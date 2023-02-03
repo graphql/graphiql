@@ -2,9 +2,86 @@
 
 This package provides a plugin that allows sending a batch request to a GraphQL Server and thence into the GraphiQI UI.
 
+The plugin scope is for sending multiple GraphQL using 2 main batching approaches:
+1. Single operation.
+2. Array of operations (GraphQL server must be configured to allow arrays).
+
+### Single operation
+Combine multiple operations ad execute them as one.
+
+For example, given the following GraphQL operations:
+
+```graphql
+query Query1($arg: String) {
+  field1
+  field2(input: $arg)
+}
+
+query Query2($arg: String) {
+  field2(input: $arg)
+  alias: field3
+}
+```
+
+These can be merged into one operation:
+
+```graphql
+query ($_0_arg: String, $_1_arg: String) {
+  _0_field1: field1
+  _0_field2: field2(input: $_0_arg)
+  _1_field2: field3(input: $_1_arg)
+  _1_alias: field3
+}
+```
+
+### Array of operations
+Combine multiple GraphQL Requests and combine them into one GraphQL Request using an array, having the server recognize the request as an array of operations instead of a single one, and handle each operation separately.
+
+For example, given the following GraphQL Requests:
+
+```json
+{
+  "operationName": "Query1",
+  "query": "query Query1($arg: String) { ... }",
+  "variables": { 
+    "arg": "foo"
+  }
+}
+
+{
+  "operationName": "Query2",
+  "query": "query Query2($arg: String) { ... }",
+  "variables": { 
+    "arg": "foo"
+  }
+}
+
+```
+
+These can be merged into one GraphQL Array Request:
+
+```json
+[
+  {
+    "operationName": "Query1",
+    "query": "query Query1($arg: String) { ... }",
+    "variables": { 
+      "arg": "foo"
+    }
+  },
+  {
+    "operationName": "Query2",
+    "query": "query Query2($arg: String) { ... }",
+    "variables": { 
+      "arg": "foo"
+    }
+  }
+]
+```
+
 ## Install
 
-Use your favoriton package manager to install the package:
+Use your favorite package manager to install the package:
 
 ```sh
 npm i -S @graphiql/plugin-batch-request
@@ -17,8 +94,6 @@ npm i -S react react-dom graphql
 ```
 
 ## Usage
-
-The plugin scope is for sending multiple GraphQL operations as an array, so the GraphQL server must be configured to allow arrays.
 
 ```jsx
 import { useBatchRequestPlugin } from '@graphiql/plugin-batch-request';

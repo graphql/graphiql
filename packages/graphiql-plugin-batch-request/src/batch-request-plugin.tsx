@@ -1,15 +1,19 @@
-import { PlayIcon, Spinner, StopIcon, useEditorContext } from '@graphiql/react';
-import { FetcherParams } from '@graphiql/toolkit';
-import { GraphiQLBatchRequestProps, TabsWithOperations } from 'graphiql-batch-request';
+import { Button, ButtonGroup, PlayIcon, Spinner, StopIcon, useEditorContext } from '@graphiql/react';
+import { FetcherParamsWithDocument, GraphiQLBatchRequestProps, TabsWithOperations } from 'graphiql-batch-request';
 import { GraphQLError, parse, print } from 'graphql';
 import { Kind } from 'graphql/language';
 import { useState } from 'react';
 import CheckboxTree from 'react-checkbox-tree';
+import { filterDocumentByOperationName } from './filter-document';
+import { mergeRequests } from './merge-requests';
 
 import "@fortawesome/fontawesome-free/css/all.css";
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import './graphiql-batch-request.d.ts';
 import './index.css';
+import { FetcherParams } from '@graphiql/toolkit';
+
+enum BatchStrategy { ALIASES, ARRAY };
 
 export function BatchRequestPlugin({
   url,
@@ -67,6 +71,7 @@ export function BatchRequestPlugin({
     })
   );
 
+  const [batchingStrategy, setBatchingStrategy] = useState(BatchStrategy.ARRAY);
   const [batchResponseLoading, setBatchResponseLoading] = useState(false);
   const [executeButtonDisabled, setExecuteButtonDisabled] = useState(
     useAllOperations === false
@@ -89,7 +94,7 @@ export function BatchRequestPlugin({
   }
 
   const sendBatchRequest = () => {
-    const operations: FetcherParams[] = [];
+    const operations: FetcherParamsWithDocument[] = [];
     let headers = {};
     for (const selectedOperation of selectedOperations) {
       const [tabId, selectedOperationName] = selectedOperation.split('|');
@@ -102,20 +107,44 @@ export function BatchRequestPlugin({
         )
         if (selectedOperationDefinition) {
           headers = {...headers, ...tab.headers};
+          const document = filterDocumentByOperationName(tab.document, selectedOperationDefinition.name?.value);
+          console.log(`filtered document op: ${selectedOperationDefinition.name?.value}\n`, print(document));
           operations.push({
+            document,
             operationName: selectedOperationDefinition.name?.value,
-            query: print(tab.document),
+            query: print(document),
             variables: tab.variables
           })
         };
       }
     }
+
+    let payload: FetcherParams[] | FetcherParams = [];
+    if (batchingStrategy === BatchStrategy.ARRAY) {
+      payload = operations.map(({query, operationName, variables}) => ({ operationName, query, variables }));
+    } else if (batchingStrategy === BatchStrategy.ALIASES) {
+      const mergedRequests = mergeRequests(
+        operations.map(({document, operationName, variables}) => ({
+          operationName,
+          document,
+          variables
+        }))
+      );
+
+      console.log('merged requests:\n', print(mergedRequests.document));
+
+      payload = {
+        query: print(mergedRequests.document),
+        operationName: mergedRequests.operationName,
+        variables: mergedRequests.variables
+      }
+    }
     
     setBatchResponseLoading(true);
-
+    
     window.fetch(url, {
       method: 'POST',
-      body: JSON.stringify(operations),
+      body: JSON.stringify(payload),
       headers: {
         'content-type': 'application/json',
         ...headers
@@ -161,6 +190,32 @@ export function BatchRequestPlugin({
           }}>
             You have selected {selectedOperations.length === 1 ? `${selectedOperations.length} operation.` : `${selectedOperations.length} operations.`}
           </p>
+        </div>
+        <div className="graphiql-batch-request-strategy-section">
+          <div>
+            <div className="graphiql-batch-request-strategy-title">Batch strategy</div>
+            <div className="graphiql-batch-request-strategy-caption">
+              How to batch operations.
+            </div>
+          </div>
+          <div>
+            <ButtonGroup>
+              <Button
+                type="button"
+                className={batchingStrategy === BatchStrategy.ALIASES ? 'active' : ''}
+                onClick={() => setBatchingStrategy(BatchStrategy.ALIASES)}
+              >
+                Aliases
+              </Button>
+              <Button
+                type="button"
+                className={batchingStrategy === BatchStrategy.ARRAY ? 'active' : ''}
+                onClick={() => setBatchingStrategy(BatchStrategy.ARRAY)}
+              >
+                Array
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
         <CheckboxTree
           icons={{
