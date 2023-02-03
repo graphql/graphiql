@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 
 module.exports = (dir, env = 'jsdom') => {
   const package = require(`${dir}/package.json`);

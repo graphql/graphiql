@@ -12,7 +12,7 @@ import {
   CompletionItem,
 } from 'graphql-language-service';
 
-import fs from 'fs';
+import fs from 'node:fs';
 import {
   buildSchema,
   FragmentDefinitionNode,
@@ -21,7 +21,7 @@ import {
   version as graphQLVersion,
 } from 'graphql';
 import { Position } from '../../utils';
-import path from 'path';
+import path from 'node:path';
 
 import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
 

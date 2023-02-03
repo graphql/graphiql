@@ -1,8 +1,8 @@
 const copy = require('copy');
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 const mkdirp = require('mkdirp');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const rimraf = require('rimraf');
 
 const [, , src, dest, destExtension] = process.argv;

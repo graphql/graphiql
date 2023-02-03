@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service';
@@ -23,9 +23,9 @@ import { loadConfig } from 'graphql-config';
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 
-jest.mock('fs', () => ({
+jest.mock('node:fs', () => ({
   ...jest.requireActual<typeof import('fs')>('fs'),
   readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
 }));
@@ -316,7 +316,8 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidOpenOrSaveNotification', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
@@ -718,7 +719,8 @@ query Test {
   });
 
   describe('handleWatchedFilesChangedNotification', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
@@ -740,7 +742,8 @@ query Test {
   });
 
   describe('handleWatchedFilesChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
@@ -763,7 +766,8 @@ query Test {
   });
 
   describe('handleDidChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');

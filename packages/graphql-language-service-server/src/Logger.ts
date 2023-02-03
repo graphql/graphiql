@@ -10,10 +10,10 @@
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { DiagnosticSeverity } from 'vscode-languageserver';
 
-import * as fs from 'fs';
-import * as os from 'os';
-import { join } from 'path';
-import { Socket } from 'net';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import { join } from 'node:path';
+import { Socket } from 'node:net';
 
 import {
   DIAGNOSTIC_SEVERITY,

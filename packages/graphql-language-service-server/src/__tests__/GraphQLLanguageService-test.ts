@@ -7,7 +7,7 @@
  *
  */
 
-import { join } from 'path';
+import { join } from 'node:path';
 
 import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';

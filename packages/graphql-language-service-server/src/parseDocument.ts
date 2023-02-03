@@ -1,4 +1,4 @@
-import { extname } from 'path';
+import { extname } from 'node:path';
 import type { CachedContent } from 'graphql-language-service';
 import { Range, Position } from 'graphql-language-service';
 

@@ -99,7 +99,7 @@
     "@types/express": "^4.17.11",
     "@types/fetch-mock": "^7.3.2",
     "@types/jest": "^26.0.22",
-    "@types/node": "^14.14.22",
+    "@types/node": "^16.18.4",
     "@types/prettier": "^2.7.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.17",

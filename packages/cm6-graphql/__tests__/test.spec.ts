@@ -1,8 +1,8 @@
 import { graphqlLanguage } from '../dist/index.js';
 import { fileTests } from '@lezer/generator/dist/test';
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 // because of the babel transformations, __dirname is the package root (cm6-graphql)
 const caseDir = path.resolve(path.dirname(__dirname), '__tests__');
@@ -23,7 +23,7 @@ describe('codemirror 6 language', () => {
           try {
             run(graphqlLanguage.parser);
           } catch (err) {
-            require('console').log(name, err);
+            require('node:console').log(name, err);
             throw err;
           }
         });

@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 

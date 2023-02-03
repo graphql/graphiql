@@ -276,6 +276,8 @@ module.exports = {
     '@typescript-eslint/no-unused-expressions': 'error',
     'sonarjs/no-small-switch': 'error',
     'sonarjs/no-duplicated-branches': 'error',
+    'unicorn/prefer-node-protocol': 'error',
+    'import/no-unresolved': ['error', { ignore: ['^node:'] }],
   },
 
   plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
@@ -344,7 +346,7 @@ module.exports = {
         'packages/vscode-graphql-execution/**',
       ],
       rules: {
-        'import/no-unresolved': ['error', { ignore: ['vscode'] }],
+        'import/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
       },
     },
   ],

@@ -9,8 +9,8 @@
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { GraphQLError, OperationDefinitionNode } from 'graphql';
 import '../lint';
 import '../mode';

@@ -8,8 +8,8 @@
  */
 
 import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import * as path from 'path';
+import { readFileSync, existsSync, writeFileSync, writeFile } from 'node:fs';
+import * as path from 'node:path';
 import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
 import {
@@ -61,7 +61,7 @@ import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 
 import { Logger } from './Logger';
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import {
   ConfigEmptyError,
   ConfigInvalidError,
@@ -71,7 +71,7 @@ import {
   ProjectNotFoundError,
 } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 
 const writeFileAsync = promisify(writeFile);
 

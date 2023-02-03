@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import fs from 'fs';
+import fs from 'node:fs';
 import {
   buildSchema,
   parse,
@@ -18,7 +18,7 @@ import {
   ASTVisitor,
   FragmentDefinitionNode,
 } from 'graphql';
-import path from 'path';
+import path from 'node:path';
 
 import {
   getDiagnostics,

@@ -14,7 +14,7 @@ import {
   LanguageClient,
 } from 'vscode-languageclient/node';
 
-import * as path from 'path';
+import * as path from 'node:path';
 import { createStatusBar, initStatusBar } from './apis/statusBar';
 
 let client: LanguageClient;
