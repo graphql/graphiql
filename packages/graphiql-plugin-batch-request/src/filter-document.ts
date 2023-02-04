@@ -21,7 +21,7 @@ export const filterDocumentByOperationName = (
     }
   }
 
-  const getFragmentDefinitions = (
+  const getSelectedFragments = (
     selectionSet: SelectionSetNode | undefined
   ): Record<string, FragmentDefinitionNode> => {
   
@@ -29,35 +29,35 @@ export const filterDocumentByOperationName = (
       return {};
     }
   
-    let filteredFragments: Record<string, FragmentDefinitionNode> = {};
+    let selectedFragments: Record<string, FragmentDefinitionNode> = {};
 
     for(const selection of selectionSet.selections) {
       if(selection.kind === Kind.FRAGMENT_SPREAD) {
-        const fragment = fragments[selection.name.value];
-        filteredFragments = {
-          ...filteredFragments,
-          [selection.name.value]: fragment,
-          ...getFragmentDefinitions(fragment.selectionSet)
+        const selectedFragment = fragments[selection.name.value];
+        selectedFragments = {
+          ...selectedFragments,
+          [selection.name.value]: selectedFragment,
+          ...getSelectedFragments(selectedFragment.selectionSet)
         };
       } else {
         // technically at this point the only SelectionNode types we are looking for are 
         // FieldNode (Kind.FIELD) and InlineFragmentNode (Kind.INLINE_FRAGMENT) 
         // but leting validation handle that.
-        filteredFragments = {
-          ...filteredFragments,
-          ...getFragmentDefinitions(selection.selectionSet)
+        selectedFragments = {
+          ...selectedFragments,
+          ...getSelectedFragments(selection.selectionSet)
         };
       }
     }
     
-    return filteredFragments;
+    return selectedFragments;
   }
 
   if (filteredOperation) {
     return {
       kind: Kind.DOCUMENT,
       definitions: [
-        ...Object.values(getFragmentDefinitions(filteredOperation.selectionSet)),
+        ...Object.values(getSelectedFragments(filteredOperation.selectionSet)),
         filteredOperation
       ]
     };
