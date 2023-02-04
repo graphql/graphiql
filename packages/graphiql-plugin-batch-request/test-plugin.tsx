@@ -4,9 +4,10 @@ import { GraphiQL } from 'graphiql';
 import * as React from 'react';
 import { useBatchRequestPlugin } from './src/index';
 
-// const url = 'https://swapi-graphql.netlify.app/.netlify/functions/index'
-// const url = 'https://api.spacex.land/graphql'
+// const url = 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+// const url = 'https://api.spacex.land/graphql';
 const url = 'https://countries.trevorblades.com/graphql';
+
 const fetcher = createGraphiQLFetcher({ url });
 
 const App = () => {

@@ -2,7 +2,7 @@
 
 This package provides a plugin that allows sending a batch request to a GraphQL Server and thence into the GraphiQI UI.
 
-The plugin scope is for sending multiple GraphQL using 2 main batching approaches:
+The plugin scope is for sending multiple GraphQL using 2 main batching strategy:
 1. Single operation.
 2. Array of operations (GraphQL server must be configured to allow arrays).
 
@@ -127,6 +127,6 @@ function GraphiQLWithExplorer() {
 
 ### Example 
 
-Sending a batch request to spacex GraphQL server: 
+Sending a batch request to the countries GraphQL server: 
 
-https://user-images.githubusercontent.com/6611331/212411159-336abe77-5f0a-4453-9de3-62abe039168f.mov
+https://user-images.githubusercontent.com/6611331/216736177-2d8d6153-b246-48ef-8e97-687beea6f9fc.mov
