@@ -1,8 +1,5 @@
-import { 
-  DocumentNode, 
-  Kind, 
-  FragmentDefinitionNode, 
-  OperationDefinitionNode, 
+import {
+  DocumentNode, FragmentDefinitionNode, Kind, OperationDefinitionNode,
   SelectionSetNode
 } from 'graphql';
 
@@ -13,21 +10,54 @@ export const filterDocumentByOperationName = (
   let filteredOperation: OperationDefinitionNode | undefined;
   const fragments: Record<string, FragmentDefinitionNode> = {};
 
-  document.definitions.forEach(definition => {
-    if (definition.kind === Kind.OPERATION_DEFINITION && definition.name?.value === operationName) {
+  for (const definition of document.definitions) {
+    if (
+      definition.kind === Kind.OPERATION_DEFINITION && 
+      definition.name?.value === operationName
+    ) {
       filteredOperation = definition;
-    }
-    if (definition.kind === Kind.FRAGMENT_DEFINITION) {
+    } else if (definition.kind === Kind.FRAGMENT_DEFINITION) {
       fragments[definition.name.value] = definition;
     }
-  });
+  }
+
+  const getFragmentDefinitions = (
+    selectionSet: SelectionSetNode | undefined
+  ): Record<string, FragmentDefinitionNode> => {
+  
+    if (!selectionSet) {
+      return {};
+    }
+  
+    let filteredFragments: Record<string, FragmentDefinitionNode> = {};
+
+    for(const selection of selectionSet.selections) {
+      if(selection.kind === Kind.FRAGMENT_SPREAD) {
+        const fragment = fragments[selection.name.value];
+        filteredFragments = {
+          ...filteredFragments,
+          [selection.name.value]: fragment,
+          ...getFragmentDefinitions(fragment.selectionSet)
+        };
+      } else {
+        // technically at this point the only SelectionNode types we are looking for are 
+        // FieldNode (Kind.FIELD) and InlineFragmentNode (Kind.INLINE_FRAGMENT) 
+        // but leting validation handle that.
+        filteredFragments = {
+          ...filteredFragments,
+          ...getFragmentDefinitions(selection.selectionSet)
+        };
+      }
+    }
+    
+    return filteredFragments;
+  }
 
   if (filteredOperation) {
-    const filteredFragments = filterSelectionSet(filteredOperation.selectionSet, fragments);
     return {
       kind: Kind.DOCUMENT,
       definitions: [
-        ...Object.values(filteredFragments), 
+        ...Object.values(getFragmentDefinitions(filteredOperation.selectionSet)),
         filteredOperation
       ]
     };
@@ -37,35 +67,4 @@ export const filterDocumentByOperationName = (
     kind: Kind.DOCUMENT,
     definitions: []
   };
-}
-
-export const filterSelectionSet = (
-  selectionSet: SelectionSetNode | undefined, 
-  fragments: Record<string, FragmentDefinitionNode>
-): Record<string, FragmentDefinitionNode> => {
-
-  if (!selectionSet) {
-    return {};
-  }
-
-  let filteredFragments: Record<string, FragmentDefinitionNode> = {};
-
-  selectionSet.selections.forEach(selection => {
-    if(selection.kind === Kind.FRAGMENT_SPREAD && fragments[selection.name.value]) {
-      const fragment = fragments[selection.name.value];
-      filteredFragments = {
-        ...filteredFragments,
-        [selection.name.value]: fragment,
-        ...filterSelectionSet(fragment.selectionSet, fragments)
-      };
-    }
-    else if (selection.kind === Kind.FIELD || selection.kind === Kind.INLINE_FRAGMENT) {
-      filteredFragments = {
-        ...filteredFragments,
-        ...filterSelectionSet(selection.selectionSet, fragments)
-      };
-    }
-  });
-  
-  return filteredFragments;
 }
