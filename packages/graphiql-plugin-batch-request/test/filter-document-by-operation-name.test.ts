@@ -97,7 +97,7 @@ describe('filterDocumentByOperationName', () => {
     );
   });
 
-  it.only('should not filter document when no operation defitinion matches provided operation name', () => {
+  it('should not filter document when no operation defitinion matches provided operation name', () => {
     const document = parse(`
       fragment ItemFragment on Item { id }
       fragment UserFragment on User { id }
@@ -116,5 +116,20 @@ describe('filterDocumentByOperationName', () => {
 
     const filteredDocument = filterDocumentByOperationName(document, 'MyAwesomeQuery');
     expect(filteredDocument.definitions.length).toEqual(0);
+  });
+
+  it('should not filter document without repeated fagment definitions', () => {
+    const document = parse(`
+      fragment ItemFragment on Item { id }
+      query GetItem {
+        item_1: item(id: 1) { ...ItemFragment }
+        item_2: item(id: 2) { ...ItemFragment }
+        item_3: item(id: 3) { ...ItemFragment }
+        item_4: item(id: 4) { ...ItemFragment }
+      }
+    `);
+
+    const filteredDocument = filterDocumentByOperationName(document, 'GetItem');
+    expect(filteredDocument.definitions.length).toEqual(2);
   });
 });

@@ -26,7 +26,10 @@ export const filterDocumentByOperationName = (
     const filteredFragments = filterSelectionSet(filteredOperation.selectionSet, fragments);
     return {
       kind: Kind.DOCUMENT,
-      definitions: [...filteredFragments, filteredOperation]
+      definitions: [
+        ...Object.values(filteredFragments), 
+        filteredOperation
+      ]
     };
   }
 
@@ -39,26 +42,28 @@ export const filterDocumentByOperationName = (
 export const filterSelectionSet = (
   selectionSet: SelectionSetNode | undefined, 
   fragments: Record<string, FragmentDefinitionNode>
-): FragmentDefinitionNode[] => {
+): Record<string, FragmentDefinitionNode> => {
 
   if (!selectionSet) {
-    return [];
+    return {};
   }
 
-  const filteredFragments: FragmentDefinitionNode[] = [];
+  let filteredFragments: Record<string, FragmentDefinitionNode> = {};
 
   selectionSet.selections.forEach(selection => {
     if(selection.kind === Kind.FRAGMENT_SPREAD && fragments[selection.name.value]) {
       const fragment = fragments[selection.name.value];
-      filteredFragments.push(
-        fragment,
+      filteredFragments = {
+        ...filteredFragments,
+        [selection.name.value]: fragment,
         ...filterSelectionSet(fragment.selectionSet, fragments)
-      );
+      };
     }
     else if (selection.kind === Kind.FIELD || selection.kind === Kind.INLINE_FRAGMENT) {
-      filteredFragments.push(
+      filteredFragments = {
+        ...filteredFragments,
         ...filterSelectionSet(selection.selectionSet, fragments)
-      );
+      };
     }
   });
   
