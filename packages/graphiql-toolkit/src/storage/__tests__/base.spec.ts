@@ -79,7 +79,7 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result?.error?.message).toEqual('Terrible Error');
     expect(result.isQuotaError).toBe(false);
   });
 
@@ -93,7 +93,19 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result?.error?.message).toEqual('Terrible Error');
     expect(result.isQuotaError).toBe(true);
+  });
+
+  it('custom storageNameSpace', () => {
+    const customStorage = new StorageAPI(undefined, 'customKey');
+    const result = customStorage.set('key7', 'value');
+    expect(result).toEqual({
+      error: null,
+      isQuotaError: false,
+    });
+
+    const newResult = customStorage.get('key7');
+    expect(newResult).toEqual('value');
   });
 });

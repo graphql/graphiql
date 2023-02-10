@@ -17,11 +17,14 @@ export type StorageContextProviderProps = {
    * for details on the required interface.
    */
   storage?: Storage;
+  storageNamespace?: string;
 };
 
 export function StorageContextProvider(props: StorageContextProviderProps) {
   const isInitialRender = useRef(true);
-  const [storage, setStorage] = useState(new StorageAPI(props.storage));
+  const [storage, setStorage] = useState(
+    new StorageAPI(props.storage, props.storageNamespace),
+  );
 
   useEffect(() => {
     if (isInitialRender.current) {
