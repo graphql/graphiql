@@ -46,12 +46,16 @@ export function GraphiQLProvider({
   schemaDescription,
   shouldPersistHeaders,
   storage,
+  storageNamespace,
   validationRules,
   variables,
   visiblePlugin,
 }: GraphiQLProviderProps) {
   return (
-    <StorageContextProvider storage={storage}>
+    <StorageContextProvider
+      storage={storage}
+      storageNamespace={storageNamespace}
+    >
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <EditorContextProvider
           defaultQuery={defaultQuery}

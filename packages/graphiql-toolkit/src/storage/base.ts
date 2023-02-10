@@ -53,8 +53,15 @@ function isQuotaError(storage: Storage, e: unknown) {
 
 export class StorageAPI {
   storage: Storage | null;
+  storageNamespace: string | null;
 
-  constructor(storage?: Storage | null) {
+  constructor(storage?: Storage | null, storageNamespace?: string | null) {
+    // sorted if define custom storage namespace
+    const sortedStorageNamespace = `${
+      storageNamespace ? `${storageNamespace}:` : ''
+    }${STORAGE_NAMESPACE}`;
+    this.storageNamespace = sortedStorageNamespace;
+
     if (storage) {
       this.storage = storage;
     } else if (storage === null) {
@@ -71,7 +78,7 @@ export class StorageAPI {
         get length() {
           let keys = 0;
           for (const key in window.localStorage) {
-            if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
+            if (key.indexOf(`${sortedStorageNamespace}:`) === 0) {
               keys += 1;
             }
           }
@@ -81,7 +88,7 @@ export class StorageAPI {
         clear: () => {
           // We only want to clear the namespaced items
           for (const key in window.localStorage) {
-            if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
+            if (key.indexOf(`${sortedStorageNamespace}:`) === 0) {
               window.localStorage.removeItem(key);
             }
           }
@@ -95,7 +102,7 @@ export class StorageAPI {
       return null;
     }
 
-    const key = `${STORAGE_NAMESPACE}:${name}`;
+    const key = `${this.storageNamespace}:${name}`;
     const value = this.storage.getItem(key);
     // Clean up any inadvertently saved null/undefined values.
     if (value === 'null' || value === 'undefined') {
@@ -114,7 +121,7 @@ export class StorageAPI {
     let error: Error | null = null;
 
     if (this.storage) {
-      const key = `${STORAGE_NAMESPACE}:${name}`;
+      const key = `${this.storageNamespace}:${name}`;
       if (value) {
         try {
           this.storage.setItem(key, value);
