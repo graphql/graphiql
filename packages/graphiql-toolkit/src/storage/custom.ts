@@ -1,6 +1,5 @@
 /**
- * This function enable a custom namespace for localStorage
- *
+ * This function enables a custom namespace for localStorage
  */
 
 import { Storage } from './base';
