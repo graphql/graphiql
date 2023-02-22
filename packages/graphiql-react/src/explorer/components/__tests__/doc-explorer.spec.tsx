@@ -120,7 +120,7 @@ describe('DocExplorer', () => {
           context.push({ name: 'Query', def: Query });
           context.push({ name: 'field', def: field });
         }
-      }, []);
+      }, [context]);
       return null;
     };
 
@@ -185,7 +185,7 @@ describe('DocExplorer', () => {
           context.push({ name: 'Query', def: Query });
           context.push({ name: 'field', def: field });
         }
-      }, []);
+      }, [context]);
       return null;
     };
 
