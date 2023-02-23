@@ -1,30 +1,32 @@
 import { version } from 'graphql/version';
 
+beforeEach(() => {
+  cy.visit('/');
+});
+
 describe('GraphiQL DocExplorer - button', () => {
-  before(() => {
-    cy.visit(`/`);
+  beforeEach(() => {
+    cy.get('.graphiql-sidebar button').eq(0).click();
   });
   it('Toggles doc pane on', () => {
-    cy.get('.graphiql-sidebar button').eq(0).click();
     cy.get('.graphiql-doc-explorer').should('be.visible');
   });
 
   it('Toggles doc pane back off', () => {
     cy.get('.graphiql-sidebar button').eq(0).click();
-    cy.get('.graphiql-doc-explorer').should('not.be.visible');
+    cy.get('.graphiql-doc-explorer').should('not.exist');
   });
 });
 
 describe('GraphiQL DocExplorer - search', () => {
-  before(() => {
-    cy.visit(`/`);
+  beforeEach(() => {
     cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('[data-reach-combobox-input]').type('test');
+    cy.get('[data-reach-combobox-option]').should('have.length', 7);
   });
 
   it('Searches docs for values', () => {
-    cy.get('[data-reach-combobox-input]').type('test');
     cy.get('[data-reach-combobox-popover]').should('not.have.attr', 'hidden');
-    cy.get('[data-reach-combobox-option]').should('have.length', 7);
   });
 
   it('Navigates to a docs entry on selecting a search result', () => {
@@ -33,11 +35,9 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Allows searching fields within a type', () => {
+    cy.get('[data-reach-combobox-option]').eq(4).children().click();
     cy.get('[data-reach-combobox-input]').type('list');
     cy.get('[data-reach-combobox-option]').should('have.length', 14);
-  });
-
-  it('Shows "other results" section', () => {
     cy.get(
       '[data-reach-combobox-popover] .graphiql-doc-explorer-search-divider',
     ).should('have.text', 'Other results');
@@ -50,15 +50,13 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Navigates back', () => {
+    cy.get('[data-reach-combobox-option]').eq(4).children().click();
     cy.get('.graphiql-doc-explorer-back').click();
     cy.get('.graphiql-doc-explorer-title').should('have.text', 'Docs');
   });
 
   it('Type fields link to their own docs entry', () => {
-    cy.get('[data-reach-combobox-input]').type('test');
-    cy.wait(250);
     cy.get('[data-reach-combobox-option]').last().click();
-
     cy.get('.graphiql-doc-explorer-title').should('have.text', 'isTest');
     cy.get('.graphiql-markdown-description').should(
       'have.text',
@@ -69,7 +67,6 @@ describe('GraphiQL DocExplorer - search', () => {
 
 describe('GraphQL DocExplorer - deprecated fields', () => {
   it('should show deprecated fields details when expanding', () => {
-    cy.visit(`/`);
     // Open doc explorer
     cy.get('.graphiql-sidebar button').eq(0).click();
 
@@ -105,6 +102,12 @@ if (!version.includes('15.5')) {
 
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
+    // Open doc explorer
+    cy.get('.graphiql-sidebar button').eq(0).click();
+
+    // Select query type
+    cy.get('.graphiql-doc-explorer-type-name').first().click();
+
     cy.get('.graphiql-doc-explorer-field-name').contains('hasArgs').click();
     cy.contains('Show Deprecated Arguments').click();
     cy.get('.graphiql-doc-explorer-section-title').contains(
