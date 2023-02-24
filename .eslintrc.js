@@ -111,6 +111,9 @@ module.exports = {
     'require-await': 0,
     'vars-on-top': 0,
     yoda: 1,
+    'sonarjs/no-identical-functions': 'error',
+    'sonarjs/no-unused-collection': 'error',
+    'sonarjs/no-extra-arguments': 'error',
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,

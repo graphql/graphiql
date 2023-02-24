@@ -178,6 +178,7 @@ describe('DocExplorer', () => {
     const { field } = (Query as GraphQLObjectType).getFields();
 
     // A hacky component to set the initial explorer nav stack
+    // eslint-disable-next-line sonarjs/no-identical-functions -- todo: could be refactored
     const SetInitialStack: React.FC = () => {
       const context = useContext(ExplorerContext)!;
       useEffect(() => {

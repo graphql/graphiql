@@ -34,6 +34,7 @@ export class NetworkHelper {
     this.outputChannel = outputChannel;
     this.sourceHelper = sourceHelper;
   }
+
   private buildClient({
     operation,
     endpoint,
@@ -112,12 +113,10 @@ export class NetworkHelper {
     projectConfig,
   }: ExecuteOperationOptions) {
     const operationTypes: OperationTypeNode[] = [];
-    const operationNames: string[] = [];
 
     visit(literal.ast, {
       OperationDefinition(node) {
         operationTypes.push(node.operation);
-        operationNames.push(node.name?.value || '');
       },
     });
     const fragmentDefinitions = await this.sourceHelper.getFragmentDefinitions(
