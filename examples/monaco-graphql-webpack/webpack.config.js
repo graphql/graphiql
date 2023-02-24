@@ -16,8 +16,8 @@ const resultConfig = {
   output: {
     path: rootPath('dist'),
     filename: '[name].js',
+    chunkFormat: 'commonjs',
   },
-  devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [
       // for graphql module, which uses .mjs
