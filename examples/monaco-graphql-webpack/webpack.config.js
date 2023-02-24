@@ -75,6 +75,15 @@ const resultConfig = {
     new MonacoWebpackPlugin({
       languages: ['json', 'graphql'],
       publicPath: '/',
+      customLanguages: [
+        {
+          label: 'graphql',
+          worker: {
+            id: 'graphql',
+            entry: require.resolve('monaco-graphql/esm/graphql.worker.js'),
+          },
+        },
+      ],
     }),
   ],
   resolve: {
