@@ -1,0 +1,1 @@
+# @graphiql/plugin-batch-request
