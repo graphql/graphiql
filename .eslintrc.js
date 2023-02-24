@@ -250,6 +250,11 @@ module.exports = {
     'promise/no-multiple-resolved': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',
+    'logical-assignment-operators': [
+      'error',
+      'always',
+      { enforceForIfStatements: true },
+    ],
     'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
