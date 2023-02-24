@@ -70,9 +70,7 @@ export async function getGraphQLCache({
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
   let graphQLConfig = config;
-  if (!graphQLConfig) {
-    graphQLConfig = await loadConfig(loadConfigOptions);
-  }
+  graphQLConfig ||= await loadConfig(loadConfigOptions);
   return new GraphQLCache({
     configDir: loadConfigOptions.rootDir as string,
     config: graphQLConfig as GraphQLConfig,

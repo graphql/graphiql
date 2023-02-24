@@ -23,15 +23,13 @@ async function render() {
 
     return;
   }
-  if (!monacoGraphQLAPI) {
-    monacoGraphQLAPI = initializeMode({
-      formattingOptions: {
-        prettierConfig: {
-          printWidth: 120,
-        },
+  monacoGraphQLAPI ||= initializeMode({
+    formattingOptions: {
+      prettierConfig: {
+        printWidth: 120,
       },
-    });
-  }
+    },
+  });
 
   document.getElementById('github-login-wrapper')?.remove();
   document
