@@ -256,12 +256,11 @@ export const QueryEditor: typeof _QueryEditor = function QueryEditor(props) {
   return <div data-testid="query-editor" ref={ref} />;
 };
 
-export const ResponseEditor: typeof _ResponseEditor = function ResponseEditor(
-  props,
-) {
-  const ref = useResponseEditor(props);
-  return <div ref={ref} />;
-};
+export const ResponseEditor: typeof _ResponseEditor =
+  function ResponseEditor() {
+    const ref = useResponseEditor();
+    return <div ref={ref} />;
+  };
 
 export const VariableEditor: typeof _VariableEditor = function VariableEditor(
   props,

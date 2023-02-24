@@ -184,6 +184,7 @@ function getDefinitionForNodeDefinition(
   };
 }
 
+// eslint-disable-next-line sonarjs/no-identical-functions
 function getDefinitionForFieldDefinition(
   path: Uri,
   text: string,
