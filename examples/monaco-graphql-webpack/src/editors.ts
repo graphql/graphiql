@@ -1,24 +1,6 @@
 import * as monaco from 'monaco-editor';
 
-// NOTE: using loader syntax because Yaml worker imports editor.worker directly and that
-// import shouldn't go through loader syntax.
-// @ts-expect-error
-import GraphQLWorker from 'monaco-graphql/esm/graphql.worker'; // eslint-disable-line import/default
-
 const GRAPHQL_LANGUAGE_ID = 'graphql';
-
-// @ts-expect-error
-window.MonacoEnvironment = {
-  getWorker(_workerId: string, label: string) {
-    if (label === GRAPHQL_LANGUAGE_ID) {
-      return new GraphQLWorker();
-    }
-    if (label === 'json') {
-      return new Worker('/json.worker.js');
-    }
-    return new Worker('/editor.worker.js');
-  },
-};
 
 const operationString =
   localStorage.getItem('operations') ??
