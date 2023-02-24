@@ -6,20 +6,18 @@ describe('Tabs', () => {
     cy.get('#graphiql-session-tab-0').should('not.exist');
 
     // Enter a query without operation name
-    cy.get('.graphiql-query-editor textarea')
-      .type('{id', { force: true })
-      .wait(500);
+    cy.get('.graphiql-query-editor textarea').type('{id', { force: true });
 
     // Run the query
-    cy.clickExecuteQuery().wait(500);
+    cy.clickExecuteQuery();
 
     // Open a new tab
     cy.get('.graphiql-tab-add').click();
 
     // Enter a query
-    cy.get('.graphiql-query-editor textarea')
-      .type('query Foo {image', { force: true })
-      .wait(500);
+    cy.get('.graphiql-query-editor textarea').type('query Foo {image', {
+      force: true,
+    });
     cy.get('#graphiql-session-tab-1').should('have.text', 'Foo');
 
     // Enter variables
@@ -34,7 +32,7 @@ describe('Tabs', () => {
       .type('{"someHeader":"someValue"', { force: true });
 
     // Run the query
-    cy.clickExecuteQuery().wait(500);
+    cy.clickExecuteQuery();
 
     // Switch back to the first tab
     cy.get('#graphiql-session-tab-0').click();

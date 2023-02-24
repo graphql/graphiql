@@ -279,13 +279,9 @@ module.exports = {
     // cypress clashes with jest expect()
     {
       files: ['**/cypress/**'],
-      plugins: ['cypress'],
-      env: {
-        'cypress/globals': true,
-      },
+      extends: 'plugin:cypress/recommended',
     },
     {
-      excludedFiles: ['**/cypress/**/*.{js,ts}'],
       files: [
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',

@@ -23,18 +23,26 @@ declare namespace Cypress {
     | { data: any; hasNext?: boolean }
     | { error: any[] }
     | { errors: any[] };
+
   interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')
      */
     dataCy(value: string): Chainable<Element>;
+
     getCy(cyName: string): Chainable<Element>;
+
     clickExecuteQuery(): Chainable<Element>;
+
     visitWithOp(op: Op): Chainable<Element>;
+
     clickPrettify(): Chainable<Element>;
+
     assertHasValues(op: Op): Chainable<Element>;
+
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+
     assertLinterMarkWithMessage(
       text: string,
       severity: 'error' | 'warning',
@@ -139,7 +147,6 @@ function normalizeWhitespace(str: string) {
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message) => {
-    cy.wait(100);
     cy.contains(text)
       .should('have.class', 'CodeMirror-lint-mark')
       .and('have.class', `CodeMirror-lint-mark-${severity}`);
