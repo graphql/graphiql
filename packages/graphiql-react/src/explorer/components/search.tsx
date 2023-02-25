@@ -58,7 +58,7 @@ export function Search() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const navItem = explorerNavStack.at(-1);
+  const navItem = explorerNavStack.at(-1)!;
 
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
@@ -198,7 +198,7 @@ export function useSearchResults(caller?: Function) {
     caller: caller || useSearchResults,
   });
 
-  const navItem = explorerNavStack.at(-1);
+  const navItem = explorerNavStack.at(-1)!;
 
   return useCallback(
     (searchValue: string) => {

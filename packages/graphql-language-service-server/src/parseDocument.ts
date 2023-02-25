@@ -68,7 +68,7 @@ export function parseDocument(
     const lines = query.split('\n');
     const range = new Range(
       new Position(0, 0),
-      new Position(lines.length - 1, lines.at(-1).length - 1),
+      new Position(lines.length - 1, lines.at(-1)!.length - 1),
     );
     return [{ query, range }];
   }

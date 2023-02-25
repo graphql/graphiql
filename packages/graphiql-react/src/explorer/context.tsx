@@ -83,7 +83,7 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
 
   const push = useCallback((item: ExplorerNavStackItem) => {
     setNavStack(currentState => {
-      const lastItem = currentState.at(-1);
+      const lastItem = currentState.at(-1)!;
       return lastItem.def === item.def
         ? // Avoid pushing duplicate items
           currentState

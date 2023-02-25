@@ -21,7 +21,7 @@ export function DocExplorer() {
     caller: DocExplorer,
   });
 
-  const navItem = explorerNavStack.at(-1);
+  const navItem = explorerNavStack.at(-1)!;
 
   let content: ReactNode = null;
   if (fetchError) {
@@ -55,7 +55,7 @@ export function DocExplorer() {
 
   let prevName;
   if (explorerNavStack.length > 1) {
-    prevName = explorerNavStack.at(-2).name;
+    prevName = explorerNavStack.at(-2)!.name;
   }
 
   return (

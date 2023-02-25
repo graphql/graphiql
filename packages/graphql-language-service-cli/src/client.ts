@@ -56,7 +56,7 @@ export default function main(
     case 'autocomplete':
       const lines = text.split('\n');
       const row = parseInt(argv.row, 10) || lines.length - 1;
-      const column = parseInt(argv.column, 10) || lines.at(-1).length;
+      const column = parseInt(argv.column, 10) || lines.at(-1)!.length;
       const point = new Position(row, column);
       exitCode = _getAutocompleteSuggestions(text, point, schemaPath);
       break;
