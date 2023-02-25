@@ -63,7 +63,7 @@ export class QueryStore {
   }
 
   fetchRecent() {
-    return this.items[this.items.length - 1];
+    return this.items.at(-1);
   }
 
   fetchAll() {

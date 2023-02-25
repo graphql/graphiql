@@ -434,7 +434,7 @@ export class MessageProcessor {
     const project = this._graphQLCache.getProjectForFile(uri);
     try {
       const { contentChanges } = params;
-      const contentChange = contentChanges[contentChanges.length - 1];
+      const contentChange = contentChanges.at(-1);
 
       // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.

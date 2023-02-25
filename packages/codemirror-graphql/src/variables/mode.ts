@@ -59,8 +59,7 @@ function indent(
   const level =
     !levels || levels.length === 0
       ? indentLevel
-      : levels[levels.length - 1] -
-        (this.electricInput?.test(textAfter) ? 1 : 0);
+      : levels.at(-1) - (this.electricInput?.test(textAfter) ? 1 : 0);
   return (level || 0) * (this.config?.indentUnit || 0);
 }
 

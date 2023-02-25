@@ -148,9 +148,9 @@ function getToken(
       if (
         state.indentLevel &&
         levels.length > 0 &&
-        levels[levels.length - 1] < state.indentLevel
+        levels.at(-1) < state.indentLevel
       ) {
-        state.indentLevel = levels[levels.length - 1];
+        state.indentLevel = levels.at(-1);
       }
     }
   }
