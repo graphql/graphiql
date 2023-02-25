@@ -111,7 +111,7 @@ export default class CharacterStream implements CharacterStreamInterface {
 
     if (typeof pattern === 'string') {
       const regex = new RegExp(pattern, caseFold ? 'i' : 'g');
-      match = regex.test(this._sourceText.slice(this._pos, pattern.length));
+      match = regex.test(this._sourceText.slice(this._pos, this._pos + pattern.length));
       token = pattern;
     } else if (pattern instanceof RegExp) {
       match = this._sourceText.slice(this._pos).match(pattern);
