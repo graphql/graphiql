@@ -72,32 +72,27 @@ export class DiagnosticsAdapter {
       }
     };
 
-    this._disposables.push(editor.onDidCreateModel(onModelAdd));
-    this._disposables.push({
-      dispose: () => {
-        clearTimeout(onChangeTimeout);
-      },
-    });
     this._disposables.push(
+      editor.onDidCreateModel(onModelAdd),
+      {
+        dispose: () => {
+          clearTimeout(onChangeTimeout);
+        },
+      },
       editor.onWillDisposeModel(model => {
         onModelRemoved(model);
       }),
-    );
-    this._disposables.push(
       editor.onDidChangeModelLanguage(event => {
         onModelRemoved(event.model);
         onModelAdd(event.model);
       }),
-    );
-
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
+      {
+        dispose: () => {
+          for (const key in this._listener) {
+            this._listener[key].dispose();
+          }
+        },
       },
-    });
-    this._disposables.push(
       defaults.onDidChange(() => {
         editor.getModels().forEach(model => {
           if (getModelLanguageId(model) === this.defaults.languageId) {
