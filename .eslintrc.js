@@ -116,6 +116,7 @@ module.exports = {
     'sonarjs/no-unused-collection': 'error',
     'sonarjs/no-extra-arguments': 'error',
     'unicorn/no-useless-undefined': 'error',
+    'no-var': 'error',
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
 
