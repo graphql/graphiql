@@ -261,6 +261,7 @@ module.exports = {
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/prefer-optional-catch-binding': 'error',
+    'unicorn/prefer-array-flat-map': 'error',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'error',
     'sonarjs/no-small-switch': 'error',

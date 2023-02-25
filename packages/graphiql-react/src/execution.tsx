@@ -204,8 +204,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
           const maybeErrors = [
             ...(fullResponse?.errors || []),
             ...maybeMultipart
-              .map(i => i.errors)
-              .flat()
+              .flatMap(i => i.errors)
               .filter(Boolean),
           ];
 
