@@ -35,7 +35,7 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.8.7",
+    "@babel/polyfill": "^7.12.1",
     "graphql-language-service": "^5.1.1",
     "graphql-language-service-server": "^2.9.5",
     "yargs": "^16.2.0"
