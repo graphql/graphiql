@@ -199,7 +199,7 @@ function getIndentation(str: string, index: number) {
       indentEnd = indentStart;
     }
   }
-  return str.substring(indentStart, indentEnd);
+  return str.slice(indentStart, indentEnd);
 }
 
 function isFieldType(
