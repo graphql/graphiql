@@ -5,7 +5,8 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "examples/monaco-graphql-webpack"
     ]
   },
   "lint-staged": {
@@ -111,7 +112,6 @@
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.2",
     "cspell": "^5.15.2",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
