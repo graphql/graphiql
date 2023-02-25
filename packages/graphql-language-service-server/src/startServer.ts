@@ -193,7 +193,6 @@ export default async function startServer(
         reader = new StreamMessageReader(process.stdin);
         writer = new StreamMessageWriter(process.stdout);
         break;
-      case 'node':
       default:
         reader = new IPCMessageReader(process);
         writer = new IPCMessageWriter(process);
