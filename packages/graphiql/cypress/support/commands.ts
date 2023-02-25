@@ -137,11 +137,11 @@ function codeWithLineNumbers(code: string): string {
 }
 
 function normalize(str: string) {
-  return str.replace(/\u200b/g, '');
+  return str.replaceAll('​', '');
 }
 
 function normalizeWhitespace(str: string) {
-  return str.replace(/\u00a0/g, ' ');
+  return str.replaceAll('\xA0', ' ');
 }
 
 Cypress.Commands.add(

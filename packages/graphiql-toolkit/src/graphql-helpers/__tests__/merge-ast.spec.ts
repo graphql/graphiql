@@ -160,5 +160,5 @@ function parseMergeAndPrint(query: string, maybeSchema?: GraphQLSchema) {
 }
 
 function stripWhitespace(str: string) {
-  return str.replace(/\s/g, '');
+  return str.replaceAll(/\s/g, '');
 }

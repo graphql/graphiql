@@ -267,6 +267,7 @@ module.exports = {
     'sonarjs/no-duplicated-branches': 'error',
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
+    'unicorn/prefer-string-replace-all': 'error',
 
     // TODO: Fix all errors for the following rules included in recommended config
     '@typescript-eslint/no-explicit-any': 'off',
