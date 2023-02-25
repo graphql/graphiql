@@ -58,15 +58,7 @@ const resultConfig = {
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isHMR,
-            },
-          },
-          'css-loader',
-        ],
+        use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader'],
       },
       {
         test: /\.css$/,
@@ -98,7 +90,9 @@ const resultConfig = {
     }),
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
-      tsconfig: rootPath('tsconfig.json'),
+      typescript: {
+        configFile: rootPath('tsconfig.json'),
+      },
     }),
     new (class {
       apply(compiler) {
