@@ -135,6 +135,7 @@ module.exports = {
 
     'no-use-before-define': 0,
 
+    'unicorn/no-useless-switch-case': 'error',
     // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
     'callback-return': 0,
     'global-require': 0,
