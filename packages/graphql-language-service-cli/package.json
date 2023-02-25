@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-cli",
-  "version": "3.3.15",
+  "version": "3.3.16",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -36,8 +36,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "graphql-language-service": "^5.1.1",
-    "graphql-language-service-server": "^2.9.5",
+    "graphql-language-service": "^5.1.2",
+    "graphql-language-service-server": "^2.9.6",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
