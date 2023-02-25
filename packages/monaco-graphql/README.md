@@ -45,7 +45,7 @@ nicely with the official `graphql` language ID.
 To use with webpack, here is an example to get you started:
 
 ```shell
-yarn add monaco-graphql
+pnpm add monaco-graphql
 ```
 
 ## Sync Example

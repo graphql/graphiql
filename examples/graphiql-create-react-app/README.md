@@ -4,5 +4,5 @@ This example demonstrates how to transpile your own custom ES6 and typescript Gr
 
 ### Setup
 
-1. `yarn` and `yarn start` from this folder to start `react-scripts` dev server.
-1. `yarn build` from this folder to build production ready transpiled files using `react-scripts`. Find the output in `build` folder.
+1. `pnpm` and `pnpm start` from this folder to start `react-scripts` dev server.
+1. `pnpm build` from this folder to build production ready transpiled files using `react-scripts`. Find the output in `build` folder.

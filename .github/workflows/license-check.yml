@@ -2,7 +2,7 @@ name: License Check
 on:
   pull_request:
     paths:
-      - 'yarn.lock'
+      - 'pnpm.lock'
 
 jobs:
   check:
@@ -14,8 +14,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: License Check
-        run: yarn license-check
+        run: pnpm license-check

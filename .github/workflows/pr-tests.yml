@@ -16,14 +16,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: yarn build
+        run: pnpm build
 
       - name: Run Unit Tests
-        run: yarn test
+        run: pnpm test
 
   e2e:
     name: Cypress E2E Suite
@@ -34,8 +34,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: Run E2E suite
-        run: yarn e2e
+        run: pnpm e2e

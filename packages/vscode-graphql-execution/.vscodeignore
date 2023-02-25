@@ -1,6 +1,6 @@
 src/
 tsconfig.json
-yarn-error.log
+pnpm-error.log
 **/*.tsbuildinfo
 **/*.d.ts
 node_modules

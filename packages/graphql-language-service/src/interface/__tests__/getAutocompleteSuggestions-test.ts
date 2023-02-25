@@ -7,11 +7,6 @@
  *
  */
 
-import {
-  AutocompleteSuggestionOptions,
-  CompletionItem,
-} from 'graphql-language-service';
-
 import fs from 'node:fs';
 import {
   buildSchema,
@@ -23,7 +18,13 @@ import {
 import { Position } from '../../utils';
 import path from 'node:path';
 
-import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
+import {
+  getAutocompleteSuggestions,
+  AutocompleteSuggestionOptions,
+
+} from '../getAutocompleteSuggestions';
+
+import { CompletionItem } from '../../types'
 
 const expectedResults = {
   droid: {

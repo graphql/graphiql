@@ -301,7 +301,7 @@ This plugin uses the
 [GraphQL language server](https://github.com/graphql/graphql-language-service-server)
 
 1.  Clone the repository - https://github.com/graphql/graphiql
-1.  `yarn`
+1.  `pnpm`
 1.  Run "VScode Extension" launcher in vscode
 1.  This will open another VSCode instance with extension enabled
 1.  Open a project with a graphql config file - ":electric_plug: graphql" in

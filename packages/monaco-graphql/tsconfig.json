@@ -6,6 +6,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "es5",
+    "typeRoots": ["./types"],
     "lib": [
       "dom",
       "es5",

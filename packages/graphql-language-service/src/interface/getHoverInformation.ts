@@ -28,13 +28,15 @@ import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
 export type HoverConfig = { useMarkdown?: boolean };
 
+export type HoverContents = Hover['contents']
+
 export function getHoverInformation(
   schema: GraphQLSchema,
   queryText: string,
   cursor: IPosition,
   contextToken?: ContextToken,
   config?: HoverConfig,
-): Hover['contents'] {
+): HoverContents {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
   if (!schema || !token || !token.state) {

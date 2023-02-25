@@ -20,15 +20,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: yarn release
+          publish: pnpm release
         env:
           # only use GH token here, because GITHUB_TOKEN is no longer allowed to create PRs
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

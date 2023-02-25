@@ -19,14 +19,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: TypeScript Build
-        run: yarn build
+        run: pnpm build
 
       - name: ESLint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Prettier Check
-        run: yarn pretty-check
+        run: pnpm pretty-check

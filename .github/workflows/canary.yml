@@ -25,8 +25,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: Setup NPM credentials
         run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
@@ -37,7 +37,7 @@ jobs:
         uses: 'kamilkisiela/release-canary@master'
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-script: 'yarn release:canary'
+          npm-script: 'pnpm release:canary'
           changesets: true
       - name: Publish a message
         if: steps.canary.outputs.released == 'true'

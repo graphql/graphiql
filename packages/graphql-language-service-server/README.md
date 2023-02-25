@@ -45,7 +45,7 @@ notifications to the server.
 ```bash
 npm install --save graphql-language-service-server
 # or
-yarn add graphql-language-service-server
+pnpm add graphql-language-service-server
 ```
 
 We also provide a CLI interface to this server, see

@@ -40,14 +40,14 @@ the server.
 **DROPPED**: GraphQL Language Service no longer depends on
 [Watchman](https://facebook.github.io/watchman/)
 
-Only node 9 or greater, and npm or yarn are required dependencies.
+Only node 9 or greater, and npm or pnpm are required dependencies.
 
 ### Installation
 
-with `yarn`:
+with `pnpm`:
 
 ```sh
-yarn global add graphql-language-service-cli
+pnpm global add graphql-language-service-cli
 ```
 
 with `npm`:

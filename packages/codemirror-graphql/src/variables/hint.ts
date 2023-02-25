@@ -7,7 +7,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror, { Hints } from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
+import type { Hints } from 'codemirror'
 import {
   getNullableType,
   getNamedType,

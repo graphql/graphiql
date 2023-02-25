@@ -14,6 +14,10 @@ module.exports = {
     ecmaVersion: 6,
   },
   settings: {
+    'import/resolver': {
+      typescript: true,
+      node: true
+    },
     react: {
       version: 'detect',
     },

@@ -4,7 +4,7 @@
 .DS_Store
 .secrets
 npm-debug.log
-yarn-error.log
+pnpm-error.log
 
 node_modules/
 coverage/
@@ -23,13 +23,13 @@ lerna-debug.log
 **/tsconfig.tsbuildinfo
 **/*.tsbuildinfo
 
-.yarnrc
-yarn-1.18.0.js
+.pnpmrc
+pnpm-1.18.0.js
 *.orig
 .idea/
 
 # Local Netlify folder
 .netlify
 
-examples/*/yarn.lock
+examples/*/pnpm.lock
 .eslintcache

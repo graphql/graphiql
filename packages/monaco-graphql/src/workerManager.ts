@@ -8,8 +8,8 @@ import { editor as monacoEditor } from 'monaco-editor';
 import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
 
-import IDisposable = monaco.IDisposable;
-import Uri = monaco.Uri;
+import type * as monaco from 'monaco-editor'
+
 import { ICreateData } from './typings';
 import { getStringSchema } from './utils';
 
@@ -19,7 +19,7 @@ export class WorkerManager {
   private _defaults: MonacoGraphQLAPI;
   private _idleCheckInterval: number;
   private _lastUsedTime: number;
-  private _configChangeListener: IDisposable;
+  private _configChangeListener: monaco.IDisposable;
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
   private _client: GraphQLWorker | null;
 
@@ -98,7 +98,7 @@ export class WorkerManager {
     return this._client as GraphQLWorker;
   }
 
-  async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
+  async getLanguageServiceWorker(...resources: monaco.Uri[]): Promise<GraphQLWorker> {
     const client = await this._getClient();
     await this._worker!.withSyncedResources(resources);
 

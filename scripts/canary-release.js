@@ -29,7 +29,7 @@ const git = async (...commands) => execa('git', commands, execOpts);
 // async function preReleaseVSCode(version) {
 //   try {
 //     await execa(
-//       'yarn',
+//       'pnpm',
 //       ['workspace', `vscode-graphql`, 'run', 'release', '--pre'],
 //       execOpts,
 //     );
