@@ -14,7 +14,7 @@ interface IStats {
 const printResult = (stats: IStats, name: string, schema: string) => {
   console.log({
     name,
-    mean: `${1.0 / stats.mean} ops / sec`,
+    mean: `${1 / stats.mean} ops / sec`,
     variance: stats.variance,
     rme: `${stats.rme}%`,
     lines: schema.split('\n').length,
