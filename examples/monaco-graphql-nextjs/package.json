@@ -10,19 +10,15 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^0.8.0",
-    "@next/font": "13.1.6",
     "@types/node": "18.13.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@zeit/next-css": "^1.0.1",
-    "css-loader": "^6.7.3",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.11.3",
     "jsonc-parser": "^3.2.0",
     "marked": "^4.2.12",
-    "mini-css-extract-plugin": "^2.7.2",
     "monaco-editor": "^0.35.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-graphql": "^1.1.7",
@@ -31,8 +27,6 @@
     "prettier": "^2.8.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "style-loader": "^3.3.1",
-    "typescript": "4.9.5",
-    "worker-loader": "^3.0.8"
+    "typescript": "4.9.5"
   }
 }
