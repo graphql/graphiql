@@ -41,7 +41,7 @@ jobs:
         uses: 'kamilkisiela/release-canary@master'
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-script: 'pnpm release:canary'
+          npm-script: 'pnpm run release:canary'
           changesets: true
       - name: Publish a message
         if: steps.canary.outputs.released == 'true'
