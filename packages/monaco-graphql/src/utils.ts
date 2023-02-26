@@ -12,7 +12,6 @@ import type {
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
-import type * as monaco from 'monaco-editor';
 
 import { buildASTSchema, printSchema } from 'graphql';
 

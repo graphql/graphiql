@@ -6,7 +6,6 @@
  */
 
 import { Uri, IDisposable } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
 
 import { WorkerManager } from './workerManager';
 import { GraphQLWorker } from './GraphQLWorker';
