@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
 import { State } from 'graphql-language-service';
 
 // Seems the electricInput type in @types/codemirror is wrong (i.e it is written all lowercase)

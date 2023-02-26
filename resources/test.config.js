@@ -6,8 +6,8 @@
  */
 require('@testing-library/jest-dom/extend-expect');
 
-import { enableFetchMocks } from 'jest-fetch-mock'
-enableFetchMocks()
+import { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
 
 global.document.createRange = function () {
   return {

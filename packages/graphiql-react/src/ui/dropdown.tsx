@@ -51,11 +51,11 @@ const ListboxButton = forwardRef<
 ));
 ListboxButton.displayName = 'ListboxButton';
 
-export const Listbox: typeof ListboxRoot & { 
-  Button: typeof ListboxButton,
-  Input: typeof ListboxInput,
-  Option: typeof ListboxOption,
-  Popover: typeof ListboxPopover
+export const Listbox: typeof ListboxRoot & {
+  Button: typeof ListboxButton;
+  Input: typeof ListboxInput;
+  Option: typeof ListboxOption;
+  Popover: typeof ListboxPopover;
 } = createComponentGroup(ListboxRoot, {
   Button: ListboxButton,
   Input: ListboxInput,

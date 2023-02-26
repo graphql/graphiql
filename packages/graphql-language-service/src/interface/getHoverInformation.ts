@@ -28,7 +28,7 @@ import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
 export type HoverConfig = { useMarkdown?: boolean };
 
-export type HoverContents = Hover['contents']
+export type HoverContents = Hover['contents'];
 
 export function getHoverInformation(
   schema: GraphQLSchema,

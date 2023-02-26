@@ -31,6 +31,9 @@ const ToolbarMenuRoot = forwardRef<
 ));
 ToolbarMenuRoot.displayName = 'ToolbarMenu';
 
-export const ToolbarMenu: typeof ToolbarMenuRoot = createComponentGroup(ToolbarMenuRoot, {
-  Item: Menu.Item,
-});
+export const ToolbarMenu: typeof ToolbarMenuRoot = createComponentGroup(
+  ToolbarMenuRoot,
+  {
+    Item: Menu.Item,
+  },
+);

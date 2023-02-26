@@ -108,7 +108,7 @@ const resultConfig = {
     modules: [
       rootPath('./node_modules'),
       rootPath('../', '../', 'node_modules'),
-      // because we add graphiql-toolkit magically in cdn bundle
+      // because we add graphiql-toolkit createFetcher magically in cdn bundle
       rootPath('../', 'graphiql-toolkit', 'node_modules'),
     ],
   },

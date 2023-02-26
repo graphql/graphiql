@@ -7,7 +7,7 @@
  *
  */
 // import { AbortController as MockAbortController } from 'node-abort-controller';
-import fetchMock from 'jest-fetch-mock'
+import fetchMock from 'jest-fetch-mock';
 
 // jest.mock('@whatwg-node/fetch', () => ({
 //   fetch: require('fetch-mock').fetchHandler,
@@ -28,7 +28,7 @@ import {
   introspectionFromSchema,
   FragmentDefinitionNode,
   TypeDefinitionNode,
- //  getIntrospectionQuery,
+  //  getIntrospectionQuery,
 } from 'graphql';
 import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { parseDocument } from '../parseDocument';
@@ -44,7 +44,6 @@ function withoutASTNode(definition: any) {
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   const logger = new Logger();
- 
 
   let graphQLRC;
   let cache = new GraphQLCache({
@@ -95,10 +94,11 @@ describe('GraphQLCache', () => {
       const schema = await cache.getSchema('testWithSchema');
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
-    // this essentially tests graphql-config schema cacheing.
+    // this essentially tests graphql-config schema caching.
     // having issues mocking
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('generates the schema correctly from endpoint', async () => {
-      require('jest-fetch-mock').enableMocks()
+      require('jest-fetch-mock').enableMocks();
       const introspectionResult = {
         data: introspectionFromSchema(
           await graphQLRC.getProject('testWithSchema').getSchema(),
@@ -106,7 +106,9 @@ describe('GraphQLCache', () => {
         ),
       };
       // @ts-expect-error
-      fetchMock.mockIf('/^https?://example.com/graphql', () => JSON.stringify({ data: introspectionResult }));
+      fetchMock.mockIf('/^https?://example.com/graphql', () =>
+        JSON.stringify({ data: introspectionResult }),
+      );
       const schema = await cache.getSchema('testWithEndpoint');
       // expect(fetchMock.called('*')).toEqual(true);
       expect(schema instanceof GraphQLSchema).toEqual(true);

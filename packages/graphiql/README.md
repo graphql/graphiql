@@ -104,7 +104,7 @@ application:
 ```jsx
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import React from 'react';
+
 import ReactDOM from 'react-dom';
 
 import 'graphiql/graphiql.css';

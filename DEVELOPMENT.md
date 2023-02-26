@@ -95,6 +95,10 @@ Then, you can run these commands:
 ### Developing Monaco GraphQL
 
 1. First run `pnpm` outside of workspace.
-1. Then, run `pnpm tsc --watch` to watch `monaco-graphql` and `graphql-language-service` in one session/tab
+1. Then, run `pnpm tsc --watch` to watch `monaco-graphql` and
+   `graphql-language-service` in one session/tab
 1. In another session/tab, run `pnpm start-monaco` outside of a workspace
-1. Alternatively to the webpack example, or in addition, you can run monaco or next.js examples, though these examples are simpler. They also require their own `pnpm` or `npm install` as they are excluded from the `workspaces` resolved on global `pnpm install`
+1. Alternatively to the webpack example, or in addition, you can run monaco or
+   next.js examples, though these examples are simpler. They also require their
+   own `pnpm` or `npm install` as they are excluded from the `workspaces`
+   resolved on global `pnpm install`

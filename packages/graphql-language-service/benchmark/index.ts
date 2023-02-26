@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import fs from 'node:fs';
 import path from 'node:path';
-import Benchmark from 'benchmark';
+import * as Benchmark from 'benchmark';
 import { parse } from 'graphql';
 import { onlineParser, CharacterStream } from '../src';
 

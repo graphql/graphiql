@@ -38,11 +38,26 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+          
       - uses: actions/setup-node@v3
         with:
           node-version: 19
           cache: 'pnpm'
+      
       - run: pnpm install --frozen-lockfile
+
+      - name: Cache Cypress binary
+        # cache cypress binary
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-cypress-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-cypress-
+
 
       - name: Run E2E suite
         run: pnpm e2e

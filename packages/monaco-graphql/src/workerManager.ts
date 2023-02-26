@@ -8,7 +8,7 @@ import { editor as monacoEditor } from 'monaco-editor';
 import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
 
-import type * as monaco from 'monaco-editor'
+import type * as monaco from 'monaco-editor';
 
 import { ICreateData } from './typings';
 import { getStringSchema } from './utils';
@@ -98,7 +98,9 @@ export class WorkerManager {
     return this._client as GraphQLWorker;
   }
 
-  async getLanguageServiceWorker(...resources: monaco.Uri[]): Promise<GraphQLWorker> {
+  async getLanguageServiceWorker(
+    ...resources: monaco.Uri[]
+  ): Promise<GraphQLWorker> {
     const client = await this._getClient();
     await this._worker!.withSyncedResources(resources);
 

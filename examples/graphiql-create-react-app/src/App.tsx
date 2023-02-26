@@ -1,4 +1,4 @@
-import React from 'react';
+
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 

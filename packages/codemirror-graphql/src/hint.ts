@@ -9,7 +9,7 @@
  *
  */
 
-import CodeMirror, { Hints, Hint } from 'codemirror';
+import { default as CodeMirror, Hints, Hint } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import { FragmentDefinitionNode, GraphQLSchema, GraphQLType } from 'graphql';

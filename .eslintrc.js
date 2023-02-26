@@ -16,7 +16,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       typescript: true,
-      node: true
+      node: true,
     },
     react: {
       version: 'detect',

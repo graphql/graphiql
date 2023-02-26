@@ -96,6 +96,7 @@ onegraph
 openvsx
 ovsx
 picomatch
+pnpm
 snyk
 stackblitz
 strictsoftware

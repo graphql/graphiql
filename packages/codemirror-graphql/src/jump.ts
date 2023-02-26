@@ -10,7 +10,7 @@
  *
  */
 
-import CodeMirror from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
 import {

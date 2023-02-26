@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { parse } from 'graphql';
 import { Maybe } from 'graphql-language-service';

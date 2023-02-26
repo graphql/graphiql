@@ -21,10 +21,9 @@ import path from 'node:path';
 import {
   getAutocompleteSuggestions,
   AutocompleteSuggestionOptions,
-
 } from '../getAutocompleteSuggestions';
 
-import { CompletionItem } from '../../types'
+import { CompletionItem } from '../../types';
 
 const expectedResults = {
   droid: {

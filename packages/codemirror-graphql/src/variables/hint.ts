@@ -8,7 +8,7 @@
  */
 
 import { default as CodeMirror } from 'codemirror';
-import type { Hints } from 'codemirror'
+import type { Hints } from 'codemirror';
 import {
   getNullableType,
   getNamedType,

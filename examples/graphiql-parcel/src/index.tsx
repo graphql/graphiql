@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
 
 const App = () => (

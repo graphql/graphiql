@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
 import modeFactory from './utils/mode-factory';
 
 CodeMirror.defineMode('graphql', modeFactory);

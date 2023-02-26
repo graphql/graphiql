@@ -19,7 +19,7 @@ import {
   GraphQLSchema,
   GraphQLType,
 } from 'graphql';
-import CodeMirror from 'codemirror';
+import { default as CodeMirror } from 'codemirror';
 
 import getTypeInfo, { TypeInfo } from './utils/getTypeInfo';
 import {

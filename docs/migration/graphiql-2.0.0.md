@@ -103,7 +103,6 @@ easy access to its props, state and methods by attaching a ref to it like so:
 ```jsx
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import React from 'react';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.endpoint' });
 

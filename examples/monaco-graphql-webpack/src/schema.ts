@@ -37,7 +37,7 @@ const setSchemaStatus = (message: string) => {
 
 class MySchemaFetcher {
   private _options: typeof schemaOptions;
-  private _currentSchema: typeof schemaOptions[0];
+  private _currentSchema: (typeof schemaOptions)[0];
   private _schemaCache = new Map<string, SchemaConfig>();
   private _schemaOverride = new Map<string, string>();
 
