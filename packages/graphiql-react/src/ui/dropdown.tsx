@@ -29,7 +29,11 @@ const MenuButton = forwardRef<
 ));
 MenuButton.displayName = 'MenuButton';
 
-export const Menu = createComponentGroup(MenuRoot, {
+export const Menu: typeof MenuRoot & {
+  Button: typeof MenuButton;
+  Item: typeof MenuItem;
+  List: typeof MenuList;
+} = createComponentGroup(MenuRoot, {
   Button: MenuButton,
   Item: MenuItem,
   List: MenuList,
@@ -47,7 +51,12 @@ const ListboxButton = forwardRef<
 ));
 ListboxButton.displayName = 'ListboxButton';
 
-export const Listbox = createComponentGroup(ListboxRoot, {
+export const Listbox: typeof ListboxRoot & { 
+  Button: typeof ListboxButton,
+  Input: typeof ListboxInput,
+  Option: typeof ListboxOption,
+  Popover: typeof ListboxPopover
+} = createComponentGroup(ListboxRoot, {
   Button: ListboxButton,
   Input: ListboxInput,
   Option: ListboxOption,

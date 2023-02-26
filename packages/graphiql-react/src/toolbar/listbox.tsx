@@ -2,7 +2,6 @@ import { ComponentProps, forwardRef, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { Listbox, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
-
 import './listbox.css';
 
 type ToolbarListboxProps = {
@@ -31,6 +30,8 @@ const ToolbarListboxRoot = forwardRef<
 });
 ToolbarListboxRoot.displayName = 'ToolbarListbox';
 
-export const ToolbarListbox = createComponentGroup(ToolbarListboxRoot, {
+export const ToolbarListbox: typeof ToolbarListboxRoot & {
+  Option: typeof Listbox.Option;
+} = createComponentGroup(ToolbarListboxRoot, {
   Option: Listbox.Option,
 });
