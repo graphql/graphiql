@@ -50,6 +50,7 @@
     "webpack": "webpack-cli --config resources/webpack.config.js"
   },
   "dependencies": {
+    "@graphiql/plugin-copy-as": "^0.0.0",
     "@graphiql/react": "^0.16.0",
     "@graphiql/toolkit": "^0.8.1",
     "entities": "^2.0.0",

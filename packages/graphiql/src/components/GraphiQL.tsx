@@ -54,6 +54,7 @@ import {
   VariableEditor,
   WriteableEditorProps,
 } from '@graphiql/react';
+import { GraphiQLPluginCopyAs } from '@graphiql/plugin-copy-as';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
@@ -161,10 +162,14 @@ export function GraphiQL({
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}
         {...props}
+        toolbar={{
+          additionalContent: <GraphiQLPluginCopyAs />,
+        }}
       />
     </GraphiQLProvider>
   );
 }
+
 // Export main windows/panes to be used separately if desired.
 GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
@@ -185,7 +190,7 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * Set the default state for the editor tools.
      * - `false` hides the editor tools
      * - `true` shows the editor tools
-     * - `'variables'` specifically shows the variables editor
+     * - `'variables'` specifically shows the variables' editor
      * - `'headers'` specifically shows the headers editor
      * By default the editor tools are initially shown when at least one of the
      * editors has contents.
