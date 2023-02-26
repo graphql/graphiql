@@ -1,7 +1,7 @@
 packages:
   # all packages in direct subdirs of packages/
   - 'packages/*'
-  - 'examples/monaco-graphql-webpack'
+  - 'examples/*'
   # exclude packages that are inside test directories
   - '!**/test/**'
   - '!**/__test__/**'

@@ -23,8 +23,6 @@ lerna-debug.log
 **/tsconfig.tsbuildinfo
 **/*.tsbuildinfo
 
-.pnpmrc
-pnpm-1.18.0.js
 *.orig
 .idea/
 

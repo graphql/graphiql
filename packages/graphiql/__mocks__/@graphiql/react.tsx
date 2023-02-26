@@ -9,6 +9,7 @@ import {
   useResponseEditor as _useResponseEditor,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
+
 import { useEffect, useRef, useState } from 'react';
 
 export {

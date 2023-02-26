@@ -55,7 +55,7 @@ const resultConfig = {
     // critical! make sure that webpack can consume the exported modules and types
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
-      tsconfig: rootPath('tsconfig.json'),
+      typescript: { configFile: rootPath('tsconfig.json') },
     }),
 
     new MonacoWebpackPlugin({

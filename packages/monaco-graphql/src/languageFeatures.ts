@@ -16,8 +16,6 @@ import type {
   IDisposable,
 } from 'monaco-editor';
 
-import * as monaco from 'monaco-editor';
-
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';

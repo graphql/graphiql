@@ -28,15 +28,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+
       - uses: actions/setup-node@v3
         with:
           cache: 'pnpm'
-          node-version: 16
+          node-version: 19
+
+      - run: pnpm install --frozen-lockfile
 
       - name: Force GraphQL ${{ matrix.release }} solution
         run: pnpm repo:resolve graphql@${{ matrix.release }}
-
-      - run: pnpm install --frozen-lockfile --immutable
 
       - name: Typescript Build
         run: pnpm build

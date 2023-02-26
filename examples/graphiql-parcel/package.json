@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "parcel src/index.html -p 8080",
-    "build": "parcel build src/index.html --public-url /"
+    "build-demo": "parcel build src/index.html --public-url /"
   },
   "browserslist": {
     "production": [

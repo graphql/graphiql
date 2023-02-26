@@ -7,8 +7,6 @@
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 
-import type * as monaco from 'monaco-editor';
-
 import { getRange } from 'graphql-language-service';
 
 import { LanguageService } from './LanguageService';
