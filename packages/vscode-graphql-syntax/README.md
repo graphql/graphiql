@@ -36,13 +36,14 @@ you can use these template tag literal expressions anywhere you like of course
 ```ts
 useFancyGraphQLClient(
   graphql`
+    {
+      id
+    }
+  `,
   {
-    id
-  }
-`, {
-  networkStrategy: 🚀
- }
-)
+    networkStrategy: '🚀',
+  },
+);
 ```
 
 ```ts
@@ -90,9 +91,10 @@ but we currently only delimit graphql template strings for obvious reasons
 #### Comment-Delimited patterns
 
 ```ts
-/* GraphQL */
-const query = `
- { id }
+const query = /* GraphQL */ `
+  {
+    id
+  }
 `;
 ```
 
