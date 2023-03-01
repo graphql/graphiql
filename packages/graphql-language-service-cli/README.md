@@ -95,7 +95,7 @@ useful on projects maintaining compatibility with the intellij plugin
 ### Using the command-line interface
 
 ```sh
-graphql-lsp server --schema=localhost:3000
+graphql-lsp server -m stream -c .
 ```
 
 The node executable contains several commands: `server` and the command-line
