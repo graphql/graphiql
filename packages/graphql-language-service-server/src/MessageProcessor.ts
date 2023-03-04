@@ -419,22 +419,16 @@ export class MessageProcessor {
     // with version information up-to-date, so that the textDocument contents
     // may be used during performing language service features,
     // e.g. auto-completions.
-    if (
-      !params ||
-      !params.textDocument ||
-      !params.contentChanges ||
-      !params.textDocument.uri
-    ) {
+    if (!params?.textDocument?.uri || !params.contentChanges) {
       throw new Error(
         '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
       );
     }
-    const { textDocument } = params;
+    const { textDocument, contentChanges } = params;
     const { uri } = textDocument;
     const project = this._graphQLCache.getProjectForFile(uri);
     try {
-      const { contentChanges } = params;
-      const contentChange = contentChanges[contentChanges.length - 1];
+      const contentChange = contentChanges.at(-1)!;
 
       // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.
