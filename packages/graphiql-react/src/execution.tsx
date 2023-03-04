@@ -203,10 +203,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
           };
           const maybeErrors = [
             ...(fullResponse?.errors || []),
-            ...maybeMultipart
-              .map(i => i.errors)
-              .flat()
-              .filter(Boolean),
+            ...maybeMultipart.flatMap(i => i.errors).filter(Boolean),
           ];
 
           if (maybeErrors.length) {
