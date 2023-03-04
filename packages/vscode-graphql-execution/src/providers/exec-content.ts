@@ -115,7 +115,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       });
   }
   validUrlFromSchema(pathOrUrl: string) {
-    return Boolean(pathOrUrl.match(/^https?:\/\//g));
+    return /^https?:\/\//.test(pathOrUrl);
   }
   reportError(message: string) {
     this.outputChannel.appendLine(message);

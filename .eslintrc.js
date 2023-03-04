@@ -248,6 +248,7 @@ module.exports = {
       'always',
       { enforceForIfStatements: true },
     ],
+    'unicorn/prefer-regexp-test': 'error',
     'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
