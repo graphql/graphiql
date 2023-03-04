@@ -130,7 +130,7 @@ export const performForEachType = (source, test) => {
   Object.keys(typesMap).map(type => {
     const { value, kind, valueType } = typesMap[type];
     const utils = getUtils(
-      source.replace(/__VALUE__/g, value).replace(/__TYPE__/g, type),
+      source.replaceAll('__VALUE__', value).replaceAll('__TYPE__', type),
     );
     test(utils, { type, value, kind, valueType });
   });

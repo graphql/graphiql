@@ -164,7 +164,7 @@ export function formatQuery(query?: string) {
     ?.split('\n')
     .map(line => line.replace(/#(.*)/, ''))
     .join(' ')
-    .replace(/{/g, ' { ')
-    .replace(/}/g, ' } ')
-    .replace(/[\s]{2,}/g, ' ');
+    .replaceAll('{', ' { ')
+    .replaceAll('}', ' } ')
+    .replaceAll(/[\s]{2,}/g, ' ');
 }
