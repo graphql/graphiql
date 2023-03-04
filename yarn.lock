@@ -12420,11 +12420,6 @@ monaco-editor-webpack-plugin@^7.0.1:
   dependencies:
     loader-utils "^2.0.2"
 
-monaco-editor@^0.31.0:
-  version "0.31.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.31.0.tgz#ec53566e40b612a96c0d54f77d37acef6d9dd70e"
-  integrity sha512-H3QmysEwxxY8oxmFhIFcY9JkuwilUDa6txdAxb797cVr7XFZX27a3SDwcGJmTlV9iGPwdh132r3KKCS5aNL4Gg==
-
 monaco-editor@^0.36.0:
   version "0.36.0"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.36.0.tgz#8e7dba92f8110b369fdbc2312366184216419fc7"
@@ -12433,6 +12428,11 @@ monaco-editor@^0.36.0:
     "@types/shelljs" "^0.8.11"
     pin-github-action "^1.8.0"
     shelljs "^0.8.5"
+
+monaco-editor@^0.36.1:
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.36.1.tgz#aad528c815605307473a1634612946921d8079b5"
+  integrity sha512-/CaclMHKQ3A6rnzBzOADfwdSJ25BFoFT0Emxsc4zYVyav5SkK9iA6lEtIeuN/oRYbwPgviJT+t3l+sjFa28jYg==
 
 ms@2.0.0:
   version "2.0.0"
