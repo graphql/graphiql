@@ -171,10 +171,12 @@ function getVariablesHint(
     }
   }
 }
+
 interface VariableTypeInfo {
   type?: Maybe<GraphQLInputType>;
   fields?: Maybe<GraphQLInputFieldMap>;
 }
+
 // Utility for collecting rich type information given any token's state
 // from the graphql-variables-mode parser.
 function getTypeInfo(
@@ -187,22 +189,31 @@ function getTypeInfo(
   };
 
   forEachState(tokenState, state => {
-    if (state.kind === 'Variable') {
-      info.type = variableToType[state.name!];
-    } else if (state.kind === 'ListValue') {
-      const nullableType = info.type ? getNullableType(info.type) : undefined;
-      info.type =
-        nullableType instanceof GraphQLList ? nullableType.ofType : null;
-    } else if (state.kind === 'ObjectValue') {
-      const objectType = info.type ? getNamedType(info.type) : undefined;
-      info.fields =
-        objectType instanceof GraphQLInputObjectType
-          ? objectType.getFields()
-          : null;
-    } else if (state.kind === 'ObjectField') {
-      const objectField =
-        state.name && info.fields ? info.fields[state.name] : null;
-      info.type = objectField?.type;
+    switch (state.kind) {
+      case 'Variable': {
+        info.type = variableToType[state.name!];
+        break;
+      }
+      case 'ListValue': {
+        const nullableType = info.type ? getNullableType(info.type) : undefined;
+        info.type =
+          nullableType instanceof GraphQLList ? nullableType.ofType : null;
+        break;
+      }
+      case 'ObjectValue': {
+        const objectType = info.type ? getNamedType(info.type) : undefined;
+        info.fields =
+          objectType instanceof GraphQLInputObjectType
+            ? objectType.getFields()
+            : null;
+        break;
+      }
+      case 'ObjectField': {
+        const objectField =
+          state.name && info.fields ? info.fields[state.name] : null;
+        info.type = objectField?.type;
+        break;
+      }
     }
   });
 

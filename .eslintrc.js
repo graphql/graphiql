@@ -265,6 +265,7 @@ module.exports = {
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
     'unicorn/prefer-string-replace-all': 'error',
 
+    'unicorn/prefer-switch': 'error',
     // TODO: Fix all errors for the following rules included in recommended config
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-var-requires': 'off',
