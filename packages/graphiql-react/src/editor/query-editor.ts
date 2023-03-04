@@ -111,14 +111,27 @@ export function useQueryEditor(
         return;
       }
       plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      if (reference && reference.kind === 'Type') {
-        explorer.push({ name: reference.type.name, def: reference.type });
-      } else if (reference.kind === 'Field') {
-        explorer.push({ name: reference.field.name, def: reference.field });
-      } else if (reference.kind === 'Argument' && reference.field) {
-        explorer.push({ name: reference.field.name, def: reference.field });
-      } else if (reference.kind === 'EnumValue' && reference.type) {
-        explorer.push({ name: reference.type.name, def: reference.type });
+      switch (reference.kind) {
+        case 'Type': {
+          explorer.push({ name: reference.type.name, def: reference.type });
+          break;
+        }
+        case 'Field': {
+          explorer.push({ name: reference.field.name, def: reference.field });
+          break;
+        }
+        case 'Argument': {
+          if (reference.field) {
+            explorer.push({ name: reference.field.name, def: reference.field });
+          }
+          break;
+        }
+        case 'EnumValue': {
+          if (reference.type) {
+            explorer.push({ name: reference.type.name, def: reference.type });
+          }
+          break;
+        }
       }
       onClickReference?.(reference);
     };
