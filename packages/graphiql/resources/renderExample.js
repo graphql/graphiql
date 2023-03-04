@@ -15,7 +15,7 @@
 // Parse the search string to get url parameters.
 var parameters = {};
 window.location.search
-  .substr(1)
+  .slice(1)
   .split('&')
   .forEach(function (entry) {
     var eq = entry.indexOf('=');

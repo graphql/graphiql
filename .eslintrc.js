@@ -112,6 +112,7 @@ module.exports = {
     'require-await': 0,
     'vars-on-top': 0,
     yoda: 1,
+    'unicorn/prefer-string-slice': 'error',
     'sonarjs/no-identical-functions': 'error',
     'sonarjs/no-unused-collection': 'error',
     'sonarjs/no-extra-arguments': 'error',
