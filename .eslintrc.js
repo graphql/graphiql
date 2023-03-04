@@ -239,6 +239,7 @@ module.exports = {
     'unicorn/consistent-destructuring': 'error',
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
     'promise/no-multiple-resolved': 'error',
+    'unicorn/no-zero-fractions': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',
     'logical-assignment-operators': [
