@@ -185,7 +185,16 @@ module.exports = {
     'no-nested-ternary': 0,
     'no-new-object': 1,
     'no-plusplus': 0,
-    'no-restricted-syntax': 0,
+    'no-restricted-syntax': [
+      'error',
+      {
+        // ❌ useMemo(…, [])
+        selector:
+          'CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]',
+        message:
+          "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
+      },
+    ],
     'no-ternary': 0,
     'no-underscore-dangle': 0,
     'no-unneeded-ternary': 0,
