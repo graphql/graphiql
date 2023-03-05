@@ -52,6 +52,7 @@
     "set-value": "^4.1.0"
   },
   "devDependencies": {
+    "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "12.1.5",
     "@types/codemirror": "^5.60.5",
     "@types/set-value": "^4.0.1",
