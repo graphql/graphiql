@@ -100,7 +100,7 @@ been removed and where you can find them now:
 The `GraphiQL` component in `graphiql@1.x` was a class component. That allowed
 easy access to its props, state and methods by attaching a ref to it like so:
 
-```jsx
+```tsx
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import React from 'react';
@@ -228,8 +228,8 @@ components that can be passed as children to the `GraphiQL` components and
 override certain parts of the UI:
 
 - `GraphiQL.Logo`: Overrides the "logo" at the top right of the screen. By
-  default it contains the text "Graph*i*QL".
-- `GraphiQL.Toolbar`: Overrides the toolbar next to the query editor. By default
+  default, it contains the text "Graph*i*QL".
+- `GraphiQL.Toolbar`: Overrides the toolbar next to the query editor. By default,
   if contains buttons for prettifying the current editor contents, merging
   fragment definitions into the operation definition and copying the contents of
   the query editor to the clipboard. Note that the default buttons will not be
@@ -237,7 +237,7 @@ override certain parts of the UI:
   the children you pass to `GraphiQL.Toolbar`. The execute button will always be
   shown. If you want to keep the default buttons and add additional buttons you
   can use the `toolbar` prop.
-- `GraphiQL.Footer`: Adds a section below the response editor. By default this
+- `GraphiQL.Footer`: Adds a section below the response editor. By default, this
   won't show up in the UI.
 
 Here is a list of all the static properties that have been removed and their
