@@ -1,5 +1,12 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  ReactNode,
+} from 'react';
 import { useStorageContext } from './storage';
+import { createContextHook, createNullableContext } from './utility/context';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -7,7 +14,10 @@ import { useStorageContext } from './storage';
  */
 export type Theme = 'light' | 'dark' | null;
 
-export function useTheme() {
+export const ThemeContext =
+  createNullableContext<ReturnType<typeof useThemeInternal>>('ThemeContext');
+
+function useThemeInternal() {
   const storageContext = useStorageContext();
 
   const [theme, setThemeInternal] = useState<Theme>(() => {
@@ -52,5 +62,24 @@ export function useTheme() {
 
   return useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
 }
+
+type ThemeContextProviderProps = { children: ReactNode };
+
+export function ThemeContextProvider(props: ThemeContextProviderProps) {
+  const theme = useThemeInternal();
+  return (
+    <ThemeContext.Provider value={theme}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+}
+
+/**
+ * React hook that exposes the GraphiQL theme selector:
+ * usage [theme, setTheme] = useTheme()
+ *
+ * Theme value can be: `light`, `dark` or `null` if it's system default
+ */
+export const useTheme = createContextHook(ThemeContext);
 
 const STORAGE_KEY = 'theme';

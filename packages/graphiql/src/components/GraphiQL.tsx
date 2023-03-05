@@ -221,7 +221,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme({ nonNull: true });
 
   const PluginContent = pluginContext?.visiblePlugin?.content;
 
