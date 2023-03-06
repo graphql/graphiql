@@ -19,6 +19,7 @@ import type {
 } from 'graphql-language-service';
 
 import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
@@ -789,57 +790,50 @@ export class GraphQLCache implements GraphQLCacheInterface {
    * Returns a Promise to read a GraphQL file and return a GraphQL metadata
    * including a parsed AST.
    */
-  promiseToReadGraphQLFile = (filePath: Uri): Promise<GraphQLFileInfo> => {
-    return new Promise((resolve, reject) =>
-      fs.readFile(URI.parse(filePath).fsPath, 'utf8', (error, content) => {
-        if (error) {
-          reject(error);
-          return;
+  promiseToReadGraphQLFile = async (
+    filePath: Uri,
+  ): Promise<GraphQLFileInfo> => {
+    const content = await readFile(URI.parse(filePath).fsPath, 'utf8');
+
+    const asts: DocumentNode[] = [];
+    let queries: CachedContent[] = [];
+    if (content.trim().length !== 0) {
+      try {
+        queries = this._parser(content, filePath);
+        if (queries.length === 0) {
+          // still resolve with an empty ast
+          return {
+            filePath,
+            content,
+            asts: [],
+            queries: [],
+            mtime: 0,
+            size: 0,
+          };
         }
 
-        const asts: DocumentNode[] = [];
-        let queries: CachedContent[] = [];
-        if (content.trim().length !== 0) {
-          try {
-            queries = this._parser(content, filePath);
-            if (queries.length === 0) {
-              // still resolve with an empty ast
-              resolve({
-                filePath,
-                content,
-                asts: [],
-                queries: [],
-                mtime: 0,
-                size: 0,
-              });
-              return;
-            }
-
-            queries.forEach(({ query }) => asts.push(parse(query)));
-            resolve({
-              filePath,
-              content,
-              asts,
-              queries,
-              mtime: 0,
-              size: 0,
-            });
-          } catch {
-            // If query has syntax errors, go ahead and still resolve
-            // the filePath and the content, but leave ast empty.
-            resolve({
-              filePath,
-              content,
-              asts: [],
-              queries: [],
-              mtime: 0,
-              size: 0,
-            });
-            return;
-          }
-        }
-        resolve({ filePath, content, asts, queries, mtime: 0, size: 0 });
-      }),
-    );
+        queries.forEach(({ query }) => asts.push(parse(query)));
+        return {
+          filePath,
+          content,
+          asts,
+          queries,
+          mtime: 0,
+          size: 0,
+        };
+      } catch {
+        // If query has syntax errors, go ahead and still resolve
+        // the filePath and the content, but leave ast empty.
+        return {
+          filePath,
+          content,
+          asts: [],
+          queries: [],
+          mtime: 0,
+          size: 0,
+        };
+      }
+    }
+    return { filePath, content, asts, queries, mtime: 0, size: 0 };
   };
 }
