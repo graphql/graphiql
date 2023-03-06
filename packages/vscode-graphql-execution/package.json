@@ -95,7 +95,6 @@
     "@types/dotenv": "8.2.0",
     "@types/mocha": "5.2.7",
     "@types/node": "^16.18.4",
-    "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "esbuild": "0.15.10",

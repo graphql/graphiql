@@ -48,7 +48,6 @@
     "graphql-language-service": "^5.1.2",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
-    "node-fetch": "^2.6.1",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
