@@ -59,7 +59,10 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
         {typeMap && (
           <div>
             {Object.values(typeMap).map(type => {
-              if (ignoreTypesInAllSchema.includes(type.name)) {
+              if (
+                ignoreTypesInAllSchema.includes(type.name) ||
+                type.name.startsWith('__')
+              ) {
                 return null;
               }
 
