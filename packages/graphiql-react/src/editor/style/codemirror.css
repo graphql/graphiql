@@ -19,7 +19,7 @@
   background-color: var(--editor-background, hsl(var(--color-base)));
 }
 
-/* No padding around line number */
+/* No padding around line numbers */
 .graphiql-container .CodeMirror-linenumber {
   padding: 0;
 }
