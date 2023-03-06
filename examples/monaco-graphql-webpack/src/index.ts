@@ -153,13 +153,13 @@ async function render() {
         const body: { variables?: string; query: string } = {
           query: operation,
         };
-        // parse the variables with JSONC so we can have comments!
+        // parse the variables with JSONC, so we can have comments!
         const parsedVariables = JSONC.parse(variables);
         if (parsedVariables && Object.keys(parsedVariables).length) {
           body.variables = JSON.stringify(parsedVariables, null, 2);
         }
         const result = await fetch(
-          schemaFetcher.currentSchema.value as string,
+          schemaFetcher.currentSchema.value,
           {
             method: 'POST',
             headers: {

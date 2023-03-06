@@ -832,7 +832,7 @@ export class MessageProcessor {
 
     const { textDocument } = params;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    if (!cachedDocument || !cachedDocument.contents[0]) {
+    if (!cachedDocument?.contents[0]) {
       return [];
     }
 
@@ -1098,9 +1098,9 @@ export class MessageProcessor {
           // build full system URI path with protocol
           const uri = URI.file(filePath).toString();
 
-          // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
+          // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
-          if (!contents[0] || !contents[0].query) {
+          if (!contents[0]?.query) {
             return;
           }
           await this._updateObjectTypeDefinition(uri, contents);

@@ -42,7 +42,7 @@ export function createEditors() {
   );
 
   const variablesEditor = monaco.editor.create(
-    document.getElementById('variables') as HTMLElement,
+    document.getElementById('variables'),
     {
       model: variablesModel,
       language: 'json',
@@ -63,7 +63,7 @@ export function createEditors() {
   );
 
   const operationEditor = monaco.editor.create(
-    document.getElementById('operation') as HTMLElement,
+    document.getElementById('operation'),
     {
       model: operationModel,
       formatOnPaste: true,
@@ -81,7 +81,7 @@ export function createEditors() {
   );
 
   const schemaEditor = monaco.editor.create(
-    document.getElementById('schema-sdl') as HTMLElement,
+    document.getElementById('schema-sdl'),
     {
       model: schemaModel,
       formatOnPaste: true,
@@ -99,7 +99,7 @@ export function createEditors() {
   );
 
   const resultsEditor = monaco.editor.create(
-    document.getElementById('results') as HTMLElement,
+    document.getElementById('results'),
     {
       model: resultsModel,
       language: 'json',

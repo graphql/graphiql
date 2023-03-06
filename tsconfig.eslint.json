@@ -12,6 +12,22 @@
     "packages/graphql-language-service/src/interface/__tests__/**/*.ts",
     "packages/graphql-language-service/benchmark/index.ts",
     "packages/graphql-language-service-server/src/__tests__/**/*.ts",
-    "packages/graphql-language-service-cli/src/__tests__/**/*.ts"
+    "packages/graphql-language-service-cli/src/__tests__/**/*.ts",
+    "packages/graphiql/src/components/__tests__/**/*.ts",
+    "packages/graphiql/src/components/__tests__/**/*.tsx",
+    "packages/graphiql/cypress.config.ts",
+    "packages/graphiql/__mocks__/codemirror.ts",
+    "packages/graphiql/__mocks__/@graphiql/react.tsx",
+    "packages/graphiql-toolkit/src/storage/__tests__/**/*.ts",
+    "packages/graphiql-toolkit/src/graphql-helpers/__tests__/**/*.ts",
+    "packages/graphiql-toolkit/src/create-fetcher/__tests__/**/*.ts",
+    "packages/*/vite.config.ts",
+    "examples/*/vite.config.ts",
+    "packages/graphiql-react/vite.config.d.ts",
+    "packages/codemirror-graphql/src/variables/__tests__/**/*.ts",
+    "packages/codemirror-graphql/src/utils/__tests__/**/*.ts",
+    "packages/codemirror-graphql/src/results/__tests__/**/*.ts",
+    "packages/codemirror-graphql/src/__tests__/**/*.ts",
+    "packages/cm6-graphql/__tests__/**/*.ts"
   ]
 }
