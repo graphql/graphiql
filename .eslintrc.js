@@ -299,7 +299,7 @@ module.exports = {
           'packages/*/tsconfig.json',
           'examples/*/tsconfig.json',
           'packages/graphiql/cypress/tsconfig.json',
-          'tsconfig.eslint.json'
+          'tsconfig.eslint.json',
         ],
       },
     },

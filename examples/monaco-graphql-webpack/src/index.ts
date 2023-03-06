@@ -158,17 +158,14 @@ async function render() {
         if (parsedVariables && Object.keys(parsedVariables).length) {
           body.variables = JSON.stringify(parsedVariables, null, 2);
         }
-        const result = await fetch(
-          schemaFetcher.currentSchema.value,
-          {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-              ...schemaFetcher.currentSchema?.headers,
-            },
-            body: JSON.stringify(body, null, 2),
+        const result = await fetch(schemaFetcher.currentSchema.value, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            ...schemaFetcher.currentSchema?.headers,
           },
-        );
+          body: JSON.stringify(body, null, 2),
+        });
 
         const resultText = await result.text();
         resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
