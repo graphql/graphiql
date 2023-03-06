@@ -127,9 +127,6 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
 }
 
 export function useExplorerPlugin(props: GraphiQLExplorerProps) {
-  const propsRef = useRef(props);
-  propsRef.current = props;
-
   const pluginRef = useRef<GraphiQLPlugin>();
   pluginRef.current ||= {
     title: 'GraphiQL Explorer',
@@ -155,7 +152,7 @@ export function useExplorerPlugin(props: GraphiQLExplorerProps) {
         />
       </svg>
     ),
-    content: () => <ExplorerPlugin {...propsRef.current} />,
+    content: () => <ExplorerPlugin {...props} />,
   };
   return pluginRef.current;
 }

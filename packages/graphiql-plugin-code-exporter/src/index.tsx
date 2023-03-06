@@ -8,9 +8,6 @@ import './graphiql-code-exporter.d.ts';
 import './index.css';
 
 export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
-  const propsRef = useRef(props);
-  propsRef.current = props;
-
   const pluginRef = useRef<GraphiQLPlugin>();
   pluginRef.current ||= {
     title: 'GraphiQL Code Exporter',
@@ -30,7 +27,7 @@ export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
       </svg>
     ),
     content: () => (
-      <GraphiQLCodeExporter codeMirrorTheme="graphiql" {...propsRef.current} />
+      <GraphiQLCodeExporter codeMirrorTheme="graphiql" {...props} />
     ),
   };
 
