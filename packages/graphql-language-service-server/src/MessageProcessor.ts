@@ -89,10 +89,10 @@ export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
-  _textDocumentCache: Map<string, CachedDocumentType>;
-  _isInitialized: boolean;
+  _textDocumentCache = new Map<string, CachedDocumentType>();
+  _isInitialized = false;
   _isGraphQLConfigMissing: boolean | null = null;
-  _willShutdown: boolean;
+  _willShutdown = false;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
   _parser: (text: string, uri: string) => CachedContent[];
@@ -124,9 +124,6 @@ export class MessageProcessor {
     connection: Connection;
   }) {
     this._connection = connection;
-    this._textDocumentCache = new Map();
-    this._isInitialized = false;
-    this._willShutdown = false;
     this._logger = logger;
     this._graphQLConfig = config;
     this._parser = (text, uri) => {
