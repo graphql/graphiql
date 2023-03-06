@@ -1,27 +1,26 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "name": "GraphQL Official LSP Documentation",
   "theme": "default",
-  "mode": "modules",
+  "darkHighlightTheme": "dark-plus",
   "out": "packages/graphiql/typedoc",
-  "inputFiles": [
-    "**/node_modules/vscode*/**",
-    "**/node_modules/@types/node/**"
+  "entryPointStrategy": "packages",
+  "tsconfig": "./resources/tsconfig.build.esm.json",
+  "entryPoints": [
+    "packages/graphql-language-service",
+    "packages/graphql-language-service-server",
+    "packages/graphiql-toolkit",
+    "packages/graphiql-react",
+    "packages/graphiql",
+    "packages/monaco-graphql"
   ],
   "exclude": [
     "**/__tests__/**",
     "*.spec.*",
     "**/*.stories.tsx",
     "*-test.*",
-    "**/esm/**",
-    "**/dist/**",
     "**/node_modules/**",
-    "packages/graphiql-2-rfc-*/**"
+    "**/cypress/**" 
   ],
-  "excludePrivate": true,
-  "excludeNotExported": true,
-
-  "ignoreCompilerErrors": true,
-  "includeDeclarations": true,
-  "preserveConstEnums": true,
   "readme": "./README.md"
 }

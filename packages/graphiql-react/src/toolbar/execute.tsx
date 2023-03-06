@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEditorContext } from '../editor';
 import { useExecutionContext } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';

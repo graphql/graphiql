@@ -10,6 +10,7 @@ declare module 'graphiql-explorer' {
     ValueNode,
   } from 'graphql';
   import { ComponentType, ReactNode, CSSProperties } from 'react';
+import React from 'react';
 
   export type GraphiQLExplorerProps = {
     query: string;

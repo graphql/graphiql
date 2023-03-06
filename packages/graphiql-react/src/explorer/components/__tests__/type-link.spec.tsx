@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
 import { ComponentProps } from 'react';
+import React from 'react';
 
 import { ExplorerContext } from '../../context';
 import { TypeLink } from '../type-link';

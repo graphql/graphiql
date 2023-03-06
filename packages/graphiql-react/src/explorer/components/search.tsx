@@ -14,7 +14,7 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import debounce from '../../utility/debounce';

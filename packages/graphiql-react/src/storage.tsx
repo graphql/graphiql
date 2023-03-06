@@ -1,5 +1,5 @@
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { createContextHook, createNullableContext } from './utility/context';
 

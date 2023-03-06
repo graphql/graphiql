@@ -11,7 +11,7 @@ import {
   MenuItem,
   MenuList,
 } from '@reach/menu-button';
-import { ComponentProps, forwardRef } from 'react';
+import React, { ComponentProps, forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { createComponentGroup } from '../utility/component-group';
 

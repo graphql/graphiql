@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { Dialog as ReachDialog } from '@reach/dialog';
 import { VisuallyHidden } from '@reach/visually-hidden';
-import { ComponentProps, forwardRef } from 'react';
+import React, { ComponentProps, forwardRef } from 'react';
 import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
 import { UnStyledButton } from './button';

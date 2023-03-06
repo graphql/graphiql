@@ -43,6 +43,7 @@
     "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
+    "handlebars":"^4.7.7",
     "glob": "^7.2.0",
     "graphql-config": "4.3.0",
     "graphql-language-service": "^5.1.1",

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import type { GraphQLSchema } from 'graphql';
 
 import { MarkdownContent } from '../../ui';

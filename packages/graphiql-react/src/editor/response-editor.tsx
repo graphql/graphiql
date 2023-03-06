@@ -1,6 +1,6 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
-import { ComponentType, useEffect, useRef } from 'react';
+import React, { ComponentType, useEffect, useRef } from 'react';
 import * as ReactDOM from 'react-dom';
 import { useSchemaContext } from '../schema';
 
@@ -64,16 +64,16 @@ export function useResponseEditor(
     let isActive = true;
     importCodeMirror(
       [
-        import('codemirror/addon/fold/foldgutter'),
-        import('codemirror/addon/fold/brace-fold'),
-        import('codemirror/addon/dialog/dialog'),
-        import('codemirror/addon/search/search'),
-        import('codemirror/addon/search/searchcursor'),
-        import('codemirror/addon/search/jump-to-line'),
+        import('codemirror/addon/fold/foldgutter.js'),
+        import('codemirror/addon/fold/brace-fold.js'),
+        import('codemirror/addon/dialog/dialog.js'),
+        import('codemirror/addon/search/search.js'),
+        import('codemirror/addon/search/searchcursor.js'),
+        import('codemirror/addon/search/jump-to-line.js'),
         // @ts-expect-error
-        import('codemirror/keymap/sublime'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
+        import('codemirror/keymap/sublime.js'),
+        import('codemirror-graphql/esm/results/mode.js'),
+        import('codemirror-graphql/esm/utils/info-addon.js'),
       ],
       { useCommonAddons: false },
     ).then(CodeMirror => {

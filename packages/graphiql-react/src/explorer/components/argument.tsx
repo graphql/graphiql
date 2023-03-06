@@ -1,3 +1,4 @@
+import React from 'react';
 import { GraphQLArgument } from 'graphql';
 
 import { DefaultValue } from './default-value';

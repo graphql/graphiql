@@ -15,7 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import {
+import  React,{
   ReactNode,
   useCallback,
   useEffect,

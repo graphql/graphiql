@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQueryEditor, UseQueryEditorArgs } from '../query-editor';
 
 import '../style/codemirror.css';

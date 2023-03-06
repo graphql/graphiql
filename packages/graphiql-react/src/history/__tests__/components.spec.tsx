@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
+import React from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import { useEditorContext } from '../../editor';

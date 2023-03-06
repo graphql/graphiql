@@ -1,5 +1,6 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import React from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';

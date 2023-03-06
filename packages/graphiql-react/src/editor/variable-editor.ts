@@ -58,9 +58,9 @@ export function useVariableEditor(
     let isActive = true;
 
     importCodeMirror([
-      import('codemirror-graphql/esm/variables/hint'),
-      import('codemirror-graphql/esm/variables/lint'),
-      import('codemirror-graphql/esm/variables/mode'),
+      import('codemirror-graphql/esm/variables/hint.js'),
+      import('codemirror-graphql/esm/variables/lint.js'),
+      import('codemirror-graphql/esm/variables/mode.js'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {

@@ -1,5 +1,5 @@
 import { isType } from 'graphql';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { ChevronLeftIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';

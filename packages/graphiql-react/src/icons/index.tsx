@@ -1,3 +1,4 @@
+import React from 'react';
 import _ArgumentIcon from './argument.svg';
 import _ChevronDownIcon from './chevron-down.svg';
 import _ChevronLeftIcon from './chevron-left.svg';

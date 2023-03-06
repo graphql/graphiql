@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime.js';
 import * as React from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { GraphiQL } from 'graphiql';
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';

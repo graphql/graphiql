@@ -5,8 +5,12 @@
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "target": "es5",
-    "strictPropertyInitialization": false
+    "target": "es6",
+    "module": "ESNext",
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "exclude": [
@@ -20,6 +24,9 @@
   "references": [
     {
       "path": "../graphiql-toolkit"
+    },
+    {
+      "path": "../graphiql-react"
     },
     {
       "path": "../codemirror-graphql"

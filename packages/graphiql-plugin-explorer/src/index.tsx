@@ -6,6 +6,7 @@ import {
 } from '@graphiql/react';
 import GraphiQLExplorer, { GraphiQLExplorerProps } from 'graphiql-explorer';
 import { useMemo, useRef } from 'react';
+import React from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';

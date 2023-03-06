@@ -1,5 +1,6 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';

@@ -1,4 +1,6 @@
 {
+
+  "extends": "./resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "composite": true
   },

@@ -5,33 +5,43 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
+
 const graphql = require('graphql');
 const rimraf = require('rimraf');
 
 const isDev = process.env.NODE_ENV === 'development';
-const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
+// const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
 
+/**
+ * @type {import('webpack').Configuration}
+ */
 const resultConfig = {
   mode: process.env.NODE_ENV,
   entry: './cdn.ts',
   context: rootPath('src'),
   output: {
+    // iife: true,
     path: rootPath(),
-    library: 'GraphiQL',
-    libraryTarget: 'window',
-    libraryExport: 'default',
+    library: { name: 'GraphiQL', type: 'window', export: 'default' },
     filename: isDev ? 'graphiql.js' : 'graphiql.min.js',
   },
   devServer: {
     hot: true,
+    // static: {
+    //   directory: path.join(__dirname, '../'),
+    // },
+
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
-    allowedHosts: ['local.example.com', 'graphiql.com'],
-    before: require('../test/beforeDevServer'),
-    after: require('../test/afterDevServer'),
+    allowedHosts: ['local.example.com', 'graphiql.com', 'localhost'],
+    onBeforeSetupMiddleware: ({ app }) =>
+      require('../test/beforeDevServer')(app),
+    onAfterSetupMiddleware: ({ app }) => require('../test/afterDevServer')(app),
   },
   devtool: isDev ? 'cheap-module-source-map' : 'source-map',
   externals: {
@@ -42,19 +52,24 @@ const resultConfig = {
   module: {
     rules: [
       // for graphql module, which uses .mjs
-      {
-        type: 'javascript/auto',
-        test: /\.mjs$/,
-        use: [],
-        include: /node_modules/,
-        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
-      },
+      // {
+      //   type: 'javascript/auto',
+      //   test: /\.mjs$/,
+      //   use: [],
+      //   include: /node_modules/,
+      //   exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
+      // },
+
       // i think we need to add another rule for
       // codemirror-graphql esm.js files to load
       {
-        test: /\.(js|jsx|ts|tsx)$/,
+        test: /\.(js|mjs|cjs|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
-        exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
+        exclude: [/\.(d\.ts|d\.ts\.map|spec\.tsx)$/, /\node_modules/],
+      },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
       },
       {
         test: /\.css$/,
@@ -79,7 +94,7 @@ const resultConfig = {
     new HtmlWebpackPlugin({
       template: relPath('index.html.ejs'),
       inject: 'head',
-      filename: isDev && !isHMR ? 'dev.html' : 'index.html',
+      filename: isDev ? 'dev.html' : 'index.html',
       graphqlVersion: JSON.stringify(graphql.version),
     }),
     new MiniCssExtractPlugin({
@@ -103,14 +118,12 @@ const resultConfig = {
       }
     })(),
   ],
+  resolveLoader: {
+    plugins: [PnpWebpackPlugin.moduleLoader(module)],
+  },
   resolve: {
     extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
-    modules: [
-      rootPath('./node_modules'),
-      rootPath('../', '../', 'node_modules'),
-      // because we add graphiql-toolkit createFetcher magically in cdn bundle
-      rootPath('../', 'graphiql-toolkit', 'node_modules'),
-    ],
+    plugins: [PnpWebpackPlugin],
   },
 };
 

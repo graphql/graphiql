@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
   "scripts": {
-    "build-demo": "cross-env NODE_ENV=production webpack-cli",
+    "build-demo-disabled": "cross-env NODE_ENV=production webpack-cli",
     "start": "cross-env NODE_ENV=development webpack-cli serve"
   },
   "dependencies": {

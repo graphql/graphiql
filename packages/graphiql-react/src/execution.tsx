@@ -9,7 +9,7 @@ import {
 } from '@graphiql/toolkit';
 import { ExecutionResult, FragmentDefinitionNode, print } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';

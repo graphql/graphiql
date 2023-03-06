@@ -8,7 +8,7 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { useSchemaContext } from '../../schema';
 import { Button, MarkdownContent } from '../../ui';

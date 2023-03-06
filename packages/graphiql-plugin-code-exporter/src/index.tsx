@@ -1,5 +1,6 @@
 import type { GraphiQLPlugin } from '@graphiql/react';
 import { useMemo, useRef } from 'react';
+import React from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';

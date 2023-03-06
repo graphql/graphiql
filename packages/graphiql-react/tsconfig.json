@@ -1,24 +1,32 @@
 {
+  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
-    "target": "ESNext",
+    "composite": true,
     "useDefineForClassFields": true,
+    "target": "ES2017",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc"
+    "rootDir": "./src",
+    "outDir": "./esm",
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["**/__tests__/**"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    {
+      "path": "../codemirror-graphql/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphiql-toolkit"
+    }
+  ]
 }

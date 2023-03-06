@@ -3,10 +3,13 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./esm",
-    "composite": false,
+    "composite": true,
     "jsx": "react",
     "baseUrl": ".",
-    "target": "es5"
+    "target": "es5",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "exclude": [
@@ -25,6 +28,9 @@
     },
     {
       "path": "../graphiql-toolkit"
+    },
+    {
+      "path": "../graphiql-react"
     },
     {
       "path": "../graphql-language-service"

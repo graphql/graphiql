@@ -8,6 +8,7 @@ examples/graphiql-create-react-app
 **/dist
 **/out
 **/esm
+**/cjs
 **/bundle
 **/typedoc
 **/monaco

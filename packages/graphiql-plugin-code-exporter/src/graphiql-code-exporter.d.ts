@@ -1,5 +1,6 @@
 declare module 'graphiql-code-exporter' {
   import { ComponentType } from 'react';
+import React from 'react';
   import {
     GraphQLSchema,
     OperationTypeNode,

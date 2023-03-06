@@ -7,7 +7,7 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import {
+import React, {
   ReactNode,
   useCallback,
   useEffect,

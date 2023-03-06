@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useResponseEditor, UseResponseEditorArgs } from '../response-editor';
 
 import '../style/codemirror.css';

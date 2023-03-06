@@ -7,6 +7,7 @@
 import '@testing-library/jest-dom';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import * as React from 'react';
+import React from 'react';
 import { GraphiQL } from '../GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';

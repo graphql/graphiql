@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { astFromValue, print, ValueNode } from 'graphql';
 
 import { ExplorerFieldDef } from '../context';

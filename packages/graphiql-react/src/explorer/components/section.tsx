@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 
 import {
   ArgumentIcon,

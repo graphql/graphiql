@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { useContext, useEffect } from 'react';
+import React from 'react';
 
 import { SchemaContext, SchemaContextType } from '../../../schema';
 import { ExplorerContext, ExplorerContextProvider } from '../../context';

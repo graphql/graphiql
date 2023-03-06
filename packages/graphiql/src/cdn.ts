@@ -11,7 +11,7 @@ import { GraphiQL } from './components/GraphiQL';
 
 import '@graphiql/react/font/roboto.css';
 import '@graphiql/react/font/fira-code.css';
-import '@graphiql/react/dist/style.css';
+// import '@graphiql/react/esm/style/style.css';
 import './style.css';
 
 /**
@@ -26,8 +26,8 @@ import './style.css';
 GraphiQL.createFetcher = createGraphiQLFetcher;
 
 /**
- * We also add the complete `graphiql-js` exports so that this instance of
- * `graphiql-js` can be reused from plugin CDN bundles.
+ * We also add the complete `graphql-js` exports so that this instance of
+ * `graphql-js` can be reused from plugin CDN bundles.
  */
 // @ts-expect-error
 GraphiQL.GraphQL = GraphQL;

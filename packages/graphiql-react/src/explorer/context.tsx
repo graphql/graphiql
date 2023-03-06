@@ -13,7 +13,7 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSchemaContext } from '../schema';
 import { createContextHook, createNullableContext } from '../utility/context';
 

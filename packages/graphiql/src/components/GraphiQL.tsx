@@ -4,8 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import * as React from 'react';
-import { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 
 import {
   Button,
@@ -76,8 +75,9 @@ export type GraphiQLToolbarConfig = {
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
-  GraphiQLInterfaceProps;
+export interface GraphiQLProps
+  extends Omit<GraphiQLProviderProps, 'children'>,
+    GraphiQLInterfaceProps {}
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire

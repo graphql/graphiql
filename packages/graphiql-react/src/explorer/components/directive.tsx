@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { DirectiveNode } from 'graphql';
 
 import './directive.css';

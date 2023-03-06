@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { GraphQLType } from 'graphql';
 
 import { useExplorerContext } from '../context';

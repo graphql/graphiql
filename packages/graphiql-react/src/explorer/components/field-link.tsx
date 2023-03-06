@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { ExplorerFieldDef, useExplorerContext } from '../context';
 
 import './field-link.css';

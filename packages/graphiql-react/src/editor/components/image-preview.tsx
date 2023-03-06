@@ -1,5 +1,5 @@
 import type { Token } from 'codemirror';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type ImagePreviewProps = { token: Token };
 

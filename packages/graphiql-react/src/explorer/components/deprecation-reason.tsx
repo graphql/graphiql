@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { MarkdownContent } from '../../ui';
 
 import './deprecation-reason.css';

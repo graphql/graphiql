@@ -128,13 +128,13 @@ export function useQueryEditor(
     let isActive = true;
 
     importCodeMirror([
-      import('codemirror/addon/comment/comment'),
-      import('codemirror/addon/search/search'),
-      import('codemirror-graphql/esm/hint'),
-      import('codemirror-graphql/esm/lint'),
-      import('codemirror-graphql/esm/info'),
-      import('codemirror-graphql/esm/jump'),
-      import('codemirror-graphql/esm/mode'),
+      import('codemirror/addon/comment/comment.js'),
+      import('codemirror/addon/search/search.js'),
+      import('codemirror-graphql/esm/hint.js'),
+      import('codemirror-graphql/esm/lint.js'),
+      import('codemirror-graphql/esm/info.js'),
+      import('codemirror-graphql/esm/jump.js'),
+      import('codemirror-graphql/esm/mode.js'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
@@ -236,13 +236,13 @@ export function useQueryEditor(
         showingHints = false;
       });
 
-      newEditor.on('keydown', (editorInstance, event) => {
+      newEditor.on('keydown', (_editorInstance, event) => {
         if (event.key === 'Escape' && showingHints) {
           event.stopPropagation();
         }
       });
 
-      newEditor.on('beforeChange', (editorInstance, change) => {
+      newEditor.on('beforeChange', (_editorInstance, change) => {
         // The update function is only present on non-redo, non-undo events.
         if (change.origin === 'paste') {
           const text = change.text.map(normalizeWhitespace);
