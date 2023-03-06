@@ -125,15 +125,11 @@ const runGraphqlParserTest = (name: string, schema: string) => {
 
 const kitchenSchema = fs.readFileSync(
   path.resolve(__dirname, './fixtures/kitchen-sink.graphql'),
-  {
-    encoding: 'utf8',
-  },
+  'utf8',
 );
 const githubSchema = fs.readFileSync(
   path.resolve(__dirname, './fixtures/github.graphql'),
-  {
-    encoding: 'utf8',
-  },
+  'utf8',
 );
 
 runWholeTest('kitchen-sink:whole', kitchenSchema);
