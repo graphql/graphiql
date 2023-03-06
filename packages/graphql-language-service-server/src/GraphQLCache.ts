@@ -621,7 +621,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let schemaCacheKey = null;
     let schema = null;
 
-    if (!schema && schemaPath && schemaKey) {
+    if (schemaPath && schemaKey) {
       schemaCacheKey = schemaKey as string;
 
       // Maybe use cache
