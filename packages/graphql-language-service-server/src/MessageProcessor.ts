@@ -531,10 +531,7 @@ export class MessageProcessor {
   }
 
   validateDocumentAndPosition(params: CompletionParams): void {
-    if (
-      !params?.textDocument?.uri ||
-      !params.position
-    ) {
+    if (!params?.textDocument?.uri || !params.position) {
       throw new Error(
         '`textDocument.uri` and `position` arguments are required.',
       );
