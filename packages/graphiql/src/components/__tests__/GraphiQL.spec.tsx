@@ -362,8 +362,7 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         // 797 / (1200 - 797) = 1.977667493796526
         expect(
-          (container.querySelector('.graphiql-plugin')?.parentElement).style
-            .flex,
+          container.querySelector('.graphiql-plugin')?.parentElement.style.flex,
         ).toBe('1.977667493796526');
       });
 
