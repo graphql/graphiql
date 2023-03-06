@@ -40,24 +40,6 @@ import { Logger } from './Logger';
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
-const {
-  DOCUMENT,
-  FRAGMENT_DEFINITION,
-  OBJECT_TYPE_DEFINITION,
-  INTERFACE_TYPE_DEFINITION,
-  ENUM_TYPE_DEFINITION,
-  UNION_TYPE_DEFINITION,
-  SCALAR_TYPE_DEFINITION,
-  INPUT_OBJECT_TYPE_DEFINITION,
-  SCALAR_TYPE_EXTENSION,
-  OBJECT_TYPE_EXTENSION,
-  INTERFACE_TYPE_EXTENSION,
-  UNION_TYPE_EXTENSION,
-  ENUM_TYPE_EXTENSION,
-  INPUT_OBJECT_TYPE_EXTENSION,
-  DIRECTIVE_DEFINITION,
-} = Kind;
-
 export async function getGraphQLCache({
   parser,
   logger,
@@ -439,7 +421,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           return;
         }
         ast.definitions.forEach(definition => {
-          if (definition.kind === FRAGMENT_DEFINITION) {
+          if (definition.kind === Kind.FRAGMENT_DEFINITION) {
             cache.set(definition.name.value, {
               filePath,
               content: query,
@@ -502,9 +484,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
         }
         ast.definitions.forEach(definition => {
           if (
-            definition.kind === OBJECT_TYPE_DEFINITION ||
-            definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-            definition.kind === ENUM_TYPE_DEFINITION
+            definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
+            definition.kind === Kind.ENUM_TYPE_DEFINITION
           ) {
             cache.set(definition.name.value, {
               filePath,
@@ -561,19 +543,19 @@ export class GraphQLCache implements GraphQLCacheInterface {
         }
         ast.definitions.forEach(definition => {
           switch (definition.kind) {
-            case OBJECT_TYPE_DEFINITION:
-            case INTERFACE_TYPE_DEFINITION:
-            case ENUM_TYPE_DEFINITION:
-            case UNION_TYPE_DEFINITION:
-            case SCALAR_TYPE_DEFINITION:
-            case INPUT_OBJECT_TYPE_DEFINITION:
-            case SCALAR_TYPE_EXTENSION:
-            case OBJECT_TYPE_EXTENSION:
-            case INTERFACE_TYPE_EXTENSION:
-            case UNION_TYPE_EXTENSION:
-            case ENUM_TYPE_EXTENSION:
-            case INPUT_OBJECT_TYPE_EXTENSION:
-            case DIRECTIVE_DEFINITION:
+            case Kind.OBJECT_TYPE_DEFINITION:
+            case Kind.INTERFACE_TYPE_DEFINITION:
+            case Kind.ENUM_TYPE_DEFINITION:
+            case Kind.UNION_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_DEFINITION:
+            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_EXTENSION:
+            case Kind.OBJECT_TYPE_EXTENSION:
+            case Kind.INTERFACE_TYPE_EXTENSION:
+            case Kind.UNION_TYPE_EXTENSION:
+            case Kind.ENUM_TYPE_EXTENSION:
+            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
+            case Kind.DIRECTIVE_DEFINITION:
               typeExtensions.push(definition);
               break;
           }
@@ -600,7 +582,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     return extendSchema(schema, {
-      kind: DOCUMENT,
+      kind: Kind.DOCUMENT,
       definitions: typeExtensions,
     });
   }
@@ -746,7 +728,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (asts) {
         asts.forEach(ast => {
           ast.definitions.forEach(definition => {
-            if (definition.kind === FRAGMENT_DEFINITION) {
+            if (definition.kind === Kind.FRAGMENT_DEFINITION) {
               fragmentDefinitions.set(definition.name.value, {
                 filePath,
                 content,
@@ -754,9 +736,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
               });
             }
             if (
-              definition.kind === OBJECT_TYPE_DEFINITION ||
-              definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-              definition.kind === ENUM_TYPE_DEFINITION
+              definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+              definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
+              definition.kind === Kind.ENUM_TYPE_DEFINITION
             ) {
               objectTypeDefinitions.set(definition.name.value, {
                 filePath,
