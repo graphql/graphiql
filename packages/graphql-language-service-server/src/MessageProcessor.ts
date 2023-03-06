@@ -318,7 +318,7 @@ export class MessageProcessor {
     // We aren't able to use initialization event for this
     // and the config change event is after the fact.
 
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
     const { textDocument } = params;
@@ -419,7 +419,7 @@ export class MessageProcessor {
     // e.g. auto-completions.
     if (!params?.textDocument?.uri || !params.contentChanges) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
+        '`textDocument.uri` and `contentChanges` arguments are required.',
       );
     }
     const { textDocument, contentChanges } = params;
@@ -501,7 +501,7 @@ export class MessageProcessor {
     // For every `textDocument/didClose` event, delete the cached entry.
     // This is to keep a low memory usage && switch the source of truth to
     // the file on disk.
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` is required.');
     }
     const { textDocument } = params;
@@ -532,13 +532,11 @@ export class MessageProcessor {
 
   validateDocumentAndPosition(params: CompletionParams): void {
     if (
-      !params ||
-      !params.textDocument ||
-      !params.textDocument.uri ||
+      !params?.textDocument?.uri ||
       !params.position
     ) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `position` arguments are required.',
+        '`textDocument.uri` and `position` arguments are required.',
       );
     }
   }
@@ -734,7 +732,7 @@ export class MessageProcessor {
       return [];
     }
 
-    if (!params || !params.textDocument || !params.position) {
+    if (!params?.textDocument || !params.position) {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
     const { textDocument, position } = params;
@@ -831,7 +829,7 @@ export class MessageProcessor {
       return [];
     }
 
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
 
@@ -852,7 +850,7 @@ export class MessageProcessor {
   //      return [];
   //    }
 
-  //    if (!params || !params.textDocument) {
+  //    if (!params?.textDocument) {
   //      throw new Error('`textDocument` argument is required.');
   //    }
 
