@@ -165,9 +165,9 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
-        const mockEditor = container.querySelector(
+        const mockEditor = container.querySelector<HTMLTextAreaElement>(
           '[data-testid="query-editor"] .mockCodeMirror',
-        ) as HTMLTextAreaElement;
+        ) ;
         expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
     });
@@ -226,7 +226,7 @@ describe('GraphiQL', () => {
 
       const secondaryEditorTitle = container.querySelector(
         '.graphiql-editor-tools',
-      ) as Element;
+      ) ;
 
       // drag the editor tools handle up
       act(() => {
@@ -300,8 +300,8 @@ describe('GraphiQL', () => {
 
       const dragBar = container.querySelector(
         '.graphiql-horizontal-drag-bar',
-      ) as Element;
-      const editors = container.querySelector('.graphiql-editors') as Element;
+      ) ;
+      const editors = container.querySelector('.graphiql-editors') ;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -319,7 +319,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect((editors.parentElement as HTMLElement).style.flex).toEqual(
+        expect((editors.parentElement ).style.flex).toEqual(
           '3.5',
         );
       });
@@ -345,7 +345,7 @@ describe('GraphiQL', () => {
         fireEvent.click(
           container.querySelector(
             '[aria-label="Show Documentation Explorer"]',
-          ) as Element,
+          ) ,
         );
       });
 
@@ -370,7 +370,7 @@ describe('GraphiQL', () => {
         expect(
           (
             container.querySelector('.graphiql-plugin')
-              ?.parentElement as HTMLElement
+              ?.parentElement
           ).style.flex,
         ).toBe('1.977667493796526');
       });
@@ -444,7 +444,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab-add') as Element,
+          container.querySelector('.graphiql-tab-add') ,
         );
       });
 
@@ -456,7 +456,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab-add') as Element,
+          container.querySelector('.graphiql-tab-add') ,
         );
       });
 
@@ -478,7 +478,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab-add') as Element,
+          container.querySelector('.graphiql-tab-add') ,
         );
       });
 
@@ -490,7 +490,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab-add') as Element,
+          container.querySelector('.graphiql-tab-add') ,
         );
       });
 
@@ -506,7 +506,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab-add') as Element,
+          container.querySelector('.graphiql-tab-add') ,
         );
       });
 
@@ -520,7 +520,7 @@ describe('GraphiQL', () => {
         fireEvent.click(
           container.querySelector(
             '.graphiql-tab .graphiql-tab-close',
-          ) as Element,
+          ) ,
         );
       });
 
@@ -914,7 +914,7 @@ describe('GraphiQL', () => {
         fireEvent.change(
           container.querySelector(
             '[data-testid="query-editor"] .mockCodeMirror',
-          ) as Element,
+          ) ,
           {
             target: { value: mockQuery2 },
           },
@@ -963,7 +963,7 @@ describe('GraphiQL', () => {
         fireEvent.change(
           container.querySelector(
             '[aria-label="Variables"] .mockCodeMirror',
-          ) as Element,
+          ) ,
           {
             target: { value: mockVariables2 },
           },
@@ -1017,7 +1017,7 @@ describe('GraphiQL', () => {
         fireEvent.change(
           container.querySelector(
             '[aria-label="Headers"] .mockCodeMirror',
-          ) as Element,
+          ) ,
           {
             target: { value: mockHeaders2 },
           },
