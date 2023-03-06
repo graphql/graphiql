@@ -1,0 +1,25 @@
+{
+  // https://typescript-eslint.io/docs/linting/typed-linting/monorepos/#one-root-tsconfigjson
+  // extend your base config to share compilerOptions, etc
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // ensure that nobody can accidentally use this config for a build
+    "noEmit": true
+  },
+  "include": [
+    "examples/*/src/**/*.ts",
+    "examples/*/src/**/*.tsx",
+    "examples/monaco-graphql-nextjs/next-env.d.ts",
+    "examples/monaco-graphql-react-vite/vite.config.ts",
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "packages/*/vite.config.ts",
+    "packages/graphiql/cypress/**/*.ts",
+    "packages/graphiql/cypress.config.ts",
+    "packages/graphiql/__mocks__/codemirror.ts",
+    "packages/graphiql/__mocks__/@graphiql/react.tsx",
+    "packages/graphql-language-service/benchmark/index.ts",
+    "packages/graphiql-react/vite.config.d.ts",
+    "packages/cm6-graphql/__tests__/test.spec.ts"
+  ]
+}
