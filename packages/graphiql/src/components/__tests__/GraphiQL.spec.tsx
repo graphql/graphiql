@@ -167,7 +167,7 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
           '[data-testid="query-editor"] .mockCodeMirror',
-        ) ;
+        );
         expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
     });
@@ -226,7 +226,7 @@ describe('GraphiQL', () => {
 
       const secondaryEditorTitle = container.querySelector(
         '.graphiql-editor-tools',
-      ) ;
+      );
 
       // drag the editor tools handle up
       act(() => {
@@ -298,10 +298,8 @@ describe('GraphiQL', () => {
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      const dragBar = container.querySelector(
-        '.graphiql-horizontal-drag-bar',
-      ) ;
-      const editors = container.querySelector('.graphiql-editors') ;
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar');
+      const editors = container.querySelector('.graphiql-editors');
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -319,9 +317,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect((editors.parentElement ).style.flex).toEqual(
-          '3.5',
-        );
+        expect(editors.parentElement.style.flex).toEqual('3.5');
       });
 
       clientWidthSpy.mockRestore();
@@ -343,9 +339,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector(
-            '[aria-label="Show Documentation Explorer"]',
-          ) ,
+          container.querySelector('[aria-label="Show Documentation Explorer"]'),
         );
       });
 
@@ -368,10 +362,8 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         // 797 / (1200 - 797) = 1.977667493796526
         expect(
-          (
-            container.querySelector('.graphiql-plugin')
-              ?.parentElement
-          ).style.flex,
+          (container.querySelector('.graphiql-plugin')?.parentElement).style
+            .flex,
         ).toBe('1.977667493796526');
       });
 
@@ -443,9 +435,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(
-          container.querySelector('.graphiql-tab-add') ,
-        );
+        fireEvent.click(container.querySelector('.graphiql-tab-add'));
       });
 
       await waitFor(() => {
@@ -455,9 +445,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(
-          container.querySelector('.graphiql-tab-add') ,
-        );
+        fireEvent.click(container.querySelector('.graphiql-tab-add'));
       });
 
       await waitFor(() => {
@@ -477,9 +465,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(
-          container.querySelector('.graphiql-tab-add') ,
-        );
+        fireEvent.click(container.querySelector('.graphiql-tab-add'));
       });
 
       await waitFor(() => {
@@ -489,9 +475,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(
-          container.querySelector('.graphiql-tab-add') ,
-        );
+        fireEvent.click(container.querySelector('.graphiql-tab-add'));
       });
 
       await waitFor(() => {
@@ -505,9 +489,7 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       act(() => {
-        fireEvent.click(
-          container.querySelector('.graphiql-tab-add') ,
-        );
+        fireEvent.click(container.querySelector('.graphiql-tab-add'));
       });
 
       await waitFor(() => {
@@ -518,9 +500,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector(
-            '.graphiql-tab .graphiql-tab-close',
-          ) ,
+          container.querySelector('.graphiql-tab .graphiql-tab-close'),
         );
       });
 
@@ -914,7 +894,7 @@ describe('GraphiQL', () => {
         fireEvent.change(
           container.querySelector(
             '[data-testid="query-editor"] .mockCodeMirror',
-          ) ,
+          ),
           {
             target: { value: mockQuery2 },
           },
@@ -961,9 +941,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.change(
-          container.querySelector(
-            '[aria-label="Variables"] .mockCodeMirror',
-          ) ,
+          container.querySelector('[aria-label="Variables"] .mockCodeMirror'),
           {
             target: { value: mockVariables2 },
           },
@@ -1015,9 +993,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.change(
-          container.querySelector(
-            '[aria-label="Headers"] .mockCodeMirror',
-          ) ,
+          container.querySelector('[aria-label="Headers"] .mockCodeMirror'),
           {
             target: { value: mockHeaders2 },
           },
