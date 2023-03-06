@@ -8,7 +8,8 @@
  */
 
 import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync, writeFile } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
@@ -71,9 +72,6 @@ import {
   ProjectNotFoundError,
 } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
-import { promisify } from 'node:util';
-
-const writeFileAsync = promisify(writeFile);
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -1064,16 +1062,12 @@ export class MessageProcessor {
         const cachedSchemaDoc = this._getCachedDocument(uri);
 
         if (!cachedSchemaDoc) {
-          await writeFileAsync(fsPath, schemaText, {
-            encoding: 'utf-8',
-          });
+          await writeFile(fsPath, schemaText, 'utf8');
           await this._cacheSchemaText(uri, schemaText, 1);
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
-          writeFileSync(fsPath, schemaText, {
-            encoding: 'utf-8',
-          });
+          writeFileSync(fsPath, schemaText, 'utf8');
           await this._cacheSchemaText(
             uri,
             schemaText,
