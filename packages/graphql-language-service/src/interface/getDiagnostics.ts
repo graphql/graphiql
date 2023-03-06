@@ -87,7 +87,7 @@ export function getDiagnostics(
 
       return [
         {
-          severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
+          severity: DIAGNOSTIC_SEVERITY.Error ,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,

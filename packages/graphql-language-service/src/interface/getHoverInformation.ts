@@ -122,7 +122,7 @@ function renderQualifiedField(
   if (!typeInfo.fieldDef) {
     return;
   }
-  const fieldName = typeInfo.fieldDef.name as string;
+  const fieldName = typeInfo.fieldDef.name ;
   if (fieldName.slice(0, 2) !== '__') {
     renderType(into, typeInfo, options, typeInfo.parentType as GraphQLType);
     text(into, '.');

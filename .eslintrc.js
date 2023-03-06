@@ -295,7 +295,11 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       },
       parserOptions: {
-        project: ['tsconfig.eslint.json'],
+        project: [
+          'packages/*/tsconfig.json',
+          'examples/*/tsconfig.json',
+          'packages/graphiql/cypress/tsconfig.json',
+        ],
       },
     },
     // Cypress plugin, global, etc., only for cypress directory
