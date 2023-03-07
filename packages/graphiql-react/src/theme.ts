@@ -35,8 +35,7 @@ export function useTheme() {
       return;
     }
 
-    document.body.classList.remove(`graphiql-light`);
-    document.body.classList.remove(`graphiql-dark`);
+    document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
     }
