@@ -206,6 +206,8 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
+    // max number tabs allowed
+    maxTabs: number,
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
@@ -332,6 +334,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       <code className="graphiql-key">Ctrl</code>
     );
 
+    const maxTabs = Math.max( props.maxTabs, 1);
+
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
@@ -418,12 +422,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <div className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs aria-label="Select active operation">
-                {editorContext.tabs.length > 1 ? (
+              {editorContext.tabs.length > 0 ? (
                   <>
                     {editorContext.tabs.map((tab, index) => (
                       <Tab
                         key={tab.id}
                         isActive={index === editorContext.activeTabIndex}
+                        className={editorContext.tabs.length === 1 ? 'tab-button-padding-right' : ''}
                       >
                         <Tab.Button
                           aria-controls="graphiql-session"
@@ -435,17 +440,17 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         >
                           {tab.title}
                         </Tab.Button>
-                        <Tab.Close
+                        {editorContext.tabs.length > 1 && <Tab.Close
                           onClick={() => {
                             if (editorContext.activeTabIndex === index) {
                               executionContext.stop();
                             }
                             editorContext.closeTab(index);
                           }}
-                        />
+                        />}
                       </Tab>
                     ))}
-                    <div>
+                   { editorContext.tabs.length < maxTabs && (<div>
                       <Tooltip label="Add tab">
                         <UnStyledButton
                           type="button"
@@ -456,12 +461,12 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                           <PlusIcon aria-hidden="true" />
                         </UnStyledButton>
                       </Tooltip>
-                    </div>
+                    </div>)}
                   </>
                 ) : null}
               </Tabs>
               <div className="graphiql-session-header-right">
-                {editorContext.tabs.length === 1 ? (
+                {editorContext.tabs.length === 0 ? (
                   <div className="graphiql-add-tab-wrapper">
                     <Tooltip label="Add tab">
                       <UnStyledButton
@@ -487,7 +492,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <div ref={editorResize.firstRef}>
                 <div
                   className={`graphiql-editors${
-                    editorContext.tabs.length === 1 ? ' full-height' : ''
+                    editorContext.tabs.length === 0 ? ' full-height' : ''
                   }`}
                 >
                   <div ref={editorToolsResize.firstRef}>

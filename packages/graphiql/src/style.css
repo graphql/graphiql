@@ -337,3 +337,7 @@ reach-portal .graphiql-key {
 .graphiql-container svg {
   pointer-events: none;
 }
+
+.graphiql-container .tab-button-padding-right {
+  padding-right: var(--px-4);
+}
