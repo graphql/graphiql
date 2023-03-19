@@ -102,7 +102,7 @@ export class LanguageService {
    * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
-    if (!this._schemas || !this._schemas.length) {
+    if (!this._schemas?.length) {
       return;
     }
     if (this._schemas.length === 1) {

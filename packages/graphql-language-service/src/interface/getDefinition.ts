@@ -39,7 +39,7 @@ function assert(value: any, message: string) {
 function getRange(text: string, node: ASTNode): Range {
   const location = node.loc as Location;
   assert(location, 'Expected ASTNode to have a location.');
-  return locToRange(text, location) as Range;
+  return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {

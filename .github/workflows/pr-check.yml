@@ -26,7 +26,8 @@ jobs:
         run: yarn build
 
       - name: ESLint
-        run: yarn lint
+        # Fixes error on CI: Allocation failed - JavaScript heap out of memory
+        run: NODE_OPTIONS=--max-old-space-size=4096 yarn lint
 
       - name: Prettier Check
         run: yarn pretty-check

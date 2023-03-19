@@ -86,7 +86,7 @@ export class QueryStore {
         this.key,
         JSON.stringify({ [this.key]: items }),
       );
-      if (!response || !response.error) {
+      if (!response?.error) {
         this.items = items;
       } else if (response.isQuotaError && this.maxSize) {
         // Only try to delete last items on LRU stores

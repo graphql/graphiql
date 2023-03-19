@@ -293,6 +293,20 @@ module.exports = {
   plugins: ['promise', 'sonarjs', 'unicorn'],
 
   overrides: [
+    {
+      files: ['**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      },
+      parserOptions: {
+        project: [
+          'packages/*/tsconfig.json',
+          'examples/*/tsconfig.json',
+          'packages/graphiql/cypress/tsconfig.json',
+          'tsconfig.eslint.json',
+        ],
+      },
+    },
     // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
     // cypress clashes with jest expect()

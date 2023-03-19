@@ -75,7 +75,7 @@ class MySchemaFetcher {
   async loadSchema() {
     try {
       setSchemaStatus('Schema Loading...');
-      const url = this._currentSchema.value as string;
+      const url = this._currentSchema.value;
 
       const headers = {
         'content-type': 'application/json',
