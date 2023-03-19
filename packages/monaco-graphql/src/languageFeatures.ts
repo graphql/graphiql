@@ -123,10 +123,10 @@ export class DiagnosticsAdapter {
   ) {
     const worker = await this._worker(resource);
 
-    // to handle an edge case bug that happens when 
+    // to handle an edge case bug that happens when
     // typing before the schema is present
-    if(!worker) {
-      return
+    if (!worker) {
+      return;
     }
 
     const diagnostics = await worker.doValidation(resource.toString());
