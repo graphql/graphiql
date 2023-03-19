@@ -52,7 +52,6 @@
   "dependencies": {
     "@graphiql/react": "^0.17.0",
     "@graphiql/toolkit": "^0.8.2",
-    "entities": "^2.0.0",
     "graphql-language-service": "^5.1.2",
     "markdown-it": "^12.2.0"
   },
