@@ -123,6 +123,12 @@ export class DiagnosticsAdapter {
   ) {
     const worker = await this._worker(resource);
 
+    // to handle an edge case bug that happens when
+    // typing before the schema is present
+    if (!worker) {
+      return;
+    }
+
     const diagnostics = await worker.doValidation(resource.toString());
     editor.setModelMarkers(
       editor.getModel(resource) as editor.ITextModel,
