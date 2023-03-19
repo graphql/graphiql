@@ -228,6 +228,7 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
+    'unicorn/no-array-push-push': 'error',
     'import/no-extraneous-dependencies': 'error',
     'import/no-duplicates': 'error',
     'import/no-named-as-default': 'error',

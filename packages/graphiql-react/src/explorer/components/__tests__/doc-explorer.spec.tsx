@@ -118,6 +118,7 @@ describe('DocExplorer', () => {
       useEffect(() => {
         if (context.explorerNavStack.length === 1) {
           context.push({ name: 'Query', def: Query });
+          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
           context.push({ name: 'field', def: field });
         }
       }, [context]);
@@ -184,6 +185,7 @@ describe('DocExplorer', () => {
       useEffect(() => {
         if (context.explorerNavStack.length === 1) {
           context.push({ name: 'Query', def: Query });
+          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
           context.push({ name: 'field', def: field });
         }
       }, [context]);
