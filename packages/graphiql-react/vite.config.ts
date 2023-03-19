@@ -23,7 +23,7 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['graphql', 'react', 'react-dom'],
+      external: ['graphql', 'react', 'react-dom', 'react/jsx-runtime'],
       output: {
         chunkFileNames: '[name].[format].js',
       },
