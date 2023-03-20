@@ -1,5 +1,21 @@
 # graphql-language-service-cli
 
+## 3.3.17
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046)
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index
+  access
+
+- Updated dependencies
+  [[`9d9478ae`](https://github.com/graphql/graphiql/commit/9d9478aea7536d2957e4371cef4f30577db2113d),
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service-server@2.9.7
+  - graphql-language-service@5.1.3
+
 ## 3.3.16
 
 ### Patch Changes

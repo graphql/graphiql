@@ -1,5 +1,42 @@
 # @graphiql/react
 
+## 0.17.1
+
+### Patch Changes
+
+- [#3033](https://github.com/graphql/graphiql/pull/3033)
+  [`2d5c60ec`](https://github.com/graphql/graphiql/commit/2d5c60ecf717abafde2bddd32b2772261d3eec8b)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove redundant `catch`
+  statement
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046)
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index
+  access
+
+- [#3017](https://github.com/graphql/graphiql/pull/3017)
+  [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid
+  bundling code from `react/jsx-runtime` so that the package can be used with
+  Preact
+
+- [#3042](https://github.com/graphql/graphiql/pull/3042)
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer String#slice() over
+  String#substr() and String#substring()
+
+- [#3061](https://github.com/graphql/graphiql/pull/3061)
+  [`7cf4908a`](https://github.com/graphql/graphiql/commit/7cf4908a5d4bd58af315047f4dec5236e8c701fc)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove unneeded `reference &&`
+  assertion, convert to switch
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - codemirror-graphql@2.0.5
+  - @graphiql/toolkit@0.8.3
+  - graphql-language-service@5.1.3
+
 ## 0.17.0
 
 ### Minor Changes

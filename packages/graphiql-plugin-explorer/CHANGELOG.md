@@ -1,5 +1,29 @@
 # @graphiql/plugin-explorer
 
+## 0.1.15
+
+### Patch Changes
+
+- [#3017](https://github.com/graphql/graphiql/pull/3017)
+  [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid
+  bundling code from `react/jsx-runtime` so that the package can be used with
+  Preact
+
+- [#3063](https://github.com/graphql/graphiql/pull/3063)
+  [`5792aaa5`](https://github.com/graphql/graphiql/commit/5792aaa5b26b68dc396f7bfb5dc3defd9331b831)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - avoid `useMemo` with empty array
+  `[]` since React can't guarantee stable reference, + lint restrict syntax for
+  future mistakes
+
+- Updated dependencies
+  [[`2d5c60ec`](https://github.com/graphql/graphiql/commit/2d5c60ecf717abafde2bddd32b2772261d3eec8b),
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0),
+  [`7cf4908a`](https://github.com/graphql/graphiql/commit/7cf4908a5d4bd58af315047f4dec5236e8c701fc)]:
+  - @graphiql/react@0.17.1
+
 ## 0.1.14
 
 ### Patch Changes
