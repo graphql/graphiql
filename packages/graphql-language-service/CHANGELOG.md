@@ -1,5 +1,19 @@
 # graphql-language-service
 
+## 5.1.3
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046)
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index
+  access
+
+- [#3042](https://github.com/graphql/graphiql/pull/3042)
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer String#slice() over
+  String#substr() and String#substring()
+
 ## 5.1.2
 
 ### Patch Changes

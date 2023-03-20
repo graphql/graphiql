@@ -1,5 +1,31 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3071](https://github.com/graphql/graphiql/pull/3071)
+  [`1821ef2b`](https://github.com/graphql/graphiql/commit/1821ef2b3f06c69fa5fa27dbd66d19e81e792590)
+  Thanks [@acao](https://github.com/acao)! - Upgrade peer resolutions for
+  monaco-graphql
+
+### Patch Changes
+
+- [#3093](https://github.com/graphql/graphiql/pull/3093)
+  [`6ed73bf7`](https://github.com/graphql/graphiql/commit/6ed73bf7ca9781d511458e70268deff203fd36cb)
+  Thanks [@acao](https://github.com/acao)! - Bugfix for 'worker not found' type
+  errors on \_doValidate()'
+
+- [#3047](https://github.com/graphql/graphiql/pull/3047)
+  [`190fae87`](https://github.com/graphql/graphiql/commit/190fae87a3e4b07a473ba7029fb22d19e713c4b4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - combining multiple Array#push()
+  into one call
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
 ## 1.1.8
 
 ### Patch Changes

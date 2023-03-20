@@ -1,5 +1,24 @@
 # Change Log
 
+## 2.4.1
+
+### Patch Changes
+
+- [#3087](https://github.com/graphql/graphiql/pull/3087)
+  [`0e2dfd49`](https://github.com/graphql/graphiql/commit/0e2dfd49b95d670a0955991fd65055000e52a9f8)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove nowhere used `entities`
+  dependency
+
+- Updated dependencies
+  [[`2d5c60ec`](https://github.com/graphql/graphiql/commit/2d5c60ecf717abafde2bddd32b2772261d3eec8b),
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0),
+  [`7cf4908a`](https://github.com/graphql/graphiql/commit/7cf4908a5d4bd58af315047f4dec5236e8c701fc)]:
+  - @graphiql/react@0.17.1
+  - @graphiql/toolkit@0.8.3
+  - graphql-language-service@5.1.3
+
 ## 2.4.0
 
 ### Minor Changes

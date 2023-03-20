@@ -1,5 +1,30 @@
 # cm6-graphql
 
+## 0.0.4
+
+### Patch Changes
+
+- [#3075](https://github.com/graphql/graphiql/pull/3075)
+  [`9c1a02db`](https://github.com/graphql/graphiql/commit/9c1a02dbff4a39fe999873912daec7dcd1d39b5c)
+  Thanks [@acao](https://github.com/acao)! - another manual release attempt to
+  trigger versioning
+
+- [#3074](https://github.com/graphql/graphiql/pull/3074)
+  [`7cb2a2f1`](https://github.com/graphql/graphiql/commit/7cb2a2f156d918fd57b7d3757ee1ecc0f4dab4ce)
+  Thanks [@acao](https://github.com/acao)! - Fix release bug, trigger changeset
+  release action
+
+- [#3069](https://github.com/graphql/graphiql/pull/3069)
+  [`d922e930`](https://github.com/graphql/graphiql/commit/d922e930f77dff879212ad39191ad6a1b8f7dd8a)
+  Thanks [@sergeichestakov](https://github.com/sergeichestakov)! - Added
+  graphql-language-service as a direct dep of cm6-graphql and update peer
+  dependencies
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
 ## 0.0.3
 
 ### Patch Changes
