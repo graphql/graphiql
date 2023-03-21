@@ -50,6 +50,7 @@ export {
   DOC_EXPLORER_PLUGIN,
   HISTORY_PLUGIN,
   PluginContext,
+  PluginContextProvider,
   usePluginContext,
 } from './plugin';
 export { GraphiQLProvider } from './provider';

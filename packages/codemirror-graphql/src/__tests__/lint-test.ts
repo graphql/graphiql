@@ -9,8 +9,8 @@
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { GraphQLError, OperationDefinitionNode } from 'graphql';
 import '../lint';
 import '../mode';
@@ -19,7 +19,7 @@ import { TestSchema } from './testSchema';
 function createEditorWithLint(lintConfig?: any) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql',
-    lint: lintConfig ? lintConfig : true,
+    lint: lintConfig || true,
   });
 }
 
@@ -31,10 +31,9 @@ function printLintErrors(queryString: string, configOverrides = {}) {
 
   return new Promise<any[]>(resolve => {
     editor.state.lint.options.onUpdateLinting = (errors: any[]) => {
-      if (errors?.[0]) {
-        if (!errors[0].message.match('Unexpected EOF')) {
-          resolve(errors);
-        }
+      if (errors?.[0] && !errors[0].message.match('Unexpected EOF')) {
+        resolve(errors);
+        return;
       }
       resolve([]);
     };
@@ -48,9 +47,10 @@ describe('graphql-lint', () => {
     expect(editor.getHelpers(editor.getCursor(), 'lint')).not.toHaveLength(0);
   });
 
-  const kitchenSink = readFileSync(join(__dirname, '/kitchen-sink.graphql'), {
-    encoding: 'utf8',
-  });
+  const kitchenSink = readFileSync(
+    join(__dirname, '/kitchen-sink.graphql'),
+    'utf8',
+  );
 
   it('returns no syntactic/validation errors after parsing kitchen-sink query', async () => {
     const errors = await printLintErrors(kitchenSink);

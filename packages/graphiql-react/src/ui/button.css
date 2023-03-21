@@ -4,18 +4,25 @@ button.graphiql-un-styled {
   border-radius: var(--border-radius-4);
   cursor: pointer;
 
+  &:hover {
+    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
+  }
+
   &:active {
-    background-color: hsla(var(--color-neutral), 0.07);
+    background-color: hsla(
+      var(--color-neutral),
+      var(--alpha-background-medium)
+    );
   }
 
   &:focus {
-    outline: hsla(var(--color-neutral), 0.15) auto 1px;
+    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
   }
 }
 
 .graphiql-button,
 button.graphiql-button {
-  background-color: hsla(var(--color-neutral), 0.07);
+  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   border: none;
   border-radius: var(--border-radius-4);
   color: hsla(var(--color-neutral), 1);
@@ -23,18 +30,22 @@ button.graphiql-button {
   font-size: var(--font-size-body);
   padding: var(--px-8) var(--px-12);
 
+  &:hover,
   &:active {
-    background-color: hsla(var(--color-neutral), 0.1);
+    background-color: hsla(
+      var(--color-neutral),
+      var(--alpha-background-medium)
+    );
   }
 
   &:focus {
-    outline: hsla(var(--color-neutral), 0.15) auto 1px;
+    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
   }
 
   &.graphiql-button-success {
-    background-color: hsla(var(--color-success), 0.15);
+    background-color: hsla(var(--color-success), var(--alpha-background-heavy));
   }
   &.graphiql-button-error {
-    background-color: hsla(var(--color-error), 0.15);
+    background-color: hsla(var(--color-error), var(--alpha-background-heavy));
   }
 }

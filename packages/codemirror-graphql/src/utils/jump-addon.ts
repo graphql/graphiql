@@ -103,9 +103,9 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
   };
 
   const onClick = (clickEvent: MouseEvent) => {
-    const destination = cm.state.jump.destination;
+    const { destination, options } = cm.state.jump;
     if (destination) {
-      cm.state.jump.options.onClick(destination, clickEvent);
+      options.onClick(destination, clickEvent);
     }
   };
 
@@ -123,7 +123,7 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
 const isMac =
   typeof navigator !== 'undefined' &&
   navigator &&
-  navigator.appVersion.indexOf('Mac') !== -1;
+  navigator.appVersion.includes('Mac');
 
 function isJumpModifier(key: string) {
   return key === (isMac ? 'Meta' : 'Control');
@@ -134,11 +134,9 @@ function enableJumpMode(cm: CodeMirror.Editor) {
     return;
   }
 
-  const cursor = cm.state.jump.cursor;
+  const { cursor, options } = cm.state.jump;
   const pos = cm.coordsChar(cursor);
   const token = cm.getTokenAt(pos, true);
-
-  const options = cm.state.jump.options;
   const getDestination = options.getDestination || cm.getHelper(pos, 'jump');
   if (getDestination) {
     const destination = getDestination(token, options, cm);
@@ -156,7 +154,7 @@ function enableJumpMode(cm: CodeMirror.Editor) {
 }
 
 function disableJumpMode(cm: CodeMirror.Editor) {
-  const marker = cm.state.jump.marker;
+  const { marker } = cm.state.jump;
   cm.state.jump.marker = null;
   cm.state.jump.destination = null;
 

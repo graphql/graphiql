@@ -1,31 +1,31 @@
 @import url('codemirror/lib/codemirror.css');
 
 /* Make the editors fill up their container and make them scrollable */
-.CodeMirror {
+.graphiql-container .CodeMirror {
   height: 100%;
   position: absolute;
   width: 100%;
 }
 
 /* Override font settings */
-.CodeMirror {
+.graphiql-container .CodeMirror {
   font-family: var(--font-family-mono);
 }
 
 /* Set default background color */
-.CodeMirror,
-.CodeMirror-gutters {
+.graphiql-container .CodeMirror,
+.graphiql-container .CodeMirror-gutters {
   background: none;
   background-color: var(--editor-background, hsl(var(--color-base)));
 }
 
-/* No padding around line number */
-.CodeMirror-linenumber {
+/* No padding around line numbers */
+.graphiql-container .CodeMirror-linenumber {
   padding: 0;
 }
 
 /* No border between gutter and editor */
-.CodeMirror-gutters {
+.graphiql-container .CodeMirror-gutters {
   border: none;
 }
 
@@ -35,7 +35,7 @@
 
 .cm-s-graphiql {
   /* Default to punctuation */
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-tertiary));
 
   /* OperationType, `fragment`, `on` */
   & .cm-keyword {
@@ -47,7 +47,7 @@
   }
   /* Punctuator (except `$` and `@`) */
   & .cm-punctuation {
-    color: hsla(var(--color-neutral), 0.6);
+    color: hsla(var(--color-neutral), var(--alpha-tertiary));
   }
   /* Variable */
   & .cm-variable {
@@ -75,7 +75,7 @@
   }
   /* Name (ObjectField, Argument) */
   & .cm-attribute {
-    color: hsl(var(--color-info));
+    color: hsl(var(--color-tertiary));
   }
   /* Name (Directive) */
   & .cm-meta {
@@ -91,11 +91,11 @@
   }
   /* Comment */
   & .cm-comment {
-    color: hsla(var(--color-neutral), 0.4);
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
   }
   /* Whitespace */
   & .cm-ws {
-    color: hsla(var(--color-neutral), 0.4);
+    color: hsla(var(--color-neutral), var(--alpha-tertiary));
   }
   /* Invalid characters */
   & .cm-invalidchar {
@@ -104,29 +104,29 @@
 
   /* Cursor */
   & .CodeMirror-cursor {
-    border-left: 2px solid hsla(var(--color-neutral), 0.6);
+    border-left: 2px solid hsla(var(--color-neutral), var(--alpha-secondary));
   }
 
   /* Color for line numbers and fold-gutters */
   & .CodeMirror-linenumber {
-    color: hsla(var(--color-neutral), 0.4);
+    color: hsla(var(--color-neutral), var(--alpha-tertiary));
   }
 }
 
 /* Matching bracket colors */
-div.CodeMirror span.CodeMirror-matchingbracket,
-div.CodeMirror span.CodeMirror-nonmatchingbracket {
-  color: hsla(var(--color-neutral), 0.4);
+.graphiql-container div.CodeMirror span.CodeMirror-matchingbracket,
+.graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: hsl(var(--color-warning));
 }
 
 /* Selected text blocks */
-.CodeMirror-selected,
-.CodeMirror-focused .CodeMirror-selected {
-  background: hsla(var(--color-neutral), 0.15);
+.graphiql-container .CodeMirror-selected,
+.graphiql-container .CodeMirror-focused .CodeMirror-selected {
+  background: hsla(var(--color-neutral), var(--alpha-background-heavy));
 }
 
 /* Position the search dialog */
-.CodeMirror-dialog {
+.graphiql-container .CodeMirror-dialog {
   background: inherit;
   color: inherit;
   left: 0;
@@ -136,35 +136,37 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   position: absolute;
   z-index: 6;
 }
-.CodeMirror-dialog-top {
-  border-bottom: 1px solid hsla(var(--color-neutral), 0.15);
+.graphiql-container .CodeMirror-dialog-top {
+  border-bottom: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
   padding-bottom: var(--px-12);
   top: 0;
 }
-.CodeMirror-dialog-bottom {
-  border-top: 1px solid hsla(var(--color-neutral), 0.15);
+.graphiql-container .CodeMirror-dialog-bottom {
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
   bottom: 0;
   padding-top: var(--px-12);
 }
 
 /* Hide the search hint */
-.CodeMirror-search-hint {
+.graphiql-container .CodeMirror-search-hint {
   display: none;
 }
 
 /* Style the input field for searching */
-.CodeMirror-dialog input {
-  border: 1px solid hsla(var(--color-neutral), 0.15);
+.graphiql-container .CodeMirror-dialog input {
+  border: 1px solid hsla(var(--color-neutral), var(--alpha-background-heavy));
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
 }
-.CodeMirror-dialog input:focus {
+.graphiql-container .CodeMirror-dialog input:focus {
   outline: hsl(var(--color-primary)) solid 2px;
 }
 
 /* Set the highlight color for search results */
-.cm-searching {
-  background-color: hsla(var(--color-warning), 0.07);
+.graphiql-container .cm-searching {
+  background-color: hsla(var(--color-warning), var(--alpha-background-light));
   /**
    * When cycling through search results, CodeMirror overlays the current 
    * selection with another element that has the .CodeMirror-selected class

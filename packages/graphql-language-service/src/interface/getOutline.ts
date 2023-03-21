@@ -85,7 +85,7 @@ export function getOutline(documentText: string): Outline | null {
   let ast;
   try {
     ast = parse(documentText);
-  } catch (error) {
+  } catch {
     return null;
   }
 

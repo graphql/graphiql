@@ -1,0 +1,14 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "strict": true,
+    "newLine": "lf",
+    "outDir": "dist"
+  },
+  "include": ["src/*.ts"],
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    }
+  ]
+}

@@ -16,10 +16,7 @@ export function getSelectedOperationName(
 
   // If a previous selection still exists, continue to use it.
   const names = operations.map(op => op.name?.value);
-  if (
-    prevSelectedOperationName &&
-    names.indexOf(prevSelectedOperationName) !== -1
-  ) {
+  if (prevSelectedOperationName && names.includes(prevSelectedOperationName)) {
     return prevSelectedOperationName;
   }
 

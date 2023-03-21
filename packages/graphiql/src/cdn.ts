@@ -4,32 +4,40 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import 'regenerator-runtime/runtime';
-
+import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import * as GraphQL from 'graphql';
+import { GraphiQL } from './components/GraphiQL';
 
 import '@graphiql/react/font/roboto.css';
 import '@graphiql/react/font/fira-code.css';
 import '@graphiql/react/dist/style.css';
 import './style.css';
 
-import { GraphiQL } from './components/GraphiQL';
+/**
+ * For the CDN bundle we add some static properties to the component function
+ * so that they can be accessed in the inline-script in the HTML file.
+ */
 
-import {
-  useEditorContext,
-  useExecutionContext,
-  useSchemaContext,
-} from '@graphiql/react';
-
-// add the static function here for CDN only. otherwise, doing this in the component could
-// add unwanted dependencies to the bundle.
+/**
+ * This function is needed in order to easily create a fetcher function.
+ */
 // @ts-expect-error
 GraphiQL.createFetcher = createGraphiQLFetcher;
+
+/**
+ * We also add the complete `graphiql-js` exports so that this instance of
+ * `graphiql-js` can be reused from plugin CDN bundles.
+ */
 // @ts-expect-error
-GraphiQL.useEditorContext = useEditorContext;
+GraphiQL.GraphQL = GraphQL;
+
+/**
+ * We also add the complete `@graphiql/react` exports. These will be included
+ * in the bundle anyway since they make up the `GraphiQL` component, so by
+ * doing this we can reuse them from plugin CDN bundles.
+ */
 // @ts-expect-error
-GraphiQL.useExecutionContext = useExecutionContext;
-// @ts-expect-error
-GraphiQL.useSchemaContext = useSchemaContext;
+GraphiQL.React = GraphiQLReact;
 
 export default GraphiQL;

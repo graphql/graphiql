@@ -6,10 +6,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { buildSchema, GraphQLSchema, parse } from 'graphql';
 
-import { join } from 'path';
+import { join } from 'node:path';
 import { collectVariables } from '../collectVariables';
 
 import { getVariablesJSONSchema } from '../getVariablesJSONSchema';
@@ -210,7 +210,7 @@ describe('getVariablesJSONSchema', () => {
             items: {
               $ref: '#/definitions/ChildInputType',
             },
-            description: `list type with default\n[ChildInputType]`,
+            description: 'list type with default\n[ChildInputType]',
             markdownDescription: `list type with default\n${mdTicks(
               '[ChildInputType]',
             )}`,
@@ -256,5 +256,24 @@ describe('getVariablesJSONSchema', () => {
         type: 'object',
       },
     });
+  });
+
+  it('should handle recursive schema properly', () => {
+    const schemaPath = join(__dirname, '__schema__', 'RecursiveSchema.graphql');
+    schema = buildSchema(readFileSync(schemaPath, 'utf8'));
+
+    const variableToType = collectVariables(
+      schema,
+      parse(`query Example(
+      $where: issues_where_input! = {}
+    ) {
+      issues(where: $where) {
+        name
+      }
+    }`),
+    );
+
+    getVariablesJSONSchema(variableToType, { useMarkdownDescription: true });
+    expect(true).toEqual(true);
   });
 });

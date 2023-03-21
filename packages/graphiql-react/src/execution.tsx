@@ -19,11 +19,17 @@ import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
   /**
-   * If there is currently a GraphQL request in-flight. For long-running
-   * requests like subscriptions this will be `true` until the request is
-   * stopped manually.
+   * If there is currently a GraphQL request in-flight. For multi-part
+   * requests like subscriptions, this will be `true` while fetching the
+   * first partial response and `false` while fetching subsequent batches.
    */
   isFetching: boolean;
+  /**
+   * If there is currently a GraphQL request in-flight. For multi-part
+   * requests like subscriptions, this will be `true` until the last batch
+   * has been fetched or the connection is closed from the client.
+   */
+  isSubscribed: boolean;
   /**
    * The operation name that will be sent with all GraphQL requests.
    */
@@ -63,8 +69,13 @@ export type ExecutionContextProviderProps = Pick<
   operationName?: string;
 };
 
-export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
-  if (!props.fetcher) {
+export function ExecutionContextProvider({
+  fetcher,
+  getDefaultFieldNames,
+  children,
+  operationName,
+}: ExecutionContextProviderProps) {
+  if (!fetcher) {
     throw new TypeError(
       'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -80,7 +91,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
   const history = useHistoryContext();
   const autoCompleteLeafs = useAutoCompleteLeafs({
-    getDefaultFieldNames: props.getDefaultFieldNames,
+    getDefaultFieldNames,
     caller: ExecutionContextProvider,
   });
   const [isFetching, setIsFetching] = useState(false);
@@ -93,7 +104,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setSubscription(null);
   }, [subscription]);
 
-  const { fetcher } = props;
   const run = useCallback<ExecutionContextType['run']>(async () => {
     if (!queryEditor || !responseEditor) {
       return;
@@ -163,14 +173,13 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setResponse('');
     setIsFetching(true);
 
-    const operationName =
-      props.operationName ?? queryEditor.operationName ?? undefined;
+    const opName = operationName ?? queryEditor.operationName ?? undefined;
 
     history?.addToHistory({
       query,
       variables: variablesString,
       headers: headersString,
-      operationName,
+      operationName: opName,
     });
 
     try {
@@ -198,10 +207,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
           };
           const maybeErrors = [
             ...(fullResponse?.errors || []),
-            ...maybeMultipart
-              .map(i => i.errors)
-              .flat()
-              .filter(Boolean),
+            ...maybeMultipart.flatMap(i => i.errors).filter(Boolean),
           ];
 
           if (maybeErrors.length) {
@@ -222,7 +228,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             } else if (data) {
               // If there is no path, we don't know what to do with the payload,
               // so we just set it.
-              payload.data = part.data;
+              payload.data = data;
             }
 
             // Ensures we also bring extensions and alike along for the ride
@@ -245,7 +251,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         {
           query,
           variables,
-          operationName,
+          operationName: opName,
         },
         {
           headers: headers ?? undefined,
@@ -280,18 +286,11 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         setSubscription({
           unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
         });
-
-        try {
-          for await (const result of value) {
-            handleResponse(result);
-          }
-          setIsFetching(false);
-          setSubscription(null);
-        } catch (error) {
-          setIsFetching(false);
-          setResponse(formatError(error));
-          setSubscription(null);
+        for await (const result of value) {
+          handleResponse(result);
         }
+        setIsFetching(false);
+        setSubscription(null);
       } else {
         handleResponse(value);
       }
@@ -306,7 +305,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     fetcher,
     headerEditor,
     history,
-    props.operationName,
+    operationName,
     queryEditor,
     responseEditor,
     stop,
@@ -315,19 +314,21 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     variableEditor,
   ]);
 
+  const isSubscribed = Boolean(subscription);
   const value = useMemo<ExecutionContextType>(
     () => ({
       isFetching,
-      operationName: props.operationName ?? null,
+      isSubscribed,
+      operationName: operationName ?? null,
       run,
       stop,
     }),
-    [isFetching, props.operationName, run, stop],
+    [isFetching, isSubscribed, operationName, run, stop],
   );
 
   return (
     <ExecutionContext.Provider value={value}>
-      {props.children}
+      {children}
     </ExecutionContext.Provider>
   );
 }
@@ -343,7 +344,7 @@ function tryParseJsonObject({
   errorMessageParse: string;
   errorMessageType: string;
 }) {
-  let parsed: Record<string, any> | undefined = undefined;
+  let parsed: Record<string, any> | undefined;
   try {
     parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
   } catch (error) {

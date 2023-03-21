@@ -1,5 +1,103 @@
 # Change Log
 
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - graphql-language-service@5.1.6
+
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+
+## 1.2.1
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+- [#3109](https://github.com/graphql/graphiql/pull/3109) [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-floating-promises` eslint rule
+
+- [#3120](https://github.com/graphql/graphiql/pull/3120) [`15c26eb6`](https://github.com/graphql/graphiql/commit/15c26eb6d621a85df9eecb2b8a5fa009fa2fe040) Thanks [@B2o5T](https://github.com/B2o5T)! - prefer await to then
+
+- Updated dependencies [[`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9)]:
+  - graphql-language-service@5.1.4
+
+## 1.2.0
+
+### Minor Changes
+
+- [#3071](https://github.com/graphql/graphiql/pull/3071) [`1821ef2b`](https://github.com/graphql/graphiql/commit/1821ef2b3f06c69fa5fa27dbd66d19e81e792590) Thanks [@acao](https://github.com/acao)! - Upgrade peer resolutions for monaco-graphql
+
+### Patch Changes
+
+- [#3093](https://github.com/graphql/graphiql/pull/3093) [`6ed73bf7`](https://github.com/graphql/graphiql/commit/6ed73bf7ca9781d511458e70268deff203fd36cb) Thanks [@acao](https://github.com/acao)! - Bugfix for 'worker not found' type errors on \_doValidate()'
+
+- [#3047](https://github.com/graphql/graphiql/pull/3047) [`190fae87`](https://github.com/graphql/graphiql/commit/190fae87a3e4b07a473ba7029fb22d19e713c4b4) Thanks [@B2o5T](https://github.com/B2o5T)! - combining multiple Array#push() into one call
+
+- Updated dependencies [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d), [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
+## 1.1.8
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993) [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4) Thanks [@B2o5T](https://github.com/B2o5T)! - add `unicorn/consistent-destructuring` rule
+
+- Updated dependencies [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c), [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b), [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4), [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d), [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+
+## 1.1.7
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931) [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and `no-else-return` rules
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922) [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b) Thanks [@B2o5T](https://github.com/B2o5T)! - extends `plugin:import/recommended` and fix warnings
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965) [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-optional-catch-binding` rule
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938) [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error` rule
+
+- Updated dependencies [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147), [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b), [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de), [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9), [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9), [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913), [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49), [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215), [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)]:
+  - graphql-language-service@5.1.1
+
+## 1.1.6
+
+### Patch Changes
+
+- [#2900](https://github.com/graphql/graphiql/pull/2900) [`8989ffce`](https://github.com/graphql/graphiql/commit/8989ffce7d6beca874e70f5a1ff066102580173a) Thanks [@acao](https://github.com/acao)! - use decorators-legacy @babel/parser plugin so that all styles of decorator usage are supported
+
+## 1.1.5
+
+### Patch Changes
+
+- [#2488](https://github.com/graphql/graphiql/pull/2488) [`967006a6`](https://github.com/graphql/graphiql/commit/967006a68e56f8f3a605c69fee5f920afdb6d8cf) Thanks [@acao](https://github.com/acao)! - Disable`fillLeafsOnComplete` by default
+
+  Users found this generally annoying by default, especially when there are required arguments
+
+  Without automatically prompting autocompletion of required arguments as well as lead expansion, it makes the extension harder to use
+
+  You can now supply this in your graphql config:
+
+  `config.extensions.languageService.fillLeafsOnComplete`
+
+  Setting it to to `true` will enable this feature. Will soon add the ability to manually enable this in `monaco-graphql` as well.
+
+  For both, this kind of behavior would be better as a keyboard command, context menu item &/or codelens prompt
+
+## 1.1.4
+
+### Patch Changes
+
+- [#2834](https://github.com/graphql/graphiql/pull/2834) [`0a950ea3`](https://github.com/graphql/graphiql/commit/0a950ea374504b13d39c042db1d495a79dff4d0d) Thanks [@acao](https://github.com/acao)! - prevent the mode from instantiating more than once in the main process. it should never need to!
+
+  you can supply multiple `schemas` with uri path resolution rules that resolve globs in the browser even!
+
 ## 1.1.3
 
 ### Patch Changes

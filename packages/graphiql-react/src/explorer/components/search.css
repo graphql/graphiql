@@ -1,7 +1,5 @@
-@import url('@reach/combobox/styles.css');
-
-[data-reach-combobox] {
-  color: hsla(var(--color-neutral), 0.6);
+.graphiql-doc-explorer-search {
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
 
   &:not([data-state='idle']) {
     border: var(--popover-border);
@@ -11,21 +9,19 @@
 
     & .graphiql-doc-explorer-search-input {
       background: hsl(var(--color-base));
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
     }
   }
 }
 
 .graphiql-doc-explorer-search-input {
   align-items: center;
-  background-color: hsla(var(--color-neutral), 0.07);
+  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   border-radius: var(--border-radius-4);
   display: flex;
   padding: var(--px-8) var(--px-12);
 }
 
-[data-reach-combobox-input] {
+.graphiql-doc-explorer-search [role='combobox'] {
   border: none;
   background-color: transparent;
   margin-left: var(--px-4);
@@ -36,15 +32,18 @@
   }
 }
 
-[data-reach-combobox-popover] {
+.graphiql-doc-explorer-search [role='listbox'] {
   background-color: hsl(var(--color-base));
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
   border-bottom-right-radius: var(--border-radius-4);
-  border-top: 1px solid hsla(var(--color-neutral), 0.15);
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
   max-height: 400px;
   overflow-y: auto;
-
+  margin: 0;
+  font-size: var(--font-size-body);
+  padding: var(--px-4);
   /**
    * This makes sure that the logic for auto-scrolling the search results when
    * using keyboard navigation works properly (we use `offsetTop` there).
@@ -52,29 +51,28 @@
   position: relative;
 }
 
-[data-reach-combobox-list] {
-  font-size: var(--font-size-body);
-  padding: var(--px-4);
-}
-
-[data-reach-combobox-option] {
+.graphiql-doc-explorer-search [role='option'] {
   border-radius: var(--border-radius-4);
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   overflow-x: hidden;
   padding: var(--px-8) var(--px-12);
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 
-  &[data-highlighted] {
-    background-color: hsla(var(--color-neutral), 0.07);
+  &[data-headlessui-state='active'] {
+    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
   &:hover {
-    background-color: hsla(var(--color-neutral), 0.1);
+    background-color: hsla(
+      var(--color-neutral),
+      var(--alpha-background-medium)
+    );
   }
 
-  &[data-highlighted]:hover {
-    background-color: hsla(var(--color-neutral), 0.15);
+  &[data-headlessui-state='active']:hover {
+    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   }
 
   & + & {
@@ -95,7 +93,7 @@
 }
 
 .graphiql-doc-explorer-search-divider {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-hint);
   font-weight: var(--font-weight-medium);
   margin-top: var(--px-8);
@@ -103,6 +101,6 @@
 }
 
 .graphiql-doc-explorer-search-empty {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   padding: var(--px-8) var(--px-12);
 }

@@ -41,9 +41,7 @@ export function getHoverInformation(
     return '';
   }
 
-  const state = token.state;
-  const kind = state.kind;
-  const step = state.step;
+  const { kind, step } = token.state;
   const typeInfo = getTypeInfo(schema, token.state);
   const options = { ...config, schema };
 
@@ -60,21 +58,24 @@ export function getHoverInformation(
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.fieldDef);
     return into.join('').trim();
-  } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+  }
+  if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderDirective(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.directiveDef);
     return into.join('').trim();
-  } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+  }
+  if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderArg(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
-  } else if (
+  }
+  if (
     kind === 'EnumValue' &&
     typeInfo.enumValue &&
     'description' in typeInfo.enumValue
@@ -85,11 +86,8 @@ export function getHoverInformation(
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.enumValue);
     return into.join('').trim();
-  } else if (
-    kind === 'NamedType' &&
-    typeInfo.type &&
-    'description' in typeInfo.type
-  ) {
+  }
+  if (kind === 'NamedType' && typeInfo.type && 'description' in typeInfo.type) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderType(into, typeInfo, options, typeInfo.type);
@@ -113,7 +111,7 @@ function renderMdCodeEnd(into: string[], options: any) {
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderQualifiedField(into, typeInfo, options);
-  renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
+  renderTypeAnnotation(into, typeInfo, options, typeInfo.type!);
 }
 
 function renderQualifiedField(
@@ -124,9 +122,9 @@ function renderQualifiedField(
   if (!typeInfo.fieldDef) {
     return;
   }
-  const fieldName = typeInfo.fieldDef.name as string;
+  const fieldName = typeInfo.fieldDef.name;
   if (fieldName.slice(0, 2) !== '__') {
-    renderType(into, typeInfo, options, typeInfo.parentType as GraphQLType);
+    renderType(into, typeInfo, options, typeInfo.parentType!);
     text(into, '.');
   }
   text(into, fieldName);
@@ -151,15 +149,10 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
     return;
   }
 
-  const name = typeInfo.argDef.name;
+  const { name } = typeInfo.argDef;
   text(into, '(');
   text(into, name);
-  renderTypeAnnotation(
-    into,
-    typeInfo,
-    options,
-    typeInfo.inputType as GraphQLType,
-  );
+  renderTypeAnnotation(into, typeInfo, options, typeInfo.inputType!);
   text(into, ')');
 }
 
@@ -177,8 +170,8 @@ function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (!typeInfo.enumValue) {
     return;
   }
-  const name = typeInfo.enumValue.name;
-  renderType(into, typeInfo, options, typeInfo.inputType as GraphQLType);
+  const { name } = typeInfo.enumValue;
+  renderType(into, typeInfo, options, typeInfo.inputType!);
   text(into, '.');
   text(into, name);
 }
@@ -232,7 +225,7 @@ function renderDeprecation(
     return;
   }
 
-  const reason = def.deprecationReason ? def.deprecationReason : null;
+  const reason = def.deprecationReason || null;
   if (!reason) {
     return;
   }

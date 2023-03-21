@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
+import { clsx } from 'clsx';
 import { markdown } from '../markdown';
-import { compose } from '../utility/compose';
 
 import './markdown.css';
 
@@ -17,9 +17,9 @@ export const MarkdownContent = forwardRef<
   <div
     {...props}
     ref={ref}
-    className={compose(
+    className={clsx(
       `graphiql-markdown-${type}`,
-      onlyShowFirstChild ? ' graphiql-markdown-preview' : '',
+      onlyShowFirstChild && 'graphiql-markdown-preview',
       props.className,
     )}
     dangerouslySetInnerHTML={{ __html: markdown.render(children) }}

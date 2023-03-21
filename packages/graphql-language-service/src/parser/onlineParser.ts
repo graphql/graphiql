@@ -27,10 +27,6 @@
  *
  */
 
-import {
-  LexRules as LexRulesType,
-  ParseRules as ParseRulesType,
-} from './Rules';
 import CharacterStream from './CharacterStream';
 import { State, Token, Rule, RuleKind } from './types';
 
@@ -39,8 +35,8 @@ import { Kind } from 'graphql';
 
 export type ParserOptions = {
   eatWhitespace: (stream: CharacterStream) => boolean;
-  lexRules: Partial<typeof LexRulesType>;
-  parseRules: typeof ParseRulesType;
+  lexRules: Partial<typeof LexRules>;
+  parseRules: typeof ParseRules;
   editorConfig: { [name: string]: any };
 };
 
@@ -83,13 +79,13 @@ function getToken(
   options: ParserOptions,
 ): string {
   if (state.inBlockstring) {
+    // eslint-disable-next-line unicorn/prefer-regexp-test -- false positive stream is not string
     if (stream.match(/.*"""/)) {
       state.inBlockstring = false;
       return 'string';
-    } else {
-      stream.skipToEnd();
-      return 'string';
     }
+    stream.skipToEnd();
+    return 'string';
   }
 
   const { lexRules, parseRules, eatWhitespace, editorConfig } = options;
@@ -150,13 +146,12 @@ function getToken(
       const levels = (state.levels = (state.levels || []).slice(0, -1));
       // FIXME
       // what if state.indentLevel === 0?
-      if (state.indentLevel) {
-        if (
-          levels.length > 0 &&
-          levels[levels.length - 1] < state.indentLevel
-        ) {
-          state.indentLevel = levels[levels.length - 1];
-        }
+      if (
+        state.indentLevel &&
+        levels.length > 0 &&
+        levels.at(-1)! < state.indentLevel
+      ) {
+        state.indentLevel = levels.at(-1);
       }
     }
   }
@@ -234,7 +229,7 @@ const SpecialParseRules = {
 
 // Push a new rule onto the state.
 function pushRule(
-  rules: typeof ParseRulesType,
+  rules: typeof ParseRules,
   state: State,
   ruleKind: RuleKind,
 ): void {
@@ -274,7 +269,7 @@ function advanceRule(state: State, successful: boolean): undefined {
     // TODO: ParseRules as numerical index
     const step = state.rule[state.step];
     if (step.separator) {
-      const separator = step.separator;
+      const { separator } = step;
       state.needsSeparator = !state.needsSeparator;
       // If the separator was optional, then give it an opportunity to repeat.
       if (!state.needsSeparator && separator.ofRule) {
@@ -346,7 +341,7 @@ function unsuccessful(state: State): void {
 
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(
-  lexRules: Partial<typeof LexRulesType>,
+  lexRules: Partial<typeof LexRules>,
   stream: CharacterStream,
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);

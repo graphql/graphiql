@@ -13,6 +13,8 @@ import { languages } from 'monaco-editor';
 
 export const LANGUAGE_ID = 'graphql';
 
+let api: MonacoGraphQLAPI;
+
 /**
  * Initialize the mode & worker synchronously with provided configuration
  *
@@ -22,15 +24,18 @@ export const LANGUAGE_ID = 'graphql';
 export function initializeMode(
   config?: MonacoGraphQLInitializeConfig,
 ): MonacoGraphQLAPI {
-  const api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
+  if (!api) {
+    api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
+    (languages as any).graphql = { api };
+    // export to the global monaco API
 
-  // export to the global monaco API
-  (<any>languages).graphql = { api };
-
-  getMode().then(mode => mode.setupMode(api));
+    // eslint-disable-next-line promise/prefer-await-to-then -- ignore to leave initializeMode sync
+    void getMode().then(mode => mode.setupMode(api));
+  }
 
   return api;
 }
+
 function getMode(): Promise<typeof GraphQLMode> {
   return import('./graphqlMode');
 }

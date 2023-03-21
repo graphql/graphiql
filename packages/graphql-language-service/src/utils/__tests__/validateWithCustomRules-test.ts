@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import {
   GraphQLError,
   buildSchema,
@@ -15,7 +15,7 @@ import {
   ValidationContext,
   ArgumentNode,
 } from 'graphql';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import { validateWithCustomRules } from '../validateWithCustomRules';
 

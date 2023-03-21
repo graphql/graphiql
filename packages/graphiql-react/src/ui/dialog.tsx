@@ -1,33 +1,48 @@
-import { Dialog as ReachDialog } from '@reach/dialog';
-import { VisuallyHidden } from '@reach/visually-hidden';
-import { ComponentProps, forwardRef } from 'react';
+import { clsx } from 'clsx';
+import { forwardRef, ReactElement } from 'react';
 import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 import { UnStyledButton } from './button';
+import * as D from '@radix-ui/react-dialog';
+import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 import './dialog.css';
-
-const DialogRoot = forwardRef<
-  HTMLDivElement,
-  ComponentProps<typeof ReachDialog>
->((props, ref) => <ReachDialog {...props} ref={ref} />);
-DialogRoot.displayName = 'Dialog';
 
 const DialogClose = forwardRef<
   HTMLButtonElement,
   JSX.IntrinsicElements['button']
 >((props, ref) => (
-  <UnStyledButton
-    {...props}
-    ref={ref}
-    type="button"
-    className={compose('graphiql-dialog-close', props.className)}
-  >
-    <VisuallyHidden>Close dialog</VisuallyHidden>
-    <CloseIcon />
-  </UnStyledButton>
+  <D.Close asChild>
+    <UnStyledButton
+      {...props}
+      ref={ref}
+      type="button"
+      className={clsx('graphiql-dialog-close', props.className)}
+    >
+      <VisuallyHidden>Close dialog</VisuallyHidden>
+      <CloseIcon />
+    </UnStyledButton>
+  </D.Close>
 ));
 DialogClose.displayName = 'Dialog.Close';
 
-export const Dialog = createComponentGroup(DialogRoot, { Close: DialogClose });
+export function DialogRoot({
+  children,
+  ...props
+}: D.DialogProps): ReactElement {
+  return (
+    <D.Root {...props}>
+      <D.Portal>
+        <D.Overlay className="graphiql-dialog-overlay" />
+        <D.Content className="graphiql-dialog">{children}</D.Content>
+      </D.Portal>
+    </D.Root>
+  );
+}
+
+export const Dialog = createComponentGroup(DialogRoot, {
+  Close: DialogClose,
+  Title: D.Title,
+  Trigger: D.Trigger,
+  Description: D.Description,
+});

@@ -1,5 +1,82 @@
 # graphql-language-service
 
+## 5.1.6
+
+### Patch Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+## 5.1.5
+
+### Patch Changes
+
+- [#3150](https://github.com/graphql/graphiql/pull/3150) [`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284) Thanks [@AaronMoat](https://github.com/AaronMoat)! - fix(graphql-language-service-server): allow getDefinition to work for unions
+
+  Fixes the issue where a schema like the one below won't allow you to click through to X.
+
+  ```graphql
+  union X = A | B
+  type A {
+    x: String
+  }
+  type B {
+    x: String
+  }
+  type Query {
+    a: X
+  }
+  ```
+
+## 5.1.4
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+## 5.1.3
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046) [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index access
+
+- [#3042](https://github.com/graphql/graphiql/pull/3042) [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer String#slice() over String#substr() and String#substring()
+
+## 5.1.2
+
+### Patch Changes
+
+- [#2986](https://github.com/graphql/graphiql/pull/2986) [`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c) Thanks [@bboure](https://github.com/bboure)! - Fix JSON schema for custom scalars validation
+
+- [#2917](https://github.com/graphql/graphiql/pull/2917) [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b) Thanks [@woodensail](https://github.com/woodensail)! - Fix infinite recursiveness in getVariablesJSONSchema when the schema contains types that reference themselves
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993) [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4) Thanks [@B2o5T](https://github.com/B2o5T)! - add `unicorn/consistent-destructuring` rule
+
+- [#2962](https://github.com/graphql/graphiql/pull/2962) [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d) Thanks [@B2o5T](https://github.com/B2o5T)! - clean all ESLint warnings, add `--max-warnings=0` and `--cache` flags
+
+- [#2940](https://github.com/graphql/graphiql/pull/2940) [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-node-protocol` rule
+
+## 5.1.1
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931) [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and `no-else-return` rules
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922) [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b) Thanks [@B2o5T](https://github.com/B2o5T)! - extends `plugin:import/recommended` and fix warnings
+
+- [#2941](https://github.com/graphql/graphiql/pull/2941) [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-logical-operator-over-ternary` rule
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937) [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2930](https://github.com/graphql/graphiql/pull/2930) [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9) Thanks [@B2o5T](https://github.com/B2o5T)! - remove `mapCat()` in favor of `Array#flatMap()`
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965) [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-optional-catch-binding` rule
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936) [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963) [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring` rule
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938) [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error` rule
+
 ## 5.1.0
 
 ### Minor Changes

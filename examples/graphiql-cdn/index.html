@@ -6,8 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
 -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title>GraphiQL</title>
     <style>
       body {
         height: 100%;
@@ -30,11 +31,11 @@
     -->
     <script
       crossorigin
-      src="https://unpkg.com/react@17/umd/react.development.js"
+      src="https://unpkg.com/react@18/umd/react.development.js"
     ></script>
     <script
       crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
     ></script>
 
     <!--
@@ -52,31 +53,14 @@
       type="application/javascript"
     ></script>
     <script>
-      function graphQLFetcher(graphQLParams) {
-        return fetch(
-          'https://swapi-graphql.netlify.app/.netlify/functions/index',
-          {
-            method: 'post',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(graphQLParams),
-            credentials: 'omit',
-          },
-        ).then(function (response) {
-          return response.json().catch(function () {
-            return response.text();
-          });
-        });
-      }
-
-      ReactDOM.render(
+      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+      root.render(
         React.createElement(GraphiQL, {
-          fetcher: graphQLFetcher,
+          fetcher: GraphiQL.createFetcher({
+            url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+          }),
           defaultEditorToolsVisibility: true,
         }),
-        document.getElementById('graphiql'),
       );
     </script>
   </body>

@@ -252,7 +252,6 @@ export const FileChangeTypeKind = {
   Deleted: 3,
 };
 
-// eslint-disable-next-line no-redeclare
 export type FileChangeTypeKind = {
   Created: 1;
   Changed: 2;
@@ -296,7 +295,6 @@ export namespace CompletionItemKind {
   export const TypeParameter = 25 as const;
 }
 
-// eslint-disable-next-line no-redeclare
 export type CompletionItemKind =
   | 1
   | 2

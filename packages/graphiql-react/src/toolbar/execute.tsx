@@ -1,7 +1,7 @@
 import { useEditorContext } from '../editor';
 import { useExecutionContext } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';
-import { Menu, Tooltip } from '../ui';
+import { DropdownMenu, Tooltip } from '../ui';
 
 import './execute.css';
 
@@ -10,35 +10,37 @@ export function ExecuteButton() {
     nonNull: true,
     caller: ExecuteButton,
   });
-  const { isFetching, operationName, run, stop } = useExecutionContext({
-    nonNull: true,
-    caller: ExecuteButton,
-  });
+  const { isFetching, isSubscribed, operationName, run, stop } =
+    useExecutionContext({
+      nonNull: true,
+      caller: ExecuteButton,
+    });
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
+  const isRunning = isFetching || isSubscribed;
 
-  const label = `${isFetching ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
+  const label = `${isRunning ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',
-    children: isFetching ? <StopIcon /> : <PlayIcon />,
+    children: isRunning ? <StopIcon /> : <PlayIcon />,
     'aria-label': label,
   };
 
-  return hasOptions ? (
-    <Menu>
+  return hasOptions && !isRunning ? (
+    <DropdownMenu>
       <Tooltip label={label}>
-        <Menu.Button {...buttonProps} />
+        <DropdownMenu.Button {...buttonProps} />
       </Tooltip>
 
-      <Menu.List>
+      <DropdownMenu.Content>
         {operations.map((operation, i) => {
           const opName = operation.name
             ? operation.name.value
             : `<Unnamed ${operation.operation}>`;
           return (
-            <Menu.Item
+            <DropdownMenu.Item
               key={`${opName}-${i}`}
               onSelect={() => {
                 const selectedOperationName = operation.name?.value;
@@ -53,17 +55,17 @@ export function ExecuteButton() {
               }}
             >
               {opName}
-            </Menu.Item>
+            </DropdownMenu.Item>
           );
         })}
-      </Menu.List>
-    </Menu>
+      </DropdownMenu.Content>
+    </DropdownMenu>
   ) : (
     <Tooltip label={label}>
       <button
         {...buttonProps}
         onClick={() => {
-          if (isFetching) {
+          if (isRunning) {
             stop();
           } else {
             run();

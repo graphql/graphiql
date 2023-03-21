@@ -7,7 +7,14 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -18,11 +25,15 @@ import {
   createTab,
   getDefaultTabState,
   setPropertiesInActiveTab,
+  TabDefinition,
   TabsState,
   TabState,
   useSetEditorValues,
   useStoreTabs,
   useSynchronizeActiveTabValues,
+  clearHeadersFromTabs,
+  serializeTabState,
+  STORAGE_KEY as STORAGE_KEY_TABS,
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
@@ -45,7 +56,12 @@ export type EditorContextType = TabsState & {
    */
   changeTab(index: number): void;
   /**
-   * Close a tab. If the currently active tab is closed the tab before it will
+   * Move a tab to a new spot.
+   * @param newOrder The new order for the tabs.
+   */
+  moveTab(newOrder: TabState[]): void;
+  /**
+   * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
    * will become active.
    * @param index The index of the tab that should be closed.
@@ -138,6 +154,10 @@ export type EditorContextType = TabsState & {
    * If the contents of the headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
+  /**
+   * Changes if headers should be persisted.
+   */
+  setShouldPersistHeaders(persist: boolean): void;
 };
 
 export const EditorContext =
@@ -168,6 +188,22 @@ export type EditorContextProviderProps = {
    * typing in the editor.
    */
   headers?: string;
+  /**
+   * This prop can be used to define the default set of tabs, with their
+   * queries, variables, and headers. It will be used as default only if
+   * there is no tab state persisted in storage.
+   *
+   * @example
+   * ```tsx
+   * <GraphiQL
+   *   defaultTabs={[
+   *     { query: 'query myExampleQuery {}' },
+   *     { query: '{ id }' }
+   *   ]}
+   * />
+   *```
+   */
+  defaultTabs?: TabDefinition[];
   /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
@@ -218,6 +254,11 @@ export type EditorContextProviderProps = {
    * typing in the editor.
    */
   variables?: string;
+
+  /**
+   * Headers to be set when opening a new tab
+   */
+  defaultHeaders?: string;
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
@@ -234,6 +275,15 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     null,
   );
 
+  const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
+    () => {
+      const isStored = storage?.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      return props.shouldPersistHeaders !== false && isStored
+        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+        : Boolean(props.shouldPersistHeaders);
+    },
+  );
+
   useSynchronizeValue(headerEditor, props.headers);
   useSynchronizeValue(queryEditor, props.query);
   useSynchronizeValue(responseEditor, props.response);
@@ -241,7 +291,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const storeTabs = useStoreTabs({
     storage,
-    shouldPersistHeaders: props.shouldPersistHeaders,
+    shouldPersistHeaders,
   });
 
   // We store this in state but never update it. By passing a function we only
@@ -257,7 +307,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
+      defaultTabs: props.defaultTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
+      defaultHeaders: props.defaultHeaders,
       storage,
     });
     storeTabs(tabState);
@@ -268,13 +320,38 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
         '',
       variables: variables ?? '',
-      headers: headers ?? '',
+      headers: headers ?? props.defaultHeaders ?? '',
       response,
       tabState,
     };
   });
 
   const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
+
+  const setShouldPersistHeaders = useCallback(
+    (persist: boolean) => {
+      if (persist) {
+        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(tabState, true);
+        storage?.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage?.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs(storage);
+      }
+      setShouldPersistHeadersInternal(persist);
+      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    },
+    [storage, tabState, headerEditor],
+  );
+
+  const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
+  useEffect(() => {
+    const propValue = Boolean(props.shouldPersistHeaders);
+    if (lastShouldPersistHeadersProp.current !== propValue) {
+      setShouldPersistHeaders(propValue);
+      lastShouldPersistHeadersProp.current = propValue;
+    }
+  }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
 
   const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
     queryEditor,
@@ -288,14 +365,14 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const { onTabChange } = props;
+  const { onTabChange, defaultHeaders, children } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [...updatedValues.tabs, createTab()],
+        tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);
@@ -303,13 +380,19 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       onTabChange?.(updated);
       return updated;
     });
-  }, [onTabChange, setEditorValues, storeTabs, synchronizeActiveTabValues]);
+  }, [
+    defaultHeaders,
+    onTabChange,
+    setEditorValues,
+    storeTabs,
+    synchronizeActiveTabValues,
+  ]);
 
   const changeTab = useCallback<EditorContextType['changeTab']>(
     index => {
       setTabState(current => {
         const updated = {
-          ...synchronizeActiveTabValues(current),
+          ...current,
           activeTabIndex: index,
         };
         storeTabs(updated);
@@ -318,7 +401,24 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         return updated;
       });
     },
-    [onTabChange, setEditorValues, storeTabs, synchronizeActiveTabValues],
+    [onTabChange, setEditorValues, storeTabs],
+  );
+
+  const moveTab = useCallback<EditorContextType['moveTab']>(
+    newOrder => {
+      setTabState(current => {
+        const activeTab = current.tabs[current.activeTabIndex];
+        const updated = {
+          tabs: newOrder,
+          activeTabIndex: newOrder.indexOf(activeTab),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    [onTabChange, setEditorValues, storeTabs],
   );
 
   const closeTab = useCallback<EditorContextType['closeTab']>(
@@ -395,6 +495,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       ...tabState,
       addTab,
       changeTab,
+      moveTab,
       closeTab,
       updateActiveTabValues,
 
@@ -417,12 +518,14 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      shouldPersistHeaders: props.shouldPersistHeaders || false,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
     }),
     [
       tabState,
       addTab,
       changeTab,
+      moveTab,
       closeTab,
       updateActiveTabValues,
 
@@ -438,18 +541,19 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      props.shouldPersistHeaders,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
     ],
   );
 
   return (
-    <EditorContext.Provider value={value}>
-      {props.children}
-    </EditorContext.Provider>
+    <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
   );
 }
 
 export const useEditorContext = createContextHook(EditorContext);
+
+const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
 
 const DEFAULT_QUERY = `# Welcome to GraphiQL
 #

@@ -22,23 +22,11 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
-      - name: Eslint
+      - name: TypeScript Build
+        run: yarn build
+
+      - name: ESLint
         run: yarn lint
 
       - name: Prettier Check
         run: yarn pretty-check
-
-  build:
-    name: Typescript Build
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
-
-      - name: Tyescript Build
-        run: yarn build

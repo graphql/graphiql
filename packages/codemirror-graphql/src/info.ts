@@ -61,10 +61,7 @@ CodeMirror.registerHelper(
     if (!options.schema || !token.state) {
       return;
     }
-
-    const state = token.state;
-    const kind = state.kind;
-    const step = state.step;
+    const { kind, step } = token.state;
     const typeInfo = getTypeInfo(options.schema, token.state);
 
     // Given a Schema and a Token, produce the contents of an info tooltip.
@@ -78,26 +75,29 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderField(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.fieldDef as any);
       return into;
-    } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+    }
+    if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
       renderDirective(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.directiveDef);
       return into;
-    } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+    }
+    if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
       renderArg(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.argDef);
       return into;
-    } else if (
+    }
+    if (
       kind === 'EnumValue' &&
       typeInfo.enumValue &&
       typeInfo.enumValue.description
@@ -106,10 +106,11 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderEnumValue(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.enumValue);
       return into;
-    } else if (
+    }
+    if (
       kind === 'NamedType' &&
       typeInfo.type &&
       (typeInfo.type as GraphQLObjectType).description
@@ -118,7 +119,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderType(header, typeInfo, options, typeInfo.type);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.type);
       return into;
     }
@@ -197,7 +198,7 @@ function renderTypeAnnotation(
       getTypeReference(typeInfo, t),
     );
   }
-  into.appendChild(typeSpan);
+  into.append(typeSpan);
 }
 
 function renderType(
@@ -234,16 +235,16 @@ function renderDescription(
     | GraphQLEnumValue
     | GraphQLType,
 ) {
-  const description = (def as GraphQLInputField).description;
+  const { description } = def as GraphQLInputField;
   if (description) {
     const descriptionDiv = document.createElement('div');
     descriptionDiv.className = 'info-description';
     if (options.renderDescription) {
       descriptionDiv.innerHTML = options.renderDescription(description);
     } else {
-      descriptionDiv.appendChild(document.createTextNode(description));
+      descriptionDiv.append(document.createTextNode(description));
     }
-    into.appendChild(descriptionDiv);
+    into.append(descriptionDiv);
   }
 
   renderDeprecation(into, options, def);
@@ -263,21 +264,21 @@ function renderDeprecation(
   if (reason) {
     const deprecationDiv = document.createElement('div');
     deprecationDiv.className = 'info-deprecation';
-    into.appendChild(deprecationDiv);
+    into.append(deprecationDiv);
 
     const label = document.createElement('span');
     label.className = 'info-deprecation-label';
-    label.appendChild(document.createTextNode('Deprecated'));
-    deprecationDiv.appendChild(label);
+    label.append(document.createTextNode('Deprecated'));
+    deprecationDiv.append(label);
 
     const reasonDiv = document.createElement('div');
     reasonDiv.className = 'info-deprecation-reason';
     if (options.renderDescription) {
       reasonDiv.innerHTML = options.renderDescription(reason);
     } else {
-      reasonDiv.appendChild(document.createTextNode(reason));
+      reasonDiv.append(document.createTextNode(reason));
     }
-    deprecationDiv.appendChild(reasonDiv);
+    deprecationDiv.append(reasonDiv);
   }
 }
 
@@ -289,7 +290,7 @@ function text(
   ref: Maybe<SchemaReference> = null,
 ) {
   if (className) {
-    const onClick = options.onClick;
+    const { onClick } = options;
     let node;
     if (onClick) {
       node = document.createElement('a');
@@ -304,9 +305,9 @@ function text(
       node = document.createElement('span');
     }
     node.className = className;
-    node.appendChild(document.createTextNode(content));
-    into.appendChild(node);
+    node.append(document.createTextNode(content));
+    into.append(node);
   } else {
-    into.appendChild(document.createTextNode(content));
+    into.append(document.createTextNode(content));
   }
 }

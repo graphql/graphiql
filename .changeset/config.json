@@ -5,8 +5,8 @@
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
   "ignore": ["example-*"],
+  "updateInternalDependencies": "patch",
   "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
     "updateInternalDependents": "always"
   }

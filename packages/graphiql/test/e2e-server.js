@@ -7,7 +7,7 @@
 
 /* eslint-disable no-console */
 const express = require('express');
-const path = require('path');
+const path = require('node:path');
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLError } = require('graphql');
 const schema = require('./schema');
@@ -43,7 +43,7 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 app.use(express.static(path.resolve(__dirname, '../')));
 
 app.listen(process.env.PORT || 0, function () {
-  const port = this.address().port;
+  const { port } = this.address();
 
   console.log(`Started on http://localhost:${port}/`);
   console.log('PID', process.pid);

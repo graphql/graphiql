@@ -9,8 +9,8 @@
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import '../mode';
 
 describe('graphql-mode', () => {
@@ -69,9 +69,10 @@ describe('graphql-mode', () => {
   });
 
   it('parses kitchen-sink query without invalidchar', () => {
-    const kitchenSink = readFileSync(join(__dirname, '/kitchen-sink.graphql'), {
-      encoding: 'utf8',
-    });
+    const kitchenSink = readFileSync(
+      join(__dirname, '/kitchen-sink.graphql'),
+      'utf8',
+    );
 
     CodeMirror.runMode(kitchenSink, 'graphql', (_token, style) => {
       expect(style).not.toBe('invalidchar');
@@ -81,7 +82,7 @@ describe('graphql-mode', () => {
   it('parses schema-kitchen-sink query without invalidchar', () => {
     const schemaKitchenSink = readFileSync(
       join(__dirname, '/schema-kitchen-sink.graphql'),
-      { encoding: 'utf8' },
+      'utf8',
     );
 
     CodeMirror.runMode(schemaKitchenSink, 'graphql', (_token, style) => {

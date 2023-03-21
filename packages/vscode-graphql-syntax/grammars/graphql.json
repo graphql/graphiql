@@ -31,15 +31,21 @@
     },
     "graphql-fragment-definition": {
       "name": "meta.fragment.graphql",
-      "begin": "\\s*(?:(\\bfragment\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)?\\s*(?:(\\bon\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)))",
+      "begin": "\\s*(?:(\\bfragment\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)?)",
       "end": "(?<=})",
       "captures": {
         "1": { "name": "keyword.fragment.graphql" },
-        "2": { "name": "entity.name.fragment.graphql" },
-        "3": { "name": "keyword.on.graphql" },
-        "4": { "name": "support.type.graphql" }
+        "2": { "name": "entity.name.fragment.graphql" }
       },
       "patterns": [
+        {
+          "match": "\\s*(?:(\\bon\\b)\\s*([_A-Za-z][_0-9A-Za-z]*))",
+          "captures": {
+            "1": { "name": "keyword.on.graphql" },
+            "2": { "name": "support.type.graphql" }
+          }
+        },
+        { "include": "#graphql-variable-definitions" },
         { "include": "#graphql-comment" },
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },
@@ -487,6 +493,7 @@
         "2": { "name": "variable.fragment.graphql" }
       },
       "patterns": [
+        { "include": "#graphql-arguments" },
         { "include": "#graphql-comment" },
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },

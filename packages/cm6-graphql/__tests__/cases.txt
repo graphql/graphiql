@@ -1,0 +1,115 @@
+# Simple query
+
+{ hello }
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName)),"}")))
+
+# Named query
+
+query a { hello }
+
+==>
+
+Document(OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")))
+
+# Nested query
+
+query {
+  node {
+    id
+  }
+}
+
+==>
+
+Document(OperationDefinition(OperationType,SelectionSet("{",Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}")))
+
+# Query with argument
+
+{
+  node(id: 4) {
+    id,
+    name
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(
+    SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,IntValue),")"),SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName)),"}"))),"}")
+  )
+)
+
+# Multiple query nesting
+
+{
+  categories(id: "1") {
+    name
+    products {
+      name
+      vendor {
+        products {
+          name
+        }
+      }
+    }
+  }
+}
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,StringValue),")"),SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))),"}"))),"}"))),"}")))
+
+# Query of fields with arguments
+
+{
+  vendors(productname: "Coconut") {
+    name
+  }
+  products(price:9.99) {
+    id
+  }
+  categories(id: ALL) {
+    parent
+  }
+}
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,StringValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,FloatValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,EnumValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),"}")))
+
+# Multiple named queries
+
+query a { hello }
+query b { bye }
+mutation c($val: String!) {
+  addAnother(value: $val) {
+    name
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")),
+  OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")),
+  OperationDefinition(OperationType,Name,VariableDefinitions("(",VariableDefinition(Variable,NonNullType(NamedType(Name))),")"),SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,Variable),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))
+)
+
+# Query with a `query` field
+
+{
+  other
+  query {
+    inner
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))
+)

@@ -53,9 +53,7 @@ export default class CharacterStream implements CharacterStreamInterface {
   public sol = (): boolean => this._pos === 0;
 
   public peek = (): string | null => {
-    return this._sourceText.charAt(this._pos)
-      ? this._sourceText.charAt(this._pos)
-      : null;
+    return this._sourceText.charAt(this._pos) || null;
   };
 
   public next = (): string => {
@@ -113,31 +111,32 @@ export default class CharacterStream implements CharacterStreamInterface {
 
     if (typeof pattern === 'string') {
       const regex = new RegExp(pattern, caseFold ? 'i' : 'g');
-      match = regex.test(this._sourceText.substr(this._pos, pattern.length));
+      match = regex.test(
+        this._sourceText.slice(this._pos, this._pos + pattern.length),
+      );
       token = pattern;
     } else if (pattern instanceof RegExp) {
       match = this._sourceText.slice(this._pos).match(pattern);
       token = match?.[0];
     }
 
-    if (match != null) {
-      if (
-        typeof pattern === 'string' ||
+    if (
+      match != null &&
+      (typeof pattern === 'string' ||
         (match instanceof Array &&
           // String.match returns 'index' property, which flow fails to detect
           // for some reason. The below is a workaround, but an easier solution
           // is just checking if `match.index === 0`
-          this._sourceText.startsWith(match[0], this._pos))
-      ) {
-        if (consume) {
-          this._start = this._pos;
-          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
-          if (token && token.length) {
-            this._pos += token.length;
-          }
+          this._sourceText.startsWith(match[0], this._pos)))
+    ) {
+      if (consume) {
+        this._start = this._pos;
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
+        if (token && token.length) {
+          this._pos += token.length;
         }
-        return match;
       }
+      return match;
     }
 
     // No match available.

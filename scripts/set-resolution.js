@@ -1,15 +1,15 @@
-const { readFile, writeFile } = require('fs/promises');
-const path = require('path');
+const { readFile, writeFile } = require('node:fs/promises');
+const path = require('node:path');
 
 async function setResolution() {
   const [, , tag] = process.argv;
   if (!tag) {
-    throw Error('no tag provided');
+    throw new Error('no tag provided');
   }
 
   const [package, version] = tag.split('@');
   if (!package || !version) {
-    throw Error(`Invalid tag ${tag}`);
+    throw new Error(`Invalid tag ${tag}`);
   }
   const pkgPath = path.resolve(path.join(process.cwd(), 'package.json'));
   const pkg = JSON.parse((await readFile(pkgPath, 'utf-8')).toString());

@@ -11,7 +11,6 @@ coverage/
 .nyc_output
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
-packages/graphiql/storybook
 packages/graphiql/typedoc
 dist
 esm
@@ -30,3 +29,13 @@ yarn-1.18.0.js
 
 # Local Netlify folder
 .netlify
+
+examples/*/yarn.lock
+package-lock.json
+.eslintcache
+
+vite.config.d.ts
+vite.config.js
+
+.next/
+.turbo/

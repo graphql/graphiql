@@ -50,12 +50,14 @@ export class LanguageService {
   private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
     null;
   private _externalFragmentDefinitionsString: string | null = null;
+  private _fillLeafsOnComplete?: boolean = false;
   constructor({
     parser,
     schemas,
     parseOptions,
     externalFragmentDefinitions,
     customValidationRules,
+    fillLeafsOnComplete,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -65,6 +67,7 @@ export class LanguageService {
     if (parser) {
       this._parser = parser;
     }
+    this._fillLeafsOnComplete = fillLeafsOnComplete;
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -82,7 +85,9 @@ export class LanguageService {
   }
 
   private _cacheSchemas() {
-    this._schemas.forEach(schema => this._cacheSchema(schema));
+    for (const schema of this._schemas) {
+      this._cacheSchema(schema);
+    }
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {
@@ -99,29 +104,28 @@ export class LanguageService {
    * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
-    if (!this._schemas || !this._schemas.length) {
+    if (!this._schemas?.length) {
       return;
     }
     if (this._schemas.length === 1) {
       return this._schemaCache.get(this._schemas[0].uri);
-    } else {
-      const schema = this._schemas.find(schemaConfig => {
-        if (!schemaConfig.fileMatch) {
-          return false;
-        }
-        return schemaConfig.fileMatch.some(glob => {
-          const isMatch = picomatch(glob);
-          return isMatch(uri);
-        });
-      });
-      if (schema) {
-        const cacheEntry = this._schemaCache.get(schema.uri);
-        if (cacheEntry) {
-          return cacheEntry;
-        }
-        const cache = this._cacheSchema(schema);
-        return cache.get(schema.uri);
+    }
+    const schema = this._schemas.find(schemaConfig => {
+      if (!schemaConfig.fileMatch) {
+        return false;
       }
+      return schemaConfig.fileMatch.some(glob => {
+        const isMatch = picomatch(glob);
+        return isMatch(uri);
+      });
+    });
+    if (schema) {
+      const cacheEntry = this._schemaCache.get(schema.uri);
+      if (cacheEntry) {
+        return cacheEntry;
+      }
+      const cache = this._cacheSchema(schema);
+      return cache.get(schema.uri);
     }
   }
 
@@ -137,15 +141,15 @@ export class LanguageService {
             definitionNodes.push(node);
           },
         });
-      } catch (err) {
-        throw Error(
+      } catch {
+        throw new Error(
           `Failed parsing externalFragmentDefinitions string:\n${this._externalFragmentDefinitionsString}`,
         );
       }
 
       this._externalFragmentDefinitionNodes = definitionNodes;
     }
-    return this._externalFragmentDefinitionNodes as FragmentDefinitionNode[];
+    return this._externalFragmentDefinitionNodes!;
   }
 
   /**
@@ -164,6 +168,7 @@ export class LanguageService {
   public updateSchema(schema: SchemaConfig): void {
     const schemaIndex = this._schemas.findIndex(c => c.uri === schema.uri);
     if (schemaIndex < 0) {
+      // eslint-disable-next-line no-console
       console.warn(
         'updateSchema could not find a schema in your config by that URI',
         schema.uri,
@@ -213,7 +218,7 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      { uri },
+      { uri, fillLeafsOnComplete: this._fillLeafsOnComplete },
     );
   };
   /**
@@ -275,7 +280,7 @@ export class LanguageService {
         if (operationFacts?.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType, options);
         }
-      } catch (err) {}
+      } catch {}
     }
     return null;
   };

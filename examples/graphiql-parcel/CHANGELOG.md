@@ -1,7 +1,6 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## [1.1.10-alpha.8](https://github.com/graphql/graphiql/compare/graphiql-parcel-example@1.1.10-alpha.7...graphiql-parcel-example@1.1.10-alpha.8) (2021-01-07)
 

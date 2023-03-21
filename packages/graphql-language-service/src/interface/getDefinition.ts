@@ -14,7 +14,6 @@ import {
   OperationDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
-  Location,
   ObjectTypeDefinitionNode,
   FieldDefinitionNode,
 } from 'graphql';
@@ -37,13 +36,13 @@ function assert(value: any, message: string) {
 }
 
 function getRange(text: string, node: ASTNode): Range {
-  const location = node.loc as Location;
+  const location = node.loc!;
   assert(location, 'Expected ASTNode to have a location.');
-  return locToRange(text, location) as Range;
+  return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {
-  const location = node.loc as Location;
+  const location = node.loc!;
   assert(location, 'Expected ASTNode to have a location.');
   return offsetToPosition(text, location.start);
 }
@@ -59,7 +58,7 @@ export async function getDefinitionQueryResultForNamedType(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL type ${name}`);
+    throw new Error(`Definition not found for GraphQL type ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
@@ -82,24 +81,24 @@ export async function getDefinitionQueryResultForField(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL type ${typeName}`);
+    throw new Error(`Definition not found for GraphQL type ${typeName}`);
   }
 
   const definitions: Array<Definition> = [];
 
-  defNodes.forEach(({ filePath, content, definition }) => {
+  for (const { filePath, content, definition } of defNodes) {
     const fieldDefinition = (
       definition as ObjectTypeDefinitionNode
     ).fields?.find(item => item.name.value === fieldName);
 
     if (fieldDefinition == null) {
-      return null;
+      continue;
     }
 
     definitions.push(
       getDefinitionForFieldDefinition(filePath || '', content, fieldDefinition),
     );
-  });
+  }
 
   return {
     definitions,
@@ -119,7 +118,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL fragment ${name}`);
+    throw new Error(`Definition not found for GraphQL fragment ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
@@ -148,9 +147,9 @@ function getDefinitionForFragmentDefinition(
   text: string,
   definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   if (!name) {
-    throw Error('Expected ASTNode to have a Name.');
+    throw new Error('Expected ASTNode to have a Name.');
   }
 
   return {
@@ -171,7 +170,7 @@ function getDefinitionForNodeDefinition(
   text: string,
   definition: TypeDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   assert(name, 'Expected ASTNode to have a Name.');
   return {
     path,
@@ -184,12 +183,13 @@ function getDefinitionForNodeDefinition(
   };
 }
 
+// eslint-disable-next-line sonarjs/no-identical-functions
 function getDefinitionForFieldDefinition(
   path: Uri,
   text: string,
   definition: FieldDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   assert(name, 'Expected ASTNode to have a Name.');
   return {
     path,

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { compose } from '../utility/compose';
+import { clsx } from 'clsx';
 
 import './button.css';
 
@@ -10,7 +10,7 @@ export const UnStyledButton = forwardRef<
   <button
     {...props}
     ref={ref}
-    className={compose('graphiql-un-styled', props.className)}
+    className={clsx('graphiql-un-styled', props.className)}
   />
 ));
 UnStyledButton.displayName = 'UnStyledButton';
@@ -24,13 +24,12 @@ export const Button = forwardRef<
   <button
     {...props}
     ref={ref}
-    className={compose(
+    className={clsx(
       'graphiql-button',
-      props.state === 'success'
-        ? 'graphiql-button-success'
-        : props.state === 'error'
-        ? 'graphiql-button-error'
-        : '',
+      {
+        success: 'graphiql-button-success',
+        error: 'graphiql-button-error',
+      }[props.state!],
       props.className,
     )}
   />

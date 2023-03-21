@@ -1,5 +1,6 @@
 /* example using https://github.com/awslabs/aws-serverless-express */
 const express = require('express');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { graphqlHTTP } = require('express-graphql');
 const awsServerlessExpress = require('aws-serverless-express');
 const schema = require('../packages/graphiql/test/schema');
@@ -41,7 +42,7 @@ exports.handler = (event, context) =>
 // // Server
 // app.post('/graphql', graphqlHTTP({ schema }));
 
-// // app.get('/graphql', graphQLMiddleware);
+// app.get('/graphql', graphQLMiddleware);
 // // Export Lambda handler
 
 // exports.handler = serverless(app, {

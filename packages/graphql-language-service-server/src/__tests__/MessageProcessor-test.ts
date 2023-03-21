@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service';
@@ -22,16 +21,16 @@ import { loadConfig } from 'graphql-config';
 
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
-import { Logger } from '../Logger';
-import { pathToFileURL } from 'url';
+import { NoopLogger } from '../Logger';
+import { pathToFileURL } from 'node:url';
 
-jest.mock('fs', () => ({
+jest.mock('node:fs', () => ({
   ...jest.requireActual<typeof import('fs')>('fs'),
   readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
 }));
 
 describe('MessageProcessor', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new NoopLogger();
   const messageProcessor = new MessageProcessor({
     // @ts-ignore
     connection: {},
@@ -270,10 +269,10 @@ describe('MessageProcessor', () => {
     const params = { textDocument: initialDocument.textDocument, position };
 
     // Should throw because file has been deleted from cache
-    return messageProcessor
-      .handleCompletionRequest(params)
-      .then(result => expect(result).toEqual(null))
-      .catch(() => {});
+    try {
+      const result = await messageProcessor.handleCompletionRequest(params);
+      expect(result).toEqual(null);
+    } catch {}
   });
 
   // modified to work with jest.mock() of WatchmanClient
@@ -316,7 +315,8 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidOpenOrSaveNotification', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
@@ -718,7 +718,8 @@ query Test {
   });
 
   describe('handleWatchedFilesChangedNotification', () => {
-    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
@@ -736,6 +737,53 @@ query Test {
       });
 
       expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleWatchedFilesChangedNotification without graphql config', () => {
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._graphQLConfig = undefined;
+      messageProcessor._isGraphQLConfigMissing = true;
+      messageProcessor._parser = jest.fn();
+    });
+
+    it('skips config updates for normal file changes', async () => {
+      await messageProcessor.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: `${pathToFileURL('.')}/foo.js`,
+            type: FileChangeType.Changed,
+          },
+        ],
+      });
+      expect(messageProcessor._parser).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleDidChangedNotification without graphql config', () => {
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._graphQLConfig = undefined;
+      messageProcessor._isGraphQLConfigMissing = true;
+      messageProcessor._parser = jest.fn();
+    });
+
+    it('skips config updates for normal file changes', async () => {
+      await messageProcessor.handleDidChangeNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/foo.js`,
+          version: 1,
+        },
+        contentChanges: [{ text: 'var something' }],
+      });
+      expect(messageProcessor._parser).not.toHaveBeenCalled();
     });
   });
 });

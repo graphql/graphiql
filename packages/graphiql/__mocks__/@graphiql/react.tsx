@@ -9,7 +9,7 @@ import {
   useResponseEditor as _useResponseEditor,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export {
   Argument,
@@ -31,6 +31,7 @@ export {
   DirectiveIcon,
   DOC_EXPLORER_PLUGIN,
   DocExplorer,
+  DocsFilledIcon,
   DocsIcon,
   EditorContext,
   EditorContextProvider,
@@ -61,6 +62,7 @@ export {
   PenIcon,
   PlayIcon,
   PluginContext,
+  PluginContextProvider,
   PlusIcon,
   PrettifyIcon,
   ReloadIcon,
@@ -171,10 +173,9 @@ function useMockedEditor(name: Name, onEdit?: (newValue: string) => void) {
     mockTextArea.className = 'mockCodeMirror';
 
     const mockWrapper = document.createElement('div');
-    mockWrapper.appendChild(mockGutter);
-    mockWrapper.appendChild(mockTextArea);
+    mockWrapper.append(mockGutter, mockTextArea);
 
-    ref.current.appendChild(mockWrapper);
+    ref.current.append(mockWrapper);
 
     setEditor({
       getValue() {
@@ -254,12 +255,11 @@ export const QueryEditor: typeof _QueryEditor = function QueryEditor(props) {
   return <div data-testid="query-editor" ref={ref} />;
 };
 
-export const ResponseEditor: typeof _ResponseEditor = function ResponseEditor(
-  props,
-) {
-  const ref = useResponseEditor(props);
-  return <div ref={ref} />;
-};
+export const ResponseEditor: typeof _ResponseEditor =
+  function ResponseEditor() {
+    const ref = useResponseEditor();
+    return <div ref={ref} />;
+  };
 
 export const VariableEditor: typeof _VariableEditor = function VariableEditor(
   props,

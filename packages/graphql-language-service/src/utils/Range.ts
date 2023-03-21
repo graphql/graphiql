@@ -29,11 +29,11 @@ export class Range implements IRange {
   containsPosition = (position: IPosition): boolean => {
     if (this.start.line === position.line) {
       return this.start.character <= position.character;
-    } else if (this.end.line === position.line) {
-      return this.end.character >= position.character;
-    } else {
-      return this.start.line <= position.line && this.end.line >= position.line;
     }
+    if (this.end.line === position.line) {
+      return this.end.character >= position.character;
+    }
+    return this.start.line <= position.line && this.end.line >= position.line;
   };
 }
 

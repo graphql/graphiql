@@ -1,0 +1,125 @@
+<!--
+ *  Copyright (c) 2021 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <style>
+      body {
+        height: 100%;
+        margin: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #graphiql {
+        height: 100vh;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@graphiql/plugin-code-exporter/dist/style.css"
+    />
+  </head>
+
+  <body>
+    <div id="graphiql">Loading...</div>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <script
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+      integrity="sha512-FmqQBx9FVDKvUNDuimXswv4o1eqQUqzQYIuEoIkmkDaoXMUvmD9fKQXYSrSEMf5LQUEZr5EEMesxUzex2wS/hg=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@graphiql/plugin-code-exporter/dist/graphiql-plugin-code-exporter.umd.js"
+      integrity="sha512-NwP+k36ExLYeIqp2lniZCblbz/FLJ/lQlBV55B6vafZWIYppwHUp1gCdvlaaUjV95RWPInQy4z/sIa56psJy/g=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      var fetcher = GraphiQL.createFetcher({
+        url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+      });
+
+      function removeQueryName(query) {
+        return query.replace(
+          /^[^{(]+([{(])/,
+          (_match, openingCurlyBracketsOrParenthesis) =>
+            `query ${openingCurlyBracketsOrParenthesis}`,
+        );
+      }
+
+      function getQuery(arg, spaceCount) {
+        var { operationDataList } = arg;
+        var { query } = operationDataList[0];
+        var anonymousQuery = removeQueryName(query);
+        return (
+          ` `.repeat(spaceCount) +
+          anonymousQuery.replace(/\n/g, `\n` + ` `.repeat(spaceCount))
+        );
+      }
+
+      var exampleSnippetOne = {
+        name: `Example One`,
+        language: `JavaScript`,
+        codeMirrorMode: `jsx`,
+        options: [],
+        generate: arg => `export const query = graphql\`
+      ${getQuery(arg, 2)}
+      \`
+      `,
+      };
+
+      var exampleSnippetTwo = {
+        name: `Example Two`,
+        language: `JavaScript`,
+        codeMirrorMode: `jsx`,
+        options: [],
+        generate: arg => `import { graphql } from 'graphql'
+
+      export const query = graphql\`
+      ${getQuery(arg, 2)}
+      \`
+      `,
+      };
+
+      var snippets = [exampleSnippetOne, exampleSnippetTwo];
+
+      function GraphiQLWithExporter() {
+        var [query, setQuery] = React.useState(
+          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
+        );
+        var exporterPlugin = GraphiQLPluginCodeExporter.useExporterPlugin({
+          query: query,
+          snippets,
+        });
+        return React.createElement(GraphiQL, {
+          fetcher: fetcher,
+          defaultEditorToolsVisibility: true,
+          plugins: [exporterPlugin],
+          query: query,
+          onEditQuery: setQuery,
+        });
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+      root.render(React.createElement(GraphiQLWithExporter));
+    </script>
+  </body>
+</html>

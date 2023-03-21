@@ -1,30 +1,6 @@
-################################################################################
-#
-# First things first; we need to ignore our built files. To achive this, we
-# have to do a bit of an ignore dance where we ignore everything, and then
-# specifically un-ignore the source code, configuration files, etc.
-#
-# First: ignore FILES (not folders!)
-/{packages,examples}/**/*.{js,jsx,ts,tsx}
-
-#
-# Now un-ignore source code, tests, configuration, etc
-!/{packages,examples}/*/{src,cypress,resources}/**
-
 # CRA example has its own eslint config
 examples/graphiql-create-react-app
 
-!.eslintrc.js
-!babel.config.js
-#
-# End of the ignore dance.
-#
-################################################################################
-
-# Regular eslintignore configuration follows.
-
-# ESLint automatically ignores node_modules _in the root_, so we only need to specify nested node_modules
-**/node_modules
 /packages/graphiql/graphiql.*
 
 # Build artifacts
@@ -36,12 +12,7 @@ examples/graphiql-create-react-app
 **/typedoc
 **/monaco
 **/webpack
-packages/graphiql/webpack
-packages/graphiql/storybook
-packages/graphiql/lsp
-packages/graphiql/monaco
 packages/graphiql/*.html
-**/renderExample.js
 **/*.min.js
 **/coverage/
 .nyc_output/
@@ -61,8 +32,9 @@ working-group/
 **/codemirror-graphql/cm6-legacy
 **/codemirror-graphql/__tests__
 
-# Vendored files
-/packages/graphiql/test/vendor
+.changeset/*.md
 
-.changeset
-storybook-static/
+# Followed are located in .gitignore
+packages/graphiql-react/types/
+packages/graphiql-plugin-explorer/types/
+packages/graphiql-plugin-code-exporter/types/

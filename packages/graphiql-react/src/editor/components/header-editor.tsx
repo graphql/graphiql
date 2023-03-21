@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { clsx } from 'clsx';
 
 import { useEditorContext } from '../context';
 import { useHeaderEditor, UseHeaderEditorArgs } from '../header-editor';
@@ -23,12 +24,12 @@ export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
   const ref = useHeaderEditor(hookArgs, HeaderEditor);
 
   useEffect(() => {
-    if (headerEditor && !isHidden) {
-      headerEditor.refresh();
+    if (!isHidden) {
+      headerEditor?.refresh();
     }
   }, [headerEditor, isHidden]);
 
   return (
-    <div className={`graphiql-editor${isHidden ? ' hidden' : ''}`} ref={ref} />
+    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
   );
 }

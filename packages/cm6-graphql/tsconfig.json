@@ -1,0 +1,19 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "strict": true,
+    "target": "es6",
+    "module": "es2020",
+    "newLine": "lf",
+    "declaration": true,
+    "moduleResolution": "node",
+    "outDir": "dist"
+  },
+  "include": ["src", "__tests__"],
+  "exclude": ["**/__tests__/**", "**/dist/**.*"],
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    }
+  ]
+}

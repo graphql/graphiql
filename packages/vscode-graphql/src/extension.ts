@@ -14,7 +14,7 @@ import {
   LanguageClient,
 } from 'vscode-languageclient/node';
 
-import * as path from 'path';
+import * as path from 'node:path';
 import { createStatusBar, initStatusBar } from './apis/statusBar';
 
 let client: LanguageClient;
@@ -27,6 +27,7 @@ export async function activate(context: ExtensionContext) {
   const config = getConfig();
   const { debug } = config;
   if (debug) {
+    // eslint-disable-next-line no-console
     console.log('Extension "vscode-graphql" is now active!');
   }
 
@@ -56,6 +57,8 @@ export async function activate(context: ExtensionContext) {
       { scheme: 'file', language: 'javascriptreact' },
       { scheme: 'file', language: 'typescript' },
       { scheme: 'file', language: 'typescriptreact' },
+      { scheme: 'file', language: 'vue' },
+      { scheme: 'file', language: 'svelte' },
     ],
     synchronize: {
       // TODO: This should include any referenced graphql files inside the graphql-config
@@ -70,9 +73,10 @@ export async function activate(context: ExtensionContext) {
           // to save for the changes to take effect
           true,
         ),
+        // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
-          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx}',
+          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts}',
         ),
       ],
     },
@@ -113,20 +117,21 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(commandShowOutputChannel);
 
   commands.registerCommand('vscode-graphql.restart', async () => {
-    outputChannel.appendLine(`Stopping GraphQL LSP`);
+    outputChannel.appendLine('Stopping GraphQL LSP');
     await client.stop();
 
-    outputChannel.appendLine(`Restarting GraphQL LSP`);
+    outputChannel.appendLine('Restarting GraphQL LSP');
     await client.start();
-    outputChannel.appendLine(`GraphQL LSP restarted`);
+    outputChannel.appendLine('GraphQL LSP restarted');
   });
 }
 
 export function deactivate() {
   if (!client) {
-    return undefined;
+    return;
   }
-  console.log('Extension "vscode-graphql" will be de-activated!!');
+  // eslint-disable-next-line no-console
+  console.log('Extension "vscode-graphql" will be de-activated!');
   return client.stop();
 }
 

@@ -62,7 +62,7 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
-    importCodeMirror(
+    void importCodeMirror(
       [
         import('codemirror/addon/fold/foldgutter'),
         import('codemirror/addon/fold/brace-fold'),
@@ -103,6 +103,7 @@ export function useResponseEditor(
             );
           }
 
+          // We can't refactor to root.unmount() from React 18 because we support React 16/17 too
           if (!infoElements.length) {
             ReactDOM.unmountComponentAtNode(tooltipDiv);
             return null;

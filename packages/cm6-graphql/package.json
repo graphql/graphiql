@@ -1,0 +1,49 @@
+{
+  "name": "cm6-graphql",
+  "version": "0.0.8",
+  "description": "GraphQL language support for CodeMirror 6",
+  "scripts": {
+    "build": "cm-buildhelper src/index.ts",
+    "prepare": "yarn build"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "graphql-language-service": "^5.1.6"
+  },
+  "devDependencies": {
+    "@codemirror/autocomplete": "^6.0.0",
+    "@codemirror/buildhelper": "^0.1.16",
+    "@codemirror/language": "^6.0.0",
+    "@codemirror/lint": "^6.0.0",
+    "@codemirror/state": "^6.1.0",
+    "@codemirror/view": "^6.1.2",
+    "@lezer/common": "^1.0.0",
+    "@lezer/generator": "^1.1.0",
+    "@lezer/highlight": "^1.0.0",
+    "@lezer/lr": "^1.1.0",
+    "esbuild": "0.15.1",
+    "graphql": "^16.5.0",
+    "rollup": "^2.60.2",
+    "rollup-plugin-dts": "^4.0.1",
+    "rollup-plugin-esbuild": "^4.9.1",
+    "rollup-plugin-ts": "^2.0.4",
+    "typescript": "^4.3.4"
+  },
+  "peerDependencies": {
+    "@codemirror/autocomplete": "^6.0.0",
+    "@codemirror/language": "^6.0.0",
+    "@codemirror/lint": "^6.0.0",
+    "@codemirror/state": "^6.1.0",
+    "@codemirror/view": "^6.1.2",
+    "@lezer/highlight": "^1.0.0",
+    "graphql": "^16.5.0"
+  },
+  "license": "MIT"
+}

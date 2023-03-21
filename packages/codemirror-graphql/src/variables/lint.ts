@@ -66,7 +66,7 @@ CodeMirror.registerHelper(
     }
 
     // If there are not yet known variables, do nothing.
-    const variableToType = options.variableToType;
+    const { variableToType } = options;
     if (!variableToType) {
       return [];
     }
@@ -85,11 +85,15 @@ function validateVariables(
 ) {
   const errors: CodeMirror.Annotation[] = [];
 
-  variablesAST.members.forEach(member => {
+  for (const member of variablesAST.members) {
     if (member) {
       const variableName = member.key?.value;
       const type = variableToType[variableName];
-      if (!type) {
+      if (type) {
+        for (const [node, message] of validateValue(type, member.value)) {
+          errors.push(lintError(editor, node, message));
+        }
+      } else {
         errors.push(
           lintError(
             editor,
@@ -97,13 +101,9 @@ function validateVariables(
             `Variable "$${variableName}" does not appear in any GraphQL query.`,
           ),
         );
-      } else {
-        validateValue(type, member.value).forEach(([node, message]) => {
-          errors.push(lintError(editor, node, message));
-        });
       }
     }
-  });
+  }
 
   return errors;
 }
@@ -169,17 +169,19 @@ function validateValue(
     );
 
     // Look for missing non-nullable fields.
-    Object.keys(type.getFields()).forEach(fieldName => {
-      if (!providedFields[fieldName]) {
-        const fieldType = type.getFields()[fieldName].type;
-        if (fieldType instanceof GraphQLNonNull) {
-          fieldErrors.push([
-            valueAST,
-            `Object of type "${type}" is missing required field "${fieldName}".`,
-          ]);
-        }
+    for (const fieldName of Object.keys(type.getFields())) {
+      const field = type.getFields()[fieldName];
+      if (
+        !providedFields[fieldName] &&
+        field.type instanceof GraphQLNonNull &&
+        !field.defaultValue
+      ) {
+        fieldErrors.push([
+          valueAST,
+          `Object of type "${type}" is missing required field "${fieldName}".`,
+        ]);
       }
-    });
+    }
 
     return fieldErrors;
   }
@@ -200,16 +202,15 @@ function validateValue(
   }
 
   // Validate enums and custom scalars.
-  if (type instanceof GraphQLEnumType || type instanceof GraphQLScalarType) {
-    if (
-      (valueAST.kind !== 'String' &&
-        valueAST.kind !== 'Number' &&
-        valueAST.kind !== 'Boolean' &&
-        valueAST.kind !== 'Null') ||
-      isNullish(type.parseValue(valueAST.value))
-    ) {
-      return [[valueAST, `Expected value of type "${type}".`]];
-    }
+  if (
+    (type instanceof GraphQLEnumType || type instanceof GraphQLScalarType) &&
+    ((valueAST.kind !== 'String' &&
+      valueAST.kind !== 'Number' &&
+      valueAST.kind !== 'Boolean' &&
+      valueAST.kind !== 'Null') ||
+      isNullish(type.parseValue(valueAST.value)))
+  ) {
+    return [[valueAST, `Expected value of type "${type}".`]];
   }
 
   return [];

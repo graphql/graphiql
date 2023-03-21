@@ -7,8 +7,15 @@
  *
  */
 import { AbortController as MockAbortController } from 'node-abort-controller';
+import fetchMock from 'fetch-mock';
 
 jest.mock('@whatwg-node/fetch', () => ({
+  fetch: require('fetch-mock').fetchHandler,
+  AbortController: MockAbortController,
+  TextDecoder: global.TextDecoder,
+}));
+
+jest.mock('cross-fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
   AbortController: MockAbortController,
   TextDecoder: global.TextDecoder,
@@ -17,7 +24,6 @@ jest.mock('@whatwg-node/fetch', () => ({
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
-import fetchMock from 'fetch-mock';
 import {
   introspectionFromSchema,
   FragmentDefinitionNode,
@@ -110,9 +116,7 @@ describe('GraphQLCache', () => {
     });
 
     it('extend the schema with appropriate custom directive', async () => {
-      const schema = (await cache.getSchema(
-        'testWithCustomDirectives',
-      )) as GraphQLSchema;
+      const schema = await cache.getSchema('testWithCustomDirectives');
       expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
@@ -126,7 +130,7 @@ describe('GraphQLCache', () => {
     });
 
     it('extend the schema with appropriate custom directive 2', async () => {
-      const schema = (await cache.getSchema('testWithSchema')) as GraphQLSchema;
+      const schema = await cache.getSchema('testWithSchema');
       expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({

@@ -19,7 +19,7 @@ import '../mode';
 function createEditorWithLint(lintConfig?: any) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql-variables',
-    lint: lintConfig ? lintConfig : true,
+    lint: lintConfig || true,
   });
 }
 
@@ -32,10 +32,9 @@ function printLintErrors(query: Maybe<string>, variables: string) {
     editor.state.lint.options.onUpdateLinting = (
       errors: CodeMirror.Annotation[],
     ) => {
-      if (errors?.[0]) {
-        if (!errors[0].message?.match('Unexpected EOF')) {
-          resolve(errors);
-        }
+      if (errors?.[0] && !errors[0].message?.match('Unexpected EOF')) {
+        resolve(errors);
+        return;
       }
       resolve([]);
     };

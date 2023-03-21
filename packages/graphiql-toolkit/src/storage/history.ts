@@ -34,7 +34,7 @@ export class HistoryStore {
 
     try {
       parse(query);
-    } catch (e) {
+    } catch {
       return false;
     }
 

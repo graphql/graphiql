@@ -5,10 +5,25 @@ import debounce from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
+export type TabDefinition = {
+  /**
+   * The contents of the query editor of this tab.
+   */
+  query: string | null;
+  /**
+   * The contents of the variable editor of this tab.
+   */
+  variables?: string | null;
+  /**
+   * The contents of the headers editor of this tab.
+   */
+  headers?: string | null;
+};
+
 /**
  * This object describes the state of a single tab.
  */
-export type TabState = {
+export type TabState = TabDefinition & {
   /**
    * A GUID value generated when the tab was created.
    */
@@ -23,18 +38,6 @@ export type TabState = {
    * The title of the tab shown in the tab element.
    */
   title: string;
-  /**
-   * The contents of the query editor of this tab.
-   */
-  query: string | null;
-  /**
-   * The contents of the variable editor of this tab.
-   */
-  variables: string | null;
-  /**
-   * The contents of the headers editor of this tab.
-   */
-  headers: string | null;
   /**
    * The operation name derived from the contents of the query editor of this
    * tab.
@@ -63,13 +66,17 @@ export type TabsState = {
 
 export function getDefaultTabState({
   defaultQuery,
+  defaultHeaders,
   headers,
+  defaultTabs,
   query,
   variables,
   storage,
 }: {
   defaultQuery: string;
+  defaultHeaders?: string;
   headers: string | null;
+  defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
   storage: StorageAPI | null;
@@ -114,13 +121,20 @@ export function getDefaultTabState({
       }
 
       return parsed;
-    } else {
-      throw new Error('Storage for tabs is invalid');
     }
-  } catch (err) {
+    throw new Error('Storage for tabs is invalid');
+  } catch {
     return {
       activeTabIndex: 0,
-      tabs: [createTab({ query: query ?? defaultQuery, variables, headers })],
+      tabs: (
+        defaultTabs || [
+          {
+            query: query ?? defaultQuery,
+            variables,
+            headers: headers ?? defaultHeaders,
+          },
+        ]
+      ).map(createTab),
     };
   }
 }
@@ -195,6 +209,19 @@ export function useSynchronizeActiveTabValues({
   );
 }
 
+export function serializeTabState(
+  tabState: TabsState,
+  shouldPersistHeaders = false,
+) {
+  return JSON.stringify(tabState, (key, value) =>
+    key === 'hash' ||
+    key === 'response' ||
+    (!shouldPersistHeaders && key === 'headers')
+      ? null
+      : value,
+  );
+}
+
 export function useStoreTabs({
   storage,
   shouldPersistHeaders,
@@ -211,15 +238,7 @@ export function useStoreTabs({
   );
   return useCallback(
     (currentState: TabsState) => {
-      store(
-        JSON.stringify(currentState, (key, value) =>
-          key === 'hash' ||
-          key === 'response' ||
-          (!shouldPersistHeaders && key === 'headers')
-            ? null
-            : value,
-        ),
-      );
+      store(serializeTabState(currentState, shouldPersistHeaders));
     },
     [shouldPersistHeaders, store],
   );
@@ -244,8 +263,8 @@ export function useSetEditorValues({
       response,
     }: {
       query: string | null;
-      variables: string | null;
-      headers: string | null;
+      variables?: string | null;
+      headers?: string | null;
       response: string | null;
     }) => {
       queryEditor?.setValue(query ?? '');
@@ -261,11 +280,11 @@ export function createTab({
   query = null,
   variables = null,
   headers = null,
-}: Partial<Pick<TabState, 'query' | 'variables' | 'headers'>> = {}): TabState {
+}: Partial<TabDefinition> = {}): TabState {
   return {
     id: guid(),
     hash: hashFromTabContents({ query, variables, headers }),
-    title: DEFAULT_TITLE,
+    title: (query && fuzzyExtractOperationName(query)) || DEFAULT_TITLE,
     query,
     variables,
     headers,
@@ -303,7 +322,7 @@ function guid(): string {
   const s4 = () => {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
-      .substring(1);
+      .slice(1);
   };
   // return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
   return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
@@ -311,19 +330,33 @@ function guid(): string {
 
 function hashFromTabContents(args: {
   query: string | null;
-  variables: string | null;
-  headers: string | null;
+  variables?: string | null;
+  headers?: string | null;
 }): string {
   return [args.query ?? '', args.variables ?? '', args.headers ?? ''].join('|');
 }
 
 export function fuzzyExtractOperationName(str: string): string | null {
-  const regex = /^(?!.*#).*(query|subscription|mutation)\s+([a-zA-Z0-9_]+)/;
+  const regex = /^(?!#).*(query|subscription|mutation)\s+([a-zA-Z0-9_]+)/m;
+
   const match = regex.exec(str);
 
   return match?.[2] ?? null;
 }
 
+export function clearHeadersFromTabs(storage: StorageAPI | null) {
+  const persistedTabs = storage?.get(STORAGE_KEY);
+  if (persistedTabs) {
+    const parsedTabs = JSON.parse(persistedTabs);
+    storage?.set(
+      STORAGE_KEY,
+      JSON.stringify(parsedTabs, (key, value) =>
+        key === 'headers' ? null : value,
+      ),
+    );
+  }
+}
+
 const DEFAULT_TITLE = '<untitled>';
 
-const STORAGE_KEY = 'tabState';
+export const STORAGE_KEY = 'tabState';

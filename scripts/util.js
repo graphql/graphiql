@@ -9,8 +9,8 @@
 
 'use strict';
 
-const { execFileSync } = require('child_process');
-const { createReadStream, createWriteStream } = require('fs');
+const { execFileSync } = require('node:child_process');
+const { createReadStream, createWriteStream } = require('node:fs');
 
 function cp(source, destination) {
   createReadStream(source).pipe(createWriteStream(destination));

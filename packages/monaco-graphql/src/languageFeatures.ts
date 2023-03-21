@@ -43,7 +43,7 @@ export class DiagnosticsAdapter {
       if (modeId !== this.defaults.languageId) {
         // it is tempting to load json models we cared about here
         // into the webworker, however setDiagnosticOptions() needs
-        // to be called here from main process anyways, and the worker
+        // to be called here from main process anyway, and the worker
         // is already generating json schema itself!
         return;
       }
@@ -56,7 +56,7 @@ export class DiagnosticsAdapter {
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(onChangeTimeout);
         onChangeTimeout = setTimeout(() => {
-          this._doValidate(model.uri, modeId, jsonValidationForModel);
+          void this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
     };
@@ -72,47 +72,46 @@ export class DiagnosticsAdapter {
       }
     };
 
-    this._disposables.push(editor.onDidCreateModel(onModelAdd));
-    this._disposables.push({
-      dispose: () => {
-        clearTimeout(onChangeTimeout);
-      },
-    });
     this._disposables.push(
+      editor.onDidCreateModel(onModelAdd),
+      {
+        dispose: () => {
+          clearTimeout(onChangeTimeout);
+        },
+      },
       editor.onWillDisposeModel(model => {
         onModelRemoved(model);
       }),
-    );
-    this._disposables.push(
       editor.onDidChangeModelLanguage(event => {
         onModelRemoved(event.model);
         onModelAdd(event.model);
       }),
-    );
-
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
+      {
+        dispose: () => {
+          for (const key in this._listener) {
+            this._listener[key].dispose();
+          }
+        },
       },
-    });
-    this._disposables.push(
       defaults.onDidChange(() => {
-        editor.getModels().forEach(model => {
+        for (const model of editor.getModels()) {
           if (getModelLanguageId(model) === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }
-        });
+        }
       }),
     );
 
-    editor.getModels().forEach(onModelAdd);
+    for (const model of editor.getModels()) {
+      onModelAdd(model);
+    }
   }
 
   public dispose(): void {
-    this._disposables.forEach(d => d?.dispose());
+    for (const d of this._disposables) {
+      d?.dispose();
+    }
     this._disposables = [];
   }
 
@@ -123,16 +122,18 @@ export class DiagnosticsAdapter {
   ) {
     const worker = await this._worker(resource);
 
+    // to handle an edge case bug that happens when
+    // typing before the schema is present
+    if (!worker) {
+      return;
+    }
+
     const diagnostics = await worker.doValidation(resource.toString());
-    editor.setModelMarkers(
-      editor.getModel(resource) as editor.ITextModel,
-      languageId,
-      diagnostics,
-    );
+    editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
       if (variablesUris.length < 1) {
-        throw Error('no variables URI strings provided to validate');
+        throw new Error('no variables URI strings provided to validate');
       }
       const jsonSchema = await worker.doGetVariablesJSONSchema(
         resource.toString(),
@@ -206,9 +207,9 @@ export function toCompletion(
   const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
-    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+    kind: toCompletionItemKind(entry.kind!),
     label: entry.label,
-    insertText: entry.insertText ?? (entry.label as string),
+    insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText
       ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
       : undefined,
@@ -250,7 +251,8 @@ export class CompletionAdapter
         suggestions: completionItems.map(toCompletion),
       };
     } catch (err) {
-      console.error(`Error fetching completion items\n\n${err}`);
+      // eslint-disable-next-line no-console
+      console.error('Error fetching completion items', err);
       return { suggestions: [] };
     }
   }
@@ -296,9 +298,9 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
-      return <monaco.languages.Hover>{
+      return {
         range: hoverItem.range,
-        contents: [{ value: hoverItem.content }],
+        contents: [{ value: hoverItem.content as string }],
       };
     }
 

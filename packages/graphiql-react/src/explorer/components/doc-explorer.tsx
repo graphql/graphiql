@@ -21,7 +21,7 @@ export function DocExplorer() {
     caller: DocExplorer,
   });
 
-  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const navItem = explorerNavStack.at(-1)!;
 
   let content: ReactNode = null;
   if (fetchError) {
@@ -55,7 +55,7 @@ export function DocExplorer() {
 
   let prevName;
   if (explorerNavStack.length > 1) {
-    prevName = explorerNavStack[explorerNavStack.length - 2].name;
+    prevName = explorerNavStack.at(-2)!.name;
   }
 
   return (
@@ -69,7 +69,10 @@ export function DocExplorer() {
             <a
               href="#"
               className="graphiql-doc-explorer-back"
-              onClick={pop}
+              onClick={event => {
+                event.preventDefault();
+                pop();
+              }}
               aria-label={`Go back to ${prevName}`}
             >
               <ChevronLeftIcon />
@@ -78,9 +81,7 @@ export function DocExplorer() {
           )}
           <div className="graphiql-doc-explorer-title">{navItem.name}</div>
         </div>
-        <div className="graphiql-doc-explorer-search">
-          <Search key={navItem.name} />
-        </div>
+        <Search key={navItem.name} />
       </div>
       <div className="graphiql-doc-explorer-content">{content}</div>
     </section>

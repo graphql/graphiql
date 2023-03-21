@@ -1,5 +1,89 @@
 # Change Log
 
+## 2.0.9-alpha.0
+
+### Patch Changes
+
+- [#3203](https://github.com/graphql/graphiql/pull/3203) [`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36) Thanks [@lesleydreyer](https://github.com/lesleydreyer)! - fix info tooltips to work when Graphiql is not used as full page
+
+## 2.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - graphql-language-service@5.1.6
+
+## 2.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+
+## 2.0.6
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+- [#3109](https://github.com/graphql/graphiql/pull/3109) [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-floating-promises` eslint rule
+
+- Updated dependencies [[`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9)]:
+  - graphql-language-service@5.1.4
+
+## 2.0.5
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046) [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index access
+
+- Updated dependencies [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d), [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
+## 2.0.4
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993) [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4) Thanks [@B2o5T](https://github.com/B2o5T)! - add `unicorn/consistent-destructuring` rule
+
+- [#2962](https://github.com/graphql/graphiql/pull/2962) [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d) Thanks [@B2o5T](https://github.com/B2o5T)! - clean all ESLint warnings, add `--max-warnings=0` and `--cache` flags
+
+- [#2940](https://github.com/graphql/graphiql/pull/2940) [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-node-protocol` rule
+
+- Updated dependencies [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c), [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b), [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4), [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d), [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+
+## 2.0.3
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931) [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and `no-else-return` rules
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922) [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b) Thanks [@B2o5T](https://github.com/B2o5T)! - extends `plugin:import/recommended` and fix warnings
+
+- [#2941](https://github.com/graphql/graphiql/pull/2941) [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-logical-operator-over-ternary` rule
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937) [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936) [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963) [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring` rule
+
+- Updated dependencies [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147), [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b), [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de), [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9), [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9), [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913), [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49), [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215), [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)]:
+  - graphql-language-service@5.1.1
+
+## 2.0.2
+
+### Patch Changes
+
+- [#2852](https://github.com/graphql/graphiql/pull/2852) [`20869583`](https://github.com/graphql/graphiql/commit/20869583eff563f5d6494e93302a835f0e034f4b) Thanks [@acao](https://github.com/acao)! - increment @codemirror/language peer dependency to 6.0.0
+
+## 2.0.1
+
+### Patch Changes
+
+- [#2847](https://github.com/graphql/graphiql/pull/2847) [`353f434e`](https://github.com/graphql/graphiql/commit/353f434e5f6bfd1bf6f8ee97d4ae8ce4f897085f) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Don't show error in variable editor linting for missing input objects that have a default value
+
 ## 2.0.0
 
 ### Major Changes
@@ -217,8 +301,7 @@
 
 - [`b4fc16c0`](https://github.com/graphql/graphiql/commit/b4fc16c025da6f466727dc17cab6026d14c6e7fe) Thanks [@imolorhe](https://github.com/imolorhe)! - BREAKING CHANGE Migrate to Typescript - [@imolorhe](https://github.com/imolorhe)
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## [0.15.2](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.15.1...codemirror-graphql@0.15.2) (2021-01-07)
 

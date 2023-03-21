@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import fs from 'fs';
+import fs from 'node:fs';
 import {
   buildSchema,
   parse,
@@ -18,7 +18,7 @@ import {
   ASTVisitor,
   FragmentDefinitionNode,
 } from 'graphql';
-import path from 'path';
+import path from 'node:path';
 
 import {
   getDiagnostics,
@@ -46,6 +46,39 @@ describe('getDiagnostics', () => {
     expect(error.source).toEqual('GraphQL: Validation');
   });
 
+  it('catches with multiple highlighted nodes', () => {
+    const errors = validateQuery(
+      parse('{ hero(episode: $ep) { name } }'),
+      schema,
+    );
+    expect(errors).toMatchObject([
+      {
+        range: {
+          end: {
+            character: 20,
+            line: 0,
+          },
+          start: {
+            character: 16,
+            line: 0,
+          },
+        },
+      },
+      {
+        range: {
+          end: {
+            character: 32,
+            line: 0,
+          },
+          start: {
+            character: 0,
+            line: 0,
+          },
+        },
+      },
+    ]);
+  });
+
   it('catches multi root validation errors without breaking (with a custom validation function that always throws errors)', () => {
     const error = validateQuery(parse('{ hero { name } } { seq }'), schema, [
       validationContext => {
@@ -54,7 +87,7 @@ describe('getDiagnostics', () => {
             for (const definition of node.definitions) {
               // add a custom error to every definition
               validationContext.reportError(
-                new GraphQLError(`This is a custom error.`, definition),
+                new GraphQLError('This is a custom error.', definition),
               );
             }
             return false;
@@ -73,7 +106,6 @@ describe('getDiagnostics', () => {
       schema,
     )[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'The field Query.deprecatedField is deprecated. Use test instead.',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Warning);
@@ -106,7 +138,6 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(1);
     const error = errors[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'Syntax Error: Expected ":", found Name "id".',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
@@ -131,7 +162,7 @@ describe('getDiagnostics', () => {
         }
       },
     });
-    const errors = getDiagnostics(`query hero { hero { id } }`, schema, [
+    const errors = getDiagnostics('query hero { hero { id } }', schema, [
       noQueryRule,
     ]);
     expect(errors).toHaveLength(1);
@@ -140,7 +171,7 @@ describe('getDiagnostics', () => {
 
   it('validates with external fragments', () => {
     const errors = getDiagnostics(
-      `query hero { hero { ...HeroGuy } }`,
+      'query hero { hero { ...HeroGuy } }',
       schema,
       [],
       false,
@@ -158,7 +189,7 @@ describe('getDiagnostics', () => {
       }
     `).definitions as FragmentDefinitionNode[];
     const errors = getDiagnostics(
-      `query hero { hero { ...Person ...Person2 } }`,
+      'query hero { hero { ...Person ...Person2 } }',
       schema,
       [],
       false,

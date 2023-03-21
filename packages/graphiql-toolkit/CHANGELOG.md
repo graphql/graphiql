@@ -1,5 +1,71 @@
 # @graphiql/toolkit
 
+## 0.8.4
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+- [#3109](https://github.com/graphql/graphiql/pull/3109) [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-floating-promises` eslint rule
+
+- [#3120](https://github.com/graphql/graphiql/pull/3120) [`15c26eb6`](https://github.com/graphql/graphiql/commit/15c26eb6d621a85df9eecb2b8a5fa009fa2fe040) Thanks [@B2o5T](https://github.com/B2o5T)! - prefer await to then
+
+## 0.8.3
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046) [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index access
+
+- [#3042](https://github.com/graphql/graphiql/pull/3042) [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer String#slice() over String#substr() and String#substring()
+
+## 0.8.2
+
+### Patch Changes
+
+- [#2962](https://github.com/graphql/graphiql/pull/2962) [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d) Thanks [@B2o5T](https://github.com/B2o5T)! - clean all ESLint warnings, add `--max-warnings=0` and `--cache` flags
+
+## 0.8.1
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931) [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and `no-else-return` rules
+
+- [#2923](https://github.com/graphql/graphiql/pull/2923) [`695100bd`](https://github.com/graphql/graphiql/commit/695100bd317940ff3ffd8f56b54248c1dba1ac04) Thanks [@TheMightyPenguin](https://github.com/TheMightyPenguin)! - Remove side-effect in StorageAPI that overrides localStorage.clear
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937) [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965) [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-optional-catch-binding` rule
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936) [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938) [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error` rule
+
+## 0.8.0
+
+### Minor Changes
+
+- [#2719](https://github.com/graphql/graphiql/pull/2719) [`e244b782`](https://github.com/graphql/graphiql/commit/e244b78291c2e2bb02d5753db82437926ebb4df4) Thanks [@andreialecu](https://github.com/andreialecu)! - Allow passing Headers for subscriptions into connection_init payload
+
+## 0.7.3
+
+### Patch Changes
+
+- [#2755](https://github.com/graphql/graphiql/pull/2755) [`674bf3f8`](https://github.com/graphql/graphiql/commit/674bf3f8ff321dfb8471b0f6e5419bb77ddc94af) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Only remove namespaced items when clearing `localStorage`
+
+## 0.7.2
+
+### Patch Changes
+
+- [#2753](https://github.com/graphql/graphiql/pull/2753) [`bfa90f24`](https://github.com/graphql/graphiql/commit/bfa90f249be4f68049c1bb81abfb524ae623313f) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Mark the `graphql-ws` peer dependency as optional (as it's only needed when the fetcher needs to support subscriptions)
+
+* [#2751](https://github.com/graphql/graphiql/pull/2751) [`8ab5fcd0`](https://github.com/graphql/graphiql/commit/8ab5fcd0a8399a0f8eb1b569751dd0e8390b9679) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Correctly handle `null` in type-guard functions for `Promise` and `Observable`
+
+## 0.7.1
+
+### Patch Changes
+
+- [#2737](https://github.com/graphql/graphiql/pull/2737) [`48872a87`](https://github.com/graphql/graphiql/commit/48872a87e6edec0c301102baaf669ffcce043a13) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Handle execution when there is no document AST (because the query editor is empty or the query string contains syntax errors)
+
 ## 0.7.0
 
 ### Minor Changes

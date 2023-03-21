@@ -37,10 +37,8 @@ export const isSubscriptionWithName = (
   let isSubscription = false;
   visit(document, {
     OperationDefinition(node) {
-      if (name === node.name?.value) {
-        if (node.operation === 'subscription') {
-          isSubscription = true;
-        }
+      if (name === node.name?.value && node.operation === 'subscription') {
+        isSubscription = true;
       }
     },
   });
@@ -87,14 +85,13 @@ export const createWebsocketsFetcherFromUrl = (
     });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
-    if (errorHasCode(err)) {
-      if (err.code === 'MODULE_NOT_FOUND') {
-        throw Error(
-          "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
-        );
-      }
+    if (errorHasCode(err) && err.code === 'MODULE_NOT_FOUND') {
+      throw new Error(
+        "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
+      );
     }
-    console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
+    // eslint-disable-next-line no-console
+    console.error(`Error creating websocket client for ${url}`, err);
   }
 };
 
@@ -107,7 +104,7 @@ export const createWebsocketsFetcherFromUrl = (
 export const createWebsocketsFetcherFromClient =
   (wsClient: Client) => (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
-      wsClient!.subscribe(graphQLParams, {
+      wsClient.subscribe(graphQLParams, {
         ...sink,
         error: err => {
           if (err instanceof CloseEvent) {
@@ -193,15 +190,18 @@ export const createMultipartFetcher = (
  * @param options {CreateFetcherOptions}
  * @returns
  */
-export const getWsFetcher = (options: CreateFetcherOptions) => {
+export const getWsFetcher = (
+  options: CreateFetcherOptions,
+  fetcherOpts: FetcherOpts | undefined,
+) => {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
-    return createWebsocketsFetcherFromUrl(
-      options.subscriptionUrl,
-      options.wsConnectionParams,
-    );
+    return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
+      ...options.wsConnectionParams,
+      ...fetcherOpts?.headers,
+    });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
   if (legacyWebsocketsClient) {

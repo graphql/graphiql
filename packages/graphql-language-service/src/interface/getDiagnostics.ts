@@ -19,9 +19,8 @@ import {
   print,
   validate,
   NoDeprecatedCustomRule,
+  parse,
 } from 'graphql';
-
-import { parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from '../parser';
 
@@ -65,31 +64,30 @@ export function getDiagnostics(
   externalFragments?: FragmentDefinitionNode[] | string,
 ): Array<Diagnostic> {
   let ast = null;
+  let fragments = '';
   if (externalFragments) {
-    if (typeof externalFragments === 'string') {
-      query += '\n\n' + externalFragments;
-    } else {
-      query +=
-        '\n\n' +
-        externalFragments.reduce((agg, node) => {
-          agg += print(node) + '\n\n';
-          return agg;
-        }, '');
-    }
+    fragments =
+      typeof externalFragments === 'string'
+        ? externalFragments
+        : externalFragments.reduce(
+            (acc, node) => acc + print(node) + '\n\n',
+            '',
+          );
   }
+  const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
 
   try {
-    ast = parse(query);
+    ast = parse(enhancedQuery);
   } catch (error) {
     if (error instanceof GraphQLError) {
       const range = getRange(
         error.locations?.[0] ?? { line: 0, column: 0 },
-        query,
+        enhancedQuery,
       );
 
       return [
         {
-          severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
+          severity: DIAGNOSTIC_SEVERITY.Error,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
@@ -113,25 +111,22 @@ export function validateQuery(
     return [];
   }
 
-  const validationErrorAnnotations = mapCat(
-    validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
+  const validationErrorAnnotations = validateWithCustomRules(
+    schema,
+    ast,
+    customRules,
+    isRelayCompatMode,
+  ).flatMap(error =>
+    annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
   // TODO: detect if > graphql@15.2.0, and use the new rule for this.
-  const deprecationWarningAnnotations = mapCat(
-    validate(schema, ast, [NoDeprecatedCustomRule]),
-    error => annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+  const deprecationWarningAnnotations = validate(schema, ast, [
+    NoDeprecatedCustomRule,
+  ]).flatMap(error =>
+    annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
   );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
-}
-
-// General utility for mapping-and-concatenating (aka flat-mapping).
-function mapCat<T>(
-  array: ReadonlyArray<T>,
-  mapper: (item: T) => Array<any>,
-): Array<any> {
-  return Array.prototype.concat.apply([], array.map(mapper));
 }
 
 function annotations(
@@ -143,7 +138,7 @@ function annotations(
     return [];
   }
   const highlightedNodes: Diagnostic[] = [];
-  error.nodes.forEach(node => {
+  for (const [i, node] of error.nodes.entries()) {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
@@ -158,7 +153,7 @@ function annotations(
 
       // @ts-ignore
       // https://github.com/microsoft/TypeScript/pull/32695
-      const loc = error.locations[0];
+      const loc = error.locations[i];
       const highlightLoc = getLocation(highlightNode);
       const end = loc.column + (highlightLoc.end - highlightLoc.start);
       highlightedNodes.push({
@@ -171,7 +166,7 @@ function annotations(
         ),
       });
     }
-  });
+  }
   return highlightedNodes;
 }
 

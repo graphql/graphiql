@@ -1,5 +1,246 @@
 # Change Log
 
+## 3.0.0-alpha.0
+
+### Major Changes
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - remove `initialTabs`, use `defaultTabs` instead
+
+### Patch Changes
+
+- Updated dependencies [[`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696), [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696)]:
+  - @graphiql/react@0.18.0-alpha.0
+
+## 2.4.7
+
+### Patch Changes
+
+- [#3198](https://github.com/graphql/graphiql/pull/3198) [`e6cb6395`](https://github.com/graphql/graphiql/commit/e6cb63956baf338f09806c2fb8d5648fde19869d) Thanks [@B2o5T](https://github.com/B2o5T)! - fix ReferenceError: window is not defined in Next.js
+
+## 2.4.6
+
+### Patch Changes
+
+- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unecessary renders by using useMemo or useCallback
+
+- Updated dependencies [[`911cf3e0`](https://github.com/graphql/graphiql/commit/911cf3e0b0fa13268245463c8db8299279e5c461), [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f), [`2ca4841b`](https://github.com/graphql/graphiql/commit/2ca4841baf74e87a3f067b3415f8da3347ee3898), [`7bf90929`](https://github.com/graphql/graphiql/commit/7bf90929f62ba812c0946e0424f9f843f7b6b0ff), [`431b7fe1`](https://github.com/graphql/graphiql/commit/431b7fe1efefa4867f0ea617adc436b1117052e8)]:
+  - @graphiql/react@0.17.6
+
+## 2.4.5
+
+### Patch Changes
+
+- Updated dependencies [[`2b212941`](https://github.com/graphql/graphiql/commit/2b212941628498957d95ee89a7a5a0623f391b7a), [`9b333a04`](https://github.com/graphql/graphiql/commit/9b333a047d6b75db7681f484156d8772e9f91810)]:
+  - @graphiql/react@0.17.5
+
+## 2.4.4
+
+### Patch Changes
+
+- Updated dependencies [[`707f3cbc`](https://github.com/graphql/graphiql/commit/707f3cbca3ac2ce186058e7d2b145cdf69bf7d9c), [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - @graphiql/react@0.17.4
+  - graphql-language-service@5.1.6
+
+## 2.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+  - @graphiql/react@0.17.3
+
+## 2.4.2
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+- Updated dependencies [[`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9), [`4879984e`](https://github.com/graphql/graphiql/commit/4879984ea1803a6e9f97d81c97e8ba27aacddae9), [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b), [`15c26eb6`](https://github.com/graphql/graphiql/commit/15c26eb6d621a85df9eecb2b8a5fa009fa2fe040)]:
+  - @graphiql/react@0.17.2
+  - @graphiql/toolkit@0.8.4
+  - graphql-language-service@5.1.4
+
+## 2.4.1
+
+### Patch Changes
+
+- [#3087](https://github.com/graphql/graphiql/pull/3087) [`0e2dfd49`](https://github.com/graphql/graphiql/commit/0e2dfd49b95d670a0955991fd65055000e52a9f8) Thanks [@B2o5T](https://github.com/B2o5T)! - remove nowhere used `entities` dependency
+
+- Updated dependencies [[`2d5c60ec`](https://github.com/graphql/graphiql/commit/2d5c60ecf717abafde2bddd32b2772261d3eec8b), [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d), [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773), [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0), [`7cf4908a`](https://github.com/graphql/graphiql/commit/7cf4908a5d4bd58af315047f4dec5236e8c701fc)]:
+  - @graphiql/react@0.17.1
+  - @graphiql/toolkit@0.8.3
+  - graphql-language-service@5.1.3
+
+## 2.4.0
+
+### Minor Changes
+
+- [#3012](https://github.com/graphql/graphiql/pull/3012) [`65f5176a`](https://github.com/graphql/graphiql/commit/65f5176a408cfbbc514ca60e2e4bd2ea133a8b0b) Thanks [@benjie](https://github.com/benjie)! - GraphiQL now maintains the DocExplorer navigation stack as best it can when the schema is updated
+
+### Patch Changes
+
+- [#2995](https://github.com/graphql/graphiql/pull/2995) [`5f276c41`](https://github.com/graphql/graphiql/commit/5f276c415ad93350382fec873025ffecc9a29d9d) Thanks [@imolorhe](https://github.com/imolorhe)! - fix(cm6-graphql): Fix query token used as field name
+
+- [#2962](https://github.com/graphql/graphiql/pull/2962) [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d) Thanks [@B2o5T](https://github.com/B2o5T)! - clean all ESLint warnings, add `--max-warnings=0` and `--cache` flags
+
+- [#2940](https://github.com/graphql/graphiql/pull/2940) [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-node-protocol` rule
+
+- Updated dependencies [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c), [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b), [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4), [`65f5176a`](https://github.com/graphql/graphiql/commit/65f5176a408cfbbc514ca60e2e4bd2ea133a8b0b), [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d), [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+  - @graphiql/react@0.17.0
+  - @graphiql/toolkit@0.8.2
+
+## 2.3.0
+
+### Minor Changes
+
+- [#2895](https://github.com/graphql/graphiql/pull/2895) [`ccba2f33`](https://github.com/graphql/graphiql/commit/ccba2f33b67a03f492222f7afde1354cfd033b42) Thanks [@TheMightyPenguin](https://github.com/TheMightyPenguin)! - Add user facing setting for persisting headers
+
+### Patch Changes
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922) [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b) Thanks [@B2o5T](https://github.com/B2o5T)! - extends `plugin:import/recommended` and fix warnings
+
+- [#2941](https://github.com/graphql/graphiql/pull/2941) [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-logical-operator-over-ternary` rule
+
+- [#2964](https://github.com/graphql/graphiql/pull/2964) [`cec3fb2a`](https://github.com/graphql/graphiql/commit/cec3fb2a493c4a0c40df7dfad04e1a95ed35e786) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-export-from` rule
+
+- [#2939](https://github.com/graphql/graphiql/pull/2939) [`bca318ce`](https://github.com/graphql/graphiql/commit/bca318ceb7821f0c4b3973c5b05131c9a23bf2cf) Thanks [@jonathanawesome](https://github.com/jonathanawesome)! - removes regenerator-runtime from cdn.ts, resolves #2868
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963) [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring` rule
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938) [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error` rule
+
+- Updated dependencies [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147), [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b), [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de), [`cec3fb2a`](https://github.com/graphql/graphiql/commit/cec3fb2a493c4a0c40df7dfad04e1a95ed35e786), [`695100bd`](https://github.com/graphql/graphiql/commit/695100bd317940ff3ffd8f56b54248c1dba1ac04), [`11e6ad11`](https://github.com/graphql/graphiql/commit/11e6ad11e745c671eb320731697887bb8d7177b7), [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9), [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9), [`d502a33b`](https://github.com/graphql/graphiql/commit/d502a33b4332f1025e947c02d7cfdc5799365c8d), [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913), [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49), [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215), [`ccba2f33`](https://github.com/graphql/graphiql/commit/ccba2f33b67a03f492222f7afde1354cfd033b42), [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171), [`4ff2794c`](https://github.com/graphql/graphiql/commit/4ff2794c8b6032168e27252096cb276ce712878e)]:
+  - @graphiql/react@0.16.0
+  - @graphiql/toolkit@0.8.1
+  - graphql-language-service@5.1.1
+
+## 2.2.0
+
+### Minor Changes
+
+- [#2908](https://github.com/graphql/graphiql/pull/2908) [`3340fd74`](https://github.com/graphql/graphiql/commit/3340fd745e181ba8f1f5a6ed002a04d253a78d4a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate the `initialTabs` prop and add a `defaultTabs` props that supersedes it
+
+### Patch Changes
+
+- [#2911](https://github.com/graphql/graphiql/pull/2911) [`118db402`](https://github.com/graphql/graphiql/commit/118db402eb1f5569e29f8f9bffef86d941dd2634) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix styles of secondary editor buttons
+
+- [#2919](https://github.com/graphql/graphiql/pull/2919) [`f6cae4ea`](https://github.com/graphql/graphiql/commit/f6cae4eaa0258ea7fcde97ba6368830955f0abf4) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix overflow when there are lots of tabs that don't fit into the tab bar at once
+
+- Updated dependencies [[`16174a05`](https://github.com/graphql/graphiql/commit/16174a053ed89fb9554d096395ab7bf69c8f6911), [`f6cae4ea`](https://github.com/graphql/graphiql/commit/f6cae4eaa0258ea7fcde97ba6368830955f0abf4), [`3340fd74`](https://github.com/graphql/graphiql/commit/3340fd745e181ba8f1f5a6ed002a04d253a78d4a), [`0851d5f9`](https://github.com/graphql/graphiql/commit/0851d5f9ecf709597d0a698609d88f99c4395665), [`83364b28`](https://github.com/graphql/graphiql/commit/83364b28020b5946ed58908d6d977f1de766e75d), [`3a7d0007`](https://github.com/graphql/graphiql/commit/3a7d00071922e2005777c92daf6ad0c1ce3e2816)]:
+  - @graphiql/react@0.15.0
+
+## 2.1.0
+
+### Minor Changes
+
+- [#2821](https://github.com/graphql/graphiql/pull/2821) [`29630c22`](https://github.com/graphql/graphiql/commit/29630c2219bca8b825ab0897840864364a9de2e8) Thanks [@avaly](https://github.com/avaly)! - Initial tabs support
+
+### Patch Changes
+
+- [#2885](https://github.com/graphql/graphiql/pull/2885) [`8f926489`](https://github.com/graphql/graphiql/commit/8f9264896e9971951853463a283a90ba3d1310ef) Thanks [@simhnna](https://github.com/simhnna)! - Fix stop execution button showing a dropdown
+
+- [#2886](https://github.com/graphql/graphiql/pull/2886) [`2ba2f620`](https://github.com/graphql/graphiql/commit/2ba2f620b6e7de3ae6b5ea641f33e600f7f44e08) Thanks [@B2o5T](https://github.com/B2o5T)! - feat: add `defaultHeaders` prop
+
+- Updated dependencies [[`29630c22`](https://github.com/graphql/graphiql/commit/29630c2219bca8b825ab0897840864364a9de2e8), [`8f926489`](https://github.com/graphql/graphiql/commit/8f9264896e9971951853463a283a90ba3d1310ef), [`2ba2f620`](https://github.com/graphql/graphiql/commit/2ba2f620b6e7de3ae6b5ea641f33e600f7f44e08)]:
+  - @graphiql/react@0.14.0
+
+## 2.0.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @graphiql/react@0.13.7
+
+## 2.0.12
+
+### Patch Changes
+
+- [#2758](https://github.com/graphql/graphiql/pull/2758) [`d63801fa`](https://github.com/graphql/graphiql/commit/d63801fad08e840eff7ff26f55694c6d18769466) Thanks [@LekoArts](https://github.com/LekoArts)! - Fix the width of the plugin pane
+
+- Updated dependencies []:
+  - @graphiql/react@0.13.6
+
+## 2.0.11
+
+### Patch Changes
+
+- Updated dependencies [[`682ad06e`](https://github.com/graphql/graphiql/commit/682ad06e58ded2f82fa973e8e6613dd654417fe2)]:
+  - @graphiql/react@0.13.5
+
+## 2.0.10
+
+### Patch Changes
+
+- Updated dependencies [[`4e2f7ff9`](https://github.com/graphql/graphiql/commit/4e2f7ff99c578ceae54a1ae17c02088bd91b89c3)]:
+  - @graphiql/react@0.13.4
+
+## 2.0.9
+
+### Patch Changes
+
+- [#2778](https://github.com/graphql/graphiql/pull/2778) [`905f2e5e`](https://github.com/graphql/graphiql/commit/905f2e5ea3f0b304d27ea583e250ed4baff5016e) Thanks [@jonathanawesome](https://github.com/jonathanawesome)! - Adds a box-model reset for all children of the `.graphiql-container` class. This change facilitated another change to the `--sidebar-width` variable.
+
+- Updated dependencies [[`42700076`](https://github.com/graphql/graphiql/commit/4270007671ce52f6c2250739916083611748b657), [`36839800`](https://github.com/graphql/graphiql/commit/36839800de128b05d11c262036c8240390c72a14), [`905f2e5e`](https://github.com/graphql/graphiql/commit/905f2e5ea3f0b304d27ea583e250ed4baff5016e)]:
+  - @graphiql/react@0.13.3
+
+## 2.0.8
+
+### Patch Changes
+
+- [#2653](https://github.com/graphql/graphiql/pull/2653) [`39b4668d`](https://github.com/graphql/graphiql/commit/39b4668d43176526d37ecf07d8c86901d53e0d80) Thanks [@dylanowen](https://github.com/dylanowen)! - Fix `fetchError` not being cleared when a new `fetcher` is used
+
+- Updated dependencies [[`39b4668d`](https://github.com/graphql/graphiql/commit/39b4668d43176526d37ecf07d8c86901d53e0d80)]:
+  - @graphiql/react@0.13.2
+
+## 2.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`e244b782`](https://github.com/graphql/graphiql/commit/e244b78291c2e2bb02d5753db82437926ebb4df4)]:
+  - @graphiql/toolkit@0.8.0
+  - @graphiql/react@0.13.1
+
+## 2.0.6
+
+### Patch Changes
+
+- [#2735](https://github.com/graphql/graphiql/pull/2735) [`ca067d88`](https://github.com/graphql/graphiql/commit/ca067d88148c5d221d196790a997ad599038fad1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Use the new CSS variables for color alpha values defined in `@graphiql/react` in style definitions
+
+- Updated dependencies [[`ca067d88`](https://github.com/graphql/graphiql/commit/ca067d88148c5d221d196790a997ad599038fad1), [`674bf3f8`](https://github.com/graphql/graphiql/commit/674bf3f8ff321dfb8471b0f6e5419bb77ddc94af), [`32a70065`](https://github.com/graphql/graphiql/commit/32a70065434eaa7733e28cda0ea0e7d51952e62a)]:
+  - @graphiql/react@0.13.0
+  - @graphiql/toolkit@0.7.3
+
+## 2.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`bfa90f24`](https://github.com/graphql/graphiql/commit/bfa90f249be4f68049c1bb81abfb524ae623313f), [`8ab5fcd0`](https://github.com/graphql/graphiql/commit/8ab5fcd0a8399a0f8eb1b569751dd0e8390b9679)]:
+  - @graphiql/toolkit@0.7.2
+  - @graphiql/react@0.12.1
+
+## 2.0.4
+
+### Patch Changes
+
+- [#2745](https://github.com/graphql/graphiql/pull/2745) [`92a17490`](https://github.com/graphql/graphiql/commit/92a17490c3842b4f83ed1065b73a803f73d02a17) Thanks [@acao](https://github.com/acao)! - Specify MIT license for `@graphiql/plugin-explorer` `package.json`
+
+* [#2741](https://github.com/graphql/graphiql/pull/2741) [`0219eef3`](https://github.com/graphql/graphiql/commit/0219eef39146495749aca2487112db52fa3bb8fd) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Improved sizing of button for adding tabs
+
+- [#2746](https://github.com/graphql/graphiql/pull/2746) [`6f0fa98e`](https://github.com/graphql/graphiql/commit/6f0fa98eadf897c7eaf8eb89e49c46880d381033) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix CodeMirror editors overlapping other parts of the UI on certain browser-OS-combinations (e.g. Chrome on Windows)
+
+- Updated dependencies [[`98e14155`](https://github.com/graphql/graphiql/commit/98e14155c650ee7c5ac639e594eb47f0052b7fa9), [`48872a87`](https://github.com/graphql/graphiql/commit/48872a87e6edec0c301102baaf669ffcce043a13), [`7dfea94a`](https://github.com/graphql/graphiql/commit/7dfea94afc0cfe79b5080f10d840bfdce53f02d7), [`3aa1f39f`](https://github.com/graphql/graphiql/commit/3aa1f39f6df559b54f703937ed510c8ba1f21058), [`0219eef3`](https://github.com/graphql/graphiql/commit/0219eef39146495749aca2487112db52fa3bb8fd)]:
+  - @graphiql/react@0.12.0
+  - @graphiql/toolkit@0.7.1
+
+## 2.0.3
+
+### Patch Changes
+
+- [#2706](https://github.com/graphql/graphiql/pull/2706) [`ff20a381`](https://github.com/graphql/graphiql/commit/ff20a3818f10f648d7b8c18229138b0424b8b25c) Thanks [@mxstbr](https://github.com/mxstbr)! - Wrap the GraphiQL logo with a link to the repository
+
+* [#2715](https://github.com/graphql/graphiql/pull/2715) [`c922719e`](https://github.com/graphql/graphiql/commit/c922719e6b960776cd0a71f14d2b86c6bb69373c) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add the contents of `graphql` and `@graphiql/react` as static properties to the `GraphiQL` component in CDN bundles so that these modules can be reused from plugin CDN bundles.
+
 ## 2.0.2
 
 ### Patch Changes
@@ -438,8 +679,7 @@
 
 ### Minor Changes
 
-- [#2197](https://github.com/graphql/graphiql/pull/2197) [`3137a6c4`](https://github.com/graphql/graphiql/commit/3137a6c4333dad8db8a0eb980d6c6464c7292946) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Now featuring: tabs! 🥳 🍾 just opt-in with new prop `<GraphiQL tabs />`.
-  You can also both opt-in and provide a handler via `<GraphiQL tabs={{ onTabsChange }} />`!
+- [#2197](https://github.com/graphql/graphiql/pull/2197) [`3137a6c4`](https://github.com/graphql/graphiql/commit/3137a6c4333dad8db8a0eb980d6c6464c7292946) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Now featuring: tabs! 🥳 🍾 just opt-in with new prop `<GraphiQL tabs />`. You can also both opt-in and provide a handler via `<GraphiQL tabs={{ onTabsChange }} />`!
 
 ### Patch Changes
 
@@ -483,7 +723,7 @@
 
 - [#2191](https://github.com/graphql/graphiql/pull/2191) [`eb8af7b5`](https://github.com/graphql/graphiql/commit/eb8af7b5666e7ed01497a862127011524fc400f5) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Allow inserting content before the topBar element via the `beforeTopBarContent` property.
 
-  ```ts
+  ```jsx
   <GraphiQL beforeTopBarContent={<SomeComponent />} />
   ```
 
@@ -583,9 +823,7 @@
 
 ### Patch Changes
 
-- [#2077](https://github.com/graphql/graphiql/pull/2077) [`701ca13f`](https://github.com/graphql/graphiql/commit/701ca13f625735564d71931e6d917e5bf69c8aa5) Thanks [@acao](https://github.com/acao)! - Include schema description in DocExplorer for schema introspection requests. Enables the `schemaDescription` option for `getIntrospectionQuery()`.
-  Also includes `deprecationReason` support in DocExplorer for arguments!
-  Enables `inputValueDeprecation` in `getIntrospectionQuery()` and displays deprecation section on field doc view.
+- [#2077](https://github.com/graphql/graphiql/pull/2077) [`701ca13f`](https://github.com/graphql/graphiql/commit/701ca13f625735564d71931e6d917e5bf69c8aa5) Thanks [@acao](https://github.com/acao)! - Include schema description in DocExplorer for schema introspection requests. Enables the `schemaDescription` option for `getIntrospectionQuery()`. Also includes `deprecationReason` support in DocExplorer for arguments! Enables `inputValueDeprecation` in `getIntrospectionQuery()` and displays deprecation section on field doc view.
 - Updated dependencies [[`9df315b4`](https://github.com/graphql/graphiql/commit/9df315b44896efa313ed6744445fc8f9e702ebc3)]:
   - graphql-language-service@4.0.0
   - codemirror-graphql@1.2.6
@@ -722,8 +960,7 @@
 
 - [`6a459f4c`](https://github.com/graphql/graphiql/commit/6a459f4c235bb0d70725ae6ad7fc1cfa34f49dca) [#1968](https://github.com/graphql/graphiql/pull/1968) Thanks [@acao](https://github.com/acao)! - Remove `optionalDependencies` entirely, remove `subscriptions-transport-ws` which introduces vulnerabilities, upgrade `@n1ru4l/push-pull-async-iterable-iterator` to 3.0.0, upgrade `graphql-ws` several minor versions - the `graphql-ws@5.x` upgrade will come in a later minor release.
 
-* [`eb2d91fa`](https://github.com/graphql/graphiql/commit/eb2d91fa8e4a03cb5663f27f724db2c95989a40f) [#1914](https://github.com/graphql/graphiql/pull/1914) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - fix: history can now be saved even when query history panel is not opened
-  feat: create a new maxHistoryLength prop to allow more than 20 queries in history panel
+* [`eb2d91fa`](https://github.com/graphql/graphiql/commit/eb2d91fa8e4a03cb5663f27f724db2c95989a40f) [#1914](https://github.com/graphql/graphiql/pull/1914) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - fix: history can now be saved even when query history panel is not opened feat: create a new maxHistoryLength prop to allow more than 20 queries in history panel
 
 - [`04fad79c`](https://github.com/graphql/graphiql/commit/04fad79c094318d4b4c9e0250c5cff55d9fc5116) [#1889](https://github.com/graphql/graphiql/pull/1889) Thanks [@henryqdineen](https://github.com/henryqdineen)! - feat: export ToolbarSelectOption and ToolbarMenuItem
 
@@ -965,9 +1202,7 @@
 
 ### BREAKING CHANGES
 
-- Deprecate support for React 15. Please use React 16.8 or greater for hooks support.
-  Co-authored-by: @ryan-m-walker, @acao
-  Reviewed-by: @benjie
+- Deprecate support for React 15. Please use React 16.8 or greater for hooks support. Co-authored-by: @ryan-m-walker, @acao Reviewed-by: @benjie
 
 ## [0.17.5](https://github.com/graphql/graphiql/compare/graphiql@0.17.4...graphiql@0.17.5) (2019-12-09)
 

@@ -9,7 +9,7 @@
 }
 
 .graphiql-doc-explorer-argument-deprecation {
-  background-color: hsla(var(--color-warning), 0.07);
+  background-color: hsla(var(--color-warning), var(--alpha-background-light));
   border: 1px solid hsl(var(--color-warning));
   border-radius: var(--border-radius-4);
   color: hsl(var(--color-warning));

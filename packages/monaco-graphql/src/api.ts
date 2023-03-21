@@ -10,6 +10,7 @@ import { Emitter } from 'monaco-editor';
 import type { IEvent } from 'monaco-editor';
 import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
 import type {
+  CompletionSettings,
   DiagnosticSettings,
   FormattingOptions,
   ModeConfiguration,
@@ -23,6 +24,7 @@ export type MonacoGraphQLAPIOptions = {
   modeConfiguration: ModeConfiguration;
   formattingOptions: FormattingOptions;
   diagnosticSettings: DiagnosticSettings;
+  completionSettings: CompletionSettings;
 };
 
 export type SchemaEntry = {
@@ -33,9 +35,10 @@ export type SchemaEntry = {
 
 export class MonacoGraphQLAPI {
   private _onDidChange = new Emitter<MonacoGraphQLAPI>();
-  private _formattingOptions!: FormattingOptions;
-  private _modeConfiguration!: ModeConfiguration;
-  private _diagnosticSettings!: DiagnosticSettings;
+  private _formattingOptions: FormattingOptions;
+  private _modeConfiguration: ModeConfiguration;
+  private _diagnosticSettings: DiagnosticSettings;
+  private _completionSettings: CompletionSettings;
   private _schemas: SchemaConfig[] | null = null;
   private _schemasById: Record<string, SchemaConfig> = Object.create(null);
   private _languageId: string;
@@ -50,15 +53,17 @@ export class MonacoGraphQLAPI {
     modeConfiguration,
     formattingOptions,
     diagnosticSettings,
+    completionSettings,
   }: MonacoGraphQLAPIOptions) {
     this._languageId = languageId;
 
     if (schemas) {
       this.setSchemaConfig(schemas);
     }
-    this.setModeConfiguration(modeConfiguration);
-    this.setFormattingOptions(formattingOptions);
-    this.setDiagnosticSettings(diagnosticSettings);
+    this._modeConfiguration = modeConfiguration ?? modeConfigurationDefault;
+    this._completionSettings = completionSettings ?? completionSettingDefault;
+    this._diagnosticSettings = diagnosticSettings ?? diagnosticSettingDefault;
+    this._formattingOptions = formattingOptions ?? formattingDefaults;
   }
 
   public get onDidChange(): IEvent<MonacoGraphQLAPI> {
@@ -84,6 +89,9 @@ export class MonacoGraphQLAPI {
   }
   public get diagnosticSettings(): DiagnosticSettings {
     return this._diagnosticSettings;
+  }
+  public get completionSettings(): CompletionSettings {
+    return this._completionSettings;
   }
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;
@@ -123,6 +131,11 @@ export class MonacoGraphQLAPI {
     this._diagnosticSettings = diagnosticSettings || Object.create(null);
     this._onDidChange.fire(this);
   }
+
+  public setCompletionSettings(completionSettings: CompletionSettings): void {
+    this._completionSettings = completionSettings || Object.create(null);
+    this._onDidChange.fire(this);
+  }
 }
 
 export function create(
@@ -132,38 +145,44 @@ export function create(
   if (!config) {
     return new MonacoGraphQLAPI({
       languageId,
+      schemas: [],
       formattingOptions: formattingDefaults,
       modeConfiguration: modeConfigurationDefault,
       diagnosticSettings: diagnosticSettingDefault,
-    });
-  } else {
-    const {
-      schemas,
-      formattingOptions,
-      modeConfiguration,
-      diagnosticSettings,
-    } = config;
-    return new MonacoGraphQLAPI({
-      languageId,
-      schemas,
-      formattingOptions: {
-        ...formattingDefaults,
-        ...formattingOptions,
-        prettierConfig: {
-          ...formattingDefaults.prettierConfig,
-          ...formattingOptions?.prettierConfig,
-        },
-      },
-      modeConfiguration: {
-        ...modeConfigurationDefault,
-        ...modeConfiguration,
-      },
-      diagnosticSettings: {
-        ...diagnosticSettingDefault,
-        ...diagnosticSettings,
-      },
+      completionSettings: completionSettingDefault,
     });
   }
+  const {
+    schemas,
+    formattingOptions,
+    modeConfiguration,
+    diagnosticSettings,
+    completionSettings,
+  } = config;
+  return new MonacoGraphQLAPI({
+    languageId,
+    schemas,
+    formattingOptions: {
+      ...formattingDefaults,
+      ...formattingOptions,
+      prettierConfig: {
+        ...formattingDefaults.prettierConfig,
+        ...formattingOptions?.prettierConfig,
+      },
+    },
+    modeConfiguration: {
+      ...modeConfigurationDefault,
+      ...modeConfiguration,
+    },
+    diagnosticSettings: {
+      ...diagnosticSettingDefault,
+      ...diagnosticSettings,
+    },
+    completionSettings: {
+      ...completionSettingDefault,
+      ...completionSettings,
+    },
+  });
 }
 
 export const modeConfigurationDefault: Required<ModeConfiguration> = {
@@ -181,6 +200,8 @@ export const modeConfigurationDefault: Required<ModeConfiguration> = {
 
 export const formattingDefaults: FormattingOptions = {
   prettierConfig: {
+    // rationale? a11y.
+    // https://adamtuttle.codes/blog/2021/tabs-vs-spaces-its-an-accessibility-issue/
     tabWidth: 2,
   },
 };
@@ -189,4 +210,8 @@ export const diagnosticSettingDefault: DiagnosticSettings = {
   jsonDiagnosticSettings: {
     schemaValidation: 'error',
   },
+};
+
+export const completionSettingDefault: CompletionSettings = {
+  __experimental__fillLeafsOnComplete: false,
 };

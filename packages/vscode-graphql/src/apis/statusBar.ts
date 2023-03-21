@@ -60,6 +60,8 @@ const statusBarActivationLanguageIds = [
   'javascriptreact',
   'typescript',
   'typescriptreact',
+  'vue',
+  'svelte',
 ];
 
 export const createStatusBar = () => {
@@ -137,7 +139,7 @@ function updateStatusBar(
 
   if (
     editor &&
-    statusBarActivationLanguageIds.indexOf(editor.document.languageId) > -1
+    statusBarActivationLanguageIds.includes(editor.document.languageId)
   ) {
     statusBarItem.show();
   } else {

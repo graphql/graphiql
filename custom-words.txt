@@ -6,6 +6,7 @@ alexey
 alok
 arminio
 asiandrummer
+aumy
 benjie
 bobbybobby
 borggreve
@@ -58,10 +59,14 @@ timsuchanek
 urigo
 wincent
 yoshiakis
+Leko
+LekoArts
 
 
 // packages and tools
 argparse
+arthurgeron
+atpl
 browserslist
 bundlephobia
 changesets
@@ -70,15 +75,21 @@ codesandbox
 combobox
 commitlint
 cosmicconfig
+clsx
 dompurify
+dustjs
 dset
 esbuild
 execa
 graphiql
+hamljs
+haml
+headlessui
 inno
 intellij
 jsdelivr
 jsgl
+jqtpl
 manypkg
 markdownit
 meros
@@ -87,14 +98,24 @@ onegraph
 openvsx
 ovsx
 picomatch
+preact
 snyk
 stackblitz
 strictsoftware
+templayed
 typedoc
+twing
 undici
+usememo
+velocityjs
 vite
 vitejs
+wonka
 wsrun
+lezer
+buildhelper
+sonarjs
+svgr
 
 // identifiers used in code and configs
 acmerc
@@ -111,6 +132,7 @@ filesfor
 flowtests
 foldgutter
 foldmarker
+htmling
 ghapi
 graphqlconfig
 graphqlrc
@@ -123,6 +145,8 @@ linkify
 listbox
 listvalues
 matchingbracket
+marko
+middlewares
 modulemap
 myschema
 newhope
@@ -139,12 +163,15 @@ outlineable
 postbuild
 prebuild
 quasis
+ractive
 resi
 resizer
 runmode
 searchcursor
 selectionset
 singleline
+sfc's
+squirrelly
 socker
 streamable
 subword
@@ -152,9 +179,11 @@ testid
 testonly
 typeof
 unfocus
+urql
 unnormalized
 unsubscribable
 websockets
+vash
 
 
 // fonts
@@ -173,6 +202,7 @@ amfoss
 colmena
 firecamp
 gdezerno
+grafbase
 graphile
 novvum
 pieas
@@ -199,6 +229,9 @@ paas
 qlapi
 qlid
 qlide
+
+// cspell en-us/en-gb edgecases?
+behaviour
 
 // other
 architecting

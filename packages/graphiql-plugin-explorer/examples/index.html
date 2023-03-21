@@ -1,0 +1,81 @@
+<!--
+ *  Copyright (c) 2021 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <style>
+      body {
+        height: 100%;
+        margin: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #graphiql {
+        height: 100vh;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@graphiql/plugin-explorer/dist/style.css"
+    />
+  </head>
+
+  <body>
+    <div id="graphiql">Loading...</div>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <script
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+      integrity="sha512-FVCV2//UVo1qJ3Kg6kkHLe0Hg+IJhjrGa+aYHh8xD4KmwbbjthIzvaAcCJsQgA43+k+6u7HqORKXMyMt82Srfw=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@graphiql/plugin-explorer@0.1.12/dist/graphiql-plugin-explorer.umd.js"
+      integrity="sha512-Fjas/uSkzvsFjbv4jqU9nt4ulU7LDjiMAXW2YFTYD96NgKS1fhhAsGR4b2k2VaVLsE29aia3vyobAq9TNzusvA=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      var fetcher = GraphiQL.createFetcher({
+        url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+      });
+
+      function GraphiQLWithExplorer() {
+        var [query, setQuery] = React.useState(
+          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
+        );
+        var explorerPlugin = GraphiQLPluginExplorer.useExplorerPlugin({
+          query: query,
+          onEdit: setQuery,
+        });
+        return React.createElement(GraphiQL, {
+          fetcher: fetcher,
+          defaultEditorToolsVisibility: true,
+          plugins: [explorerPlugin],
+          query: query,
+          onEditQuery: setQuery,
+        });
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+      root.render(React.createElement(GraphiQLWithExplorer));
+    </script>
+  </body>
+</html>

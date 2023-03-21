@@ -16,6 +16,10 @@ import {
   ValidationRule,
   FieldNode,
   GraphQLError,
+  Kind,
+  parse,
+  print,
+  isTypeDefinitionNode,
 } from 'graphql';
 
 import {
@@ -45,35 +49,12 @@ import {
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
+import type { Logger } from 'vscode-languageserver';
 import {
   Hover,
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
-
-import { Kind, parse, print } from 'graphql';
-import { Logger } from './Logger';
-
-const {
-  FRAGMENT_DEFINITION,
-  OBJECT_TYPE_DEFINITION,
-  INTERFACE_TYPE_DEFINITION,
-  ENUM_TYPE_DEFINITION,
-  UNION_TYPE_DEFINITION,
-  SCALAR_TYPE_DEFINITION,
-  INPUT_OBJECT_TYPE_DEFINITION,
-  SCALAR_TYPE_EXTENSION,
-  OBJECT_TYPE_EXTENSION,
-  INTERFACE_TYPE_EXTENSION,
-  UNION_TYPE_EXTENSION,
-  ENUM_TYPE_EXTENSION,
-  INPUT_OBJECT_TYPE_EXTENSION,
-  DIRECTIVE_DEFINITION,
-  FRAGMENT_SPREAD,
-  OPERATION_DEFINITION,
-  NAMED_TYPE,
-  FIELD,
-} = Kind;
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
@@ -142,19 +123,19 @@ export class GraphQLLanguageService {
       if (!schemaPath || uri !== schemaPath) {
         documentHasExtensions = documentAST.definitions.some(definition => {
           switch (definition.kind) {
-            case OBJECT_TYPE_DEFINITION:
-            case INTERFACE_TYPE_DEFINITION:
-            case ENUM_TYPE_DEFINITION:
-            case UNION_TYPE_DEFINITION:
-            case SCALAR_TYPE_DEFINITION:
-            case INPUT_OBJECT_TYPE_DEFINITION:
-            case SCALAR_TYPE_EXTENSION:
-            case OBJECT_TYPE_EXTENSION:
-            case INTERFACE_TYPE_EXTENSION:
-            case UNION_TYPE_EXTENSION:
-            case ENUM_TYPE_EXTENSION:
-            case INPUT_OBJECT_TYPE_EXTENSION:
-            case DIRECTIVE_DEFINITION:
+            case Kind.OBJECT_TYPE_DEFINITION:
+            case Kind.INTERFACE_TYPE_DEFINITION:
+            case Kind.ENUM_TYPE_DEFINITION:
+            case Kind.UNION_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_DEFINITION:
+            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_EXTENSION:
+            case Kind.OBJECT_TYPE_EXTENSION:
+            case Kind.INTERFACE_TYPE_EXTENSION:
+            case Kind.UNION_TYPE_EXTENSION:
+            case Kind.ENUM_TYPE_EXTENSION:
+            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
+            case Kind.DIRECTIVE_DEFINITION:
               return true;
           }
 
@@ -202,7 +183,7 @@ export class GraphQLLanguageService {
     let validationAst = null;
     try {
       validationAst = parse(source);
-    } catch (error) {
+    } catch {
       // the query string is already checked to be parsed properly - errors
       // from this parse must be from corrupted fragment dependencies.
       // For IDEs we don't care for errors outside of the currently edited
@@ -229,12 +210,7 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    return validateQuery(
-      validationAst,
-      schema,
-      customRules as ValidationRule[],
-      isRelayCompatMode,
-    );
+    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
   public async getAutocompleteSuggestions(
@@ -262,7 +238,12 @@ export class GraphQLLanguageService {
         position,
         undefined,
         fragmentInfo,
-        { uri: filePath },
+        {
+          uri: filePath,
+          fillLeafsOnComplete:
+            projectConfig?.extensions?.languageService?.fillLeafsOnComplete ??
+            false,
+        },
       );
     }
     return [];
@@ -299,14 +280,14 @@ export class GraphQLLanguageService {
     let ast;
     try {
       ast = parse(query);
-    } catch (error) {
+    } catch {
       return null;
     }
 
     const node = getASTNodeAtPosition(query, ast, position);
     if (node) {
       switch (node.kind) {
-        case FRAGMENT_SPREAD:
+        case Kind.FRAGMENT_SPREAD:
           return this._getDefinitionForFragmentSpread(
             query,
             ast,
@@ -315,15 +296,15 @@ export class GraphQLLanguageService {
             projectConfig,
           );
 
-        case FRAGMENT_DEFINITION:
-        case OPERATION_DEFINITION:
+        case Kind.FRAGMENT_DEFINITION:
+        case Kind.OPERATION_DEFINITION:
           return getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
             node,
           );
 
-        case NAMED_TYPE:
+        case Kind.NAMED_TYPE:
           return this._getDefinitionForNamedType(
             query,
             ast,
@@ -332,7 +313,7 @@ export class GraphQLLanguageService {
             projectConfig,
           );
 
-        case FIELD:
+        case Kind.FIELD:
           return this._getDefinitionForField(
             query,
             ast,
@@ -411,25 +392,13 @@ export class GraphQLLanguageService {
         objectTypeDefinitions,
       );
 
-    const localObjectTypeDefinitions = ast.definitions.filter(
-      definition =>
-        definition.kind === OBJECT_TYPE_DEFINITION ||
-        definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === ENUM_TYPE_DEFINITION ||
-        definition.kind === SCALAR_TYPE_DEFINITION ||
-        definition.kind === INTERFACE_TYPE_DEFINITION,
-    );
-
-    const typeCastedDefs =
-      localObjectTypeDefinitions as any as Array<TypeDefinitionNode>;
-
-    const localOperationDefinitionInfos = typeCastedDefs.map(
-      (definition: TypeDefinitionNode) => ({
+    const localOperationDefinitionInfos = ast.definitions
+      .filter(isTypeDefinitionNode)
+      .map((definition: TypeDefinitionNode) => ({
         filePath,
         content: query,
         definition,
-      }),
-    );
+      }));
 
     const result = await getDefinitionQueryResultForNamedType(
       query,
@@ -492,7 +461,7 @@ export class GraphQLLanguageService {
     );
 
     const localFragDefinitions = ast.definitions.filter(
-      definition => definition.kind === FRAGMENT_DEFINITION,
+      definition => definition.kind === Kind.FRAGMENT_DEFINITION,
     );
 
     const typeCastedDefs =

@@ -2,7 +2,7 @@ import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useStorageContext } from './storage';
 
 /**
- * The value `null` semantically means that the user does not explicity choose
+ * The value `null` semantically means that the user does not explicitly choose
  * any theme, so we use the system default.
  */
 export type Theme = 'light' | 'dark' | null;
@@ -35,8 +35,7 @@ export function useTheme() {
       return;
     }
 
-    document.body.classList.remove(`graphiql-light`);
-    document.body.classList.remove(`graphiql-dark`);
+    document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
     }

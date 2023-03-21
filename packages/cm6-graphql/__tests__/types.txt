@@ -1,0 +1,43 @@
+# String
+
+{ test(v1: "abc") }
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,StringValue),")"))),"}")))
+
+# Enum
+
+{ test(v1: ABC) }
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,EnumValue),")"))),"}")))
+
+# Numbers
+
+{ test(v1: 123) }
+{ test(v1: 123.01) }
+{ test(v1: -1.35384e+3) }
+
+==>
+
+Document(
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,IntValue),")"))),"}")),
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,FloatValue),")"))),"}")),
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,FloatValue),")"))),"}"))
+)
+
+# List
+
+{ test(v1: []) }
+{ test(v1: ["abc", "def"]) }
+{ test(v1: ["abc", ABC, 123, 213.01, true, null]) }
+
+==>
+
+Document(
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,ListValue("[","]")),")"))),"}")),
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,ListValue("[",StringValue,StringValue,"]")),")"))),"}")),
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,ListValue("[",StringValue,EnumValue,IntValue,FloatValue,BooleanValue,NullValue,"]")),")"))),"}"))
+)

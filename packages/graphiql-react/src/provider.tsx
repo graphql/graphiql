@@ -24,6 +24,8 @@ export function GraphiQLProvider({
   children,
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
+  defaultHeaders,
+  defaultTabs,
   externalFragments,
   fetcher,
   getDefaultFieldNames,
@@ -52,6 +54,8 @@ export function GraphiQLProvider({
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <EditorContextProvider
           defaultQuery={defaultQuery}
+          defaultHeaders={defaultHeaders}
+          defaultTabs={defaultTabs}
           externalFragments={externalFragments}
           headers={headers}
           onEditOperationName={onEditOperationName}

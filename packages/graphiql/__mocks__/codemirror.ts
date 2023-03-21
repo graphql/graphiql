@@ -9,9 +9,8 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
     _emit('change', e);
   });
   mockTextArea.value = value;
-  mockWrapper.appendChild(mockGutter);
-  mockWrapper.appendChild(mockTextArea);
-  node.appendChild(mockWrapper);
+  mockWrapper.append(mockGutter, mockTextArea);
+  node.append(mockWrapper);
 
   function _emit(event, data) {
     if (_eventListeners[event]) {

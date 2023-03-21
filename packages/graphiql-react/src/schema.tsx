@@ -179,7 +179,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const { fetcher, onSchemaChange } = props;
+  const { fetcher, onSchemaChange, dangerouslyAssumeSchemaIsValid, children } =
+    props;
   const introspect = useCallback(() => {
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -192,9 +193,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 
     const counter = ++counterRef.current;
 
-    setSchema(undefined);
-
     const maybeIntrospectionData = props.schema;
+
     async function fetchIntrospectionData() {
       if (maybeIntrospectionData) {
         // No need to introspect if we already have the data
@@ -227,6 +227,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       }
 
       setIsFetching(true);
+      setFetchError(null);
 
       let result = await fetch;
 
@@ -317,10 +318,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
-      if (event.keyCode === 82 && event.shiftKey && event.ctrlKey) {
+      if (event.ctrlKey && event.key === 'R') {
         introspect();
       }
     }
+
     window.addEventListener('keydown', triggerIntrospection);
     return () => window.removeEventListener('keydown', triggerIntrospection);
   });
@@ -329,11 +331,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Derive validation errors from the schema
    */
   const validationErrors = useMemo(() => {
-    if (!schema || props.dangerouslyAssumeSchemaIsValid) {
+    if (!schema || dangerouslyAssumeSchemaIsValid) {
       return [];
     }
     return validateSchema(schema);
-  }, [schema, props.dangerouslyAssumeSchemaIsValid]);
+  }, [schema, dangerouslyAssumeSchemaIsValid]);
 
   /**
    * Memoize context value
@@ -350,9 +352,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   );
 
   return (
-    <SchemaContext.Provider value={value}>
-      {props.children}
-    </SchemaContext.Provider>
+    <SchemaContext.Provider value={value}>{children}</SchemaContext.Provider>
   );
 }
 
@@ -416,7 +416,7 @@ function parseHeaderString(headersString: string | undefined) {
     if (headersString) {
       headers = JSON.parse(headersString);
     }
-  } catch (err) {
+  } catch {
     isValidJSON = false;
   }
   return { headers, isValidJSON };

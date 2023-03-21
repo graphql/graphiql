@@ -1,36 +1,41 @@
-import { forwardRef, ReactNode } from 'react';
-import { Menu, Tooltip } from '../ui';
+import { ReactNode } from 'react';
+import { clsx } from 'clsx';
+import { DropdownMenu, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 
 import './menu.css';
+import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 type ToolbarMenuProps = {
   button: ReactNode;
   label: string;
 };
 
-const ToolbarMenuRoot = forwardRef<
-  HTMLDivElement,
-  ToolbarMenuProps & JSX.IntrinsicElements['div']
->(({ button, children, label, ...props }, ref) => (
-  <Menu {...props} ref={ref}>
+const ToolbarMenuRoot = ({
+  button,
+  children,
+  label,
+  ...props
+}: ToolbarMenuProps & {
+  children: ReactNode;
+  className?: string;
+} & DropdownMenuProps) => (
+  <DropdownMenu {...props}>
     <Tooltip label={label}>
-      <Menu.Button
-        className={compose(
+      <DropdownMenu.Button
+        className={clsx(
           'graphiql-un-styled graphiql-toolbar-menu',
           props.className,
         )}
         aria-label={label}
       >
         {button}
-      </Menu.Button>
+      </DropdownMenu.Button>
     </Tooltip>
-    <Menu.List>{children}</Menu.List>
-  </Menu>
-));
-ToolbarMenuRoot.displayName = 'ToolbarMenu';
+    <DropdownMenu.Content>{children}</DropdownMenu.Content>
+  </DropdownMenu>
+);
 
 export const ToolbarMenu = createComponentGroup(ToolbarMenuRoot, {
-  Item: Menu.Item,
+  Item: DropdownMenu.Item,
 });

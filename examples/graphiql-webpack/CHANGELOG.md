@@ -1,7 +1,6 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## [1.1.1-alpha.8](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.1.1-alpha.7...example-graphiql-webpack@1.1.1-alpha.8) (2021-01-07)
 
@@ -109,9 +108,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### BREAKING CHANGES
 
-- Deprecate support for React 15. Please use React 16.8 or greater for hooks support.
-  Co-authored-by: @ryan-m-walker, @acao
-  Reviewed-by: @benjie
+- Deprecate support for React 15. Please use React 16.8 or greater for hooks support. Co-authored-by: @ryan-m-walker, @acao Reviewed-by: @benjie
 
 ## [0.0.10](https://github.com/graphql/graphiql/compare/graphiql-example-webpack@0.0.9...graphiql-example-webpack@0.0.10) (2019-12-09)
 

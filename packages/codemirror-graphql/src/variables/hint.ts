@@ -89,15 +89,13 @@ function getVariablesHint(
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
-  const kind = state.kind;
-  const step = state.step;
-
+  const { kind, step } = state;
   // Variables can only be an object literal.
   if (kind === 'Document' && step === 0) {
     return hintList(cur, token, [{ text: '{' }]);
   }
 
-  const variableToType = options.variableToType;
+  const { variableToType } = options;
   if (!variableToType) {
     return;
   }
@@ -118,21 +116,22 @@ function getVariablesHint(
   }
 
   // Input Object fields
-  if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
-    if (typeInfo.fields) {
-      const inputFields = Object.keys(typeInfo.fields).map(
-        fieldName => typeInfo.fields![fieldName],
-      );
-      return hintList(
-        cur,
-        token,
-        inputFields.map(field => ({
-          text: `"${field.name}": `,
-          type: field.type,
-          description: field.description,
-        })),
-      );
-    }
+  if (
+    (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) &&
+    typeInfo.fields
+  ) {
+    const inputFields = Object.keys(typeInfo.fields).map(
+      fieldName => typeInfo.fields![fieldName],
+    );
+    return hintList(
+      cur,
+      token,
+      inputFields.map(field => ({
+        text: `"${field.name}": `,
+        type: field.type,
+        description: field.description,
+      })),
+    );
   }
 
   // Input values.
@@ -150,7 +149,8 @@ function getVariablesHint(
       : undefined;
     if (namedInputType instanceof GraphQLInputObjectType) {
       return hintList(cur, token, [{ text: '{' }]);
-    } else if (namedInputType instanceof GraphQLEnumType) {
+    }
+    if (namedInputType instanceof GraphQLEnumType) {
       const values = namedInputType.getValues();
       // const values = Object.keys(valueMap).map(name => valueMap[name]); // TODO: Previously added
       return hintList(
@@ -162,7 +162,8 @@ function getVariablesHint(
           description: value.description,
         })),
       );
-    } else if (namedInputType === GraphQLBoolean) {
+    }
+    if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [
         { text: 'true', type: GraphQLBoolean, description: 'Not false.' }, // TODO: type and description don't seem to be used. Added them as optional anyway.
         { text: 'false', type: GraphQLBoolean, description: 'Not true.' },
@@ -170,10 +171,12 @@ function getVariablesHint(
     }
   }
 }
+
 interface VariableTypeInfo {
   type?: Maybe<GraphQLInputType>;
   fields?: Maybe<GraphQLInputFieldMap>;
 }
+
 // Utility for collecting rich type information given any token's state
 // from the graphql-variables-mode parser.
 function getTypeInfo(
@@ -186,22 +189,31 @@ function getTypeInfo(
   };
 
   forEachState(tokenState, state => {
-    if (state.kind === 'Variable') {
-      info.type = variableToType[state.name!];
-    } else if (state.kind === 'ListValue') {
-      const nullableType = info.type ? getNullableType(info.type) : undefined;
-      info.type =
-        nullableType instanceof GraphQLList ? nullableType.ofType : null;
-    } else if (state.kind === 'ObjectValue') {
-      const objectType = info.type ? getNamedType(info.type) : undefined;
-      info.fields =
-        objectType instanceof GraphQLInputObjectType
-          ? objectType.getFields()
-          : null;
-    } else if (state.kind === 'ObjectField') {
-      const objectField =
-        state.name && info.fields ? info.fields[state.name] : null;
-      info.type = objectField?.type;
+    switch (state.kind) {
+      case 'Variable': {
+        info.type = variableToType[state.name!];
+        break;
+      }
+      case 'ListValue': {
+        const nullableType = info.type ? getNullableType(info.type) : undefined;
+        info.type =
+          nullableType instanceof GraphQLList ? nullableType.ofType : null;
+        break;
+      }
+      case 'ObjectValue': {
+        const objectType = info.type ? getNamedType(info.type) : undefined;
+        info.fields =
+          objectType instanceof GraphQLInputObjectType
+            ? objectType.getFields()
+            : null;
+        break;
+      }
+      case 'ObjectField': {
+        const objectField =
+          state.name && info.fields ? info.fields[state.name] : null;
+        info.type = objectField?.type;
+        break;
+      }
     }
   });
 

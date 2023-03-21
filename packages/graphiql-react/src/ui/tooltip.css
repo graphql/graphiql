@@ -1,6 +1,4 @@
-@import url('@reach/tooltip/styles.css');
-
-[data-reach-tooltip] {
+.graphiql-tooltip {
   background: hsl(var(--color-base));
   border: var(--popover-border);
   border-radius: var(--border-radius-4);
@@ -8,4 +6,5 @@
   color: hsl(var(--color-neutral));
   font-size: inherit;
   padding: var(--px-4) var(--px-6);
+  font-family: var(--font-family);
 }

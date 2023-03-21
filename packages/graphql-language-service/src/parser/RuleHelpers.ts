@@ -21,7 +21,7 @@ export function list(ofRule: Rule | string, separator?: string | Rule): Rule {
   return { ofRule, isList: true, separator };
 }
 
-// An constraint described as `but not` in the GraphQL spec.
+// A constraint described as `but not` in the GraphQL spec.
 export function butNot(rule: Rule, exclusions: Array<Rule>) {
   const ruleMatch = rule.match;
   rule.match = token => {
@@ -31,6 +31,7 @@ export function butNot(rule: Rule, exclusions: Array<Rule>) {
     }
     return (
       check &&
+      // eslint-disable-next-line unicorn/prefer-regexp-test -- false positive exclusion is not string
       exclusions.every(exclusion => exclusion.match && !exclusion.match(token))
     );
   };

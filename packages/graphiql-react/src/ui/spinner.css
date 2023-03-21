@@ -8,7 +8,7 @@
     animation: rotation 0.8s linear 0s infinite;
     border: 4px solid transparent;
     border-radius: 100%;
-    border-top: 4px solid hsla(var(--color-neutral), 0.4);
+    border-top: 4px solid hsla(var(--color-neutral), var(--alpha-tertiary));
     content: '';
     display: inline-block;
     height: 46px;

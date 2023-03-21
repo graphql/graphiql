@@ -16,7 +16,8 @@ import {
 import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
-import { Logger } from './Logger';
+import * as VueParser from '@vue/compiler-sfc';
+import type { Logger } from 'vscode-languageserver';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -37,30 +38,80 @@ interface TagVisitors {
 }
 
 const BABEL_PLUGINS: ParserPlugin[] = [
-  'jsx',
-  'doExpressions',
-  'objectRestSpread',
-  ['decorators', { decoratorsBeforeExport: false }],
+  'asyncDoExpressions',
+  'asyncGenerators',
+  'bigInt',
   'classProperties',
   'classPrivateProperties',
   'classPrivateMethods',
+  'classStaticBlock',
+  'doExpressions',
+  'decimal',
+  'decorators-legacy',
+  'destructuringPrivate',
+  'dynamicImport',
   'exportDefaultFrom',
   'exportNamespaceFrom',
-  'asyncGenerators',
   'functionBind',
   'functionSent',
-  'dynamicImport',
-  'numericSeparator',
-  'optionalChaining',
   'importMeta',
-  'bigInt',
-  'optionalCatchBinding',
-  'throwExpressions',
-  ['pipelineOperator', { proposal: 'minimal' }],
-  'nullishCoalescingOperator',
-  'topLevelAwait',
+  'importAssertions',
+  'jsx',
   'logicalAssignment',
+  'moduleBlocks',
+  'moduleStringNames',
+  'nullishCoalescingOperator',
+  'numericSeparator',
+  'objectRestSpread',
+  'optionalCatchBinding',
+  'optionalChaining',
+  ['pipelineOperator', { proposal: 'minimal' }],
+  'privateIn',
+  'regexpUnicodeSets',
+  'throwExpressions',
+  'topLevelAwait',
 ];
+
+type ParseVueSFCResult =
+  | { type: 'error'; errors: Error[] }
+  | {
+      type: 'ok';
+      scriptOffset: number;
+      scriptSetupAst?: import('@babel/types').Statement[];
+      scriptAst?: import('@babel/types').Statement[];
+    };
+function parseVueSFC(source: string): ParseVueSFCResult {
+  const { errors, descriptor } = VueParser.parse(source);
+
+  if (errors.length !== 0) {
+    return { type: 'error', errors };
+  }
+
+  let scriptBlock: VueParser.SFCScriptBlock | null = null;
+  try {
+    scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === '[@vue/compiler-sfc] SFC contains no <script> tags.'
+    ) {
+      return {
+        type: 'ok',
+        scriptSetupAst: [],
+        scriptAst: [],
+        scriptOffset: 0,
+      };
+    }
+    return { type: 'error', errors: [error as Error] };
+  }
+
+  return {
+    type: 'ok',
+    scriptOffset: scriptBlock.loc.start.line - 1,
+    scriptSetupAst: scriptBlock?.scriptSetupAst,
+    scriptAst: scriptBlock?.scriptAst,
+  };
+}
 
 export function findGraphQLTags(
   text: string,
@@ -72,29 +123,57 @@ export function findGraphQLTags(
 
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
-  const isTypeScript = ext === '.ts' || ext === '.tsx';
-  if (isTypeScript) {
-    plugins?.push('typescript');
-  } else {
-    plugins?.push('flow', 'flowComments');
-  }
-  PARSER_OPTIONS.plugins = plugins;
+  const isVueLike = ext === '.vue' || ext === '.svelte';
 
-  let parsedAST: ReturnType<typeof parse> | undefined = undefined;
-  try {
-    parsedAST = parse(text, PARSER_OPTIONS);
-  } catch (error) {
-    const type = isTypeScript ? 'TypeScript' : 'JavaScript';
-    logger.error(
-      `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
-    );
-    logger.error(String(error));
-    return [];
+  let parsedASTs: { [key: string]: any }[] = [];
+
+  let scriptOffset = 0;
+
+  if (isVueLike) {
+    const parseVueSFCResult = parseVueSFC(text);
+    if (parseVueSFCResult.type === 'error') {
+      logger.error(
+        `Could not parse the "${ext}" file at ${uri} to extract the graphql tags:`,
+      );
+      for (const error of parseVueSFCResult.errors) {
+        logger.error(String(error));
+      }
+      return [];
+    }
+
+    if (parseVueSFCResult.scriptAst !== undefined) {
+      parsedASTs.push(...parseVueSFCResult.scriptAst);
+    }
+    if (parseVueSFCResult.scriptSetupAst !== undefined) {
+      parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
+    }
+
+    scriptOffset = parseVueSFCResult.scriptOffset;
+  } else {
+    const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
+    if (isTypeScript) {
+      plugins?.push('typescript');
+    } else {
+      plugins?.push('flow', 'flowComments');
+    }
+    PARSER_OPTIONS.plugins = plugins;
+
+    try {
+      parsedASTs = [parse(text, PARSER_OPTIONS)];
+    } catch (error) {
+      const type = isTypeScript ? 'TypeScript' : 'JavaScript';
+      logger.error(
+        `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
+      );
+      logger.error(String(error));
+      return [];
+    }
   }
-  const ast = parsedAST!;
+
+  const asts = parsedASTs;
 
   const parseTemplateLiteral = (node: TemplateLiteral) => {
-    const loc = node.quasis[0].loc;
+    const { loc } = node.quasis[0];
     if (loc) {
       if (node.quasis.length > 1) {
         const last = node.quasis.pop();
@@ -107,9 +186,10 @@ export function findGraphQLTags(
           ? node.quasis.map(quasi => quasi.value.raw).join('')
           : node.quasis[0].value.raw;
       const range = new Range(
-        new Position(loc.start.line - 1, loc.start.column),
-        new Position(loc.end.line - 1, loc.end.column),
+        new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+        new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
       );
+
       result.push({
         tag: '',
         template,
@@ -121,7 +201,7 @@ export function findGraphQLTags(
   const visitors = {
     CallExpression: (node: Expression) => {
       if ('callee' in node) {
-        const callee = node.callee;
+        const { callee } = node;
 
         if (
           callee.type === 'Identifier' &&
@@ -136,13 +216,12 @@ export function findGraphQLTags(
         }
 
         traverse(node, visitors);
-        return;
       }
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
-        const loc = node.quasi.quasis[0].loc;
+        const { loc } = node.quasi.quasis[0];
         const template =
           node.quasi.quasis.length > 1
             ? node.quasi.quasis.map(quasi => quasi.value.raw).join('')
@@ -155,8 +234,8 @@ export function findGraphQLTags(
         }
         if (loc) {
           const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
+            new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+            new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
           );
 
           result.push({
@@ -180,7 +259,9 @@ export function findGraphQLTags(
       }
     },
   };
-  visit(ast, visitors);
+  for (const ast of asts) {
+    visit(ast, visitors);
+  }
 
   return result;
 }
@@ -197,12 +278,10 @@ const IGNORED_KEYS: { [key: string]: boolean } = {
 };
 
 function getGraphQLTagName(tag: Expression): string | null {
-  if (
-    tag.type === 'Identifier' &&
-    DEFAULT_STABLE_TAGS.some(t => t === tag.name)
-  ) {
+  if (tag.type === 'Identifier' && DEFAULT_STABLE_TAGS.includes(tag.name)) {
     return tag.name;
-  } else if (
+  }
+  if (
     tag.type === 'MemberExpression' &&
     tag.object.type === 'Identifier' &&
     tag.object.name === 'graphql' &&
@@ -232,11 +311,11 @@ function traverse(node: { [key: string]: any }, visitors: TagVisitors) {
     if (prop && typeof prop === 'object' && typeof prop.type === 'string') {
       visit(prop, visitors);
     } else if (Array.isArray(prop)) {
-      prop.forEach(item => {
+      for (const item of prop) {
         if (item && typeof item === 'object' && typeof item.type === 'string') {
           visit(item, visitors);
         }
-      });
+      }
     }
   }
 }

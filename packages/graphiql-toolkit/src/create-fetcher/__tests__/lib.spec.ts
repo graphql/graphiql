@@ -56,9 +56,7 @@ describe('createWebsocketsFetcherFromUrl', () => {
 
   it('creates a websockets client using provided url that fails', async () => {
     createClient.mockReturnValue(false);
-    expect(
-      await createWebsocketsFetcherFromUrl('wss://example.com'),
-    ).toThrowError();
+    expect(await createWebsocketsFetcherFromUrl('wss://example.com')).toThrow();
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
@@ -97,7 +95,7 @@ describe('getWsFetcher', () => {
       subscriptionUrl: 'wss://example',
     });
     expect(createClient.mock.calls[0]).toEqual([
-      { connectionParams: undefined, url: 'wss://example' },
+      { connectionParams: {}, url: 'wss://example' },
     ]);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
@@ -107,12 +105,11 @@ describe('missing graphql-ws dependency', () => {
   it('should throw a nice error', () => {
     jest.resetModules();
     jest.doMock('graphql-ws', () => {
+      // eslint-disable-next-line no-throw-literal
       throw { code: 'MODULE_NOT_FOUND' };
     });
 
-    expect(() =>
-      createWebsocketsFetcherFromUrl('wss://example.com'),
-    ).toThrowError(
+    expect(() => createWebsocketsFetcherFromUrl('wss://example.com')).toThrow(
       /You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'/,
     );
   });

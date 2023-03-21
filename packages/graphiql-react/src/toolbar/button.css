@@ -1,9 +1,11 @@
 button.graphiql-toolbar-button {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: var(--toolbar-width);
   width: var(--toolbar-width);
 
   &.error {
-    background: hsla(var(--color-error), 0.15);
+    background: hsla(var(--color-error), var(--alpha-background-heavy));
   }
 }

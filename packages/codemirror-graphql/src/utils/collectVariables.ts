@@ -22,18 +22,18 @@ export default function collectVariables(
   documentAST: DocumentNode,
 ) {
   const variableToType = Object.create(null);
-  documentAST.definitions.forEach(definition => {
+  for (const definition of documentAST.definitions) {
     if (definition.kind === 'OperationDefinition') {
-      const variableDefinitions = definition.variableDefinitions;
+      const { variableDefinitions } = definition;
       if (variableDefinitions) {
-        variableDefinitions.forEach(({ variable, type }) => {
+        for (const { variable, type } of variableDefinitions) {
           const inputType = typeFromAST(schema, type as NamedTypeNode);
           if (inputType) {
             variableToType[variable.name.value] = inputType;
           }
-        });
+        }
       }
     }
-  });
+  }
   return variableToType;
 }

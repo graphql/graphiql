@@ -4,31 +4,41 @@
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/graphql-language-service-server.svg?style=flat-square)](LICENSE)
 
-[Changelog](https://github.com/graphql/graphiql/blob/main/packages/graphql-language-service-server/CHANGELOG.md) |
-[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html) |
-[Discord Channel](https://discord.gg/PXaRYrpgK4)
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/graphql-language-service-server/CHANGELOG.md)
+|
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html)
+| [Discord Channel](https://discord.gg/PXaRYrpgK4)
 
-Server process backing the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service).
+Server process backing the
+[GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service).
 
-GraphQL Language Service Server provides an interface for building GraphQL language services for IDEs.
+GraphQL Language Service Server provides an interface for building GraphQL
+language services for IDEs.
 
-Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
+Partial support for
+[Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol)
+is in place, with more to come in the future.
 
 Supported features include:
 
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
-- Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
+- Hyperlink to fragment definitions and named types (type, input, enum)
+  definitions (**spec-compliant**)
 - Outline view support for queries
-- Support for `gql` `graphql` and other template tags inside javascript, typescript, jsx and tsx files, and an interface to allow custom parsing of all files.
+- Support for `gql` `graphql` and other template tags inside javascript,
+  typescript, jsx, ts, vue and svelte files, and an interface to allow custom
+  parsing of all files.
 
 ## Installation and Usage
 
 ### Dependencies
 
-An LSP compatible client with its own file watcher, that sends watch notifications to the server.
+An LSP compatible client with its own file watcher, that sends watch
+notifications to the server.
 
-**DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
+**DROPPED**: GraphQL Language Service no longer depends on
+[Watchman](https://facebook.github.io/watchman/)
 
 ### Installation
 
@@ -38,7 +48,8 @@ npm install --save graphql-language-service-server
 yarn add graphql-language-service-server
 ```
 
-We also provide a CLI interface to this server, see [`graphql-language-service-cli`](../graphql-language-service-cli/)
+We also provide a CLI interface to this server, see
+[`graphql-language-service-cli`](../graphql-language-service-cli/)
 
 ### Usage
 
@@ -52,9 +63,11 @@ await startServer({
 });
 ```
 
-If you are developing a service or extension, this is the LSP language server you want to run.
+If you are developing a service or extension, this is the LSP language server
+you want to run.
 
-When developing vscode extensions, just the above is enough to get started for your extension's `ServerOptions.run.module`, for example.
+When developing vscode extensions, just the above is enough to get started for
+your extension's `ServerOptions.run.module`, for example.
 
 `startServer` function takes the following parameters:
 
@@ -72,7 +85,8 @@ When developing vscode extensions, just the above is enough to get started for y
 
 You _must_ provide a graphql config file
 
-Check out [graphql-config](https://graphql-config.com/introduction) to learn the many ways you can define your graphql config
+Check out [graphql-config](https://graphql-config.com/introduction) to learn the
+many ways you can define your graphql config
 
 #### `.graphqlrc` or `.graphqlrc.yml/yaml` or `graphql.config.yml`
 
@@ -103,7 +117,8 @@ module.exports = { schema: 'https://localhost:8000' };
 
 #### custom `startServer`
 
-use graphql config [`loadConfig`](https://graphql-config.com/load-config) for further customization:
+use graphql config [`loadConfig`](https://graphql-config.com/load-config) for
+further customization:
 
 ```ts
 import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
@@ -193,25 +208,34 @@ export default {
 };
 ```
 
-You can specify any of these settings globally as above, or per project. Read the graphql-config docs to learn more about this!
+You can specify any of these settings globally as above, or per project. Read
+the graphql-config docs to learn more about this!
 
-For secrets (headers, urls, etc), you can import `dotenv()` and set a base path as you wish in your `graphql-config` file to pre-load `process.env` variables.
+For secrets (headers, urls, etc), you can import `dotenv()` and set a base path
+as you wish in your `graphql-config` file to pre-load `process.env` variables.
 
 ### Troubleshooting notes
 
-- you may need to manually restart the language server for some of these configurations to take effect
-- graphql-config's multi-project support is not related to multi-root workspaces in vscode - in fact, each workspace can have multiple graphql config projects, which is what makes multi-root workspaces tricky to support. coming soon!
+- you may need to manually restart the language server for some of these
+  configurations to take effect
+- graphql-config's multi-project support is not related to multi-root workspaces
+  in vscode - in fact, each workspace can have multiple graphql config projects,
+  which is what makes multi-root workspaces tricky to support. coming soon!
 
 <span id="workspace-configuration" />
 
 ### Workspace Configuration
 
-The LSP Server reads config by sending `workspace/configuration` method when it initializes.
+The LSP Server reads config by sending `workspace/configuration` method when it
+initializes.
 
-Note: We still do not support LSP multi-root workspaces but will tackle this very soon!
+Note: We still do not support LSP multi-root workspaces but will tackle this
+very soon!
 
-Many LSP clients beyond vscode offer ways to set these configurations, such as via `initializationOptions` in nvim.coc.
-The options are mostly designed to configure graphql-config's load parameters, the only thing we can't configure with graphql config. The final option can be set in `graphql-config` as well
+Many LSP clients beyond vscode offer ways to set these configurations, such as
+via `initializationOptions` in nvim.coc. The options are mostly designed to
+configure graphql-config's load parameters, the only thing we can't configure
+with graphql config. The final option can be set in `graphql-config` as well
 
 | Parameter                                 | Default                         | Description                                                                                                                                                       |
 | ----------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -222,15 +246,22 @@ The options are mostly designed to configure graphql-config's load parameters, t
 | `graphql-config.dotEnvPath`               | `null`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
 | `vscode-graphql.cacheSchemaFileForLookup` | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls |
 
-all the `graphql-config.load.*` configuration values come from static `loadConfig()` options in graphql config.
+all the `graphql-config.load.*` configuration values come from static
+`loadConfig()` options in graphql config.
 
 (more coming soon!)
 
 ### Architectural Overview
 
-GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
+GraphQL Language Service currently communicates via Stream transport with the
+IDE server. GraphQL server will receive/send RPC messages to perform language
+service features, while caching the necessary GraphQL artifacts such as fragment
+definitions, GraphQL schemas etc. More about the server interface and RPC
+message format below.
 
-The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlrc.yml` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
+The IDE server should launch a separate GraphQL server with its own child
+process for each `.graphqlrc.yml` file the IDE finds (using the nearest ancestor
+directory relative to the file currently being edited):
 
 ```
 ./application
@@ -246,15 +277,29 @@ The IDE server should launch a separate GraphQL server with its own child proces
     ProductBSchema.graphql
 ```
 
-A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc.yml` file, as illustrated in the directory structure above.
+A separate GraphQL server should be instantiated for `ProductA` and `ProductB`,
+each with its own `.graphqlrc.yml` file, as illustrated in the directory
+structure above.
 
-The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
+The IDE server should manage the lifecycle of the GraphQL server. Ideally, the
+IDE server should spawn a child process for each of the GraphQL Language Service
+processes necessary, and gracefully exit the processes as the IDE closes. In
+case of errors or a sudden halt the GraphQL Language Service will close as the
+stream from the IDE closes.
 
 ### Server Interface
 
-GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://microsoft.github.io/language-server-protocol/specification) documentation.
+GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to
+communicate with the IDE servers. Microsoft's language server currently supports
+two communication transports: Stream (stdio) and IPC. For IPC transport, the
+reference guide to be used for development is
+[the language server protocol](https://microsoft.github.io/language-server-protocol/specification)
+documentation.
 
-For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
+For each transport, there is a slight difference in JSON message format,
+especially in how the methods to be invoked are defined - below are the
+currently supported methods for each transport (will be updated as progress is
+made):
 
 |                      | Stream                       | IPC                                         |
 | -------------------: | ---------------------------- | ------------------------------------------- |

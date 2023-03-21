@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/npm/l/codemirror-graphql.svg?style=flat-square)](LICENSE)
 [Discord Channel](https://discord.gg/cffZwk8NJW)
 
+**NOTE: For CodeMirror 6, use [cm6-graphql](/packages/cm6-graphql/) instead**
+
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema.
 
@@ -16,10 +18,10 @@ typeahead hinter powered by your GraphQL Schema.
 npm install --save codemirror-graphql
 ```
 
-CodeMirror helpers install themselves to the global CodeMirror when they
-are imported.
+CodeMirror helpers install themselves to the global CodeMirror when they are
+imported.
 
-```js
+```ts
 import type { ValidationContext, SDLValidationContext } from 'graphql';
 
 import CodeMirror from 'codemirror';
@@ -43,7 +45,8 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ## External Fragments Example
 
-If you want to have autocompletion for external fragment definitions, there's a new configuration setting available
+If you want to have autocompletion for external fragment definitions, there's a
+new configuration setting available
 
 ```ts
 import CodeMirror from 'codemirror';
@@ -53,7 +56,7 @@ import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
 
-const externalFragments = `
+const externalFragments = /* GraphQL */ `
   fragment MyFragment on Example {
     id: ID!
     name: String!
@@ -80,9 +83,10 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ### Custom Validation Rules
 
-If you want to show custom validation, you can do that too! It uses the `ValidationRule` interface.
+If you want to show custom validation, you can do that too! It uses the
+`ValidationRule` interface.
 
-```js
+```ts
 import type { ValidationRule } from 'graphql';
 
 import CodeMirror from 'codemirror';

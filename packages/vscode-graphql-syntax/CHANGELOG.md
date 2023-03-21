@@ -1,5 +1,33 @@
 # vscode-graphql-syntax
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3106](https://github.com/graphql/graphiql/pull/3106) [`40690901`](https://github.com/graphql/graphiql/commit/40690901603a678ad6aa8e38f63b14e6b53d315c) Thanks [@hugo-vrijswijk](https://github.com/hugo-vrijswijk)! - Add syntax highlighting in Scala
+
+### Patch Changes
+
+- [#3133](https://github.com/graphql/graphiql/pull/3133) [`a8f21ad3`](https://github.com/graphql/graphiql/commit/a8f21ad3cf1c2ead95fa2c95372d01bafff8fee9) Thanks [@acao](https://github.com/acao)! - ci: test formatting fix with a changeset
+
+## 1.1.0
+
+### Minor Changes
+
+- [#3019](https://github.com/graphql/graphiql/pull/3019) [`ae43add6`](https://github.com/graphql/graphiql/commit/ae43add68c39825580fc8fc63a0b4c55f9fb70ad) Thanks [@mjmahone](https://github.com/mjmahone)! - Adds syntax highlighting for arguments on fragment spreads as well as variable definitions on fragments.
+
+## 1.0.6
+
+### Patch Changes
+
+- [#2926](https://github.com/graphql/graphiql/pull/2926) [`10e97bbe`](https://github.com/graphql/graphiql/commit/10e97bbe6c9ff81bae73b11ba81ac2b69eca2772) Thanks [@elijaholmos](https://github.com/elijaholmos)! - support cts and mts file extensions
+
+## 1.0.5
+
+### Patch Changes
+
+- [#2849](https://github.com/graphql/graphiql/pull/2849) [`9b98c1b6`](https://github.com/graphql/graphiql/commit/9b98c1b63a184385d22a8457cfdfebf01387697f) Thanks [@acao](https://github.com/acao)! - docs typo bug - `/* GraphQL */` (not `/* GraphiQL */`) is the delimiter for `vscode-graphql-syntax` & `vscode-graphql` language support
+
 ## 1.0.4
 
 ### Patch Changes

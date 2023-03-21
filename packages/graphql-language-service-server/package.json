@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.8.4",
+  "version": "2.11.1",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:lsp-server"
   },
   "license": "MIT",
   "files": [
@@ -25,7 +25,10 @@
   "keywords": [
     "graphql",
     "language server",
-    "LSP"
+    "LSP",
+    "vue",
+    "svelte",
+    "typescript"
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -34,25 +37,28 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "@babel/parser": "^7.17.3",
-    "@babel/types": "^7.17.0",
+    "@babel/parser": "^7.21.2",
+    "@babel/types": "^7.21.2",
     "@graphql-tools/load": "^7.5.3",
+    "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
     "graphql-config": "4.3.0",
-    "graphql-language-service": "^5.1.0",
+    "graphql-language-service": "^5.1.6",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
-    "node-fetch": "^2.6.1",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
+    "vscode-languageserver-types": "^3.17.2",
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
+    "@types/glob": "^8.1.0",
     "cross-env": "^7.0.2",
-    "graphql": "^16.4.0"
+    "graphql": "^16.4.0",
+    "cross-fetch": "^3.1.5"
   }
 }

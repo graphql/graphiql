@@ -30,12 +30,11 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     httpFetch = options.fetch;
   }
   if (!httpFetch) {
-    throw Error('No valid fetcher implementation available');
+    throw new Error('No valid fetcher implementation available');
   }
   // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
-  const wsFetcher = getWsFetcher(options);
   const httpFetcher = options.enableIncrementalDelivery
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
@@ -47,17 +46,21 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         fetcherOpts,
       );
     }
-    const isSubscription = isSubscriptionWithName(
-      fetcherOpts?.documentAST!,
-      graphQLParams.operationName || undefined,
-    );
+    const isSubscription = fetcherOpts?.documentAST
+      ? isSubscriptionWithName(
+          fetcherOpts.documentAST,
+          graphQLParams.operationName || undefined,
+        )
+      : false;
     if (isSubscription) {
+      const wsFetcher = getWsFetcher(options, fetcherOpts);
+
       if (!wsFetcher) {
-        throw Error(
+        throw new Error(
           `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
             options.subscriptionUrl
               ? `Provided URL ${options.subscriptionUrl} failed`
-              : `Please provide subscriptionUrl, wsClient or legacyClient option first.`
+              : 'Please provide subscriptionUrl, wsClient or legacyClient option first.'
           }`,
         );
       }

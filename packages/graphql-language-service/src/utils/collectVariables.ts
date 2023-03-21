@@ -26,26 +26,27 @@ export function collectVariables(
 ): VariableToType {
   const variableToType: VariableToType = Object.create(null);
   // it would be more ideal to use visitWithTypeInfo here but it's very simple
-  documentAST.definitions.forEach(definition => {
+  for (const definition of documentAST.definitions) {
     if (definition.kind === 'OperationDefinition') {
-      const variableDefinitions = definition.variableDefinitions;
+      const { variableDefinitions } = definition;
       if (variableDefinitions) {
-        variableDefinitions.forEach(({ variable, type }) => {
+        for (const { variable, type } of variableDefinitions) {
           const inputType = typeFromAST(
             schema,
             type as NamedTypeNode,
           ) as GraphQLInputType;
           if (inputType) {
             variableToType[variable.name.value] = inputType;
-          } else if (type.kind === Kind.NAMED_TYPE) {
+          } else if (
+            type.kind === Kind.NAMED_TYPE &&
             // in the experimental stream defer branch we are using, it seems typeFromAST() doesn't recognize Floats?
-            if (type.name.value === 'Float') {
-              variableToType[variable.name.value] = GraphQLFloat;
-            }
+            type.name.value === 'Float'
+          ) {
+            variableToType[variable.name.value] = GraphQLFloat;
           }
-        });
+        }
       }
     }
-  });
+  }
   return variableToType;
 }

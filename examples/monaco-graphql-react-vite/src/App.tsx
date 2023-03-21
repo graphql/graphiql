@@ -108,7 +108,7 @@ export default function App() {
     const variablesModel = getOrCreateModel('variables.json', defaultVariables);
     const resultsModel = getOrCreateModel('results.json', '{}');
 
-    queryEditor ??
+    if (!queryEditor) {
       setQueryEditor(
         createEditor(opsRef, {
           theme: 'vs-dark',
@@ -116,14 +116,16 @@ export default function App() {
           language: 'graphql',
         }),
       );
-    variablesEditor ??
+    }
+    if (!variablesEditor) {
       setVariablesEditor(
         createEditor(varsRef, {
           theme: 'vs-dark',
           model: variablesModel,
         }),
       );
-    resultsViewer ??
+    }
+    if (!resultsViewer) {
       setResultsViewer(
         createEditor(resultsRef, {
           theme: 'vs-dark',
@@ -132,7 +134,7 @@ export default function App() {
           smoothScrolling: true,
         }),
       );
-
+    }
     queryModel.onDidChangeContent(
       debounce(300, () => {
         localStorage.setItem('operations', queryModel.getValue());
@@ -143,24 +145,23 @@ export default function App() {
         localStorage.setItem('variables', variablesModel.getValue());
       }),
     );
-
-    // only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run once on mount
   }, []);
 
   useEffect(() => {
     queryEditor?.addAction(queryAction);
     variablesEditor?.addAction(queryAction);
-  }, [variablesEditor]);
+  }, [queryEditor, variablesEditor]);
   /**
    * Handle the initial schema load
    */
   useEffect(() => {
     if (!schema && !loading) {
       setLoading(true);
-      getSchema()
+      void getSchema()
         .then(data => {
           if (!('data' in data)) {
-            throw Error(
+            throw new Error(
               'this demo does not support subscriptions or http multipart yet',
             );
           }
@@ -188,8 +189,6 @@ export default function App() {
           });
 
           setSchema(data.data);
-
-          return;
         })
         .then(() => setLoading(false));
     }

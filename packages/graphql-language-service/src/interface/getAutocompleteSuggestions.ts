@@ -31,17 +31,6 @@ import {
   isEnumType,
   isInputObjectType,
   isOutputType,
-} from 'graphql';
-
-import {
-  CompletionItem,
-  AllTypeInfo,
-  IPosition,
-  CompletionItemKind,
-  InsertTextFormat,
-} from '../types';
-
-import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -60,6 +49,14 @@ import {
   BREAK,
   parse,
 } from 'graphql';
+
+import {
+  CompletionItem,
+  AllTypeInfo,
+  IPosition,
+  CompletionItemKind,
+  InsertTextFormat,
+} from '../types';
 
 import {
   CharacterStream,
@@ -168,7 +165,7 @@ export function getAutocompleteSuggestions(
     schema,
   };
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor);
+    contextToken || getTokenAtPosition(queryText, cursor, 1);
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
@@ -180,8 +177,7 @@ export function getAutocompleteSuggestions(
     return [];
   }
 
-  const kind = state.kind;
-  const step = state.step;
+  const { kind, step, prevState } = state;
   const typeInfo = getTypeInfo(schema, token.state);
 
   // Definition kinds
@@ -197,14 +193,14 @@ export function getAutocompleteSuggestions(
   }
 
   if (
-    state.prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
+    prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
     state.name
   ) {
     return hintList(token, []);
   }
 
   // extend scalar
-  if (state.prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -217,7 +213,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend object type
-  if (state.prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -230,7 +226,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend interface type
-  if (state.prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -243,7 +239,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend union type
-  if (state.prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -256,7 +252,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend enum type
-  if (state.prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -269,7 +265,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend input object type
-  if (state.prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -283,8 +279,7 @@ export function getAutocompleteSuggestions(
 
   if (
     kind === RuleKinds.IMPLEMENTS ||
-    (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState?.kind === RuleKinds.IMPLEMENTS)
+    (kind === RuleKinds.NAMED_TYPE && prevState?.kind === RuleKinds.IMPLEMENTS)
   ) {
     return getSuggestionsForImplements(
       token,
@@ -309,7 +304,7 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.ARGUMENTS ||
     (kind === RuleKinds.ARGUMENT && step === 0)
   ) {
-    const argDefs = typeInfo.argDefs;
+    const { argDefs } = typeInfo;
     if (argDefs) {
       return hintList(
         token,
@@ -330,26 +325,25 @@ export function getAutocompleteSuggestions(
 
   // Input Object fields
   if (
-    kind === RuleKinds.OBJECT_VALUE ||
-    (kind === RuleKinds.OBJECT_FIELD && step === 0)
+    (kind === RuleKinds.OBJECT_VALUE ||
+      (kind === RuleKinds.OBJECT_FIELD && step === 0)) &&
+    typeInfo.objectFieldDefs
   ) {
-    if (typeInfo.objectFieldDefs) {
-      const objectFields = objectValues(typeInfo.objectFieldDefs);
-      const completionKind =
-        kind === RuleKinds.OBJECT_VALUE
-          ? CompletionItemKind.Value
-          : CompletionItemKind.Field;
-      return hintList(
-        token,
-        objectFields.map(field => ({
-          label: field.name,
-          detail: String(field.type),
-          documentation: field.description ?? undefined,
-          kind: completionKind,
-          type: field.type,
-        })),
-      );
-    }
+    const objectFields = objectValues(typeInfo.objectFieldDefs);
+    const completionKind =
+      kind === RuleKinds.OBJECT_VALUE
+        ? CompletionItemKind.Value
+        : CompletionItemKind.Field;
+    return hintList(
+      token,
+      objectFields.map(field => ({
+        label: field.name,
+        detail: String(field.type),
+        documentation: field.description ?? undefined,
+        kind: completionKind,
+        type: field.type,
+      })),
+    );
   }
 
   // Input values: Enum and Boolean
@@ -363,7 +357,7 @@ export function getAutocompleteSuggestions(
   }
   // complete for all variables available in the query
   if (kind === RuleKinds.VARIABLE && step === 1) {
-    const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+    const namedInputType = getNamedType(typeInfo.inputType!);
     const variableDefinitions = getVariableCompletions(
       queryText,
       schema,
@@ -379,8 +373,8 @@ export function getAutocompleteSuggestions(
   if (
     (kind === RuleKinds.TYPE_CONDITION && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState != null &&
-      state.prevState.kind === RuleKinds.TYPE_CONDITION)
+      prevState != null &&
+      prevState.kind === RuleKinds.TYPE_CONDITION)
   ) {
     return getSuggestionsForFragmentTypeConditions(
       token,
@@ -408,8 +402,8 @@ export function getAutocompleteSuggestions(
   if (
     (mode === GraphQLDocumentMode.TYPE_SYSTEM &&
       !unwrappedState.needsAdvance &&
-      state.kind === RuleKinds.NAMED_TYPE) ||
-    state.kind === RuleKinds.LIST_TYPE
+      kind === RuleKinds.NAMED_TYPE) ||
+    kind === RuleKinds.LIST_TYPE
   ) {
     if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
       return hintList(
@@ -440,10 +434,10 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
     (kind === RuleKinds.LIST_TYPE && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState &&
-      (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
-        state.prevState.kind === RuleKinds.LIST_TYPE ||
-        state.prevState.kind === RuleKinds.NON_NULL_TYPE))
+      prevState &&
+      (prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
+        prevState.kind === RuleKinds.LIST_TYPE ||
+        prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
@@ -456,7 +450,7 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const insertSuffix = ` {\n  $1\n}`;
+const insertSuffix = ' {\n  $1\n}';
 
 /**
  * Choose carefully when to insert the `insertText`!
@@ -464,7 +458,7 @@ const insertSuffix = ` {\n  $1\n}`;
  * @returns
  */
 const getInsertText = (field: GraphQLField<null, null>) => {
-  const type = field.type;
+  const { type } = field;
   if (isCompositeType(type)) {
     return insertSuffix;
   }
@@ -522,7 +516,7 @@ function getSuggestionsForFieldNames(
   options?: AutocompleteSuggestionOptions,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
-    const parentType = typeInfo.parentType;
+    const { parentType } = typeInfo;
     let fields: GraphQLField<null, null>[] = [];
     if ('getFields' in parentType) {
       fields = objectValues<GraphQLField<null, null>>(
@@ -552,14 +546,17 @@ function getSuggestionsForFieldNames(
           kind: CompletionItemKind.Field,
           type: field.type,
         };
-        // TODO: fillLeafs capability
-        const insertText = getInsertText(field);
 
-        if (insertText) {
-          suggestion.insertText = field.name + insertText;
-          suggestion.insertTextFormat = InsertTextFormat.Snippet;
-          suggestion.command = SuggestionCommand;
+        if (options?.fillLeafsOnComplete) {
+          // TODO: fillLeafs capability
+          const insertText = getInsertText(field);
+          if (insertText) {
+            suggestion.insertText = field.name + insertText;
+            suggestion.insertTextFormat = InsertTextFormat.Snippet;
+            suggestion.command = SuggestionCommand;
+          }
         }
+
         return suggestion;
       }),
     );
@@ -573,7 +570,7 @@ function getSuggestionsForInputValues(
   queryText: string,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
-  const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+  const namedInputType = getNamedType(typeInfo.inputType!);
 
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
@@ -598,7 +595,8 @@ function getSuggestionsForInputValues(
         }))
         .concat(queryVariables),
     );
-  } else if (namedInputType === GraphQLBoolean) {
+  }
+  if (namedInputType === GraphQLBoolean) {
     return hintList(
       token,
       queryVariables.concat([
@@ -646,7 +644,7 @@ function getSuggestionsForImplements(
         state.kind === RuleKinds.INTERFACE_DEF &&
         !schemaInterfaceNames.includes(state.name)
       ) {
-        inlineInterfaces.add(<string>state.name);
+        inlineInterfaces.add(state.name);
       }
       // gather the other interfaces the current type/interface definition implements
       // so we can filter them out below
@@ -662,7 +660,7 @@ function getSuggestionsForImplements(
             return;
           }
           const type = schema.getType(state.name);
-          const interfaceConfig = typeInfo.interfaceDef?.toConfig()!;
+          const interfaceConfig = typeInfo.interfaceDef?.toConfig();
           typeInfo.interfaceDef = new GraphQLInterfaceType({
             ...interfaceConfig,
             interfaces: [
@@ -679,7 +677,7 @@ function getSuggestionsForImplements(
             return;
           }
           const type = schema.getType(state.name);
-          const objectTypeConfig = typeInfo.objectTypeDef?.toConfig()!;
+          const objectTypeConfig = typeInfo.objectTypeDef?.toConfig();
           typeInfo.objectTypeDef = new GraphQLObjectType({
             ...objectTypeConfig,
             interfaces: [
@@ -748,11 +746,11 @@ function getSuggestionsForFragmentTypeConditions(
       // they implement.
       const possibleObjTypes = schema.getPossibleTypes(abstractType);
       const possibleIfaceMap = Object.create(null);
-      possibleObjTypes.forEach(type => {
-        type.getInterfaces().forEach(iface => {
+      for (const type of possibleObjTypes) {
+        for (const iface of type.getInterfaces()) {
           possibleIfaceMap[iface.name] = iface;
-        });
-      });
+        }
+      }
       possibleTypes = possibleObjTypes.concat(objectValues(possibleIfaceMap));
     } else {
       // The parent type is a non-abstract Object type, so the only possible
@@ -867,21 +865,19 @@ export function getVariableCompletions(
       }
     }
 
-    if (variableName && variableType) {
-      if (!definitions[variableName]) {
-        // append `$` if the `token.string` is not already `$`
+    if (variableName && variableType && !definitions[variableName]) {
+      // append `$` if the `token.string` is not already `$`
 
-        definitions[variableName] = {
-          detail: variableType.toString(),
-          insertText: token.string === '$' ? variableName : '$' + variableName,
-          label: variableName, // keep label the same for `codemirror-graphql`
-          type: variableType,
-          kind: CompletionItemKind.Variable,
-        } as CompletionItem;
+      definitions[variableName] = {
+        detail: variableType.toString(),
+        insertText: token.string === '$' ? variableName : '$' + variableName,
+        label: variableName, // keep label the same for `codemirror-graphql`
+        type: variableType,
+        kind: CompletionItemKind.Variable,
+      } as CompletionItem;
 
-        variableName = null;
-        variableType = null;
-      }
+      variableName = null;
+      variableType = null;
     }
   });
 
@@ -936,7 +932,7 @@ function getSuggestionsForVariableDefinition(
     // TODO: couldn't get Exclude<> working here
     inputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
-      documentation: type.description as string,
+      documentation: type.description!,
       kind: CompletionItemKind.Variable,
     })),
   );
@@ -967,18 +963,20 @@ function getSuggestionsForDirective(
 export function getTokenAtPosition(
   queryText: string,
   cursor: IPosition,
+  offset = 0,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (index === cursor.line) {
-      if (stream.getCurrentPosition() >= cursor.character) {
-        styleAtCursor = style;
-        stateAtCursor = { ...state };
-        stringAtCursor = stream.current();
-        return 'BREAK';
-      }
+    if (
+      index === cursor.line &&
+      stream.getCurrentPosition() + offset >= cursor.character + 1
+    ) {
+      styleAtCursor = style;
+      stateAtCursor = { ...state };
+      stringAtCursor = stream.current();
+      return 'BREAK';
     }
   });
 
@@ -1050,58 +1048,54 @@ export function canUseDirective(
   state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {
-  if (!state || !state.kind) {
+  if (!state?.kind) {
     return false;
   }
-  const kind = state.kind;
-  const locations = directive.locations;
+  const { kind, prevState } = state;
+  const { locations } = directive;
   switch (kind) {
     case RuleKinds.QUERY:
-      return locations.indexOf(DirectiveLocation.QUERY) !== -1;
+      return locations.includes(DirectiveLocation.QUERY);
     case RuleKinds.MUTATION:
-      return locations.indexOf(DirectiveLocation.MUTATION) !== -1;
+      return locations.includes(DirectiveLocation.MUTATION);
     case RuleKinds.SUBSCRIPTION:
-      return locations.indexOf(DirectiveLocation.SUBSCRIPTION) !== -1;
+      return locations.includes(DirectiveLocation.SUBSCRIPTION);
     case RuleKinds.FIELD:
     case RuleKinds.ALIASED_FIELD:
-      return locations.indexOf(DirectiveLocation.FIELD) !== -1;
+      return locations.includes(DirectiveLocation.FIELD);
     case RuleKinds.FRAGMENT_DEFINITION:
-      return locations.indexOf(DirectiveLocation.FRAGMENT_DEFINITION) !== -1;
+      return locations.includes(DirectiveLocation.FRAGMENT_DEFINITION);
     case RuleKinds.FRAGMENT_SPREAD:
-      return locations.indexOf(DirectiveLocation.FRAGMENT_SPREAD) !== -1;
+      return locations.includes(DirectiveLocation.FRAGMENT_SPREAD);
     case RuleKinds.INLINE_FRAGMENT:
-      return locations.indexOf(DirectiveLocation.INLINE_FRAGMENT) !== -1;
+      return locations.includes(DirectiveLocation.INLINE_FRAGMENT);
 
     // Schema Definitions
     case RuleKinds.SCHEMA_DEF:
-      return locations.indexOf(DirectiveLocation.SCHEMA) !== -1;
+      return locations.includes(DirectiveLocation.SCHEMA);
     case RuleKinds.SCALAR_DEF:
-      return locations.indexOf(DirectiveLocation.SCALAR) !== -1;
+      return locations.includes(DirectiveLocation.SCALAR);
     case RuleKinds.OBJECT_TYPE_DEF:
-      return locations.indexOf(DirectiveLocation.OBJECT) !== -1;
+      return locations.includes(DirectiveLocation.OBJECT);
     case RuleKinds.FIELD_DEF:
-      return locations.indexOf(DirectiveLocation.FIELD_DEFINITION) !== -1;
+      return locations.includes(DirectiveLocation.FIELD_DEFINITION);
     case RuleKinds.INTERFACE_DEF:
-      return locations.indexOf(DirectiveLocation.INTERFACE) !== -1;
+      return locations.includes(DirectiveLocation.INTERFACE);
     case RuleKinds.UNION_DEF:
-      return locations.indexOf(DirectiveLocation.UNION) !== -1;
+      return locations.includes(DirectiveLocation.UNION);
     case RuleKinds.ENUM_DEF:
-      return locations.indexOf(DirectiveLocation.ENUM) !== -1;
+      return locations.includes(DirectiveLocation.ENUM);
     case RuleKinds.ENUM_VALUE:
-      return locations.indexOf(DirectiveLocation.ENUM_VALUE) !== -1;
+      return locations.includes(DirectiveLocation.ENUM_VALUE);
     case RuleKinds.INPUT_DEF:
-      return locations.indexOf(DirectiveLocation.INPUT_OBJECT) !== -1;
+      return locations.includes(DirectiveLocation.INPUT_OBJECT);
     case RuleKinds.INPUT_VALUE_DEF:
-      const prevStateKind = state.prevState?.kind;
+      const prevStateKind = prevState?.kind;
       switch (prevStateKind) {
         case RuleKinds.ARGUMENTS_DEF:
-          return (
-            locations.indexOf(DirectiveLocation.ARGUMENT_DEFINITION) !== -1
-          );
+          return locations.includes(DirectiveLocation.ARGUMENT_DEFINITION);
         case RuleKinds.INPUT_DEF:
-          return (
-            locations.indexOf(DirectiveLocation.INPUT_FIELD_DEFINITION) !== -1
-          );
+          return locations.includes(DirectiveLocation.INPUT_FIELD_DEFINITION);
       }
   }
 
@@ -1156,7 +1150,7 @@ export function getTypeInfo(
         break;
       }
       case RuleKinds.SELECTION_SET:
-        parentType = getNamedType(type as GraphQLType);
+        parentType = getNamedType(type!);
         break;
       case RuleKinds.DIRECTIVE:
         directiveDef = state.name ? schema.getDirective(state.name) : null;
@@ -1186,9 +1180,7 @@ export function getTypeInfo(
 
         break;
       case RuleKinds.ARGUMENTS: {
-        if (!state.prevState) {
-          argDefs = null;
-        } else {
+        if (state.prevState) {
           switch (state.prevState.kind) {
             case RuleKinds.FIELD:
               argDefs = fieldDef && (fieldDef.args as GraphQLArgument[]);
@@ -1218,6 +1210,8 @@ export function getTypeInfo(
               argDefs = null;
               break;
           }
+        } else {
+          argDefs = null;
         }
         break;
       }
@@ -1234,7 +1228,7 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
-        const enumType = getNamedType(inputType as GraphQLType);
+        const enumType = getNamedType(inputType!);
         enumValue =
           enumType instanceof GraphQLEnumType
             ? enumType
@@ -1244,12 +1238,12 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.LIST_VALUE:
-        const nullableType = getNullableType(inputType as GraphQLType);
+        const nullableType = getNullableType(inputType!);
         inputType =
           nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case RuleKinds.OBJECT_VALUE:
-        const objectType = getNamedType(inputType as GraphQLType);
+        const objectType = getNamedType(inputType!);
         objectFieldDefs =
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()

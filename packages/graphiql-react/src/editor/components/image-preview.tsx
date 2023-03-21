@@ -42,7 +42,7 @@ export function ImagePreview(props: ImagePreviewProps) {
     dimensions.width !== null && dimensions.height !== null ? (
       <div>
         {dimensions.width}x{dimensions.height}
-        {mime !== null ? ' ' + mime : null}
+        {mime === null ? null : ' ' + mime}
       </div>
     ) : null;
 
@@ -76,9 +76,9 @@ function tokenToURL(token: Token) {
   const value = token.string.slice(1).slice(0, -1).trim();
 
   try {
-    const location = window.location;
+    const { location } = window;
     return new URL(value, location.protocol + '//' + location.host);
-  } catch (err) {
+  } catch {
     return;
   }
 }

@@ -23,11 +23,11 @@ export default function runParser(
   const state = parser.startState();
   const lines = sourceText.split('\n');
 
-  lines.forEach(line => {
+  for (const line of lines) {
     const stream = new CharacterStream(line);
     while (!stream.eol()) {
       const style = parser.token(stream, state);
       callbackFn(stream, state, style);
     }
-  });
+  }
 }

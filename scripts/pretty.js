@@ -7,9 +7,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const { spawnSync } = require('child_process');
-const { join } = require('path');
-const os = require('os');
+const { spawnSync } = require('node:child_process');
+const { join } = require('node:path');
+const os = require('node:os');
 
 const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
@@ -22,10 +22,10 @@ const executable = join(
   root,
   'node_modules',
   '.bin',
-  os.platform() !== 'win32' ? 'prettier' : 'prettier.cmd',
+  os.platform() === 'win32' ? 'prettier.cmd' : 'prettier',
 );
 const ignorePath = ['--ignore-path', '.eslintignore'];
-const check = process.argv.indexOf('--check') !== -1;
+const check = process.argv.includes('--check');
 const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 
@@ -54,9 +54,9 @@ if (status) {
     print(
       [
         `Try: ${INVERSE} yarn format ${RESET},`,
-        `which executes eslint --fix and prettier in a specific order.`,
-        `If you are using prettier for vscode you can also enable "format on save".`,
-        `Learn more about contributing in DEVELOPMENT.md`,
+        'which executes eslint --fix and prettier in a specific order.',
+        'If you are using prettier for vscode you can also enable "format on save".',
+        'Learn more about contributing in DEVELOPMENT.md',
       ].join('\n'),
     );
   }
@@ -64,4 +64,4 @@ if (status) {
 if (error) {
   print(error);
 }
-process.exit(status != null ? status : 1);
+process.exit(status == null ? 1 : status);

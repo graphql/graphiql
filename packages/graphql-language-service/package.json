@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "5.1.0",
+  "version": "5.1.6",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"
@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:languageservice"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphql-language-service"
   },
   "license": "MIT",
   "files": [

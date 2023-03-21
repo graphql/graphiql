@@ -7,11 +7,10 @@
  *
  */
 
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, buildSchema, buildClientSchema } from 'graphql';
 
-import invariant from 'assert';
-import fs from 'fs';
-import { buildSchema, buildClientSchema } from 'graphql';
+import invariant from 'node:assert';
+import fs from 'node:fs';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -19,7 +18,7 @@ import {
   Position,
 } from 'graphql-language-service';
 
-import path from 'path';
+import path from 'node:path';
 
 import type { CompletionItem, Diagnostic } from 'graphql-language-service';
 
@@ -57,8 +56,7 @@ export default function main(
     case 'autocomplete':
       const lines = text.split('\n');
       const row = parseInt(argv.row, 10) || lines.length - 1;
-      const column =
-        parseInt(argv.column, 10) || lines[lines.length - 1].length;
+      const column = parseInt(argv.column, 10) || lines.at(-1)!.length;
       const point = new Position(row, column);
       exitCode = _getAutocompleteSuggestions(text, point, schemaPath);
       break;
@@ -152,7 +150,7 @@ function _getOutline(queryText: string): EXIT_CODE {
     if (outline) {
       process.stdout.write(JSON.stringify(outline, null, 2));
     } else {
-      throw Error('Error parsing or no outline tree found');
+      throw new Error('Error parsing or no outline tree found');
     }
   } catch (error) {
     process.stderr.write(formatUnknownError(error) + '\n');
