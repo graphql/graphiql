@@ -28,7 +28,7 @@ export function initializeMode(
     api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
     (<any>languages).graphql = { api };
     // export to the global monaco API
-    getMode().then(mode => mode.setupMode(api));
+    void getMode().then(mode => mode.setupMode(api));
   }
 
   return api;
