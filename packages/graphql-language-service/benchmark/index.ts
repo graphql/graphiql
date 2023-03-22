@@ -14,7 +14,7 @@ interface IStats {
 const printResult = (stats: IStats, name: string, schema: string) => {
   console.log({
     name,
-    mean: `${1.0 / stats.mean} ops / sec`,
+    mean: `${1 / stats.mean} ops / sec`,
     variance: stats.variance,
     rme: `${stats.rme}%`,
     lines: schema.split('\n').length,
@@ -125,15 +125,11 @@ const runGraphqlParserTest = (name: string, schema: string) => {
 
 const kitchenSchema = fs.readFileSync(
   path.resolve(__dirname, './fixtures/kitchen-sink.graphql'),
-  {
-    encoding: 'utf8',
-  },
+  'utf8',
 );
 const githubSchema = fs.readFileSync(
   path.resolve(__dirname, './fixtures/github.graphql'),
-  {
-    encoding: 'utf8',
-  },
+  'utf8',
 );
 
 runWholeTest('kitchen-sink:whole', kitchenSchema);

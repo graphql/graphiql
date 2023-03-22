@@ -47,9 +47,10 @@ describe('graphql-lint', () => {
     expect(editor.getHelpers(editor.getCursor(), 'lint')).not.toHaveLength(0);
   });
 
-  const kitchenSink = readFileSync(join(__dirname, '/kitchen-sink.graphql'), {
-    encoding: 'utf8',
-  });
+  const kitchenSink = readFileSync(
+    join(__dirname, '/kitchen-sink.graphql'),
+    'utf8',
+  );
 
   it('returns no syntactic/validation errors after parsing kitchen-sink query', async () => {
     const errors = await printLintErrors(kitchenSink);

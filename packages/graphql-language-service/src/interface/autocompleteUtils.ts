@@ -140,7 +140,7 @@ function filterNonEmpty<T>(
 }
 
 function normalizeText(text: string): string {
-  return text.toLowerCase().replace(/\W/g, '');
+  return text.toLowerCase().replaceAll(/\W/g, '');
 }
 
 // Determine a numeric proximity for a suggestion based on current text.

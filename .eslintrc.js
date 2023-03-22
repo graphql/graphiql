@@ -32,6 +32,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:react/jsx-runtime',
     'prettier',
   ],
 
@@ -111,6 +112,10 @@ module.exports = {
     'require-await': 0,
     'vars-on-top': 0,
     yoda: 1,
+    'unicorn/prefer-string-slice': 'error',
+    'sonarjs/no-identical-functions': 'error',
+    'sonarjs/no-unused-collection': 'error',
+    'sonarjs/no-extra-arguments': 'error',
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
@@ -127,11 +132,16 @@ module.exports = {
 
     '@typescript-eslint/no-unused-vars': [
       'error',
-      { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+      {
+        varsIgnorePattern: '^React$',
+        argsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
     ],
 
     'no-use-before-define': 0,
 
+    'unicorn/no-useless-switch-case': 'error',
     // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
     'callback-return': 0,
     'global-require': 0,
@@ -179,7 +189,16 @@ module.exports = {
     'no-nested-ternary': 0,
     'no-new-object': 1,
     'no-plusplus': 0,
-    'no-restricted-syntax': 0,
+    'no-restricted-syntax': [
+      'error',
+      {
+        // ❌ useMemo(…, [])
+        selector:
+          'CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]',
+        message:
+          "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
+      },
+    ],
     'no-ternary': 0,
     'no-underscore-dangle': 0,
     'no-unneeded-ternary': 0,
@@ -209,6 +228,7 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
+    'unicorn/no-array-push-push': 'error',
     'import/no-extraneous-dependencies': 'error',
     'import/no-duplicates': 'error',
     'import/no-named-as-default': 'error',
@@ -218,24 +238,13 @@ module.exports = {
     'react/jsx-curly-brace-presence': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
-    'react/jsx-key': 'error',
-    'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': 'error',
-    'react/jsx-uses-react': 'error',
-    'react/jsx-uses-vars': 'error',
-    'react/no-deprecated': 'error',
     'react/no-did-mount-set-state': 'error',
     'react/no-did-update-set-state': 'error',
-    'react/no-direct-mutation-state': 'error',
-    'react/no-string-refs': 'error',
-    'react/no-unknown-property': 'error',
     'react/prop-types': 0,
     'react/prefer-es6-class': 'error',
     'react/prefer-stateless-function': 'error',
-    'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
-    'react/display-name': 'warn',
     'react/jsx-no-useless-fragment': 'error',
     'react/jsx-filename-extension': [
       'error',
@@ -243,24 +252,35 @@ module.exports = {
     ],
 
     'unicorn/no-typeof-undefined': 'error',
+    'unicorn/prefer-at': 'error',
     'unicorn/consistent-destructuring': 'error',
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
     'promise/no-multiple-resolved': 'error',
+    'unicorn/no-zero-fractions': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',
+    'logical-assignment-operators': [
+      'error',
+      'always',
+      { enforceForIfStatements: true },
+    ],
+    'unicorn/prefer-regexp-test': 'error',
     'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/prefer-optional-catch-binding': 'error',
+    'unicorn/prefer-array-flat-map': 'error',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'error',
     'sonarjs/no-small-switch': 'error',
     'sonarjs/no-duplicated-branches': 'error',
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
+    'unicorn/prefer-string-replace-all': 'error',
 
+    'unicorn/prefer-switch': 'error',
     // TODO: Fix all errors for the following rules included in recommended config
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-var-requires': 'off',
@@ -275,18 +295,28 @@ module.exports = {
   plugins: ['promise', 'sonarjs', 'unicorn'],
 
   overrides: [
+    {
+      files: ['**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      },
+      parserOptions: {
+        project: [
+          'packages/*/tsconfig.json',
+          'examples/*/tsconfig.json',
+          'packages/graphiql/cypress/tsconfig.json',
+          'tsconfig.eslint.json',
+        ],
+      },
+    },
     // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
     // cypress clashes with jest expect()
     {
       files: ['**/cypress/**'],
-      plugins: ['cypress'],
-      env: {
-        'cypress/globals': true,
-      },
+      extends: 'plugin:cypress/recommended',
     },
     {
-      excludedFiles: ['**/cypress/**/*.{js,ts}'],
       files: [
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',

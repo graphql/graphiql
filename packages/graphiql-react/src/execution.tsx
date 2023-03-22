@@ -69,8 +69,13 @@ export type ExecutionContextProviderProps = Pick<
   operationName?: string;
 };
 
-export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
-  if (!props.fetcher) {
+export function ExecutionContextProvider({
+  fetcher,
+  getDefaultFieldNames,
+  children,
+  operationName,
+}: ExecutionContextProviderProps) {
+  if (!fetcher) {
     throw new TypeError(
       'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -86,7 +91,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
   const history = useHistoryContext();
   const autoCompleteLeafs = useAutoCompleteLeafs({
-    getDefaultFieldNames: props.getDefaultFieldNames,
+    getDefaultFieldNames,
     caller: ExecutionContextProvider,
   });
   const [isFetching, setIsFetching] = useState(false);
@@ -99,7 +104,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setSubscription(null);
   }, [subscription]);
 
-  const { fetcher, children, operationName } = props;
   const run = useCallback<ExecutionContextType['run']>(async () => {
     if (!queryEditor || !responseEditor) {
       return;
@@ -203,10 +207,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
           };
           const maybeErrors = [
             ...(fullResponse?.errors || []),
-            ...maybeMultipart
-              .map(i => i.errors)
-              .flat()
-              .filter(Boolean),
+            ...maybeMultipart.flatMap(i => i.errors).filter(Boolean),
           ];
 
           if (maybeErrors.length) {
@@ -285,18 +286,11 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         setSubscription({
           unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
         });
-
-        try {
-          for await (const result of value) {
-            handleResponse(result);
-          }
-          setIsFetching(false);
-          setSubscription(null);
-        } catch (error) {
-          setIsFetching(false);
-          setResponse(formatError(error));
-          setSubscription(null);
+        for await (const result of value) {
+          handleResponse(result);
         }
+        setIsFetching(false);
+        setSubscription(null);
       } else {
         handleResponse(value);
       }

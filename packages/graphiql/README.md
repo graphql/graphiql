@@ -109,11 +109,12 @@ import ReactDOM from 'react-dom';
 
 import 'graphiql/graphiql.css';
 
-const fetcher = createGraphiQLFetcher({
-  url: 'https://my.backend/graphql',
-});
+const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 
-ReactDOM.render(<GraphiQL fetcher={fetcher} />, document.body);
+ReactDOM.render(
+  <GraphiQL fetcher={fetcher} />,
+  document.getElementById('root'),
+);
 ```
 
 ### Using as UMD bundle over CDN (Unpkg, JSDelivr, etc)

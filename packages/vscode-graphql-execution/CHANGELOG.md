@@ -1,5 +1,24 @@
 # vscode-graphql-execution
 
+## 0.1.8
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993)
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - add
+  `unicorn/consistent-destructuring` rule
+
+- [#3038](https://github.com/graphql/graphiql/pull/3038)
+  [`708c428c`](https://github.com/graphql/graphiql/commit/708c428c9f7260989891db6ea37d1bc9ba5a439a)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove unused collection
+  `operationNames` in `executeOperation()`
+
+- [#2940](https://github.com/graphql/graphiql/pull/2940)
+  [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-node-protocol` rule
+
 ## 0.1.7
 
 ### Patch Changes

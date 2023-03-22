@@ -115,7 +115,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       });
   }
   validUrlFromSchema(pathOrUrl: string) {
-    return Boolean(pathOrUrl.match(/^https?:\/\//g));
+    return /^https?:\/\//.test(pathOrUrl);
   }
   reportError(message: string) {
     this.outputChannel.appendLine(message);
@@ -146,7 +146,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         if (schema && Array.isArray(schema)) {
           schema.map(s => {
             if (this.validUrlFromSchema(s as string)) {
-              endpoints!.default.url = s.toString();
+              endpoints.default.url = s.toString();
             }
           });
         } else if (schema && this.validUrlFromSchema(schema as string)) {
@@ -182,7 +182,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         return;
       }
       const config = await loadConfig({
-        rootDir: rootDir!.uri.fsPath,
+        rootDir: rootDir.uri.fsPath,
         legacy: true,
       });
       const projectConfig = config?.getProjectForFile(this.literal.uri);
@@ -246,7 +246,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.reportError(`Error: this file is outside the workspace.`);
       return;
     }
-    const config = await loadConfig({ rootDir: rootDir!.uri.fsPath });
+    const config = await loadConfig({ rootDir: rootDir.uri.fsPath });
     const projectConfig = config?.getProjectForFile(literal.uri);
 
     if (!projectConfig!.schema) {

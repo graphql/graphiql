@@ -1,5 +1,46 @@
 # Change Log
 
+## 2.0.5
+
+### Patch Changes
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046)
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index
+  access
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
+## 2.0.4
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993)
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - add
+  `unicorn/consistent-destructuring` rule
+
+- [#2962](https://github.com/graphql/graphiql/pull/2962)
+  [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - clean all ESLint warnings, add
+  `--max-warnings=0` and `--cache` flags
+
+- [#2940](https://github.com/graphql/graphiql/pull/2940)
+  [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-node-protocol` rule
+
+- Updated dependencies
+  [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c),
+  [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b),
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4),
+  [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d),
+  [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+
 ## 2.0.3
 
 ### Patch Changes

@@ -96,9 +96,7 @@ const UnionFirst = new GraphQLObjectType({
     },
     first: {
       type: new GraphQLList(TestInterface),
-      resolve: () => {
-        return true;
-      },
+      resolve: () => true,
     },
   }),
   interfaces: [TestInterface],
@@ -113,9 +111,7 @@ const UnionSecond = new GraphQLObjectType({
     },
     second: {
       type: TestInterface,
-      resolve: () => {
-        return false;
-      },
+      resolve: () => false,
     },
   }),
   interfaces: [TestInterface],
@@ -295,9 +291,7 @@ const TestType = new GraphQLObjectType({
     isTest: {
       type: GraphQLBoolean,
       description: 'Is this a test schema? Sure it is.',
-      resolve: () => {
-        return true;
-      },
+      resolve: () => true,
     },
     image: {
       type: GraphQLString,

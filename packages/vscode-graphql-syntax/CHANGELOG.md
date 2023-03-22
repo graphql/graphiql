@@ -1,5 +1,15 @@
 # vscode-graphql-syntax
 
+## 1.1.0
+
+### Minor Changes
+
+- [#3019](https://github.com/graphql/graphiql/pull/3019)
+  [`ae43add6`](https://github.com/graphql/graphiql/commit/ae43add68c39825580fc8fc63a0b4c55f9fb70ad)
+  Thanks [@mjmahone](https://github.com/mjmahone)! - Adds syntax highlighting
+  for arguments on fragment spreads as well as variable definitions on
+  fragments.
+
 ## 1.0.6
 
 ### Patch Changes

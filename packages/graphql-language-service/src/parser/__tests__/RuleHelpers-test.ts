@@ -24,8 +24,7 @@ describe('list', () => {
 describe('butNot', () => {
   const rule = {
     match: token =>
-      token.kind === 'Name' &&
-      Boolean(token.value.match(/^[_A-Za-z][_0-9A-Za-z]*/)),
+      token.kind === 'Name' && /^[_A-Za-z][_0-9A-Za-z]*/.test(token.value),
   };
 
   const exclusionRules = [

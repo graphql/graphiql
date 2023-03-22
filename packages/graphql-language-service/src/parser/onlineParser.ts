@@ -79,6 +79,7 @@ function getToken(
   options: ParserOptions,
 ): string {
   if (state.inBlockstring) {
+    // eslint-disable-next-line unicorn/prefer-regexp-test -- false positive stream is not string
     if (stream.match(/.*"""/)) {
       state.inBlockstring = false;
       return 'string';
@@ -148,9 +149,9 @@ function getToken(
       if (
         state.indentLevel &&
         levels.length > 0 &&
-        levels[levels.length - 1] < state.indentLevel
+        levels.at(-1)! < state.indentLevel
       ) {
-        state.indentLevel = levels[levels.length - 1];
+        state.indentLevel = levels.at(-1);
       }
     }
   }

@@ -243,7 +243,7 @@ function getJSONSchemaFromGraphQLType(
           });
         }
       });
-      definitions![type.name] = fieldDef;
+      definitions[type.name] = fieldDef;
     }
   }
   // append descriptions

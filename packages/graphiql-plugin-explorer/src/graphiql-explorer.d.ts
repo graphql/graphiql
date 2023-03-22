@@ -43,10 +43,10 @@ declare module 'graphiql-explorer' {
       variable: string;
       atom: string;
     } | null;
-    arrowOpen?: ReactNode | null;
-    arrowClosed?: ReactNode | null;
-    checkboxChecked?: ReactNode | null;
-    checkboxUnchecked?: ReactNode | null;
+    arrowOpen?: ReactNode;
+    arrowClosed?: ReactNode;
+    checkboxChecked?: ReactNode;
+    checkboxUnchecked?: ReactNode;
     styles?: {
       explorerActionsStyle?: CSSProperties;
       buttonStyle?: CSSProperties;

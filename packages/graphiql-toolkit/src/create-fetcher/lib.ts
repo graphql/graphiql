@@ -104,7 +104,7 @@ export const createWebsocketsFetcherFromUrl = (
 export const createWebsocketsFetcherFromClient =
   (wsClient: Client) => (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
-      wsClient!.subscribe(graphQLParams, {
+      wsClient.subscribe(graphQLParams, {
         ...sink,
         error: err => {
           if (err instanceof CloseEvent) {

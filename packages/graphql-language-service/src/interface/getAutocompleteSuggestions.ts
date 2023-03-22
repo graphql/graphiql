@@ -644,7 +644,7 @@ function getSuggestionsForImplements(
         state.kind === RuleKinds.INTERFACE_DEF &&
         !schemaInterfaceNames.includes(state.name)
       ) {
-        inlineInterfaces.add(<string>state.name);
+        inlineInterfaces.add(state.name);
       }
       // gather the other interfaces the current type/interface definition implements
       // so we can filter them out below
@@ -1047,7 +1047,7 @@ export function canUseDirective(
   state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {
-  if (!state || !state.kind) {
+  if (!state?.kind) {
     return false;
   }
   const { kind, prevState } = state;

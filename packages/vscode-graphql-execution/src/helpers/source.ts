@@ -47,7 +47,7 @@ export class SourceHelper {
     }
     if (namedTypeNode) {
       // TODO: Handle this for object types/ enums/ custom scalars
-      return (namedTypeNode as NamedTypeNode).name.value as GraphQLScalarType;
+      return (namedTypeNode as NamedTypeNode).name.value;
     }
     // TODO: Is handling all via string a correct fallback?
     return 'String';

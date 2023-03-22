@@ -1,3 +1,5 @@
+/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+
 /**
  * UMD GraphiQL Example
  *
@@ -11,10 +13,9 @@
  */
 
 // Parse the search string to get url parameters.
-var search = window.location.search;
 var parameters = {};
-search
-  .substr(1)
+window.location.search
+  .slice(1)
   .split('&')
   .forEach(function (entry) {
     var eq = entry.indexOf('=');
@@ -73,13 +74,14 @@ function getSchemaUrl() {
     // This supports an e2e test which ensures that invalid schemas do not load.
     if (parameters.bad === 'true') {
       return '/bad/graphql';
-    } else if (parameters['http-error'] === 'true') {
-      return '/http-error/graphql';
-    } else if (parameters['graphql-error'] === 'true') {
-      return '/graphql-error/graphql';
-    } else {
-      return '/graphql';
     }
+    if (parameters['http-error'] === 'true') {
+      return '/http-error/graphql';
+    }
+    if (parameters['graphql-error'] === 'true') {
+      return '/graphql-error/graphql';
+    }
+    return '/graphql';
   }
   return '/.netlify/functions/schema-demo';
 }

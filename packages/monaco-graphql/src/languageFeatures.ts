@@ -72,32 +72,27 @@ export class DiagnosticsAdapter {
       }
     };
 
-    this._disposables.push(editor.onDidCreateModel(onModelAdd));
-    this._disposables.push({
-      dispose: () => {
-        clearTimeout(onChangeTimeout);
-      },
-    });
     this._disposables.push(
+      editor.onDidCreateModel(onModelAdd),
+      {
+        dispose: () => {
+          clearTimeout(onChangeTimeout);
+        },
+      },
       editor.onWillDisposeModel(model => {
         onModelRemoved(model);
       }),
-    );
-    this._disposables.push(
       editor.onDidChangeModelLanguage(event => {
         onModelRemoved(event.model);
         onModelAdd(event.model);
       }),
-    );
-
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
+      {
+        dispose: () => {
+          for (const key in this._listener) {
+            this._listener[key].dispose();
+          }
+        },
       },
-    });
-    this._disposables.push(
       defaults.onDidChange(() => {
         editor.getModels().forEach(model => {
           if (getModelLanguageId(model) === this.defaults.languageId) {
@@ -122,6 +117,12 @@ export class DiagnosticsAdapter {
     variablesUris?: string[],
   ) {
     const worker = await this._worker(resource);
+
+    // to handle an edge case bug that happens when
+    // typing before the schema is present
+    if (!worker) {
+      return;
+    }
 
     const diagnostics = await worker.doValidation(resource.toString());
     editor.setModelMarkers(
@@ -208,7 +209,7 @@ export function toCompletion(
     range: entry.range,
     kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
     label: entry.label,
-    insertText: entry.insertText ?? (entry.label as string),
+    insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText
       ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
       : undefined,

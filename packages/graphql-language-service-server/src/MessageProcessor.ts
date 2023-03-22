@@ -8,7 +8,8 @@
  */
 
 import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync, writeFile } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
@@ -71,9 +72,6 @@ import {
   ProjectNotFoundError,
 } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
-import { promisify } from 'node:util';
-
-const writeFileAsync = promisify(writeFile);
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -91,10 +89,10 @@ export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
-  _textDocumentCache: Map<string, CachedDocumentType>;
-  _isInitialized: boolean;
+  _textDocumentCache = new Map<string, CachedDocumentType>();
+  _isInitialized = false;
   _isGraphQLConfigMissing: boolean | null = null;
-  _willShutdown: boolean;
+  _willShutdown = false;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
   _parser: (text: string, uri: string) => CachedContent[];
@@ -126,9 +124,6 @@ export class MessageProcessor {
     connection: Connection;
   }) {
     this._connection = connection;
-    this._textDocumentCache = new Map();
-    this._isInitialized = false;
-    this._willShutdown = false;
     this._logger = logger;
     this._graphQLConfig = config;
     this._parser = (text, uri) => {
@@ -320,7 +315,7 @@ export class MessageProcessor {
     // We aren't able to use initialization event for this
     // and the config change event is after the fact.
 
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
     const { textDocument } = params;
@@ -419,22 +414,16 @@ export class MessageProcessor {
     // with version information up-to-date, so that the textDocument contents
     // may be used during performing language service features,
     // e.g. auto-completions.
-    if (
-      !params ||
-      !params.textDocument ||
-      !params.contentChanges ||
-      !params.textDocument.uri
-    ) {
+    if (!params?.textDocument?.uri || !params.contentChanges) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
+        '`textDocument.uri` and `contentChanges` arguments are required.',
       );
     }
-    const { textDocument } = params;
+    const { textDocument, contentChanges } = params;
     const { uri } = textDocument;
     const project = this._graphQLCache.getProjectForFile(uri);
     try {
-      const { contentChanges } = params;
-      const contentChange = contentChanges[contentChanges.length - 1];
+      const contentChange = contentChanges.at(-1)!;
 
       // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.
@@ -509,7 +498,7 @@ export class MessageProcessor {
     // For every `textDocument/didClose` event, delete the cached entry.
     // This is to keep a low memory usage && switch the source of truth to
     // the file on disk.
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` is required.');
     }
     const { textDocument } = params;
@@ -539,14 +528,9 @@ export class MessageProcessor {
   }
 
   validateDocumentAndPosition(params: CompletionParams): void {
-    if (
-      !params ||
-      !params.textDocument ||
-      !params.textDocument.uri ||
-      !params.position
-    ) {
+    if (!params?.textDocument?.uri || !params.position) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `position` arguments are required.',
+        '`textDocument.uri` and `position` arguments are required.',
       );
     }
   }
@@ -742,7 +726,7 @@ export class MessageProcessor {
       return [];
     }
 
-    if (!params || !params.textDocument || !params.position) {
+    if (!params?.textDocument || !params.position) {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
     const { textDocument, position } = params;
@@ -839,13 +823,13 @@ export class MessageProcessor {
       return [];
     }
 
-    if (!params || !params.textDocument) {
+    if (!params?.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
 
     const { textDocument } = params;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    if (!cachedDocument || !cachedDocument.contents[0]) {
+    if (!cachedDocument?.contents[0]) {
       return [];
     }
 
@@ -860,7 +844,7 @@ export class MessageProcessor {
   //      return [];
   //    }
 
-  //    if (!params || !params.textDocument) {
+  //    if (!params?.textDocument) {
   //      throw new Error('`textDocument` argument is required.');
   //    }
 
@@ -1070,16 +1054,12 @@ export class MessageProcessor {
         const cachedSchemaDoc = this._getCachedDocument(uri);
 
         if (!cachedSchemaDoc) {
-          await writeFileAsync(fsPath, schemaText, {
-            encoding: 'utf-8',
-          });
+          await writeFile(fsPath, schemaText, 'utf8');
           await this._cacheSchemaText(uri, schemaText, 1);
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
-          writeFileSync(fsPath, schemaText, {
-            encoding: 'utf-8',
-          });
+          writeFileSync(fsPath, schemaText, 'utf8');
           await this._cacheSchemaText(
             uri,
             schemaText,
@@ -1115,9 +1095,9 @@ export class MessageProcessor {
           // build full system URI path with protocol
           const uri = URI.file(filePath).toString();
 
-          // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
+          // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
-          if (!contents[0] || !contents[0].query) {
+          if (!contents[0]?.query) {
             return;
           }
           await this._updateObjectTypeDefinition(uri, contents);

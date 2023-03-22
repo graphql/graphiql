@@ -66,7 +66,7 @@ export function fillLeafs(
           const indent = getIndentation(docString, node.loc.start);
           insertions.push({
             index: node.loc.end,
-            string: ' ' + print(selectionSet).replace(/\n/g, '\n' + indent),
+            string: ' ' + print(selectionSet).replaceAll('\n', '\n' + indent),
           });
         }
       }
@@ -199,7 +199,7 @@ function getIndentation(str: string, index: number) {
       indentEnd = indentStart;
     }
   }
-  return str.substring(indentStart, indentEnd);
+  return str.slice(indentStart, indentEnd);
 }
 
 function isFieldType(

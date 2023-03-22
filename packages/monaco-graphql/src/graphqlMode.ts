@@ -24,7 +24,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     ...uris: Uri[]
   ): Promise<GraphQLWorker> => {
     try {
-      return client!.getLanguageServiceWorker(...uris);
+      return client.getLanguageServiceWorker(...uris);
     } catch {
       throw new Error('Error fetching graphql language service worker');
     }

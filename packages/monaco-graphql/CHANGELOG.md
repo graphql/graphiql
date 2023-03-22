@@ -1,5 +1,48 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3071](https://github.com/graphql/graphiql/pull/3071)
+  [`1821ef2b`](https://github.com/graphql/graphiql/commit/1821ef2b3f06c69fa5fa27dbd66d19e81e792590)
+  Thanks [@acao](https://github.com/acao)! - Upgrade peer resolutions for
+  monaco-graphql
+
+### Patch Changes
+
+- [#3093](https://github.com/graphql/graphiql/pull/3093)
+  [`6ed73bf7`](https://github.com/graphql/graphiql/commit/6ed73bf7ca9781d511458e70268deff203fd36cb)
+  Thanks [@acao](https://github.com/acao)! - Bugfix for 'worker not found' type
+  errors on \_doValidate()'
+
+- [#3047](https://github.com/graphql/graphiql/pull/3047)
+  [`190fae87`](https://github.com/graphql/graphiql/commit/190fae87a3e4b07a473ba7029fb22d19e713c4b4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - combining multiple Array#push()
+  into one call
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - graphql-language-service@5.1.3
+
+## 1.1.8
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993)
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - add
+  `unicorn/consistent-destructuring` rule
+
+- Updated dependencies
+  [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c),
+  [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b),
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4),
+  [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d),
+  [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+
 ## 1.1.7
 
 ### Patch Changes

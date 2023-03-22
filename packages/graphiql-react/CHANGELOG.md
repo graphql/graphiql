@@ -1,5 +1,68 @@
 # @graphiql/react
 
+## 0.17.1
+
+### Patch Changes
+
+- [#3033](https://github.com/graphql/graphiql/pull/3033)
+  [`2d5c60ec`](https://github.com/graphql/graphiql/commit/2d5c60ecf717abafde2bddd32b2772261d3eec8b)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove redundant `catch`
+  statement
+
+- [#3046](https://github.com/graphql/graphiql/pull/3046)
+  [`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer .at() method for index
+  access
+
+- [#3017](https://github.com/graphql/graphiql/pull/3017)
+  [`4a2284f5`](https://github.com/graphql/graphiql/commit/4a2284f54809f91d03ba51b9eb4e3ba7b8b7e773)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid
+  bundling code from `react/jsx-runtime` so that the package can be used with
+  Preact
+
+- [#3042](https://github.com/graphql/graphiql/pull/3042)
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer String#slice() over
+  String#substr() and String#substring()
+
+- [#3061](https://github.com/graphql/graphiql/pull/3061)
+  [`7cf4908a`](https://github.com/graphql/graphiql/commit/7cf4908a5d4bd58af315047f4dec5236e8c701fc)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - remove unneeded `reference &&`
+  assertion, convert to switch
+
+- Updated dependencies
+  [[`b9c13328`](https://github.com/graphql/graphiql/commit/b9c13328f3d28c0026ee0f0ecc7213065c9b016d),
+  [`881a2024`](https://github.com/graphql/graphiql/commit/881a202497d5a58eb5260a5aa54c0c88930d69a0)]:
+  - codemirror-graphql@2.0.5
+  - @graphiql/toolkit@0.8.3
+  - graphql-language-service@5.1.3
+
+## 0.17.0
+
+### Minor Changes
+
+- [#3012](https://github.com/graphql/graphiql/pull/3012)
+  [`65f5176a`](https://github.com/graphql/graphiql/commit/65f5176a408cfbbc514ca60e2e4bd2ea133a8b0b)
+  Thanks [@benjie](https://github.com/benjie)! - GraphiQL now maintains the
+  DocExplorer navigation stack as best it can when the schema is updated
+
+### Patch Changes
+
+- [#2993](https://github.com/graphql/graphiql/pull/2993)
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - add
+  `unicorn/consistent-destructuring` rule
+
+- Updated dependencies
+  [[`e68cb8bc`](https://github.com/graphql/graphiql/commit/e68cb8bcaf9baddf6fca747abab871ecd1bc7a4c),
+  [`f788e65a`](https://github.com/graphql/graphiql/commit/f788e65aff267ec873237034831d1fd936222a9b),
+  [`bdc966cb`](https://github.com/graphql/graphiql/commit/bdc966cba6134a72ff7fe40f76543c77ba15d4a4),
+  [`db2a0982`](https://github.com/graphql/graphiql/commit/db2a0982a17134f0069483ab283594eb64735b7d),
+  [`8725d1b6`](https://github.com/graphql/graphiql/commit/8725d1b6b686139286cf05dec6a84d89942128ba)]:
+  - graphql-language-service@5.1.2
+  - codemirror-graphql@2.0.4
+  - @graphiql/toolkit@0.8.2
+
 ## 0.16.0
 
 ### Minor Changes

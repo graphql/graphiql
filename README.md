@@ -71,6 +71,7 @@ The GraphiQL IDE, implemented in React, currently using
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/monaco-graphql)
 
 Provides monaco editor with a powerful, schema-driven graphql language mode.
+Uses the `graphql-language-service`directly.
 
 See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain
 javascript demo using GitHub API
@@ -85,7 +86,8 @@ javascript demo using GitHub API
 ![Animated Codemirror GraphQL Completion Example](https://raw.githubusercontent.com/graphql/graphiql/main/packages/codemirror-graphql/resources/example.gif)
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
-typeahead hinter powered by your GraphQL Schema
+typeahead hinter powered by your GraphQL Schema. Uses the
+`graphql-language-service`.
 
 ## [`graphql-language-service`](packages/graphql-language-service#readme)
 
@@ -107,7 +109,24 @@ the now-retired `graphql-language-service-interface`,
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server)
 
-Provides language services for LSP-based IDE extensions
+Provides language services for LSP-based IDE extensions using the
+`graphql-language-service`
+
+## [`graphql.vscode-graphql`](packages/vscode-graphql#readme)
+
+An example implementation of `graphql-language-service-server` for Visual Studio
+Code. Available
+[on the marketplace](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql).
+OVSX fix is pending.
+
+## [`graphql.vscode-graphql-syntax`](packages/vscode-graphql-syntax#readme)
+
+A new syntax highlighting-only extension for vscode to be used by other vscode
+extensions.
+
+## [`graphql.vscode-graphql-execution`](packages/vscode-graphql-execution#readme)
+
+An extension for vscode-graphql that allows inline query execution.
 
 ## [`graphql-language-service-cli`](packages/graphql-language-service-cli#readme)
 
@@ -115,7 +134,7 @@ Provides language services for LSP-based IDE extensions
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-cli?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-cli)
 
-Provides a CLI for the language service server
+Provides a CLI for the language service server.
 
 ## Browser & Runtime Support
 
