@@ -143,6 +143,7 @@ listbox
 listvalues
 matchingbracket
 marko
+middlewares
 modulemap
 myschema
 newhope
