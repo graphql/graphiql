@@ -105,7 +105,6 @@ module.exports = {
     'no-useless-call': 1,
     'no-useless-concat': 1,
     'no-useless-return': 0,
-    'no-void': 1,
     '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
     radix: 'error',
@@ -297,8 +296,10 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.{ts,tsx}'],
+      // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+        '@typescript-eslint/no-floating-promises': 'error',
       },
       parserOptions: {
         project: [

@@ -24,8 +24,8 @@ export function onHasCompletion(
   explorer: ExplorerContextType | null,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
-) {
-  importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
+): void {
+  void importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
     let fieldName: HTMLSpanElement | null;
     let typeNamePill: HTMLSpanElement | null;

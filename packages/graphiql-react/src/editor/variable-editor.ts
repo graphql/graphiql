@@ -57,7 +57,7 @@ export function useVariableEditor(
   useEffect(() => {
     let isActive = true;
 
-    importCodeMirror([
+    void importCodeMirror([
       import('codemirror-graphql/esm/variables/hint'),
       import('codemirror-graphql/esm/variables/lint'),
       import('codemirror-graphql/esm/variables/mode'),
