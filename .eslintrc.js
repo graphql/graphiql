@@ -251,6 +251,7 @@ module.exports = {
       { extensions: ['.tsx', '.jsx'], allow: 'as-needed' },
     ],
 
+    'unicorn/no-typeof-undefined': 'error',
     'unicorn/prefer-at': 'error',
     'unicorn/consistent-destructuring': 'error',
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],

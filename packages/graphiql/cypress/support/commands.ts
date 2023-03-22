@@ -81,7 +81,7 @@ Cypress.Commands.add(
         codeWithLineNumbers(query),
       );
     });
-    if (typeof variables !== 'undefined') {
+    if (variables !== undefined) {
       cy.contains('Variables').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
@@ -91,7 +91,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof variablesString !== 'undefined') {
+    if (variablesString !== undefined) {
       cy.contains('Variables').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
@@ -101,7 +101,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof headersString !== 'undefined') {
+    if (headersString !== undefined) {
       cy.contains('Headers').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(1)
@@ -111,7 +111,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof response !== 'undefined') {
+    if (response !== undefined) {
       cy.get('.result-window').should(element => {
         expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
           JSON.stringify(response, null, 2),
