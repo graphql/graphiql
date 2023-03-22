@@ -452,7 +452,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
         cache.delete(filePath);
       }
     } else if (fileAndContent?.queries) {
-      await this.updateFragmentDefinition(rootDir, filePath, fileAndContent.queries);
+      await this.updateFragmentDefinition(
+        rootDir,
+        filePath,
+        fileAndContent.queries,
+      );
     }
   }
 
