@@ -126,12 +126,10 @@ if (command === 'server') {
   if (argv?.configDir) {
     options.configDir = argv.configDir;
   }
-  try {
-    startServer(options);
-  } catch (error) {
+  startServer(options).catch(error => {
     const logger = new Logger();
     logger.error(String(error));
-  }
+  });
 } else {
   client(command as string, argv as { [key: string]: string });
 }
