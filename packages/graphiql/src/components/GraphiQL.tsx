@@ -12,6 +12,8 @@ import React, {
   useState,
 } from 'react';
 
+import { Reorder } from 'framer-motion';
+
 import {
   Button,
   ButtonGroup,
@@ -420,31 +422,43 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Tabs aria-label="Select active operation">
                 {editorContext.tabs.length > 1 ? (
                   <>
-                    {editorContext.tabs.map((tab, index) => (
-                      <Tab
-                        key={tab.id}
-                        isActive={index === editorContext.activeTabIndex}
-                      >
-                        <Tab.Button
-                          aria-controls="graphiql-session"
-                          id={`graphiql-session-tab-${index}`}
-                          onClick={() => {
-                            executionContext.stop();
-                            editorContext.changeTab(index);
-                          }}
+                    <Reorder.Group
+                      axis="x"
+                      values={editorContext.tabs}
+                      onReorder={newOrder => editorContext.moveTab(newOrder)}
+                      className="graphiql-reorder-tabs"
+                    >
+                      {editorContext.tabs.map((tab, index) => (
+                        <Reorder.Item
+                          key={tab.id}
+                          value={tab}
+                          className="graphiql-reorder-tab"
                         >
-                          {tab.title}
-                        </Tab.Button>
-                        <Tab.Close
-                          onClick={() => {
-                            if (editorContext.activeTabIndex === index) {
-                              executionContext.stop();
-                            }
-                            editorContext.closeTab(index);
-                          }}
-                        />
-                      </Tab>
-                    ))}
+                          <Tab
+                            isActive={index === editorContext.activeTabIndex}
+                          >
+                            <Tab.Button
+                              aria-controls="graphiql-session"
+                              id={`graphiql-session-tab-${index}`}
+                              onClick={() => {
+                                executionContext.stop();
+                                editorContext.changeTab(index);
+                              }}
+                            >
+                              {tab.title}
+                            </Tab.Button>
+                            <Tab.Close
+                              onClick={() => {
+                                if (editorContext.activeTabIndex === index) {
+                                  executionContext.stop();
+                                }
+                                editorContext.closeTab(index);
+                              }}
+                            />
+                          </Tab>
+                        </Reorder.Item>
+                      ))}
+                    </Reorder.Group>
                     <div>
                       <Tooltip label="Add tab">
                         <UnStyledButton
