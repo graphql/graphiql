@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
+import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
 import { UnStyledButton } from './button';
@@ -9,25 +10,29 @@ import './tabs.css';
 
 type TabProps = {
   isActive?: boolean;
+  key: string;
+  value: object;
 };
 
 const TabRoot = forwardRef<
   HTMLDivElement,
   TabProps & JSX.IntrinsicElements['div']
->(({ isActive, ...props }, ref) => (
-  <div
-    {...props}
-    ref={ref}
-    role="tab"
-    aria-selected={isActive}
-    className={clsx(
-      'graphiql-tab',
-      isActive && 'graphiql-tab-active',
-      props.className,
-    )}
-  >
-    {props.children}
-  </div>
+>(({ isActive, key, value, ...props }, ref) => (
+  <Reorder.Item key={key} value={value} className="graphiql-reorder-tab">
+    <div
+      {...props}
+      ref={ref}
+      role="tab"
+      aria-selected={isActive}
+      className={clsx(
+        'graphiql-tab',
+        isActive && 'graphiql-tab-active',
+        props.className,
+      )}
+    >
+      {props.children}
+    </div>
+  </Reorder.Item>
 ));
 TabRoot.displayName = 'Tab';
 
@@ -68,8 +73,21 @@ export const Tab = createComponentGroup(TabRoot, {
   Close: TabClose,
 });
 
-export const Tabs = forwardRef<HTMLDivElement, JSX.IntrinsicElements['div']>(
-  (props, ref) => (
+type TabsProps = {
+  values: object[];
+  onReorder: (newOrder: any[]) => void;
+};
+
+export const Tabs = forwardRef<
+  HTMLDivElement,
+  TabsProps & JSX.IntrinsicElements['div']
+>(({ values, onReorder, ...props }, ref) => (
+  <Reorder.Group
+    axis="x"
+    values={values}
+    onReorder={onReorder}
+    className="graphiql-reorder-tabs"
+  >
     <div
       {...props}
       ref={ref}
@@ -78,6 +96,6 @@ export const Tabs = forwardRef<HTMLDivElement, JSX.IntrinsicElements['div']>(
     >
       {props.children}
     </div>
-  ),
-);
+  </Reorder.Group>
+));
 Tabs.displayName = 'Tabs';

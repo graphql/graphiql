@@ -87,20 +87,6 @@ button.graphiql-tab-add > svg {
   padding: var(--px-12) 0;
 }
 
-/* The reorder container to move tabs */
-.graphiql-reorder-tabs {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
-  flex-wrap: nowrap;
-  padding-left: 0;
-}
-
-/* The reorder item wrapper for tabs */
-.graphiql-reorder-tab {
-  list-style: none;
-}
-
 /* The right-hand-side of the session header */
 .graphiql-container .graphiql-session-header-right {
   align-items: stretch;

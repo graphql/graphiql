@@ -1,3 +1,8 @@
+.graphiql-reorder-tabs {
+  display: flex;
+  padding-left: 0;
+}
+
 .graphiql-tabs {
   display: flex;
   overflow-x: auto;
@@ -6,6 +11,10 @@
   & > :not(:first-child) {
     margin-left: var(--px-12);
   }
+}
+
+.graphiql-reorder-tab {
+  list-style: none;
 }
 
 .graphiql-tab {
