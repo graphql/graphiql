@@ -10,15 +10,14 @@ import './tabs.css';
 
 type TabProps = {
   isActive?: boolean;
-  key: string;
   value: object;
 };
 
 const TabRoot = forwardRef<
   HTMLDivElement,
   TabProps & JSX.IntrinsicElements['div']
->(({ isActive, key, value, ...props }, ref) => (
-  <Reorder.Item key={key} value={value} className="graphiql-reorder-tab">
+>(({ isActive, value, ...props }, ref) => (
+  <Reorder.Item value={value} className="graphiql-reorder-tab">
     <div
       {...props}
       ref={ref}
