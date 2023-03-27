@@ -158,9 +158,9 @@ function getJSONSchemaFromGraphQLType(
       definition.items = def;
     }
     if (defs) {
-      Object.keys(defs).forEach(defName => {
+      for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];
-      });
+      }
     }
   }
   if (isNonNullType(type)) {
@@ -171,9 +171,9 @@ function getJSONSchemaFromGraphQLType(
     );
     definition = def;
     if (defs) {
-      Object.keys(defs).forEach(defName => {
+      for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];
-      });
+      }
     }
   }
   if (isInputObjectType(type)) {
@@ -202,7 +202,7 @@ function getJSONSchemaFromGraphQLType(
         }
       }
 
-      Object.keys(fields).forEach(fieldName => {
+      for (const fieldName of Object.keys(fields)) {
         const field = fields[fieldName];
         const {
           required: fieldRequired,
@@ -242,7 +242,7 @@ function getJSONSchemaFromGraphQLType(
             definitions[defName] = typeDefinitions[defName];
           });
         }
-      });
+      }
       definitions[type.name] = fieldDef;
     }
   }
@@ -324,7 +324,7 @@ export function getVariablesJSONSchema(
 
   if (variableToType) {
     // I would use a reduce here, but I wanted it to be readable.
-    Object.entries(variableToType).forEach(([variableName, type]) => {
+    for (const [variableName, type] of Object.entries(variableToType)) {
       const { definition, required, definitions } =
         getJSONSchemaFromGraphQLType(type, runtimeOptions);
       jsonSchema.properties[variableName] = definition;
@@ -334,7 +334,7 @@ export function getVariablesJSONSchema(
       if (definitions) {
         jsonSchema.definitions = { ...jsonSchema?.definitions, ...definitions };
       }
-    });
+    }
   }
   return jsonSchema;
 }

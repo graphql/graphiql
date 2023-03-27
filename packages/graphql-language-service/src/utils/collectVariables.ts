@@ -26,11 +26,11 @@ export function collectVariables(
 ): VariableToType {
   const variableToType: VariableToType = Object.create(null);
   // it would be more ideal to use visitWithTypeInfo here but it's very simple
-  documentAST.definitions.forEach(definition => {
+  for (const definition of documentAST.definitions) {
     if (definition.kind === 'OperationDefinition') {
       const { variableDefinitions } = definition;
       if (variableDefinitions) {
-        variableDefinitions.forEach(({ variable, type }) => {
+        for (const { variable, type } of variableDefinitions) {
           const inputType = typeFromAST(
             schema,
             type as NamedTypeNode,
@@ -44,9 +44,9 @@ export function collectVariables(
           ) {
             variableToType[variable.name.value] = GraphQLFloat;
           }
-        });
+        }
       }
     }
-  });
+  }
   return variableToType;
 }
