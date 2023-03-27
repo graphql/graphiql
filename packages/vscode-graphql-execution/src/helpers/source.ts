@@ -127,7 +127,7 @@ export class SourceHelper {
     const sources = await projectConfig.getDocuments();
     const { fragmentDefinitions } = this;
 
-    sources.forEach(source => {
+    for (const source of sources) {
       visit(source.document as DocumentNode, {
         FragmentDefinition(node) {
           const existingDef = fragmentDefinitions.get(node.name.value);
@@ -141,7 +141,7 @@ export class SourceHelper {
           }
         },
       });
-    });
+    }
     return fragmentDefinitions;
   }
 
@@ -160,7 +160,7 @@ export class SourceHelper {
       } catch {}
     }
 
-    tags.forEach(tag => {
+    for (const tag of tags) {
       // https://regex101.com/r/Pd5PaU/2
       const regExpGQL = new RegExp(tag + '\\s*`([\\s\\S]+?)`', 'mg');
 
@@ -179,7 +179,7 @@ export class SourceHelper {
           // don't break the extension while editing
         } catch {}
       }
-    });
+    }
     return documents;
 
     function processGraphQLString(textString: string, offset: number) {
@@ -265,15 +265,15 @@ export const getFragmentDependenciesForAST = async (
   });
 
   const asts = new Set<FragmentInfo>();
-  referencedFragNames.forEach(name => {
+  for (const name of referencedFragNames) {
     if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
       asts.add(nullthrows(fragmentDefinitions.get(name)));
     }
-  });
+  }
 
   const referencedFragments: FragmentInfo[] = [];
 
-  asts.forEach(ast => {
+  for (const ast of asts) {
     visit(ast.definition, {
       FragmentSpread(node) {
         if (
@@ -288,7 +288,7 @@ export const getFragmentDependenciesForAST = async (
     if (!existingFrags.has(ast.definition.name.value)) {
       referencedFragments.push(ast);
     }
-  });
+  }
 
   return referencedFragments;
 };

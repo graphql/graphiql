@@ -85,7 +85,7 @@ export class LanguageService {
   }
 
   private _cacheSchemas() {
-    this._schemas.forEach(schema => this._cacheSchema(schema));
+    for (const schema of this._schemas) {this._cacheSchema(schema);}
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {

@@ -314,13 +314,13 @@ export function useAutoCompleteLeafs({
             },
           ),
         );
-        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        setTimeout(() => { for (const marker of markers) {marker.clear()} }, 7000);
         let newCursorIndex = cursorIndex;
-        insertions.forEach(({ index, string }) => {
+        for (const { index, string } of insertions) {
           if (index < cursorIndex) {
             newCursorIndex += string.length;
           }
-        });
+        }
         queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
       });
     }
