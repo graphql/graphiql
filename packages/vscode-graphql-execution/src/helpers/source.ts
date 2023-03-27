@@ -188,7 +188,7 @@ export class SourceHelper {
         def => def.kind === 'OperationDefinition',
       );
       for (const operation of operations) {
-        const op = operation as any
+        const op = operation as any;
         const filteredAst = {
           ...ast,
           definitions: ast.definitions.filter(def => {
