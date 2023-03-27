@@ -38,7 +38,9 @@ describe('GraphiQL On Initialization', () => {
     ];
     cy.visit(`/`);
     cy.get('.graphiql-query-editor').contains('# Welcome to GraphiQL');
-    for (const cSelector of containers) {cy.get(cSelector).should('be.visible');}
+    for (const cSelector of containers) {
+      cy.get(cSelector).should('be.visible');
+    }
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {

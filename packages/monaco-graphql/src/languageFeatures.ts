@@ -107,7 +107,9 @@ export class DiagnosticsAdapter {
   }
 
   public dispose(): void {
-    for (const d of this._disposables) {d?.dispose();}
+    for (const d of this._disposables) {
+      d?.dispose();
+    }
     this._disposables = [];
   }
 

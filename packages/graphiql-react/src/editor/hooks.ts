@@ -314,7 +314,11 @@ export function useAutoCompleteLeafs({
             },
           ),
         );
-        setTimeout(() => { for (const marker of markers) {marker.clear()} }, 7000);
+        setTimeout(() => {
+          for (const marker of markers) {
+            marker.clear();
+          }
+        }, 7000);
         let newCursorIndex = cursorIndex;
         for (const { index, string } of insertions) {
           if (index < cursorIndex) {
