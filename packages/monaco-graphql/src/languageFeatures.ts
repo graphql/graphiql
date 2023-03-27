@@ -103,7 +103,9 @@ export class DiagnosticsAdapter {
       }),
     );
 
-    editor.getModels().forEach(onModelAdd);
+    for (const model of editor.getModels()) {
+      onModelAdd(model);
+    }
   }
 
   public dispose(): void {

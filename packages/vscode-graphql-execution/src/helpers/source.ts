@@ -187,7 +187,8 @@ export class SourceHelper {
       const operations = ast.definitions.filter(
         def => def.kind === 'OperationDefinition',
       );
-      operations.forEach((op: any) => {
+      for (const operation of operations) {
+        const op = operation as any
         const filteredAst = {
           ...ast,
           definitions: ast.definitions.filter(def => {
@@ -204,7 +205,7 @@ export class SourceHelper {
           definition: op,
           ast: filteredAst,
         });
-      });
+      }
       // no-op, so that non-parse-able source files
       // don't break the extension while editing
     }

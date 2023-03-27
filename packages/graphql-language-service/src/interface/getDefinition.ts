@@ -87,19 +87,19 @@ export async function getDefinitionQueryResultForField(
 
   const definitions: Array<Definition> = [];
 
-  defNodes.forEach(({ filePath, content, definition }) => {
+  for (const { filePath, content, definition } of defNodes) {
     const fieldDefinition = (
       definition as ObjectTypeDefinitionNode
     ).fields?.find(item => item.name.value === fieldName);
 
     if (fieldDefinition == null) {
-      return null;
+      continue;
     }
 
     definitions.push(
       getDefinitionForFieldDefinition(filePath || '', content, fieldDefinition),
     );
-  });
+  }
 
   return {
     definitions,
