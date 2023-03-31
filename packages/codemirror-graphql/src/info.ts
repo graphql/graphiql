@@ -75,7 +75,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderField(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.fieldDef as any);
       return into;
     }
@@ -84,7 +84,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderDirective(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.directiveDef);
       return into;
     }
@@ -93,7 +93,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderArg(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.argDef);
       return into;
     }
@@ -106,7 +106,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderEnumValue(header, typeInfo, options);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.enumValue);
       return into;
     }
@@ -119,7 +119,7 @@ CodeMirror.registerHelper(
       header.className = 'CodeMirror-info-header';
       renderType(header, typeInfo, options, typeInfo.type);
       const into = document.createElement('div');
-      into.appendChild(header);
+      into.append(header);
       renderDescription(into, options, typeInfo.type);
       return into;
     }
@@ -198,7 +198,7 @@ function renderTypeAnnotation(
       getTypeReference(typeInfo, t),
     );
   }
-  into.appendChild(typeSpan);
+  into.append(typeSpan);
 }
 
 function renderType(
@@ -242,9 +242,9 @@ function renderDescription(
     if (options.renderDescription) {
       descriptionDiv.innerHTML = options.renderDescription(description);
     } else {
-      descriptionDiv.appendChild(document.createTextNode(description));
+      descriptionDiv.append(document.createTextNode(description));
     }
-    into.appendChild(descriptionDiv);
+    into.append(descriptionDiv);
   }
 
   renderDeprecation(into, options, def);
@@ -264,21 +264,21 @@ function renderDeprecation(
   if (reason) {
     const deprecationDiv = document.createElement('div');
     deprecationDiv.className = 'info-deprecation';
-    into.appendChild(deprecationDiv);
+    into.append(deprecationDiv);
 
     const label = document.createElement('span');
     label.className = 'info-deprecation-label';
-    label.appendChild(document.createTextNode('Deprecated'));
-    deprecationDiv.appendChild(label);
+    label.append(document.createTextNode('Deprecated'));
+    deprecationDiv.append(label);
 
     const reasonDiv = document.createElement('div');
     reasonDiv.className = 'info-deprecation-reason';
     if (options.renderDescription) {
       reasonDiv.innerHTML = options.renderDescription(reason);
     } else {
-      reasonDiv.appendChild(document.createTextNode(reason));
+      reasonDiv.append(document.createTextNode(reason));
     }
-    deprecationDiv.appendChild(reasonDiv);
+    deprecationDiv.append(reasonDiv);
   }
 }
 
@@ -305,9 +305,9 @@ function text(
       node = document.createElement('span');
     }
     node.className = className;
-    node.appendChild(document.createTextNode(content));
-    into.appendChild(node);
+    node.append(document.createTextNode(content));
+    into.append(node);
   } else {
-    into.appendChild(document.createTextNode(content));
+    into.append(document.createTextNode(content));
   }
 }

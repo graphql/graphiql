@@ -268,6 +268,7 @@ module.exports = {
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/no-array-for-each': 'error',
+    'unicorn/prefer-dom-node-append': 'error',
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/prefer-optional-catch-binding': 'error',

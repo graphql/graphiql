@@ -173,10 +173,9 @@ function useMockedEditor(name: Name, onEdit?: (newValue: string) => void) {
     mockTextArea.className = 'mockCodeMirror';
 
     const mockWrapper = document.createElement('div');
-    mockWrapper.appendChild(mockGutter);
-    mockWrapper.appendChild(mockTextArea);
+    mockWrapper.append(mockGutter, mockTextArea);
 
-    ref.current.appendChild(mockWrapper);
+    ref.current.append(mockWrapper);
 
     setEditor({
       getValue() {
