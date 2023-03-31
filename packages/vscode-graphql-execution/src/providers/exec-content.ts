@@ -114,18 +114,22 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.html = err.toString();
       });
   }
+
   validUrlFromSchema(pathOrUrl: string) {
     return /^https?:\/\//.test(pathOrUrl);
   }
+
   reportError(message: string) {
     this.outputChannel.appendLine(message);
     this.setContentAndUpdate(message);
   }
+
   setContentAndUpdate(html: string) {
     this.html = html;
     this.update(this.uri);
     this.updatePanel();
   }
+
   async loadEndpoint(
     projectConfig?: GraphQLProjectConfig,
   ): Promise<Endpoint | null> {
@@ -144,11 +148,11 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         );
         const { schema } = projectConfig;
         if (schema && Array.isArray(schema)) {
-          schema.map(s => {
+          for (const s of schema) {
             if (this.validUrlFromSchema(s as string)) {
               endpoints.default.url = s.toString();
             }
-          });
+          }
         } else if (schema && this.validUrlFromSchema(schema as string)) {
           endpoints.default.url = schema.toString();
         }
@@ -174,6 +178,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     const endpointName = await this.getEndpointName(endpointNames);
     return endpoints[endpointName] || endpoints.default;
   }
+
   async loadProvider() {
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(this.literal.uri));
@@ -240,6 +245,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       return;
     }
   }
+
   async loadConfig() {
     const { rootDir, literal } = this;
     if (!rootDir) {
