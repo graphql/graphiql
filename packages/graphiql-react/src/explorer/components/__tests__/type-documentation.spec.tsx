@@ -128,7 +128,7 @@ describe('TypeDocumentation', () => {
     const deprecatedTitle = container.querySelectorAll(
       '.graphiql-doc-explorer-section-title',
     )[1];
-    deprecatedTitle.removeChild(deprecatedTitle.childNodes[0]);
+    deprecatedTitle.childNodes[0].remove();
     expect(deprecatedTitle).toHaveTextContent('Deprecated Enum Values');
 
     enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');

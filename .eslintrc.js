@@ -213,7 +213,7 @@ module.exports = {
     'sort-vars': 0,
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
     'wrap-regex': 0,
-
+    'unicorn/prefer-dom-node-remove': 'error',
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
     'arrow-body-style': 0,
     'no-duplicate-imports': 0,
