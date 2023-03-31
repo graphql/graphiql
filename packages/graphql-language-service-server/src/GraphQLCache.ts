@@ -679,33 +679,32 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const responses: GraphQLFileInfo[] = [];
     while (queue.length) {
       const chunk = queue.splice(0, MAX_READS);
-      const promises = chunk.map(fileInfo =>
-        this.promiseToReadGraphQLFile(fileInfo.filePath)
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.log('pro', error);
-            /**
-             * fs emits `EMFILE | ENFILE` error when there are too many
-             * open files - this can cause some fragment files not to be
-             * processed.  Solve this case by implementing a queue to save
-             * files failed to be processed because of `EMFILE` error,
-             * and await on Promises created with the next batch from the
-             * queue.
-             */
-            if (error.code === 'EMFILE' || error.code === 'ENFILE') {
-              queue.push(fileInfo);
-            }
-          })
-          .then((response: GraphQLFileInfo | void) => {
-            if (response) {
-              responses.push({
-                ...response,
-                mtime: fileInfo.mtime,
-                size: fileInfo.size,
-              });
-            }
-          }),
-      );
+      const promises = chunk.map(async fileInfo => {
+        try {
+          const response = await this.promiseToReadGraphQLFile(
+            fileInfo.filePath,
+          );
+          responses.push({
+            ...response,
+            mtime: fileInfo.mtime,
+            size: fileInfo.size,
+          });
+        } catch (error: any) {
+          // eslint-disable-next-line no-console
+          console.log('pro', error);
+          /**
+           * fs emits `EMFILE | ENFILE` error when there are too many
+           * open files - this can cause some fragment files not to be
+           * processed.  Solve this case by implementing a queue to save
+           * files failed to be processed because of `EMFILE` error,
+           * and await on Promises created with the next batch from the
+           * queue.
+           */
+          if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+            queue.push(fileInfo);
+          }
+        }
+      });
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 

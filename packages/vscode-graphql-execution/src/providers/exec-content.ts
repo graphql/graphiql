@@ -108,11 +108,10 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       enableScripts: true,
     };
 
-    this.loadProvider()
-      .then()
-      .catch(err => {
-        this.html = err.toString();
-      });
+    // eslint-disable-next-line promise/prefer-await-to-then -- can't use async in constructor
+    this.loadProvider().catch(err => {
+      this.html = err.toString();
+    });
   }
 
   validUrlFromSchema(pathOrUrl: string) {

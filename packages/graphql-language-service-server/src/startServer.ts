@@ -170,7 +170,7 @@ export default async function startServer(
 
         const { port, hostname } = options;
         const socket = net
-          .createServer(client => {
+          .createServer(async client => {
             client.setEncoding('utf8');
             reader = new SocketMessageReader(client);
             writer = new SocketMessageWriter(client);
@@ -178,14 +178,13 @@ export default async function startServer(
               socket.close();
               process.exit(0);
             });
-            return initializeHandlers({
+            const s = await initializeHandlers({
               reader,
               writer,
               logger,
               options: finalOptions,
-            }).then(s => {
-              s.listen();
             });
+            s.listen();
           })
           .listen(port, hostname);
         return;
