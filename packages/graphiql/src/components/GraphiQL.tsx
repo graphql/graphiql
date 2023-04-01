@@ -7,6 +7,7 @@
 
 import React, {
   ComponentType,
+  MouseEventHandler,
   PropsWithChildren,
   ReactNode,
   useCallback,
@@ -333,12 +334,24 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, [storageContext]);
 
+  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> =
+    useCallback(
+      event => {
+        editorContext.setShouldPersistHeaders(
+          event.currentTarget.dataset.value === 'true',
+        );
+      },
+      [editorContext],
+    );
+
   const modifier =
     window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
       <code className="graphiql-key">Cmd</code>
     ) : (
       <code className="graphiql-key">Ctrl</code>
     );
+
+  const handleAddTab = editorContext.addTab;
 
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
@@ -458,7 +471,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <UnStyledButton
                           type="button"
                           className="graphiql-tab-add"
-                          onClick={editorContext.addTab}
+                          onClick={handleAddTab}
                           aria-label="Add tab"
                         >
                           <PlusIcon aria-hidden="true" />
@@ -475,7 +488,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       <UnStyledButton
                         type="button"
                         className="graphiql-tab-add"
-                        onClick={editorContext.addTab}
+                        onClick={handleAddTab}
                         aria-label="Add tab"
                       >
                         <PlusIcon aria-hidden="true" />
@@ -785,9 +798,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 className={
                   editorContext.shouldPersistHeaders ? 'active' : undefined
                 }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(true);
-                }}
+                data-value="true"
+                onClick={handlePersistHeaders}
               >
                 On
               </Button>
@@ -797,9 +809,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 className={
                   editorContext.shouldPersistHeaders ? undefined : 'active'
                 }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(false);
-                }}
+                onClick={handlePersistHeaders}
               >
                 Off
               </Button>
