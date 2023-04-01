@@ -1,5 +1,5 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
@@ -56,8 +56,8 @@ export function HistoryItem(props: QueryHistoryItemProps) {
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
-    if (isEditable && inputRef.current) {
-      inputRef.current.focus();
+    if (isEditable) {
+      inputRef.current?.focus();
     }
   }, [isEditable]);
 
@@ -65,6 +65,11 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     props.item.label ||
     props.item.operationName ||
     formatQuery(props.item.query);
+
+  const handleSave = useCallback(() => {
+    setIsEditable(false);
+    editLabel({ ...props.item, label: inputRef.current?.value });
+  }, [editLabel, props.item]);
 
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
@@ -84,14 +89,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             }}
             placeholder="Type a label"
           />
-          <UnStyledButton
-            type="button"
-            ref={buttonRef}
-            onClick={() => {
-              setIsEditable(false);
-              editLabel({ ...props.item, label: inputRef.current?.value });
-            }}
-          >
+          <UnStyledButton type="button" ref={buttonRef} onClick={handleSave}>
             Save
           </UnStyledButton>
           <UnStyledButton
