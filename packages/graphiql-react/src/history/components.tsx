@@ -75,11 +75,9 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             defaultValue={props.item.label}
             ref={inputRef}
             onKeyDown={e => {
-              if (e.keyCode === 27) {
-                // Escape
+              if (e.key === 'Esc') {
                 setIsEditable(false);
-              } else if (e.keyCode === 13) {
-                // Enter
+              } else if (e.key === 'Enter') {
                 setIsEditable(false);
                 editLabel({ ...props.item, label: e.currentTarget.value });
               }

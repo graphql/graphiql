@@ -116,13 +116,10 @@ export function useVariableEditor(
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
-        const code = event.keyCode;
-        if (
-          (code >= 65 && code <= 90) || // letters
-          (!event.shiftKey && code >= 48 && code <= 57) || // numbers
-          (event.shiftKey && code === 189) || // underscore
-          (event.shiftKey && code === 222) // "
-        ) {
+        const { keyCode, key, shiftKey } = event;
+        const isLetter = keyCode >= 65 && keyCode <= 90;
+        const isNumber = keyCode >= 48 && keyCode <= 57;
+        if (isLetter || (!shiftKey && isNumber) || key === '_' || key === '"') {
           editorInstance.execCommand('autocomplete');
         }
       });

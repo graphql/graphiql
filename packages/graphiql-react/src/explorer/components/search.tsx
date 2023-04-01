@@ -50,10 +50,11 @@ export function Search() {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.metaKey && event.keyCode === 75 && inputRef.current) {
-        inputRef.current.focus();
+      if (event.metaKey && (event.key === 'K' || event.key === 'k')) {
+        inputRef.current?.focus();
       }
     }
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
