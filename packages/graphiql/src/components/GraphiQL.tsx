@@ -297,18 +297,18 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   ) || (
     <>
       <ToolbarButton
-        onClick={() => prettify()}
+        onClick={prettify}
         label="Prettify query (Shift-Ctrl-P)"
       >
         <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       <ToolbarButton
-        onClick={() => merge()}
+        onClick={merge}
         label="Merge fragments into query (Shift-Ctrl-M)"
       >
         <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      <ToolbarButton onClick={() => copy()} label="Copy query (Shift-Ctrl-C)">
+      <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       {props.toolbar?.additionalContent || null}
