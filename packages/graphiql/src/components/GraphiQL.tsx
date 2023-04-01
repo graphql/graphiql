@@ -211,6 +211,13 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
     showPersistHeadersSettings?: boolean;
   };
 
+const modifier =
+  window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
+    <code className="graphiql-key">Cmd</code>
+  ) : (
+    <code className="graphiql-key">Ctrl</code>
+  );
+
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
 
@@ -342,13 +349,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         );
       },
       [editorContext],
-    );
-
-  const modifier =
-    window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
-      <code className="graphiql-key">Cmd</code>
-    ) : (
-      <code className="graphiql-key">Ctrl</code>
     );
 
   const handleAddTab = editorContext.addTab;
