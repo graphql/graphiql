@@ -363,6 +363,16 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   );
 
   const handleAddTab = editorContext.addTab;
+  const handleRefetchSchema = schemaContext.introspect;
+
+  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      setShowDialog(
+        event.currentTarget.dataset.value as 'short-keys' | 'settings',
+      );
+    },
+    [],
+  );
 
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
@@ -399,7 +409,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <UnStyledButton
               type="button"
               disabled={schemaContext.isFetching}
-              onClick={schemaContext.introspect}
+              onClick={handleRefetchSchema}
               aria-label="Re-fetch GraphQL schema"
             >
               <ReloadIcon
@@ -411,7 +421,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <Tooltip label="Open short keys dialog">
             <UnStyledButton
               type="button"
-              onClick={() => setShowDialog('short-keys')}
+              data-value="short-keys"
+              onClick={handleShowDialog}
               aria-label="Open short keys dialog"
             >
               <KeyboardShortcutIcon aria-hidden="true" />
@@ -420,7 +431,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <Tooltip label="Open settings dialog">
             <UnStyledButton
               type="button"
-              onClick={() => setShowDialog('settings')}
+              data-value="settings"
+              onClick={handleShowDialog}
               aria-label="Open settings dialog"
             >
               <SettingsIcon aria-hidden="true" />
