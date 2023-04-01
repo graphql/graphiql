@@ -1,5 +1,12 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
@@ -71,6 +78,18 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     editLabel({ ...props.item, label: inputRef.current?.value });
   }, [editLabel, props.item]);
 
+  const handleClose = useCallback(() => {
+    setIsEditable(false);
+  }, []);
+
+  const handleEditLabel: MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      e.stopPropagation();
+      setIsEditable(true);
+    },
+    [],
+  );
+
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
@@ -92,13 +111,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
           <UnStyledButton type="button" ref={buttonRef} onClick={handleSave}>
             Save
           </UnStyledButton>
-          <UnStyledButton
-            type="button"
-            ref={buttonRef}
-            onClick={() => {
-              setIsEditable(false);
-            }}
-          >
+          <UnStyledButton type="button" ref={buttonRef} onClick={handleClose}>
             <CloseIcon />
           </UnStyledButton>
         </>
@@ -119,10 +132,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             <UnStyledButton
               type="button"
               className="graphiql-history-item-action"
-              onClick={e => {
-                e.stopPropagation();
-                setIsEditable(true);
-              }}
+              onClick={handleEditLabel}
               aria-label="Edit label"
             >
               <PenIcon aria-hidden="true" />
