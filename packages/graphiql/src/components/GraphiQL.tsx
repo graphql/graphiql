@@ -324,6 +324,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, [pluginResize]);
 
+  const handleClearData = useCallback(() => {
+    try {
+      storageContext?.clear();
+      setClearStorageStatus('success');
+    } catch {
+      setClearStorageStatus('error');
+    }
+  }, [storageContext]);
+
   const modifier =
     window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
       <code className="graphiql-key">Cmd</code>
@@ -366,7 +375,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <UnStyledButton
               type="button"
               disabled={schemaContext.isFetching}
-              onClick={() => schemaContext.introspect()}
+              onClick={schemaContext.introspect}
               aria-label="Re-fetch GraphQL schema"
             >
               <ReloadIcon
@@ -449,7 +458,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <UnStyledButton
                           type="button"
                           className="graphiql-tab-add"
-                          onClick={() => editorContext.addTab()}
+                          onClick={editorContext.addTab}
                           aria-label="Add tab"
                         >
                           <PlusIcon aria-hidden="true" />
@@ -466,7 +475,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       <UnStyledButton
                         type="button"
                         className="graphiql-tab-add"
-                        onClick={() => editorContext.addTab()}
+                        onClick={editorContext.addTab}
                         aria-label="Add tab"
                       >
                         <PlusIcon aria-hidden="true" />
@@ -843,14 +852,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 type="button"
                 state={clearStorageStatus || undefined}
                 disabled={clearStorageStatus === 'success'}
-                onClick={() => {
-                  try {
-                    storageContext?.clear();
-                    setClearStorageStatus('success');
-                  } catch {
-                    setClearStorageStatus('error');
-                  }
-                }}
+                onClick={handleClearData}
               >
                 {clearStorageStatus === 'success'
                   ? 'Cleared data'
