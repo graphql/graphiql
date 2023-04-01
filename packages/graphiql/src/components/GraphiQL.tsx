@@ -351,6 +351,17 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       [editorContext],
     );
 
+  const handleTheme: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      const selectedTheme = event.currentTarget.dataset.theme as
+        | 'light'
+        | 'dark'
+        | undefined;
+      setTheme(selectedTheme || null);
+    },
+    [setTheme],
+  );
+
   const handleAddTab = editorContext.addTab;
 
   return (
@@ -795,9 +806,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 id="enable-persist-headers"
-                className={
-                  editorContext.shouldPersistHeaders ? 'active' : undefined
-                }
+                className={editorContext.shouldPersistHeaders ? 'active' : ''}
                 data-value="true"
                 onClick={handlePersistHeaders}
               >
@@ -806,9 +815,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 id="disable-persist-headers"
-                className={
-                  editorContext.shouldPersistHeaders ? undefined : 'active'
-                }
+                className={editorContext.shouldPersistHeaders ? '' : 'active'}
                 onClick={handlePersistHeaders}
               >
                 Off
@@ -828,21 +835,23 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 className={theme === null ? 'active' : ''}
-                onClick={() => setTheme(null)}
+                onClick={handleTheme}
               >
                 System
               </Button>
               <Button
                 type="button"
                 className={theme === 'light' ? 'active' : ''}
-                onClick={() => setTheme('light')}
+                data-theme="light"
+                onClick={handleTheme}
               >
                 Light
               </Button>
               <Button
                 type="button"
                 className={theme === 'dark' ? 'active' : ''}
-                onClick={() => setTheme('dark')}
+                data-theme="dark"
+                onClick={handleTheme}
               >
                 Dark
               </Button>
