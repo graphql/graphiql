@@ -9,6 +9,7 @@ import React, {
   ComponentType,
   PropsWithChildren,
   ReactNode,
+  useCallback,
   useState,
 } from 'react';
 
@@ -165,6 +166,7 @@ export function GraphiQL({
     </GraphiQLProvider>
   );
 }
+
 // Export main windows/panes to be used separately if desired.
 GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
@@ -296,10 +298,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Toolbar),
   ) || (
     <>
-      <ToolbarButton
-        onClick={prettify}
-        label="Prettify query (Shift-Ctrl-P)"
-      >
+      <ToolbarButton onClick={prettify} label="Prettify query (Shift-Ctrl-P)">
         <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       <ToolbarButton
@@ -319,11 +318,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const onClickReference = () => {
+  const onClickReference = useCallback(() => {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  };
+  }, [pluginResize]);
 
   const modifier =
     window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
