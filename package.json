@@ -81,6 +81,7 @@
     "tsc": "tsc --build"
   },
   "devDependencies": {
+    "@arthurgeron/eslint-plugin-react-usememo": "^1.1.4",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",

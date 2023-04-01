@@ -49,7 +49,7 @@ module.exports = {
     '@arthurgeron/react-usememo/require-usememo': [
       'error',
       {
-        checkHookCalls: false
+        checkHookCalls: false,
       },
     ],
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
@@ -343,6 +343,7 @@ module.exports = {
       rules: {
         'jest/no-conditional-expect': 'off',
         'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        '@arthurgeron/react-usememo/require-usememo': 'off',
       },
     },
     {

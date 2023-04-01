@@ -29,6 +29,11 @@
   dependencies:
     node-fetch "^2.6.1"
 
+"@arthurgeron/eslint-plugin-react-usememo@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@arthurgeron/eslint-plugin-react-usememo/-/eslint-plugin-react-usememo-1.1.4.tgz#7c92ef49813191f5af18339242b60f4beddabc86"
+  integrity sha512-OIjOhplz6MT+HgJjKZT1SDGzhofSRZaYfNBc7yRl/eeuh2VfUlRQP9ulReBLmfwuQWyRLr0wcdazQNKq35MaEw==
+
 "@babel/cli@^7.21.0":
   version "7.21.0"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.21.0.tgz#1868eb70e9824b427fc607610cce8e9e7889e7e1"
