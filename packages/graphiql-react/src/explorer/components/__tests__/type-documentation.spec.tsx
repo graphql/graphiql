@@ -85,7 +85,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title?.removeChild(title?.childNodes[0]);
+    title?.childNodes[0].remove();
     expect(title).toHaveTextContent('Possible Types');
   });
 
@@ -96,7 +96,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title?.removeChild(title?.childNodes[0]);
+    title?.childNodes[0].remove();
     expect(title).toHaveTextContent('Enum Values');
     const enums = container.querySelectorAll(
       '.graphiql-doc-explorer-enum-value',
@@ -115,7 +115,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title?.removeChild(title?.childNodes[0]);
+    title?.childNodes[0].remove();
     expect(title).toHaveTextContent('Enum Values');
 
     let enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
