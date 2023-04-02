@@ -61,7 +61,7 @@ export type EditorContextType = TabsState & {
    */
   moveTab(newOrder: TabState[]): void;
   /**
-   * Close a tab. If the currently active tab is closed the tab before it will
+   * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
    * will become active.
    * @param index The index of the tab that should be closed.
