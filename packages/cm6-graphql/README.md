@@ -1,11 +1,11 @@
-# CodeMirror 6 GraphQL Language package
+# CodeMirror 6 GraphQL Language extension
 
 [![NPM](https://img.shields.io/npm/v/cm6-graphql.svg?style=flat-square)](https://npmjs.com/cm6-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/cm6-graphql?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/cm6-graphql.svg?style=flat-square)](LICENSE)
 [Discord Channel](https://discord.gg/cffZwk8NJW)
 
-Provides CodeMirror 6 with a parser mode for GraphQL along with a autocomplete and linting powered by your GraphQL Schema.
+Provides CodeMirror 6 extension with a parser mode for GraphQL along with a autocomplete and linting powered by your GraphQL Schema.
 
 ### Getting Started
 
@@ -13,108 +13,35 @@ Provides CodeMirror 6 with a parser mode for GraphQL along with a autocomplete a
 npm install --save cm6-graphql
 ```
 
-CodeMirror helpers install themselves to the global CodeMirror when they are
-imported.
+[CodeMirror 6](https://codemirror.net/) customization is done through [extensions](https://codemirror.net/docs/guide/#extension). This package an extension that customizes codemirror 6 for GraphQL.
 
 ```js
-import type { ValidationContext, SDLValidationContext } from 'graphql';
+import {basicSetup, EditorView} from 'codemirror';
+import {graphql} from 'cm6-graphql';
 
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/lint/lint';
-import 'codemirror-graphql/hint';
-import 'codemirror-graphql/lint';
-import 'codemirror-graphql/mode';
+const view = new EditorView({
+  doc: `mutation mutationName {
+    setString(value: "newString")
+  }`,
+  extensions: [
+    basicSetup,
+    graphql(myGraphQLSchema),
+  ],
+  parent: document.body
+})
 
-CodeMirror.fromTextArea(myTextarea, {
-  mode: 'graphql',
-  lint: {
-    schema: myGraphQLSchema,
-    validationRules: [ExampleRule],
-  },
-  hintOptions: {
-    schema: myGraphQLSchema,
-  },
-});
 ```
 
-## External Fragments Example
+Note: You have to provide a theme to codemirror 6 for the styling you want. You can take a look at [this example](https://github.com/graphql/graphiql/blob/main/examples/cm6-graphql-parcel/src/index.ts) or see the codemirror 6 [documentation examples](https://codemirror.net/examples/styling/) for more details.
 
-If you want to have autocompletion for external fragment definitions, there's a
-new configuration setting available
+### Updating schema
 
-```ts
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/lint/lint';
-import 'codemirror-graphql/hint';
-import 'codemirror-graphql/lint';
-import 'codemirror-graphql/mode';
-
-const externalFragments = `
-  fragment MyFragment on Example {
-    id: ID!
-    name: String!
-  }
-   fragment AnotherFragment on Example {
-    id: ID!
-    title: String!
-  }
-`;
-
-CodeMirror.fromTextArea(myTextarea, {
-  mode: 'graphql',
-  lint: {
-    schema: myGraphQLSchema,
-  },
-  hintOptions: {
-    schema: myGraphQLSchema,
-    // here we use a string, but
-    // you can also provide an array of FragmentDefinitionNodes
-    externalFragments,
-  },
-});
-```
-
-### Custom Validation Rules
-
-If you want to show custom validation, you can do that too! It uses the
-`ValidationRule` interface.
+If you need to update the GraphQL schema used in the editor dynamically, you can call `updateSchema` with the codemirror `EditorView` instance and the new schema
 
 ```js
-import type { ValidationRule } from 'graphql';
+import {updateSchema} from 'cm6-graphql';
 
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/lint/lint';
-import 'codemirror-graphql/hint';
-import 'codemirror-graphql/lint';
-import 'codemirror-graphql/mode';
-
-const ExampleRule: ValidationRule = context => {
-  // your custom rules here
-  const schema = context.getSchema();
-  const document = context.getDocument();
-  return {
-    NamedType(node) {
-      if (node.name.value !== node.name.value.toLowercase()) {
-        context.reportError('only lowercase type names allowed!');
-      }
-    },
-  };
+const onNewSchema = (schema) => {
+  updateSchema(view, schema);
 };
-
-CodeMirror.fromTextArea(myTextarea, {
-  mode: 'graphql',
-  lint: {
-    schema: myGraphQLSchema,
-    validationRules: [ExampleRule],
-  },
-  hintOptions: {
-    schema: myGraphQLSchema,
-  },
-});
 ```
-
-Build for the web with [webpack](http://webpack.github.io/) or
-[browserify](http://browserify.org/).
