@@ -32,7 +32,7 @@ const view = new EditorView({
 
 ```
 
-Note: You have to provide a theme to codemirror 6 for the styling you want. You can take a look at [this example](https://github.com/graphql/graphiql/blob/main/examples/cm6-graphql-parcel/src/index.ts) or see the codemirror 6 [documentation examples](https://codemirror.net/examples/styling/) for more details.
+Note: You have to provide a theme to CodeMirror 6 for the styling you want. You can take a look at [this example](https://github.com/graphql/graphiql/blob/main/examples/cm6-graphql-parcel/src/index.ts) or see the CodeMirror 6 [documentation examples](https://codemirror.net/examples/styling/) for more details.
 
 ### Updating schema
 
