@@ -36,7 +36,7 @@ Note: You have to provide a theme to codemirror 6 for the styling you want. You 
 
 ### Updating schema
 
-If you need to update the GraphQL schema used in the editor dynamically, you can call `updateSchema` with the codemirror `EditorView` instance and the new schema
+If you need to update the GraphQL schema used in the editor dynamically, you can call `updateSchema` with the CodeMirror `EditorView` instance and the new schema
 
 ```js
 import {updateSchema} from 'cm6-graphql';
