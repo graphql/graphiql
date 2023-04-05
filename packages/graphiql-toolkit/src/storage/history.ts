@@ -70,6 +70,7 @@ export class HistoryStore {
     variables?: string,
     headers?: string,
     operationName?: string,
+    _id?: string,
   ) => {
     if (
       this.shouldSaveQuery(
@@ -84,11 +85,39 @@ export class HistoryStore {
         variables,
         headers,
         operationName,
+        ...(_id && { _id }),
       });
       const historyQueries = this.history.items;
       const favoriteQueries = this.favorite.items;
       this.queries = historyQueries.concat(favoriteQueries);
     }
+  };
+
+  deleteHistory = (item: QueryStoreItem, clearFavorites = false) => {
+    const { query, variables, headers, operationName, favorite, _id } = item;
+
+    function deleteFromStore(store: QueryStore) {
+      const found = store.items.find(
+        x =>
+          x.query === query &&
+          x.variables === variables &&
+          x.headers === headers &&
+          x.operationName === operationName &&
+          x._id === _id,
+      );
+      if (found) {
+        store.delete(found);
+      }
+    }
+
+    if (favorite || clearFavorites) {
+      deleteFromStore(this.favorite);
+    }
+    if (!favorite || clearFavorites) {
+      deleteFromStore(this.history);
+    }
+
+    this.queries = [...this.history.items, ...this.favorite.items];
   };
 
   toggleFavorite(
@@ -98,6 +127,8 @@ export class HistoryStore {
     operationName?: string,
     label?: string,
     favorite?: boolean,
+    _active?: boolean,
+    _id?: string,
   ) {
     const item: QueryStoreItem = {
       query,
@@ -105,6 +136,8 @@ export class HistoryStore {
       headers,
       operationName,
       label,
+      _active,
+      _id,
     };
     if (!this.favorite.contains(item)) {
       item.favorite = true;
@@ -112,6 +145,12 @@ export class HistoryStore {
     } else if (favorite) {
       item.favorite = false;
       this.favorite.delete(item);
+      if (!this.history.contains(item)) {
+        // in case was deleted from history then add it back -
+        // editing labels doesn't adjust item in both favorites & history
+        // so figured deleting shouldn't either maybe
+        this.history.push(item);
+      }
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
@@ -123,6 +162,8 @@ export class HistoryStore {
     operationName?: string,
     label?: string,
     favorite?: boolean,
+    _active?: boolean,
+    _id?: string,
   ) {
     const item = {
       query,
@@ -130,12 +171,23 @@ export class HistoryStore {
       headers,
       operationName,
       label,
+      _active,
+      _id,
     };
     if (favorite) {
       this.favorite.edit({ ...item, favorite });
     } else {
       this.history.edit(item);
     }
+    this.queries = [...this.history.items, ...this.favorite.items];
+  }
+
+  setActive(item: QueryStoreItem) {
+    const current = this.queries.find(x => x._active);
+    if (current) {
+      current._active = false;
+    }
+    item._active = true;
     this.queries = [...this.history.items, ...this.favorite.items];
   }
 }

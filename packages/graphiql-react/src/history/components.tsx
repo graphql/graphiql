@@ -3,18 +3,63 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import { CloseIcon, PenIcon, StarFilledIcon, StarIcon } from '../icons';
-import { Tooltip, UnStyledButton } from '../ui';
+import {
+  CloseIcon,
+  PenIcon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from '../icons';
+import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
 import './style.css';
 
 export function History() {
-  const { items } = useHistoryContext({ nonNull: true });
+  const { items, deleteFromHistory } = useHistoryContext({ nonNull: true });
   const reversedItems = items.slice().reverse();
+
+  const [clearHistoryStatus, setClearHistoryStatus] = useState<
+    'success' | 'error' | null
+  >(null);
+  useEffect(() => {
+    if (!clearHistoryStatus) {
+      return;
+    }
+    // reset button after a couple seconds
+    setTimeout(() => {
+      setClearHistoryStatus(null);
+    }, 2000);
+  }, [clearHistoryStatus]);
+
   return (
     <section aria-label="History" className="graphiql-history">
-      <div className="graphiql-history-header">History</div>
+      <div className="graphiql-history-header">
+        History
+        {Boolean(items.length) && (
+          <Button
+            type="button"
+            state={clearHistoryStatus || undefined}
+            disabled={!items.length}
+            onClick={() => {
+              try {
+                items.forEach(item => {
+                  deleteFromHistory(item, true);
+                });
+                setClearHistoryStatus('success');
+              } catch {
+                setClearHistoryStatus('error');
+              }
+            }}
+          >
+            {clearHistoryStatus === 'success'
+              ? 'Cleared'
+              : clearHistoryStatus === 'error'
+              ? 'Failed to clear'
+              : 'Clear'}
+          </Button>
+        )}
+      </div>
       <ul className="graphiql-history-items">
         {reversedItems.map((item, i) => {
           return (
@@ -43,10 +88,11 @@ type QueryHistoryItemProps = {
 };
 
 export function HistoryItem(props: QueryHistoryItemProps) {
-  const { editLabel, toggleFavorite } = useHistoryContext({
-    nonNull: true,
-    caller: HistoryItem,
-  });
+  const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
+    useHistoryContext({
+      nonNull: true,
+      caller: HistoryItem,
+    });
   const { headerEditor, queryEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: HistoryItem,
@@ -115,6 +161,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
               queryEditor?.setValue(props.item.query ?? '');
               variableEditor?.setValue(props.item.variables ?? '');
               headerEditor?.setValue(props.item.headers ?? '');
+              setActive(props.item);
             }}
           >
             {displayName}
@@ -151,6 +198,19 @@ export function HistoryItem(props: QueryHistoryItemProps) {
               ) : (
                 <StarIcon aria-hidden="true" />
               )}
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Delete from history">
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-action"
+              onClick={e => {
+                e.stopPropagation();
+                deleteFromHistory(props.item);
+              }}
+              aria-label="Delete from history"
+            >
+              <TrashIcon aria-hidden="true" />
             </UnStyledButton>
           </Tooltip>
         </>

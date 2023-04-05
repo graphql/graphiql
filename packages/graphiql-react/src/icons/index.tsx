@@ -27,6 +27,7 @@ import _SettingsIcon from './settings.svg';
 import _StarFilledIcon from './star-filled.svg';
 import _StarIcon from './star.svg';
 import _StopIcon from './stop.svg';
+import _TrashIcon from './trash.svg';
 import _TypeIcon from './type.svg';
 
 export const ArgumentIcon = generateIcon(_ArgumentIcon, 'argument icon');
@@ -79,6 +80,7 @@ export const SettingsIcon = generateIcon(_SettingsIcon, 'settings icon');
 export const StarFilledIcon = generateIcon(_StarFilledIcon, 'filled star icon');
 export const StarIcon = generateIcon(_StarIcon, 'star icon');
 export const StopIcon = generateIcon(_StopIcon, 'stop icon');
+export const TrashIcon = generateIcon(_TrashIcon, 'trash icon');
 export const TypeIcon = generateIcon(_TypeIcon, 'type icon');
 
 function generateIcon(RawComponent: any, title: string) {

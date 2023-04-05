@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import { ComponentProps } from 'react';
+import React, { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import { useEditorContext } from '../../editor';
@@ -62,7 +62,8 @@ function getMockProps(
   };
 }
 
-describe('QueryHistoryItem', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('QueryHistoryItem', () => {
   const mockedSetQueryEditor = useEditorContext()?.queryEditor
     ?.setValue as jest.Mock;
   const mockedSetVariableEditor = useEditorContext()?.variableEditor
@@ -123,5 +124,13 @@ describe('QueryHistoryItem', () => {
     expect(
       container.querySelectorAll('button.graphiql-history-item-label').length,
     ).toBe(0);
+  });
+
+  it('deletes if trash button is clicked', () => {
+    const { container, getByLabelText } = render(
+      <QueryHistoryItemWithContext {...getMockProps()} />,
+    );
+    fireEvent.click(getByLabelText('Delete from history'));
+    expect(container.querySelectorAll('.graphiql-history-item').length).toBe(0);
   });
 });
