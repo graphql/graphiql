@@ -3,7 +3,13 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import { CloseIcon, PenIcon, StarFilledIcon, StarIcon, TrashIcon } from '../icons';
+import {
+  CloseIcon,
+  PenIcon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
@@ -13,18 +19,26 @@ export function History() {
   const { items, deleteFromHistory } = useHistoryContext({ nonNull: true });
   const reversedItems = items.slice().reverse();
 
-  const [clearHistoryStatus, setClearHistoryStatus] = useState<
-    'success' | 'error' | null
-  >(null);
+  const [clearStatus, setClearStatus] = useState<'success' | 'error' | null>(
+    null,
+  );
   useEffect(() => {
-    if (!clearHistoryStatus) {
-      return;
+    if (clearStatus) {
+      // reset button after a couple seconds
+      setTimeout(() => {
+        setClearStatus(null);
+      }, 2000);
     }
-    // reset button after a couple seconds
-    setTimeout(() => {
-      setClearHistoryStatus(null);
-    }, 2000);
-  }, [clearHistoryStatus]);
+  }, [clearStatus]);
+
+  const [showClearButton, setShowClearButton] = useState(Boolean(items.length));
+  useEffect(() => {
+    const show = clearStatus ? true : Boolean(items.length);
+    if (show !== showClearButton) {
+      setShowClearButton(show);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clearStatus, items]);
 
   return (
     <section aria-label="History" className="graphiql-history">
@@ -33,22 +47,22 @@ export function History() {
         {Boolean(items.length) && (
           <Button
             type="button"
-            state={clearHistoryStatus || undefined}
+            state={clearStatus || undefined}
             disabled={!items.length}
             onClick={() => {
               try {
                 items.forEach(item => {
                   deleteFromHistory(item, true);
                 });
-                setClearHistoryStatus('success');
+                setClearStatus('success');
               } catch {
-                setClearHistoryStatus('error');
+                setClearStatus('error');
               }
             }}
           >
-            {clearHistoryStatus === 'success'
+            {clearStatus === 'success'
               ? 'Cleared'
-              : clearHistoryStatus === 'error'
+              : clearStatus === 'error'
               ? 'Failed to clear'
               : 'Clear'}
           </Button>
