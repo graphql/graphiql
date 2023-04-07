@@ -1,0 +1,7 @@
+# Settings in the [build] context are global and are applied to
+# all contexts unless otherwise overridden by more specific contexts.
+[build]
+  publish = "packages/graphiql"
+
+  # Default build command.
+  command = "yarn install --frozen-lockfile && yarn build && yarn build-bundles && yarn build-docs"
