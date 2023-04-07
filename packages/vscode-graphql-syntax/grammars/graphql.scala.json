@@ -1,0 +1,75 @@
+{
+  "fileTypes": ["scala"],
+  "injectionSelector": "L:source -string -comment",
+  "patterns": [
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(gql|graphql|schema)(\"\"\")",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.interpolation.scala"
+        },
+        "2": {
+          "name": "string.quoted.triple.scala"
+        }
+      },
+      "end": "(\"\"\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.triple.scala"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(gql|graphql|schema)(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.interpolation.scala"
+        },
+        "2": {
+          "name": "string.quoted.double.scala"
+        }
+      },
+      "end": "(\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.double.scala"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "(\"\"\")(#graphql)",
+      "beginCaptures": {
+        "1": {
+          "name": "string.quoted.triple.scala"
+        },
+        "2": {
+          "name": "comment.line.graphql.js"
+        }
+      },
+      "end": "(\"\"\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.triple.scala"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    }
+  ],
+  "scopeName": "inline.graphql.scala"
+}
