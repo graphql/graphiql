@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/npm/l/codemirror-graphql.svg?style=flat-square)](LICENSE)
 [Discord Channel](https://discord.gg/cffZwk8NJW)
 
+**NOTE: For CodeMirror 6, use [cm6-graphql](/packages/cm6-graphql/) instead**
+
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema.
 

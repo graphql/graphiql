@@ -1,0 +1,8 @@
+# Settings in the [build] context are global and are applied to
+# all contexts unless otherwise overridden by more specific contexts.
+[build]
+  publish = "packages/graphiql"
+
+  # Default build command.
+  command = "yarn build && yarn build-bundles && yarn build-docs"
+  environment = { YARN_FLAGS = "--frozen-lockfile --immutable"}

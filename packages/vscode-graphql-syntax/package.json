@@ -110,6 +110,16 @@
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
+      },
+      {
+        "injectTo": [
+          "source.scala"
+        ],
+        "scopeName": "inline.graphql.scala",
+        "path": "./grammars/graphql.scala.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
       }
     ]
   },

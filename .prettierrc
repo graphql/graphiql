@@ -8,11 +8,15 @@
       "files": ["*.md", "*.mdx"],
       "options": {
         "printWidth": 80,
-        "proseWrap": "always"
+        "proseWrap": "preserve"
       }
     },
     {
-      "files": ["**/.changeset/*.md"],
+      "files": [
+        "**/.changeset/*.md",
+        "**/CHANGELOG.md",
+        "working-group/agendas/**/*.md"
+      ],
       "options": {
         "proseWrap": "never"
       }

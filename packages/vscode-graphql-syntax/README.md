@@ -9,6 +9,7 @@ matching.
 - Python
 - PHP
 - [Markdown](#markdown)
+- [Scala](#scala)
 
 You'll want to install this if you do not use `graphql-config`, or want to use
 the highlighting with other extensions than `vscode-graphql`
@@ -139,6 +140,30 @@ string : X = gql`
 }
 ```
 ````
+
+#### Scala
+
+Using a `graphql`, `gql` or `schema` string interpolator:
+
+```scala
+val query = graphql"""
+  { id }
+"""
+val query2 = gql"""
+  { id }
+"""
+val query3 = schema"""
+  { id }
+"""
+```
+
+Using a comment-delimited pattern:
+
+```scala
+val query = """#graphql
+ { id }
+"""
+```
 
 ## Other languages
 
