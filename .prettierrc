@@ -12,7 +12,11 @@
       }
     },
     {
-      "files": ["**/.changeset/*.md", "**/CHANGELOG.md"],
+      "files": [
+        "**/.changeset/*.md",
+        "**/CHANGELOG.md",
+        "working-group/agendas/**/*.md"
+      ],
       "options": {
         "proseWrap": "never"
       }
