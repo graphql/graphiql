@@ -3,13 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import {
-  CloseIcon,
-  PenIcon,
-  StarFilledIcon,
-  StarIcon,
-  TrashIcon,
-} from '../icons';
+import { CloseIcon, PenIcon, StarFilledIcon, StarIcon, TrashIcon } from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
