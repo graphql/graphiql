@@ -146,9 +146,9 @@ export class HistoryStore {
       item.favorite = false;
       this.favorite.delete(item);
       if (!this.history.contains(item)) {
-        // in case was deleted from history then add it back -
+        // if was deleted from history, then add it back -
         // editing labels doesn't adjust item in both favorites & history
-        // so figured deleting shouldn't either maybe
+        // so figured maybe deleting shouldn't either
         this.history.push(item);
       }
     }

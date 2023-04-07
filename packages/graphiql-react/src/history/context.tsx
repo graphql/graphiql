@@ -8,7 +8,7 @@ export type HistoryContextType = {
   /**
    * Add an operation to the history.
    * @param operation The operation that was executed, consisting of the query,
-   * variables, headers and the operation name. (_id for customizations)
+   * variables, headers, and operation name. (_id for customizations)
    */
   addToHistory(operation: {
     query?: string;
@@ -57,16 +57,16 @@ export type HistoryContextType = {
   }): void;
   /**
    * Delete an operation from the history.
-   * @param operation The operation that was executed, consisting of the query,
-   * variables, headers and the operation name.
-   * @param clearFavorites This is if you press the 'clear' button only
+   * @param args The operation that was executed, consisting of the query,
+   * variables, headers, and operation name.
+   * @param clearFavorites This is only if you press the 'clear' button
    */
   deleteFromHistory(args: QueryStoreItem, clearFavorites?: boolean): void;
   /**
-   * In case you need to know when an item in history is set as active to customize your application.
-   * Set an operation as the active operation.
-   * @param operation The operation that was executed, consisting of the query,
-   * variables, headers and the operation name.
+   * If you need to know when an item in history is set as active to customize your application,
+   * set an operation as the active operation.
+   * @param args The operation that was executed, consisting of the query,
+   * variables, headers, and operation name.
    */
   setActive(args: QueryStoreItem): void;
 };

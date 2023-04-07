@@ -2,7 +2,7 @@ import { StorageAPI } from './base';
 
 /**
  * @param _active for users to customize their UI when the active item is set
- * @param _id for users to customize (i.e. if using an alternative backend
+ * @param _id for users to customize (e.g., if using an alternative backend
  * storage system instead of localStorage)
  */
 export type QueryStoreItem = {
@@ -14,7 +14,7 @@ export type QueryStoreItem = {
   favorite?: boolean;
   /* for users to customize their UI when the active item is set */
   _active?: boolean;
-  /* for users to customize (i.e. if using an alternative backend storage 
+  /* for users to customize (e.g., if using an alternative backend storage 
     system instead of local storage) */
   _id?: string;
 };
