@@ -4,4 +4,4 @@
   publish = "packages/graphiql"
 
   # Default build command.
-  command = "yarn install --frozen-lockfile && yarn build && yarn build-bundles && yarn build-docs"
+  command = "yarn install --frozen-lockfile --immutable && yarn build && yarn build-bundles && yarn build-docs"
