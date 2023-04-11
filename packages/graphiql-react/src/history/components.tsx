@@ -3,7 +3,13 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import { CloseIcon, PenIcon, StarFilledIcon, StarIcon, TrashIcon } from '../icons';
+import {
+  CloseIcon,
+  PenIcon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
@@ -156,18 +162,20 @@ export function HistoryItem(props: QueryHistoryItemProps) {
         </>
       ) : (
         <>
-          <UnStyledButton
-            type="button"
-            className="graphiql-history-item-label"
-            onClick={() => {
-              queryEditor?.setValue(props.item.query ?? '');
-              variableEditor?.setValue(props.item.variables ?? '');
-              headerEditor?.setValue(props.item.headers ?? '');
-              setActive(props.item);
-            }}
-          >
-            {displayName}
-          </UnStyledButton>
+          <Tooltip label="Set active">
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-label"
+              onClick={() => {
+                queryEditor?.setValue(props.item.query ?? '');
+                variableEditor?.setValue(props.item.variables ?? '');
+                headerEditor?.setValue(props.item.headers ?? '');
+                setActive(props.item);
+              }}
+            >
+              {displayName}
+            </UnStyledButton>
+          </Tooltip>
           <Tooltip label="Edit label">
             <UnStyledButton
               type="button"
