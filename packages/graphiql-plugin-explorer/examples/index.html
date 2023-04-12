@@ -62,6 +62,7 @@
       function GraphiQLWithExplorer() {
         var [query, setQuery] = React.useState(
           'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
+          null
         );
         var explorerPlugin = GraphiQLPluginExplorer.useExplorerPlugin({
           query: query,
