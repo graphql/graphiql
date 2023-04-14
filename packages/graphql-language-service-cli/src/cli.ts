@@ -117,21 +117,22 @@ if (command === 'server') {
   });
 
   const options: { [key: string]: any } = {};
-  if (argv?.port) {
+  if (argv.port) {
     options.port = argv.port;
   }
-  if (argv?.method) {
+  if (argv.method) {
     options.method = argv.method;
   }
-  if (argv?.configDir) {
+  if (argv.configDir) {
     options.configDir = argv.configDir;
   }
+  // eslint-disable-next-line promise/prefer-await-to-then -- don't know if I can use top level await here
   startServer(options).catch(error => {
     const logger = new Logger();
     logger.error(String(error));
   });
 } else {
-  client(command as string, argv as { [key: string]: string });
+  client(command as string, argv as Record<string, string>);
 }
 
 // Exit the process when stream closes from remote end.
