@@ -227,7 +227,7 @@ function renderToolbar(toolbar: HTMLElement) {
   const executionTray = document.createElement('div');
 
   executionTray.id = 'execution-tray';
-  executionTray.appendChild(executeOpButton);
+  executionTray.append(executeOpButton);
   executionTray.classList.add('align-right');
 
   executeOpButton.id = 'execute-op';
@@ -241,12 +241,12 @@ function renderToolbar(toolbar: HTMLElement) {
   schemaStatus.id = 'schema-status';
   schemaStatus.innerHTML = `Schema Empty`;
 
-  toolbar.appendChild(schemaPicker);
-
-  toolbar.appendChild(schemaReloadButton);
-  toolbar.appendChild(schemaStatus);
-
-  toolbar?.appendChild(executeOpButton);
+  toolbar.append(
+    schemaPicker,
+    schemaReloadButton,
+    schemaStatus,
+    executeOpButton,
+  );
   return { schemaReloadButton, executeOpButton, schemaStatus, schemaPicker };
 }
 
@@ -261,7 +261,7 @@ function getSchemaPicker(): HTMLSelectElement {
     if (option.default) {
       optEl.selected = true;
     }
-    schemaPicker.appendChild(optEl);
+    schemaPicker.append(optEl);
   }
 
   return schemaPicker;
@@ -295,7 +295,7 @@ export function renderGithubLoginButton() {
     const toolbar = document.getElementById('toolbar');
     toolbar?.appendChild(logoutButton);
   } else {
-    githubLoginWrapper.appendChild(githubButton);
+    githubLoginWrapper.append(githubButton);
     document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);
   }
 

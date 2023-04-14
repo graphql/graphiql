@@ -49,50 +49,50 @@ export function onHasCompletion(
           // highlighted typeahead option.
           information = document.createElement('div');
           information.className = 'CodeMirror-hint-information';
-          hintsUl.appendChild(information);
+          hintsUl.append(information);
 
           const header = document.createElement('header');
           header.className = 'CodeMirror-hint-information-header';
-          information.appendChild(header);
+          information.append(header);
 
           fieldName = document.createElement('span');
           fieldName.className = 'CodeMirror-hint-information-field-name';
-          header.appendChild(fieldName);
+          header.append(fieldName);
 
           typeNamePill = document.createElement('span');
           typeNamePill.className = 'CodeMirror-hint-information-type-name-pill';
-          header.appendChild(typeNamePill);
+          header.append(typeNamePill);
 
           typeNamePrefix = document.createElement('span');
-          typeNamePill.appendChild(typeNamePrefix);
+          typeNamePill.append(typeNamePrefix);
 
           typeName = document.createElement('a');
           typeName.className = 'CodeMirror-hint-information-type-name';
           typeName.href = 'javascript:void 0'; // eslint-disable-line no-script-url
           typeName.addEventListener('click', onClickHintInformation);
-          typeNamePill.appendChild(typeName);
+          typeNamePill.append(typeName);
 
           typeNameSuffix = document.createElement('span');
-          typeNamePill.appendChild(typeNameSuffix);
+          typeNamePill.append(typeNameSuffix);
 
           description = document.createElement('div');
           description.className = 'CodeMirror-hint-information-description';
-          information.appendChild(description);
+          information.append(description);
 
           deprecation = document.createElement('div');
           deprecation.className = 'CodeMirror-hint-information-deprecation';
-          information.appendChild(deprecation);
+          information.append(deprecation);
 
           const deprecationLabel = document.createElement('span');
           deprecationLabel.className =
             'CodeMirror-hint-information-deprecation-label';
           deprecationLabel.innerText = 'Deprecated';
-          deprecation.appendChild(deprecationLabel);
+          deprecation.append(deprecationLabel);
 
           deprecationReason = document.createElement('div');
           deprecationReason.className =
             'CodeMirror-hint-information-deprecation-reason';
-          deprecation.appendChild(deprecationReason);
+          deprecation.append(deprecationReason);
 
           /**
            * This is a bit hacky: By default, codemirror renders all hints

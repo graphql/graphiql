@@ -112,8 +112,8 @@ function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
 function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
   const popup = document.createElement('div');
   popup.className = 'CodeMirror-info';
-  popup.appendChild(info);
-  document.body.appendChild(popup);
+  popup.append(info);
+  document.body.append(popup);
 
   const popupBox = popup.getBoundingClientRect();
   const popupStyle = window.getComputedStyle(popup);
