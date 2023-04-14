@@ -284,7 +284,7 @@ module.exports = {
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
     'unicorn/prefer-string-replace-all': 'error',
-    // doesn't catch a lot of cases we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
+    // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
     'unicorn/prefer-keyboard-event-key': 'off',
 
     'unicorn/prefer-switch': 'error',
