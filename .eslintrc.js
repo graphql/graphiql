@@ -227,6 +227,7 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
+    'sonarjs/no-ignored-return': 'error',
     'unicorn/no-array-push-push': 'error',
     'import/no-extraneous-dependencies': 'error',
     'import/no-duplicates': 'error',

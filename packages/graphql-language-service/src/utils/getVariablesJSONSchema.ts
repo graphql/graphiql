@@ -111,6 +111,7 @@ const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
 
 class Marker {
   private set = new Set<string>();
+
   mark(name: string): boolean {
     if (this.set.has(name)) {
       return false;
@@ -238,9 +239,9 @@ function getJSONSchemaFromGraphQLType(
           fieldDef.required!.push(fieldName);
         }
         if (typeDefinitions) {
-          Object.keys(typeDefinitions).map(defName => {
-            definitions[defName] = typeDefinitions[defName];
-          });
+          for (const [defName, value] of Object.entries(typeDefinitions)) {
+            definitions[defName] = value;
+          }
         }
       }
       definitions[type.name] = fieldDef;
@@ -269,6 +270,7 @@ function getJSONSchemaFromGraphQLType(
 
   return { required, definition, definitions };
 }
+
 /**
  * Generates a JSONSchema6 valid document for operation(s) from a map of Map<string, GraphQLInputType>.
  *
