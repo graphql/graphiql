@@ -106,7 +106,7 @@ function parseVueSFC(source: string): ParseVueSFCResult {
 
   return {
     type: 'ok',
-    scriptOffset: scriptBlock.loc.start.line,
+    scriptOffset: scriptBlock.loc.start.line - 1,
     scriptSetupAst: scriptBlock?.scriptSetupAst,
     scriptAst: scriptBlock?.scriptAst,
   };
@@ -147,7 +147,7 @@ export function findGraphQLTags(
       parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
 
-    scriptOffset = parseVueSFCResult.scriptOffset - 1;
+    scriptOffset = parseVueSFCResult.scriptOffset;
   } else {
     const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
     if (isTypeScript) {
