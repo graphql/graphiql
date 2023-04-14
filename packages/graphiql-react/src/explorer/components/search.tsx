@@ -50,7 +50,7 @@ export function Search() {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.metaKey && (event.key === 'K' || event.key === 'k')) {
+      if (event.metaKey && event.key === 'k') {
         inputRef.current?.focus();
       }
     }
