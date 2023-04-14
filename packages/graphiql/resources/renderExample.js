@@ -13,9 +13,9 @@
  */
 
 // Parse the search string to get url parameters.
-var parameters = {};
+const parameters = {};
 for (const entry of window.location.search.slice(1).split('&')) {
-  var eq = entry.indexOf('=');
+  const eq = entry.indexOf('=');
   if (eq >= 0) {
     parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
       entry.slice(eq + 1),
@@ -49,7 +49,7 @@ function onTabChange(tabsState) {
 }
 
 function updateURL() {
-  var newSearch =
+  const newSearch =
     '?' +
     Object.keys(parameters)
       .filter(function (key) {
