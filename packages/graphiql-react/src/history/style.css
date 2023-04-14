@@ -8,7 +8,7 @@
 
 .graphiql-history-header button {
   font-size: var(--font-size-inline-code);
-  padding: 7px 10px;
+  padding: var(--px-6) var(--px-10);
 }
 
 .graphiql-history-items {

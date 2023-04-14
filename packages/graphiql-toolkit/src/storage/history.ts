@@ -91,33 +91,6 @@ export class HistoryStore {
     }
   };
 
-  deleteHistory = (
-    { query, variables, headers, operationName, favorite }: QueryStoreItem,
-    clearFavorites = false,
-  ) => {
-    function deleteFromStore(store: QueryStore) {
-      const found = store.items.find(
-        x =>
-          x.query === query &&
-          x.variables === variables &&
-          x.headers === headers &&
-          x.operationName === operationName,
-      );
-      if (found) {
-        store.delete(found);
-      }
-    }
-
-    if (favorite || clearFavorites) {
-      deleteFromStore(this.favorite);
-    }
-    if (!favorite || clearFavorites) {
-      deleteFromStore(this.history);
-    }
-
-    this.queries = [...this.history.items, ...this.favorite.items];
-  };
-
   toggleFavorite({
     query,
     variables,
@@ -166,10 +139,36 @@ export class HistoryStore {
     };
     if (favorite) {
       this.favorite.edit({ ...item, favorite });
-      this.history.edit(item);
     } else {
       this.history.edit(item);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
+
+  deleteHistory = (
+    { query, variables, headers, operationName, favorite }: QueryStoreItem,
+    clearFavorites = false,
+  ) => {
+    function deleteFromStore(store: QueryStore) {
+      const found = store.items.find(
+        x =>
+          x.query === query &&
+          x.variables === variables &&
+          x.headers === headers &&
+          x.operationName === operationName,
+      );
+      if (found) {
+        store.delete(found);
+      }
+    }
+
+    if (favorite || clearFavorites) {
+      deleteFromStore(this.favorite);
+    }
+    if (!favorite || clearFavorites) {
+      deleteFromStore(this.history);
+    }
+
+    this.queries = [...this.history.items, ...this.favorite.items];
+  };
 }
