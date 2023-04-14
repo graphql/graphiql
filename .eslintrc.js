@@ -198,6 +198,11 @@ module.exports = {
         message:
           "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
       },
+      {
+        // ❌ event.keyCode
+        selector: 'MemberExpression > .property[type=Identifier][name=keyCode]',
+        message: 'Use `.key` instead of `.keyCode`',
+      },
     ],
     'no-ternary': 0,
     'no-underscore-dangle': 0,
@@ -282,6 +287,8 @@ module.exports = {
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
     'unicorn/prefer-string-replace-all': 'error',
+    // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
+    'unicorn/prefer-keyboard-event-key': 'off',
 
     'unicorn/prefer-switch': 'error',
     // TODO: Fix all errors for the following rules included in recommended config
