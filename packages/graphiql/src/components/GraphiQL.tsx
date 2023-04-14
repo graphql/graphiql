@@ -374,11 +374,28 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     [],
   );
 
+  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      const context = pluginContext!;
+      const pluginIndex = Number(e.currentTarget.dataset.index!);
+      const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
+      const isVisible = plugin === context.visiblePlugin;
+      if (isVisible) {
+        context.setVisiblePlugin(null);
+        pluginResize.setHiddenElement('first');
+      } else {
+        context.setVisiblePlugin(plugin);
+        pluginResize.setHiddenElement(null);
+      }
+    },
+    [],
+  );
+
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
         <div className="graphiql-sidebar-section">
-          {pluginContext?.plugins.map(plugin => {
+          {pluginContext?.plugins.map((plugin, index) => {
             const isVisible = plugin === pluginContext.visiblePlugin;
             const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
             const Icon = plugin.icon;
@@ -387,15 +404,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <UnStyledButton
                   type="button"
                   className={isVisible ? 'active' : ''}
-                  onClick={() => {
-                    if (isVisible) {
-                      pluginContext.setVisiblePlugin(null);
-                      pluginResize.setHiddenElement('first');
-                    } else {
-                      pluginContext.setVisiblePlugin(plugin);
-                      pluginResize.setHiddenElement(null);
-                    }
-                  }}
+                  onClick={handlePluginClick}
+                  data-index={index}
                   aria-label={label}
                 >
                   <Icon aria-hidden="true" />
