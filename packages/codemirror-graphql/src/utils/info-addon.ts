@@ -169,11 +169,11 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
       popup.style.opacity = '0';
       setTimeout(() => {
         if (popup.parentNode) {
-          popup.parentNode.removeChild(popup);
+          popup.remove();
         }
       }, 600);
     } else if (popup.parentNode) {
-      popup.parentNode.removeChild(popup);
+      popup.remove();
     }
   };
 
