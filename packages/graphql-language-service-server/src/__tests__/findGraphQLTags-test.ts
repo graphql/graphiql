@@ -270,6 +270,8 @@ query {id}
     const contents = findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
+    expect(contents[0].range.start.line).toEqual(2);
+    expect(contents[0].range.end.line).toEqual(4);
   });
 
   it('finds queries in tagged templates in Vue SFC using normal <script> and template above', async () => {
