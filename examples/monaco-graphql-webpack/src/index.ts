@@ -231,7 +231,7 @@ function renderToolbar(toolbar: HTMLElement) {
   executionTray.classList.add('align-right');
 
   executeOpButton.id = 'execute-op';
-  executeOpButton.innerText = 'Run Operation ➤';
+  executeOpButton.textContent = 'Run Operation ➤';
   executeOpButton.title = 'Execute the active GraphQL Operation';
 
   schemaReloadButton.classList.add('reload-button');

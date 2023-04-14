@@ -305,6 +305,7 @@ module.exports = {
         'unicorn/prefer-keyboard-event-key': 'off',
 
         'unicorn/prefer-switch': 'error',
+        'unicorn/prefer-dom-node-text-content': 'error',
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-var-requires': 'off',
@@ -343,6 +344,10 @@ module.exports = {
     {
       files: ['**/cypress/**'],
       extends: 'plugin:cypress/recommended',
+      rules: {
+        // Because innerText doesn't return hidden elements and returns new line (\n) characters
+        'unicorn/prefer-dom-node-text-content': 'off',
+      },
     },
     {
       // Rules for unit tests
