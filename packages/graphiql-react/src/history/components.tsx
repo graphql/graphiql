@@ -90,6 +90,19 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     [],
   );
 
+  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      queryEditor?.setValue(props.item.query ?? '');
+      variableEditor?.setValue(props.item.variables ?? '');
+      headerEditor?.setValue(props.item.headers ?? '');
+    }, []);
+
+  const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
+    useCallback(e => {
+      e.stopPropagation();
+      toggleFavorite(props.item);
+    }, []);
+
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
@@ -120,11 +133,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
           <UnStyledButton
             type="button"
             className="graphiql-history-item-label"
-            onClick={() => {
-              queryEditor?.setValue(props.item.query ?? '');
-              variableEditor?.setValue(props.item.variables ?? '');
-              headerEditor?.setValue(props.item.headers ?? '');
-            }}
+            onClick={handleHistoryItemClick}
           >
             {displayName}
           </UnStyledButton>
@@ -144,10 +153,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             <UnStyledButton
               type="button"
               className="graphiql-history-item-action"
-              onClick={e => {
-                e.stopPropagation();
-                toggleFavorite(props.item);
-              }}
+              onClick={handleToggleFavorite}
               aria-label={
                 props.item.favorite ? 'Remove favorite' : 'Add favorite'
               }
