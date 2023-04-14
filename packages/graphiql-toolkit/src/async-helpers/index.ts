@@ -52,42 +52,34 @@ export function isAsyncIterable(
   );
 }
 
-function asyncIterableToPromise<T>(
+async function asyncIterableToPromise<T>(
   input: AsyncIterable<T> | AsyncIterableIterator<T>,
 ): Promise<T> {
-  return new Promise((resolve, reject) => {
-    // Also support AsyncGenerator on Safari iOS.
-    // As mentioned in the isAsyncIterable function there is no Symbol.asyncIterator available
-    // so every AsyncIterable must be implemented using AsyncGenerator.
-    const iteratorReturn = (
-      'return' in input ? input : input[Symbol.asyncIterator]()
-    ).return?.bind(input);
-    const iteratorNext = (
-      'next' in input ? input : input[Symbol.asyncIterator]()
-    ).next.bind(input);
+  // Also support AsyncGenerator on Safari iOS.
+  // As mentioned in the isAsyncIterable function, there is no Symbol.asyncIterator available,
+  // so every AsyncIterable must be implemented using AsyncGenerator.
+  const iteratorReturn = (
+    'return' in input ? input : input[Symbol.asyncIterator]()
+  ).return?.bind(input);
+  const iteratorNext = (
+    'next' in input ? input : input[Symbol.asyncIterator]()
+  ).next.bind(input);
 
-    iteratorNext()
-      .then(result => {
-        resolve(result.value);
-        // ensure cleanup
-        void iteratorReturn?.();
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
+  const result = await iteratorNext();
+  // ensure cleanup
+  void iteratorReturn?.();
+  return result.value;
 }
 
-export function fetcherReturnToPromise(
+export async function fetcherReturnToPromise(
   fetcherResult: FetcherReturnType,
 ): Promise<FetcherResult> {
-  return Promise.resolve(fetcherResult).then(result => {
-    if (isAsyncIterable(result)) {
-      return asyncIterableToPromise(result);
-    }
-    if (isObservable(result)) {
-      return observableToPromise(result);
-    }
-    return result;
-  });
+  const result = await fetcherResult;
+  if (isAsyncIterable(result)) {
+    return asyncIterableToPromise(result);
+  }
+  if (isObservable(result)) {
+    return observableToPromise(result);
+  }
+  return result;
 }

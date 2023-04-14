@@ -366,5 +366,13 @@ module.exports = {
         'import/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
       },
     },
+    {
+      files: ['packages/**'],
+      // ignore React packages because it's ugly to have `async IIFE` inside `useEffect`
+      excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
+      rules: {
+        'promise/prefer-await-to-then': 'error',
+      },
+    },
   ],
 };
