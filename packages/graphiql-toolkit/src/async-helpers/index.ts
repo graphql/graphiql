@@ -70,7 +70,7 @@ function asyncIterableToPromise<T>(
       .then(result => {
         resolve(result.value);
         // ensure cleanup
-        iteratorReturn?.();
+        void iteratorReturn?.();
       })
       .catch(err => {
         reject(err);

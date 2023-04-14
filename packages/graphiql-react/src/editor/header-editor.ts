@@ -51,7 +51,7 @@ export function useHeaderEditor(
   useEffect(() => {
     let isActive = true;
 
-    importCodeMirror([
+    void importCodeMirror([
       // @ts-expect-error
       import('codemirror/mode/javascript/javascript'),
     ]).then(CodeMirror => {

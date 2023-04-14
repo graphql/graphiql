@@ -244,7 +244,7 @@ function reportDiagnostics(
   connection: Connection,
 ) {
   if (diagnostics) {
-    connection.sendNotification(
+    void connection.sendNotification(
       PublishDiagnosticsNotification.type,
       diagnostics,
     );

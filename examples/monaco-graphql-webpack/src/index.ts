@@ -13,9 +13,7 @@ const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
 
 let monacoGraphQLAPI: MonacoGraphQLAPI | null = null;
 
-(async () => {
-  await render();
-})();
+void render();
 
 async function render() {
   if (!schemaFetcher.token) {
@@ -314,7 +312,7 @@ export function renderGithubLoginButton() {
         if (err) {
           console.error('Error authenticating with GitHub:', err);
         } else {
-          schemaFetcher.setApiToken(data.token);
+          await schemaFetcher.setApiToken(data.token);
           await render();
         }
       },

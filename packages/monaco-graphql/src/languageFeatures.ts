@@ -56,7 +56,7 @@ export class DiagnosticsAdapter {
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(onChangeTimeout);
         onChangeTimeout = setTimeout(() => {
-          this._doValidate(model.uri, modeId, jsonValidationForModel);
+          void this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
     };

@@ -140,7 +140,7 @@ export function useQueryEditor(
   useEffect(() => {
     let isActive = true;
 
-    importCodeMirror([
+    void importCodeMirror([
       import('codemirror/addon/comment/comment'),
       import('codemirror/addon/search/search'),
       import('codemirror-graphql/esm/hint'),
