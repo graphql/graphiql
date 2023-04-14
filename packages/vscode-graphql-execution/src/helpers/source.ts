@@ -82,7 +82,7 @@ export class SourceHelper {
             JSON.parse(value);
             return null;
           } catch {
-            return undefined;
+            return;
           }
       }
     } catch {
