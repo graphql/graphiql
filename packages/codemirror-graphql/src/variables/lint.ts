@@ -85,14 +85,14 @@ function validateVariables(
 ) {
   const errors: CodeMirror.Annotation[] = [];
 
-  variablesAST.members.forEach(member => {
+  for (const member of variablesAST.members) {
     if (member) {
       const variableName = member.key?.value;
       const type = variableToType[variableName];
       if (type) {
-        validateValue(type, member.value).forEach(([node, message]) => {
+        for (const [node, message] of validateValue(type, member.value)) {
           errors.push(lintError(editor, node, message));
-        });
+        }
       } else {
         errors.push(
           lintError(
@@ -103,7 +103,7 @@ function validateVariables(
         );
       }
     }
-  });
+  }
 
   return errors;
 }
@@ -169,7 +169,7 @@ function validateValue(
     );
 
     // Look for missing non-nullable fields.
-    Object.keys(type.getFields()).forEach(fieldName => {
+    for (const fieldName of Object.keys(type.getFields())) {
       const field = type.getFields()[fieldName];
       if (
         !providedFields[fieldName] &&
@@ -181,7 +181,7 @@ function validateValue(
           `Object of type "${type}" is missing required field "${fieldName}".`,
         ]);
       }
-    });
+    }
 
     return fieldErrors;
   }

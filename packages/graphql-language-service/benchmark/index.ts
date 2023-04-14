@@ -30,7 +30,7 @@ const runSplitTest = (name: string, schema: string) => {
   const parser = onlineParser();
   let state: any = parser.startState();
 
-  schema.split('\n').forEach((line, index) => {
+  for (const [index, line] of schema.split('\n').entries()) {
     let prevState: any;
     let completeState: any;
 
@@ -59,7 +59,7 @@ const runSplitTest = (name: string, schema: string) => {
         stats.push(e.target.stats);
       },
     });
-  });
+  }
 
   console.log(`Started test suite: ${name}`);
 

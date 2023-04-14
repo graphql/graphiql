@@ -94,20 +94,24 @@ export class DiagnosticsAdapter {
         },
       },
       defaults.onDidChange(() => {
-        editor.getModels().forEach(model => {
+        for (const model of editor.getModels()) {
           if (getModelLanguageId(model) === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }
-        });
+        }
       }),
     );
 
-    editor.getModels().forEach(onModelAdd);
+    for (const model of editor.getModels()) {
+      onModelAdd(model);
+    }
   }
 
   public dispose(): void {
-    this._disposables.forEach(d => d?.dispose());
+    for (const d of this._disposables) {
+      d?.dispose();
+    }
     this._disposables = [];
   }
 

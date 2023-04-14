@@ -109,11 +109,11 @@ function defaultGetDefaultFieldNames(type: GraphQLType) {
 
   // Include all leaf-type fields.
   const leafFieldNames: Array<string> = [];
-  Object.keys(fields).forEach(fieldName => {
+  for (const fieldName of Object.keys(fields)) {
     if (isLeafType(fields[fieldName].type)) {
       leafFieldNames.push(fieldName);
     }
-  });
+  }
   return leafFieldNames;
 }
 
@@ -174,10 +174,10 @@ function withInsertions(initial: string, insertions: Insertion[]) {
   }
   let edited = '';
   let prevIndex = 0;
-  insertions.forEach(({ index, string }) => {
+  for (const { index, string } of insertions) {
     edited += initial.slice(prevIndex, index) + string;
     prevIndex = index;
-  });
+  }
   edited += initial.slice(prevIndex);
   return edited;
 }

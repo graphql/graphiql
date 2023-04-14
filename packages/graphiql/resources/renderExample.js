@@ -14,17 +14,14 @@
 
 // Parse the search string to get url parameters.
 var parameters = {};
-window.location.search
-  .slice(1)
-  .split('&')
-  .forEach(function (entry) {
-    var eq = entry.indexOf('=');
-    if (eq >= 0) {
-      parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-        entry.slice(eq + 1),
-      );
-    }
-  });
+for (const entry of window.location.search.slice(1).split('&')) {
+  var eq = entry.indexOf('=');
+  if (eq >= 0) {
+    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
+      entry.slice(eq + 1),
+    );
+  }
+}
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.

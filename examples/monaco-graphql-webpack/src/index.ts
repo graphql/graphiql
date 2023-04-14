@@ -256,7 +256,7 @@ function getSchemaPicker(): HTMLSelectElement {
   const schemaPicker = document.createElement('select');
   schemaPicker.id = 'schema-picker';
 
-  schemaOptions.forEach(option => {
+  for (const option of schemaOptions) {
     const optEl = document.createElement('option');
     optEl.value = option.value;
     optEl.label = option.label;
@@ -264,7 +264,7 @@ function getSchemaPicker(): HTMLSelectElement {
       optEl.selected = true;
     }
     schemaPicker.appendChild(optEl);
-  });
+  }
 
   return schemaPicker;
 }

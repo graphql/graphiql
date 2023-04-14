@@ -268,6 +268,7 @@ module.exports = {
     'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
+    'unicorn/no-array-for-each': 'error',
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/prefer-optional-catch-binding': 'error',

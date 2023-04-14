@@ -128,9 +128,9 @@ export class NetworkHelper {
       fragmentDefinitions,
     );
 
-    fragmentInfos.forEach(fragmentInfo => {
+    for (const fragmentInfo of fragmentInfos) {
       literal.content = fragmentInfo.content + '\n' + literal.content;
-    });
+    }
 
     const parsedOperation = gql`
       ${literal.content}
