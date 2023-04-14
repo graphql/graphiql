@@ -131,22 +131,8 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     }, []);
 
   const value = useMemo<HistoryContextType>(
-    () => ({
-      addToHistory,
-      editLabel,
-      items,
-      toggleFavorite,
-      setActive,
-      deleteFromHistory,
-    }),
-    [
-      addToHistory,
-      editLabel,
-      items,
-      toggleFavorite,
-      setActive,
-      deleteFromHistory,
-    ],
+    () => ({ addToHistory, editLabel, items, toggleFavorite, setActive, deleteFromHistory }),
+    [addToHistory, editLabel, items, toggleFavorite, setActive, deleteFromHistory]
   );
 
   return (
