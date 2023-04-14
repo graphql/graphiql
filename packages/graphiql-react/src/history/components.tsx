@@ -31,20 +31,11 @@ export function History() {
     }
   }, [clearStatus]);
 
-  const [showClearButton, setShowClearButton] = useState(Boolean(items.length));
-  useEffect(() => {
-    const show = clearStatus ? true : Boolean(items.length);
-    if (show !== showClearButton) {
-      setShowClearButton(show);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearStatus, items]);
-
   return (
     <section aria-label="History" className="graphiql-history">
       <div className="graphiql-history-header">
         History
-        {Boolean(items.length) && (
+        {(clearStatus ? true : Boolean(items.length)) && (
           <Button
             type="button"
             state={clearStatus || undefined}

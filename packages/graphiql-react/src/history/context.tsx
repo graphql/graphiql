@@ -8,21 +8,20 @@ export type HistoryContextType = {
   /**
    * Add an operation to the history.
    * @param operation The operation that was executed, consisting of the query,
-   * variables, headers, and operation name. (_id for customizations)
+   * variables, headers, and operation name.
    */
   addToHistory(operation: {
     query?: string;
     variables?: string;
     headers?: string;
     operationName?: string;
-    _id?: string;
   }): void;
   /**
    * Change the custom label of an item from the history.
    * @param args An object containing the label (`undefined` if it should be
    * unset) and properties that identify the history item that the label should
    * be applied to. (This can result in the label being applied to multiple
-   * history items.) (_id for customizations)
+   * history items.)
    */
   editLabel(args: {
     query?: string;
@@ -31,8 +30,6 @@ export type HistoryContextType = {
     operationName?: string;
     label?: string;
     favorite?: boolean;
-    _active?: boolean;
-    _id?: string;
   }): void;
   /**
    * The list of history items.
@@ -43,7 +40,7 @@ export type HistoryContextType = {
    * @param args An object containing the favorite state (`undefined` if it
    * should be unset) and properties that identify the history item that the
    * label should be applied to. (This can result in the label being applied
-   * to multiple history items.) (_id for customizations)
+   * to multiple history items.)
    */
   toggleFavorite(args: {
     query?: string;
@@ -52,8 +49,6 @@ export type HistoryContextType = {
     operationName?: string;
     label?: string;
     favorite?: boolean;
-    _active?: boolean;
-    _id?: string;
   }): void;
   /**
    * Delete an operation from the history.
@@ -63,10 +58,8 @@ export type HistoryContextType = {
    */
   deleteFromHistory(args: QueryStoreItem, clearFavorites?: boolean): void;
   /**
-   * If you need to know when an item in history is set as active to customize your application,
-   * set an operation as the active operation.
-   * @param args The operation that was executed, consisting of the query,
-   * variables, headers, and operation name.
+   * If you need to know when an item in history is set as active to customize
+   * your application.
    */
   setActive(args: QueryStoreItem): void;
 };
@@ -83,6 +76,12 @@ export type HistoryContextProviderProps = {
   maxHistoryLength?: number;
 };
 
+/**
+ * The functions send the entire operation so users can customize their own application with
+ * <HistoryContext.Provider value={customizedFunctions} /> and get access to the operation plus
+ * any additional props they added for their needs (i.e. build their own functions that may save
+ * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
+ */
 export function HistoryContextProvider(props: HistoryContextProviderProps) {
   const storage = useStorageContext();
   const historyStore = useRef(
@@ -95,66 +94,24 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
   const [items, setItems] = useState(historyStore.current?.queries || []);
 
   const addToHistory: HistoryContextType['addToHistory'] = useCallback(
-    ({ query, variables, headers, operationName, _id }) => {
-      historyStore.current?.updateHistory(
-        query,
-        variables,
-        headers,
-        operationName,
-        _id,
-      );
+    (operation: QueryStoreItem) => {
+      historyStore.current?.updateHistory(operation);
       setItems(historyStore.current.queries);
     },
     [],
   );
 
   const editLabel: HistoryContextType['editLabel'] = useCallback(
-    ({
-      query,
-      variables,
-      headers,
-      operationName,
-      label,
-      favorite,
-      _active,
-      _id,
-    }) => {
-      historyStore.current.editLabel(
-        query,
-        variables,
-        headers,
-        operationName,
-        label,
-        favorite,
-        _active,
-        _id,
-      );
+    (operation: QueryStoreItem) => {
+      historyStore.current.editLabel(operation);
       setItems(historyStore.current.queries);
     },
     [],
   );
 
   const toggleFavorite: HistoryContextType['toggleFavorite'] = useCallback(
-    ({
-      query,
-      variables,
-      headers,
-      operationName,
-      label,
-      favorite,
-      _active,
-      _id,
-    }) => {
-      historyStore.current.toggleFavorite(
-        query,
-        variables,
-        headers,
-        operationName,
-        label,
-        favorite,
-        _active,
-        _id,
-      );
+    (operation: QueryStoreItem) => {
+      historyStore.current.toggleFavorite(operation);
       setItems(historyStore.current.queries);
     },
     [],
@@ -162,8 +119,7 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
 
   const setActive: HistoryContextType['setActive'] = useCallback(
     (item: QueryStoreItem) => {
-      historyStore.current.setActive(item);
-      setItems(historyStore.current.queries);
+      return item;
     },
     [],
   );

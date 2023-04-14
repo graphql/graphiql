@@ -1,10 +1,5 @@
 import { StorageAPI } from './base';
 
-/**
- * @param _active for users to customize their UI when the active item is set
- * @param _id for users to customize (e.g., if using an alternative backend
- * storage system instead of localStorage)
- */
 export type QueryStoreItem = {
   query?: string;
   variables?: string;
@@ -12,11 +7,6 @@ export type QueryStoreItem = {
   operationName?: string;
   label?: string;
   favorite?: boolean;
-  /* for users to customize their UI when the active item is set */
-  _active?: boolean;
-  /* for users to customize (e.g., if using an alternative backend storage 
-    system instead of local storage) */
-  _id?: string;
 };
 
 export class QueryStore {
@@ -40,8 +30,7 @@ export class QueryStore {
         x.query === item.query &&
         x.variables === item.variables &&
         x.headers === item.headers &&
-        x.operationName === item.operationName &&
-        x._id === item._id,
+        x.operationName === item.operationName,
     );
   }
 
@@ -65,8 +54,7 @@ export class QueryStore {
         x.query === item.query &&
         x.variables === item.variables &&
         x.headers === item.headers &&
-        x.operationName === item.operationName &&
-        x._id === item._id,
+        x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1);
