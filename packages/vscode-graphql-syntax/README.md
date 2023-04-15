@@ -132,12 +132,13 @@ backtick codeblocks.
 
 ```js
 gql`
-{
-  its {
-    query
-    time
+  {
+    its {
+      query
+      time
+    }
   }
-}
+`
 ```
 ````
 
