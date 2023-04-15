@@ -419,6 +419,12 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       setShowDialog(null);
     }, []);
 
+  const handleDismissSettingsDialog: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      setShowDialog(null);
+      setClearStorageStatus(null);
+    }, []);
+
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
@@ -807,19 +813,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </Dialog>
       <Dialog
         isOpen={showDialog === 'settings'}
-        onDismiss={() => {
-          setShowDialog(null);
-          setClearStorageStatus(null);
-        }}
+        onDismiss={handleDismissSettingsDialog}
       >
         <div className="graphiql-dialog-header">
           <div className="graphiql-dialog-title">Settings</div>
-          <Dialog.Close
-            onClick={() => {
-              setShowDialog(null);
-              setClearStorageStatus(null);
-            }}
-          />
+          <Dialog.Close onClick={handleDismissSettingsDialog} />
         </div>
         {props.showPersistHeadersSettings ? (
           <div className="graphiql-dialog-section">
