@@ -131,7 +131,7 @@ backtick codeblocks.
 # Hello Jan
 
 ```js
-gql`
+const myQuery = gql`
   {
     its {
       query
