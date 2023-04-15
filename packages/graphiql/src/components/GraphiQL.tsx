@@ -407,6 +407,18 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       setActiveSecondaryEditor('headers');
     }, [editorToolsResize]);
 
+  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      editorToolsResize.setHiddenElement(
+        editorToolsResize.hiddenElement === 'second' ? null : 'second',
+      );
+    }, [editorToolsResize]);
+
+  const handleDismissShortKeysDialog: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      setShowDialog(null);
+    }, []);
+
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
@@ -624,13 +636,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       >
                         <UnStyledButton
                           type="button"
-                          onClick={() => {
-                            editorToolsResize.setHiddenElement(
-                              editorToolsResize.hiddenElement === 'second'
-                                ? null
-                                : 'second',
-                            );
-                          }}
+                          onClick={toggleEditorTools}
                           aria-label={
                             editorToolsResize.hiddenElement === 'second'
                               ? 'Show editor tools'
@@ -702,11 +708,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </div>
       <Dialog
         isOpen={showDialog === 'short-keys'}
-        onDismiss={() => setShowDialog(null)}
+        onDismiss={handleDismissShortKeysDialog}
       >
         <div className="graphiql-dialog-header">
           <div className="graphiql-dialog-title">Short Keys</div>
-          <Dialog.Close onClick={() => setShowDialog(null)} />
+          <Dialog.Close onClick={handleDismissShortKeysDialog} />
         </div>
         <div className="graphiql-dialog-section">
           <div>
