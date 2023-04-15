@@ -103,14 +103,14 @@ Provide your initial connection params.
 
 ```jsx
 const fetcher = createGraphiQLFetcher({
-   url: "https://localhost:3000",
-   subscriptionUrl: "https://localhost:3001",
-   wsConnectionParams: { Authorization: "token 1234" }
-})
+  url: 'https://localhost:3000',
+  subscriptionUrl: 'https://localhost:3001',
+  wsConnectionParams: { Authorization: 'token 1234' },
+});
 
 const App = () => {
-  return <GraphiQL fetcher={fetcher} />
-}
+  return <GraphiQL fetcher={fetcher} />;
+};
 ```
 
 ### `legacyWsClient` or `legacyClient`

@@ -138,7 +138,7 @@ const myQuery = gql`
       time
     }
   }
-`
+`;
 ```
 ````
 

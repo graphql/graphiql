@@ -315,7 +315,7 @@ module.exports = {
     {
       // Rules that requires type information
       files: ['**/*.{ts,tsx}'],
-      excludedFiles: ['**/*.md/*.{ts,tsx}'],
+      excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
@@ -367,14 +367,14 @@ module.exports = {
       },
     },
     {
-      // Rules for ignoring imported dependencies from tests files
+      // Rule for ignoring imported dependencies from tests files
       files: ['**/__tests__/**', 'webpack.config.js'],
       rules: {
         'import/no-extraneous-dependencies': 'off',
       },
     },
     {
-      // Rules for allowing import `vscode` package
+      // Rule for allowing import `vscode` package
       files: [
         'packages/vscode-graphql/**',
         'packages/vscode-graphql-execution/**',
@@ -395,11 +395,8 @@ module.exports = {
       // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
-      processor: 'mdx/remark',
       plugins: ['mdx'],
-      rules: {
-        'mdx/remark': 'error',
-      },
+      processor: 'mdx/remark',
       settings: {
         'mdx/code-blocks': true,
       },

@@ -260,10 +260,10 @@ const { api } = monaco.languages.graphql;
 ```
 
 ```ts
-import "monaco-graphql";
+import 'monaco-graphql';
 
 // also this
-import { languages } from "monaco-editor";
+import { languages } from 'monaco-editor';
 // now the api will be available on the `monaco.languages` global
 const { api } = languages.graphql;
 ```
@@ -441,23 +441,23 @@ you'll want to create your own `my-graphql.worker.ts` file, and add your custom
 config such as `schemaLoader` to `createData`:
 
 ```ts
-import type { worker as WorkerNamespace } from "monaco-editor";
+import type { worker as WorkerNamespace } from 'monaco-editor';
 // @ts-ignore
-import * as worker from "monaco-editor/esm/vs/editor/editor.worker";
+import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
-import { GraphQLWorker } from "monaco-graphql/esm/GraphQLWorker";
+import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 
-import { myValidationRules } from "./custom";
+import { myValidationRules } from './custom';
 
 self.onmessage = () => {
   worker.initialize(
     (
       ctx: WorkerNamespace.IWorkerContext,
-      createData: monaco.languages.graphql.ICreateData
+      createData: monaco.languages.graphql.ICreateData,
     ) => {
       createData.languageConfig.customValidationRules = myValidationRules;
       return new GraphQLWorker(ctx, createData);
-    }
+    },
   );
 };
 ```

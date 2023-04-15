@@ -388,8 +388,9 @@
   - add support for template strings and tags with replacement expressions, so strings like these should work now:
 
   ```js
-  const myQuery = /* GraphQL */
-      `
+  const myQuery =
+    /* GraphQL */
+    `
           ${myFragments}
           query MyQuery {
               something
