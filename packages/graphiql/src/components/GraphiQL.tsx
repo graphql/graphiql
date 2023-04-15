@@ -391,6 +391,22 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     [pluginContext, pluginResize],
   );
 
+  const handleVariablesTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      if (editorToolsResize.hiddenElement === 'second') {
+        editorToolsResize.setHiddenElement(null);
+      }
+      setActiveSecondaryEditor('variables');
+    }, [editorToolsResize]);
+
+  const handleHeadersTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      if (editorToolsResize.hiddenElement === 'second') {
+        editorToolsResize.setHiddenElement(null);
+      }
+      setActiveSecondaryEditor('headers');
+    }, [editorToolsResize]);
+
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
@@ -580,12 +596,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                               ? 'active'
                               : ''
                           }
-                          onClick={() => {
-                            if (editorToolsResize.hiddenElement === 'second') {
-                              editorToolsResize.setHiddenElement(null);
-                            }
-                            setActiveSecondaryEditor('variables');
-                          }}
+                          onClick={handleVariablesTabClick}
                         >
                           Variables
                         </UnStyledButton>
@@ -598,14 +609,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                                 ? 'active'
                                 : ''
                             }
-                            onClick={() => {
-                              if (
-                                editorToolsResize.hiddenElement === 'second'
-                              ) {
-                                editorToolsResize.setHiddenElement(null);
-                              }
-                              setActiveSecondaryEditor('headers');
-                            }}
+                            onClick={handleHeadersTabClick}
                           >
                             Headers
                           </UnStyledButton>
