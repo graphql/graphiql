@@ -92,16 +92,20 @@ export function HistoryItem(props: QueryHistoryItemProps) {
 
   const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
-      queryEditor?.setValue(props.item.query ?? '');
-      variableEditor?.setValue(props.item.variables ?? '');
-      headerEditor?.setValue(props.item.headers ?? '');
-    }, []);
+      const { query, variables, headers } = props.item;
+      queryEditor?.setValue(query ?? '');
+      variableEditor?.setValue(variables ?? '');
+      headerEditor?.setValue(headers ?? '');
+    }, [props.item, queryEditor, variableEditor, headerEditor]);
 
   const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
-    useCallback(e => {
-      e.stopPropagation();
-      toggleFavorite(props.item);
-    }, []);
+    useCallback(
+      e => {
+        e.stopPropagation();
+        toggleFavorite(props.item);
+      },
+      [props.item, toggleFavorite],
+    );
 
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>

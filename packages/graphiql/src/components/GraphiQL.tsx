@@ -388,7 +388,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         pluginResize.setHiddenElement(null);
       }
     },
-    [],
+    [pluginContext, pluginResize],
   );
 
   return (
