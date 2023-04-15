@@ -351,7 +351,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       [editorContext],
     );
 
-  const handleTheme: MouseEventHandler<HTMLButtonElement> = useCallback(
+  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = useCallback(
     event => {
       const selectedTheme = event.currentTarget.dataset.theme as
         | 'light'
@@ -865,7 +865,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 className={theme === null ? 'active' : ''}
-                onClick={handleTheme}
+                onClick={handleChangeTheme}
               >
                 System
               </Button>
@@ -873,7 +873,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 type="button"
                 className={theme === 'light' ? 'active' : ''}
                 data-theme="light"
-                onClick={handleTheme}
+                onClick={handleChangeTheme}
               >
                 Light
               </Button>
@@ -881,7 +881,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 type="button"
                 className={theme === 'dark' ? 'active' : ''}
                 data-theme="dark"
-                onClick={handleTheme}
+                onClick={handleChangeTheme}
               >
                 Dark
               </Button>
