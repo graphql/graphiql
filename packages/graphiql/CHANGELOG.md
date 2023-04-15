@@ -663,7 +663,7 @@
 
 - [#2191](https://github.com/graphql/graphiql/pull/2191) [`eb8af7b5`](https://github.com/graphql/graphiql/commit/eb8af7b5666e7ed01497a862127011524fc400f5) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Allow inserting content before the topBar element via the `beforeTopBarContent` property.
 
-  ```ts
+  ```jsx
   <GraphiQL beforeTopBarContent={<SomeComponent />} />
   ```
 

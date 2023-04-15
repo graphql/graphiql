@@ -118,7 +118,7 @@ For full autocompletion, validation and other features, you can install
 # Hello Jan
 
 ```graphql
-  query MyQuery {}
+query MyQuery {}
 ```
 ````
 
@@ -131,7 +131,7 @@ backtick codeblocks.
 # Hello Jan
 
 ```js
-string : X = gql`
+gql`
 {
   its {
     query
