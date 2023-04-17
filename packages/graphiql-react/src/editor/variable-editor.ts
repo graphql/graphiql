@@ -118,8 +118,8 @@ export function useVariableEditor(
       newEditor.on('keyup', (editorInstance, event) => {
         const { code, key, shiftKey } = event;
         const isLetter = code.startsWith('Key');
-        const isNumber = code.startsWith('Digit');
-        if (isLetter || (!shiftKey && isNumber) || key === '_' || key === '"') {
+        const isNumber = !shiftKey && code.startsWith('Digit');
+        if (isLetter || isNumber || key === '_' || key === '"') {
           editorInstance.execCommand('autocomplete');
         }
       });
