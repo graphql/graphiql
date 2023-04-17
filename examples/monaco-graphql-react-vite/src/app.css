@@ -4,7 +4,7 @@ body {
   height: 100vh;
 }
 
-#wrapper {
+#root {
   display: flex;
   flex-direction: row;
   height: 97.7vh;
@@ -22,6 +22,6 @@ body {
   height: 50%;
 }
 
-#right-pane .editor {
+#right-pane.editor {
   height: 100%;
 }

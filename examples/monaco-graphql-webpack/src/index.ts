@@ -143,36 +143,34 @@ async function render() {
    * monaco-graphql itself doesn't do anything with handling operations yet, but it may soon!
    */
 
-  const getOperationHandler = () => {
-    return async () => {
-      try {
-        const operation = operationEditor.getValue();
-        const variables = variablesEditor.getValue();
-        const body: { variables?: string; query: string } = {
-          query: operation,
-        };
-        // parse the variables with JSONC, so we can have comments!
-        const parsedVariables = JSONC.parse(variables);
-        if (parsedVariables && Object.keys(parsedVariables).length) {
-          body.variables = JSON.stringify(parsedVariables, null, 2);
-        }
-        const result = await fetch(schemaFetcher.currentSchema.value, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            ...schemaFetcher.currentSchema?.headers,
-          },
-          body: JSON.stringify(body, null, 2),
-        });
-
-        const resultText = await result.text();
-        resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
-      } catch (err) {
-        if (err instanceof Error) {
-          resultsEditor.setValue(err.toString());
-        }
+  const getOperationHandler = () => async () => {
+    try {
+      const operation = operationEditor.getValue();
+      const variables = variablesEditor.getValue();
+      const body: { variables?: string; query: string } = {
+        query: operation,
+      };
+      // parse the variables with JSONC, so we can have comments!
+      const parsedVariables = JSONC.parse(variables);
+      if (parsedVariables && Object.keys(parsedVariables).length) {
+        body.variables = JSON.stringify(parsedVariables, null, 2);
       }
-    };
+      const result = await fetch(schemaFetcher.currentSchema.value, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          ...schemaFetcher.currentSchema?.headers,
+        },
+        body: JSON.stringify(body, null, 2),
+      });
+
+      const resultText = await result.text();
+      resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
+    } catch (err) {
+      if (err instanceof Error) {
+        resultsEditor.setValue(err.toString());
+      }
+    }
   };
 
   const operationHandler = getOperationHandler();
