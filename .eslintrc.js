@@ -298,6 +298,8 @@ module.exports = {
         '@typescript-eslint/no-unused-expressions': 'error',
         'sonarjs/no-small-switch': 'error',
         'sonarjs/no-duplicated-branches': 'error',
+        'sonar/prefer-promise-shorthand': 'error',
+        'sonar/no-dead-store': 'error',
         'unicorn/prefer-node-protocol': 'error',
         'import/no-unresolved': ['error', { ignore: ['^node:'] }],
         'unicorn/prefer-string-replace-all': 'error',
@@ -316,7 +318,7 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
       },
 
-      plugins: ['promise', 'sonarjs', 'unicorn', '@arthurgeron/react-usememo'],
+      plugins: ['promise', 'sonarjs', 'unicorn', '@arthurgeron/react-usememo', 'sonar'],
     },
     {
       // Rules that requires type information

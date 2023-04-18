@@ -353,11 +353,6 @@ export class MessageProcessor {
         await this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
       }
-      // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(uri);
-      if (cachedDocument) {
-        contents = cachedDocument.contents;
-      }
       return null;
     }
     if (!this._graphQLCache) {

@@ -37,10 +37,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   timeout = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  getCurrentHtml(): Promise<string> {
-    return new Promise(resolve => {
-      resolve(this.html);
-    });
+  async getCurrentHtml(): Promise<string> {
+    return this.html;
   }
 
   updatePanel() {
