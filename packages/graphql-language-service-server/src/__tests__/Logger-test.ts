@@ -8,11 +8,11 @@
  */
 
 import { tmpdir } from 'node:os';
-import { Logger } from '../Logger';
+import { ConsoleLogger } from '../Logger';
 
 describe('Logger', () => {
-  let mockedStdoutWrite: jest.SpyInstance = null;
-  let mockedStderrWrite: jest.SpyInstance = null;
+  let mockedStdoutWrite: jest.SpyInstance = null!;
+  let mockedStderrWrite: jest.SpyInstance = null!;
 
   beforeEach(async () => {
     mockedStdoutWrite = jest
@@ -29,7 +29,7 @@ describe('Logger', () => {
   });
 
   it('logs to stdout', () => {
-    const logger = new Logger(tmpdir());
+    const logger = new ConsoleLogger(tmpdir());
     logger.info('log test');
 
     expect(mockedStdoutWrite.mock.calls.length).toBe(1);
@@ -38,7 +38,7 @@ describe('Logger', () => {
   });
 
   it('logs to stderr', () => {
-    const logger = new Logger(tmpdir());
+    const logger = new ConsoleLogger(tmpdir());
     logger.error('error test');
 
     expect(mockedStdoutWrite.mock.calls.length).toBe(0);
@@ -48,7 +48,7 @@ describe('Logger', () => {
 
   it('only writes to stderr with "stderrOnly" enabled', () => {
     const stderrOnly = true;
-    const logger = new Logger(tmpdir(), stderrOnly);
+    const logger = new ConsoleLogger(tmpdir(), stderrOnly);
     logger.info('info test');
     logger.warn('warn test');
     // log is only logged to file now :)

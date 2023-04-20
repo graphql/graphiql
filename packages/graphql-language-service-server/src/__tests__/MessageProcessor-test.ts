@@ -22,7 +22,7 @@ import { loadConfig } from 'graphql-config';
 
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
-import { Logger } from '../Logger';
+import { ConsoleLogger } from '../Logger';
 import { pathToFileURL } from 'node:url';
 
 jest.mock('node:fs', () => ({
@@ -31,7 +31,7 @@ jest.mock('node:fs', () => ({
 }));
 
 describe('MessageProcessor', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new ConsoleLogger(tmpdir());
   const messageProcessor = new MessageProcessor({
     // @ts-ignore
     connection: {},

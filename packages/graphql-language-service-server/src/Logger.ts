@@ -8,7 +8,7 @@
  */
 
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
-import { DiagnosticSeverity } from 'vscode-languageserver';
+import { Connection, DiagnosticSeverity } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -22,6 +22,26 @@ import {
 } from 'graphql-language-service';
 
 export class Logger implements VSCodeLogger {
+  constructor(private _connection: Connection) {}
+
+  error(message: string): void {
+    this._connection.console.error(message);
+  }
+
+  warn(message: string): void {
+    this._connection.console.warn(message);
+  }
+
+  info(message: string): void {
+    this._connection.console.info(message);
+  }
+
+  log(message: string): void {
+    this._connection.console.log(message);
+  }
+}
+
+export class ConsoleLogger implements VSCodeLogger {
   _logFilePath: string;
   _stderrOnly: boolean;
 

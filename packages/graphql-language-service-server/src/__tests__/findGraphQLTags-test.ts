@@ -12,10 +12,10 @@ import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
-import { Logger } from '../Logger';
+import { ConsoleLogger } from '../Logger';
 
 describe('findGraphQLTags', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new ConsoleLogger(tmpdir());
   const findGraphQLTags = (text: string, ext: string) =>
     baseFindGraphQLTags(text, ext, '', logger);
 

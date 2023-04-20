@@ -17,7 +17,7 @@ import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import * as VueParser from '@vue/compiler-sfc';
-import { Logger } from './Logger';
+import type { Logger } from 'vscode-languageserver';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
