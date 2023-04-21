@@ -194,6 +194,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     const counter = ++counterRef.current;
 
     const maybeIntrospectionData = props.schema;
+
     async function fetchIntrospectionData() {
       if (maybeIntrospectionData) {
         // No need to introspect if we already have the data
@@ -317,10 +318,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
-      if (event.keyCode === 82 && event.shiftKey && event.ctrlKey) {
+      if (event.ctrlKey && event.key === 'R') {
         introspect();
       }
     }
+
     window.addEventListener('keydown', triggerIntrospection);
     return () => window.removeEventListener('keydown', triggerIntrospection);
   });

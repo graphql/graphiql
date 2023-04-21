@@ -143,7 +143,7 @@ export class MessageProcessor {
     }
 
     if (!existsSync(this._tmpDirBase)) {
-      mkdirp(this._tmpDirBase);
+      void mkdirp(this._tmpDirBase);
     }
   }
   get connection(): Connection {
@@ -350,7 +350,7 @@ export class MessageProcessor {
         uri.match('package.json')?.length && require(uri)?.graphql;
       if (hasGraphQLConfigFile || hasPackageGraphQLConfig) {
         this._logger.info('updating graphql config');
-        this._updateGraphQLConfig();
+        await this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
       }
       // update graphql config only when graphql config is saved!
@@ -703,12 +703,12 @@ export class MessageProcessor {
           return { uri, diagnostics };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
-          this._graphQLCache.updateFragmentDefinitionCache(
+          await this._graphQLCache.updateFragmentDefinitionCache(
             this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
-          this._graphQLCache.updateObjectTypeDefinitionCache(
+          await this._graphQLCache.updateObjectTypeDefinitionCache(
             this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
@@ -924,7 +924,7 @@ export class MessageProcessor {
         version = schemaDocument.version++;
       }
       const schemaText = readFileSync(uri, 'utf8');
-      this._cacheSchemaText(schemaUri, schemaText, version);
+      await this._cacheSchemaText(schemaUri, schemaText, version);
     }
   }
   _getTmpProjectPath(
@@ -937,7 +937,7 @@ export class MessageProcessor {
     const basePath = path.join(this._tmpDirBase, workspaceName);
     let projectTmpPath = path.join(basePath, 'projects', project.name);
     if (!existsSync(projectTmpPath)) {
-      mkdirp(projectTmpPath);
+      void mkdirp(projectTmpPath);
     }
     if (appendPath) {
       projectTmpPath = path.join(projectTmpPath, appendPath);
@@ -963,7 +963,7 @@ export class MessageProcessor {
         );
       } else {
         try {
-          this._cacheSchemaFile(uri, project);
+          await this._cacheSchemaFile(uri, project);
         } catch {
           // this string may be an SDL string even, how do we even evaluate this?
         }

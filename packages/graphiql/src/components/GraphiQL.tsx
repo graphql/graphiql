@@ -249,7 +249,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         props.defaultEditorToolsVisibility === 'variables' ||
         props.defaultEditorToolsVisibility === 'headers'
       ) {
-        return undefined;
+        return;
       }
 
       if (typeof props.defaultEditorToolsVisibility === 'boolean') {

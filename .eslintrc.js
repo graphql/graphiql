@@ -105,7 +105,6 @@ module.exports = {
     'no-useless-call': 1,
     'no-useless-concat': 1,
     'no-useless-return': 0,
-    'no-void': 1,
     '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
     radix: 'error',
@@ -116,7 +115,8 @@ module.exports = {
     'sonarjs/no-identical-functions': 'error',
     'sonarjs/no-unused-collection': 'error',
     'sonarjs/no-extra-arguments': 'error',
-
+    'unicorn/no-useless-undefined': 'error',
+    'no-var': 'error',
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
 
@@ -198,6 +198,11 @@ module.exports = {
         message:
           "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
       },
+      {
+        // ❌ event.keyCode
+        selector: 'MemberExpression > .property[type=Identifier][name=keyCode]',
+        message: 'Use `.key` instead of `.keyCode`',
+      },
     ],
     'no-ternary': 0,
     'no-underscore-dangle': 0,
@@ -213,7 +218,7 @@ module.exports = {
     'sort-vars': 0,
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
     'wrap-regex': 0,
-
+    'unicorn/prefer-dom-node-remove': 'error',
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
     'arrow-body-style': 0,
     'no-duplicate-imports': 0,
@@ -228,6 +233,7 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
+    'sonarjs/no-ignored-return': 'error',
     'unicorn/no-array-push-push': 'error',
     'import/no-extraneous-dependencies': 'error',
     'import/no-duplicates': 'error',
@@ -268,6 +274,8 @@ module.exports = {
     'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
+    'unicorn/no-array-for-each': 'error',
+    'unicorn/prefer-dom-node-append': 'error',
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/prefer-optional-catch-binding': 'error',
@@ -279,6 +287,8 @@ module.exports = {
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
     'unicorn/prefer-string-replace-all': 'error',
+    // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
+    'unicorn/prefer-keyboard-event-key': 'off',
 
     'unicorn/prefer-switch': 'error',
     // TODO: Fix all errors for the following rules included in recommended config
@@ -297,8 +307,10 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.{ts,tsx}'],
+      // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+        '@typescript-eslint/no-floating-promises': 'error',
       },
       parserOptions: {
         project: [
@@ -359,6 +371,14 @@ module.exports = {
       ],
       rules: {
         'import/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
+      },
+    },
+    {
+      files: ['packages/**'],
+      // ignore React packages because it's ugly to have `async IIFE` inside `useEffect`
+      excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
+      rules: {
+        'promise/prefer-await-to-then': 'error',
       },
     },
   ],

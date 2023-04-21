@@ -63,7 +63,7 @@ export class Logger implements VSCodeLogger {
   }
 
   _log(message: string, severityKey: SeverityEnum): void {
-    const timestamp = new Date().toLocaleString(undefined);
+    const timestamp = new Date().toLocaleString();
     const severity = DIAGNOSTIC_SEVERITY[severityKey];
     const { pid } = process;
 

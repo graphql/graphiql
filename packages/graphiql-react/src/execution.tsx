@@ -344,7 +344,7 @@ function tryParseJsonObject({
   errorMessageParse: string;
   errorMessageType: string;
 }) {
-  let parsed: Record<string, any> | undefined = undefined;
+  let parsed: Record<string, any> | undefined;
   try {
     parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
   } catch (error) {

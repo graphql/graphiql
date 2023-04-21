@@ -32,7 +32,7 @@ if (tempPath) {
     if (error) {
       throw error;
     }
-    files.forEach(file => {
+    for (const file of files) {
       if (file.dest) {
         const srcExt = path.parse(file.dest).ext;
         const destinationPath = path.resolve(
@@ -45,7 +45,7 @@ if (tempPath) {
         // move the files and rename them... by renaming them :)
         fs.renameSync(file.dest, destinationPath);
       }
-    });
+    }
     // should cleanup temp directory after renaming
     // every file to the destination path
     rimraf.sync(tempRenamePath);

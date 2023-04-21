@@ -746,11 +746,11 @@ function getSuggestionsForFragmentTypeConditions(
       // they implement.
       const possibleObjTypes = schema.getPossibleTypes(abstractType);
       const possibleIfaceMap = Object.create(null);
-      possibleObjTypes.forEach(type => {
-        type.getInterfaces().forEach(iface => {
+      for (const type of possibleObjTypes) {
+        for (const iface of type.getInterfaces()) {
           possibleIfaceMap[iface.name] = iface;
-        });
-      });
+        }
+      }
       possibleTypes = possibleObjTypes.concat(objectValues(possibleIfaceMap));
     } else {
       // The parent type is a non-abstract Object type, so the only possible

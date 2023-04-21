@@ -127,13 +127,12 @@ export const getUtils = (source: string) => {
 };
 
 export const performForEachType = (source, test) => {
-  Object.keys(typesMap).map(type => {
-    const { value, kind, valueType } = typesMap[type];
+  for (const [type, { value, kind, valueType }] of Object.entries(typesMap)) {
     const utils = getUtils(
       source.replaceAll('__VALUE__', value).replaceAll('__TYPE__', type),
     );
     test(utils, { type, value, kind, valueType });
-  });
+  }
 };
 
 export const expectVarsDef = (
@@ -142,14 +141,14 @@ export const expectVarsDef = (
 ) => {
   t.punctuation(/\(/, { kind: 'VariableDefinitions' });
 
-  vars.forEach(variable => {
+  for (const variable of vars) {
     t.variable('$', { kind: 'Variable' });
     t.variable(variable.name);
     t.punctuation(':', { kind: 'VariableDefinition' });
     t.name(variable.type, { kind: 'NamedType' });
 
     stream.eatWhile(/(,|\s)/);
-  });
+  }
 
   t.punctuation(/\)/, { kind: onKind });
 };
@@ -160,7 +159,7 @@ export const expectArgs = (
 ) => {
   t.punctuation(/\(/, { kind: 'Arguments' });
 
-  args.forEach(arg => {
+  for (const arg of args) {
     t.attribute(arg.name, { kind: 'Argument' });
     t.punctuation(':');
     if (arg.isVariable) {
@@ -177,7 +176,7 @@ export const expectArgs = (
     }
 
     stream.eatWhile(/(,|\s)/);
-  });
+  }
 
   t.punctuation(/\)/, { kind: onKind });
 };

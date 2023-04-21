@@ -111,6 +111,7 @@ const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
 
 class Marker {
   private set = new Set<string>();
+
   mark(name: string): boolean {
     if (this.set.has(name)) {
       return false;
@@ -158,9 +159,9 @@ function getJSONSchemaFromGraphQLType(
       definition.items = def;
     }
     if (defs) {
-      Object.keys(defs).forEach(defName => {
+      for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];
-      });
+      }
     }
   }
   if (isNonNullType(type)) {
@@ -171,9 +172,9 @@ function getJSONSchemaFromGraphQLType(
     );
     definition = def;
     if (defs) {
-      Object.keys(defs).forEach(defName => {
+      for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];
-      });
+      }
     }
   }
   if (isInputObjectType(type)) {
@@ -202,7 +203,7 @@ function getJSONSchemaFromGraphQLType(
         }
       }
 
-      Object.keys(fields).forEach(fieldName => {
+      for (const fieldName of Object.keys(fields)) {
         const field = fields[fieldName];
         const {
           required: fieldRequired,
@@ -238,11 +239,11 @@ function getJSONSchemaFromGraphQLType(
           fieldDef.required!.push(fieldName);
         }
         if (typeDefinitions) {
-          Object.keys(typeDefinitions).map(defName => {
-            definitions[defName] = typeDefinitions[defName];
-          });
+          for (const [defName, value] of Object.entries(typeDefinitions)) {
+            definitions[defName] = value;
+          }
         }
-      });
+      }
       definitions[type.name] = fieldDef;
     }
   }
@@ -269,6 +270,7 @@ function getJSONSchemaFromGraphQLType(
 
   return { required, definition, definitions };
 }
+
 /**
  * Generates a JSONSchema6 valid document for operation(s) from a map of Map<string, GraphQLInputType>.
  *
@@ -324,7 +326,7 @@ export function getVariablesJSONSchema(
 
   if (variableToType) {
     // I would use a reduce here, but I wanted it to be readable.
-    Object.entries(variableToType).forEach(([variableName, type]) => {
+    for (const [variableName, type] of Object.entries(variableToType)) {
       const { definition, required, definitions } =
         getJSONSchemaFromGraphQLType(type, runtimeOptions);
       jsonSchema.properties[variableName] = definition;
@@ -334,7 +336,7 @@ export function getVariablesJSONSchema(
       if (definitions) {
         jsonSchema.definitions = { ...jsonSchema?.definitions, ...definitions };
       }
-    });
+    }
   }
   return jsonSchema;
 }
