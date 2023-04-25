@@ -7,7 +7,12 @@
  *
  */
 
-import { ASTNode, DocumentNode, DefinitionNode } from 'graphql/language';
+import {
+  ASTNode,
+  DocumentNode,
+  DefinitionNode,
+  isTypeDefinitionNode,
+} from 'graphql/language';
 import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
@@ -254,6 +259,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
           referencedObjectTypes.add(node.name.value);
         }
       },
+      UnionTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      ScalarTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      InterfaceTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
     });
 
     const asts = new Set<ObjectTypeInfo>();
@@ -494,11 +508,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           continue;
         }
         for (const definition of ast.definitions) {
-          if (
-            definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-            definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-            definition.kind === Kind.ENUM_TYPE_DEFINITION
-          ) {
+          if (isTypeDefinitionNode(definition)) {
             cache.set(definition.name.value, {
               filePath,
               content: query,
@@ -744,12 +754,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
                 content,
                 definition,
               });
-            }
-            if (
-              definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-              definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-              definition.kind === Kind.ENUM_TYPE_DEFINITION
-            ) {
+            } else if (isTypeDefinitionNode(definition)) {
               objectTypeDefinitions.set(definition.name.value, {
                 filePath,
                 content,
