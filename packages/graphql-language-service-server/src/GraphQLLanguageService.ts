@@ -403,7 +403,8 @@ export class GraphQLLanguageService {
         definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
         definition.kind === Kind.ENUM_TYPE_DEFINITION ||
         definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-        definition.kind === Kind.INTERFACE_TYPE_DEFINITION,
+        definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+        definition.kind === Kind.UNION_TYPE_DEFINITION,
     );
 
     const typeCastedDefs =
