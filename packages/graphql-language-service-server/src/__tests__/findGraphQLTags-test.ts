@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
-jest.mock('../Logger');
+// jest.mock('../Logger');
 
 import { Logger } from '../Logger';
 
@@ -287,6 +287,72 @@ query {id}
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
 query {id}`);
+  });
+
+  it('no crash in Svelte files without <script>', async () => {
+    const text = ``;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new Logger(tmpdir(), false),
+    );
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('no crash in Svelte files with empty <script>', async () => {
+    const text = `<script></script>`;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new Logger(tmpdir(), false),
+    );
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('no crash in Svelte files with empty <script>', async () => {
+    const text = `<script lang="ts"></script>`;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new Logger(tmpdir(), false),
+    );
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('finds multiple queries in a single file', async () => {
