@@ -644,7 +644,7 @@ function getSuggestionsForImplements(
         state.kind === RuleKinds.INTERFACE_DEF &&
         !schemaInterfaceNames.includes(state.name)
       ) {
-        inlineInterfaces.add(<string>state.name);
+        inlineInterfaces.add(state.name);
       }
       // gather the other interfaces the current type/interface definition implements
       // so we can filter them out below
@@ -746,11 +746,11 @@ function getSuggestionsForFragmentTypeConditions(
       // they implement.
       const possibleObjTypes = schema.getPossibleTypes(abstractType);
       const possibleIfaceMap = Object.create(null);
-      possibleObjTypes.forEach(type => {
-        type.getInterfaces().forEach(iface => {
+      for (const type of possibleObjTypes) {
+        for (const iface of type.getInterfaces()) {
           possibleIfaceMap[iface.name] = iface;
-        });
-      });
+        }
+      }
       possibleTypes = possibleObjTypes.concat(objectValues(possibleIfaceMap));
     } else {
       // The parent type is a non-abstract Object type, so the only possible
@@ -1047,7 +1047,7 @@ export function canUseDirective(
   state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {
-  if (!state || !state.kind) {
+  if (!state?.kind) {
     return false;
   }
   const { kind, prevState } = state;

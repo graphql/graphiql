@@ -6,6 +6,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const graphql = require('graphql');
+const rimraf = require('rimraf');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -29,18 +30,19 @@ const resultConfig = {
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'graphiql.com'],
-    before: require('../test/beforeDevServer'),
-    after: require('../test/afterDevServer'),
+    setupMiddlewares: (middlewares, devServer) => {
+      require('../test/beforeDevServer')(devServer.app);
+      require('../test/afterDevServer')();
+
+      return middlewares;
+    },
   },
-  devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
-  node: {
-    fs: 'empty',
-    module: 'empty',
-  },
+  devtool: isDev ? 'cheap-module-source-map' : 'source-map',
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
+
   module: {
     rules: [
       // for graphql module, which uses .mjs
@@ -60,15 +62,7 @@ const resultConfig = {
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isHMR,
-            },
-          },
-          'css-loader',
-        ],
+        use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader'],
       },
       {
         test: /\.css$/,
@@ -77,6 +71,7 @@ const resultConfig = {
       },
     ],
   },
+
   plugins: [
     // in order to prevent async modules for CDN builds
     // until we can guarantee it will work with the CDN properly
@@ -99,8 +94,18 @@ const resultConfig = {
     }),
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
-      tsconfig: rootPath('tsconfig.json'),
+      typescript: {
+        configFile: rootPath('tsconfig.json'),
+      },
     }),
+    new (class {
+      apply(compiler) {
+        compiler.hooks.done.tap('Remove LICENSE', () => {
+          console.log('Remove LICENSE.txt');
+          rimraf.sync('./*.LICENSE.txt');
+        });
+      }
+    })(),
   ],
   resolve: {
     extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],

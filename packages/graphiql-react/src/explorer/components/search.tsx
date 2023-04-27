@@ -50,15 +50,16 @@ export function Search() {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.metaKey && event.keyCode === 75 && inputRef.current) {
-        inputRef.current.focus();
+      if (event.metaKey && event.key === 'k') {
+        inputRef.current?.focus();
       }
     }
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const navItem = explorerNavStack.at(-1)!;
 
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
@@ -198,7 +199,7 @@ export function useSearchResults(caller?: Function) {
     caller: caller || useSearchResults,
   });
 
-  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const navItem = explorerNavStack.at(-1)!;
 
   return useCallback(
     (searchValue: string) => {
@@ -284,7 +285,7 @@ export function useSearchResults(caller?: Function) {
 
 function isMatch(sourceText: string, searchValue: string) {
   try {
-    const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
+    const escaped = searchValue.replaceAll(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
     return sourceText.search(new RegExp(escaped, 'i')) !== -1;
   } catch {
     return sourceText.toLowerCase().includes(searchValue.toLowerCase());

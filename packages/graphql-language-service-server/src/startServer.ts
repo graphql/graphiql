@@ -170,7 +170,7 @@ export default async function startServer(
 
         const { port, hostname } = options;
         const socket = net
-          .createServer(client => {
+          .createServer(async client => {
             client.setEncoding('utf8');
             reader = new SocketMessageReader(client);
             writer = new SocketMessageWriter(client);
@@ -178,14 +178,13 @@ export default async function startServer(
               socket.close();
               process.exit(0);
             });
-            return initializeHandlers({
+            const s = await initializeHandlers({
               reader,
               writer,
               logger,
               options: finalOptions,
-            }).then(s => {
-              s.listen();
             });
+            s.listen();
           })
           .listen(port, hostname);
         return;
@@ -193,7 +192,6 @@ export default async function startServer(
         reader = new StreamMessageReader(process.stdin);
         writer = new StreamMessageWriter(process.stdout);
         break;
-      case 'node':
       default:
         reader = new IPCMessageReader(process);
         writer = new IPCMessageWriter(process);
@@ -245,7 +243,7 @@ function reportDiagnostics(
   connection: Connection,
 ) {
   if (diagnostics) {
-    connection.sendNotification(
+    void connection.sendNotification(
       PublishDiagnosticsNotification.type,
       diagnostics,
     );

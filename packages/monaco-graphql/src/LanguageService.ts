@@ -85,7 +85,9 @@ export class LanguageService {
   }
 
   private _cacheSchemas() {
-    this._schemas.forEach(schema => this._cacheSchema(schema));
+    for (const schema of this._schemas) {
+      this._cacheSchema(schema);
+    }
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {
@@ -102,7 +104,7 @@ export class LanguageService {
    * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
-    if (!this._schemas || !this._schemas.length) {
+    if (!this._schemas?.length) {
       return;
     }
     if (this._schemas.length === 1) {

@@ -4,10 +4,8 @@ import { GraphQLSchema } from 'graphql';
 import { GqlExtensionsOptions } from './interfaces';
 
 const schemaEffect = StateEffect.define<GraphQLSchema | undefined>();
-const schemaStateField = StateField.define<GraphQLSchema | undefined>({
-  create() {
-    return undefined;
-  },
+const schemaStateField = StateField.define<GraphQLSchema | void>({
+  create() {},
   update(schema, tr) {
     for (const e of tr.effects) {
       if (e.is(schemaEffect)) {
@@ -20,10 +18,8 @@ const schemaStateField = StateField.define<GraphQLSchema | undefined>({
 });
 
 const optionsEffect = StateEffect.define<GqlExtensionsOptions | undefined>();
-const optionsStateField = StateField.define<GqlExtensionsOptions | undefined>({
-  create() {
-    return undefined;
-  },
+const optionsStateField = StateField.define<GqlExtensionsOptions | void>({
+  create() {},
   update(opts, tr) {
     for (const e of tr.effects) {
       if (e.is(optionsEffect)) {

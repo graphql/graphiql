@@ -1,15 +1,16 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "preserve",
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
-    "lib": ["dom", "ESNext"]
+    "lib": ["dom", "ESNext"],
+    "moduleResolution": "node"
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],

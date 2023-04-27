@@ -1,25 +1,6 @@
 import * as monaco from 'monaco-editor';
 
-// NOTE: using loader syntax because Yaml worker imports editor.worker directly and that
-// import shouldn't go through loader syntax.
-// @ts-ignore
-import GraphQLWorker from 'monaco-graphql/esm/graphql.worker'; // eslint-disable-line import/default
-
 const GRAPHQL_LANGUAGE_ID = 'graphql';
-
-// @ts-ignore
-window.MonacoEnvironment = {
-  getWorker(_workerId: string, label: string) {
-    if (label === GRAPHQL_LANGUAGE_ID) {
-      // @ts-expect-error
-      return new GraphQLWorker();
-    }
-    if (label === 'json') {
-      return new Worker('/json.worker.js');
-    }
-    return new Worker('/editor.worker.js');
-  },
-};
 
 const operationString =
   localStorage.getItem('operations') ??
@@ -61,7 +42,7 @@ export function createEditors() {
   );
 
   const variablesEditor = monaco.editor.create(
-    document.getElementById('variables') as HTMLElement,
+    document.getElementById('variables'),
     {
       model: variablesModel,
       language: 'json',
@@ -82,7 +63,7 @@ export function createEditors() {
   );
 
   const operationEditor = monaco.editor.create(
-    document.getElementById('operation') as HTMLElement,
+    document.getElementById('operation'),
     {
       model: operationModel,
       formatOnPaste: true,
@@ -100,7 +81,7 @@ export function createEditors() {
   );
 
   const schemaEditor = monaco.editor.create(
-    document.getElementById('schema-sdl') as HTMLElement,
+    document.getElementById('schema-sdl'),
     {
       model: schemaModel,
       formatOnPaste: true,
@@ -118,7 +99,7 @@ export function createEditors() {
   );
 
   const resultsEditor = monaco.editor.create(
-    document.getElementById('results') as HTMLElement,
+    document.getElementById('results'),
     {
       model: resultsModel,
       language: 'json',

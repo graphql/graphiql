@@ -14,23 +14,17 @@ const { schema: badSchema } = require('./bad-schema');
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
   app.post('/graphql', graphqlHTTP({ schema }));
+  app.get('/graphql', graphqlHTTP({ schema }));
 
   app.post('/bad/graphql', (_req, res, next) => {
     res.json({ data: badSchema });
     next();
   });
 
-  app.get(
-    '/graphql',
-    graphqlHTTP({
-      schema,
-    }),
-  );
-
   app.use('/images', express.static(path.join(__dirname, 'images')));
 
   app.use(
-    '/renderExample.js',
+    '/resources/renderExample.js',
     express.static(path.join(__dirname, '../resources/renderExample.js')),
   );
 };

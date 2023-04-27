@@ -1,3 +1,5 @@
+/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+
 /**
  * UMD GraphiQL Example
  *
@@ -11,19 +13,15 @@
  */
 
 // Parse the search string to get url parameters.
-var search = window.location.search;
-var parameters = {};
-search
-  .substr(1)
-  .split('&')
-  .forEach(function (entry) {
-    var eq = entry.indexOf('=');
-    if (eq >= 0) {
-      parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-        entry.slice(eq + 1),
-      );
-    }
-  });
+const parameters = {};
+for (const entry of window.location.search.slice(1).split('&')) {
+  const eq = entry.indexOf('=');
+  if (eq >= 0) {
+    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
+      entry.slice(eq + 1),
+    );
+  }
+}
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
@@ -51,7 +49,7 @@ function onTabChange(tabsState) {
 }
 
 function updateURL() {
-  var newSearch =
+  const newSearch =
     '?' +
     Object.keys(parameters)
       .filter(function (key) {
@@ -73,13 +71,14 @@ function getSchemaUrl() {
     // This supports an e2e test which ensures that invalid schemas do not load.
     if (parameters.bad === 'true') {
       return '/bad/graphql';
-    } else if (parameters['http-error'] === 'true') {
-      return '/http-error/graphql';
-    } else if (parameters['graphql-error'] === 'true') {
-      return '/graphql-error/graphql';
-    } else {
-      return '/graphql';
     }
+    if (parameters['http-error'] === 'true') {
+      return '/http-error/graphql';
+    }
+    if (parameters['graphql-error'] === 'true') {
+      return '/graphql-error/graphql';
+    }
+    return '/graphql';
   }
   return '/.netlify/functions/schema-demo';
 }

@@ -62,7 +62,7 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
-    importCodeMirror(
+    void importCodeMirror(
       [
         import('codemirror/addon/fold/foldgutter'),
         import('codemirror/addon/fold/brace-fold'),

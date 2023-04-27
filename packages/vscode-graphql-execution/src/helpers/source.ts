@@ -47,7 +47,7 @@ export class SourceHelper {
     }
     if (namedTypeNode) {
       // TODO: Handle this for object types/ enums/ custom scalars
-      return (namedTypeNode as NamedTypeNode).name.value as GraphQLScalarType;
+      return (namedTypeNode as NamedTypeNode).name.value;
     }
     // TODO: Is handling all via string a correct fallback?
     return 'String';
@@ -82,7 +82,7 @@ export class SourceHelper {
             JSON.parse(value);
             return null;
           } catch {
-            return undefined;
+            return;
           }
       }
     } catch {
@@ -127,7 +127,7 @@ export class SourceHelper {
     const sources = await projectConfig.getDocuments();
     const { fragmentDefinitions } = this;
 
-    sources.forEach(source => {
+    for (const source of sources) {
       visit(source.document as DocumentNode, {
         FragmentDefinition(node) {
           const existingDef = fragmentDefinitions.get(node.name.value);
@@ -141,7 +141,7 @@ export class SourceHelper {
           }
         },
       });
-    });
+    }
     return fragmentDefinitions;
   }
 
@@ -160,7 +160,7 @@ export class SourceHelper {
       } catch {}
     }
 
-    tags.forEach(tag => {
+    for (const tag of tags) {
       // https://regex101.com/r/Pd5PaU/2
       const regExpGQL = new RegExp(tag + '\\s*`([\\s\\S]+?)`', 'mg');
 
@@ -179,7 +179,7 @@ export class SourceHelper {
           // don't break the extension while editing
         } catch {}
       }
-    });
+    }
     return documents;
 
     function processGraphQLString(textString: string, offset: number) {
@@ -187,7 +187,8 @@ export class SourceHelper {
       const operations = ast.definitions.filter(
         def => def.kind === 'OperationDefinition',
       );
-      operations.forEach((op: any) => {
+      for (const operation of operations) {
+        const op = operation as any;
         const filteredAst = {
           ...ast,
           definitions: ast.definitions.filter(def => {
@@ -204,7 +205,7 @@ export class SourceHelper {
           definition: op,
           ast: filteredAst,
         });
-      });
+      }
       // no-op, so that non-parse-able source files
       // don't break the extension while editing
     }
@@ -265,15 +266,15 @@ export const getFragmentDependenciesForAST = async (
   });
 
   const asts = new Set<FragmentInfo>();
-  referencedFragNames.forEach(name => {
+  for (const name of referencedFragNames) {
     if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
       asts.add(nullthrows(fragmentDefinitions.get(name)));
     }
-  });
+  }
 
   const referencedFragments: FragmentInfo[] = [];
 
-  asts.forEach(ast => {
+  for (const ast of asts) {
     visit(ast.definition, {
       FragmentSpread(node) {
         if (
@@ -288,7 +289,7 @@ export const getFragmentDependenciesForAST = async (
     if (!existingFrags.has(ast.definition.name.value)) {
       referencedFragments.push(ast);
     }
-  });
+  }
 
   return referencedFragments;
 };

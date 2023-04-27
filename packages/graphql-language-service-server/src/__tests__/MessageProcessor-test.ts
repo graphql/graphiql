@@ -270,10 +270,10 @@ describe('MessageProcessor', () => {
     const params = { textDocument: initialDocument.textDocument, position };
 
     // Should throw because file has been deleted from cache
-    return messageProcessor
-      .handleCompletionRequest(params)
-      .then(result => expect(result).toEqual(null))
-      .catch(() => {});
+    try {
+      const result = await messageProcessor.handleCompletionRequest(params);
+      expect(result).toEqual(null);
+    } catch {}
   });
 
   // modified to work with jest.mock() of WatchmanClient

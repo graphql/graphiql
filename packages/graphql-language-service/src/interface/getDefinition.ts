@@ -39,7 +39,7 @@ function assert(value: any, message: string) {
 function getRange(text: string, node: ASTNode): Range {
   const location = node.loc as Location;
   assert(location, 'Expected ASTNode to have a location.');
-  return locToRange(text, location) as Range;
+  return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {
@@ -87,19 +87,19 @@ export async function getDefinitionQueryResultForField(
 
   const definitions: Array<Definition> = [];
 
-  defNodes.forEach(({ filePath, content, definition }) => {
+  for (const { filePath, content, definition } of defNodes) {
     const fieldDefinition = (
       definition as ObjectTypeDefinitionNode
     ).fields?.find(item => item.name.value === fieldName);
 
     if (fieldDefinition == null) {
-      return null;
+      continue;
     }
 
     definitions.push(
       getDefinitionForFieldDefinition(filePath || '', content, fieldDefinition),
     );
-  });
+  }
 
   return {
     definitions,
@@ -184,6 +184,7 @@ function getDefinitionForNodeDefinition(
   };
 }
 
+// eslint-disable-next-line sonarjs/no-identical-functions
 function getDefinitionForFieldDefinition(
   path: Uri,
   text: string,

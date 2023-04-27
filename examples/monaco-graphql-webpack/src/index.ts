@@ -13,9 +13,7 @@ const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
 
 let monacoGraphQLAPI: MonacoGraphQLAPI | null = null;
 
-(async () => {
-  await render();
-})();
+void render();
 
 async function render() {
   if (!schemaFetcher.token) {
@@ -23,15 +21,13 @@ async function render() {
 
     return;
   }
-  if (!monacoGraphQLAPI) {
-    monacoGraphQLAPI = initializeMode({
-      formattingOptions: {
-        prettierConfig: {
-          printWidth: 120,
-        },
+  monacoGraphQLAPI ||= initializeMode({
+    formattingOptions: {
+      prettierConfig: {
+        printWidth: 120,
       },
-    });
-  }
+    },
+  });
 
   document.getElementById('github-login-wrapper')?.remove();
   document
@@ -155,22 +151,19 @@ async function render() {
         const body: { variables?: string; query: string } = {
           query: operation,
         };
-        // parse the variables with JSONC so we can have comments!
+        // parse the variables with JSONC, so we can have comments!
         const parsedVariables = JSONC.parse(variables);
         if (parsedVariables && Object.keys(parsedVariables).length) {
           body.variables = JSON.stringify(parsedVariables, null, 2);
         }
-        const result = await fetch(
-          schemaFetcher.currentSchema.value as string,
-          {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-              ...schemaFetcher.currentSchema?.headers,
-            },
-            body: JSON.stringify(body, null, 2),
+        const result = await fetch(schemaFetcher.currentSchema.value, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            ...schemaFetcher.currentSchema?.headers,
           },
-        );
+          body: JSON.stringify(body, null, 2),
+        });
 
         const resultText = await result.text();
         resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
@@ -234,7 +227,7 @@ function renderToolbar(toolbar: HTMLElement) {
   const executionTray = document.createElement('div');
 
   executionTray.id = 'execution-tray';
-  executionTray.appendChild(executeOpButton);
+  executionTray.append(executeOpButton);
   executionTray.classList.add('align-right');
 
   executeOpButton.id = 'execute-op';
@@ -248,12 +241,12 @@ function renderToolbar(toolbar: HTMLElement) {
   schemaStatus.id = 'schema-status';
   schemaStatus.innerHTML = `Schema Empty`;
 
-  toolbar.appendChild(schemaPicker);
-
-  toolbar.appendChild(schemaReloadButton);
-  toolbar.appendChild(schemaStatus);
-
-  toolbar?.appendChild(executeOpButton);
+  toolbar.append(
+    schemaPicker,
+    schemaReloadButton,
+    schemaStatus,
+    executeOpButton,
+  );
   return { schemaReloadButton, executeOpButton, schemaStatus, schemaPicker };
 }
 
@@ -261,15 +254,15 @@ function getSchemaPicker(): HTMLSelectElement {
   const schemaPicker = document.createElement('select');
   schemaPicker.id = 'schema-picker';
 
-  schemaOptions.forEach(option => {
+  for (const option of schemaOptions) {
     const optEl = document.createElement('option');
     optEl.value = option.value;
     optEl.label = option.label;
     if (option.default) {
       optEl.selected = true;
     }
-    schemaPicker.appendChild(optEl);
-  });
+    schemaPicker.append(optEl);
+  }
 
   return schemaPicker;
 }
@@ -302,7 +295,7 @@ export function renderGithubLoginButton() {
     const toolbar = document.getElementById('toolbar');
     toolbar?.appendChild(logoutButton);
   } else {
-    githubLoginWrapper.appendChild(githubButton);
+    githubLoginWrapper.append(githubButton);
     document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);
   }
 
@@ -319,7 +312,7 @@ export function renderGithubLoginButton() {
         if (err) {
           console.error('Error authenticating with GitHub:', err);
         } else {
-          schemaFetcher.setApiToken(data.token);
+          await schemaFetcher.setApiToken(data.token);
           await render();
         }
       },

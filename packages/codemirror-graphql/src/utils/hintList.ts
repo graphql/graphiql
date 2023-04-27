@@ -68,7 +68,7 @@ function filterNonEmpty<T>(array: T[], predicate: (item: T) => boolean) {
 }
 
 function normalizeText(text: string) {
-  return text.toLowerCase().replace(/\W/g, '');
+  return text.toLowerCase().replaceAll(/\W/g, '');
 }
 
 // Determine a numeric proximity for a suggestion based on current text.

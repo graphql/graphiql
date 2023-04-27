@@ -56,7 +56,7 @@ export class DiagnosticsAdapter {
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(onChangeTimeout);
         onChangeTimeout = setTimeout(() => {
-          this._doValidate(model.uri, modeId, jsonValidationForModel);
+          void this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
     };
@@ -72,47 +72,46 @@ export class DiagnosticsAdapter {
       }
     };
 
-    this._disposables.push(editor.onDidCreateModel(onModelAdd));
-    this._disposables.push({
-      dispose: () => {
-        clearTimeout(onChangeTimeout);
-      },
-    });
     this._disposables.push(
+      editor.onDidCreateModel(onModelAdd),
+      {
+        dispose: () => {
+          clearTimeout(onChangeTimeout);
+        },
+      },
       editor.onWillDisposeModel(model => {
         onModelRemoved(model);
       }),
-    );
-    this._disposables.push(
       editor.onDidChangeModelLanguage(event => {
         onModelRemoved(event.model);
         onModelAdd(event.model);
       }),
-    );
-
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
+      {
+        dispose: () => {
+          for (const key in this._listener) {
+            this._listener[key].dispose();
+          }
+        },
       },
-    });
-    this._disposables.push(
       defaults.onDidChange(() => {
-        editor.getModels().forEach(model => {
+        for (const model of editor.getModels()) {
           if (getModelLanguageId(model) === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }
-        });
+        }
       }),
     );
 
-    editor.getModels().forEach(onModelAdd);
+    for (const model of editor.getModels()) {
+      onModelAdd(model);
+    }
   }
 
   public dispose(): void {
-    this._disposables.forEach(d => d?.dispose());
+    for (const d of this._disposables) {
+      d?.dispose();
+    }
     this._disposables = [];
   }
 
@@ -122,6 +121,12 @@ export class DiagnosticsAdapter {
     variablesUris?: string[],
   ) {
     const worker = await this._worker(resource);
+
+    // to handle an edge case bug that happens when
+    // typing before the schema is present
+    if (!worker) {
+      return;
+    }
 
     const diagnostics = await worker.doValidation(resource.toString());
     editor.setModelMarkers(
@@ -208,7 +213,7 @@ export function toCompletion(
     range: entry.range,
     kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
     label: entry.label,
-    insertText: entry.insertText ?? (entry.label as string),
+    insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText
       ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
       : undefined,

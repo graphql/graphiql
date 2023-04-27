@@ -19,6 +19,7 @@ import type {
 } from 'graphql-language-service';
 
 import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
@@ -40,24 +41,6 @@ import { Logger } from './Logger';
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
-const {
-  DOCUMENT,
-  FRAGMENT_DEFINITION,
-  OBJECT_TYPE_DEFINITION,
-  INTERFACE_TYPE_DEFINITION,
-  ENUM_TYPE_DEFINITION,
-  UNION_TYPE_DEFINITION,
-  SCALAR_TYPE_DEFINITION,
-  INPUT_OBJECT_TYPE_DEFINITION,
-  SCALAR_TYPE_EXTENSION,
-  OBJECT_TYPE_EXTENSION,
-  INTERFACE_TYPE_EXTENSION,
-  UNION_TYPE_EXTENSION,
-  ENUM_TYPE_EXTENSION,
-  INPUT_OBJECT_TYPE_EXTENSION,
-  DIRECTIVE_DEFINITION,
-} = Kind;
-
 export async function getGraphQLCache({
   parser,
   logger,
@@ -69,10 +52,7 @@ export async function getGraphQLCache({
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
-  let graphQLConfig = config;
-  if (!graphQLConfig) {
-    graphQLConfig = await loadConfig(loadConfigOptions);
-  }
+  const graphQLConfig = config || (await loadConfig(loadConfigOptions));
   return new GraphQLCache({
     configDir: loadConfigOptions.rootDir as string,
     config: graphQLConfig as GraphQLConfig,
@@ -171,15 +151,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
     });
 
     const asts = new Set<FragmentInfo>();
-    referencedFragNames.forEach(name => {
+    for (const name of referencedFragNames) {
       if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
         asts.add(nullthrows(fragmentDefinitions.get(name)));
       }
-    });
+    }
 
     const referencedFragments: FragmentInfo[] = [];
 
-    asts.forEach(ast => {
+    for (const ast of asts) {
       visit(ast.definition, {
         FragmentSpread(node) {
           if (
@@ -194,7 +174,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (!existingFrags.has(ast.definition.name.value)) {
         referencedFragments.push(ast);
       }
-    });
+    }
 
     return referencedFragments;
   };
@@ -272,15 +252,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
     });
 
     const asts = new Set<ObjectTypeInfo>();
-    referencedObjectTypes.forEach(name => {
+    for (const name of referencedObjectTypes) {
       if (!existingObjectTypes.has(name) && objectTypeDefinitions.has(name)) {
         asts.add(nullthrows(objectTypeDefinitions.get(name)));
       }
-    });
+    }
 
     const referencedObjects: ObjectTypeInfo[] = [];
 
-    asts.forEach(ast => {
+    for (const ast of asts) {
       visit(ast.definition, {
         NamedType(node) {
           if (
@@ -295,7 +275,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (!existingObjectTypes.has(ast.definition.name.value)) {
         referencedObjects.push(ast);
       }
-    });
+    }
 
     return referencedObjects;
   };
@@ -432,25 +412,25 @@ export class GraphQLCache implements GraphQLCacheInterface {
     });
     if (cache) {
       // first go through the fragment list to delete the ones from this file
-      cache.forEach((value, key) => {
+      for (const [key, value] of cache.entries()) {
         if (value.filePath === filePath) {
           cache.delete(key);
         }
-      });
-      asts.forEach(({ ast, query }) => {
+      }
+      for (const { ast, query } of asts) {
         if (!ast) {
-          return;
+          continue;
         }
-        ast.definitions.forEach(definition => {
-          if (definition.kind === FRAGMENT_DEFINITION) {
+        for (const definition of ast.definitions) {
+          if (definition.kind === Kind.FRAGMENT_DEFINITION) {
             cache.set(definition.name.value, {
               filePath,
               content: query,
               definition,
             });
           }
-        });
-      });
+        }
+      }
     }
   }
 
@@ -472,7 +452,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
         cache.delete(filePath);
       }
     } else if (fileAndContent?.queries) {
-      this.updateFragmentDefinition(rootDir, filePath, fileAndContent.queries);
+      await this.updateFragmentDefinition(
+        rootDir,
+        filePath,
+        fileAndContent.queries,
+      );
     }
   }
 
@@ -494,20 +478,20 @@ export class GraphQLCache implements GraphQLCacheInterface {
     });
     if (cache) {
       // first go through the types list to delete the ones from this file
-      cache.forEach((value, key) => {
+      for (const [key, value] of cache.entries()) {
         if (value.filePath === filePath) {
           cache.delete(key);
         }
-      });
-      asts.forEach(({ ast, query }) => {
+      }
+      for (const { ast, query } of asts) {
         if (!ast) {
-          return;
+          continue;
         }
-        ast.definitions.forEach(definition => {
+        for (const definition of ast.definitions) {
           if (
-            definition.kind === OBJECT_TYPE_DEFINITION ||
-            definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-            definition.kind === ENUM_TYPE_DEFINITION
+            definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
+            definition.kind === Kind.ENUM_TYPE_DEFINITION
           ) {
             cache.set(definition.name.value, {
               filePath,
@@ -515,8 +499,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
               definition,
             });
           }
-        });
-      });
+        }
+      }
     }
   }
 
@@ -538,7 +522,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         cache.delete(filePath);
       }
     } else if (fileAndContent?.queries) {
-      this.updateObjectTypeDefinition(
+      await this.updateObjectTypeDefinition(
         rootDir,
         filePath,
         fileAndContent.queries,
@@ -557,32 +541,32 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (!graphQLFileMap) {
       return schema;
     }
-    graphQLFileMap.forEach(({ filePath, asts }) => {
-      asts.forEach(ast => {
+    for (const { filePath, asts } of graphQLFileMap.values()) {
+      for (const ast of asts) {
         if (filePath === schemaPath) {
-          return;
+          continue;
         }
-        ast.definitions.forEach(definition => {
+        for (const definition of ast.definitions) {
           switch (definition.kind) {
-            case OBJECT_TYPE_DEFINITION:
-            case INTERFACE_TYPE_DEFINITION:
-            case ENUM_TYPE_DEFINITION:
-            case UNION_TYPE_DEFINITION:
-            case SCALAR_TYPE_DEFINITION:
-            case INPUT_OBJECT_TYPE_DEFINITION:
-            case SCALAR_TYPE_EXTENSION:
-            case OBJECT_TYPE_EXTENSION:
-            case INTERFACE_TYPE_EXTENSION:
-            case UNION_TYPE_EXTENSION:
-            case ENUM_TYPE_EXTENSION:
-            case INPUT_OBJECT_TYPE_EXTENSION:
-            case DIRECTIVE_DEFINITION:
+            case Kind.OBJECT_TYPE_DEFINITION:
+            case Kind.INTERFACE_TYPE_DEFINITION:
+            case Kind.ENUM_TYPE_DEFINITION:
+            case Kind.UNION_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_DEFINITION:
+            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_EXTENSION:
+            case Kind.OBJECT_TYPE_EXTENSION:
+            case Kind.INTERFACE_TYPE_EXTENSION:
+            case Kind.UNION_TYPE_EXTENSION:
+            case Kind.ENUM_TYPE_EXTENSION:
+            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
+            case Kind.DIRECTIVE_DEFINITION:
               typeExtensions.push(definition);
               break;
           }
-        });
-      });
-    });
+        }
+      }
+    }
 
     if (schemaCacheKey) {
       const sorted = typeExtensions.sort((a: any, b: any) => {
@@ -603,7 +587,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     return extendSchema(schema, {
-      kind: DOCUMENT,
+      kind: Kind.DOCUMENT,
       definitions: typeExtensions,
     });
   }
@@ -624,7 +608,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let schemaCacheKey = null;
     let schema = null;
 
-    if (!schema && schemaPath && schemaKey) {
+    if (schemaPath && schemaKey) {
       schemaCacheKey = schemaKey as string;
 
       // Maybe use cache
@@ -695,33 +679,32 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const responses: GraphQLFileInfo[] = [];
     while (queue.length) {
       const chunk = queue.splice(0, MAX_READS);
-      const promises = chunk.map(fileInfo =>
-        this.promiseToReadGraphQLFile(fileInfo.filePath)
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.log('pro', error);
-            /**
-             * fs emits `EMFILE | ENFILE` error when there are too many
-             * open files - this can cause some fragment files not to be
-             * processed.  Solve this case by implementing a queue to save
-             * files failed to be processed because of `EMFILE` error,
-             * and await on Promises created with the next batch from the
-             * queue.
-             */
-            if (error.code === 'EMFILE' || error.code === 'ENFILE') {
-              queue.push(fileInfo);
-            }
-          })
-          .then((response: GraphQLFileInfo | void) => {
-            if (response) {
-              responses.push({
-                ...response,
-                mtime: fileInfo.mtime,
-                size: fileInfo.size,
-              });
-            }
-          }),
-      );
+      const promises = chunk.map(async fileInfo => {
+        try {
+          const response = await this.promiseToReadGraphQLFile(
+            fileInfo.filePath,
+          );
+          responses.push({
+            ...response,
+            mtime: fileInfo.mtime,
+            size: fileInfo.size,
+          });
+        } catch (error: any) {
+          // eslint-disable-next-line no-console
+          console.log('pro', error);
+          /**
+           * fs emits `EMFILE | ENFILE` error when there are too many
+           * open files - this can cause some fragment files not to be
+           * processed.  Solve this case by implementing a queue to save
+           * files failed to be processed because of `EMFILE` error,
+           * and await on Promises created with the next batch from the
+           * queue.
+           */
+          if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+            queue.push(fileInfo);
+          }
+        }
+      });
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 
@@ -743,13 +726,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const fragmentDefinitions = new Map();
     const graphQLFileMap = new Map();
 
-    responses.forEach(response => {
+    for (const response of responses) {
       const { filePath, content, asts, mtime, size } = response;
 
       if (asts) {
-        asts.forEach(ast => {
-          ast.definitions.forEach(definition => {
-            if (definition.kind === FRAGMENT_DEFINITION) {
+        for (const ast of asts) {
+          for (const definition of ast.definitions) {
+            if (definition.kind === Kind.FRAGMENT_DEFINITION) {
               fragmentDefinitions.set(definition.name.value, {
                 filePath,
                 content,
@@ -757,9 +740,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
               });
             }
             if (
-              definition.kind === OBJECT_TYPE_DEFINITION ||
-              definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-              definition.kind === ENUM_TYPE_DEFINITION
+              definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+              definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
+              definition.kind === Kind.ENUM_TYPE_DEFINITION
             ) {
               objectTypeDefinitions.set(definition.name.value, {
                 filePath,
@@ -767,8 +750,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
                 definition,
               });
             }
-          });
-        });
+          }
+        }
       }
 
       // Relay the previous object whether or not ast exists.
@@ -779,7 +762,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         mtime,
         size,
       });
-    });
+    }
 
     return {
       objectTypeDefinitions,
@@ -792,57 +775,52 @@ export class GraphQLCache implements GraphQLCacheInterface {
    * Returns a Promise to read a GraphQL file and return a GraphQL metadata
    * including a parsed AST.
    */
-  promiseToReadGraphQLFile = (filePath: Uri): Promise<GraphQLFileInfo> => {
-    return new Promise((resolve, reject) =>
-      fs.readFile(URI.parse(filePath).fsPath, 'utf8', (error, content) => {
-        if (error) {
-          reject(error);
-          return;
+  promiseToReadGraphQLFile = async (
+    filePath: Uri,
+  ): Promise<GraphQLFileInfo> => {
+    const content = await readFile(URI.parse(filePath).fsPath, 'utf8');
+
+    const asts: DocumentNode[] = [];
+    let queries: CachedContent[] = [];
+    if (content.trim().length !== 0) {
+      try {
+        queries = this._parser(content, filePath);
+        if (queries.length === 0) {
+          // still resolve with an empty ast
+          return {
+            filePath,
+            content,
+            asts: [],
+            queries: [],
+            mtime: 0,
+            size: 0,
+          };
         }
 
-        const asts: DocumentNode[] = [];
-        let queries: CachedContent[] = [];
-        if (content.trim().length !== 0) {
-          try {
-            queries = this._parser(content, filePath);
-            if (queries.length === 0) {
-              // still resolve with an empty ast
-              resolve({
-                filePath,
-                content,
-                asts: [],
-                queries: [],
-                mtime: 0,
-                size: 0,
-              });
-              return;
-            }
-
-            queries.forEach(({ query }) => asts.push(parse(query)));
-            resolve({
-              filePath,
-              content,
-              asts,
-              queries,
-              mtime: 0,
-              size: 0,
-            });
-          } catch {
-            // If query has syntax errors, go ahead and still resolve
-            // the filePath and the content, but leave ast empty.
-            resolve({
-              filePath,
-              content,
-              asts: [],
-              queries: [],
-              mtime: 0,
-              size: 0,
-            });
-            return;
-          }
+        for (const { query } of queries) {
+          asts.push(parse(query));
         }
-        resolve({ filePath, content, asts, queries, mtime: 0, size: 0 });
-      }),
-    );
+        return {
+          filePath,
+          content,
+          asts,
+          queries,
+          mtime: 0,
+          size: 0,
+        };
+      } catch {
+        // If query has syntax errors, go ahead and still resolve
+        // the filePath and the content, but leave ast empty.
+        return {
+          filePath,
+          content,
+          asts: [],
+          queries: [],
+          mtime: 0,
+          size: 0,
+        };
+      }
+    }
+    return { filePath, content, asts, queries, mtime: 0, size: 0 };
   };
 }

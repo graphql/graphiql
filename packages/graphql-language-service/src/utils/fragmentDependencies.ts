@@ -51,15 +51,15 @@ export const getFragmentDependenciesForAST = (
   });
 
   const asts = new Set<FragmentDefinitionNode>();
-  referencedFragNames.forEach(name => {
+  for (const name of referencedFragNames) {
     if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
       asts.add(nullthrows(fragmentDefinitions.get(name)));
     }
-  });
+  }
 
   const referencedFragments: FragmentDefinitionNode[] = [];
 
-  asts.forEach(ast => {
+  for (const ast of asts) {
     visit(ast, {
       FragmentSpread(node) {
         if (
@@ -74,7 +74,7 @@ export const getFragmentDependenciesForAST = (
     if (!existingFrags.has(ast.name.value)) {
       referencedFragments.push(ast);
     }
-  });
+  }
 
   return referencedFragments;
 };

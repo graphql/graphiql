@@ -17,23 +17,15 @@ const resultConfig = {
     path: rootPath('dist'),
     filename: '[name].js',
   },
-  devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [
-      // for graphql module, which uses .mjs
-      {
-        type: 'javascript/auto',
-        test: /\.mjs$/,
-        use: [],
-        include: /node_modules/,
-        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
-      },
-      // i think we need to add another rule for
-      // codemirror-graphql esm.js files to load
+      // you can also use ts-loader of course
+      // i prefer to use babel-loader & @babel/plugin-typescript
+      // so we can experiment with how changing browserslistrc targets impacts
+      // monaco-graphql bundling
       {
         test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
-        exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
       },
       {
         test: /\.css$/,
@@ -45,18 +37,12 @@ const resultConfig = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: ['file-loader'],
-      },
-      {
-        test: require.resolve('monaco-graphql/esm/graphql.worker.js'),
-        use: {
-          loader: 'worker-loader',
-          options: {
-            filename: 'graphql.worker.js',
-          },
-        },
+        type: 'asset/resource',
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
   plugins: [
     // in order to prevent async modules for CDN builds
@@ -69,17 +55,23 @@ const resultConfig = {
     // critical! make sure that webpack can consume the exported modules and types
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
-      tsconfig: rootPath('tsconfig.json'),
+      typescript: { configFile: rootPath('tsconfig.json') },
     }),
 
     new MonacoWebpackPlugin({
       languages: ['json', 'graphql'],
       publicPath: '/',
+      customLanguages: [
+        {
+          label: 'graphql',
+          worker: {
+            id: 'graphql',
+            entry: require.resolve('monaco-graphql/esm/graphql.worker.js'),
+          },
+        },
+      ],
     }),
   ],
-  resolve: {
-    extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
-  },
 };
 
 if (process.env.ANALYZE) {

@@ -293,11 +293,11 @@ function traverse(node: { [key: string]: any }, visitors: TagVisitors) {
     if (prop && typeof prop === 'object' && typeof prop.type === 'string') {
       visit(prop, visitors);
     } else if (Array.isArray(prop)) {
-      prop.forEach(item => {
+      for (const item of prop) {
         if (item && typeof item === 'object' && typeof item.type === 'string') {
           visit(item, visitors);
         }
-      });
+      }
     }
   }
 }

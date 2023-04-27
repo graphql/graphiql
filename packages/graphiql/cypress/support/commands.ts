@@ -23,18 +23,26 @@ declare namespace Cypress {
     | { data: any; hasNext?: boolean }
     | { error: any[] }
     | { errors: any[] };
+
   interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')
      */
     dataCy(value: string): Chainable<Element>;
+
     getCy(cyName: string): Chainable<Element>;
+
     clickExecuteQuery(): Chainable<Element>;
+
     visitWithOp(op: Op): Chainable<Element>;
+
     clickPrettify(): Chainable<Element>;
+
     assertHasValues(op: Op): Chainable<Element>;
+
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+
     assertLinterMarkWithMessage(
       text: string,
       severity: 'error' | 'warning',
@@ -73,7 +81,7 @@ Cypress.Commands.add(
         codeWithLineNumbers(query),
       );
     });
-    if (typeof variables !== 'undefined') {
+    if (variables !== undefined) {
       cy.contains('Variables').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
@@ -83,7 +91,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof variablesString !== 'undefined') {
+    if (variablesString !== undefined) {
       cy.contains('Variables').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
@@ -93,7 +101,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof headersString !== 'undefined') {
+    if (headersString !== undefined) {
       cy.contains('Headers').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(1)
@@ -103,7 +111,7 @@ Cypress.Commands.add(
           );
         });
     }
-    if (typeof response !== 'undefined') {
+    if (response !== undefined) {
       cy.get('.result-window').should(element => {
         expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
           JSON.stringify(response, null, 2),
@@ -129,17 +137,16 @@ function codeWithLineNumbers(code: string): string {
 }
 
 function normalize(str: string) {
-  return str.replace(/\u200b/g, '');
+  return str.replaceAll('​', '');
 }
 
 function normalizeWhitespace(str: string) {
-  return str.replace(/\u00a0/g, ' ');
+  return str.replaceAll('\xA0', ' ');
 }
 
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message) => {
-    cy.wait(100);
     cy.contains(text)
       .should('have.class', 'CodeMirror-lint-mark')
       .and('have.class', `CodeMirror-lint-mark-${severity}`);

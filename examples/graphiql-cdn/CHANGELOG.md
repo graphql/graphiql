@@ -1,7 +1,6 @@
 # Change Log
 
-All notable changes to this project will be documented in this file. See
-[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## [0.0.8](https://github.com/graphql/graphiql/compare/example-graphiql-cdn@0.0.8-alpha.6...example-graphiql-cdn@0.0.8) (2020-06-11)
 

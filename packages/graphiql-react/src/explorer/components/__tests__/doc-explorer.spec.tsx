@@ -118,6 +118,7 @@ describe('DocExplorer', () => {
       useEffect(() => {
         if (context.explorerNavStack.length === 1) {
           context.push({ name: 'Query', def: Query });
+          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
           context.push({ name: 'field', def: field });
         }
       }, [context]);
@@ -178,11 +179,13 @@ describe('DocExplorer', () => {
     const { field } = (Query as GraphQLObjectType).getFields();
 
     // A hacky component to set the initial explorer nav stack
+    // eslint-disable-next-line sonarjs/no-identical-functions -- todo: could be refactored
     const SetInitialStack: React.FC = () => {
       const context = useContext(ExplorerContext)!;
       useEffect(() => {
         if (context.explorerNavStack.length === 1) {
           context.push({ name: 'Query', def: Query });
+          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
           context.push({ name: 'field', def: field });
         }
       }, [context]);

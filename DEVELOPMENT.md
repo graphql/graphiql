@@ -94,7 +94,12 @@ Then, you can run these commands:
 
 ### Developing Monaco GraphQL
 
-Follow the
-[`monaco-graphql` example readme](examples/monaco-graphql-webpack/README.md) to
-set it up, and then you can run `yarn start-monaco` from anywhere in the
-repository!
+1. First run `yarn`.
+1. run `yarn tsc --watch` to watch `monaco-graphql` and
+   `graphql-language-service` in one screen session/terminal tab/etc
+1. in another session, run `yarn start-monaco` from anywhere in the repository
+   aside from an individual workspace.
+1. alternatively to the webpack example, or in addition, you can run monaco or
+   next.js examples, though these examples are simpler. They also require their
+   own `yarn` or `npm install` as they are excluded from the `workspaces`
+   resolved on global `yarn install`

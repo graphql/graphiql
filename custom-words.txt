@@ -96,6 +96,7 @@ onegraph
 openvsx
 ovsx
 picomatch
+preact
 snyk
 stackblitz
 strictsoftware
@@ -142,6 +143,7 @@ listbox
 listvalues
 matchingbracket
 marko
+middlewares
 modulemap
 myschema
 newhope
