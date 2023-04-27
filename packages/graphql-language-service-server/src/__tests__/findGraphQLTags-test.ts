@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
-// jest.mock('../Logger');
+jest.mock('../Logger');
 
 import { Logger } from '../Logger';
 

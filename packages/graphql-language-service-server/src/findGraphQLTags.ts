@@ -130,7 +130,7 @@ export function findGraphQLTags(
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
       logger.error(
-        `Could not parse the ${ext} file at ${uri} to extract the graphql tags:`,
+        `Could not parse the "${ext}" file at ${uri} to extract the graphql tags:`,
       );
       for (const error of parseVueSFCResult.errors) {
         logger.error(String(error));
