@@ -333,7 +333,7 @@ query {id}`);
     consoleErrorSpy.mockRestore();
   });
 
-  it('no crash in Svelte files with empty <script>', async () => {
+  it('no crash in Svelte files with empty <script> (typescript)', async () => {
     const text = `<script lang="ts"></script>`;
 
     const consoleErrorSpy = jest

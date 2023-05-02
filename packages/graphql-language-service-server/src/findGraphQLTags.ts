@@ -90,18 +90,16 @@ function parseVueSFC(source: string): ParseVueSFCResult {
   try {
     scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
   } catch (error) {
-    if (error instanceof Error) {
-      if (
-        error.message === '[@vue/compiler-sfc] SFC contains no <script> tags.'
-      ) {
-        return {
-          type: 'ok',
-          scriptSetupAst: [],
-          scriptAst: [],
-        };
-      }
+    if (
+      error instanceof Error &&
+      error.message === '[@vue/compiler-sfc] SFC contains no <script> tags.'
+    ) {
+      return {
+        type: 'ok',
+        scriptSetupAst: [],
+        scriptAst: [],
+      };
     }
-
     return { type: 'error', errors: [error as Error] };
   }
 
