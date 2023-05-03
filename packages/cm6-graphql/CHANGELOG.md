@@ -1,5 +1,14 @@
 # cm6-graphql
 
+## 0.0.5
+
+### Patch Changes
+
+- [#3127](https://github.com/graphql/graphiql/pull/3127) [`0d2bb2bc`](https://github.com/graphql/graphiql/commit/0d2bb2bcc6522e156e2d70f3be553bd4b60c8ee1) Thanks [@imolorhe](https://github.com/imolorhe)! - Updated cm6-graphql package README
+
+- Updated dependencies [[`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9)]:
+  - graphql-language-service@5.1.4
+
 ## 0.0.4
 
 ### Patch Changes
