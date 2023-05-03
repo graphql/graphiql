@@ -90,6 +90,16 @@ function parseVueSFC(source: string): ParseVueSFCResult {
   try {
     scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === '[@vue/compiler-sfc] SFC contains no <script> tags.'
+    ) {
+      return {
+        type: 'ok',
+        scriptSetupAst: [],
+        scriptAst: [],
+      };
+    }
     return { type: 'error', errors: [error as Error] };
   }
 
@@ -118,7 +128,7 @@ export function findGraphQLTags(
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
       logger.error(
-        `Could not parse the Vue file at ${uri} to extract the graphql tags:`,
+        `Could not parse the "${ext}" file at ${uri} to extract the graphql tags:`,
       );
       for (const error of parseVueSFCResult.errors) {
         logger.error(String(error));
