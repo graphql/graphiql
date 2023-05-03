@@ -27,6 +27,9 @@
       "path": "../graphiql-toolkit"
     },
     {
+      "path": "../graphiql-react"
+    },
+    {
       "path": "../graphql-language-service"
     }
   ]

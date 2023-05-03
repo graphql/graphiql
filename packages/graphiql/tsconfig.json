@@ -22,6 +22,9 @@
       "path": "../graphiql-toolkit"
     },
     {
+      "path": "../graphiql-react"
+    },
+    {
       "path": "../codemirror-graphql"
     },
     {

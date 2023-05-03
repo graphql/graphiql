@@ -11,7 +11,8 @@ const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema');
 const { schema: badSchema } = require('./bad-schema');
 
-module.exports = function beforeDevServer(app, _server, _compiler) {
+module.exports = function beforeDevServer(app) {
+  // console.log(app)
   // GraphQL Server
   app.post('/graphql', graphqlHTTP({ schema }));
   app.get('/graphql', graphqlHTTP({ schema }));
@@ -20,9 +21,9 @@ module.exports = function beforeDevServer(app, _server, _compiler) {
     res.json({ data: badSchema });
     next();
   });
+  // app.use('/', express.static(path.join(__dirname, '../')))
 
   app.use('/images', express.static(path.join(__dirname, 'images')));
-
   app.use(
     '/renderExample.js',
     express.static(path.join(__dirname, '../resources/renderExample.js')),

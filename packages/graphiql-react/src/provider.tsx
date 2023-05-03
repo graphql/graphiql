@@ -12,13 +12,22 @@ import { PluginContextProvider, PluginContextProviderProps } from './plugin';
 import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
-export type GraphiQLProviderProps = EditorContextProviderProps &
-  ExecutionContextProviderProps &
-  ExplorerContextProviderProps &
-  HistoryContextProviderProps &
-  PluginContextProviderProps &
-  SchemaContextProviderProps &
-  StorageContextProviderProps;
+export interface GraphiQLProviderProps
+  extends EditorContextProviderProps,
+    ExecutionContextProviderProps,
+    ExplorerContextProviderProps,
+    HistoryContextProviderProps,
+    PluginContextProviderProps,
+    SchemaContextProviderProps,
+    StorageContextProviderProps {}
+
+// export type GraphiQLProviderProps = EditorContextProviderProps &
+//   ExecutionContextProviderProps &
+//   ExplorerContextProviderProps &
+//   HistoryContextProviderProps &
+//   PluginContextProviderProps &
+//   SchemaContextProviderProps &
+//   StorageContextProviderProps;
 
 export function GraphiQLProvider({
   children,

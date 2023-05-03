@@ -76,8 +76,9 @@ export type GraphiQLToolbarConfig = {
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
-  GraphiQLInterfaceProps;
+export interface GraphiQLProps
+  extends Omit<GraphiQLProviderProps, 'children'>,
+    GraphiQLInterfaceProps {}
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire

@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+cjs
 dist-ssr
 types
 *.local
@@ -23,5 +24,9 @@ types
 *.njsproj
 *.sln
 *.sw?
+
+# generated files
+vite.config.js
+vite.config.d.ts
 
 

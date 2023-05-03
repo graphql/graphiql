@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "composite": true,
     "useDefineForClassFields": true,
+    "target": "esnext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
@@ -16,9 +17,20 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc"
+    "emitDeclarationOnly": true,
+    "rootDir": "./src",
+
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["**/__tests__/**"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    {
+      "path": "../codemirror-graphql/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphiql-toolkit"
+    }
+  ]
 }
