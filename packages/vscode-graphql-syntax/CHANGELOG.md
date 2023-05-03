@@ -1,5 +1,15 @@
 # vscode-graphql-syntax
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3106](https://github.com/graphql/graphiql/pull/3106) [`40690901`](https://github.com/graphql/graphiql/commit/40690901603a678ad6aa8e38f63b14e6b53d315c) Thanks [@hugo-vrijswijk](https://github.com/hugo-vrijswijk)! - Add syntax highlighting in Scala
+
+### Patch Changes
+
+- [#3133](https://github.com/graphql/graphiql/pull/3133) [`a8f21ad3`](https://github.com/graphql/graphiql/commit/a8f21ad3cf1c2ead95fa2c95372d01bafff8fee9) Thanks [@acao](https://github.com/acao)! - ci: test formatting fix with a changeset
+
 ## 1.1.0
 
 ### Minor Changes
