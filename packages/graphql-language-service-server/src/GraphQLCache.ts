@@ -179,14 +179,19 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return referencedFragments;
   };
 
+  _cacheKeyForProject = ({ dirpath, name }: GraphQLProjectConfig): string => {
+    return `${dirpath}-${name}`;
+  };
+
   getFragmentDefinitions = async (
     projectConfig: GraphQLProjectConfig,
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
     const rootDir = projectConfig.dirpath;
-    if (this._fragmentDefinitionsCache.has(rootDir)) {
-      return this._fragmentDefinitionsCache.get(rootDir) || new Map();
+    const cacheKey = this._cacheKeyForProject(projectConfig);
+    if (this._fragmentDefinitionsCache.has(cacheKey)) {
+      return this._fragmentDefinitionsCache.get(cacheKey) || new Map();
     }
 
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
@@ -194,8 +199,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const { fragmentDefinitions, graphQLFileMap } =
       await this.readAllGraphQLFiles(list);
 
-    this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
-    this._graphQLFileListCache.set(rootDir, graphQLFileMap);
+    this._fragmentDefinitionsCache.set(cacheKey, fragmentDefinitions);
+    this._graphQLFileListCache.set(cacheKey, graphQLFileMap);
 
     return fragmentDefinitions;
   };
@@ -286,14 +291,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // This function may be called from other classes.
     // If then, check the cache first.
     const rootDir = projectConfig.dirpath;
-    if (this._typeDefinitionsCache.has(rootDir)) {
-      return this._typeDefinitionsCache.get(rootDir) || new Map();
+    const cacheKey = this._cacheKeyForProject(projectConfig);
+    if (this._typeDefinitionsCache.has(cacheKey)) {
+      return this._typeDefinitionsCache.get(cacheKey) || new Map();
     }
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
     const { objectTypeDefinitions, graphQLFileMap } =
       await this.readAllGraphQLFiles(list);
-    this._typeDefinitionsCache.set(rootDir, objectTypeDefinitions);
-    this._graphQLFileListCache.set(rootDir, graphQLFileMap);
+    this._typeDefinitionsCache.set(cacheKey, objectTypeDefinitions);
+    this._graphQLFileListCache.set(cacheKey, graphQLFileMap);
 
     return objectTypeDefinitions;
   };
