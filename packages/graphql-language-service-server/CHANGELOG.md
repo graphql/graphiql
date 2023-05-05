@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.9.9
+
+### Patch Changes
+
+- [#3154](https://github.com/graphql/graphiql/pull/3154) [`632a7c6b`](https://github.com/graphql/graphiql/commit/632a7c6bb2959ef5d59236aeab218587578466e7) Thanks [@scamden](https://github.com/scamden)! - allow caching for multiple projects in graphql config
+
 ## 2.9.8
 
 ### Patch Changes

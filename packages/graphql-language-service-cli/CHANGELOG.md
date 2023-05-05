@@ -1,5 +1,12 @@
 # graphql-language-service-cli
 
+## 3.3.19
+
+### Patch Changes
+
+- Updated dependencies [[`632a7c6b`](https://github.com/graphql/graphiql/commit/632a7c6bb2959ef5d59236aeab218587578466e7)]:
+  - graphql-language-service-server@2.9.9
+
 ## 3.3.18
 
 ### Patch Changes
