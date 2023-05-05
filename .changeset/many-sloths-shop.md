@@ -5,7 +5,7 @@
 
 fix(graphql-language-service-server): allow getDefinition to work for unions
 
-Fixes the issue where a schema like the below won't allow you to click through to X.
+Fixes the issue where a schema like the one below won't allow you to click through to X.
 
 ```graphql```
 union X = A | B
