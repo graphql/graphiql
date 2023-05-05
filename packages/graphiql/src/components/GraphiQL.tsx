@@ -165,6 +165,7 @@ export function GraphiQL({
     </GraphiQLProvider>
   );
 }
+
 // Export main windows/panes to be used separately if desired.
 GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
@@ -643,12 +644,18 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         </div>
       </div>
       <Dialog
-        isOpen={showDialog === 'short-keys'}
-        onDismiss={() => setShowDialog(null)}
+        open={showDialog === 'short-keys'}
+        onOpenChange={isOpen => {
+          if (!isOpen) {
+            setShowDialog(null);
+          }
+        }}
       >
         <div className="graphiql-dialog-header">
-          <div className="graphiql-dialog-title">Short Keys</div>
-          <Dialog.Close onClick={() => setShowDialog(null)} />
+          <Dialog.Title className="graphiql-dialog-title">
+            Short Keys
+          </Dialog.Title>
+          <Dialog.Close />
         </div>
         <div className="graphiql-dialog-section">
           <div>
@@ -742,20 +749,19 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         </div>
       </Dialog>
       <Dialog
-        isOpen={showDialog === 'settings'}
-        onDismiss={() => {
-          setShowDialog(null);
-          setClearStorageStatus(null);
+        open={showDialog === 'settings'}
+        onOpenChange={isOpen => {
+          if (!isOpen) {
+            setShowDialog(null);
+            setClearStorageStatus(null);
+          }
         }}
       >
         <div className="graphiql-dialog-header">
-          <div className="graphiql-dialog-title">Settings</div>
-          <Dialog.Close
-            onClick={() => {
-              setShowDialog(null);
-              setClearStorageStatus(null);
-            }}
-          />
+          <Dialog.Title className="graphiql-dialog-title">
+            Settings
+          </Dialog.Title>
+          <Dialog.Close />
         </div>
         {props.showPersistHeadersSettings ? (
           <div className="graphiql-dialog-section">

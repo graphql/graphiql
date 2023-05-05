@@ -6,7 +6,8 @@
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
-reach-portal {
+.graphiql-dialog,
+.graphiql-dialog-overlay {
   /* Colors */
   --color-primary: 320, 95%, 43%;
   --color-secondary: 242, 51%, 61%;
@@ -71,7 +72,8 @@ reach-portal {
   body:not(.graphiql-light) .graphiql-container,
   body:not(.graphiql-light) .CodeMirror-info,
   body:not(.graphiql-light) .CodeMirror-lint-tooltip,
-  body:not(.graphiql-light) reach-portal {
+  body:not(.graphiql-light) .graphiql-dialog,
+  body:not(.graphiql-light) .graphiql-dialog-overlay {
     --color-primary: 338, 100%, 67%;
     --color-secondary: 243, 100%, 77%;
     --color-tertiary: 188, 100%, 44%;
@@ -90,7 +92,8 @@ reach-portal {
 body.graphiql-dark .graphiql-container,
 body.graphiql-dark .CodeMirror-info,
 body.graphiql-dark .CodeMirror-lint-tooltip,
-body.graphiql-dark reach-portal {
+body.graphiql-dark .graphiql-dialog,
+body.graphiql-dark .graphiql-dialog-overlay {
   --color-primary: 338, 100%, 67%;
   --color-secondary: 243, 100%, 77%;
   --color-tertiary: 188, 100%, 44%;
@@ -108,7 +111,7 @@ body.graphiql-dark reach-portal {
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
-reach-portal {
+.graphiql-dialog {
   &,
   &:is(button) {
     color: hsla(var(--color-neutral), 1);
