@@ -1,55 +1,40 @@
-import {
-  Listbox as ListboxRoot,
-  ListboxButton as ReachListboxButton,
-  ListboxInput,
-  ListboxOption,
-  ListboxPopover,
-} from '@reach/listbox';
-import {
-  Menu as MenuRoot,
-  MenuButton as ReachMenuButton,
-  MenuItem,
-  MenuList,
-} from '@reach/menu-button';
-import { ComponentProps, forwardRef } from 'react';
+import { ComponentProps, forwardRef, ReactElement } from 'react';
 import { clsx } from 'clsx';
 import { createComponentGroup } from '../utility/component-group';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import './dropdown.css';
 
-const MenuButton = forwardRef<
-  HTMLButtonElement,
-  ComponentProps<typeof ReachMenuButton>
->((props, ref) => (
-  <ReachMenuButton
-    {...props}
-    ref={ref}
-    className={clsx('graphiql-un-styled', props.className)}
-  />
-));
+const MenuButton = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
+  (props, ref) => (
+    <DropdownMenu.Trigger asChild>
+      <button
+        {...props}
+        ref={ref}
+        className={clsx('graphiql-un-styled', props.className)}
+      />
+    </DropdownMenu.Trigger>
+  ),
+);
 MenuButton.displayName = 'MenuButton';
 
-export const Menu = createComponentGroup(MenuRoot, {
+function MenuList({
+  children,
+  align = 'start',
+  sideOffset = 5,
+  ...props
+}: DropdownMenu.DropdownMenuContentProps): ReactElement {
+  return (
+    <DropdownMenu.Portal>
+      <DropdownMenu.Content align={align} sideOffset={sideOffset} {...props}>
+        {children}
+      </DropdownMenu.Content>
+    </DropdownMenu.Portal>
+  );
+}
+
+export const Menu = createComponentGroup(DropdownMenu.Root, {
   Button: MenuButton,
-  Item: MenuItem,
+  Item: DropdownMenu.Item,
   List: MenuList,
-});
-
-const ListboxButton = forwardRef<
-  HTMLDivElement,
-  ComponentProps<typeof ReachListboxButton>
->((props, ref) => (
-  <ReachListboxButton
-    {...props}
-    ref={ref}
-    className={clsx('graphiql-un-styled', props.className)}
-  />
-));
-ListboxButton.displayName = 'ListboxButton';
-
-export const Listbox = createComponentGroup(ListboxRoot, {
-  Button: ListboxButton,
-  Input: ListboxInput,
-  Option: ListboxOption,
-  Popover: ListboxPopover,
 });
