@@ -323,22 +323,16 @@ export class GraphQLCache implements GraphQLCacheInterface {
     projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
-    const { documents } = projectConfig;
-
-    if (!documents || documents.length === 0) {
-      return Promise.resolve([]);
-    }
+    const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
 
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
     // documents.length === 1 case.
-    if (typeof documents === 'string') {
-      pattern = documents;
-    } else if (documents.length === 1) {
+    if (patterns.length === 1) {
       // @ts-ignore
-      pattern = documents[0];
+      pattern = patterns[0];
     } else {
-      pattern = `{${documents.join(',')}}`;
+      pattern = `{${patterns.join(',')}}`;
     }
 
     return new Promise((resolve, reject) => {
@@ -386,6 +380,22 @@ export class GraphQLCache implements GraphQLCacheInterface {
         );
       });
     });
+  };
+
+  _getSchemaAndDocumentFilePatterns = (projectConfig: GraphQLProjectConfig) => {
+    const patterns: string[] = [];
+
+    for (const pointer of [projectConfig.documents, projectConfig.schema]) {
+      if (pointer) {
+        if (typeof pointer === 'string') {
+          patterns.push(pointer);
+        } else if (Array.isArray(pointer)) {
+          patterns.push(...pointer);
+        }
+      }
+    }
+
+    return patterns;
   };
 
   async _updateGraphQLFileListCache(
