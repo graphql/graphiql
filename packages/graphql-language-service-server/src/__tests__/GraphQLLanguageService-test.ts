@@ -13,7 +13,7 @@ import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
-import { ConsoleLogger } from '../Logger';
+import { NoopLogger } from '../Logger';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -122,7 +122,7 @@ describe('GraphQLLanguageService', () => {
   beforeEach(() => {
     languageService = new GraphQLLanguageService(
       mockCache as any,
-      new ConsoleLogger(),
+      new NoopLogger(),
     );
   });
 
