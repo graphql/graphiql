@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.10.0
+
+### Minor Changes
+
+- [#3163](https://github.com/graphql/graphiql/pull/3163) [`f2040452`](https://github.com/graphql/graphiql/commit/f20404529677635f5d4792b328aa648641bf8d9c) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Fix GraphQLCache to read both documents and schema
+
 ## 2.9.10
 
 ### Patch Changes
