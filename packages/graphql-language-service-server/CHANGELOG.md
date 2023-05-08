@@ -1,5 +1,35 @@
 # graphql-language-service-server
 
+## 2.10.0
+
+### Minor Changes
+
+- [#3163](https://github.com/graphql/graphiql/pull/3163) [`f2040452`](https://github.com/graphql/graphiql/commit/f20404529677635f5d4792b328aa648641bf8d9c) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Fix GraphQLCache to read both documents and schema
+
+## 2.9.10
+
+### Patch Changes
+
+- [#3150](https://github.com/graphql/graphiql/pull/3150) [`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284) Thanks [@AaronMoat](https://github.com/AaronMoat)! - fix(graphql-language-service-server): allow getDefinition to work for unions
+
+  Fixes the issue where a schema like the one below won't allow you to click through to X.
+
+  ```graphql
+  union X = A | B
+  type A {
+    x: String
+  }
+  type B {
+    x: String
+  }
+  type Query {
+    a: X
+  }
+  ```
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+
 ## 2.9.9
 
 ### Patch Changes

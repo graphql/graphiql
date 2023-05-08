@@ -7,7 +7,12 @@
  *
  */
 
-import { ASTNode, DocumentNode, DefinitionNode } from 'graphql/language';
+import {
+  ASTNode,
+  DocumentNode,
+  DefinitionNode,
+  isTypeDefinitionNode,
+} from 'graphql/language';
 import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
@@ -254,6 +259,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
           referencedObjectTypes.add(node.name.value);
         }
       },
+      UnionTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      ScalarTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      InterfaceTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
     });
 
     const asts = new Set<ObjectTypeInfo>();
@@ -309,22 +323,16 @@ export class GraphQLCache implements GraphQLCacheInterface {
     projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
-    const { documents } = projectConfig;
-
-    if (!documents || documents.length === 0) {
-      return Promise.resolve([]);
-    }
+    const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
 
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
     // documents.length === 1 case.
-    if (typeof documents === 'string') {
-      pattern = documents;
-    } else if (documents.length === 1) {
+    if (patterns.length === 1) {
       // @ts-ignore
-      pattern = documents[0];
+      pattern = patterns[0];
     } else {
-      pattern = `{${documents.join(',')}}`;
+      pattern = `{${patterns.join(',')}}`;
     }
 
     return new Promise((resolve, reject) => {
@@ -372,6 +380,22 @@ export class GraphQLCache implements GraphQLCacheInterface {
         );
       });
     });
+  };
+
+  _getSchemaAndDocumentFilePatterns = (projectConfig: GraphQLProjectConfig) => {
+    const patterns: string[] = [];
+
+    for (const pointer of [projectConfig.documents, projectConfig.schema]) {
+      if (pointer) {
+        if (typeof pointer === 'string') {
+          patterns.push(pointer);
+        } else if (Array.isArray(pointer)) {
+          patterns.push(...pointer);
+        }
+      }
+    }
+
+    return patterns;
   };
 
   async _updateGraphQLFileListCache(
@@ -494,11 +518,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           continue;
         }
         for (const definition of ast.definitions) {
-          if (
-            definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-            definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-            definition.kind === Kind.ENUM_TYPE_DEFINITION
-          ) {
+          if (isTypeDefinitionNode(definition)) {
             cache.set(definition.name.value, {
               filePath,
               content: query,
@@ -744,12 +764,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
                 content,
                 definition,
               });
-            }
-            if (
-              definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-              definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-              definition.kind === Kind.ENUM_TYPE_DEFINITION
-            ) {
+            } else if (isTypeDefinitionNode(definition)) {
               objectTypeDefinitions.set(definition.name.value, {
                 filePath,
                 content,
