@@ -37,7 +37,7 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.17.2",
+    "@graphiql/react": "^0.17.3",
     "@vitejs/plugin-react": "^1.3.0",
     "postcss-nesting": "^10.1.7",
     "typescript": "^4.6.3",
