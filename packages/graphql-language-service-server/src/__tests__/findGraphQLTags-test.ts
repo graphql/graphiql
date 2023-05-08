@@ -295,12 +295,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -317,12 +312,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -339,12 +329,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
