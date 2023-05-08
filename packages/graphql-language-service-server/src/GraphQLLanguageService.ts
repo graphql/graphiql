@@ -19,6 +19,7 @@ import {
   Kind,
   parse,
   print,
+  isTypeDefinitionNode,
 } from 'graphql';
 
 import {
@@ -396,25 +397,13 @@ export class GraphQLLanguageService {
         objectTypeDefinitions,
       );
 
-    const localObjectTypeDefinitions = ast.definitions.filter(
-      definition =>
-        definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-        definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === Kind.ENUM_TYPE_DEFINITION ||
-        definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-        definition.kind === Kind.INTERFACE_TYPE_DEFINITION,
-    );
-
-    const typeCastedDefs =
-      localObjectTypeDefinitions as any as Array<TypeDefinitionNode>;
-
-    const localOperationDefinitionInfos = typeCastedDefs.map(
-      (definition: TypeDefinitionNode) => ({
+    const localOperationDefinitionInfos = ast.definitions
+      .filter(isTypeDefinitionNode)
+      .map((definition: TypeDefinitionNode) => ({
         filePath,
         content: query,
         definition,
-      }),
-    );
+      }));
 
     const result = await getDefinitionQueryResultForNamedType(
       query,
