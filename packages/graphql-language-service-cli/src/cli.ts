@@ -10,7 +10,7 @@
 import yargs from 'yargs';
 import client from './client';
 
-import { Logger, startServer } from 'graphql-language-service-server';
+import { startServer } from 'graphql-language-service-server';
 
 const { argv } = yargs
   .usage(
@@ -128,8 +128,9 @@ if (command === 'server') {
   }
   // eslint-disable-next-line promise/prefer-await-to-then -- don't know if I can use top level await here
   startServer(options).catch(error => {
-    const logger = new Logger();
-    logger.error(String(error));
+    process.stderr.write(
+      'An error was thrown from GraphQL language service: ' + String(error),
+    );
   });
 } else {
   client(command as string, argv as Record<string, string>);

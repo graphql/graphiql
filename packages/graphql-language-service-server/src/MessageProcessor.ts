@@ -53,6 +53,7 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
+  Logger,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -60,7 +61,6 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 
-import { Logger } from './Logger';
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'node:os';
 import {

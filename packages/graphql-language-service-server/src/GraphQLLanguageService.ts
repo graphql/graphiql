@@ -49,13 +49,12 @@ import {
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
+import type { Logger } from 'vscode-languageserver';
 import {
   Hover,
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
-
-import { Logger } from './Logger';
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
