@@ -22,6 +22,7 @@ import type {
   ObjectTypeInfo,
   Uri,
 } from 'graphql-language-service';
+import type { Logger } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -41,7 +42,6 @@ import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
-import { Logger } from './Logger';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;

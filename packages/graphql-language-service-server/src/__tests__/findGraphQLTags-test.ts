@@ -6,16 +6,15 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
-import { Logger } from '../Logger';
+import { NoopLogger } from '../Logger';
 
 describe('findGraphQLTags', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new NoopLogger();
   const findGraphQLTags = (text: string, ext: string) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
@@ -296,12 +295,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -318,12 +312,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -340,12 +329,7 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
