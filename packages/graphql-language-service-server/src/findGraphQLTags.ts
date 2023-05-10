@@ -99,6 +99,7 @@ function parseVueSFC(source: string): ParseVueSFCResult {
         type: 'ok',
         scriptSetupAst: [],
         scriptAst: [],
+        scriptOffset: 0
       };
     }
     return { type: 'error', errors: [error as Error] };
