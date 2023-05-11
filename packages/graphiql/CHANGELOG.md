@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.4.4
+
+### Patch Changes
+
+- Updated dependencies [[`707f3cbc`](https://github.com/graphql/graphiql/commit/707f3cbca3ac2ce186058e7d2b145cdf69bf7d9c), [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - @graphiql/react@0.17.4
+  - graphql-language-service@5.1.6
+
 ## 2.4.3
 
 ### Patch Changes
