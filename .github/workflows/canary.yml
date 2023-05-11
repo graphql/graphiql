@@ -2,8 +2,6 @@ name: Canary Release
 
 on:
   pull_request:
-    branches:
-      - main
     paths-ignore:
       - '**.md'
       - 'examples'
