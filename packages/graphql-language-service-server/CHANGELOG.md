@@ -1,5 +1,18 @@
 # graphql-language-service-server
 
+## 2.11.0
+
+### Minor Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+### Patch Changes
+
+- [#3135](https://github.com/graphql/graphiql/pull/3135) [`28b1b5a0`](https://github.com/graphql/graphiql/commit/28b1b5a016787ec4119d28f057a9d93814d4e310) Thanks [@KammererTob](https://github.com/KammererTob)! - fixed wrong script tag offset for vue-sfc
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - graphql-language-service@5.1.6
+
 ## 2.10.0
 
 ### Minor Changes
