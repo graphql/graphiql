@@ -1,10 +1,10 @@
 import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
-import { formatQuery, HistoryItem } from '../components';
-import { HistoryContextProvider } from '../context';
-import { useEditorContext } from '../../editor';
+import { formatQuery, HistoryItem } from '../../../src/history/components';
+import { HistoryContextProvider } from '../../../src/history/context';
+import { useEditorContext } from '../../../src/editor';
 
-jest.mock('../../editor', () => {
+jest.mock('../../../src/editor', () => {
   const mockedSetQueryEditor = jest.fn();
   const mockedSetVariableEditor = jest.fn();
   const mockedSetHeaderEditor = jest.fn();

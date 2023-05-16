@@ -10,9 +10,9 @@ import {
   GraphQLUnionType,
 } from 'graphql';
 
-import { SchemaContext } from '../../../schema';
-import { ExplorerContext } from '../../context';
-import { TypeDocumentation } from '../type-documentation';
+import { SchemaContext } from '../../../../src/schema';
+import { ExplorerContext } from '../../../../src/explorer/context';
+import { TypeDocumentation } from '../../../../src/explorer/components/type-documentation';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
 function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {

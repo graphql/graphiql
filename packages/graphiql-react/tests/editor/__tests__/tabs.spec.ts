@@ -5,7 +5,7 @@ import {
   getDefaultTabState,
   clearHeadersFromTabs,
   STORAGE_KEY,
-} from '../tabs';
+} from '../../../src/editor/tabs';
 
 describe('createTab', () => {
   it('creates with default title', () => {

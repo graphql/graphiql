@@ -2,8 +2,8 @@ import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
 import { ComponentProps } from 'react';
 
-import { ExplorerContext } from '../../context';
-import { TypeLink } from '../type-link';
+import { ExplorerContext } from '../../../../src/explorer/context';
+import { TypeLink } from '../../../../src/explorer/components/type-link';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
 const nonNullType = new GraphQLNonNull(GraphQLString);

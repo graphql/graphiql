@@ -1,6 +1,6 @@
 import { GraphQLNamedType, GraphQLType } from 'graphql';
 
-import { ExplorerContextType, ExplorerNavStackItem } from '../../context';
+import { ExplorerContextType, ExplorerNavStackItem } from '../../../../src/explorer/context';
 
 export function mockExplorerContextValue(
   navStackItem: ExplorerNavStackItem,

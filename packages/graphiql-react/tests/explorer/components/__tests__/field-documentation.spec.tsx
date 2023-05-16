@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
 
-import { ExplorerContext, ExplorerFieldDef } from '../../context';
-import { FieldDocumentation } from '../field-documentation';
+import { ExplorerContext, ExplorerFieldDef } from '../../../../src/explorer/context';
+import { FieldDocumentation } from '../../../../src/explorer/components/field-documentation';
 import { mockExplorerContextValue } from './test-utils';
 
 const exampleObject = new GraphQLObjectType({
