@@ -1,7 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -103,11 +103,12 @@ export function useResponseEditor(
             );
           }
 
+          const root = createRoot(tooltipDiv);
           if (!infoElements.length) {
-            ReactDOM.unmountComponentAtNode(tooltipDiv);
+            root.unmount();
             return null;
           }
-          ReactDOM.render(infoElements, tooltipDiv);
+          root.render(infoElements);
           return tooltipDiv;
         },
       );

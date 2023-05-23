@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 
 const App = () => (
@@ -22,9 +22,8 @@ const App = () => (
   />
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
 
 // Hot Module Replacement
-if (module.hot) {
-  module.hot.accept();
-}
+module.hot?.accept();

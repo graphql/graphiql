@@ -29,9 +29,9 @@ Here's a simple example. In this case, a websocket client isn't even
 initialized, only http (with multipart `@stream` and `@defer` Incremental
 Delivery support of course!).
 
-```ts
+```tsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
@@ -41,7 +41,8 @@ const fetcher = createGraphiQLFetcher({ url });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ### Adding `graphql-ws` websockets subscriptions
@@ -56,9 +57,9 @@ Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws`
 client. This client now supports both HTTP/Multipart Incremental Delivery for
 `@defer` and `@stream`, _and_ websockets subscriptions.
 
-```ts
+```tsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
@@ -73,7 +74,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 You can further customize the `graphql-ws` implementation by creating a custom
@@ -101,17 +103,14 @@ long as it matches `graphql-ws` `Client` signature.
 
 Provide your initial connection params.
 
-```ts
-
+```tsx
 const fetcher = createGraphiQLFetcher({
-   url: "https://localhost:3000",
-   subscriptionUrl: "https://localhost:3001",
-   wsConnectionParams: { Authorization: "token 1234" }
-})
+  url: 'https://localhost:3000',
+  subscriptionUrl: 'https://localhost:3001',
+  wsConnectionParams: { Authorization: 'token 1234' },
+});
 
-const App () {
-  return <GraphiQL fetcher={fetcher} />
-}
+const App = () => <GraphiQL fetcher={fetcher} />;
 ```
 
 ### `legacyWsClient` or `legacyClient`
@@ -135,9 +134,9 @@ Pass a custom fetch implementation such as `isomorphic-fetch`.
 
 This example passes a `graphql-ws` client to the `wsClient` option:
 
-```ts
+```tsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createClient } from 'graphql-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -156,7 +155,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ### Custom `legacyClient` Example
@@ -166,9 +166,9 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 By providing the `legacyClient` you can support a `subscriptions-transport-ws`
 client implementation, or equivalent:
 
-```ts
+```tsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -184,7 +184,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 Note that you will need to install the client separately:
@@ -197,9 +198,9 @@ npm install --save subscriptions-transport-ws
 
 For SSR, we might want to use something like `isomorphic-fetch`:
 
-```ts
+```tsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { fetch } from 'isomorphic-fetch';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -213,7 +214,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ## Credits
