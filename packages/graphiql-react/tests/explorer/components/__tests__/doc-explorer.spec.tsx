@@ -2,9 +2,9 @@ import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { useContext, useEffect } from 'react';
 
-import { SchemaContext, SchemaContextType } from '../../../schema';
-import { ExplorerContext, ExplorerContextProvider } from '../../context';
-import { DocExplorer } from '../doc-explorer';
+import { SchemaContext, SchemaContextType } from '../../../../src/schema';
+import { ExplorerContext, ExplorerContextProvider } from '../../../../src/explorer/context';
+import { DocExplorer } from '../../../../src/explorer/components/doc-explorer';
 
 function makeSchema(fieldName = 'field') {
   return new GraphQLSchema({

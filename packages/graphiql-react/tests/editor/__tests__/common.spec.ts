@@ -1,4 +1,4 @@
-import { importCodeMirror } from '../common';
+import { importCodeMirror } from '../../../src/editor/common';
 
 describe('importCodeMirror', () => {
   it('should dynamically load codemirror module', async () => {
