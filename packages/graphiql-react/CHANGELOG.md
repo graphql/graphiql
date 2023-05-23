@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.17.5
+
+### Patch Changes
+
+- [#3147](https://github.com/graphql/graphiql/pull/3147) [`2b212941`](https://github.com/graphql/graphiql/commit/2b212941628498957d95ee89a7a5a0623f391b7a) Thanks [@Yahkob](https://github.com/Yahkob)! - limit code-mirror css scope to .graphiql-container
+
+- [#3180](https://github.com/graphql/graphiql/pull/3180) [`9b333a04`](https://github.com/graphql/graphiql/commit/9b333a047d6b75db7681f484156d8772e9f91810) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Remove duplicate Vite config and again make sure to not include `react/jsx-runtime` in the bundle
+
 ## 0.17.4
 
 ### Patch Changes
