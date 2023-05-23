@@ -33,3 +33,6 @@ yarn-1.18.0.js
 
 examples/*/yarn.lock
 .eslintcache
+
+vite.config.d.ts
+vite.config.js
