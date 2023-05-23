@@ -1,5 +1,15 @@
 # graphql-language-service-cli
 
+## 3.3.22
+
+### Patch Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939), [`28b1b5a0`](https://github.com/graphql/graphiql/commit/28b1b5a016787ec4119d28f057a9d93814d4e310)]:
+  - graphql-language-service-server@2.11.0
+  - graphql-language-service@5.1.6
+
 ## 3.3.21
 
 ### Patch Changes
