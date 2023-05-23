@@ -21,42 +21,42 @@ describe('GraphiQL DocExplorer - button', () => {
 describe('GraphiQL DocExplorer - search', () => {
   beforeEach(() => {
     cy.get('.graphiql-sidebar button').eq(0).click();
-    cy.get('[data-reach-combobox-input]').type('test');
-    cy.get('[data-reach-combobox-option]').should('have.length', 7);
+    cy.get('[cmdk-input]').type('test');
+    cy.get('[cmdk-item]').should('have.length', 7);
   });
 
   it('Searches docs for values', () => {
-    cy.get('[data-reach-combobox-popover]').should('not.have.attr', 'hidden');
+    cy.get('[cmdk-list]').should('not.have.attr', 'hidden');
   });
 
   it('Navigates to a docs entry on selecting a search result', () => {
-    cy.get('[data-reach-combobox-option]').eq(4).children().click();
+    cy.get('[cmdk-item]').eq(4).children().click();
     cy.get('.graphiql-doc-explorer-title').should('have.text', 'TestInput');
   });
 
   it('Allows searching fields within a type', () => {
-    cy.get('[data-reach-combobox-option]').eq(4).children().click();
-    cy.get('[data-reach-combobox-input]').type('list');
-    cy.get('[data-reach-combobox-option]').should('have.length', 14);
+    cy.get('[cmdk-item]').eq(4).children().click();
+    cy.get('[cmdk-input]').type('list');
+    cy.get('[cmdk-item]').should('have.length', 14);
     cy.get(
-      '[data-reach-combobox-popover] .graphiql-doc-explorer-search-divider',
+      '[cmdk-list] .graphiql-doc-explorer-search-divider',
     ).should('have.text', 'Other results');
-    cy.get('[data-reach-combobox-option]').contains('hasArgs');
+    cy.get('[cmdk-item]').contains('hasArgs');
   });
 
   it('Closes popover when blurring input', () => {
-    cy.get('[data-reach-combobox-input]').blur();
-    cy.get('[data-reach-combobox-popover]').should('have.attr', 'hidden');
+    cy.get('[cmdk-input]').blur();
+    cy.get('[cmdk-list]').should('have.attr', 'hidden');
   });
 
   it('Navigates back', () => {
-    cy.get('[data-reach-combobox-option]').eq(4).children().click();
+    cy.get('[cmdk-item]').eq(4).children().click();
     cy.get('.graphiql-doc-explorer-back').click();
     cy.get('.graphiql-doc-explorer-title').should('have.text', 'Docs');
   });
 
   it('Type fields link to their own docs entry', () => {
-    cy.get('[data-reach-combobox-option]').last().click();
+    cy.get('[cmdk-item]').last().click();
     cy.get('.graphiql-doc-explorer-title').should('have.text', 'isTest');
     cy.get('.graphiql-markdown-description').should(
       'have.text',

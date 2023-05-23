@@ -1,6 +1,4 @@
-@import url('@reach/combobox/styles.css');
-
-[data-reach-combobox] {
+[cmdk-root] {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
 
   &:not([data-state='idle']) {
@@ -25,7 +23,7 @@
   padding: var(--px-8) var(--px-12);
 }
 
-[data-reach-combobox-input] {
+[cmdk-input] {
   border: none;
   background-color: transparent;
   margin-left: var(--px-4);
@@ -36,7 +34,7 @@
   }
 }
 
-[data-reach-combobox-popover] {
+[cmdk-list] {
   background-color: hsl(var(--color-base));
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
@@ -53,12 +51,12 @@
   position: relative;
 }
 
-[data-reach-combobox-list] {
+[cmdk-group-items] {
   font-size: var(--font-size-body);
   padding: var(--px-4);
 }
 
-[data-reach-combobox-option] {
+[cmdk-item] {
   border-radius: var(--border-radius-4);
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   overflow-x: hidden;
@@ -66,7 +64,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &[data-highlighted] {
+  &[aria-selected='true'] {
     background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
@@ -77,7 +75,7 @@
     );
   }
 
-  &[data-highlighted]:hover {
+  &[aria-selected='true']:hover {
     background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   }
 

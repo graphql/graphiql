@@ -14,6 +14,7 @@ const ToolbarMenuRoot = forwardRef<
   HTMLDivElement,
   ToolbarMenuProps & JSX.IntrinsicElements['div']
 >(({ button, children, label, ...props }, ref) => (
+  // @ts-expect-error -- Should I remove ref? got Property 'ref' does not exist on type 'IntrinsicAttributes & DropdownMenuProps & { children?: ReactNode; }'
   <Menu {...props} ref={ref}>
     <Tooltip label={label}>
       <Menu.Button

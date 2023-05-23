@@ -37,12 +37,12 @@
     left: 0;
   }
 
-  & [data-reach-combobox-input] {
+  & [cmdk-input] {
     height: 24px;
     width: 4ch;
   }
 
-  & [data-reach-combobox-input]:focus {
+  & [cmdk-input]:focus {
     width: 100%;
   }
 }
