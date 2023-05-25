@@ -129,11 +129,7 @@ export class DiagnosticsAdapter {
     }
 
     const diagnostics = await worker.doValidation(resource.toString());
-    editor.setModelMarkers(
-      editor.getModel(resource)!,
-      languageId,
-      diagnostics,
-    );
+    editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
       if (variablesUris.length < 1) {

@@ -152,12 +152,7 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
   const { name } = typeInfo.argDef;
   text(into, '(');
   text(into, name);
-  renderTypeAnnotation(
-    into,
-    typeInfo,
-    options,
-    typeInfo.inputType!,
-  );
+  renderTypeAnnotation(into, typeInfo, options, typeInfo.inputType!);
   text(into, ')');
 }
 

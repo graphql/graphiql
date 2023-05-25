@@ -210,12 +210,7 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    return validateQuery(
-      validationAst,
-      schema,
-      customRules,
-      isRelayCompatMode,
-    );
+    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
   public async getAutocompleteSuggestions(
