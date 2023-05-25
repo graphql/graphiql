@@ -14,7 +14,6 @@ import {
   OperationDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
-  Location,
   ObjectTypeDefinitionNode,
   FieldDefinitionNode,
 } from 'graphql';
