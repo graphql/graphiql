@@ -111,7 +111,7 @@ function renderMdCodeEnd(into: string[], options: any) {
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderQualifiedField(into, typeInfo, options);
-  renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
+  renderTypeAnnotation(into, typeInfo, options, typeInfo.type!);
 }
 
 function renderQualifiedField(
@@ -124,7 +124,7 @@ function renderQualifiedField(
   }
   const fieldName = typeInfo.fieldDef.name;
   if (fieldName.slice(0, 2) !== '__') {
-    renderType(into, typeInfo, options, typeInfo.parentType as GraphQLType);
+    renderType(into, typeInfo, options, typeInfo.parentType!);
     text(into, '.');
   }
   text(into, fieldName);
@@ -156,7 +156,7 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
     into,
     typeInfo,
     options,
-    typeInfo.inputType as GraphQLType,
+    typeInfo.inputType!,
   );
   text(into, ')');
 }
@@ -176,7 +176,7 @@ function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
     return;
   }
   const { name } = typeInfo.enumValue;
-  renderType(into, typeInfo, options, typeInfo.inputType as GraphQLType);
+  renderType(into, typeInfo, options, typeInfo.inputType!);
   text(into, '.');
   text(into, name);
 }

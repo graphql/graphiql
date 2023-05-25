@@ -158,7 +158,7 @@ function buildSelectionSet(
         // we can use as here, because we already know that fieldType
         // comes from an origin parameter
         selectionSet: buildSelectionSet(
-          fieldType as GraphQLOutputType,
+          fieldType!,
           getDefaultFieldNames,
         ),
       };

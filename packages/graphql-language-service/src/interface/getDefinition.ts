@@ -37,13 +37,13 @@ function assert(value: any, message: string) {
 }
 
 function getRange(text: string, node: ASTNode): Range {
-  const location = node.loc as Location;
+  const location = node.loc!;
   assert(location, 'Expected ASTNode to have a location.');
   return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {
-  const location = node.loc as Location;
+  const location = node.loc!;
   assert(location, 'Expected ASTNode to have a location.');
   return offsetToPosition(text, location.start);
 }

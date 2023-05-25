@@ -213,7 +213,7 @@ export class GraphQLLanguageService {
     return validateQuery(
       validationAst,
       schema,
-      customRules as ValidationRule[],
+      customRules,
       isRelayCompatMode,
     );
   }

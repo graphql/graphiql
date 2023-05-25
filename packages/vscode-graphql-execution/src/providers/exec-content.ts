@@ -63,7 +63,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
             placeHolder: `Please enter the value for ${node.variable.name.value}`,
             validateInput: async (value: string) =>
               this.sourceHelper.validate(value, variableType),
-          })) as string,
+          }))!,
           variableType,
         ),
       };

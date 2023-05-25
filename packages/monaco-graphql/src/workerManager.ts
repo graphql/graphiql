@@ -95,7 +95,7 @@ export class WorkerManager {
         console.error('error loading worker', error);
       }
     }
-    return this._client as GraphQLWorker;
+    return this._client!;
   }
 
   async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
