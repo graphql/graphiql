@@ -391,7 +391,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     index => {
       setTabState(current => {
         const updated = {
-          ...synchronizeActiveTabValues(current),
+          ...current,
           activeTabIndex: index,
         };
         storeTabs(updated);
@@ -400,7 +400,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         return updated;
       });
     },
-    [onTabChange, setEditorValues, storeTabs, synchronizeActiveTabValues],
+    [onTabChange, setEditorValues, storeTabs],
   );
 
   const closeTab = useCallback<EditorContextType['closeTab']>(
