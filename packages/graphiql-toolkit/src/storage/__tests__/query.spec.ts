@@ -99,7 +99,7 @@ describe('QueryStore', () => {
       // tries to add an item, succeeds on 3rd try
       retryCounter = 0;
       shouldThrow = () => retryCounter < 3;
-      store.push({ query: `finalItem` });
+      store.push({ query: 'finalItem' });
 
       expect(store.items.length).toBe(8);
       expect(store.items[0].query).toBe('item13');
@@ -131,7 +131,7 @@ describe('QueryStore', () => {
       // tries to add an item, keeps failing
       retryCounter = 0;
       shouldThrow = () => true;
-      store.push({ query: `finalItem` });
+      store.push({ query: 'finalItem' });
 
       expect(store.items.length).toBe(10);
       // kept the items

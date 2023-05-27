@@ -282,7 +282,7 @@ export class MessageProcessor {
 
   _logConfigError(errorMessage: string) {
     this._logger.error(
-      `WARNING: graphql-config error, only highlighting is enabled:\n` +
+      'WARNING: graphql-config error, only highlighting is enabled:\n' +
         errorMessage +
         `\nfor more information on using 'graphql-config' with 'graphql-language-service-server', \nsee the documentation at ${configDocLink}`,
     );

@@ -120,7 +120,7 @@ describe('getAutocompleteSuggestions', () => {
     it('provides correct sortText response', () => {
       const result = getAutocompleteSuggestions(
         schema,
-        `{ h`,
+        '{ h',
         new Position(0, 3),
       ).map(({ sortText, label, detail }) => ({ sortText, label, detail }));
       expect(result).toEqual([
@@ -597,7 +597,7 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on object fields', () =>
       expect(
-        testSuggestions(`type Type {\n  aField: s`, new Position(0, 23), [], {
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
           uri: 'schema.graphqls',
         }),
       ).toEqual([
@@ -609,7 +609,7 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on object fields that are arrays', () =>
       expect(
-        testSuggestions(`type Type {\n  aField: []`, new Position(0, 25), [], {
+        testSuggestions('type Type {\n  aField: []', new Position(0, 25), [], {
           uri: 'schema.graphqls',
         }),
       ).toEqual([
@@ -628,7 +628,7 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on input object fields', () =>
       expect(
-        testSuggestions(`input Type {\n  aField: s`, new Position(0, 23), [], {
+        testSuggestions('input Type {\n  aField: s', new Position(0, 23), [], {
           uri: 'schema.graphqls',
         }),
       ).toEqual([{ label: 'Episode' }, { label: 'String' }]));

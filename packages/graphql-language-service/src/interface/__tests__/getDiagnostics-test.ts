@@ -87,7 +87,7 @@ describe('getDiagnostics', () => {
             for (const definition of node.definitions) {
               // add a custom error to every definition
               validationContext.reportError(
-                new GraphQLError(`This is a custom error.`, definition),
+                new GraphQLError('This is a custom error.', definition),
               );
             }
             return false;
@@ -162,7 +162,7 @@ describe('getDiagnostics', () => {
         }
       },
     });
-    const errors = getDiagnostics(`query hero { hero { id } }`, schema, [
+    const errors = getDiagnostics('query hero { hero { id } }', schema, [
       noQueryRule,
     ]);
     expect(errors).toHaveLength(1);
@@ -171,7 +171,7 @@ describe('getDiagnostics', () => {
 
   it('validates with external fragments', () => {
     const errors = getDiagnostics(
-      `query hero { hero { ...HeroGuy } }`,
+      'query hero { hero { ...HeroGuy } }',
       schema,
       [],
       false,
@@ -189,7 +189,7 @@ describe('getDiagnostics', () => {
       }
     `).definitions as FragmentDefinitionNode[];
     const errors = getDiagnostics(
-      `query hero { hero { ...Person ...Person2 } }`,
+      'query hero { hero { ...Person ...Person2 } }',
       schema,
       [],
       false,

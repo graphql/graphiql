@@ -117,12 +117,12 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(commandShowOutputChannel);
 
   commands.registerCommand('vscode-graphql.restart', async () => {
-    outputChannel.appendLine(`Stopping GraphQL LSP`);
+    outputChannel.appendLine('Stopping GraphQL LSP');
     await client.stop();
 
-    outputChannel.appendLine(`Restarting GraphQL LSP`);
+    outputChannel.appendLine('Restarting GraphQL LSP');
     await client.start();
-    outputChannel.appendLine(`GraphQL LSP restarted`);
+    outputChannel.appendLine('GraphQL LSP restarted');
   });
 }
 

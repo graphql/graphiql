@@ -450,7 +450,7 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const insertSuffix = ` {\n  $1\n}`;
+const insertSuffix = ' {\n  $1\n}';
 
 /**
  * Choose carefully when to insert the `insertText`!
