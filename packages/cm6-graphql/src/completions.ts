@@ -47,7 +47,8 @@ export const completion = graphqlLanguage.data.of({
               (item.isDeprecated && item.deprecationReason)
             ) {
               const el = document.createElement('div');
-              el.innerText = item.documentation || item.deprecationReason || '';
+              el.textContent =
+                item.documentation || item.deprecationReason || '';
               return el;
             }
           },
