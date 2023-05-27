@@ -1,6 +1,7 @@
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {
   box-sizing: border-box;
+  font-variant-ligatures: none;
 }
 
 .graphiql-container,
