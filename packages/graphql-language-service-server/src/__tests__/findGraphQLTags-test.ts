@@ -6,16 +6,15 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
-import { Logger } from '../Logger';
+import { NoopLogger } from '../Logger';
 
 describe('findGraphQLTags', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new NoopLogger();
   const findGraphQLTags = (text: string, ext: string) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
@@ -239,6 +238,25 @@ query {id}
     const contents = findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
+    expect(contents[0].range.start.line).toEqual(2);
+    expect(contents[0].range.end.line).toEqual(4);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using <script setup> and template above', async () => {
+    const text = `<template>
+      <div/>
+    </template>
+<script setup lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+    expect(contents[0].range.start.line).toEqual(4);
+    expect(contents[0].range.end.line).toEqual(6);
   });
 
   it('finds queries in tagged templates in Vue SFC using normal <script>', async () => {
@@ -252,6 +270,25 @@ query {id}
     const contents = findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
+    expect(contents[0].range.start.line).toEqual(2);
+    expect(contents[0].range.end.line).toEqual(4);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using normal <script> and template above', async () => {
+    const text = `<template>
+    <div/>
+  </template>
+<script lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+    expect(contents[0].range.start.line).toEqual(4);
+    expect(contents[0].range.end.line).toEqual(6);
   });
 
   it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', async () => {
@@ -287,6 +324,57 @@ query {id}
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
 query {id}`);
+  });
+
+  it('no crash in Svelte files without <script>', async () => {
+    const text = ``;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('no crash in Svelte files with empty <script>', async () => {
+    const text = `<script></script>`;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('no crash in Svelte files with empty <script> (typescript)', async () => {
+    const text = `<script lang="ts"></script>`;
+
+    const consoleErrorSpy = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    // We should have no contents
+    expect(contents).toMatchObject([]);
+
+    // Nothing should be logged as it's a managed error
+    expect(consoleErrorSpy.mock.calls.length).toBe(0);
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('finds multiple queries in a single file', async () => {

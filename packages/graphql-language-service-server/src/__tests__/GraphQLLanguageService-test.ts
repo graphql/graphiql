@@ -13,7 +13,7 @@ import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
-import { Logger } from '../Logger';
+import { NoopLogger } from '../Logger';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -122,7 +122,7 @@ describe('GraphQLLanguageService', () => {
   beforeEach(() => {
     languageService = new GraphQLLanguageService(
       mockCache as any,
-      new Logger(),
+      new NoopLogger(),
     );
   });
 
@@ -163,8 +163,7 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
-    // @ts-ignore
-    expect(definitionQueryResult.definitions.length).toEqual(1);
+    expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
 
   it('runs definition service on field as expected', async () => {
@@ -173,8 +172,18 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 21 } as Position,
       './queries/definitionQuery.graphql',
     );
-    // @ts-ignore
-    expect(definitionQueryResult.definitions.length).toEqual(1);
+    expect(definitionQueryResult?.definitions.length).toEqual(1);
+  });
+
+  it('can find a definition for a union', async () => {
+    const query =
+      'union X = A | B\ntype A { x: String }\ntype B { x: String }\ntype Query { a: X }';
+    const definitionQueryResult = await languageService.getDefinition(
+      query,
+      { line: 3, character: 16 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
 
   it('runs hover service as expected', async () => {

@@ -32,4 +32,8 @@ yarn-1.18.0.js
 .netlify
 
 examples/*/yarn.lock
+package-lock.json
 .eslintcache
+
+vite.config.d.ts
+vite.config.js

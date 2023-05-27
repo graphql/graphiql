@@ -33,7 +33,8 @@ type ExplorerSectionProps = {
     | 'Possible Types'
     | 'Enum Values'
     | 'Deprecated Enum Values'
-    | 'Directives';
+    | 'Directives'
+    | 'All Schema Types';
 };
 
 export function ExplorerSection(props: ExplorerSectionProps) {
@@ -64,4 +65,5 @@ const TYPE_TO_ICON: Record<ExplorerSectionProps['title'], ComponentType> = {
   'Possible Types': TypeIcon,
   'Root Types': RootTypeIcon,
   Type: TypeIcon,
+  'All Schema Types': TypeIcon,
 };
