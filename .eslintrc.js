@@ -420,6 +420,7 @@ module.exports = {
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         'react-hooks/rules-of-hooks': 'off',
+        '@arthurgeron/react-usememo/require-usememo': 'off',
       },
     },
   ],
