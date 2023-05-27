@@ -357,7 +357,7 @@ export function getAutocompleteSuggestions(
   }
   // complete for all variables available in the query
   if (kind === RuleKinds.VARIABLE && step === 1) {
-    const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+    const namedInputType = getNamedType(typeInfo.inputType!);
     const variableDefinitions = getVariableCompletions(
       queryText,
       schema,
@@ -570,7 +570,7 @@ function getSuggestionsForInputValues(
   queryText: string,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
-  const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+  const namedInputType = getNamedType(typeInfo.inputType!);
 
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
@@ -932,7 +932,7 @@ function getSuggestionsForVariableDefinition(
     // TODO: couldn't get Exclude<> working here
     inputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
-      documentation: type.description as string,
+      documentation: type.description!,
       kind: CompletionItemKind.Variable,
     })),
   );
@@ -1149,7 +1149,7 @@ export function getTypeInfo(
         break;
       }
       case RuleKinds.SELECTION_SET:
-        parentType = getNamedType(type as GraphQLType);
+        parentType = getNamedType(type!);
         break;
       case RuleKinds.DIRECTIVE:
         directiveDef = state.name ? schema.getDirective(state.name) : null;
@@ -1227,7 +1227,7 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
-        const enumType = getNamedType(inputType as GraphQLType);
+        const enumType = getNamedType(inputType!);
         enumValue =
           enumType instanceof GraphQLEnumType
             ? enumType
@@ -1237,12 +1237,12 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.LIST_VALUE:
-        const nullableType = getNullableType(inputType as GraphQLType);
+        const nullableType = getNullableType(inputType!);
         inputType =
           nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case RuleKinds.OBJECT_VALUE:
-        const objectType = getNamedType(inputType as GraphQLType);
+        const objectType = getNamedType(inputType!);
         objectFieldDefs =
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()
