@@ -239,7 +239,7 @@ function renderToolbar(toolbar: HTMLElement) {
   schemaReloadButton.title = 'Reload the graphql schema';
 
   schemaStatus.id = 'schema-status';
-  schemaStatus.innerHTML = `Schema Empty`;
+  schemaStatus.innerHTML = 'Schema Empty';
 
   toolbar.append(
     schemaPicker,
@@ -273,7 +273,8 @@ function getSchemaPicker(): HTMLSelectElement {
 export function renderGithubLoginButton() {
   const githubLoginWrapper = document.createElement('div');
   githubLoginWrapper.id = 'github-login-wrapper';
-  githubLoginWrapper.innerHTML = `<p>Using Netlify's OAuth client to retrieve your token, you'll see a simple github graphql <code>monaco-graphql</code> Demo.</p>`;
+  githubLoginWrapper.innerHTML =
+    "<p>Using Netlify's OAuth client to retrieve your token, you'll see a simple GitHub graphql <code>monaco-graphql</code> Demo.</p>";
   const githubButton = document.createElement('button');
 
   const logoutButton = document.createElement('button');

@@ -140,10 +140,10 @@ query Test {
   });
 
   it('finds queries with nested graphql.experimental template tag expression', async () => {
-    const text = `const query = graphql.experimental\` query {} \``;
+    const text = 'const query = graphql.experimental` query {} `';
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with spec decorators', async () => {
@@ -155,7 +155,7 @@ query Test {
     `;
     const contents = findGraphQLTags(text, '.ts');
 
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with es7 decorators', async () => {
@@ -206,7 +206,7 @@ class Todo2{}
     `;
     const contents = findGraphQLTags(text, '.ts');
 
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with nested template tag expressions', async () => {
@@ -215,7 +215,7 @@ class Todo2{}
 }`;
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with template tags inside call expressions', async () => {
@@ -224,7 +224,7 @@ class Todo2{}
 })`;
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries in tagged templates in Vue SFC using <script setup>', async () => {
@@ -327,7 +327,7 @@ query {id}`);
   });
 
   it('no crash in Svelte files without <script>', async () => {
-    const text = ``;
+    const text = '';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
@@ -344,7 +344,7 @@ query {id}`);
   });
 
   it('no crash in Svelte files with empty <script>', async () => {
-    const text = `<script></script>`;
+    const text = '<script></script>';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
@@ -361,7 +361,7 @@ query {id}`);
   });
 
   it('no crash in Svelte files with empty <script> (typescript)', async () => {
-    const text = `<script lang="ts"></script>`;
+    const text = '<script lang="ts"></script>';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
@@ -393,14 +393,14 @@ const query = graphql\`query myQuery {}\``;
     expect(contents[0].range.start.character).toEqual(18);
     expect(contents[0].range.end.line).toEqual(1);
     expect(contents[0].range.end.character).toEqual(28);
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
 
     // and the second string, with correct positional information!
     expect(contents[1].range.start.line).toEqual(3);
     expect(contents[1].range.start.character).toEqual(22);
     expect(contents[1].range.end.line).toEqual(3);
     expect(contents[1].range.end.character).toEqual(38);
-    expect(contents[1].template).toEqual(`query myQuery {}`);
+    expect(contents[1].template).toEqual('query myQuery {}');
   });
 
   it('ignores non gql tagged templates', async () => {

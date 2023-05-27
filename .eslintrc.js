@@ -306,6 +306,7 @@ module.exports = {
 
         'unicorn/prefer-switch': 'error',
         'unicorn/prefer-dom-node-text-content': 'error',
+        quotes: ['error', 'single', { avoidEscape: true }], // Matches Prettier, but also replaces backticks with single quotes
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-var-requires': 'off',
       },

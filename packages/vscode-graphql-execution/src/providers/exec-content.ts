@@ -141,7 +141,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.updatePanel();
       if (projectConfig?.schema) {
         this.outputChannel.appendLine(
-          `Warning: endpoints missing from graphql config. will try 'schema' value(s) instead`,
+          "Warning: endpoints missing from graphql config. will try 'schema' value(s) instead",
         );
         const { schema } = projectConfig;
         if (schema && Array.isArray(schema)) {
@@ -168,7 +168,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
     if (endpointNames.length === 0) {
       this.reportError(
-        `Error: endpoint data missing from graphql config endpoints extension`,
+        'Error: endpoint data missing from graphql config endpoints extension',
       );
       return null;
     }
@@ -233,7 +233,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           });
         }
       } else {
-        this.reportError(`Error: no endpoint url provided`);
+        this.reportError('Error: no endpoint url provided');
         return;
       }
     } catch (err: unknown) {
@@ -246,14 +246,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   async loadConfig() {
     const { rootDir, literal } = this;
     if (!rootDir) {
-      this.reportError(`Error: this file is outside the workspace.`);
+      this.reportError('Error: this file is outside the workspace.');
       return;
     }
     const config = await loadConfig({ rootDir: rootDir.uri.fsPath });
     const projectConfig = config?.getProjectForFile(literal.uri);
 
     if (!projectConfig!.schema) {
-      this.reportError(`Error: schema from graphql config`);
+      this.reportError('Error: schema from graphql config');
       return;
     }
     return projectConfig;

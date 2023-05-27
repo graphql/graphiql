@@ -11,10 +11,10 @@ const tokenTypeMap = {
 };
 
 const typesMap = {
-  ID: { value: `"1"`, kind: 'StringValue', valueType: 'String' },
+  ID: { value: '"1"', kind: 'StringValue', valueType: 'String' },
   Int: { value: '1', kind: 'NumberValue', valueType: 'Number' },
   Float: { value: '1.0', kind: 'NumberValue', valueType: 'Number' },
-  String: { value: `"abc"`, kind: 'StringValue', valueType: 'String' },
+  String: { value: '"abc"', kind: 'StringValue', valueType: 'String' },
   Boolean: { value: 'true', kind: 'BooleanValue', valueType: 'Boolean' },
   Enum: { value: 'ADMIN', kind: 'EnumValue', valueType: 'Enum' },
   Null: { value: 'null', kind: 'NullValue', valueType: 'Null' },
