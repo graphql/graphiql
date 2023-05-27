@@ -65,6 +65,7 @@ LekoArts
 
 // packages and tools
 argparse
+arthurgeron
 atpl
 browserslist
 bundlephobia
@@ -104,6 +105,7 @@ templayed
 typedoc
 twing
 undici
+usememo
 velocityjs
 vite
 vitejs

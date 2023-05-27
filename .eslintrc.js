@@ -50,6 +50,12 @@ module.exports = {
       },
 
       rules: {
+        '@arthurgeron/react-usememo/require-usememo': [
+          'error',
+          {
+            checkHookCalls: false,
+          },
+        ],
         // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
         'no-console': 'error',
         'no-constant-binary-expression': 2,
@@ -310,7 +316,7 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
       },
 
-      plugins: ['promise', 'sonarjs', 'unicorn'],
+      plugins: ['promise', 'sonarjs', 'unicorn', '@arthurgeron/react-usememo'],
     },
     {
       // Rules that requires type information
@@ -348,6 +354,7 @@ module.exports = {
       rules: {
         'jest/no-conditional-expect': 'off',
         'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        '@arthurgeron/react-usememo/require-usememo': 'off',
       },
     },
     {
@@ -413,6 +420,7 @@ module.exports = {
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         'react-hooks/rules-of-hooks': 'off',
+        '@arthurgeron/react-usememo/require-usememo': 'off',
       },
     },
   ],
