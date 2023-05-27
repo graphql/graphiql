@@ -56,7 +56,7 @@ const getQuery = (arg, spaceCount) => {
   const anonymousQuery = removeQueryName(query);
   return (
     ` `.repeat(spaceCount) +
-    anonymousQuery.replace(/\n/g, `\n` + ` `.repeat(spaceCount))
+    anonymousQuery.replaceAll('\n', '\n' + ' '.repeat(spaceCount))
   );
 };
 
