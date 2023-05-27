@@ -13,12 +13,11 @@ import {
 import { GraphQLContentProvider } from './providers/exec-content';
 import { GraphQLCodeLensProvider } from './providers/exec-codelens';
 import { ExtractedTemplateLiteral } from './helpers/source';
-// import { CustomInitializationFailedHandler } from "./CustomInitializationFailedHandler"
 
 function getConfig() {
   return workspace.getConfiguration(
     'vscode-graphql-execution',
-    window.activeTextEditor ? window.activeTextEditor.document.uri : null,
+    window.activeTextEditor?.document.uri,
   );
 }
 
@@ -27,9 +26,8 @@ export function activate(context: ExtensionContext) {
     'GraphQL Operation Execution',
   );
   const config = getConfig();
-  const { debug } = config;
 
-  if (debug) {
+  if (config.debug) {
     // eslint-disable-next-line no-console
     console.log('Extension "vscode-graphql" is now active!');
   }
@@ -72,7 +70,7 @@ export function activate(context: ExtensionContext) {
 
   const commandContentProvider = commands.registerCommand(
     'vscode-graphql-execution.contentProvider',
-    async (literal: ExtractedTemplateLiteral) => {
+    (literal: ExtractedTemplateLiteral) => {
       const uri = Uri.parse('graphql://authority/graphql');
 
       const panel = window.createWebviewPanel(
@@ -93,9 +91,7 @@ export function activate(context: ExtensionContext) {
         contentProvider,
       );
       context.subscriptions.push(registration);
-
-      const html = await contentProvider.getCurrentHtml();
-      panel.webview.html = html;
+      panel.webview.html = contentProvider.getCurrentHtml();
     },
   );
   context.subscriptions.push(commandContentProvider);
