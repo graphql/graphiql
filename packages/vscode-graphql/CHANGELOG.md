@@ -426,27 +426,26 @@
   - bugfix for `insertText` & completion on invalid list types
   - add support for template strings and tags with replacement expressions, so strings like these should work now:
 
-  ```ts
-  const = /*GraphiQL*/
-      `
+  ```js
+  const myQuery =
+    /* GraphQL */
+    `
           ${myFragments}
           query MyQuery {
               something
               ${anotherString}
           }
-
-      `
+      `;
   ```
 
-  ```ts
-  const = gql`
+  ```js
+  const myQuery = gql`
           ${myFragments}
           query MyQuery {
               something
               ${anotherString}
           }
-
-      `
+      `;
   ```
 
 All notable changes to the "vscode-graphql" extension will be manually documented in this file.
