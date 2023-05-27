@@ -256,7 +256,7 @@ If you `import 'monaco-graphql'` synchronously, you can access the api via
 ```ts
 import 'monaco-graphql';
 // now the api will be available on the `monaco.languages` global
-monaco.languages.graphql.api;
+const { api } = monaco.languages.graphql;
 ```
 
 ```ts
@@ -265,7 +265,7 @@ import 'monaco-graphql';
 // also this
 import { languages } from 'monaco-editor';
 // now the api will be available on the `monaco.languages` global
-languages.graphql.api;
+const { api } = languages.graphql;
 ```
 
 Otherwise, you can, like in the sync demo above:
@@ -450,19 +450,15 @@ import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 import { myValidationRules } from './custom';
 
 self.onmessage = () => {
-  try {
-    worker.initialize(
-      (
-        ctx: WorkerNamespace.IWorkerContext,
-        createData: monaco.languages.graphql.ICreateData,
-      ) => {
-        createData.languageConfig.customValidationRules = myValidationRules;
-        return new GraphQLWorker(ctx, createData);
-      },
-    );
-  } catch (err) {
-    throw err;
-  }
+  worker.initialize(
+    (
+      ctx: WorkerNamespace.IWorkerContext,
+      createData: monaco.languages.graphql.ICreateData,
+    ) => {
+      createData.languageConfig.customValidationRules = myValidationRules;
+      return new GraphQLWorker(ctx, createData);
+    },
+  );
 };
 ```
 

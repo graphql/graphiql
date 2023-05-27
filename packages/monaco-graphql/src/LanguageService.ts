@@ -149,7 +149,7 @@ export class LanguageService {
 
       this._externalFragmentDefinitionNodes = definitionNodes;
     }
-    return this._externalFragmentDefinitionNodes as FragmentDefinitionNode[];
+    return this._externalFragmentDefinitionNodes!;
   }
 
   /**

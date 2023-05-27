@@ -7,8 +7,10 @@
 
 import React, {
   ComponentType,
+  MouseEventHandler,
   PropsWithChildren,
   ReactNode,
+  useCallback,
   useState,
 } from 'react';
 
@@ -165,6 +167,7 @@ export function GraphiQL({
     </GraphiQLProvider>
   );
 }
+
 // Export main windows/panes to be used separately if desired.
 GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
@@ -207,6 +210,13 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     showPersistHeadersSettings?: boolean;
   };
+
+const modifier =
+  window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
+    <code className="graphiql-key">Cmd</code>
+  ) : (
+    <code className="graphiql-key">Ctrl</code>
+  );
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -296,19 +306,16 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Toolbar),
   ) || (
     <>
-      <ToolbarButton
-        onClick={() => prettify()}
-        label="Prettify query (Shift-Ctrl-P)"
-      >
+      <ToolbarButton onClick={prettify} label="Prettify query (Shift-Ctrl-P)">
         <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       <ToolbarButton
-        onClick={() => merge()}
+        onClick={merge}
         label="Merge fragments into query (Shift-Ctrl-M)"
       >
         <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      <ToolbarButton onClick={() => copy()} label="Copy query (Shift-Ctrl-C)">
+      <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       {props.toolbar?.additionalContent || null}
@@ -319,24 +326,110 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const onClickReference = () => {
+  const onClickReference = useCallback(() => {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  };
+  }, [pluginResize]);
 
-  const modifier =
-    window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
-      <code className="graphiql-key">Cmd</code>
-    ) : (
-      <code className="graphiql-key">Ctrl</code>
+  const handleClearData = useCallback(() => {
+    try {
+      storageContext?.clear();
+      setClearStorageStatus('success');
+    } catch {
+      setClearStorageStatus('error');
+    }
+  }, [storageContext]);
+
+  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> =
+    useCallback(
+      event => {
+        editorContext.setShouldPersistHeaders(
+          event.currentTarget.dataset.value === 'true',
+        );
+      },
+      [editorContext],
     );
+
+  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      const selectedTheme = event.currentTarget.dataset.theme as
+        | 'light'
+        | 'dark'
+        | undefined;
+      setTheme(selectedTheme || null);
+    },
+    [setTheme],
+  );
+
+  const handleAddTab = editorContext.addTab;
+  const handleRefetchSchema = schemaContext.introspect;
+
+  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      setShowDialog(
+        event.currentTarget.dataset.value as 'short-keys' | 'settings',
+      );
+    },
+    [],
+  );
+
+  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      const context = pluginContext!;
+      const pluginIndex = Number(e.currentTarget.dataset.index!);
+      const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
+      const isVisible = plugin === context.visiblePlugin;
+      if (isVisible) {
+        context.setVisiblePlugin(null);
+        pluginResize.setHiddenElement('first');
+      } else {
+        context.setVisiblePlugin(plugin);
+        pluginResize.setHiddenElement(null);
+      }
+    },
+    [pluginContext, pluginResize],
+  );
+
+  const handleVariablesTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      if (editorToolsResize.hiddenElement === 'second') {
+        editorToolsResize.setHiddenElement(null);
+      }
+      setActiveSecondaryEditor('variables');
+    }, [editorToolsResize]);
+
+  const handleHeadersTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      if (editorToolsResize.hiddenElement === 'second') {
+        editorToolsResize.setHiddenElement(null);
+      }
+      setActiveSecondaryEditor('headers');
+    }, [editorToolsResize]);
+
+  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      editorToolsResize.setHiddenElement(
+        editorToolsResize.hiddenElement === 'second' ? null : 'second',
+      );
+    }, [editorToolsResize]);
+
+  const handleDismissShortKeysDialog: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      setShowDialog(null);
+    }, []);
+
+  const handleDismissSettingsDialog: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      setShowDialog(null);
+      setClearStorageStatus(null);
+    }, []);
 
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
         <div className="graphiql-sidebar-section">
-          {pluginContext?.plugins.map(plugin => {
+          {pluginContext?.plugins.map((plugin, index) => {
             const isVisible = plugin === pluginContext.visiblePlugin;
             const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
             const Icon = plugin.icon;
@@ -345,15 +438,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <UnStyledButton
                   type="button"
                   className={isVisible ? 'active' : ''}
-                  onClick={() => {
-                    if (isVisible) {
-                      pluginContext.setVisiblePlugin(null);
-                      pluginResize.setHiddenElement('first');
-                    } else {
-                      pluginContext.setVisiblePlugin(plugin);
-                      pluginResize.setHiddenElement(null);
-                    }
-                  }}
+                  onClick={handlePluginClick}
+                  data-index={index}
                   aria-label={label}
                 >
                   <Icon aria-hidden="true" />
@@ -367,7 +453,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <UnStyledButton
               type="button"
               disabled={schemaContext.isFetching}
-              onClick={() => schemaContext.introspect()}
+              onClick={handleRefetchSchema}
               aria-label="Re-fetch GraphQL schema"
             >
               <ReloadIcon
@@ -379,7 +465,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <Tooltip label="Open short keys dialog">
             <UnStyledButton
               type="button"
-              onClick={() => setShowDialog('short-keys')}
+              data-value="short-keys"
+              onClick={handleShowDialog}
               aria-label="Open short keys dialog"
             >
               <KeyboardShortcutIcon aria-hidden="true" />
@@ -388,7 +475,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <Tooltip label="Open settings dialog">
             <UnStyledButton
               type="button"
-              onClick={() => setShowDialog('settings')}
+              data-value="settings"
+              onClick={handleShowDialog}
               aria-label="Open settings dialog"
             >
               <SettingsIcon aria-hidden="true" />
@@ -450,7 +538,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <UnStyledButton
                           type="button"
                           className="graphiql-tab-add"
-                          onClick={() => editorContext.addTab()}
+                          onClick={handleAddTab}
                           aria-label="Add tab"
                         >
                           <PlusIcon aria-hidden="true" />
@@ -467,7 +555,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       <UnStyledButton
                         type="button"
                         className="graphiql-tab-add"
-                        onClick={() => editorContext.addTab()}
+                        onClick={handleAddTab}
                         aria-label="Add tab"
                       >
                         <PlusIcon aria-hidden="true" />
@@ -526,12 +614,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                               ? 'active'
                               : ''
                           }
-                          onClick={() => {
-                            if (editorToolsResize.hiddenElement === 'second') {
-                              editorToolsResize.setHiddenElement(null);
-                            }
-                            setActiveSecondaryEditor('variables');
-                          }}
+                          onClick={handleVariablesTabClick}
                         >
                           Variables
                         </UnStyledButton>
@@ -544,14 +627,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                                 ? 'active'
                                 : ''
                             }
-                            onClick={() => {
-                              if (
-                                editorToolsResize.hiddenElement === 'second'
-                              ) {
-                                editorToolsResize.setHiddenElement(null);
-                              }
-                              setActiveSecondaryEditor('headers');
-                            }}
+                            onClick={handleHeadersTabClick}
                           >
                             Headers
                           </UnStyledButton>
@@ -566,13 +642,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       >
                         <UnStyledButton
                           type="button"
-                          onClick={() => {
-                            editorToolsResize.setHiddenElement(
-                              editorToolsResize.hiddenElement === 'second'
-                                ? null
-                                : 'second',
-                            );
-                          }}
+                          onClick={toggleEditorTools}
                           aria-label={
                             editorToolsResize.hiddenElement === 'second'
                               ? 'Show editor tools'
@@ -644,11 +714,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </div>
       <Dialog
         isOpen={showDialog === 'short-keys'}
-        onDismiss={() => setShowDialog(null)}
+        onDismiss={handleDismissShortKeysDialog}
       >
         <div className="graphiql-dialog-header">
           <div className="graphiql-dialog-title">Short Keys</div>
-          <Dialog.Close onClick={() => setShowDialog(null)} />
+          <Dialog.Close onClick={handleDismissShortKeysDialog} />
         </div>
         <div className="graphiql-dialog-section">
           <div>
@@ -743,19 +813,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </Dialog>
       <Dialog
         isOpen={showDialog === 'settings'}
-        onDismiss={() => {
-          setShowDialog(null);
-          setClearStorageStatus(null);
-        }}
+        onDismiss={handleDismissSettingsDialog}
       >
         <div className="graphiql-dialog-header">
           <div className="graphiql-dialog-title">Settings</div>
-          <Dialog.Close
-            onClick={() => {
-              setShowDialog(null);
-              setClearStorageStatus(null);
-            }}
-          />
+          <Dialog.Close onClick={handleDismissSettingsDialog} />
         </div>
         {props.showPersistHeadersSettings ? (
           <div className="graphiql-dialog-section">
@@ -774,24 +836,17 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 id="enable-persist-headers"
-                className={
-                  editorContext.shouldPersistHeaders ? 'active' : undefined
-                }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(true);
-                }}
+                className={editorContext.shouldPersistHeaders ? 'active' : ''}
+                data-value="true"
+                onClick={handlePersistHeaders}
               >
                 On
               </Button>
               <Button
                 type="button"
                 id="disable-persist-headers"
-                className={
-                  editorContext.shouldPersistHeaders ? undefined : 'active'
-                }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(false);
-                }}
+                className={editorContext.shouldPersistHeaders ? '' : 'active'}
+                onClick={handlePersistHeaders}
               >
                 Off
               </Button>
@@ -810,21 +865,23 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Button
                 type="button"
                 className={theme === null ? 'active' : ''}
-                onClick={() => setTheme(null)}
+                onClick={handleChangeTheme}
               >
                 System
               </Button>
               <Button
                 type="button"
                 className={theme === 'light' ? 'active' : ''}
-                onClick={() => setTheme('light')}
+                data-theme="light"
+                onClick={handleChangeTheme}
               >
                 Light
               </Button>
               <Button
                 type="button"
                 className={theme === 'dark' ? 'active' : ''}
-                onClick={() => setTheme('dark')}
+                data-theme="dark"
+                onClick={handleChangeTheme}
               >
                 Dark
               </Button>
@@ -844,14 +901,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 type="button"
                 state={clearStorageStatus || undefined}
                 disabled={clearStorageStatus === 'success'}
-                onClick={() => {
-                  try {
-                    storageContext?.clear();
-                    setClearStorageStatus('success');
-                  } catch {
-                    setClearStorageStatus('error');
-                  }
-                }}
+                onClick={handleClearData}
               >
                 {clearStorageStatus === 'success'
                   ? 'Cleared data'
