@@ -55,11 +55,11 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.sourceHelper.getTypeForVariableDefinitionNode(node);
       variables = {
         ...variables,
-        [`${node.variable.name.value}`]: this.sourceHelper.typeCast(
+        [node.variable.name.value]: this.sourceHelper.typeCast(
           (await window.showInputBox({
             ignoreFocusOut: true,
             placeHolder: `Please enter the value for ${node.variable.name.value}`,
-            validateInput: async (value: string) =>
+            validateInput: (value: string) =>
               this.sourceHelper.validate(value, variableType),
           }))!,
           variableType,

@@ -44,7 +44,7 @@ nicely with the official `graphql` language ID.
 
 To use with webpack, here is an example to get you started:
 
-```shell
+```sh
 yarn add monaco-graphql
 ```
 
@@ -442,7 +442,7 @@ config such as `schemaLoader` to `createData`:
 
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
-// @ts-ignore
+// @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
@@ -472,10 +472,7 @@ import GraphQLWorker from 'worker-loader!./my-graphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphql') {
-      return new GraphQLWorker();
-    }
-    return new EditorWorker();
+    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
   },
 };
 ```
@@ -485,10 +482,7 @@ or, if you have webpack configured for it:
 ```ts
 window.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
-    if (label === 'graphql') {
-      return 'my-graphql.worker.js';
-    }
-    return 'editor.worker.js';
+    return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
   },
 };
 ```
