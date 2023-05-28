@@ -212,6 +212,7 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
   };
 
 const modifier =
+  typeof window !== 'undefined' &&
   window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
     <code className="graphiql-key">Cmd</code>
   ) : (
