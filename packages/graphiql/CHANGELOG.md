@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.4.7
+
+### Patch Changes
+
+- [#3198](https://github.com/graphql/graphiql/pull/3198) [`e6cb6395`](https://github.com/graphql/graphiql/commit/e6cb63956baf338f09806c2fb8d5648fde19869d) Thanks [@B2o5T](https://github.com/B2o5T)! - fix ReferenceError: window is not defined in Next.js
+
 ## 2.4.6
 
 ### Patch Changes
