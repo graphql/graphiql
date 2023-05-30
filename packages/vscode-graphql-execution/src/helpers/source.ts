@@ -116,7 +116,7 @@ export class SourceHelper {
       return JSON.parse(value);
     } catch {
       this.outputChannel.appendLine(
-        `Failed to parse user input as JSON, please use double quotes.`,
+        'Failed to parse user input as JSON, please use double quotes.',
       );
       return value;
     }

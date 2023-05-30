@@ -1,5 +1,5 @@
 import { GraphQLArgument } from 'graphql';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button, MarkdownContent } from '../../ui';
 import { ExplorerFieldDef } from '../context';
@@ -36,6 +36,9 @@ export function FieldDocumentation(props: FieldDocumentationProps) {
 
 function Arguments({ field }: { field: ExplorerFieldDef }) {
   const [showDeprecated, setShowDeprecated] = useState(false);
+  const handleShowDeprecated = useCallback(() => {
+    setShowDeprecated(true);
+  }, []);
 
   if (!('args' in field)) {
     return null;
@@ -68,12 +71,7 @@ function Arguments({ field }: { field: ExplorerFieldDef }) {
             ))}
           </ExplorerSection>
         ) : (
-          <Button
-            type="button"
-            onClick={() => {
-              setShowDeprecated(true);
-            }}
-          >
+          <Button type="button" onClick={handleShowDeprecated}>
             Show Deprecated Arguments
           </Button>
         )

@@ -1,6 +1,6 @@
 {
   "name": "cm6-graphql",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
     "build": "cm-buildhelper src/index.ts",

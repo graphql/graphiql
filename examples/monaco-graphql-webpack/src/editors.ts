@@ -28,9 +28,9 @@ const variablesString =
   "name": true
 }`;
 
-const resultsString = `{}`;
+const resultsString = '{}';
 
-const schemaSdlString = localStorage.getItem('schema-sdl') ?? ``;
+const schemaSdlString = localStorage.getItem('schema-sdl') ?? '';
 
 const THEME = 'vs-dark';
 

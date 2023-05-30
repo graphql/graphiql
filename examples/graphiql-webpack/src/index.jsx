@@ -20,15 +20,15 @@ const getQuery = (arg, spaceCount) => {
   const { query } = operationDataList[0];
   const anonymousQuery = removeQueryName(query);
   return (
-    ` `.repeat(spaceCount) +
-    anonymousQuery.replaceAll('\n', `\n` + ` `.repeat(spaceCount))
+    ' '.repeat(spaceCount) +
+    anonymousQuery.replaceAll('\n', '\n' + ' '.repeat(spaceCount))
   );
 };
 
 const exampleSnippetOne = {
-  name: `Example One`,
-  language: `JavaScript`,
-  codeMirrorMode: `jsx`,
+  name: 'Example One',
+  language: 'JavaScript',
+  codeMirrorMode: 'jsx',
   options: [],
   generate: arg => `export const query = graphql\`
 ${getQuery(arg, 2)}
@@ -37,9 +37,9 @@ ${getQuery(arg, 2)}
 };
 
 const exampleSnippetTwo = {
-  name: `Example Two`,
-  language: `JavaScript`,
-  codeMirrorMode: `jsx`,
+  name: 'Example Two',
+  language: 'JavaScript',
+  codeMirrorMode: 'jsx',
   options: [],
   generate: arg => `import { graphql } from 'graphql'
 
@@ -50,6 +50,25 @@ ${getQuery(arg, 2)}
 };
 
 const snippets = [exampleSnippetOne, exampleSnippetTwo];
+
+const fetcher = async (graphQLParams, options) => {
+  const data = await fetch(
+    'https://swapi-graphql.netlify.app/.netlify/functions/index',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      body: JSON.stringify(graphQLParams),
+      credentials: 'same-origin',
+    },
+  );
+  return data.json().catch(() => data.text());
+};
+
+const style = { height: '100vh' };
 
 const App = () => {
   const [query, setQuery] = React.useState('');
@@ -62,28 +81,18 @@ const App = () => {
     snippets,
   });
 
+  const plugins = React.useMemo(
+    () => [explorerPlugin, exporterPlugin],
+    [explorerPlugin, exporterPlugin],
+  );
+
   return (
     <GraphiQL
-      style={{ height: '100vh' }}
+      style={style}
       query={query}
       onEditQuery={setQuery}
-      plugins={[explorerPlugin, exporterPlugin]}
-      fetcher={async (graphQLParams, options) => {
-        const data = await fetch(
-          'https://swapi-graphql.netlify.app/.netlify/functions/index',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              ...options.headers,
-            },
-            body: JSON.stringify(graphQLParams),
-            credentials: 'same-origin',
-          },
-        );
-        return data.json().catch(() => data.text());
-      }}
+      plugins={plugins}
+      fetcher={fetcher}
     />
   );
 };

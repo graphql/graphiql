@@ -1,5 +1,11 @@
 # cm6-graphql
 
+## 0.0.8
+
+### Patch Changes
+
+- [#3118](https://github.com/graphql/graphiql/pull/3118) [`431b7fe1`](https://github.com/graphql/graphiql/commit/431b7fe1efefa4867f0ea617adc436b1117052e8) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer `.textContent` over `.innerText`
+
 ## 0.0.7
 
 ### Patch Changes

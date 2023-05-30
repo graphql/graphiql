@@ -14,7 +14,15 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import debounce from '../../utility/debounce';
@@ -67,63 +75,73 @@ export function Search() {
     isInterfaceType(navItem.def) ||
     isInputObjectType(navItem.def);
 
+  const handleSelect = useCallback(
+    (value: string) => {
+      const def = value as unknown as TypeMatch | FieldMatch;
+      push(
+        'field' in def
+          ? { name: def.field.name, def: def.field }
+          : { name: def.type.name, def: def.type },
+      );
+    },
+    [push],
+  );
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    event => {
+      setSearchValue(event.target.value);
+    },
+    [],
+  );
+
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    event => {
+      if (!event.isDefaultPrevented()) {
+        const container = popoverRef.current;
+        if (!container) {
+          return;
+        }
+
+        window.requestAnimationFrame(() => {
+          const element = container.querySelector('[aria-selected=true]');
+          if (!(element instanceof HTMLElement)) {
+            return;
+          }
+          const top = element.offsetTop - container.scrollTop;
+          const bottom =
+            container.scrollTop +
+            container.clientHeight -
+            (element.offsetTop + element.clientHeight);
+          if (bottom < 0) {
+            container.scrollTop -= bottom;
+          }
+          if (top < 0) {
+            container.scrollTop += top;
+          }
+        });
+      }
+
+      // We don't want, for example, "Escape" key presses to bubble up
+      // further. This could have other effects like closing a dialog
+      // that contains this component.
+      event.stopPropagation();
+    },
+    [],
+  );
+
   return shouldSearchBoxAppear ? (
-    <Combobox
-      aria-label={`Search ${navItem.name}...`}
-      onSelect={value => {
-        const def = value as unknown as TypeMatch | FieldMatch;
-        push(
-          'field' in def
-            ? { name: def.field.name, def: def.field }
-            : { name: def.type.name, def: def.type },
-        );
-      }}
-    >
+    <Combobox aria-label={`Search ${navItem.name}...`} onSelect={handleSelect}>
       <div
         className="graphiql-doc-explorer-search-input"
         onClick={() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
+          inputRef.current?.focus();
         }}
       >
         <MagnifyingGlassIcon />
         <ComboboxInput
           autocomplete={false}
-          onChange={event => {
-            setSearchValue(event.target.value);
-          }}
-          onKeyDown={event => {
-            if (!event.isDefaultPrevented()) {
-              const container = popoverRef.current;
-              if (!container) {
-                return;
-              }
-
-              window.requestAnimationFrame(() => {
-                const element = container.querySelector('[aria-selected=true]');
-                if (!(element instanceof HTMLElement)) {
-                  return;
-                }
-                const top = element.offsetTop - container.scrollTop;
-                const bottom =
-                  container.scrollTop +
-                  container.clientHeight -
-                  (element.offsetTop + element.clientHeight);
-                if (bottom < 0) {
-                  container.scrollTop -= bottom;
-                }
-                if (top < 0) {
-                  container.scrollTop += top;
-                }
-              });
-            }
-
-            // We don't want for example "Escape" key presses to bubble up
-            // further. This could have other effects like closing a dialog
-            // that contains this component.
-            event.stopPropagation();
-          }}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
           placeholder="&#x2318; K"
           ref={inputRef}
           value={searchValue}

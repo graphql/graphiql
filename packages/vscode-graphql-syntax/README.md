@@ -66,7 +66,7 @@ const query = gql<MyType>`
 as well as normal function expressions with template literals
 
 ```ts
-gql(`{ id }`);
+gql('{ id }');
 ```
 
 ```ts
@@ -83,7 +83,7 @@ there is a bug with function expressions with type arguments like these that we
 need to fix:
 
 ```ts
-gql<MyType>(`{ id }`);
+gql<MyType>('{ id }');
 ```
 
 Note, inline `""` and `''` string literals could also be delimited if needed,
@@ -118,7 +118,7 @@ For full autocompletion, validation and other features, you can install
 # Hello Jan
 
 ```graphql
-  query MyQuery {}
+query MyQuery {}
 ```
 ````
 
@@ -131,13 +131,14 @@ backtick codeblocks.
 # Hello Jan
 
 ```js
-string : X = gql`
-{
-  its {
-    query
-    time
+const myQuery = gql`
+  {
+    its {
+      query
+      time
+    }
   }
-}
+`;
 ```
 ````
 

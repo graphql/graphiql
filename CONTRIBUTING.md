@@ -39,20 +39,20 @@ You will need to include a type prefix for all commit messages. For example:
 [a list of type prefixes](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#type-enum)
 is available:
 
-```js
+```json
 [
-  'build',
-  'ci',
-  'chore',
-  'docs',
-  'feat',
-  'fix',
-  'perf',
-  'refactor',
-  'revert',
-  'style',
-  'test',
-];
+  "build",
+  "ci",
+  "chore",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "refactor",
+  "revert",
+  "style",
+  "test"
+]
 ```
 
 of these, `fix` and `feat` can trigger patch and minor version releases,
