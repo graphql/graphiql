@@ -47,18 +47,19 @@ export function History() {
     <section aria-label="History" className="graphiql-history">
       <div className="graphiql-history-header">
         History
-        {(clearStatus ? true : Boolean(items.length)) && (
+        {(clearStatus || items.length > 0) && (
           <Button
             type="button"
             state={clearStatus || undefined}
             disabled={!items.length}
             onClick={handleClearStatus}
           >
-            {clearStatus === 'success'
-              ? 'Cleared'
-              : clearStatus === 'error'
-              ? 'Failed to clear'
-              : 'Clear'}
+            {
+              {
+                success: 'Cleared',
+                error: 'Failed to Clear'
+              }[clearStatus!] || 'Clear'
+            }
           </Button>
         )}
       </div>
