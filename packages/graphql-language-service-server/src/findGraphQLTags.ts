@@ -18,6 +18,8 @@ import { Position, Range } from 'graphql-language-service';
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import * as VueParser from '@vue/compiler-sfc';
 import type { Logger } from 'vscode-languageserver';
+import { svelte2tsx } from 'svelte2tsx';
+import { SourceMapConsumer } from 'source-map-js';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -26,6 +28,7 @@ const PARSER_OPTIONS: ParserOptions = {
   allowSuperOutsideMethod: true,
   sourceType: 'module',
   strictMode: false,
+  errorRecovery: true,
 };
 
 const DEFAULT_STABLE_TAGS = ['graphql', 'graphqls', 'gql'];
@@ -123,13 +126,11 @@ export function findGraphQLTags(
 
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
-  const isVueLike = ext === '.vue' || ext === '.svelte';
-
   let parsedASTs: { [key: string]: any }[] = [];
 
-  let scriptOffset = 0;
+  let rangeMapper = (range: Range) => range;
 
-  if (isVueLike) {
+  if (ext === '.vue') {
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
       logger.error(
@@ -148,7 +149,56 @@ export function findGraphQLTags(
       parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
 
-    scriptOffset = parseVueSFCResult.scriptOffset;
+    rangeMapper = range => {
+      return new Range(
+        new Position(
+          range.start.line - parseVueSFCResult.scriptOffset,
+          range.start.character,
+        ),
+        new Position(
+          range.end.line - parseVueSFCResult.scriptOffset,
+          range.end.character,
+        ),
+      );
+    };
+  } else if (ext == '.svelte') {
+    const result = svelte2tsx(text, {
+      filename: uri,
+    });
+    plugins?.push('typescript');
+    PARSER_OPTIONS.plugins = plugins;
+
+    const consumer = new SourceMapConsumer({
+      ...result.map,
+      version: String(result.map.version),
+    });
+
+    rangeMapper = range => {
+      const start = consumer.originalPositionFor({
+        line: range.start.line,
+        column: range.start.character,
+      });
+
+      const end = consumer.originalPositionFor({
+        line: range.end.line,
+        column: range.end.character,
+      });
+
+      return new Range(
+        new Position(start.line, start.column),
+        new Position(end.line, end.column),
+      );
+    };
+
+    try {
+      parsedASTs = [parse(result.code, PARSER_OPTIONS)];
+    } catch (error) {
+      logger.error(
+        `Could not parse the Svelte file at ${uri} to extract the graphql tags:`,
+      );
+      logger.error(String(error));
+      return [];
+    }
   } else {
     const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
     if (isTypeScript) {
@@ -185,9 +235,11 @@ export function findGraphQLTags(
         node.quasis.length > 1
           ? node.quasis.map(quasi => quasi.value.raw).join('')
           : node.quasis[0].value.raw;
-      const range = new Range(
-        new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
-        new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
+      const range = rangeMapper(
+        new Range(
+          new Position(loc.start.line - 1, loc.start.column),
+          new Position(loc.end.line - 1, loc.end.column),
+        ),
       );
 
       result.push({
@@ -233,9 +285,11 @@ export function findGraphQLTags(
           }
         }
         if (loc) {
-          const range = new Range(
-            new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
-            new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
+          const range = rangeMapper(
+            new Range(
+              new Position(loc.start.line - 1, loc.start.column),
+              new Position(loc.end.line - 1, loc.end.column),
+            ),
           );
 
           result.push({
