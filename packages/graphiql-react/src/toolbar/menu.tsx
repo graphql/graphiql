@@ -1,21 +1,26 @@
-import { forwardRef, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { Menu, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
 
 import './menu.css';
+import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 type ToolbarMenuProps = {
   button: ReactNode;
   label: string;
 };
 
-const ToolbarMenuRoot = forwardRef<
-  HTMLDivElement,
-  ToolbarMenuProps & JSX.IntrinsicElements['div']
->(({ button, children, label, ...props }, ref) => (
-  // @ts-expect-error -- Should I remove ref? got Property 'ref' does not exist on type 'IntrinsicAttributes & DropdownMenuProps & { children?: ReactNode; }'
-  <Menu {...props} ref={ref}>
+const ToolbarMenuRoot = ({
+  button,
+  children,
+  label,
+  ...props
+}: ToolbarMenuProps & {
+  children: ReactNode;
+  className?: string;
+} & DropdownMenuProps) => (
+  <Menu {...props}>
     <Tooltip label={label}>
       <Menu.Button
         className={clsx(
@@ -29,8 +34,7 @@ const ToolbarMenuRoot = forwardRef<
     </Tooltip>
     <Menu.List>{children}</Menu.List>
   </Menu>
-));
-ToolbarMenuRoot.displayName = 'ToolbarMenu';
+);
 
 export const ToolbarMenu = createComponentGroup(ToolbarMenuRoot, {
   Item: Menu.Item,
