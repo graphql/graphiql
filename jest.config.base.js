@@ -44,7 +44,7 @@ module.exports = (dir, env = 'jsdom') => {
       'types.ts',
     ],
 
-    roots: [`<rootDir>`],
+    roots: ['<rootDir>'],
 
     rootDir: dir,
     name: package.name,

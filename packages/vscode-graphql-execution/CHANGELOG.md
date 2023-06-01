@@ -1,5 +1,15 @@
 # vscode-graphql-execution
 
+## 0.2.0
+
+### Minor Changes
+
+- [#3143](https://github.com/graphql/graphiql/pull/3143) [`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4) Thanks [@B2o5T](https://github.com/B2o5T)! - `GraphQLContentProvider.getCurrentHtml` should not return `Promise`
+
+### Patch Changes
+
+- [#3143](https://github.com/graphql/graphiql/pull/3143) [`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4) Thanks [@B2o5T](https://github.com/B2o5T)! - [ESLint] enable `sonar/prefer-promise-shorthand` and `sonar/no-dead-store` rules
+
 ## 0.1.9
 
 ### Patch Changes

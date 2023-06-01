@@ -146,7 +146,7 @@ const DeferrableObject = new GraphQLObjectType({
   fields: {
     normalString: {
       type: GraphQLString,
-      resolve: () => `Nice`,
+      resolve: () => 'Nice',
     },
     deferredString: {
       args: {

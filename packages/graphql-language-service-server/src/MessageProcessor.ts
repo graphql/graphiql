@@ -282,7 +282,7 @@ export class MessageProcessor {
 
   _logConfigError(errorMessage: string) {
     this._logger.error(
-      `WARNING: graphql-config error, only highlighting is enabled:\n` +
+      'WARNING: graphql-config error, only highlighting is enabled:\n' +
         errorMessage +
         `\nfor more information on using 'graphql-config' with 'graphql-language-service-server', \nsee the documentation at ${configDocLink}`,
     );
@@ -352,11 +352,6 @@ export class MessageProcessor {
         this._logger.info('updating graphql config');
         await this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
-      }
-      // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(uri);
-      if (cachedDocument) {
-        contents = cachedDocument.contents;
       }
       return null;
     }

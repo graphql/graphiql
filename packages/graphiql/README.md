@@ -198,7 +198,9 @@ has to be loaded for the theme prop to work.
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css"
 />
+```
 
+```jsx
 // When rendering GraphiQL:
 <GraphiQL editorTheme="solarized light" />
 ```

@@ -8,7 +8,7 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useSchemaContext } from '../../schema';
 import { Button, MarkdownContent } from '../../ui';
@@ -63,6 +63,10 @@ function ImplementsInterfaces({ type }: { type: GraphQLNamedType }) {
 
 function Fields({ type }: { type: GraphQLNamedType }) {
   const [showDeprecated, setShowDeprecated] = useState(false);
+  const handleShowDeprecated = useCallback(() => {
+    setShowDeprecated(true);
+  }, []);
+
   if (
     !isObjectType(type) &&
     !isInterfaceType(type) &&
@@ -101,12 +105,7 @@ function Fields({ type }: { type: GraphQLNamedType }) {
             ))}
           </ExplorerSection>
         ) : (
-          <Button
-            type="button"
-            onClick={() => {
-              setShowDeprecated(true);
-            }}
-          >
+          <Button type="button" onClick={handleShowDeprecated}>
             Show Deprecated Fields
           </Button>
         )
@@ -158,6 +157,9 @@ function Field({ field }: { field: ExplorerFieldDef }) {
 
 function EnumValues({ type }: { type: GraphQLNamedType }) {
   const [showDeprecated, setShowDeprecated] = useState(false);
+  const handleShowDeprecated = useCallback(() => {
+    setShowDeprecated(true);
+  }, []);
 
   if (!isEnumType(type)) {
     return null;
@@ -190,12 +192,7 @@ function EnumValues({ type }: { type: GraphQLNamedType }) {
             ))}
           </ExplorerSection>
         ) : (
-          <Button
-            type="button"
-            onClick={() => {
-              setShowDeprecated(true);
-            }}
-          >
+          <Button type="button" onClick={handleShowDeprecated}>
             Show Deprecated Values
           </Button>
         )

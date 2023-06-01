@@ -1,5 +1,27 @@
 # Change Log
 
+## 2.4.7
+
+### Patch Changes
+
+- [#3198](https://github.com/graphql/graphiql/pull/3198) [`e6cb6395`](https://github.com/graphql/graphiql/commit/e6cb63956baf338f09806c2fb8d5648fde19869d) Thanks [@B2o5T](https://github.com/B2o5T)! - fix ReferenceError: window is not defined in Next.js
+
+## 2.4.6
+
+### Patch Changes
+
+- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unecessary renders by using useMemo or useCallback
+
+- Updated dependencies [[`911cf3e0`](https://github.com/graphql/graphiql/commit/911cf3e0b0fa13268245463c8db8299279e5c461), [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f), [`2ca4841b`](https://github.com/graphql/graphiql/commit/2ca4841baf74e87a3f067b3415f8da3347ee3898), [`7bf90929`](https://github.com/graphql/graphiql/commit/7bf90929f62ba812c0946e0424f9f843f7b6b0ff), [`431b7fe1`](https://github.com/graphql/graphiql/commit/431b7fe1efefa4867f0ea617adc436b1117052e8)]:
+  - @graphiql/react@0.17.6
+
+## 2.4.5
+
+### Patch Changes
+
+- Updated dependencies [[`2b212941`](https://github.com/graphql/graphiql/commit/2b212941628498957d95ee89a7a5a0623f391b7a), [`9b333a04`](https://github.com/graphql/graphiql/commit/9b333a047d6b75db7681f484156d8772e9f91810)]:
+  - @graphiql/react@0.17.5
+
 ## 2.4.4
 
 ### Patch Changes
@@ -690,7 +712,7 @@
 
 - [#2191](https://github.com/graphql/graphiql/pull/2191) [`eb8af7b5`](https://github.com/graphql/graphiql/commit/eb8af7b5666e7ed01497a862127011524fc400f5) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Allow inserting content before the topBar element via the `beforeTopBarContent` property.
 
-  ```ts
+  ```jsx
   <GraphiQL beforeTopBarContent={<SomeComponent />} />
   ```
 

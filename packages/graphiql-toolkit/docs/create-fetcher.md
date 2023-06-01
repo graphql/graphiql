@@ -29,7 +29,7 @@ Here's a simple example. In this case, a websocket client isn't even
 initialized, only http (with multipart `@stream` and `@defer` Incremental
 Delivery support of course!).
 
-```tsx
+```jsx
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
@@ -57,7 +57,7 @@ Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws`
 client. This client now supports both HTTP/Multipart Incremental Delivery for
 `@defer` and `@stream`, _and_ websockets subscriptions.
 
-```tsx
+```jsx
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
@@ -103,14 +103,16 @@ long as it matches `graphql-ws` `Client` signature.
 
 Provide your initial connection params.
 
-```tsx
+```jsx
 const fetcher = createGraphiQLFetcher({
   url: 'https://localhost:3000',
   subscriptionUrl: 'https://localhost:3001',
   wsConnectionParams: { Authorization: 'token 1234' },
 });
 
-const App = () => <GraphiQL fetcher={fetcher} />;
+const App = () => {
+  return <GraphiQL fetcher={fetcher} />;
+};
 ```
 
 ### `legacyWsClient` or `legacyClient`
@@ -134,7 +136,7 @@ Pass a custom fetch implementation such as `isomorphic-fetch`.
 
 This example passes a `graphql-ws` client to the `wsClient` option:
 
-```tsx
+```jsx
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
@@ -166,7 +168,7 @@ root.render(<App />);
 By providing the `legacyClient` you can support a `subscriptions-transport-ws`
 client implementation, or equivalent:
 
-```tsx
+```jsx
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
@@ -198,7 +200,7 @@ npm install --save subscriptions-transport-ws
 
 For SSR, we might want to use something like `isomorphic-fetch`:
 
-```tsx
+```jsx
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';

@@ -44,7 +44,7 @@ nicely with the official `graphql` language ID.
 
 To use with webpack, here is an example to get you started:
 
-```shell
+```sh
 yarn add monaco-graphql
 ```
 
@@ -256,7 +256,7 @@ If you `import 'monaco-graphql'` synchronously, you can access the api via
 ```ts
 import 'monaco-graphql';
 // now the api will be available on the `monaco.languages` global
-monaco.languages.graphql.api;
+const { api } = monaco.languages.graphql;
 ```
 
 ```ts
@@ -265,7 +265,7 @@ import 'monaco-graphql';
 // also this
 import { languages } from 'monaco-editor';
 // now the api will be available on the `monaco.languages` global
-languages.graphql.api;
+const { api } = languages.graphql;
 ```
 
 Otherwise, you can, like in the sync demo above:
@@ -442,7 +442,7 @@ config such as `schemaLoader` to `createData`:
 
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
-// @ts-ignore
+// @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
@@ -450,19 +450,15 @@ import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 import { myValidationRules } from './custom';
 
 self.onmessage = () => {
-  try {
-    worker.initialize(
-      (
-        ctx: WorkerNamespace.IWorkerContext,
-        createData: monaco.languages.graphql.ICreateData,
-      ) => {
-        createData.languageConfig.customValidationRules = myValidationRules;
-        return new GraphQLWorker(ctx, createData);
-      },
-    );
-  } catch (err) {
-    throw err;
-  }
+  worker.initialize(
+    (
+      ctx: WorkerNamespace.IWorkerContext,
+      createData: monaco.languages.graphql.ICreateData,
+    ) => {
+      createData.languageConfig.customValidationRules = myValidationRules;
+      return new GraphQLWorker(ctx, createData);
+    },
+  );
 };
 ```
 
@@ -476,10 +472,7 @@ import GraphQLWorker from 'worker-loader!./my-graphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphql') {
-      return new GraphQLWorker();
-    }
-    return new EditorWorker();
+    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
   },
 };
 ```
@@ -489,10 +482,7 @@ or, if you have webpack configured for it:
 ```ts
 window.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
-    if (label === 'graphql') {
-      return 'my-graphql.worker.js';
-    }
-    return 'editor.worker.js';
+    return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
   },
 };
 ```

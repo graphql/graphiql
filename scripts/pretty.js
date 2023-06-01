@@ -54,9 +54,9 @@ if (status) {
     print(
       [
         `Try: ${INVERSE} yarn format ${RESET},`,
-        `which executes eslint --fix and prettier in a specific order.`,
-        `If you are using prettier for vscode you can also enable "format on save".`,
-        `Learn more about contributing in DEVELOPMENT.md`,
+        'which executes eslint --fix and prettier in a specific order.',
+        'If you are using prettier for vscode you can also enable "format on save".',
+        'Learn more about contributing in DEVELOPMENT.md',
       ].join('\n'),
     );
   }

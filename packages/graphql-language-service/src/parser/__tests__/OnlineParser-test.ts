@@ -43,7 +43,7 @@ describe('onlineParser', () => {
 
   describe('.token', () => {
     it('detects invalid char', () => {
-      const { token } = getUtils(`^`);
+      const { token } = getUtils('^');
 
       expect(token()).toEqual('invalidchar');
     });
@@ -242,7 +242,7 @@ describe('onlineParser', () => {
       },
     );
 
-    it(`parses query field with a directive and selection set`, () => {
+    it('parses query field with a directive and selection set', () => {
       const { t } = getUtils(`
         query SomeQuery {
           someField @someDirective {
@@ -267,7 +267,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses query field with an alias`, () => {
+    it('parses query field with an alias', () => {
       const { t } = getUtils(`
         query SomeQuery {
           someAlias : someField @someDirective {
@@ -294,7 +294,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses invalid query`, () => {
+    it('parses invalid query', () => {
       const { t, token } = getUtils(`
         {}garbage
       `);
@@ -308,7 +308,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses a fragment definition`, () => {
+    it('parses a fragment definition', () => {
       const { t } = getUtils(`
         fragment SomeFragment on SomeType {
           someField
@@ -328,7 +328,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses a fragment definition with a directive`, () => {
+    it('parses a fragment definition with a directive', () => {
       const { t } = getUtils(`
         fragment SomeFragment on SomeType @someDirective {
           someField
@@ -541,7 +541,7 @@ describe('onlineParser', () => {
       },
     );
 
-    it(`parses mutation field with a directive and selection set`, () => {
+    it('parses mutation field with a directive and selection set', () => {
       const { t } = getUtils(`
         mutation SomeMutation {
           someMutation @someDirective {
@@ -566,7 +566,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses mutation field with an alias`, () => {
+    it('parses mutation field with an alias', () => {
       const { t } = getUtils(`
         mutation SomeMutation {
           someAlias : someMutation @someDirective {
@@ -785,7 +785,7 @@ describe('onlineParser', () => {
       },
     );
 
-    it(`parses subscription field with a directive and selection set`, () => {
+    it('parses subscription field with a directive and selection set', () => {
       const { t } = getUtils(`
         subscription SomeSubscription {
           someSubscription @someDirective {
@@ -810,7 +810,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses subscription field with an alias`, () => {
+    it('parses subscription field with an alias', () => {
       const { t } = getUtils(`
         subscription SomeSubscription {
           someAlias : someSubscription @someDirective {
@@ -899,7 +899,7 @@ describe('onlineParser', () => {
     });
 
     describe('parses object type def', () => {
-      it(`correctly`, () => {
+      it('correctly', () => {
         const { t } = getUtils(`
           type SomeType {
             someField: AnotherType!
@@ -920,7 +920,7 @@ describe('onlineParser', () => {
       });
 
       it('with an object implementing an interface', () => {
-        const { t } = getUtils(`type SomeType implements SomeInterface`);
+        const { t } = getUtils('type SomeType implements SomeInterface');
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
@@ -932,7 +932,7 @@ describe('onlineParser', () => {
 
       it('with an object type implementing multiple interfaces', () => {
         const { t } = getUtils(
-          `type SomeType implements SomeInterface & AnotherInterface & YetAnotherInterface`,
+          'type SomeType implements SomeInterface & AnotherInterface & YetAnotherInterface',
         );
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
@@ -947,7 +947,7 @@ describe('onlineParser', () => {
       });
 
       it('with a directive', () => {
-        const { t } = getUtils(`type SomeType @someDirective`);
+        const { t } = getUtils('type SomeType @someDirective');
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
@@ -957,7 +957,7 @@ describe('onlineParser', () => {
       });
 
       performForEachType(
-        `type SomeType @someDirective(someArg: __VALUE__)`,
+        'type SomeType @someDirective(someArg: __VALUE__)',
         ({ t, stream }, fill) => {
           it(`with a directive having argument of type ${fill.type}`, () => {
             t.keyword('type', { kind: 'ObjectTypeDef' });
@@ -999,7 +999,7 @@ describe('onlineParser', () => {
       });
 
       it('with a directive', () => {
-        const { t } = getUtils(`interface SomeInterface @someDirective`);
+        const { t } = getUtils('interface SomeInterface @someDirective');
 
         t.keyword('interface', { kind: 'InterfaceDef' });
         t.name('SomeInterface');
@@ -1010,7 +1010,7 @@ describe('onlineParser', () => {
 
       it('implementing multiple interfaces', () => {
         const { t } = getUtils(
-          `interface AnInterface implements SomeInterface & AnotherInterface & YetAnotherInterface`,
+          'interface AnInterface implements SomeInterface & AnotherInterface & YetAnotherInterface',
         );
 
         t.keyword('interface', { kind: 'InterfaceDef' });
@@ -1025,7 +1025,7 @@ describe('onlineParser', () => {
       });
 
       performForEachType(
-        `interface SomeInterface @someDirective(someArg: __VALUE__)`,
+        'interface SomeInterface @someDirective(someArg: __VALUE__)',
         ({ t, stream }, fill) => {
           it(`with a directive having argument of type ${fill.type}`, () => {
             t.keyword('interface', { kind: 'InterfaceDef' });
@@ -1304,7 +1304,7 @@ describe('onlineParser', () => {
 
     describe('parses scalar type def', () => {
       it('correctly', () => {
-        const { t } = getUtils(`scalar SomeScalar`);
+        const { t } = getUtils('scalar SomeScalar');
 
         t.keyword('scalar', { kind: 'ScalarDef' });
         t.name('SomeScalar');
@@ -1313,7 +1313,7 @@ describe('onlineParser', () => {
       });
 
       it('with a directive', () => {
-        const { t } = getUtils(`scalar SomeScalar @someDirective`);
+        const { t } = getUtils('scalar SomeScalar @someDirective');
 
         t.keyword('scalar', { kind: 'ScalarDef' });
         t.name('SomeScalar');
@@ -1325,7 +1325,7 @@ describe('onlineParser', () => {
 
     describe('parses union type def', () => {
       it('correctly', () => {
-        const { t } = getUtils(`union SomeUnionType = SomeType | AnotherType`);
+        const { t } = getUtils('union SomeUnionType = SomeType | AnotherType');
 
         t.keyword('union', { kind: 'UnionDef' });
         t.name('SomeUnionType');
@@ -1339,7 +1339,7 @@ describe('onlineParser', () => {
 
       it('with a directive', () => {
         const { t } = getUtils(
-          `union SomeUnionType @someDirective = SomeType | AnotherType`,
+          'union SomeUnionType @someDirective = SomeType | AnotherType',
         );
 
         t.keyword('union', { kind: 'UnionDef' });
@@ -1357,7 +1357,7 @@ describe('onlineParser', () => {
     describe('parses directive type def', () => {
       it('with multiple locations', () => {
         const { t } = getUtils(
-          `directive @someDirective on FIELD_DEFINITION | ENUM_VALUE `,
+          'directive @someDirective on FIELD_DEFINITION | ENUM_VALUE ',
         );
 
         t.keyword('directive', { kind: 'DirectiveDef' });

@@ -16,13 +16,13 @@ const prettifiedVariables = `{
   "a": 1
 }`;
 
-const uglyQuery = `{longDescriptionType {id}}`;
+const uglyQuery = '{longDescriptionType {id}}';
 
-const uglyVariables = `{"a": 1}`;
+const uglyVariables = '{"a": 1}';
 
-const brokenQuery = `longDescriptionType {id}}`;
+const brokenQuery = 'longDescriptionType {id}}';
 
-const brokenVariables = `"a": 1}`;
+const brokenVariables = '"a": 1}';
 
 describeOrSkip('GraphiQL Prettify', () => {
   it('Regular prettification', () => {

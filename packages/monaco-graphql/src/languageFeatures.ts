@@ -129,11 +129,7 @@ export class DiagnosticsAdapter {
     }
 
     const diagnostics = await worker.doValidation(resource.toString());
-    editor.setModelMarkers(
-      editor.getModel(resource) as editor.ITextModel,
-      languageId,
-      diagnostics,
-    );
+    editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
       if (variablesUris.length < 1) {
@@ -211,7 +207,7 @@ export function toCompletion(
   const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
-    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+    kind: toCompletionItemKind(entry.kind!),
     label: entry.label,
     insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText

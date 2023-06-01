@@ -1,5 +1,27 @@
 # @graphiql/react
 
+## 0.17.6
+
+### Patch Changes
+
+- [#3194](https://github.com/graphql/graphiql/pull/3194) [`911cf3e0`](https://github.com/graphql/graphiql/commit/911cf3e0b0fa13268245463c8db8299279e5c461) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - fix tab content getting replaced on `changeTab`
+
+- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unecessary renders by using useMemo or useCallback
+
+- [#3197](https://github.com/graphql/graphiql/pull/3197) [`2ca4841b`](https://github.com/graphql/graphiql/commit/2ca4841baf74e87a3f067b3415f8da3347ee3898) Thanks [@B2o5T](https://github.com/B2o5T)! - remove confusing ligatures, set `font-variant-ligatures: none`
+
+- [#3136](https://github.com/graphql/graphiql/pull/3136) [`7bf90929`](https://github.com/graphql/graphiql/commit/7bf90929f62ba812c0946e0424f9f843f7b6b0ff) Thanks [@B2o5T](https://github.com/B2o5T)! - replace rest of `event.keyCode` usages by `event.code`
+
+- [#3118](https://github.com/graphql/graphiql/pull/3118) [`431b7fe1`](https://github.com/graphql/graphiql/commit/431b7fe1efefa4867f0ea617adc436b1117052e8) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer `.textContent` over `.innerText`
+
+## 0.17.5
+
+### Patch Changes
+
+- [#3147](https://github.com/graphql/graphiql/pull/3147) [`2b212941`](https://github.com/graphql/graphiql/commit/2b212941628498957d95ee89a7a5a0623f391b7a) Thanks [@Yahkob](https://github.com/Yahkob)! - limit code-mirror css scope to .graphiql-container
+
+- [#3180](https://github.com/graphql/graphiql/pull/3180) [`9b333a04`](https://github.com/graphql/graphiql/commit/9b333a047d6b75db7681f484156d8772e9f91810) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Remove duplicate Vite config and again make sure to not include `react/jsx-runtime` in the bundle
+
 ## 0.17.4
 
 ### Patch Changes
