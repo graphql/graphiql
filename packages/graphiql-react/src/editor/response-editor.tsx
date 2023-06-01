@@ -1,7 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -103,12 +103,12 @@ export function useResponseEditor(
             );
           }
 
-          const root = createRoot(tooltipDiv);
+          // We can't refactor to root.unmount() from because we support React 16/17 too
           if (!infoElements.length) {
-            root.unmount();
+            ReactDOM.unmountComponentAtNode(tooltipDiv);
             return null;
           }
-          root.render(infoElements);
+          ReactDOM.render(infoElements, tooltipDiv);
           return tooltipDiv;
         },
       );
