@@ -60,7 +60,7 @@
   white-space: nowrap;
   cursor: pointer;
 
-  &[data-headlessui-state="active"] {
+  &[data-headlessui-state='active'] {
     background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
@@ -71,7 +71,7 @@
     );
   }
 
-  &[data-headlessui-state="active"]:hover {
+  &[data-headlessui-state='active']:hover {
     background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   }
 

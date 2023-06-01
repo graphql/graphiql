@@ -409,16 +409,18 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       );
     }, [editorToolsResize]);
 
-  const handleDismissShortKeysDialog: MouseEventHandler<HTMLButtonElement> =
-    useCallback(() => {
+  const handleOpenShortKeysDialog = useCallback((isOpen: boolean) => {
+    if (!isOpen) {
       setShowDialog(null);
-    }, []);
+    }
+  }, []);
 
-  const handleDismissSettingsDialog: MouseEventHandler<HTMLButtonElement> =
-    useCallback(() => {
+  const handleOpenSettingsDialog = useCallback((isOpen: boolean) => {
+    if (!isOpen) {
       setShowDialog(null);
       setClearStorageStatus(null);
-    }, []);
+    }
+  }, []);
 
   return (
     <Tooltip.Provider>
@@ -710,11 +712,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         </div>
         <Dialog
           open={showDialog === 'short-keys'}
-          onOpenChange={isOpen => {
-            if (!isOpen) {
-              setShowDialog(null);
-            }
-          }}
+          onOpenChange={handleOpenShortKeysDialog}
         >
           <div className="graphiql-dialog-header">
             <Dialog.Title className="graphiql-dialog-title">
@@ -728,12 +726,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         </Dialog>
         <Dialog
           open={showDialog === 'settings'}
-          onOpenChange={isOpen => {
-            if (!isOpen) {
-              setShowDialog(null);
-              setClearStorageStatus(null);
-            }
-          }}
+          onOpenChange={handleOpenSettingsDialog}
         >
           <div className="graphiql-dialog-header">
             <Dialog.Title className="graphiql-dialog-title">
