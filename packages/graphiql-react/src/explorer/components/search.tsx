@@ -8,7 +8,7 @@ import {
   isObjectType,
 } from 'graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Command } from 'cmdk';
+import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import debounce from '../../utility/debounce';
@@ -27,7 +27,6 @@ export function Search() {
   const inputRef = useRef<HTMLInputElement>(null);
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
-
   const [results, setResults] = useState(getSearchResults(searchValue));
   const debouncedGetSearchResults = useMemo(
     () =>
@@ -54,8 +53,7 @@ export function Search() {
   const navItem = explorerNavStack.at(-1)!;
 
   const onSelect = useCallback(
-    (value: string) => {
-      const def = JSON.parse(value) as TypeMatch | FieldMatch;
+    (def: TypeMatch | FieldMatch) => {
       push(
         'field' in def
           ? { name: def.field.name, def: def.field }
@@ -77,10 +75,14 @@ export function Search() {
   if (!shouldSearchBoxAppear) {
     return null;
   }
+
   return (
-    <Command
-      label={`Search ${navItem.name}...`}
+    <Combobox
+      as="div"
+      className="graphiql-doc-explorer-search"
+      onChange={onSelect}
       data-state={isFocused ? undefined : 'idle'}
+      aria-label={`Search ${navItem.name}...`}
     >
       <div
         className="graphiql-doc-explorer-search-input"
@@ -89,62 +91,67 @@ export function Search() {
         }}
       >
         <MagnifyingGlassIcon />
-        <Command.Input
+        <Combobox.Input
           autoComplete="off"
           onFocus={handleFocus}
           onBlur={handleFocus}
-          onValueChange={setSearchValue}
+          onChange={event => setSearchValue(event.target.value)}
           placeholder="&#x2318; K"
           ref={inputRef}
           value={searchValue}
+          data-cy="doc-explorer-input"
         />
       </div>
 
+      {/* hide on blur */}
       {isFocused && (
-        <Command.List>
-          <Command.Empty className="graphiql-doc-explorer-search-empty">
-            No results found
-          </Command.Empty>
-
-          <Command.Group>
-            {results.within.map((result, i) => (
-              <Command.Item
+        <Combobox.Options data-cy="doc-explorer-list">
+          {results.within.length +
+            results.types.length +
+            results.fields.length ===
+          0 ? (
+            <li className="graphiql-doc-explorer-search-empty">
+              No results found
+            </li>
+          ) : (
+            results.within.map((result, i) => (
+              <Combobox.Option
                 key={`within-${i}`}
-                value={JSON.stringify(result)}
-                onSelect={onSelect}
+                value={result}
+                data-cy="doc-explorer-option"
               >
                 <Field field={result.field} argument={result.argument} />
-              </Command.Item>
-            ))}
-            {results.within.length > 0 &&
-            results.types.length + results.fields.length > 0 ? (
-              <div className="graphiql-doc-explorer-search-divider">
-                Other results
-              </div>
-            ) : null}
-            {results.types.map((result, i) => (
-              <Command.Item
-                key={`type-${i}`}
-                value={JSON.stringify(result)}
-                onSelect={onSelect}
-              >
-                <Type type={result.type} />
-              </Command.Item>
-            ))}
-            {results.fields.map((result, i) => (
-              <Command.Item
-                key={`field-${i}`}
-                value={JSON.stringify(result)}
-                onSelect={onSelect}
-              >
-                <Type type={result.type} />.
-                <Field field={result.field} argument={result.argument} />
-              </Command.Item>
-            ))}
-          </Command.Group>
-        </Command.List>
+              </Combobox.Option>
+            ))
+          )}
+          {results.within.length > 0 &&
+          results.types.length + results.fields.length > 0 ? (
+            <div className="graphiql-doc-explorer-search-divider">
+              Other results
+            </div>
+          ) : null}
+          {results.types.map((result, i) => (
+            <Combobox.Option
+              key={`type-${i}`}
+              value={result}
+              data-cy="doc-explorer-option"
+            >
+              <Type type={result.type} />
+            </Combobox.Option>
+          ))}
+          {results.fields.map((result, i) => (
+            <Combobox.Option
+              key={`field-${i}`}
+              value={result}
+              data-cy="doc-explorer-option"
+            >
+              <Type type={result.type} />.
+              <Field field={result.field} argument={result.argument} />
+            </Combobox.Option>
+          ))}
+        </Combobox.Options>
       )}
-    </Command>
+    </Combobox>
   );
 }
 
@@ -194,7 +201,6 @@ export function useSearchResults(caller?: Function) {
         typeNames = typeNames.filter(n => n !== withinType.name);
         typeNames.unshift(withinType.name);
       }
-
       for (const typeName of typeNames) {
         if (
           matches.within.length +

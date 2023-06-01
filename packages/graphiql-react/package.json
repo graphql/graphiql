@@ -36,12 +36,12 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.14",
     "@radix-ui/react-dialog": "^1.0.3",
     "@radix-ui/react-visually-hidden": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.4",
     "@graphiql/toolkit": "^0.8.4",
-    "cmdk": "^0.2.0",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.0.8",
