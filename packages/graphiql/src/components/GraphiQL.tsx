@@ -7,9 +7,11 @@
 
 import React, {
   ComponentType,
+  Fragment,
   MouseEventHandler,
   PropsWithChildren,
   ReactNode,
+  ReactElement,
   useCallback,
   useState,
 } from 'react';
@@ -210,14 +212,6 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     showPersistHeadersSettings?: boolean;
   };
-
-const modifier =
-  typeof window !== 'undefined' &&
-  window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
-    <code className="graphiql-key">Cmd</code>
-  ) : (
-    <code className="graphiql-key">Ctrl</code>
-  );
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -729,96 +723,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <Dialog.Close />
           </div>
           <div className="graphiql-dialog-section">
-            <div>
-              <table className="graphiql-table">
-                <thead>
-                  <tr>
-                    <th>Short key</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">F</code>
-                    </td>
-                    <td>Search in editor</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">K</code>
-                    </td>
-                    <td>Search in documentation</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">Enter</code>
-                    </td>
-                    <td>Execute query</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">P</code>
-                    </td>
-                    <td>Prettify editors</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">M</code>
-                    </td>
-                    <td>
-                      Merge fragments definitions into operation definition
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">C</code>
-                    </td>
-                    <td>Copy query</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">R</code>
-                    </td>
-                    <td>Re-fetch schema using introspection</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p>
-                The editors use{' '}
-                <a
-                  href="https://codemirror.net/5/doc/manual.html#keymaps"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  CodeMirror Key Maps
-                </a>{' '}
-                that add more short keys. This instance of Graph<em>i</em>QL
-                uses <code>{props.keyMap || 'sublime'}</code>.
-              </p>
-            </div>
+            <ShortKeys keyMap={props.keyMap || 'sublime'} />
           </div>
         </Dialog>
         <Dialog
@@ -934,6 +839,68 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         </Dialog>
       </div>
     </Tooltip.Provider>
+  );
+}
+
+const modifier =
+  typeof window !== 'undefined' &&
+  window.navigator.platform.toLowerCase().indexOf('mac') === 0
+    ? 'Cmd'
+    : 'Ctrl';
+
+const SHORT_KEYS = Object.entries({
+  'Search in editor': [modifier, 'F'],
+  'Search in documentation': [modifier, 'K'],
+  'Execute query': [modifier, 'Enter'],
+  'Prettify editors': ['Ctrl', 'Shift', 'P'],
+  'Merge fragments definitions into operation definition': [
+    'Ctrl',
+    'Shift',
+    'M',
+  ],
+  'Copy query': ['Ctrl', 'Shift', 'C'],
+  'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
+});
+
+function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
+  return (
+    <div>
+      <table className="graphiql-table">
+        <thead>
+          <tr>
+            <th>Short Key</th>
+            <th>Function</th>
+          </tr>
+        </thead>
+        <tbody>
+          {SHORT_KEYS.map(([title, keys]) => (
+            <tr key={title}>
+              <td>
+                {keys.map((key, index, array) => (
+                  <Fragment key={key}>
+                    <code className="graphiql-key">{key}</code>
+                    {index !== array.length - 1 && ' + '}
+                  </Fragment>
+                ))}
+              </td>
+              <td>{title}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p>
+        The editors use{' '}
+        <a
+          href="https://codemirror.net/5/doc/manual.html#keymaps"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          CodeMirror Key Maps
+        </a>{' '}
+        that add more short keys. This instance of Graph<em>i</em>QL uses{' '}
+        <code>{keyMap}</code>.
+      </p>
+    </div>
   );
 }
 
