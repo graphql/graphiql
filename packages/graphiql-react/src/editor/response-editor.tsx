@@ -103,6 +103,7 @@ export function useResponseEditor(
             );
           }
 
+          // We can't refactor to root.unmount() from because we support React 16/17 too
           if (!infoElements.length) {
             ReactDOM.unmountComponentAtNode(tooltipDiv);
             return null;
