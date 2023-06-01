@@ -1,8 +1,4 @@
-@import url('@reach/listbox/styles.css');
-@import url('@reach/menu-button/styles.css');
-
-[data-reach-listbox-popover],
-[data-reach-menu-list] {
+[data-radix-menu-content] {
   background-color: hsl(var(--color-base));
   border: var(--popover-border);
   border-radius: var(--border-radius-8);
@@ -10,10 +6,11 @@
   font-size: inherit;
   max-width: 250px;
   padding: var(--px-4);
+  font-family: var(--font-family);
+  color: hsl(var(--color-neutral));
 }
 
-[data-reach-listbox-option],
-[data-reach-menu-item] {
+[data-radix-collection-item] {
   border-radius: var(--border-radius-4);
   font-size: inherit;
   margin: var(--px-4);
@@ -21,6 +18,9 @@
   padding: var(--px-6) var(--px-8);
   text-overflow: ellipsis;
   white-space: nowrap;
+  outline: none;
+  cursor: pointer;
+  line-height: var(--line-height);
 
   &[data-selected],
   &[data-current-nav],
@@ -32,10 +32,4 @@
   &:not(:first-child) {
     margin-top: 0;
   }
-}
-
-[data-reach-listbox-button] {
-  border: none;
-  cursor: pointer;
-  padding: 0;
 }

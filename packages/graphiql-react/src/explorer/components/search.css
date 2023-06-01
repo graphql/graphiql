@@ -1,6 +1,4 @@
-@import url('@reach/combobox/styles.css');
-
-[data-reach-combobox] {
+.graphiql-doc-explorer-search {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
 
   &:not([data-state='idle']) {
@@ -11,8 +9,6 @@
 
     & .graphiql-doc-explorer-search-input {
       background: hsl(var(--color-base));
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
     }
   }
 }
@@ -25,7 +21,7 @@
   padding: var(--px-8) var(--px-12);
 }
 
-[data-reach-combobox-input] {
+.graphiql-doc-explorer-search [role='combobox'] {
   border: none;
   background-color: transparent;
   margin-left: var(--px-4);
@@ -36,7 +32,7 @@
   }
 }
 
-[data-reach-combobox-popover] {
+.graphiql-doc-explorer-search [role='listbox'] {
   background-color: hsl(var(--color-base));
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
@@ -45,7 +41,9 @@
     hsla(var(--color-neutral), var(--alpha-background-heavy));
   max-height: 400px;
   overflow-y: auto;
-
+  margin: 0;
+  font-size: var(--font-size-body);
+  padding: var(--px-4);
   /**
    * This makes sure that the logic for auto-scrolling the search results when
    * using keyboard navigation works properly (we use `offsetTop` there).
@@ -53,20 +51,16 @@
   position: relative;
 }
 
-[data-reach-combobox-list] {
-  font-size: var(--font-size-body);
-  padding: var(--px-4);
-}
-
-[data-reach-combobox-option] {
+.graphiql-doc-explorer-search [role='option'] {
   border-radius: var(--border-radius-4);
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   overflow-x: hidden;
   padding: var(--px-8) var(--px-12);
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 
-  &[data-highlighted] {
+  &[data-headlessui-state="active"] {
     background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
@@ -77,7 +71,7 @@
     );
   }
 
-  &[data-highlighted]:hover {
+  &[data-headlessui-state="active"]:hover {
     background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   }
 
