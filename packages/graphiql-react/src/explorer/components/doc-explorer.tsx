@@ -81,9 +81,7 @@ export function DocExplorer() {
           )}
           <div className="graphiql-doc-explorer-title">{navItem.name}</div>
         </div>
-        <div className="graphiql-doc-explorer-search">
-          <Search key={navItem.name} />
-        </div>
+        <Search key={navItem.name} />
       </div>
       <div className="graphiql-doc-explorer-content">{content}</div>
     </section>
