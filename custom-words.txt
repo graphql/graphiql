@@ -84,6 +84,7 @@ execa
 graphiql
 hamljs
 haml
+headlessui
 inno
 intellij
 jsdelivr
