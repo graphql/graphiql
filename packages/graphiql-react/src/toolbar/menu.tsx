@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { clsx } from 'clsx';
-import { Menu, Tooltip } from '../ui';
+import { DropdownMenu, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
 
 import './menu.css';
@@ -20,9 +20,9 @@ const ToolbarMenuRoot = ({
   children: ReactNode;
   className?: string;
 } & DropdownMenuProps) => (
-  <Menu {...props}>
+  <DropdownMenu {...props}>
     <Tooltip label={label}>
-      <Menu.Button
+      <DropdownMenu.Button
         className={clsx(
           'graphiql-un-styled graphiql-toolbar-menu',
           props.className,
@@ -30,12 +30,12 @@ const ToolbarMenuRoot = ({
         aria-label={label}
       >
         {button}
-      </Menu.Button>
+      </DropdownMenu.Button>
     </Tooltip>
-    <Menu.List>{children}</Menu.List>
-  </Menu>
+    <DropdownMenu.Content>{children}</DropdownMenu.Content>
+  </DropdownMenu>
 );
 
 export const ToolbarMenu = createComponentGroup(ToolbarMenuRoot, {
-  Item: Menu.Item,
+  Item: DropdownMenu.Item,
 });

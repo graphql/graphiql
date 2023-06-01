@@ -1,7 +1,7 @@
 import { useEditorContext } from '../editor';
 import { useExecutionContext } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';
-import { Menu, Tooltip } from '../ui';
+import { DropdownMenu, Tooltip } from '../ui';
 
 import './execute.css';
 
@@ -29,18 +29,18 @@ export function ExecuteButton() {
   };
 
   return hasOptions && !isRunning ? (
-    <Menu>
+    <DropdownMenu>
       <Tooltip label={label}>
-        <Menu.Button {...buttonProps} />
+        <DropdownMenu.Button {...buttonProps} />
       </Tooltip>
 
-      <Menu.List>
+      <DropdownMenu.Content>
         {operations.map((operation, i) => {
           const opName = operation.name
             ? operation.name.value
             : `<Unnamed ${operation.operation}>`;
           return (
-            <Menu.Item
+            <DropdownMenu.Item
               key={`${opName}-${i}`}
               onSelect={() => {
                 const selectedOperationName = operation.name?.value;
@@ -55,11 +55,11 @@ export function ExecuteButton() {
               }}
             >
               {opName}
-            </Menu.Item>
+            </DropdownMenu.Item>
           );
         })}
-      </Menu.List>
-    </Menu>
+      </DropdownMenu.Content>
+    </DropdownMenu>
   ) : (
     <Tooltip label={label}>
       <button
