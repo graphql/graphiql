@@ -45,7 +45,7 @@ describe('GraphiQL DocExplorer - search', () => {
     cy.dataCy('doc-explorer-option').contains('hasArgs');
   });
 
-  it(' Closes popover when blurring input', () => {
+  it('Closes popover when blurring input', () => {
     cy.dataCy('doc-explorer-input').blur();
     cy.dataCy('doc-explorer-list').should('not.exist');
   });
