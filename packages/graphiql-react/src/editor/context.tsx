@@ -189,10 +189,6 @@ export type EditorContextProviderProps = {
    */
   headers?: string;
   /**
-   * @deprecated Use `defaultTabs` instead.
-   */
-  initialTabs?: TabDefinition[];
-  /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
    * there is no tab state persisted in storage.
@@ -311,7 +307,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
-      defaultTabs: props.defaultTabs || props.initialTabs,
+      defaultTabs: props.defaultTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       defaultHeaders: props.defaultHeaders,
       storage,
