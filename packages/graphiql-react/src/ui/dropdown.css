@@ -1,4 +1,4 @@
-[data-radix-menu-content] {
+.graphiql-dropdown-content {
   background-color: hsl(var(--color-base));
   border: var(--popover-border);
   border-radius: var(--border-radius-8);
@@ -8,9 +8,14 @@
   padding: var(--px-4);
   font-family: var(--font-family);
   color: hsl(var(--color-neutral));
+  max-height: min(
+    calc(var(--radix-dropdown-menu-content-available-height) - 10px),
+    400px
+  );
+  overflow-y: scroll;
 }
 
-[data-radix-collection-item] {
+.graphiql-dropdown-item {
   border-radius: var(--border-radius-4);
   font-size: inherit;
   margin: var(--px-4);

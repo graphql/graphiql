@@ -1,5 +1,5 @@
 ---
-'@graphiql/react': major
+'@graphiql/react': minor
 ---
 
 replace `@reach/dialog` by `@radix-ui/react-dialog`

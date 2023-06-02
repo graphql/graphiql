@@ -1,40 +1,60 @@
 import { ComponentProps, forwardRef, ReactElement } from 'react';
 import { clsx } from 'clsx';
 import { createComponentGroup } from '../utility/component-group';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {
+  Trigger,
+  Portal,
+  Content as RadixContent,
+  Item as RadixItem,
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+  Root,
+} from '@radix-ui/react-dropdown-menu';
 
 import './dropdown.css';
 
-const MenuButton = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
+const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
   (props, ref) => (
-    <DropdownMenu.Trigger asChild>
+    <Trigger asChild>
       <button
         {...props}
         ref={ref}
         className={clsx('graphiql-un-styled', props.className)}
       />
-    </DropdownMenu.Trigger>
+    </Trigger>
   ),
 );
-MenuButton.displayName = 'MenuButton';
+Button.displayName = 'DropdownMenuButton';
 
-function MenuList({
+function Content({
   children,
   align = 'start',
   sideOffset = 5,
+  className,
   ...props
-}: DropdownMenu.DropdownMenuContentProps): ReactElement {
+}: DropdownMenuContentProps): ReactElement {
   return (
-    <DropdownMenu.Portal>
-      <DropdownMenu.Content align={align} sideOffset={sideOffset} {...props}>
+    <Portal>
+      <RadixContent
+        align={align}
+        sideOffset={sideOffset}
+        className={clsx('graphiql-dropdown-content', className)}
+        {...props}
+      >
         {children}
-      </DropdownMenu.Content>
-    </DropdownMenu.Portal>
+      </RadixContent>
+    </Portal>
   );
 }
 
-export const Menu = createComponentGroup(DropdownMenu.Root, {
-  Button: MenuButton,
-  Item: DropdownMenu.Item,
-  List: MenuList,
+const Item = ({ className, children, ...props }: DropdownMenuItemProps) => (
+  <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
+    {children}
+  </RadixItem>
+);
+
+export const DropdownMenu = createComponentGroup(Root, {
+  Button,
+  Item,
+  Content,
 });
