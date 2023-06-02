@@ -1,5 +1,5 @@
 ---
-'@graphiql/react': minors
+'@graphiql/react': minor
 ---
 
 - Add a clear history button to clear all history as well as trash icons to clear individual history items
