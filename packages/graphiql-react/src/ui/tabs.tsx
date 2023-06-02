@@ -74,7 +74,7 @@ export const Tab = createComponentGroup(TabRoot, {
 
 type TabsProps = {
   values: object[];
-  onReorder: (newOrder: object[]) => void;
+  onReorder: (newOrder: any[]) => void;
   className?: string;
   children: ReactNode;
 };
