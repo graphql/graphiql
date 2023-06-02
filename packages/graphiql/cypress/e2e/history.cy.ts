@@ -36,15 +36,21 @@ describe('History', () => {
   });
 
   it('should add/remove item to favorite', () => {
+    const favorites =
+      '.graphiql-history ul:first-of-type .graphiql-history-item';
+    const items = '.graphiql-history ul:last-of-type .graphiql-history-item';
+
     cy.get(
       '.graphiql-history-item:nth-child(3) > button[aria-label="Add favorite"]',
     ).click();
-    cy.get('.graphiql-history-item').should('have.length', 4);
+    cy.get('.graphiql-history ul').should('have.length', 2); // favorites and items
+    cy.get(favorites).should('have.length', 1);
+    cy.get(items).should('have.length', 2);
     cy.get('.graphiql-history-item-label').eq(0).should('have.text', 'one');
-    cy.get('.graphiql-history-item-label').eq(3).should('have.text', 'one');
     cy.get(
       '.graphiql-history-item:nth-child(1) > button[aria-label="Remove favorite"]',
     ).click();
-    cy.get('.graphiql-history-item').should('have.length', 3);
+    cy.get('.graphiql-history ul').should('have.length', 1); // just items
+    cy.get(items).should('have.length', 3);
   });
 });
