@@ -3,4 +3,4 @@
 '@graphiql/react': minor
 ---
 
-remove `initialTabs` Use `defaultTabs` instead
+remove `initialTabs`, use `defaultTabs` instead
