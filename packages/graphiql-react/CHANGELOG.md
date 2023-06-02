@@ -1,5 +1,30 @@
 # @graphiql/react
 
+## 0.18.0-alpha.0
+
+### Minor Changes
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - remove `initialTabs`, use `defaultTabs` instead
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/dialog` by `@radix-ui/react-dialog` replace `@reach/visually-hidden` by `@radix-ui/react-visually-hidden`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/menu-button` by `@radix-ui/react-dropdown-menu` remove `@reach/listbox` remove `<ToolbarListbox />` and `<Listbox />` components (use `<Menu />` instead)
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - fixed long list items in dropdown were hidden
+
+  rename `<Menu />` to `<DropdownMenu />` rename `<Menu.List />` to `<DropdownMenu.Content />` rename `<Menu.Item />` to `<DropdownMenu.Item />` rename `<Menu.Button />` to `<DropdownMenu.Button />`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/tooltip` by `@radix-ui/react-tooltip`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/combobox` with `Combobox` from `@headlessui/react`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - tabs could be reorderded
+
+### Patch Changes
+
+- Updated dependencies [[`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36)]:
+  - codemirror-graphql@2.0.9-alpha.0
+
 ## 0.17.6
 
 ### Patch Changes

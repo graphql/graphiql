@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.9-alpha.0
+
+### Patch Changes
+
+- [#3203](https://github.com/graphql/graphiql/pull/3203) [`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36) Thanks [@lesleydreyer](https://github.com/lesleydreyer)! - fix info tooltips to work when Graphiql is not used as full page
+
 ## 2.0.8
 
 ### Patch Changes
