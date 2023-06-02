@@ -23,7 +23,7 @@ describe('History', () => {
     cy.get('.graphiql-history-item-label').eq(2).should('have.text', 'one');
   });
 
-  it.only('should remove individual item', () => {
+  it('should remove individual item', () => {
     cy.get('.graphiql-history-item:nth-child(2) > button[aria-label="Delete from history"]').click();
     cy.get('.graphiql-history-item').should('have.length', 2);
   });
