@@ -1,5 +1,5 @@
 ---
-'@graphiql/react': major
+'@graphiql/react': minor
 ---
 
 replace `@reach/menu-button` by `@radix-ui/react-dropdown-menu`

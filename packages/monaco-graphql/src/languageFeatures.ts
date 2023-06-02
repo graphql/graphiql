@@ -43,7 +43,7 @@ export class DiagnosticsAdapter {
       if (modeId !== this.defaults.languageId) {
         // it is tempting to load json models we cared about here
         // into the webworker, however setDiagnosticOptions() needs
-        // to be called here from main process anyways, and the worker
+        // to be called here from main process anyway, and the worker
         // is already generating json schema itself!
         return;
       }

@@ -8,7 +8,7 @@
   padding: var(--px-4);
   font-family: var(--font-family);
   color: hsl(var(--color-neutral));
-  max-height: calc(var(--radix-dropdown-menu-content-available-height) - 10px);
+  max-height: min(calc(var(--radix-dropdown-menu-content-available-height) - 10px), 400px);
   overflow-y: scroll;
 }
 

@@ -1,5 +1,5 @@
 ---
-'@graphiql/react': major
+'@graphiql/react': minor
 ---
 
 fixed long list items in dropdown were hidden
