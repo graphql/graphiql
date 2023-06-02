@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../icons';
@@ -11,28 +11,28 @@ import './tabs.css';
 type TabProps = {
   isActive?: boolean;
   value: object;
+  className?: string;
+  children: ReactNode;
 };
 
-const TabRoot = forwardRef<
-  HTMLDivElement,
-  TabProps & JSX.IntrinsicElements['div']
->(({ isActive, value, ...props }, ref) => (
-  <Reorder.Item value={value} className="graphiql-reorder-tab">
-    <div
+const TabRoot = forwardRef<HTMLLIElement, TabProps>(
+  ({ isActive, value, children, className, ...props }, ref) => (
+    <Reorder.Item
       {...props}
       ref={ref}
+      value={value}
+      aria-selected={isActive ? 'true' : undefined}
       role="tab"
-      aria-selected={isActive}
       className={clsx(
         'graphiql-tab',
         isActive && 'graphiql-tab-active',
-        props.className,
+        className,
       )}
     >
-      {props.children}
-    </div>
-  </Reorder.Item>
-));
+      {children}
+    </Reorder.Item>
+  ),
+);
 TabRoot.displayName = 'Tab';
 
 const TabButton = forwardRef<
@@ -74,27 +74,24 @@ export const Tab = createComponentGroup(TabRoot, {
 
 type TabsProps = {
   values: object[];
-  onReorder: (newOrder: any[]) => void;
+  onReorder: (newOrder: object[]) => void;
+  className?: string;
+  children: ReactNode;
 };
 
-export const Tabs = forwardRef<
-  HTMLDivElement,
-  TabsProps & JSX.IntrinsicElements['div']
->(({ values, onReorder, ...props }, ref) => (
-  <Reorder.Group
-    axis="x"
-    values={values}
-    onReorder={onReorder}
-    className="graphiql-reorder-tabs"
-  >
-    <div
+export const Tabs = forwardRef<HTMLUListElement, TabsProps>(
+  ({ values, onReorder, children, className, ...props }, ref) => (
+    <Reorder.Group
       {...props}
       ref={ref}
+      values={values}
+      onReorder={onReorder}
+      axis="x"
       role="tablist"
-      className={clsx('graphiql-tabs', props.className)}
+      className={clsx('graphiql-tabs', className)}
     >
-      {props.children}
-    </div>
-  </Reorder.Group>
-));
+      {children}
+    </Reorder.Group>
+  ),
+);
 Tabs.displayName = 'Tabs';

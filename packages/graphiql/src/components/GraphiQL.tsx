@@ -422,6 +422,19 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, []);
 
+  const addTab = (
+    <Tooltip label="Add tab">
+      <UnStyledButton
+        type="button"
+        className="graphiql-tab-add"
+        onClick={handleAddTab}
+        aria-label="Add tab"
+      >
+        <PlusIcon aria-hidden="true" />
+      </UnStyledButton>
+    </Tooltip>
+  );
+
   return (
     <Tooltip.Provider>
       <div data-testid="graphiql-container" className="graphiql-container">
@@ -505,7 +518,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <div className="graphiql-session-header">
                 <Tabs
                   values={editorContext.tabs}
-                  onReorder={newOrder => editorContext.moveTab(newOrder)}
+                  onReorder={editorContext.moveTab}
                   aria-label="Select active operation"
                 >
                   {editorContext.tabs.length > 1 ? (
@@ -536,35 +549,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                           />
                         </Tab>
                       ))}
-                      <div>
-                        <Tooltip label="Add tab">
-                          <UnStyledButton
-                            type="button"
-                            className="graphiql-tab-add"
-                            onClick={handleAddTab}
-                            aria-label="Add tab"
-                          >
-                            <PlusIcon aria-hidden="true" />
-                          </UnStyledButton>
-                        </Tooltip>
-                      </div>
+                      {addTab}
                     </>
                   ) : null}
                 </Tabs>
                 <div className="graphiql-session-header-right">
                   {editorContext.tabs.length === 1 ? (
-                    <div className="graphiql-add-tab-wrapper">
-                      <Tooltip label="Add tab">
-                        <UnStyledButton
-                          type="button"
-                          className="graphiql-tab-add"
-                          onClick={handleAddTab}
-                          aria-label="Add tab"
-                        >
-                          <PlusIcon aria-hidden="true" />
-                        </UnStyledButton>
-                      </Tooltip>
-                    </div>
+                    <div className="graphiql-add-tab-wrapper">{addTab}</div>
                   ) : null}
                   {logo}
                 </div>

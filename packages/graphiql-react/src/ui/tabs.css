@@ -1,20 +1,12 @@
-.graphiql-reorder-tabs {
-  display: flex;
-  padding-left: 0;
-}
-
 .graphiql-tabs {
   display: flex;
+  align-items: center;
   overflow-x: auto;
   padding: var(--px-12);
 
   & > :not(:first-child) {
     margin-left: var(--px-12);
   }
-}
-
-.graphiql-reorder-tab {
-  list-style: none;
 }
 
 .graphiql-tab {
