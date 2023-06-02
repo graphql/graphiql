@@ -4,7 +4,6 @@
   "initialVersions": {
     "example-monaco-graphql-webpack": "1.1.1",
     "cm6-graphql": "0.0.8",
-    "codemirror-graphql": "2.0.8",
     "graphiql": "2.4.7",
     "@graphiql/plugin-code-exporter": "0.1.2",
     "@graphiql/plugin-explorer": "0.1.20",
