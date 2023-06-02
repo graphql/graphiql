@@ -37,10 +37,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   timeout = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  getCurrentHtml(): Promise<string> {
-    return new Promise(resolve => {
-      resolve(this.html);
-    });
+  getCurrentHtml(): string {
+    return this.html;
   }
 
   updatePanel() {
@@ -57,13 +55,13 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.sourceHelper.getTypeForVariableDefinitionNode(node);
       variables = {
         ...variables,
-        [`${node.variable.name.value}`]: this.sourceHelper.typeCast(
+        [node.variable.name.value]: this.sourceHelper.typeCast(
           (await window.showInputBox({
             ignoreFocusOut: true,
             placeHolder: `Please enter the value for ${node.variable.name.value}`,
-            validateInput: async (value: string) =>
+            validateInput: (value: string) =>
               this.sourceHelper.validate(value, variableType),
-          })) as string,
+          }))!,
           variableType,
         ),
       };
@@ -108,24 +106,27 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       enableScripts: true,
     };
 
-    this.loadProvider()
-      .then()
-      .catch(err => {
-        this.html = err.toString();
-      });
+    // eslint-disable-next-line promise/prefer-await-to-then -- can't use async in constructor
+    this.loadProvider().catch(err => {
+      this.html = err.toString();
+    });
   }
+
   validUrlFromSchema(pathOrUrl: string) {
     return /^https?:\/\//.test(pathOrUrl);
   }
+
   reportError(message: string) {
     this.outputChannel.appendLine(message);
     this.setContentAndUpdate(message);
   }
+
   setContentAndUpdate(html: string) {
     this.html = html;
     this.update(this.uri);
     this.updatePanel();
   }
+
   async loadEndpoint(
     projectConfig?: GraphQLProjectConfig,
   ): Promise<Endpoint | null> {
@@ -140,15 +141,15 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.updatePanel();
       if (projectConfig?.schema) {
         this.outputChannel.appendLine(
-          `Warning: endpoints missing from graphql config. will try 'schema' value(s) instead`,
+          "Warning: endpoints missing from graphql config. will try 'schema' value(s) instead",
         );
         const { schema } = projectConfig;
         if (schema && Array.isArray(schema)) {
-          schema.map(s => {
+          for (const s of schema) {
             if (this.validUrlFromSchema(s as string)) {
               endpoints.default.url = s.toString();
             }
-          });
+          }
         } else if (schema && this.validUrlFromSchema(schema as string)) {
           endpoints.default.url = schema.toString();
         }
@@ -167,13 +168,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
     if (endpointNames.length === 0) {
       this.reportError(
-        `Error: endpoint data missing from graphql config endpoints extension`,
+        'Error: endpoint data missing from graphql config endpoints extension',
       );
       return null;
     }
     const endpointName = await this.getEndpointName(endpointNames);
     return endpoints[endpointName] || endpoints.default;
   }
+
   async loadProvider() {
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(this.literal.uri));
@@ -231,7 +233,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           });
         }
       } else {
-        this.reportError(`Error: no endpoint url provided`);
+        this.reportError('Error: no endpoint url provided');
         return;
       }
     } catch (err: unknown) {
@@ -240,17 +242,18 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       return;
     }
   }
+
   async loadConfig() {
     const { rootDir, literal } = this;
     if (!rootDir) {
-      this.reportError(`Error: this file is outside the workspace.`);
+      this.reportError('Error: this file is outside the workspace.');
       return;
     }
     const config = await loadConfig({ rootDir: rootDir.uri.fsPath });
     const projectConfig = config?.getProjectForFile(literal.uri);
 
     if (!projectConfig!.schema) {
-      this.reportError(`Error: schema from graphql config`);
+      this.reportError('Error: schema from graphql config');
       return;
     }
     return projectConfig;

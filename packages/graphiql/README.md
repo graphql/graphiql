@@ -105,16 +105,14 @@ application:
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import 'graphiql/graphiql.css';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 
-ReactDOM.render(
-  <GraphiQL fetcher={fetcher} />,
-  document.getElementById('root'),
-);
+const root = createRoot(document.getElementById('root'));
+root.render(<GraphiQL fetcher={fetcher} />);
 ```
 
 ### Using as UMD bundle over CDN (Unpkg, JSDelivr, etc)
@@ -196,8 +194,13 @@ has to be loaded for the theme prop to work.
 
 ```jsx
 // In your document head:
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css"
+/>
+```
 
+```jsx
 // When rendering GraphiQL:
 <GraphiQL editorTheme="solarized light" />
 ```

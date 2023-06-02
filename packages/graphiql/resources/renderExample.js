@@ -13,18 +13,15 @@
  */
 
 // Parse the search string to get url parameters.
-var parameters = {};
-window.location.search
-  .slice(1)
-  .split('&')
-  .forEach(function (entry) {
-    var eq = entry.indexOf('=');
-    if (eq >= 0) {
-      parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-        entry.slice(eq + 1),
-      );
-    }
-  });
+const parameters = {};
+for (const entry of window.location.search.slice(1).split('&')) {
+  const eq = entry.indexOf('=');
+  if (eq >= 0) {
+    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
+      entry.slice(eq + 1),
+    );
+  }
+}
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
@@ -52,7 +49,7 @@ function onTabChange(tabsState) {
 }
 
 function updateURL() {
-  var newSearch =
+  const newSearch =
     '?' +
     Object.keys(parameters)
       .filter(function (key) {
@@ -90,7 +87,9 @@ function getSchemaUrl() {
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+
+root.render(
   React.createElement(GraphiQL, {
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
@@ -109,5 +108,4 @@ ReactDOM.render(
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
   }),
-  document.getElementById('graphiql'),
 );

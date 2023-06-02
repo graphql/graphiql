@@ -138,7 +138,7 @@ function annotations(
     return [];
   }
   const highlightedNodes: Diagnostic[] = [];
-  error.nodes.forEach((node, i) => {
+  for (const [i, node] of error.nodes.entries()) {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
@@ -166,7 +166,7 @@ function annotations(
         ),
       });
     }
-  });
+  }
   return highlightedNodes;
 }
 

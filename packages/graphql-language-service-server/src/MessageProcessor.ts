@@ -53,6 +53,7 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
+  Logger,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -60,7 +61,6 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 
-import { Logger } from './Logger';
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'node:os';
 import {
@@ -143,7 +143,7 @@ export class MessageProcessor {
     }
 
     if (!existsSync(this._tmpDirBase)) {
-      mkdirp(this._tmpDirBase);
+      void mkdirp(this._tmpDirBase);
     }
   }
   get connection(): Connection {
@@ -282,7 +282,7 @@ export class MessageProcessor {
 
   _logConfigError(errorMessage: string) {
     this._logger.error(
-      `WARNING: graphql-config error, only highlighting is enabled:\n` +
+      'WARNING: graphql-config error, only highlighting is enabled:\n' +
         errorMessage +
         `\nfor more information on using 'graphql-config' with 'graphql-language-service-server', \nsee the documentation at ${configDocLink}`,
     );
@@ -350,13 +350,8 @@ export class MessageProcessor {
         uri.match('package.json')?.length && require(uri)?.graphql;
       if (hasGraphQLConfigFile || hasPackageGraphQLConfig) {
         this._logger.info('updating graphql config');
-        this._updateGraphQLConfig();
+        await this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
-      }
-      // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(uri);
-      if (cachedDocument) {
-        contents = cachedDocument.contents;
       }
       return null;
     }
@@ -703,12 +698,12 @@ export class MessageProcessor {
           return { uri, diagnostics };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
-          this._graphQLCache.updateFragmentDefinitionCache(
+          await this._graphQLCache.updateFragmentDefinitionCache(
             this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
-          this._graphQLCache.updateObjectTypeDefinitionCache(
+          await this._graphQLCache.updateObjectTypeDefinitionCache(
             this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
@@ -924,7 +919,7 @@ export class MessageProcessor {
         version = schemaDocument.version++;
       }
       const schemaText = readFileSync(uri, 'utf8');
-      this._cacheSchemaText(schemaUri, schemaText, version);
+      await this._cacheSchemaText(schemaUri, schemaText, version);
     }
   }
   _getTmpProjectPath(
@@ -937,7 +932,7 @@ export class MessageProcessor {
     const basePath = path.join(this._tmpDirBase, workspaceName);
     let projectTmpPath = path.join(basePath, 'projects', project.name);
     if (!existsSync(projectTmpPath)) {
-      mkdirp(projectTmpPath);
+      void mkdirp(projectTmpPath);
     }
     if (appendPath) {
       projectTmpPath = path.join(projectTmpPath, appendPath);
@@ -963,7 +958,7 @@ export class MessageProcessor {
         );
       } else {
         try {
-          this._cacheSchemaFile(uri, project);
+          await this._cacheSchemaFile(uri, project);
         } catch {
           // this string may be an SDL string even, how do we even evaluate this?
         }

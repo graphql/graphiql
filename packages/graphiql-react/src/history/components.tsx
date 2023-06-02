@@ -1,5 +1,12 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
@@ -56,8 +63,8 @@ export function HistoryItem(props: QueryHistoryItemProps) {
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
-    if (isEditable && inputRef.current) {
-      inputRef.current.focus();
+    if (isEditable) {
+      inputRef.current?.focus();
     }
   }, [isEditable]);
 
@@ -65,6 +72,40 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     props.item.label ||
     props.item.operationName ||
     formatQuery(props.item.query);
+
+  const handleSave = useCallback(() => {
+    setIsEditable(false);
+    editLabel({ ...props.item, label: inputRef.current?.value });
+  }, [editLabel, props.item]);
+
+  const handleClose = useCallback(() => {
+    setIsEditable(false);
+  }, []);
+
+  const handleEditLabel: MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      e.stopPropagation();
+      setIsEditable(true);
+    },
+    [],
+  );
+
+  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      const { query, variables, headers } = props.item;
+      queryEditor?.setValue(query ?? '');
+      variableEditor?.setValue(variables ?? '');
+      headerEditor?.setValue(headers ?? '');
+    }, [props.item, queryEditor, variableEditor, headerEditor]);
+
+  const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
+    useCallback(
+      e => {
+        e.stopPropagation();
+        toggleFavorite(props.item);
+      },
+      [props.item, toggleFavorite],
+    );
 
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
@@ -75,34 +116,19 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             defaultValue={props.item.label}
             ref={inputRef}
             onKeyDown={e => {
-              if (e.keyCode === 27) {
-                // Escape
+              if (e.key === 'Esc') {
                 setIsEditable(false);
-              } else if (e.keyCode === 13) {
-                // Enter
+              } else if (e.key === 'Enter') {
                 setIsEditable(false);
                 editLabel({ ...props.item, label: e.currentTarget.value });
               }
             }}
             placeholder="Type a label"
           />
-          <UnStyledButton
-            type="button"
-            ref={buttonRef}
-            onClick={() => {
-              setIsEditable(false);
-              editLabel({ ...props.item, label: inputRef.current?.value });
-            }}
-          >
+          <UnStyledButton type="button" ref={buttonRef} onClick={handleSave}>
             Save
           </UnStyledButton>
-          <UnStyledButton
-            type="button"
-            ref={buttonRef}
-            onClick={() => {
-              setIsEditable(false);
-            }}
-          >
+          <UnStyledButton type="button" ref={buttonRef} onClick={handleClose}>
             <CloseIcon />
           </UnStyledButton>
         </>
@@ -111,11 +137,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
           <UnStyledButton
             type="button"
             className="graphiql-history-item-label"
-            onClick={() => {
-              queryEditor?.setValue(props.item.query ?? '');
-              variableEditor?.setValue(props.item.variables ?? '');
-              headerEditor?.setValue(props.item.headers ?? '');
-            }}
+            onClick={handleHistoryItemClick}
           >
             {displayName}
           </UnStyledButton>
@@ -123,10 +145,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             <UnStyledButton
               type="button"
               className="graphiql-history-item-action"
-              onClick={e => {
-                e.stopPropagation();
-                setIsEditable(true);
-              }}
+              onClick={handleEditLabel}
               aria-label="Edit label"
             >
               <PenIcon aria-hidden="true" />
@@ -138,10 +157,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
             <UnStyledButton
               type="button"
               className="graphiql-history-item-action"
-              onClick={e => {
-                e.stopPropagation();
-                toggleFavorite(props.item);
-              }}
+              onClick={handleToggleFavorite}
               aria-label={
                 props.item.favorite ? 'Remove favorite' : 'Add favorite'
               }

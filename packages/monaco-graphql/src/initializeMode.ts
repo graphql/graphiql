@@ -28,7 +28,9 @@ export function initializeMode(
     api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
     (<any>languages).graphql = { api };
     // export to the global monaco API
-    getMode().then(mode => mode.setupMode(api));
+
+    // eslint-disable-next-line promise/prefer-await-to-then -- ignore to leave initializeMode sync
+    void getMode().then(mode => mode.setupMode(api));
   }
 
   return api;

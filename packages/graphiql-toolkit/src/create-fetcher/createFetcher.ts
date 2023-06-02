@@ -60,7 +60,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
           `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
             options.subscriptionUrl
               ? `Provided URL ${options.subscriptionUrl} failed`
-              : `Please provide subscriptionUrl, wsClient or legacyClient option first.`
+              : 'Please provide subscriptionUrl, wsClient or legacyClient option first.'
           }`,
         );
       }

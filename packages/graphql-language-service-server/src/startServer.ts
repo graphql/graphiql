@@ -150,9 +150,6 @@ export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
   if (options?.method) {
-    const stderrOnly = options.method === 'stream';
-    const logger = new Logger(options.tmpDir, stderrOnly);
-
     const finalOptions = buildOptions(options);
     let reader;
     let writer;
@@ -170,7 +167,7 @@ export default async function startServer(
 
         const { port, hostname } = options;
         const socket = net
-          .createServer(client => {
+          .createServer(async client => {
             client.setEncoding('utf8');
             reader = new SocketMessageReader(client);
             writer = new SocketMessageWriter(client);
@@ -178,14 +175,12 @@ export default async function startServer(
               socket.close();
               process.exit(0);
             });
-            return initializeHandlers({
+            const s = await initializeHandlers({
               reader,
               writer,
-              logger,
               options: finalOptions,
-            }).then(s => {
-              s.listen();
             });
+            s.listen();
           })
           .listen(port, hostname);
         return;
@@ -199,37 +194,30 @@ export default async function startServer(
         break;
     }
 
-    try {
-      const serverWithHandlers = await initializeHandlers({
-        reader,
-        writer,
-        logger,
-        options: finalOptions,
-      });
-      serverWithHandlers.listen();
-    } catch (err) {
-      logger.error('There was a Graphql LSP handler exception:');
-      logger.error(String(err));
-    }
+    const serverWithHandlers = await initializeHandlers({
+      reader,
+      writer,
+      options: finalOptions,
+    });
+    serverWithHandlers.listen();
   }
 }
 
 type InitializerParams = {
   reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
   writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
-  logger: Logger;
   options: MappedServerOptions;
 };
 
 async function initializeHandlers({
   reader,
   writer,
-  logger,
   options,
 }: InitializerParams): Promise<Connection> {
-  try {
-    const connection = createConnection(reader, writer);
+  const connection = createConnection(reader, writer);
+  const logger = new Logger(connection);
 
+  try {
     await addHandlers({ connection, logger, ...options });
     return connection;
   } catch (err) {
@@ -244,7 +232,7 @@ function reportDiagnostics(
   connection: Connection,
 ) {
   if (diagnostics) {
-    connection.sendNotification(
+    void connection.sendNotification(
       PublishDiagnosticsNotification.type,
       diagnostics,
     );

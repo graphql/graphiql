@@ -8,12 +8,12 @@ const rimraf = require('rimraf');
 const [, , src, dest, destExtension] = process.argv;
 if (!src || !dest || !destExtension) {
   console.error(
-    `\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.js './dist/**/*.js' './dest-dir' .new.extension.js`,
+    "\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.js './dist/**/*.js' './dest-dir' .new.extension.js",
   );
   process.exit(1);
 }
 
-const coveragePath = path.join(__dirname, `../coverage`);
+const coveragePath = path.join(__dirname, '../coverage');
 
 const tempRenamePath = path.join(
   coveragePath,
@@ -32,7 +32,7 @@ if (tempPath) {
     if (error) {
       throw error;
     }
-    files.forEach(file => {
+    for (const file of files) {
       if (file.dest) {
         const srcExt = path.parse(file.dest).ext;
         const destinationPath = path.resolve(
@@ -45,7 +45,7 @@ if (tempPath) {
         // move the files and rename them... by renaming them :)
         fs.renameSync(file.dest, destinationPath);
       }
-    });
+    }
     // should cleanup temp directory after renaming
     // every file to the destination path
     rimraf.sync(tempRenamePath);

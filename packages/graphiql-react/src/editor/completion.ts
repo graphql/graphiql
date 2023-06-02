@@ -24,8 +24,8 @@ export function onHasCompletion(
   explorer: ExplorerContextType | null,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
-) {
-  importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
+): void {
+  void importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
     let fieldName: HTMLSpanElement | null;
     let typeNamePill: HTMLSpanElement | null;
@@ -49,50 +49,50 @@ export function onHasCompletion(
           // highlighted typeahead option.
           information = document.createElement('div');
           information.className = 'CodeMirror-hint-information';
-          hintsUl.appendChild(information);
+          hintsUl.append(information);
 
           const header = document.createElement('header');
           header.className = 'CodeMirror-hint-information-header';
-          information.appendChild(header);
+          information.append(header);
 
           fieldName = document.createElement('span');
           fieldName.className = 'CodeMirror-hint-information-field-name';
-          header.appendChild(fieldName);
+          header.append(fieldName);
 
           typeNamePill = document.createElement('span');
           typeNamePill.className = 'CodeMirror-hint-information-type-name-pill';
-          header.appendChild(typeNamePill);
+          header.append(typeNamePill);
 
           typeNamePrefix = document.createElement('span');
-          typeNamePill.appendChild(typeNamePrefix);
+          typeNamePill.append(typeNamePrefix);
 
           typeName = document.createElement('a');
           typeName.className = 'CodeMirror-hint-information-type-name';
           typeName.href = 'javascript:void 0'; // eslint-disable-line no-script-url
           typeName.addEventListener('click', onClickHintInformation);
-          typeNamePill.appendChild(typeName);
+          typeNamePill.append(typeName);
 
           typeNameSuffix = document.createElement('span');
-          typeNamePill.appendChild(typeNameSuffix);
+          typeNamePill.append(typeNameSuffix);
 
           description = document.createElement('div');
           description.className = 'CodeMirror-hint-information-description';
-          information.appendChild(description);
+          information.append(description);
 
           deprecation = document.createElement('div');
           deprecation.className = 'CodeMirror-hint-information-deprecation';
-          information.appendChild(deprecation);
+          information.append(deprecation);
 
           const deprecationLabel = document.createElement('span');
           deprecationLabel.className =
             'CodeMirror-hint-information-deprecation-label';
-          deprecationLabel.innerText = 'Deprecated';
-          deprecation.appendChild(deprecationLabel);
+          deprecationLabel.textContent = 'Deprecated';
+          deprecation.append(deprecationLabel);
 
           deprecationReason = document.createElement('div');
           deprecationReason.className =
             'CodeMirror-hint-information-deprecation-reason';
-          deprecation.appendChild(deprecationReason);
+          deprecation.append(deprecationReason);
 
           /**
            * This is a bit hacky: By default, codemirror renders all hints
@@ -186,7 +186,7 @@ export function onHasCompletion(
         }
 
         if (fieldName) {
-          fieldName.innerText = ctx.text;
+          fieldName.textContent = ctx.text;
         }
 
         if (typeNamePill && typeNamePrefix && typeName && typeNameSuffix) {
@@ -195,24 +195,24 @@ export function onHasCompletion(
 
             const renderType = (type: GraphQLType) => {
               if (isNonNullType(type)) {
-                typeNameSuffix!.innerText = '!' + typeNameSuffix!.innerText;
+                typeNameSuffix!.textContent = '!' + typeNameSuffix!.textContent;
                 renderType(type.ofType);
               } else if (isListType(type)) {
-                typeNamePrefix!.innerText += '[';
-                typeNameSuffix!.innerText = ']' + typeNameSuffix!.innerText;
+                typeNamePrefix!.textContent += '[';
+                typeNameSuffix!.textContent = ']' + typeNameSuffix!.textContent;
                 renderType(type.ofType);
               } else {
-                typeName!.innerText = type.name;
+                typeName!.textContent = type.name;
               }
             };
 
-            typeNamePrefix.innerText = '';
-            typeNameSuffix.innerText = '';
+            typeNamePrefix.textContent = '';
+            typeNameSuffix.textContent = '';
             renderType(ctx.type);
           } else {
-            typeNamePrefix.innerText = '';
-            typeName.innerText = '';
-            typeNameSuffix.innerText = '';
+            typeNamePrefix.textContent = '';
+            typeName.textContent = '';
+            typeNameSuffix.textContent = '';
             typeNamePill.style.display = 'none';
           }
         }
@@ -252,7 +252,7 @@ export function onHasCompletion(
       return;
     }
 
-    const typeName = event.currentTarget.innerText;
+    const typeName = event.currentTarget.textContent || '';
     const type = schema.getType(typeName);
     if (type) {
       plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);

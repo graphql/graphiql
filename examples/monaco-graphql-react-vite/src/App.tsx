@@ -158,7 +158,7 @@ export default function App() {
   useEffect(() => {
     if (!schema && !loading) {
       setLoading(true);
-      getSchema()
+      void getSchema()
         .then(data => {
           if (!('data' in data)) {
             throw new Error(

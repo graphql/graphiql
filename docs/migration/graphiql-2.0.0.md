@@ -162,7 +162,7 @@ function InsideContext() {
 
   useEffect(() => {
     const query = queryEditor.getValue();
-  }, []);
+  }, [queryEditor]);
 
   return <GraphiQLInterface />;
 }

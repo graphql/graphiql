@@ -43,7 +43,7 @@ export class DiagnosticsAdapter {
       if (modeId !== this.defaults.languageId) {
         // it is tempting to load json models we cared about here
         // into the webworker, however setDiagnosticOptions() needs
-        // to be called here from main process anyways, and the worker
+        // to be called here from main process anyway, and the worker
         // is already generating json schema itself!
         return;
       }
@@ -56,7 +56,7 @@ export class DiagnosticsAdapter {
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(onChangeTimeout);
         onChangeTimeout = setTimeout(() => {
-          this._doValidate(model.uri, modeId, jsonValidationForModel);
+          void this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
     };
@@ -94,20 +94,24 @@ export class DiagnosticsAdapter {
         },
       },
       defaults.onDidChange(() => {
-        editor.getModels().forEach(model => {
+        for (const model of editor.getModels()) {
           if (getModelLanguageId(model) === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }
-        });
+        }
       }),
     );
 
-    editor.getModels().forEach(onModelAdd);
+    for (const model of editor.getModels()) {
+      onModelAdd(model);
+    }
   }
 
   public dispose(): void {
-    this._disposables.forEach(d => d?.dispose());
+    for (const d of this._disposables) {
+      d?.dispose();
+    }
     this._disposables = [];
   }
 
@@ -125,11 +129,7 @@ export class DiagnosticsAdapter {
     }
 
     const diagnostics = await worker.doValidation(resource.toString());
-    editor.setModelMarkers(
-      editor.getModel(resource) as editor.ITextModel,
-      languageId,
-      diagnostics,
-    );
+    editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
       if (variablesUris.length < 1) {
@@ -207,7 +207,7 @@ export function toCompletion(
   const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
-    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+    kind: toCompletionItemKind(entry.kind!),
     label: entry.label,
     insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText

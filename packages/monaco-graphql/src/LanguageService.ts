@@ -85,7 +85,9 @@ export class LanguageService {
   }
 
   private _cacheSchemas() {
-    this._schemas.forEach(schema => this._cacheSchema(schema));
+    for (const schema of this._schemas) {
+      this._cacheSchema(schema);
+    }
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {
@@ -147,7 +149,7 @@ export class LanguageService {
 
       this._externalFragmentDefinitionNodes = definitionNodes;
     }
-    return this._externalFragmentDefinitionNodes as FragmentDefinitionNode[];
+    return this._externalFragmentDefinitionNodes!;
   }
 
   /**

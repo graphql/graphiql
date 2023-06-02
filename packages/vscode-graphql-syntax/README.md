@@ -9,6 +9,7 @@ matching.
 - Python
 - PHP
 - [Markdown](#markdown)
+- [Scala](#scala)
 
 You'll want to install this if you do not use `graphql-config`, or want to use
 the highlighting with other extensions than `vscode-graphql`
@@ -65,7 +66,7 @@ const query = gql<MyType>`
 as well as normal function expressions with template literals
 
 ```ts
-gql(`{ id }`);
+gql('{ id }');
 ```
 
 ```ts
@@ -82,7 +83,7 @@ there is a bug with function expressions with type arguments like these that we
 need to fix:
 
 ```ts
-gql<MyType>(`{ id }`);
+gql<MyType>('{ id }');
 ```
 
 Note, inline `""` and `''` string literals could also be delimited if needed,
@@ -117,7 +118,7 @@ For full autocompletion, validation and other features, you can install
 # Hello Jan
 
 ```graphql
-  query MyQuery {}
+query MyQuery {}
 ```
 ````
 
@@ -130,15 +131,40 @@ backtick codeblocks.
 # Hello Jan
 
 ```js
-string : X = gql`
-{
-  its {
-    query
-    time
+const myQuery = gql`
+  {
+    its {
+      query
+      time
+    }
   }
-}
+`;
 ```
 ````
+
+#### Scala
+
+Using a `graphql`, `gql` or `schema` string interpolator:
+
+```scala
+val query = graphql"""
+  { id }
+"""
+val query2 = gql"""
+  { id }
+"""
+val query3 = schema"""
+  { id }
+"""
+```
+
+Using a comment-delimited pattern:
+
+```scala
+val query = """#graphql
+ { id }
+"""
+```
 
 ## Other languages
 

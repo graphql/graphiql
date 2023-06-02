@@ -51,7 +51,7 @@ export function useHeaderEditor(
   useEffect(() => {
     let isActive = true;
 
-    importCodeMirror([
+    void importCodeMirror([
       // @ts-expect-error
       import('codemirror/mode/javascript/javascript'),
     ]).then(CodeMirror => {
@@ -96,13 +96,10 @@ export function useHeaderEditor(
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
-        const code = event.keyCode;
-        if (
-          (code >= 65 && code <= 90) || // letters
-          (!event.shiftKey && code >= 48 && code <= 57) || // numbers
-          (event.shiftKey && code === 189) || // underscore
-          (event.shiftKey && code === 222) // "
-        ) {
+        const { code, key, shiftKey } = event;
+        const isLetter = code.startsWith('Key');
+        const isNumber = !shiftKey && code.startsWith('Digit');
+        if (isLetter || isNumber || key === '_' || key === '"') {
           editorInstance.execCommand('autocomplete');
         }
       });

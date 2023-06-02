@@ -210,7 +210,7 @@ describe('getVariablesJSONSchema', () => {
             items: {
               $ref: '#/definitions/ChildInputType',
             },
-            description: `list type with default\n[ChildInputType]`,
+            description: 'list type with default\n[ChildInputType]',
             markdownDescription: `list type with default\n${mdTicks(
               '[ChildInputType]',
             )}`,

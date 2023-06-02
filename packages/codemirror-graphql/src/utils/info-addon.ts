@@ -90,10 +90,13 @@ function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {
 }
 
 function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
-  const pos = cm.coordsChar({
-    left: (box.left + box.right) / 2,
-    top: (box.top + box.bottom) / 2,
-  });
+  const pos = cm.coordsChar(
+    {
+      left: (box.left + box.right) / 2,
+      top: (box.top + box.bottom) / 2,
+    },
+    'window',
+  ); // 'window' allows to work when editor is not full page and window has scrolled
 
   const state = cm.state.info;
   const { options } = state;
@@ -112,8 +115,8 @@ function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
 function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
   const popup = document.createElement('div');
   popup.className = 'CodeMirror-info';
-  popup.appendChild(info);
-  document.body.appendChild(popup);
+  popup.append(info);
+  document.body.append(popup);
 
   const popupBox = popup.getBoundingClientRect();
   const popupStyle = window.getComputedStyle(popup);
@@ -169,11 +172,11 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
       popup.style.opacity = '0';
       setTimeout(() => {
         if (popup.parentNode) {
-          popup.parentNode.removeChild(popup);
+          popup.remove();
         }
       }, 600);
     } else if (popup.parentNode) {
-      popup.parentNode.removeChild(popup);
+      popup.remove();
     }
   };
 

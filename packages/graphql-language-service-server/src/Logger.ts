@@ -8,94 +8,31 @@
  */
 
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
-import { DiagnosticSeverity } from 'vscode-languageserver';
-
-import * as fs from 'node:fs';
-import * as os from 'node:os';
-import { join } from 'node:path';
-import { Socket } from 'node:net';
-
-import {
-  DIAGNOSTIC_SEVERITY,
-  SeverityEnum,
-  SEVERITY,
-} from 'graphql-language-service';
+import { Connection } from 'vscode-languageserver';
 
 export class Logger implements VSCodeLogger {
-  _logFilePath: string;
-  _stderrOnly: boolean;
-
-  constructor(tmpDir?: string, stderrOnly?: boolean) {
-    const dir = join(tmpDir || os.tmpdir(), 'graphql-language-service-logs');
-    try {
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-      }
-    } catch {
-      // intentionally no-op. Don't block the language server even if
-      // the necessary setup cannot be completed for logger.
-    }
-
-    this._logFilePath = join(
-      dir,
-      `graphql-language-service-log-${
-        os.userInfo().username
-      }-${getDateString()}.log`,
-    );
-
-    this._stderrOnly = stderrOnly || false;
-  }
+  constructor(private _connection: Connection) {}
 
   error(message: string): void {
-    this._log(message, SEVERITY.Error);
+    this._connection.console.error(message);
   }
 
   warn(message: string): void {
-    this._log(message, SEVERITY.Warning);
+    this._connection.console.warn(message);
   }
 
   info(message: string): void {
-    this._log(message, SEVERITY.Information);
+    this._connection.console.info(message);
   }
 
   log(message: string): void {
-    this._log(message, SEVERITY.Hint);
-  }
-
-  _log(message: string, severityKey: SeverityEnum): void {
-    const timestamp = new Date().toLocaleString(undefined);
-    const severity = DIAGNOSTIC_SEVERITY[severityKey];
-    const { pid } = process;
-
-    const stringMessage = String(message).trim();
-    const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${stringMessage}\n`;
-    // write to the file in tmpdir
-    fs.appendFile(this._logFilePath, logMessage, _error => {});
-    // @TODO: enable with debugging
-    if (severityKey !== SEVERITY.Hint) {
-      this._getOutputStream(severity).write(logMessage, err => {
-        if (err) {
-          // eslint-disable-next-line no-console
-          console.error(err);
-        }
-      });
-    }
-  }
-
-  _getOutputStream(severity: DiagnosticSeverity): Socket {
-    if (this._stderrOnly || severity === DIAGNOSTIC_SEVERITY.Error) {
-      return process.stderr;
-    }
-
-    return process.stdout;
+    this._connection.console.log(message);
   }
 }
 
-// function getUnixTime() {
-//   return new Date().getTime() / 1000;
-// }
-
-function getDateString() {
-  const date = new Date();
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+export class NoopLogger implements VSCodeLogger {
+  error() {}
+  warn() {}
+  info() {}
+  log() {}
 }

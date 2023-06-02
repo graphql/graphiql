@@ -13,7 +13,7 @@ inline in your code for:
    the operation.
 2. (If variables are specified in the operation), a dialog will prompt for these
    variables
-3. Then, the results or network error should appear, voila!
+3. Then, the results or network error should appear, voilà!
 4. If no endpoints are configured, it will exit early and tell you to define
    them.
 

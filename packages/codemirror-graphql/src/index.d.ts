@@ -13,7 +13,6 @@ declare module 'codemirror' {
     hint?: ShowHintOptions['hint'];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface CodeMirrorHintMap {}
 
   const hint: CodeMirrorHintMap;
