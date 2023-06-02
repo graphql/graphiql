@@ -87,7 +87,9 @@ function getSchemaUrl() {
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+
+root.render(
   React.createElement(GraphiQL, {
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
@@ -106,5 +108,4 @@ ReactDOM.render(
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
   }),
-  document.getElementById('graphiql'),
 );

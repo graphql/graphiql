@@ -37,3 +37,6 @@ package-lock.json
 
 vite.config.d.ts
 vite.config.js
+
+.next/
+.turbo/
