@@ -24,7 +24,9 @@ describe('History', () => {
   });
 
   it('should remove individual item', () => {
-    cy.get('.graphiql-history-item:nth-child(2) > button[aria-label="Delete from history"]').click();
+    cy.get(
+      '.graphiql-history-item:nth-child(2) > button[aria-label="Delete from history"]',
+    ).click();
     cy.get('.graphiql-history-item').should('have.length', 2);
   });
 
@@ -34,11 +36,15 @@ describe('History', () => {
   });
 
   it('should add/remove item to favorite', () => {
-    cy.get('.graphiql-history-item:nth-child(3) > button[aria-label="Add favorite"]').click();
+    cy.get(
+      '.graphiql-history-item:nth-child(3) > button[aria-label="Add favorite"]',
+    ).click();
     cy.get('.graphiql-history-item').should('have.length', 4);
     cy.get('.graphiql-history-item-label').eq(0).should('have.text', 'one');
     cy.get('.graphiql-history-item-label').eq(3).should('have.text', 'one');
-    cy.get('.graphiql-history-item:nth-child(1) > button[aria-label="Remove favorite"]').click();
+    cy.get(
+      '.graphiql-history-item:nth-child(1) > button[aria-label="Remove favorite"]',
+    ).click();
     cy.get('.graphiql-history-item').should('have.length', 3);
   });
 });

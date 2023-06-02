@@ -10,7 +10,13 @@ import {
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import { CloseIcon, PenIcon, StarFilledIcon, StarIcon, TrashIcon } from '../icons';
+import {
+  CloseIcon,
+  PenIcon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
@@ -41,7 +47,7 @@ export function History() {
     } catch {
       setClearStatus('error');
     }
-  }, [deleteFromHistory, items])
+  }, [deleteFromHistory, items]);
 
   return (
     <section aria-label="History" className="graphiql-history">
@@ -54,12 +60,10 @@ export function History() {
             disabled={!items.length}
             onClick={handleClearStatus}
           >
-            {
-              {
-                success: 'Cleared',
-                error: 'Failed to Clear'
-              }[clearStatus!] || 'Clear'
-            }
+            {{
+              success: 'Cleared',
+              error: 'Failed to Clear',
+            }[clearStatus!] || 'Clear'}
           </Button>
         )}
       </div>
@@ -139,17 +143,15 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       variableEditor?.setValue(variables ?? '');
       headerEditor?.setValue(headers ?? '');
       setActive(props.item);
-    }, 
-    [headerEditor, props.item, queryEditor, setActive, variableEditor]
-  );
-  
-  const handleDeleteItemFromHistory: MouseEventHandler<HTMLButtonElement> = 
+    }, [headerEditor, props.item, queryEditor, setActive, variableEditor]);
+
+  const handleDeleteItemFromHistory: MouseEventHandler<HTMLButtonElement> =
     useCallback(
       e => {
         e.stopPropagation();
         deleteFromHistory(props.item);
-      }, 
-      [props.item, deleteFromHistory]
+      },
+      [props.item, deleteFromHistory],
     );
 
   const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
