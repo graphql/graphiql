@@ -359,6 +359,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   const handleAddTab = editorContext.addTab;
   const handleRefetchSchema = schemaContext.introspect;
+  const handleReorder = editorContext.moveTab;
 
   const handleShowDialog: MouseEventHandler<HTMLButtonElement> = useCallback(
     event => {
@@ -518,7 +519,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <div className="graphiql-session-header">
                 <Tabs
                   values={editorContext.tabs}
-                  onReorder={editorContext.moveTab}
+                  onReorder={handleReorder}
                   aria-label="Select active operation"
                 >
                   {editorContext.tabs.length > 1 ? (
