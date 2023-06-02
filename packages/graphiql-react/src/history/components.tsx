@@ -193,6 +193,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
               type="button"
               className="graphiql-history-item-label"
               onClick={handleHistoryItemClick}
+              aria-label="Set active"
             >
               {displayName}
             </UnStyledButton>
