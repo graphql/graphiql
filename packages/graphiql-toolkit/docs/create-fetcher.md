@@ -31,7 +31,7 @@ Delivery support of course!).
 
 ```jsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
@@ -41,7 +41,8 @@ const fetcher = createGraphiQLFetcher({ url });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ### Adding `graphql-ws` websockets subscriptions
@@ -58,7 +59,7 @@ client. This client now supports both HTTP/Multipart Incremental Delivery for
 
 ```jsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
@@ -73,7 +74,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 You can further customize the `graphql-ws` implementation by creating a custom
@@ -136,7 +138,7 @@ This example passes a `graphql-ws` client to the `wsClient` option:
 
 ```jsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createClient } from 'graphql-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -155,7 +157,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ### Custom `legacyClient` Example
@@ -167,7 +170,7 @@ client implementation, or equivalent:
 
 ```jsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -183,7 +186,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 Note that you will need to install the client separately:
@@ -198,7 +202,7 @@ For SSR, we might want to use something like `isomorphic-fetch`:
 
 ```jsx
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { fetch } from 'isomorphic-fetch';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -212,7 +216,8 @@ const fetcher = createGraphiQLFetcher({
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
-ReactDOM.render(document.getElementByID('graphiql'), <App />);
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
 ```
 
 ## Credits

@@ -56,7 +56,12 @@ export type EditorContextType = TabsState & {
    */
   changeTab(index: number): void;
   /**
-   * Close a tab. If the currently active tab is closed the tab before it will
+   * Move a tab to a new spot.
+   * @param newOrder The new order for the tabs.
+   */
+  moveTab(newOrder: TabState[]): void;
+  /**
+   * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
    * will become active.
    * @param index The index of the tab that should be closed.
@@ -184,10 +189,6 @@ export type EditorContextProviderProps = {
    */
   headers?: string;
   /**
-   * @deprecated Use `defaultTabs` instead.
-   */
-  initialTabs?: TabDefinition[];
-  /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
    * there is no tab state persisted in storage.
@@ -306,7 +307,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
-      defaultTabs: props.defaultTabs || props.initialTabs,
+      defaultTabs: props.defaultTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       defaultHeaders: props.defaultHeaders,
       storage,
@@ -403,6 +404,23 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     [onTabChange, setEditorValues, storeTabs],
   );
 
+  const moveTab = useCallback<EditorContextType['moveTab']>(
+    newOrder => {
+      setTabState(current => {
+        const activeTab = current.tabs[current.activeTabIndex];
+        const updated = {
+          tabs: newOrder,
+          activeTabIndex: newOrder.indexOf(activeTab),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    [onTabChange, setEditorValues, storeTabs],
+  );
+
   const closeTab = useCallback<EditorContextType['closeTab']>(
     index => {
       setTabState(current => {
@@ -477,6 +495,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       ...tabState,
       addTab,
       changeTab,
+      moveTab,
       closeTab,
       updateActiveTabValues,
 
@@ -506,6 +525,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       tabState,
       addTab,
       changeTab,
+      moveTab,
       closeTab,
       updateActiveTabValues,
 

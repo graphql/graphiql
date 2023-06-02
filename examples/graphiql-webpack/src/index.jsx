@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime.js';
 import * as React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
@@ -97,4 +97,5 @@ const App = () => {
   );
 };
 
-render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);

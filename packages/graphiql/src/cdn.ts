@@ -34,7 +34,7 @@ GraphiQL.GraphQL = GraphQL;
 
 /**
  * We also add the complete `@graphiql/react` exports. These will be included
- * in the bundle anyways since they make up the `GraphiQL` component, so by
+ * in the bundle anyway since they make up the `GraphiQL` component, so by
  * doing this we can reuse them from plugin CDN bundles.
  */
 // @ts-expect-error

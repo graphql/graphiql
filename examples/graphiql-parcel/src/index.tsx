@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { CSSProperties } from 'react';
@@ -23,7 +23,8 @@ const style: CSSProperties = { height: '100vh' };
 
 const App = () => <GraphiQL style={style} fetcher={fetcher} />;
 
-render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
 
 // Hot Module Replacement
 module.hot?.accept();

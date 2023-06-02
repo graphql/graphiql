@@ -51,7 +51,7 @@
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
     "e2e": "yarn run e2e:build && yarn workspace graphiql e2e",
-    "e2e:build": "yarn build && yarn workspace graphiql run build-bundles-min",
+    "e2e:build": "yarn build && yarn workspace graphiql build-bundles-min",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --cache .",
     "format": "yarn eslint --fix && yarn pretty",
     "jest": "jest",

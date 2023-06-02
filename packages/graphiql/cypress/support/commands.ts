@@ -31,8 +31,6 @@ declare namespace Cypress {
      */
     dataCy(value: string): Chainable<Element>;
 
-    getCy(cyName: string): Chainable<Element>;
-
     clickExecuteQuery(): Chainable<Element>;
 
     visitWithOp(op: Op): Chainable<Element>;
@@ -51,8 +49,8 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add('getCy', cyName => {
-  return cy.get(`[data-cy=${cyName}]`);
+Cypress.Commands.add('dataCy', value => {
+  return cy.get(`[data-cy="${value}"]`);
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {

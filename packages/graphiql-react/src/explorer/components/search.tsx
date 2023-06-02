@@ -1,11 +1,4 @@
 import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from '@reach/combobox';
-import {
   GraphQLArgument,
   GraphQLField,
   GraphQLInputField,
@@ -14,15 +7,8 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import {
-  ChangeEventHandler,
-  KeyboardEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import debounce from '../../utility/debounce';
@@ -39,11 +25,8 @@ export function Search() {
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
-
   const [results, setResults] = useState(getSearchResults(searchValue));
   const debouncedGetSearchResults = useMemo(
     () =>
@@ -69,15 +52,8 @@ export function Search() {
 
   const navItem = explorerNavStack.at(-1)!;
 
-  const shouldSearchBoxAppear =
-    explorerNavStack.length === 1 ||
-    isObjectType(navItem.def) ||
-    isInterfaceType(navItem.def) ||
-    isInputObjectType(navItem.def);
-
-  const handleSelect = useCallback(
-    (value: string) => {
-      const def = value as unknown as TypeMatch | FieldMatch;
+  const onSelect = useCallback(
+    (def: TypeMatch | FieldMatch) => {
       push(
         'field' in def
           ? { name: def.field.name, def: def.field }
@@ -86,51 +62,28 @@ export function Search() {
     },
     [push],
   );
+  const [isFocused, setIsFocused] = useState(false);
+  const handleFocus = useCallback(e => {
+    setIsFocused(e.type === 'focus');
+  }, []);
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-    event => {
-      setSearchValue(event.target.value);
-    },
-    [],
-  );
+  const shouldSearchBoxAppear =
+    explorerNavStack.length === 1 ||
+    isObjectType(navItem.def) ||
+    isInterfaceType(navItem.def) ||
+    isInputObjectType(navItem.def);
+  if (!shouldSearchBoxAppear) {
+    return null;
+  }
 
-  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
-    event => {
-      if (!event.isDefaultPrevented()) {
-        const container = popoverRef.current;
-        if (!container) {
-          return;
-        }
-
-        window.requestAnimationFrame(() => {
-          const element = container.querySelector('[aria-selected=true]');
-          if (!(element instanceof HTMLElement)) {
-            return;
-          }
-          const top = element.offsetTop - container.scrollTop;
-          const bottom =
-            container.scrollTop +
-            container.clientHeight -
-            (element.offsetTop + element.clientHeight);
-          if (bottom < 0) {
-            container.scrollTop -= bottom;
-          }
-          if (top < 0) {
-            container.scrollTop += top;
-          }
-        });
-      }
-
-      // We don't want, for example, "Escape" key presses to bubble up
-      // further. This could have other effects like closing a dialog
-      // that contains this component.
-      event.stopPropagation();
-    },
-    [],
-  );
-
-  return shouldSearchBoxAppear ? (
-    <Combobox aria-label={`Search ${navItem.name}...`} onSelect={handleSelect}>
+  return (
+    <Combobox
+      as="div"
+      className="graphiql-doc-explorer-search"
+      onChange={onSelect}
+      data-state={isFocused ? undefined : 'idle'}
+      aria-label={`Search ${navItem.name}...`}
+    >
       <div
         className="graphiql-doc-explorer-search-input"
         onClick={() => {
@@ -138,28 +91,39 @@ export function Search() {
         }}
       >
         <MagnifyingGlassIcon />
-        <ComboboxInput
-          autocomplete={false}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
+        <Combobox.Input
+          autoComplete="off"
+          onFocus={handleFocus}
+          onBlur={handleFocus}
+          onChange={event => setSearchValue(event.target.value)}
           placeholder="&#x2318; K"
           ref={inputRef}
           value={searchValue}
+          data-cy="doc-explorer-input"
         />
       </div>
-      <ComboboxPopover portal={false} ref={popoverRef}>
-        <ComboboxList>
-          {/**
-           * Setting the `index` prop explicitly on the `ComboboxOption` solves
-           * buggy behavior of the internal ordering of the combobox items.
-           * (Sometimes this results in weird jumps when using the keyboard to
-           * navigate search results.)
-           */}
-          {results.within.map((result, i) => (
-            <ComboboxOption key={`within-${i}`} index={i} value={result as any}>
-              <Field field={result.field} argument={result.argument} />
-            </ComboboxOption>
-          ))}
+
+      {/* hide on blur */}
+      {isFocused && (
+        <Combobox.Options data-cy="doc-explorer-list">
+          {results.within.length +
+            results.types.length +
+            results.fields.length ===
+          0 ? (
+            <li className="graphiql-doc-explorer-search-empty">
+              No results found
+            </li>
+          ) : (
+            results.within.map((result, i) => (
+              <Combobox.Option
+                key={`within-${i}`}
+                value={result}
+                data-cy="doc-explorer-option"
+              >
+                <Field field={result.field} argument={result.argument} />
+              </Combobox.Option>
+            ))
+          )}
           {results.within.length > 0 &&
           results.types.length + results.fields.length > 0 ? (
             <div className="graphiql-doc-explorer-search-divider">
@@ -167,36 +131,28 @@ export function Search() {
             </div>
           ) : null}
           {results.types.map((result, i) => (
-            <ComboboxOption
+            <Combobox.Option
               key={`type-${i}`}
-              index={results.within.length + i}
-              value={result as any}
+              value={result}
+              data-cy="doc-explorer-option"
             >
               <Type type={result.type} />
-            </ComboboxOption>
+            </Combobox.Option>
           ))}
           {results.fields.map((result, i) => (
-            <ComboboxOption
+            <Combobox.Option
               key={`field-${i}`}
-              index={results.within.length + results.types.length + i}
-              value={result as any}
+              value={result}
+              data-cy="doc-explorer-option"
             >
               <Type type={result.type} />.
               <Field field={result.field} argument={result.argument} />
-            </ComboboxOption>
+            </Combobox.Option>
           ))}
-          {results.within.length +
-            results.types.length +
-            results.fields.length ===
-          0 ? (
-            <div className="graphiql-doc-explorer-search-empty">
-              No results found
-            </div>
-          ) : null}
-        </ComboboxList>
-      </ComboboxPopover>
+        </Combobox.Options>
+      )}
     </Combobox>
-  ) : null;
+  );
 }
 
 type TypeMatch = { type: GraphQLNamedType };
@@ -245,7 +201,6 @@ export function useSearchResults(caller?: Function) {
         typeNames = typeNames.filter(n => n !== withinType.name);
         typeNames.unshift(withinType.name);
       }
-
       for (const typeName of typeNames) {
         if (
           matches.within.length +
@@ -301,7 +256,7 @@ export function useSearchResults(caller?: Function) {
   );
 }
 
-function isMatch(sourceText: string, searchValue: string) {
+function isMatch(sourceText: string, searchValue: string): boolean {
   try {
     const escaped = searchValue.replaceAll(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
     return sourceText.search(new RegExp(escaped, 'i')) !== -1;
@@ -323,20 +278,18 @@ type FieldProps = {
   argument?: GraphQLArgument;
 };
 
-function Field(props: FieldProps) {
+function Field({ field, argument }: FieldProps) {
   return (
     <>
-      <span className="graphiql-doc-explorer-search-field">
-        {props.field.name}
-      </span>
-      {props.argument ? (
+      <span className="graphiql-doc-explorer-search-field">{field.name}</span>
+      {argument ? (
         <>
           (
           <span className="graphiql-doc-explorer-search-argument">
-            {props.argument.name}
+            {argument.name}
           </span>
           :{' '}
-          {renderType(props.argument.type, namedType => (
+          {renderType(argument.type, namedType => (
             <Type type={namedType} />
           ))}
           )
