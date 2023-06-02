@@ -22,15 +22,20 @@ export type HistoryContextType = {
    * unset) and properties that identify the history item that the label should
    * be applied to. (This can result in the label being applied to multiple
    * history items.)
+   * @param index Index to edit - without it will look for the first index match the
+   * operation which may lead to misleading results if multiple items have the same label
    */
-  editLabel(args: {
-    query?: string;
-    variables?: string;
-    headers?: string;
-    operationName?: string;
-    label?: string;
-    favorite?: boolean;
-  }): void;
+  editLabel(
+    args: {
+      query?: string;
+      variables?: string;
+      headers?: string;
+      operationName?: string;
+      label?: string;
+      favorite?: boolean;
+    },
+    index?: number,
+  ): void;
   /**
    * The list of history items.
    */
@@ -102,8 +107,8 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
   );
 
   const editLabel: HistoryContextType['editLabel'] = useCallback(
-    (operation: QueryStoreItem) => {
-      historyStore.current.editLabel(operation);
+    (operation: QueryStoreItem, index?: number) => {
+      historyStore.current.editLabel(operation, index);
       setItems(historyStore.current.queries);
     },
     [],

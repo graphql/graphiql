@@ -1,6 +1,5 @@
-import { QueryStoreItem } from '@graphiql/toolkit';
+import type { QueryStoreItem } from '@graphiql/toolkit';
 import {
-  Fragment,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -23,8 +22,20 @@ import { useHistoryContext } from './context';
 import './style.css';
 
 export function History() {
-  const { items, deleteFromHistory } = useHistoryContext({ nonNull: true });
-  const reversedItems = items.slice().reverse();
+  const { items: all, deleteFromHistory } = useHistoryContext({
+    nonNull: true,
+  });
+
+  // Reverse items since we push them in so want the latest one at the top, and pass the
+  // original index in case multiple items share the same label so we can edit correct item
+  let items = all
+    .slice()
+    .map((item, i) => ({ ...item, index: i }))
+    .reverse();
+  const favorites = items.filter(item => item.favorite);
+  if (favorites.length) {
+    items = items.filter(item => !item.favorite);
+  }
 
   const [clearStatus, setClearStatus] = useState<'success' | 'error' | null>(
     null,
@@ -67,31 +78,32 @@ export function History() {
           </Button>
         )}
       </div>
-      <ul className="graphiql-history-items">
-        {reversedItems.map((item, i) => {
-          return (
-            <Fragment key={`${i}:${item.label || item.query}`}>
-              <HistoryItem item={item} />
-              {/**
-               * The (reversed) items are ordered in a way that all favorites
-               * come first, so if the next item is not a favorite anymore we
-               * place a spacer between them to separate these groups.
-               */}
-              {item.favorite &&
-              reversedItems[i + 1] &&
-              !reversedItems[i + 1].favorite ? (
-                <div className="graphiql-history-item-spacer" />
-              ) : null}
-            </Fragment>
-          );
-        })}
-      </ul>
+
+      {favorites && (
+        <ul className="graphiql-history-items">
+          {favorites.map(item => (
+            <HistoryItem item={item} key={item.index} />
+          ))}
+        </ul>
+      )}
+
+      {Boolean(favorites?.length) && Boolean(items?.length) && (
+        <div className="graphiql-history-item-spacer" />
+      )}
+
+      {items && (
+        <ul className="graphiql-history-items">
+          {items.map(item => (
+            <HistoryItem item={item} key={item.index} />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
 
 type QueryHistoryItemProps = {
-  item: QueryStoreItem;
+  item: QueryStoreItem & { index?: number };
 };
 
 export function HistoryItem(props: QueryHistoryItemProps) {
@@ -121,7 +133,8 @@ export function HistoryItem(props: QueryHistoryItemProps) {
 
   const handleSave = useCallback(() => {
     setIsEditable(false);
-    editLabel({ ...props.item, label: inputRef.current?.value });
+    const { index, ...item } = props.item;
+    editLabel({ ...item, label: inputRef.current?.value }, index);
   }, [editLabel, props.item]);
 
   const handleClose = useCallback(() => {

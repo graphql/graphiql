@@ -118,14 +118,17 @@ export class HistoryStore {
     this.queries = [...this.history.items, ...this.favorite.items];
   }
 
-  editLabel({
-    query,
-    variables,
-    headers,
-    operationName,
-    label,
-    favorite,
-  }: QueryStoreItem) {
+  editLabel(
+    {
+      query,
+      variables,
+      headers,
+      operationName,
+      label,
+      favorite,
+    }: QueryStoreItem,
+    index?: number,
+  ) {
     const item = {
       query,
       variables,
@@ -134,9 +137,9 @@ export class HistoryStore {
       label,
     };
     if (favorite) {
-      this.favorite.edit({ ...item, favorite });
+      this.favorite.edit({ ...item, favorite }, index);
     } else {
-      this.history.edit(item);
+      this.history.edit(item, index);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
