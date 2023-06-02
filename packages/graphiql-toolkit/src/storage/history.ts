@@ -106,18 +106,14 @@ export class HistoryStore {
       operationName,
       label,
     };
-    if (!this.favorite.contains(item)) {
-      item.favorite = true;
-      this.favorite.push(item);
-    } else if (favorite) {
+    if (favorite) {
       item.favorite = false;
       this.favorite.delete(item);
-      if (!this.history.contains(item)) {
-        // if was deleted from history, then add it back -
-        // editing labels doesn't adjust item in both favorites & history
-        // so figured maybe deleting shouldn't either
-        this.history.push(item);
-      }
+      this.history.push(item);
+    } else {
+      item.favorite = true;
+      this.favorite.push(item);
+      this.history.delete(item);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
