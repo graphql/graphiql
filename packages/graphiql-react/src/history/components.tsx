@@ -79,7 +79,7 @@ export function History() {
         )}
       </div>
 
-      {favorites && (
+      {Boolean(favorites.length) && (
         <ul className="graphiql-history-items">
           {favorites.map(item => (
             <HistoryItem item={item} key={item.index} />
@@ -87,11 +87,11 @@ export function History() {
         </ul>
       )}
 
-      {Boolean(favorites?.length) && Boolean(items?.length) && (
+      {Boolean(favorites.length) && Boolean(items.length) && (
         <div className="graphiql-history-item-spacer" />
       )}
 
-      {items && (
+      {Boolean(items.length) && (
         <ul className="graphiql-history-items">
           {items.map(item => (
             <HistoryItem item={item} key={item.index} />
