@@ -62,7 +62,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^2.9.13",
+    "vite": "^2.9.16",
     "vite-plugin-react-svg": "^0.2.0"
   }
 }
