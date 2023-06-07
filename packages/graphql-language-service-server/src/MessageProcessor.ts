@@ -665,6 +665,8 @@ export class MessageProcessor {
           await this._updateObjectTypeDefinition(uri, contents);
 
           const project = this._graphQLCache.getProjectForFile(uri);
+          await this._updateSchemaIfChanged(project, uri);
+
           let diagnostics: Diagnostic[] = [];
 
           if (
@@ -1136,6 +1138,18 @@ export class MessageProcessor {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateFragmentDefinition(rootDir, uri, contents);
+  }
+
+  async _updateSchemaIfChanged(
+    project: GraphQLProjectConfig,
+    uri: Uri,
+  ): Promise<void> {
+    const { dirpath, schema } = project;
+    const schemaFilePath = path.resolve(dirpath, schema as string);
+    const uriFilePath = URI.parse(uri).fsPath;
+    if (uriFilePath === schemaFilePath) {
+      await this._graphQLCache.invalidateSchemaCacheForProject(project);
+    }
   }
 
   async _updateObjectTypeDefinition(
