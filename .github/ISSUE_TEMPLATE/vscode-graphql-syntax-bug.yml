@@ -1,5 +1,5 @@
-name: Vscode Syntax Bug
-description: Report a bug for `monaco-graphql`
+name: VSCode GraphQL Syntax Bug
+description: Report a bug for `vscode-graphql-syntax`
 title: "[vscode-graphql-syntax] <title>"
 labels: [vscode-graphql-syntax, bug, needs triage]
 body:
