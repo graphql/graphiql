@@ -68,13 +68,12 @@ export interface GraphQLCache {
   ) => Promise<Map<string, ObjectTypeInfo>>;
 
   updateObjectTypeDefinition: (
-    rootDir: Uri,
+    cacheKey: string,
     filePath: Uri,
     contents: CachedContent[],
   ) => Promise<void>;
 
   updateObjectTypeDefinitionCache: (
-    rootDir: Uri,
     filePath: Uri,
     exists: boolean,
   ) => Promise<void>;
@@ -94,13 +93,12 @@ export interface GraphQLCache {
   ) => Promise<Map<string, FragmentInfo>>;
 
   updateFragmentDefinition: (
-    rootDir: Uri,
+    cacheKey: string,
     filePath: Uri,
     contents: CachedContent[],
   ) => Promise<void>;
 
   updateFragmentDefinitionCache: (
-    rootDir: Uri,
     filePath: Uri,
     exists: boolean,
   ) => Promise<void>;

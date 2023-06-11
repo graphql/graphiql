@@ -48,6 +48,7 @@ import {
 } from './parseDocument';
 import { LoadConfigOptions } from './types';
 
+
 export interface ServerOptions {
   /**
    * port for the LSP server to run on. required if using method socket
@@ -266,6 +267,7 @@ async function addHandlers({
   tmpDir,
   loadConfigOptions,
 }: HandlerOptions): Promise<void> {
+
   const messageProcessor = new MessageProcessor({
     logger,
     config,
@@ -275,7 +277,7 @@ async function addHandlers({
       graphqlFileExtensions || DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
     tmpDir,
     loadConfigOptions,
-    connection,
+    connection
   });
 
   connection.onNotification(

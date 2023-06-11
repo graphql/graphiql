@@ -43,7 +43,7 @@
     "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
-    "glob": "^7.2.0",
+    "glob": "^10.2.3",
     "graphql-config": "4.3.0",
     "graphql-language-service": "^5.1.5",
     "mkdirp": "^1.0.4",
@@ -51,6 +51,7 @@
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
+    "vscode-languageserver-textdocument": "1.0.8",
     "vscode-languageserver-types": "^3.17.2",
     "vscode-uri": "^3.0.2"
   },

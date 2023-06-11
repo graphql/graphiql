@@ -24,8 +24,8 @@ import type {
 } from 'graphql-language-service';
 import type { Logger } from 'vscode-languageserver';
 
-import * as fs from 'node:fs';
-import { readFile } from 'node:fs/promises';
+// import * as fs from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
@@ -39,9 +39,10 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
-import glob from 'glob';
+import { glob } from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
+import { resolve } from 'node:path';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -57,7 +58,8 @@ export async function getGraphQLCache({
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
-  const graphQLConfig = config || (await loadConfig(loadConfigOptions));
+  logger.error(`loadConfig: ${JSON.stringify(loadConfigOptions, null, 2)}`);
+  const graphQLConfig = config || (await loadConfig({}));
   return new GraphQLCache({
     configDir: loadConfigOptions.rootDir as string,
     config: graphQLConfig as GraphQLConfig,
@@ -193,16 +195,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
-    const rootDir = projectConfig.dirpath;
     const cacheKey = this._cacheKeyForProject(projectConfig);
     if (this._fragmentDefinitionsCache.has(cacheKey)) {
       return this._fragmentDefinitionsCache.get(cacheKey) || new Map();
     }
 
-    const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
-
     const { fragmentDefinitions, graphQLFileMap } =
-      await this.readAllGraphQLFiles(list);
+      await this.readAllGraphQLFiles(projectConfig);
 
     this._fragmentDefinitionsCache.set(cacheKey, fragmentDefinitions);
     this._graphQLFileListCache.set(cacheKey, graphQLFileMap);
@@ -304,14 +303,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
   ): Promise<Map<string, ObjectTypeInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
-    const rootDir = projectConfig.dirpath;
     const cacheKey = this._cacheKeyForProject(projectConfig);
     if (this._typeDefinitionsCache.has(cacheKey)) {
       return this._typeDefinitionsCache.get(cacheKey) || new Map();
     }
-    const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
     const { objectTypeDefinitions, graphQLFileMap } =
-      await this.readAllGraphQLFiles(list);
+      await this.readAllGraphQLFiles(projectConfig);
+
     this._typeDefinitionsCache.set(cacheKey, objectTypeDefinitions);
     this._graphQLFileListCache.set(cacheKey, graphQLFileMap);
 
@@ -319,66 +317,68 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   _readFilesFromInputDirs = (
-    rootDir: string,
-    projectConfig: GraphQLProjectConfig,
+    _rootDir: string,
+    _projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
-    let pattern: string;
-    const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
+    // let pattern: string;
+    // const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
 
-    // See https://github.com/graphql/graphql-language-service/issues/221
-    // for details on why special handling is required here for the
-    // documents.length === 1 case.
-    if (patterns.length === 1) {
-      // @ts-ignore
-      pattern = patterns[0];
-    } else {
-      pattern = `{${patterns.join(',')}}`;
-    }
+    // // See https://github.com/graphql/graphql-language-service/issues/221
+    // // for details on why special handling is required here for the
+    // // documents.length === 1 case.
+    // if (patterns.length === 1) {
+    //   // @ts-ignore
+    //   pattern = patterns[0];
+    // } else {
+    //   pattern = `{${patterns.join(',')}}`;
+    // }
 
-    return new Promise((resolve, reject) => {
-      const globResult = new glob.Glob(
-        pattern,
-        {
-          cwd: rootDir,
-          stat: true,
-          absolute: false,
-          ignore: [
-            'generated/relay',
-            '**/__flow__/**',
-            '**/__generated__/**',
-            '**/__github__/**',
-            '**/__mocks__/**',
-            '**/node_modules/**',
-            '**/__flowtests__/**',
-          ],
-        },
-        error => {
-          if (error) {
-            reject(error);
-          }
-        },
-      );
-      globResult.on('end', () => {
-        resolve(
-          Object.keys(globResult.statCache)
-            .filter(
-              filePath => typeof globResult.statCache[filePath] === 'object',
-            )
-            .filter(filePath => projectConfig.match(filePath))
-            .map(filePath => {
-              // @TODO
-              // so we have to force this here
-              // because glob's DefinitelyTyped doesn't use fs.Stats here though
-              // the docs indicate that is what's there :shrug:
-              const cacheEntry = globResult.statCache[filePath] as fs.Stats;
-              return {
-                filePath: URI.file(filePath).toString(),
-                mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
-                size: cacheEntry.size,
-              };
-            }),
-        );
-      });
+    return new Promise((res, _reject) => {
+      // const globResult = new glob.Glob(
+      //   pattern,
+      //   {
+      //     cwd: rootDir,
+      //     stat: true,
+      //     absolute: false,
+      //     ignore: [
+      //       'generated/relay',
+      //       '**/__flow__/**',
+      //       '**/__generated__/**',
+      //       '**/__github__/**',
+      //       '**/__mocks__/**',
+      //       '**/node_modules/**',
+      //       '**/__flowtests__/**',
+      //     ],
+      //   },
+      //   error => {
+      //     if (error) {
+      //       reject(error);
+      //     }
+      //   },
+      // );
+      this._logger.error('glob result');
+      // globResult.on('end', () => {
+      res([]);
+      // resolve(
+      //   Object.keys(globResult.statCache)
+      //     .filter(
+      //       filePath => typeof globResult.statCache[filePath] === 'object',
+      //     )
+      //     .filter(filePath => projectConfig.match(filePath))
+      //     .map(filePath => {
+      //       // @TODO
+      //       // so we have to force this here
+      //       // because glob's DefinitelyTyped doesn't use fs.Stats here though
+      //       // the docs indicate that is what's there :shrug:
+      //       const cacheEntry = globResult.statCache[filePath] as fs.Stats;
+      //       return {
+      //         filePath: URI.file(filePath).toString(),
+      //         mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
+      //         size: cacheEntry.size,
+      //       };
+      //     }),
+      // );
+      //   });
     });
   };
 
@@ -425,11 +425,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   async updateFragmentDefinition(
-    rootDir: Uri,
+    cacheKey: string,
     filePath: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const cache = this._fragmentDefinitionsCache.get(rootDir);
+    const cache = this._fragmentDefinitionsCache.get(cacheKey);
     const asts = contents.map(({ query }) => {
       try {
         return {
@@ -465,10 +465,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   async updateFragmentDefinitionCache(
-    rootDir: Uri,
     filePath: Uri,
     exists: boolean,
   ): Promise<void> {
+    const projectConfig = this._graphQLConfig.getProjectForFile(filePath);
+    const cacheKey = this._cacheKeyForProject(projectConfig);
     const fileAndContent = exists
       ? await this.promiseToReadGraphQLFile(filePath)
       : null;
@@ -477,13 +478,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // previously.
     // For delete, remove the entry from the set.
     if (!exists) {
-      const cache = this._fragmentDefinitionsCache.get(rootDir);
+      const cache = this._fragmentDefinitionsCache.get(cacheKey);
       if (cache) {
         cache.delete(filePath);
       }
     } else if (fileAndContent?.queries) {
       await this.updateFragmentDefinition(
-        rootDir,
+        cacheKey,
         filePath,
         fileAndContent.queries,
       );
@@ -491,11 +492,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   async updateObjectTypeDefinition(
-    rootDir: Uri,
+    cacheKey: string,
     filePath: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const cache = this._typeDefinitionsCache.get(rootDir);
+    const cache = this._typeDefinitionsCache.get(cacheKey);
     const asts = contents.map(({ query }) => {
       try {
         return {
@@ -531,10 +532,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   async updateObjectTypeDefinitionCache(
-    rootDir: Uri,
     filePath: Uri,
     exists: boolean,
   ): Promise<void> {
+    const projectConfig = this._graphQLConfig.getProjectForFile(filePath);
+    const cacheKey = this._cacheKeyForProject(projectConfig);
     const fileAndContent = exists
       ? await this.promiseToReadGraphQLFile(filePath)
       : null;
@@ -543,13 +545,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // previously.
     // For delete, remove the entry from the set.
     if (!exists) {
-      const cache = this._typeDefinitionsCache.get(rootDir);
+      const cache = this._typeDefinitionsCache.get(cacheKey);
       if (cache) {
         cache.delete(filePath);
       }
     } else if (fileAndContent?.queries) {
       await this.updateObjectTypeDefinition(
-        rootDir,
+        cacheKey,
         filePath,
         fileAndContent.queries,
       );
@@ -620,7 +622,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   getSchema = async (
     appName?: string,
-    queryHasExtensions?: boolean | null,
+    _queryHasExtensions?: boolean | null,
   ): Promise<GraphQLSchema | null> => {
     const projectConfig = this._graphQLConfig.getProject(appName);
 
@@ -629,27 +631,25 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     const schemaPath = projectConfig.schema as string;
-    const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
+    const schemaKey = this._cacheKeyForProject(projectConfig);
 
-    let schemaCacheKey = null;
+    // let schemaCacheKey = null;
     let schema = null;
 
-    if (schemaPath && schemaKey) {
-      schemaCacheKey = schemaKey as string;
+    // schemaCacheKey = schemaKey as string;
 
-      // Maybe use cache
-      if (this._schemaMap.has(schemaCacheKey)) {
-        schema = this._schemaMap.get(schemaCacheKey);
-        if (schema) {
-          return queryHasExtensions
-            ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-            : schema;
-        }
-      }
+    // Maybe use cache
+    // if (this._schemaMap.has(schemaCacheKey)) {
+    //   schema = this._schemaMap.get(schemaCacheKey);
+    //   if (schema) {
+    //     return queryHasExtensions
+    //       ? this._extendSchema(schema, schemaPath, schemaCacheKey)
+    //       : schema;
+    //   }
+    // }
 
-      // Read from disk
-      schema = await projectConfig.getSchema();
-    }
+    // Read from disk or network
+    schema = await projectConfig.getSchema();
 
     const customDirectives = projectConfig?.extensions?.customDirectives;
     if (customDirectives && schema) {
@@ -662,12 +662,12 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     if (this._graphQLFileListCache.has(this._configDir)) {
-      schema = this._extendSchema(schema, schemaPath, schemaCacheKey);
+      schema = this._extendSchema(schema, schemaPath, schemaKey);
     }
 
-    if (schemaCacheKey) {
-      this._schemaMap.set(schemaCacheKey, schema);
-    }
+    // if (schemaCacheKey) {
+    //   this._schemaMap.set(schemaCacheKey, schema);
+    // }
     return schema;
   };
 
@@ -695,25 +695,39 @@ export class GraphQLCache implements GraphQLCacheInterface {
    * and create fragmentDefinitions and GraphQL files cache.
    */
   readAllGraphQLFiles = async (
-    list: Array<GraphQLFileMetadata>,
+    projectConfig: GraphQLProjectConfig,
   ): Promise<{
     objectTypeDefinitions: Map<string, ObjectTypeInfo>;
     fragmentDefinitions: Map<string, FragmentInfo>;
     graphQLFileMap: Map<string, GraphQLFileInfo>;
   }> => {
+    const list = await glob(
+      this._getSchemaAndDocumentFilePatterns(projectConfig),
+      {
+        // stat: true,
+        ignore: 'node_modules/**',
+        // withFileTypes: true,
+      },
+    );
     const queue = list.slice(); // copy
     const responses: GraphQLFileInfo[] = [];
     while (queue.length) {
       const chunk = queue.splice(0, MAX_READS);
-      const promises = chunk.map(async fileInfo => {
+      const promises = chunk.map(async filePath => {
         try {
-          const response = await this.promiseToReadGraphQLFile(
-            fileInfo.filePath,
-          );
+          const resolvedPath = resolve(filePath);
+          this._logger.error(resolvedPath);
+          const stats = await stat(resolvedPath);
+
+          if (!filePath || !stats) {
+            return;
+          }
+          const response = await this.promiseToReadGraphQLFile(resolvedPath);
           responses.push({
             ...response,
-            mtime: fileInfo.mtime,
-            size: fileInfo.size,
+            filePath: resolvedPath,
+            mtime: stats.mtimeMs,
+            size: stats.size,
           });
         } catch (error: any) {
           // eslint-disable-next-line no-console
@@ -727,7 +741,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
            * queue.
            */
           if (error.code === 'EMFILE' || error.code === 'ENFILE') {
-            queue.push(fileInfo);
+            queue.push(filePath);
           }
         }
       });
@@ -754,6 +768,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     for (const response of responses) {
       const { filePath, content, asts, mtime, size } = response;
+      this._logger.error(asts?.length.toString());
 
       if (asts) {
         for (const ast of asts) {
@@ -799,7 +814,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
   promiseToReadGraphQLFile = async (
     filePath: Uri,
   ): Promise<GraphQLFileInfo> => {
-    const content = await readFile(URI.parse(filePath).fsPath, 'utf8');
+    const actualPath = URI.parse(filePath).fsPath;
+    this._logger.error(`actual path ${actualPath}`);
+    const content = await readFile(actualPath, 'utf8');
 
     const asts: DocumentNode[] = [];
     let queries: CachedContent[] = [];

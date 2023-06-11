@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { Connection } from 'vscode-languageserver';
 
