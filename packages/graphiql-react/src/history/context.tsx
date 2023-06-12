@@ -22,8 +22,8 @@ export type HistoryContextType = {
    * unset) and properties that identify the history item that the label should
    * be applied to. (This can result in the label being applied to multiple
    * history items.)
-   * @param index Index to edit - without it will look for the first index match the
-   * operation which may lead to misleading results if multiple items have the same label
+   * @param index Index to edit. Without it, will look for the first index matching the
+   * operation, which may lead to misleading results if multiple items have the same label
    */
   editLabel(
     args: {
