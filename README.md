@@ -52,7 +52,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 ![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.png)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
-[Try the live demo](http://graphql.org/swapi-graphql). We also have
+[Try the live demo](https://graphql.github.io/swapi-graphql). We also have
 [a demo using our latest netlify build](http://graphiql-test.netlify.com) for
 the `main` branch.
 
