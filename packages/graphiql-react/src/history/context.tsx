@@ -84,7 +84,7 @@ export type HistoryContextProviderProps = {
 /**
  * The functions send the entire operation so users can customize their own application with
  * <HistoryContext.Provider value={customizedFunctions} /> and get access to the operation plus
- * any additional props they added for their needs (i.e. build their own functions that may save
+ * any additional props they added for their needs (i.e., build their own functions that may save
  * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
  */
 export function HistoryContextProvider(props: HistoryContextProviderProps) {
