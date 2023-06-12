@@ -165,7 +165,7 @@ export function getAutocompleteSuggestions(
     schema,
   };
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor);
+    contextToken || getTokenAtPosition(queryText, cursor, 1);
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
@@ -963,6 +963,7 @@ function getSuggestionsForDirective(
 export function getTokenAtPosition(
   queryText: string,
   cursor: IPosition,
+  offset = 0,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
@@ -970,7 +971,7 @@ export function getTokenAtPosition(
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (
       index === cursor.line &&
-      stream.getCurrentPosition() >= cursor.character
+      stream.getCurrentPosition() + offset >= cursor.character + 1
     ) {
       styleAtCursor = style;
       stateAtCursor = { ...state };
