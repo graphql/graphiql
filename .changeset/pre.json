@@ -9,13 +9,7 @@
     "@graphiql/plugin-explorer": "0.1.20",
     "@graphiql/react": "0.17.6",
     "@graphiql/toolkit": "0.8.4",
-    "graphql-language-service": "5.1.6",
-    "graphql-language-service-cli": "3.3.23",
-    "graphql-language-service-server": "2.11.1",
     "monaco-graphql": "1.2.3",
-    "vscode-graphql": "0.8.13",
-    "vscode-graphql-execution": "0.2.0",
-    "vscode-graphql-syntax": "1.2.0",
     "codemirror-graphql": "2.0.8"
   },
   "changesets": [
