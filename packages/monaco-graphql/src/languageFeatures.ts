@@ -298,9 +298,9 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
-      return <monaco.languages.Hover>{
+      return {
         range: hoverItem.range,
-        contents: [{ value: hoverItem.content }],
+        contents: [{ value: hoverItem.content as string }],
       };
     }
 
