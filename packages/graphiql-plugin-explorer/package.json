@@ -6,8 +6,8 @@
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-plugin-explorer"
   },
-  "main": "dist/graphiql-plugin-explorer.cjs.js",
-  "module": "dist/graphiql-plugin-explorer.es.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "keywords": [
