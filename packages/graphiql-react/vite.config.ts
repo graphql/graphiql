@@ -35,7 +35,9 @@ export default defineConfig({
         'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
-        ...Object.keys(packageJSON.dependencies),
+        ...Object.keys(packageJSON.dependencies).filter(
+          dependency => dependency !== 'codemirror',
+        ),
       ],
       output: {
         chunkFileNames: '[name].[format].js',
