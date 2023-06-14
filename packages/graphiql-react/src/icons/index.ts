@@ -1,3 +1,5 @@
+import { ComponentProps, FC } from 'react';
+
 import _ArgumentIcon from './argument.svg';
 import _ChevronDownIcon from './chevron-down.svg';
 import _ChevronLeftIcon from './chevron-left.svg';
@@ -69,7 +71,7 @@ function generateIcon(
     .replaceAll(/([A-Z])/g, ' $1')
     .trimStart()
     .toLowerCase() + ' icon',
-) {
+): FC<ComponentProps<'svg'>> {
   RawComponent.defaultProps = { title };
   return RawComponent;
 }
