@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import reactSvgPlugin from 'vite-plugin-react-svg';
 import postCssNestingPlugin from 'postcss-nesting';
+import packageJSON from './package.json';
 
 export default defineConfig({
   plugins: [
@@ -26,11 +27,16 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: 'src/index.ts',
-      fileName: 'graphiql-react',
+      fileName: 'index',
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['graphql', 'react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react/jsx-runtime',
+        // Exclude peer dependencies and dependencies from bundle
+        ...Object.keys(packageJSON.peerDependencies),
+        ...Object.keys(packageJSON.dependencies),
+      ],
       output: {
         chunkFileNames: '[name].[format].js',
       },
