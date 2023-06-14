@@ -25,7 +25,7 @@ export { LANGUAGE_ID };
 languages.onLanguage(LANGUAGE_ID, () => {
   const api = initializeMode();
 
-  (<any>languages).graphql = { api };
+  (languages as any).graphql = { api };
 });
 /**
  * Register the language mode without schema or any settings, so you can configure them asynchronously.
