@@ -115,7 +115,7 @@ wsrun
 lezer
 buildhelper
 sonarjs
-
+svgr
 
 // identifiers used in code and configs
 acmerc
