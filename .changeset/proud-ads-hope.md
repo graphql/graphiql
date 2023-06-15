@@ -2,7 +2,7 @@
 '@graphiql/react': minor
 ---
 
-- Add a clear history button to clear all history as well as trash icons to clear individual history items
+- Add a "clear history" button to clear all history as well as trash icons to clear individual history items
 
 - Change so item is in history items or history favorites, not both
 
