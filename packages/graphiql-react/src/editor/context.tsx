@@ -37,6 +37,7 @@ import {
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+import { editor } from 'monaco-editor';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -79,39 +80,39 @@ export type EditorContextType = TabsState & {
   ): void;
 
   /**
-   * The CodeMirror editor instance for the headers editor.
+   * The CodeMirror editor instance for the headers' editor.
    */
-  headerEditor: CodeMirrorEditor | null;
+  headerEditor: editor.IStandaloneCodeEditor | null;
   /**
    * The CodeMirror editor instance for the query editor. This editor also
    * stores the operation facts that are derived from the current editor
    * contents.
    */
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  queryEditor: editor.IStandaloneCodeEditor | null;
   /**
    * The CodeMirror editor instance for the response editor.
    */
-  responseEditor: CodeMirrorEditor | null;
+  responseEditor: editor.IStandaloneCodeEditor | null;
   /**
-   * The CodeMirror editor instance for the variables editor.
+   * The CodeMirror editor instance for the variables' editor.
    */
-  variableEditor: CodeMirrorEditor | null;
+  variableEditor: editor.IStandaloneCodeEditor | null;
   /**
-   * Set the CodeMirror editor instance for the headers editor.
+   * Set the CodeMirror editor instance for the headers' editor.
    */
-  setHeaderEditor(newEditor: CodeMirrorEditor): void;
+  setHeaderEditor(newEditor: editor.IStandaloneCodeEditor): void;
   /**
    * Set the CodeMirror editor instance for the query editor.
    */
-  setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
+  setQueryEditor(newEditor: editor.IStandaloneCodeEditor): void;
   /**
    * Set the CodeMirror editor instance for the response editor.
    */
-  setResponseEditor(newEditor: CodeMirrorEditor): void;
+  setResponseEditor(newEditor: editor.IStandaloneCodeEditor): void;
   /**
-   * Set the CodeMirror editor instance for the variables editor.
+   * Set the CodeMirror editor instance for the variables' editor.
    */
-  setVariableEditor(newEditor: CodeMirrorEditor): void;
+  setVariableEditor(newEditor: editor.IStandaloneCodeEditor): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.
@@ -207,7 +208,7 @@ export type EditorContextProviderProps = {
   /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
-   * - Selecting a operation for execution in a document that contains multiple
+   * - Selecting an operation for execution in a document that contains multiple
    *   operation definitions
    * @param operationName The operation name after it has been changed.
    */
@@ -248,7 +249,7 @@ export type EditorContextProviderProps = {
    */
   validationRules?: ValidationRule[];
   /**
-   * This prop can be used to set the contents of the variables editor. Every
+   * This prop can be used to set the contents of the variables' editor. Every
    * time this prop changes, the contents of the variables editor are replaced.
    * Note that the editor contents can be changed in between these updates by
    * typing in the editor.
@@ -263,15 +264,15 @@ export type EditorContextProviderProps = {
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
   const storage = useStorageContext();
-  const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
+  const [headerEditor, setHeaderEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
   const [queryEditor, setQueryEditor] =
-    useState<CodeMirrorEditorWithOperationFacts | null>(null);
-  const [responseEditor, setResponseEditor] = useState<CodeMirrorEditor | null>(
+    useState<editor.IStandaloneCodeEditor | null>(null);
+  const [responseEditor, setResponseEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
-  const [variableEditor, setVariableEditor] = useState<CodeMirrorEditor | null>(
+  const [variableEditor, setVariableEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
 
@@ -459,6 +460,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         return;
       }
 
+      // @ts-expect-error FIXME: MONACO
       queryEditor.operationName = operationName;
       updateActiveTabValues({ operationName });
       onEditOperationName?.(operationName);
@@ -556,7 +558,7 @@ export const useEditorContext = createContextHook(EditorContext);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
 
-const DEFAULT_QUERY = `# Welcome to GraphiQL
+export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # GraphiQL is an in-browser tool for writing, validating, and
 # testing GraphQL queries.

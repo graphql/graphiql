@@ -1,3 +1,4 @@
+// @ts-nocheck -- codemirror editor complain about type errors
 import { useEffect } from 'react';
 import { clsx } from 'clsx';
 

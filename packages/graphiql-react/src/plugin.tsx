@@ -120,10 +120,9 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
         throw new Error(
           `All GraphiQL plugins must have a unique title, found two plugins with the title '${plugin.title}'`,
         );
-      } else {
-        pluginList.push(plugin);
-        pluginTitles[plugin.title] = true;
       }
+      pluginList.push(plugin);
+      pluginTitles[plugin.title] = true;
     }
 
     return pluginList;

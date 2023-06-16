@@ -3,14 +3,10 @@ import './style/root.css';
 export {
   EditorContext,
   EditorContextProvider,
-  HeaderEditor,
   ImagePreview,
-  QueryEditor,
-  ResponseEditor,
   useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
-  useHeaderEditor,
   useMergeQuery,
   usePrettifyEditors,
   useQueryEditor,
@@ -19,6 +15,10 @@ export {
   useOperationsEditorState,
   useVariablesEditorState,
   VariableEditor,
+  OperationsEditor,
+  VariablesEditor,
+  HeadersEditor,
+  ResultsEditor,
 } from './editor';
 export {
   ExecutionContext,

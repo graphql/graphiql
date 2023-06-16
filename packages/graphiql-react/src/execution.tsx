@@ -155,8 +155,10 @@ export function ExecutionContextProvider({
     }
 
     if (externalFragments) {
+      // @ts-expect-error FIXME: MONACO
       const fragmentDependencies = queryEditor.documentAST
         ? getFragmentDependenciesForAST(
+          // @ts-expect-error FIXME: MONACO
             queryEditor.documentAST,
             externalFragments,
           )
@@ -173,6 +175,7 @@ export function ExecutionContextProvider({
     setResponse('');
     setIsFetching(true);
 
+    // @ts-expect-error FIXME: MONACO
     const opName = operationName ?? queryEditor.operationName ?? undefined;
 
     history?.addToHistory({
@@ -255,6 +258,7 @@ export function ExecutionContextProvider({
         },
         {
           headers: headers ?? undefined,
+          // @ts-expect-error FIXME: MONACO
           documentAST: queryEditor.documentAST ?? undefined,
         },
       );

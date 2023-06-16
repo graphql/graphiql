@@ -4,6 +4,10 @@ export {
   QueryEditor,
   ResponseEditor,
   VariableEditor,
+  OperationsEditor,
+  VariablesEditor,
+  HeadersEditor,
+  ResultsEditor
 } from './components';
 export {
   EditorContext,
