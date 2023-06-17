@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "graphql": "^16.4.0",
-    "monaco-editor": "^0.36.1",
+    "monaco-editor": "^0.39.0",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {

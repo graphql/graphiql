@@ -6,7 +6,6 @@
  */
 
 import { Emitter } from 'monaco-editor';
-
 import type { IEvent } from 'monaco-editor';
 import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
 import type {

@@ -13,7 +13,6 @@ export {
   MonacoGraphQLAPIOptions,
   diagnosticSettingDefault,
 } from './api';
-
 import { languages } from 'monaco-editor';
 
 export * from './typings';

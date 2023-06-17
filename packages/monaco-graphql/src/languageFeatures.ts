@@ -7,7 +7,6 @@
 
 import { GraphQLWorker } from './GraphQLWorker';
 import type { MonacoGraphQLAPI } from './api';
-
 import type {
   Uri,
   Position,
@@ -15,9 +14,7 @@ import type {
   CancellationToken,
   IDisposable,
 } from 'monaco-editor';
-
 import * as monaco from 'monaco-editor';
-
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
