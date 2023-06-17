@@ -11,10 +11,10 @@ import type {
   IPosition as GraphQLPosition,
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
-  Position,
 } from 'graphql-language-service';
 import type { editor } from 'monaco-editor';
 import { buildASTSchema, printSchema } from 'graphql';
+import { Position } from 'graphql-language-service';
 
 // for backwards compatibility
 export const getModelLanguageId = (model: editor.ITextModel) => {
