@@ -63,8 +63,8 @@ export function useDragResize({
   const store = useMemo(
     () =>
       debounce(500, (value: string) => {
-        if (storage && storageKey) {
-          storage.set(storageKey, value);
+        if (storageKey) {
+          storage?.set(storageKey, value);
         }
       }),
     [storage, storageKey],
@@ -72,8 +72,7 @@ export function useDragResize({
 
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     () => {
-      const storedValue =
-        storage && storageKey ? storage.get(storageKey) : null;
+      const storedValue = storageKey && storage?.get(storageKey);
       if (storedValue === HIDE_FIRST || initiallyHidden === 'first') {
         return 'first';
       }
@@ -105,14 +104,10 @@ export function useDragResize({
    */
   useLayoutEffect(() => {
     const storedValue =
-      storage && storageKey
-        ? storage.get(storageKey) || defaultFlexRef.current
-        : defaultFlexRef.current;
-    const flexDirection = direction === 'horizontal' ? 'row' : 'column';
+      (storageKey && storage?.get(storageKey)) || defaultFlexRef.current;
 
     if (firstRef.current) {
       firstRef.current.style.display = 'flex';
-      firstRef.current.style.flexDirection = flexDirection;
       firstRef.current.style.flex =
         storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
           ? defaultFlexRef.current
@@ -121,13 +116,11 @@ export function useDragResize({
 
     if (secondRef.current) {
       secondRef.current.style.display = 'flex';
-      secondRef.current.style.flexDirection = flexDirection;
       secondRef.current.style.flex = '1';
     }
 
     if (dragBarRef.current) {
       dragBarRef.current.style.display = 'flex';
-      dragBarRef.current.style.flexDirection = flexDirection;
     }
   }, [direction, storage, storageKey]);
 
@@ -172,9 +165,13 @@ export function useDragResize({
       element.style.position = '';
       element.style.left = '';
 
-      if (firstRef.current && storage && storageKey) {
-        const storedValue = storage?.get(storageKey);
-        if (storedValue !== HIDE_FIRST && storedValue !== HIDE_SECOND) {
+      if (storage && storageKey) {
+        const storedValue = storage.get(storageKey);
+        if (
+          firstRef.current &&
+          storedValue !== HIDE_FIRST &&
+          storedValue !== HIDE_SECOND
+        ) {
           firstRef.current.style.flex = storedValue || defaultFlexRef.current;
         }
       }

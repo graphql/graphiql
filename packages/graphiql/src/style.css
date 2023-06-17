@@ -35,9 +35,11 @@
 .graphiql-container .graphiql-sidebar button.active {
   color: hsla(var(--color-neutral), 1);
 }
+
 .graphiql-container .graphiql-sidebar button:not(:first-child) {
   margin-top: var(--px-4);
 }
+
 .graphiql-container .graphiql-sidebar button > svg {
   height: var(--px-20);
   width: var(--px-20);
@@ -75,21 +77,23 @@
 /* The button to add a new tab */
 button.graphiql-tab-add {
   height: 100%;
-  padding: 0 var(--px-4);
+  padding: var(--px-4);
 }
+
 button.graphiql-tab-add > svg {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   display: block;
   height: var(--px-16);
   width: var(--px-16);
 }
+
 .graphiql-add-tab-wrapper {
   padding: var(--px-12) 0;
 }
 
 /* The right-hand-side of the session header */
 .graphiql-container .graphiql-session-header-right {
-  align-items: stretch;
+  align-items: center;
   display: flex;
 }
 
@@ -123,6 +127,7 @@ button.graphiql-tab-add > svg {
   flex: 1;
   flex-direction: column;
 }
+
 .graphiql-container .graphiql-editors.full-height {
   margin-top: calc(var(--px-8) - var(--session-header-height));
 }
@@ -131,22 +136,17 @@ button.graphiql-tab-add > svg {
 .graphiql-container .graphiql-query-editor {
   border-bottom: 1px solid
     hsla(var(--color-neutral), var(--alpha-background-heavy));
-  display: flex;
-  flex: 1;
   padding: var(--px-16);
-}
-
-/* The query editor */
-.graphiql-container .graphiql-query-editor-wrapper {
+  column-gap: var(--px-16);
   display: flex;
-  flex: 1;
+  width: 100%;
 }
 
 /* The vertical toolbar next to the query editor */
 .graphiql-container .graphiql-toolbar {
-  margin-left: var(--px-16);
   width: var(--toolbar-width);
 }
+
 .graphiql-container .graphiql-toolbar > * + * {
   margin-top: var(--px-8);
 }
@@ -161,29 +161,30 @@ button.graphiql-tab-add > svg {
 
 /* The tab bar for editor tools */
 .graphiql-container .graphiql-editor-tools {
-  align-items: center;
   cursor: row-resize;
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  column-gap: var(--px-8);
   padding: var(--px-8);
 }
+
 .graphiql-container .graphiql-editor-tools button {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
 }
+
 .graphiql-container .graphiql-editor-tools button.active {
   color: hsla(var(--color-neutral), 1);
 }
 
 /* The tab buttons to switch between editor tools */
-.graphiql-container .graphiql-editor-tools-tabs {
-  cursor: auto;
-  display: flex;
-}
-.graphiql-container .graphiql-editor-tools-tabs > button {
+.graphiql-container
+  .graphiql-editor-tools
+  > button:not(.graphiql-toggle-editor-tools) {
   padding: var(--px-8) var(--px-12);
 }
-.graphiql-container .graphiql-editor-tools-tabs > button + button {
-  margin-left: var(--px-8);
+
+.graphiql-container .graphiql-editor-tools .graphiql-toggle-editor-tools {
+  margin-left: auto;
 }
 
 /* An editor tool, e.g. variable or header editor */
@@ -208,9 +209,8 @@ button.graphiql-tab-add > svg {
 .graphiql-container .graphiql-response {
   --editor-background: transparent;
   display: flex;
-  flex: 1;
+  width: 100%;
   flex-direction: column;
-  position: relative;
 }
 
 /* The results editor wrapping container */
@@ -235,11 +235,12 @@ button.graphiql-tab-add > svg {
 }
 
 /* Generic drag bar for horizontal resizing */
-.graphiql-container .graphiql-horizontal-drag-bar {
+.graphiql-horizontal-drag-bar {
   width: var(--px-12);
   cursor: col-resize;
 }
-.graphiql-container .graphiql-horizontal-drag-bar:hover::after {
+
+.graphiql-horizontal-drag-bar:hover::after {
   border: var(--px-2) solid
     hsla(var(--color-neutral), var(--alpha-background-heavy));
   border-radius: var(--border-radius-2);
@@ -265,6 +266,7 @@ button.graphiql-tab-add > svg {
 .graphiql-spin {
   animation: spin 0.8s linear 0s infinite;
 }
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -298,6 +300,7 @@ button.graphiql-tab-add > svg {
   justify-content: space-between;
   padding: var(--px-24);
 }
+
 .graphiql-dialog .graphiql-dialog-section > :not(:first-child) {
   margin-left: var(--px-24);
 }
@@ -322,6 +325,7 @@ button.graphiql-tab-add > svg {
   border-collapse: collapse;
   width: 100%;
 }
+
 .graphiql-dialog .graphiql-table :is(th, td) {
   border: 1px solid hsla(var(--color-neutral), var(--alpha-background-heavy));
   padding: var(--px-8) var(--px-12);
