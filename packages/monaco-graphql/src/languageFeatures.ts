@@ -8,13 +8,12 @@
 import { GraphQLWorker } from './GraphQLWorker';
 import type { MonacoGraphQLAPI } from './api';
 import type {
-  Uri,
   Position,
   Thenable,
   CancellationToken,
   IDisposable,
 } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
+import { Uri, languages } from 'monaco-editor';
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
@@ -139,7 +138,7 @@ export class DiagnosticsAdapter {
         return;
       }
 
-      const schemaUri = monaco.Uri.file(
+      const schemaUri = Uri.file(
         variablesUris[0].replace('.json', '-schema.json'),
       ).toString();
       const configResult = {
@@ -148,7 +147,7 @@ export class DiagnosticsAdapter {
         fileMatch: variablesUris,
       };
       // TODO: export from api somehow?
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      languages.json.jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
         ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
@@ -159,12 +158,9 @@ export class DiagnosticsAdapter {
   }
 }
 
-const mKind = monaco.languages.CompletionItemKind;
+const mKind = languages.CompletionItemKind;
 
-const kindMap: Record<
-  lsCompletionItemKind,
-  monaco.languages.CompletionItemKind
-> = {
+const kindMap: Record<lsCompletionItemKind, languages.CompletionItemKind> = {
   [lsCompletionItemKind.Text]: mKind.Text,
   [lsCompletionItemKind.Method]: mKind.Method,
   [lsCompletionItemKind.Function]: mKind.Function,
@@ -194,21 +190,21 @@ const kindMap: Record<
 
 export function toCompletionItemKind(
   kind: lsCompletionItemKind,
-): monaco.languages.CompletionItemKind {
+): languages.CompletionItemKind {
   return kind in kindMap ? kindMap[kind] : mKind.Text;
 }
 
 export function toCompletion(
   entry: GraphQLWorkerCompletionItem,
-): monaco.languages.CompletionItem {
-  const suggestions: monaco.languages.CompletionItem = {
+): languages.CompletionItem {
+  const suggestions: languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
     kind: toCompletionItemKind(entry.kind!),
     label: entry.label,
     insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText
-      ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+      ? languages.CompletionItemInsertTextRule.InsertAsSnippet
       : undefined,
     sortText: entry.sortText,
     filterText: entry.filterText,
@@ -219,9 +215,7 @@ export function toCompletion(
   return suggestions;
 }
 
-export class CompletionAdapter
-  implements monaco.languages.CompletionItemProvider
-{
+export class CompletionAdapter implements languages.CompletionItemProvider {
   constructor(private _worker: WorkerAccessor) {
     this._worker = _worker;
   }
@@ -233,9 +227,9 @@ export class CompletionAdapter
   async provideCompletionItems(
     model: editor.IReadOnlyModel,
     position: Position,
-    _context: monaco.languages.CompletionContext,
+    _context: languages.CompletionContext,
     _token: CancellationToken,
-  ): Promise<monaco.languages.CompletionList> {
+  ): Promise<languages.CompletionList> {
     try {
       const resource = model.uri;
       const worker = await this._worker(model.uri);
@@ -256,7 +250,7 @@ export class CompletionAdapter
 }
 
 export class DocumentFormattingAdapter
-  implements monaco.languages.DocumentFormattingEditProvider
+  implements languages.DocumentFormattingEditProvider
 {
   constructor(private _worker: WorkerAccessor) {
     this._worker = _worker;
@@ -264,7 +258,7 @@ export class DocumentFormattingAdapter
 
   async provideDocumentFormattingEdits(
     document: editor.ITextModel,
-    _options: monaco.languages.FormattingOptions,
+    _options: languages.FormattingOptions,
     _token: CancellationToken,
   ) {
     const worker = await this._worker(document.uri);
@@ -282,14 +276,14 @@ export class DocumentFormattingAdapter
   }
 }
 
-export class HoverAdapter implements monaco.languages.HoverProvider {
+export class HoverAdapter implements languages.HoverProvider {
   constructor(private _worker: WorkerAccessor) {}
 
   async provideHover(
     model: editor.IReadOnlyModel,
     position: Position,
     _token: CancellationToken,
-  ): Promise<monaco.languages.Hover> {
+  ): Promise<languages.Hover> {
     const resource = model.uri;
     const worker = await this._worker(model.uri);
     const hoverItem = await worker.doHover(resource.toString(), position);
