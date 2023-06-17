@@ -1,5 +1,4 @@
-import type { languages } from 'monaco-editor';
-
+import type * as monaco from 'monaco-editor';
 import {
   IntrospectionQuery,
   DocumentNode,
@@ -10,7 +9,6 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
 } from 'graphql';
-
 import type { Options as PrettierConfig } from 'prettier';
 
 export type BaseSchemaConfig = {
@@ -127,7 +125,8 @@ export interface IDisposable {
   dispose(): void;
 }
 
-export type JSONDiagnosticOptions = languages.json.DiagnosticsOptions;
+export type JSONDiagnosticOptions = monaco.languages.json.DiagnosticsOptions;
+
 export interface IEvent<T> {
   (listener: (e: T) => any, thisArg?: any): IDisposable;
 }
@@ -209,7 +208,7 @@ export type DiagnosticSettings = {
    * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
    * {languages.json.DiagnosticsOptions}
    */
-  jsonDiagnosticSettings?: languages.json.DiagnosticsOptions;
+  jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
 };
 
 export type CompletionSettings = {

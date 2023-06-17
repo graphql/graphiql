@@ -7,26 +7,22 @@
 
 import { GraphQLWorker } from './GraphQLWorker';
 import type { MonacoGraphQLAPI } from './api';
-import type {
-  Position,
-  Thenable,
-  CancellationToken,
-  IDisposable,
-} from 'monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { Uri, languages } from 'monaco-editor';
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
 
 export interface WorkerAccessor {
-  (...more: Uri[]): Thenable<GraphQLWorker>;
+  (...more: Uri[]): monaco.Thenable<GraphQLWorker>;
 }
 
 // --- completion ------
 
 export class DiagnosticsAdapter {
-  private _disposables: IDisposable[] = [];
-  private _listener: { [uri: string]: IDisposable } = Object.create(null);
+  private _disposables: monaco.IDisposable[] = [];
+  private _listener: { [uri: string]: monaco.IDisposable } =
+    Object.create(null);
 
   constructor(
     private defaults: MonacoGraphQLAPI,
@@ -226,9 +222,9 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
 
   async provideCompletionItems(
     model: editor.IReadOnlyModel,
-    position: Position,
+    position: monaco.Position,
     _context: languages.CompletionContext,
-    _token: CancellationToken,
+    _token: monaco.CancellationToken,
   ): Promise<languages.CompletionList> {
     try {
       const resource = model.uri;
@@ -259,7 +255,7 @@ export class DocumentFormattingAdapter
   async provideDocumentFormattingEdits(
     document: editor.ITextModel,
     _options: languages.FormattingOptions,
-    _token: CancellationToken,
+    _token: monaco.CancellationToken,
   ) {
     const worker = await this._worker(document.uri);
 
@@ -281,8 +277,8 @@ export class HoverAdapter implements languages.HoverProvider {
 
   async provideHover(
     model: editor.IReadOnlyModel,
-    position: Position,
-    _token: CancellationToken,
+    position: monaco.Position,
+    _token: monaco.CancellationToken,
   ): Promise<languages.Hover> {
     const resource = model.uri;
     const worker = await this._worker(model.uri);

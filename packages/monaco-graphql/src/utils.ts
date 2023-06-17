@@ -13,9 +13,7 @@ import type {
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
 import type * as monaco from 'monaco-editor';
-
 import { buildASTSchema, printSchema } from 'graphql';
-
 import { Position } from 'graphql-language-service';
 
 // for backwards compatibility
