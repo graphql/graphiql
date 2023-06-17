@@ -11,7 +11,6 @@ coverage/
 .nyc_output
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
-packages/graphiql/storybook
 packages/graphiql/typedoc
 dist
 esm
