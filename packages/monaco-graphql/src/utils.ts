@@ -11,12 +11,10 @@ import type {
   IPosition as GraphQLPosition,
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
+  Position,
 } from 'graphql-language-service';
 import type { editor } from 'monaco-editor';
-
 import { buildASTSchema, printSchema } from 'graphql';
-
-import { Position } from 'graphql-language-service';
 
 // for backwards compatibility
 export const getModelLanguageId = (model: editor.ITextModel) => {
@@ -112,8 +110,7 @@ export function toMarkerData(
     startColumn: diagnostic.range.start.character + 1,
     endColumn: diagnostic.range.end.character,
     message: diagnostic.message,
-    severity: 5,
-    // severity: toMonacoSeverity(diagnostic.severity),
+    severity: monaco.MarkerSeverity.Error,
     code: (diagnostic.code as string) || undefined,
   };
 }

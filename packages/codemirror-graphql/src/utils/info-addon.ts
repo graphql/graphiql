@@ -33,7 +33,7 @@ CodeMirror.defineOption(
   },
 );
 
-function createState(options: GraphQLInfoOptions) {
+function createState(options: GraphQLInfoOptions | true | (() => any)) {
   return {
     options:
       options instanceof Function
