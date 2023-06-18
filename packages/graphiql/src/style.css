@@ -87,10 +87,6 @@ button.graphiql-tab-add > svg {
   width: var(--px-16);
 }
 
-.graphiql-add-tab-wrapper {
-  padding: var(--px-12) 0;
-}
-
 /* The right-hand-side of the session header */
 .graphiql-container .graphiql-session-header-right {
   align-items: center;
