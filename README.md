@@ -89,7 +89,7 @@ Provides CodeMirror 5 with a parser mode for GraphQL along with a live linter an
 typeahead hinter powered by your GraphQL Schema. Uses the
 `graphql-language-service`.
 
-## [`cm6-graphql`](packages/codemirror-graphql#readme)
+## [`cm6-graphql`](packages/cm6-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/cm6-graphql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/cm6-graphql)
