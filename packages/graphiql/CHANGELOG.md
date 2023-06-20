@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.0.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5), [`bc9d243d`](https://github.com/graphql/graphiql/commit/bc9d243d40b95f95fc9d00d25aa0dd1733952626), [`67bf93a3`](https://github.com/graphql/graphiql/commit/67bf93a33e98c60ae3a686063a1c47037f88ef49)]:
+  - graphql-language-service@5.1.7-alpha.0
+  - @graphiql/react@0.18.0-alpha.1
+
 ## 3.0.0-alpha.0
 
 ### Major Changes

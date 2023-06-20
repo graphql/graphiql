@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 0.1.3-alpha.0
+
+### Patch Changes
+
+- [#3229](https://github.com/graphql/graphiql/pull/3229) [`0a65e720`](https://github.com/graphql/graphiql/commit/0a65e7207b6bc4174896f6acca8a40f45d2fb1b8) Thanks [@B2o5T](https://github.com/B2o5T)! - exclude peer dependencies and dependencies from bundle
+
 ## 0.1.2
 
 ### Patch Changes
