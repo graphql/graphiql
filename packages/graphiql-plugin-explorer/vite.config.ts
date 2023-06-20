@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import packageJSON from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,12 +8,16 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'graphiql-plugin-explorer',
+      fileName: 'index',
       name: 'GraphiQLPluginExplorer',
       formats: ['cjs', 'es', 'umd'],
     },
     rollupOptions: {
-      external: ['@graphiql/react', 'graphql', 'react', 'react-dom'],
+      external: [
+        // Exclude peer dependencies and dependencies from bundle
+        ...Object.keys(packageJSON.peerDependencies),
+        ...Object.keys(packageJSON.dependencies),
+      ],
       output: {
         chunkFileNames: '[name].[format].js',
         globals: {

@@ -7,8 +7,8 @@
     "directory": "packages/graphiql-plugin-code-exporter"
   },
   "author": "LekoArts",
-  "main": "dist/graphiql-plugin-code-exporter.cjs.js",
-  "module": "dist/graphiql-plugin-code-exporter.es.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "keywords": [

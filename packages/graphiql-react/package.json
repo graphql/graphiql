@@ -47,6 +47,7 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "dependencies": {
+    "@types/codemirror": "^5.60.8",
     "@headlessui/react": "^1.7.15",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-visually-hidden": "^1.0.3",
@@ -65,7 +66,6 @@
   "devDependencies": {
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "12.1.5",
-    "@types/codemirror": "^5.60.5",
     "@types/set-value": "^4.0.1",
     "@vitejs/plugin-react": "^4.0.0",
     "graphql": "^16.4.0",

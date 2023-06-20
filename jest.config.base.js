@@ -31,7 +31,6 @@ module.exports = (dir, env = 'jsdom') => {
     testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],
     coveragePathIgnorePatterns: [
-      '.stories.js',
       'dist',
       'esm',
       'node_modules',
