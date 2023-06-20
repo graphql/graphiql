@@ -93,7 +93,7 @@ typeahead hinter powered by your GraphQL Schema. Uses the
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/cm6-graphql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/cm6-graphql)
-![npm downloads](https://img.shields.io/npm/dm/codemirror-graphql?label=npm%20downloads)
+![npm downloads](https://img.shields.io/npm/dm/cm6-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/cm6-graphql)
 
 Provides CodeMirror 6 with a full-featured language mode for GraphQL. Uses the `graphql-language-service`.
