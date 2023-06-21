@@ -28,15 +28,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@graphiql/react": "^0.18.0-alpha.1",
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
     "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react-dom": "^16.8.0 || ^17 || ^18",
+    "@graphiql/react": "^0.17 || ^0.18"
   },
   "devDependencies": {
+    "@graphiql/react": "^0.18.0-alpha.1",
     "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^4.6.3",
     "vite": "^4.3.9"
