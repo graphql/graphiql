@@ -1,7 +1,6 @@
 import {
   mockQuery1,
   mockVariables1,
-  mockOperationName1,
   mockBadQuery,
   mockQuery2,
   mockVariables2,
