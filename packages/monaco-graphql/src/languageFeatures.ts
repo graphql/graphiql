@@ -217,7 +217,7 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
   }
 
   public get triggerCharacters(): string[] {
-    return [':', '$', '\n', ' ', '(', '@'];
+    return [':', '$', '\n', '(', '@'];
   }
 
   async provideCompletionItems(
