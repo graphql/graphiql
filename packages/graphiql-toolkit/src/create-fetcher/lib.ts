@@ -169,6 +169,7 @@ export const createMultipartFetcher = (
 
     // Follows the same as createSimpleFetcher above, in that we simply return it as json.
     if (!isAsyncIterable(response)) {
+      // @ts-expect-error don't know how to fix 'yield' expression implicitly results in an 'any' type because its containing generator lacks a return-type annotation.
       return yield response.json();
     }
 

@@ -75,15 +75,17 @@ When running `server`, your LSP-compatible client can
 
 For example, `coc.nvim` allows for providing custom `settings`
 
-```json
-"languageserver": {
-  "graphql": {
-    "command": "graphql-lsp",
-    "args": ["server", "-m", "stream"],
-    // customize filetypes to your needs
-    "filetypes": ["typescript", "typescriptreact", "graphql"],
-    "settings": {
+```jsonc
+{
+  "languageserver": {
+    "graphql": {
+      "command": "graphql-lsp",
+      "args": ["server", "-m", "stream"],
+      // customize filetypes to your needs
+      "filetypes": ["typescript", "typescriptreact", "graphql"],
+      "settings": {
         "graphql-config.load.legacy": true
+      }
     }
   }
 }
@@ -145,5 +147,4 @@ directory, or the current working directory, until a
 
 At least one command is required.
 Commands: "server, validate, autocomplete, outline"
-
 ```
