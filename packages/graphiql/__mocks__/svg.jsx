@@ -4,4 +4,4 @@ export default function MockedIcon(props) {
       <title>mocked icon</title>
     </svg>
   );
-};
+}

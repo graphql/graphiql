@@ -11,7 +11,6 @@ import { GraphiQL } from '../GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 
-
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
   data: {

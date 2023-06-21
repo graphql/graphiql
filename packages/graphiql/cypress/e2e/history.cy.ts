@@ -9,9 +9,7 @@ import {
 } from '../fixtures/fixtures';
 
 describe('history', () => {
-  beforeEach(() => {
-
-  });
+  beforeEach(() => {});
   it('defaults to closed history panel', () => {
     cy.visit('/');
 
@@ -64,12 +62,16 @@ describe('history', () => {
   });
 
   it('will save query if the variables change', () => {
-    cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables1}`);
+    cy.visit(
+      `?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables1}`,
+    );
     cy.get('button[aria-label="Show History"]').click();
     cy.clickExecuteQuery();
     cy.get('ul.graphiql-history-items li').should('have.length', 1);
 
-    cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables2}`);
+    cy.visit(
+      `?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables2}`,
+    );
     cy.clickExecuteQuery();
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
@@ -86,5 +88,4 @@ describe('history', () => {
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
   });
-
 });

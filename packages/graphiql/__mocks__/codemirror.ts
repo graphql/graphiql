@@ -22,13 +22,13 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
     options: {
       ...options,
       lint: {
-        linterOptions: {}
-      }
+        linterOptions: {},
+      },
     },
     state: {
       lint: {
-        linterOptions: {}
-      }
+        linterOptions: {},
+      },
     },
 
     on(event, handler) {

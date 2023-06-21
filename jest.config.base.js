@@ -29,7 +29,7 @@ module.exports = (dir, env = 'jsdom') => {
       // relies on compilation
       '^cm6-graphql\\/src\\/([^]+)': `${__dirname}/packages/cm6-graphql/dist/$1`,
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
-      '^-!svg-react-loader.*$': '<rootDir>/resources/jest/svgImportMock.js'
+      '^-!svg-react-loader.*$': '<rootDir>/resources/jest/svgImportMock.js',
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
     testEnvironment: env,
