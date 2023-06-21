@@ -5,9 +5,18 @@ codecov:
 coverage:
   precision: 2
   round: down
-  range: "30...100"
-  
-comment:                  # this is a top-level key
-  layout: "reach, diff, flags, files"
+  range: '30...100'
+
+  status:
+    project:
+      default:
+        target: 60% # the required coverage value
+        threshold: 1% # the leniency in hitting the target, allows 1% drop
+    patch:
+      default:
+        informational: true
+
+comment: # this is a top-level key
+  layout: 'reach, diff, flags, files'
   behavior: default
-  require_changes: true  # if true: only post the comment if coverage changes
+  require_changes: true # if true: only post the comment if coverage changes
