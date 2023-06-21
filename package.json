@@ -73,11 +73,11 @@
     "repo:resolve": "node scripts/set-resolution.js",
     "start-graphiql": "yarn workspace graphiql dev",
     "start-monaco": "yarn workspace example-monaco-graphql-webpack start",
-    "t": "yarn run testonly",
-    "test": "yarn jest --noStackTrace",
+    "t": "yarn run test",
+    "test": "yarn jest",
+    "test:ci": "yarn test && yarn workspace cm6-graphql test",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
-    "testonly": "jest && yarn workspace codemirror-graphql run test",
     "tsc": "tsc --build"
   },
   "devDependencies": {

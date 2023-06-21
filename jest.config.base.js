@@ -26,12 +26,14 @@ module.exports = (dir, env = 'jsdom') => {
       '^@graphiql-plugins\\/([^/]+)': `${__dirname}/plugins/$1/src`,
       '^codemirror-graphql\\/esm([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
       '^codemirror-graphql\\/cjs([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
+      // relies on compilation
+      // '^cm6-graphql\\/([^]+)': `${__dirname}/packages/cm6-graphql/src/$1`,
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
       '^-!svg-react-loader.*$': '<rootDir>/resources/jest/svgImportMock.js'
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
     testEnvironment: env,
-    testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
+    testPathIgnorePatterns: ['node_modules', 'dist', 'cypress', 'packages/cm6-graphql'],
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],
     coveragePathIgnorePatterns: [
       'dist',

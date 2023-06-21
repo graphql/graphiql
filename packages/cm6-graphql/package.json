@@ -4,7 +4,8 @@
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
     "build": "cm-buildhelper src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "test": "yarn build && yarn test"
   },
   "main": "dist/index.cjs",
   "module": "dist/index.js",
