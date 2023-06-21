@@ -1,7 +1,5 @@
-name: Test PR
+name: E2E
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [opened, synchronize]
     paths-ignore:
@@ -9,8 +7,8 @@ on:
       - 'examples'
       - '!examples/monaco-graphql-webpack'
 jobs:
-  unit:
-    name: Unit Tests
+  e2e:
+    name: Cypress E2E Suite
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
@@ -21,12 +19,5 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
-      - name: Run Unit Tests
-        run: yarn test:ci --coverage
-
-      - uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+      - name: Run E2E suite
+        run: yarn e2e

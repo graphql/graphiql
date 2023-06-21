@@ -1,5 +1,14 @@
 # @graphiql/plugin-explorer
 
+## 0.1.21-alpha.1
+
+### Patch Changes
+
+- [#3229](https://github.com/graphql/graphiql/pull/3229) [`0a65e720`](https://github.com/graphql/graphiql/commit/0a65e7207b6bc4174896f6acca8a40f45d2fb1b8) Thanks [@B2o5T](https://github.com/B2o5T)! - exclude peer dependencies and dependencies from bundle
+
+- Updated dependencies [[`bc9d243d`](https://github.com/graphql/graphiql/commit/bc9d243d40b95f95fc9d00d25aa0dd1733952626), [`67bf93a3`](https://github.com/graphql/graphiql/commit/67bf93a33e98c60ae3a686063a1c47037f88ef49)]:
+  - @graphiql/react@0.18.0-alpha.1
+
 ## 0.1.21-alpha.0
 
 ### Patch Changes

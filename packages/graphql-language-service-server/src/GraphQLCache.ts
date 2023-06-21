@@ -671,7 +671,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return schema;
   };
 
-  _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
+  invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
     const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
     ) as string;

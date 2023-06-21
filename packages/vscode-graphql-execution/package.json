@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-execution",
-  "version": "0.2.0",
+  "version": "0.2.1-alpha.0",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
   "publisher": "GraphQL",
@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "main": "./dist/extension",
+  "main": "./dist/extension.js",
   "icon": "assets/images/logo.png",
   "contributors": [
     {
@@ -87,7 +87,7 @@
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish",
+    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
@@ -98,7 +98,7 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "esbuild": "0.15.10",
-    "ovsx": "0.3.0",
+    "ovsx": "0.5.1",
     "vsce": "^2.13.0"
   },
   "dependencies": {

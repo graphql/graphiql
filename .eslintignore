@@ -33,7 +33,6 @@ working-group/
 **/codemirror-graphql/__tests__
 
 .changeset/*.md
-storybook-static/
 
 # Followed are located in .gitignore
 packages/graphiql-react/types/
