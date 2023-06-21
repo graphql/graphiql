@@ -11,16 +11,6 @@ import { GraphiQL } from '../GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 
-import {
-  mockQuery1,
-  mockVariables1,
-  mockOperationName1,
-  mockBadQuery,
-  mockQuery2,
-  mockVariables2,
-  mockHeaders1,
-  mockHeaders2,
-} from './fixtures';
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {

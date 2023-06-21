@@ -38,11 +38,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile --immutable
 
-      - name: Typescript Build
-        run: yarn build
-
       - name: Unit Tests
-        run: yarn test
+        run: yarn test:ci
 
       - name: Cypress
         run: yarn e2e
