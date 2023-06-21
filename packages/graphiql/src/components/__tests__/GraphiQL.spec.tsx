@@ -44,7 +44,6 @@ beforeEach(() => {
 });
 
 describe('GraphiQL', () => {
-  // @ts-expect-error fake Fetcher
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
@@ -166,7 +165,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
-          '[data-testid="query-editor"] .mockCodeMirror',
+          '.graphiql-query-editor .mockCodeMirror',
         );
         expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
@@ -180,7 +179,7 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         expect(
           container.querySelector(
-            '[data-testid="query-editor"] .mockCodeMirror',
+            '.graphiql-query-editor .mockCodeMirror',
           ),
         ).toHaveValue('GraphQL Party!!');
       });
@@ -753,13 +752,18 @@ describe('GraphiQL', () => {
           fetcher={noOpFetcher}
         />,
       );
+      await act(async () => {
+        try {
+          fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
+          fireEvent.click(getByLabelText('Show History'));
+        }
+        catch(err) {
+          console.error(err)
+        }
 
-      act(() => {
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-        fireEvent.click(getByLabelText('Show History'));
       });
 
-      await waitFor(() => {
+      await waitFor(async () => {
         expect(
           container.querySelectorAll('.graphiql-history-items li'),
         ).toHaveLength(1);

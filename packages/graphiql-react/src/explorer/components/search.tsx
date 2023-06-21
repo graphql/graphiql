@@ -63,7 +63,7 @@ export function Search() {
     [push],
   );
   const [isFocused, setIsFocused] = useState(false);
-  const handleFocus = useCallback(e => {
+  const handleFocus = useCallback((e: any) => {
     setIsFocused(e.type === 'focus');
   }, []);
 
