@@ -23,7 +23,7 @@ jobs:
         run: yarn build
 
       - name: Run Unit Tests
-        run: yarn test
+        run: yarn test --coverage
 
       - uses: codecov/codecov-action@v3
         with:
