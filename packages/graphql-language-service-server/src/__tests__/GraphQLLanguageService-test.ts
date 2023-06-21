@@ -14,6 +14,9 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
+import { DocumentNode, parse } from 'graphql';
+
+const simplify = (data: unknown) => JSON.parse(JSON.stringify(data));
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -24,6 +27,8 @@ const MOCK_CONFIG = {
 };
 
 describe('GraphQLLanguageService', () => {
+  let mockGetSchemaDocumentNode: DocumentNode | undefined;
+
   const mockCache = {
     async getSchema() {
       const config = this.getGraphQLConfig();
@@ -116,6 +121,10 @@ describe('GraphQLLanguageService', () => {
         },
       ];
     },
+
+    getSchemaDocumentNode() {
+      return mockGetSchemaDocumentNode;
+    },
   };
 
   let languageService: GraphQLLanguageService;
@@ -124,6 +133,7 @@ describe('GraphQLLanguageService', () => {
       mockCache as any,
       new NoopLogger(),
     );
+    mockGetSchemaDocumentNode = undefined;
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -186,6 +196,28 @@ describe('GraphQLLanguageService', () => {
     expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
 
+  it('can find references for an object type', async () => {
+    const document =
+      'union X = A | B\ntype A { x: String }\ntype B { x: String }\ntype Query { a: X\n z: A }';
+    mockGetSchemaDocumentNode = parse(document);
+
+    const references = await languageService.getReferences(
+      document,
+      { line: 1, character: 5 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(
+      references
+        ?.flatMap(r => [r.location.range.start, r.location.range.end])
+        .map(p => [p.line, p.character]),
+    ).toEqual([
+      [0, 10],
+      [0, 10],
+      [4, 4],
+      [4, 4],
+    ]);
+  });
+
   it('runs hover service as expected', async () => {
     const hoverInformation = await languageService.getHoverInformation(
       'type Query { hero(episode: String): String }',
@@ -213,12 +245,45 @@ describe('GraphQLLanguageService', () => {
 
     expect(result).not.toBeUndefined();
     expect(result.length).toEqual(3);
-    // expect(result[0].name).toEqual('item');
-    expect(result[1].name).toEqual('item');
-    expect(result[1].kind).toEqual(SymbolKind.Field);
-    expect(result[1].location.range.start.line).toEqual(2);
-    expect(result[1].location.range.start.character).toEqual(4);
-    expect(result[1].location.range.end.line).toEqual(4);
-    expect(result[1].location.range.end.character).toEqual(5);
+    expect(simplify(result)).toEqual(
+      simplify([
+        {
+          containerName: undefined,
+          name: 'OperationExample',
+          kind: SymbolKind.Class,
+          location: {
+            range: {
+              end: new Position(5, 3),
+              start: new Position(1, 2),
+            },
+            uri: 'file://file.graphql',
+          },
+        },
+        {
+          containerName: 'OperationExample',
+          name: 'item',
+          kind: SymbolKind.Field,
+          location: {
+            range: {
+              end: new Position(4, 5),
+              start: new Position(2, 4),
+            },
+            uri: 'file://file.graphql',
+          },
+        },
+        {
+          containerName: 'item',
+          name: 'testFragment',
+          kind: SymbolKind.Struct,
+          location: {
+            range: {
+              end: new Position(3, 21),
+              start: new Position(3, 6),
+            },
+            uri: 'file://file.graphql',
+          },
+        },
+      ]),
+    );
   });
 });

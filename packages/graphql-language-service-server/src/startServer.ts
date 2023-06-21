@@ -38,6 +38,7 @@ import {
   WorkspaceSymbolRequest,
   createConnection,
   Connection,
+  ReferencesRequest,
 } from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
@@ -333,6 +334,10 @@ async function addHandlers({
 
   connection.onRequest(DefinitionRequest.type, params =>
     messageProcessor.handleDefinitionRequest(params),
+  );
+
+  connection.onRequest(ReferencesRequest.type, params =>
+    messageProcessor.handleReferencesRequest(params),
   );
 
   connection.onRequest(HoverRequest.type, params =>

@@ -6,6 +6,10 @@ module.exports = (dir, env = 'jsdom') => {
   if (env === 'jsdom') {
     setupFilesAfterEnv.push(path.join(__dirname, '/resources/test.config.js'));
   }
+  const testPathIgnorePatterns = ['node_modules', 'dist', 'cypress'];
+  if (process.env.IGNORE_CM6) {
+    testPathIgnorePatterns.push('cm6-graphql');
+  }
   return {
     globals: {
       'ts-jest': {
@@ -33,7 +37,7 @@ module.exports = (dir, env = 'jsdom') => {
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
     testEnvironment: env,
-    testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
+    testPathIgnorePatterns,
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],
     coveragePathIgnorePatterns: [
       'dist',
