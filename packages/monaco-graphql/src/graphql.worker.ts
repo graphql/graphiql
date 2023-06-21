@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import type { worker as WorkerNamespace } from 'monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { ICreateData } from './typings';
 
 // @ts-expect-error
@@ -15,7 +15,7 @@ import { GraphQLWorker } from './GraphQLWorker';
 
 self.onmessage = () => {
   initialize(
-    (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) =>
+    (ctx: monaco.worker.IWorkerContext, createData: ICreateData) =>
       new GraphQLWorker(ctx, createData),
   );
 };

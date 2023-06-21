@@ -6,8 +6,7 @@
  */
 
 import { Emitter } from 'monaco-editor';
-
-import type { IEvent } from 'monaco-editor';
+import type * as monaco from 'monaco-editor';
 import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
 import type {
   CompletionSettings,
@@ -66,7 +65,7 @@ export class MonacoGraphQLAPI {
     this._formattingOptions = formattingOptions ?? formattingDefaults;
   }
 
-  public get onDidChange(): IEvent<MonacoGraphQLAPI> {
+  public get onDidChange(): monaco.IEvent<MonacoGraphQLAPI> {
     return this._onDidChange.event;
   }
 

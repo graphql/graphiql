@@ -13,13 +13,13 @@ export {
   MonacoGraphQLAPIOptions,
   diagnosticSettingDefault,
 } from './api';
-
 import { languages } from 'monaco-editor';
-
-export * from './typings';
 import { initializeMode, LANGUAGE_ID } from './initializeMode';
 
+export * from './typings';
+
 export { LANGUAGE_ID };
+
 // here is the only place where we
 // initialize the mode `onLanguage`
 languages.onLanguage(LANGUAGE_ID, () => {
