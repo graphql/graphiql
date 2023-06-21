@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build",
+    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {
