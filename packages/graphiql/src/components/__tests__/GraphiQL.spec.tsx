@@ -753,13 +753,9 @@ describe('GraphiQL', () => {
         />,
       );
       await act(async () => {
-        try {
           fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
           fireEvent.click(getByLabelText('Show History'));
-        }
-        catch(err) {
-          console.error(err)
-        }
+        
 
       });
 
