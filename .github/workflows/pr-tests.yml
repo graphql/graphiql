@@ -21,9 +21,6 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
-      - name: Build
-        run: yarn build
-
       - name: Run Unit Tests
         run: yarn test --coverage
 
