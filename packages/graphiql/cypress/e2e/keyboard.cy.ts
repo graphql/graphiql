@@ -1,6 +1,6 @@
 describe('GraphiQL keyboard interactions', () => {
   it('Does not prevent the escape key from being handled outside the editor', () => {
-    cy.visit('');
+    cy.visit('/');
     const mockFn = cy.stub().as('escapeHandler');
     cy.document().then(doc => {
       doc.addEventListener('keydown', event => {
@@ -16,7 +16,7 @@ describe('GraphiQL keyboard interactions', () => {
   });
 
   it('Does prevent the escape key from being handled outside the editor if closing the autocomplete dialog', () => {
-    cy.visit('');
+    cy.visit('/');
     const mockFn = cy.stub().as('escapeHandler');
     cy.document().then(doc => {
       doc.addEventListener('keydown', event => {

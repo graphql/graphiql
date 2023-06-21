@@ -7,7 +7,7 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FocusEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
@@ -63,7 +63,7 @@ export function Search() {
     [push],
   );
   const [isFocused, setIsFocused] = useState(false);
-  const handleFocus = useCallback((e: any) => {
+  const handleFocus: FocusEventHandler = useCallback((e) => {
     setIsFocused(e.type === 'focus');
   }, []);
 

@@ -2,7 +2,7 @@ import { version } from 'graphql';
 
 describe('Errors', () => {
   it('Should show an error when the HTTP request fails', () => {
-    cy.visit('?http-error=true');
+    cy.visit('/?http-error=true');
     cy.assertQueryResult({
       errors: [
         {
@@ -21,14 +21,14 @@ describe('Errors', () => {
   });
 
   it('Should show an error when introspection fails', () => {
-    cy.visit('?graphql-error=true');
+    cy.visit('/?graphql-error=true');
     cy.assertQueryResult({
       errors: [{ message: 'Something unexpected happened...' }],
     });
   });
 
   it('Should show an error when the schema is invalid', () => {
-    cy.visit('?bad=true');
+    cy.visit('/?bad=true');
     /**
      * We can't use `cy.assertQueryResult` here because the stack contains line
      * and column numbers of the `graphiql.min.js` bundle which are not stable.
