@@ -21,6 +21,14 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
   return {
     options: {
       ...options,
+      lint: {
+        linterOptions: {},
+      },
+    },
+    state: {
+      lint: {
+        linterOptions: {},
+      },
     },
 
     on(event, handler) {
@@ -46,7 +54,10 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
     setValue(newValue) {
       mockTextArea.value = newValue;
     },
-
+    addKeyMap() {},
+    removeKeyMap() {},
+    setOption() {},
+    refresh() {},
     setSize() {},
 
     emit: _emit,
@@ -56,6 +67,8 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
 CodeMirror.defineExtension = () => {};
 CodeMirror.registerHelper = () => {};
 CodeMirror.defineOption = () => {};
+CodeMirror.defineMode = () => {};
+
 CodeMirror.signal = (mockCodeMirror, event, ...args) => {
   mockCodeMirror.emit(event, ...args);
 };

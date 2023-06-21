@@ -21,11 +21,8 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
-      - name: Build
-        run: yarn build
-
       - name: Run Unit Tests
-        run: yarn test --coverage
+        run: yarn test:ci --coverage
 
       - uses: codecov/codecov-action@v3
         with:
