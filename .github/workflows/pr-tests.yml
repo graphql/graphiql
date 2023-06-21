@@ -25,6 +25,13 @@ jobs:
       - name: Run Unit Tests
         run: yarn test
 
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+
   e2e:
     name: Cypress E2E Suite
     runs-on: ubuntu-20.04
