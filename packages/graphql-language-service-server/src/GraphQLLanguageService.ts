@@ -20,6 +20,7 @@ import {
   parse,
   print,
   isTypeDefinitionNode,
+  visit,
 } from 'graphql';
 
 import {
@@ -45,6 +46,9 @@ import {
   getASTNodeAtPosition,
   getTokenAtPosition,
   getTypeInfo,
+  Reference,
+  Range,
+  Position,
 } from 'graphql-language-service';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -373,14 +377,66 @@ export class GraphQLLanguageService {
     }
     return output;
   }
-  //
-  // public async getReferences(
-  //   document: string,
-  //   position: Position,
-  //   filePath: Uri,
-  // ): Promise<Location[]> {
-  //
-  // }
+
+  public async getReferences(
+    query: string,
+    position: IPosition,
+    filePath: Uri,
+  ): Promise<Reference[] | null> {
+    const projectConfig = this.getConfigForURI(filePath);
+    if (!projectConfig) {
+      return null;
+    }
+
+    let ast;
+    try {
+      ast = parse(query);
+    } catch {
+      return null;
+    }
+
+    const definitionNode = getASTNodeAtPosition(query, ast, position);
+
+    if (!definitionNode || !isTypeDefinitionNode(definitionNode)) {
+      return null;
+    }
+
+    const schema = await this._graphQLCache.getSchemaDocumentNode(
+      projectConfig.name,
+    );
+
+    if (!schema) {
+      return null;
+    }
+
+    const references: Reference[] = [];
+
+    visit(schema, {
+      NamedType(node) {
+        if (!node.loc?.source) {
+          return;
+        }
+
+        if (node.name.value === definitionNode.name.value) {
+          references.push({
+            path: node.loc.source.name,
+            range: new Range(
+              new Position(
+                node.loc.startToken.line - 1,
+                node.loc.startToken.column - 1,
+              ),
+              new Position(
+                node.loc.endToken.line - 1,
+                node.loc.endToken.column - 1,
+              ),
+            ),
+          });
+        }
+      },
+    });
+
+    return references;
+  }
 
   async _getDefinitionForNamedType(
     query: string,

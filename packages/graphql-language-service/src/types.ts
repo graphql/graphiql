@@ -109,6 +109,8 @@ export interface GraphQLCache {
     appName?: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
+
+  getSchemaDocumentNode: (appName?: string) => Promise<DocumentNode | null>;
 }
 
 // online-parser related
@@ -207,6 +209,11 @@ export type Definition = {
   name?: string;
   language?: string;
   projectRoot?: Uri;
+};
+
+export type Reference = {
+  path: Uri;
+  range: IRange;
 };
 
 // Outline view

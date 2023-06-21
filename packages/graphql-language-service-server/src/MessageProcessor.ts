@@ -53,6 +53,7 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
+  ReferenceParams,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -173,6 +174,7 @@ export class MessageProcessor {
         definitionProvider: true,
         textDocumentSync: 1,
         hoverProvider: true,
+        referencesProvider: true,
         workspace: {
           workspaceFolders: {
             supported: true,
@@ -718,17 +720,17 @@ export class MessageProcessor {
     );
   }
 
-  async handleDefinitionRequest(
+  async _prepareTextDocumentPositionRequest(
     params: TextDocumentPositionParams,
-    _token?: CancellationToken,
-  ): Promise<Array<Location>> {
+  ) {
     if (!this._isInitialized || !this._graphQLCache) {
-      return [];
+      return null;
     }
 
     if (!params?.textDocument || !params.position) {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
+
     const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     if (project) {
@@ -736,7 +738,7 @@ export class MessageProcessor {
     }
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      return [];
+      return null;
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -748,13 +750,27 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return [];
+      return null;
     }
 
     const { query, range: parentRange } = found;
     if (parentRange) {
       position.line -= parentRange.start.line;
     }
+
+    return { query, position, textDocument, parentRange, project };
+  }
+
+  async handleDefinitionRequest(
+    params: TextDocumentPositionParams,
+    _token?: CancellationToken,
+  ): Promise<Array<Location>> {
+    const request = await this._prepareTextDocumentPositionRequest(params);
+    if (!request) {
+      return [];
+    }
+
+    const { query, position, textDocument, parentRange, project } = request;
 
     let result = null;
 
@@ -839,26 +855,44 @@ export class MessageProcessor {
     );
   }
 
-  // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
-  //    if (!this._isInitialized) {
-  //      return [];
-  //    }
+  async handleReferencesRequest(
+    params: ReferenceParams,
+  ): Promise<Array<Location>> {
+    const request = await this._prepareTextDocumentPositionRequest(params);
+    if (!request) {
+      return [];
+    }
 
-  //    if (!params?.textDocument) {
-  //      throw new Error('`textDocument` argument is required.');
-  //    }
+    const { query, position, textDocument, project } = request;
 
-  //    const textDocument = params.textDocument;
-  //    const cachedDocument = this._getCachedDocument(textDocument.uri);
-  //    if (!cachedDocument) {
-  //      throw new Error('A cached document cannot be found.');
-  //    }
-  //    return this._languageService.getReferences(
-  //      cachedDocument.contents[0].query,
-  //      params.position,
-  //      textDocument.uri,
-  //    );
-  // }
+    let result = null;
+
+    try {
+      result = await this._languageService.getReferences(
+        query,
+        toPosition(position),
+        textDocument.uri,
+      );
+    } catch (e) {
+      this._logger.error('Error in handleReferencesRequest: ' + e);
+    }
+
+    const formatted = (result ?? []).map(res => ({
+      uri: res.path,
+      range: res.range,
+    }));
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/references',
+        projectName: project?.name,
+        fileName: textDocument.uri,
+      }),
+    );
+
+    return formatted;
+  }
 
   async handleWorkspaceSymbolRequest(
     params: WorkspaceSymbolParams,

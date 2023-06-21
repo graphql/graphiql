@@ -14,6 +14,7 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { Logger } from '../Logger';
+import { DocumentNode, parse } from 'graphql';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -24,6 +25,8 @@ const MOCK_CONFIG = {
 };
 
 describe('GraphQLLanguageService', () => {
+  let mockGetSchemaDocumentNode: DocumentNode | undefined;
+
   const mockCache = {
     async getSchema() {
       const config = this.getGraphQLConfig();
@@ -116,6 +119,10 @@ describe('GraphQLLanguageService', () => {
         },
       ];
     },
+
+    getSchemaDocumentNode() {
+      return mockGetSchemaDocumentNode;
+    },
   };
 
   let languageService: GraphQLLanguageService;
@@ -124,6 +131,7 @@ describe('GraphQLLanguageService', () => {
       mockCache as any,
       new Logger(),
     );
+    mockGetSchemaDocumentNode = undefined;
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -184,6 +192,28 @@ describe('GraphQLLanguageService', () => {
       './queries/definitionQuery.graphql',
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
+  });
+
+  it('can find a references for an object type', async () => {
+    const query =
+      'union X = A | B\ntype A { x: String }\ntype B { x: String }\ntype Query { a: X\n z: A }';
+    mockGetSchemaDocumentNode = parse(query);
+
+    const references = await languageService.getReferences(
+      query,
+      { line: 1, character: 5 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(
+      references
+        ?.flatMap(r => [r.range.start, r.range.end])
+        .map(p => [p.line, p.character]),
+    ).toEqual([
+      [0, 10],
+      [0, 10],
+      [4, 4],
+      [4, 4],
+    ]);
   });
 
   it('runs hover service as expected', async () => {

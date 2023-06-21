@@ -97,6 +97,7 @@ export type {
   FileChangeType,
   GraphQLCache,
   GraphQLExtensionDeclaration,
+  Reference,
 } from './types';
 
 export { CompletionItemKind, FileChangeTypeKind } from './types';

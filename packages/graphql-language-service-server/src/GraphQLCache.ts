@@ -71,6 +71,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
   _schemaMap: Map<Uri, GraphQLSchema>;
+  _schemaDocumentNodeMap: Map<Uri, DocumentNode>;
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
@@ -92,6 +93,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._graphQLConfig = config;
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
+    this._schemaDocumentNodeMap = new Map();
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
@@ -658,6 +660,37 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (schemaCacheKey) {
       this._schemaMap.set(schemaCacheKey, schema);
     }
+    return schema;
+  };
+
+  getSchemaDocumentNode = async (
+    appName?: string,
+  ): Promise<DocumentNode | null> => {
+    const projectConfig = this._graphQLConfig.getProject(appName);
+
+    if (!projectConfig) {
+      return null;
+    }
+
+    const schemaPath = projectConfig.schema as string;
+    const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
+
+    let schemaCacheKey = null;
+    let schema = null;
+
+    if (schemaPath && schemaKey) {
+      schemaCacheKey = schemaKey as string;
+
+      if (this._schemaDocumentNodeMap.has(schemaCacheKey)) {
+        schema = this._schemaDocumentNodeMap.get(schemaCacheKey);
+        if (schema) {
+          return schema;
+        }
+      }
+
+      schema = await projectConfig.getSchema('DocumentNode');
+    }
+
     return schema;
   };
 
