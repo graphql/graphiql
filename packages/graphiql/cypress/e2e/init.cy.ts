@@ -36,7 +36,7 @@ describe('GraphiQL On Initialization', () => {
       '.graphiql-response',
       '.graphiql-editor-tool',
     ];
-    cy.visit('/');
+    cy.visit('');
     cy.get('.graphiql-query-editor').contains('# Welcome to GraphiQL');
     for (const cSelector of containers) {
       cy.get(cSelector).should('be.visible');
@@ -49,7 +49,7 @@ describe('GraphiQL On Initialization', () => {
     cy.assertQueryResult(mockSuccess);
   });
   it('Shows the expected error when the schema is invalid', () => {
-    cy.visit('/?bad=true');
+    cy.visit('?bad=true');
     cy.get('section.result-window').should(element => {
       expect(element.get(0).innerText).to.contain('Names must');
     });

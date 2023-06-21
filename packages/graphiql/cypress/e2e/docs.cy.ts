@@ -1,7 +1,7 @@
 import { version } from 'graphql/version';
 
 beforeEach(() => {
-  cy.visit('/');
+  cy.visit('');
 });
 
 describe('GraphiQL DocExplorer - button', () => {
