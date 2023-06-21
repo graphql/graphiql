@@ -1,13 +1,13 @@
 codecov:
   notify:
-    require_ci_to_pass: no
+    require_ci_to_pass: yes
 
 coverage:
   precision: 2
   round: down
   range: "30...100"
-
-  status:
-    project: no
-    patch: no
-    changes: no
+  
+comment:                  # this is a top-level key
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: true  # if true: only post the comment if coverage changes
