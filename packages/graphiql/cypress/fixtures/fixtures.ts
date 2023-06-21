@@ -1,4 +1,4 @@
-export const mockBadQuery = `bad {} query`;
+export const mockBadQuery = 'bad {} query';
 
 export const mockQuery1 = /* GraphQL */ `
   query Test($string: String) {

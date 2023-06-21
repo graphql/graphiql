@@ -151,9 +151,6 @@ export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
   if (options?.method) {
-    const stderrOnly = options.method === 'stream';
-    const logger = new Logger(options.tmpDir, stderrOnly);
-
     const finalOptions = buildOptions(options);
     let reader;
     let writer;
@@ -182,7 +179,6 @@ export default async function startServer(
             const s = await initializeHandlers({
               reader,
               writer,
-              logger,
               options: finalOptions,
             });
             s.listen();
@@ -199,37 +195,30 @@ export default async function startServer(
         break;
     }
 
-    try {
-      const serverWithHandlers = await initializeHandlers({
-        reader,
-        writer,
-        logger,
-        options: finalOptions,
-      });
-      serverWithHandlers.listen();
-    } catch (err) {
-      logger.error('There was a Graphql LSP handler exception:');
-      logger.error(String(err));
-    }
+    const serverWithHandlers = await initializeHandlers({
+      reader,
+      writer,
+      options: finalOptions,
+    });
+    serverWithHandlers.listen();
   }
 }
 
 type InitializerParams = {
   reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
   writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
-  logger: Logger;
   options: MappedServerOptions;
 };
 
 async function initializeHandlers({
   reader,
   writer,
-  logger,
   options,
 }: InitializerParams): Promise<Connection> {
-  try {
-    const connection = createConnection(reader, writer);
+  const connection = createConnection(reader, writer);
+  const logger = new Logger(connection);
 
+  try {
     await addHandlers({ connection, logger, ...options });
     return connection;
   } catch (err) {

@@ -43,7 +43,7 @@ export class DiagnosticsAdapter {
       if (modeId !== this.defaults.languageId) {
         // it is tempting to load json models we cared about here
         // into the webworker, however setDiagnosticOptions() needs
-        // to be called here from main process anyways, and the worker
+        // to be called here from main process anyway, and the worker
         // is already generating json schema itself!
         return;
       }
@@ -129,11 +129,7 @@ export class DiagnosticsAdapter {
     }
 
     const diagnostics = await worker.doValidation(resource.toString());
-    editor.setModelMarkers(
-      editor.getModel(resource) as editor.ITextModel,
-      languageId,
-      diagnostics,
-    );
+    editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
       if (variablesUris.length < 1) {
@@ -211,7 +207,7 @@ export function toCompletion(
   const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
-    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+    kind: toCompletionItemKind(entry.kind!),
     label: entry.label,
     insertText: entry.insertText ?? entry.label,
     insertTextRules: entry.insertText
@@ -302,9 +298,9 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
-      return <monaco.languages.Hover>{
+      return {
         range: hoverItem.range,
-        contents: [{ value: hoverItem.content }],
+        contents: [{ value: hoverItem.content as string }],
       };
     }
 

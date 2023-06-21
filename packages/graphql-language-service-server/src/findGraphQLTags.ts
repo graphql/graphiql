@@ -17,7 +17,7 @@ import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import * as VueParser from '@vue/compiler-sfc';
-import { Logger } from './Logger';
+import type { Logger } from 'vscode-languageserver';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -76,6 +76,7 @@ type ParseVueSFCResult =
   | { type: 'error'; errors: Error[] }
   | {
       type: 'ok';
+      scriptOffset: number;
       scriptSetupAst?: import('@babel/types').Statement[];
       scriptAst?: import('@babel/types').Statement[];
     };
@@ -98,6 +99,7 @@ function parseVueSFC(source: string): ParseVueSFCResult {
         type: 'ok',
         scriptSetupAst: [],
         scriptAst: [],
+        scriptOffset: 0,
       };
     }
     return { type: 'error', errors: [error as Error] };
@@ -105,6 +107,7 @@ function parseVueSFC(source: string): ParseVueSFCResult {
 
   return {
     type: 'ok',
+    scriptOffset: scriptBlock.loc.start.line - 1,
     scriptSetupAst: scriptBlock?.scriptSetupAst,
     scriptAst: scriptBlock?.scriptAst,
   };
@@ -124,6 +127,8 @@ export function findGraphQLTags(
 
   let parsedASTs: { [key: string]: any }[] = [];
 
+  let scriptOffset = 0;
+
   if (isVueLike) {
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
@@ -142,6 +147,8 @@ export function findGraphQLTags(
     if (parseVueSFCResult.scriptSetupAst !== undefined) {
       parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
+
+    scriptOffset = parseVueSFCResult.scriptOffset;
   } else {
     const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
     if (isTypeScript) {
@@ -179,9 +186,10 @@ export function findGraphQLTags(
           ? node.quasis.map(quasi => quasi.value.raw).join('')
           : node.quasis[0].value.raw;
       const range = new Range(
-        new Position(loc.start.line - 1, loc.start.column),
-        new Position(loc.end.line - 1, loc.end.column),
+        new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+        new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
       );
+
       result.push({
         tag: '',
         template,
@@ -226,8 +234,8 @@ export function findGraphQLTags(
         }
         if (loc) {
           const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
+            new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+            new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
           );
 
           result.push({

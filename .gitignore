@@ -11,10 +11,10 @@ coverage/
 .nyc_output
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
-packages/graphiql/storybook
 packages/graphiql/typedoc
 dist
 esm
+cjs
 bundle
 *.vsix
 
@@ -32,4 +32,11 @@ yarn-1.18.0.js
 .netlify
 
 examples/*/yarn.lock
+package-lock.json
 .eslintcache
+
+vite.config.d.ts
+vite.config.js
+
+.next/
+.turbo/

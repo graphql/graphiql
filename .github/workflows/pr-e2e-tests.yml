@@ -1,0 +1,23 @@
+name: E2E
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
+jobs:
+  e2e:
+    name: Cypress E2E Suite
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
+
+      - name: Run E2E suite
+        run: yarn e2e

@@ -189,11 +189,11 @@ function getJSONSchemaFromGraphQLType(
       };
       if (type.description) {
         fieldDef.description =
-          type.description + `\n` + renderTypeToString(type);
+          type.description + '\n' + renderTypeToString(type);
         if (options?.useMarkdownDescription) {
           // @ts-expect-error
           fieldDef.markdownDescription =
-            type.description + `\n` + renderTypeToString(type, true);
+            type.description + '\n' + renderTypeToString(type, true);
         }
       } else {
         fieldDef.description = renderTypeToString(type);

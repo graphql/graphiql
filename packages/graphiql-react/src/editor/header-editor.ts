@@ -96,10 +96,10 @@ export function useHeaderEditor(
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
-        const { keyCode, key, shiftKey } = event;
-        const isLetter = keyCode >= 65 && keyCode <= 90;
-        const isNumber = keyCode >= 48 && keyCode <= 57;
-        if (isLetter || (!shiftKey && isNumber) || key === '_' || key === '"') {
+        const { code, key, shiftKey } = event;
+        const isLetter = code.startsWith('Key');
+        const isNumber = !shiftKey && code.startsWith('Digit');
+        if (isLetter || isNumber || key === '_' || key === '"') {
           editorInstance.execCommand('autocomplete');
         }
       });

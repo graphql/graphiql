@@ -90,10 +90,13 @@ function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {
 }
 
 function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
-  const pos = cm.coordsChar({
-    left: (box.left + box.right) / 2,
-    top: (box.top + box.bottom) / 2,
-  });
+  const pos = cm.coordsChar(
+    {
+      left: (box.left + box.right) / 2,
+      top: (box.top + box.bottom) / 2,
+    },
+    'window',
+  ); // 'window' allows to work when editor is not full page and window has scrolled
 
   const state = cm.state.info;
   const { options } = state;

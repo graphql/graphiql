@@ -12,8 +12,9 @@ describe('Errors', () => {
            * we use to run the tests headless), the error in the latest Chrome
            * version is different!
            */
-          message: `Unexpected token 'B', "Bad Gateway" is not valid JSON`,
-          stack: `SyntaxError: Unexpected token 'B', "Bad Gateway" is not valid JSON`,
+          message: 'Unexpected token \'B\', "Bad Gateway" is not valid JSON',
+          stack:
+            'SyntaxError: Unexpected token \'B\', "Bad Gateway" is not valid JSON',
         },
       ],
     });

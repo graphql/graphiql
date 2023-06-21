@@ -22,6 +22,7 @@ import type {
   ObjectTypeInfo,
   Uri,
 } from 'graphql-language-service';
+import type { Logger } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -41,7 +42,6 @@ import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
-import { Logger } from './Logger';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -59,8 +59,8 @@ export async function getGraphQLCache({
 }): Promise<GraphQLCache> {
   const graphQLConfig = config || (await loadConfig(loadConfigOptions));
   return new GraphQLCache({
-    configDir: loadConfigOptions.rootDir as string,
-    config: graphQLConfig as GraphQLConfig,
+    configDir: loadConfigOptions.rootDir!,
+    config: graphQLConfig!,
     parser,
     logger,
   });
@@ -325,22 +325,16 @@ export class GraphQLCache implements GraphQLCacheInterface {
     projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
-    const { documents } = projectConfig;
-
-    if (!documents || documents.length === 0) {
-      return Promise.resolve([]);
-    }
+    const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
 
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
     // documents.length === 1 case.
-    if (typeof documents === 'string') {
-      pattern = documents;
-    } else if (documents.length === 1) {
+    if (patterns.length === 1) {
       // @ts-ignore
-      pattern = documents[0];
+      pattern = patterns[0];
     } else {
-      pattern = `{${documents.join(',')}}`;
+      pattern = `{${patterns.join(',')}}`;
     }
 
     return new Promise((resolve, reject) => {
@@ -388,6 +382,22 @@ export class GraphQLCache implements GraphQLCacheInterface {
         );
       });
     });
+  };
+
+  _getSchemaAndDocumentFilePatterns = (projectConfig: GraphQLProjectConfig) => {
+    const patterns: string[] = [];
+
+    for (const pointer of [projectConfig.documents, projectConfig.schema]) {
+      if (pointer) {
+        if (typeof pointer === 'string') {
+          patterns.push(pointer);
+        } else if (Array.isArray(pointer)) {
+          patterns.push(...pointer);
+        }
+      }
+    }
+
+    return patterns;
   };
 
   async _updateGraphQLFileListCache(
@@ -694,7 +704,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return schema;
   };
 
-  _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
+  invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
     const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
     ) as string;

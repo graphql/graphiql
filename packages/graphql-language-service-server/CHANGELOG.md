@@ -1,5 +1,65 @@
 # graphql-language-service-server
 
+## 2.11.2-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- [#3216](https://github.com/graphql/graphiql/pull/3216) [`55135804`](https://github.com/graphql/graphiql/commit/551358045611a27551e5654c2b115295c35639d8) Thanks [@simowe](https://github.com/simowe)! - fix: reload schema when a change to the schema file is detected
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5)]:
+  - graphql-language-service@5.1.7-alpha.0
+
+## 2.11.1
+
+### Patch Changes
+
+- [#3143](https://github.com/graphql/graphiql/pull/3143) [`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4) Thanks [@B2o5T](https://github.com/B2o5T)! - [ESLint] enable `sonar/prefer-promise-shorthand` and `sonar/no-dead-store` rules
+
+## 2.11.0
+
+### Minor Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+### Patch Changes
+
+- [#3135](https://github.com/graphql/graphiql/pull/3135) [`28b1b5a0`](https://github.com/graphql/graphiql/commit/28b1b5a016787ec4119d28f057a9d93814d4e310) Thanks [@KammererTob](https://github.com/KammererTob)! - fixed wrong script tag offset for vue-sfc
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - graphql-language-service@5.1.6
+
+## 2.10.0
+
+### Minor Changes
+
+- [#3163](https://github.com/graphql/graphiql/pull/3163) [`f2040452`](https://github.com/graphql/graphiql/commit/f20404529677635f5d4792b328aa648641bf8d9c) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Fix GraphQLCache to read both documents and schema
+
+## 2.9.10
+
+### Patch Changes
+
+- [#3150](https://github.com/graphql/graphiql/pull/3150) [`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284) Thanks [@AaronMoat](https://github.com/AaronMoat)! - fix(graphql-language-service-server): allow getDefinition to work for unions
+
+  Fixes the issue where a schema like the one below won't allow you to click through to X.
+
+  ```graphql
+  union X = A | B
+  type A {
+    x: String
+  }
+  type B {
+    x: String
+  }
+  type Query {
+    a: X
+  }
+  ```
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+
 ## 2.9.9
 
 ### Patch Changes

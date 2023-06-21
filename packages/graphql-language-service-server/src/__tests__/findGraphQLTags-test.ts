@@ -6,16 +6,15 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'node:os';
 
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
-import { Logger } from '../Logger';
+import { NoopLogger } from '../Logger';
 
 describe('findGraphQLTags', () => {
-  const logger = new Logger(tmpdir());
+  const logger = new NoopLogger();
   const findGraphQLTags = (text: string, ext: string) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
@@ -141,10 +140,10 @@ query Test {
   });
 
   it('finds queries with nested graphql.experimental template tag expression', async () => {
-    const text = `const query = graphql.experimental\` query {} \``;
+    const text = 'const query = graphql.experimental` query {} `';
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with spec decorators', async () => {
@@ -156,7 +155,7 @@ query Test {
     `;
     const contents = findGraphQLTags(text, '.ts');
 
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with es7 decorators', async () => {
@@ -207,7 +206,7 @@ class Todo2{}
     `;
     const contents = findGraphQLTags(text, '.ts');
 
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with nested template tag expressions', async () => {
@@ -216,7 +215,7 @@ class Todo2{}
 }`;
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries with template tags inside call expressions', async () => {
@@ -225,7 +224,7 @@ class Todo2{}
 })`;
 
     const contents = findGraphQLTags(text, '.ts');
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
   });
 
   it('finds queries in tagged templates in Vue SFC using <script setup>', async () => {
@@ -239,6 +238,25 @@ query {id}
     const contents = findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
+    expect(contents[0].range.start.line).toEqual(2);
+    expect(contents[0].range.end.line).toEqual(4);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using <script setup> and template above', async () => {
+    const text = `<template>
+      <div/>
+    </template>
+<script setup lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+    expect(contents[0].range.start.line).toEqual(4);
+    expect(contents[0].range.end.line).toEqual(6);
   });
 
   it('finds queries in tagged templates in Vue SFC using normal <script>', async () => {
@@ -252,6 +270,25 @@ query {id}
     const contents = findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
+    expect(contents[0].range.start.line).toEqual(2);
+    expect(contents[0].range.end.line).toEqual(4);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using normal <script> and template above', async () => {
+    const text = `<template>
+    <div/>
+  </template>
+<script lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+    expect(contents[0].range.start.line).toEqual(4);
+    expect(contents[0].range.end.line).toEqual(6);
   });
 
   it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', async () => {
@@ -290,18 +327,13 @@ query {id}`);
   });
 
   it('no crash in Svelte files without <script>', async () => {
-    const text = ``;
+    const text = '';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -312,18 +344,13 @@ query {id}`);
   });
 
   it('no crash in Svelte files with empty <script>', async () => {
-    const text = `<script></script>`;
+    const text = '<script></script>';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -334,18 +361,13 @@ query {id}`);
   });
 
   it('no crash in Svelte files with empty <script> (typescript)', async () => {
-    const text = `<script lang="ts"></script>`;
+    const text = '<script lang="ts"></script>';
 
     const consoleErrorSpy = jest
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(
-      text,
-      '.svelte',
-      '',
-      new Logger(tmpdir(), false),
-    );
+    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -371,14 +393,14 @@ const query = graphql\`query myQuery {}\``;
     expect(contents[0].range.start.character).toEqual(18);
     expect(contents[0].range.end.line).toEqual(1);
     expect(contents[0].range.end.character).toEqual(28);
-    expect(contents[0].template).toEqual(` query {} `);
+    expect(contents[0].template).toEqual(' query {} ');
 
     // and the second string, with correct positional information!
     expect(contents[1].range.start.line).toEqual(3);
     expect(contents[1].range.start.character).toEqual(22);
     expect(contents[1].range.end.line).toEqual(3);
     expect(contents[1].range.end.character).toEqual(38);
-    expect(contents[1].template).toEqual(`query myQuery {}`);
+    expect(contents[1].template).toEqual('query myQuery {}');
   });
 
   it('ignores non gql tagged templates', async () => {

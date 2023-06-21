@@ -1,55 +1,60 @@
-import {
-  Listbox as ListboxRoot,
-  ListboxButton as ReachListboxButton,
-  ListboxInput,
-  ListboxOption,
-  ListboxPopover,
-} from '@reach/listbox';
-import {
-  Menu as MenuRoot,
-  MenuButton as ReachMenuButton,
-  MenuItem,
-  MenuList,
-} from '@reach/menu-button';
-import { ComponentProps, forwardRef } from 'react';
+import { ComponentProps, forwardRef, ReactElement } from 'react';
 import { clsx } from 'clsx';
 import { createComponentGroup } from '../utility/component-group';
+import {
+  Trigger,
+  Portal,
+  Content as RadixContent,
+  Item as RadixItem,
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+  Root,
+} from '@radix-ui/react-dropdown-menu';
 
 import './dropdown.css';
 
-const MenuButton = forwardRef<
-  HTMLButtonElement,
-  ComponentProps<typeof ReachMenuButton>
->((props, ref) => (
-  <ReachMenuButton
-    {...props}
-    ref={ref}
-    className={clsx('graphiql-un-styled', props.className)}
-  />
-));
-MenuButton.displayName = 'MenuButton';
+const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
+  (props, ref) => (
+    <Trigger asChild>
+      <button
+        {...props}
+        ref={ref}
+        className={clsx('graphiql-un-styled', props.className)}
+      />
+    </Trigger>
+  ),
+);
+Button.displayName = 'DropdownMenuButton';
 
-export const Menu = createComponentGroup(MenuRoot, {
-  Button: MenuButton,
-  Item: MenuItem,
-  List: MenuList,
-});
+function Content({
+  children,
+  align = 'start',
+  sideOffset = 5,
+  className,
+  ...props
+}: DropdownMenuContentProps): ReactElement {
+  return (
+    <Portal>
+      <RadixContent
+        align={align}
+        sideOffset={sideOffset}
+        className={clsx('graphiql-dropdown-content', className)}
+        {...props}
+      >
+        {children}
+      </RadixContent>
+    </Portal>
+  );
+}
 
-const ListboxButton = forwardRef<
-  HTMLDivElement,
-  ComponentProps<typeof ReachListboxButton>
->((props, ref) => (
-  <ReachListboxButton
-    {...props}
-    ref={ref}
-    className={clsx('graphiql-un-styled', props.className)}
-  />
-));
-ListboxButton.displayName = 'ListboxButton';
+const Item = ({ className, children, ...props }: DropdownMenuItemProps) => (
+  <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
+    {children}
+  </RadixItem>
+);
 
-export const Listbox = createComponentGroup(ListboxRoot, {
-  Button: ListboxButton,
-  Input: ListboxInput,
-  Option: ListboxOption,
-  Popover: ListboxPopover,
+export const DropdownMenu = createComponentGroup(Root, {
+  Button,
+  Item,
+  Content,
 });

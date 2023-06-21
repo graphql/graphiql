@@ -65,6 +65,7 @@ LekoArts
 
 // packages and tools
 argparse
+arthurgeron
 atpl
 browserslist
 bundlephobia
@@ -83,6 +84,7 @@ execa
 graphiql
 hamljs
 haml
+headlessui
 inno
 intellij
 jsdelivr
@@ -104,6 +106,7 @@ templayed
 typedoc
 twing
 undici
+usememo
 velocityjs
 vite
 vitejs
@@ -112,7 +115,7 @@ wsrun
 lezer
 buildhelper
 sonarjs
-
+svgr
 
 // identifiers used in code and configs
 acmerc

@@ -1,5 +1,82 @@
 # @graphiql/react
 
+## 0.18.0-alpha.1
+
+### Patch Changes
+
+- [#2716](https://github.com/graphql/graphiql/pull/2716) [`bc9d243d`](https://github.com/graphql/graphiql/commit/bc9d243d40b95f95fc9d00d25aa0dd1733952626) Thanks [@SimenB](https://github.com/SimenB)! - Make `@types/codemirror` a dependency of `@graphiql/react`
+
+- [#3228](https://github.com/graphql/graphiql/pull/3228) [`67bf93a3`](https://github.com/graphql/graphiql/commit/67bf93a33e98c60ae3a686063a1c47037f88ef49) Thanks [@B2o5T](https://github.com/B2o5T)! - exclude peer dependencies and dependencies from bundle
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5)]:
+  - graphql-language-service@5.1.7-alpha.0
+  - codemirror-graphql@2.0.9-alpha.1
+
+## 0.18.0-alpha.0
+
+### Minor Changes
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - remove `initialTabs`, use `defaultTabs` instead
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/dialog` by `@radix-ui/react-dialog` replace `@reach/visually-hidden` by `@radix-ui/react-visually-hidden`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/menu-button` by `@radix-ui/react-dropdown-menu` remove `@reach/listbox` remove `<ToolbarListbox />` and `<Listbox />` components (use `<Menu />` instead)
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - fixed long list items in dropdown were hidden
+
+  rename `<Menu />` to `<DropdownMenu />` rename `<Menu.List />` to `<DropdownMenu.Content />` rename `<Menu.Item />` to `<DropdownMenu.Item />` rename `<Menu.Button />` to `<DropdownMenu.Button />`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/tooltip` by `@radix-ui/react-tooltip`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/combobox` with `Combobox` from `@headlessui/react`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - tabs could be reorderded
+
+### Patch Changes
+
+- Updated dependencies [[`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36)]:
+  - codemirror-graphql@2.0.9-alpha.0
+
+## 0.17.6
+
+### Patch Changes
+
+- [#3194](https://github.com/graphql/graphiql/pull/3194) [`911cf3e0`](https://github.com/graphql/graphiql/commit/911cf3e0b0fa13268245463c8db8299279e5c461) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - fix tab content getting replaced on `changeTab`
+
+- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unecessary renders by using useMemo or useCallback
+
+- [#3197](https://github.com/graphql/graphiql/pull/3197) [`2ca4841b`](https://github.com/graphql/graphiql/commit/2ca4841baf74e87a3f067b3415f8da3347ee3898) Thanks [@B2o5T](https://github.com/B2o5T)! - remove confusing ligatures, set `font-variant-ligatures: none`
+
+- [#3136](https://github.com/graphql/graphiql/pull/3136) [`7bf90929`](https://github.com/graphql/graphiql/commit/7bf90929f62ba812c0946e0424f9f843f7b6b0ff) Thanks [@B2o5T](https://github.com/B2o5T)! - replace rest of `event.keyCode` usages by `event.code`
+
+- [#3118](https://github.com/graphql/graphiql/pull/3118) [`431b7fe1`](https://github.com/graphql/graphiql/commit/431b7fe1efefa4867f0ea617adc436b1117052e8) Thanks [@B2o5T](https://github.com/B2o5T)! - Prefer `.textContent` over `.innerText`
+
+## 0.17.5
+
+### Patch Changes
+
+- [#3147](https://github.com/graphql/graphiql/pull/3147) [`2b212941`](https://github.com/graphql/graphiql/commit/2b212941628498957d95ee89a7a5a0623f391b7a) Thanks [@Yahkob](https://github.com/Yahkob)! - limit code-mirror css scope to .graphiql-container
+
+- [#3180](https://github.com/graphql/graphiql/pull/3180) [`9b333a04`](https://github.com/graphql/graphiql/commit/9b333a047d6b75db7681f484156d8772e9f91810) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Remove duplicate Vite config and again make sure to not include `react/jsx-runtime` in the bundle
+
+## 0.17.4
+
+### Patch Changes
+
+- [#3077](https://github.com/graphql/graphiql/pull/3077) [`707f3cbc`](https://github.com/graphql/graphiql/commit/707f3cbca3ac2ce186058e7d2b145cdf69bf7d9c) Thanks [@Zolwiastyl](https://github.com/Zolwiastyl)! - show all schema types in explorer
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939)]:
+  - graphql-language-service@5.1.6
+  - codemirror-graphql@2.0.8
+
+## 0.17.3
+
+### Patch Changes
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service@5.1.5
+  - codemirror-graphql@2.0.7
+
 ## 0.17.2
 
 ### Patch Changes

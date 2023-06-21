@@ -15,9 +15,9 @@
 [![](https://dcbadge.vercel.app/api/server/NP5vbPeUFp?style=flat)](https://discord.gg/NP5vbPeUFp)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
-[Try the live demo](http://graphql.org/swapi-graphql).
+[Try the live demo](https://graphql.github.io/swapi-graphql).
 
-[![](resources/graphiql.png)](http://graphql.org/swapi-graphql)
+[![](resources/graphiql.png)](https://graphql.github.io/swapi-graphql)
 
 ## Features
 
@@ -34,9 +34,9 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Live Demos
 
-- The [latest stable version](http://graphql.org/swapi-graphql)
+- The [latest stable version](https://graphql.github.io/swapi-graphql)
 - The current state of the `master` branch:
-  - Using the [minified bundles](https://graphiql-test.netlify.com/)
+  - Using the [minified bundles](https://graphiql-test.netlify.com)
   - Using the [development bundles](https://graphiql-test.netlify.com/dev) (good
     for inspecting, debugging, etc)
 - Each pull request will also get its own preview deployment on Netlify, you'll
@@ -48,9 +48,9 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
   assets and a script tag
 - [`Webpack`](../../examples/graphiql-webpack) - A starter for Webpack
 - [`Create React App`](../../examples/graphiql-create-react-app) - An example
-  using [Create React App](https://create-react-app.dev/)
+  using [Create React App](https://create-react-app.dev)
 - [`Parcel`](../../examples/graphiql-parcel) - An example using
-  [Parcel](https://parceljs.org/)
+  [Parcel](https://parceljs.org)
 
 ## Getting started
 
@@ -77,7 +77,7 @@ also need to have `react`,`react-dom` and `graphql` installed which are peer
 dependencies of `graphiql`.
 
 ```sh
-npm install --save graphiql react react-dom graphql
+npm install graphiql react react-dom graphql
 ```
 
 The package exports a bunch of React components:
@@ -105,23 +105,20 @@ application:
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import React from 'react';
-import ReactDOM from 'react-dom';
-
+import { createRoot } from 'react-dom/client';
 import 'graphiql/graphiql.css';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 
-ReactDOM.render(
-  <GraphiQL fetcher={fetcher} />,
-  document.getElementById('root'),
-);
+const root = createRoot(document.getElementById('root'));
+root.render(<GraphiQL fetcher={fetcher} />);
 ```
 
 ### Using as UMD bundle over CDN (Unpkg, JSDelivr, etc)
 
 There exist pre-bundled static assets that allow you to easily render GraphiQL
 just by putting together a single HTML file. Check out the `index.html` file in
-the [example project](../../examples/graphiql-cdn/) in this repository.
+the [example project](../../examples/graphiql-cdn) in this repository.
 
 ## Customize
 
@@ -149,7 +146,7 @@ Parts of the UI can be customized by passing children to the `GraphiQL` or the
 
 ### Plugins
 
-Starting with `graphiql@2` there exists a simple plugin API that allow you to
+Starting with `graphiql@2` there exists a simple plugin API that allows you to
 build your own custom tools right into GraphiQL.
 
 There are two built-in plugins that come with GraphiQL: The documentation
@@ -173,7 +170,7 @@ You can pass a list of plugin objects to the `GraphiQL` component using the
 the `onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
-state using the hooks provided by `@graphiql/react`. As an example, check out
+state using the hooks provided by `@graphiql/react`. For example, check out
 how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in
 the [plugin package](../graphiql-plugin-explorer) in this repo.
 
@@ -196,8 +193,13 @@ has to be loaded for the theme prop to work.
 
 ```jsx
 // In your document head:
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css"
+/>
+```
 
+```jsx
 // When rendering GraphiQL:
 <GraphiQL editorTheme="solarized light" />
 ```

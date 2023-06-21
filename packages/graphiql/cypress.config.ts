@@ -5,4 +5,6 @@ export default defineConfig({
     baseUrl: 'http://localhost:8080',
   },
   video: false,
+  viewportWidth: 1920,
+  viewportHeight: 1080,
 });

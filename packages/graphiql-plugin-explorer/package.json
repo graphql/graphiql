@@ -1,13 +1,13 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "0.1.16",
+  "version": "0.1.21-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-plugin-explorer"
   },
-  "main": "dist/graphiql-plugin-explorer.cjs.js",
-  "module": "dist/graphiql-plugin-explorer.es.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -28,17 +28,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@graphiql/react": "^0.17.2",
+    "@graphiql/react": "^0.18.0-alpha.1",
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "react": "^16.8.0 || ^17 || ^18",
+    "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.3.0",
     "typescript": "^4.6.3",
-    "vite": "^2.9.13"
+    "vite": "^2.9.16"
   }
 }

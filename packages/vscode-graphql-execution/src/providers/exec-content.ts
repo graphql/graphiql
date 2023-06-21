@@ -37,10 +37,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   timeout = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  getCurrentHtml(): Promise<string> {
-    return new Promise(resolve => {
-      resolve(this.html);
-    });
+  getCurrentHtml(): string {
+    return this.html;
   }
 
   updatePanel() {
@@ -57,13 +55,13 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.sourceHelper.getTypeForVariableDefinitionNode(node);
       variables = {
         ...variables,
-        [`${node.variable.name.value}`]: this.sourceHelper.typeCast(
+        [node.variable.name.value]: this.sourceHelper.typeCast(
           (await window.showInputBox({
             ignoreFocusOut: true,
             placeHolder: `Please enter the value for ${node.variable.name.value}`,
-            validateInput: async (value: string) =>
+            validateInput: (value: string) =>
               this.sourceHelper.validate(value, variableType),
-          })) as string,
+          }))!,
           variableType,
         ),
       };
@@ -143,7 +141,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.updatePanel();
       if (projectConfig?.schema) {
         this.outputChannel.appendLine(
-          `Warning: endpoints missing from graphql config. will try 'schema' value(s) instead`,
+          "Warning: endpoints missing from graphql config. will try 'schema' value(s) instead",
         );
         const { schema } = projectConfig;
         if (schema && Array.isArray(schema)) {
@@ -170,7 +168,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
     if (endpointNames.length === 0) {
       this.reportError(
-        `Error: endpoint data missing from graphql config endpoints extension`,
+        'Error: endpoint data missing from graphql config endpoints extension',
       );
       return null;
     }
@@ -235,7 +233,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           });
         }
       } else {
-        this.reportError(`Error: no endpoint url provided`);
+        this.reportError('Error: no endpoint url provided');
         return;
       }
     } catch (err: unknown) {
@@ -248,14 +246,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   async loadConfig() {
     const { rootDir, literal } = this;
     if (!rootDir) {
-      this.reportError(`Error: this file is outside the workspace.`);
+      this.reportError('Error: this file is outside the workspace.');
       return;
     }
     const config = await loadConfig({ rootDir: rootDir.uri.fsPath });
     const projectConfig = config?.getProjectForFile(literal.uri);
 
     if (!projectConfig!.schema) {
-      this.reportError(`Error: schema from graphql config`);
+      this.reportError('Error: schema from graphql config');
       return;
     }
     return projectConfig;

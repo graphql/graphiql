@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.2.1-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
 ## 1.2.0
 
 ### Minor Changes
