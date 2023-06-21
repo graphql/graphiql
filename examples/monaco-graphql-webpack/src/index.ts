@@ -294,7 +294,7 @@ export function renderGithubLoginButton() {
   if (schemaFetcher.token) {
     document.getElementById('github-login-wrapper')?.remove();
     const toolbar = document.getElementById('toolbar');
-    toolbar?.appendChild(logoutButton);
+    toolbar?.append(logoutButton);
   } else {
     githubLoginWrapper.append(githubButton);
     document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);
