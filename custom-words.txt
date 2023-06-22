@@ -116,6 +116,8 @@ lezer
 buildhelper
 sonarjs
 svgr
+prettierignore
+pnpm
 
 // identifiers used in code and configs
 acmerc

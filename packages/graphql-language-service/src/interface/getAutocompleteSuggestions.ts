@@ -699,7 +699,7 @@ function getSuggestionsForImplements(
   // TODO: we should be using schema.getPossibleTypes() here, but
   const possibleInterfaces = schemaInterfaces
     .concat(
-      [...inlineInterfaces].map(name => ({ name } as GraphQLInterfaceType)),
+      [...inlineInterfaces].map(name => ({ name }) as GraphQLInterfaceType),
     )
     .filter(
       ({ name }) =>

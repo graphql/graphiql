@@ -3,33 +3,24 @@
 .*.haste_cache.*
 .DS_Store
 .secrets
-npm-debug.log
-yarn-error.log
+*.log
 
 node_modules/
 coverage/
 .nyc_output
-packages/**/dist/.gitignore
-packages/**/dist/.npmignore
-packages/graphiql/typedoc
-dist
-esm
-cjs
-bundle
+packages/graphiql/typedoc/
+dist/
+esm/
+packages/*/out/
 *.vsix
+*.tsbuildinfo
 
-cypress/screenshots
-lerna-debug.log
-**/tsconfig.tsbuildinfo
-**/*.tsbuildinfo
-
-.yarnrc
 yarn-1.18.0.js
 *.orig
 .idea/
 
 # Local Netlify folder
-.netlify
+.netlify/
 
 examples/*/yarn.lock
 package-lock.json
@@ -40,3 +31,20 @@ vite.config.js
 
 .next/
 .turbo/
+types/
+packages/codemirror-graphql/cm6-legacy/
+packages/codemirror-graphql/results/
+packages/codemirror-graphql/utils/
+packages/codemirror-graphql/variables/
+packages/codemirror-graphql/*.js
+packages/codemirror-graphql/*.d.ts
+packages/codemirror-graphql/*.map
+!packages/codemirror-graphql/*.config.js
+
+packages/graphiql/index.html
+packages/graphiql/dev.html
+packages/graphiql/analyzer.html
+packages/graphiql/graphiql*.js
+packages/graphiql/*.css
+packages/graphiql/*.map
+packages/graphiql/cypress/screenshots/

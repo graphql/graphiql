@@ -1,2 +1,12 @@
-js-green-licenses.json
-.changeset
+.changeset/
+
+# ignore working-group dir markdown so it's easier for people to edit from the UI
+working-group/
+packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql
+CHANGELOG.md
+
+# bug in v3 https://github.com/prettier/prettier/issues/14964
+packages/graphql-language-service/benchmark/fixtures/github.graphql
+
+# remove after merge of https://github.com/graphql/graphiql/pull/3256
+*.flow
