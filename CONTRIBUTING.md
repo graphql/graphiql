@@ -23,17 +23,6 @@ issue. The best way is to provide a reduced test case on jsFiddle or jsBin.
 All active development of this project happens on GitHub. We actively welcome
 your [pull requests](https://help.github.com/articles/creating-a-pull-request).
 
-## Commit Message Conventions
-
-Our commit messages are linted by `commitlint` following the angular changelog
-convention. You may end up losing a commit message or two if you don't follow
-this rule. We can add a prompt if people ask for it. This was designed for
-compatibility with various git clients in mind.
-
-You will need to include a type prefix for all commit messages. For example:
-
-`git commit -m 'fix: fix window undefined error in result viewer'`
-
 ### Type Prefixes
 
 [a list of type prefixes](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#type-enum)
