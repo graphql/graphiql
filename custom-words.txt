@@ -129,7 +129,6 @@ chainable
 codegen
 dirpath
 envrc
-eslintignore
 filesfor
 flowtests
 foldgutter
