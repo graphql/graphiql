@@ -10,6 +10,10 @@
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
+  ignorePatterns: [
+    // CRA example has its own eslint config
+    'examples/graphiql-create-react-app',
+  ],
   overrides: [
     {
       // Rules for all code files
