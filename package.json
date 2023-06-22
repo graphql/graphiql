@@ -54,7 +54,7 @@
     "e2e:build": "yarn build && yarn workspace graphiql build-bundles-min",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
-    "jest": "jest --testPathIgnorePatterns cm6-graphql",
+    "jest": "IGNORE_CM6=true jest",
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn lint-check && yarn pretty-check && yarn lint-cspell",
     "lint-check": "eslint-config-prettier .eslintrc.js",

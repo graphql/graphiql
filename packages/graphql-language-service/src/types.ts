@@ -209,6 +209,13 @@ export type Definition = {
   projectRoot?: Uri;
 };
 
+export type Reference = {
+  location: {
+    uri: Uri;
+    range: IRange;
+  };
+};
+
 // Outline view
 export type TokenKind =
   | 'keyword'
