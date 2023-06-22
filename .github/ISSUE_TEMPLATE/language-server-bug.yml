@@ -1,6 +1,6 @@
 name: Generic IDE (LSP Server) Bug 🐞
 description: File any non syntax highlighting related bugs in vscode or any IDE lsp runtime (vim, intellij, emacs, sublime, etc), with the `graphql-language-service-server` / `graphql-lsp` CLI
-title: "[lsp-server] 🐞 <title>"
+title: '[lsp-server] 🐞 <title>'
 labels: [bug, lsp-server]
 body:
   - type: checkboxes

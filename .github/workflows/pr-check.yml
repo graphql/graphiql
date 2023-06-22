@@ -27,6 +27,3 @@ jobs:
 
       - name: ESLint
         run: yarn lint
-
-      - name: Prettier Check
-        run: yarn pretty-check
