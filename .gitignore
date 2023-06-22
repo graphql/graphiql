@@ -11,6 +11,7 @@ coverage/
 packages/graphiql/typedoc/
 dist/
 esm/
+packages/*/out/
 *.vsix
 *.tsbuildinfo
 
@@ -41,8 +42,9 @@ packages/codemirror-graphql/*.map
 !packages/codemirror-graphql/*.config.js
 
 packages/graphiql/index.html
+packages/graphiql/dev.html
 packages/graphiql/analyzer.html
-packages/graphiql/graphiql.*.js
+packages/graphiql/graphiql*.js
 packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/

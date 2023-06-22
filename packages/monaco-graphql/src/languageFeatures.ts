@@ -218,7 +218,7 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
 
   public get triggerCharacters(): string[] {
     // removing /n character for now until we can
-    // re-introduce the behavior in a programattic,
+    // re-introduce the behavior in a programmatic,
     // context-aware fashion
     return [':', '$', ' ', '(', '@'];
   }
