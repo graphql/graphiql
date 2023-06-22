@@ -132,7 +132,7 @@
     "js-green-licenses": "3.0.0",
     "lint-staged": "^10.1.2",
     "mkdirp": "^1.0.4",
-    "prettier": "^3.0.0-alpha.12",
+    "prettier": "3.0.0-alpha.12",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
     "typedoc": "^0.19.2",
