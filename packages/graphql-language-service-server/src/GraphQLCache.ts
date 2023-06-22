@@ -71,7 +71,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
   _schemaMap: Map<Uri, GraphQLSchema>;
-  _schemaDocumentNodeMap: Map<Uri, DocumentNode>;
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
@@ -93,7 +92,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._graphQLConfig = config;
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
-    this._schemaDocumentNodeMap = new Map();
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
