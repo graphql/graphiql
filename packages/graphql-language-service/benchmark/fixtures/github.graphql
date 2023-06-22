@@ -273,7 +273,7 @@ type BlameRange {
   startingLine: Int!
 }
 
-type Blob implements Node, GitObject {
+type Blob implements Node & GitObject {
   abbreviatedOid: String!
 
   byteSize: Int!
@@ -294,7 +294,7 @@ type Blob implements Node, GitObject {
   text: String
 }
 
-type Bot implements Node, Actor, UniformResourceLocatable {
+type Bot implements Node & Actor & UniformResourceLocatable {
   avatarUrl(size: Int): URI!
 
   createdAt: DateTime!
@@ -482,7 +482,7 @@ interface Closable {
   closedAt: DateTime
 }
 
-type ClosedEvent implements Node, UniformResourceLocatable {
+type ClosedEvent implements Node & UniformResourceLocatable {
   actor: Actor
 
   closable: Closable!
@@ -624,7 +624,7 @@ type CommentDeletedEvent implements Node {
   id: ID!
 }
 
-type Commit implements Node, GitObject, Subscribable, UniformResourceLocatable {
+type Commit implements Node & GitObject & Subscribable & UniformResourceLocatable {
   abbreviatedOid: String!
 
   additions: Int!
@@ -761,7 +761,7 @@ input CommitAuthor {
   emails: [String!]
 }
 
-type CommitComment implements Node, Comment, Deletable, Updatable, UpdatableComment, Reactable, RepositoryNode {
+type CommitComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -860,7 +860,7 @@ type CommitCommentEdge {
   node: CommitComment
 }
 
-type CommitCommentThread implements Node, RepositoryNode {
+type CommitCommentThread implements Node & RepositoryNode {
   comments(
     after: String
 
@@ -1018,7 +1018,9 @@ enum ContributionOrderField {
 }
 
 type ContributionsCollection {
-  commitContributionsByRepository(maxRepositories: Int = 25): [CommitContributionsByRepository!]!
+  commitContributionsByRepository(
+    maxRepositories: Int = 25
+  ): [CommitContributionsByRepository!]!
 
   contributionCalendar: ContributionCalendar!
 
@@ -1108,7 +1110,9 @@ type ContributionsCollection {
     orderBy: ContributionOrder
   ): CreatedPullRequestReviewContributionConnection!
 
-  pullRequestReviewContributionsByRepository(maxRepositories: Int = 25): [PullRequestReviewContributionsByRepository!]!
+  pullRequestReviewContributionsByRepository(
+    maxRepositories: Int = 25
+  ): [PullRequestReviewContributionsByRepository!]!
 
   repositoryContributions(
     after: String
@@ -1304,7 +1308,9 @@ type CreatedIssueContributionEdge {
   node: CreatedIssueContribution
 }
 
-union CreatedIssueOrRestrictedContribution = CreatedIssueContribution | RestrictedContribution
+union CreatedIssueOrRestrictedContribution =
+    CreatedIssueContribution
+  | RestrictedContribution
 
 type CreatedPullRequestContribution implements Contribution {
   isRestricted: Boolean!
@@ -1336,7 +1342,9 @@ type CreatedPullRequestContributionEdge {
   node: CreatedPullRequestContribution
 }
 
-union CreatedPullRequestOrRestrictedContribution = CreatedPullRequestContribution | RestrictedContribution
+union CreatedPullRequestOrRestrictedContribution =
+    CreatedPullRequestContribution
+  | RestrictedContribution
 
 type CreatedPullRequestReviewContribution implements Contribution {
   isRestricted: Boolean!
@@ -1402,7 +1410,9 @@ type CreatedRepositoryContributionEdge {
   node: CreatedRepositoryContribution
 }
 
-union CreatedRepositoryOrRestrictedContribution = CreatedRepositoryContribution | RestrictedContribution
+union CreatedRepositoryOrRestrictedContribution =
+    CreatedRepositoryContribution
+  | RestrictedContribution
 
 input CreateIssueInput {
   repositoryId: ID!
@@ -1464,7 +1474,7 @@ type CreatePullRequestPayload {
   pullRequest: PullRequest
 }
 
-type CrossReferencedEvent implements Node, UniformResourceLocatable {
+type CrossReferencedEvent implements Node & UniformResourceLocatable {
   actor: Actor
 
   createdAt: DateTime!
@@ -1898,7 +1908,7 @@ type FollowingConnection {
   totalCount: Int!
 }
 
-type Gist implements Node, Starrable {
+type Gist implements Node & Starrable {
   comments(
     after: String
 
@@ -1943,7 +1953,7 @@ type Gist implements Node, Starrable {
   viewerHasStarred: Boolean!
 }
 
-type GistComment implements Node, Comment, Deletable, Updatable, UpdatableComment {
+type GistComment implements Node & Comment & Deletable & Updatable & UpdatableComment {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -2248,7 +2258,7 @@ input ImportProjectInput {
   clientMutationId: String
 }
 
-type Issue implements Node, Assignable, Closable, Comment, Updatable, UpdatableComment, Labelable, Lockable, Reactable, RepositoryNode, Subscribable, UniformResourceLocatable {
+type Issue implements Node & Assignable & Closable & Comment & Updatable & UpdatableComment & Labelable & Lockable & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable {
   activeLockReason: LockReason
 
   assignees(
@@ -2417,7 +2427,7 @@ type Issue implements Node, Assignable, Closable, Comment, Updatable, UpdatableC
   viewerSubscription: SubscriptionState
 }
 
-type IssueComment implements Node, Comment, Deletable, Updatable, UpdatableComment, Reactable, RepositoryNode {
+type IssueComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -2963,7 +2973,7 @@ enum LockReason {
   SPAM
 }
 
-type Mannequin implements Node, Actor, UniformResourceLocatable {
+type Mannequin implements Node & Actor & UniformResourceLocatable {
   avatarUrl(size: Int): URI!
 
   createdAt: DateTime!
@@ -3037,12 +3047,16 @@ type MarketplaceListing implements Node {
   installedForViewer: Boolean!
 
   isApproved: Boolean!
-    @deprecated(reason: "`isApproved` will be removed. Use `isPublic` instead. Removal on 2019-10-01 UTC.")
+    @deprecated(
+      reason: "`isApproved` will be removed. Use `isPublic` instead. Removal on 2019-10-01 UTC."
+    )
 
   isArchived: Boolean!
 
   isDelisted: Boolean!
-    @deprecated(reason: "`isDelisted` will be removed. Use `isArchived` instead. Removal on 2019-10-01 UTC.")
+    @deprecated(
+      reason: "`isDelisted` will be removed. Use `isArchived` instead. Removal on 2019-10-01 UTC."
+    )
 
   isDraft: Boolean!
 
@@ -3168,7 +3182,7 @@ enum MergeableState {
   UNKNOWN
 }
 
-type MergedEvent implements Node, UniformResourceLocatable {
+type MergedEvent implements Node & UniformResourceLocatable {
   actor: Actor
 
   commit: Commit
@@ -3205,7 +3219,7 @@ type MergePullRequestPayload {
   pullRequest: PullRequest
 }
 
-type Milestone implements Node, Closable, UniformResourceLocatable {
+type Milestone implements Node & Closable & UniformResourceLocatable {
   closed: Boolean!
 
   closedAt: DateTime
@@ -3371,21 +3385,31 @@ type MoveProjectColumnPayload {
 }
 
 type Mutation {
-  acceptTopicSuggestion(input: AcceptTopicSuggestionInput!): AcceptTopicSuggestionPayload
+  acceptTopicSuggestion(
+    input: AcceptTopicSuggestionInput!
+  ): AcceptTopicSuggestionPayload
 
-  addAssigneesToAssignable(input: AddAssigneesToAssignableInput!): AddAssigneesToAssignablePayload
+  addAssigneesToAssignable(
+    input: AddAssigneesToAssignableInput!
+  ): AddAssigneesToAssignablePayload
 
   addComment(input: AddCommentInput!): AddCommentPayload
 
-  addLabelsToLabelable(input: AddLabelsToLabelableInput!): AddLabelsToLabelablePayload
+  addLabelsToLabelable(
+    input: AddLabelsToLabelableInput!
+  ): AddLabelsToLabelablePayload
 
   addProjectCard(input: AddProjectCardInput!): AddProjectCardPayload
 
   addProjectColumn(input: AddProjectColumnInput!): AddProjectColumnPayload
 
-  addPullRequestReview(input: AddPullRequestReviewInput!): AddPullRequestReviewPayload
+  addPullRequestReview(
+    input: AddPullRequestReviewInput!
+  ): AddPullRequestReviewPayload
 
-  addPullRequestReviewComment(input: AddPullRequestReviewCommentInput!): AddPullRequestReviewCommentPayload
+  addPullRequestReviewComment(
+    input: AddPullRequestReviewCommentInput!
+  ): AddPullRequestReviewCommentPayload
 
   addReaction(input: AddReactionInput!): AddReactionPayload
 
@@ -3393,7 +3417,9 @@ type Mutation {
 
   changeUserStatus(input: ChangeUserStatusInput!): ChangeUserStatusPayload
 
-  clearLabelsFromLabelable(input: ClearLabelsFromLabelableInput!): ClearLabelsFromLabelablePayload
+  clearLabelsFromLabelable(
+    input: ClearLabelsFromLabelableInput!
+  ): ClearLabelsFromLabelablePayload
 
   cloneProject(input: CloneProjectInput!): CloneProjectPayload
 
@@ -3401,9 +3427,13 @@ type Mutation {
 
   closePullRequest(input: ClosePullRequestInput!): ClosePullRequestPayload
 
-  convertProjectCardNoteToIssue(input: ConvertProjectCardNoteToIssueInput!): ConvertProjectCardNoteToIssuePayload
+  convertProjectCardNoteToIssue(
+    input: ConvertProjectCardNoteToIssueInput!
+  ): ConvertProjectCardNoteToIssuePayload
 
-  createBranchProtectionRule(input: CreateBranchProtectionRuleInput!): CreateBranchProtectionRulePayload
+  createBranchProtectionRule(
+    input: CreateBranchProtectionRuleInput!
+  ): CreateBranchProtectionRulePayload
 
   createIssue(input: CreateIssueInput!): CreateIssuePayload
 
@@ -3411,9 +3441,13 @@ type Mutation {
 
   createPullRequest(input: CreatePullRequestInput!): CreatePullRequestPayload
 
-  declineTopicSuggestion(input: DeclineTopicSuggestionInput!): DeclineTopicSuggestionPayload
+  declineTopicSuggestion(
+    input: DeclineTopicSuggestionInput!
+  ): DeclineTopicSuggestionPayload
 
-  deleteBranchProtectionRule(input: DeleteBranchProtectionRuleInput!): DeleteBranchProtectionRulePayload
+  deleteBranchProtectionRule(
+    input: DeleteBranchProtectionRuleInput!
+  ): DeleteBranchProtectionRulePayload
 
   deleteIssue(input: DeleteIssueInput!): DeleteIssuePayload
 
@@ -3423,13 +3457,21 @@ type Mutation {
 
   deleteProjectCard(input: DeleteProjectCardInput!): DeleteProjectCardPayload
 
-  deleteProjectColumn(input: DeleteProjectColumnInput!): DeleteProjectColumnPayload
+  deleteProjectColumn(
+    input: DeleteProjectColumnInput!
+  ): DeleteProjectColumnPayload
 
-  deletePullRequestReview(input: DeletePullRequestReviewInput!): DeletePullRequestReviewPayload
+  deletePullRequestReview(
+    input: DeletePullRequestReviewInput!
+  ): DeletePullRequestReviewPayload
 
-  deletePullRequestReviewComment(input: DeletePullRequestReviewCommentInput!): DeletePullRequestReviewCommentPayload
+  deletePullRequestReviewComment(
+    input: DeletePullRequestReviewCommentInput!
+  ): DeletePullRequestReviewCommentPayload
 
-  dismissPullRequestReview(input: DismissPullRequestReviewInput!): DismissPullRequestReviewPayload
+  dismissPullRequestReview(
+    input: DismissPullRequestReviewInput!
+  ): DismissPullRequestReviewPayload
 
   lockLockable(input: LockLockableInput!): LockLockablePayload
 
@@ -3439,11 +3481,17 @@ type Mutation {
 
   moveProjectColumn(input: MoveProjectColumnInput!): MoveProjectColumnPayload
 
-  removeAssigneesFromAssignable(input: RemoveAssigneesFromAssignableInput!): RemoveAssigneesFromAssignablePayload
+  removeAssigneesFromAssignable(
+    input: RemoveAssigneesFromAssignableInput!
+  ): RemoveAssigneesFromAssignablePayload
 
-  removeLabelsFromLabelable(input: RemoveLabelsFromLabelableInput!): RemoveLabelsFromLabelablePayload
+  removeLabelsFromLabelable(
+    input: RemoveLabelsFromLabelableInput!
+  ): RemoveLabelsFromLabelablePayload
 
-  removeOutsideCollaborator(input: RemoveOutsideCollaboratorInput!): RemoveOutsideCollaboratorPayload
+  removeOutsideCollaborator(
+    input: RemoveOutsideCollaboratorInput!
+  ): RemoveOutsideCollaboratorPayload
 
   removeReaction(input: RemoveReactionInput!): RemoveReactionPayload
 
@@ -3455,17 +3503,27 @@ type Mutation {
 
   requestReviews(input: RequestReviewsInput!): RequestReviewsPayload
 
-  resolveReviewThread(input: ResolveReviewThreadInput!): ResolveReviewThreadPayload
+  resolveReviewThread(
+    input: ResolveReviewThreadInput!
+  ): ResolveReviewThreadPayload
 
-  submitPullRequestReview(input: SubmitPullRequestReviewInput!): SubmitPullRequestReviewPayload
+  submitPullRequestReview(
+    input: SubmitPullRequestReviewInput!
+  ): SubmitPullRequestReviewPayload
 
   unlockLockable(input: UnlockLockableInput!): UnlockLockablePayload
 
-  unmarkIssueAsDuplicate(input: UnmarkIssueAsDuplicateInput!): UnmarkIssueAsDuplicatePayload
+  unmarkIssueAsDuplicate(
+    input: UnmarkIssueAsDuplicateInput!
+  ): UnmarkIssueAsDuplicatePayload
 
-  unresolveReviewThread(input: UnresolveReviewThreadInput!): UnresolveReviewThreadPayload
+  unresolveReviewThread(
+    input: UnresolveReviewThreadInput!
+  ): UnresolveReviewThreadPayload
 
-  updateBranchProtectionRule(input: UpdateBranchProtectionRuleInput!): UpdateBranchProtectionRulePayload
+  updateBranchProtectionRule(
+    input: UpdateBranchProtectionRuleInput!
+  ): UpdateBranchProtectionRulePayload
 
   updateIssue(input: UpdateIssueInput!): UpdateIssuePayload
 
@@ -3475,13 +3533,19 @@ type Mutation {
 
   updateProjectCard(input: UpdateProjectCardInput!): UpdateProjectCardPayload
 
-  updateProjectColumn(input: UpdateProjectColumnInput!): UpdateProjectColumnPayload
+  updateProjectColumn(
+    input: UpdateProjectColumnInput!
+  ): UpdateProjectColumnPayload
 
   updatePullRequest(input: UpdatePullRequestInput!): UpdatePullRequestPayload
 
-  updatePullRequestReview(input: UpdatePullRequestReviewInput!): UpdatePullRequestReviewPayload
+  updatePullRequestReview(
+    input: UpdatePullRequestReviewInput!
+  ): UpdatePullRequestReviewPayload
 
-  updatePullRequestReviewComment(input: UpdatePullRequestReviewCommentInput!): UpdatePullRequestReviewCommentPayload
+  updatePullRequestReviewComment(
+    input: UpdatePullRequestReviewCommentInput!
+  ): UpdatePullRequestReviewCommentPayload
 
   updateSubscription(input: UpdateSubscriptionInput!): UpdateSubscriptionPayload
 
@@ -3498,7 +3562,7 @@ enum OrderDirection {
   DESC
 }
 
-type Organization implements Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable, MemberStatusable, ProfileOwner {
+type Organization implements Node & Actor & RegistryPackageOwner & RegistryPackageSearch & ProjectOwner & RepositoryOwner & UniformResourceLocatable & MemberStatusable & ProfileOwner {
   anyPinnableItems(type: PinnableItemType): Boolean!
 
   avatarUrl(size: Int): URI!
@@ -3915,7 +3979,7 @@ interface ProfileOwner {
   websiteUrl: URI
 }
 
-type Project implements Node, Closable, Updatable {
+type Project implements Node & Closable & Updatable {
   body: String
 
   bodyHTML: HTML!
@@ -4193,7 +4257,7 @@ type PublicKeyEdge {
   node: PublicKey
 }
 
-type PullRequest implements Node, Assignable, Closable, Comment, Updatable, UpdatableComment, Labelable, Lockable, Reactable, RepositoryNode, Subscribable, UniformResourceLocatable {
+type PullRequest implements Node & Assignable & Closable & Comment & Updatable & UpdatableComment & Labelable & Lockable & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable {
   activeLockReason: LockReason
 
   additions: Int!
@@ -4490,7 +4554,7 @@ type PullRequestChangedFileEdge {
   node: PullRequestChangedFile
 }
 
-type PullRequestCommit implements Node, UniformResourceLocatable {
+type PullRequestCommit implements Node & UniformResourceLocatable {
   commit: Commit!
   id: ID!
 
@@ -4501,7 +4565,7 @@ type PullRequestCommit implements Node, UniformResourceLocatable {
   url: URI!
 }
 
-type PullRequestCommitCommentThread implements Node, RepositoryNode {
+type PullRequestCommitCommentThread implements Node & RepositoryNode {
   comments(
     after: String
 
@@ -4596,7 +4660,7 @@ enum PullRequestPubSubTopic {
   STATE
 }
 
-type PullRequestReview implements Node, Comment, Deletable, Updatable, UpdatableComment, Reactable, RepositoryNode {
+type PullRequestReview implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -4695,7 +4759,7 @@ type PullRequestReview implements Node, Comment, Deletable, Updatable, Updatable
   viewerDidAuthor: Boolean!
 }
 
-type PullRequestReviewComment implements Node, Comment, Deletable, Updatable, UpdatableComment, Reactable, RepositoryNode {
+type PullRequestReviewComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -5507,7 +5571,7 @@ interface RegistryPackageSearch {
   id: ID!
 }
 
-type Release implements Node, UniformResourceLocatable {
+type Release implements Node & UniformResourceLocatable {
   author: User
 
   createdAt: DateTime!
@@ -5752,7 +5816,7 @@ enum ReportedContentClassifiers {
   RESOLVED
 }
 
-type Repository implements Node, ProjectOwner, RegistryPackageOwner, Subscribable, Starrable, UniformResourceLocatable, RepositoryInfo {
+type Repository implements Node & ProjectOwner & RegistryPackageOwner & Subscribable & Starrable & UniformResourceLocatable & RepositoryInfo {
   assignableUsers(
     after: String
 
@@ -6338,7 +6402,7 @@ enum RepositoryPrivacy {
   PRIVATE
 }
 
-type RepositoryTopic implements Node, UniformResourceLocatable {
+type RepositoryTopic implements Node & UniformResourceLocatable {
   id: ID!
 
   resourcePath: URI!
@@ -6435,7 +6499,7 @@ type ReviewDismissalAllowanceEdge {
   node: ReviewDismissalAllowance
 }
 
-type ReviewDismissedEvent implements Node, UniformResourceLocatable {
+type ReviewDismissedEvent implements Node & UniformResourceLocatable {
   actor: Actor
 
   createdAt: DateTime!
@@ -6517,7 +6581,13 @@ type ReviewRequestRemovedEvent implements Node {
   requestedReviewer: RequestedReviewer
 }
 
-union SearchResultItem = Issue | PullRequest | Repository | User | Organization | MarketplaceListing
+union SearchResultItem =
+    Issue
+  | PullRequest
+  | Repository
+  | User
+  | Organization
+  | MarketplaceListing
 
 type SearchResultItemConnection {
   codeCount: Int!
@@ -6885,7 +6955,7 @@ type SuggestedReviewer {
   reviewer: User!
 }
 
-type Tag implements Node, GitObject {
+type Tag implements Node & GitObject {
   abbreviatedOid: String!
 
   commitResourcePath: URI!
@@ -6906,7 +6976,7 @@ type Tag implements Node, GitObject {
   target: GitObject!
 }
 
-type Team implements Node, Subscribable, MemberStatusable {
+type Team implements Node & Subscribable & MemberStatusable {
   ancestors(
     after: String
 
@@ -7177,7 +7247,7 @@ type TextMatchHighlight {
   text: String!
 }
 
-type Topic implements Node, Starrable {
+type Topic implements Node & Starrable {
   id: ID!
 
   name: String!
@@ -7234,7 +7304,7 @@ type TransferredEvent implements Node {
   issue: Issue!
 }
 
-type Tree implements Node, GitObject {
+type Tree implements Node & GitObject {
   abbreviatedOid: String!
 
   commitResourcePath: URI!
@@ -7602,7 +7672,7 @@ type UpdateTopicsPayload {
 
 scalar URI
 
-type User implements Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable, ProfileOwner {
+type User implements Node & Actor & RegistryPackageOwner & RegistryPackageSearch & ProjectOwner & RepositoryOwner & UniformResourceLocatable & ProfileOwner {
   anyPinnableItems(type: PinnableItemType): Boolean!
 
   avatarUrl(size: Int): URI!
