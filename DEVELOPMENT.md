@@ -32,19 +32,19 @@ this repo._
    First you'll need —
 
    ```sh
-   yarn run build
+   yarn build
    ```
 
    — or —
 
    ```sh
-   yarn run build:watch
+   yarn build:watch
    ```
 
    If you are focused on GraphiQL development, you can run —
 
    ```sh
-   yarn run start-graphiql
+   yarn start-graphiql
    ```
 
 5. Get coding! If you've added code, add tests. If you've changed APIs, update
