@@ -4,16 +4,7 @@ schema {
 
 directive @test(testArg: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 directive @onArg on ARGUMENT_DEFINITION
-directive @onAllDefs on SCHEMA
-  | SCALAR
-  | OBJECT
-  | FIELD_DEFINITION
-  | INTERFACE
-  | UNION
-  | ENUM_VALUE
-  | INPUT_OBJECT
-  | ARGUMENT_DEFINITION
-  | INPUT_FIELD_DEFINITION
+directive @onAllDefs on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | INTERFACE | UNION | ENUM_VALUE | INPUT_OBJECT | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 enum Episode {
   NEWHOPE
@@ -68,7 +59,7 @@ type Query {
   hero(episode: Episode): Character
   human(id: String!): Human
   droid(id: String!): Droid
-  inputTypeTest(args: InputType = {key: "key"}): TestType
+  inputTypeTest(args: InputType = { key: "key" }): TestType
   deprecatedField: TestType @deprecated(reason: "Use test instead.")
 }
 

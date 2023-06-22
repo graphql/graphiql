@@ -17,7 +17,10 @@ export interface IPosition {
 }
 
 export class Position implements IPosition {
-  constructor(public line: number, public character: number) {}
+  constructor(
+    public line: number,
+    public character: number,
+  ) {}
 
   setLine(line: number) {
     this.line = line;

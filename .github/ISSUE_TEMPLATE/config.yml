@@ -1,29 +1,29 @@
 blank_issues_enabled: true
 contact_links:
-  - name: "📚 Support/Q&A"
+  - name: '📚 Support/Q&A'
     url: https://github.com/graphql/graphiql/discussions/categories/q-a-support
     about: >-
-      Some questions are already answered in our github discussions Q&A section
-      If you don't find an answer, [create a support ticket](ttps://github.com/graphql/graphiql/discussions/new?category=q-a-support)
+      Some questions are already answered in our github discussions Q&A section If you don't find an answer, [create a support ticket](ttps://github.com/graphql/graphiql/discussions/new?category=q-a-support)
 
-  - name: "💬 `graphiql` Discord Support"
+
+  - name: '💬 `graphiql` Discord Support'
     url: https://discord.gg/NP5vbPeUFp
-    about: "`graphiql` Discord Support Channel"
+    about: '`graphiql` Discord Support Channel'
 
-  - name: "💬 `vscode-graphql` Discord Support"
+  - name: '💬 `vscode-graphql` Discord Support'
     url: https://discord.gg/bHrQtxGNzQ
-    about: "`vscode-graphql` Discord Support Channel"
+    about: '`vscode-graphql` Discord Support Channel'
 
-  - name: "💬 GraphQL LSP & CLI Discord Support"
+  - name: '💬 GraphQL LSP & CLI Discord Support'
     url: https://discord.gg/wkQCKwazxj
     about: >-
-      GraphQL LSP (Language Server Protocol) Server Discord Support Channel 
-      For `graphql-language-service-server` and/or `graphql-language-service-cli`
+      GraphQL LSP (Language Server Protocol) Server Discord Support Channel  For `graphql-language-service-server` and/or `graphql-language-service-cli`
 
-  - name: "💬 `monaco-graphql` Discord Support"
+
+  - name: '💬 `monaco-graphql` Discord Support'
     url: https://discord.gg/r4BxrAG6fN
-    about: "`monaco-graphql` Discord Support Channel"
+    about: '`monaco-graphql` Discord Support Channel'
 
-  - name: "💬 `codedemirror-graphql` Discord Support"
+  - name: '💬 `codedemirror-graphql` Discord Support'
     url: https://discord.gg/cffZwk8NJW
-    about: "`codemirror-graphql` Discord Support Channel"
+    about: '`codemirror-graphql` Discord Support Channel'

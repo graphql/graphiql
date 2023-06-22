@@ -56,9 +56,7 @@ input InputType {
   """
   list type with default
   """
-  exampleList: [ChildInputType] = [
-    { isChild: false, favoriteBook: "Binti" }
-  ]
+  exampleList: [ChildInputType] = [{ isChild: false, favoriteBook: "Binti" }]
   exampleScalarList: [String]! = ["something"]
 }
 

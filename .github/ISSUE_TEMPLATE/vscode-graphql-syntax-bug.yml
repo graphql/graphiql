@@ -1,6 +1,6 @@
 name: VSCode GraphQL Syntax Bug
 description: Report a bug for `vscode-graphql-syntax`
-title: "[vscode-graphql-syntax] <title>"
+title: '[vscode-graphql-syntax] <title>'
 labels: [vscode-graphql-syntax, bug, needs triage]
 body:
   - type: checkboxes
@@ -8,5 +8,5 @@ body:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for the bug you encountered.
       options:
-      - label: I have searched the existing issues
-        required: true
+        - label: I have searched the existing issues
+          required: true

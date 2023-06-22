@@ -1,6 +1,6 @@
 name: GraphiQL 🐞 Bug
 description: File a bug with the graphiql web editor
-title: "[graphiql] <title>"
+title: '[graphiql] <title>'
 labels: [bug, needs triage, graphiql]
 body:
   - type: checkboxes

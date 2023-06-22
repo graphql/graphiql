@@ -10,7 +10,10 @@ export class HistoryStore {
   history: QueryStore;
   favorite: QueryStore;
 
-  constructor(private storage: StorageAPI, private maxHistoryLength: number) {
+  constructor(
+    private storage: StorageAPI,
+    private maxHistoryLength: number,
+  ) {
     this.history = new QueryStore(
       'queries',
       this.storage,
