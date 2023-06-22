@@ -1,5 +1,13 @@
 # graphql-language-service
 
+## 5.1.7
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- [#3149](https://github.com/graphql/graphiql/pull/3149) [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5) Thanks [@mskelton](https://github.com/mskelton)! - Fix hover docs being off by one position.
+
 ## 5.1.7-alpha.0
 
 ### Patch Changes
