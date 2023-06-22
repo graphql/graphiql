@@ -4,6 +4,3 @@
 working-group/
 packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql
 CHANGELOG.md
-
-# remove after merge of https://github.com/graphql/graphiql/pull/3256
-*.flow
