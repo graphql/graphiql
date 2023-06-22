@@ -69,12 +69,11 @@ clsx
 codemirror
 codesandbox
 combobox
-commitlint
 delivr
 dompurify
 esbuild
 execa
-graphiql
+GraphiQL
 headlessui
 inno
 intellij
@@ -160,7 +159,6 @@ unsubscribable
 urql
 vash
 websockets
-
 
 // fonts
 fira

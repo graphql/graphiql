@@ -2,6 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "language": "en",
   "useGitignore": true,
+  "cache": {
+    "useCache": true
+  },
   "dictionaries": ["custom-words"],
   "dictionaryDefinitions": [
     {
