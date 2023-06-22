@@ -109,8 +109,6 @@ export interface GraphQLCache {
     appName?: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
-
-  getSchemaDocumentNode: (appName?: string) => Promise<DocumentNode | null>;
 }
 
 // online-parser related

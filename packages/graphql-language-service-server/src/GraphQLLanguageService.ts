@@ -404,10 +404,7 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    const schema = await this._graphQLCache.getSchemaDocumentNode(
-      projectConfig.name,
-    );
-
+    const schema = await projectConfig.getSchema('DocumentNode');
     if (!schema) {
       return [];
     }
@@ -436,6 +433,18 @@ export class GraphQLLanguageService {
         });
       }
     };
+    // TODO: check fragment and type definition caches
+    // instead of this workaround that only works for a single
+    // file and schema
+    // the proper solution requires searching all documents in the cache
+    visit(parse(document), {
+      FragmentSpread(node) {
+        matchNodeByName(node);
+      },
+      NamedType(node) {
+        matchNodeByName(node);
+      },
+    });
 
     visit(schema, {
       FragmentSpread(node) {

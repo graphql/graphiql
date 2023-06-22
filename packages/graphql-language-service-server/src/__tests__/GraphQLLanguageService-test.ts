@@ -14,7 +14,6 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
-import { parse } from 'graphql';
 
 const simplify = (data: unknown) => JSON.parse(JSON.stringify(data));
 
@@ -27,8 +26,6 @@ const MOCK_CONFIG = {
 };
 
 describe('GraphQLLanguageService', () => {
-  let mockGetSchemaDocumentNode;
-
   const mockCache = {
     async getSchema() {
       const config = this.getGraphQLConfig();
@@ -121,10 +118,6 @@ describe('GraphQLLanguageService', () => {
         },
       ];
     },
-
-    getSchemaDocumentNode() {
-      return mockGetSchemaDocumentNode;
-    },
   };
 
   let languageService: GraphQLLanguageService;
@@ -133,7 +126,6 @@ describe('GraphQLLanguageService', () => {
       mockCache as any,
       new NoopLogger(),
     );
-    mockGetSchemaDocumentNode = languageService._graphQLConfig.project;
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -199,7 +191,7 @@ describe('GraphQLLanguageService', () => {
   it('can find references for an object type', async () => {
     const document =
       'union X = A | B\ntype A { x: String }\ntype B { x: String }\ntype Query { a: X\n z: A }';
-    mockGetSchemaDocumentNode = parse(document);
+    // mockGetSchemaDocumentNode = parse(document);
 
     const references = await languageService.getReferences(
       document,
@@ -222,7 +214,7 @@ describe('GraphQLLanguageService', () => {
     const document =
       'fragment Example on Character {name}\nquery A { hero {...Example}}\nquery B { hero {...Example }}';
 
-    mockGetSchemaDocumentNode = parse(document);
+    // mockGetSchemaDocumentNode = parse(document);
 
     const references = await languageService.getReferences(
       document,
@@ -245,7 +237,7 @@ describe('GraphQLLanguageService', () => {
     const document =
       'fragment ExampleA on Character {name}\nquery A { hero {...Example}}\nquery B { hero {...Example }}';
 
-    mockGetSchemaDocumentNode = parse(document);
+    // mockGetSchemaDocumentNode = parse(document);
 
     const references = await languageService.getReferences(
       document,

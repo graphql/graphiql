@@ -673,37 +673,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return schema;
   };
 
-  getSchemaDocumentNode = async (
-    appName?: string,
-  ): Promise<DocumentNode | null> => {
-    const projectConfig = this._graphQLConfig.getProject(appName);
-
-    if (!projectConfig) {
-      return null;
-    }
-
-    const schemaPath = projectConfig.schema as string;
-    const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
-
-    let schemaCacheKey = null;
-    let schema = null;
-
-    if (schemaPath && schemaKey) {
-      schemaCacheKey = schemaKey as string;
-
-      if (this._schemaDocumentNodeMap.has(schemaCacheKey)) {
-        schema = this._schemaDocumentNodeMap.get(schemaCacheKey);
-        if (schema) {
-          return schema;
-        }
-      }
-
-      schema = await projectConfig.getSchema('DocumentNode');
-    }
-
-    return schema;
-  };
-
   invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
     const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
