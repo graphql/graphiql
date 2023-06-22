@@ -377,7 +377,7 @@ export class GraphQLLanguageService {
     }
     return output;
   }
-
+  // TODO: move this logic to graphql-language-service for monaco-graphql/etc eventually
   public async getReferences(
     document: string,
     position: IPosition,
@@ -397,7 +397,10 @@ export class GraphQLLanguageService {
 
     const definitionNode = getASTNodeAtPosition(document, ast, position);
 
-    if (!definitionNode || !isTypeDefinitionNode(definitionNode)) {
+    // @ts-expect-error
+    const name = definitionNode?.name?.value;
+
+    if (!name) {
       return [];
     }
 
@@ -411,32 +414,35 @@ export class GraphQLLanguageService {
 
     const references: Reference[] = [];
 
-    visit(schema, {
-      NamedType(node) {
-        if (!node.loc?.source) {
-          return;
-        }
-
-        if (
-          node.name.value.toLowerCase() ===
-          definitionNode.name.value.toLowerCase()
-        ) {
-          references.push({
-            location: {
-              uri: node.loc.source.name,
-              range: new Range(
-                new Position(
-                  node.loc.startToken.line - 1,
-                  node.loc.startToken.column - 1,
-                ),
-                new Position(
-                  node.loc.endToken.line - 1,
-                  node.loc.endToken.column - 1,
-                ),
+    const matchNodeByName = (node: NamedTypeNode | FragmentSpreadNode) => {
+      if (!node.loc?.source) {
+        return;
+      }
+      if (node.name.value.toLowerCase() === name.toLowerCase()) {
+        references.push({
+          location: {
+            uri: node.loc.source.name,
+            range: new Range(
+              new Position(
+                node.loc.startToken.line - 1,
+                node.loc.startToken.column - 1,
               ),
-            },
-          });
-        }
+              new Position(
+                node.loc.endToken.line - 1,
+                node.loc.endToken.column - 1,
+              ),
+            ),
+          },
+        });
+      }
+    };
+
+    visit(schema, {
+      FragmentSpread(node) {
+        matchNodeByName(node);
+      },
+      NamedType(node) {
+        matchNodeByName(node);
       },
     });
 

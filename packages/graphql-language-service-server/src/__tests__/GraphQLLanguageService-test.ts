@@ -14,7 +14,7 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
-import { DocumentNode, parse } from 'graphql';
+import { parse } from 'graphql';
 
 const simplify = (data: unknown) => JSON.parse(JSON.stringify(data));
 
@@ -27,7 +27,7 @@ const MOCK_CONFIG = {
 };
 
 describe('GraphQLLanguageService', () => {
-  let mockGetSchemaDocumentNode: DocumentNode | undefined;
+  let mockGetSchemaDocumentNode;
 
   const mockCache = {
     async getSchema() {
@@ -133,7 +133,7 @@ describe('GraphQLLanguageService', () => {
       mockCache as any,
       new NoopLogger(),
     );
-    mockGetSchemaDocumentNode = undefined;
+    mockGetSchemaDocumentNode = languageService._graphQLConfig.project;
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -216,6 +216,47 @@ describe('GraphQLLanguageService', () => {
       [4, 4],
       [4, 4],
     ]);
+  });
+
+  it('can find references for fragments', async () => {
+    const document =
+      'fragment Example on Character {name}\nquery A { hero {...Example}}\nquery B { hero {...Example }}';
+
+    mockGetSchemaDocumentNode = parse(document);
+
+    const references = await languageService.getReferences(
+      document,
+      { line: 0, character: 12 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(
+      references
+        ?.flatMap(r => [r.location.range.start, r.location.range.end])
+        .map(p => [p.line, p.character]),
+    ).toEqual([
+      [1, 16],
+      [1, 19],
+      [2, 16],
+      [2, 19],
+    ]);
+  });
+
+  it('finds no references', async () => {
+    const document =
+      'fragment ExampleA on Character {name}\nquery A { hero {...Example}}\nquery B { hero {...Example }}';
+
+    mockGetSchemaDocumentNode = parse(document);
+
+    const references = await languageService.getReferences(
+      document,
+      { line: 0, character: 12 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(
+      references
+        ?.flatMap(r => [r.location.range.start, r.location.range.end])
+        .map(p => [p.line, p.character]),
+    ).toEqual([]);
   });
 
   it('runs hover service as expected', async () => {
