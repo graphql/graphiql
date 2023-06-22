@@ -8,7 +8,6 @@
 node_modules/
 coverage/
 .nyc_output
-packages/graphiql/typedoc/
 dist/
 esm/
 packages/*/out/
@@ -25,6 +24,7 @@ yarn-1.18.0.js
 examples/*/yarn.lock
 package-lock.json
 .eslintcache
+.cspellcache
 
 vite.config.d.ts
 vite.config.js
@@ -48,3 +48,4 @@ packages/graphiql/graphiql*.js
 packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
+packages/graphiql/typedoc/

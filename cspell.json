@@ -1,7 +1,11 @@
 {
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "language": "en",
+  "useGitignore": true,
+  "cache": {
+    "useCache": true
+  },
   "dictionaries": ["custom-words"],
-
   "dictionaryDefinitions": [
     {
       "name": "custom-words",
@@ -10,8 +14,9 @@
     }
   ],
   "ignorePaths": [
-    "examples/graphiql-2-rfc-context",
-    "packages/graphiql/src/css",
-    "**/CHANGELOG.md"
-  ]
+    "**/CHANGELOG.md",
+    "**/package.json",
+    "packages/vscode-graphql/esbuild.js"
+  ],
+  "files": ["**/*.{js,cjs,mjs,ts,jsx,tsx,md,mdx,html,json,css,toml,yaml,yml}"]
 }

@@ -58,7 +58,7 @@
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn lint-check && yarn pretty-check && yarn lint-cspell",
     "lint-check": "eslint-config-prettier .eslintrc.js",
-    "lint-cspell": "cspell --gitignore '**/*.{js,ts,jsx,tsx,md,html,json,css}'",
+    "lint-cspell": "cspell --unique",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
