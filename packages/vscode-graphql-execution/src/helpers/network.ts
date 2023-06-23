@@ -123,13 +123,15 @@ export class NetworkHelper {
       projectConfig,
     );
 
-    const fragmentInfos = await getFragmentDependenciesForAST(
-      literal.ast,
-      fragmentDefinitions,
-    );
-
-    for (const fragmentInfo of fragmentInfos) {
-      literal.content = fragmentInfo.content + '\n' + literal.content;
+    if(fragmentDefinitions) {
+      const fragmentInfos = await getFragmentDependenciesForAST(
+        literal.ast,
+        fragmentDefinitions,
+      );
+  
+      for (const fragmentInfo of fragmentInfos) {
+        literal.content = fragmentInfo.content + '\n' + literal.content;
+      }
     }
 
     const parsedOperation = gql`

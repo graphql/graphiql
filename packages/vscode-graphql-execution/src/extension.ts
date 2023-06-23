@@ -8,6 +8,8 @@ import {
   languages,
   Uri,
   ViewColumn,
+  // Command,
+  // Disposable,
 } from 'vscode';
 
 import { GraphQLContentProvider } from './providers/exec-content';
@@ -29,7 +31,7 @@ export function activate(context: ExtensionContext) {
 
   if (config.debug) {
     // eslint-disable-next-line no-console
-    console.log('Extension "vscode-graphql" is now active!');
+    console.log('Extension "vscode-graphql-execution" is now active!');
   }
 
   const commandShowOutputChannel = commands.registerCommand(
@@ -41,7 +43,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(commandShowOutputChannel);
 
   // const settings = workspace.getConfiguration("vscode-graphql-execution")
-
+  // let provider: GraphQLCodeLensProvider;
   const registerCodeLens = () => {
     context.subscriptions.push(
       languages.registerCodeLensProvider(
@@ -53,51 +55,68 @@ export function activate(context: ExtensionContext) {
           'graphql',
         ],
         new GraphQLCodeLensProvider(outputChannel),
-      ),
-    );
+        ),
+      );
   };
+
 
   // if (settings.showExecCodelens !== false) {
   registerCodeLens();
   // }
 
-  workspace.onDidChangeConfiguration(() => {
-    // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
-    // if (newSettings.showExecCodeLens !== false) {
-    registerCodeLens();
-    // }
-  });
 
-  const commandContentProvider = commands.registerCommand(
-    'vscode-graphql-execution.contentProvider',
-    (literal: ExtractedTemplateLiteral) => {
-      const uri = Uri.parse('graphql://authority/graphql');
+  // let commandContentProvider: Disposable;
 
-      const panel = window.createWebviewPanel(
-        'vscode-graphql-execution.results-preview',
-        'GraphQL Execution Result',
-        ViewColumn.Two,
-        {},
-      );
+  const registerContentProvider = () => {
+    return commands.registerCommand(
+      'vscode-graphql-execution.contentProvider',
+      (literal: ExtractedTemplateLiteral) => {
+        const uri = Uri.parse('graphql://authority/graphql');
+  
+        const panel = window.createWebviewPanel(
+          'vscode-graphql-execution.results-preview',
+          'GraphQL Execution Result',
+          ViewColumn.Two,
+          {},
+        );
+  
+        const contentProvider = new GraphQLContentProvider(
+          uri,
+          outputChannel,
+          literal,
+          panel,
+        );
+        const registration = workspace.registerTextDocumentContentProvider(
+          'graphql',
+          contentProvider,
+        );
+        context.subscriptions.push(registration);
+        panel.webview.html = contentProvider.getCurrentHtml();
+      },
+    );
+  }
 
-      const contentProvider = new GraphQLContentProvider(
-        uri,
-        outputChannel,
-        literal,
-        panel,
-      );
-      const registration = workspace.registerTextDocumentContentProvider(
-        'graphql',
-        contentProvider,
-      );
-      context.subscriptions.push(registration);
-      panel.webview.html = contentProvider.getCurrentHtml();
-    },
-  );
-  context.subscriptions.push(commandContentProvider);
+  const provider = registerContentProvider()
+  context.subscriptions.push(provider);
+
+  // workspace.onDidChangeConfiguration(async () => {
+  //   // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
+  //   // if (newSettings.showExecCodeLens !== false) {
+  //     commandContentProvider.dispose()
+  //   // }
+  // });
+  workspace.onDidSaveTextDocument(async (e) =>{
+   await window.showErrorMessage('saved')
+    if (e.fileName.includes('graphql.config') || e.fileName.includes('graphqlrc')) {
+      await window.showErrorMessage('heyyy')
+      provider.dispose()
+      const newprovider = registerContentProvider()
+      context.subscriptions.push(newprovider);
+    }
+  })
 }
 
 export function deactivate() {
   // eslint-disable-next-line no-console
   console.log('Extension "vscode-graphql-execution" is now de-active!');
-}
+}    // documents: ["./src/*.ts"],
