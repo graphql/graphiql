@@ -109,10 +109,9 @@ export function activate(context: ExtensionContext) {
       e.fileName.includes('graphql.config') ||
       e.fileName.includes('graphqlrc')
     ) {
-      await window.showErrorMessage('heyyy');
       provider.dispose();
-      const newprovider = registerContentProvider();
-      context.subscriptions.push(newprovider);
+      const newProvider = registerContentProvider();
+      context.subscriptions.push(newProvider);
     }
   });
 }
