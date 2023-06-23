@@ -259,7 +259,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.reportError('Error: this file is outside the workspace.');
       return;
     }
-    this.reportError(rootDir.uri.fsPath)
 
     const config = await loadConfig({
       rootDir: rootDir.uri.fsPath,
@@ -269,7 +268,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       extensions: [LanguageServiceExecutionExtension]
     });
     this._projectConfig = config?.getProjectForFile(literal.uri);
-    this.reportError(JSON.stringify(this._projectConfig?.schema ?? {}))
 
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (!this._projectConfig?.schema) {
