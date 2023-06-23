@@ -138,8 +138,5 @@
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
     "wsrun": "^5.2.4"
-  },
-  "resolutions": {
-    "graphql-config": "4.3.0"
   }
 }

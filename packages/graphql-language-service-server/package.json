@@ -44,7 +44,7 @@
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
-    "graphql-config": "4.3.0",
+    "graphql-config": "5.0.2",
     "graphql-language-service": "^5.1.7-alpha.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
@@ -52,7 +52,8 @@
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
     "vscode-languageserver-types": "^3.17.2",
-    "vscode-uri": "^3.0.2"
+    "vscode-uri": "^3.0.2",
+    "svelte2tsx": "^0.6.16"
   },
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",

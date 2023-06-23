@@ -114,9 +114,6 @@
     "nullthrows": "1.1.1",
     "@graphql-tools/code-file-loader": "8.0.1"
   },
-  "resolutions": {
-    "cosmiconfig": "^5.0.1"
-  },
   "workspaces": {
     "nohoist": [
       "graphql",
