@@ -48,7 +48,7 @@ build({
     'twig',
     'cosmiconfig',
     'graphql-config',
-    'graphql'
+    'graphql',
   ],
   format: 'cjs',
   sourcemap: true,

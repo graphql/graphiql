@@ -52,7 +52,7 @@ build({
     'twig',
     'cosmiconfig',
     'graphql-config',
-    'graphql'
+    'graphql',
   ],
 })
   .then(({ errors, warnings }) => {
