@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "main": "./dist/extension.js",
+  "main": "./out/extension.js",
   "icon": "assets/images/logo.png",
   "contributors": [
     {
@@ -26,8 +26,7 @@
   ],
   "activationEvents": [
     "onCommand:vscode-graphql-execution.contentProvider.isDebugging",
-    "onCommand:vscode-graphql-execution.contentProvider.contentProvider",
-    "onLanguage:graphql",
+    "onCommand:vscode-graphql-execution.contentProvidergit.contentProvider",
     "workspaceContains:**/.graphqlrc",
     "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
     "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
@@ -112,6 +111,10 @@
     "ws": "8.8.1",
     "graphql": "16.6.0",
     "nullthrows": "1.1.1",
-    "@graphql-tools/code-file-loader": "8.0.1"
+    "@graphql-tools/code-file-loader": "8.0.1",
+    "cosmiconfig": "8.2.0",
+    "svelte2tsx": "^0.6.16",
+    "svelte": "^4.0.0",
+    "cosmiconfig-toml-loader": "^1.0.0"
   }
 }

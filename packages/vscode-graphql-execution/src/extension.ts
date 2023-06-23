@@ -1,4 +1,3 @@
-'use strict';
 import {
   workspace,
   ExtensionContext,
@@ -8,8 +7,6 @@ import {
   languages,
   Uri,
   ViewColumn,
-  // Command,
-  // Disposable,
 } from 'vscode';
 
 import { GraphQLContentProvider } from './providers/exec-content';

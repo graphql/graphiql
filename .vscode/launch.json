@@ -45,7 +45,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-graphql-execution"
       ],
       "outFiles": [
-        "${workspaceFolder}/packages/vscode-graphql-execution/dist/extension.js"
+        "${workspaceFolder}/packages/vscode-graphql-execution/out/extension.js"
       ],
       "sourceMaps": true,
       "preLaunchTask": "watch-vscode-exec"
