@@ -10,10 +10,7 @@ import {
   WebviewPanel,
   WorkspaceFolder,
 } from 'vscode';
-import {
-  loadConfig,
-  GraphQLProjectConfig,
-} from 'graphql-config';
+import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
