@@ -32,6 +32,7 @@ import {
 import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { parseDocument } from '../parseDocument';
 import type { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service';
+import { NoopLogger } from '../Logger';
 
 function withoutASTNode(definition: any) {
   const result = { ...definition };
@@ -39,6 +40,7 @@ function withoutASTNode(definition: any) {
   return result;
 }
 
+const logger = new NoopLogger()
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
@@ -46,6 +48,7 @@ describe('GraphQLCache', () => {
     configDir,
     config: graphQLRC,
     parser: parseDocument,
+    logger
   });
 
   beforeEach(async () => {
@@ -54,6 +57,7 @@ describe('GraphQLCache', () => {
       configDir,
       config: graphQLRC,
       parser: parseDocument,
+      logger,
     });
   });
 
@@ -72,6 +76,7 @@ describe('GraphQLCache', () => {
       const cacheWithExtensions = await getGraphQLCache({
         loadConfigOptions: { rootDir: configDir, extensions },
         parser: parseDocument,
+        logger,
       });
       const config = cacheWithExtensions.getGraphQLConfig();
       expect('extensions' in config).toBe(true);

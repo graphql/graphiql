@@ -71,7 +71,7 @@ export async function getGraphQLCache({
 }): Promise<GraphQLCache> {
   const graphQLConfig = config || (await loadConfig({
     ...loadConfigOptions,
-    extensions: [LanguageServiceExtension]
+    extensions: [...(loadConfigOptions?.extensions ?? []), LanguageServiceExtension]
   }));
   return new GraphQLCache({
     configDir: loadConfigOptions.rootDir!,
