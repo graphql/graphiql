@@ -63,7 +63,7 @@ export function activate(context: ExtensionContext) {
   registerCodeLens();
   // }
 
-  // let commandContentProvider: Disposable;
+  let commandContentProvider: GraphQLContentProvider;
 
   const registerContentProvider = () => {
     return commands.registerCommand(
@@ -78,7 +78,7 @@ export function activate(context: ExtensionContext) {
           {},
         );
 
-        const contentProvider = new GraphQLContentProvider(
+        commandContentProvider = new GraphQLContentProvider(
           uri,
           outputChannel,
           literal,
@@ -86,10 +86,10 @@ export function activate(context: ExtensionContext) {
         );
         const registration = workspace.registerTextDocumentContentProvider(
           'graphql',
-          contentProvider,
+          commandContentProvider,
         );
         context.subscriptions.push(registration);
-        panel.webview.html = contentProvider.getCurrentHtml();
+        panel.webview.html = commandContentProvider.getCurrentHtml();
       },
     );
   };
@@ -104,14 +104,11 @@ export function activate(context: ExtensionContext) {
   //   // }
   // });
   workspace.onDidSaveTextDocument(async e => {
-    await window.showErrorMessage('saved');
     if (
       e.fileName.includes('graphql.config') ||
       e.fileName.includes('graphqlrc')
     ) {
-      provider.dispose();
-      const newProvider = registerContentProvider();
-      context.subscriptions.push(newProvider);
+      await commandContentProvider.loadConfig();
     }
   });
 }

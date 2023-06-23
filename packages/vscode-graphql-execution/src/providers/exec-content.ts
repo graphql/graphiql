@@ -14,7 +14,10 @@ import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
-import { LanguageServiceExecutionExtension } from '../helpers/extensions';
+import {
+  LanguageServiceExecutionExtension,
+  EndpointsExtension,
+} from '../helpers/extensions';
 
 import type { Endpoint, Endpoints } from '../helpers/extensions';
 import type { ExtractedTemplateLiteral } from '../helpers/source';
@@ -255,7 +258,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       throwOnEmpty: false,
       throwOnMissing: false,
       legacy: true,
-      extensions: [LanguageServiceExecutionExtension],
+      extensions: [LanguageServiceExecutionExtension, EndpointsExtension],
     });
     this._projectConfig = config?.getProjectForFile(literal.uri);
 
