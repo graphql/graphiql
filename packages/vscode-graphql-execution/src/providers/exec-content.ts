@@ -10,22 +10,17 @@ import {
   WebviewPanel,
   WorkspaceFolder,
 } from 'vscode';
-import type { ExtractedTemplateLiteral } from '../helpers/source';
-import { loadConfig, GraphQLProjectConfig, GraphQLExtensionDeclaration } from 'graphql-config';
+import {
+  loadConfig,
+  GraphQLProjectConfig,
+} from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
-import type { Endpoints, Endpoint } from 'graphql-config/extensions/endpoints';
-import { CodeFileLoader } from '@graphql-tools/code-file-loader'
+import { LanguageServiceExecutionExtension } from '../helpers/extensions';
 
-const LanguageServiceExecutionExtension: GraphQLExtensionDeclaration = api => {
-  // For schema
-  api.loaders.schema.register(new CodeFileLoader());
-  // For documents
-  api.loaders.documents.register(new CodeFileLoader());
-
-  return { name: 'languageServiceExecution' };
-}
+import type { Endpoint, Endpoints } from '../helpers/extensions';
+import type { ExtractedTemplateLiteral } from '../helpers/source';
 
 export type UserVariables = { [key: string]: GraphQLScalarTSType };
 
@@ -193,14 +188,12 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         return;
       }
 
-
       await this.loadConfig();
       const projectConfig = this._projectConfig;
 
       if (!projectConfig) {
-        return
+        return;
       }
-
 
       const endpoint = await this.loadEndpoint();
       if (endpoint?.url) {
@@ -265,7 +258,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       throwOnEmpty: false,
       throwOnMissing: false,
       legacy: true,
-      extensions: [LanguageServiceExecutionExtension]
+      extensions: [LanguageServiceExecutionExtension],
     });
     this._projectConfig = config?.getProjectForFile(literal.uri);
 

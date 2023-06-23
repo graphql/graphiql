@@ -127,13 +127,16 @@ export class SourceHelper {
     try {
       const sources = await projectConfig.getDocuments();
       const { fragmentDefinitions } = this;
-  
+
       for (const source of sources) {
         visit(source.document as DocumentNode, {
           FragmentDefinition(node) {
             const existingDef = fragmentDefinitions.get(node.name.value);
             const newVal = print(node);
-            if ((existingDef && existingDef.content !== newVal) || !existingDef) {
+            if (
+              (existingDef && existingDef.content !== newVal) ||
+              !existingDef
+            ) {
               fragmentDefinitions.set(node.name.value, {
                 definition: node,
                 content: newVal,
@@ -144,8 +147,8 @@ export class SourceHelper {
         });
       }
       return fragmentDefinitions;
-    } catch(err) {
-      this.outputChannel.append(`${err}`)
+    } catch (err) {
+      this.outputChannel.append(`${err}`);
     }
   }
 

@@ -40,7 +40,7 @@ function withoutASTNode(definition: any) {
   return result;
 }
 
-const logger = new NoopLogger()
+const logger = new NoopLogger();
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
@@ -48,7 +48,7 @@ describe('GraphQLCache', () => {
     configDir,
     config: graphQLRC,
     parser: parseDocument,
-    logger
+    logger,
   });
 
   beforeEach(async () => {

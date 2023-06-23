@@ -6,8 +6,7 @@ import * as ws from 'ws';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { pipe, subscribe } from 'wonka';
 
-// eslint-disable-next-line import/no-unresolved
-import { Endpoint } from 'graphql-config/extensions/endpoints';
+import { Endpoint } from './extensions';
 import { OutputChannel, workspace } from 'vscode';
 import { GraphQLProjectConfig } from 'graphql-config';
 import { createClient as createWSClient, OperationResult } from 'graphql-ws';
@@ -123,12 +122,12 @@ export class NetworkHelper {
       projectConfig,
     );
 
-    if(fragmentDefinitions) {
+    if (fragmentDefinitions) {
       const fragmentInfos = await getFragmentDependenciesForAST(
         literal.ast,
         fragmentDefinitions,
       );
-  
+
       for (const fragmentInfo of fragmentInfos) {
         literal.content = fragmentInfo.content + '\n' + literal.content;
       }
