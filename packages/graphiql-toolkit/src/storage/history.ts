@@ -75,23 +75,24 @@ export class HistoryStore {
     operationName?: string,
   ) => {
     if (
-      this.shouldSaveQuery(
+      !this.shouldSaveQuery(
         query,
         variables,
         headers,
         this.history.fetchRecent(),
       )
     ) {
-      this.history.push({
-        query,
-        variables,
-        headers,
-        operationName,
-      });
-      const historyQueries = this.history.items;
-      const favoriteQueries = this.favorite.items;
-      this.queries = historyQueries.concat(favoriteQueries);
+      return;
     }
+    this.history.push({
+      query,
+      variables,
+      headers,
+      operationName,
+    });
+    const historyQueries = this.history.items;
+    const favoriteQueries = this.favorite.items;
+    this.queries = historyQueries.concat(favoriteQueries);
   };
 
   toggleFavorite(

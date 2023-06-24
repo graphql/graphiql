@@ -4,6 +4,7 @@ import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
+
 /**
  * Copied from graphql/graphiql/examples/monaco-graphql-vite
  */
@@ -154,42 +155,44 @@ export default function Editor() {
    * Handle the initial schema load
    */
   useEffect(() => {
-    if (!schema && !loading) {
-      setLoading(true);
-      void getSchema()
-        .then(data => {
-          if (!('data' in data)) {
-            throw new Error(
-              'this demo does not support subscriptions or http multipart yet',
-            );
-          }
-          initializeMode({
-            diagnosticSettings: {
-              validateVariablesJSON: {
-                [Uri.file('operation.graphql').toString()]: [
-                  Uri.file('variables.json').toString(),
-                ],
-              },
-              jsonDiagnosticSettings: {
-                validate: true,
-                schemaValidation: 'error',
-                // set these again, because we are entirely re-setting them here
-                allowComments: true,
-                trailingCommas: 'ignore',
-              },
-            },
-            schemas: [
-              {
-                introspectionJSON: data.data as unknown as IntrospectionQuery,
-                uri: 'myschema.graphql',
-              },
-            ],
-          });
-
-          setSchema(data.data);
-        })
-        .then(() => setLoading(false));
+    if (schema || loading) {
+      return;
     }
+
+    setLoading(true);
+    void getSchema()
+      .then(data => {
+        if (!('data' in data)) {
+          throw new Error(
+            'this demo does not support subscriptions or http multipart yet',
+          );
+        }
+        initializeMode({
+          diagnosticSettings: {
+            validateVariablesJSON: {
+              [Uri.file('operation.graphql').toString()]: [
+                Uri.file('variables.json').toString(),
+              ],
+            },
+            jsonDiagnosticSettings: {
+              validate: true,
+              schemaValidation: 'error',
+              // set these again, because we are entirely re-setting them here
+              allowComments: true,
+              trailingCommas: 'ignore',
+            },
+          },
+          schemas: [
+            {
+              introspectionJSON: data.data as unknown as IntrospectionQuery,
+              uri: 'myschema.graphql',
+            },
+          ],
+        });
+
+        setSchema(data.data);
+      })
+      .then(() => setLoading(false));
   }, [schema, loading]);
   return (
     <div id="wrapper">

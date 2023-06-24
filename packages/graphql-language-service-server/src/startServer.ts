@@ -149,58 +149,59 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  if (options?.method) {
-    const finalOptions = buildOptions(options);
-    let reader;
-    let writer;
-    switch (options.method) {
-      case 'socket':
-        // For socket connection, the message connection needs to be
-        // established before the server socket starts listening.
-        // Do that, and return at the end of this block.
-        if (!options.port) {
-          process.stderr.write(
-            '--port is required to establish socket connection.',
-          );
-          process.exit(1);
-        }
-
-        const { port, hostname } = options;
-        const socket = net
-          .createServer(async client => {
-            client.setEncoding('utf8');
-            reader = new SocketMessageReader(client);
-            writer = new SocketMessageWriter(client);
-            client.on('end', () => {
-              socket.close();
-              process.exit(0);
-            });
-            const s = await initializeHandlers({
-              reader,
-              writer,
-              options: finalOptions,
-            });
-            s.listen();
-          })
-          .listen(port, hostname);
-        return;
-      case 'stream':
-        reader = new StreamMessageReader(process.stdin);
-        writer = new StreamMessageWriter(process.stdout);
-        break;
-      default:
-        reader = new IPCMessageReader(process);
-        writer = new IPCMessageWriter(process);
-        break;
-    }
-
-    const serverWithHandlers = await initializeHandlers({
-      reader,
-      writer,
-      options: finalOptions,
-    });
-    serverWithHandlers.listen();
+  if (!options?.method) {
+    return;
   }
+  const finalOptions = buildOptions(options);
+  let reader;
+  let writer;
+  switch (options.method) {
+    case 'socket':
+      // For socket connection, the message connection needs to be
+      // established before the server socket starts listening.
+      // Do that, and return at the end of this block.
+      if (!options.port) {
+        process.stderr.write(
+          '--port is required to establish socket connection.',
+        );
+        process.exit(1);
+      }
+
+      const { port, hostname } = options;
+      const socket = net
+        .createServer(async client => {
+          client.setEncoding('utf8');
+          reader = new SocketMessageReader(client);
+          writer = new SocketMessageWriter(client);
+          client.on('end', () => {
+            socket.close();
+            process.exit(0);
+          });
+          const s = await initializeHandlers({
+            reader,
+            writer,
+            options: finalOptions,
+          });
+          s.listen();
+        })
+        .listen(port, hostname);
+      return;
+    case 'stream':
+      reader = new StreamMessageReader(process.stdin);
+      writer = new StreamMessageWriter(process.stdout);
+      break;
+    default:
+      reader = new IPCMessageReader(process);
+      writer = new IPCMessageWriter(process);
+      break;
+  }
+
+  const serverWithHandlers = await initializeHandlers({
+    reader,
+    writer,
+    options: finalOptions,
+  });
+  serverWithHandlers.listen();
 }
 
 type InitializerParams = {

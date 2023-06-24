@@ -43,7 +43,14 @@ module.exports = {
         'plugin:react/jsx-runtime',
         'prettier',
       ],
-
+      plugins: [
+        'promise',
+        'sonarjs',
+        'unicorn',
+        '@arthurgeron/react-usememo',
+        'sonar',
+        '@shopify',
+      ],
       globals: {
         atom: false,
         document: false,
@@ -52,8 +59,9 @@ module.exports = {
         Map: true,
         Set: true,
       },
-
       rules: {
+        '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
+        'sonarjs/no-inverted-boolean-check': 'error',
         '@arthurgeron/react-usememo/require-usememo': [
           'error',
           { checkHookCalls: false },
@@ -314,14 +322,6 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-var-requires': 'off',
       },
-
-      plugins: [
-        'promise',
-        'sonarjs',
-        'unicorn',
-        '@arthurgeron/react-usememo',
-        'sonar',
-      ],
     },
     {
       // Rules that requires type information

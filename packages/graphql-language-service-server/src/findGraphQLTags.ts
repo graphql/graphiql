@@ -80,6 +80,7 @@ type ParseVueSFCResult =
       scriptSetupAst?: import('@babel/types').Statement[];
       scriptAst?: import('@babel/types').Statement[];
     };
+
 function parseVueSFC(source: string): ParseVueSFCResult {
   const { errors, descriptor } = VueParser.parse(source);
 
@@ -199,24 +200,25 @@ export function findGraphQLTags(
   };
 
   const visitors = {
-    CallExpression: (node: Expression) => {
-      if ('callee' in node) {
-        const { callee } = node;
-
-        if (
-          callee.type === 'Identifier' &&
-          getGraphQLTagName(callee) &&
-          'arguments' in node
-        ) {
-          const templateLiteral = node.arguments[0];
-          if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
-            parseTemplateLiteral(templateLiteral);
-            return;
-          }
-        }
-
-        traverse(node, visitors);
+    CallExpression(node: Expression) {
+      if (!('callee' in node)) {
+        return;
       }
+      const { callee } = node;
+
+      if (
+        callee.type === 'Identifier' &&
+        getGraphQLTagName(callee) &&
+        'arguments' in node
+      ) {
+        const templateLiteral = node.arguments[0];
+        if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
+          parseTemplateLiteral(templateLiteral);
+          return;
+        }
+      }
+
+      traverse(node, visitors);
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
       const tagName = getGraphQLTagName(node.tag);
