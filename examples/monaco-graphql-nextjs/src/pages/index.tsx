@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 
-const DynamicEditor = dynamic(() => import('../components/editor'), {
+const DynamicEditor = dynamic(() => import('../editor'), {
   suspense: true,
   ssr: false,
 });

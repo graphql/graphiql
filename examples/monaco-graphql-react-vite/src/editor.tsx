@@ -68,7 +68,7 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
 
 type CodeEditor = editor.IStandaloneCodeEditor | null;
 
-export function Editor(): ReactElement {
+export default function Editor(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null);
   const variablesRef = useRef<HTMLDivElement>(null);
   const responseRef = useRef<HTMLDivElement>(null);
