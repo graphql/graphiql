@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`source.graphql grammar should tokenize a simple query 1`] = `
+query  | keyword.operation.graphql
+       | 
+simple | entity.name.function.graphql
+       | meta.selectionset.graphql
+{      | meta.selectionset.graphql punctuation.operation.graphql
+       | meta.selectionset.graphql
+stuff  | meta.selectionset.graphql variable.graphql
+(      | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id     | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:      | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+       | meta.selectionset.graphql meta.arguments.graphql
+"      | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+1      | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"      | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)      | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+       | meta.selectionset.graphql meta.selectionset.graphql
+{      | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+       | meta.selectionset.graphql meta.selectionset.graphql
+id     | meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+       | meta.selectionset.graphql meta.selectionset.graphql
+name   | meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+       | meta.selectionset.graphql meta.selectionset.graphql
+}      | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+}      | meta.selectionset.graphql punctuation.operation.graphql
+       | 
+`;

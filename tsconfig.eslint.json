@@ -18,6 +18,8 @@
     "packages/graphiql/cypress.config.ts",
     "packages/graphiql/__mocks__/codemirror.ts",
     "packages/graphiql/__mocks__/@graphiql/react.tsx",
-    "packages/monaco-graphql/test/*.test.ts"
+    "packages/monaco-graphql/test/*.test.ts",
+    "packages/graphiql-react/vite.config.d.ts",
+    "packages/vscode-graphql-syntax/tests/**/*.ts"
   ]
 }
