@@ -1,10 +1,7 @@
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 
-const DynamicEditor = dynamic(() => import('../editor'), {
-  suspense: true,
-  ssr: false,
-});
+const DynamicEditor = dynamic(() => import('../editor'), { ssr: false });
 
 export default function Home() {
   return (
