@@ -45,7 +45,7 @@ build({
     'dustjs-linkedin',
     'atpl',
     'liquor',
-    'twig'
+    'twig',
   ],
   format: 'cjs',
   sourcemap: true,
