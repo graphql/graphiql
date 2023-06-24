@@ -1,9 +1,8 @@
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const { patchWebpackConfig } = require('next-global-css');
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+import { patchWebpackConfig } from 'next-global-css';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   trailingSlash: true,
   webpack(config, options) {
     // this fixes some issues with loading web workers
@@ -36,7 +35,7 @@ const nextConfig = {
               label: 'graphql',
               worker: {
                 id: 'graphql',
-                entry: require.resolve('monaco-graphql/esm/graphql.worker.js'),
+                entry: 'monaco-graphql/esm/graphql.worker.js',
               },
             },
           ],
@@ -49,4 +48,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

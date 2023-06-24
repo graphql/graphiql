@@ -2,8 +2,9 @@
   "name": "next-monaco-example",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -24,9 +25,11 @@
     "monaco-graphql": "^1.1.7",
     "next": "13.1.6",
     "next-global-css": "^1.3.1",
-    "prettier": "^2.8.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "4.9.5"
+  },
+  "devDependencies": {
+    "prettier": "3.0.0-alpha.12"
   }
 }
