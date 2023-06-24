@@ -3,7 +3,7 @@ import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
-import { debounce } from './debounce';
+import { debounce, monaco } from './utils';
 import {
   DEFAULT_EDITOR_OPTIONS,
   MONACO_GRAPHQL_API,

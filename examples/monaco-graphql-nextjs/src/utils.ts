@@ -13,3 +13,5 @@ export function debounce<F extends (...args: any[]) => any>(
     }, duration);
   };
 }
+
+export * from 'monaco-editor/esm/vs/editor/edcore.main';
