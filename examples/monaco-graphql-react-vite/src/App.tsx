@@ -5,26 +5,15 @@ import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 import { createGraphiQLFetcher, SyncFetcherResult } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './debounce';
+import {
+  DEFAULT_VALUE,
+  DEFAULT_EDITOR_OPTIONS,
+  GRAPHQL_URL,
+  FILE_SYSTEM_PATH,
+  STORAGE_KEY,
+} from './constants';
 
-const fetcher = createGraphiQLFetcher({
-  url: 'https://countries.trevorblades.com',
-});
-
-const defaultOperations =
-  localStorage.getItem('operations') ??
-  `# cmd/ctrl + return/enter will execute the op,
-# same in variables editor below
-# also available via context menu & f1 command palette
-
-query($code: ID!) {
-  country(code: $code) {
-    awsRegion
-    native
-    phone
-  }
-}`;
-
-const defaultVariables = localStorage.getItem('variables') ?? '{}';
+const fetcher = createGraphiQLFetcher({ url: GRAPHQL_URL });
 
 async function getSchema(): Promise<SyncFetcherResult> {
   return fetcher({
@@ -33,37 +22,34 @@ async function getSchema(): Promise<SyncFetcherResult> {
   });
 }
 
-export function getOrCreateModel({
-  uri,
-  value,
-}: {
-  uri: string;
-  value: string;
-}): editor.ITextModel {
-  const language = uri.split('.').pop();
+export function getOrCreateModel(
+  type: 'operations' | 'variables' | 'response',
+): editor.ITextModel {
+  const uri = Uri.file(FILE_SYSTEM_PATH[type]);
+  const defaultValue = DEFAULT_VALUE[type];
+  const language = uri.path.split('.').pop();
   return (
-    editor.getModel(Uri.file(uri)) ??
-    editor.createModel(value, language, Uri.file(uri))
+    editor.getModel(uri) ?? editor.createModel(defaultValue, language, uri)
   );
 }
 
 async function execOperation(): Promise<void> {
-  const variables = editor.getModel(Uri.file('variables.json'))!.getValue();
-  const operations = editor.getModel(Uri.file('operation.graphql'))!.getValue();
-  const resultsModel = editor.getModel(Uri.file('results.json'));
+  const operationsModel = getOrCreateModel('operations');
+  const variablesModel = getOrCreateModel('variables');
+  const responseModel = getOrCreateModel('response');
   const result = await fetcher({
-    query: operations,
-    variables: JSONC.parse(variables),
+    query: operationsModel.getValue(),
+    variables: JSONC.parse(variablesModel.getValue()),
   });
   // TODO: this demo only supports a single iteration for http GET/POST,
   // no multipart or subscriptions yet.
   // @ts-expect-error
   const data = await result.next();
 
-  resultsModel?.setValue(JSON.stringify(data.value, null, 2));
+  responseModel.setValue(JSON.stringify(data.value, null, 2));
 }
 
-const queryAction = {
+const queryAction: editor.IActionDescriptor = {
   id: 'graphql-run',
   label: 'Run Operation',
   contextMenuOrder: 0,
@@ -85,10 +71,10 @@ type Editor = editor.IStandaloneCodeEditor | null;
 export default function App(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null);
   const variablesRef = useRef<HTMLDivElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
-  const [queryEditor, setQueryEditor] = useState<Editor>(null);
+  const responseRef = useRef<HTMLDivElement>(null);
+  const [operationsEditor, setOperationsEditor] = useState<Editor>(null);
   const [variablesEditor, setVariablesEditor] = useState<Editor>(null);
-  const [resultsViewer, setResultsViewer] = useState<Editor>(null);
+  const [responseEditor, setResponseEditor] = useState<Editor>(null);
   const [schema, setSchema] = useState<IntrospectionQuery | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -96,37 +82,31 @@ export default function App(): ReactElement {
    * Create the models & editors
    */
   useEffect(() => {
-    const queryModel = getOrCreateModel({
-      uri: 'operation.graphql',
-      value: defaultOperations,
-    });
-    const variablesModel = getOrCreateModel({
-      uri: 'variables.json',
-      value: defaultVariables,
-    });
-    const resultsModel = getOrCreateModel({ uri: 'results.json', value: '{}' });
+    const queryModel = getOrCreateModel('operations');
+    const variablesModel = getOrCreateModel('variables');
+    const resultsModel = getOrCreateModel('response');
 
-    if (!queryEditor) {
-      setQueryEditor(
+    if (!operationsEditor) {
+      setOperationsEditor(
         editor.create(operationsRef.current!, {
-          theme: 'vs-dark',
           model: queryModel,
+          ...DEFAULT_EDITOR_OPTIONS,
         }),
       );
     }
     if (!variablesEditor) {
       setVariablesEditor(
         editor.create(variablesRef.current!, {
-          theme: 'vs-dark',
           model: variablesModel,
+          ...DEFAULT_EDITOR_OPTIONS,
         }),
       );
     }
-    if (!resultsViewer) {
-      setResultsViewer(
-        editor.create(resultsRef.current!, {
-          theme: 'vs-dark',
+    if (!responseEditor) {
+      setResponseEditor(
+        editor.create(responseRef.current!, {
           model: resultsModel,
+          ...DEFAULT_EDITOR_OPTIONS,
           readOnly: true,
           smoothScrolling: true,
         }),
@@ -134,21 +114,21 @@ export default function App(): ReactElement {
     }
     queryModel.onDidChangeContent(
       debounce(300, () => {
-        localStorage.setItem('operations', queryModel.getValue());
+        localStorage.setItem(STORAGE_KEY.operations, queryModel.getValue());
       }),
     );
     variablesModel.onDidChangeContent(
       debounce(300, () => {
-        localStorage.setItem('variables', variablesModel.getValue());
+        localStorage.setItem(STORAGE_KEY.variables, variablesModel.getValue());
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only run once on mount
   }, []);
 
   useEffect(() => {
-    queryEditor?.addAction(queryAction);
+    operationsEditor?.addAction(queryAction);
     variablesEditor?.addAction(queryAction);
-  }, [queryEditor, variablesEditor]);
+  }, [operationsEditor, variablesEditor]);
   /**
    * Handle the initial schema load
    */
@@ -170,8 +150,8 @@ export default function App(): ReactElement {
       initializeMode({
         diagnosticSettings: {
           validateVariablesJSON: {
-            [Uri.file('operation.graphql').toString()]: [
-              Uri.file('variables.json').toString(),
+            [Uri.file(FILE_SYSTEM_PATH.operations).toString()]: [
+              Uri.file(FILE_SYSTEM_PATH.variables).toString(),
             ],
           },
           jsonDiagnosticSettings: {
@@ -192,11 +172,11 @@ export default function App(): ReactElement {
 
   return (
     <>
-      <div id="left-pane" className="pane">
-        <div ref={operationsRef} className="editor" />
-        <div ref={variablesRef} className="editor" />
+      <div className="pane">
+        <div ref={operationsRef} className="left-editor" />
+        <div ref={variablesRef} className="left-editor" />
       </div>
-      <div ref={resultsRef} id="right-pane" className="pane editor" />
+      <div ref={responseRef} className="pane" />
     </>
   );
 }

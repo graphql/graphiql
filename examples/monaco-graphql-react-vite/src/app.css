@@ -1,27 +1,17 @@
 body {
   margin: 0;
-  background-color: #1e1e1e;
   height: 100vh;
 }
 
 #root {
   display: flex;
-  flex-direction: row;
   height: inherit;
 }
 
 .pane {
-  height: 100%;
   width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
 }
 
-#left-pane .editor {
+.left-editor {
   height: 50%;
-}
-
-#right-pane.editor {
-  height: 100%;
 }
