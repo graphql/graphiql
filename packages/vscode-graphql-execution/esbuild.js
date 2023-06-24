@@ -45,10 +45,7 @@ build({
     'dustjs-linkedin',
     'atpl',
     'liquor',
-    'twig',
-    'cosmiconfig',
-    'graphql-config',
-    'graphql',
+    'twig'
   ],
   format: 'cjs',
   sourcemap: true,
