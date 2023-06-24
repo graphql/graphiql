@@ -20,13 +20,11 @@
 import { TokenPattern, CharacterStreamInterface } from './types';
 
 export default class CharacterStream implements CharacterStreamInterface {
-  private _start: number;
-  private _pos: number;
+  private _start = 0;
+  private _pos = 0;
   private _sourceText: string;
 
   constructor(sourceText: string) {
-    this._start = 0;
-    this._pos = 0;
     this._sourceText = sourceText;
   }
 
