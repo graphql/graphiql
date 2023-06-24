@@ -1,0 +1,1 @@
+../../monaco-graphql-react-vite/src/editor.tsx

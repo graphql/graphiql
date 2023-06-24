@@ -66,15 +66,15 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
   trailingCommas: 'ignore',
 });
 
-type Editor = editor.IStandaloneCodeEditor | null;
+type CodeEditor = editor.IStandaloneCodeEditor | null;
 
-export default function App(): ReactElement {
+export function Editor(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null);
   const variablesRef = useRef<HTMLDivElement>(null);
   const responseRef = useRef<HTMLDivElement>(null);
-  const [operationsEditor, setOperationsEditor] = useState<Editor>(null);
-  const [variablesEditor, setVariablesEditor] = useState<Editor>(null);
-  const [responseEditor, setResponseEditor] = useState<Editor>(null);
+  const [operationsEditor, setOperationsEditor] = useState<CodeEditor>(null);
+  const [variablesEditor, setVariablesEditor] = useState<CodeEditor>(null);
+  const [responseEditor, setResponseEditor] = useState<CodeEditor>(null);
   const [schema, setSchema] = useState<IntrospectionQuery | null>(null);
   const [loading, setLoading] = useState(false);
 
