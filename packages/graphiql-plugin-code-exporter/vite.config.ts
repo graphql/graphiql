@@ -1,18 +1,26 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import packageJSON from './package.json';
 
-// https://vitejs.dev/config/
+const IS_UMD = process.env.UMD === 'true';
+
 export default defineConfig({
   plugins: [react({ jsxRuntime: 'classic' })],
   build: {
+    // avoid clean cjs/es builds
+    emptyOutDir: !IS_UMD,
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'graphiql-plugin-code-exporter',
+      fileName: 'index',
       name: 'GraphiQLPluginCodeExporter',
-      formats: ['cjs', 'es', 'umd'],
+      formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['graphql', 'react', 'react-dom'],
+      external: [
+        // Exclude peer dependencies and dependencies from bundle
+        ...Object.keys(packageJSON.peerDependencies),
+        ...(IS_UMD ? [] : Object.keys(packageJSON.dependencies)),
+      ],
       output: {
         chunkFileNames: '[name].[format].js',
         globals: {

@@ -63,10 +63,10 @@ function MyGraphQLIDE() {
 The package also ships the necessary CSS that all its UI components need. You
 can import them from `@graphiql/react/dist/style.css`.
 
-**Note**: In order for these styles to apply, the UI components need to be
-rendered inside an element that has a class name `graphiql-container`.
+> **Note**: In order for these styles to apply, the UI components need to be
+> rendered inside an element that has a class name `graphiql-container`.
 
-By default the UI components will try to use the
+By default, the UI components will try to use the
 [Roboto](https://fonts.google.com/specimen/Roboto) font for regular text and the
 [Fira Code](https://fonts.google.com/specimen/Fira+Code) font for mono-space
 text. If you want to use the default fonts you can load them using these files:

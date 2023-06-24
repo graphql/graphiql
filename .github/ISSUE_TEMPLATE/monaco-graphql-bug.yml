@@ -1,6 +1,6 @@
 name: Monaco GraphQL Bug
 description: Report a bug for `monaco-graphql`
-title: "[monaco-graphql] <title>"
+title: '[monaco-graphql] <title>'
 labels: [monaco-graphql, bug, needs triage]
 body:
   - type: checkboxes

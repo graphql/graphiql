@@ -9,14 +9,7 @@
     "strictPropertyInitialization": false
   },
   "include": ["src"],
-  "exclude": [
-    "**/__tests__/**",
-    "**/dist/**.*",
-    "cypress/**",
-    "**/*.stories.js",
-    "**/*.stories.ts",
-    "**/*.stories.tsx"
-  ],
+  "exclude": ["**/__tests__/**", "**/dist/**.*", "cypress/**"],
   "references": [
     {
       "path": "../graphiql-toolkit"

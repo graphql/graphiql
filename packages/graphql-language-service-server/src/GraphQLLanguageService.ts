@@ -19,6 +19,7 @@ import {
   Kind,
   parse,
   print,
+  isTypeDefinitionNode,
 } from 'graphql';
 
 import {
@@ -48,13 +49,12 @@ import {
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
+import type { Logger } from 'vscode-languageserver';
 import {
   Hover,
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
-
-import { Logger } from './Logger';
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
@@ -210,12 +210,7 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    return validateQuery(
-      validationAst,
-      schema,
-      customRules as ValidationRule[],
-      isRelayCompatMode,
-    );
+    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
   public async getAutocompleteSuggestions(
@@ -356,7 +351,7 @@ export class GraphQLLanguageService {
 
       output.push({
         // @ts-ignore
-        name: tree.representativeName,
+        name: tree.representativeName ?? 'Anonymous',
         kind: getKind(tree),
         location: {
           uri: filePath,
@@ -397,25 +392,13 @@ export class GraphQLLanguageService {
         objectTypeDefinitions,
       );
 
-    const localObjectTypeDefinitions = ast.definitions.filter(
-      definition =>
-        definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-        definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === Kind.ENUM_TYPE_DEFINITION ||
-        definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-        definition.kind === Kind.INTERFACE_TYPE_DEFINITION,
-    );
-
-    const typeCastedDefs =
-      localObjectTypeDefinitions as any as Array<TypeDefinitionNode>;
-
-    const localOperationDefinitionInfos = typeCastedDefs.map(
-      (definition: TypeDefinitionNode) => ({
+    const localOperationDefinitionInfos = ast.definitions
+      .filter(isTypeDefinitionNode)
+      .map((definition: TypeDefinitionNode) => ({
         filePath,
         content: query,
         definition,
-      }),
-    );
+      }));
 
     const result = await getDefinitionQueryResultForNamedType(
       query,

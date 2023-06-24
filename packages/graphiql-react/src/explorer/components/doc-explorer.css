@@ -28,7 +28,6 @@
 
 /* The search input in the header of the doc explorer */
 .graphiql-doc-explorer-search {
-  height: 100%;
   position: absolute;
   right: 0;
   top: 0;
@@ -37,12 +36,12 @@
     left: 0;
   }
 
-  & [data-reach-combobox-input] {
+  & [role='combobox'] {
     height: 24px;
     width: 4ch;
   }
 
-  & [data-reach-combobox-input]:focus {
+  & [role='combobox']:focus {
     width: 100%;
   }
 }

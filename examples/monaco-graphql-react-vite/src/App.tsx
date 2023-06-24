@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState, StrictMode } from 'react';
+import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/src/initializeMode';
@@ -186,12 +186,12 @@ export default function App(): ReactElement {
   }, [schema, loading]);
 
   return (
-    <StrictMode>
+    <>
       <div id="left-pane" className="pane">
         <div ref={operationsRef} className="editor" />
         <div ref={variablesRef} className="editor" />
       </div>
       <div ref={resultsRef} id="right-pane" className="pane editor" />
-    </StrictMode>
+    </>
   );
 }

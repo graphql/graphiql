@@ -8,7 +8,6 @@
 import type * as GraphQLMode from './graphqlMode';
 import { create as createMonacoGraphQLAPI, MonacoGraphQLAPI } from './api';
 import type { MonacoGraphQLInitializeConfig } from './typings';
-
 import { languages } from 'monaco-editor';
 
 export const LANGUAGE_ID = 'graphql';
@@ -26,7 +25,7 @@ export function initializeMode(
 ): MonacoGraphQLAPI {
   if (!api) {
     api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
-    (<any>languages).graphql = { api };
+    (languages as any).graphql = { api };
     // export to the global monaco API
 
     // eslint-disable-next-line promise/prefer-await-to-then -- ignore to leave initializeMode sync
@@ -35,6 +34,7 @@ export function initializeMode(
 
   return api;
 }
+
 function getMode(): Promise<typeof GraphQLMode> {
   return import('./graphqlMode');
 }

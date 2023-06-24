@@ -32,19 +32,19 @@ this repo._
    First you'll need —
 
    ```sh
-   yarn run build
+   yarn build
    ```
 
    — or —
 
    ```sh
-   yarn run build:watch
+   yarn build:watch
    ```
 
    If you are focused on GraphiQL development, you can run —
 
    ```sh
-   yarn run start-graphiql
+   yarn start-graphiql
    ```
 
 5. Get coding! If you've added code, add tests. If you've changed APIs, update
@@ -92,14 +92,16 @@ Then, you can run these commands:
 - `yarn start-graphiql` — which will launch `webpack` dev server for graphiql
   from the root
 
+> The GraphiQL UI is available at http://localhost:8080/dev.html
+
 ### Developing Monaco GraphQL
 
 1. First run `yarn`.
-1. run `yarn tsc --watch` to watch `monaco-graphql` and
+2. run `yarn tsc --watch` to watch `monaco-graphql` and
    `graphql-language-service` in one screen session/terminal tab/etc
-1. in another session, run `yarn start-monaco` from anywhere in the repository
+3. in another session, run `yarn start-monaco` from anywhere in the repository
    aside from an individual workspace.
-1. alternatively to the webpack example, or in addition, you can run monaco or
+4. alternatively to the webpack example, or in addition, you can run monaco or
    next.js examples, though these examples are simpler. They also require their
    own `yarn` or `npm install` as they are excluded from the `workspaces`
    resolved on global `yarn install`

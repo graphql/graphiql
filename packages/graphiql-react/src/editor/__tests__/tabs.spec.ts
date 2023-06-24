@@ -179,7 +179,7 @@ describe('clearHeadersFromTabs', () => {
     };
     const stateWithHeaders = {
       ...stateWithoutHeaders,
-      headers: `{ "authorization": "secret" }`,
+      headers: '{ "authorization": "secret" }',
     };
     storage.set(STORAGE_KEY, JSON.stringify(stateWithHeaders));
 

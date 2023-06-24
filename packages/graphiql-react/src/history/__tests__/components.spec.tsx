@@ -3,6 +3,7 @@ import { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import { useEditorContext } from '../../editor';
+import { Tooltip } from '../../ui';
 
 jest.mock('../../editor', () => {
   const mockedSetQueryEditor = jest.fn();
@@ -37,9 +38,11 @@ type QueryHistoryItemProps = ComponentProps<typeof HistoryItem>;
 
 function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
   return (
-    <HistoryContextProvider>
-      <HistoryItem {...props} />
-    </HistoryContextProvider>
+    <Tooltip.Provider>
+      <HistoryContextProvider>
+        <HistoryItem {...props} />
+      </HistoryContextProvider>
+    </Tooltip.Provider>
   );
 }
 

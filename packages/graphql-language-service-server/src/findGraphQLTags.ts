@@ -17,7 +17,7 @@ import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import * as VueParser from '@vue/compiler-sfc';
-import { Logger } from './Logger';
+import type { Logger } from 'vscode-languageserver';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -76,9 +76,11 @@ type ParseVueSFCResult =
   | { type: 'error'; errors: Error[] }
   | {
       type: 'ok';
+      scriptOffset: number;
       scriptSetupAst?: import('@babel/types').Statement[];
       scriptAst?: import('@babel/types').Statement[];
     };
+
 function parseVueSFC(source: string): ParseVueSFCResult {
   const { errors, descriptor } = VueParser.parse(source);
 
@@ -90,11 +92,23 @@ function parseVueSFC(source: string): ParseVueSFCResult {
   try {
     scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === '[@vue/compiler-sfc] SFC contains no <script> tags.'
+    ) {
+      return {
+        type: 'ok',
+        scriptSetupAst: [],
+        scriptAst: [],
+        scriptOffset: 0,
+      };
+    }
     return { type: 'error', errors: [error as Error] };
   }
 
   return {
     type: 'ok',
+    scriptOffset: scriptBlock.loc.start.line - 1,
     scriptSetupAst: scriptBlock?.scriptSetupAst,
     scriptAst: scriptBlock?.scriptAst,
   };
@@ -114,11 +128,13 @@ export function findGraphQLTags(
 
   let parsedASTs: { [key: string]: any }[] = [];
 
+  let scriptOffset = 0;
+
   if (isVueLike) {
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
       logger.error(
-        `Could not parse the Vue file at ${uri} to extract the graphql tags:`,
+        `Could not parse the "${ext}" file at ${uri} to extract the graphql tags:`,
       );
       for (const error of parseVueSFCResult.errors) {
         logger.error(String(error));
@@ -132,6 +148,8 @@ export function findGraphQLTags(
     if (parseVueSFCResult.scriptSetupAst !== undefined) {
       parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
+
+    scriptOffset = parseVueSFCResult.scriptOffset;
   } else {
     const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
     if (isTypeScript) {
@@ -169,9 +187,10 @@ export function findGraphQLTags(
           ? node.quasis.map(quasi => quasi.value.raw).join('')
           : node.quasis[0].value.raw;
       const range = new Range(
-        new Position(loc.start.line - 1, loc.start.column),
-        new Position(loc.end.line - 1, loc.end.column),
+        new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+        new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
       );
+
       result.push({
         tag: '',
         template,
@@ -181,24 +200,25 @@ export function findGraphQLTags(
   };
 
   const visitors = {
-    CallExpression: (node: Expression) => {
-      if ('callee' in node) {
-        const { callee } = node;
-
-        if (
-          callee.type === 'Identifier' &&
-          getGraphQLTagName(callee) &&
-          'arguments' in node
-        ) {
-          const templateLiteral = node.arguments[0];
-          if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
-            parseTemplateLiteral(templateLiteral);
-            return;
-          }
-        }
-
-        traverse(node, visitors);
+    CallExpression(node: Expression) {
+      if (!('callee' in node)) {
+        return;
       }
+      const { callee } = node;
+
+      if (
+        callee.type === 'Identifier' &&
+        getGraphQLTagName(callee) &&
+        'arguments' in node
+      ) {
+        const templateLiteral = node.arguments[0];
+        if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
+          parseTemplateLiteral(templateLiteral);
+          return;
+        }
+      }
+
+      traverse(node, visitors);
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
       const tagName = getGraphQLTagName(node.tag);
@@ -216,8 +236,8 @@ export function findGraphQLTags(
         }
         if (loc) {
           const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
+            new Position(loc.start.line - 1 + scriptOffset, loc.start.column),
+            new Position(loc.end.line - 1 + scriptOffset, loc.end.column),
           );
 
           result.push({

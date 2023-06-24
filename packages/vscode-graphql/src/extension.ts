@@ -76,7 +76,7 @@ export async function activate(context: ExtensionContext) {
         // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
-          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts}',
+          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts,*.json}',
         ),
       ],
     },
@@ -117,12 +117,12 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(commandShowOutputChannel);
 
   commands.registerCommand('vscode-graphql.restart', async () => {
-    outputChannel.appendLine(`Stopping GraphQL LSP`);
+    outputChannel.appendLine('Stopping GraphQL LSP');
     await client.stop();
 
-    outputChannel.appendLine(`Restarting GraphQL LSP`);
+    outputChannel.appendLine('Restarting GraphQL LSP');
     await client.start();
-    outputChannel.appendLine(`GraphQL LSP restarted`);
+    outputChannel.appendLine('GraphQL LSP restarted');
   });
 }
 

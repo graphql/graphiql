@@ -52,7 +52,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 ![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.png)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
-[Try the live demo](http://graphql.org/swapi-graphql). We also have
+[Try the live demo](https://graphql.github.io/swapi-graphql). We also have
 [a demo using our latest netlify build](http://graphiql-test.netlify.com) for
 the `main` branch.
 
@@ -85,9 +85,18 @@ javascript demo using GitHub API
 
 ![Animated Codemirror GraphQL Completion Example](https://raw.githubusercontent.com/graphql/graphiql/main/packages/codemirror-graphql/resources/example.gif)
 
-Provides CodeMirror with a parser mode for GraphQL along with a live linter and
+Provides CodeMirror 5 with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema. Uses the
 `graphql-language-service`.
+
+## [`cm6-graphql`](packages/cm6-graphql#readme)
+
+[![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/cm6-graphql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/cm6-graphql)
+![npm downloads](https://img.shields.io/npm/dm/cm6-graphql?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/cm6-graphql)
+
+Provides CodeMirror 6 with a full-featured language mode for GraphQL. Uses the `graphql-language-service`.
 
 ## [`graphql-language-service`](packages/graphql-language-service#readme)
 

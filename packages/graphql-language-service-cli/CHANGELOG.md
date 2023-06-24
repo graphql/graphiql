@@ -1,5 +1,74 @@
 # graphql-language-service-cli
 
+## 3.3.24
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5), [`55135804`](https://github.com/graphql/graphiql/commit/551358045611a27551e5654c2b115295c35639d8)]:
+  - graphql-language-service-server@2.11.2
+  - graphql-language-service@5.1.7
+
+## 3.3.24-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5), [`55135804`](https://github.com/graphql/graphiql/commit/551358045611a27551e5654c2b115295c35639d8)]:
+  - graphql-language-service-server@2.11.2-alpha.0
+  - graphql-language-service@5.1.7-alpha.0
+
+## 3.3.23
+
+### Patch Changes
+
+- Updated dependencies [[`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4)]:
+  - graphql-language-service-server@2.11.1
+
+## 3.3.22
+
+### Patch Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+- Updated dependencies [[`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939), [`28b1b5a0`](https://github.com/graphql/graphiql/commit/28b1b5a016787ec4119d28f057a9d93814d4e310)]:
+  - graphql-language-service-server@2.11.0
+  - graphql-language-service@5.1.6
+
+## 3.3.21
+
+### Patch Changes
+
+- Updated dependencies [[`f2040452`](https://github.com/graphql/graphiql/commit/f20404529677635f5d4792b328aa648641bf8d9c)]:
+  - graphql-language-service-server@2.10.0
+
+## 3.3.20
+
+### Patch Changes
+
+- Updated dependencies [[`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284)]:
+  - graphql-language-service-server@2.9.10
+  - graphql-language-service@5.1.5
+
+## 3.3.19
+
+### Patch Changes
+
+- Updated dependencies [[`632a7c6b`](https://github.com/graphql/graphiql/commit/632a7c6bb2959ef5d59236aeab218587578466e7)]:
+  - graphql-language-service-server@2.9.9
+
+## 3.3.18
+
+### Patch Changes
+
+- [#3109](https://github.com/graphql/graphiql/pull/3109) [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b) Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-floating-promises` eslint rule
+
+- Updated dependencies [[`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9), [`06d39823`](https://github.com/graphql/graphiql/commit/06d39823e093c8441fea469446c25f18a664e778), [`51007002`](https://github.com/graphql/graphiql/commit/510070028b7d8e98f2ba25f396519976aea5fa4b), [`15c26eb6`](https://github.com/graphql/graphiql/commit/15c26eb6d621a85df9eecb2b8a5fa009fa2fe040)]:
+  - graphql-language-service@5.1.4
+  - graphql-language-service-server@2.9.8
+
 ## 3.3.17
 
 ### Patch Changes
@@ -174,7 +243,7 @@
 
 - [#2519](https://github.com/graphql/graphiql/pull/2519) [`de5d5a07`](https://github.com/graphql/graphiql/commit/de5d5a07891fd49241a5abbb17eaf377a015a0a8) Thanks [@acao](https://github.com/acao)! - enable graphql-config legacy mode by default in the LSP server
 
-* [#2509](https://github.com/graphql/graphiql/pull/2509) [`737d4184`](https://github.com/graphql/graphiql/commit/737d4184f3af1d8fe9d64eb1b7e23dfcfbe640ea) Thanks [@Chnapy](https://github.com/Chnapy)! - Add ` gql(``) `, ` graphql(``) ` call expressions support for highlighting & language
+* [#2509](https://github.com/graphql/graphiql/pull/2509) [`737d4184`](https://github.com/graphql/graphiql/commit/737d4184f3af1d8fe9d64eb1b7e23dfcfbe640ea) Thanks [@Chnapy](https://github.com/Chnapy)! - Add `gql(``)`, `graphql(``)` call expressions support for highlighting & language
 
 * Updated dependencies [[`de5d5a07`](https://github.com/graphql/graphiql/commit/de5d5a07891fd49241a5abbb17eaf377a015a0a8), [`737d4184`](https://github.com/graphql/graphiql/commit/737d4184f3af1d8fe9d64eb1b7e23dfcfbe640ea)]:
   - graphql-language-service-server@2.7.28

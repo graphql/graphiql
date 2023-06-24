@@ -111,19 +111,19 @@ async function render() {
   schemaPicker.addEventListener(
     'input',
     async function SchemaSelectionHandler(_ev: Event) {
-      if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
-        const schemaResult = await schemaFetcher.changeSchema(
-          schemaPicker.value,
-        );
-        if (schemaResult && monacoGraphQLAPI) {
-          monacoGraphQLAPI.setSchemaConfig([
-            {
-              ...schemaResult,
-              fileMatch: [operationModel.uri.toString()],
-            },
-          ]);
-          schemaEditor.setValue(schemaResult.documentString || '');
-        }
+      if (schemaPicker.value === schemaFetcher.currentSchema.value) {
+        return;
+      }
+
+      const schemaResult = await schemaFetcher.changeSchema(schemaPicker.value);
+      if (schemaResult && monacoGraphQLAPI) {
+        monacoGraphQLAPI.setSchemaConfig([
+          {
+            ...schemaResult,
+            fileMatch: [operationModel.uri.toString()],
+          },
+        ]);
+        schemaEditor.setValue(schemaResult.documentString || '');
       }
     },
   );
@@ -229,7 +229,7 @@ function renderToolbar(toolbar: HTMLElement) {
   executionTray.classList.add('align-right');
 
   executeOpButton.id = 'execute-op';
-  executeOpButton.innerText = 'Run Operation ➤';
+  executeOpButton.textContent = 'Run Operation ➤';
   executeOpButton.title = 'Execute the active GraphQL Operation';
 
   schemaReloadButton.classList.add('reload-button');
@@ -237,7 +237,7 @@ function renderToolbar(toolbar: HTMLElement) {
   schemaReloadButton.title = 'Reload the graphql schema';
 
   schemaStatus.id = 'schema-status';
-  schemaStatus.innerHTML = `Schema Empty`;
+  schemaStatus.innerHTML = 'Schema Empty';
 
   toolbar.append(
     schemaPicker,
@@ -271,7 +271,8 @@ function getSchemaPicker(): HTMLSelectElement {
 export function renderGithubLoginButton() {
   const githubLoginWrapper = document.createElement('div');
   githubLoginWrapper.id = 'github-login-wrapper';
-  githubLoginWrapper.innerHTML = `<p>Using Netlify's OAuth client to retrieve your token, you'll see a simple github graphql <code>monaco-graphql</code> Demo.</p>`;
+  githubLoginWrapper.innerHTML =
+    "<p>Using Netlify's OAuth client to retrieve your token, you'll see a simple GitHub graphql <code>monaco-graphql</code> Demo.</p>";
   const githubButton = document.createElement('button');
 
   const logoutButton = document.createElement('button');
@@ -291,7 +292,7 @@ export function renderGithubLoginButton() {
   if (schemaFetcher.token) {
     document.getElementById('github-login-wrapper')?.remove();
     const toolbar = document.getElementById('toolbar');
-    toolbar?.appendChild(logoutButton);
+    toolbar?.append(logoutButton);
   } else {
     githubLoginWrapper.append(githubButton);
     document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);

@@ -86,7 +86,7 @@ export function onHasCompletion(
           const deprecationLabel = document.createElement('span');
           deprecationLabel.className =
             'CodeMirror-hint-information-deprecation-label';
-          deprecationLabel.innerText = 'Deprecated';
+          deprecationLabel.textContent = 'Deprecated';
           deprecation.append(deprecationLabel);
 
           deprecationReason = document.createElement('div');
@@ -161,32 +161,33 @@ export function onHasCompletion(
           hintsUl.addEventListener(
             'DOMNodeRemoved',
             (onRemoveFn = (event: Event) => {
-              if (event.target === hintsUl) {
-                hintsUl.removeEventListener('scroll', handleScroll);
-                hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
-                if (information) {
-                  information.removeEventListener(
-                    'click',
-                    onClickHintInformation,
-                  );
-                }
-                information = null;
-                fieldName = null;
-                typeNamePill = null;
-                typeNamePrefix = null;
-                typeName = null;
-                typeNameSuffix = null;
-                description = null;
-                deprecation = null;
-                deprecationReason = null;
-                onRemoveFn = null;
+              if (event.target !== hintsUl) {
+                return;
               }
+              hintsUl.removeEventListener('scroll', handleScroll);
+              hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
+              if (information) {
+                information.removeEventListener(
+                  'click',
+                  onClickHintInformation,
+                );
+              }
+              information = null;
+              fieldName = null;
+              typeNamePill = null;
+              typeNamePrefix = null;
+              typeName = null;
+              typeNameSuffix = null;
+              description = null;
+              deprecation = null;
+              deprecationReason = null;
+              onRemoveFn = null;
             }),
           );
         }
 
         if (fieldName) {
-          fieldName.innerText = ctx.text;
+          fieldName.textContent = ctx.text;
         }
 
         if (typeNamePill && typeNamePrefix && typeName && typeNameSuffix) {
@@ -195,24 +196,24 @@ export function onHasCompletion(
 
             const renderType = (type: GraphQLType) => {
               if (isNonNullType(type)) {
-                typeNameSuffix!.innerText = '!' + typeNameSuffix!.innerText;
+                typeNameSuffix!.textContent = '!' + typeNameSuffix!.textContent;
                 renderType(type.ofType);
               } else if (isListType(type)) {
-                typeNamePrefix!.innerText += '[';
-                typeNameSuffix!.innerText = ']' + typeNameSuffix!.innerText;
+                typeNamePrefix!.textContent += '[';
+                typeNameSuffix!.textContent = ']' + typeNameSuffix!.textContent;
                 renderType(type.ofType);
               } else {
-                typeName!.innerText = type.name;
+                typeName!.textContent = type.name;
               }
             };
 
-            typeNamePrefix.innerText = '';
-            typeNameSuffix.innerText = '';
+            typeNamePrefix.textContent = '';
+            typeNameSuffix.textContent = '';
             renderType(ctx.type);
           } else {
-            typeNamePrefix.innerText = '';
-            typeName.innerText = '';
-            typeNameSuffix.innerText = '';
+            typeNamePrefix.textContent = '';
+            typeName.textContent = '';
+            typeNameSuffix.textContent = '';
             typeNamePill.style.display = 'none';
           }
         }
@@ -252,7 +253,7 @@ export function onHasCompletion(
       return;
     }
 
-    const typeName = event.currentTarget.innerText;
+    const typeName = event.currentTarget.textContent || '';
     const type = schema.getType(typeName);
     if (type) {
       plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);

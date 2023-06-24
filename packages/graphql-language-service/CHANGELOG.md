@@ -1,5 +1,54 @@
 # graphql-language-service
 
+## 5.1.7
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- [#3149](https://github.com/graphql/graphiql/pull/3149) [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5) Thanks [@mskelton](https://github.com/mskelton)! - Fix hover docs being off by one position.
+
+## 5.1.7-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+- [#3149](https://github.com/graphql/graphiql/pull/3149) [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5) Thanks [@mskelton](https://github.com/mskelton)! - Fix hover docs being off by one position.
+
+## 5.1.6
+
+### Patch Changes
+
+- [#3148](https://github.com/graphql/graphiql/pull/3148) [`06007498`](https://github.com/graphql/graphiql/commit/06007498880528ed75dd4d705dcbcd7c9e775939) Thanks [@mskelton](https://github.com/mskelton)! - Use native LSP logger instead of manual file based logging. This fixes errors in Neovim when using the GraphQL LSP.
+
+## 5.1.5
+
+### Patch Changes
+
+- [#3150](https://github.com/graphql/graphiql/pull/3150) [`4d33b221`](https://github.com/graphql/graphiql/commit/4d33b2214e941f171385a1b72a1fa995714bb284) Thanks [@AaronMoat](https://github.com/AaronMoat)! - fix(graphql-language-service-server): allow getDefinition to work for unions
+
+  Fixes the issue where a schema like the one below won't allow you to click through to X.
+
+  ```graphql
+  union X = A | B
+  type A {
+    x: String
+  }
+  type B {
+    x: String
+  }
+  type Query {
+    a: X
+  }
+  ```
+
+## 5.1.4
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
 ## 5.1.3
 
 ### Patch Changes

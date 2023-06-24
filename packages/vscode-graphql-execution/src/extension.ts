@@ -1,4 +1,3 @@
-'use strict';
 import {
   workspace,
   ExtensionContext,
@@ -13,12 +12,11 @@ import {
 import { GraphQLContentProvider } from './providers/exec-content';
 import { GraphQLCodeLensProvider } from './providers/exec-codelens';
 import { ExtractedTemplateLiteral } from './helpers/source';
-// import { CustomInitializationFailedHandler } from "./CustomInitializationFailedHandler"
 
 function getConfig() {
   return workspace.getConfiguration(
     'vscode-graphql-execution',
-    window.activeTextEditor ? window.activeTextEditor.document.uri : null,
+    window.activeTextEditor?.document.uri,
   );
 }
 
@@ -27,11 +25,10 @@ export function activate(context: ExtensionContext) {
     'GraphQL Operation Execution',
   );
   const config = getConfig();
-  const { debug } = config;
 
-  if (debug) {
+  if (config.debug) {
     // eslint-disable-next-line no-console
-    console.log('Extension "vscode-graphql" is now active!');
+    console.log('Extension "vscode-graphql-execution" is now active!');
   }
 
   const commandShowOutputChannel = commands.registerCommand(
@@ -43,7 +40,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(commandShowOutputChannel);
 
   // const settings = workspace.getConfiguration("vscode-graphql-execution")
-
+  // let provider: GraphQLCodeLensProvider;
   const registerCodeLens = () => {
     context.subscriptions.push(
       languages.registerCodeLensProvider(
@@ -63,45 +60,57 @@ export function activate(context: ExtensionContext) {
   registerCodeLens();
   // }
 
-  workspace.onDidChangeConfiguration(() => {
-    // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
-    // if (newSettings.showExecCodeLens !== false) {
-    registerCodeLens();
-    // }
+  let commandContentProvider: GraphQLContentProvider;
+
+  const registerContentProvider = () => {
+    return commands.registerCommand(
+      'vscode-graphql-execution.contentProvider',
+      (literal: ExtractedTemplateLiteral) => {
+        const uri = Uri.parse('graphql://authority/graphql');
+
+        const panel = window.createWebviewPanel(
+          'vscode-graphql-execution.results-preview',
+          'GraphQL Execution Result',
+          ViewColumn.Two,
+          {},
+        );
+
+        commandContentProvider = new GraphQLContentProvider(
+          uri,
+          outputChannel,
+          literal,
+          panel,
+        );
+        const registration = workspace.registerTextDocumentContentProvider(
+          'graphql',
+          commandContentProvider,
+        );
+        context.subscriptions.push(registration);
+        panel.webview.html = commandContentProvider.getCurrentHtml();
+      },
+    );
+  };
+
+  const provider = registerContentProvider();
+  context.subscriptions.push(provider);
+
+  // workspace.onDidChangeConfiguration(async () => {
+  //   // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
+  //   // if (newSettings.showExecCodeLens !== false) {
+  //     commandContentProvider.dispose()
+  //   // }
+  // });
+  workspace.onDidSaveTextDocument(async e => {
+    if (
+      e.fileName.includes('graphql.config') ||
+      e.fileName.includes('graphqlrc')
+    ) {
+      await commandContentProvider.loadConfig();
+    }
   });
-
-  const commandContentProvider = commands.registerCommand(
-    'vscode-graphql-execution.contentProvider',
-    async (literal: ExtractedTemplateLiteral) => {
-      const uri = Uri.parse('graphql://authority/graphql');
-
-      const panel = window.createWebviewPanel(
-        'vscode-graphql-execution.results-preview',
-        'GraphQL Execution Result',
-        ViewColumn.Two,
-        {},
-      );
-
-      const contentProvider = new GraphQLContentProvider(
-        uri,
-        outputChannel,
-        literal,
-        panel,
-      );
-      const registration = workspace.registerTextDocumentContentProvider(
-        'graphql',
-        contentProvider,
-      );
-      context.subscriptions.push(registration);
-
-      const html = await contentProvider.getCurrentHtml();
-      panel.webview.html = html;
-    },
-  );
-  context.subscriptions.push(commandContentProvider);
 }
 
 export function deactivate() {
   // eslint-disable-next-line no-console
   console.log('Extension "vscode-graphql-execution" is now de-active!');
-}
+} // documents: ["./src/*.ts"],

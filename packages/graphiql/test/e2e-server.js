@@ -41,6 +41,7 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 });
 
 app.use(express.static(path.resolve(__dirname, '../')));
+app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
 
 app.listen(process.env.PORT || 0, function () {
   const { port } = this.address();

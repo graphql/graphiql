@@ -53,6 +53,7 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
+  Logger,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -60,7 +61,6 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 
-import { Logger } from './Logger';
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'node:os';
 import {
@@ -282,7 +282,7 @@ export class MessageProcessor {
 
   _logConfigError(errorMessage: string) {
     this._logger.error(
-      `WARNING: graphql-config error, only highlighting is enabled:\n` +
+      'WARNING: graphql-config error, only highlighting is enabled:\n' +
         errorMessage +
         `\nfor more information on using 'graphql-config' with 'graphql-language-service-server', \nsee the documentation at ${configDocLink}`,
     );
@@ -352,11 +352,6 @@ export class MessageProcessor {
         this._logger.info('updating graphql config');
         await this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
-      }
-      // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(uri);
-      if (cachedDocument) {
-        contents = cachedDocument.contents;
       }
       return null;
     }
@@ -670,6 +665,8 @@ export class MessageProcessor {
           await this._updateObjectTypeDefinition(uri, contents);
 
           const project = this._graphQLCache.getProjectForFile(uri);
+          await this._updateSchemaIfChanged(project, uri);
+
           let diagnostics: Diagnostic[] = [];
 
           if (
@@ -1141,6 +1138,42 @@ export class MessageProcessor {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateFragmentDefinition(rootDir, uri, contents);
+  }
+
+  async _updateSchemaIfChanged(
+    project: GraphQLProjectConfig,
+    uri: Uri,
+  ): Promise<void> {
+    await Promise.all(
+      this._unwrapProjectSchema(project).map(async schema => {
+        const schemaFilePath = path.resolve(project.dirpath, schema);
+        const uriFilePath = URI.parse(uri).fsPath;
+        if (uriFilePath === schemaFilePath) {
+          await this._graphQLCache.invalidateSchemaCacheForProject(project);
+        }
+      }),
+    );
+  }
+
+  _unwrapProjectSchema(project: GraphQLProjectConfig): string[] {
+    const projectSchema = project.schema;
+
+    const schemas: string[] = [];
+    if (typeof projectSchema === 'string') {
+      schemas.push(projectSchema);
+    } else if (Array.isArray(projectSchema)) {
+      for (const schemaEntry of projectSchema) {
+        if (typeof schemaEntry === 'string') {
+          schemas.push(schemaEntry);
+        } else if (schemaEntry) {
+          schemas.push(...Object.keys(schemaEntry));
+        }
+      }
+    } else {
+      schemas.push(...Object.keys(projectSchema));
+    }
+
+    return schemas;
   }
 
   async _updateObjectTypeDefinition(

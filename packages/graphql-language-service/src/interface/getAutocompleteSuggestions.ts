@@ -165,7 +165,7 @@ export function getAutocompleteSuggestions(
     schema,
   };
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor);
+    contextToken || getTokenAtPosition(queryText, cursor, 1);
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
@@ -357,7 +357,7 @@ export function getAutocompleteSuggestions(
   }
   // complete for all variables available in the query
   if (kind === RuleKinds.VARIABLE && step === 1) {
-    const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+    const namedInputType = getNamedType(typeInfo.inputType!);
     const variableDefinitions = getVariableCompletions(
       queryText,
       schema,
@@ -450,7 +450,7 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const insertSuffix = ` {\n  $1\n}`;
+const insertSuffix = ' {\n  $1\n}';
 
 /**
  * Choose carefully when to insert the `insertText`!
@@ -570,7 +570,7 @@ function getSuggestionsForInputValues(
   queryText: string,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
-  const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
+  const namedInputType = getNamedType(typeInfo.inputType!);
 
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
@@ -699,7 +699,7 @@ function getSuggestionsForImplements(
   // TODO: we should be using schema.getPossibleTypes() here, but
   const possibleInterfaces = schemaInterfaces
     .concat(
-      [...inlineInterfaces].map(name => ({ name } as GraphQLInterfaceType)),
+      [...inlineInterfaces].map(name => ({ name }) as GraphQLInterfaceType),
     )
     .filter(
       ({ name }) =>
@@ -932,7 +932,7 @@ function getSuggestionsForVariableDefinition(
     // TODO: couldn't get Exclude<> working here
     inputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
-      documentation: type.description as string,
+      documentation: type.description!,
       kind: CompletionItemKind.Variable,
     })),
   );
@@ -963,20 +963,22 @@ function getSuggestionsForDirective(
 export function getTokenAtPosition(
   queryText: string,
   cursor: IPosition,
+  offset = 0,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (
-      index === cursor.line &&
-      stream.getCurrentPosition() >= cursor.character
+      index !== cursor.line ||
+      stream.getCurrentPosition() + offset < cursor.character + 1
     ) {
-      styleAtCursor = style;
-      stateAtCursor = { ...state };
-      stringAtCursor = stream.current();
-      return 'BREAK';
+      return;
     }
+    styleAtCursor = style;
+    stateAtCursor = { ...state };
+    stringAtCursor = stream.current();
+    return 'BREAK';
   });
 
   // Return the state/style of parsed token in case those at cursor aren't
@@ -1149,7 +1151,7 @@ export function getTypeInfo(
         break;
       }
       case RuleKinds.SELECTION_SET:
-        parentType = getNamedType(type as GraphQLType);
+        parentType = getNamedType(type!);
         break;
       case RuleKinds.DIRECTIVE:
         directiveDef = state.name ? schema.getDirective(state.name) : null;
@@ -1227,7 +1229,7 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
-        const enumType = getNamedType(inputType as GraphQLType);
+        const enumType = getNamedType(inputType!);
         enumValue =
           enumType instanceof GraphQLEnumType
             ? enumType
@@ -1237,12 +1239,12 @@ export function getTypeInfo(
         break;
       // TODO: needs tests
       case RuleKinds.LIST_VALUE:
-        const nullableType = getNullableType(inputType as GraphQLType);
+        const nullableType = getNullableType(inputType!);
         inputType =
           nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case RuleKinds.OBJECT_VALUE:
-        const objectType = getNamedType(inputType as GraphQLType);
+        const objectType = getNamedType(inputType!);
         objectFieldDefs =
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()

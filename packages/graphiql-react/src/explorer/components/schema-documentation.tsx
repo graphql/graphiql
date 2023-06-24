@@ -17,6 +17,12 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
   const queryType = props.schema.getQueryType();
   const mutationType = props.schema.getMutationType?.();
   const subscriptionType = props.schema.getSubscriptionType?.();
+  const typeMap = props.schema.getTypeMap();
+  const ignoreTypesInAllSchema = [
+    queryType?.name,
+    mutationType?.name,
+    subscriptionType?.name,
+  ];
 
   return (
     <>
@@ -46,6 +52,26 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
             </span>
             {': '}
             <TypeLink type={subscriptionType} />
+          </div>
+        )}
+      </ExplorerSection>
+      <ExplorerSection title="All Schema Types">
+        {typeMap && (
+          <div>
+            {Object.values(typeMap).map(type => {
+              if (
+                ignoreTypesInAllSchema.includes(type.name) ||
+                type.name.startsWith('__')
+              ) {
+                return null;
+              }
+
+              return (
+                <div key={type.name}>
+                  <TypeLink type={type} />
+                </div>
+              );
+            })}
           </div>
         )}
       </ExplorerSection>

@@ -1,5 +1,53 @@
 # vscode-graphql-execution
 
+## 0.2.4
+
+### Patch Changes
+
+- [#3274](https://github.com/graphql/graphiql/pull/3274) [`5e38ab6b`](https://github.com/graphql/graphiql/commit/5e38ab6b2235cb0dec4e7df42772680a1e905a1a) Thanks [@acao](https://github.com/acao)! - fix vscode-graphql-execution release
+
+## 0.2.3
+
+### Patch Changes
+
+- [#3271](https://github.com/graphql/graphiql/pull/3271) [`d29b3d8f`](https://github.com/graphql/graphiql/commit/d29b3d8f983b9ae306aeae4325203ddd7f4f127e) Thanks [@acao](https://github.com/acao)! - fix vscode-graphql-execution release
+
+## 0.2.2
+
+### Patch Changes
+
+- [#3269](https://github.com/graphql/graphiql/pull/3269) [`2fb7f1f5`](https://github.com/graphql/graphiql/commit/2fb7f1f5d8a69a5de572b783de7801d5993f758a) Thanks [@acao](https://github.com/acao)! - fix ovsx release
+
+## 0.2.1
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+## 0.2.1-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+## 0.2.0
+
+### Minor Changes
+
+- [#3143](https://github.com/graphql/graphiql/pull/3143) [`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4) Thanks [@B2o5T](https://github.com/B2o5T)! - `GraphQLContentProvider.getCurrentHtml` should not return `Promise`
+
+### Patch Changes
+
+- [#3143](https://github.com/graphql/graphiql/pull/3143) [`4c3a08b1`](https://github.com/graphql/graphiql/commit/4c3a08b1a99e0933362a1c93340b613730c90aa4) Thanks [@B2o5T](https://github.com/B2o5T)! - [ESLint] enable `sonar/prefer-promise-shorthand` and `sonar/no-dead-store` rules
+
+## 0.1.9
+
+### Patch Changes
+
+- [#3113](https://github.com/graphql/graphiql/pull/3113) [`2e477eb2`](https://github.com/graphql/graphiql/commit/2e477eb24672a242ae4a4f2dfaeaf41152ed7ee9) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `.forEach` with `for..of`
+
+- [#3120](https://github.com/graphql/graphiql/pull/3120) [`15c26eb6`](https://github.com/graphql/graphiql/commit/15c26eb6d621a85df9eecb2b8a5fa009fa2fe040) Thanks [@B2o5T](https://github.com/B2o5T)! - prefer await to then
+
 ## 0.1.8
 
 ### Patch Changes

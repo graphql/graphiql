@@ -24,8 +24,8 @@ export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
   const ref = useHeaderEditor(hookArgs, HeaderEditor);
 
   useEffect(() => {
-    if (headerEditor && !isHidden) {
-      headerEditor.refresh();
+    if (!isHidden) {
+      headerEditor?.refresh();
     }
   }, [headerEditor, isHidden]);
 
