@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.0.9
+
+### Patch Changes
+
+- [#3203](https://github.com/graphql/graphiql/pull/3203) [`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36) Thanks [@lesleydreyer](https://github.com/lesleydreyer)! - fix info tooltips to work when Graphiql is not used as full page
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5)]:
+  - graphql-language-service@5.1.7
+
 ## 2.0.9-alpha.1
 
 ### Patch Changes
