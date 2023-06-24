@@ -36,10 +36,10 @@ const runSplitTest = (name: string, schema: string) => {
 
     suite.add({
       maxTime: 0.1,
-      onStart: () => {
+      onStart() {
         prevState = { ...state };
       },
-      fn: () => {
+      fn() {
         const stream = new CharacterStream(line);
 
         while (!stream.eol()) {
@@ -54,7 +54,7 @@ const runSplitTest = (name: string, schema: string) => {
         state = { ...prevState };
       },
       onError: console.log,
-      onComplete: (e: any) => {
+      onComplete(e) {
         state = completeState;
         stats.push(e.target.stats);
       },

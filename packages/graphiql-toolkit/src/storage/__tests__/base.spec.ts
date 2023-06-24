@@ -72,7 +72,7 @@ describe('StorageAPI', () => {
   it('returns any error while setting a value', () => {
     // @ts-ignore
     const throwingStorage = new StorageAPI({
-      setItem: () => {
+      setItem() {
         throw new DOMException('Terrible Error');
       },
       length: 1,
@@ -86,7 +86,7 @@ describe('StorageAPI', () => {
   it('returns isQuotaError to true if isQuotaError is thrown', () => {
     // @ts-ignore
     const throwingStorage = new StorageAPI({
-      setItem: () => {
+      setItem() {
         throw new DOMException('Terrible Error', 'QuotaExceededError');
       },
       length: 1,
