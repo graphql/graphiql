@@ -1,0 +1,10 @@
+query something {
+  getMeTheThings(someArguments: [1, 2]) {
+    id
+    ...someFragment
+  }
+}
+
+fragment someFragment on SomeType {
+  name
+}

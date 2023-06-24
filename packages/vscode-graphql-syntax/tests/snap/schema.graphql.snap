@@ -1,0 +1,52 @@
+>type Query {
+#^^^^ source.graphql meta.type.interface.graphql keyword.type.graphql
+#    ^ source.graphql meta.type.interface.graphql
+#     ^^^^^ source.graphql meta.type.interface.graphql support.type.graphql
+#          ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#           ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>  field: String
+#^^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#  ^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql variable.graphql
+#       ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+#        ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#         ^^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+>}
+#^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>
+>type Mutation {
+#^^^^ source.graphql meta.type.interface.graphql keyword.type.graphql
+#    ^ source.graphql meta.type.interface.graphql
+#     ^^^^^^^^ source.graphql meta.type.interface.graphql support.type.graphql
+#             ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#              ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>  doTheThing(input: InputType!): String
+#^^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#  ^^^^^^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql variable.graphql
+#            ^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+#             ^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql variable.parameter.graphql
+#                  ^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql punctuation.colon.graphql
+#                   ^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+#                    ^^^^^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql support.type.graphql
+#                             ^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql keyword.operator.nulltype.graphql
+#                              ^ source.graphql meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+#                               ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+#                                ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#                                 ^^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+>}
+#^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>
+>input InputType {
+#^^^^^ source.graphql meta.type.interface.graphql keyword.input.graphql
+#     ^ source.graphql meta.type.interface.graphql
+#      ^^^^^^^^^ source.graphql meta.type.interface.graphql support.type.graphql
+#               ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#                ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>  field: String
+#^^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#  ^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql variable.graphql
+#       ^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+#        ^ source.graphql meta.type.interface.graphql meta.type.object.graphql
+#         ^^^^^^ source.graphql meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+>}
+#^ source.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+>

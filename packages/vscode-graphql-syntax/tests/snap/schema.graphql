@@ -1,0 +1,11 @@
+type Query {
+  field: String
+}
+
+type Mutation {
+  doTheThing(input: InputType!): String
+}
+
+input InputType {
+  field: String
+}

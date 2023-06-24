@@ -1,0 +1,5 @@
+# SYNTAX TEST "source.graphql"
+
+type Query {
+  field: String
+}

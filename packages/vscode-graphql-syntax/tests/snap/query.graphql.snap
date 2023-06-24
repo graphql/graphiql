@@ -1,0 +1,51 @@
+>query something {
+#^^^^^ source.graphql keyword.operation.graphql
+#     ^ source.graphql
+#      ^^^^^^^^^ source.graphql entity.name.function.graphql
+#               ^ source.graphql meta.selectionset.graphql
+#                ^ source.graphql meta.selectionset.graphql punctuation.operation.graphql
+>  getMeTheThings(someArguments: [1, 2]) {
+#^^ source.graphql meta.selectionset.graphql
+#  ^^^^^^^^^^^^^^ source.graphql meta.selectionset.graphql variable.graphql
+#                ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+#                 ^^^^^^^^^^^^^ source.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+#                              ^ source.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+#                               ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql
+#                                ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql meta.brace.square.graphql
+#                                 ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql constant.numeric.float.graphql
+#                                  ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql
+#                                   ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql
+#                                    ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql constant.numeric.float.graphql
+#                                     ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.listvalues.graphql meta.brace.square.graphql
+#                                      ^ source.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+#                                       ^ source.graphql meta.selectionset.graphql meta.selectionset.graphql
+#                                        ^ source.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+>    id
+#^^^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql
+#    ^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+>    ...someFragment
+#^^^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql
+#    ^^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql keyword.operator.spread.graphql
+#       ^^^^^^^^^^^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql variable.fragment.graphql
+>  }
+#^^ source.graphql meta.selectionset.graphql meta.selectionset.graphql
+#  ^ source.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+>}
+#^ source.graphql meta.selectionset.graphql punctuation.operation.graphql
+>
+>fragment someFragment on SomeType {
+#^^^^^^^^ source.graphql meta.fragment.graphql keyword.fragment.graphql
+#        ^ source.graphql meta.fragment.graphql
+#         ^^^^^^^^^^^^ source.graphql meta.fragment.graphql entity.name.fragment.graphql
+#                     ^ source.graphql meta.fragment.graphql
+#                      ^^ source.graphql meta.fragment.graphql keyword.on.graphql
+#                        ^ source.graphql meta.fragment.graphql
+#                         ^^^^^^^^ source.graphql meta.fragment.graphql support.type.graphql
+#                                 ^ source.graphql meta.fragment.graphql meta.selectionset.graphql
+#                                  ^ source.graphql meta.fragment.graphql meta.selectionset.graphql punctuation.operation.graphql
+>  name
+#^^ source.graphql meta.fragment.graphql meta.selectionset.graphql
+#  ^^^^ source.graphql meta.fragment.graphql meta.selectionset.graphql variable.graphql
+>}
+#^ source.graphql meta.fragment.graphql meta.selectionset.graphql punctuation.operation.graphql
+>
