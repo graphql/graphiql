@@ -30,18 +30,6 @@ async function getSchema(): Promise<IntrospectionQuery> {
   return introspectionJSON;
 }
 
-async function execOperation(): Promise<void> {
-  const result = await fetcher({
-    query: MODEL.operations.getValue(),
-    variables: JSONC.parse(MODEL.variables.getValue()),
-  });
-  // TODO: this demo only supports a single iteration for http GET/POST,
-  // no multipart or subscriptions yet.
-  // @ts-expect-error
-  const data = await result.next();
-  MODEL.response.setValue(JSON.stringify(data.value, null, 2));
-}
-
 const queryAction: editor.IActionDescriptor = {
   id: 'graphql-run',
   label: 'Run Operation',
@@ -51,7 +39,17 @@ const queryAction: editor.IActionDescriptor = {
     // eslint-disable-next-line no-bitwise
     KeyMod.CtrlCmd | KeyCode.Enter,
   ],
-  run: execOperation,
+  async run() {
+    const result = await fetcher({
+      query: MODEL.operations.getValue(),
+      variables: JSONC.parse(MODEL.variables.getValue()),
+    });
+    // TODO: this demo only supports a single iteration for http GET/POST,
+    // no multipart or subscriptions yet.
+    // @ts-expect-error
+    const data = await result.next();
+    MODEL.response.setValue(JSON.stringify(data.value, null, 2));
+  },
 };
 // set these early on so that initial variables with comments don't flash an error
 languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -70,26 +68,41 @@ export default function Editor(): ReactElement {
   const [responseEditor, setResponseEditor] = useState<CodeEditor>(null);
   const [schema, setSchema] = useState<IntrospectionQuery | null>(null);
   const [loading, setLoading] = useState(false);
-
   /**
    * Create the models & editors
    */
   useEffect(() => {
     if (!operationsEditor) {
-      setOperationsEditor(
-        editor.create(operationsRef.current!, {
-          model: MODEL.operations,
-          ...DEFAULT_EDITOR_OPTIONS,
+      const codeEditor = editor.create(operationsRef.current!, {
+        model: MODEL.operations,
+        ...DEFAULT_EDITOR_OPTIONS,
+      });
+      codeEditor.addAction(queryAction);
+      MODEL.operations.onDidChangeContent(
+        debounce(300, () => {
+          localStorage.setItem(
+            STORAGE_KEY.operations,
+            MODEL.operations.getValue(),
+          );
         }),
       );
+      setOperationsEditor(codeEditor);
     }
     if (!variablesEditor) {
-      setVariablesEditor(
-        editor.create(variablesRef.current!, {
-          model: MODEL.variables,
-          ...DEFAULT_EDITOR_OPTIONS,
+      const codeEditor = editor.create(variablesRef.current!, {
+        model: MODEL.variables,
+        ...DEFAULT_EDITOR_OPTIONS,
+      });
+      codeEditor.addAction(queryAction);
+      MODEL.variables.onDidChangeContent(
+        debounce(300, () => {
+          localStorage.setItem(
+            STORAGE_KEY.variables,
+            MODEL.variables.getValue(),
+          );
         }),
       );
+      setVariablesEditor(codeEditor);
     }
     if (!responseEditor) {
       setResponseEditor(
@@ -101,26 +114,7 @@ export default function Editor(): ReactElement {
         }),
       );
     }
-    MODEL.operations.onDidChangeContent(
-      debounce(300, () => {
-        localStorage.setItem(
-          STORAGE_KEY.operations,
-          MODEL.operations.getValue(),
-        );
-      }),
-    );
-    MODEL.variables.onDidChangeContent(
-      debounce(300, () => {
-        localStorage.setItem(STORAGE_KEY.variables, MODEL.variables.getValue());
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run once on mount
-  }, []);
-
-  useEffect(() => {
-    operationsEditor?.addAction(queryAction);
-    variablesEditor?.addAction(queryAction);
-  }, [operationsEditor, variablesEditor]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only run once on mount
   /**
    * Handle the initial schema load
    */

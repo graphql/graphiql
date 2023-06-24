@@ -15,7 +15,6 @@ const nextConfig = {
     patchWebpackConfig(config, options);
     config.resolve.alias = {
       ...config.resolve.alias,
-
       // this solves a bug with more recent `monaco-editor` versions in next.js,
       // where vscode contains a version of `marked` with modules pre-transpiled, which seems to break the build.
       //

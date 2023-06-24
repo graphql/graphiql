@@ -21,9 +21,9 @@ export const STORAGE_KEY = {
 export const DEFAULT_VALUE: Record<ModelType, string> = {
   operations:
     localStorage.getItem(STORAGE_KEY.operations) ??
-    `# cmd/ctrl + return/enter will execute the op,
-# same in variables editor below
-# also available via context menu & f1 command palette
+    `# CMD/CTRL + Return/Enter will execute the operation,
+# same in the variables editor below
+# also available via context menu & F1 command palette
 
 query($code: ID!) {
   country(code: $code) {
