@@ -12,9 +12,9 @@ similar client-side-only loading (with or without dynamic import) should be
 fine. For more information on loading `monaco-editor` in esm contexts, you can
 [read their docs](https://github.com/microsoft/monaco-editor/blob/main/docs/integrate-esm.md)
 
-This work was sponsored by [Grafbase](https://grafbase.com/)!
+This work was sponsored by [Grafbase](https://grafbase.com)!
 
 # Setup
 
-1. npm install
-1. npm start
+1. yarn
+1. yarn dev

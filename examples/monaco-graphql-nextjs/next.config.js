@@ -3,6 +3,9 @@ import { patchWebpackConfig } from 'next-global-css';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   trailingSlash: true,
   webpack(config, options) {
     // this fixes some issues with loading web workers
