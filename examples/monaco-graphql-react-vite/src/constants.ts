@@ -31,7 +31,9 @@ query($code: ID!) {
     phone
   }
 }`,
-  variables: localStorage.getItem(STORAGE_KEY.variables) ?? '{}',
+  variables: localStorage.getItem(STORAGE_KEY.variables) ?? `{
+  "code": "UA"
+}`,
   response: '',
 };
 
