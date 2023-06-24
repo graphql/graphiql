@@ -6,7 +6,7 @@ const logger = console;
 const isWatchMode = arg === '--watch';
 
 build({
-  entryPoints: ['src/extension.ts', 'src/server/index.ts'],
+  entryPoints: ['src/extension.ts'],
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
@@ -14,7 +14,18 @@ build({
   format: 'cjs',
   sourcemap: true,
   watch: isWatchMode,
-  // Avoid bundling @vue/compiler-sfc's dynamic dependencies
+  plugins: [
+    {
+      name: 'require-handler',
+      setup(b) {
+        b.onResolve({ filter: /^graphql-config$/ }, ({ path }) => {
+          return {
+            path: require.resolve(path),
+          };
+        });
+      },
+    },
+  ],
   external: [
     'squirrelly',
     'teacup',
@@ -60,7 +71,7 @@ build({
       logger.error(...errors);
     }
 
-    logger.log('successfully bundled vscode-graphql 🚀');
+    logger.log('successfully bundled vscode-graphql-execution 🚀');
 
     if (isWatchMode) {
       logger.log('watching... 🕰');

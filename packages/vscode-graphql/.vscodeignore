@@ -1,13 +1,6 @@
-.vscode/**
-.vscode-test/**
 out/test/**
-src/**
-.gitignore
-tsconfig.json
-vsc-extension-quickstart.md
-tslint.json
-.github
-renovate.json
-*.tsbuildinfo
-esbuild.js
 dist/**
+src/**
+tsconfig.json
+*.tsbuildinfo
+*.vsix
