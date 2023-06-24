@@ -50,6 +50,9 @@ build({
     'atpl',
     'liquor',
     'twig',
+    'cosmiconfig',
+    'graphql-config',
+    'graphql',
   ],
 })
   .then(({ errors, warnings }) => {

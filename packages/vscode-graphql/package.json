@@ -43,7 +43,6 @@
   "activationEvents": [
     "onCommand:vscode-graphql.isDebugging",
     "onCommand:vscode-graphql.contentProvider",
-    "onLanguage:graphql",
     "workspaceContains:**/.graphqlrc",
     "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
     "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
@@ -54,12 +53,6 @@
     "GraphQL.vscode-graphql-syntax"
   ],
   "contributes": {
-    "snippets": [
-      {
-        "language": "graphql",
-        "path": "./snippets/graphql.json"
-      }
-    ],
     "icons": {
       "graphql-logo": {
         "description": "GraphQL Icon",
@@ -172,7 +165,6 @@
     "vsce": "^2.13.0"
   },
   "dependencies": {
-    "graphql": "^16.4.0",
     "graphql-language-service-server": "^2.11.2-alpha.0",
     "vscode-languageclient": "8.0.2"
   }

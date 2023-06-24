@@ -45,8 +45,8 @@
     "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
     "watch": "yarn build:watch",
-    "watch-vscode": "concurrently --raw \"yarn tsc && yarn build:watch\" \"yarn workspace vscode-graphql run compile --watch\"",
-    "watch-vscode-exec": "yarn build:watch",
+    "watch-vscode": "yarn workspace vscode-graphql run compile",
+    "watch-vscode-exec": "yarn workspace vscode-graphql-execution run compile",
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
@@ -138,8 +138,5 @@
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
     "wsrun": "^5.2.4"
-  },
-  "resolutions": {
-    "graphql-config": "4.3.0"
   }
 }

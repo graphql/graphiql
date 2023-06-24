@@ -123,26 +123,33 @@ export class SourceHelper {
   }
   async getFragmentDefinitions(
     projectConfig: GraphQLProjectConfig,
-  ): Promise<Map<string, FragmentInfo>> {
-    const sources = await projectConfig.getDocuments();
-    const { fragmentDefinitions } = this;
+  ): Promise<Map<string, FragmentInfo> | void> {
+    try {
+      const sources = await projectConfig.getDocuments();
+      const { fragmentDefinitions } = this;
 
-    for (const source of sources) {
-      visit(source.document as DocumentNode, {
-        FragmentDefinition(node) {
-          const existingDef = fragmentDefinitions.get(node.name.value);
-          const newVal = print(node);
-          if ((existingDef && existingDef.content !== newVal) || !existingDef) {
-            fragmentDefinitions.set(node.name.value, {
-              definition: node,
-              content: newVal,
-              filePath: source.location,
-            });
-          }
-        },
-      });
+      for (const source of sources) {
+        visit(source.document as DocumentNode, {
+          FragmentDefinition(node) {
+            const existingDef = fragmentDefinitions.get(node.name.value);
+            const newVal = print(node);
+            if (
+              (existingDef && existingDef.content !== newVal) ||
+              !existingDef
+            ) {
+              fragmentDefinitions.set(node.name.value, {
+                definition: node,
+                content: newVal,
+                filePath: source.location,
+              });
+            }
+          },
+        });
+      }
+      return fragmentDefinitions;
+    } catch (err) {
+      this.outputChannel.append(`${err}`);
     }
-    return fragmentDefinitions;
   }
 
   extractAllTemplateLiterals(

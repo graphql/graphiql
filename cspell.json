@@ -13,10 +13,6 @@
       "addWords": true
     }
   ],
-  "ignorePaths": [
-    "**/CHANGELOG.md",
-    "**/package.json",
-    "packages/vscode-graphql/esbuild.js"
-  ],
+  "ignorePaths": ["**/CHANGELOG.md", "**/package.json", "**/esbuild.js"],
   "files": ["**/*.{js,cjs,mjs,ts,jsx,tsx,md,mdx,html,json,css,toml,yaml,yml}"]
 }
