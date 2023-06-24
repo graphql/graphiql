@@ -166,6 +166,7 @@
   },
   "dependencies": {
     "graphql-language-service-server": "^2.11.2",
-    "vscode-languageclient": "8.0.2"
+    "vscode-languageclient": "8.0.2",
+    "graphql": "16.6.0"
   }
 }
