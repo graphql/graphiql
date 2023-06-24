@@ -243,8 +243,6 @@ module.exports = {
         'unicorn/prefer-dom-node-remove': 'error',
         // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
-        'no-duplicate-imports': 'off',
-        'no-restricted-imports': 'off',
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',
@@ -419,6 +417,22 @@ module.exports = {
       },
     },
     {
+      // Monaco-GraphQL rules
+      files: ['packages/monaco-graphql/**'],
+      rules: {
+        // Note: disable base rule as it can report incorrect errors
+        'no-restricted-imports': 'off',
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          {
+            name: 'monaco-editor',
+            message:
+              '`monaco-editor` will imports all languages, use local `monaco-editor.ts` instead that imports only `json` and `graphql` languages',
+          },
+        ],
+      },
+    },
+    {
       // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
@@ -429,6 +443,7 @@ module.exports = {
       },
     },
     {
+      // ❗ALWAYS LAST
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
       rules: {
@@ -441,6 +456,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         '@arthurgeron/react-usememo/require-usememo': 'off',
         'sonar/no-dead-store': 'off',
+        '@typescript-eslint/no-restricted-imports': 'off',
       },
     },
   ],
