@@ -768,7 +768,7 @@ export class MessageProcessor {
     const inlineFragments: string[] = [];
     try {
       visit(parse(query), {
-        FragmentDefinition: (node: FragmentDefinitionNode) => {
+        FragmentDefinition(node: FragmentDefinitionNode) {
           inlineFragments.push(node.name.value);
         },
       });

@@ -83,7 +83,7 @@ export async function activate(context: ExtensionContext) {
     outputChannel,
     outputChannelName: 'GraphQL Language Server',
     revealOutputChannelOn: RevealOutputChannelOn.Never,
-    initializationFailedHandler: err => {
+    initializationFailedHandler(err) {
       outputChannel.appendLine('Initialization failed');
       outputChannel.appendLine(err.message);
       if (err.stack) {
