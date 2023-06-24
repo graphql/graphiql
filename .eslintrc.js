@@ -249,7 +249,7 @@ module.exports = {
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',
         'object-shorthand': 'error',
-        'prefer-arrow-callback': ['off', { allowNamedFunctions: true }], // prettier --list-different
+        'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
         'prefer-numeric-literals': 'off',
         'prefer-template': 'off',
         'sort-imports': 'off',
