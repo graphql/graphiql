@@ -6,4 +6,6 @@
 'vscode-graphql': minor
 ---
 
-Fix code file loader, upgrade graphql-config!
+- Fix code file loader bug (now schemas and documents with .ts,.js,.tsx,.svelte, etc work again!)
+- upgrade graphql-config!
+- fix bundling for `vscode-graphql-execution`
