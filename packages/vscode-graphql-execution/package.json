@@ -114,6 +114,7 @@
     "nullthrows": "1.1.1",
     "svelte2tsx": "^0.6.16",
     "svelte": "^4.0.0",
-    "cosmiconfig-toml-loader": "^1.0.0"
+    "cosmiconfig-toml-loader": "^1.0.0",
+    "@graphql-tools/code-file-loader": "^8.0.1"
   }
 }

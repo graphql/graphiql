@@ -2652,7 +2652,7 @@
     tslib "^2.4.0"
     value-or-promise "^1.0.12"
 
-"@graphql-tools/code-file-loader@8.0.1":
+"@graphql-tools/code-file-loader@8.0.1", "@graphql-tools/code-file-loader@^8.0.1":
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/@graphql-tools/code-file-loader/-/code-file-loader-8.0.1.tgz#86ab699cc8ed76010b2f0401e8a4a149338b759e"
   integrity sha512-pmg81lsIXGW3uW+nFSCIG0lFQIxWVbgDjeBkSWlnP8CZsrHTQEkB53DT7t4BHLryoxDS4G4cPxM52yNINDSL8w==
