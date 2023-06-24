@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.2.3
+
+### Patch Changes
+
+- [#3271](https://github.com/graphql/graphiql/pull/3271) [`d29b3d8f`](https://github.com/graphql/graphiql/commit/d29b3d8f983b9ae306aeae4325203ddd7f4f127e) Thanks [@acao](https://github.com/acao)! - fix vscode-graphql-execution release
+
 ## 0.2.2
 
 ### Patch Changes

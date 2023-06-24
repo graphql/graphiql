@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-execution",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
   "publisher": "GraphQL",
