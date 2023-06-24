@@ -418,7 +418,11 @@ module.exports = {
     },
     {
       // Monaco-GraphQL rules
-      files: ['packages/monaco-graphql/**'],
+      files: [
+        'packages/monaco-graphql/**',
+        'examples/monaco-graphql-nextjs/**',
+        'examples/monaco-graphql-react-vite/**',
+      ],
       rules: {
         // Note: disable base rule as it can report incorrect errors
         'no-restricted-imports': 'off',
