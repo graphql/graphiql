@@ -36,15 +36,16 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
     },
 
     off(event) {
-      if (Object.prototype.hasOwnProperty.call(_eventListeners, event)) {
-        const updatedEventListeners = {};
-        for (const e in _eventListeners) {
-          if (e !== event) {
-            updatedEventListeners[e] = _eventListeners[e];
-          }
-        }
-        _eventListeners = updatedEventListeners;
+      if (!Object.prototype.hasOwnProperty.call(_eventListeners, event)) {
+        return;
       }
+      const updatedEventListeners = {};
+      for (const e in _eventListeners) {
+        if (e !== event) {
+          updatedEventListeners[e] = _eventListeners[e];
+        }
+      }
+      _eventListeners = updatedEventListeners;
     },
 
     getValue() {

@@ -111,19 +111,19 @@ async function render() {
   schemaPicker.addEventListener(
     'input',
     async function SchemaSelectionHandler(_ev: Event) {
-      if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
-        const schemaResult = await schemaFetcher.changeSchema(
-          schemaPicker.value,
-        );
-        if (schemaResult && monacoGraphQLAPI) {
-          monacoGraphQLAPI.setSchemaConfig([
-            {
-              ...schemaResult,
-              fileMatch: [operationModel.uri.toString()],
-            },
-          ]);
-          schemaEditor.setValue(schemaResult.documentString || '');
-        }
+      if (schemaPicker.value === schemaFetcher.currentSchema.value) {
+        return;
+      }
+
+      const schemaResult = await schemaFetcher.changeSchema(schemaPicker.value);
+      if (schemaResult && monacoGraphQLAPI) {
+        monacoGraphQLAPI.setSchemaConfig([
+          {
+            ...schemaResult,
+            fileMatch: [operationModel.uri.toString()],
+          },
+        ]);
+        schemaEditor.setValue(schemaResult.documentString || '');
       }
     },
   );
