@@ -61,6 +61,7 @@ module.exports = {
       },
       rules: {
         '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
+        '@shopify/prefer-class-properties': 'off', // enable after https://github.com/Shopify/web-configs/issues/387 will be fixed
         'sonarjs/no-inverted-boolean-check': 'error',
         '@arthurgeron/react-usememo/require-usememo': [
           'error',
