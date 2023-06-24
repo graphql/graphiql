@@ -1,52 +1,45 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
-import { createGraphiQLFetcher, SyncFetcherResult } from '@graphiql/toolkit';
+import { editor, KeyMod, KeyCode, languages } from 'monaco-editor';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './debounce';
 import {
-  DEFAULT_VALUE,
   DEFAULT_EDITOR_OPTIONS,
-  GRAPHQL_URL,
-  FILE_SYSTEM_PATH,
+  MONACO_GRAPHQL_API,
   STORAGE_KEY,
+  GRAPHQL_URL,
+  MODEL,
 } from './constants';
 
 const fetcher = createGraphiQLFetcher({ url: GRAPHQL_URL });
 
-async function getSchema(): Promise<SyncFetcherResult> {
-  return fetcher({
+async function getSchema(): Promise<IntrospectionQuery> {
+  const data = await fetcher({
     query: getIntrospectionQuery(),
     operationName: 'IntrospectionQuery',
   });
-}
+  const introspectionJSON =
+    'data' in data && (data.data as unknown as IntrospectionQuery);
 
-export function getOrCreateModel(
-  type: 'operations' | 'variables' | 'response',
-): editor.ITextModel {
-  const uri = Uri.file(FILE_SYSTEM_PATH[type]);
-  const defaultValue = DEFAULT_VALUE[type];
-  const language = uri.path.split('.').pop();
-  return (
-    editor.getModel(uri) ?? editor.createModel(defaultValue, language, uri)
-  );
+  if (!introspectionJSON) {
+    throw new Error(
+      'this demo does not support subscriptions or http multipart yet',
+    );
+  }
+  return introspectionJSON;
 }
 
 async function execOperation(): Promise<void> {
-  const operationsModel = getOrCreateModel('operations');
-  const variablesModel = getOrCreateModel('variables');
-  const responseModel = getOrCreateModel('response');
   const result = await fetcher({
-    query: operationsModel.getValue(),
-    variables: JSONC.parse(variablesModel.getValue()),
+    query: MODEL.operations.getValue(),
+    variables: JSONC.parse(MODEL.variables.getValue()),
   });
   // TODO: this demo only supports a single iteration for http GET/POST,
   // no multipart or subscriptions yet.
   // @ts-expect-error
   const data = await result.next();
-
-  responseModel.setValue(JSON.stringify(data.value, null, 2));
+  MODEL.response.setValue(JSON.stringify(data.value, null, 2));
 }
 
 const queryAction: editor.IActionDescriptor = {
@@ -82,14 +75,10 @@ export default function Editor(): ReactElement {
    * Create the models & editors
    */
   useEffect(() => {
-    const queryModel = getOrCreateModel('operations');
-    const variablesModel = getOrCreateModel('variables');
-    const resultsModel = getOrCreateModel('response');
-
     if (!operationsEditor) {
       setOperationsEditor(
         editor.create(operationsRef.current!, {
-          model: queryModel,
+          model: MODEL.operations,
           ...DEFAULT_EDITOR_OPTIONS,
         }),
       );
@@ -97,7 +86,7 @@ export default function Editor(): ReactElement {
     if (!variablesEditor) {
       setVariablesEditor(
         editor.create(variablesRef.current!, {
-          model: variablesModel,
+          model: MODEL.variables,
           ...DEFAULT_EDITOR_OPTIONS,
         }),
       );
@@ -105,21 +94,24 @@ export default function Editor(): ReactElement {
     if (!responseEditor) {
       setResponseEditor(
         editor.create(responseRef.current!, {
-          model: resultsModel,
+          model: MODEL.response,
           ...DEFAULT_EDITOR_OPTIONS,
           readOnly: true,
           smoothScrolling: true,
         }),
       );
     }
-    queryModel.onDidChangeContent(
+    MODEL.operations.onDidChangeContent(
       debounce(300, () => {
-        localStorage.setItem(STORAGE_KEY.operations, queryModel.getValue());
+        localStorage.setItem(
+          STORAGE_KEY.operations,
+          MODEL.operations.getValue(),
+        );
       }),
     );
-    variablesModel.onDidChangeContent(
+    MODEL.variables.onDidChangeContent(
       debounce(300, () => {
-        localStorage.setItem(STORAGE_KEY.variables, variablesModel.getValue());
+        localStorage.setItem(STORAGE_KEY.variables, MODEL.variables.getValue());
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only run once on mount
@@ -137,34 +129,10 @@ export default function Editor(): ReactElement {
       return;
     }
     setLoading(true);
-
-    void getSchema().then(data => {
-      const introspectionJSON =
-        'data' in data && (data.data as unknown as IntrospectionQuery);
-
-      if (!introspectionJSON) {
-        throw new Error(
-          'this demo does not support subscriptions or http multipart yet',
-        );
-      }
-      initializeMode({
-        diagnosticSettings: {
-          validateVariablesJSON: {
-            [Uri.file(FILE_SYSTEM_PATH.operations).toString()]: [
-              Uri.file(FILE_SYSTEM_PATH.variables).toString(),
-            ],
-          },
-          jsonDiagnosticSettings: {
-            validate: true,
-            schemaValidation: 'error',
-            // set these again, because we are entirely re-setting them here
-            allowComments: true,
-            trailingCommas: 'ignore',
-          },
-        },
-        schemas: [{ introspectionJSON, uri: 'myschema.graphql' }],
-      });
-
+    void getSchema().then(async introspectionJSON => {
+      MONACO_GRAPHQL_API.setSchemaConfig([
+        { introspectionJSON, uri: 'myschema.graphql' },
+      ]);
       setSchema(introspectionJSON);
       setLoading(false);
     });

@@ -1,4 +1,5 @@
-import { editor } from 'monaco-editor';
+import { editor, Uri } from 'monaco-editor';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 
 type ModelType = 'operations' | 'variables' | 'response';
 
@@ -31,7 +32,9 @@ query($code: ID!) {
     phone
   }
 }`,
-  variables: localStorage.getItem(STORAGE_KEY.variables) ?? `{
+  variables:
+    localStorage.getItem(STORAGE_KEY.variables) ??
+    `{
   "code": "UA"
 }`,
   response: '',
@@ -45,3 +48,37 @@ export const FILE_SYSTEM_PATH: Record<
   variables: 'variables.json',
   response: 'response.json',
 };
+
+export const MONACO_GRAPHQL_API = initializeMode({
+  diagnosticSettings: {
+    validateVariablesJSON: {
+      [Uri.file(FILE_SYSTEM_PATH.operations).toString()]: [
+        Uri.file(FILE_SYSTEM_PATH.variables).toString(),
+      ],
+    },
+    jsonDiagnosticSettings: {
+      validate: true,
+      schemaValidation: 'error',
+      // set these again, because we are entirely re-setting them here
+      allowComments: true,
+      trailingCommas: 'ignore',
+    },
+  },
+});
+
+export const MODEL: Record<ModelType, editor.ITextModel> = {
+  operations: getOrCreateModel('operations'),
+  variables: getOrCreateModel('variables'),
+  response: getOrCreateModel('response'),
+};
+
+function getOrCreateModel(
+  type: 'operations' | 'variables' | 'response',
+): editor.ITextModel {
+  const uri = Uri.file(FILE_SYSTEM_PATH[type]);
+  const defaultValue = DEFAULT_VALUE[type];
+  const language = uri.path.split('.').pop();
+  return (
+    editor.getModel(uri) ?? editor.createModel(defaultValue, language, uri)
+  );
+}
