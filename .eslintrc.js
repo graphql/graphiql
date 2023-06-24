@@ -248,8 +248,12 @@ module.exports = {
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',
-        'object-shorthand': 'error',
         'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
+        'object-shorthand': [
+          'error',
+          'always',
+          { avoidExplicitReturnArrows: true },
+        ],
         'prefer-numeric-literals': 'off',
         'prefer-template': 'off',
         'sort-imports': 'off',

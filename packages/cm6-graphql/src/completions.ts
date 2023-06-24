@@ -7,7 +7,7 @@ import { graphqlLanguage } from './language';
 const AUTOCOMPLETE_CHARS = /^[a-zA-Z0-9_@(]$/;
 
 export const completion = graphqlLanguage.data.of({
-  autocomplete: (ctx: CompletionContext) => {
+  autocomplete(ctx: CompletionContext) {
     const schema = getSchema(ctx.state);
     const opts = getOpts(ctx.state);
     if (!schema) {
@@ -38,7 +38,7 @@ export const completion = graphqlLanguage.data.of({
         return {
           label: item.label,
           detail: item.detail || '',
-          info: (completionData: Completion) => {
+          info(completionData: Completion) {
             if (opts?.onCompletionInfoRender) {
               return opts.onCompletionInfoRender(item, ctx, completionData);
             }

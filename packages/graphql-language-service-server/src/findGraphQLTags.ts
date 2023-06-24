@@ -220,7 +220,7 @@ export function findGraphQLTags(
 
       traverse(node, visitors);
     },
-    TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
+    TaggedTemplateExpression(node: TaggedTemplateExpression) {
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
         const { loc } = node.quasi.quasis[0];
@@ -250,7 +250,7 @@ export function findGraphQLTags(
         }
       }
     },
-    TemplateLiteral: (node: TemplateLiteral) => {
+    TemplateLiteral(node: TemplateLiteral) {
       const hasGraphQLPrefix =
         node.quasis[0].value.raw.startsWith('#graphql\n');
       const hasGraphQLComment = Boolean(

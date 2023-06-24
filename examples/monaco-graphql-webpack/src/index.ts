@@ -196,7 +196,7 @@ async function render() {
   };
 
   /**
-   * Add an reload operation to the command palette & keyboard shortcuts
+   * Add a reload operation to the command palette & keyboard shortcuts
    */
   const reloadAction: monaco.editor.IActionDescriptor = {
     id: 'graphql-reload',
@@ -206,7 +206,7 @@ async function render() {
     keybindings: [
       monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
     ],
-    run: async () => {
+    async run() {
       await schemaFetcher.loadSchema();
     },
   };

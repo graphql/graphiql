@@ -67,7 +67,7 @@ export class DiagnosticsAdapter {
     this._disposables.push(
       editor.onDidCreateModel(onModelAdd),
       {
-        dispose: () => {
+        dispose() {
           clearTimeout(onChangeTimeout);
         },
       },
