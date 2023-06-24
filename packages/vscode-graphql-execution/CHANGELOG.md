@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.2.2
+
+### Patch Changes
+
+- [#3269](https://github.com/graphql/graphiql/pull/3269) [`2fb7f1f5`](https://github.com/graphql/graphiql/commit/2fb7f1f5d8a69a5de572b783de7801d5993f758a) Thanks [@acao](https://github.com/acao)! - fix ovsx release
+
 ## 0.2.1
 
 ### Patch Changes
