@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
-import { initializeMode } from 'monaco-graphql/src/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 import { createGraphiQLFetcher, SyncFetcherResult } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './debounce';
@@ -24,14 +24,7 @@ query($code: ID!) {
   }
 }`;
 
-const defaultVariables =
-  localStorage.getItem('variables') ??
-  `{
-  // 'code' will appear here as autocomplete,
-  // and because the default value is 0, will
-  // complete as such
-  $1
-}`;
+const defaultVariables = localStorage.getItem('variables') ?? '{}';
 
 async function getSchema(): Promise<SyncFetcherResult> {
   return fetcher({
@@ -40,10 +33,17 @@ async function getSchema(): Promise<SyncFetcherResult> {
   });
 }
 
-function getOrCreateModel(uri: string, value: string): editor.ITextModel {
+export function getOrCreateModel({
+  uri,
+  value,
+}: {
+  uri: string;
+  value: string;
+}): editor.ITextModel {
+  const language = uri.split('.').pop();
   return (
     editor.getModel(Uri.file(uri)) ??
-    editor.createModel(value, uri.split('.').pop(), Uri.file(uri))
+    editor.createModel(value, language, Uri.file(uri))
   );
 }
 
@@ -96,16 +96,21 @@ export default function App(): ReactElement {
    * Create the models & editors
    */
   useEffect(() => {
-    const queryModel = getOrCreateModel('operation.graphql', defaultOperations);
-    const variablesModel = getOrCreateModel('variables.json', defaultVariables);
-    const resultsModel = getOrCreateModel('results.json', '{}');
+    const queryModel = getOrCreateModel({
+      uri: 'operation.graphql',
+      value: defaultOperations,
+    });
+    const variablesModel = getOrCreateModel({
+      uri: 'variables.json',
+      value: defaultVariables,
+    });
+    const resultsModel = getOrCreateModel({ uri: 'results.json', value: '{}' });
 
     if (!queryEditor) {
       setQueryEditor(
         editor.create(operationsRef.current!, {
           theme: 'vs-dark',
           model: queryModel,
-          language: 'graphql',
         }),
       );
     }
