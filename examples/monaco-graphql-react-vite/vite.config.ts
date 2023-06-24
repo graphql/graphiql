@@ -3,12 +3,10 @@ import react from '@vitejs/plugin-react';
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
 export default defineConfig({
-  build: {
-    target: 'esnext',
-  },
   plugins: [
     react(),
     monacoEditorPlugin({
+      publicPath: 'workers',
       languageWorkers: ['json', 'editorWorkerService'],
       customWorkers: [
         {
