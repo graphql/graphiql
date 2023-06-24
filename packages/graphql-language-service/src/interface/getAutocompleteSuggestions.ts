@@ -970,14 +970,15 @@ export function getTokenAtPosition(
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (
-      index === cursor.line &&
-      stream.getCurrentPosition() + offset >= cursor.character + 1
+      index !== cursor.line ||
+      stream.getCurrentPosition() + offset < cursor.character + 1
     ) {
-      styleAtCursor = style;
-      stateAtCursor = { ...state };
-      stringAtCursor = stream.current();
-      return 'BREAK';
+      return;
     }
+    styleAtCursor = style;
+    stateAtCursor = { ...state };
+    stringAtCursor = stream.current();
+    return 'BREAK';
   });
 
   // Return the state/style of parsed token in case those at cursor aren't

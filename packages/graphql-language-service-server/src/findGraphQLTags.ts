@@ -200,7 +200,7 @@ export function findGraphQLTags(
   };
 
   const visitors = {
-    CallExpression(node: Expression)  {
+    CallExpression(node: Expression) {
       if (!('callee' in node)) {
         return;
       }

@@ -60,7 +60,8 @@ module.exports = {
         Set: true,
       },
       rules: {
-        '@shopify/prefer-early-return':[ 'error', { maximumStatements: 2 }],
+        '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
+        'sonarjs/no-inverted-boolean-check': 'error',
         '@arthurgeron/react-usememo/require-usememo': [
           'error',
           { checkHookCalls: false },
