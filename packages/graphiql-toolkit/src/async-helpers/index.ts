@@ -17,12 +17,12 @@ export function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
 function observableToPromise<T>(observable: Observable<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     const subscription = observable.subscribe({
-      next: v => {
+      next(v) {
         resolve(v);
         subscription.unsubscribe();
       },
       error: reject,
-      complete: () => {
+      complete() {
         reject(new Error('no value resolved'));
       },
     });

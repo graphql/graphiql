@@ -59,14 +59,14 @@ describe('MessageProcessor', () => {
     });
     messageProcessor._languageService = {
       // @ts-ignore
-      getAutocompleteSuggestions: (query, position, uri) => {
+      getAutocompleteSuggestions(query, position, uri) {
         return [{ label: `${query} at ${uri}` }];
       },
       // @ts-ignore
-      getDiagnostics: (_query, _uri) => {
+      getDiagnostics(_query, _uri) {
         return [];
       },
-      getDocumentSymbols: async (_query: string, uri: string) => {
+      async getDocumentSymbols(_query: string, uri: string) {
         return [
           {
             name: 'item',
@@ -81,7 +81,7 @@ describe('MessageProcessor', () => {
           },
         ];
       },
-      getOutline: async (_query: string): Promise<Outline> => {
+      async getOutline(_query: string): Promise<Outline> {
         return {
           outlineTrees: [
             {
@@ -94,11 +94,11 @@ describe('MessageProcessor', () => {
           ],
         };
       },
-      getDefinition: async (
+      async getDefinition(
         _query,
         position,
         uri,
-      ): Promise<DefinitionQueryResult> => {
+      ): Promise<DefinitionQueryResult> {
         return {
           queryRange: [new Range(position, position)],
           definitions: [
@@ -118,7 +118,7 @@ describe('MessageProcessor', () => {
     // @ts-ignore
     get workspace() {
       return {
-        getConfiguration: async () => {
+        async getConfiguration() {
           return [getConfigurationReturnValue];
         },
       };

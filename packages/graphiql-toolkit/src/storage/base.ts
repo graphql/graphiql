@@ -78,7 +78,7 @@ export class StorageAPI {
           return keys;
         },
 
-        clear: () => {
+        clear() {
           // We only want to clear the namespaced items
           for (const key in window.localStorage) {
             if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
