@@ -15,24 +15,21 @@ const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 export class WorkerManager {
   private _defaults: MonacoGraphQLAPI;
   private _idleCheckInterval: number;
-  private _lastUsedTime: number;
+  private _lastUsedTime = 0;
   private _configChangeListener: IDisposable;
-  private _worker: editor.MonacoWebWorker<GraphQLWorker> | null;
-  private _client: GraphQLWorker | null;
+  private _worker: editor.MonacoWebWorker<GraphQLWorker> | null = null;
+  private _client: GraphQLWorker | null = null;
 
   constructor(defaults: MonacoGraphQLAPI) {
     this._defaults = defaults;
-    this._worker = null;
     this._idleCheckInterval = window.setInterval(
       () => this._checkIfIdle(),
       30 * 1000,
     );
-    this._lastUsedTime = 0;
     // this is where we re-start the worker on config changes
     this._configChangeListener = this._defaults.onDidChange(() => {
       this._stopWorker();
     });
-    this._client = null;
   }
 
   private _stopWorker(): void {
