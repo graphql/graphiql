@@ -1,41 +1,17 @@
-html,
-body,
-#__next,
-main {
-  max-width: 100vw;
-  height: 100vh;
-  margin: 0;
-  background-color: #1e1e1e;
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  height: 100vh;
 }
 
-#wrapper {
+#__next {
   display: flex;
-  flex-direction: row;
-  height: 97.7vh;
+  height: inherit;
 }
 
 .pane {
-  height: 100%;
   width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
 }
 
-#left-pane .editor {
+.left-editor {
   height: 50%;
-}
-
-#right-pane .editor {
-  height: 100%;
 }
