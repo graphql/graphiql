@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.8.16
+
+### Patch Changes
+
+- [#3274](https://github.com/graphql/graphiql/pull/3274) [`5e38ab6b`](https://github.com/graphql/graphiql/commit/5e38ab6b2235cb0dec4e7df42772680a1e905a1a) Thanks [@acao](https://github.com/acao)! - fix esbuild + vsce issue
+
 ## 0.8.15
 
 ### Patch Changes

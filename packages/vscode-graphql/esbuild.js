@@ -49,7 +49,7 @@ build({
     'dustjs-linkedin',
     'atpl',
     'liquor',
-    'twig'
+    'twig',
   ],
 })
   .then(({ errors, warnings }) => {
