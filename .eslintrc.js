@@ -248,12 +248,12 @@ module.exports = {
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',
+        'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
         'object-shorthand': [
           'error',
           'always',
           { avoidExplicitReturnArrows: true },
         ],
-        'prefer-arrow-callback': ['off', { allowNamedFunctions: true }], // prettier --list-different
         'prefer-numeric-literals': 'off',
         'prefer-template': 'off',
         'sort-imports': 'off',
