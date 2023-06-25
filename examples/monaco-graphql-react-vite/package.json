@@ -11,8 +11,7 @@
     "react-dom": "^18.2.0",
     "graphql": "^16.6.0",
     "jsonc-parser": "^3.2.0",
-    "monaco-editor": "^0.39.0",
-    "prettier": "3.0.0-alpha.12"
+    "monaco-editor": "^0.39.0"
   },
   "devDependencies": {
     "vite": "^4.3.9",
