@@ -1,3 +1,7 @@
+# Monaco GraphQL Next.js Example
+
+## Getting Started
+
 This is a working example of `monaco-editor` and `monaco-graphql` using
 `next.js` 13
 
@@ -14,7 +18,7 @@ fine. For more information on loading `monaco-editor` in esm contexts, you can
 
 This work was sponsored by [Grafbase](https://grafbase.com)!
 
-# Setup
+## Setup
 
-1. yarn
-1. yarn dev
+1. In monorepo root directory run `yarn` and `yarn build`.
+1. In this directory run `yarn dev`.

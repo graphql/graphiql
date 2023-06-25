@@ -11,7 +11,7 @@ coverage:
     project:
       default:
         target: 50% # the minimum required coverage value
-        threshold: 1% # the leniency in hitting the target, allows 1% drop
+        threshold: .1% # the leniency in hitting the target, allows 1% drop
     patch:
       default:
         informational: true
