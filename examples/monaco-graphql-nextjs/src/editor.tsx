@@ -1,6 +1,11 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import { editor, KeyMod, KeyCode, languages } from 'monaco-graphql/esm/monaco-editor';
+import {
+  editor,
+  KeyMod,
+  KeyCode,
+  languages,
+} from 'monaco-graphql/esm/monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './debounce';
