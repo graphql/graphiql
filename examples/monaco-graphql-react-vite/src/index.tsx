@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import Editor from './editor';
 
-const root = createRoot(document.getElementById('root')!);
-root.render(<App />);
+const root = createRoot(document.getElementById('__next')!);
+root.render(<Editor />);

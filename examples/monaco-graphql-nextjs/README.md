@@ -1,3 +1,7 @@
+# Monaco GraphQL Next.js Example
+
+## Getting Started
+
 This is a working example of `monaco-editor` and `monaco-graphql` using
 `next.js` 13
 
@@ -12,9 +16,9 @@ similar client-side-only loading (with or without dynamic import) should be
 fine. For more information on loading `monaco-editor` in esm contexts, you can
 [read their docs](https://github.com/microsoft/monaco-editor/blob/main/docs/integrate-esm.md)
 
-This work was sponsored by [Grafbase](https://grafbase.com/)!
+This work was sponsored by [Grafbase](https://grafbase.com)!
 
-# Setup
+## Setup
 
-1. npm install
-1. npm start
+1. In monorepo root directory run `yarn` and `yarn build`.
+1. In this directory run `yarn dev`.

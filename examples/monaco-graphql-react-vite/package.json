@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
+    "prettier": "3.0.0-alpha.12",
     "@graphiql/toolkit": "^0.8.4",
     "graphql-language-service": "^5.1.7",
     "monaco-graphql": "^1.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "graphql": "^16.7.1",
+    "graphql": "^16.6.0",
     "jsonc-parser": "^3.2.0",
     "monaco-editor": "^0.39.0"
   },
