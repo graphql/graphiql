@@ -1,6 +1,11 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import { editor, KeyMod, KeyCode, languages } from 'monaco-graphql/esm/monaco-editor';
+import {
+  editor,
+  KeyMod,
+  KeyCode,
+  languages,
+} from 'monaco-graphql/esm/monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import {
@@ -137,7 +142,7 @@ export default function Editor(): ReactElement {
     setLoading(true);
     void getSchema().then(async introspectionJSON => {
       MONACO_GRAPHQL_API.setSchemaConfig([
-        { introspectionJSON, uri: 'myschema.graphql' },
+        { introspectionJSON, uri: 'my-schema.graphql' },
       ]);
       setSchema(introspectionJSON);
       setLoading(false);

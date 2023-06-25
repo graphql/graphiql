@@ -64,8 +64,8 @@ const MonacoGraphQLAPI = initializeMode({
     {
       schema: myGraphqlSchema as GraphQLSchema,
       // anything that monaco.URI.from() is compatible with
-      uri: 'https://myschema.com',
-      uri: '/myschema.graphql',
+      uri: 'https://my-schema.com',
+      uri: '/my-schema.graphql',
       // match the monaco file uris for this schema.
       // accepts specific uris and anything `picomatch` supports.
       // (everything except bracket regular expressions)
@@ -108,8 +108,8 @@ monaco.languages.graphql.setSchemaConfig([
   {
     schema: myGraphqlSchema as GraphQLSchema,
     // anything that monaco.URI.from() is compatible with
-    uri: 'https://myschema.com',
-    uri: '/myschema.graphql',
+    uri: 'https://my-schema.com',
+    uri: '/my-schema.graphql',
     // match the monaco file uris for this schema.
     // accepts specific uris and anything `picomatch` supports.
     // (everything except bracket regular expressions)
@@ -169,7 +169,7 @@ const MonacoGraphQLAPI = initializeMode({
   schemas: [
     {
       // anything that monaco.URI.from() is compatible with
-      uri: 'https://myschema.com',
+      uri: 'https://my-schema.com',
       // match the monaco file uris for this schema.
       // accepts specific filenames and anything `picomatch` supports.
       fileMatch: ['**/*.graphql'],
@@ -289,7 +289,7 @@ monaco.languages.graphql.api.setSchemaConfig([
   {
     schema: GraphQLSchema,
     fileMatch: ['**/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ]);
 ```
@@ -303,7 +303,7 @@ const schemas = [
   {
     schema: GraphQLSchema,
     fileMatch: ['operations/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ];
 const api = initializeMode({ schemas });
@@ -327,7 +327,7 @@ api.setSchemaConfig([
   {
     introspectionJSON: myIntrospectionJSON,
     fileMatch: ['**/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ]);
 ```

@@ -90,8 +90,10 @@ sonarjs
 svgr
 typedoc
 vite
+vitest
 vitejs
 wonka
+urql
 
 // identifiers used in code and configs
 acmerc
@@ -123,7 +125,6 @@ marko
 matchingbracket
 middlewares
 modulemap
-myschema
 newhope
 nocheck
 nocursor
@@ -152,11 +153,9 @@ streamable
 subword
 testid
 testonly
-typeof
 unfocus
 unnormalized
 unsubscribable
-urql
 vash
 websockets
 
@@ -221,3 +220,5 @@ typeahead
 typeaheads
 unparsable
 randomthing
+codicon
+edcore
