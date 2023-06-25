@@ -6,7 +6,9 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/monaco-graphql-webpack"
+      "examples/monaco-graphql-webpack",
+      "examples/monaco-graphql-nextjs",
+      "examples/monaco-graphql-react-vite"
     ]
   },
   "lint-staged": {
@@ -138,6 +140,7 @@
     "ts-jest": "^27.1.5",
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
-    "wsrun": "^5.2.4"
+    "wsrun": "^5.2.4",
+    "vitest": "^0.32.2"
   }
 }

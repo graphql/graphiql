@@ -3,7 +3,6 @@ import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
-import { debounce } from './debounce';
 import {
   DEFAULT_EDITOR_OPTIONS,
   MONACO_GRAPHQL_API,
@@ -28,6 +27,19 @@ async function getSchema(): Promise<IntrospectionQuery> {
     );
   }
   return introspectionJSON;
+}
+
+function debounce<F extends (...args: any[]) => any>(duration: number, fn: F) {
+  let timeout = 0;
+  return (...args: Parameters<F>) => {
+    if (timeout) {
+      window.clearTimeout(timeout);
+    }
+    timeout = window.setTimeout(() => {
+      timeout = 0;
+      fn(args);
+    }, duration);
+  };
 }
 
 const queryAction: editor.IActionDescriptor = {

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
+    "prettier": "3.0.0-alpha.12",
     "@graphiql/toolkit": "^0.8.4",
     "graphql-language-service": "^5.1.7",
     "monaco-graphql": "^1.2.4",
