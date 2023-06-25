@@ -419,11 +419,7 @@ module.exports = {
     },
     {
       // Monaco-GraphQL rules
-      files: [
-        'packages/monaco-graphql/**',
-        'examples/monaco-graphql-nextjs/**',
-        'examples/monaco-graphql-react-vite/**',
-      ],
+      files: ['packages/monaco-graphql/**'],
       rules: {
         // Note: disable base rule as it can report incorrect errors
         'no-restricted-imports': 'off',
@@ -433,6 +429,25 @@ module.exports = {
             name: 'monaco-editor',
             message:
               '`monaco-editor` will imports all languages, use local `monaco-editor.ts` instead that imports only `json` and `graphql` languages',
+          },
+        ],
+      },
+    },
+    {
+      files: [
+        'examples/monaco-graphql-nextjs/**',
+        'examples/monaco-graphql-react-vite/**',
+        'examples/graphiql-react/**',
+      ],
+      rules: {
+        // Note: disable base rule as it can report incorrect errors
+        'no-restricted-imports': 'off',
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          {
+            name: 'monaco-editor',
+            message:
+              '`monaco-editor` will imports all languages, use local `monaco-graphql/esm/monaco-editor` instead that imports only `json` and `graphql` languages',
           },
         ],
       },
