@@ -14,6 +14,11 @@ const RESTRICTED_IMPORTS = [
   { name: 'graphql/type/definition', message: 'use `graphql`' },
   { name: 'graphql/type/directives', message: 'use `graphql`' },
   { name: 'graphql/version', message: 'use `graphql`' },
+  {
+    name: 'monaco-editor',
+    message:
+      '`monaco-editor` will import all languages; use local `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+  },
 ];
 
 module.exports = {
@@ -428,41 +433,6 @@ module.exports = {
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
         'promise/prefer-await-to-then': 'error',
-      },
-    },
-    {
-      // Monaco-GraphQL rules
-      files: ['packages/monaco-graphql/**'],
-      rules: {
-        // Note: disable base rule as it can report incorrect errors
-        'no-restricted-imports': 'off',
-        '@typescript-eslint/no-restricted-imports': [
-          'error',
-          {
-            name: 'monaco-editor',
-            message:
-              '`monaco-editor` will import all languages; use local `monaco-editor.ts` instead to import only `json` and `graphql` languages',
-          },
-        ],
-      },
-    },
-    {
-      files: [
-        'examples/monaco-graphql-nextjs/**',
-        'examples/monaco-graphql-react-vite/**',
-        'examples/graphiql-react/**',
-      ],
-      rules: {
-        // Note: disable base rule as it can report incorrect errors
-        'no-restricted-imports': 'off',
-        '@typescript-eslint/no-restricted-imports': [
-          'error',
-          {
-            name: 'monaco-editor',
-            message:
-              '`monaco-editor` will imports all languages, use local `monaco-graphql/esm/monaco-editor` instead that imports only `json` and `graphql` languages',
-          },
-        ],
       },
     },
     {

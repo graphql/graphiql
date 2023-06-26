@@ -28,7 +28,7 @@
     "@lezer/generator": "^1.1.0",
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.1.0",
-    "esbuild": "0.15.1",
+    "esbuild": "0.18.10",
     "graphql": "^16.5.0",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",

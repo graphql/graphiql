@@ -67,7 +67,7 @@
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "14.0.0",
     "@types/set-value": "^4.0.1",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react": "^4.0.1",
     "graphql": "^16.4.0",
     "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",

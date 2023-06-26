@@ -97,7 +97,7 @@
     "@types/node": "^16.18.4",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "esbuild": "0.15.10",
+    "esbuild": "0.18.10",
     "ovsx": "0.5.1",
     "vsce": "^2.13.0"
   },
