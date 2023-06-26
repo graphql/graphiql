@@ -49,9 +49,6 @@
     "workspaceContains:**/package.json"
   ],
   "main": "./out/extension.js",
-  "extensionDependencies": [
-    "GraphQL.vscode-graphql-syntax"
-  ],
   "contributes": {
     "icons": {
       "graphql-logo": {
@@ -149,20 +146,26 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "node esbuild",
+    "compile": "node esbuild.mjs",
     "build-bundles": "npm run compile -- --sourcemap",
     "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --yarn",
     "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
-    "release": "npm run vsce:publish && npm run open-vsx:publish"
+    "release": "npm run vsce:publish && npm run open-vsx:publish",
+    "test": "sh ./scripts/e2e.sh"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^9.1.0",
     "esbuild": "0.15.10",
     "ovsx": "0.5.1",
-    "vsce": "^2.13.0"
+    "vsce": "^2.13.0",
+    "glob": "^10.3.0",
+    "@vscode/test-electron": "^2.2.3",
+    "mocha": "^9.2.1"
   },
   "dependencies": {
     "graphql-language-service-server": "^2.11.2",

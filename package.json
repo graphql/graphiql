@@ -6,9 +6,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/monaco-graphql-webpack",
-      "examples/monaco-graphql-nextjs",
-      "examples/monaco-graphql-react-vite"
+      "examples/monaco-graphql-webpack"
     ]
   },
   "lint-staged": {
@@ -128,6 +126,7 @@
     "eslint-plugin-unicorn": "^47.0.0",
     "execa": "^6.0.0",
     "express": "^4.18.2",
+    "esbuild": "0.15.10",
     "fetch-mock": "6.5.2",
     "husky": "^4.2.3",
     "jest": "^27.5.1",
@@ -139,7 +138,6 @@
     "ts-jest": "^27.1.5",
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
-    "vitest": "^0.32.2",
     "wsrun": "^5.2.4"
   }
 }

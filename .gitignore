@@ -11,8 +11,11 @@ coverage/
 dist/
 esm/
 out/
+
+# vscode
 *.vsix
 *.tsbuildinfo
+.vscode-test
 
 yarn-1.18.0.js
 *.orig

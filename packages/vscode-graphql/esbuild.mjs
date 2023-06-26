@@ -1,9 +1,12 @@
-const { build } = require('esbuild');
+import { build }from 'esbuild';
+import { glob } from  'glob';
+
 const [, , arg] = process.argv;
 
 const logger = console;
 
 const isWatchMode = arg === '--watch';
+
 
 build({
   entryPoints: ['src/extension.ts', 'src/server/index.ts'],
