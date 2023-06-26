@@ -528,7 +528,7 @@ some gotchas:
 ## Avoid Bundle All `monaco-editor`'s Languages
 
 While importing `monaco-editor` in your project, you silently import 83 builtin
-languages, such as `typescript`, `html`, `css`, `json` and other. You can found
+languages, such as `typescript`, `html`, `css`, `json` and others. You can found
 a full list of
 [basic-languages](https://github.com/microsoft/monaco-editor/tree/main/src/basic-languages)
 and
