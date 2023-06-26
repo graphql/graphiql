@@ -445,7 +445,7 @@ module.exports = {
           {
             name: 'monaco-editor',
             message:
-              '`monaco-editor` import all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
+              '`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
           },
         ],
       },
