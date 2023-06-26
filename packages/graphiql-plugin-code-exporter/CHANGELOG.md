@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 0.1.4
+
+### Patch Changes
+
+- [#3292](https://github.com/graphql/graphiql/pull/3292) [`f86e4172`](https://github.com/graphql/graphiql/commit/f86e41721d4d990535253b579c810bc5e291b40b) Thanks [@B2o5T](https://github.com/B2o5T)! - fix umd build names `graphiql-plugin-code-exporter.umd.js` and `graphiql-plugin-explorer.umd.js`
+
 ## 0.1.3
 
 ### Patch Changes
