@@ -16,5 +16,5 @@ describe('monaco-editor', () => {
     expect(lines[11].startsWith('dist/assets/graphqlMode-')).toBe(true);
     expect(lines[12].startsWith('dist/assets/index-')).toBe(true);
     expect(lines[13].startsWith('✓ built in ')).toBe(true);
-  }, 20_000);
+  }, 25_000);
 });

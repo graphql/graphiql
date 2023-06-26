@@ -534,11 +534,10 @@ a full list of
 and
 [languages](https://github.com/microsoft/monaco-editor/tree/main/src/language).
 
-For `monaco-graphql` basically you need only 2 languages - `graphql` and `json`.
-To improve performance and drop loading unused languages starting from
-`monaco-graphql@1.3.0` version you can do it by replacing all your `monaco-editor`'s
-imports with `monaco-graphql/esm/monaco-editor` that will load only `graphql`
-and `json` languages.
+For `monaco-graphql`, you need only 2 languages - `graphql` and `json`.
+In version `monaco-graphql@1.3.0` and later, you can replace all `monaco-editor`'s
+imports with `monaco-graphql/esm/monaco-editor` to improve performance, load
+only `graphql` and `json` languages, and skip loading unused languages.
 
 ```diff
 -import { ... } from 'monaco-editor'
