@@ -559,7 +559,7 @@ To prevent mis importing of `monaco-editor` you can setup default
       'error',
       {
         name: 'monaco-editor',
-        message: '`monaco-editor` import all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+        message: '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
       },
     ],
   },
