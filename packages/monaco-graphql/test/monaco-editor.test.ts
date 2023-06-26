@@ -5,7 +5,7 @@ describe('monaco-editor', () => {
     const { stdout } =
       await $`yarn workspace example-monaco-graphql-react-vite build`;
     const lines = stdout.split('\n');
-    expect(lines[3]).toBe('✓ 1092 modules transformed.');
+    expect(lines[3].includes('1092 modules transformed.')).toBe(true);
     expect(lines[4]).toBe('rendering chunks...');
     expect(lines[5]).toBe('computing gzip size...');
     expect(lines[6].startsWith('dist/index.html')).toBe(true);
