@@ -21,9 +21,6 @@ import type {
   NamedTypeNode,
   TypeDefinitionNode,
   NameNode,
-} from 'graphql';
-
-import type {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
@@ -31,8 +28,8 @@ import type {
   GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLType,
-} from 'graphql/type/definition';
-import type { GraphQLDirective } from 'graphql/type/directives';
+  GraphQLDirective,
+} from 'graphql';
 
 export type Maybe<T> = T | null | undefined;
 

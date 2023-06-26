@@ -7,6 +7,15 @@
  *
  */
 
+const RESTRICTED_IMPORTS = [
+  { name: 'graphql/type', message: 'use `graphql`' },
+  { name: 'graphql/language', message: 'use `graphql`' },
+  { name: 'graphql/type/introspection', message: 'use `graphql`' },
+  { name: 'graphql/type/definition', message: 'use `graphql`' },
+  { name: 'graphql/type/directives', message: 'use `graphql`' },
+  { name: 'graphql/version', message: 'use `graphql`' },
+];
+
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
@@ -243,8 +252,7 @@ module.exports = {
         'no-duplicate-imports': 'off',
         '@typescript-eslint/no-restricted-imports': [
           'error',
-          { name: 'graphql/type', message: 'use `graphql`' },
-          { name: 'graphql/language', message: 'use `graphql`' },
+          ...RESTRICTED_IMPORTS,
         ],
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
