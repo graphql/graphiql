@@ -547,7 +547,7 @@ and `json` languages.
 
 ### Catch Future Import Mistakes with ESLint
 
-To prevent mis importing of `monaco-editor` you can setup default
+To prevent mis-importing of `monaco-editor`, you can set up default
 `no-restricted-imports` rule for JavaScript projects or
 `@typescript-eslint/no-restricted-imports` for TypeScript projects.
 
