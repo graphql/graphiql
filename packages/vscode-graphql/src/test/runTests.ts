@@ -21,17 +21,16 @@ async function main() {
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      version: '1.40.1',
+      version: 'insiders',
       launchArgs: [
-        'fixtures',
-        'fixtures/diagnostics.txt',
-          '--disable-workspace-trust',
+          // '--disable-workspace-trust',
         // '--disable-workspace-trust'
         // '--install-extension',
         // 'GraphQL.vscode-graphql-syntax',
         // '--install-extension',
         // 'GraphQL.vscode-graphql-execution',
         '--wait',
+        'fixtures'
        
       ],
       // reuseMachineInstall: true,

@@ -14,25 +14,7 @@ suite('Should get diagnostics', async () => {
 	const docUri = getDocUri('diagnostics.txt');
 	console.log(docUri)
 
-	async function testDiagnostics(
-		docUri: vscode.Uri,
-		expectedDiagnostics: vscode.Diagnostic[],
-	  ) {
-		console.log('testing!!!!');
-		await activate(docUri);
-	 	 console.log('after activation')
-		const actualDiagnostics = vscode.languages.getDiagnostics(docUri);
-		console.log(actualDiagnostics)
-	  
-		assert.equal(actualDiagnostics.length, expectedDiagnostics.length);
-	  
-		expectedDiagnostics.forEach((expectedDiagnostic, i) => {
-		  const actualDiagnostic = actualDiagnostics[i];
-		  assert.equal(actualDiagnostic.message, expectedDiagnostic.message);
-		  assert.deepEqual(actualDiagnostic.range, expectedDiagnostic.range);
-		  assert.equal(actualDiagnostic.severity, expectedDiagnostic.severity);
-		});
-	  }
+
 	  
 
 
@@ -57,6 +39,26 @@ suite('Should get diagnostics', async () => {
       },
     ]);
 });
+
+async function testDiagnostics(
+  docUri: vscode.Uri,
+  expectedDiagnostics: vscode.Diagnostic[],
+  ) {
+
+  await activate(docUri);
+  
+  const actualDiagnostics = vscode.languages.getDiagnostics(docUri);
+  console.log(actualDiagnostics)
+  
+  assert.equal(actualDiagnostics.length, expectedDiagnostics.length);
+  
+  expectedDiagnostics.forEach((expectedDiagnostic, i) => {
+    const actualDiagnostic = actualDiagnostics[i];
+    assert.equal(actualDiagnostic.message, expectedDiagnostic.message);
+    assert.deepEqual(actualDiagnostic.range, expectedDiagnostic.range);
+    assert.equal(actualDiagnostic.severity, expectedDiagnostic.severity);
+  });
+  }
 
 function toRange(sLine: number, sChar: number, eLine: number, eChar: number) {
   const start = new vscode.Position(sLine, sChar);

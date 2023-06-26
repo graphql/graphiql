@@ -21,14 +21,18 @@ export async function activate(docUri: vscode.Uri) {
     // The extensionId is `publisher.name` from package.json
     const ext = vscode.extensions.getExtension('GraphQL.vscode-graphql')!;
     console.log('ext retrieved', ext.id);
-    console.log('extensionPath', ext.extensionPath);
-    console.log('extensionKind', ext.extensionKind);
-    console.log('extensionUri', ext.extensionUri);
-    console.log('packageJSON', ext.packageJSON);
-     writeFileSync(__dirname + '/../outext-activate.js', 'module.exports = ' + JSON.stringify(ext, null, 2));
+    // console.log('extensionPath', ext.extensionPath);
+    // console.log('extensionKind', ext.extensionKind);
+    // console.log('extensionUri', ext.extensionUri);
+    // console.log('packageJSON', ext.packageJSON);
+    writeFileSync(
+      __dirname + '/../outext-activate.js',
+      'module.exports = ' + JSON.stringify(ext, null, 2) + `\n\n${ext.activate}`,
+    );
 
+    ext.extensionKind
     await ext.activate();
-    console.log('ext activated');
+    console.log('ext activated', docUri);
     doc = await vscode.workspace.openTextDocument(docUri);
     console.log('doc opened');
     editor = await vscode.window.showTextDocument(doc);

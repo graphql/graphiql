@@ -1,7 +1,6 @@
 {
   "name": "vscode-graphql",
   "version": "0.8.16",
-  "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
   "keywords": [
@@ -33,7 +32,7 @@
   },
   "publisher": "GraphQL",
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.79.0"
   },
   "categories": [
     "Programming Languages",
@@ -48,7 +47,8 @@
     "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
     "workspaceContains:**/package.json"
   ],
-  "main": "./out/extension.js",
+  "extensionKind": ["ui"],
+  "main": "./dist/extension.js",
   "contributes": {
     "icons": {
       "graphql-logo": {

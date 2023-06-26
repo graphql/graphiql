@@ -32,7 +32,7 @@
         "${workspaceFolder}/packages/vscode-graphql/fixtures/diagnostics.txt"
       ],
       "outFiles": [
-        "${workspaceFolder}/packages/vscode-graphql/out/extension.js"
+        "${workspaceFolder}/packages/vscode-graphql/dist/extension.js"
       ],
       "trace": true,
       "preLaunchTask": "watch-vscode"
