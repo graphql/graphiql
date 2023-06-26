@@ -11,7 +11,7 @@ export default defineConfig({
     emptyOutDir: !IS_UMD,
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'index',
+      fileName: IS_UMD ? 'graphiql-plugin-code-exporter' : 'index',
       name: 'GraphiQLPluginCodeExporter',
       formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
     },
