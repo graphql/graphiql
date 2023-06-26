@@ -7,7 +7,7 @@
  *
  */
 
-import { Location } from 'graphql/language';
+import { Location } from 'graphql';
 import { Range, Position, offsetToPosition, locToRange } from '../Range';
 
 const text = `query test {

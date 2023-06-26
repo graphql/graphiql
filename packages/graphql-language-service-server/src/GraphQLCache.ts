@@ -12,7 +12,12 @@ import {
   DocumentNode,
   DefinitionNode,
   isTypeDefinitionNode,
-} from 'graphql/language';
+  GraphQLSchema,
+  Kind,
+  extendSchema,
+  parse,
+  visit,
+} from 'graphql';
 import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
@@ -26,7 +31,6 @@ import type { Logger } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
 import {

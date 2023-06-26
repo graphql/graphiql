@@ -23,15 +23,11 @@ import {
   GraphQLInputType,
   GraphQLEnumValue,
   GraphQLInputFieldMap,
-} from 'graphql';
-import type { State, Maybe } from 'graphql-language-service';
-
-import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from 'graphql/type/introspection';
-
+} from 'graphql';
+import type { State, Maybe } from 'graphql-language-service';
 import forEachState from './forEachState';
 
 export interface TypeInfo {

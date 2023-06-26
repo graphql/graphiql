@@ -15,10 +15,10 @@ jest.mock('@whatwg-node/fetch', () => ({
   TextDecoder: global.TextDecoder,
 }));
 
-import { GraphQLSchema } from 'graphql/type';
-import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
+  GraphQLSchema,
+  parse,
   introspectionFromSchema,
   FragmentDefinitionNode,
   TypeDefinitionNode,

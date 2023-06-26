@@ -1,4 +1,4 @@
-import { version as graphqlVersion } from 'graphql/version';
+import { version as graphqlVersion } from 'graphql';
 
 describe('Linting', () => {
   it('Does not mark valid fields', () => {
