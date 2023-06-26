@@ -13,7 +13,6 @@ build({
   outdir: 'out/',
   format: 'cjs',
   sourcemap: true,
-  watch: isWatchMode,
   // Avoid bundling @vue/compiler-sfc's dynamic dependencies
   external: [
     'squirrelly',

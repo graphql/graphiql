@@ -49,7 +49,6 @@ build({
   ],
   format: 'cjs',
   sourcemap: true,
-  watch: isWatchMode,
 })
   .then(({ errors, warnings }) => {
     if (warnings.length) {
