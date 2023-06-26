@@ -436,6 +436,21 @@ module.exports = {
       },
     },
     {
+      // Monaco-GraphQL rules
+      files: ['packages/monaco-graphql/**'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS.filter(({ name }) => name !== 'monaco-editor'),
+          {
+            name: 'monaco-editor',
+            message:
+              '`monaco-editor` import all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
+          },
+        ],
+      },
+    },
+    {
       // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
