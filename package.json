@@ -77,7 +77,7 @@
     "start-monaco": "yarn workspace example-monaco-graphql-webpack start",
     "t": "yarn test",
     "test": "yarn jest",
-    "test:ci": "yarn build:cm6-graphql && jest --coverage && yarn workspace monaco-graphql test",
+    "test:ci": "yarn build && jest --coverage && yarn workspace monaco-graphql test",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
     "tsc": "tsc --build"
