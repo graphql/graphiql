@@ -1,4 +1,4 @@
-import { version } from 'graphql/version';
+import { version } from 'graphql';
 
 beforeEach(() => {
   cy.visit('/');

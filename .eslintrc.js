@@ -7,6 +7,15 @@
  *
  */
 
+const RESTRICTED_IMPORTS = [
+  { name: 'graphql/type', message: 'use `graphql`' },
+  { name: 'graphql/language', message: 'use `graphql`' },
+  { name: 'graphql/type/introspection', message: 'use `graphql`' },
+  { name: 'graphql/type/definition', message: 'use `graphql`' },
+  { name: 'graphql/type/directives', message: 'use `graphql`' },
+  { name: 'graphql/version', message: 'use `graphql`' },
+];
+
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
@@ -240,6 +249,10 @@ module.exports = {
         'unicorn/prefer-dom-node-remove': 'error',
         // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS,
+        ],
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',

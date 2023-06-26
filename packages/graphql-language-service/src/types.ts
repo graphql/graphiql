@@ -13,17 +13,14 @@ import type {
 
 export { InsertTextFormat } from 'vscode-languageserver-types';
 
-import type { ASTNode, GraphQLSchema } from 'graphql';
-
 import type {
+  ASTNode,
+  GraphQLSchema,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
   NameNode,
-} from 'graphql/language';
-
-import type {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
@@ -31,8 +28,8 @@ import type {
   GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLType,
-} from 'graphql/type/definition';
-import type { GraphQLDirective } from 'graphql/type/directives';
+  GraphQLDirective,
+} from 'graphql';
 
 export type Maybe<T> = T | null | undefined;
 
