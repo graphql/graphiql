@@ -1,6 +1,6 @@
 /* global netlify */
 
-import * as monaco from 'monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/esm/monaco-editor';
 import * as JSONC from 'jsonc-parser';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
@@ -181,14 +181,14 @@ async function render() {
   /**
    * Add an editor operation to the command palette & keyboard shortcuts
    */
-  const opAction: monaco.editor.IActionDescriptor = {
+  const opAction: editor.IActionDescriptor = {
     id: 'graphql-run',
     label: 'Run Operation',
     contextMenuOrder: 0,
     contextMenuGroupId: 'graphql',
     keybindings: [
       // eslint-disable-next-line no-bitwise
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+      KeyMod.CtrlCmd | KeyCode.Enter,
     ],
     run: operationHandler,
   };
@@ -196,13 +196,13 @@ async function render() {
   /**
    * Add a reload operation to the command palette & keyboard shortcuts
    */
-  const reloadAction: monaco.editor.IActionDescriptor = {
+  const reloadAction: editor.IActionDescriptor = {
     id: 'graphql-reload',
     label: 'Reload Schema',
     contextMenuOrder: 0,
     contextMenuGroupId: 'graphql',
     keybindings: [
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
+      KeyMod.CtrlCmd | KeyCode?.KeyR, // eslint-disable-line no-bitwise
     ],
     async run() {
       await schemaFetcher.loadSchema();
