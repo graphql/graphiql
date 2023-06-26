@@ -523,6 +523,42 @@ some gotchas:
   repository is great for tips on implementing with different bundlers,
   runtimes, etc.
 
+## Avoid Bundle All `monaco-editor`'s Languages
+
+While importing `monaco-editor` in your project, you silently import 83 builtin languages, such
+as `typescript`, `html`, `css`, `json` and other. You can found a full list
+of [basic-languages](https://github.com/microsoft/monaco-editor/tree/main/src/basic-languages)
+and [languages](https://github.com/microsoft/monaco-editor/tree/main/src/language).
+
+For `monaco-graphql` basically you need only 2 languages - `graphql` and `json`.
+To improve performance and drop loading unused languages starting from monaco-graphql@1.3.0 version
+you can do it by replacing all your `monaco-editor` exports with `monaco-graphql/esm/monaco-editor`
+that will load only `graphql` and `json` languages.
+
+```diff
+-import { ... } from 'monaco-editor'
++import { ... } from 'monaco-graphql/esm/monaco-editor'
+```
+
+### Catch Future Import Mistakes with ESLint
+
+To prevent mis importing of `monaco-editor` you can setup default `no-restricted-imports` rule for
+JavaScript projects or `@typescript-eslint/no-restricted-imports` for TypeScript projects.
+
+```json5
+{
+  rules: {
+    'no-restricted-imports': [ // or @typescript-eslint/no-restricted-imports 
+      'error',
+      {
+        name: 'monaco-editor',
+        message: '`monaco-editor` import all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+      },
+    ],
+  },
+}
+```
+
 ## Inspiration
 
 `microsoft/monaco-json` was our inspiration from the outset, when it was still a
