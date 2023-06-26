@@ -7,7 +7,7 @@
  *
  */
 
-import { Location } from 'graphql/language';
+import { Location } from 'graphql';
 import { IRange, IPosition } from '../types';
 
 export class Range implements IRange {

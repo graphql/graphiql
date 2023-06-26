@@ -241,7 +241,11 @@ module.exports = {
         // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
         'no-duplicate-imports': 'off',
-        'no-restricted-imports': 'off',
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          { name: 'graphql/type', message: 'use `graphql`' },
+          { name: 'graphql/language', message: 'use `graphql`' },
+        ],
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',

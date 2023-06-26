@@ -13,15 +13,15 @@ import type {
 
 export { InsertTextFormat } from 'vscode-languageserver-types';
 
-import type { ASTNode, GraphQLSchema } from 'graphql';
-
 import type {
+  ASTNode,
+  GraphQLSchema,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
   NameNode,
-} from 'graphql/language';
+} from 'graphql';
 
 import type {
   GraphQLArgument,
