@@ -26,7 +26,8 @@
     "src"
   ],
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "postbuild": "node scripts/patch-monaco-editor-types.mjs"
   },
   "dependencies": {
     "graphql-language-service": "^5.1.7",
