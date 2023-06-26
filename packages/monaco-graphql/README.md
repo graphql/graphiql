@@ -518,7 +518,7 @@ some gotchas:
 - "linting" => "diagnostics" in lsp terminology
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
-- you can extend the standard completion/linting/etc. provided. for example,
+- you can extend the provided standard completion, linting, etc. for example,
   `editor.setModelMarkers()`
 - [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 - [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples)
