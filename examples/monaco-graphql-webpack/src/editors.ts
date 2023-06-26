@@ -41,20 +41,17 @@ export function createEditors() {
     Uri.file('/1/variables.json'),
   );
 
-  const variablesEditor = editor.create(
-    document.getElementById('variables'),
-    {
-      model: variablesModel,
-      language: 'json',
-      formatOnPaste: true,
-      formatOnType: true,
-      theme: THEME,
-      comments: {
-        insertSpace: true,
-        ignoreEmptyLines: true,
-      },
+  const variablesEditor = editor.create(document.getElementById('variables'), {
+    model: variablesModel,
+    language: 'json',
+    formatOnPaste: true,
+    formatOnType: true,
+    theme: THEME,
+    comments: {
+      insertSpace: true,
+      ignoreEmptyLines: true,
     },
-  );
+  });
 
   const operationModel = editor.createModel(
     operationString,
@@ -62,17 +59,14 @@ export function createEditors() {
     Uri.file('/1/operation.graphql'),
   );
 
-  const operationEditor = editor.create(
-    document.getElementById('operation'),
-    {
-      model: operationModel,
-      formatOnPaste: true,
-      formatOnType: true,
-      folding: true,
-      theme: THEME,
-      language: GRAPHQL_LANGUAGE_ID,
-    },
-  );
+  const operationEditor = editor.create(document.getElementById('operation'), {
+    model: operationModel,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
+    theme: THEME,
+    language: GRAPHQL_LANGUAGE_ID,
+  });
 
   const schemaModel = editor.createModel(
     schemaSdlString,
@@ -80,17 +74,14 @@ export function createEditors() {
     Uri.file('/1/schema.graphqls'),
   );
 
-  const schemaEditor = editor.create(
-    document.getElementById('schema-sdl'),
-    {
-      model: schemaModel,
-      formatOnPaste: true,
-      formatOnType: true,
-      folding: true,
-      theme: THEME,
-      language: GRAPHQL_LANGUAGE_ID,
-    },
-  );
+  const schemaEditor = editor.create(document.getElementById('schema-sdl'), {
+    model: schemaModel,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
+    theme: THEME,
+    language: GRAPHQL_LANGUAGE_ID,
+  });
 
   const resultsModel = editor.createModel(
     resultsString,
@@ -98,17 +89,14 @@ export function createEditors() {
     Uri.file('/1/results.json'),
   );
 
-  const resultsEditor = editor.create(
-    document.getElementById('results'),
-    {
-      model: resultsModel,
-      language: 'json',
-      theme: THEME,
-      wordWrap: 'on',
-      readOnly: true,
-      showFoldingControls: 'always',
-    },
-  );
+  const resultsEditor = editor.create(document.getElementById('results'), {
+    model: resultsModel,
+    language: 'json',
+    theme: THEME,
+    wordWrap: 'on',
+    readOnly: true,
+    showFoldingControls: 'always',
+  });
 
   return {
     operationEditor,
