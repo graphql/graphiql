@@ -1,7 +1,7 @@
 /*
- * Importing `monaco-editor` imports all languages, that can expand bundle size
- * When you import `monaco-editor` under the hood you import
- * `monaco-editor/esm/vs/editor/editor.main.js` (that described in his `package.json#module` field)
+ * Importing `monaco-editor` imports all languages, and can expand bundle size.
+ * When you import `monaco-editor`, under the hood you import
+ * `monaco-editor/esm/vs/editor/editor.main.js` (described in its `package.json#module` field)
  * Inside this file there are the following:
  *
  * ```js
