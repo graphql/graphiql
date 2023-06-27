@@ -5,6 +5,8 @@ describe('monaco-editor', () => {
     const { stdout } =
       await $`yarn workspace example-monaco-graphql-react-vite build`;
     const lines = stdout.split('\n');
+    // eslint-disable-next-line no-console
+    console.log('debug', lines)
     expect(lines[3].includes('1092 modules transformed.')).toBe(true);
     expect(lines[4]).toBe('rendering chunks...');
     expect(lines[5]).toBe('computing gzip size...');
