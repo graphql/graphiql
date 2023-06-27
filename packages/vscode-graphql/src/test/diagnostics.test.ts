@@ -9,44 +9,46 @@ import { getDocUri, activate } from './helper';
 
 
 suite('Should get diagnostics', async () => {
-	console.log('testing...')
+	console.log('testing...!')
 
-	const docUri = getDocUri('diagnostics.txt');
-	console.log(docUri)
+	const docUri = getDocUri('src/queries/query.ts');
+	console.log('retrived doc uri')
 
+  console.log('testing file!!')
+  await testDiagnostics(docUri, [
+    {
+      message: 'ANY is all uppercase.',
+      range: toRange(0, 0, 0, 3),
+      severity: vscode.DiagnosticSeverity.Warning,
+      source: 'ex',
+    },
+    {
+      message: 'ANY is all uppercase.',
+      range: toRange(0, 14, 0, 17),
+      severity: vscode.DiagnosticSeverity.Warning,
+      source: 'ex',
+    },
+    {
+      message: 'OS is all uppercase.',
+      range: toRange(0, 18, 0, 20),
+      severity: vscode.DiagnosticSeverity.Warning,
+      source: 'ex',
+    },
+  ]);
 
-	  
-
-
-    await testDiagnostics(docUri, [
-      {
-        message: 'ANY is all uppercase.',
-        range: toRange(0, 0, 0, 3),
-        severity: vscode.DiagnosticSeverity.Warning,
-        source: 'ex',
-      },
-      {
-        message: 'ANY is all uppercase.',
-        range: toRange(0, 14, 0, 17),
-        severity: vscode.DiagnosticSeverity.Warning,
-        source: 'ex',
-      },
-      {
-        message: 'OS is all uppercase.',
-        range: toRange(0, 18, 0, 20),
-        severity: vscode.DiagnosticSeverity.Warning,
-        source: 'ex',
-      },
-    ]);
+  test('diagnoses uppercase texts', async () => {
+  
+  })
 });
 
 async function testDiagnostics(
   docUri: vscode.Uri,
   expectedDiagnostics: vscode.Diagnostic[],
   ) {
-
+  console.log('testDiagnostics')
   await activate(docUri);
-  
+  console.log('post activate method')
+
   const actualDiagnostics = vscode.languages.getDiagnostics(docUri);
   console.log(actualDiagnostics)
   

@@ -16,25 +16,29 @@ async function main() {
     // Passed to --extensionTestsPath
     const extensionTestsPath = path.resolve(__dirname, './index');
 
-
     // Download VS Code, unzip it and run the integration test
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
       version: 'insiders',
       launchArgs: [
-          // '--disable-workspace-trust',
+        // '--disable-workspace-trust',
         // '--disable-workspace-trust'
         // '--install-extension',
         // 'GraphQL.vscode-graphql-syntax',
         // '--install-extension',
         // 'GraphQL.vscode-graphql-execution',
+
+        'fixtures',
+        'fixtures/src/queries/query.ts',
         '--wait',
-        'fixtures'
-       
+        '--disable-workspace-trust',
+        '--no-sandbox ',
+        '--disable-gpu-sandbox ',
+        '--disable-extensions'
       ],
       // reuseMachineInstall: true,
-    //   reuseMachineInstall: true
+      //   reuseMachineInstall: true
     });
 
     console.log('tests run!');

@@ -1,11 +1,15 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "CommonJS",
+    "module": "commonjs",
+		"target": "es2020",
+		"lib": ["es2020"],
+		"sourceMap": true,
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": false
   },
   "references": [
     {
@@ -16,5 +20,5 @@
     }
   ],
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/*.spec.*", "fixtures", "scripts", ".vscode-test"]
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "fixtures", "scripts", ".vscode-test", "node_modules"]
 }

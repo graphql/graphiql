@@ -48,7 +48,7 @@
     "workspaceContains:**/package.json"
   ],
   "extensionKind": ["ui"],
-  "main": "./dist/extension.js",
+  "main": "./out/extension.js",
   "contributes": {
     "icons": {
       "graphql-logo": {
@@ -169,7 +169,7 @@
   },
   "dependencies": {
     "graphql-language-service-server": "^2.11.2",
-    "vscode-languageclient": "8.0.2",
+    "vscode-languageclient": "8.1.0",
     "graphql": "16.6.0"
   }
 }

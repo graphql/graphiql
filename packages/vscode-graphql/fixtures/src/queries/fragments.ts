@@ -1,8 +1,8 @@
+import { graphql } from 'graphql-tag';
 
-gql`
-
-# example fragment
-fragment ExampleFragment4 on ExampleType {
-  shelter
-}
+const fragment = graphql`
+  # example fragment
+  fragment ExampleFragment4 on ExampleType {
+    shelter
+  }
 `

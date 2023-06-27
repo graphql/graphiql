@@ -8,9 +8,6 @@ enum ExampleEnum {
 
 # for example
 type ExampleType {
-    field: String
-    field2: ExampleEnum
-    fiel3: String
    shelter: String
    something: String
    however: String
@@ -20,14 +17,5 @@ type Query {
     exampleField: ExampleType
     love: String
     message: String
-    example: Boolean
-    example2: String
-    example3: Boolean
-    example4: Boolean
-    example5: Boolean
-    example6: String
-    something: String
-    something2: String
-    something3: String
 }
 

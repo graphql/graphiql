@@ -30,12 +30,10 @@ export async function activate(docUri: vscode.Uri) {
       'module.exports = ' + JSON.stringify(ext, null, 2) + `\n\n${ext.activate}`,
     );
 
-    ext.extensionKind
     await ext.activate();
     console.log('ext activated', docUri);
-    doc = await vscode.workspace.openTextDocument(docUri);
-    console.log('doc opened');
-    editor = await vscode.window.showTextDocument(doc);
+    editor = await vscode.window.showTextDocument(docUri);
+    console.log('doc shown')
   } catch (e) {
     console.error(e);
     throw e;
@@ -47,9 +45,11 @@ export async function sleep(ms: number) {
 }
 
 export const getDocPath = (p: string) => {
+  console.log('path', path.resolve(__dirname, '../../fixtures', p))
   return path.resolve(__dirname, '../../fixtures', p);
 };
 export const getDocUri = (p: string) => {
+  console.log('docuri', vscode.Uri.file(getDocPath(p)))
   return vscode.Uri.file(getDocPath(p));
 };
 

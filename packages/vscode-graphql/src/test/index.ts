@@ -11,12 +11,14 @@ export async function run(): Promise<void> {
   const mocha = new Mocha({
     ui: 'tdd',
     color: true,
+    timeout: 1000000
   });
+
+  mocha.timeout(100000)
 
   const testsRoot = __dirname;
 
   try {
-    console.log(path.resolve(testsRoot, 'diagnostics.test.js'));
     mocha.addFile(path.resolve(testsRoot, 'diagnostics.test.js'));
   } catch (err) {
     console.log(err);

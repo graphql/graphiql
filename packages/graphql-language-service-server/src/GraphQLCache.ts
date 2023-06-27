@@ -51,9 +51,9 @@ import { CodeFileLoader } from '@graphql-tools/code-file-loader';
 
 const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For schema
-  api.loaders.schema.register(new CodeFileLoader());
+  api.loaders.schema.register(new CodeFileLoader({ noSilentErrors: false }));
   // For documents
-  api.loaders.documents.register(new CodeFileLoader());
+  api.loaders.documents.register(new CodeFileLoader({ noSilentErrors: false }));
 
   return { name: 'languageService' };
 };

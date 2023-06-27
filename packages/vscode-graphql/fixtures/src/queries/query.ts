@@ -1,13 +1,12 @@
-const gql = (arg: TemplateStringsArray) => null;
+import { graphql } from 'graphql-tag';
 
-
-gql`
+const query1 = graphql`
 fragment ExampleFragment on ExampleType {
   something
 }
 `
 
-gql`
+const query2 = graphql`
   query ExampleQuery {
     exampleField {
       ...ExampleFragment

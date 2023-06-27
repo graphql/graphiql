@@ -114,6 +114,7 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(statusBarItem);
 
   await client.start();
+  console.log('after client start')
   initStatusBar(statusBarItem, client, window.activeTextEditor);
 
   const commandShowOutputChannel = commands.registerCommand(
