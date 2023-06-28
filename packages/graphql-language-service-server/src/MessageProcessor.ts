@@ -642,10 +642,13 @@ export class MessageProcessor {
       return null;
     }
 
-    const updatedSchemaProjects = new Set<{
-      schemaUri: string;
-      project: GraphQLProjectConfig;
-    }>();
+    const updatedSchemaProjects = new Map<
+      GraphQLProjectConfig,
+      {
+        updatedSchemaUris: string[];
+        cachedDocuments: Array<{ uri: string; document: CachedDocumentType }>;
+      }
+    >();
 
     const changeRelatedParamsArr = await Promise.all(
       params.changes.map(async (change: FileEvent) => {
@@ -671,8 +674,19 @@ export class MessageProcessor {
 
           const project = this._graphQLCache.getProjectForFile(uri);
           const updatedSchema = await this._updateSchemaIfChanged(project, uri);
-          if (updatedSchema) {
-            updatedSchemaProjects.add({ schemaUri: uri, project });
+          if (
+            project?.extensions?.languageService?.enableValidation !== false &&
+            updatedSchema
+          ) {
+            const projectData = updatedSchemaProjects.get(project);
+            if (projectData === undefined) {
+              updatedSchemaProjects.set(project, {
+                updatedSchemaUris: [uri],
+                cachedDocuments: [],
+              });
+            } else {
+              projectData.updatedSchemaUris.push(uri);
+            }
           }
 
           let diagnostics: Diagnostic[] = [];
@@ -735,11 +749,28 @@ export class MessageProcessor {
 
     const paramsArrPromises: Array<Promise<PublishDiagnosticsParams[]>> = [];
 
-    for (const { schemaUri, project } of updatedSchemaProjects) {
-      if (project?.extensions?.languageService?.enableValidation === false) {
-        continue;
+    // Group cached documents by project
+    for (const [
+      cachedDocumentUri,
+      cachedDocument,
+    ] of this._textDocumentCache.entries()) {
+      const project = this._graphQLCache.getProjectForFile(cachedDocumentUri);
+      const projectData = updatedSchemaProjects.get(project);
+      // Only add cached document if it is in a validated project with
+      // an updated schema but is not an updated schema in that project
+      if (
+        projectData !== undefined &&
+        !projectData.updatedSchemaUris.includes(cachedDocumentUri)
+      ) {
+        projectData.cachedDocuments.push({
+          uri: cachedDocumentUri,
+          document: cachedDocument,
+        });
       }
+    }
 
+    // For each project, loop over cached documents that need diagnostics to be regenerated
+    for (const projectData of updatedSchemaProjects.values()) {
       type RawDiagnostics = {
         resultsPromise: Promise<Diagnostic[]>;
         query: string;
@@ -748,28 +779,17 @@ export class MessageProcessor {
       const data: Array<{ rawDiagnosticsArr: RawDiagnostics[]; uri: string }> =
         [];
 
-      for (const [
-        cachedDocumentUri,
-        cachedDocument,
-      ] of this._textDocumentCache.entries()) {
-        if (schemaUri !== cachedDocumentUri) {
-          const cachedDocumentProject =
-            this._graphQLCache.getProjectForFile(cachedDocumentUri);
-          if (cachedDocumentProject === project) {
-            const rawDiagnosticsArr = cachedDocument.contents.map(
-              ({ query, range }) => ({
-                resultsPromise: this._languageService.getDiagnostics(
-                  query,
-                  cachedDocumentUri,
-                  this._isRelayCompatMode(query),
-                ),
-                query,
-                range,
-              }),
-            );
-            data.push({ rawDiagnosticsArr, uri: cachedDocumentUri });
-          }
-        }
+      for (const { uri, document } of projectData.cachedDocuments) {
+        const rawDiagnosticsArr = document.contents.map(({ query, range }) => ({
+          resultsPromise: this._languageService.getDiagnostics(
+            query,
+            uri,
+            this._isRelayCompatMode(query),
+          ),
+          query,
+          range,
+        }));
+        data.push({ rawDiagnosticsArr, uri });
       }
 
       const paramsArrPromise = Promise.all(
