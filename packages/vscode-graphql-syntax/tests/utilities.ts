@@ -16,9 +16,9 @@ export async function tokenizeFile(
   grammarScopeName: string,
 ): Promise<Token[]> {
   const grammar = await getGrammar(grammarScopeName);
-  const lines = (await readFile(path.join(__dirname, file), 'utf8'))
-    .toString()
-    .split('\n');
+  const lines = (await readFile(path.join(__dirname, file), 'utf8')).split(
+    '\n',
+  );
 
   const tokens: Token[] = [];
 
@@ -39,7 +39,7 @@ export async function tokenizeFile(
   return tokens;
 }
 
-const grammarCache: Record<string, tm.IGrammar> = {};
+const grammarCache: Record<string, tm.IGrammar> = Object.create(null);
 
 async function getGrammar(scopeName: string) {
   if (grammarCache[scopeName]) {
@@ -49,12 +49,12 @@ async function getGrammar(scopeName: string) {
   const grammars = (await loadConfiguration()).map(grammar => {
     return {
       grammar,
-      content: fs.readFileSync(grammar.path).toString(),
+      content: fs.readFileSync(grammar.path, 'utf8'),
     };
   });
 
-  const grammarMap: { [key: string]: tm.IRawGrammar } = {};
-  const injections: { [scopeName: string]: string[] } = {};
+  const grammarMap: { [key: string]: tm.IRawGrammar } = Object.create(null);
+  const injections: { [scopeName: string]: string[] } = Object.create(null);
 
   for (const { grammar, content } of grammars) {
     const rawGrammar = tm.parseRawGrammar(content, grammar.path);
@@ -69,7 +69,7 @@ async function getGrammar(scopeName: string) {
 
   const registry = new tm.Registry({
     onigLib: vscodeOnigurumaLib(),
-    loadGrammar: scope => Promise.resolve(grammarMap[scope]),
+    loadGrammar: async scope => grammarMap[scope],
     getInjections: scope =>
       scope
         .split('.')
@@ -108,7 +108,7 @@ async function vscodeOnigurumaLib() {
 
 async function loadConfiguration() {
   const json = JSON.parse(
-    (await readFile(path.join(ROOT, 'package.json'))).toString(),
+    (await readFile(path.join(ROOT, 'package.json')), 'utf8'),
   );
 
   return (json?.contributes?.grammars || []).map(grammar => ({
