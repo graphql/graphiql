@@ -204,7 +204,7 @@ describe('MergeAst', () => {
   });
 
   it('preserve directives on fragments', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test($param: Boolean!) {
         ...Fragment1 @include(if: $param)        
       }
@@ -212,13 +212,13 @@ describe('MergeAst', () => {
       fragment Fragment1 on Test {
         id
       }`;
-    const mergedQuery = stripWhitespace(`
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test($param: Boolean!) {
         ...on Test @include(if: $param) {
           id
         }
       }`);
-    const mergedQueryWithSchema = stripWhitespace(`
+    const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test($param: Boolean!) {
         ...on Test @include(if: $param) {
           id
