@@ -1,0 +1,2294 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+scalar BaseballISO8601DateTime
+scalar HexColorCode
+scalar NBAISO8601DateTime
+scalar Time
+scalar UUID
+scalar _Any
+scalar _FieldSet
+type BaseballBoostItem implements UserItem {
+  title: String!
+  description: String!
+  imageURL: String!
+  id: UUID!
+  state: UserItemState!
+  cardRarity: CardRarity!
+  percentBonus: Int!
+}
+type BaseballBuyShopItemResponse {
+  itemID: UUID!
+  remainingCoinBalance: Int!
+  error: BaseballBuyShopItemError
+}
+type BaseballCard implements SportsNode & CardInterface {
+  id: UUID!
+  slug: String!
+  assetId: ID!
+  owner: User
+  player: BaseballPlayer!
+  team: BaseballTeam
+  rarity: CardRarity!
+  season: String!
+  serialNumber: Int!
+  positions: [BaseballPlayerPosition!]!
+  fullImageUrl: String!
+  avatarImageUrl: String!
+  cardLevel: Int!
+  xpThresholdForCurrentCardLevel: Int!
+  xpThresholdForNextCardLevel: Int
+  xp: Int!
+  seasonBonus: Float!
+  rarityBonus: Float!
+  xpBonus: Float!
+  totalBonus: Float!
+  bonusLossAfterTransfer: Float!
+  energy: Int
+  dhMVP: Boolean!
+}
+type BaseballCardBundleOffer implements CardBundleOffer {
+  id: String!
+  priceUSDCents: Int!
+  cards: [BaseballCard!]!
+  expiresAt: Time!
+  leaderboard: BaseballLeaderboard
+  rewardPlayerName: String!
+  rank: Int!
+}
+type BaseballCardConnection {
+  nodes: [BaseballCard!]!
+  pageInfo: PageInfo!
+}
+type BaseballCardCountsByLineupPosition {
+  startingPitcherCount: Int!
+  reliefPitcherCount: Int!
+  cornerInfielderCount: Int!
+  middleInfielderCount: Int!
+  outfielderCount: Int!
+}
+type BaseballCardForComposeLineup {
+  card: BaseballCard!
+  usedInOtherLineup: BaseballLineup
+  totalBonusInLineup: Float!
+}
+type BaseballCardForComposeLineupConnection {
+  nodes: [BaseballCardForComposeLineup!]!
+  pageInfo: PageInfo!
+}
+type BaseballCardInLineup implements CardInLineupInterface {
+  lineup: BaseballLineup!
+  indexInLineup: Int!
+  card: BaseballCard!
+  playerInFixture: BaseballPlayerInFixture!
+  score: Float!
+  totalBonus: Float!
+  gameScores: [BaseballCardInLineupGameScore!]
+}
+type BaseballCardInLineupGameScore implements CardInLineupGameScoreInterface {
+  score: BaseballScore!
+  gameStats: BaseballPlayerGameStats!
+  detailedPitchingGameScore: BaseballPlayerGameDetailedPitchingScores
+  detailedBattingGameScore: BaseballPlayerGameDetailedBattingScores
+}
+type BaseballCardSampleInDailyLineup implements CardSampleInDailyLineupInterface {
+  lineup: BaseballDailyLineup!
+  indexInLineup: Int!
+  cardSample: BaseballCommonCardSample!
+  score: Float!
+  gameScore: BaseballCardInLineupGameScore!
+}
+type BaseballCardSamplesForCommonDraftConnection {
+  nodes: [BaseballCommonCardSample!]!
+  pageInfo: PageInfo!
+}
+type BaseballCardTrade implements CardTradeInterface {
+  id: UUID!
+  expiresAfter: Time
+  userGiveCard: BaseballCard!
+  userGiveCardUsedInLineup: BaseballLineup
+  userReceiveCardChoices: [BaseballCommonCardSample!]!
+  userReceiveCard: BaseballCard
+  isComplete: Boolean!
+}
+type BaseballCardTradeItem implements UserItem {
+  title: String!
+  description: String!
+  imageURL: String!
+  id: UUID!
+  state: UserItemState!
+}
+type BaseballCardsPaginated {
+  currentPage: Int!
+  pages: Int!
+  cards: [BaseballCard!]!
+}
+type BaseballCollection implements CollectionInterface {
+  slug: String!
+  isComplete: Boolean!
+  slots: [BaseballCollectionSlot!]!
+  slotsCount: Int!
+  filledSlots: Int!
+  team: BaseballTeam
+  season: String
+}
+type BaseballCollectionSlot implements CollectionSlotInterface {
+  requiredPlayer: BaseballPlayer!
+  ownedCards: [BaseballCard!]
+  displayCard: BaseballCard
+}
+type BaseballCommonCardSample implements CommonCardSampleInterface {
+  id: UUID!
+  player: BaseballPlayer!
+  commonCardImageUrl: String!
+}
+type BaseballCommonDraftAutofillSuggestionsResponse {
+  autofilledCardSamples: [BaseballCommonCardSample!]!
+  autofillError: BaseballCommonDraftAutofillSuggestionsError
+}
+type BaseballCommonDraftConfig {
+  baseballCommonDraftCardSamples(
+    selectionIndex: Int!
+    first: Int! = 20
+    after: String
+    teamSlugs: [String!]!
+    minCost: Int
+    maxCost: Int
+    query: String
+  ): BaseballCardSamplesForCommonDraftConnection!
+  commonDraftInitialSuggestions: [BaseballCommonCardSample]!
+  commonDraftAutofillSuggestions(
+    selectedPlayerSlugs: [String!]!
+  ): BaseballCommonDraftAutofillSuggestionsResponse!
+  maxTotalCost: Int!
+  eligibleTeams: [BaseballTeam!]!
+}
+type BaseballCreateOrUpdateDailyLineupResponse {
+  createdLineup: BaseballDailyLineup
+  lineupValidationErrors: [BaseballCreateOrUpdateLineupValidationError!]!
+}
+type BaseballCreateOrUpdateLineupResponse {
+  createdLineup: BaseballLineup
+  lineupValidationErrors: [BaseballCreateOrUpdateLineupValidationError!]!
+}
+type BaseballCurrentUserData {
+  onboarding: BaseballOnboarding!
+  isDraftComplete: Boolean!
+  canDraft: Boolean!
+}
+type BaseballDailyGame implements DailyGameInterface {
+  game: BaseballGame!
+  status: DailyGameStatus!
+  lineupsCount: Int!
+  myLineup: BaseballDailyLineup
+  lineups(
+    first: Int! = 20
+    after: String
+    userId: ID
+  ): BaseballDailyLineupConnection!
+  myComposeLineupCardSamples(
+    query: String
+    dailyLineupId: UUID
+    includeOverTotalLimit: Boolean
+    indexInLineup: Int!
+    playersInDailyLineupPartial: [ID!]!
+    scoreSortOrder: BaseballComposeLineupCardsScoreSortOrder
+  ): [BaseballCommonCardSample!]!
+}
+type BaseballDailyGameConnection {
+  nodes: [BaseballDailyGame!]!
+  pageInfo: PageInfo!
+}
+type BaseballDailyLineup implements DailyLineupInterface {
+  id: UUID!
+  game: BaseballDailyGame!
+  cardSamples: [BaseballCardSampleInDailyLineup!]!
+  score: Float!
+  rank: Int!
+  user: User!
+}
+type BaseballDailyLineupConnection {
+  nodes: [BaseballDailyLineup!]!
+  pageInfo: PageInfo!
+}
+type BaseballFixture implements SportsNode & FixtureInterface {
+  id: UUID!
+  slug: String!
+  fixtureState: FixtureState!
+  gameWeek: Int!
+  startDate: Time!
+  endDate: Time!
+  games: [BaseballGame!]!
+  leaderboards(includeTraining: Boolean): [BaseballLeaderboard!]!
+  myEligibleGames: [BaseballGame!]!
+  myLiveLineupGames: [BaseballGameWithCardInLineup!]!
+  myLineups: [BaseballLineup!]!
+  myRecommendedLeaderboards(first: Int! = 3): [BaseballLeaderboard!]!
+  myNextProgressionLeaderboards: [BaseballLeaderboard!]!
+  playerFixtureStats(
+    input: BaseballPlayerFixtureStatsInput!
+  ): BaseballPlayerFixtureStatsConnection!
+  rewardPool(
+    rarity: BaseballCardRarity
+    cardRarity: CardRarity
+    tier: Int!
+  ): [BaseballPlayer!]!
+  nextFixture: BaseballFixture
+  previousFixture: BaseballFixture
+  rewardPoolCardExamples(
+    cardRarity: CardRarity!
+    tier: Int
+    limit: Int!
+  ): [BaseballCard!]!
+}
+type BaseballFixtureConnection {
+  nodes: [BaseballFixture!]!
+  pageInfo: PageInfo!
+}
+type BaseballGame implements SportsNode & GameInterface {
+  id: UUID!
+  status: GameStatus!
+  startDate: Time!
+  homeTeam: BaseballTeam!
+  awayTeam: BaseballTeam!
+  homeScore: Int!
+  awayScore: Int!
+  inning: BaseballInning
+  homeProbableStartingPitcher: BaseballPlayer
+  awayProbableStartingPitcher: BaseballPlayer
+  pastPlayerPerformance(
+    playerSlug: String!
+    last: Int! = 5
+  ): [BaseballPlayerGameStats!]!
+  gameWeek: Int!
+}
+type BaseballGameWithCardInLineup implements GameWithCardInLineupInterface {
+  game: BaseballGame!
+  homeCardsInLineups: [BaseballCardInLineup!]!
+  awayCardsInLineups: [BaseballCardInLineup!]!
+}
+type BaseballInning {
+  half: BaseballInningHalf!
+  number: Int!
+}
+type BaseballLeaderboard implements SportsNode & LeaderboardInterface {
+  id: UUID!
+  slug: String!
+  displayName: String!
+  displayNameWithoutRarity: String!
+  descriptions: [String]!
+  lineups(
+    first: Int! = 20
+    after: String
+    userId: ID
+  ): BaseballLineupConnection!
+  myLineups: [BaseballLineup!]!
+  myRecentLineup: BaseballLineup
+  lineupsCount: Int!
+  fixture: BaseballFixture!
+  prizePool: LeaderboardPrizePool!
+  requirements: BaseballLeaderboardRequirements!
+  leaderboardRarity: LeaderboardRarity!
+  isUserEligible: Boolean!
+  isTraining: Boolean!
+  beginnerLeaderboardDetails: BeginnerLeaderboardDetails
+  iconImageUrl: String!
+  monochromeIconImageUrl: String!
+  myComposeLineupCards(
+    query: String
+    lineupId: UUID
+    first: Int! = 20
+    after: String
+    includeUsed: Boolean!
+    indexInLineup: Int!
+    cardsInLineupPartial: [ID!]!
+    scoreSortOrder: BaseballComposeLineupCardsScoreSortOrder
+  ): BaseballCardForComposeLineupConnection!
+  scoringStrategy: String!
+  inLeague(slug: String!): BaseballLeagueLeaderboard! @deprecated
+  league(slug: String!): LeagueLeaderboard!
+  cumulativeLeaderboard: CumulativeLeaderboard
+  isUltimate: Boolean!
+}
+type BaseballLeaderboardRequirements implements LeaderboardRequirementsInterface {
+  allowedRarities: [CardRarity!]!
+  minRarity: LeaderboardRulesMinimumRarityRequirement
+  minRookieCount: Int!
+  playerAgeRequirements: PlayerAgeRequirements
+  allowedConference: BaseballConference
+  marketplaceQueryParameters: String
+}
+type BaseballLeague implements LeagueInterface {
+  id: String!
+  slug: String!
+  name: String!
+  members: [User!]!
+}
+type BaseballLeagueLeaderboard implements LeagueLeaderboardInterface {
+  league: BaseballLeague!
+  leaderboard: BaseballLeaderboard!
+  lineupCount: Int!
+  lineups: [BaseballLeagueLineup!]!
+  participants: [User!]!
+}
+type BaseballLeagueLineup implements LeagueLineupInterface {
+  rank: Int!
+  lineup: BaseballLineup!
+  leaderboard: BaseballLeagueLeaderboard!
+}
+type BaseballLineup implements SportsNode & LineupInterface {
+  id: UUID!
+  leaderboard: BaseballLeaderboard!
+  cards: [BaseballCardInLineup!]!
+  games: [BaseballGameWithCardInLineup!]!
+  score: Float!
+  rank: Int!
+  user: User!
+  xpScore: Float! @deprecated
+  projectedReward: ProjectedReward
+  reward: BaseballReward
+  accoladeString: String
+}
+type BaseballLineupConnection {
+  nodes: [BaseballLineup!]!
+  pageInfo: PageInfo!
+}
+type BaseballOnboarding {
+  selectCardOptions: [BaseballOnboardingCardOption!]!
+  state: BaseballOnboardingState!
+}
+type BaseballOnboardingCardOption {
+  player: BaseballPlayer!
+  commonCardImageUrl: String!
+}
+type BaseballPlayer implements SportsNode & PlayerInterface {
+  id: UUID!
+  slug: String!
+  birthPlaceCountry: String!
+  birthDate: Time!
+  age: Int!
+  displayName: String!
+  firstName: String!
+  lastName: String!
+  shirtNumber: Int!
+  positions: [BaseballPlayerPosition!]!
+  team: BaseballTeam
+  avatarImageUrl: String!
+  latestFinalGameStats(last: Int!): [BaseballPlayerGameStats!]!
+  latestFixtureStats(last: Int!): [BaseballPlayerInFixture!]!
+  fixtureGames(fixtureSlug: String!): [BaseballGame!]!
+    @deprecated(reason: "use PlayerInFixture.upcomingGames")
+  upcomingGames(next: Int!): [BaseballGame!]!
+  inFixture(fixtureSlug: String!): BaseballPlayerInFixture
+  currentSeasonAverageScore: BaseballScore!
+  last15AverageScore: BaseballScore!
+    @deprecated(reason: "use BaseballPlayer.last15AverageGameStats.score")
+  last15AverageGameStats: BaseballPlayerAverageGameStats!
+  isActive: Boolean!
+  commonDraftCost: Int!
+  playerInjury: PlayerInjury
+  cards(
+    first: Int! = 100
+    after: String
+    positions: [BaseballPlayerPosition!]
+    rarities: [CardRarity!]
+  ): BaseballCardConnection!
+  croppedPictureUrl: String!
+}
+type BaseballPlayerAverageGameBattingStats {
+  runs: Float
+  rbi: Float
+  singles: Float
+  doubles: Float
+  triples: Float
+  homeRuns: Float
+  walks: Float
+  strikeouts: Float
+  stolenBases: Float
+  hitByPitch: Float
+  stealsCaught: Float!
+}
+type BaseballPlayerAverageGamePitchingStats {
+  outs: Float
+  strikeouts: Float
+  hitsAllowed: Float
+  earnedRuns: Float
+  walks: Float
+  hitBatsmen: Float
+  win: Float
+  loss: Float
+  save: Float
+  hold: Float
+  reliefAppearance: Float!
+}
+type BaseballPlayerAverageGameStats {
+  score: BaseballScore!
+  pitching: BaseballPlayerAverageGamePitchingStats
+  batting: BaseballPlayerAverageGameBattingStats
+  detailedPitchingScores: BaseballPlayerGameDetailedPitchingScores
+  detailedBattingScores: BaseballPlayerGameDetailedBattingScores
+}
+type BaseballPlayerFixtureStatsConnection {
+  nodes: [BaseballPlayerInFixture!]!
+  pageInfo: PageInfo!
+}
+type BaseballPlayerGameBattingStats {
+  runs: Int
+  rbi: Int
+  singles: Int
+  doubles: Int
+  triples: Int
+  homeRuns: Int
+  walks: Int
+  strikeouts: Int
+  stolenBases: Int
+  hitByPitch: Int
+  stealsCaught: Int!
+}
+type BaseballPlayerGameDetailedBattingScores {
+  runs: Float
+  rbi: Float
+  singles: Float
+  doubles: Float
+  triples: Float
+  homeRuns: Float
+  walks: Float
+  strikeouts: Float
+  stolenBases: Float
+  hitByPitch: Float
+  stealsCaught: Float!
+}
+type BaseballPlayerGameDetailedPitchingScores {
+  outs: Float
+  strikeouts: Float
+  hitsAllowed: Float
+  earnedRuns: Float
+  walks: Float
+  hitBatsmen: Float
+  win: Float
+  loss: Float
+  save: Float
+  hold: Float
+  reliefAppearance: Float!
+}
+type BaseballPlayerGamePitchingStats {
+  outs: Int
+  strikeouts: Int
+  hitsAllowed: Int
+  earnedRuns: Int
+  walks: Int
+  hitBatsmen: Int
+  win: Int
+  loss: Int
+  save: Int
+  hold: Int
+  reliefAppearance: Int!
+}
+type BaseballPlayerGameStats implements PlayerGameStatsInterface {
+  score: BaseballScore!
+  playedInGame: Boolean!
+  pitching: BaseballPlayerGamePitchingStats
+  batting: BaseballPlayerGameBattingStats
+  detailedPitchingScores: BaseballPlayerGameDetailedPitchingScores
+  detailedBattingScores: BaseballPlayerGameDetailedBattingScores
+  game: BaseballGame!
+  team: BaseballTeam!
+  againstTeam: BaseballTeam!
+}
+type BaseballPlayerInFixture implements PlayerInFixtureInterface {
+  fixture: BaseballFixture!
+  player: BaseballPlayer!
+  score: BaseballScore!
+  status: BaseballPlayerInFixtureStatus!
+}
+type BaseballPlayerInFixtureStatus implements PlayerInFixtureStatusInterface {
+  gameStats: [BaseballPlayerGameStats!]!
+  upcomingGames: [BaseballGame!]!
+  inGame: Boolean!
+  isScoreFinal: Boolean!
+  statusIconType: PlayerInFixtureStatusIconType!
+  hasTBDGames: Boolean!
+  probablePitcherGames: [BaseballGame!]!
+}
+type BaseballReferralReward implements SportsNode & ReferralRewardInterface {
+  id: UUID!
+  card: BaseballCard!
+  state: RewardState!
+}
+type BaseballReward implements SportsNode & RewardInterface {
+  id: UUID!
+  card: BaseballCard!
+  backImageUrl: String!
+  tier: Int!
+  lineup: BaseballLineup!
+  state: RewardState!
+}
+type BaseballScore {
+  pitching: Float!
+  batting: Float!
+}
+type BaseballScoutingMission {
+  slug: String!
+  displayName: String!
+  description: String!
+  endDate: Time!
+  minPlayersRequired: Int!
+  isComplete: Boolean!
+  slots: [BaseballScoutingMissionSlot!]!
+}
+type BaseballScoutingMissionSlot {
+  requiredPlayer: BaseballPlayer!
+  ownedCard: BaseballCard
+}
+type BaseballShop {
+  shopItems(
+    first: Int! = 20
+    after: String
+    category: BaseballItemCategory
+  ): BaseballShopItemConnection!
+}
+type BaseballShopItem {
+  title: String!
+  description: String!
+  imageUrl: String!
+  price: Int!
+  quantity: Int
+  slug: String!
+}
+type BaseballShopItemConnection {
+  nodes: [BaseballShopItem!]!
+  pageInfo: PageInfo!
+}
+type BaseballSubmitCommonDraftResponse {
+  draftedCommonCards: [BaseballCard!]!
+  commonDraftValidationErrors: [BaseballSubmitCommonDraftValidationError!]!
+}
+type BaseballTeam implements SportsTeamInterface {
+  id: UUID!
+  name: String!
+  market: String!
+  fullName: String!
+  slug: String!
+  abbreviation: String!
+  svgUrl: String!
+  monochromeSvgUrl: String!
+  teamStyleGuidePrimaryColor: HexColorCode!
+  teamStyleGuideSecondaryColor: HexColorCode!
+  players: [BaseballPlayer!]!
+  dhSPBackgroundPngUrl: String!
+}
+type BaseballUserItemConnection {
+  nodes: [UserItem!]!
+  pageInfo: PageInfo!
+}
+type BeginnerLeaderboardDetails {
+  progressionRankPercentageThreshold: Int!
+  progressOnReward: CardRarity
+  isCompleted: Boolean!
+  isVisible: Boolean!
+}
+type CardCountsByRarity {
+  uniqueCount: Int!
+  superRareCount: Int!
+  rareCount: Int!
+  limitedCount: Int!
+  commonCount: Int!
+}
+type CardInNoCardLineup {
+  card: CardInterface!
+  bonus: Float!
+}
+type CardReward {
+  id: UUID!
+  card: CardInterface!
+  backImageUrl: String!
+  tier: Int!
+  lineup: LineupInterface!
+  state: RewardState!
+}
+type CashReward {
+  id: UUID!
+  amountUSDCents: Int!
+  amountWei: String!
+  lineup: LineupInterface!
+  state: RewardState!
+}
+type CumulativeLeaderboard {
+  slug: String!
+  displayName: String!
+  displayNameWithoutRarity: String!
+  iconImageUrl: String!
+  startGameWeek: Int!
+  endGameWeek: Int!
+  currentCumulativeGameWeek: Int!
+  cumulativeLeaderboardRanks(
+    first: Int! = 20
+    after: String
+  ): CumulativeLeaderboardRankConnection!
+  myCumulativeLeaderboardRank: CumulativeLeaderboardRank
+  prizeLevels: [PrizeCreditsLevel!]!
+  participantsCount: Int!
+  leaderboardRarity: LeaderboardRarity!
+  myLineups: [LineupInterface!]!
+  webUrl: String
+}
+type CumulativeLeaderboardRank {
+  id: UUID!
+  user: User!
+  score: Float!
+  rank: Int!
+  lineups: [LineupInterface]!
+  cumulativeLeaderboard: CumulativeLeaderboard!
+  projectedPrizeCredits: Int
+}
+type CumulativeLeaderboardRankConnection {
+  nodes: [CumulativeLeaderboardRank!]!
+  pageInfo: PageInfo!
+}
+type CurrentNBAUser {
+  id: UUID!
+  nbaCurrentUserData: NBACurrentUserData!
+  nbaCards(first: Int! = 100, after: String): NBACardConnection!
+  unclaimedRewards: [NBAReward!]
+}
+type CurrentSportsUser implements UserInterface {
+  id: ID!
+  slug: String!
+  nickname: String!
+  leagues(sport: GoSport): [League!]!
+  unclaimedCashRewards(sport: GoSport): [CashReward!]!
+  unclaimedCardRewards(sport: GoSport): [CardReward!]!
+  noCardRouteInfo(sport: GoSport!): NoCardRouteInfo!
+  cumulativeLeaderboardRanks(sport: GoSport!): [CumulativeLeaderboardRank!]!
+    @deprecated(reason: "use cumulativeLeaderboards instead")
+  nbaCards(
+    first: Int = 100
+    after: String
+    positions: [NBAPlayerPosition!]
+    rarities: [CardRarity!]
+  ): NBACardConnection!
+  nbaCurrentUserData: NBACurrentUserData!
+  nbaUnclaimedLineupRewards: [NBAReward!]!
+  nbaCardCounts: CardCountsByRarity!
+  nbaLast30DaysLineupsCount: Int!
+  nbaLineupsCount: Int!
+  nextNBACardTradeAvailableAfter: Time
+  latestNBACardTrade: NBACardTrade
+  nextCommonCardDropAvailableAfter: Time
+  nbaCommonCardDrop: NBACommonCardDrop
+  nbaStarterBundleOffer: [NBACardBundleOffer!]!
+  nbaRecommendedStarterBundles(first: Int!): [NBACardBundleOffer!]!
+  nbaLeagues: [NBALeague!]!
+  nbaCollections(slugsFilter: [String!]): [NBACollection!]!
+  nbaMostRecentlyPlayedPastFixture: NBAFixture
+  baseballCards(
+    first: Int! = 100
+    after: String
+    positions: [BaseballPlayerPosition!]
+    rarities: [CardRarity!]
+  ): BaseballCardConnection!
+  baseballCardCounts: CardCountsByRarity!
+  baseballCardCountsByLineupPosition(
+    rarities: [CardRarity!]
+  ): BaseballCardCountsByLineupPosition!
+  baseballCurrentUserData: BaseballCurrentUserData!
+  baseballUnclaimedLineupRewards: [BaseballReward!]!
+  baseballLast30DaysLineupsCount: Int!
+  baseballLineupsCount: Int!
+  nextBaseballCardTradeAvailableAfter: Time
+  latestBaseballCardTrade: BaseballCardTrade
+  baseballScoutingMissions: [BaseballScoutingMission!]!
+    @deprecated(reason: "unsupported")
+  baseballCollections(slugsFilter: [String!]): [BaseballCollection!]!
+  baseballLeagues: [BaseballLeague!]! @deprecated
+  baseballMostRecentlyPlayedPastFixture: BaseballFixture
+  baseballStarterBundleOffer: [BaseballCardBundleOffer!]!
+  baseballRecommendedStarterBundles(first: Int!): [BaseballCardBundleOffer!]!
+  dhDeck: DHDeck
+  dhNBAOnboarding: DHNBAOnboarding!
+  dhBaseballOnboarding: DHBaseballOnboarding!
+  dhCoins: Int!
+  dhUnclaimedCoinRewards: [DHCoinReward!]!
+  dhChallenges: [DHChallenge!]!
+  dhPlayStreak: Int!
+  dhPlayStreakUnclaimedRewards: [DHReward!]!
+}
+type CurrentUser implements UserInterface {
+  id: ID!
+  slug: String!
+  nickname: String!
+  leagues(sport: Sport): [League!]!
+  unclaimedCashRewards(sport: Sport): [CashReward!]!
+    @deprecated(
+      reason: "use CurrentUser.baseballUnclaimedCashRewards or CurrentUser.nbaUnclaimedCashRewards"
+    )
+  unclaimedCardRewards(sport: Sport): [CardReward!]!
+    @deprecated(
+      reason: "use CurrentUser.baseballUnclaimedCardRewards or CurrentUser.nbaUnclaimedCardRewards"
+    )
+  noCardRouteInfo(sport: Sport!): NoCardRouteInfo!
+    @deprecated(
+      reason: "use CurrentUser.baseballNoCardRouteInfo or CurrentUser.nbaNoCardRouteInfo"
+    )
+  nbaCards(
+    first: Int! = 100
+    after: String
+    positions: [NBAPlayerPosition!]
+    rarities: [CardRarity!]
+  ): NBACardConnection!
+  nbaCurrentUserData: NBACurrentUserData!
+  nbaUnclaimedLineupRewards: [NBAReward!]!
+  nbaCardCounts: CardCountsByRarity!
+  nbaLast30DaysLineupsCount: Int!
+  nbaLineupsCount: Int!
+  nextNBACardTradeAvailableAfter: Time
+  latestNBACardTrade: NBACardTrade
+  nextCommonCardDropAvailableAfter: Time
+  nbaCommonCardDrop: NBACommonCardDrop
+  nbaStarterBundleOffer: [NBACardBundleOffer!]!
+  nbaRecommendedStarterBundles(first: Int!): [NBACardBundleOffer!]!
+  nbaLeagues: [NBALeague!]!
+  nbaCollections(slugsFilter: [String!]): [NBACollection!]!
+  nbaMostRecentlyPlayedPastFixture: NBAFixture
+  nbaUnclaimedCashRewards: [CashReward!]!
+  nbaUnclaimedCardRewards: [CardReward!]!
+  nbaNoCardRouteInfo: NoCardRouteInfo!
+  baseballCards(
+    first: Int! = 100
+    after: String
+    positions: [BaseballPlayerPosition!]
+    rarities: [CardRarity!]
+  ): BaseballCardConnection!
+  baseballCardCounts: CardCountsByRarity!
+  baseballCardCountsByLineupPosition(
+    rarities: [CardRarity!]
+  ): BaseballCardCountsByLineupPosition!
+  baseballCurrentUserData: BaseballCurrentUserData!
+  baseballUnclaimedLineupRewards: [BaseballReward!]!
+  baseballLast30DaysLineupsCount: Int!
+  baseballLineupsCount: Int!
+  nextBaseballCardTradeAvailableAfter: Time
+  latestBaseballCardTrade: BaseballCardTrade
+  baseballScoutingMissions: [BaseballScoutingMission!]!
+    @deprecated(reason: "unsupported")
+  baseballCollections(slugsFilter: [String!]): [BaseballCollection!]!
+  baseballLeagues: [BaseballLeague!]! @deprecated
+  baseballMostRecentlyPlayedPastFixture: BaseballFixture
+  baseballStarterBundleOffer: [BaseballCardBundleOffer!]!
+  baseballRecommendedStarterBundles(first: Int!): [BaseballCardBundleOffer!]!
+  baseballUnclaimedCashRewards: [CashReward!]!
+  baseballUnclaimedCardRewards: [CardReward!]!
+  baseballNoCardRouteInfo: NoCardRouteInfo!
+  baseballCoinBalance: Int!
+  baseballMyItems(
+    first: Int! = 20
+    after: String
+    category: BaseballItemCategory
+  ): BaseballUserItemConnection!
+}
+type DHBaseballFixture implements DHFixtureInterface {
+  id: String!
+  state: DHFixtureState!
+  games: [GameInterface!]!
+  startDate: Time!
+  endDate: Time!
+  leaderboard: DHLeaderboard
+  probablePitchers: [DHBaseballProbablePitcher!]!
+}
+type DHBaseballLineup implements DHLineupInterface {
+  id: ID!
+  owner: User!
+  cards: [DHCardInLineup!]!
+  boost: DHBoostInLineup!
+  leaderboard: DHLeaderboard!
+  rank: Int!
+  score: Float!
+  baseFantasyScore: Float!
+  reward: DHLineupReward
+}
+type DHBaseballOnboarding {
+  nextTask: DHOnboardingTask!
+  mvpCardOptions: [DHMVPCardOption!]!
+}
+type DHBaseballProbablePitcher {
+  card: BaseballCard!
+  coinCost: Int!
+}
+type DHBoost {
+  type: DHBoostType!
+  target: DHBoostTarget!
+  levels: [DHBoostLevel!]!
+}
+type DHBoostInLineup {
+  cardSlug: String!
+  boost: DHBoost!
+}
+type DHBoostLevel {
+  description: String!
+  statName: String!
+  threshold: Float!
+  percentScoreIncrease: Int!
+  status: DHBoostLevelStatus
+}
+type DHBoostLevelStatus {
+  value: Int!
+  thresholdReached: Boolean!
+}
+type DHCardInLineup {
+  card: CardInterface!
+  game: GameInterface
+  score: Float!
+}
+type DHChallenge {
+  id: String!
+  shortDescription: String!
+  amountCoins: Int!
+  mvpCard: Boolean!
+  state: DHChallengeState!
+}
+type DHCoinReward {
+  id: String!
+  amountCoins: Int!
+}
+type DHCommonCardPack {
+  packType: String!
+  cardPool: [DHMVPCardOption!]!
+}
+type DHCompleteOnboardingTaskResponse {
+  currentSportsUser: CurrentSportsUser
+    @deprecated(reason: "use DHCompleteOnboardingTaskResponse.currentUser")
+  currentUser: CurrentUser
+}
+type DHDeck {
+  cards: [CardInterface!]!
+  trickPlays: [DHTrickPlay!]!
+  boosts: [DHBoost!]!
+}
+type DHEligibleCard {
+  card: CardInterface!
+  game: GameInterface
+  locked: Boolean!
+}
+type DHGameWeek {
+  id: String!
+  gameWeek: Int!
+  state: DHFixtureState!
+  previousFixture: DHFixtureInterface
+  liveFixture: DHFixtureInterface
+  standings: [DHGameWeekParticipant!]!
+  startDate: Time!
+  endDate: Time!
+}
+type DHGameWeekParticipant {
+  user: UserInterface!
+  score: Float!
+}
+type DHLeaderboard {
+  id: String!
+  name: String!
+  fixture: DHFixtureInterface!
+  lineups: [DHLineupInterface!]!
+  myLineup: DHLineupInterface
+  myEligibleCards(
+    slotIndex: Int
+    selectedCardSlugs: [String!]!
+  ): [DHEligibleCard!]!
+  myEligibleTrickPlays(playerCardSlug: String): [DHTrickPlay!]!
+}
+type DHLineupReward {
+  coins: Int!
+}
+type DHMVPCardOption {
+  player: PlayerInterface!
+  commonCardImageUrl: String!
+}
+type DHNBAFixture implements DHFixtureInterface {
+  id: String!
+  state: DHFixtureState!
+  games: [GameInterface!]!
+  startDate: Time!
+  endDate: Time!
+  leaderboard: DHLeaderboard
+}
+type DHNBALineup implements DHLineupInterface {
+  id: ID!
+  owner: User!
+  cards: [DHCardInLineup!]!
+  trickPlay: DHTrickPlayInLineup
+  leaderboard: DHLeaderboard!
+  rank: Int!
+  score: Float!
+  baseFantasyScore: Float!
+  trickPlayBonus: Float!
+  trickPlaySubtraction: Float!
+  trickPlayImpactsOnOthers: [DHTrickPlayImpact!]!
+  trickPlayImpactsFromOthers: [DHTrickPlayImpact!]!
+  reward: DHLineupReward
+}
+type DHNBAOnboarding {
+  nextTask: DHOnboardingTask!
+  mvpCardOptions: [DHMVPCardOption!]!
+}
+type DHPurchaseListingResponse {
+  isSuccess: Boolean!
+  remainingCoinBalance: Int!
+  purchasedCards: [CardInterface!]!
+  dhDeck: DHDeck
+}
+type DHReward {
+  id: String!
+  amountCoins: Int
+  card: CardInterface
+}
+type DHShop {
+  listings: [DHShopListing!]!
+}
+type DHShopListing {
+  id: String!
+  coinCost: Int!
+  item: DHShopItem!
+}
+type DHSubmitLineupResponse {
+  submittedLineup: DHLineupInterface
+  lineupValidationErrors: [DHSubmitLineupValidationError!]!
+}
+type DHTrickPlay {
+  type: String!
+  description: String!
+  imageUrl: String!
+  styleOptions: [DHTrickPlayStyleOption!]!
+  sport: GoSport!
+}
+type DHTrickPlayImpact {
+  sourceUser: User!
+  targetUser: User!
+  trickPlayInLineup: DHTrickPlayInLineup!
+  subtraction: Float!
+}
+type DHTrickPlayInLineup {
+  trickPlay: DHTrickPlay!
+  trickPlayStyle: DHTrickPlayStyle
+  status: DHTrickPlayInLineupStatus
+}
+type DHTrickPlayInLineupStatus {
+  progress: [DHTrickPlayProgress!]!
+  thresholdReached: Boolean!
+}
+type DHTrickPlayPack {
+  trickPlayType: String!
+  imageURL: String!
+}
+type DHTrickPlayProgress {
+  statName: String!
+  value: Float!
+  threshold: Float!
+}
+type DHTrickPlayStyleOption {
+  headline: String!
+  body: [String!]!
+  style: DHTrickPlayStyle!
+}
+type Entity {
+  findBaseballCardByAssetID(assetID: ID!): BaseballCard!
+  findCurrentUserByID(id: ID!): CurrentUser!
+  findNBACardByAssetID(assetID: ID!): NBACard!
+  findUserByID(id: ID!): User!
+}
+type IRLPrize {
+  headlineText: String!
+  detailText: String
+  type: IRLPrizeType!
+}
+type LeaderboardPrizePool {
+  commonCardsMaxThreshold: Int
+  commonCardsCount: Int!
+  limitedCardsCount: Int!
+  rareCardsCount: Int!
+  superRareCardsCount: Int!
+  uniqueCardsCount: Int!
+  amountUSDCents: Int!
+  podium: [PrizePoolPodiumPrize!]!
+  participation: [PrizeLevel!]!
+}
+type LeaderboardRulesMinimumRarityRequirement {
+  rarity: CardRarity!
+  minCount: Int!
+}
+type League {
+  id: String!
+  slug: String!
+  name: String!
+  sport: GoSport
+  memberCount: Int!
+  members(offset: Int! = 0, limit: Int! = 100): [User!]!
+  affiliate: User
+  leaderboardsInFixture(fixtureSlug: String!): [LeagueLeaderboard!]!
+  leagueType: LeagueType!
+}
+type LeagueLeaderboard {
+  league: League!
+  leaderboard: LeaderboardInterface!
+  lineupCount: Int!
+  lineups(offset: Int! = 0, limit: Int! = 100): [LeagueLineup!]!
+  affiliateLeagueLineup: LeagueLineup
+  myLineup: LeagueLineup
+}
+type LeagueLineup {
+  rank: Int!
+  lineup: LineupInterface!
+  leaderboard: LeagueLeaderboard!
+}
+type Mutation {
+  deleteLineup(input: BaseballDeleteLineupInput, id: UUID): Boolean
+    @deprecated(reason: "use deleteBaseballLineup")
+  createLeague(name: String!, sport: GoSport!): League!
+  joinLeague(slug: String!): League!
+  leaveLeague(slug: String!): Boolean
+  claimCashRewards(ids: [UUID!]!): [CashReward!]
+  claimCardRewards(ids: [UUID!]!): [CardReward!]
+  generateNoCardLineup(
+    userID: UUID!
+    fixtureID: UUID!
+    token: String!
+  ): NoCardLineup!
+  declineNoCardLineup(userID: UUID!, id: UUID!): NoCardLineup!
+  confirmNoCardLineup(userID: UUID!, id: UUID!): NoCardLineup!
+  confirmNoCardLineupLeaderboard(
+    userID: UUID!
+    lineupID: UUID!
+    leaderboardID: UUID!
+  ): NoCardLineup!
+  claimNBARewards(ids: [UUID!]!): [NBAReward!]
+  claimNBAReferralRewards(referralIDs: [UUID!]!): [NBAReferralReward!]!
+  completeNBAOnboardingTask(
+    input: NBACompleteOnboardingTaskInput!
+  ): NBACompleteOnboardingTaskResponse!
+  createOrUpdateNBALineup(
+    input: NBACreateOrUpdateLineupInput!
+  ): NBACreateOrUpdateLineupResponse!
+  deleteNBALineup(id: UUID!): Boolean
+  startNBACardTrade(userGiveCardSlug: String!): NBACardTrade!
+  completeNBACardTrade(id: UUID!, userReceiveCardSampleId: UUID): NBACardTrade!
+  claimNBACommonCardDrop(
+    nbaCommonCardDropID: UUID!
+    claimedCardSampleID: UUID!
+  ): NBACommonCardDrop!
+  createNBALeague(name: String!): NBALeague!
+  joinNBALeague(slug: String!): NBALeague!
+  leaveNBALeague(slug: String!): Boolean
+  claimBaseballRewards(ids: [UUID!]!): [BaseballReward!]
+  claimBaseballReferralRewards(referralIDs: [UUID!]!): [BaseballReferralReward!]
+  startBaseballCardTrade(
+    userGiveCardSlug: String!
+    position: BaseballPlayerLineupPosition
+    cardTradeItemID: UUID
+  ): BaseballCardTrade!
+  completeBaseballCardTrade(
+    id: UUID!
+    userReceiveCardSampleId: UUID
+  ): BaseballCardTrade!
+  createBaseballLeague(name: String!): BaseballLeague! @deprecated
+  joinBaseballLeague(slug: String!): BaseballLeague! @deprecated
+  leaveBaseballLeague(slug: String!): Boolean @deprecated
+  createOrUpdateBaseballLineup(
+    input: BaseballCreateOrUpdateLineupInput!
+  ): BaseballCreateOrUpdateLineupResponse!
+  deleteBaseballLineup(id: UUID!): Boolean
+  submitBaseballCommonDraft(
+    input: BaseballSubmitCommonDraftInput!
+  ): BaseballSubmitCommonDraftResponse!
+  submitOnboardingPlayerSelection(selectedCardPlayerID: UUID!): Boolean
+  createOrUpdateBaseballDailyLineup(
+    input: BaseballCreateOrUpdateDailyLineupInput!
+  ): BaseballCreateOrUpdateDailyLineupResponse
+  deleteBaseballDailyLineup(id: UUID!): Boolean
+  buyBaseballShopItem(slug: String!): BaseballBuyShopItemResponse!
+  completeDHNBAOnboardingTask(
+    input: DHNBACompleteOnboardingTaskInput!
+  ): DHCompleteOnboardingTaskResponse!
+  completeDHBaseballOnboardingTask(
+    input: DHBaseballCompleteOnboardingTaskInput!
+  ): DHCompleteOnboardingTaskResponse!
+  dhNBASubmitLineup(input: DHNBASubmitLineupInput!): DHSubmitLineupResponse!
+  dhBaseballSubmitLineup(
+    input: DHBaseballSubmitLineupInput!
+  ): DHSubmitLineupResponse!
+  dhDeleteLineup(lineupID: String!): Boolean!
+  dhPurchaseListing(id: String!): DHPurchaseListingResponse!
+  dhClaimCoinRewards(ids: [String!]!): Boolean!
+  dhClaimChallenge(id: String!): [DHChallenge!]!
+  dhClaimPlayStreakReward(id: String!): Boolean!
+}
+type NBACard implements CardInterface {
+  id: UUID!
+  slug: String!
+  assetId: ID!
+  owner: User
+  player: NBAPlayer!
+  team: NBATeam
+  rarity: CardRarity!
+  season: String!
+  serialNumber: Int!
+  positions: [NBAPlayerPosition!]!
+  fullImageUrl: String!
+  avatarImageUrl: String!
+  cardLevel: Int!
+  xpThresholdForCurrentCardLevel: Int!
+  xpThresholdForNextCardLevel: Int
+  xp: Int!
+  seasonBonus: Float!
+  rarityBonus: Float!
+  xpBonus: Float!
+  totalBonus: Float!
+  bonusLossAfterTransfer: Float!
+  energy: Int
+  dhMVP: Boolean!
+}
+type NBACardBundleOffer implements CardBundleOffer {
+  id: String!
+  priceUSDCents: Int!
+  cards: [NBACard!]!
+  expiresAt: Time!
+  leaderboard: NBALeaderboard
+  rewardPlayerName: String!
+  rank: Int!
+}
+type NBACardConnection {
+  nodes: [NBACard!]!
+  pageInfo: PageInfo!
+}
+type NBACardForComposeLineup {
+  card: NBACard!
+  usedInOtherLineup: NBALineup
+  tenGameAverageForComposeLineup: Int!
+  totalBonusInLineup: Float!
+}
+type NBACardForComposeLineupConnection {
+  nodes: [NBACardForComposeLineup!]!
+  pageInfo: PageInfo!
+}
+type NBACardInLineup implements CardInLineupInterface {
+  lineup: NBALineup!
+  card: NBACard!
+  playerInFixture: NBAPlayerInFixture!
+  score: Float!
+  totalBonus: Float!
+  isMvp: Boolean!
+  gameScores: [NBACardInLineupGameScore!]
+}
+type NBACardInLineupGameScore implements CardInLineupGameScoreInterface {
+  score: Float!
+  gameStats: NBAPlayerGameStats!
+  detailedGameScores: NBAPlayerGameDetailedScores!
+}
+type NBACardTrade implements CardTradeInterface {
+  id: UUID!
+  expiresAfter: Time
+  userGiveCard: NBACard!
+  userGiveCardUsedInLineup: NBALineup
+  userReceiveCardChoices: [NBACommonCardSample!]!
+  userReceiveCard: NBACard
+  isComplete: Boolean!
+}
+type NBACardsPaginated {
+  currentPage: Int!
+  pages: Int!
+  cards: [NBACard!]!
+}
+type NBACollection implements CollectionInterface {
+  slug: String!
+  isComplete: Boolean!
+  slots: [NBACollectionSlot!]!
+  slotsCount: Int!
+  filledSlots: Int!
+  team: NBATeam
+  season: String
+}
+type NBACollectionSlot implements CollectionSlotInterface {
+  requiredPlayer: NBAPlayer!
+  ownedCards: [NBACard!]
+  displayCard: NBACard
+}
+type NBACommonCardDrop {
+  id: UUID!
+  cardChoices: [NBACommonCardSample!]!
+  claimedCard: NBACard
+}
+type NBACommonCardSample implements CommonCardSampleInterface {
+  id: UUID!
+  player: NBAPlayer!
+  commonCardImageUrl: String!
+}
+type NBACompleteOnboardingTaskResponse {
+  currentSportsUser: CurrentSportsUser
+    @deprecated(reason: "use NBACompleteOnboardingTaskResponse.currentUser")
+  currentUser: CurrentUser
+}
+type NBACreateOrUpdateLineupResponse {
+  createdLineup: NBALineup
+  lineupValidationErrors: [NBACreateOrUpdateLineupValidationError!]!
+}
+type NBACurrentUserData {
+  onboardingState: NBAOnboarding!
+}
+type NBAFixture implements FixtureInterface {
+  id: UUID!
+  slug: String!
+  fixtureState: FixtureState!
+  gameWeek: Int!
+  startDate: Time!
+  endDate: Time!
+  games: [NBAGame!]!
+  leaderboards(includeTraining: Boolean): [NBALeaderboard!]!
+  myEligibleGames: [NBAGame!]!
+  myLiveLineupGames: [NBAGameWithCardInLineup!]!
+  myLineups: [NBALineup!]!
+  myRecommendedLeaderboards(first: Int! = 3): [NBALeaderboard!]!
+  myNextProgressionLeaderboards: [NBALeaderboard!]!
+  playerFixtureStats(
+    first: Int! = 20
+    after: String
+    hideUnownedPlayers: Boolean
+    playerOwnershipFilter: PlayerOwnershipFilter
+    order: PlayerFixtureStatsSortOrder
+  ): NBAPlayerFixtureStatsConnection!
+  rewardPool(
+    rarity: BaseballCardRarity
+    cardRarity: CardRarity
+    tier: Int!
+  ): [NBAPlayer!]!
+  nextFixture: NBAFixture
+  previousFixture: NBAFixture
+  cumulativeLeaderboards: [CumulativeLeaderboard]!
+  rewardPoolCardExamples(
+    cardRarity: CardRarity!
+    tier: Int
+    limit: Int!
+  ): [NBACard!]!
+}
+type NBAFixtureConnection {
+  nodes: [NBAFixture!]!
+  pageInfo: PageInfo!
+}
+type NBAGame implements GameInterface {
+  id: UUID!
+  status: GameStatus!
+  startDate: Time!
+  homeTeam: NBATeam!
+  awayTeam: NBATeam!
+  homeScore: Int!
+  awayScore: Int!
+  quarter: Int!
+  isHalftime: Boolean!
+  pastPlayerPerformance(
+    playerSlug: String!
+    last: Int! = 5
+  ): [NBAPlayerGameStats!]!
+  gameWeek: Int!
+}
+type NBAGameWithCardInLineup implements GameWithCardInLineupInterface {
+  game: NBAGame!
+  homeCardsInLineups: [NBACardInLineup!]!
+  awayCardsInLineups: [NBACardInLineup!]!
+}
+type NBALeaderboard implements SportsNode & LeaderboardInterface {
+  id: UUID!
+  slug: String!
+  displayName: String!
+  displayNameWithoutRarity: String!
+  descriptions: [String]!
+  lineups(first: Int! = 20, after: String, userId: ID): NBALineupConnection!
+  myLineups: [NBALineup!]!
+  myRecentLineup: NBALineup
+  lineupsCount: Int!
+  fixture: NBAFixture!
+  prizePool: LeaderboardPrizePool!
+  requirements: NBALeaderboardRequirements!
+  leaderboardRarity: LeaderboardRarity!
+  isUserEligible: Boolean!
+  isTraining: Boolean!
+  beginnerLeaderboardDetails: BeginnerLeaderboardDetails
+  iconImageUrl: String!
+  monochromeIconImageUrl: String!
+  myComposeLineupCards(
+    query: String
+    lineupId: UUID
+    first: Int! = 20
+    after: String
+    includeUsed: Boolean!
+    includeOverTenGameAverageTotalLimit: Boolean
+    indexInLineup: Int!
+    cardsInLineupPartial: [ID!]!
+  ): NBACardForComposeLineupConnection!
+  inLeague(slug: String!): NBALeagueLeaderboard!
+  league(slug: String!): LeagueLeaderboard!
+  scoringStrategy: String!
+  cumulativeLeaderboard: CumulativeLeaderboard
+  isUltimate: Boolean!
+}
+type NBALeaderboardRequirements implements LeaderboardRequirementsInterface {
+  allowedRarities: [CardRarity!]!
+  minRarity: LeaderboardRulesMinimumRarityRequirement
+  minRookieCount: Int!
+  tenGameAverageTotalLimit: Int!
+  allowMVP: Boolean!
+  allowedConference: NBAConference
+  playerAgeRequirements: PlayerAgeRequirements
+  marketplaceQueryParameters: String
+}
+type NBALeaderboardRuleRange {
+  min: Int!
+  max: Int!
+}
+type NBALeaderboardRulesRarityRange {
+  common: NBALeaderboardRuleRange
+  limited: NBALeaderboardRuleRange
+  rare: NBALeaderboardRuleRange
+  superRare: NBALeaderboardRuleRange
+  unique: NBALeaderboardRuleRange
+}
+type NBALeague implements LeagueInterface {
+  id: String!
+  slug: String!
+  name: String!
+  members: [User!]!
+}
+type NBALeagueLeaderboard implements LeagueLeaderboardInterface {
+  league: NBALeague!
+  leaderboard: NBALeaderboard!
+  lineupCount: Int!
+  lineups: [NBALeagueLineup!]!
+  participants: [User!]!
+}
+type NBALeagueLineup implements LeagueLineupInterface {
+  rank: Int!
+  lineup: NBALineup!
+  leaderboard: NBALeagueLeaderboard!
+}
+type NBALineup implements LineupInterface {
+  id: UUID!
+  leaderboard: NBALeaderboard!
+  cards: [NBACardInLineup!]!
+  games: [NBAGameWithCardInLineup!]!
+  score: Float!
+  rank: Int!
+  user: User!
+  xpScore: Float! @deprecated
+  projectedReward: ProjectedReward
+  reward: NBAReward
+  accoladeString: String
+}
+type NBALineupConnection {
+  nodes: [NBALineup!]!
+  pageInfo: PageInfo!
+}
+type NBAOnboarding {
+  nextTask: NBAOnboardingTask!
+  selectCardOptions: [NBAOnboardingCardOption!]!
+  leaderboard: NBALeaderboard
+  gradualOnboardingPhase: GradualOnboardingPhase!
+}
+type NBAOnboardingCardOption {
+  player: NBAPlayer!
+  commonCardImageUrl: String!
+}
+type NBAPlayer implements PlayerInterface {
+  id: UUID!
+  slug: String!
+  birthDate: Time!
+  age: Int!
+  birthPlaceCountry: String!
+  displayName: String!
+  firstName: String!
+  lastName: String!
+  shirtNumber: Int!
+  positions: [NBAPlayerPosition!]!
+  team: NBATeam
+  avatarImageUrl: String!
+  latestFinalGameStats(last: Int!): [NBAPlayerGameStats!]!
+  latestFinalFixtureStats(last: Int!): [NBAPlayerInFixture!]!
+    @deprecated(reason: "use latestFixtureStats")
+  latestFixtureStats(last: Int!): [NBAPlayerInFixture!]!
+  fixtureGames(fixtureSlug: String!): [NBAGame!]!
+    @deprecated(reason: "use PlayerInFixture.upcomingGames")
+  upcomingGames(next: Int!): [NBAGame!]!
+  inFixture(fixtureSlug: String!): NBAPlayerInFixture
+  tenGameAverage: Int!
+    @deprecated(reason: "use NBAPlayer.tenGameAverageGameStats.score")
+  tenGameAverageGameStats: NBAPlayerAverageGameStats!
+  isActive: Boolean!
+  playerInjury: PlayerInjury
+  cards(
+    first: Int! = 100
+    after: String
+    positions: [NBAPlayerPosition!]
+    rarities: [CardRarity!]
+  ): NBACardConnection!
+  croppedPictureUrl: String!
+}
+type NBAPlayerAverageGameDetailedStats {
+  points: Float!
+  rebounds: Float!
+  assists: Float!
+  blocks: Float!
+  steals: Float!
+  turnovers: Float!
+  made3PointFGs: Float!
+  doubleDoubles: Float!
+  tripleDoubles: Float!
+  secondsPlayed: Float!
+}
+type NBAPlayerAverageGameStats {
+  score: Float!
+  detailedStats: NBAPlayerAverageGameDetailedStats
+  detailedScores: NBAPlayerGameDetailedScores
+}
+type NBAPlayerFixtureStatsConnection {
+  nodes: [NBAPlayerInFixture!]!
+  pageInfo: PageInfo!
+}
+type NBAPlayerGameDetailedScores {
+  points: Float!
+  rebounds: Float!
+  assists: Float!
+  blocks: Float!
+  steals: Float!
+  turnovers: Float!
+  fieldGoalAttempts: Float!
+  freeThrowAttempts: Float!
+  made3PointFGs: Float!
+  doubleDoubles: Float!
+  tripleDoubles: Float!
+}
+type NBAPlayerGameDetailedStats {
+  points: Int!
+  rebounds: Int!
+  assists: Int!
+  blocks: Int!
+  steals: Int!
+  turnovers: Int!
+  made3PointFGs: Int!
+  doubleDoubles: Int!
+  tripleDoubles: Int!
+  minutes: String @deprecated(reason: "use secondsPlayed")
+  secondsPlayed: Int!
+}
+type NBAPlayerGameStats implements PlayerGameStatsInterface {
+  score: Float!
+  playedInGame: Boolean!
+  detailedStats: NBAPlayerGameDetailedStats
+  detailedScores: NBAPlayerGameDetailedScores
+  game: NBAGame!
+  team: NBATeam!
+  againstTeam: NBATeam!
+  scoreForScoringStrategy(strategy: String): Float!
+}
+type NBAPlayerInFixture implements PlayerInFixtureInterface {
+  fixture: NBAFixture!
+  player: NBAPlayer!
+  score: Float!
+  status: NBAPlayerInFixtureStatus!
+  tenGameAverage: Int!
+}
+type NBAPlayerInFixtureStatus implements PlayerInFixtureStatusInterface {
+  gameStats: [NBAPlayerGameStats!]!
+  upcomingGames: [NBAGame!]!
+  inGame: Boolean!
+  isScoreFinal: Boolean!
+  statusIconType: PlayerInFixtureStatusIconType!
+  hasTBDGames: Boolean!
+}
+type NBAReferralReward implements SportsNode & ReferralRewardInterface {
+  id: UUID!
+  card: NBACard!
+  state: RewardState!
+}
+type NBAReward implements RewardInterface {
+  id: UUID!
+  card: NBACard!
+  backImageUrl: String!
+  tier: Int!
+  lineup: NBALineup!
+  state: RewardState!
+}
+type NBATeam implements SportsTeamInterface {
+  id: UUID!
+  name: String!
+  market: String!
+  fullName: String!
+  slug: String!
+  svgUrl: String!
+  monochromeSvgUrl: String!
+  teamStyleGuidePrimaryColor: HexColorCode!
+  players: [NBAPlayer!]!
+  abbreviation: String!
+}
+type NoCardLineup {
+  id: UUID!
+  leaderboard: LeaderboardInterface
+  cards: [CardInNoCardLineup!]!
+  score: Float!
+  rank: Int!
+  user: User!
+}
+type NoCardRouteInfo {
+  emailAddress: String!
+  isRouteOpen: Boolean!
+  maxLineupsPerUser: Int!
+  gameWeek: Int!
+  cardCountsByRarity: CardCountsByRarity!
+}
+type NoCardRouteLeaderboard {
+  id: UUID!
+  name: String!
+}
+type PageInfo {
+  endCursor: String!
+  startCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+type PlayerAgeRequirements {
+  minAge: Int
+  maxAge: Int
+}
+type PlayerInjury {
+  status: String!
+  description: String!
+  comment: String!
+  startDate: String!
+  updateDate: String! @deprecated(reason: "use updateDateTime")
+  updateDateTime: Time
+}
+type PrizeCreditsLevel {
+  from: PrizePoolPrizeLevelBoundary!
+  to: PrizePoolPrizeLevelBoundary!
+  fromLineup: CumulativeLeaderboardRank
+  toLineup: CumulativeLeaderboardRank
+  prizeCredits: Int!
+  irlPrizes: [IRLPrize!]!
+}
+type PrizeLevel {
+  from: PrizePoolPrizeLevelBoundary!
+  to: PrizePoolPrizeLevelBoundary!
+  rarity: CardRarity! @deprecated(reason: "use cardRarity")
+  cardRarity: CardRarity
+  tier: Int! @deprecated(reason: "use cardTier")
+  cardTier: Int
+  amountUSDCents: Int!
+  fromLineup: LineupInterface
+  toLineup: LineupInterface
+  cashRewardOnly: Boolean!
+}
+type PrizePoolPodiumPrize {
+  rank: Int!
+  rarity: CardRarity! @deprecated(reason: "use cardRarity")
+  cardRarity: CardRarity
+  tier: Int! @deprecated(reason: "use cardTier")
+  cardTier: Int
+  amountUSDCents: Int!
+  lineup: LineupInterface
+  irlPrize: IRLPrize
+  cashRewardOnly: Boolean!
+}
+type PrizePoolPrizeLevelBoundary {
+  rank: Int!
+  isPercent: Boolean!
+}
+type ProjectedReward {
+  rarity: CardRarity!
+  tier: Int!
+  amountUSDCents: Int!
+}
+type Query {
+  currentSportsUser: CurrentSportsUser @deprecated(reason: "use currentUser")
+  sportsUser(id: UUID!): User
+  currentUser: CurrentUser
+  league(slug: String!): League
+  openCumulativeLeaderboards(sport: GoSport!): [CumulativeLeaderboard!]!
+    @deprecated(reason: "use cumulativeLeaderboards")
+  cumulativeLeaderboards(sport: GoSport!): [CumulativeLeaderboard!]!
+  cumulativeLeaderboardRank(id: UUID!): CumulativeLeaderboardRank
+  requestLeaderboardsNoCardLineup(
+    userID: UUID!
+    id: UUID!
+  ): [NoCardRouteLeaderboard]
+  currentNBAUser: CurrentNBAUser @deprecated(reason: "use currentSportsUser")
+  nbaCard(slug: String!): NBACard
+  nbaCards(
+    ids: [ID!]
+    assetIds: [ID!]
+    input: NBACardsInput
+    slugs: [String!]
+  ): [NBACard!]!
+  nbaFixture(slug: String!): NBAFixture
+  nbaLeaderboard(slug: String!): NBALeaderboard
+  nbaLineup(id: UUID!): NBALineup
+  nbaLiveFixture: NBAFixture
+  nbaOpenFixture: NBAFixture
+  nbaPastFixtures(first: Int! = 100, after: String): NBAFixtureConnection!
+  nbaPlayer(slug: String!): NBAPlayer
+  nbaPlayers(slugs: [String!]): [NBAPlayer!]!
+  nbaReferralRewards(referralIDs: [UUID!]!): [NBAReferralReward!]!
+  nbaTeam(slug: String!): NBATeam
+  nbaLeague(slug: String!): NBALeague
+  nbaStarterBundles(ids: [UUID!]!): [NBACardBundleOffer!]!
+  nbaCumulativeLeaderboard(slug: String!): CumulativeLeaderboard
+  baseballCard(slug: String!): BaseballCard
+  baseballCards(
+    slugs: [String!]
+    ids: [String!]
+    assetIds: [String!]
+  ): [BaseballCard!]!
+  baseballFixture(slug: String!): BaseballFixture
+  baseballLeaderboard(slug: String!): BaseballLeaderboard
+  baseballLiveFixture: BaseballFixture
+  baseballOpenFixture: BaseballFixture
+  baseballPastFixtures(
+    first: Int! = 100
+    after: String
+  ): BaseballFixtureConnection!
+  baseballPlayer(slug: String!): BaseballPlayer
+  baseballPlayers(slugs: [String!]): [BaseballPlayer!]!
+  baseballReferralRewards(referralIDs: [UUID!]!): [BaseballReferralReward!]
+  baseballTeam(slug: String!): BaseballTeam
+  baseballLeague(slug: String!): BaseballLeague @deprecated
+  baseballLineup(id: UUID!): BaseballLineup
+  baseballCommonDraftConfig: BaseballCommonDraftConfig!
+  baseballStarterBundles(ids: [UUID!]!): [BaseballCardBundleOffer!]!
+  baseballDailyGames(
+    first: Int! = 100
+    after: String
+    status: DailyGameStatus!
+    day: Time
+  ): BaseballDailyGameConnection!
+  baseballShop: BaseballShop!
+  dhNBALiveGameWeek: DHGameWeek
+  dhBaseballLiveGameWeek: DHGameWeek
+  dhShop: DHShop
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+}
+type User implements UserInterface {
+  id: ID!
+  slug: String!
+  nickname: String!
+  avatarUrl: String!
+  suspended: Boolean!
+  nbaCollections(slugsFilter: [String!]): [NBACollection!]!
+  nbaCards(
+    first: Int! = 100
+    after: String
+    positions: [NBAPlayerPosition!]
+    rarities: [CardRarity!]
+  ): NBACardConnection!
+  baseballScoutingMissions: [BaseballScoutingMission!]!
+    @deprecated(reason: "unsupported")
+  baseballCollections(slugsFilter: [String!]): [BaseballCollection!]!
+  baseballCards(
+    first: Int! = 100
+    after: String
+    positions: [BaseballPlayerPosition!]
+    rarities: [CardRarity!]
+  ): BaseballCardConnection!
+}
+type _Service {
+  sdl: String
+}
+interface CardBundleOffer {
+  id: String!
+  priceUSDCents: Int!
+  cards: [CardInterface!]!
+  expiresAt: Time!
+  leaderboard: LeaderboardInterface
+  rewardPlayerName: String!
+  rank: Int!
+}
+interface CardInLineupGameScoreInterface {
+  gameStats: PlayerGameStatsInterface!
+}
+interface CardInLineupInterface {
+  lineup: LineupInterface!
+  card: CardInterface!
+  playerInFixture: PlayerInFixtureInterface!
+  score: Float!
+  totalBonus: Float!
+  gameScores: [CardInLineupGameScoreInterface!]
+}
+interface CardInterface {
+  id: UUID!
+  slug: String!
+  assetId: ID!
+  owner: User
+  rarity: CardRarity!
+  season: String!
+  serialNumber: Int!
+  fullImageUrl: String!
+  avatarImageUrl: String!
+  player: PlayerInterface!
+  team: SportsTeamInterface
+  cardLevel: Int!
+  xpThresholdForCurrentCardLevel: Int!
+  xpThresholdForNextCardLevel: Int
+  xp: Int!
+  seasonBonus: Float!
+  rarityBonus: Float!
+  xpBonus: Float!
+  totalBonus: Float!
+  bonusLossAfterTransfer: Float!
+  energy: Int
+}
+interface CardSampleInDailyLineupInterface {
+  lineup: DailyLineupInterface!
+  indexInLineup: Int!
+  cardSample: CommonCardSampleInterface!
+  score: Float!
+  gameScore: CardInLineupGameScoreInterface!
+}
+interface CardTradeInterface {
+  id: UUID!
+  expiresAfter: Time
+  userGiveCard: CardInterface!
+  userGiveCardUsedInLineup: LineupInterface
+  userReceiveCardChoices: [CommonCardSampleInterface!]!
+  userReceiveCard: CardInterface
+  isComplete: Boolean!
+}
+interface CollectionInterface {
+  slug: String!
+  isComplete: Boolean!
+  slots: [CollectionSlotInterface!]!
+  slotsCount: Int!
+  filledSlots: Int!
+  team: SportsTeamInterface
+  season: String
+}
+interface CollectionSlotInterface {
+  requiredPlayer: PlayerInterface!
+  ownedCards: [CardInterface!]
+  displayCard: CardInterface
+}
+interface CommonCardSampleInterface {
+  id: UUID!
+  player: PlayerInterface!
+  commonCardImageUrl: String!
+}
+interface DHFixtureInterface {
+  id: String!
+  state: DHFixtureState!
+  games: [GameInterface!]!
+  startDate: Time!
+  endDate: Time!
+  leaderboard: DHLeaderboard
+}
+interface DHLineupInterface {
+  id: ID!
+  owner: User!
+  cards: [DHCardInLineup!]!
+  leaderboard: DHLeaderboard!
+  rank: Int!
+  score: Float!
+  baseFantasyScore: Float!
+  reward: DHLineupReward
+}
+interface DailyGameInterface {
+  game: GameInterface!
+  status: DailyGameStatus!
+  lineupsCount: Int!
+  myLineup: DailyLineupInterface
+}
+interface DailyLineupInterface {
+  id: UUID!
+  cardSamples: [CardSampleInDailyLineupInterface!]!
+  score: Float!
+  rank: Int!
+  user: User!
+}
+interface FixtureInterface {
+  id: UUID!
+  slug: String!
+  fixtureState: FixtureState!
+  gameWeek: Int!
+  startDate: Time!
+  endDate: Time!
+  games: [GameInterface!]!
+  leaderboards(includeTraining: Boolean): [LeaderboardInterface!]!
+  myEligibleGames: [GameInterface!]!
+  myLiveLineupGames: [GameWithCardInLineupInterface!]!
+  myLineups: [LineupInterface!]!
+  myRecommendedLeaderboards(first: Int! = 3): [LeaderboardInterface!]!
+  myNextProgressionLeaderboards: [LeaderboardInterface!]!
+  nextFixture: FixtureInterface
+  previousFixture: FixtureInterface
+  rewardPool(
+    rarity: BaseballCardRarity
+    cardRarity: CardRarity
+    tier: Int!
+  ): [PlayerInterface!]!
+  rewardPoolCardExamples(
+    cardRarity: CardRarity!
+    tier: Int
+    limit: Int!
+  ): [CardInterface!]!
+}
+interface GameInterface {
+  id: UUID!
+  status: GameStatus!
+  startDate: Time!
+  homeTeam: SportsTeamInterface!
+  awayTeam: SportsTeamInterface!
+  homeScore: Int!
+  awayScore: Int!
+  gameWeek: Int!
+}
+interface GameWithCardInLineupInterface {
+  game: GameInterface!
+  homeCardsInLineups: [CardInLineupInterface!]!
+  awayCardsInLineups: [CardInLineupInterface!]!
+}
+interface LeaderboardInterface {
+  id: UUID!
+  slug: String!
+  displayName: String!
+  descriptions: [String]!
+  displayNameWithoutRarity: String!
+  lineupsCount: Int!
+  myRecentLineup: LineupInterface
+  prizePool: LeaderboardPrizePool!
+  isUserEligible: Boolean!
+  isTraining: Boolean!
+  iconImageUrl: String!
+  monochromeIconImageUrl: String!
+  fixture: FixtureInterface!
+  requirements: LeaderboardRequirementsInterface!
+  leaderboardRarity: LeaderboardRarity!
+  beginnerLeaderboardDetails: BeginnerLeaderboardDetails
+  scoringStrategy: String!
+  inLeague(slug: String!): LeagueLeaderboardInterface!
+  league(slug: String!): LeagueLeaderboard!
+  cumulativeLeaderboard: CumulativeLeaderboard
+  isUltimate: Boolean!
+}
+interface LeaderboardRequirementsInterface {
+  allowedRarities: [CardRarity!]!
+  minRarity: LeaderboardRulesMinimumRarityRequirement
+  minRookieCount: Int!
+  playerAgeRequirements: PlayerAgeRequirements
+  marketplaceQueryParameters: String
+}
+interface LeagueInterface {
+  id: String!
+  slug: String!
+  name: String!
+  members: [User!]!
+}
+interface LeagueLeaderboardInterface {
+  league: LeagueInterface!
+  leaderboard: LeaderboardInterface!
+  lineupCount: Int!
+  lineups: [LeagueLineupInterface!]!
+  participants: [User!]!
+}
+interface LeagueLineupInterface {
+  rank: Int!
+  lineup: LineupInterface!
+  leaderboard: LeagueLeaderboardInterface!
+}
+interface LineupInterface {
+  id: UUID!
+  leaderboard: LeaderboardInterface!
+  cards: [CardInLineupInterface!]!
+  games: [GameWithCardInLineupInterface!]!
+  score: Float!
+  rank: Int!
+  user: User!
+  xpScore: Float! @deprecated
+  projectedReward: ProjectedReward
+  reward: RewardInterface
+  accoladeString: String
+}
+interface PlayerGameStatsInterface {
+  playedInGame: Boolean!
+  game: GameInterface!
+  team: SportsTeamInterface!
+  againstTeam: SportsTeamInterface!
+}
+interface PlayerInFixtureInterface {
+  fixture: FixtureInterface!
+  player: PlayerInterface!
+  status: PlayerInFixtureStatusInterface!
+}
+interface PlayerInFixtureStatusInterface {
+  gameStats: [PlayerGameStatsInterface!]!
+  upcomingGames: [GameInterface!]!
+  inGame: Boolean!
+  isScoreFinal: Boolean!
+  statusIconType: PlayerInFixtureStatusIconType!
+  hasTBDGames: Boolean!
+}
+interface PlayerInterface {
+  id: UUID!
+  slug: String!
+  birthDate: Time!
+  age: Int!
+  displayName: String!
+  firstName: String!
+  lastName: String!
+  avatarImageUrl: String!
+  team: SportsTeamInterface
+  birthPlaceCountry: String!
+  shirtNumber: Int!
+  isActive: Boolean!
+  playerInjury: PlayerInjury
+  croppedPictureUrl: String!
+}
+interface ReferralRewardInterface {
+  id: UUID!
+  card: CardInterface!
+  state: RewardState!
+}
+interface RewardInterface {
+  id: UUID!
+  card: CardInterface!
+  backImageUrl: String!
+  tier: Int!
+  lineup: LineupInterface!
+  state: RewardState!
+}
+interface SportsNode {
+  id: UUID!
+}
+interface SportsTeamInterface {
+  id: UUID!
+  name: String!
+  market: String!
+  fullName: String!
+  abbreviation: String!
+  slug: String!
+  svgUrl: String!
+  monochromeSvgUrl: String!
+  teamStyleGuidePrimaryColor: HexColorCode!
+  players: [PlayerInterface!]!
+}
+interface UserInterface {
+  id: ID!
+  slug: String!
+  nickname: String!
+}
+interface UserItem {
+  title: String!
+  description: String!
+  imageURL: String!
+  id: UUID!
+  state: UserItemState!
+}
+union DHShopItem = DHMVPCardOption | DHTrickPlayPack | DHCommonCardPack
+union _Entity = BaseballCard | CurrentUser | NBACard | User
+enum BaseballBuyShopItemError {
+  INSUFFICIENT_COINS
+  ITEM_UNAVAILABLE
+}
+enum BaseballCardRarity {
+  unique
+  super_rare
+  rare
+  limited
+  common
+}
+enum BaseballCommonDraftAutofillSuggestionsError {
+  NOT_ENOUGH_BUDGET
+}
+enum BaseballComposeLineupCardsScoreSortOrder {
+  SEASON_AVERAGE_SCORE
+  LAST_15_AVERAGE_SCORE
+}
+enum BaseballConference {
+  AMERICAN
+  NATIONAL
+}
+enum BaseballCreateOrUpdateLineupValidationError {
+  MISSING_PITCHER_AT_REQUIRED_RARITY
+  ALLOWED_RARITIES_VIOLATION
+  MIN_RARITY_VIOLATION
+}
+enum BaseballInningHalf {
+  TOP
+  BOTTOM
+}
+enum BaseballItemCategory {
+  BOOST
+  CARD_TRADE
+}
+enum BaseballOnboardingState {
+  SIGNED_UP
+  RECEIVED_ONBOARDING_CARDS
+  COMPOSED_FIRST_LINEUP
+  CLAIMED_FIRST_REWARD
+  COMPOSED_SECOND_LINEUP
+  ONBOARDED
+}
+enum BaseballPlayerFixtureStatsPosition {
+  STARTING_PITCHER
+  RELIEF_PITCHER
+  CORNER_INFIELDER
+  MIDDLE_INFIELDER
+  OUTFIELDER
+}
+enum BaseballPlayerLineupPosition {
+  STARTING_PITCHER
+  RELIEF_PITCHER
+  CORNER_INFIELDER
+  MIDDLE_INFIELDER
+  OUTFIELDER
+}
+enum BaseballPlayerPosition {
+  STARTING_PITCHER
+  RELIEF_PITCHER
+  FIRST_BASE
+  THIRD_BASE
+  DESIGNATED_HITTER
+  CATCHER
+  SECOND_BASE
+  SHORTSTOP
+  OUTFIELD
+}
+enum BaseballSubmitCommonDraftValidationError {
+  INVALID_POSITION_SELECTION
+  OVER_MAX_TOTAL_COST
+  OVER_SAME_TEAM_LIMIT
+  DUPLICATE_PLAYER
+  INELIGIBLE_PLAYER
+}
+enum CardRarity {
+  unique
+  super_rare
+  rare
+  limited
+  common
+}
+enum DHBoostTarget {
+  HITTER
+  STARTING_PITCHER
+}
+enum DHBoostType {
+  SLUGGER
+  THIEF
+  WORKHORSE
+  STRIKEOUT_ARTIST
+}
+enum DHChallengeState {
+  CLAIMED
+  AVAILABLE
+  LOCKED
+}
+enum DHFixtureState {
+  LIVE
+  CLOSED
+}
+enum DHOnboardingTask {
+  NO_TASK
+  SELECT_MVP
+}
+enum DHSubmitLineupValidationError {
+  INSUFFICIENT_COIN_BALANCE
+}
+enum DHTrickPlayStyle {
+  AGGRESSIVE
+  BALANCED
+  CONSERVATIVE
+}
+enum DailyGameStatus {
+  UPCOMING
+  LIVE
+  PAST
+}
+enum FixtureState {
+  opened
+  started
+  closed
+}
+enum GameStatus {
+  scheduled
+  playing
+  played
+  canceled
+  delayed
+  postponed
+  suspended
+}
+enum GoSport {
+  NBA @deprecated(reason: "use Sport.NBA instead")
+  BASEBALL @deprecated(reason: "use Sport.BASEBALL instead")
+}
+enum GradualOnboardingPhase {
+  NONE
+  CLAIM_FIRST_COMMON_CARDS
+  FIRST_OPEN_FIXTURE
+  FIRST_LIVE_FIXTURE
+  SECOND_OPEN_FIXTURE
+  SECOND_LIVE_FIXTURE
+  FIRST_LIMITED_LEADERBOARD
+}
+enum IRLPrizeType {
+  TICKETS
+  GIFT_CARD
+  JERSEY
+  MEMORABILIA
+  TV_SUBSCRIPTION
+}
+enum LeaderboardRarity {
+  COMMON
+  LIMITED
+  RARE
+  SUPER_RARE
+  UNIQUE
+  MIXED
+}
+enum LeagueType {
+  PRIVATE
+  AFFILIATE
+  SMALL
+}
+enum NBAConference {
+  EASTERN
+  WESTERN
+}
+enum NBACreateOrUpdateLineupValidationError {
+  ALLOWED_RARITIES_VIOLATION
+  MIN_RARITY_VIOLATION
+}
+enum NBAOnboardingTask {
+  NO_TASK
+  SELECT_STARTER_CARD
+}
+enum NBAPlayerPosition {
+  NBA_GUARD
+  NBA_FORWARD
+  NBA_CENTER
+}
+enum PlayerFixtureStatsSortOrder {
+  SCORE
+  OUTPERFORMANCE
+}
+enum PlayerInFixtureStatusIconType {
+  FINAL_SCORE
+  IN_PROGRESS_SCORE
+  PENDING
+  NO_GAME
+  DID_NOT_PLAY
+  INACTIVE
+  TBD
+}
+enum PlayerOwnershipFilterType {
+  UNOWNED
+  OWNED
+}
+enum RewardState {
+  CLAIMED
+  UNCLAIMED
+}
+enum Sport {
+  FOOTBALL
+  BASEBALL
+  NBA
+}
+enum UserItemState {
+  AVAILABLE
+  APPLIED
+  CONSUMED
+}
+input BaseballCardsInput {
+  ids: [UUID!]
+  assetIds: [ID!]
+}
+input BaseballCreateOrUpdateDailyLineupInput {
+  lineupId: UUID
+  gameId: UUID!
+  playerSlugs: [String!]!
+}
+input BaseballCreateOrUpdateLineupInput {
+  lineupId: UUID
+  leaderboardSlug: String!
+  cardSlugs: [String!]!
+}
+input BaseballDeleteLineupInput {
+  lineupId: UUID!
+}
+input BaseballPlayerFixtureStatsInput {
+  position: BaseballPlayerFixtureStatsPosition!
+  first: Int! = 100
+  after: String
+  playerOwnershipFilter: PlayerOwnershipFilter
+}
+input BaseballSubmitCommonDraftInput {
+  selectedPlayerSlugs: [String!]!
+}
+input DHBaseballCompleteOnboardingTaskInput {
+  task: DHOnboardingTask!
+  selectedMVPPlayerID: UUID
+}
+input DHBaseballSubmitLineupInput {
+  leaderboardID: String!
+  cardSlugs: [String!]!
+  boost: DHBoostSubmission!
+}
+input DHBoostSubmission {
+  type: DHBoostType!
+}
+input DHNBACompleteOnboardingTaskInput {
+  task: DHOnboardingTask!
+  selectedMVPPlayerID: UUID
+}
+input DHNBASubmitLineupInput {
+  leaderboardID: String!
+  cardSlugs: [String!]!
+  trickPlay: DHTrickPlaySubmission!
+}
+input DHTrickPlaySubmission {
+  type: String!
+  style: DHTrickPlayStyle!
+}
+input NBACardsInput {
+  ids: [UUID!]
+  assetIds: [ID!]
+}
+input NBACompleteOnboardingTaskInput {
+  task: NBAOnboardingTask!
+  selectedCardPlayerId: UUID
+}
+input NBACreateOrUpdateLineupInput {
+  lineupId: UUID
+  leaderboardSlug: String!
+  cardSlugs: [String!]!
+}
+input NBADeleteLineupInput {
+  lineupId: UUID!
+}
+input PlayerOwnershipFilter {
+  rarity: CardRarity!
+  filterType: PlayerOwnershipFilterType!
+}
+directive @authRequired on FIELD_DEFINITION
+directive @complexity(multipliers: [String!], fixed: Int) on FIELD_DEFINITION
+directive @extends on OBJECT | INTERFACE
+directive @external on FIELD_DEFINITION
+directive @featureFlag(flag: String) on FIELD_DEFINITION
+directive @hidden on FIELD_DEFINITION | OBJECT | ENUM | INPUT_OBJECT | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION | UNION | INTERFACE
+directive @inaccessible on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+directive @key(
+  fields: _FieldSet!
+  resolvable: Boolean = true
+) on OBJECT | INTERFACE
+directive @link(import: [String!], url: String!) on SCHEMA
+directive @nestingAllowed on FIELD_DEFINITION
+directive @notProd on FIELD_DEFINITION
+directive @override(from: String!) on FIELD_DEFINITION
+directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
+directive @requires(fields: _FieldSet!) on FIELD_DEFINITION
+directive @shareable on OBJECT | FIELD_DEFINITION
+"The @specifiedBy built-in directive is used within the type system definition language to provide a scalar specification URL for specifying the behavior of custom scalar types."
+directive @specifiedBy(url: String!) on SCALAR
+directive @tag(
+  name: String!
+) on FIELD_DEFINITION | INTERFACE | OBJECT | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION

@@ -2,12 +2,14 @@ import {
   GraphQLInt,
   GraphQLObjectType,
   GraphQLSchema,
+  buildSchema,
   parse,
   print,
 } from 'graphql';
 
 import { mergeAst } from '../merge-ast';
-
+import fs from 'node:fs';
+import path from 'node:path';
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Test',
@@ -166,6 +168,37 @@ describe('MergeAst', () => {
     `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
+  });
+
+  it('handles very complex query without crashing', async () => {
+    // graphQLVersion = pkg.version;
+    const schemaIDL = fs.readFileSync(
+      path.join(__dirname, '__schema__/sorareSchema.graphql'),
+      'utf8',
+    );
+
+    const sorareSchema = buildSchema(schemaIDL);
+
+    // graphQLVersion = pkg.version;
+    const query = fs.readFileSync(
+      path.join(__dirname, '__queries__/testQuery.graphql'),
+      'utf8',
+    );
+    const mergedQuery = stripWhitespace(
+      fs.readFileSync(
+        path.join(__dirname, '__queries__/mergedQuery.graphql'),
+        'utf8',
+      ),
+    );
+    const mergedQueryWithSchema = stripWhitespace(
+      fs.readFileSync(
+        path.join(__dirname, '__queries__/mergedQueryWithSchema.graphql'),
+        'utf8',
+      ),
+    );
+
+    expect(parseMergeAndPrint(query)).toBe(mergedQuery);
+    expect(parseMergeAndPrint(query, sorareSchema)).toBe(mergedQueryWithSchema);
   });
 });
 

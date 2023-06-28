@@ -1,0 +1,740 @@
+query NBAHomepageQuery {
+  currentUser {
+    slug
+    id
+    nickname
+    __typename
+    nbaCardCounts {
+      uniqueCount
+      superRareCount
+      rareCount
+      limitedCount
+      commonCount
+      __typename
+    }
+    nbaMostRecentlyPlayedPastFixture {
+      slug
+      gameWeek
+      leaderboards {
+        slug
+        ... on LeaderboardInterface {
+          slug
+          leaderboardRarity
+          __typename
+        }
+        isTraining
+        fixture {
+          slug
+          fixtureState
+          __typename
+        }
+        isUserEligible
+        lineupsCount
+        iconImageUrl
+        monochromeIconImageUrl
+        requirements {
+          allowedConference
+          ... on LeaderboardRequirementsInterface {
+            allowedRarities
+            minRarity {
+              minCount
+              rarity
+              __typename
+            }
+            playerAgeRequirements {
+              minAge
+              maxAge
+              __typename
+            }
+            __typename
+          }
+          __typename
+          ... on LeaderboardRequirementsInterface {
+            allowedRarities
+            minRarity {
+              minCount
+              rarity
+              __typename
+            }
+            __typename
+          }
+        }
+        ... on LeaderboardInterface {
+          slug
+          fixture {
+            slug
+            fixtureState
+            __typename
+            startDate
+            endDate
+            id
+            gameWeek
+          }
+          isUserEligible
+          lineupsCount
+          iconImageUrl
+          monochromeIconImageUrl
+          displayName
+          __typename
+          requirements {
+            allowedRarities
+            minRarity {
+              minCount
+              rarity
+              __typename
+            }
+            __typename
+          }
+          prizePool {
+            uniqueCardsCount
+            superRareCardsCount
+            rareCardsCount
+            limitedCardsCount
+            commonCardsMaxThreshold
+            commonCardsCount
+            __typename
+            amountUSDCents
+          }
+        }
+        __typename
+        myLineups {
+          id
+          rank
+          score
+          cards {
+            score
+            isMvp
+            card {
+              slug
+              ... on CardInterface {
+                id
+                slug
+                fullImageUrl
+                player {
+                  slug
+                  displayName
+                  __typename
+                }
+                __typename
+              }
+              __typename
+              totalBonus
+            }
+            playerInFixture {
+              status {
+                statusIconType
+                upcomingGames {
+                  id
+                  __typename
+                }
+                inGame
+                isScoreFinal
+                __typename
+                hasTBDGames
+                gameStats {
+                  score
+                  game {
+                    id
+                    status
+                    __typename
+                  }
+                  __typename
+                }
+              }
+              __typename
+            }
+            __typename
+          }
+          ... on LineupInterface {
+            id
+            rank
+            score
+            cards {
+              card {
+                slug
+                __typename
+              }
+              __typename
+            }
+            projectedReward {
+              tier
+              rarity
+              amountUSDCents
+              __typename
+            }
+            reward {
+              id
+              tier
+              card {
+                slug
+                rarity
+                player {
+                  slug
+                  displayName
+                  __typename
+                }
+                __typename
+              }
+              state
+              __typename
+            }
+            accoladeString
+            __typename
+          }
+          __typename
+        }
+        ... on LeaderboardInterface {
+          slug
+          leaderboardRarity
+          __typename
+        }
+      }
+      __typename
+    }
+    nbaRecommendedStarterBundles(first: 3) {
+      id
+      ... on CardBundleOffer {
+        id
+        rank
+        leaderboard {
+          slug
+          displayName
+          lineupsCount
+          fixture {
+            slug
+            gameWeek
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+  nbaLiveFixture {
+    slug
+    games {
+      id
+      quarter
+      isHalftime
+      ... on GameInterface {
+        id
+        status
+        startDate
+        homeScore
+        awayScore
+        homeTeam {
+          slug
+          name
+          abbreviation
+          svgUrl
+          __typename
+        }
+        awayTeam {
+          slug
+          name
+          abbreviation
+          svgUrl
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    leaderboards {
+      slug
+      isTraining
+      fixture {
+        slug
+        fixtureState
+        __typename
+      }
+      isUserEligible
+      lineupsCount
+      iconImageUrl
+      monochromeIconImageUrl
+      requirements {
+        allowedConference
+        ... on LeaderboardRequirementsInterface {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          playerAgeRequirements {
+            minAge
+            maxAge
+            __typename
+          }
+          __typename
+        }
+        __typename
+        ... on LeaderboardRequirementsInterface {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          __typename
+        }
+      }
+      ... on LeaderboardInterface {
+        slug
+        fixture {
+          slug
+          fixtureState
+          __typename
+          startDate
+          endDate
+          id
+          gameWeek
+        }
+        isUserEligible
+        lineupsCount
+        iconImageUrl
+        monochromeIconImageUrl
+        displayName
+        __typename
+        requirements {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          __typename
+        }
+        prizePool {
+          uniqueCardsCount
+          superRareCardsCount
+          rareCardsCount
+          limitedCardsCount
+          commonCardsMaxThreshold
+          commonCardsCount
+          __typename
+          amountUSDCents
+        }
+      }
+      __typename
+      myLineups {
+        id
+        rank
+        score
+        cards {
+          score
+          isMvp
+          card {
+            slug
+            ... on CardInterface {
+              id
+              slug
+              fullImageUrl
+              player {
+                slug
+                displayName
+                __typename
+              }
+              __typename
+            }
+            __typename
+            totalBonus
+          }
+          playerInFixture {
+            status {
+              statusIconType
+              upcomingGames {
+                id
+                __typename
+              }
+              inGame
+              isScoreFinal
+              __typename
+              hasTBDGames
+              gameStats {
+                score
+                game {
+                  id
+                  status
+                  __typename
+                }
+                __typename
+              }
+            }
+            __typename
+          }
+          __typename
+        }
+        ... on LineupInterface {
+          id
+          rank
+          score
+          cards {
+            card {
+              slug
+              __typename
+            }
+            __typename
+          }
+          projectedReward {
+            tier
+            rarity
+            amountUSDCents
+            __typename
+          }
+          reward {
+            id
+            tier
+            card {
+              slug
+              rarity
+              player {
+                slug
+                displayName
+                __typename
+              }
+              __typename
+            }
+            state
+            __typename
+          }
+          accoladeString
+          __typename
+        }
+        __typename
+        games {
+          ... on GameWithCardInLineupInterface {
+            game {
+              id
+              __typename
+            }
+            homeCardsInLineups {
+              card {
+                slug
+                __typename
+              }
+              __typename
+            }
+            awayCardsInLineups {
+              card {
+                slug
+                __typename
+              }
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+      }
+      ... on LeaderboardInterface {
+        slug
+        leaderboardRarity
+        __typename
+      }
+      ... on LeaderboardInterface {
+        slug
+        leaderboardRarity
+        __typename
+      }
+    }
+    __typename
+  }
+  nbaOpenFixture {
+    slug
+    gameWeek
+    ... on FixtureInterface {
+      slug
+      gameWeek
+      startDate
+      __typename
+    }
+    games {
+      id
+      quarter
+      isHalftime
+      ... on GameInterface {
+        id
+        status
+        startDate
+        homeScore
+        awayScore
+        homeTeam {
+          slug
+          name
+          abbreviation
+          svgUrl
+          __typename
+        }
+        awayTeam {
+          slug
+          name
+          abbreviation
+          svgUrl
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    leaderboards {
+      slug
+      displayName
+      leaderboardRarity
+      isUserEligible
+      myLineups {
+        id
+        games {
+          ... on GameWithCardInLineupInterface {
+            game {
+              id
+              __typename
+            }
+            homeCardsInLineups {
+              card {
+                slug
+                __typename
+              }
+              __typename
+            }
+            awayCardsInLineups {
+              card {
+                slug
+                __typename
+              }
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+        rank
+        score
+        cards {
+          score
+          isMvp
+          card {
+            slug
+            ... on CardInterface {
+              id
+              slug
+              fullImageUrl
+              player {
+                slug
+                displayName
+                __typename
+              }
+              __typename
+            }
+            __typename
+            totalBonus
+          }
+          playerInFixture {
+            status {
+              statusIconType
+              upcomingGames {
+                id
+                __typename
+              }
+              inGame
+              isScoreFinal
+              __typename
+              hasTBDGames
+              gameStats {
+                score
+                game {
+                  id
+                  status
+                  __typename
+                }
+                __typename
+              }
+            }
+            __typename
+          }
+          __typename
+        }
+        ... on LineupInterface {
+          id
+          rank
+          score
+          cards {
+            card {
+              slug
+              __typename
+            }
+            __typename
+          }
+          projectedReward {
+            tier
+            rarity
+            amountUSDCents
+            __typename
+          }
+          reward {
+            id
+            tier
+            card {
+              slug
+              rarity
+              player {
+                slug
+                displayName
+                __typename
+              }
+              __typename
+            }
+            state
+            __typename
+          }
+          accoladeString
+          __typename
+        }
+      }
+      __typename
+      isTraining
+      fixture {
+        slug
+        fixtureState
+        __typename
+      }
+      lineupsCount
+      iconImageUrl
+      monochromeIconImageUrl
+      requirements {
+        allowedConference
+        ... on LeaderboardRequirementsInterface {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          playerAgeRequirements {
+            minAge
+            maxAge
+            __typename
+          }
+          __typename
+        }
+        __typename
+        ... on LeaderboardRequirementsInterface {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          __typename
+        }
+      }
+      ... on LeaderboardInterface {
+        slug
+        fixture {
+          slug
+          fixtureState
+          __typename
+          startDate
+          endDate
+          id
+          gameWeek
+        }
+        isUserEligible
+        lineupsCount
+        iconImageUrl
+        monochromeIconImageUrl
+        displayName
+        __typename
+        requirements {
+          allowedRarities
+          minRarity {
+            minCount
+            rarity
+            __typename
+          }
+          __typename
+        }
+        prizePool {
+          uniqueCardsCount
+          superRareCardsCount
+          rareCardsCount
+          limitedCardsCount
+          commonCardsMaxThreshold
+          commonCardsCount
+          __typename
+          amountUSDCents
+        }
+      }
+      ... on LeaderboardInterface {
+        slug
+        leaderboardRarity
+        __typename
+      }
+    }
+    __typename
+    myRecommendedLeaderboards(first: 5) {
+      slug
+      __typename
+    }
+  }
+  nbaPastFixtures(first: 1) {
+    nodes {
+      slug
+      gameWeek
+      playerFixtureStats(first: 15, order: SCORE, hideUnownedPlayers: false) {
+        nodes {
+          player {
+            slug
+            team {
+              slug
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  cumulativeLeaderboards(sport: NBA) {
+    slug
+    currentCumulativeGameWeek
+    displayName
+    startGameWeek
+    endGameWeek
+    myCumulativeLeaderboardRank {
+      id
+      projectedPrizeCredits
+      __typename
+      score
+      rank
+      cumulativeLeaderboard {
+        slug
+        displayName
+        iconImageUrl
+        startGameWeek
+        endGameWeek
+        participantsCount
+        leaderboardRarity
+        myCumulativeLeaderboardRank {
+          id
+          score
+          rank
+          projectedPrizeCredits
+          __typename
+        }
+        __typename
+      }
+    }
+    __typename
+    iconImageUrl
+    participantsCount
+    leaderboardRarity
+  }
+}
