@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`source.graphql grammar should tokenize a simple query 1`] = `
+exports[`source.graphql grammar > should tokenize a simple query 1`] = `
 query  | keyword.operation.graphql
        | 
 simple | entity.name.function.graphql

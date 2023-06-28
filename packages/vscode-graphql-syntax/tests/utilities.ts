@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import * as oniguruma from 'vscode-oniguruma';
 import * as tm from 'vscode-textmate';
+import { expect } from 'vitest';
 
 const ROOT = path.join(__dirname, '..');
 
@@ -108,7 +109,7 @@ async function vscodeOnigurumaLib() {
 
 async function loadConfiguration() {
   const json = JSON.parse(
-    (await readFile(path.join(ROOT, 'package.json')), 'utf8'),
+    await readFile(path.join(ROOT, 'package.json'), 'utf8'),
   );
 
   return (json?.contributes?.grammars || []).map(grammar => ({
