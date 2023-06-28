@@ -1184,18 +1184,22 @@ export class MessageProcessor {
       cachedDocument,
     ] of this._textDocumentCache.entries()) {
       if (uri !== cachedDocumentUri) {
-        const rawDiagnosticsArr = cachedDocument.contents.map(
-          ({ query, range }) => ({
-            resultsPromise: this._languageService.getDiagnostics(
+        const cachedDocumentProject =
+          this._graphQLCache.getProjectForFile(cachedDocumentUri);
+        if (cachedDocumentProject === project) {
+          const rawDiagnosticsArr = cachedDocument.contents.map(
+            ({ query, range }) => ({
+              resultsPromise: this._languageService.getDiagnostics(
+                query,
+                cachedDocumentUri,
+                this._isRelayCompatMode(query),
+              ),
               query,
-              cachedDocumentUri,
-              this._isRelayCompatMode(query),
-            ),
-            query,
-            range,
-          }),
-        );
-        data.push({ rawDiagnosticsArr, uri: cachedDocumentUri });
+              range,
+            }),
+          );
+          data.push({ rawDiagnosticsArr, uri: cachedDocumentUri });
+        }
       }
     }
 
