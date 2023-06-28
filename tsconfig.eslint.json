@@ -20,6 +20,7 @@
     "packages/graphiql/__mocks__/@graphiql/react.tsx",
     "packages/monaco-graphql/test/*.test.ts",
     "packages/graphiql-react/vite.config.d.ts",
-    "packages/vscode-graphql-syntax/tests/**/*.ts"
+    "packages/vscode-graphql-syntax/tests/**/*.ts",
+    "packages/vscode-graphql-syntax/serializer.ts"
   ]
 }

@@ -55,7 +55,7 @@ async function getGrammar(scopeName: string) {
     })),
   );
 
-  const grammarMap: { [key: string]: tm.IRawGrammar } = Object.create(null);
+  const grammarMap: Record<string, tm.IRawGrammar> = Object.create(null);
   const injections: { [scopeName: string]: string[] } = Object.create(null);
 
   for (const { grammar, content } of grammars) {
