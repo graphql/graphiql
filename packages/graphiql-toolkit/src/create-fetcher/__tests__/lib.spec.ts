@@ -70,7 +70,6 @@ describe('getWsFetcher', () => {
     createClient.mockReturnValue(true);
     getWsFetcher({
       url: '',
-      // @ts-ignore
       wsClient: true,
     });
     // @ts-ignore
@@ -80,7 +79,6 @@ describe('getWsFetcher', () => {
     createClient.mockReturnValue(true);
     getWsFetcher({
       url: '',
-      // @ts-ignore
       legacyClient: true,
     });
     // @ts-ignore

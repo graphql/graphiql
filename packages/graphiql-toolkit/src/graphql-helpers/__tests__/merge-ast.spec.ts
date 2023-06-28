@@ -21,135 +21,149 @@ const schema = new GraphQLSchema({
 
 describe('MergeAst', () => {
   it('does not modify query with no fragments', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test {
         id
-      }`;
-    const mergedQuery = stripWhitespace(`
+      }
+    `;
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test {
         id
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQuery);
   });
 
   it('does inline simple nested fragment', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
-      }`;
-    const mergedQuery = stripWhitespace(`
+      }
+    `;
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test {
-        ...on Test {
+        ... on Test {
           id
         }
-      }`);
-    const mergedQueryWithSchema = stripWhitespace(`
+      }
+    `);
+    const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test {
         id
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
 
   it('does inline triple nested fragment', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         ...Fragment2
       }
-      
+
       fragment Fragment2 on Test {
         ...Fragment3
       }
-      
+
       fragment Fragment3 on Test {
         id
-      }`;
-    const mergedQuery = stripWhitespace(`
+      }
+    `;
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test {
-        ...on Test {
-          ...on Test {
-            ...on Test {
+        ... on Test {
+          ... on Test {
+            ... on Test {
               id
             }
           }
         }
-      }`);
-    const mergedQueryWithSchema = stripWhitespace(`
+      }
+    `);
+    const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test {
         id
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
 
   it('does inline multiple fragments', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test {
         ...Fragment1
         ...Fragment2
         ...Fragment3
       }
-      
+
       fragment Fragment1 on Test {
         id
       }
-      
+
       fragment Fragment2 on Test {
         id
       }
-      
+
       fragment Fragment3 on Test {
         id
-      }`;
-    const mergedQuery = stripWhitespace(`
+      }
+    `;
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test {
-        ...on Test {
+        ... on Test {
           id
         }
-        ...on Test {
+        ... on Test {
           id
         }
-        ...on Test {
+        ... on Test {
           id
         }
-      }`);
-    const mergedQueryWithSchema = stripWhitespace(`
+      }
+    `);
+    const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test {
         id
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
 
   it('removes duplicate fragment spreads', () => {
-    const query = `
+    const query = /* GraphQL */ `
       query Test {
         ...Fragment1
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
-      }`;
-    const mergedQuery = stripWhitespace(`
+      }
+    `;
+    const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test {
-        ...on Test {
+        ... on Test {
           id
         }
-      }`);
-    const mergedQueryWithSchema = stripWhitespace(`
+      }
+    `);
+    const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test {
         id
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
