@@ -1,13 +1,12 @@
-import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import * as oniguruma from 'vscode-oniguruma';
 import * as tm from 'vscode-textmate';
-import { expect } from 'vitest';
+import packageJson from '../package.json' assert { type: 'json' };
 
-const ROOT = path.join(__dirname, '..');
+const ROOT = process.cwd();
 
-type Token = {
+export type Token = {
   text: string;
   scopes: string[];
 };
@@ -47,12 +46,14 @@ async function getGrammar(scopeName: string) {
     return grammarCache[scopeName];
   }
 
-  const grammars = (await loadConfiguration()).map(grammar => {
-    return {
+  const configuration = loadConfiguration();
+
+  const grammars = await Promise.all(
+    configuration.map(async grammar => ({
       grammar,
-      content: fs.readFileSync(grammar.path, 'utf8'),
-    };
-  });
+      content: await readFile(grammar.path, 'utf8'),
+    })),
+  );
 
   const grammarMap: { [key: string]: tm.IRawGrammar } = Object.create(null);
   const injections: { [scopeName: string]: string[] } = Object.create(null);
@@ -90,11 +91,7 @@ async function getGrammar(scopeName: string) {
 }
 
 async function vscodeOnigurumaLib() {
-  const wasmPath = path.join(
-    path.dirname(require.resolve('vscode-oniguruma')),
-    'onig.wasm',
-  );
-
+  const wasmPath = require.resolve('vscode-oniguruma/release/onig.wasm');
   await oniguruma.loadWASM((await readFile(wasmPath)).buffer);
 
   return {
@@ -107,35 +104,9 @@ async function vscodeOnigurumaLib() {
   };
 }
 
-async function loadConfiguration() {
-  const json = JSON.parse(
-    await readFile(path.join(ROOT, 'package.json'), 'utf8'),
-  );
-
-  return (json?.contributes?.grammars || []).map(grammar => ({
+function loadConfiguration() {
+  return packageJson.contributes.grammars.map(grammar => ({
     ...grammar,
     path: path.join(ROOT, grammar.path),
   }));
 }
-
-function formatTokens(tokens: Token[]): string {
-  const maxLength = Math.max(...tokens.map(token => token.text.length));
-
-  return tokens
-    .map(token => {
-      return `${token.text.padEnd(maxLength)} | ${token.scopes.join(' ')}`;
-    })
-    .join('\n');
-}
-
-expect.addSnapshotSerializer({
-  test: value =>
-    Array.isArray(value) &&
-    value.every(
-      item =>
-        typeof item === 'object' &&
-        typeof item.text === 'string' &&
-        Array.isArray(item.scopes),
-    ),
-  serialize: value => formatTokens(value as Token[]),
-});
