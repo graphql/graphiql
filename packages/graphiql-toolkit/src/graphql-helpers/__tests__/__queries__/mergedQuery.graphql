@@ -1106,7 +1106,11 @@ query NBAHomepageQuery {
           gameWeek
           ... on NBAFixture {
             slug
-            playerFixtureStats(first: 15, order: SCORE, hideUnownedPlayers: false) {
+            playerFixtureStats(
+              first: 15
+              order: SCORE
+              hideUnownedPlayers: false
+            ) {
               nodes {
                 player {
                   slug
