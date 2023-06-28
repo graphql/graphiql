@@ -340,8 +340,17 @@ async function addHandlers({
     messageProcessor.handleHoverRequest(params),
   );
 
-  connection.onNotification(DidChangeWatchedFilesNotification.type, params =>
-    messageProcessor.handleWatchedFilesChangedNotification(params),
+  connection.onNotification(
+    DidChangeWatchedFilesNotification.type,
+    async params => {
+      const allDiagnostics =
+        await messageProcessor.handleWatchedFilesChangedNotification(params);
+      if (allDiagnostics) {
+        for (const diagnostics of allDiagnostics) {
+          reportDiagnostics(diagnostics, connection);
+        }
+      }
+    },
   );
 
   connection.onRequest(DocumentSymbolRequest.type, params =>

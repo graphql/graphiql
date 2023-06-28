@@ -633,7 +633,7 @@ export class MessageProcessor {
 
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
-  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
+  ): Promise<Array<PublishDiagnosticsParams> | null> {
     if (
       this._isGraphQLConfigMissing ||
       !this._isInitialized ||
@@ -642,7 +642,7 @@ export class MessageProcessor {
       return null;
     }
 
-    return Promise.all(
+    const allDiagnosticsParams = await Promise.all(
       params.changes.map(async (change: FileEvent) => {
         if (
           this._isGraphQLConfigMissing ||
@@ -650,7 +650,7 @@ export class MessageProcessor {
           !this._graphQLCache
         ) {
           this._logger.warn('No cache available for handleWatchedFilesChanged');
-          return;
+          return [];
         }
         if (
           change.type === FileChangeTypeKind.Created ||
@@ -665,7 +665,10 @@ export class MessageProcessor {
           await this._updateObjectTypeDefinition(uri, contents);
 
           const project = this._graphQLCache.getProjectForFile(uri);
-          await this._updateSchemaIfChanged(project, uri);
+          const diagnosticsParams = await this._updateSchemaIfChanged(
+            project,
+            uri,
+          );
 
           let diagnostics: Diagnostic[] = [];
 
@@ -697,7 +700,8 @@ export class MessageProcessor {
               fileName: uri,
             }),
           );
-          return { uri, diagnostics };
+          diagnosticsParams.push({ uri, diagnostics });
+          return diagnosticsParams;
         }
         if (change.type === FileChangeTypeKind.Deleted) {
           await this._graphQLCache.updateFragmentDefinitionCache(
@@ -711,8 +715,11 @@ export class MessageProcessor {
             false,
           );
         }
+        return [];
       }),
     );
+
+    return allDiagnosticsParams.flat();
   }
 
   async handleDefinitionRequest(
@@ -1143,14 +1150,68 @@ export class MessageProcessor {
   async _updateSchemaIfChanged(
     project: GraphQLProjectConfig,
     uri: Uri,
-  ): Promise<void> {
+  ): Promise<Array<PublishDiagnosticsParams>> {
+    let invalidatedSchema = false;
+
     await Promise.all(
       this._unwrapProjectSchema(project).map(async schema => {
         const schemaFilePath = path.resolve(project.dirpath, schema);
         const uriFilePath = URI.parse(uri).fsPath;
         if (uriFilePath === schemaFilePath) {
-          await this._graphQLCache.invalidateSchemaCacheForProject(project);
+          invalidatedSchema = true;
+          this._graphQLCache.invalidateSchemaCacheForProject(project);
         }
+      }),
+    );
+
+    if (
+      !invalidatedSchema ||
+      project?.extensions?.languageService?.enableValidation === false
+    ) {
+      return [];
+    }
+
+    type RawDiagnostics = {
+      resultsPromise: Promise<Diagnostic[]>;
+      query: string;
+      range: RangeType | null;
+    };
+    const data: Array<{ rawDiagnosticsArr: RawDiagnostics[]; uri: string }> =
+      [];
+
+    for (const [
+      cachedDocumentUri,
+      cachedDocument,
+    ] of this._textDocumentCache.entries()) {
+      if (uri !== cachedDocumentUri) {
+        const rawDiagnosticsArr = cachedDocument.contents.map(
+          ({ query, range }) => ({
+            resultsPromise: this._languageService.getDiagnostics(
+              query,
+              cachedDocumentUri,
+              this._isRelayCompatMode(query),
+            ),
+            query,
+            range,
+          }),
+        );
+        data.push({ rawDiagnosticsArr, uri: cachedDocumentUri });
+      }
+    }
+
+    return Promise.all(
+      data.map(async ({ rawDiagnosticsArr, uri: cachedDocumentUri }) => {
+        const diagnosticsPromiseArr = rawDiagnosticsArr.map(
+          async ({ resultsPromise, query, range }) => {
+            const results = await resultsPromise;
+            return results && results.length > 0
+              ? processDiagnosticsMessage(results, query, range)
+              : [];
+          },
+        );
+        const diagnosticsArr = await Promise.all(diagnosticsPromiseArr);
+        const diagnostics = diagnosticsArr.flat();
+        return { uri: cachedDocumentUri, diagnostics };
       }),
     );
   }
