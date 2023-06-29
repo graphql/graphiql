@@ -207,7 +207,7 @@ importers:
       express-graphql: experimental-stream-defer
       fork-ts-checker-webpack-plugin: 7.3.0
       graphql: ^16.4.0
-      graphql-language-service: ^5.1.7
+      graphql-language-service: 'workspace:'
       graphql-subscriptions: ^2.0.0
       html-webpack-plugin: ^5.5.0
       identity-obj-proxy: ^3.0.0

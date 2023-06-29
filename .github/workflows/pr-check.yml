@@ -16,14 +16,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+          
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          node-version: 19
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: TypeScript Build
-        run: yarn build
+        run: pnpm build
 
       - name: ESLint
-        run: yarn lint
+        run: pnpm lint

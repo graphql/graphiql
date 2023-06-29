@@ -29,16 +29,16 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: 16
+          cache: 'pnpm'
+          node-version: 19
 
       - name: Force GraphQL ${{ matrix.release }} solution
-        run: yarn repo:resolve graphql@${{ matrix.release }}
+        run: pnpm repo:resolve graphql@${{ matrix.release }}
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: pnpm install --frozen-lockfile
 
       - name: Unit Tests
-        run: yarn test:ci
+        run: pnpm test:ci
 
       - name: Cypress
-        run: yarn e2e
+        run: pnpm e2e

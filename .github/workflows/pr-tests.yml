@@ -15,14 +15,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --immutable
+          node-version: 19
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
 
       - name: Run Unit Tests
-        run: yarn test:ci --coverage
+        run: pnpm test:ci --coverage
 
       - uses: codecov/codecov-action@v3
         with:
