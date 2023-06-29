@@ -7,13 +7,11 @@
  *
  */
 
-import fetchMock from 'jest-fetch-mock';
 
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
   GraphQLSchema,
   parse,
-  introspectionFromSchema,
   FragmentDefinitionNode,
   TypeDefinitionNode,
 } from 'graphql';
