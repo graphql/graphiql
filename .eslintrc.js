@@ -31,6 +31,10 @@ module.exports = {
         react: {
           version: 'detect',
         },
+        'import/resolver': {
+          typescript: true,
+          node: true,
+        },
       },
       // https://github.com/sindresorhus/globals/blob/master/globals.json
       env: {

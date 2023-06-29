@@ -3,3 +3,5 @@ packages:
 # - "examples/monaco-graphql-webpack"
 # - "examples/monaco-graphql-nextjs"
 # - "examples/monaco-graphql-react-vite"
+  - '!**/test/**'
+  - '!**/__test__/**'
