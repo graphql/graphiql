@@ -32,7 +32,7 @@
   "scripts": {
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 pnpm webpack -p",
     "build": "pnpm build-clean && pnpm build-esm && pnpm build-bundles",
-    "build-bundles": "pnpm build-bundles-clean && pnpm build-bundles-dev && pnpm build-bundles-min",
+    "build-bundles": "pnpm build-bundles-dev && pnpm build-bundles-min",
     "build-bundles-dev": "cross-env NODE_ENV=development BABEL_ENV=development CDN=1 pnpm webpack --mode development --bail",
     "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 pnpm webpack --mode production --bail",
     "build-clean": "rimraf esm dist webpack *.html",

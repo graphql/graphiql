@@ -12,6 +12,7 @@
     "downlevelIteration": true,
     "removeComments": true,
     "strict": true,
+    "preserveSymlinks": true,
     "jsx": "react",
     "noImplicitAny": true,
     "noImplicitReturns": false,

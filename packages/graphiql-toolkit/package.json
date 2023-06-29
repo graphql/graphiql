@@ -18,7 +18,10 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
-  "scripts": {},
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",
     "meros": "^1.1.4"
