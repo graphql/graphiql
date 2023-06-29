@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -242,7 +238,7 @@ importers:
         version: 4.10.3(esbuild@0.15.1)(rollup@2.79.1)
       rollup-plugin-ts:
         specifier: ^2.0.4
-        version: 2.0.7(@babel/core@7.22.5)(@babel/preset-env@7.20.2)(rollup@2.79.1)(typescript@4.7.4)
+        version: 2.0.7(rollup@2.79.1)(typescript@4.7.4)
       typescript:
         specifier: ^4.3.4
         version: 4.7.4
@@ -425,6 +421,9 @@ importers:
 
   packages/graphiql-plugin-code-exporter:
     dependencies:
+      '@graphiql/react':
+        specifier: 'workspace:'
+        version: link:../graphiql-react
       graphiql-code-exporter:
         specifier: ^3.0.3
         version: 3.0.3(codemirror@5.65.13)(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
@@ -438,9 +437,6 @@ importers:
         specifier: ^16.8.0 || ^17 || ^18
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@graphiql/react':
-        specifier: 'workspace:'
-        version: link:../graphiql-react
       '@types/react':
         specifier: ^18.2.14
         version: 18.2.14
@@ -455,10 +451,13 @@ importers:
         version: 4.7.4
       vite:
         specifier: ^4.3.9
-        version: 4.3.9(@types/node@16.18.4)
+        version: 4.3.9
 
   packages/graphiql-plugin-explorer:
     dependencies:
+      '@graphiql/react':
+        specifier: 'workspace:'
+        version: link:../graphiql-react
       graphiql-explorer:
         specifier: ^0.9.0
         version: 0.9.0(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
@@ -472,9 +471,6 @@ importers:
         specifier: ^16.8.0 || ^17 || ^18
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@graphiql/react':
-        specifier: 'workspace:'
-        version: link:../graphiql-react
       '@types/react':
         specifier: ^18.2.14
         version: 18.2.14
@@ -486,7 +482,7 @@ importers:
         version: 4.7.4
       vite:
         specifier: ^4.3.9
-        version: 4.3.9(@types/node@16.18.4)
+        version: 4.3.9
 
   packages/graphiql-react:
     dependencies:
@@ -577,7 +573,7 @@ importers:
         version: 4.7.4
       vite:
         specifier: ^4.3.9
-        version: 4.3.9(@types/node@16.18.4)
+        version: 4.3.9
       vite-plugin-svgr:
         specifier: ^3.2.0
         version: 3.2.0(vite@4.3.9)
@@ -589,7 +585,7 @@ importers:
         version: 3.2.0
       meros:
         specifier: ^1.1.4
-        version: 1.3.0(@types/node@16.18.4)
+        version: 1.3.0
     devDependencies:
       graphql:
         specifier: ^16.4.0
@@ -630,7 +626,7 @@ importers:
         version: 16.6.0
       graphql-config:
         specifier: 5.0.2
-        version: 5.0.2(@types/node@16.18.4)(cosmiconfig-toml-loader@1.0.0)(graphql@16.6.0)
+        version: 5.0.2(graphql@16.6.0)
       lodash:
         specifier: ^4.17.15
         version: 4.17.21
@@ -694,7 +690,7 @@ importers:
         version: 7.2.3
       graphql-config:
         specifier: 5.0.2
-        version: 5.0.2(@types/node@16.18.4)(cosmiconfig-toml-loader@1.0.0)(graphql@16.6.0)
+        version: 5.0.2(cosmiconfig-toml-loader@1.0.0)(graphql@16.6.0)
       graphql-language-service:
         specifier: 'workspace:'
         version: link:../graphql-language-service
@@ -952,7 +948,7 @@ packages:
       '@babel/traverse': 7.22.5
       '@babel/types': 7.22.5
       convert-source-map: 1.9.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.0
@@ -1060,7 +1056,7 @@ packages:
       '@babel/core': 7.22.5
       '@babel/helper-compilation-targets': 7.22.5(@babel/core@7.22.5)
       '@babel/helper-plugin-utils': 7.22.5
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       lodash.debounce: 4.0.8
       resolve: 1.22.2
       semver: 6.3.0
@@ -2229,7 +2225,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.22.5
       '@babel/parser': 7.22.5
       '@babel/types': 7.22.5
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -3086,7 +3082,7 @@ packages:
       '@babel/preset-env': 7.20.2(@babel/core@7.22.5)
       babel-loader: 9.1.2(@babel/core@7.22.5)(webpack@5.76.0)
       bluebird: 3.7.1
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       lodash: 4.17.21
       webpack: 5.76.0(webpack-cli@5.1.4)
     transitivePeerDependencies:
@@ -3365,7 +3361,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       espree: 9.5.2
       globals: 13.20.0
       ignore: 5.2.4
@@ -3478,6 +3474,25 @@ packages:
       extract-files: 11.0.0
       graphql: 16.6.0
       meros: 1.3.0(@types/node@16.18.4)
+      tslib: 2.5.3
+      value-or-promise: 1.0.12
+    transitivePeerDependencies:
+      - '@types/node'
+    dev: false
+
+  /@graphql-tools/executor-http@1.0.0(graphql@16.6.0):
+    resolution: {integrity: sha512-7R9IWRN1Iszyayd4qgguITLLTmRUZ3wSS5umK0xwShB8mFQ5cSsVx6rewPhGIwGEenN6e9ahwcGX9ytuLlw55g==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      '@graphql-tools/utils': 10.0.1(graphql@16.6.0)
+      '@repeaterjs/repeater': 3.0.4
+      '@whatwg-node/fetch': 0.9.7
+      dset: 3.1.2
+      extract-files: 11.0.0
+      graphql: 16.6.0
+      meros: 1.3.0
       tslib: 2.5.3
       value-or-promise: 1.0.12
     transitivePeerDependencies:
@@ -3625,6 +3640,33 @@ packages:
       - bufferutil
       - encoding
       - utf-8-validate
+    dev: false
+
+  /@graphql-tools/url-loader@8.0.0(graphql@16.6.0):
+    resolution: {integrity: sha512-rPc9oDzMnycvz+X+wrN3PLrhMBQkG4+sd8EzaFN6dypcssiefgWKToXtRKI8HHK68n2xEq1PyrOpkjHFJB+GwA==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      '@ardatan/sync-fetch': 0.0.1
+      '@graphql-tools/delegate': 10.0.0(graphql@16.6.0)
+      '@graphql-tools/executor-graphql-ws': 1.0.1(graphql@16.6.0)
+      '@graphql-tools/executor-http': 1.0.0(graphql@16.6.0)
+      '@graphql-tools/executor-legacy-ws': 1.0.1(graphql@16.6.0)
+      '@graphql-tools/utils': 10.0.1(graphql@16.6.0)
+      '@graphql-tools/wrap': 10.0.0(graphql@16.6.0)
+      '@types/ws': 8.2.2
+      '@whatwg-node/fetch': 0.9.7
+      graphql: 16.6.0
+      isomorphic-ws: 5.0.0(ws@8.13.0)
+      tslib: 2.5.3
+      value-or-promise: 1.0.12
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - encoding
+      - utf-8-validate
 
   /@graphql-tools/utils@10.0.1(graphql@16.6.0):
     resolution: {integrity: sha512-i1FozbDGHgdsFA47V/JvQZ0FE8NAy0Eiz7HGCJO2MkNdZAKNnwei66gOq0JWYVFztwpwbVQ09GkKhq7Kjcq5Cw==}
@@ -3683,7 +3725,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -3700,6 +3742,7 @@ packages:
 
   /@iarna/toml@2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
+    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -4830,7 +4873,7 @@ packages:
       doctrine: 2.1.0
       eslint: 8.43.0
       eslint-config-prettier: 8.8.0(eslint@8.43.0)
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.60.0)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.60.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@8.43.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.60.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
       eslint-plugin-jest: 25.7.0(@typescript-eslint/eslint-plugin@5.60.0)(eslint@8.43.0)(jest@27.5.1)(typescript@4.7.4)
@@ -5599,7 +5642,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.60.0
       '@typescript-eslint/type-utils': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
       '@typescript-eslint/utils': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
@@ -5627,7 +5670,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.60.0
       '@typescript-eslint/type-utils': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
       '@typescript-eslint/utils': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
@@ -5655,7 +5698,7 @@ packages:
       '@typescript-eslint/scope-manager': 6.0.0-alpha.159
       '@typescript-eslint/type-utils': 6.0.0-alpha.159(eslint@8.43.0)(typescript@4.7.4)
       '@typescript-eslint/utils': 6.0.0-alpha.159(eslint@8.43.0)(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
@@ -5693,7 +5736,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.60.0
       '@typescript-eslint/types': 5.60.0
       '@typescript-eslint/typescript-estree': 5.60.0(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       typescript: 4.7.4
     transitivePeerDependencies:
@@ -5714,7 +5757,7 @@ packages:
       '@typescript-eslint/types': 6.0.0-alpha.159
       '@typescript-eslint/typescript-estree': 6.0.0-alpha.159(typescript@4.7.4)
       '@typescript-eslint/visitor-keys': 6.0.0-alpha.159
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       typescript: 4.7.4
     transitivePeerDependencies:
@@ -5749,7 +5792,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.60.0(typescript@4.7.4)
       '@typescript-eslint/utils': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       tsutils: 3.21.0(typescript@4.7.4)
       typescript: 4.7.4
@@ -5769,7 +5812,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 6.0.0-alpha.159(typescript@4.7.4)
       '@typescript-eslint/utils': 6.0.0-alpha.159(eslint@8.43.0)(typescript@4.7.4)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 8.43.0
       ts-api-utils: 1.0.1(typescript@4.7.4)
       typescript: 4.7.4
@@ -5798,7 +5841,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.60.0
       '@typescript-eslint/visitor-keys': 5.60.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.2
@@ -5819,7 +5862,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 6.0.0-alpha.159
       '@typescript-eslint/visitor-keys': 6.0.0-alpha.159
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.2
@@ -5913,7 +5956,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.5)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.5)
       react-refresh: 0.14.0
-      vite: 4.3.9(@types/node@16.18.4)
+      vite: 4.3.9
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6278,7 +6321,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7945,6 +7988,7 @@ packages:
     resolution: {integrity: sha512-H/2gurFWVi7xXvCyvsWRLCMekl4tITJcX0QEsDMpzxtuxDyM59xLatYNg4s/k9AA/HdtCYfj2su8mgA0GSDLDA==}
     dependencies:
       '@iarna/toml': 2.2.5
+    dev: false
 
   /cosmiconfig@6.0.0:
     resolution: {integrity: sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==}
@@ -8436,6 +8480,17 @@ packages:
       ms: 2.0.0
     dev: true
 
+  /debug@3.2.7:
+    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+    dev: true
+
   /debug@3.2.7(supports-color@8.1.1):
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
     peerDependencies:
@@ -8448,6 +8503,17 @@ packages:
       supports-color: 8.1.1
     dev: true
 
+  /debug@4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+
   /debug@4.3.4(supports-color@8.1.1):
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -8459,6 +8525,7 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 8.1.1
+    dev: true
 
   /decamelize-keys@1.1.0:
     resolution: {integrity: sha512-ocLWuYzRPoS9bfiSdDd3cxvrzovVMZnRDVEzAs+hWIVXGDbHxWMECij2OBuyB/An0FFW/nLuq6Kv1i/YC5Qfzg==}
@@ -9469,7 +9536,7 @@ packages:
   /eslint-import-resolver-node@0.3.7:
     resolution: {integrity: sha512-gozW2blMLJCeFpBwugLTGyvVjNoeo1knonXAcatC6bjPBZitotxdWf7Gimr25N4c0AAOo4eOUfaG82IJPDpqCA==}
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7
       is-core-module: 2.12.1
       resolve: 1.22.2
     transitivePeerDependencies:
@@ -9483,10 +9550,10 @@ packages:
       eslint: '*'
       eslint-plugin-import: '*'
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       enhanced-resolve: 5.15.0
       eslint: 8.43.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0)
       get-tsconfig: 4.6.0
       globby: 13.2.0
@@ -9547,9 +9614,38 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/parser': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7
       eslint: 8.43.0
       eslint-import-resolver-node: 0.3.7
+      eslint-import-resolver-typescript: 3.5.5(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-plugin-import@2.27.5)(eslint@8.43.0)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /eslint-module-utils@2.8.0(@typescript-eslint/parser@5.60.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0):
+    resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
+    engines: {node: '>=4'}
+    peerDependencies:
+      '@typescript-eslint/parser': '*'
+      eslint: '*'
+      eslint-import-resolver-node: '*'
+      eslint-import-resolver-typescript: '*'
+      eslint-import-resolver-webpack: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
+      eslint:
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
+        optional: true
+    dependencies:
+      '@typescript-eslint/parser': 5.60.0(eslint@8.43.0)(typescript@4.7.4)
+      debug: 3.2.7
+      eslint: 8.43.0
       eslint-import-resolver-typescript: 3.5.5(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-plugin-import@2.27.5)(eslint@8.43.0)
     transitivePeerDependencies:
       - supports-color
@@ -9577,9 +9673,38 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/parser': 6.0.0-alpha.159(eslint@8.43.0)(typescript@4.7.4)
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7
       eslint: 8.43.0
       eslint-import-resolver-node: 0.3.7
+      eslint-import-resolver-typescript: 3.5.5(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-plugin-import@2.27.5)(eslint@8.43.0)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-import-resolver-typescript@3.5.5)(eslint@8.43.0):
+    resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
+    engines: {node: '>=4'}
+    peerDependencies:
+      '@typescript-eslint/parser': '*'
+      eslint: '*'
+      eslint-import-resolver-node: '*'
+      eslint-import-resolver-typescript: '*'
+      eslint-import-resolver-webpack: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
+      eslint:
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
+        optional: true
+    dependencies:
+      '@typescript-eslint/parser': 6.0.0-alpha.159(eslint@8.43.0)(typescript@4.7.4)
+      debug: 3.2.7
+      eslint: 8.43.0
       eslint-import-resolver-typescript: 3.5.5(@typescript-eslint/parser@6.0.0-alpha.159)(eslint-plugin-import@2.27.5)(eslint@8.43.0)
     transitivePeerDependencies:
       - supports-color
@@ -9630,7 +9755,7 @@ packages:
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1
       array.prototype.flatmap: 1.3.1
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7
       doctrine: 2.1.0
       eslint: 8.43.0
       eslint-import-resolver-node: 0.3.7
@@ -9663,7 +9788,7 @@ packages:
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1
       array.prototype.flatmap: 1.3.1
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7
       doctrine: 2.1.0
       eslint: 8.43.0
       eslint-import-resolver-node: 0.3.7
@@ -9992,7 +10117,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.0
@@ -10702,6 +10827,16 @@ packages:
     resolution: {integrity: sha512-8/sOawo8tJ4QOBX8YlQBMxL8+RLZfxMQOif9o0KUKTNTjMYElWPE0r/m5VNFxTRd0NSw8qSy8dajrwX4RYI1Hw==}
     dev: true
 
+  /follow-redirects@1.15.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: true
+
   /follow-redirects@1.15.2(debug@4.3.4):
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
@@ -10711,7 +10846,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     dev: true
 
   /for-each@0.3.3:
@@ -11324,6 +11459,66 @@ packages:
       - bufferutil
       - encoding
       - utf-8-validate
+    dev: false
+
+  /graphql-config@5.0.2(cosmiconfig-toml-loader@1.0.0)(graphql@16.6.0):
+    resolution: {integrity: sha512-7TPxOrlbiG0JplSZYCyxn2XQtqVhXomEjXUmWJVSS5ET1nPhOJSsIb/WTwqWhcYX6G0RlHXSj9PLtGTKmxLNGg==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      cosmiconfig-toml-loader: ^1.0.0
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      cosmiconfig-toml-loader:
+        optional: true
+    dependencies:
+      '@graphql-tools/graphql-file-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/json-file-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/load': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/merge': 9.0.0(graphql@16.6.0)
+      '@graphql-tools/url-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/utils': 10.0.1(graphql@16.6.0)
+      cosmiconfig: 8.2.0
+      cosmiconfig-toml-loader: 1.0.0
+      graphql: 16.6.0
+      jiti: 1.18.2
+      minimatch: 4.2.3
+      string-env-interpolation: 1.0.1
+      tslib: 2.5.3
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /graphql-config@5.0.2(graphql@16.6.0):
+    resolution: {integrity: sha512-7TPxOrlbiG0JplSZYCyxn2XQtqVhXomEjXUmWJVSS5ET1nPhOJSsIb/WTwqWhcYX6G0RlHXSj9PLtGTKmxLNGg==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      cosmiconfig-toml-loader: ^1.0.0
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      cosmiconfig-toml-loader:
+        optional: true
+    dependencies:
+      '@graphql-tools/graphql-file-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/json-file-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/load': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/merge': 9.0.0(graphql@16.6.0)
+      '@graphql-tools/url-loader': 8.0.0(graphql@16.6.0)
+      '@graphql-tools/utils': 10.0.1(graphql@16.6.0)
+      cosmiconfig: 8.2.0
+      graphql: 16.6.0
+      jiti: 1.18.2
+      minimatch: 4.2.3
+      string-env-interpolation: 1.0.1
+      tslib: 2.5.3
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: true
 
   /graphql-subscriptions@2.0.0(graphql@16.6.0):
     resolution: {integrity: sha512-s6k2b8mmt9gF9pEfkxsaO1lTxaySfKoEJzEfmwguBbQ//Oq23hIXCfR1hm4kdh5hnR20RdwB+s3BCb+0duHSZA==}
@@ -11416,6 +11611,7 @@ packages:
   /has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
+    dev: true
 
   /has-glob@0.1.1:
     resolution: {integrity: sha512-WMHzb7oCwDcMDngWy0b+viLjED8zvSi5d4/YdBetADHX/rLH+noJaRTytuyN6thTxxM7lK+FloogQHHdOOR+7g==}
@@ -11638,7 +11834,7 @@ packages:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -11667,7 +11863,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.2(debug@4.3.4)
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -11687,7 +11883,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -12428,7 +12624,7 @@ packages:
     resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
     engines: {node: '>=10'}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -13368,7 +13564,7 @@ packages:
       chalk: 3.0.0
       commander: 4.1.1
       cosmiconfig: 6.0.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       dedent: 0.7.0
       execa: 3.4.0
       listr: 0.14.3
@@ -13944,6 +14140,15 @@ packages:
     resolution: {integrity: sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==}
     dev: true
 
+  /meros@1.3.0:
+    resolution: {integrity: sha512-2BNGOimxEz5hmjUG2FwoxCt5HN7BXdaWyFqEwxPTrJzVdABtrL4TiHTcsWSFAxPQ/tOnEaQEJh3qWq71QRMY+w==}
+    engines: {node: '>=13'}
+    peerDependencies:
+      '@types/node': '>=13'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   /meros@1.3.0(@types/node@16.18.4):
     resolution: {integrity: sha512-2BNGOimxEz5hmjUG2FwoxCt5HN7BXdaWyFqEwxPTrJzVdABtrL4TiHTcsWSFAxPQ/tOnEaQEJh3qWq71QRMY+w==}
     engines: {node: '>=13'}
@@ -13954,6 +14159,7 @@ packages:
         optional: true
     dependencies:
       '@types/node': 16.18.4
+    dev: false
 
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
@@ -14198,7 +14404,7 @@ packages:
   /micromark@2.11.4:
     resolution: {integrity: sha512-+WoovN/ppKolQOFIAajxi7Lu9kInbPxFuTBVEavFcL8eAfVstoc5MocPmqBeAdBOJV00uaVjegzH4+MA0DN/uA==}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       parse-entities: 2.0.0
     transitivePeerDependencies:
       - supports-color
@@ -14208,7 +14414,7 @@ packages:
     resolution: {integrity: sha512-6Mj0yHLdUZjHnOPgr5xfWIMqMWS12zDN6iws9SLuSz76W8jTtAv24MN4/CL7gJrl5vtxGInkkqDv/JIoRsQOvA==}
     dependencies:
       '@types/debug': 4.1.7
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       decode-named-character-reference: 1.0.2
       micromark-core-commonmark: 1.0.6
       micromark-factory-space: 1.0.0
@@ -14892,7 +15098,7 @@ packages:
     hasBin: true
     dependencies:
       commander: 6.2.1
-      follow-redirects: 1.15.2(debug@4.3.4)
+      follow-redirects: 1.15.2
       is-ci: 2.0.0
       leven: 3.1.0
       tmp: 0.2.1
@@ -16882,7 +17088,7 @@ packages:
       rollup: ^1.20.0 || ^2.0.0
     dependencies:
       '@rollup/pluginutils': 4.2.1
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       es-module-lexer: 0.9.3
       esbuild: 0.15.1
       joycon: 3.1.1
@@ -16892,7 +17098,7 @@ packages:
       - supports-color
     dev: true
 
-  /rollup-plugin-ts@2.0.7(@babel/core@7.22.5)(@babel/preset-env@7.20.2)(rollup@2.79.1)(typescript@4.7.4):
+  /rollup-plugin-ts@2.0.7(rollup@2.79.1)(typescript@4.7.4):
     resolution: {integrity: sha512-M9sppRKX6y/b2KXbGdUdHid0tshAEK/sEeYLBHBJiBa4swukSsoFVXKGGZasLcjaXhgUnnizFuvFFj6znxwvSA==}
     engines: {node: '>=10.0.0', npm: '>=7.0.0', pnpm: '>=3.2.0', yarn: '>=1.13'}
     peerDependencies:
@@ -16918,8 +17124,6 @@ packages:
       '@swc/helpers':
         optional: true
     dependencies:
-      '@babel/core': 7.22.5
-      '@babel/preset-env': 7.20.2(@babel/core@7.22.5)
       '@rollup/pluginutils': 4.2.1
       '@wessberg/stringutil': 1.0.19
       browserslist: 4.21.5
@@ -17471,7 +17675,7 @@ packages:
   /spdy-transport@3.0.0:
     resolution: {integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw==}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -17485,7 +17689,7 @@ packages:
     resolution: {integrity: sha512-r46gZQZQV+Kl9oItvl1JZZqJKGr+oEkB08A6BzkiR7593/7IbtuncXHd2YoYeTsG4157ZssMu9KYvUHLcjcDoA==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -17551,7 +17755,7 @@ packages:
       arg: 5.0.2
       bluebird: 3.7.2
       check-more-types: 2.24.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       execa: 5.1.1
       lazy-ass: 1.6.0
       ps-tree: 1.2.0
@@ -17901,6 +18105,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       has-flag: 4.0.0
+    dev: true
 
   /supports-color@9.3.1:
     resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
@@ -18643,7 +18848,7 @@ packages:
       '@types/node': 18.16.18
       '@types/unist': 2.0.6
       concat-stream: 2.0.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       fault: 2.0.1
       glob: 8.1.0
       ignore: 5.2.4
@@ -19002,7 +19207,7 @@ packages:
     hasBin: true
     dependencies:
       cac: 6.7.14
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       mlly: 1.4.0
       pathe: 1.1.1
       picocolors: 1.0.0
@@ -19025,10 +19230,42 @@ packages:
       '@rollup/pluginutils': 5.0.2
       '@svgr/core': 7.0.0
       '@svgr/plugin-jsx': 7.0.0
-      vite: 4.3.9(@types/node@16.18.4)
+      vite: 4.3.9
     transitivePeerDependencies:
       - rollup
       - supports-color
+    dev: true
+
+  /vite@4.3.9:
+    resolution: {integrity: sha512-qsTNZjO9NoJNW7KnOrgYwczm0WctJ8m/yqYAMAK9Lxt4SoySUfS5S8ia9K7JHpa3KEeMfyF8LoJ3c5NeBJy6pg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.17.19
+      postcss: 8.4.24
+      rollup: 3.25.3
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: true
 
   /vite@4.3.9(@types/node@16.18.4):
@@ -19108,7 +19345,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       concordance: 5.0.4
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       local-pkg: 0.4.3
       magic-string: 0.30.0
       pathe: 1.1.1
@@ -19968,3 +20205,7 @@ packages:
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
