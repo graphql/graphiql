@@ -31,9 +31,8 @@
   ],
   "scripts": {
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 pnpm webpack -p",
-    "build": "pnpm build-clean && pnpm build-esm && pnpm build-bundles",
+    "build": " pnpm build-esm && pnpm build-bundles",
     "build-bundles": "cross-env BABEL_ENV=development CDN=1 pnpm webpack --bail",
-    "build-clean": "rimraf esm dist webpack *.html",
     "build-esm": "tsc --project ./tsconfig.json",
     "check": "tsc --noEmit",
     "cypress-open": "pnpm e2e-server 'cypress open'",
