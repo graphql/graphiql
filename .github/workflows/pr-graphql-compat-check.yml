@@ -26,7 +26,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.6.5
       - uses: actions/setup-node@v3
         with:
           cache: 'pnpm'
