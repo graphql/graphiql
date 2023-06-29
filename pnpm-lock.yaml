@@ -458,6 +458,9 @@ importers:
       '@graphiql/react':
         specifier: 'workspace:'
         version: link:../graphiql-react
+      '@graphiql/toolkit':
+        specifier: 'workspace:'
+        version: link:../graphiql-toolkit
       graphiql-explorer:
         specifier: ^0.9.0
         version: 0.9.0(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)

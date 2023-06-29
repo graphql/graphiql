@@ -18,6 +18,7 @@
   },
   "license": "MIT",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "src",
     "cm6-legacy",

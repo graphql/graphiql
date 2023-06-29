@@ -17,7 +17,8 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc"
+    "outDir": "types",
+    "rootDir": "./src"
   },
   "include": ["src"],
   "exclude": ["**/__tests__/**"],

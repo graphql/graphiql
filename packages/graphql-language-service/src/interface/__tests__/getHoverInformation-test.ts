@@ -12,7 +12,7 @@ import { Hover } from 'vscode-languageserver-types';
 
 import fs from 'node:fs';
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { Position } from 'graphql-language-service';
+import { Position } from '../../';
 import path from 'node:path';
 
 import { getHoverInformation } from '../getHoverInformation';

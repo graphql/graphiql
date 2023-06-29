@@ -10,7 +10,7 @@
 import {
   AutocompleteSuggestionOptions,
   CompletionItem,
-} from 'graphql-language-service';
+} from '../../';
 
 import fs from 'node:fs';
 import {

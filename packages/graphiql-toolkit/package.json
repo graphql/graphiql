@@ -15,8 +15,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/toolkit"
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "esm/index.js",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",

@@ -30,7 +30,7 @@
     "typescript"
   ],
   "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0"
   },

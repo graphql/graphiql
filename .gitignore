@@ -23,6 +23,7 @@ yarn-1.18.0.js
 
 examples/*/yarn.lock
 package-lock.json
+yarn.lock
 .eslintcache
 .cspellcache
 
