@@ -6,10 +6,10 @@
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
   "types": "esm/monaco.contribution.d.ts",
-    "scripts": {
-      "build": "tsc",
-      "dev": "tsc --watch"
-    },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
   "contributors": [
     {
       "name": "Peng Lyu",
