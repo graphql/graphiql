@@ -15,7 +15,7 @@ import {
   Source,
 } from 'graphql';
 import picomatch from 'picomatch-browser';
-import type { IPosition } from 'graphql-language-service';
+import type { Diagnostic, HoverContents, IPosition } from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -25,6 +25,7 @@ import {
   getOperationASTFacts,
   JSONSchemaOptions,
 } from 'graphql-language-service';
+
 import { defaultSchemaLoader } from './schemaLoader';
 import { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
 
@@ -228,7 +229,7 @@ export class LanguageService {
     uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => {
+  ): Diagnostic[] => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.trim().length < 2 || !schema?.schema) {
       return [];
@@ -247,7 +248,7 @@ export class LanguageService {
     documentText: string,
     position: IPosition,
     options?: HoverConfig,
-  ) => {
+  ): HoverContents | undefined => {
     const schema = this.getSchemaForFile(uri);
     if (schema && documentText?.length > 3) {
       return getHoverInformation(

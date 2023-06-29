@@ -148,14 +148,14 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "node esbuild",
-    "build-bundles": "npm run compile -- --sourcemap",
+    "vscode:prepublish": "pnpm run build -- --minify",
+    "build": "node esbuild",
+    "build-bundles": "pnpm run build -- --sourcemap",
     "vsce:package": "vsce package --pnpm",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --pnpm",
     "open-vsx:publish": "ovsx publish --pnpm -i . --pat $OVSX_PAT",
-    "release": "npm run vsce:publish && npm run open-vsx:publish"
+    "release": "pnpm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",

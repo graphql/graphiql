@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "composite": false,
+    "composite": true,
     "jsx": "react",
     "baseUrl": ".",
     "target": "es5",

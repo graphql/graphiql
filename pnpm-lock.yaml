@@ -839,6 +839,9 @@ importers:
       svelte2tsx:
         specifier: ^0.6.16
         version: 0.6.16(svelte@4.0.1)(typescript@4.9.5)
+      wonka:
+        specifier: 6.3.2
+        version: 6.3.2
       ws:
         specifier: 8.8.1
         version: 8.8.1
@@ -19594,6 +19597,10 @@ packages:
 
   /wonka@4.0.15:
     resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
+    dev: false
+
+  /wonka@6.3.2:
+    resolution: {integrity: sha512-2xXbQ1LnwNS7egVm1HPhW2FyKrekolzhpM3mCwXdQr55gO+tAiY76rhb32OL9kKsW8taj++iP7C6hxlVzbnvrw==}
     dev: false
 
   /word-wrap@1.2.3:
