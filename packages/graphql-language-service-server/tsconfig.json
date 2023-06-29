@@ -2,7 +2,7 @@
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "target": "ES2018",
-    "composite": true,
+
     "rootDir": "./src",
     "outDir": "./dist"
   },

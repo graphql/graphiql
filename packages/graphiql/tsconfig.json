@@ -6,7 +6,8 @@
     "composite": false,
     "jsx": "react",
     "baseUrl": ".",
-    "target": "es5"
+    "target": "es5",
+    "esModuleInterop": true
   },
   "include": ["src"],
   "exclude": [

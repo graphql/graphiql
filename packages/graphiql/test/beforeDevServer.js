@@ -12,8 +12,6 @@ const schema = require('./schema');
 const { schema: badSchema } = require('./bad-schema');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
-  // GraphQL Server
-  console.log('dev server');
   app.post('/graphql', graphqlHTTP({ schema }));
   app.get('/graphql', graphqlHTTP({ schema }));
 
