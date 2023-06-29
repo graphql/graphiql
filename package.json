@@ -3,14 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "examples/monaco-graphql-webpack",
-      "examples/monaco-graphql-nextjs",
-      "examples/monaco-graphql-react-vite"
-    ]
-  },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
@@ -36,11 +28,11 @@
     "dev": "turbo dev --concurrency 20",
     "build:cm6-graphql": "pnpm run --filter cm6-graphql build",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
-    "watch-vscode": "pnpm workspace vscode-graphql run compile",
-    "watch-vscode-exec": "pnpm workspace vscode-graphql-execution run compile",
-    "cypress-open": "pnpm workspace graphiql cypress-open",
-    "dev-graphiql": "pnpm workspace graphiql dev",
-    "e2e": "pnpm run build && pnpm workspace graphiql e2e",
+    "watch-vscode": "pnpm --filter vscode-graphql run compile",
+    "watch-vscode-exec": "pnpm --filter vscode-graphql-execution run compile",
+    "cypress-open": "pnpm --filter graphiql run cypress-open",
+    "dev-graphiql": "pnpm --filter graphiql run dev",
+    "e2e": "pnpm run build && pnpm --filter graphiql run e2e",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "pnpm eslint --fix && pnpm pretty",
     "jest": "jest --testPathIgnorePatterns cm6-graphql",
@@ -49,7 +41,7 @@
     "lint-check": "eslint-config-prettier .eslintrc.js",
     "lint-cspell": "cspell --unique",
     "lint-fix": "pnpm eslint --fix",
-    "postbuild": "pnpm workspace codemirror-graphql run postbuild",
+    "postbuild": "pnpm --filter codemirror-graphql run postbuild",
     "prepublishOnly": "./scripts/prepublish.sh",
     "pretty": "pnpm pretty-check --write",
     "pretty-check": "prettier --cache --check --ignore-path .gitignore --ignore-path .prettierignore .",
@@ -59,8 +51,8 @@
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "repo:resolve": "node scripts/set-resolution.js",
-    "start-graphiql": "pnpm workspace graphiql dev",
-    "start-monaco": "pnpm workspace example-monaco-graphql-webpack start",
+    "start-graphiql": "pnpm --filter graphiql run dev",
+    "start-monaco": "pnpm --filter example-monaco-graphql-webpack run start",
     "t": "pnpm run test",
     "test": "pnpm jest",
     "test:coverage": "pnpm jest --coverage",
