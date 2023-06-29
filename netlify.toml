@@ -5,4 +5,4 @@
 
   # Default build command.
   command = "yarn build && yarn build-bundles && yarn build-docs"
-  environment = { YARN_FLAGS = "--frozen-lockfile --immutable"}
+  environment = { YARN_FLAGS = "--frozen-lockfile"}
