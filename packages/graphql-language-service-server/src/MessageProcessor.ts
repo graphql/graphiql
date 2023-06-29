@@ -756,8 +756,8 @@ export class MessageProcessor {
     ] of this._textDocumentCache.entries()) {
       const project = this._graphQLCache.getProjectForFile(cachedDocumentUri);
       const projectData = updatedSchemaProjects.get(project);
-      // Only add cached document if it is in a validated project with
-      // an updated schema but is not an updated schema in that project
+      // Only add cached document if it is in a project with an
+      // updated schema but is not an updated schema in that project
       if (
         projectData !== undefined &&
         !projectData.updatedSchemaUris.includes(cachedDocumentUri)
