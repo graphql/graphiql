@@ -314,7 +314,7 @@ export class MessageProcessor {
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    this._logger.info('opening document')
+    this._logger.info('opening document 1')
     /**
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
@@ -360,6 +360,7 @@ export class MessageProcessor {
       contents = this._parser(text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
+      this._logger.info('opening document 3')
     } else {
       const configMatchers = [
         'graphql.config',
@@ -383,6 +384,7 @@ export class MessageProcessor {
       return null;
     }
     if (!this._graphQLCache) {
+      this._logger.info('opening document 3.5')
       return { uri, diagnostics };
     }
     try {
@@ -391,20 +393,26 @@ export class MessageProcessor {
         this._isInitialized &&
         project?.extensions?.languageService?.enableValidation !== false
       ) {
+        this._logger.info('opening document 4...')
+
         await Promise.all(
           contents.map(async ({ query, range }) => {
+            this._logger.info(JSON.stringify({ query, range }))
             const results = await this._languageService.getDiagnostics(
               query,
               uri,
               this._isRelayCompatMode(query),
             );
+            this._logger.info(JSON.stringify(results, null, 2))
             if (results && results.length > 0) {
+              this._logger.info('has validation errors')
               diagnostics.push(
                 ...processDiagnosticsMessage(results, query, range),
               );
             }
           }),
         );
+        this._logger.info('opening document 5')
       }
 
       this._logger.log(
@@ -1125,38 +1133,38 @@ export class MessageProcessor {
     try {
       this._logger.info('cacheDocumentFilesforProject 1')
       this._logger.info(JSON.stringify(project, null, 2))
-      const documents = await project.getDocuments();
-      this._logger.info('cacheDocumentFilesforProject 2')
+      // const documents = await project.getDocuments();
+      // this._logger.info('cacheDocumentFilesforProject 2')
 
-      return Promise.all(
-        documents.map(async document => {
-          if (!document.location || !document.rawSDL) {
-            return;
-          }
-          this._logger.info('cacheDocumentFilesforProject 3')
-
-
-          let filePath = document.location;
-          if (!path.isAbsolute(filePath)) {
-            filePath = path.join(project.dirpath, document.location);
-          }
-          this._logger.info('cacheDocumentFilesforProject 4')
-
-          // build full system URI path with protocol
-          const uri = URI.file(filePath).toString();
-          this._logger.info('cacheDocumentFilesforProject 5')
+      // return Promise.all(
+      //   documents.map(async document => {
+      //     if (!document.location || !document.rawSDL) {
+      //       return;
+      //     }
+      //     this._logger.info('cacheDocumentFilesforProject 3')
 
 
-          // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
-          const contents = this._parser(document.rawSDL, uri);
-          if (!contents[0]?.query) {
-            return;
-          }
-          await this._updateObjectTypeDefinition(uri, contents);
-          await this._updateFragmentDefinition(uri, contents);
-          await this._invalidateCache({ version: 1, uri }, uri, contents);
-        }),
-      );
+      //     let filePath = document.location;
+      //     if (!path.isAbsolute(filePath)) {
+      //       filePath = path.join(project.dirpath, document.location);
+      //     }
+      //     this._logger.info('cacheDocumentFilesforProject 4')
+
+      //     // build full system URI path with protocol
+      //     const uri = URI.file(filePath).toString();
+      //     this._logger.info('cacheDocumentFilesforProject 5')
+
+
+      //     // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
+      //     const contents = this._parser(document.rawSDL, uri);
+      //     if (!contents[0]?.query) {
+      //       return;
+      //     }
+      //     await this._updateObjectTypeDefinition(uri, contents);
+      //     await this._updateFragmentDefinition(uri, contents);
+      //     await this._invalidateCache({ version: 1, uri }, uri, contents);
+      //   }),
+      // );
     } catch (err) {
       this._logger.error(
         `invalid/unknown file in graphql config documents entry:\n '${project.documents}'`,
@@ -1175,7 +1183,8 @@ export class MessageProcessor {
         Object.keys(config.projects).map(async projectName => {
           const project = config.getProject(projectName);
           await this._cacheSchemaFilesForProject(project);
-          await this._cacheDocumentFilesforProject(project);
+          this._logger.info('updating config 6.5')
+         // await this._cacheDocumentFilesforProject(project);
         }),
       );
     }

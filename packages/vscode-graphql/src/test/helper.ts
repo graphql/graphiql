@@ -32,7 +32,8 @@ export async function activate(docUri: vscode.Uri) {
 
     await ext.activate();
     console.log('ext activated', docUri);
-    editor = await vscode.window.showTextDocument(docUri);
+    // editor = await vscode.window.showTextDocument(docUri);
+    await sleep(5000)
     console.log('doc shown')
   } catch (e) {
     console.error(e);

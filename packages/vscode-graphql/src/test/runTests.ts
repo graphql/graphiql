@@ -21,6 +21,7 @@ async function main() {
       extensionDevelopmentPath,
       extensionTestsPath,
       version: 'insiders',
+      timeout: 10000000,
       launchArgs: [
         // '--disable-workspace-trust',
         // '--disable-workspace-trust'

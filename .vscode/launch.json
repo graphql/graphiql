@@ -29,7 +29,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-graphql",
         "--extensionTestsPath=${workspaceFolder}/packages/vscode-graphql/dist/test/index",
         "${workspaceFolder}/packages/vscode-graphql/fixtures",
-        "${workspaceFolder}/packages/vscode-graphql/fixtures/diagnostics.txt"
+        "${workspaceFolder}/packages/vscode-graphql/fixtures/src/queries/query.ts"
       ],
       "outFiles": [
         "${workspaceFolder}/packages/vscode-graphql/out/extension.js"

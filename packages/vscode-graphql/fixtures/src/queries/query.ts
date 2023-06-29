@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { graphql } from 'graphql-tag';
 
 const query1 = graphql`
@@ -8,8 +9,8 @@ fragment ExampleFragment on ExampleType {
 
 const query2 = graphql`
   query ExampleQuery {
-    exampleField {
-      ...ExampleFragment
+    exampleFiel {
+      ...ExampleFragmen
     }
   }
 `;

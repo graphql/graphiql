@@ -47,7 +47,7 @@
     "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
     "workspaceContains:**/package.json"
   ],
-  "extensionKind": ["ui"],
+  "extensionKind": ["ui", "workspace"],
   "main": "./out/extension.js",
   "contributes": {
     "icons": {

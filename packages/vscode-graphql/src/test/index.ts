@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import path from 'path';
-import Mocha from 'mocha';
+import { default as Mocha } from 'mocha';
 // import { readFileSync, readdirSync } from 'fs';
 
 export async function run(): Promise<void> {
@@ -11,7 +11,7 @@ export async function run(): Promise<void> {
   const mocha = new Mocha({
     ui: 'tdd',
     color: true,
-    timeout: 1000000
+   // timeout: 1000000
   });
 
   mocha.timeout(100000)
