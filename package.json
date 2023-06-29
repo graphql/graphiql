@@ -54,8 +54,8 @@
     "start-graphiql": "pnpm --filter graphiql run dev",
     "start-monaco": "pnpm --filter example-monaco-graphql-webpack run start",
     "test": "jest",
-    "test:coverage": "pnpm jest --coverage",
-    "test:watch": "pnpm jest --watch"
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@arthurgeron/eslint-plugin-react-usememo": "^1.1.4",
