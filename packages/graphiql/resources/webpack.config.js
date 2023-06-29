@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
+
 const graphql = require('graphql');
 const rimraf = require('rimraf');
 
@@ -56,7 +58,7 @@ const resultConfig = {
       // i think we need to add another rule for
       // codemirror-graphql esm.js files to load
       {
-        test: /\.(js|jsx|ts|tsx)$/,
+        test: /\.(js|jsx|ts|tsx|mjs)$/,
         use: [{ loader: 'babel-loader' }],
         exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
       },
@@ -107,9 +109,12 @@ const resultConfig = {
       }
     })(),
   ],
+  resolveLoader: {
+    plugins: [PnpWebpackPlugin.moduleLoader(module)],
+  },
   resolve: {
     extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
-    modules: [rootPath('node_modules'), rootPath('../', '../', 'node_modules')],
+    plugins: [PnpWebpackPlugin],
   },
 };
 

@@ -64,7 +64,10 @@
     "set-value": "^4.1.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.14",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@types/jest": "^29.5.2",
+    "@types/markdown-it": "12.2.3",
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "14.0.0",
     "@types/set-value": "^4.0.1",

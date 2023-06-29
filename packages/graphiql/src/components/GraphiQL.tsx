@@ -707,6 +707,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           onOpenChange={handleOpenShortKeysDialog}
         >
           <div className="graphiql-dialog-header">
+            {/* @ts-expect-error */}
+
             <Dialog.Title className="graphiql-dialog-title">
               Short Keys
             </Dialog.Title>
@@ -721,6 +723,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           onOpenChange={handleOpenSettingsDialog}
         >
           <div className="graphiql-dialog-header">
+            {/* @ts-expect-error */}
             <Dialog.Title className="graphiql-dialog-title">
               Settings
             </Dialog.Title>

@@ -49,7 +49,8 @@
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
-    "vscode-languageserver-types": "^3.17.2",
+    "vscode-languageserver-protocol": "^3.17.3",
+    "vscode-languageserver-types": "^3.17.3",
     "vscode-uri": "^3.0.2",
     "svelte2tsx": "^0.6.16",
     "svelte": "^4.0.0",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
     "@types/glob": "^8.1.0",
+    "@graphql-tools/load": "^8.0.0",
     "cross-env": "^7.0.2",
     "graphql": "^16.4.0"
   },
