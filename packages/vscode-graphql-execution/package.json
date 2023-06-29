@@ -83,7 +83,6 @@
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
     "build": "node esbuild.js",
-    "build-bundles": "pnpm run build",
     "vsce:package": "pnpm build && vsce package --pnpm",
     "vsce:prepublish": "pnpm run vsce:package",
     "vsce:publish": "vsce publish --pnpm",

@@ -149,8 +149,7 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run build -- --minify",
-    "build": "node esbuild",
-    "build-bundles": "pnpm run build -- --sourcemap",
+    "build": "node esbuild --sourcemap",
     "vsce:package": "vsce package --pnpm",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --pnpm",
