@@ -24,14 +24,14 @@ imported.
 ```ts
 import type { ValidationContext, SDLValidationContext } from 'graphql';
 
-import CodeMirror from 'codemirror';
+import {fromTextArea} from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
 
-CodeMirror.fromTextArea(myTextarea, {
+fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
     schema: myGraphQLSchema,

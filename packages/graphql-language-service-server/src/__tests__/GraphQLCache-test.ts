@@ -78,23 +78,23 @@ describe('GraphQLCache', () => {
     });
 
     // this essentially tests url loader
-    it.skip('generates the schema correctly from endpoint', async () => {
-      const introspectionResult = {
-        data: introspectionFromSchema(
-          await graphQLRC.getProject('testWithSchema').getSchema(),
-          { descriptions: true },
-        ),
-      };
-      fetchMock.mockIf(
-        JSON.stringify({
-          data: introspectionResult,
-        }),
-      );
+    // it.skip('generates the schema correctly from endpoint', async () => {
+    //   const introspectionResult = {
+    //     data: introspectionFromSchema(
+    //       await graphQLRC.getProject('testWithSchema').getSchema(),
+    //       { descriptions: true },
+    //     ),
+    //   };
+    //   fetchMock.mockIf(
+    //     JSON.stringify({
+    //       data: introspectionResult,
+    //     }),
+    //   );
 
-      const schema = await cache.getSchema('testWithEndpoint');
-      expect(fetchMock.called('*')).toEqual(true);
-      expect(schema instanceof GraphQLSchema).toEqual(true);
-    });
+    //   const schema = await cache.getSchema('testWithEndpoint');
+    //   expect(fetchMock.called('*')).toEqual(true);
+    //   expect(schema instanceof GraphQLSchema).toEqual(true);
+    // });
 
     it('does not generate a schema without a schema path or endpoint', async () => {
       const schema = await cache.getSchema('testWithoutSchema');
