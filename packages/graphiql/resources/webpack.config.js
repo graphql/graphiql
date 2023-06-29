@@ -16,7 +16,7 @@ const resultConfig = isDev => {
   const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
   const config = {
-    mode: isDev ? 'development': 'production',
+    mode: isDev ? 'development' : 'production',
     entry: './cdn.ts',
     context: rootPath('src'),
     output: {

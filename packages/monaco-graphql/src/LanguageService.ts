@@ -15,7 +15,11 @@ import {
   Source,
 } from 'graphql';
 import picomatch from 'picomatch-browser';
-import type { Diagnostic, HoverContents, IPosition } from 'graphql-language-service';
+import type {
+  Diagnostic,
+  HoverContents,
+  IPosition,
+} from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,

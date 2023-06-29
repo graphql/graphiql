@@ -16,4 +16,8 @@ export * from './getDefinition';
 export * from './getDiagnostics';
 
 export { getOutline } from './getOutline';
-export { getHoverInformation, HoverConfig, HoverContents } from './getHoverInformation';
+export {
+  getHoverInformation,
+  HoverConfig,
+  HoverContents,
+} from './getHoverInformation';
