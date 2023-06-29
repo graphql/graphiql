@@ -13,6 +13,7 @@ const { schema: badSchema } = require('./bad-schema');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
+  console.log('dev server')
   app.post('/graphql', graphqlHTTP({ schema }));
   app.get('/graphql', graphqlHTTP({ schema }));
 
@@ -22,6 +23,8 @@ module.exports = function beforeDevServer(app, _server, _compiler) {
   });
 
   app.use('/images', express.static(path.join(__dirname, 'images')));
+
+  app.use('/', express.static(path.join(__dirname, '../', 'index.html')));
 
   app.use(
     '/resources/renderExample.js',

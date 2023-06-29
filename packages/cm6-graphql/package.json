@@ -4,7 +4,7 @@
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
     "build": "cm-buildhelper src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "pnpm build"
   },
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -15,7 +15,7 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "graphql-language-service": "^5.1.7"
+    "graphql-language-service": "workspace:"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.0.0",

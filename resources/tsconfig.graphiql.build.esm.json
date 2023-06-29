@@ -6,7 +6,7 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql/tsconfig.esm.json"
+      "path": "../packages/graphiql/tsconfig.json"
     }
   ]
 }

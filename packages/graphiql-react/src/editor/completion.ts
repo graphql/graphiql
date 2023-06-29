@@ -1,5 +1,5 @@
 import type { Editor, EditorChange } from 'codemirror';
-import type { IHint } from 'codemirror-graphql/hint';
+import type { IHint } from 'codemirror-graphql/dist/hint';
 import {
   GraphQLNamedType,
   GraphQLSchema,

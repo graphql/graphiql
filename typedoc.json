@@ -7,7 +7,7 @@
     "**/node_modules/vscode*/**",
     "**/node_modules/@types/node/**"
   ],
-  "exclude": "**/__tests__/**,*.spec.*,**/*-test.*,**/esm/**,**/dist/**,**/node_modules/**,packages/graphiql-2-rfc-*/**",
+  "exclude": "**/__tests__/**,*.spec.*,**/*-test.*,**/dist/**,**/dist/**,**/node_modules/**,packages/graphiql-2-rfc-*/**",
   "excludePrivate": true,
   "excludeNotExported": true,
   "external-modulemap": ".*/packages/([\\w\\-_]+)/",

@@ -6,6 +6,10 @@
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
   "types": "esm/monaco.contribution.d.ts",
+    "scripts": {
+      "build": "tsc",
+      "dev": "tsc --watch"
+    },
   "contributors": [
     {
       "name": "Peng Lyu",
@@ -26,13 +30,13 @@
     "src"
   ],
   "dependencies": {
-    "graphql-language-service": "^5.1.7",
+    "vscode-languageserver-types": "^3.17.2",
+    "graphql-language-service": "workspace:",
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
     "graphql": "^16.4.0",
-    "monaco-editor": "^0.39.0",
-    "vscode-languageserver-types": "^3.17.1"
+    "monaco-editor": "^0.39.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

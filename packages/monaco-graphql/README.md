@@ -51,12 +51,12 @@ yarn add monaco-graphql
 ## Sync Example
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor/dist/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
 
 // instantiates the worker & language features with the schema!
 const MonacoGraphQLAPI = initializeMode({
@@ -96,12 +96,12 @@ monaco.editor.create(document.getElementById('someElementId'), {
 The existing API works as before in terms of instantiating the schema
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor/dist/vs/editor/editor.api';
 // enables our language worker right away, despite no schema
 import 'monaco-graphql';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
 
 // lazily invoke the api config methods whenever we want!
 monaco.languages.graphql.setSchemaConfig([
@@ -149,11 +149,11 @@ any given set of operations
 ## Full Sync Demo with Variables JSON
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor/dist/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 
-import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
@@ -271,7 +271,7 @@ const { api } = languages.graphql;
 Otherwise, you can, like in the sync demo above:
 
 ```ts
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 const api = initializeMode(config);
 ```
 
@@ -297,7 +297,7 @@ monaco.languages.graphql.api.setSchemaConfig([
 or you can load the language features only when you have your schema
 
 ```ts
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 
 const schemas = [
   {
@@ -443,9 +443,9 @@ config such as `schemaLoader` to `createData`:
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
 // @ts-expect-error - ignore missing types
-import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
+import * as worker from 'monaco-editor/dist/vs/editor/editor.worker';
 
-import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
+import { GraphQLWorker } from 'monaco-graphql/dist/GraphQLWorker';
 
 import { myValidationRules } from './custom';
 
@@ -465,7 +465,7 @@ self.onmessage = () => {
 then, in your application:
 
 ```ts
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
+import EditorWorker from 'worker-loader!monaco-editor/dist/vs/editor/editor.worker';
 
 // specify the path to your language worker
 import GraphQLWorker from 'worker-loader!./my-graphql.worker';

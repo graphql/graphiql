@@ -16,8 +16,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "esm/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -31,26 +30,24 @@
     "graphiql.min.css.map"
   ],
   "scripts": {
-    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
-    "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
-    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
-    "build-bundles-dev": "cross-env NODE_ENV=development BABEL_ENV=development CDN=1 yarn webpack --mode development --bail",
-    "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack --mode production --bail",
-    "build-cjs": "tsc",
+    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 pnpm webpack -p",
+    "build": "pnpm build-clean && pnpm build-esm && pnpm build-bundles",
+    "build-bundles": "pnpm build-bundles-clean && pnpm build-bundles-dev && pnpm build-bundles-min",
+    "build-bundles-dev": "cross-env NODE_ENV=development BABEL_ENV=development CDN=1 pnpm webpack --mode development --bail",
+    "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 pnpm webpack --mode production --bail",
     "build-clean": "rimraf esm dist webpack *.html",
-    "build-esm": "tsc --project ./tsconfig.esm.json",
+    "build-esm": "tsc --project ./tsconfig.json",
     "check": "tsc --noEmit",
-    "cypress-open": "yarn e2e-server 'cypress open'",
+    "cypress-open": "pnpm e2e-server 'cypress open'",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
-    "e2e": "yarn e2e-server 'cypress run'",
+    "e2e": "pnpm e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
     "webpack": "webpack-cli --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/react": "^0.18.0",
-    "@graphiql/toolkit": "^0.8.4",
-    "graphql-language-service": "^5.1.7",
+    "@graphiql/react": "workspace:",
+    "@graphiql/toolkit": "workspace:",
+    "graphql-language-service": "workspace:",
     "markdown-it": "^12.2.0"
   },
   "peerDependencies": {

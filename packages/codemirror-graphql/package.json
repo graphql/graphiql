@@ -17,12 +17,11 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },
   "license": "MIT",
-  "main": "index.js",
-  "module": "esm/index.js",
+  "module": "dist/index.js",
   "files": [
     "src",
     "cm6-legacy",
-    "esm",
+    "dist",
     "utils",
     "variables",
     "results",
@@ -35,23 +34,17 @@
     "!jest.config.js"
   ],
   "scripts": {
-    "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
-    "build-js": "yarn tsc",
-    "build-esm": "cross-env ESM=true yarn tsc --project tsconfig.esm.json && node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
-    "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow,js.map,d.ts,d.ts.map} && rimraf esm results utils variables coverage cm6-legacy __tests__",
-    "build-flow": "node ../../scripts/buildFlow.js",
-    "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "jest",
-    "postbuild": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest"
   },
   "peerDependencies": {
     "@codemirror/language": "6.0.0",
     "codemirror": "^5.65.3",
     "graphql": "^15.5.0 || ^16.0.0"
   },
-  "// TEMPORARILY PINNED until we fix graphql 15 support": "",
   "dependencies": {
-    "graphql-language-service": "5.1.7"
+    "graphql-language-service": "workspace:"
   },
   "devDependencies": {
     "@codemirror/language": "6.0.0",

@@ -49,3 +49,6 @@ packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
 packages/graphiql/typedoc/
+
+.vscode-test
+.turbo

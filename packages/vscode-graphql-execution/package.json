@@ -83,12 +83,12 @@
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
     "compile": "node esbuild.js",
-    "build-bundles": "yarn run compile",
-    "vsce:package": "yarn compile && vsce package --yarn",
-    "vsce:prepublish": "yarn run vsce:package",
-    "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
-    "release": "yarn run compile && yarn run vsce:publish && yarn run open-vsx:publish"
+    "build-bundles": "pnpm run compile",
+    "vsce:package": "pnpm compile && vsce package --pnpm",
+    "vsce:prepublish": "pnpm run vsce:package",
+    "vsce:publish": "vsce publish --pnpm",
+    "open-vsx:publish": "ovsx publish --pnpm -i . --pat $OVSX_PAT",
+    "release": "pnpm run compile && pnpm run vsce:publish && pnpm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
