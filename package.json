@@ -34,7 +34,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --concurrency 20",
-    "build:cm6-graphql": "pnpm workspace cm6-graphql run build",
+    "build:cm6-graphql": "pnpm run --filter cm6-graphql build",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
     "watch-vscode": "pnpm workspace vscode-graphql run compile",
     "watch-vscode-exec": "pnpm workspace vscode-graphql-execution run compile",
