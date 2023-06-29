@@ -26,7 +26,7 @@ jobs:
       - name: Run Build
         run: pnpm build
       - name: Run Unit Tests
-        run: pnpm test
+        run: pnpm test --coverage
 
       - uses: codecov/codecov-action@v3
         with:
