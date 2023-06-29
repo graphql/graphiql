@@ -366,6 +366,8 @@ module.exports = {
           'examples/*/tsconfig.json',
           'packages/graphiql/cypress/tsconfig.json',
           'tsconfig.eslint.json',
+          '!packages/graphiql-react/tsconfig.json',
+          'packages/graphiql-react/tsconfig.test.json'
         ],
       },
     },

@@ -4,8 +4,9 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import * as React from 'react';
 
-import React, {
+import {
   ComponentType,
   Fragment,
   MouseEventHandler,
@@ -14,6 +15,7 @@ import React, {
   ReactElement,
   useCallback,
   useState,
+  version
 } from 'react';
 
 import {
@@ -59,7 +61,7 @@ import {
   WriteableEditorProps,
 } from '@graphiql/react';
 
-const majorVersion = parseInt(React.version.slice(0, 2), 10);
+const majorVersion = parseInt(version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
   throw new Error(

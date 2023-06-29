@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { AbortController as MockAbortController } from 'node-abort-controller';
 
 import fetchMock from 'jest-fetch-mock';
 

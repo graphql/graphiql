@@ -100,6 +100,7 @@ root.render(
     defaultEditorToolsVisibility: true,
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
+    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
   }),
 );

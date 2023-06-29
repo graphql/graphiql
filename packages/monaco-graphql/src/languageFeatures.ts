@@ -8,7 +8,9 @@
 import { GraphQLWorker } from './GraphQLWorker';
 import type { MonacoGraphQLAPI } from './api';
 import type * as monaco from 'monaco-editor';
+// eslint-disable-next-line import/no-duplicates
 import { Uri, languages } from 'monaco-editor';
+// eslint-disable-next-line import/no-duplicates
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';

@@ -9,6 +9,7 @@ import type * as monaco from 'monaco-editor';
 import { ICreateData } from './typings';
 
 // @ts-expect-error
+// eslint-disable-next-line import/no-unresolved
 import { initialize } from 'monaco-editor/dist/vs/editor/editor.worker';
 
 import { GraphQLWorker } from './GraphQLWorker';
