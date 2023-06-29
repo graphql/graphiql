@@ -53,8 +53,7 @@
     "repo:resolve": "node scripts/set-resolution.js",
     "start-graphiql": "pnpm --filter graphiql run dev",
     "start-monaco": "pnpm --filter example-monaco-graphql-webpack run start",
-    "t": "pnpm run test",
-    "test": "pnpm jest",
+    "test": "jest",
     "test:coverage": "pnpm jest --coverage",
     "test:watch": "pnpm jest --watch"
   },
