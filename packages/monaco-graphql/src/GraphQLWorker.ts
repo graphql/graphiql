@@ -7,7 +7,7 @@
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from 'monaco-editor';
-import { getRange } from 'graphql-language-service';
+import { HoverContents, getRange } from 'graphql-language-service';
 import { LanguageService } from './LanguageService';
 import {
   toGraphQLPosition,
@@ -74,7 +74,11 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: monaco.Position) {
+  public async doHover(uri: string, position: monaco.Position): Promise<{
+    content: HoverContents | undefined;
+    range: monaco.IRange;
+  } | null> {
+
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
