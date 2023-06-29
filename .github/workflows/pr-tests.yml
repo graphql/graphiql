@@ -23,9 +23,10 @@ jobs:
           node-version: 19
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-
       - name: Run Unit Tests
-        run: pnpm test:ci --coverage
+        run: pnpm build
+      - name: Run Unit Tests
+        run: pnpm test
 
       - uses: codecov/codecov-action@v3
         with:
