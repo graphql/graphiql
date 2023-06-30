@@ -81,6 +81,7 @@ jsdelivr
 lezer
 manypkg
 meros
+nextjs
 nullthrows
 ovsx
 picomatch
