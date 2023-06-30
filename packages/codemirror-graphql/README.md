@@ -24,7 +24,7 @@ imported.
 ```ts
 import type { ValidationContext, SDLValidationContext } from 'graphql';
 
-import {fromTextArea} from 'codemirror';
+import { fromTextArea } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
@@ -49,7 +49,7 @@ If you want to have autocompletion for external fragment definitions, there's a
 new configuration setting available
 
 ```ts
-import CodeMirror from 'codemirror';
+import { fromTextArea } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
@@ -67,7 +67,7 @@ const externalFragments = /* GraphQL */ `
   }
 `;
 
-CodeMirror.fromTextArea(myTextarea, {
+fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
     schema: myGraphQLSchema,
@@ -89,7 +89,7 @@ If you want to show custom validation, you can do that too! It uses the
 ```ts
 import type { ValidationRule } from 'graphql';
 
-import CodeMirror from 'codemirror';
+import { fromTextArea } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
@@ -109,7 +109,7 @@ const ExampleRule: ValidationRule = context => {
   };
 };
 
-CodeMirror.fromTextArea(myTextarea, {
+fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
     schema: myGraphQLSchema,

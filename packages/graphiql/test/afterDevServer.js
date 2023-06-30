@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { useServer } = require('graphql-ws/lib/use/ws');
 const { Server: WebSocketServer } = require('ws');
 const schema = require('./schema');

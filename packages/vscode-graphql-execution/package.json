@@ -112,6 +112,7 @@
     "graphql": "16.6.0",
     "nullthrows": "1.1.1",
     "@graphql-tools/code-file-loader": "8.0.1",
+    "@vue/compiler-sfc": "3.3.4",
     "cosmiconfig": "8.2.0",
     "svelte2tsx": "^0.6.16",
     "svelte": "^4.0.0",

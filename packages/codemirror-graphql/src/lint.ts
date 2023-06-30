@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import CodeMirror, { registerHelper, Pos } from 'codemirror';
 import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
 import { getDiagnostics } from 'graphql-language-service';
 
@@ -38,7 +38,7 @@ interface GraphQLLintOptions {
  *   - schema: GraphQLSchema provides the linter with positionally relevant info
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'lint',
   'graphql',
   (text: string, options: GraphQLLintOptions): CodeMirror.Annotation[] => {
@@ -55,8 +55,8 @@ CodeMirror.registerHelper(
       message: error.message,
       severity: error.severity ? SEVERITY[error.severity - 1] : SEVERITY[0],
       type: error.source ? TYPE[error.source] : undefined,
-      from: CodeMirror.Pos(error.range.start.line, error.range.start.character),
-      to: CodeMirror.Pos(error.range.end.line, error.range.end.character),
+      from: Pos(error.range.start.line, error.range.start.character),
+      to: Pos(error.range.end.line, error.range.end.character),
     }));
 
     return results;

@@ -150,7 +150,10 @@ export const createMultipartFetcher = (
   options: CreateFetcherOptions,
   httpFetch: typeof fetch,
 ): Fetcher =>
-  async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts): FetcherReturnType {
+  async function* (
+    graphQLParams: FetcherParams,
+    fetcherOpts?: FetcherOpts,
+  ): FetcherReturnType {
     const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),

@@ -7,10 +7,7 @@
  *
  */
 
-import {
-  AutocompleteSuggestionOptions,
-  CompletionItem,
-} from '../../';
+import { AutocompleteSuggestionOptions, CompletionItem } from '../../';
 
 import fs from 'node:fs';
 import {

@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { registerHelper } from 'codemirror';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -41,7 +41,7 @@ interface GraphQLVariableLintOptions {
  *   - variableToType: { [variable: string]: GraphQLInputType }
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'lint',
   'graphql-variables',
   (

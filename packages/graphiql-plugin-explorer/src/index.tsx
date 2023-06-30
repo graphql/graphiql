@@ -5,7 +5,7 @@ import {
   useSchemaContext,
 } from '@graphiql/react';
 import GraphiQLExplorer, { GraphiQLExplorerProps } from 'graphiql-explorer';
-import * as React from 'react'
+import * as React from 'react';
 import { useCallback, useRef } from 'react';
 
 import './graphiql-explorer.d.ts';

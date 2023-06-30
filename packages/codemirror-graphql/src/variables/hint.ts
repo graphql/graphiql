@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror, { Hints } from 'codemirror';
+import { Hints, registerHelper, Pos, signal } from 'codemirror';
 import {
   getNullableType,
   getNamedType,
@@ -59,7 +59,7 @@ declare module 'codemirror' {
  *     new list of completion suggestions.
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'hint',
   'graphql-variables',
   (
@@ -71,9 +71,9 @@ CodeMirror.registerHelper(
 
     const results = getVariablesHint(cur, token, options);
     if (results?.list && results.list.length > 0) {
-      results.from = CodeMirror.Pos(results.from.line, results.from.ch);
-      results.to = CodeMirror.Pos(results.to.line, results.to.ch);
-      CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
+      results.from = Pos(results.from.line, results.from.ch);
+      results.to = Pos(results.to.line, results.to.ch);
+      signal(editor, 'hasCompletion', editor, results, token);
     }
 
     return results;

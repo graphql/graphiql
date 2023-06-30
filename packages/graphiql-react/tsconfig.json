@@ -18,7 +18,7 @@
     "declaration": true,
     "declarationDir": "types",
     "outDir": "types",
-    "rootDir": "./src",
+    "rootDir": "./src"
   },
   "include": ["src"],
   "exclude": ["**/__tests__/**"],

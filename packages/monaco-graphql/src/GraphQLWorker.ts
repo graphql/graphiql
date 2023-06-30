@@ -141,7 +141,6 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
-    // eslint-disable-next-line import/no-unresolved -- should be fixed by pnpm migration (points to @types/prettier rather owns prettier types)
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {

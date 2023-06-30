@@ -7,7 +7,6 @@
  *
  */
 
-
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
   GraphQLSchema,
@@ -75,7 +74,9 @@ describe('GraphQLCache', () => {
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
 
-    // this essentially tests url loader
+    // this essentially tests url loader, but let's keep it around because
+    // there is some internal logic to test here
+    // eslint-disable-next-line jest/no-commented-out-tests
     // it.skip('generates the schema correctly from endpoint', async () => {
     //   const introspectionResult = {
     //     data: introspectionFromSchema(

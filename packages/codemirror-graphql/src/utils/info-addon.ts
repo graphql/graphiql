@@ -7,20 +7,16 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { defineOption, Init, on, off, Editor } from 'codemirror';
 import { GraphQLInfoOptions } from '../info';
 
-CodeMirror.defineOption(
+defineOption(
   'info',
   false,
-  (
-    cm: CodeMirror.Editor,
-    options: GraphQLInfoOptions,
-    old?: GraphQLInfoOptions,
-  ) => {
-    if (old && old !== CodeMirror.Init) {
+  (cm: Editor, options: GraphQLInfoOptions, old?: GraphQLInfoOptions) => {
+    if (old && old !== Init) {
       const oldOnMouseOver = cm.state.info.onMouseOver;
-      CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
+      off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
       clearTimeout(cm.state.info.hoverTimeout);
       delete cm.state.info;
     }
@@ -28,7 +24,7 @@ CodeMirror.defineOption(
     if (options) {
       const state: Record<string, any> = (cm.state.info = createState(options));
       state.onMouseOver = onMouseOver.bind(null, cm);
-      CodeMirror.on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
+      on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
     }
   },
 );
@@ -38,18 +34,18 @@ function createState(options: GraphQLInfoOptions) {
     options:
       options instanceof Function
         ? { render: options }
-        : options === true
-        ? {}
-        : options,
+        : typeof options === 'object'
+        ? options
+        : {},
   };
 }
 
-function getHoverTime(cm: CodeMirror.Editor) {
+function getHoverTime(cm: Editor) {
   const { options } = cm.state.info;
   return options?.hoverTime || 500;
 }
 
-function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {
+function onMouseOver(cm: Editor, e: MouseEvent) {
   const state = cm.state.info;
 
   const target = e.target || e.srcElement;
@@ -69,15 +65,15 @@ function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {
   };
 
   const onMouseOut = function () {
-    CodeMirror.off(document, 'mousemove', onMouseMove);
-    CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
+    off(document, 'mousemove', onMouseMove);
+    off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = undefined;
   };
 
   const onHover = function () {
-    CodeMirror.off(document, 'mousemove', onMouseMove);
-    CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
+    off(document, 'mousemove', onMouseMove);
+    off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     state.hoverTimeout = undefined;
     onMouseHover(cm, box);
   };
@@ -85,11 +81,11 @@ function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {
   const hoverTime = getHoverTime(cm);
   state.hoverTimeout = setTimeout(onHover, hoverTime);
 
-  CodeMirror.on(document, 'mousemove', onMouseMove);
-  CodeMirror.on(cm.getWrapperElement(), 'mouseout', onMouseOut);
+  on(document, 'mousemove', onMouseMove);
+  on(cm.getWrapperElement(), 'mouseout', onMouseOut);
 }
 
-function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
+function onMouseHover(cm: Editor, box: DOMRect) {
   const pos = cm.coordsChar(
     {
       left: (box.left + box.right) / 2,
@@ -112,7 +108,7 @@ function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
   }
 }
 
-function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
+function showPopup(cm: Editor, box: DOMRect, info: HTMLDivElement) {
   const popup = document.createElement('div');
   popup.className = 'CodeMirror-info';
   popup.append(info);
@@ -164,9 +160,9 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
   };
 
   const hidePopup = function () {
-    CodeMirror.off(popup, 'mouseover', onMouseOverPopup);
-    CodeMirror.off(popup, 'mouseout', onMouseOut);
-    CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
+    off(popup, 'mouseover', onMouseOverPopup);
+    off(popup, 'mouseout', onMouseOut);
+    off(cm.getWrapperElement(), 'mouseout', onMouseOut);
 
     if (popup.style.opacity) {
       popup.style.opacity = '0';
@@ -180,7 +176,7 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
     }
   };
 
-  CodeMirror.on(popup, 'mouseover', onMouseOverPopup);
-  CodeMirror.on(popup, 'mouseout', onMouseOut);
-  CodeMirror.on(cm.getWrapperElement(), 'mouseout', onMouseOut);
+  on(popup, 'mouseover', onMouseOverPopup);
+  on(popup, 'mouseout', onMouseOut);
+  on(cm.getWrapperElement(), 'mouseout', onMouseOut);
 }

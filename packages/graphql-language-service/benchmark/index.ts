@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import fs from 'node:fs';
 import path from 'node:path';
-import Benchmark from 'benchmark';
+import { Suite } from 'benchmark';
 import { parse } from 'graphql';
 import { onlineParser, CharacterStream } from '../src';
 
@@ -26,7 +26,7 @@ const printResult = (stats: IStats, name: string, schema: string) => {
 const runSplitTest = (name: string, schema: string) => {
   const stats: IStats[] = [];
 
-  const suite = new Benchmark.Suite();
+  const suite = new Suite();
   const parser = onlineParser();
   let state: any = parser.startState();
 
@@ -80,7 +80,7 @@ const runSplitTest = (name: string, schema: string) => {
 };
 
 const runWholeTest = (name: string, schema: string) => {
-  const suite = new Benchmark.Suite('', {
+  const suite = new Suite('', {
     onComplete: (e: any) => printResult(e.target.stats, name, schema),
   });
 
@@ -104,7 +104,7 @@ const runWholeTest = (name: string, schema: string) => {
 };
 
 const runGraphqlParserTest = (name: string, schema: string) => {
-  const suite = new Benchmark.Suite('', {
+  const suite = new Suite('', {
     onComplete: (e: any) => printResult(e.target.stats, name, schema),
   });
 

@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { defineMode } from 'codemirror';
 
 import {
   list,
@@ -24,7 +24,7 @@ import indent from '../utils/mode-indent';
  * This mode defines JSON, but provides a data-laden parser state to enable
  * better code intelligence.
  */
-CodeMirror.defineMode('graphql-variables', config => {
+defineMode('graphql-variables', config => {
   const parser = onlineParser({
     eatWhitespace: stream => stream.eatSpace(),
     lexRules: LexRules,
