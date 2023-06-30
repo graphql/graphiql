@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/Cypress
-          key: binary-${{ hashFiles('package-lock.json') }}
+          key: binary-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Run E2E suite
         run: pnpm e2e
