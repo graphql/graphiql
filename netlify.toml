@@ -4,5 +4,5 @@
   publish = "packages/graphiql"
 
   # Default build command.
-  command = "yarn build && yarn build-docs"
+  command = "pnpm install --frozen-lockfile && pnpm build && pnpm build-docs"
   environment = { YARN_FLAGS = "--frozen-lockfile"}

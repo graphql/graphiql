@@ -17,6 +17,7 @@ import type {
   FetcherOpts,
   ExecutionResultPayload,
   CreateFetcherOptions,
+  FetcherReturnType,
 } from './types';
 
 const errorHasCode = (err: unknown): err is { code: string } => {
@@ -149,7 +150,7 @@ export const createMultipartFetcher = (
   options: CreateFetcherOptions,
   httpFetch: typeof fetch,
 ): Fetcher =>
-  async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
+  async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts): FetcherReturnType {
     const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
