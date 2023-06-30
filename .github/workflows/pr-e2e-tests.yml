@@ -2,10 +2,6 @@ name: E2E
 on:
   pull_request:
     types: [opened, synchronize]
-    paths-ignore:
-      - '**.md'
-      - 'examples'
-      - '!examples/monaco-graphql-webpack'
 jobs:
   e2e:
     name: Cypress E2E Suite
@@ -18,9 +14,15 @@ jobs:
           version: 8.6.5
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 19
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      - name: Cache Cypress Binary
+        id: cache-cypress-binary
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: binary-${{ hashFiles('package-lock.json') }}
 
       - name: Run E2E suite
         run: pnpm e2e
