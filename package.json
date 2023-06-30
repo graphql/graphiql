@@ -23,6 +23,7 @@
   "engines": {
     "npm": "please_use_pnpm_instead"
   },
+  "packageManager": "pnpm@8.6.5",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --concurrency 20",
