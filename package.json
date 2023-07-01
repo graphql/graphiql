@@ -59,7 +59,7 @@
     "jest": "jest --testPathIgnorePatterns cm6-graphql",
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn pretty-check && yarn lint-cspell",
-    "lint-cspell": "cspell --unique --gitignore --no-progress --no-must-find-files",
+    "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
