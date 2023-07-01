@@ -1,7 +1,7 @@
 /* example using https://github.com/awslabs/aws-serverless-express */
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { graphqlHTTP } = require('express-graphql');
+const { createHandler } = require('graphql-http/lib/use/express');
 const awsServerlessExpress = require('aws-serverless-express');
 const schema = require('../packages/graphiql/test/schema');
 const cors = require('cors');
@@ -31,7 +31,7 @@ app.all('/graphql', (req, res) => res.redirect('/'));
 // Finally, serve up the GraphQL Schema itself
 app.use(
   '/',
-  graphqlHTTP(() => ({ schema })),
+  createHandler(() => ({ schema })),
 );
 
 const server = awsServerlessExpress.createServer(app, null, binaryMimeTypes);
