@@ -710,7 +710,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         >
           <div className="graphiql-dialog-header">
             {/* @ts-expect-error */}
-
             <Dialog.Title className="graphiql-dialog-title">
               Short Keys
             </Dialog.Title>

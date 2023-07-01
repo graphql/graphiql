@@ -31,6 +31,7 @@
     "cypress-open": "pnpm --filter graphiql run cypress-open",
     "dev-graphiql": "pnpm --filter graphiql run dev",
     "e2e": "pnpm run build && pnpm --filter graphiql run e2e",
+    "e2e:start": "pnpm --filter graphiql run e2e-server",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "pnpm eslint --fix && pnpm pretty",
     "jest": "jest --testPathIgnorePatterns cm6-graphql",

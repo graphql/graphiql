@@ -16,15 +16,7 @@ jobs:
         with:
           node-version: 19
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - name: Cache Cypress Binary
-        id: cache-cypress-binary
-        uses: actions/cache@v3
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
         with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-cypress-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-cypress-
-
-      - name: Run E2E suite
-        run: pnpm e2e
+          start: pnpm e2e:start
