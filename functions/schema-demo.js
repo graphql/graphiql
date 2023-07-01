@@ -1,7 +1,7 @@
 /* example using https://github.com/awslabs/aws-serverless-express */
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { createHandler } from 'graphql-http/lib/use/express';
+const { createHandler } = require('graphql-http/lib/use/express');
 const awsServerlessExpress = require('aws-serverless-express');
 const schema = require('../packages/graphiql/test/schema');
 const cors = require('cors');
