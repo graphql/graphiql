@@ -1,5 +1,5 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import type { SchemaReference } from 'codemirror-graphql/dist/utils/SchemaReference';
 import type {
   DocumentNode,
   FragmentDefinitionNode,
@@ -143,11 +143,11 @@ export function useQueryEditor(
     void importCodeMirror([
       import('codemirror/addon/comment/comment'),
       import('codemirror/addon/search/search'),
-      import('codemirror-graphql/esm/hint'),
-      import('codemirror-graphql/esm/lint'),
-      import('codemirror-graphql/esm/info'),
-      import('codemirror-graphql/esm/jump'),
-      import('codemirror-graphql/esm/mode'),
+      import('codemirror-graphql/dist/hint'),
+      import('codemirror-graphql/dist/lint'),
+      import('codemirror-graphql/dist/info'),
+      import('codemirror-graphql/dist/jump'),
+      import('codemirror-graphql/dist/mode'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {

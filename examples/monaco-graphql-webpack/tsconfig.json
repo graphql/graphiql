@@ -4,7 +4,7 @@
     "module": "esnext",
     "rootDir": "./src",
     "outDir": "./dist",
-    "composite": true,
+
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],

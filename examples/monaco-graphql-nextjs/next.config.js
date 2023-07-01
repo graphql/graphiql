@@ -37,7 +37,7 @@ const nextConfig = {
               label: 'graphql',
               worker: {
                 id: 'graphql',
-                entry: 'monaco-graphql/esm/graphql.worker.js',
+                entry: 'monaco-graphql/dist/graphql.worker.js',
               },
             },
           ],

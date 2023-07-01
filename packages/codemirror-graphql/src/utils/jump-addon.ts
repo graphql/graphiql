@@ -7,23 +7,19 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import { defineOption, Init, on, off, Editor } from 'codemirror';
 import { GraphQLJumpOptions } from '../jump';
 
-CodeMirror.defineOption(
+defineOption(
   'jump',
   false,
-  (
-    cm: CodeMirror.Editor,
-    options: GraphQLJumpOptions,
-    old?: GraphQLJumpOptions,
-  ) => {
-    if (old && old !== CodeMirror.Init) {
+  (cm: Editor, options: GraphQLJumpOptions, old?: GraphQLJumpOptions) => {
+    if (old && old !== Init) {
       const oldOnMouseOver = cm.state.jump.onMouseOver;
-      CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
+      off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
       const oldOnMouseOut = cm.state.jump.onMouseOut;
-      CodeMirror.off(cm.getWrapperElement(), 'mouseout', oldOnMouseOut);
-      CodeMirror.off(document, 'keydown', cm.state.jump.onKeyDown);
+      off(cm.getWrapperElement(), 'mouseout', oldOnMouseOut);
+      off(document, 'keydown', cm.state.jump.onKeyDown);
       delete cm.state.jump;
     }
 
@@ -35,14 +31,14 @@ CodeMirror.defineOption(
         onKeyDown: onKeyDown.bind(null, cm),
       });
 
-      CodeMirror.on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
-      CodeMirror.on(cm.getWrapperElement(), 'mouseout', state.onMouseOut);
-      CodeMirror.on(document, 'keydown', state.onKeyDown);
+      on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
+      on(cm.getWrapperElement(), 'mouseout', state.onMouseOut);
+      on(document, 'keydown', state.onKeyDown);
     }
   },
 );
 
-function onMouseOver(cm: CodeMirror.Editor, event: MouseEvent) {
+function onMouseOver(cm: Editor, event: MouseEvent) {
   const target = event.target || event.srcElement;
   if (!(target instanceof HTMLElement)) {
     return;
@@ -64,7 +60,7 @@ function onMouseOver(cm: CodeMirror.Editor, event: MouseEvent) {
   }
 }
 
-function onMouseOut(cm: CodeMirror.Editor) {
+function onMouseOut(cm: Editor) {
   if (!cm.state.jump.isHoldingModifier && cm.state.jump.cursor) {
     cm.state.jump.cursor = null;
     return;
@@ -75,7 +71,7 @@ function onMouseOut(cm: CodeMirror.Editor) {
   }
 }
 
-function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
+function onKeyDown(cm: Editor, event: KeyboardEvent) {
   if (cm.state.jump.isHoldingModifier || !isJumpModifier(event.key)) {
     return;
   }
@@ -97,8 +93,8 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
       disableJumpMode(cm);
     }
 
-    CodeMirror.off(document, 'keyup', onKeyUp);
-    CodeMirror.off(document, 'click', onClick);
+    off(document, 'keyup', onKeyUp);
+    off(document, 'click', onClick);
     cm.off('mousedown', onMouseDown);
   };
 
@@ -115,8 +111,8 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
     }
   };
 
-  CodeMirror.on(document, 'keyup', onKeyUp);
-  CodeMirror.on(document, 'click', onClick);
+  on(document, 'keyup', onKeyUp);
+  on(document, 'click', onClick);
   cm.on('mousedown', onMouseDown);
 }
 
@@ -129,7 +125,7 @@ function isJumpModifier(key: string) {
   return key === (isMac ? 'Meta' : 'Control');
 }
 
-function enableJumpMode(cm: CodeMirror.Editor) {
+function enableJumpMode(cm: Editor) {
   if (cm.state.jump.marker) {
     return;
   }
@@ -153,7 +149,7 @@ function enableJumpMode(cm: CodeMirror.Editor) {
   }
 }
 
-function disableJumpMode(cm: CodeMirror.Editor) {
+function disableJumpMode(cm: Editor) {
   const { marker } = cm.state.jump;
   cm.state.jump.marker = null;
   cm.state.jump.destination = null;

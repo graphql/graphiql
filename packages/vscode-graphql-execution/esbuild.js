@@ -32,6 +32,7 @@ build({
     'haml-coffee',
     'hogan.js',
     'templayed',
+    'handlebars',
     'walrus',
     'mustache',
     'just',

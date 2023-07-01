@@ -66,7 +66,7 @@ const resultConfig = {
           label: 'graphql',
           worker: {
             id: 'graphql',
-            entry: require.resolve('monaco-graphql/esm/graphql.worker.js'),
+            entry: require.resolve('monaco-graphql/dist/graphql.worker.js'),
           },
         },
       ],

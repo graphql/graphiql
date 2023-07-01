@@ -9,7 +9,7 @@
 
 /**
  * Ported from codemirror-graphql
- * https://github.com/graphql/blob/main/packages/codemirror-graphql/src/info.js
+ * https://github.com/graphql/blob/main/packages/codemirror-graphql/dist/src/info.js
  */
 
 import {
@@ -27,6 +27,8 @@ import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
 export type HoverConfig = { useMarkdown?: boolean };
+
+export type HoverContents = Hover['contents'];
 
 export function getHoverInformation(
   schema: GraphQLSchema,

@@ -25,8 +25,7 @@
     "language service",
     "LSP"
   ],
-  "main": "dist/index.js",
-  "module": "esm/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "graphql": "./dist/temp-bin.js"
@@ -35,7 +34,7 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.17.1",
+    "vscode-languageserver-types": "^3.17.2",
     "nullthrows": "^1.0.0"
   },
   "devDependencies": {
@@ -51,6 +50,8 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
     "benchmark": "ts-node benchmark/index.ts"
   }
 }

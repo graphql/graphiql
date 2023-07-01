@@ -139,10 +139,10 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
-    "vsce:package": "vsce package --yarn",
+    "vsce:package": "vsce package --pnpm",
     "vsce:prepublish": "npm run vsce:package",
-    "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
+    "vsce:publish": "vsce publish --pnpm",
+    "open-vsx:publish": "ovsx publish --pnpm -i . --pat $OVSX_PAT",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   }
 }

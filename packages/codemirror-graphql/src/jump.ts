@@ -10,7 +10,7 @@
  *
  */
 
-import CodeMirror from 'codemirror';
+import CodeMirror, { registerHelper } from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
 import {
@@ -42,7 +42,7 @@ export interface GraphQLJumpOptions {
  *   - onClick: A function called when a named thing is clicked.
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'jump',
   'graphql',
   (token: CodeMirror.Token, options: GraphQLJumpOptions) => {

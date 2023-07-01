@@ -6,6 +6,12 @@
   "include": [],
   "references": [
     {
+      "path": "../packages/graphiql"
+    },
+    {
+      "path": "../packages/graphiql-react"
+    },
+    {
       "path": "../packages/graphiql-toolkit"
     },
     {
@@ -25,12 +31,6 @@
     },
     {
       "path": "../packages/graphql-language-service-cli"
-    },
-    {
-      "path": "../packages/vscode-graphql"
-    },
-    {
-      "path": "../packages/vscode-graphql-execution"
     }
   ]
 }

@@ -41,6 +41,7 @@ export {
   SuggestionCommand,
   AutocompleteSuggestionOptions,
   validateQuery,
+  HoverContents,
 } from './interface';
 
 /**

@@ -9,7 +9,13 @@
  *
  */
 
-import CodeMirror, { Hints, Hint } from 'codemirror';
+import CodeMirror, {
+  Hints,
+  Hint,
+  registerHelper,
+  signal,
+  Pos,
+} from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import { FragmentDefinitionNode, GraphQLSchema, GraphQLType } from 'graphql';
@@ -63,7 +69,7 @@ declare module 'codemirror' {
  *     new list of completion suggestions.
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'hint',
   'graphql',
   (
@@ -106,9 +112,9 @@ CodeMirror.registerHelper(
     };
 
     if (results?.list && results.list.length > 0) {
-      results.from = CodeMirror.Pos(results.from.line, results.from.ch);
-      results.to = CodeMirror.Pos(results.to.line, results.to.ch);
-      CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
+      results.from = Pos(results.from.line, results.from.ch);
+      results.to = Pos(results.to.line, results.to.ch);
+      signal(editor, 'hasCompletion', editor, results, token);
     }
 
     return results;

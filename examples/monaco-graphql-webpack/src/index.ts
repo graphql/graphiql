@@ -2,7 +2,7 @@
 
 import * as monaco from 'monaco-editor';
 import * as JSONC from 'jsonc-parser';
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/dist/initializeMode';
 
 import { createEditors } from './editors';
 import { schemaFetcher, schemaOptions } from './schema';

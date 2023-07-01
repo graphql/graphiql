@@ -36,9 +36,9 @@ import {
   DocumentSymbolRequest,
   PublishDiagnosticsParams,
   WorkspaceSymbolRequest,
-  createConnection,
-  Connection,
-} from 'vscode-languageserver/node';
+} from 'vscode-languageserver-protocol';
+
+import { createConnection, Connection } from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
 import {

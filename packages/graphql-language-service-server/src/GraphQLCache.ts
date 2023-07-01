@@ -44,7 +44,7 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
-import glob from 'glob';
+import * as glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
 import { CodeFileLoader } from '@graphql-tools/code-file-loader';

@@ -11,7 +11,7 @@ import { parse } from 'graphql';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForNamedType,
-} from '../getDefinition';
+} from '../../';
 
 describe('getDefinition', () => {
   describe('getDefinitionQueryResultForNamedType', () => {
@@ -99,8 +99,8 @@ describe('getDefinition', () => {
       fragment Duck on Duck {
         quack
       }`;
-      // @ts-ignore
       const fragmentSpread =
+        // @ts-expect-error
         parse(query).definitions[0].selectionSet.selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
       const result = await getDefinitionQueryResultForFragmentSpread(

@@ -38,6 +38,7 @@ build({
     'templayed',
     'walrus',
     'mustache',
+    'handlebars',
     'just',
     'ect',
     'toffee',

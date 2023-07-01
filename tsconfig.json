@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "resolveJsonModule": true
   },
   "files": [],
   "include": [],
   "references": [
     {
-      "path": "resources/tsconfig.build.esm.json"
-    },
-    {
-      "path": "resources/tsconfig.build.cjs.json"
+      "path": "resources/tsconfig.build.json"
     }
   ]
 }

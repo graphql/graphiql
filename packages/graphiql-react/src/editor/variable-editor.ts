@@ -1,4 +1,4 @@
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import type { SchemaReference } from 'codemirror-graphql/dist/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
@@ -58,9 +58,9 @@ export function useVariableEditor(
     let isActive = true;
 
     void importCodeMirror([
-      import('codemirror-graphql/esm/variables/hint'),
-      import('codemirror-graphql/esm/variables/lint'),
-      import('codemirror-graphql/esm/variables/mode'),
+      import('codemirror-graphql/dist/variables/hint'),
+      import('codemirror-graphql/dist/variables/lint'),
+      import('codemirror-graphql/dist/variables/mode'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {

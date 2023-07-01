@@ -9,7 +9,7 @@
 
 export { MessageProcessor } from './MessageProcessor';
 
-export { default as startServer } from './startServer';
+export { default as startServer, ServerOptions } from './startServer';
 
 export * from './GraphQLCache';
 export * from './parseDocument';

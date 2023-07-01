@@ -1,10 +1,9 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "composite": true,
     "rootDir": "./src",
     "outDir": "./dist",
-    "baseUrl": "."
+    "composite": true
   },
   "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]

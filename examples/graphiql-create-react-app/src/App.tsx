@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import 'graphiql/graphiql.min.css';

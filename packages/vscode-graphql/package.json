@@ -148,14 +148,13 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "node esbuild",
-    "build-bundles": "npm run compile -- --sourcemap",
-    "vsce:package": "vsce package --yarn",
+    "vscode:prepublish": "pnpm run build -- --minify",
+    "build": "node esbuild --sourcemap",
+    "vsce:package": "vsce package --pnpm",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
-    "release": "npm run vsce:publish && npm run open-vsx:publish"
+    "vsce:publish": "vsce publish --pnpm",
+    "open-vsx:publish": "ovsx publish --pnpm -i . --pat $OVSX_PAT",
+    "release": "pnpm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
@@ -165,7 +164,7 @@
     "vsce": "^2.13.0"
   },
   "dependencies": {
-    "graphql-language-service-server": "^2.11.2",
+    "graphql-language-service-server": "workspace:",
     "vscode-languageclient": "8.0.2",
     "graphql": "16.6.0"
   }

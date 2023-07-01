@@ -7,7 +7,7 @@
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from 'monaco-editor';
-import { getRange } from 'graphql-language-service';
+import { HoverContents, getRange } from 'graphql-language-service';
 import { LanguageService } from './LanguageService';
 import {
   toGraphQLPosition,
@@ -74,7 +74,13 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: monaco.Position) {
+  public async doHover(
+    uri: string,
+    position: monaco.Position,
+  ): Promise<{
+    content: HoverContents | undefined;
+    range: monaco.IRange;
+  } | null> {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
@@ -135,7 +141,6 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
-    // eslint-disable-next-line import/no-unresolved -- should be fixed by pnpm migration (points to @types/prettier rather owns prettier types)
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {

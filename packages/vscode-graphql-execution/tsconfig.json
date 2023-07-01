@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "CommonJS",
-    "composite": true,
+
     "rootDir": "./src",
     "outDir": "./dist"
   },

@@ -31,6 +31,10 @@ module.exports = {
         react: {
           version: 'detect',
         },
+        'import/resolver': {
+          typescript: true,
+          node: true,
+        },
       },
       // https://github.com/sindresorhus/globals/blob/master/globals.json
       env: {
@@ -362,6 +366,8 @@ module.exports = {
           'examples/*/tsconfig.json',
           'packages/graphiql/cypress/tsconfig.json',
           'tsconfig.eslint.json',
+          '!packages/graphiql-react/tsconfig.json',
+          'packages/graphiql-react/tsconfig.test.json',
         ],
       },
     },

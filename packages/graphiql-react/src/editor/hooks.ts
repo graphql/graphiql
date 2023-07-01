@@ -1,6 +1,6 @@
 import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import type { SchemaReference } from 'codemirror-graphql/dist/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
 import { useCallback, useEffect } from 'react';

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
+// @ts-expect-error
 import packageJSON from './package.json';
 
 export default defineConfig({
@@ -16,6 +17,7 @@ export default defineConfig({
   ],
   css: {
     postcss: {
+      // @ts-expect-error
       plugins: [postCssNestingPlugin()],
     },
   },

@@ -1,21 +1,29 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
+    "baseUrl": ".",
     "target": "es5",
-    "strictPropertyInitialization": false
+    "esModuleInterop": true
   },
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/dist/**.*", "cypress/**"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/dist/**.*",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js"
+  ],
   "references": [
     {
-      "path": "../graphiql-toolkit"
+      "path": "../codemirror-graphql"
     },
     {
-      "path": "../codemirror-graphql"
+      "path": "../graphiql-toolkit"
     },
     {
       "path": "../graphql-language-service"

@@ -51,10 +51,11 @@ import type {
   DocumentSymbolParams,
   SymbolInformation,
   WorkspaceSymbolParams,
-  Connection,
   DidChangeConfigurationRegistrationOptions,
   Logger,
-} from 'vscode-languageserver/node';
+} from 'vscode-languageserver-protocol';
+
+import { Connection } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 

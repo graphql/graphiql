@@ -4,3 +4,4 @@
 working-group/
 packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql
 CHANGELOG.md
+pnpm-lock.yaml

@@ -19,7 +19,8 @@ import {
   GraphQLSchema,
   GraphQLType,
 } from 'graphql';
-import CodeMirror from 'codemirror';
+
+import { registerHelper } from 'codemirror';
 
 import getTypeInfo, { TypeInfo } from './utils/getTypeInfo';
 import {
@@ -54,7 +55,7 @@ export interface GraphQLInfoOptions {
  *   - onClick: A function called when a named thing is clicked.
  *
  */
-CodeMirror.registerHelper(
+registerHelper(
   'info',
   'graphql',
   (token: CodeMirror.Token, options: GraphQLInfoOptions) => {

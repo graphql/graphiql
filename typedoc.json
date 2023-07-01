@@ -1,18 +1,35 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "name": "GraphQL Official LSP Documentation",
   "theme": "default",
-  "mode": "modules",
+  "darkHighlightTheme": "dark-plus",
   "out": "packages/graphiql/typedoc",
-  "inputFiles": [
-    "**/node_modules/vscode*/**",
-    "**/node_modules/@types/node/**"
+  "tsconfig": "resources/tsconfig.build.json",
+  "entryPointStrategy": "packages",
+  "includeVersion": true,
+  "entryPoints": ["packages/*"],
+  "exclude": [
+    "**/__tests__/**",
+    "*.spec.*",
+    "**/*.stories.tsx",
+    "*-test.*",
+    "**/cypress/**"
   ],
-  "exclude": "**/__tests__/**,*.spec.*,**/*-test.*,**/esm/**,**/dist/**,**/node_modules/**,packages/graphiql-2-rfc-*/**",
-  "excludePrivate": true,
-  "excludeNotExported": true,
-  "external-modulemap": ".*/packages/([\\w\\-_]+)/",
-  "ignoreCompilerErrors": true,
-  "includeDeclarations": true,
-  "preserveConstEnums": true,
-  "readme": "./README.md"
+  "validation": {
+    "notExported": false,
+    "notDocumented": false,
+    "invalidLink": false
+  },
+  "readme": "./README.md",
+  "externalSymbolLinkMappings": {
+    "graphql": {
+      "GraphQLSchema": "https://graphql-js.org/api/class/GraphQLSchema",
+      "DocumentNode": "https://graphql-js.org/api/#DefinitionNode",
+      "TypeNode": "https://graphql-js.org/api#TypeNode"
+    },
+    "graphql-config": {
+      "GraphQLConfig": "https://the-guild.dev/graphql/config/docs/library/graphql-config",
+      "GraphQLProjectConfig": "https://the-guild.dev/graphql/config/docs/library/graphql-project-config"
+    }
+  }
 }

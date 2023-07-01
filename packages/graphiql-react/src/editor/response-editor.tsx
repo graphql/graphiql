@@ -1,7 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -72,8 +72,8 @@ export function useResponseEditor(
         import('codemirror/addon/search/jump-to-line'),
         // @ts-expect-error
         import('codemirror/keymap/sublime'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
+        import('codemirror-graphql/dist/results/mode'),
+        import('codemirror-graphql/dist/utils/info-addon'),
       ],
       { useCommonAddons: false },
     ).then(CodeMirror => {

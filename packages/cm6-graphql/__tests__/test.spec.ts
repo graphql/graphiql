@@ -1,6 +1,6 @@
 /* eslint-disable jest/expect-expect */
-import { graphqlLanguage } from '../dist/index.js';
-import { fileTests } from '@lezer/generator/dist/test';
+import { graphqlLanguage } from '../dist/index.cjs';
+import { fileTests } from '@lezer/generator/dist/test.cjs';
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
