@@ -28,7 +28,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          command: npm run e2e
+          command: pnpm e2e
           working-directory: packages/graphiql
       - uses: actions/upload-artifact@v3
         # add the line below to store screenshots only on failures
