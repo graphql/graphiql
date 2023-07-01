@@ -114,6 +114,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
     "typedoc": "^0.24.8",
+    "typedoc-plugin-expand-object-like-types": "^0.1.1",
     "typescript": "^4.6.3",
     "turbo": "^1.10.6",
     "vitest": "^0.32.2",

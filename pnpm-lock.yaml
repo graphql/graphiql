@@ -182,6 +182,9 @@ importers:
       typedoc:
         specifier: ^0.24.8
         version: 0.24.8(typescript@4.7.4)
+      typedoc-plugin-expand-object-like-types:
+        specifier: ^0.1.1
+        version: 0.1.1(typedoc@0.24.8)
       typescript:
         specifier: ^4.6.3
         version: 4.7.4
@@ -19401,6 +19404,14 @@ packages:
 
   /typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
+    dev: true
+
+  /typedoc-plugin-expand-object-like-types@0.1.1(typedoc@0.24.8):
+    resolution: {integrity: sha512-h7iw2qugVqEevlqMK4VeAPHMegg63v6zRjvGMoRfsc4ygoCttFYDs05PyLQNwxjEbXZLvGK9TTzig/oHiXUOJg==}
+    peerDependencies:
+      typedoc: 0.22.x || 0.23.x
+    dependencies:
+      typedoc: 0.24.8(typescript@4.7.4)
     dev: true
 
   /typedoc@0.24.8(typescript@4.7.4):

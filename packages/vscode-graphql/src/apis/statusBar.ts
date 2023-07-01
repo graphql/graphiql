@@ -5,9 +5,10 @@ import {
   window,
   ThemeColor,
   version,
+  Event,
 } from 'vscode';
 
-import { LanguageClient, State } from 'vscode-languageclient/node';
+import { LanguageClient, State, StateChangeEvent } from 'vscode-languageclient/node';
 
 enum Status {
   INIT = 1,
@@ -91,7 +92,7 @@ export function initStatusBar(
     updateStatusBar(statusBarItem, editor);
   });
 
-  client.onDidChangeState(event => {
+  client.onDidChangeState((event)=> {
     if (event.newState === State.Running) {
       extensionStatus = Status.RUNNING;
       serverRunning = true;

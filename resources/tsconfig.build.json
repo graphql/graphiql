@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+      "composite": true
+    },
+    "files": [],
+    "include": [],
+    "references": [
+      {
+        "path": "../packages/graphiql"
+      },
+      {
+        "path": "../packages/graphiql-react"
+      },
+      {
+        "path": "../packages/graphiql-toolkit"
+      },
+      {
+        "path": "../packages/monaco-graphql"
+      },
+      {
+        "path": "../packages/codemirror-graphql"
+      },
+      {
+        "path": "../packages/cm6-graphql"
+      },
+      {
+        "path": "../packages/graphql-language-service"
+      },
+      {
+        "path": "../packages/graphql-language-service-server"
+      },
+      {
+        "path": "../packages/graphql-language-service-cli"
+      }
+    ]
+  }

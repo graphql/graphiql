@@ -4,15 +4,10 @@
   "theme": "default",
   "darkHighlightTheme": "dark-plus",
   "out": "packages/graphiql/typedoc",
-  "entryPointStrategy": "expand",
-  "entryPoints": [
-    "packages/graphql-language-service/",
-    "packages/graphql-language-service-server/",
-    "packages/graphiql-toolkit/",
-    "packages/graphiql-react/",
-    "packages/graphiql/",
-    "packages/monaco-graphql/"
-  ],
+  "tsconfig": "resources/tsconfig.build.json",
+  "entryPointStrategy": "packages",
+  "includeVersion": true,
+  "entryPoints": ["packages/*"],
   "exclude": [
     "**/__tests__/**",
     "*.spec.*",
@@ -20,5 +15,21 @@
     "*-test.*",
     "**/cypress/**"
   ],
-  "readme": "./README.md"
+  "validation": {
+    "notExported": false,
+    "notDocumented": false,
+    "invalidLink": false
+  },
+  "readme": "./README.md",
+  "externalSymbolLinkMappings": {
+    "graphql": {
+      "GraphQLSchema": "https://graphql-js.org/api/class/GraphQLSchema",
+      "DocumentNode": "https://graphql-js.org/api/#DefinitionNode",
+      "TypeNode": "https://graphql-js.org/api#TypeNode"
+    },
+    "graphql-config": {
+      "GraphQLConfig": "https://the-guild.dev/graphql/config/docs/library/graphql-config",
+      "GraphQLProjectConfig": "https://the-guild.dev/graphql/config/docs/library/graphql-project-config"
+    }
+  }
 }

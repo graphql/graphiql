@@ -7,7 +7,7 @@
   "include": [],
   "references": [
     {
-      "path": "resources/tsconfig.base.esm.json"
+      "path": "resources/tsconfig.build.json"
     }
   ]
 }

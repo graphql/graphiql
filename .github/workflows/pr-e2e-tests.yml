@@ -33,6 +33,7 @@ jobs:
           command: pnpm e2e
           working-directory: packages/graphiql
       - uses: actions/upload-artifact@v3
+        if: failure()
         # add the line below to store screenshots only on failures
         # if: failure()
         with:
@@ -40,6 +41,7 @@ jobs:
           path: packages/graphiql/cypress/screenshots
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
       - uses: actions/upload-artifact@v3
+        if: failure()
         with:
           name: cypress-videos
           path: packages/graphiql/cypress/videos
