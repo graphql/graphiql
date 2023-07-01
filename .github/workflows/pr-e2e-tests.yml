@@ -12,7 +12,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8.6.5
-     
+
       - uses: actions/setup-node@v3
         with:
           node-version: 19
@@ -24,6 +24,8 @@ jobs:
           runTests: false
       - name: Cypress info
         run: npx cypress info
+      - name: Run Build
+        run: pnpm run build
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
