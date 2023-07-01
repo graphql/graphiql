@@ -12,11 +12,31 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8.6.5
+      - uses: actions/upload-artifact@v3
+        # add the line below to store screenshots only on failures
+        # if: failure()
+        with:
+          name: cypress-screenshots
+          path: packages/graphiql/cypress/screenshots
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cypress-videos
+          path: packages/graphiql/cypress/videos
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
       - uses: actions/setup-node@v3
         with:
           node-version: 19
           cache: 'pnpm'
+      - name: Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          # just perform install
+          runTests: false
+      - name: Cypress info
+        run: npx cypress info
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          start: pnpm e2e:start
+          install: false
+          command: npm run e2e
