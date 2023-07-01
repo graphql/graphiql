@@ -22,7 +22,6 @@ jobs:
         with:
           # just perform install
           runTests: false
-          working-directory: packages/graphiql
       - name: Cypress info
         run: npx cypress info
       - name: Cypress run
