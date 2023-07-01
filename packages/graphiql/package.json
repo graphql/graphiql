@@ -73,7 +73,7 @@
     "cssnano": "^5.1.15",
     "cypress": "^12.6.0",
     "express": "^4.17.3",
-    "express-graphql": "experimental-stream-defer",
+    "graphql-http": "^1.19.0",
     "fork-ts-checker-webpack-plugin": "7.3.0",
     "graphql": "^16.4.0",
     "graphql-subscriptions": "^2.0.0",

@@ -32,7 +32,6 @@ const resultConfig = {
     allowedHosts: ['local.example.com', 'graphiql.com'],
     setupMiddlewares(middlewares, devServer) {
       require('../test/beforeDevServer')(devServer.app);
-      require('../test/afterDevServer')();
 
       return middlewares;
     },
