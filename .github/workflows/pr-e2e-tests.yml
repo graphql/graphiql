@@ -33,6 +33,7 @@ jobs:
         with:
           # just perform install
           runTests: false
+          config-file: packages/graphiql/cypress.config.ts
       - name: Cypress info
         run: npx cypress info
       - name: Cypress run
@@ -40,3 +41,4 @@ jobs:
         with:
           install: false
           command: npm run e2e
+          config-file: packages/graphiql/cypress.config.ts
