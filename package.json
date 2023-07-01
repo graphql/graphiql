@@ -16,11 +16,11 @@
       "eslint --fix",
       "prettier --write",
       "jest --passWithNoTests",
-      "yarn cspell --gitignore"
+      "yarn cspell lint --gitignore --no-progress --no-must-find-files"
     ],
     "*.{md,html,json,css}": [
       "prettier --write",
-      "yarn cspell --gitignore"
+      "yarn cspell lint --gitignore --no-progress --no-must-find-files"
     ]
   },
   "husky": {
@@ -59,7 +59,7 @@
     "jest": "jest --testPathIgnorePatterns cm6-graphql",
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn pretty-check && yarn lint-cspell",
-    "lint-cspell": "cspell --unique",
+    "lint-cspell": "cspell --unique --gitignore --no-progress --no-must-find-files",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
