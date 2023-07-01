@@ -149,6 +149,9 @@ importers:
       express:
         specifier: ^4.17.3
         version: 4.18.2
+      express-graphql:
+        specifier: ^0.12.0
+        version: 0.12.0(graphql@15.8.0)
       fetch-mock:
         specifier: 6.5.2
         version: 6.5.2
@@ -11201,6 +11204,20 @@ packages:
       jest-util: 29.5.0
     dev: true
 
+  /express-graphql@0.12.0(graphql@15.8.0):
+    resolution: {integrity: sha512-DwYaJQy0amdy3pgNtiTDuGGM2BLdj+YO2SgbKoLliCfuHv3VVTt7vNG/ZqK2hRYjtYHE2t2KB705EU94mE64zg==}
+    engines: {node: '>= 10.x'}
+    deprecated: This package is no longer maintained. We recommend using `graphql-http` instead. Please consult the migration document https://github.com/graphql/graphql-http#migrating-express-grpahql.
+    peerDependencies:
+      graphql: ^14.7.0 || ^15.3.0
+    dependencies:
+      accepts: 1.3.8
+      content-type: 1.0.5
+      graphql: 15.8.0
+      http-errors: 1.8.0
+      raw-body: 2.5.2
+    dev: true
+
   /express-graphql@0.12.0-experimental-stream-defer.1(graphql@16.6.0):
     resolution: {integrity: sha512-VqSOUgN00Sbs+OO7sYWvZVtGwkLbWK6D71N07Q8iuM9NcJOSQH/g0UvODd1eXLq/nEOQTWLyd7W1s9n1UWxZsA==}
     engines: {node: '>= 10.x'}
@@ -12252,6 +12269,11 @@ packages:
       graphql: '>=0.11 <=16'
     dependencies:
       graphql: 16.6.0
+
+  /graphql@15.8.0:
+    resolution: {integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==}
+    engines: {node: '>= 10.x'}
+    dev: true
 
   /graphql@16.6.0:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
