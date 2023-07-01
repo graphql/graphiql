@@ -12,6 +12,25 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8.6.5
+     
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
+          cache: 'pnpm'
+      - name: Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          # just perform install
+          runTests: false
+          working-directory: packages/graphiql
+      - name: Cypress info
+        run: npx cypress info
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          command: npm run e2e
+          working-directory: packages/graphiql
       - uses: actions/upload-artifact@v3
         # add the line below to store screenshots only on failures
         # if: failure()
@@ -24,21 +43,3 @@ jobs:
           name: cypress-videos
           path: packages/graphiql/cypress/videos
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 19
-          cache: 'pnpm'
-      - name: Cypress install
-        uses: cypress-io/github-action@v5
-        with:
-          # just perform install
-          runTests: false
-          config-file: packages/graphiql/cypress.config.ts
-      - name: Cypress info
-        run: npx cypress info
-      - name: Cypress run
-        uses: cypress-io/github-action@v5
-        with:
-          install: false
-          command: npm run e2e
-          config-file: packages/graphiql/cypress.config.ts
