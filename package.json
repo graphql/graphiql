@@ -45,7 +45,7 @@
     "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
     "watch": "yarn build:watch",
-    "watch-vscode": "yarn workspace vscode-graphql run compile",
+    "watch-vscode": "yarn tsc && yarn workspace vscode-graphql run compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution run compile",
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",

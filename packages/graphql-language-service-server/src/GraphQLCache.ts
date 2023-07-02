@@ -51,9 +51,26 @@ import { CodeFileLoader } from '@graphql-tools/code-file-loader';
 
 const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For schema
-  api.loaders.schema.register(new CodeFileLoader({ noSilentErrors: false }));
+
+  api.loaders.schema.register(
+    new CodeFileLoader({
+      noSilentErrors: false,
+      noRequire: false,
+      noPluck: false,
+      // // @ts-expect-error
+      // require: true,
+    }),
+  );
   // For documents
-  api.loaders.documents.register(new CodeFileLoader({ noSilentErrors: false }));
+  api.loaders.documents.register(
+    new CodeFileLoader({
+      noSilentErrors: false,
+      noRequire: false,
+      noPluck: false,
+      // // @ts-expect-error
+      // require: true,
+    }),
+  );
 
   return { name: 'languageService' };
 };
@@ -342,6 +359,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
+    return Promise.resolve([])
     let pattern: string;
     const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
     console.log('patterns', patterns);
@@ -385,7 +403,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           },
         );
         globResult.on('error', error => {
-          console.log(error)
+          console.log(error);
           reject(error);
         });
         globResult.on('end', () => {
@@ -411,7 +429,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           );
         });
       } catch (error) {
-        console.log(error)
+        console.log(error);
 
         reject(error);
       }

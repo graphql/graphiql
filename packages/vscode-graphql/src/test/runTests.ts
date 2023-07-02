@@ -21,7 +21,7 @@ async function main() {
       extensionDevelopmentPath,
       extensionTestsPath,
       version: 'insiders',
-      timeout: 10000000,
+      timeout: 1000000,
       launchArgs: [
         // '--disable-workspace-trust',
         // '--disable-workspace-trust'
@@ -34,8 +34,8 @@ async function main() {
         'fixtures/src/queries/query.ts',
         '--wait',
         '--disable-workspace-trust',
-        '--no-sandbox ',
-        '--disable-gpu-sandbox ',
+        '--no-sandbox',
+        '--disable-gpu-sandbox',
         '--disable-extensions'
       ],
       // reuseMachineInstall: true,

@@ -1,6 +1,4 @@
 import { build }from 'esbuild';
-import { glob } from  'glob';
-
 const [, , arg] = process.argv;
 
 const logger = console;
