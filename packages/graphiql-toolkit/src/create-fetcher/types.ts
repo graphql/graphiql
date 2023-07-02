@@ -26,7 +26,7 @@ export type Unsubscribable = {
 
 export type FetcherParams = {
   query: string;
-  operationName?: string | null;
+  operationName?: string;
   variables?: any;
 };
 
