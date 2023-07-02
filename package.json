@@ -16,11 +16,11 @@
       "eslint --fix",
       "prettier --write",
       "jest --passWithNoTests",
-      "yarn cspell lint --gitignore --no-progress --no-must-find-files"
+      "yarn cspell lint . --gitignore --no-progress --no-must-find-files"
     ],
     "*.{md,html,json,css}": [
       "prettier --write",
-      "yarn cspell lint --gitignore --no-progress --no-must-find-files"
+      "yarn cspell lint . --gitignore --no-progress --no-must-find-files"
     ]
   },
   "husky": {
