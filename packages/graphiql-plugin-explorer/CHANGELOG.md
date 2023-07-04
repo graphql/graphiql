@@ -1,5 +1,15 @@
 # @graphiql/plugin-explorer
 
+## 0.2.0
+
+### Minor Changes
+
+- [#3293](https://github.com/graphql/graphiql/pull/3293) [`1b8f3fe9`](https://github.com/graphql/graphiql/commit/1b8f3fe9c41697855378ec13a76f1a908fda778a) Thanks [@B2o5T](https://github.com/B2o5T)! - BREAKING CHANGE: umd build was renamed to `index.umd.js`
+
+### Patch Changes
+
+- [#3319](https://github.com/graphql/graphiql/pull/3319) [`2f51b1a5`](https://github.com/graphql/graphiql/commit/2f51b1a5f25ac515af89b708c009796c57a611fb) Thanks [@LekoArts](https://github.com/LekoArts)! - Use named `Explorer` import from `graphiql-explorer` to fix an issue where the bundler didn't correctly choose either the `default` or `Explorer` import. This change should ensure that `@graphiql/plugin-explorer` works correctly without `graphiql-explorer` being bundled.
+
 ## 0.1.22
 
 ### Patch Changes

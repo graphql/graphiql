@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 0.2.0
+
+### Minor Changes
+
+- [#3293](https://github.com/graphql/graphiql/pull/3293) [`1b8f3fe9`](https://github.com/graphql/graphiql/commit/1b8f3fe9c41697855378ec13a76f1a908fda778a) Thanks [@B2o5T](https://github.com/B2o5T)! - BREAKING CHANGE: umd build was renamed to `index.umd.js`
+
 ## 0.1.4
 
 ### Patch Changes
