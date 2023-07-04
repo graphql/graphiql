@@ -4,7 +4,10 @@ import {
   useExecutionContext,
   useSchemaContext,
 } from '@graphiql/react';
-import GraphiQLExplorer, { GraphiQLExplorerProps } from 'graphiql-explorer';
+import {
+  Explorer as GraphiQLExplorer,
+  GraphiQLExplorerProps,
+} from 'graphiql-explorer';
 import React, { useCallback, useRef } from 'react';
 
 import './graphiql-explorer.d.ts';
@@ -71,6 +74,7 @@ const checkboxUnchecked = (
     <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" fill="none" />
   </svg>
 );
+
 const checkboxChecked = (
   <svg
     viewBox="0 0 15 15"

@@ -61,5 +61,7 @@ declare module 'graphiql-explorer' {
     defaultValue: (arg: GraphQLLeafType) => ValueNode;
   };
 
+  export { GraphiQLExplorer as Explorer };
+
   export default GraphiQLExplorer;
 }
