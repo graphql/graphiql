@@ -4,13 +4,14 @@ import {
   useExecutionContext,
   useSchemaContext,
 } from '@graphiql/react';
-import { Explorer as GraphiQLExplorer, GraphiQLExplorerProps } from 'graphiql-explorer';
+import {
+  Explorer as GraphiQLExplorer,
+  GraphiQLExplorerProps,
+} from 'graphiql-explorer';
 import React, { useCallback, useRef } from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
-
-const preferDefault = (m: any): any => m?.default || m;
 
 const colors = {
   keyword: 'hsl(var(--color-primary))',
@@ -113,8 +114,6 @@ const styles = {
     fontSize: '1em',
   },
 };
-
-const GraphiQLExplorer = preferDefault(GraphiQLExplorerImport);
 
 function ExplorerPlugin(props: GraphiQLExplorerProps) {
   const { setOperationName } = useEditorContext({ nonNull: true });
