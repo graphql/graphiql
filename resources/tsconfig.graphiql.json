@@ -7,9 +7,6 @@
   "references": [
     {
       "path": "./tsconfig.graphiql.build.esm.json"
-    },
-    {
-      "path": "./tsconfig.graphiql.build.cjs.json"
     }
   ]
 }

@@ -12,4 +12,4 @@ if (process?.env) {
 }
 
 require('@babel/polyfill');
-require('../dist/cli');
+require('../esm/cli');

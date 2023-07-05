@@ -2,7 +2,7 @@
   "compilerOptions": {
     "composite": true,
     "target": "es6",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,

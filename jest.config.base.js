@@ -9,7 +9,7 @@ module.exports = (dir, env = 'jsdom') => {
   return {
     globals: {
       'ts-jest': {
-        tsConfig: `${__dirname}/resources/tsconfig.base.esm.json`,
+        tsConfig: `${__dirname}/resources/tsconfig.base.json`,
       },
     },
     clearMocks: true,
@@ -24,8 +24,7 @@ module.exports = (dir, env = 'jsdom') => {
       '^graphql-language-([^/]+)': `${__dirname}/packages/graphql-language-$1/src`,
       '^@graphiql\\/([^/]+)': `${__dirname}/packages/graphiql-$1/src`,
       '^@graphiql-plugins\\/([^/]+)': `${__dirname}/plugins/$1/src`,
-      '^codemirror-graphql\\/esm([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
-      '^codemirror-graphql\\/cjs([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
+      '^codemirror-graphql([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
       // relies on compilation
       '^cm6-graphql\\/src\\/([^]+)': `${__dirname}/packages/cm6-graphql/dist/$1`,
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,

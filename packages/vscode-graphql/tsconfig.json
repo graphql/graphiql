@@ -1,5 +1,5 @@
 {
-  "extends": "../../resources/tsconfig.base.esm.json",
+  "extends": "../../resources/tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2018",
     "module": "CommonJS",

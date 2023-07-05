@@ -16,9 +16,8 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
-  "main": "dist/index.js",
   "module": "esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "esm/index.d.ts",
   "files": [
     "dist",
     "esm",
@@ -31,20 +30,18 @@
     "graphiql.min.css.map"
   ],
   "scripts": {
-    "analyze-bundle": "cross-env NODE_ENV=production ANALYZE=1 yarn webpack -p",
-    "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
-    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-webpack",
+    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
+    "build": "yarn build-clean && yarn build-esm",
+    "build-bundles": "yarn build-bundles-clean && yarn webpack",
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
-    "build-bundles-webpack": "cross-env yarn webpack --mode development --bail",
-    "build-cjs": "tsc",
     "build-clean": "rimraf esm dist webpack *.html",
-    "build-esm": "tsc --project ./tsconfig.esm.json",
+    "build-esm": "tsc",
     "check": "tsc --noEmit",
     "cypress-open": "yarn e2e-server 'cypress open'",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "webpack": "webpack-cli --config resources/webpack.config.js"
+    "webpack": "webpack-cli --config resources/webpack.config.js --bail"
   },
   "dependencies": {
     "@graphiql/react": "^0.18.0",

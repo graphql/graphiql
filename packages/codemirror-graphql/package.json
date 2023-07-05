@@ -17,8 +17,6 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },
   "license": "MIT",
-  "main": "index.js",
-  "module": "esm/index.js",
   "files": [
     "src",
     "cm6-legacy",
@@ -41,8 +39,7 @@
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow,js.map,d.ts,d.ts.map} && rimraf esm results utils variables coverage cm6-legacy __tests__",
     "build-flow": "node ../../scripts/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "jest",
-    "postbuild": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js"
+    "test": "jest"
   },
   "peerDependencies": {
     "@codemirror/language": "6.0.0",

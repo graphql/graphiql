@@ -3,7 +3,6 @@
   "description": "full service, official monaco mode for GraphQL",
   "version": "1.2.4",
   "license": "MIT",
-  "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
   "types": "esm/monaco.contribution.d.ts",
   "contributors": [

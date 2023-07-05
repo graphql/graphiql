@@ -7,9 +7,6 @@
   "references": [
     {
       "path": "resources/tsconfig.build.esm.json"
-    },
-    {
-      "path": "resources/tsconfig.build.cjs.json"
     }
   ]
 }

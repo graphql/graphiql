@@ -25,9 +25,8 @@
     "language service",
     "LSP"
   ],
-  "main": "dist/index.js",
   "module": "esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "esm/index.d.ts",
   "bin": {
     "graphql": "./dist/temp-bin.js"
   },

@@ -1,10 +1,10 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2018",
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./esm"
   },
   "references": [
     {

@@ -6,25 +6,25 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-toolkit/tsconfig.esm.json"
+      "path": "../packages/graphiql-toolkit"
     },
     {
-      "path": "../packages/cm6-graphql/tsconfig.esm.json"
+      "path": "../packages/cm6-graphql"
     },
     {
-      "path": "../packages/codemirror-graphql/tsconfig.esm.json"
+      "path": "../packages/codemirror-graphql"
     },
     {
-      "path": "../packages/monaco-graphql/tsconfig.esm.json"
+      "path": "../packages/monaco-graphql"
     },
     {
-      "path": "../packages/graphql-language-service/tsconfig.esm.json"
+      "path": "../packages/graphql-language-service"
     },
     {
-      "path": "../packages/graphql-language-service-server/tsconfig.esm.json"
+      "path": "../packages/graphql-language-service-server"
     },
     {
-      "path": "../packages/graphql-language-service-cli/tsconfig.esm.json"
+      "path": "../packages/graphql-language-service-cli"
     }
   ]
 }

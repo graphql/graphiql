@@ -15,9 +15,8 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/toolkit"
   },
   "license": "MIT",
-  "main": "dist/index.js",
   "module": "esm/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "esm/index.d.ts",
   "scripts": {},
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",

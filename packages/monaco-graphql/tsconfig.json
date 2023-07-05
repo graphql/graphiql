@@ -1,18 +1,20 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.json",
   "compilerOptions": {
+    "module": "ESNext",
     "moduleResolution": "node",
+    "target": "ESNext",
     "baseUrl": ".",
     "rootDir": "./src",
-    "outDir": "./dist",
-    "target": "es5",
+    "outDir": "./esm",
     "lib": [
       "dom",
       "es5",
-      "es2015.collection",
-      "es2015.promise",
-      "es2015.iterable",
       "es6",
+      "es2015",
+      "Es2016",
+      "ES2017",
+      "ES2018",
       "ESNext"
     ],
     "paths": {
@@ -24,6 +26,14 @@
       "path": "../graphql-language-service"
     }
   ],
-  "include": ["./src"],
-  "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.*",
+    "**/node_modules/monaco-editor-core/**/*.d.ts",
+    "**/node_modules/jest-haste-map/**/*",
+    "dist",
+    "esm",
+    "node_modules"
+  ]
 }

@@ -6,13 +6,12 @@
     "build": "cm-buildhelper src/index.ts",
     "prepare": "yarn build"
   },
-  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs"
+    "import": "./esm/index.js",
+    "require": "./esm/index.cjs"
   },
-  "types": "dist/index.d.ts",
+  "types": "esm/index.d.ts",
   "sideEffects": false,
   "dependencies": {
     "graphql-language-service": "^5.1.7"

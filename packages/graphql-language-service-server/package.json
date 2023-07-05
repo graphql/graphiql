@@ -30,7 +30,6 @@
     "svelte",
     "typescript"
   ],
-  "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
