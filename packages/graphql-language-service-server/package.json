@@ -37,8 +37,8 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "@babel/parser": "^7.21.2",
-    "@babel/types": "^7.21.2",
+    "@babel/parser": "^7.22.6",
+    "@babel/types": "^7.22.5",
     "@graphql-tools/code-file-loader": "8.0.1",
     "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",

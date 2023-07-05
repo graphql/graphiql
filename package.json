@@ -16,11 +16,11 @@
       "eslint --fix",
       "prettier --write",
       "jest --passWithNoTests",
-      "yarn cspell --gitignore"
+      "yarn lint-cspell"
     ],
     "*.{md,html,json,css}": [
       "prettier --write",
-      "yarn cspell --gitignore"
+      "yarn lint-cspell"
     ]
   },
   "husky": {
@@ -52,15 +52,14 @@
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
-    "e2e": "yarn e2e:build && yarn workspace graphiql e2e",
-    "e2e:build": "yarn build && yarn workspace graphiql build-bundles-min",
+    "e2e": "yarn run e2e:build && yarn workspace graphiql e2e",
+    "e2e:build": "yarn build && yarn workspace graphiql build-bundles",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
     "jest": "jest --testPathIgnorePatterns cm6-graphql",
     "license-check": "jsgl --local ./",
-    "lint": "yarn eslint && yarn lint-check && yarn pretty-check && yarn lint-cspell",
-    "lint-check": "eslint-config-prettier .eslintrc.js",
-    "lint-cspell": "cspell --unique",
+    "lint": "yarn eslint && yarn pretty-check && yarn lint-cspell",
+    "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql postbuild && yarn workspace monaco-graphql postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
@@ -128,7 +127,7 @@
     "eslint-plugin-sonarjs": "^0.19.0",
     "eslint-plugin-unicorn": "^47.0.0",
     "execa": "^6.0.0",
-    "express": "^4.17.3",
+    "express": "^4.18.2",
     "fetch-mock": "6.5.2",
     "husky": "^4.2.3",
     "jest": "^27.5.1",

@@ -8,7 +8,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 const path = require('node:path');
-const { graphqlHTTP } = require('express-graphql');
+const { createHandler } = require('graphql-http/lib/use/express');
 const { GraphQLError } = require('graphql');
 const schema = require('./schema');
 const app = express();
@@ -16,11 +16,11 @@ const { schema: badSchema } = require('./bad-schema');
 const WebSocketsServer = require('./afterDevServer');
 
 // Server
-app.post('/graphql', graphqlHTTP({ schema }));
+app.post('/graphql', createHandler({ schema }));
 
 app.get(
   '/graphql',
-  graphqlHTTP({
+  createHandler({
     schema,
   }),
 );

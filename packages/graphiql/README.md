@@ -35,7 +35,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 ## Live Demos
 
 - The [latest stable version](https://graphql.github.io/swapi-graphql)
-- The current state of the `master` branch:
+- The current state of the `main` branch:
   - Using the [minified bundles](https://graphiql-test.netlify.com)
   - Using the [development bundles](https://graphiql-test.netlify.com/dev) (good
     for inspecting, debugging, etc)

@@ -4,10 +4,10 @@ on:
     branches: [main]
   pull_request:
     types: [opened, synchronize]
-    paths-ignore:
-      - '**.md'
-      - 'examples'
-      - '!examples/monaco-graphql-webpack'
+#     paths-ignore:
+#       - '**.md'
+#       - 'examples'
+#       - '!examples/monaco-graphql-webpack'
 jobs:
   unit:
     name: Unit Tests
