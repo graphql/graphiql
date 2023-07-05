@@ -1,0 +1,21 @@
+
+# this is the example enum
+enum ExampleEnum {
+    food
+    water
+    shelter
+}
+
+# for example
+type ExampleType {
+   shelter: String
+   something: String
+   however: String
+}
+
+type Query {
+    exampleField: ExampleType
+    love: String
+    message: String
+}
+

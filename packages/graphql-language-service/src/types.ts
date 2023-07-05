@@ -77,7 +77,7 @@ export interface GraphQLCache {
   ) => Promise<void>;
 
   getFragmentDependencies: (
-    query: string,
+    query: DocumentNode,
     fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
   ) => Promise<FragmentInfo[]>;
 

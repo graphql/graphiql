@@ -1,0 +1,4 @@
+{
+    "graphql-config.load.legacy": true,
+    "vscode-graphql.cacheSchemaFileForLookup": false
+}

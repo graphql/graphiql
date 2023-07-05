@@ -20,6 +20,33 @@
       "preLaunchTask": "watch-vscode"
     },
     {
+      "outputCapture": "console",
+      "name": "Extension Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "timeout": 30000,
+      "autoAttachChildProcesses": true,
+      "serverReadyAction": {
+        "action": "openExternally"
+      },
+      "args": [
+        "${workspaceFolder}/packages/vscode-graphql/fixtures",
+        "${workspaceFolder}/packages/vscode-graphql/fixtures/src/queries/query.ts",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-graphql",
+        "--extensionTestsPath=${workspaceFolder}/packages/vscode-graphql/dist/test/index",
+        "--disable-workspace-trust",
+        "--no-sandbox",
+        "--disable-gpu-sandbox",
+        "--disable-extensions"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/packages/vscode-graphql/out/extension.js"
+      ],
+      "trace": true,
+      "preLaunchTask": "watch-vscode"
+    },
+    {
       "type": "node",
       "name": "jest watch",
       "request": "launch",

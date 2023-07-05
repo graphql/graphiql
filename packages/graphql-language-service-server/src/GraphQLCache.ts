@@ -51,9 +51,26 @@ import { CodeFileLoader } from '@graphql-tools/code-file-loader';
 
 const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For schema
-  api.loaders.schema.register(new CodeFileLoader());
+
+  api.loaders.schema.register(
+    new CodeFileLoader({
+      noSilentErrors: false,
+      noRequire: false,
+      noPluck: false,
+      // // @ts-expect-error
+      // require: true,
+    }),
+  );
   // For documents
-  api.loaders.documents.register(new CodeFileLoader());
+  api.loaders.documents.register(
+    new CodeFileLoader({
+      noSilentErrors: false,
+      noRequire: false,
+      noPluck: false,
+      // // @ts-expect-error
+      // require: true,
+    }),
+  );
 
   return { name: 'languageService' };
 };
@@ -137,7 +154,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   getFragmentDependencies = async (
-    query: string,
+    documentAST: DocumentNode,
     fragmentDefinitions?: Map<string, FragmentInfo> | null,
   ): Promise<FragmentInfo[]> => {
     // If there isn't context for fragment references,
@@ -145,15 +162,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (!fragmentDefinitions) {
       return [];
     }
-    // If the query cannot be parsed, validations cannot happen yet.
-    // Return an empty array.
-    let parsedQuery;
-    try {
-      parsedQuery = parse(query);
-    } catch {
-      return [];
-    }
-    return this.getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
+
+    return this.getFragmentDependenciesForAST(documentAST, fragmentDefinitions);
   };
 
   getFragmentDependenciesForAST = async (
@@ -217,12 +227,16 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // This function may be called from other classes.
     // If then, check the cache first.
     const rootDir = projectConfig.dirpath;
+    console.log('getFragmentDefinitions 0');
     const cacheKey = this._cacheKeyForProject(projectConfig);
+    console.log('getFragmentDefinitions .5');
     if (this._fragmentDefinitionsCache.has(cacheKey)) {
+      console.log('getFragmentDefinitions cache hit');
       return this._fragmentDefinitionsCache.get(cacheKey) || new Map();
     }
-
+    console.log('getFragmentDefinitions 1');
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
+    console.log('getFragmentDefinitions 2');
 
     const { fragmentDefinitions, graphQLFileMap } =
       await this.readAllGraphQLFiles(list);
@@ -345,8 +359,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
   ): Promise<Array<GraphQLFileMetadata>> => {
+    return Promise.resolve([])
     let pattern: string;
     const patterns = this._getSchemaAndDocumentFilePatterns(projectConfig);
+    console.log('patterns', patterns);
 
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
@@ -359,49 +375,64 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     return new Promise((resolve, reject) => {
-      const globResult = new glob.Glob(
-        pattern,
-        {
-          cwd: rootDir,
-          stat: true,
-          absolute: false,
-          ignore: [
-            'generated/relay',
-            '**/__flow__/**',
-            '**/__generated__/**',
-            '**/__github__/**',
-            '**/__mocks__/**',
-            '**/node_modules/**',
-            '**/__flowtests__/**',
-          ],
-        },
-        error => {
-          if (error) {
-            reject(error);
-          }
-        },
-      );
-      globResult.on('end', () => {
-        resolve(
-          Object.keys(globResult.statCache)
-            .filter(
-              filePath => typeof globResult.statCache[filePath] === 'object',
-            )
-            .filter(filePath => projectConfig.match(filePath))
-            .map(filePath => {
-              // @TODO
-              // so we have to force this here
-              // because glob's DefinitelyTyped doesn't use fs.Stats here though
-              // the docs indicate that is what's there :shrug:
-              const cacheEntry = globResult.statCache[filePath] as fs.Stats;
-              return {
-                filePath: URI.file(filePath).toString(),
-                mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
-                size: cacheEntry.size,
-              };
-            }),
+      console.log('about to glob', glob.Glob);
+      try {
+        const globResult = new glob.Glob(
+          pattern,
+          {
+            cwd: rootDir,
+            stat: true,
+            absolute: false,
+            strict: false,
+            ignore: [
+              'generated/relay',
+              '**/__flow__/**',
+              '**/__generated__/**',
+              '**/__github__/**',
+              '**/__mocks__/**',
+              '**/node_modules/**',
+              '**/__flowtests__/**',
+            ],
+          },
+          error => {
+            if (error) {
+              console.log('error');
+              reject(error);
+            }
+            console.log('empty error');
+          },
         );
-      });
+        globResult.on('error', error => {
+          console.log(error);
+          reject(error);
+        });
+        globResult.on('end', () => {
+          console.log('end');
+          resolve(
+            Object.keys(globResult.statCache)
+              .filter(
+                filePath => typeof globResult.statCache[filePath] === 'object',
+              )
+              .filter(filePath => projectConfig.match(filePath))
+              .map(filePath => {
+                // @TODO
+                // so we have to force this here
+                // because glob's DefinitelyTyped doesn't use fs.Stats here though
+                // the docs indicate that is what's there :shrug:
+                const cacheEntry = globResult.statCache[filePath] as fs.Stats;
+                return {
+                  filePath: URI.file(filePath).toString(),
+                  mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
+                  size: cacheEntry.size,
+                };
+              }),
+          );
+        });
+      } catch (error) {
+        console.log(error);
+
+        reject(error);
+      }
     });
   };
 

@@ -24,7 +24,7 @@ const PARSER_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
-  sourceType: 'module',
+  sourceType: "unambiguous",
   strictMode: false,
 };
 

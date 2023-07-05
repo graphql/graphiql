@@ -1,6 +1,5 @@
 .vscode/**
 .vscode-test/**
-out/test/**
 src/**
 .gitignore
 tsconfig.json
@@ -10,4 +9,3 @@ tslint.json
 renovate.json
 *.tsbuildinfo
 esbuild.js
-dist/**

@@ -111,16 +111,26 @@ export class GraphQLLanguageService {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
     let documentHasExtensions = false;
+    let documentAST: DocumentNode;
+    console.log('get project');
     const projectConfig = this.getConfigForURI(uri);
+    console.log('project');
+
     // skip validation when there's nothing to validate, prevents noisy unexpected EOF errors
     if (!projectConfig || !document || document.trim().length < 2) {
+      console.log('validate 1.5');
       return [];
     }
-    const { schema: schemaPath, name: projectName, extensions } = projectConfig;
+    const { name: projectName, extensions } = projectConfig;
+
+    console.log('validate 1');
+    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
+      projectConfig,
+    );
+    console.log('validate 2');
 
     try {
-      const documentAST = parse(document);
-      if (!schemaPath || uri !== schemaPath) {
+      documentAST = parse(document);
         documentHasExtensions = documentAST.definitions.some(definition => {
           switch (definition.kind) {
             case Kind.OBJECT_TYPE_DEFINITION:
@@ -141,8 +151,9 @@ export class GraphQLLanguageService {
 
           return false;
         });
-      }
+        console.log('validate 3');
     } catch (error) {
+      console.log(error)
       if (error instanceof GraphQLError) {
         const range = getRange(
           error.locations?.[0] ?? { column: 0, line: 0 },
@@ -163,16 +174,13 @@ export class GraphQLLanguageService {
 
     // If there's a matching config, proceed to prepare to run validation
     let source = document;
-    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
-      projectConfig,
-    );
 
     const fragmentDependencies =
       await this._graphQLCache.getFragmentDependencies(
-        document,
+        documentAST,
         fragmentDefinitions,
       );
-
+      console.log('validate 4');
     const dependenciesSource = fragmentDependencies.reduce(
       (prev, cur) => `${prev} ${print(cur.definition)}`,
       '',
@@ -190,7 +198,7 @@ export class GraphQLLanguageService {
       // query, so we return an empty array here.
       return [];
     }
-
+    console.log('validate 5');
     // Check if there are custom validation rules to be used
     let customRules: ValidationRule[] | null = null;
     if (
@@ -201,11 +209,12 @@ export class GraphQLLanguageService {
 
       /* eslint-enable no-implicit-coercion */
     }
+    console.log('validate 6');
     const schema = await this._graphQLCache.getSchema(
       projectName,
       documentHasExtensions,
     );
-
+    console.log('validate 7');
     if (!schema) {
       return [];
     }

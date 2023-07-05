@@ -16,6 +16,7 @@ import {
 
 import * as path from 'node:path';
 import { createStatusBar, initStatusBar } from './apis/statusBar';
+// import { writeFile } from 'fs/promises';
 
 let client: LanguageClient;
 
@@ -24,12 +25,16 @@ export async function activate(context: ExtensionContext) {
     'GraphQL Language Server',
   );
 
+  console.log('activating 2')
+  // await writeFile(__dirname + '/dist/ext-output.js', 'hello')
   const config = getConfig();
   const { debug } = config;
   if (debug) {
     // eslint-disable-next-line no-console
     console.log('Extension "vscode-graphql" is now active!');
   }
+
+  console.log('activating 1')
 
   const serverPath = path.join('out', 'server', 'index.js');
   const serverModule = context.asAbsolutePath(serverPath);
@@ -95,18 +100,21 @@ export async function activate(context: ExtensionContext) {
       return false;
     },
   };
-
+  console.log('before client')
   client = new LanguageClient(
     'vscode-graphql',
     serverOptions,
     clientOptions,
     debug,
   );
+  console.log('after client')
+
 
   const statusBarItem = createStatusBar();
   context.subscriptions.push(statusBarItem);
 
   await client.start();
+  console.log('after client start')
   initStatusBar(statusBarItem, client, window.activeTextEditor);
 
   const commandShowOutputChannel = commands.registerCommand(

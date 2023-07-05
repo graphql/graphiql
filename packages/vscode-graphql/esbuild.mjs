@@ -1,9 +1,10 @@
-const { build } = require('esbuild');
+import { build }from 'esbuild';
 const [, , arg] = process.argv;
 
 const logger = console;
 
 const isWatchMode = arg === '--watch';
+
 
 build({
   entryPoints: ['src/extension.ts', 'src/server/index.ts'],
@@ -12,6 +13,7 @@ build({
   platform: 'node',
   outdir: 'out/',
   format: 'cjs',
+  target: 'node16',
   sourcemap: true,
   watch: isWatchMode,
   // Avoid bundling @vue/compiler-sfc's dynamic dependencies
