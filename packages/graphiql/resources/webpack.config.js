@@ -11,7 +11,7 @@ const rimraf = require('rimraf');
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
 
-const resultConfig = ({ isDev }) => {
+const resultConfig = ({ isDev = false }) => {
   const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
   const config = {
@@ -127,4 +127,7 @@ const resultConfig = ({ isDev }) => {
   return config;
 };
 
-module.exports = [resultConfig({ isDev: true }), resultConfig()];
+module.exports = [
+  resultConfig({ isDev: true }),
+  resultConfig({ isDev: false }),
+];
