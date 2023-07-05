@@ -24,6 +24,9 @@ const PARSER_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
+  allowAwaitOutsideFunction: true,
+  // important! this allows babel to keep parsing when there are issues
+  errorRecovery: true,
   sourceType: 'module',
   strictMode: false,
 };
@@ -65,7 +68,7 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'objectRestSpread',
   'optionalCatchBinding',
   'optionalChaining',
-  ['pipelineOperator', { proposal: 'minimal' }],
+  // ['pipelineOperator', { proposal: 'hack' }],
   'privateIn',
   'regexpUnicodeSets',
   'throwExpressions',
