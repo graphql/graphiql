@@ -21,10 +21,9 @@
   },
   "files": [
     "dist",
-    "esm",
     "src",
-    "esm/typings/monaco-editor.d.ts",
-    "esm/typings/picomatch-browser.d.ts"
+    "dist/typings/monaco-editor.d.ts",
+    "dist/typings/picomatch-browser.d.ts"
   ],
   "scripts": {
     "test": "vitest run",

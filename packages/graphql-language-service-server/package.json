@@ -19,7 +19,6 @@
   "license": "MIT",
   "files": [
     "dist",
-    "esm",
     "src"
   ],
   "keywords": [

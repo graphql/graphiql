@@ -4,7 +4,7 @@
     "target": "ES2018",
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./esm"
+    "outDir": "./dist"
   },
   "references": [
     {
