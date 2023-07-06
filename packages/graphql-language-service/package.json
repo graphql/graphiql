@@ -36,6 +36,9 @@
     "vscode-languageserver-types": "^3.17.1",
     "nullthrows": "^1.0.0"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "devDependencies": {
     "@types/picomatch": "^2.3.0",
     "@types/benchmark": "^1.0.33",

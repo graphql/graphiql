@@ -3,6 +3,7 @@
   "description": "full service, official monaco mode for GraphQL",
   "version": "1.2.4",
   "license": "MIT",
+  "type": "module",
   "module": "dist/monaco.contribution.js",
   "types": "dist/monaco.contribution.d.ts",
   "contributors": [
@@ -25,6 +26,9 @@
     "dist/typings/monaco-editor.d.ts",
     "dist/typings/picomatch-browser.d.ts"
   ],
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "test": "vitest run",
     "postbuild": "node scripts/patch-monaco-editor-types.mjs"

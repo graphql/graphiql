@@ -11,19 +11,24 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/react"
   },
   "license": "MIT",
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "types": "types/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "types": "./types/index.d.ts"
     },
     "./font/roboto.css": "./font/roboto.css",
     "./font/fira-code.css": "./font/fira-code.css",
-    "./dist/style.css": "./dist/style.css"
+    "./dist/style.css": {
+      "browser": "./dist/style.css",
+      "require": "./dist/style.css",
+      "import": "./dist/style.css"
+    }
   },
-  "types": "types/index.d.ts",
   "keywords": [
     "react",
     "graphql",
@@ -37,8 +42,8 @@
     "types"
   ],
   "scripts": {
-    "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
-    "build": "tsc --emitDeclarationOnly && vite build"
+    "dev": "vite build --watch",
+    "build": "vite build"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
@@ -73,6 +78,7 @@
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
     "vite": "^4.3.9",
-    "vite-plugin-svgr": "^3.2.0"
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-plugin-dts": "^3.1.0"
   }
 }

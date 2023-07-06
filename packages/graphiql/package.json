@@ -38,7 +38,7 @@
     "build-esm": "tsc",
     "check": "tsc --noEmit",
     "cypress-open": "yarn e2e-server 'cypress open'",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
+    "dev": "cross-env DEV_SERVER=1 NODE_ENV=development webpack-cli serve --config resources/webpack.config.js",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
     "webpack": "webpack-cli --config resources/webpack.config.js --bail"

@@ -2,11 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
+import dts from 'vite-plugin-dts';
 import packageJSON from './package.json';
 
 export default defineConfig({
   plugins: [
     react(),
+    dts(),
     svgr({
       exportAsDefault: true,
       svgrOptions: {
