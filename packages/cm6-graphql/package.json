@@ -6,7 +6,6 @@
     "build": "cm-buildhelper src/index.ts",
     "prepare": "yarn build"
   },
-  "type": "module",
   "module": "dist/index.js",
   "exports": {
     "import": "./dist/index.js",
