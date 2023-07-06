@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { FormattingOptions, ICreateData, SchemaConfig } from './typings.js';
+import type { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from './monaco-editor';
 import { getRange } from 'graphql-language-service';
 import { LanguageService } from './LanguageService.js';

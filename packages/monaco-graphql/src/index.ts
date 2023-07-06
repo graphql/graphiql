@@ -1,3 +1,3 @@
-export { initializeMode } from './initializeMode';
-export * from './typings';
-export * from './api';
+export { initializeMode } from './initializeMode.js';
+export * from './typings.js';
+export * from './api.js';

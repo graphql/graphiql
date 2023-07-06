@@ -5,11 +5,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Uri, IDisposable, languages } from './monaco-editor';
-import { WorkerManager } from './workerManager';
-import { GraphQLWorker } from './GraphQLWorker';
-import { MonacoGraphQLAPI } from './api';
-import * as languageFeatures from './languageFeatures';
+import { Uri, IDisposable, languages } from './monaco-editor.js';
+import { WorkerManager } from './workerManager.js';
+import { GraphQLWorker } from './GraphQLWorker.js';
+import { MonacoGraphQLAPI } from './api.js';
+import * as languageFeatures from './languageFeatures.js';
 
 export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   const disposables: IDisposable[] = [];

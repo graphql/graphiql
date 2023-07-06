@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { SchemaConfig } from './typings.js';
+import type { SchemaConfig } from './typings';
 import type {
   IRange as GraphQLRange,
   IPosition as GraphQLPosition,

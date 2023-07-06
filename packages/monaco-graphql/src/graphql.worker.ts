@@ -6,12 +6,12 @@
  */
 
 import type * as monaco from './monaco-editor';
-import { ICreateData } from './typings';
+import type { ICreateData } from './typings';
 
 // @ts-expect-error
 import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 
-import { GraphQLWorker } from './GraphQLWorker';
+import { GraphQLWorker } from './GraphQLWorker.js';
 
 self.onmessage = () => {
   initialize(

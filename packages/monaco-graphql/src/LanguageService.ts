@@ -25,8 +25,8 @@ import {
   getOperationASTFacts,
   JSONSchemaOptions,
 } from 'graphql-language-service';
-import { defaultSchemaLoader } from './schemaLoader';
-import { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
+import { defaultSchemaLoader } from './schemaLoader.js';
+import type { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
 
@@ -96,8 +96,6 @@ export class LanguageService {
 
   /**
    * Provide a model uri path, and see if a schema config has a `fileMatch` to match it
-   * @param uri {string}
-   * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
     if (!this._schemas?.length) {
@@ -150,7 +148,6 @@ export class LanguageService {
 
   /**
    * override `schemas` config entirely
-   * @param schema {schemaString}
    */
   public async updateSchemas(schemas: SchemaConfig[]): Promise<void> {
     this._schemas = schemas;
@@ -159,7 +156,6 @@ export class LanguageService {
 
   /**
    * overwrite an existing schema config by Uri string
-   * @param schema {schemaString}
    */
   public updateSchema(schema: SchemaConfig): void {
     const schemaIndex = this._schemas.findIndex(c => c.uri === schema.uri);
@@ -177,7 +173,6 @@ export class LanguageService {
 
   /**
    * add a schema to the config
-   * @param schema {schemaString}
    */
   public addSchema(schema: SchemaConfig): void {
     this._schemas.push(schema);
@@ -185,19 +180,12 @@ export class LanguageService {
   }
   /**
    * Uses the configured parser
-   * @param text {string | Source}
-   * @param options {ParseOptions}
-   * @returns {DocumentNode}
    */
   public parse(text: string | Source, options?: ParseOptions): DocumentNode {
     return this._parser(text, options || this._parseOptions);
   }
   /**
    * get completion for the given uri and matching schema
-   * @param uri
-   * @param documentText
-   * @param position
-   * @returns
    */
   public getCompletion = (
     uri: string,
@@ -219,10 +207,6 @@ export class LanguageService {
   };
   /**
    * get diagnostics using graphql validation
-   * @param uri
-   * @param documentText
-   * @param customRules
-   * @returns
    */
   public getDiagnostics = (
     uri: string,
