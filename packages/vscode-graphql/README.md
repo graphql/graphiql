@@ -58,7 +58,7 @@ Install the
 
 As of `vscode-graphql@0.3.0` we support `graphql-config@3`. You can read more
 about that [here](https://www.graphql-config.com/docs/user/user-usage). Because
-it now uses `cosmicconfig` there are plenty of new options for loading config
+it now uses `cosmiconfig` there are plenty of new options for loading config
 files:
 
 ```

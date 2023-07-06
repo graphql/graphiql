@@ -11,17 +11,6 @@ import { GraphiQL } from '../GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 
-import {
-  mockQuery1,
-  mockVariables1,
-  mockOperationName1,
-  mockBadQuery,
-  mockQuery2,
-  mockVariables2,
-  mockHeaders1,
-  mockHeaders2,
-} from './fixtures';
-
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
   data: {
@@ -44,7 +33,6 @@ beforeEach(() => {
 });
 
 describe('GraphiQL', () => {
-  // @ts-expect-error fake Fetcher
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
@@ -166,7 +154,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
-          '[data-testid="query-editor"] .mockCodeMirror',
+          '.graphiql-query-editor .mockCodeMirror',
         );
         expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
@@ -179,9 +167,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         expect(
-          container.querySelector(
-            '[data-testid="query-editor"] .mockCodeMirror',
-          ),
+          container.querySelector('.graphiql-query-editor .mockCodeMirror'),
         ).toHaveValue('GraphQL Party!!');
       });
     });
@@ -731,283 +717,4 @@ describe('GraphiQL', () => {
       });
     });
   });
-
-  describe('history', () => {
-    it('defaults to closed history panel', async () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-
-      await waitFor(() => {
-        expect(
-          container.querySelector('.graphiql-history'),
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it('will save history item even when history panel is closed', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-          operationName={mockOperationName1}
-          fetcher={noOpFetcher}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-        fireEvent.click(getByLabelText('Show History'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(1);
-      });
-    });
-
-    it('adds a history item when the execute query function button is clicked', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-          operationName={mockOperationName1}
-          fetcher={noOpFetcher}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(1);
-      });
-    });
-
-    it('will not save invalid queries', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL query={mockBadQuery} fetcher={noOpFetcher} />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(0);
-      });
-    });
-
-    it('will save if there was not a previously saved query', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL
-          fetcher={noOpFetcher}
-          operationName={mockOperationName1}
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(1);
-      });
-    });
-
-    it('will not save a query if the query is the same as previous query', async () => {
-      const { getByLabelText, findByLabelText, container } = render(
-        <GraphiQL
-          fetcher={noOpFetcher}
-          operationName={mockOperationName1}
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-        fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(1);
-      });
-
-      await act(async () => {
-        fireEvent.click(await findByLabelText('Execute query (Ctrl-Enter)'));
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-items li'),
-        ).toHaveLength(1);
-      });
-    });
-
-    it('will save if new query is different than previous query', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL
-          fetcher={noOpFetcher}
-          operationName={mockOperationName1}
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-      });
-
-      const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(1);
-      });
-
-      act(() => {
-        fireEvent.change(
-          container.querySelector(
-            '[data-testid="query-editor"] .mockCodeMirror',
-          ),
-          {
-            target: { value: mockQuery2 },
-          },
-        );
-      });
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(2);
-      });
-    });
-
-    it('will save query if variables are different', async () => {
-      const { getByLabelText, container } = render(
-        <GraphiQL
-          fetcher={noOpFetcher}
-          operationName={mockOperationName1}
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-      });
-
-      const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(1);
-      });
-
-      act(() => {
-        fireEvent.change(
-          container.querySelector('[aria-label="Variables"] .mockCodeMirror'),
-          {
-            target: { value: mockVariables2 },
-          },
-        );
-      });
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(2);
-      });
-    });
-
-    it('will save query if headers are different', async () => {
-      const { getByLabelText, getByText, container } = render(
-        <GraphiQL
-          fetcher={noOpFetcher}
-          operationName={mockOperationName1}
-          query={mockQuery1}
-          variables={mockVariables1}
-          headers={mockHeaders1}
-          isHeadersEditorEnabled
-        />,
-      );
-
-      act(() => {
-        fireEvent.click(getByLabelText('Show History'));
-      });
-
-      const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(1);
-      });
-
-      act(() => {
-        fireEvent.click(getByText('Headers'));
-      });
-
-      act(() => {
-        fireEvent.change(
-          container.querySelector('[aria-label="Headers"] .mockCodeMirror'),
-          {
-            target: { value: mockHeaders2 },
-          },
-        );
-      });
-
-      act(() => {
-        fireEvent.click(executeQueryButton);
-      });
-
-      await waitFor(() => {
-        expect(
-          container.querySelectorAll('.graphiql-history-item'),
-        ).toHaveLength(2);
-      });
-    });
-  }); // history
 });

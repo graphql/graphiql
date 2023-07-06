@@ -1,5 +1,35 @@
 # vscode-graphql-execution
 
+## 0.2.4
+
+### Patch Changes
+
+- [#3274](https://github.com/graphql/graphiql/pull/3274) [`5e38ab6b`](https://github.com/graphql/graphiql/commit/5e38ab6b2235cb0dec4e7df42772680a1e905a1a) Thanks [@acao](https://github.com/acao)! - fix vscode-graphql-execution release
+
+## 0.2.3
+
+### Patch Changes
+
+- [#3271](https://github.com/graphql/graphiql/pull/3271) [`d29b3d8f`](https://github.com/graphql/graphiql/commit/d29b3d8f983b9ae306aeae4325203ddd7f4f127e) Thanks [@acao](https://github.com/acao)! - fix vscode-graphql-execution release
+
+## 0.2.2
+
+### Patch Changes
+
+- [#3269](https://github.com/graphql/graphiql/pull/3269) [`2fb7f1f5`](https://github.com/graphql/graphiql/commit/2fb7f1f5d8a69a5de572b783de7801d5993f758a) Thanks [@acao](https://github.com/acao)! - fix ovsx release
+
+## 0.2.1
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
+## 0.2.1-alpha.0
+
+### Patch Changes
+
+- [#3224](https://github.com/graphql/graphiql/pull/3224) [`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9) Thanks [@acao](https://github.com/acao)! - try removing some packages from pre.json
+
 ## 0.2.0
 
 ### Minor Changes

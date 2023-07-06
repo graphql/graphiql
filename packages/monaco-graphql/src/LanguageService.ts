@@ -14,9 +14,7 @@ import {
   DocumentNode,
   Source,
 } from 'graphql';
-
 import picomatch from 'picomatch-browser';
-
 import type { IPosition } from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
@@ -27,9 +25,7 @@ import {
   getOperationASTFacts,
   JSONSchemaOptions,
 } from 'graphql-language-service';
-
 import { defaultSchemaLoader } from './schemaLoader';
-
 import { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };

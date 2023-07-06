@@ -351,7 +351,7 @@ export class GraphQLLanguageService {
 
       output.push({
         // @ts-ignore
-        name: tree.representativeName,
+        name: tree.representativeName ?? 'Anonymous',
         kind: getKind(tree),
         location: {
           uri: filePath,

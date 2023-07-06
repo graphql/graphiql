@@ -64,8 +64,8 @@ const MonacoGraphQLAPI = initializeMode({
     {
       schema: myGraphqlSchema as GraphQLSchema,
       // anything that monaco.URI.from() is compatible with
-      uri: 'https://myschema.com',
-      uri: '/myschema.graphql',
+      uri: 'https://my-schema.com',
+      uri: '/my-schema.graphql',
       // match the monaco file uris for this schema.
       // accepts specific uris and anything `picomatch` supports.
       // (everything except bracket regular expressions)
@@ -108,8 +108,8 @@ monaco.languages.graphql.setSchemaConfig([
   {
     schema: myGraphqlSchema as GraphQLSchema,
     // anything that monaco.URI.from() is compatible with
-    uri: 'https://myschema.com',
-    uri: '/myschema.graphql',
+    uri: 'https://my-schema.com',
+    uri: '/my-schema.graphql',
     // match the monaco file uris for this schema.
     // accepts specific uris and anything `picomatch` supports.
     // (everything except bracket regular expressions)
@@ -169,7 +169,7 @@ const MonacoGraphQLAPI = initializeMode({
   schemas: [
     {
       // anything that monaco.URI.from() is compatible with
-      uri: 'https://myschema.com',
+      uri: 'https://my-schema.com',
       // match the monaco file uris for this schema.
       // accepts specific filenames and anything `picomatch` supports.
       fileMatch: ['**/*.graphql'],
@@ -272,6 +272,7 @@ Otherwise, you can, like in the sync demo above:
 
 ```ts
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+
 const api = initializeMode(config);
 ```
 
@@ -285,11 +286,12 @@ globs or specific files. `uri` can be an url or file path, anything parsable
 ```ts
 // you can load it lazily
 import 'monaco-graphql';
+
 monaco.languages.graphql.api.setSchemaConfig([
   {
     schema: GraphQLSchema,
     fileMatch: ['**/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ]);
 ```
@@ -303,7 +305,7 @@ const schemas = [
   {
     schema: GraphQLSchema,
     fileMatch: ['operations/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ];
 const api = initializeMode({ schemas });
@@ -327,7 +329,7 @@ api.setSchemaConfig([
   {
     introspectionJSON: myIntrospectionJSON,
     fileMatch: ['**/*.graphql'],
-    uri: 'myschema.graphql',
+    uri: 'my-schema.graphql',
   },
 ]);
 ```
@@ -516,12 +518,52 @@ some gotchas:
 - "linting" => "diagnostics" in lsp terminology
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
-- you can extend the standard completion/linting/etc provided. for example,
+- you can extend the provided standard completion, linting, etc. for example,
   `editor.setModelMarkers()`
 - [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 - [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples)
   repository is great for tips on implementing with different bundlers,
   runtimes, etc.
+
+## Avoid Bundle All `monaco-editor`'s Languages
+
+While importing `monaco-editor` in your project, you silently import 83 builtin
+languages, such as `typescript`, `html`, `css`, `json` and others. You can found
+a full list of
+[basic-languages](https://github.com/microsoft/monaco-editor/tree/main/src/basic-languages)
+and
+[languages](https://github.com/microsoft/monaco-editor/tree/main/src/language).
+
+For `monaco-graphql`, you need only 2 languages - `graphql` and `json`.
+In version `monaco-graphql@1.3.0` and later, you can replace all `monaco-editor`'s
+imports with `monaco-graphql/esm/monaco-editor` to improve performance, load
+only `graphql` and `json` languages, and skip loading unused languages.
+
+```diff
+-import { ... } from 'monaco-editor'
++import { ... } from 'monaco-graphql/esm/monaco-editor'
+```
+
+### Catch Future Import Mistakes with ESLint
+
+To prevent mis-importing of `monaco-editor`, you can set up default
+`no-restricted-imports` rule for JavaScript projects or
+`@typescript-eslint/no-restricted-imports` for TypeScript projects.
+
+```json5
+{
+  rules: {
+    // or @typescript-eslint/no-restricted-imports
+    'no-restricted-imports': [
+      'error',
+      {
+        name: 'monaco-editor',
+        message: '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+      },
+    ],
+  },
+}
+```
 
 ## Inspiration
 

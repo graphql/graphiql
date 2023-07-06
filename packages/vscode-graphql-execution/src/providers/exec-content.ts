@@ -10,12 +10,17 @@ import {
   WebviewPanel,
   WorkspaceFolder,
 } from 'vscode';
-import type { ExtractedTemplateLiteral } from '../helpers/source';
 import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
-import type { Endpoints, Endpoint } from 'graphql-config/extensions/endpoints';
+import {
+  LanguageServiceExecutionExtension,
+  EndpointsExtension,
+} from '../helpers/extensions';
+
+import type { Endpoint, Endpoints } from '../helpers/extensions';
+import type { ExtractedTemplateLiteral } from '../helpers/source';
 
 export type UserVariables = { [key: string]: GraphQLScalarTSType };
 
@@ -29,6 +34,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   private panel: WebviewPanel;
   private rootDir: WorkspaceFolder | undefined;
   private literal: ExtractedTemplateLiteral;
+  private _projectConfig: GraphQLProjectConfig | undefined;
 
   // Event emitter which invokes document updates
   private _onDidChange = new EventEmitter<Uri>();
@@ -127,10 +133,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     this.updatePanel();
   }
 
-  async loadEndpoint(
-    projectConfig?: GraphQLProjectConfig,
-  ): Promise<Endpoint | null> {
-    let endpoints: Endpoints = projectConfig?.extensions?.endpoints;
+  async loadEndpoint(): Promise<Endpoint | null> {
+    let endpoints: Endpoints = this._projectConfig?.extensions?.endpoints;
 
     if (!endpoints) {
       endpoints = {
@@ -139,11 +143,11 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
       this.update(this.uri);
       this.updatePanel();
-      if (projectConfig?.schema) {
+      if (this._projectConfig?.schema) {
         this.outputChannel.appendLine(
           "Warning: endpoints missing from graphql config. will try 'schema' value(s) instead",
         );
-        const { schema } = projectConfig;
+        const { schema } = this._projectConfig;
         if (schema && Array.isArray(schema)) {
           for (const s of schema) {
             if (this.validUrlFromSchema(s as string)) {
@@ -183,16 +187,15 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.reportError('Error: this file is outside the workspace.');
         return;
       }
-      const config = await loadConfig({
-        rootDir: rootDir.uri.fsPath,
-        legacy: true,
-      });
-      const projectConfig = config?.getProjectForFile(this.literal.uri);
+
+      await this.loadConfig();
+      const projectConfig = this._projectConfig;
+
       if (!projectConfig) {
         return;
       }
 
-      const endpoint = await this.loadEndpoint(projectConfig);
+      const endpoint = await this.loadEndpoint();
       if (endpoint?.url) {
         const variableDefinitionNodes: VariableDefinitionNode[] = [];
         visit(this.literal.ast, {
@@ -249,14 +252,20 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.reportError('Error: this file is outside the workspace.');
       return;
     }
-    const config = await loadConfig({ rootDir: rootDir.uri.fsPath });
-    const projectConfig = config?.getProjectForFile(literal.uri);
 
-    if (!projectConfig!.schema) {
+    const config = await loadConfig({
+      rootDir: rootDir.uri.fsPath,
+      throwOnEmpty: false,
+      throwOnMissing: false,
+      legacy: true,
+      extensions: [LanguageServiceExecutionExtension, EndpointsExtension],
+    });
+    this._projectConfig = config?.getProjectForFile(literal.uri);
+
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    if (!this._projectConfig?.schema) {
       this.reportError('Error: schema from graphql config');
-      return;
     }
-    return projectConfig;
   }
 
   get onDidChange(): Event<Uri> {

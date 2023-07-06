@@ -146,7 +146,7 @@ export const TestType: GraphQLObjectType = new GraphQLObjectType({
     },
     isTest: {
       type: GraphQLBoolean,
-      resolve: () => {
+      resolve() {
         return true;
       },
     },

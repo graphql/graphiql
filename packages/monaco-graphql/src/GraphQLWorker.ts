@@ -6,13 +6,9 @@
  */
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
-
-import type { worker, Position } from 'monaco-editor';
-
+import type * as monaco from './monaco-editor';
 import { getRange } from 'graphql-language-service';
-
 import { LanguageService } from './LanguageService';
-
 import {
   toGraphQLPosition,
   toMonacoRange,
@@ -26,10 +22,10 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   deprecationReason?: string | null;
 };
 export class GraphQLWorker {
-  private _ctx: worker.IWorkerContext;
+  private _ctx: monaco.worker.IWorkerContext;
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
-  constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
+  constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
@@ -56,7 +52,7 @@ export class GraphQLWorker {
 
   public async doComplete(
     uri: string,
-    position: Position,
+    position: monaco.Position,
   ): Promise<GraphQLWorkerCompletionItem[]> {
     try {
       const documentModel = this._getTextModel(uri);
@@ -78,7 +74,7 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: Position) {
+  public async doHover(uri: string, position: monaco.Position) {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
@@ -139,10 +135,12 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
+    // eslint-disable-next-line import/no-unresolved -- should be fixed by pnpm migration (points to @types/prettier rather owns prettier types)
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {
       parser: 'graphql',
+      // @ts-expect-error -- should be fixed by pnpm migration
       plugins: [prettierGraphqlParser],
       ...this._formattingOptions?.prettierConfig,
     });
@@ -173,7 +171,7 @@ export default {
 };
 
 export function create(
-  ctx: worker.IWorkerContext,
+  ctx: monaco.worker.IWorkerContext,
   createData: ICreateData,
 ): GraphQLWorker {
   return new GraphQLWorker(ctx, createData);

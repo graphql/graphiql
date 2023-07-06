@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import { editor, Uri } from 'monaco-graphql/esm/monaco-editor';
 
 const GRAPHQL_LANGUAGE_ID = 'graphql';
 
@@ -35,80 +35,68 @@ const schemaSdlString = localStorage.getItem('schema-sdl') ?? '';
 const THEME = 'vs-dark';
 
 export function createEditors() {
-  const variablesModel = monaco.editor.createModel(
+  const variablesModel = editor.createModel(
     variablesString,
     'json',
-    monaco.Uri.file('/1/variables.json'),
+    Uri.file('/1/variables.json'),
   );
 
-  const variablesEditor = monaco.editor.create(
-    document.getElementById('variables'),
-    {
-      model: variablesModel,
-      language: 'json',
-      formatOnPaste: true,
-      formatOnType: true,
-      theme: THEME,
-      comments: {
-        insertSpace: true,
-        ignoreEmptyLines: true,
-      },
+  const variablesEditor = editor.create(document.getElementById('variables'), {
+    model: variablesModel,
+    language: 'json',
+    formatOnPaste: true,
+    formatOnType: true,
+    theme: THEME,
+    comments: {
+      insertSpace: true,
+      ignoreEmptyLines: true,
     },
-  );
+  });
 
-  const operationModel = monaco.editor.createModel(
+  const operationModel = editor.createModel(
     operationString,
     GRAPHQL_LANGUAGE_ID,
-    monaco.Uri.file('/1/operation.graphql'),
+    Uri.file('/1/operation.graphql'),
   );
 
-  const operationEditor = monaco.editor.create(
-    document.getElementById('operation'),
-    {
-      model: operationModel,
-      formatOnPaste: true,
-      formatOnType: true,
-      folding: true,
-      theme: THEME,
-      language: GRAPHQL_LANGUAGE_ID,
-    },
-  );
+  const operationEditor = editor.create(document.getElementById('operation'), {
+    model: operationModel,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
+    theme: THEME,
+    language: GRAPHQL_LANGUAGE_ID,
+  });
 
-  const schemaModel = monaco.editor.createModel(
+  const schemaModel = editor.createModel(
     schemaSdlString,
     GRAPHQL_LANGUAGE_ID,
-    monaco.Uri.file('/1/schema.graphqls'),
+    Uri.file('/1/schema.graphqls'),
   );
 
-  const schemaEditor = monaco.editor.create(
-    document.getElementById('schema-sdl'),
-    {
-      model: schemaModel,
-      formatOnPaste: true,
-      formatOnType: true,
-      folding: true,
-      theme: THEME,
-      language: GRAPHQL_LANGUAGE_ID,
-    },
-  );
+  const schemaEditor = editor.create(document.getElementById('schema-sdl'), {
+    model: schemaModel,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
+    theme: THEME,
+    language: GRAPHQL_LANGUAGE_ID,
+  });
 
-  const resultsModel = monaco.editor.createModel(
+  const resultsModel = editor.createModel(
     resultsString,
     'json',
-    monaco.Uri.file('/1/results.json'),
+    Uri.file('/1/results.json'),
   );
 
-  const resultsEditor = monaco.editor.create(
-    document.getElementById('results'),
-    {
-      model: resultsModel,
-      language: 'json',
-      theme: THEME,
-      wordWrap: 'on',
-      readOnly: true,
-      showFoldingControls: 'always',
-    },
-  );
+  const resultsEditor = editor.create(document.getElementById('results'), {
+    model: resultsModel,
+    language: 'json',
+    theme: THEME,
+    wordWrap: 'on',
+    readOnly: true,
+    showFoldingControls: 'always',
+  });
 
   return {
     operationEditor,

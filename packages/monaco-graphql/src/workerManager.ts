@@ -4,12 +4,9 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { editor as monacoEditor } from 'monaco-editor';
+import { editor, IDisposable, Uri } from './monaco-editor';
 import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
-
-import IDisposable = monaco.IDisposable;
-import Uri = monaco.Uri;
 import { ICreateData } from './typings';
 import { getStringSchema } from './utils';
 
@@ -18,24 +15,21 @@ const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 export class WorkerManager {
   private _defaults: MonacoGraphQLAPI;
   private _idleCheckInterval: number;
-  private _lastUsedTime: number;
+  private _lastUsedTime = 0;
   private _configChangeListener: IDisposable;
-  private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
-  private _client: GraphQLWorker | null;
+  private _worker: editor.MonacoWebWorker<GraphQLWorker> | null = null;
+  private _client: GraphQLWorker | null = null;
 
   constructor(defaults: MonacoGraphQLAPI) {
     this._defaults = defaults;
-    this._worker = null;
     this._idleCheckInterval = window.setInterval(
       () => this._checkIfIdle(),
       30 * 1000,
     );
-    this._lastUsedTime = 0;
     // this is where we re-start the worker on config changes
     this._configChangeListener = this._defaults.onDidChange(() => {
       this._stopWorker();
     });
-    this._client = null;
   }
 
   private _stopWorker(): void {
@@ -66,7 +60,7 @@ export class WorkerManager {
     this._lastUsedTime = Date.now();
     if (!this._client && !this._worker) {
       try {
-        this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
+        this._worker = editor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
           moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
 

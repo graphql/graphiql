@@ -7,10 +7,8 @@
  *
  */
 
-import { ASTNode } from 'graphql/language';
-
 import { IPosition as TPosition } from '../types';
-import { visit } from 'graphql';
+import { ASTNode, visit } from 'graphql';
 
 export function getASTNodeAtPosition(
   query: string,

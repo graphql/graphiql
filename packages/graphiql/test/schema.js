@@ -82,7 +82,7 @@ const TestInterface = new GraphQLInterfaceType({
       description: 'Common name string.',
     },
   }),
-  resolveType: check => {
+  resolveType(check) {
     return check ? UnionFirst : UnionSecond;
   },
 });

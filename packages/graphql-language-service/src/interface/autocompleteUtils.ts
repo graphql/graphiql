@@ -12,14 +12,11 @@ import {
   GraphQLSchema,
   GraphQLType,
   isCompositeType,
-} from 'graphql';
-import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from 'graphql/type/introspection';
+} from 'graphql';
 import { CompletionItemBase, AllTypeInfo } from '../types';
-
 import { ContextTokenUnion, State } from '../parser';
 
 // Utility for returning the state representing the Definition this token state

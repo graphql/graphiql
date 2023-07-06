@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -31,12 +31,11 @@
     "graphiql.min.css.map"
   ],
   "scripts": {
-    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
+    "analyze-bundle": "cross-env NODE_ENV=production ANALYZE=1 yarn webpack -p",
     "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
-    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
+    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-webpack",
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
-    "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn webpack --mode development --bail",
-    "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack --mode production --bail",
+    "build-bundles-webpack": "cross-env yarn webpack --mode development --bail",
     "build-cjs": "tsc",
     "build-clean": "rimraf esm dist webpack *.html",
     "build-esm": "tsc --project ./tsconfig.esm.json",
@@ -48,9 +47,9 @@
     "webpack": "webpack-cli --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/react": "^0.18.0-alpha.0",
+    "@graphiql/react": "^0.18.0",
     "@graphiql/toolkit": "^0.8.4",
-    "graphql-language-service": "^5.1.6",
+    "graphql-language-service": "^5.1.7",
     "markdown-it": "^12.2.0"
   },
   "peerDependencies": {
@@ -61,7 +60,7 @@
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.5.0",
     "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "12.1.5",
+    "@testing-library/react": "14.0.0",
     "@types/codemirror": "^5.60.5",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^16.18.4",
@@ -72,8 +71,8 @@
     "css-loader": "^6.7.3",
     "cssnano": "^5.1.15",
     "cypress": "^12.6.0",
-    "express": "^4.17.3",
-    "express-graphql": "experimental-stream-defer",
+    "express": "^4.18.2",
+    "graphql-http": "^1.19.0",
     "fork-ts-checker-webpack-plugin": "7.3.0",
     "graphql": "^16.4.0",
     "graphql-subscriptions": "^2.0.0",
@@ -88,7 +87,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.12.20",
-    "react-test-renderer": "^16.13.1",
+    "react-test-renderer": "^18.2.0",
     "require-context.macro": "^1.2.2",
     "rimraf": "^3.0.2",
     "serve": "^11.3.0",

@@ -10,7 +10,10 @@ export class HistoryStore {
   history: QueryStore;
   favorite: QueryStore;
 
-  constructor(private storage: StorageAPI, private maxHistoryLength: number) {
+  constructor(
+    private storage: StorageAPI,
+    private maxHistoryLength: number,
+  ) {
     this.history = new QueryStore(
       'queries',
       this.storage,
@@ -72,23 +75,24 @@ export class HistoryStore {
     operationName,
   }: QueryStoreItem) => {
     if (
-      this.shouldSaveQuery(
+      !this.shouldSaveQuery(
         query,
         variables,
         headers,
         this.history.fetchRecent(),
       )
     ) {
-      this.history.push({
-        query,
-        variables,
-        headers,
-        operationName,
-      });
-      const historyQueries = this.history.items;
-      const favoriteQueries = this.favorite.items;
-      this.queries = historyQueries.concat(favoriteQueries);
+      return;
     }
+    this.history.push({
+      query,
+      variables,
+      headers,
+      operationName,
+    });
+    const historyQueries = this.history.items;
+    const favoriteQueries = this.favorite.items;
+    this.queries = historyQueries.concat(favoriteQueries);
   };
 
   toggleFavorite({

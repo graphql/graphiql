@@ -1,4 +1,6 @@
-## Description
+# Monaco-GraphQL React Vite Example
+
+## Getting Started
 
 This is an extremely naive & minimalist implementation of `monaco-graphql` with
 `react` using `vite` as a bundler.
@@ -10,4 +12,5 @@ This workspace could be used to help us prototype components & hooks for
 
 ## Setup
 
-In this directory, you can just run `yarn` and `yarn start`
+1. In monorepo root directory run `yarn` and `yarn build`.
+1. In this directory run `yarn dev`.

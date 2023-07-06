@@ -12,7 +12,12 @@ import {
   DocumentNode,
   DefinitionNode,
   isTypeDefinitionNode,
-} from 'graphql/language';
+  GraphQLSchema,
+  Kind,
+  extendSchema,
+  parse,
+  visit,
+} from 'graphql';
 import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
@@ -26,13 +31,13 @@ import type { Logger } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
 import {
   loadConfig,
   GraphQLConfig,
   GraphQLProjectConfig,
+  GraphQLExtensionDeclaration,
 } from 'graphql-config';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -42,6 +47,16 @@ import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
+import { CodeFileLoader } from '@graphql-tools/code-file-loader';
+
+const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
+  // For schema
+  api.loaders.schema.register(new CodeFileLoader());
+  // For documents
+  api.loaders.documents.register(new CodeFileLoader());
+
+  return { name: 'languageService' };
+};
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -57,7 +72,15 @@ export async function getGraphQLCache({
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
-  const graphQLConfig = config || (await loadConfig(loadConfigOptions));
+  const graphQLConfig =
+    config ||
+    (await loadConfig({
+      ...loadConfigOptions,
+      extensions: [
+        ...(loadConfigOptions?.extensions ?? []),
+        LanguageServiceExtension,
+      ],
+    }));
   return new GraphQLCache({
     configDir: loadConfigOptions.rootDir!,
     config: graphQLConfig!,
@@ -671,7 +694,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return schema;
   };
 
-  _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
+  invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
     const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
     ) as string;

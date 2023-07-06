@@ -7,9 +7,24 @@
  *
  */
 
+const RESTRICTED_IMPORTS = [
+  { name: 'graphql/type', message: 'use `graphql`' },
+  { name: 'graphql/language', message: 'use `graphql`' },
+  { name: 'graphql/type/introspection', message: 'use `graphql`' },
+  { name: 'graphql/type/definition', message: 'use `graphql`' },
+  { name: 'graphql/type/directives', message: 'use `graphql`' },
+  { name: 'graphql/version', message: 'use `graphql`' },
+  {
+    name: 'monaco-editor',
+    message:
+      '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+  },
+];
+
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
+  ignorePatterns: ['react-app-env.d.ts', 'next-env.d.ts'],
   overrides: [
     {
       // Rules for all code files
@@ -39,7 +54,14 @@ module.exports = {
         'plugin:react/jsx-runtime',
         'prettier',
       ],
-
+      plugins: [
+        'promise',
+        'sonarjs',
+        'unicorn',
+        '@arthurgeron/react-usememo',
+        'sonar',
+        '@shopify',
+      ],
       globals: {
         atom: false,
         document: false,
@@ -48,8 +70,10 @@ module.exports = {
         Map: true,
         Set: true,
       },
-
       rules: {
+        '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
+        '@shopify/prefer-class-properties': 'off', // enable after https://github.com/Shopify/web-configs/issues/387 will be fixed
+        'sonarjs/no-inverted-boolean-check': 'error',
         '@arthurgeron/react-usememo/require-usememo': [
           'error',
           { checkHookCalls: false },
@@ -230,13 +254,19 @@ module.exports = {
         'unicorn/prefer-dom-node-remove': 'error',
         // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
-        'no-duplicate-imports': 'off',
-        'no-restricted-imports': 'off',
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS,
+        ],
         'no-useless-computed-key': 'error',
         'no-useless-constructor': 'off',
         'no-useless-rename': 'error',
-        'object-shorthand': 'error',
-        'prefer-arrow-callback': ['off', { allowNamedFunctions: true }], // prettier --list-different
+        'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
+        'object-shorthand': [
+          'error',
+          'always',
+          { avoidExplicitReturnArrows: true },
+        ],
         'prefer-numeric-literals': 'off',
         'prefer-template': 'off',
         'sort-imports': 'off',
@@ -301,6 +331,7 @@ module.exports = {
         'unicorn/prefer-node-protocol': 'error',
         'import/no-unresolved': ['error', { ignore: ['^node:'] }],
         'unicorn/prefer-string-replace-all': 'error',
+        'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
 
@@ -310,14 +341,6 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-var-requires': 'off',
       },
-
-      plugins: [
-        'promise',
-        'sonarjs',
-        'unicorn',
-        '@arthurgeron/react-usememo',
-        'sonar',
-      ],
     },
     {
       // Rules that requires type information
@@ -414,6 +437,21 @@ module.exports = {
       },
     },
     {
+      // Monaco-GraphQL rules
+      files: ['packages/monaco-graphql/**'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS.filter(({ name }) => name !== 'monaco-editor'),
+          {
+            name: 'monaco-editor',
+            message:
+              '`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
+          },
+        ],
+      },
+    },
+    {
       // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
@@ -424,6 +462,7 @@ module.exports = {
       },
     },
     {
+      // ❗ALWAYS LAST
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
       rules: {
@@ -436,6 +475,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         '@arthurgeron/react-usememo/require-usememo': 'off',
         'sonar/no-dead-store': 'off',
+        '@typescript-eslint/no-restricted-imports': 'off',
       },
     },
   ],

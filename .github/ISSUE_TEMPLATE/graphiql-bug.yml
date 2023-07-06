@@ -1,6 +1,6 @@
 name: GraphiQL 🐞 Bug
 description: File a bug with the graphiql web editor
-title: "[graphiql] <title>"
+title: '[graphiql] <title>'
 labels: [bug, needs triage, graphiql]
 body:
   - type: checkboxes
@@ -31,42 +31,32 @@ body:
         2. With this config...
         3. Do '...' in [repro codesandbox/stackblitz]()
         4. See error...
-      render: Markdown
     validations:
       required: false
-  - type: checkboxes
-    attributes:
-      label: Module pattern
-      options:
-        - label: graphiql-umd
-        - label: graphiql-esm
-        - label: graphiql-commonjs
 
   - type: textarea
     attributes:
       label: Environment
       description: |
         examples:
-          - **GraphiQL Version**: latest
-          - **OS**: Ubuntu 20.04
-          - **Browser**: Chrome 106
-          - **Bundler**: vite x.y
-          - **`react` Version**: 18
-          - **`graphql` Version**: 16
+          * **GraphiQL Version**: latest
+          * **OS**: Ubuntu 20.04
+          * **Browser**: Chrome 106
+          * **Bundler**: vite x.y
+          * **`react` Version**: 18
+          * **`graphql` Version**: 16
       value: |
-        - GraphiQL Version:
-        - OS:
-        - Browser:
-        - Bundler:
-        - `react` Version:
-        - `graphql` Version:
-      render: Markdown
+        * GraphiQL Version:
+        * OS:
+        * Browser:
+        * Bundler:
+        * `react` Version:
+        * `graphql` Version:
     validations:
       required: false
   - type: textarea
     attributes:
       label: Anything else?
-      render: Markdown
       description: |
         Links? References? Anything that will give us more context about the issue you are encountering!
 

@@ -15,16 +15,10 @@ jest.mock('@whatwg-node/fetch', () => ({
   TextDecoder: global.TextDecoder,
 }));
 
-jest.mock('cross-fetch', () => ({
-  fetch: require('fetch-mock').fetchHandler,
-  AbortController: MockAbortController,
-  TextDecoder: global.TextDecoder,
-}));
-
-import { GraphQLSchema } from 'graphql/type';
-import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
+  GraphQLSchema,
+  parse,
   introspectionFromSchema,
   FragmentDefinitionNode,
   TypeDefinitionNode,
@@ -32,6 +26,7 @@ import {
 import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { parseDocument } from '../parseDocument';
 import type { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service';
+import { NoopLogger } from '../Logger';
 
 function withoutASTNode(definition: any) {
   const result = { ...definition };
@@ -39,6 +34,7 @@ function withoutASTNode(definition: any) {
   return result;
 }
 
+const logger = new NoopLogger();
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
@@ -46,6 +42,7 @@ describe('GraphQLCache', () => {
     configDir,
     config: graphQLRC,
     parser: parseDocument,
+    logger,
   });
 
   beforeEach(async () => {
@@ -54,6 +51,7 @@ describe('GraphQLCache', () => {
       configDir,
       config: graphQLRC,
       parser: parseDocument,
+      logger,
     });
   });
 
@@ -72,6 +70,7 @@ describe('GraphQLCache', () => {
       const cacheWithExtensions = await getGraphQLCache({
         loadConfigOptions: { rootDir: configDir, extensions },
         parser: parseDocument,
+        logger,
       });
       const config = cacheWithExtensions.getGraphQLConfig();
       expect('extensions' in config).toBe(true);

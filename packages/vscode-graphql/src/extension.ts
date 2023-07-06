@@ -76,14 +76,14 @@ export async function activate(context: ExtensionContext) {
         // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
-          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts}',
+          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts,*.json}',
         ),
       ],
     },
     outputChannel,
     outputChannelName: 'GraphQL Language Server',
     revealOutputChannelOn: RevealOutputChannelOn.Never,
-    initializationFailedHandler: err => {
+    initializationFailedHandler(err) {
       outputChannel.appendLine('Initialization failed');
       outputChannel.appendLine(err.message);
       if (err.stack) {

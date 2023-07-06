@@ -4,11 +4,10 @@ import { QueryStore } from '../query';
 class StorageMock {
   shouldThrow: () => boolean;
   count: number;
-  map: any;
+  map = {};
   storage: Storage;
   constructor(shouldThrow: () => boolean) {
     this.shouldThrow = shouldThrow;
-    this.map = {};
   }
 
   set(key: string, value: string) {

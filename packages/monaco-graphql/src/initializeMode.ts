@@ -8,8 +8,7 @@
 import type * as GraphQLMode from './graphqlMode';
 import { create as createMonacoGraphQLAPI, MonacoGraphQLAPI } from './api';
 import type { MonacoGraphQLInitializeConfig } from './typings';
-
-import { languages } from 'monaco-editor';
+import { languages } from './monaco-editor';
 
 export const LANGUAGE_ID = 'graphql';
 

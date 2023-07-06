@@ -161,26 +161,27 @@ export function onHasCompletion(
           hintsUl.addEventListener(
             'DOMNodeRemoved',
             (onRemoveFn = (event: Event) => {
-              if (event.target === hintsUl) {
-                hintsUl.removeEventListener('scroll', handleScroll);
-                hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
-                if (information) {
-                  information.removeEventListener(
-                    'click',
-                    onClickHintInformation,
-                  );
-                }
-                information = null;
-                fieldName = null;
-                typeNamePill = null;
-                typeNamePrefix = null;
-                typeName = null;
-                typeNameSuffix = null;
-                description = null;
-                deprecation = null;
-                deprecationReason = null;
-                onRemoveFn = null;
+              if (event.target !== hintsUl) {
+                return;
               }
+              hintsUl.removeEventListener('scroll', handleScroll);
+              hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
+              if (information) {
+                information.removeEventListener(
+                  'click',
+                  onClickHintInformation,
+                );
+              }
+              information = null;
+              fieldName = null;
+              typeNamePill = null;
+              typeNamePrefix = null;
+              typeName = null;
+              typeNameSuffix = null;
+              description = null;
+              deprecation = null;
+              deprecationReason = null;
+              onRemoveFn = null;
             }),
           );
         }

@@ -8,10 +8,10 @@ import {
   ListTypeNode,
   OperationDefinitionNode,
   print,
+  ASTNode,
+  DocumentNode,
 } from 'graphql';
 import { GraphQLProjectConfig } from 'graphql-config';
-import { ASTNode, DocumentNode } from 'graphql/language';
-
 import nullthrows from 'nullthrows';
 
 export type FragmentInfo = {
@@ -23,6 +23,7 @@ export type FragmentInfo = {
 export class SourceHelper {
   private outputChannel: OutputChannel;
   private fragmentDefinitions: Map<string, FragmentInfo>;
+
   constructor(outputChannel: OutputChannel) {
     this.outputChannel = outputChannel;
     this.fragmentDefinitions = new Map();
@@ -52,6 +53,7 @@ export class SourceHelper {
     // TODO: Is handling all via string a correct fallback?
     return 'String';
   }
+
   validate(value: string, type: GraphQLScalarType) {
     try {
       switch (type) {
@@ -121,28 +123,36 @@ export class SourceHelper {
       return value;
     }
   }
+
   async getFragmentDefinitions(
     projectConfig: GraphQLProjectConfig,
-  ): Promise<Map<string, FragmentInfo>> {
-    const sources = await projectConfig.getDocuments();
-    const { fragmentDefinitions } = this;
+  ): Promise<Map<string, FragmentInfo> | void> {
+    try {
+      const sources = await projectConfig.getDocuments();
+      const { fragmentDefinitions } = this;
 
-    for (const source of sources) {
-      visit(source.document as DocumentNode, {
-        FragmentDefinition(node) {
-          const existingDef = fragmentDefinitions.get(node.name.value);
-          const newVal = print(node);
-          if ((existingDef && existingDef.content !== newVal) || !existingDef) {
-            fragmentDefinitions.set(node.name.value, {
-              definition: node,
-              content: newVal,
-              filePath: source.location,
-            });
-          }
-        },
-      });
+      for (const source of sources) {
+        visit(source.document as DocumentNode, {
+          FragmentDefinition(node) {
+            const existingDef = fragmentDefinitions.get(node.name.value);
+            const newVal = print(node);
+            if (
+              (existingDef && existingDef.content !== newVal) ||
+              !existingDef
+            ) {
+              fragmentDefinitions.set(node.name.value, {
+                definition: node,
+                content: newVal,
+                filePath: source.location,
+              });
+            }
+          },
+        });
+      }
+      return fragmentDefinitions;
+    } catch (err) {
+      this.outputChannel.append(`${err}`);
     }
-    return fragmentDefinitions;
   }
 
   extractAllTemplateLiterals(

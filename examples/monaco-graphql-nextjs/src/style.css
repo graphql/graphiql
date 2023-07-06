@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  height: 100vh;
+}
+
+#__next {
+  display: flex;
+  height: inherit;
+}
+
+.pane {
+  width: 50%;
+}
+
+.left-editor {
+  height: 50%;
+}

@@ -70,13 +70,11 @@ gql('{ id }');
 ```
 
 ```ts
-graphql(
-  `
-    {
-      id
-    }
-  `,
-);
+graphql(`
+  {
+    id
+  }
+`);
 ```
 
 there is a bug with function expressions with type arguments like these that we

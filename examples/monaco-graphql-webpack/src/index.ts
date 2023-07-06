@@ -1,6 +1,6 @@
 /* global netlify */
 
-import * as monaco from 'monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/esm/monaco-editor';
 import * as JSONC from 'jsonc-parser';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
@@ -111,19 +111,19 @@ async function render() {
   schemaPicker.addEventListener(
     'input',
     async function SchemaSelectionHandler(_ev: Event) {
-      if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
-        const schemaResult = await schemaFetcher.changeSchema(
-          schemaPicker.value,
-        );
-        if (schemaResult && monacoGraphQLAPI) {
-          monacoGraphQLAPI.setSchemaConfig([
-            {
-              ...schemaResult,
-              fileMatch: [operationModel.uri.toString()],
-            },
-          ]);
-          schemaEditor.setValue(schemaResult.documentString || '');
-        }
+      if (schemaPicker.value === schemaFetcher.currentSchema.value) {
+        return;
+      }
+
+      const schemaResult = await schemaFetcher.changeSchema(schemaPicker.value);
+      if (schemaResult && monacoGraphQLAPI) {
+        monacoGraphQLAPI.setSchemaConfig([
+          {
+            ...schemaResult,
+            fileMatch: [operationModel.uri.toString()],
+          },
+        ]);
+        schemaEditor.setValue(schemaResult.documentString || '');
       }
     },
   );
@@ -143,36 +143,34 @@ async function render() {
    * monaco-graphql itself doesn't do anything with handling operations yet, but it may soon!
    */
 
-  const getOperationHandler = () => {
-    return async () => {
-      try {
-        const operation = operationEditor.getValue();
-        const variables = variablesEditor.getValue();
-        const body: { variables?: string; query: string } = {
-          query: operation,
-        };
-        // parse the variables with JSONC, so we can have comments!
-        const parsedVariables = JSONC.parse(variables);
-        if (parsedVariables && Object.keys(parsedVariables).length) {
-          body.variables = JSON.stringify(parsedVariables, null, 2);
-        }
-        const result = await fetch(schemaFetcher.currentSchema.value, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            ...schemaFetcher.currentSchema?.headers,
-          },
-          body: JSON.stringify(body, null, 2),
-        });
-
-        const resultText = await result.text();
-        resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
-      } catch (err) {
-        if (err instanceof Error) {
-          resultsEditor.setValue(err.toString());
-        }
+  const getOperationHandler = () => async () => {
+    try {
+      const operation = operationEditor.getValue();
+      const variables = variablesEditor.getValue();
+      const body: { variables?: string; query: string } = {
+        query: operation,
+      };
+      // parse the variables with JSONC, so we can have comments!
+      const parsedVariables = JSONC.parse(variables);
+      if (parsedVariables && Object.keys(parsedVariables).length) {
+        body.variables = JSON.stringify(parsedVariables, null, 2);
       }
-    };
+      const result = await fetch(schemaFetcher.currentSchema.value, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          ...schemaFetcher.currentSchema?.headers,
+        },
+        body: JSON.stringify(body, null, 2),
+      });
+
+      const resultText = await result.text();
+      resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
+    } catch (err) {
+      if (err instanceof Error) {
+        resultsEditor.setValue(err.toString());
+      }
+    }
   };
 
   const operationHandler = getOperationHandler();
@@ -183,30 +181,30 @@ async function render() {
   /**
    * Add an editor operation to the command palette & keyboard shortcuts
    */
-  const opAction: monaco.editor.IActionDescriptor = {
+  const opAction: editor.IActionDescriptor = {
     id: 'graphql-run',
     label: 'Run Operation',
     contextMenuOrder: 0,
     contextMenuGroupId: 'graphql',
     keybindings: [
       // eslint-disable-next-line no-bitwise
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+      KeyMod.CtrlCmd | KeyCode.Enter,
     ],
     run: operationHandler,
   };
 
   /**
-   * Add an reload operation to the command palette & keyboard shortcuts
+   * Add a reload operation to the command palette & keyboard shortcuts
    */
-  const reloadAction: monaco.editor.IActionDescriptor = {
+  const reloadAction: editor.IActionDescriptor = {
     id: 'graphql-reload',
     label: 'Reload Schema',
     contextMenuOrder: 0,
     contextMenuGroupId: 'graphql',
     keybindings: [
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
+      KeyMod.CtrlCmd | KeyCode?.KeyR, // eslint-disable-line no-bitwise
     ],
-    run: async () => {
+    async run() {
       await schemaFetcher.loadSchema();
     },
   };
@@ -294,7 +292,7 @@ export function renderGithubLoginButton() {
   if (schemaFetcher.token) {
     document.getElementById('github-login-wrapper')?.remove();
     const toolbar = document.getElementById('toolbar');
-    toolbar?.appendChild(logoutButton);
+    toolbar?.append(logoutButton);
   } else {
     githubLoginWrapper.append(githubButton);
     document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);

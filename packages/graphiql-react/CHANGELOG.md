@@ -1,5 +1,47 @@
 # @graphiql/react
 
+## 0.18.0
+
+### Minor Changes
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - remove `initialTabs`, use `defaultTabs` instead
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/dialog` by `@radix-ui/react-dialog` replace `@reach/visually-hidden` by `@radix-ui/react-visually-hidden`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/menu-button` by `@radix-ui/react-dropdown-menu` remove `@reach/listbox` remove `<ToolbarListbox />` and `<Listbox />` components (use `<Menu />` instead)
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - fixed long list items in dropdown were hidden
+
+  rename `<Menu />` to `<DropdownMenu />` rename `<Menu.List />` to `<DropdownMenu.Content />` rename `<Menu.Item />` to `<DropdownMenu.Item />` rename `<Menu.Button />` to `<DropdownMenu.Button />`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/tooltip` by `@radix-ui/react-tooltip`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - replace `@reach/combobox` with `Combobox` from `@headlessui/react`
+
+- [#3181](https://github.com/graphql/graphiql/pull/3181) [`9ac84bfc`](https://github.com/graphql/graphiql/commit/9ac84bfc7b847105565852a01bdca122319e3696) Thanks [@B2o5T](https://github.com/B2o5T)! - tabs could be reorderded
+
+### Patch Changes
+
+- [#2716](https://github.com/graphql/graphiql/pull/2716) [`bc9d243d`](https://github.com/graphql/graphiql/commit/bc9d243d40b95f95fc9d00d25aa0dd1733952626) Thanks [@SimenB](https://github.com/SimenB)! - Make `@types/codemirror` a dependency of `@graphiql/react`
+
+- [#3228](https://github.com/graphql/graphiql/pull/3228) [`67bf93a3`](https://github.com/graphql/graphiql/commit/67bf93a33e98c60ae3a686063a1c47037f88ef49) Thanks [@B2o5T](https://github.com/B2o5T)! - exclude peer dependencies and dependencies from bundle
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5), [`61986469`](https://github.com/graphql/graphiql/commit/619864691941c46cc0b0848e8713028e20212c36)]:
+  - graphql-language-service@5.1.7
+  - codemirror-graphql@2.0.9
+
+## 0.18.0-alpha.1
+
+### Patch Changes
+
+- [#2716](https://github.com/graphql/graphiql/pull/2716) [`bc9d243d`](https://github.com/graphql/graphiql/commit/bc9d243d40b95f95fc9d00d25aa0dd1733952626) Thanks [@SimenB](https://github.com/SimenB)! - Make `@types/codemirror` a dependency of `@graphiql/react`
+
+- [#3228](https://github.com/graphql/graphiql/pull/3228) [`67bf93a3`](https://github.com/graphql/graphiql/commit/67bf93a33e98c60ae3a686063a1c47037f88ef49) Thanks [@B2o5T](https://github.com/B2o5T)! - exclude peer dependencies and dependencies from bundle
+
+- Updated dependencies [[`5971d528`](https://github.com/graphql/graphiql/commit/5971d528b0608e76d9d109103f64857a790a99b9), [`d9e5089f`](https://github.com/graphql/graphiql/commit/d9e5089f78f85cd50c3e3e3ba8510f7dda3d06f5)]:
+  - graphql-language-service@5.1.7-alpha.0
+  - codemirror-graphql@2.0.9-alpha.1
+
 ## 0.18.0-alpha.0
 
 ### Minor Changes

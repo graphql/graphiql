@@ -190,13 +190,13 @@ export function useQueryEditor(
         info: {
           schema: undefined,
           renderDescription: (text: string) => markdown.render(text),
-          onClick: (reference: SchemaReference) => {
+          onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },
         jump: {
           schema: undefined,
-          onClick: (reference: SchemaReference) => {
+          onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },

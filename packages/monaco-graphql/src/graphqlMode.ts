@@ -5,12 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Uri, IDisposable } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
-
+import { Uri, IDisposable, languages } from './monaco-editor';
 import { WorkerManager } from './workerManager';
 import { GraphQLWorker } from './GraphQLWorker';
-
 import { MonacoGraphQLAPI } from './api';
 import * as languageFeatures from './languageFeatures';
 
@@ -34,7 +31,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     const { modeConfiguration, languageId } = defaults;
     if (modeConfiguration.documentFormattingEdits) {
       providers.push(
-        monaco.languages.registerDocumentFormattingEditProvider(
+        languages.registerDocumentFormattingEditProvider(
           languageId,
           new languageFeatures.DocumentFormattingAdapter(worker),
         ),
@@ -48,7 +45,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
 
     if (modeConfiguration.completionItems) {
       providers.push(
-        monaco.languages.registerCompletionItemProvider(
+        languages.registerCompletionItemProvider(
           languageId,
           new languageFeatures.CompletionAdapter(worker),
         ),
@@ -59,7 +56,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     }
     if (modeConfiguration.hovers) {
       providers.push(
-        monaco.languages.registerHoverProvider(
+        languages.registerHoverProvider(
           languageId,
           new languageFeatures.HoverAdapter(worker),
         ),
@@ -68,6 +65,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
 
     registerSchemaLessProviders();
   }
+
   let {
     modeConfiguration,
     formattingOptions,

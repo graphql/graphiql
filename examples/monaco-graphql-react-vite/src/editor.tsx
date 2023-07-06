@@ -1,0 +1,1 @@
+../../monaco-graphql-nextjs/src/editor.tsx
