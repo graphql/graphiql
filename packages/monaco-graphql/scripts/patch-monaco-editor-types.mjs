@@ -5,6 +5,6 @@ import { writeFile } from 'node:fs/promises';
  * reexport of `monaco-editor`
  */
 
-await writeFile('esm/monaco-editor.d.ts', "export * from 'monaco-editor'");
+await writeFile('dist/monaco-editor.d.ts', "export * from 'monaco-editor'");
 
 console.log('✅ `monaco-graphql` types patched!');

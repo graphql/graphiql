@@ -2,6 +2,7 @@
   "name": "example-monaco-graphql-nextjs",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next",
     "build": "next build",
