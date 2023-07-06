@@ -6,7 +6,7 @@
     "target": "ESNext",
     "baseUrl": ".",
     "rootDir": "./src",
-    "outDir": "./esm",
+    "outDir": "./dist",
     "lib": [
       "dom",
       "es5",

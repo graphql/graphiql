@@ -2,7 +2,7 @@
   "extends": "../../resources/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./esm",
+    "outDir": "./dist",
     "composite": false,
     "jsx": "react",
     "baseUrl": ".",

@@ -13,6 +13,11 @@
       "addWords": true
     }
   ],
-  "ignorePaths": ["**/CHANGELOG.md", "**/package.json", "**/esbuild.js"],
+  "ignorePaths": [
+    "**/CHANGELOG.md",
+    "**/package.json",
+    "**/esbuild.js",
+    ".eslintrc.js"
+  ],
   "files": ["**/*.{js,cjs,mjs,ts,jsx,tsx,md,mdx,html,json,css,toml,yaml,yml}"]
 }

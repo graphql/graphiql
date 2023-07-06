@@ -10,3 +10,6 @@
 ---
 
 _BREAKING CHANGE:_ drop commonjs exports in all libraries except for `graphiql` and `@graphiql/react`
+
+all previously `<package>/esm` paths are now `<package>/dist`
+for example, `monaco-graphql/esm/initializeMode` is now `monaco-graphql/dist/initializeMode`

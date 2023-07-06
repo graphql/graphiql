@@ -62,7 +62,7 @@ export class WorkerManager {
       try {
         this._worker = editor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
-          moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
+          moduleId: 'monaco-graphql/dist/GraphQLWorker.js',
 
           label: this._defaults.languageId,
           // passed in to the create() method

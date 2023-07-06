@@ -6,7 +6,7 @@ import {
   buildASTSchema,
 } from 'graphql';
 import type { SchemaConfig } from 'monaco-graphql';
-import { Uri } from 'monaco-graphql/esm/monaco-editor';
+import { Uri } from 'monaco-graphql/dist/monaco-editor';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
 const API_TOKEN = localStorage.getItem('ghapi') || null;

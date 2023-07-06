@@ -11,7 +11,7 @@
     "import": "./esm/index.js",
     "require": "./esm/index.cjs"
   },
-  "types": "esm/index.d.ts",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
     "graphql-language-service": "^5.1.7"

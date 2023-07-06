@@ -17,7 +17,7 @@ const RESTRICTED_IMPORTS = [
   {
     name: 'monaco-editor',
     message:
-      '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+      '`monaco-editor` imports all languages; use `monaco-graphql/dist/monaco-editor` instead to import only `json` and `graphql` languages',
   },
 ];
 

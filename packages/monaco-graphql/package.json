@@ -3,8 +3,8 @@
   "description": "full service, official monaco mode for GraphQL",
   "version": "1.2.4",
   "license": "MIT",
-  "module": "esm/monaco.contribution.js",
-  "types": "esm/monaco.contribution.d.ts",
+  "module": "dist/monaco.contribution.js",
+  "types": "dist/monaco.contribution.d.ts",
   "contributors": [
     {
       "name": "Peng Lyu",
