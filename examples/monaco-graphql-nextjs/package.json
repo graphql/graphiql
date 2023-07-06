@@ -9,7 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "prettier": "3.0.0-alpha.12",
+    "prettier": "3.0.0",
     "@graphiql/toolkit": "^0.8.4",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.5.5",

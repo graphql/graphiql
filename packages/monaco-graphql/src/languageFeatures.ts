@@ -9,7 +9,7 @@ import { GraphQLWorker } from './GraphQLWorker.js';
 import type { MonacoGraphQLAPI } from './api';
 import type * as monaco from './monaco-editor';
 import { Uri, languages } from './monaco-editor.js';
-import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
+import { editor } from 'monaco-editor/esm/vs/editor/editor.api.js';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils.js';
 

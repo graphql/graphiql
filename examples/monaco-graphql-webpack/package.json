@@ -15,7 +15,7 @@
     "jsonc-parser": "3.2.0",
     "monaco-editor": "^0.36.0",
     "monaco-graphql": "^1.2.4",
-    "prettier": "3.0.0-alpha.12"
+    "prettier": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
