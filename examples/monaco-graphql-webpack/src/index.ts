@@ -1,13 +1,12 @@
 /* global netlify */
 
-import { editor, KeyMod, KeyCode } from 'monaco-graphql/dist/monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/monaco-editor';
 import * as JSONC from 'jsonc-parser';
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
+import { initializeMode, type MonacoGraphQLAPI } from 'monaco-graphql';
 
 import { createEditors } from './editors';
 import { schemaFetcher, schemaOptions } from './schema';
 import './style.css';
-import type { MonacoGraphQLAPI } from 'monaco-graphql';
 
 const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
 

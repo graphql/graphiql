@@ -1,4 +1,4 @@
-import { editor, Uri } from 'monaco-graphql/dist/monaco-editor';
+import { editor, Uri } from 'monaco-graphql/monaco-editor';
 
 const GRAPHQL_LANGUAGE_ID = 'graphql';
 
