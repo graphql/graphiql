@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Uri, IDisposable, languages } from 'monaco-editor';
+import { Uri, IDisposable, languages } from './monaco-editor';
 import { WorkerManager } from './workerManager';
 import { GraphQLWorker } from './GraphQLWorker';
 import { MonacoGraphQLAPI } from './api';

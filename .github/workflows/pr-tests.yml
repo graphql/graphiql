@@ -22,7 +22,7 @@ jobs:
       - run: yarn install --frozen-lockfile --immutable
 
       - name: Run Unit Tests
-        run: yarn test:ci --coverage
+        run: yarn test:ci
 
       - uses: codecov/codecov-action@v3
         with:

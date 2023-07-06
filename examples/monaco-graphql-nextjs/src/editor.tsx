@@ -1,6 +1,11 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import { editor, KeyMod, KeyCode, languages } from 'monaco-editor';
+import {
+  editor,
+  KeyMod,
+  KeyCode,
+  languages,
+} from 'monaco-graphql/esm/monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import {
@@ -69,16 +74,17 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
   trailingCommas: 'ignore',
 });
 
-type CodeEditor = editor.IStandaloneCodeEditor | null;
-
 export default function Editor(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null);
   const variablesRef = useRef<HTMLDivElement>(null);
   const responseRef = useRef<HTMLDivElement>(null);
-  const [operationsEditor, setOperationsEditor] = useState<CodeEditor>(null);
-  const [variablesEditor, setVariablesEditor] = useState<CodeEditor>(null);
-  const [responseEditor, setResponseEditor] = useState<CodeEditor>(null);
-  const [schema, setSchema] = useState<IntrospectionQuery | null>(null);
+  const [operationsEditor, setOperationsEditor] =
+    useState<editor.IStandaloneCodeEditor>();
+  const [variablesEditor, setVariablesEditor] =
+    useState<editor.IStandaloneCodeEditor>();
+  const [responseEditor, setResponseEditor] =
+    useState<editor.IStandaloneCodeEditor>();
+  const [schema, setSchema] = useState<IntrospectionQuery>();
   const [loading, setLoading] = useState(false);
   /**
    * Create the models & editors
@@ -137,7 +143,7 @@ export default function Editor(): ReactElement {
     setLoading(true);
     void getSchema().then(async introspectionJSON => {
       MONACO_GRAPHQL_API.setSchemaConfig([
-        { introspectionJSON, uri: 'myschema.graphql' },
+        { introspectionJSON, uri: 'my-schema.graphql' },
       ]);
       setSchema(introspectionJSON);
       setLoading(false);

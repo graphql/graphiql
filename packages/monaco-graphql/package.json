@@ -25,6 +25,10 @@
     "esm",
     "src"
   ],
+  "scripts": {
+    "test": "vitest run",
+    "postbuild": "node scripts/patch-monaco-editor-types.mjs"
+  },
   "dependencies": {
     "graphql-language-service": "^5.1.7",
     "picomatch-browser": "^2.2.6"
@@ -32,7 +36,8 @@
   "devDependencies": {
     "graphql": "^16.4.0",
     "monaco-editor": "^0.39.0",
-    "vscode-languageserver-types": "^3.17.1"
+    "vscode-languageserver-types": "^3.17.1",
+    "execa": "^7.1.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

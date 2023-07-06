@@ -35,7 +35,7 @@ import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
-const url = 'https://myschema.com/graphql';
+const url = 'https://my-schema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({ url });
 
@@ -63,9 +63,9 @@ import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
-const url = 'https://myschema.com/graphql';
+const url = 'https://my-schema.com/graphql';
 
-const subscriptionUrl = 'wss://myschema.com/graphql';
+const subscriptionUrl = 'wss://my-schema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,
@@ -143,9 +143,9 @@ import { GraphiQL } from 'graphiql';
 import { createClient } from 'graphql-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
-const url = 'https://myschema.com/graphql';
+const url = 'https://my-schema.com/graphql';
 
-const subscriptionUrl = 'wss://myschema.com/graphql';
+const subscriptionUrl = 'wss://my-schema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,
@@ -175,9 +175,9 @@ import { GraphiQL } from 'graphiql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
-const url = 'https://myschema.com/graphql';
+const url = 'https://my-schema.com/graphql';
 
-const subscriptionUrl = 'wss://myschema.com/graphql';
+const subscriptionUrl = 'wss://my-schema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,
@@ -207,7 +207,7 @@ import { GraphiQL } from 'graphiql';
 import { fetch } from 'isomorphic-fetch';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
-const url = 'https://myschema.com/graphql';
+const url = 'https://my-schema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,

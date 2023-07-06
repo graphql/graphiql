@@ -14,6 +14,11 @@ const RESTRICTED_IMPORTS = [
   { name: 'graphql/type/definition', message: 'use `graphql`' },
   { name: 'graphql/type/directives', message: 'use `graphql`' },
   { name: 'graphql/version', message: 'use `graphql`' },
+  {
+    name: 'monaco-editor',
+    message:
+      '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+  },
 ];
 
 module.exports = {
@@ -249,7 +254,6 @@ module.exports = {
         'unicorn/prefer-dom-node-remove': 'error',
         // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
-        'no-duplicate-imports': 'off',
         '@typescript-eslint/no-restricted-imports': [
           'error',
           ...RESTRICTED_IMPORTS,
@@ -327,6 +331,7 @@ module.exports = {
         'unicorn/prefer-node-protocol': 'error',
         'import/no-unresolved': ['error', { ignore: ['^node:'] }],
         'unicorn/prefer-string-replace-all': 'error',
+        'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
 
@@ -432,6 +437,21 @@ module.exports = {
       },
     },
     {
+      // Monaco-GraphQL rules
+      files: ['packages/monaco-graphql/**'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS.filter(({ name }) => name !== 'monaco-editor'),
+          {
+            name: 'monaco-editor',
+            message:
+              '`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
+          },
+        ],
+      },
+    },
+    {
       // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
@@ -442,6 +462,7 @@ module.exports = {
       },
     },
     {
+      // ❗ALWAYS LAST
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
       rules: {
@@ -454,6 +475,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         '@arthurgeron/react-usememo/require-usememo': 'off',
         'sonar/no-dead-store': 'off',
+        '@typescript-eslint/no-restricted-imports': 'off',
       },
     },
   ],

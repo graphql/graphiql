@@ -5,8 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Emitter } from 'monaco-editor';
-import type * as monaco from 'monaco-editor';
+import { Emitter } from './monaco-editor';
+import type * as monaco from './monaco-editor';
 import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
 import type {
   CompletionSettings,
