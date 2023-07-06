@@ -7,7 +7,7 @@
 import { editor, IDisposable, Uri } from './monaco-editor.js';
 import { MonacoGraphQLAPI } from './api.js';
 import { GraphQLWorker } from './GraphQLWorker.js';
-import { ICreateData } from './typings.js';
+import type { ICreateData } from './typings';
 import { getStringSchema } from './utils.js';
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
@@ -59,29 +59,30 @@ export class WorkerManager {
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
     if (!this._client && !this._worker) {
+      const createData: ICreateData = {
+        languageId: this._defaults.languageId,
+        formattingOptions: this._defaults.formattingOptions,
+        // only string based config can be passed from the main process
+        languageConfig: {
+          schemas: this._defaults.schemas?.map(getStringSchema),
+          externalFragmentDefinitions:
+            this._defaults.externalFragmentDefinitions,
+          // TODO: make this overridable
+          // MonacoAPI possibly another configuration object for this I think?
+          // all of this could be organized better
+          fillLeafsOnComplete:
+            this._defaults.completionSettings
+              .__experimental__fillLeafsOnComplete,
+        },
+      };
+
       try {
         this._worker = editor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
           moduleId: 'monaco-graphql/dist/GraphQLWorker.js',
-
           label: this._defaults.languageId,
           // passed in to the create() method
-          createData: {
-            languageId: this._defaults.languageId,
-            formattingOptions: this._defaults.formattingOptions,
-            // only string based config can be passed from the main process
-            languageConfig: {
-              schemas: this._defaults.schemas?.map(getStringSchema),
-              externalFragmentDefinitions:
-                this._defaults.externalFragmentDefinitions,
-              // TODO: make this overridable
-              // MonacoAPI possibly another configuration object for this I think?
-              // all of this could be organized better
-              fillLeafsOnComplete:
-                this._defaults.completionSettings
-                  .__experimental__fillLeafsOnComplete,
-            },
-          } as ICreateData,
+          createData,
         });
         this._client = await this._worker.getProxy();
       } catch (error) {
