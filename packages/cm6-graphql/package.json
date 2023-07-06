@@ -8,8 +8,8 @@
   },
   "module": "dist/index.js",
   "exports": {
-    "import": "./esm/index.js",
-    "require": "./esm/index.cjs"
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
   },
   "types": "dist/index.d.ts",
   "sideEffects": false,
