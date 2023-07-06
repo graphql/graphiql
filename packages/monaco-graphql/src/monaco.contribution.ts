@@ -5,18 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-export {
-  modeConfigurationDefault,
-  SchemaEntry,
-  formattingDefaults,
-  MonacoGraphQLAPI,
-  MonacoGraphQLAPIOptions,
-  diagnosticSettingDefault,
-} from './api';
-import { languages } from './monaco-editor';
-import { initializeMode, LANGUAGE_ID } from './initializeMode';
-
-export * from './typings';
+import { languages } from './monaco-editor.js';
+import { initializeMode, LANGUAGE_ID } from './initializeMode.js';
 
 export { LANGUAGE_ID };
 

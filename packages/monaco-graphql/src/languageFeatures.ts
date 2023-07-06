@@ -5,13 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { GraphQLWorker } from './GraphQLWorker';
+import { GraphQLWorker } from './GraphQLWorker.js';
 import type { MonacoGraphQLAPI } from './api';
 import type * as monaco from './monaco-editor';
-import { Uri, languages } from './monaco-editor';
+import { Uri, languages } from './monaco-editor.js';
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
-import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
+import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils.js';
 
 export interface WorkerAccessor {
   (...more: Uri[]): monaco.Thenable<GraphQLWorker>;

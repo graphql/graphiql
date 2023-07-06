@@ -4,11 +4,11 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { editor, IDisposable, Uri } from './monaco-editor';
-import { MonacoGraphQLAPI } from './api';
-import { GraphQLWorker } from './GraphQLWorker';
-import { ICreateData } from './typings';
-import { getStringSchema } from './utils';
+import { editor, IDisposable, Uri } from './monaco-editor.js';
+import { MonacoGraphQLAPI } from './api.js';
+import { GraphQLWorker } from './GraphQLWorker.js';
+import { ICreateData } from './typings.js';
+import { getStringSchema } from './utils.js';
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 
