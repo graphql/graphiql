@@ -17,8 +17,8 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
       "types": "./types/index.d.ts"
     },
     "./font/roboto.css": "./font/roboto.css",
@@ -42,7 +42,7 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "build-clean": "rimraf dist types"
+    "prebuild": "rimraf dist types"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

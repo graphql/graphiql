@@ -34,7 +34,7 @@
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql build-bundles-clean",
-    "build-clean": "wsrun --exclude-missing build-clean && yarn tsc --clean",
+    "build-clean": "yarn tsc --clean",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
     "build:nontsc": "yarn wsrun:noexamples --exclude-missing --serial build",
     "build:clean": "yarn tsc --clean",
