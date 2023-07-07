@@ -26,7 +26,11 @@ import {
   JSONSchemaOptions,
 } from 'graphql-language-service';
 import { defaultSchemaLoader } from './schemaLoader.js';
-import type { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
+import type {
+  SchemaConfig,
+  SchemaLoader,
+  GraphQLLanguageConfig,
+} from './typings';
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
 
@@ -47,6 +51,7 @@ export class LanguageService {
     null;
   private _externalFragmentDefinitionsString: string | null = null;
   private _fillLeafsOnComplete?: boolean = false;
+
   constructor({
     parser,
     schemas,
@@ -178,12 +183,14 @@ export class LanguageService {
     this._schemas.push(schema);
     this._cacheSchema(schema);
   }
+
   /**
    * Uses the configured parser
    */
   public parse(text: string | Source, options?: ParseOptions): DocumentNode {
     return this._parser(text, options || this._parseOptions);
   }
+
   /**
    * get completion for the given uri and matching schema
    */
