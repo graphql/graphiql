@@ -14774,7 +14774,7 @@ periscopic@^3.1.0:
     estree-walker "^3.0.0"
     is-reference "^3.0.0"
 
-picocolors@^1.0.0:
+picocolors@1.0.0, picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
   integrity sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
@@ -18579,10 +18579,10 @@ vite-node@0.32.2:
     picocolors "^1.0.0"
     vite "^3.0.0 || ^4.0.0"
 
-vite-plugin-dts@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-3.1.0.tgz#b8ff395476d5d52745cd3270e9b9d1f82b660cc3"
-  integrity sha512-KMrbt07OVJlsVQyrhJ4gBd+1xlboxJiYyoMJLmEEYlKYAhxmIlb50KlCxYYiNbrEt2FDQ+Ocl0fbFqHmP19gTg==
+vite-plugin-dts@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-3.0.0.tgz#fb21a0e9c3d9ea5a5ebf1a52c9dc5d4f22bdc0ac"
+  integrity sha512-3UfEnH7DtokNZfEWEODzKWJOVTpNJL26ok121VGgxa2Iu6/uX5wgMiYPnadUuQsowXFibbWijbT4MQy8Ig/+fg==
   dependencies:
     "@microsoft/api-extractor" "^7.36.0"
     "@rollup/pluginutils" "^5.0.2"
@@ -18594,6 +18594,14 @@ vite-plugin-dts@^3.1.0:
   optionalDependencies:
     rollup "*"
     vite "^4.3.9"
+
+vite-plugin-lib@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/vite-plugin-lib/-/vite-plugin-lib-1.2.3.tgz#ac0520d7a64ecd20669979c911ec73d1156267f3"
+  integrity sha512-POC33jmELapMccJfYK50e/KlMyBCfMtwxjEXYV1lXEZXmfQBRNBs1L6kvsLbZ74NUbrx9MQ6Xjhi3/LVw5pp/g==
+  dependencies:
+    picocolors "1.0.0"
+    vite-plugin-dts "3.0.0"
 
 vite-plugin-monaco-editor@^1.1.0:
   version "1.1.0"
