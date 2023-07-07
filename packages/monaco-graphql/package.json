@@ -1,10 +1,30 @@
 {
   "name": "monaco-graphql",
-  "description": "full service, official monaco mode for GraphQL",
+  "description": "Full service, official monaco mode for GraphQL",
   "version": "1.2.4",
   "license": "MIT",
-  "module": "dist/monaco.contribution.js",
-  "types": "dist/monaco.contribution.d.ts",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./dist/index.js",
+    "./monaco-editor": "./dist/monaco-editor.js",
+    "./graphql.worker": "./dist/graphql.worker.js",
+    "./monaco.contribution": "./dist/monaco.contribution.js"
+  },
+  "typesVersions": {
+    "*": {
+      "monaco-editor": [
+        "./dist/monaco-editor.d.ts"
+      ],
+      "graphql.worker": [
+        "./dist/graphql.worker.d.ts"
+      ],
+      "monaco.contribution": [
+        "./dist/monaco.contribution.d.ts"
+      ]
+    }
+  },
   "contributors": [
     {
       "name": "Peng Lyu",
@@ -20,14 +40,11 @@
     "directory": "packages/monaco-graphql"
   },
   "files": [
-    "dist",
-    "src",
-    "dist/typings/monaco-editor.d.ts",
-    "dist/typings/picomatch-browser.d.ts"
+    "dist"
   ],
   "scripts": {
     "test": "vitest run",
-    "postbuild": "node scripts/patch-monaco-editor-types.mjs"
+    "postbuild": "node scripts/patch-monaco-editor-types.js"
   },
   "dependencies": {
     "graphql-language-service": "^5.1.7",
@@ -41,7 +58,7 @@
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
-    "monaco-editor": ">= 0.20.0 < 1",
+    "monaco-editor": ">= 0.39.0 < 1",
     "prettier": "^2.8.0 || ^3.0.0"
   }
 }
