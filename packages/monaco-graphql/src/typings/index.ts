@@ -108,7 +108,7 @@ export type GraphQLLanguageConfig = {
   /**
    * External fragments to be used with completion and validation
    */
-  externalFragmentDefinitions?: FragmentDefinitionNode[] | string;
+  externalFragmentDefinitions: FragmentDefinitionNode[] | string | null;
   /**
    * Custom validation rules following `graphql` `ValidationRule` signature
    */
@@ -266,5 +266,5 @@ export interface ICreateData {
   languageId: string;
   formattingOptions?: FormattingOptions;
   languageConfig: GraphQLLanguageConfig;
-  diagnosticSettings: DiagnosticSettings;
+  diagnosticSettings?: DiagnosticSettings;
 }

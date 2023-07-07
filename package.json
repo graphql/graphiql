@@ -7,7 +7,8 @@
     "packages": [
       "packages/*",
       "examples/monaco-graphql-react-vite",
-      "examples/monaco-graphql-nextjs"
+      "examples/monaco-graphql-nextjs",
+      "examples/monaco-graphql-webpack"
     ]
   },
   "lint-staged": {
@@ -107,9 +108,8 @@
     "cspell": "^5.15.2",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-cypress": "^2.13.3",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "npm:eslint-plugin-i@^2.27.5-4",
     "eslint-plugin-jest": "^27.2.2",
     "eslint-plugin-mdx": "^2.1.0",
     "eslint-plugin-promise": "^6.1.1",
@@ -126,7 +126,7 @@
     "js-green-licenses": "3.0.0",
     "lint-staged": "^10.1.2",
     "mkdirp": "^1.0.4",
-    "prettier": "3.0.0-alpha.12",
+    "prettier": "3.0.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
     "typedoc": "^0.19.2",

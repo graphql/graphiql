@@ -18,4 +18,5 @@
  */
 import 'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js';
 import 'monaco-editor/esm/vs/language/json/monaco.contribution.js';
+
 export * from 'monaco-editor/esm/vs/editor/edcore.main.js';

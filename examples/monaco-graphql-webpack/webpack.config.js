@@ -19,10 +19,9 @@ const resultConfig = {
   },
   module: {
     rules: [
-      // you can also use ts-loader of course
-      // i prefer to use babel-loader & @babel/plugin-typescript
-      // so we can experiment with how changing browserslistrc targets impacts
-      // monaco-graphql bundling
+      // You can also use ts-loader of course, I prefer to use babel-loader &
+      // @babel/plugin-typescript, so we can experiment with how changing
+      // browserslistrc targets impacts monaco-graphql bundling
       {
         test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
@@ -66,7 +65,7 @@ const resultConfig = {
           label: 'graphql',
           worker: {
             id: 'graphql',
-            entry: require.resolve('monaco-graphql/dist/graphql.worker.js'),
+            entry: 'monaco-graphql/graphql.worker',
           },
         },
       ],

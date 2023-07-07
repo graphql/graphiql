@@ -17,7 +17,7 @@ const RESTRICTED_IMPORTS = [
   {
     name: 'monaco-editor',
     message:
-      '`monaco-editor` imports all languages; use `monaco-graphql/dist/monaco-editor` instead to import only `json` and `graphql` languages',
+      '`monaco-editor` imports all languages; use `monaco-graphql/monaco-editor` instead to import only `json` and `graphql` languages',
   },
 ];
 
@@ -329,11 +329,12 @@ module.exports = {
         'sonar/prefer-promise-shorthand': 'error',
         'sonar/no-dead-store': 'error',
         'unicorn/prefer-node-protocol': 'error',
-        'import/no-unresolved': ['error', { ignore: ['^node:'] }],
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
+        // too buggy with typescript
+        'import/no-unresolved': 'off',
 
         'unicorn/prefer-switch': 'error',
         'unicorn/prefer-dom-node-text-content': 'error',
@@ -396,7 +397,7 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/**', '**/resources/**', 'scripts/**'],
+      files: ['resources/**', '**/resources/**', '**/scripts/**'],
       rules: {
         'no-console': 'off',
       },
@@ -408,7 +409,6 @@ module.exports = {
         'no-console': 'off',
         'no-new': 'off',
         'no-alert': 'off',
-        'import/no-unresolved': 'off',
       },
     },
     {
@@ -416,16 +416,6 @@ module.exports = {
       files: ['**/__tests__/**', 'webpack.config.js'],
       rules: {
         'import/no-extraneous-dependencies': 'off',
-      },
-    },
-    {
-      // Rule for allowing import `vscode` package
-      files: [
-        'packages/vscode-graphql/**',
-        'packages/vscode-graphql-execution/**',
-      ],
-      rules: {
-        'import/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
       },
     },
     {
@@ -449,6 +439,8 @@ module.exports = {
               '`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages',
           },
         ],
+        'import/extensions': ['error', 'ignorePackages'],
+        'import/no-default-export': 'error',
       },
     },
     {
@@ -468,7 +460,6 @@ module.exports = {
       rules: {
         'import/no-extraneous-dependencies': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
-        'import/no-unresolved': 'off',
         'no-console': 'off',
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
@@ -476,6 +467,14 @@ module.exports = {
         '@arthurgeron/react-usememo/require-usememo': 'off',
         'sonar/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
+        'import/extensions': 'off',
+        'import/no-default-export': 'off',
+      },
+    },
+    {
+      files: ['**/vite.config.ts'],
+      rules: {
+        'import/no-default-export': 'off',
       },
     },
   ],

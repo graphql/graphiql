@@ -3,10 +3,10 @@
   "version": "1.1.1",
   "private": true,
   "license": "MIT",
-  "description": "A simple monaco example with webpack and typescript",
+  "description": "A simple monaco example with webpack and TypeScript",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack-cli",
-    "start": "cross-env NODE_ENV=development webpack-cli serve"
+    "bundle": "cross-env NODE_ENV=production webpack-cli",
+    "dev": "cross-env NODE_ENV=development webpack-cli serve"
   },
   "dependencies": {
     "graphql": "^16.6.0",
@@ -15,7 +15,7 @@
     "jsonc-parser": "3.2.0",
     "monaco-editor": "^0.36.0",
     "monaco-graphql": "^1.2.4",
-    "prettier": "3.0.0-alpha.12"
+    "prettier": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

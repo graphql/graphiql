@@ -5,17 +5,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
+import type { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from './monaco-editor';
 import { getRange } from 'graphql-language-service';
-import { LanguageService } from './LanguageService';
+import { LanguageService } from './LanguageService.js';
 import {
   toGraphQLPosition,
   toMonacoRange,
   toMarkerData,
   toCompletion,
   GraphQLWorkerCompletionItem,
-} from './utils';
+} from './utils.js';
 
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
@@ -135,7 +135,6 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
-    // eslint-disable-next-line import/no-unresolved -- should be fixed by pnpm migration (points to @types/prettier rather owns prettier types)
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {
@@ -165,10 +164,6 @@ export class GraphQLWorker {
     return this._languageService.updateSchemas(schemas);
   }
 }
-
-export default {
-  GraphQLWorker,
-};
 
 export function create(
   ctx: monaco.worker.IWorkerContext,

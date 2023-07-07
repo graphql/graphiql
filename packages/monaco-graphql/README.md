@@ -7,7 +7,7 @@ GraphQL language plugin for the Monaco Editor. You can use it to build
 vscode/codespaces-like web or desktop IDEs using whatever frontend javascript
 libraries or frameworks you want, or none!
 
-- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/)
+- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack)
   using plain javascript, shows how to change schemas
 - [vite + react example](https://stackblitz.com/edit/monaco-graphql-react-vite?file=src%2FApp.tsx&terminal=dev) -
   minimal example with variables (C)JSON support using react
@@ -53,10 +53,10 @@ yarn add monaco-graphql
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
+import { initializeMode } from 'monaco-graphql';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/graphql.worker';
 
 // instantiates the worker & language features with the schema!
 const MonacoGraphQLAPI = initializeMode({
@@ -98,10 +98,10 @@ The existing API works as before in terms of instantiating the schema
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 // enables our language worker right away, despite no schema
-import 'monaco-graphql';
+import 'monaco-graphql/monaco.contribution';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/graphql.worker';
 
 // lazily invoke the api config methods whenever we want!
 monaco.languages.graphql.setSchemaConfig([
@@ -151,9 +151,9 @@ any given set of operations
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
+import { initializeMode } from 'monaco-graphql';
 
-import GraphQLWorker from 'worker-loader!monaco-graphql/dist/graphql.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/graphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
@@ -250,17 +250,17 @@ If you call any of these API methods to modify the language service
 configuration at any point at runtime, the webworker will reload relevant
 language features.
 
-If you `import 'monaco-graphql'` synchronously, you can access the api via
+If you `import 'monaco-graphql/monaco.contribution'` synchronously, you can access the api via
 `monaco.languages.graphql.api`.
 
 ```ts
-import 'monaco-graphql';
+import 'monaco-graphql/monaco.contribution';
 // now the api will be available on the `monaco.languages` global
 const { api } = monaco.languages.graphql;
 ```
 
 ```ts
-import 'monaco-graphql';
+import 'monaco-graphql/monaco.contribution';
 
 // also this
 import { languages } from 'monaco-editor';
@@ -271,7 +271,7 @@ const { api } = languages.graphql;
 Otherwise, you can, like in the sync demo above:
 
 ```ts
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
+import { initializeMode } from 'monaco-graphql';
 
 const api = initializeMode(config);
 ```
@@ -285,7 +285,7 @@ globs or specific files. `uri` can be an url or file path, anything parsable
 
 ```ts
 // you can load it lazily
-import 'monaco-graphql';
+import 'monaco-graphql/monaco.contribution';
 
 monaco.languages.graphql.api.setSchemaConfig([
   {
@@ -299,7 +299,7 @@ monaco.languages.graphql.api.setSchemaConfig([
 or you can load the language features only when you have your schema
 
 ```ts
-import { initializeMode } from 'monaco-graphql/dist/initializeMode';
+import { initializeMode } from 'monaco-graphql';
 
 const schemas = [
   {
@@ -411,7 +411,7 @@ editor worker using
 ## Web Frameworks
 
 the plain javascript
-[webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/)
+[webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack)
 should give you a starting point to see how to implement it with
 
 ### React
@@ -447,11 +447,11 @@ import type { worker as WorkerNamespace } from 'monaco-editor';
 // @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
-import { GraphQLWorker } from 'monaco-graphql/dist/GraphQLWorker';
+import { GraphQLWorker } from 'monaco-graphql/GraphQLWorker';
 
 import { myValidationRules } from './custom';
 
-self.onmessage = () => {
+globalThis.onmessage = () => {
   worker.initialize(
     (
       ctx: WorkerNamespace.IWorkerContext,
@@ -536,12 +536,12 @@ and
 
 For `monaco-graphql`, you need only 2 languages - `graphql` and `json`.
 In version `monaco-graphql@1.3.0` and later, you can replace all `monaco-editor`'s
-imports with `monaco-graphql/dist/monaco-editor` to improve performance, load
+imports with `monaco-graphql/monaco-editor` to improve performance, load
 only `graphql` and `json` languages, and skip loading unused languages.
 
 ```diff
 -import { ... } from 'monaco-editor'
-+import { ... } from 'monaco-graphql/dist/monaco-editor'
++import { ... } from 'monaco-graphql/monaco-editor'
 ```
 
 ### Catch Future Import Mistakes with ESLint
@@ -558,7 +558,7 @@ To prevent mis-importing of `monaco-editor`, you can set up default
       'error',
       {
         name: 'monaco-editor',
-        message: '`monaco-editor` imports all languages; use `monaco-graphql/dist/monaco-editor` instead to import only `json` and `graphql` languages',
+        message: '`monaco-editor` imports all languages; use `monaco-graphql/monaco-editor` instead to import only `json` and `graphql` languages',
       },
     ],
   },

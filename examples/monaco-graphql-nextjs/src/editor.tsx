@@ -5,7 +5,7 @@ import {
   KeyMod,
   KeyCode,
   languages,
-} from 'monaco-graphql/dist/monaco-editor';
+} from 'monaco-graphql/monaco-editor';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import {

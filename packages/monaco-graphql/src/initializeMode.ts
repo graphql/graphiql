@@ -6,9 +6,9 @@
  */
 
 import type * as GraphQLMode from './graphqlMode';
-import { create as createMonacoGraphQLAPI, MonacoGraphQLAPI } from './api';
+import { create as createMonacoGraphQLAPI, MonacoGraphQLAPI } from './api.js';
 import type { MonacoGraphQLInitializeConfig } from './typings';
-import { languages } from './monaco-editor';
+import { languages } from './monaco-editor.js';
 
 export const LANGUAGE_ID = 'graphql';
 
@@ -36,5 +36,5 @@ export function initializeMode(
 }
 
 function getMode(): Promise<typeof GraphQLMode> {
-  return import('./graphqlMode');
+  return import('./graphqlMode.js');
 }

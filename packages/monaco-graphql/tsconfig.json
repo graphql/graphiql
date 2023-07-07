@@ -7,19 +7,7 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
-    "lib": [
-      "dom",
-      "es5",
-      "es6",
-      "es2015",
-      "Es2016",
-      "ES2017",
-      "ES2018",
-      "ESNext"
-    ],
-    "paths": {
-      "*": ["*"]
-    }
+    "lib": ["dom", "ESNext"]
   },
   "references": [
     {
@@ -27,13 +15,5 @@
     }
   ],
   "include": ["src"],
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.*",
-    "**/node_modules/monaco-editor-core/**/*.d.ts",
-    "**/node_modules/jest-haste-map/**/*",
-    "dist",
-    "esm",
-    "node_modules"
-  ]
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

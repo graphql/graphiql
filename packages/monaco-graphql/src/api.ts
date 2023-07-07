@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Emitter } from './monaco-editor';
+import { Emitter } from './monaco-editor.js';
 import type * as monaco from './monaco-editor';
 import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
 import type {
@@ -72,6 +72,7 @@ export class MonacoGraphQLAPI {
   public get languageId(): string {
     return this._languageId;
   }
+
   public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
@@ -79,6 +80,7 @@ export class MonacoGraphQLAPI {
   public get schemas(): SchemaConfig[] | null {
     return this._schemas;
   }
+
   public schemasById(): Record<string, SchemaConfig> {
     return this._schemasById;
   }
@@ -86,12 +88,15 @@ export class MonacoGraphQLAPI {
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
   }
+
   public get diagnosticSettings(): DiagnosticSettings {
     return this._diagnosticSettings;
   }
+
   public get completionSettings(): CompletionSettings {
     return this._completionSettings;
   }
+
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;
   }
