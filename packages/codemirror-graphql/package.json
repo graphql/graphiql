@@ -32,8 +32,10 @@
     "!jest.config.js"
   ],
   "scripts": {
-    "watch": "babel --optional runtime resources/watch.js | node",
     "test": "jest"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "peerDependencies": {
     "@codemirror/language": "6.0.0",

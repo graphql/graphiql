@@ -27,4 +27,8 @@ module.exports = function beforeDevServer(app, _server, _compiler) {
     '/resources/renderExample.js',
     express.static(path.join(__dirname, '../resources/renderExample.js')),
   );
+
+  // app.use(
+  //   express.static(path.join(__dirname, '../')),
+  // );
 };

@@ -11,7 +11,7 @@ const rimraf = require('rimraf');
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
 
-const resultConfig = ({ isDev = false }) => {
+const resultConfig = ({ isDev }) => {
   const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
   const config = {
@@ -35,6 +35,7 @@ const resultConfig = ({ isDev = false }) => {
 
         return middlewares;
       },
+      // static: rootPath()
     },
     devtool: isDev ? 'cheap-module-source-map' : 'source-map',
     externals: {
@@ -127,7 +128,10 @@ const resultConfig = ({ isDev = false }) => {
   return config;
 };
 
-module.exports = [
-  resultConfig({ isDev: true }),
-  resultConfig({ isDev: false }),
-];
+const builds = [resultConfig({ isDev: true })];
+
+if (!process.env.WEBPACK_DEV_SERVER) {
+  builds.push(resultConfig({ isDev: false }));
+}
+
+module.exports = builds;

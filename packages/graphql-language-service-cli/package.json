@@ -18,6 +18,9 @@
   "bin": {
     "graphql-lsp": "./bin/graphql.js"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "license": "MIT",
   "files": [
     "bin",
