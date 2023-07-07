@@ -447,7 +447,7 @@ import type { worker as WorkerNamespace } from 'monaco-editor';
 // @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
-import { GraphQLWorker } from 'monaco-graphql/graphql-worker';
+import { GraphQLWorker } from 'monaco-graphql/GraphQLWorker';
 
 import { myValidationRules } from './custom';
 

@@ -21,4 +21,4 @@ all previously `<package>/esm` paths are now `<package>/dist`
 | `monaco-graphql/{esm,dist}/initializeMode` | `monaco-graphql`                     |
 | `monaco-graphql`                           | `monaco-graphql/monaco.contribution` |
 | `monaco-graphql/{esm,dist}/graphql.worker` | `monaco-graphql/graphql.worker`      |
-| `monaco-graphql/{esm,dist}/GraphQLWorker`  | `monaco-graphql/graphql-worker`      |
+| `monaco-graphql/{esm,dist}/GraphQLWorker`  | `monaco-graphql/GraphQLWorker`      |

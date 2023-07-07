@@ -10,7 +10,7 @@
     ".": "./dist/index.js",
     "./monaco-editor": "./dist/monaco-editor.js",
     "./graphql.worker": "./dist/graphql.worker.js",
-    "./graphql-worker": "./dist/GraphQLWorker.js",
+    "./GraphQLWorker": "./dist/GraphQLWorker.js",
     "./monaco.contribution": "./dist/monaco.contribution.js"
   },
   "typesVersions": {
@@ -21,8 +21,8 @@
       "graphql.worker": [
         "./dist/graphql.worker.d.ts"
       ],
-      "graphql-worker": [
-        "./dist/graphql-worker.d.ts"
+      "GraphQLWorker": [
+        "./dist/GraphQLWorker.d.ts"
       ],
       "monaco.contribution": [
         "./dist/monaco.contribution.d.ts"

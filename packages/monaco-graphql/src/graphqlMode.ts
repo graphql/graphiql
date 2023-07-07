@@ -7,8 +7,8 @@
 
 import { Uri, IDisposable, languages } from './monaco-editor.js';
 import { WorkerManager } from './workerManager.js';
-import { GraphQLWorker } from './GraphQLWorker.js';
-import { MonacoGraphQLAPI } from './api.js';
+import type { GraphQLWorker } from './GraphQLWorker.js';
+import type { MonacoGraphQLAPI } from './api.js';
 import * as languageFeatures from './languageFeatures.js';
 
 export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
