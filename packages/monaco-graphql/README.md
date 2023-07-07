@@ -451,7 +451,7 @@ import { GraphQLWorker } from 'monaco-graphql/graphql-worker';
 
 import { myValidationRules } from './custom';
 
-self.onmessage = () => {
+globalThis.onmessage = () => {
   worker.initialize(
     (
       ctx: WorkerNamespace.IWorkerContext,

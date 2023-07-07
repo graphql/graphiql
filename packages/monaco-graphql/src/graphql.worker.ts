@@ -13,7 +13,7 @@ import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker.js';
 
 import { GraphQLWorker } from './GraphQLWorker.js';
 
-self.onmessage = () => {
+globalThis.onmessage = () => {
   initialize(
     (ctx: monaco.worker.IWorkerContext, createData: ICreateData) =>
       new GraphQLWorker(ctx, createData),
