@@ -1,14 +1,27 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts';
 import packageJSON from './package.json';
 
 const IS_UMD = process.env.UMD === 'true';
 
+const plugins = [react({ jsxRuntime: 'classic' })];
+if (!IS_UMD) {
+  plugins.push(
+    dts({
+      cleanVueFileName: true,
+      copyDtsFiles: true,
+      outDir: 'types',
+      staticImport: true,
+    }),
+  );
+}
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins,
   build: {
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
+
     lib: {
       entry: 'src/index.tsx',
       fileName: 'index',

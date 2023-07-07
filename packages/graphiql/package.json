@@ -16,6 +16,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
+  "main": "cjs/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -31,11 +32,12 @@
   ],
   "scripts": {
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
-    "build": "yarn build-clean && yarn build-esm",
+    "build": "yarn build-clean && yarn build-esm && yarn build-cjs",
     "build-bundles": "yarn build-bundles-clean && yarn webpack",
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
     "build-clean": "rimraf esm dist webpack *.html",
     "build-esm": "tsc",
+    "build-cjs": "tsc --module commonjs --outDir cjs",
     "check": "tsc --noEmit",
     "cypress-open": "yarn e2e-server 'cypress open'",
     "dev": "cross-env DEV_SERVER=1 NODE_ENV=development webpack-cli serve --config resources/webpack.config.js",

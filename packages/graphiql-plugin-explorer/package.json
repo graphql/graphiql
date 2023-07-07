@@ -6,7 +6,9 @@
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-plugin-explorer"
   },
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "browser": "dist/index.umd.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -18,12 +20,11 @@
   ],
   "files": [
     "dist",
-    "src",
     "types"
   ],
   "scripts": {
     "dev": "vite build --watch",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
+    "build": "vite build && UMD=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@graphiql/react": "^0.18.0",
     "@vitejs/plugin-react": "^4.0.1",
+    "vite-plugin-dts": "^3.1.1",
     "typescript": "^4.6.3",
     "vite": "^4.3.9"
   }

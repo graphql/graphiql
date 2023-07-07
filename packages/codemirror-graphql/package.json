@@ -18,13 +18,11 @@
   },
   "license": "MIT",
   "files": [
-    "src",
     "cm6-legacy",
     "utils",
     "variables",
     "results",
     "/*.js",
-    "/*.js.flow",
     "/*.js.map",
     "/*.d.ts",
     "/*.d.ts.map",

@@ -7,7 +7,9 @@
     "directory": "packages/graphiql-plugin-code-exporter"
   },
   "author": "LekoArts",
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "browser": "dist/index.umd.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@graphiql/react": "^0.18.0",
     "@vitejs/plugin-react": "^4.0.1",
+    "vite-plugin-dts": "^3.1.1",
     "postcss-nesting": "^10.1.7",
     "typescript": "^4.6.3",
     "vite": "^4.3.9"

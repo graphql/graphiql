@@ -22,7 +22,6 @@
   },
   "files": [
     "dist",
-    "src",
     "dist/typings/monaco-editor.d.ts",
     "dist/typings/picomatch-browser.d.ts"
   ],

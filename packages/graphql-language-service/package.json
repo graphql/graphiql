@@ -16,8 +16,7 @@
   },
   "license": "MIT",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "keywords": [
     "graphql",

@@ -2,15 +2,17 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
-import { library } from 'vite-plugin-lib';
+import dts from 'vite-plugin-dts';
 import packageJSON from './package.json';
 
 export default defineConfig({
   plugins: [
     react(),
-    library({
-      entry: 'src/index.ts',
-      formats: ['cjs', 'es'],
+    dts({
+      cleanVueFileName: true,
+      copyDtsFiles: true,
+      outDir: 'types',
+      staticImport: true,
     }),
     svgr({
       exportAsDefault: true,
