@@ -397,7 +397,7 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/**', '**/resources/**', 'scripts/**'],
+      files: ['resources/**', '**/resources/**', '**/scripts/**'],
       rules: {
         'no-console': 'off',
       },
@@ -440,6 +440,7 @@ module.exports = {
           },
         ],
         'import/extensions': ['error', 'ignorePackages'],
+        'import/no-default-export': 'error',
       },
     },
     {
@@ -467,6 +468,13 @@ module.exports = {
         'sonar/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
         'import/extensions': 'off',
+        'import/no-default-export': 'off',
+      },
+    },
+    {
+      files: ['**/vite.config.ts'],
+      rules: {
+        'import/no-default-export': 'off',
       },
     },
   ],

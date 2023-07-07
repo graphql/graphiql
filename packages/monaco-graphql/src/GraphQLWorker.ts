@@ -165,10 +165,6 @@ export class GraphQLWorker {
   }
 }
 
-export default {
-  GraphQLWorker,
-};
-
 export function create(
   ctx: monaco.worker.IWorkerContext,
   createData: ICreateData,
