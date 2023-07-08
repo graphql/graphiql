@@ -382,6 +382,12 @@ module.exports = {
       },
     },
     {
+      files: ['**/vite.config.ts'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
+    {
       // Rules for unit tests
       files: [
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',

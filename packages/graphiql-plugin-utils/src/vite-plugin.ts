@@ -10,15 +10,36 @@ type PluginOptions = {
   /**
    * The plugin name used by the UMD global
    */
-  pluginName: string;
+  umdExportName: string;
+  /**
+   * The name of the plugin exported by the umd global
+   * Defaults to a normalized version of the package.json `name` field
+   */
+  fileName?: string;
 };
 
-function graphiqlPluginConfig({ pluginName }: PluginOptions): Plugin {
+const normalizePackageName = (name: string): string => {
+  return name.replace('@', '').replace('/', '-');
+};
+
+function graphiqlPluginConfig({
+  umdExportName,
+  fileName,
+}: PluginOptions): Plugin {
   return {
     name: 'vite-plugin-graphiql-plugin:build',
     enforce: 'pre',
     async config(config) {
-      const packageJSON = await import(`${process.env.PWD}/package.json`);
+      let packageJSON;
+      // TODO: process.env.npm_package_json_path is no longer present in vite. study
+      try {
+        // more vite plugins to see how others load the full package.json
+        packageJSON = await import(`${process.env.PWD}/package.json`);
+      } catch {
+        throw new Error(
+          'the graphiql plugin vite plugin currently only works if you execute vite commands from the same directory as package.json',
+        );
+      }
       const external = [];
       const userExternal = config.build?.rollupOptions?.external;
       if (userExternal) {
@@ -55,13 +76,16 @@ function graphiqlPluginConfig({ pluginName }: PluginOptions): Plugin {
           lib: {
             ...config?.build?.lib,
             entry: 'src/index.tsx',
-            fileName: 'index',
-            name: pluginName,
+            fileName: IS_UMD
+              ? fileName ?? normalizePackageName(packageJSON.name)
+              : 'index',
+            name: umdExportName,
             formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
           },
           rollupOptions: {
             ...config?.build?.rollupOptions,
             external: [
+              'react-jsx-runtime',
               ...external,
               // Exclude peer dependencies and dependencies from bundle
               ...Object.keys(packageJSON.peerDependencies),

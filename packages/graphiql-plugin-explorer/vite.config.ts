@@ -3,5 +3,5 @@ import { defineConfig } from 'vite';
 import { graphiqlVitePlugin } from '@graphiql/plugin-utils';
 
 export default defineConfig({
-  plugins: graphiqlVitePlugin({ pluginName: 'GraphiQLPluginExplorer' }),
+  plugins: graphiqlVitePlugin({ umdExportName: 'GraphiQLPluginExplorer' }),
 });
