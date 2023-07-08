@@ -6,14 +6,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/vite-plugin.js",
+  "main": "cjs/vite-plugin.js",
+  "module": "dist/vite-plugin.js",
   "types": "types/vite-plugin.d.ts",
   "exports": {
     "./base.tsconfig.json": "./base.tsconfig.json",
     "./vite.config.tsconfig.json": "./vite.config.tsconfig.json",
     ".": {
       "types": "./types/vite-plugin.d.ts",
-      "require": "./dist/vite-plugin.js"
+      "require": "./cjs/vite-plugin.js",
+      "import": "./dist/vite-plugin.js"
     }
   },
   "files": [
@@ -21,7 +23,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && tsc --module CommonJS --outDir cjs"
   },
   "dependencies": {
     "vite": "^4.4.2",
