@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "dev": "vite build --watch",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
+    "build": "vite build && UMD=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,11 +38,7 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.18.0",
-    "@vitejs/plugin-react": "^4.0.1",
-    "vite-plugin-dts": "^3.1.1",
-    "postcss-nesting": "^10.1.7",
-    "typescript": "^4.6.3",
-    "vite": "^4.3.9"
+    "vite": "^4.4.2",
+    "@graphiql/plugin-utils": "^0.0.1"
   }
 }

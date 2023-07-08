@@ -1,0 +1,10 @@
+{
+  "extends": "./base.tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
