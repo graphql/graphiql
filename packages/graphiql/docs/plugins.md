@@ -23,12 +23,9 @@ import {
   useExecutionContext,
 } from '@graphiql/react';
 
-...
 const { setOperationName } = useEditorContext({ nonNull: true });
 const { schema } = useSchemaContext({ nonNull: true });
 const { run } = useExecutionContext({ nonNull: true });
-...
-
 ```
 
 ## Export a plugin definition

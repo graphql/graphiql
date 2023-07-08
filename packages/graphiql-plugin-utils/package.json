@@ -20,7 +20,8 @@
   },
   "files": [
     "*.json",
-    "dist"
+    "dist",
+    "cjs"
   ],
   "scripts": {
     "build": "tsc && tsc --module CommonJS --outDir cjs"
