@@ -17,9 +17,18 @@ For this, we've created [`@graphiql/plugin-utils`](../../graphiql-plugin-utils/)
 you can use the `@graphiql/react` hooks as needed, as your plugin will be able to access all needed contexts
 
 ```ts
+import {
+  useEditorContext,
+  useSchemaContext,
+  useExecutionContext,
+} from '@graphiql/react';
+
+...
 const { setOperationName } = useEditorContext({ nonNull: true });
 const { schema } = useSchemaContext({ nonNull: true });
 const { run } = useExecutionContext({ nonNull: true });
+...
+
 ```
 
 ## Export a plugin definition
@@ -49,7 +58,7 @@ export default plugin;
 
 ## Usage: ESM
 
-Now that it's published or in your monorepo, you can use the plugin in ESM bundler mode easily
+Now that it's published to npm or in your monorepo, you can use the plugin in ESM bundler mode easily
 
 ```tsx
 import { GraphiQL } from 'graphiql';
@@ -60,7 +69,20 @@ import MyPlugin from 'my-schema-printer-plugin';
 
 ## Usage: CDN (umd)
 
-This is where you use the `umdExportName`. In this case, we specified `MySchemaPrinterPlugin`
+This is where you would use the `umdExportName`.
+
+In this case, we specified `MySchemaPrinterPlugin`:
+
+```ts
+import { defineConfig } from 'vite';
+import { graphiqlVitePlugin } from '@graphiql/plugin-utils';
+
+export default defineConfig({
+  plugins: graphiqlVitePlugin({ umdExportName: 'MySchemaPrinterPlugin' }),
+});
+```
+
+So we use that UMD global in our script:
 
 ```html
 <html lang="en">
@@ -71,7 +93,7 @@ This is where you use the `umdExportName`. In this case, we specified `MySchemaP
     <div id="graphiql"></div>
   </main>
   <footer>
-    // other imports
+    <!-- be sure to include all the other imports, such as react, react-dom and graphiql itself, see /examples/graphiql-cdn -->
     <script
       src="https://unpkg.com/my-schema-printer-plugin@0.1.12/dist/my-schema-printer-plugin.umd.js"
       crossorigin="anonymous"
