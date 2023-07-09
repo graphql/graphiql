@@ -14,7 +14,7 @@
     "monaco-editor": "^0.39.0"
   },
   "devDependencies": {
-    "vite": "^4.3.9",
+    "vite": "^4.4.2",
     "@vitejs/plugin-react": "^4.0.1",
     "vite-plugin-monaco-editor": "^1.1.0"
   },

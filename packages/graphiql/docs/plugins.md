@@ -39,18 +39,17 @@ import { PrintIconSvg } from './icons';
 
 import type { GraphiQLPlugin } from '@graphiql/react';
 
-function SchemaPrinterPlugin() {
+function SchemaPrinter() {
   const { schema } = useSchemaContext({ nonNull: true });
   return <div>{printSchema(schema)}</div>;
 }
 
-const plugin: GraphQLPlugin = {
+const SchemaPrinterPlugin = {
   name: 'Schema Printer Plugin',
-  content: () => <SchemaPrinterPlugin />,
+  content: () => <SchemaPrinter />,
   icon: () => <PrintIconSvg />,
 };
-
-export default plugin;
+export { SchemaPrinterPlugin };
 ```
 
 ## Usage: ESM
@@ -86,29 +85,27 @@ So we use that UMD global in our script:
   <head>
     <title>My Schema Printer Plugin Example</title>
   </head>
-  <main>
+  <body>
     <div id="graphiql"></div>
-  </main>
-  <footer>
-    <!-- be sure to include all the other imports, such as react, react-dom and graphiql itself, see /examples/graphiql-cdn -->
-    <script
-      src="https://unpkg.com/my-schema-printer-plugin@0.1.12/dist/my-schema-printer-plugin.umd.js"
-      crossorigin="anonymous"
-    ></script>
+  </body>
+  <!-- be sure to include all the other imports, such as react, react-dom and graphiql itself, see /examples/graphiql-cdn -->
+  <script
+    src="https://unpkg.com/my-schema-printer-plugin@0.1.12/dist/my-schema-printer-plugin.umd.js"
+    crossorigin="anonymous"
+  ></script>
 
-    <script>
-      const fetcher = GraphiQL.createFetcher({
-        url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-      });
+  <script>
+    const fetcher = GraphiQL.createFetcher({
+      url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+    });
 
-      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-      root.render(
-        React.createElement(GraphiQL, {
-          fetcher,
-          plugins: [MySchemaPrinterPlugin],
-        }),
-      );
-    </script>
-  </footer>
+    const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+    root.render(
+      React.createElement(GraphiQL, {
+        fetcher,
+        plugins: [MySchemaPrinterPlugin],
+      }),
+    );
+  </script>
 </html>
 ```

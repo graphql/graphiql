@@ -1,7 +1,6 @@
 {
   "extends": "./base.tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
     "esModuleInterop": true,
     "outDir": "dist"
   },

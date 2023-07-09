@@ -2,20 +2,15 @@ import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
 import dts from 'vite-plugin-dts';
-import type { Plugin, UserConfig } from 'vite';
+import type { Plugin, PluginOption, UserConfig } from 'vite';
 
 const IS_UMD = process.env.UMD === 'true';
 
-type PluginOptions = {
+type GraphiQLPluginOptions = {
   /**
    * The plugin name used by the UMD global
    */
   umdExportName: string;
-  /**
-   * The name of the plugin exported by the umd global
-   * Defaults to a normalized version of the package.json `name` field
-   */
-  fileName?: string;
 };
 
 const normalizePackageName = (name: string): string => {
@@ -24,8 +19,7 @@ const normalizePackageName = (name: string): string => {
 
 function graphiqlPluginConfig({
   umdExportName,
-  fileName,
-}: PluginOptions): Plugin {
+}: GraphiQLPluginOptions): Plugin {
   return {
     name: 'vite-plugin-graphiql-plugin:build',
     enforce: 'pre',
@@ -37,7 +31,7 @@ function graphiqlPluginConfig({
         packageJSON = await import(`${process.env.PWD}/package.json`);
       } catch {
         throw new Error(
-          'the graphiql plugin vite plugin currently only works if you execute vite commands from the same directory as package.json',
+          'The graphiql plugin vite plugin currently only works if you execute vite commands from the same directory as package.json',
         );
       }
       const external = [];
@@ -76,9 +70,7 @@ function graphiqlPluginConfig({
           lib: {
             ...config?.build?.lib,
             entry: 'src/index.tsx',
-            fileName: IS_UMD
-              ? fileName ?? normalizePackageName(packageJSON.name)
-              : 'index',
+            fileName: IS_UMD ? normalizePackageName(packageJSON.name) : 'index',
             name: umdExportName,
             formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
           },
@@ -111,11 +103,10 @@ function graphiqlPluginConfig({
   };
 }
 
-/**
- * @type import("vite").Plugin
- */
-export function graphiqlVitePlugin(config: PluginOptions) {
-  const plugins = [];
+export function graphiqlVitePlugin(
+  config: GraphiQLPluginOptions,
+): (Plugin | PluginOption[])[] {
+  const plugins: Plugin[] = [];
   if (!IS_UMD) {
     plugins.push(
       dts({
@@ -123,7 +114,7 @@ export function graphiqlVitePlugin(config: PluginOptions) {
         copyDtsFiles: true,
         outDir: 'types',
         staticImport: true,
-      }),
+      }) as Plugin,
     );
   }
   return [

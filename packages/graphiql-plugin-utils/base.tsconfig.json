@@ -17,7 +17,8 @@
     "declaration": true,
     "declarationDir": "types",
     "jsx": "react",
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "."
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
