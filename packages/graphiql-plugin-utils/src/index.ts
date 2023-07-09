@@ -3,6 +3,7 @@ import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
 import dts from 'vite-plugin-dts';
 import type { Plugin, PluginOption, UserConfig } from 'vite';
+import { readFile } from 'node:fs/promises';
 
 const IS_UMD = process.env.UMD === 'true';
 
@@ -28,7 +29,13 @@ function graphiqlPluginConfig({
       // TODO: process.env.npm_package_json_path is no longer present in vite. study
       try {
         // more vite plugins to see how others load the full package.json
-        packageJSON = await import(`${process.env.PWD}/package.json`);
+        // this was originally await import(), but when switching to tsup,
+        // the esm build expected a json assert, which is not compatible with cjs
+        packageJSON = JSON.parse(
+          await readFile(`${process.env.PWD}/package.json`, {
+            encoding: 'utf-8',
+          }),
+        );
       } catch {
         throw new Error(
           'The graphiql plugin vite plugin currently only works if you execute vite commands from the same directory as package.json',

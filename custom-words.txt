@@ -94,6 +94,7 @@ vitest
 vitejs
 wonka
 urql
+tsup
 
 // identifiers used in code and configs
 acmerc

@@ -6,16 +6,22 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "cjs/vite-plugin.js",
-  "module": "dist/vite-plugin.js",
-  "types": "types/vite-plugin.d.ts",
+  "contributors": [
+    {
+      "name": "Rikki Schulte",
+      "email": "rikki.schulte@gmail.com"
+    }
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     "./base.tsconfig.json": "./base.tsconfig.json",
     "./vite.config.tsconfig.json": "./vite.config.tsconfig.json",
     ".": {
-      "types": "./types/vite-plugin.d.ts",
-      "require": "./cjs/vite-plugin.js",
-      "import": "./dist/vite-plugin.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
     }
   },
   "files": [
@@ -24,7 +30,7 @@
     "cjs"
   ],
   "scripts": {
-    "build": "tsc && tsc --module CommonJS --outDir cjs"
+    "build": "tsup --dts --format esm,cjs src/index.ts"
   },
   "dependencies": {
     "vite": "^4.4.2",
@@ -32,6 +38,7 @@
     "vite-plugin-svgr": "^3.2.0",
     "postcss-nesting": "12.0.0",
     "@vitejs/plugin-react": "^4.0.2",
-    "@graphiql/react": "^0.18.0"
+    "@graphiql/react": "^0.18.0",
+    "tsup": "^7.1.0"
   }
 }
