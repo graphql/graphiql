@@ -50,3 +50,4 @@ packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
 packages/graphiql/typedoc/
+packages/graphiql/webpack/

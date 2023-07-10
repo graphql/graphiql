@@ -40,6 +40,7 @@
     "build:nontsc": "yarn wsrun:noexamples --exclude-missing --serial build",
     "build:clean": "yarn tsc --clean",
     "build:watch": "yarn tsc --watch",
+    "build-demo": "wsrun -m build-demo",
     "watch": "yarn build:watch",
     "watch-vscode": "yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
