@@ -71,8 +71,4 @@ module.exports = {
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.test.com', 'graphiql.com'],
   },
-  node: {
-    fs: 'empty',
-    module: 'empty',
-  },
 };

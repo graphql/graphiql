@@ -8,7 +8,8 @@
       "packages/*",
       "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-nextjs",
-      "examples/monaco-graphql-react-vite"
+      "examples/monaco-graphql-react-vite",
+      "examples/graphiql-webpack"
     ]
   },
   "lint-staged": {
