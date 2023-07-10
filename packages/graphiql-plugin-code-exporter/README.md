@@ -86,20 +86,14 @@ ${getQuery(arg, 2)}
 
 const snippets = [exampleSnippetOne, exampleSnippetTwo];
 
+const exporter = exporterPlugin({
+  snippets,
+  codeMirrorTheme: 'graphiql',
+});
+
 function GraphiQLWithExplorer() {
-  const [query, setQuery] = useState(DEFAULT_QUERY);
-  const exporterPlugin = useExporterPlugin({
-    query,
-    snippets,
-    codeMirrorTheme: 'graphiql',
-  });
   return (
-    <GraphiQL
-      fetcher={fetcher}
-      query={query}
-      onEditQuery={setQuery}
-      plugins={[exporterPlugin]}
-    />
+    <GraphiQL fetcher={fetcher} defaultQuery={query} plugins={[exporter]} />
   );
 }
 ```

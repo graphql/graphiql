@@ -100,21 +100,19 @@
       };
 
       var snippets = [exampleSnippetOne, exampleSnippetTwo];
+      var exporterPlugin = GraphiQLPluginCodeExporter.exporterPlugin({
+        snippets,
+      });
+
+      var query =
+        'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}';
 
       function GraphiQLWithExporter() {
-        var [query, setQuery] = React.useState(
-          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
-        );
-        var exporterPlugin = GraphiQLPluginCodeExporter.useExporterPlugin({
-          query: query,
-          snippets,
-        });
         return React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
           plugins: [exporterPlugin],
-          query: query,
-          onEditQuery: setQuery,
+          defaultQuery: query,
         });
       }
 
