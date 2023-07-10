@@ -5,7 +5,8 @@
 
 *BREAKING CHANGE*: fix lifecycle issue in plugin-explorer, change implementation pattern
 
-`value` and `setValue` is no longer an implementation detail, and are handled internally by plugins
+`value` and `setValue` is no longer an implementation detail, and are handled internally by plugins.
+the plugin signature has changed slightly as well.
 
 now you can simplify implementations like these:
 
@@ -47,13 +48,40 @@ is now as simple as:
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { createGraphiQLFetcher } from '@graphiql/toolkit'
 
 // only invoke these inside the component lifecycle
-// if there are dynamic values, and then use useMemo()
+// if there are dynamic values, and then use useMemo() (see below)
 const explorer = explorerPlugin();
 const exporter = codeExporterPlugin({ snippets });
 
+const fetcher = createGraphiQLFetcher({ url: '/graphql' })
+
 const App = () => {
+  return (
+    <GraphiQL
+      plugins={[explorer, exporter]}
+      fetcher={fetcher}
+    />
+  );
+};
+```
+
+more complex example with dynamic plugin config:
+
+```js
+import { useMemo } from 'react'
+import { explorerPlugin } from '@graphiql/plugin-explorer';
+import { snippets } from './snippets';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+
+const explorer = explorerPlugin();
+const fetcher = createGraphiQLFetcher({ url: '/graphql' })
+
+const App = () => {
+ const {snippets} = useMyUserSuppliedState()
+ const exporter = useMemo(() => codeExporterPlugin({ snippets }), [snippets])
+
   return (
     <GraphiQL
       plugins={[explorer, exporter]}
