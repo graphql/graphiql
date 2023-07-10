@@ -115,7 +115,10 @@ const styles = {
   },
 };
 
-export type GraphiQLExplorerPluginProps = Omit<GraphiQLExplorerProps, 'query'>;
+export type GraphiQLExplorerPluginProps = Omit<
+  Omit<GraphiQLExplorerProps, 'query'>,
+  'onEdit'
+>;
 
 function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
   const { setOperationName, queryEditor } = useEditorContext({ nonNull: true });
@@ -130,6 +133,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
     },
     [run, setOperationName],
   );
+  // todo: document how to do this!
   const handleEditOperation = useCallback(
     (value: string) => queryEditor!.setValue(value),
     [queryEditor],
@@ -146,11 +150,9 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       checkboxUnchecked={checkboxUnchecked}
       checkboxChecked={checkboxChecked}
       styles={styles}
-      {...props}
-      // this might not work, we need this to re-render on query value changes
       query={queryEditor!.getValue()}
-      // we should be setting query editor state to the editor, not sure how else to do this
       onEdit={handleEditOperation}
+      {...props}
     />
   );
 }
