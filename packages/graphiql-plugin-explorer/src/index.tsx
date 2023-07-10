@@ -157,7 +157,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
   );
 }
 
-export function GraphiQLExplorerPlugin(props: GraphiQLExplorerPluginProps) {
+export function explorerPlugin(props: GraphiQLExplorerPluginProps) {
   return {
     title: 'GraphiQL Explorer',
     icon: () => (

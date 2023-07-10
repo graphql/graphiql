@@ -2,12 +2,18 @@ import 'regenerator-runtime/runtime.js';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
-import { GraphiQLExplorerPlugin } from '@graphiql/plugin-explorer';
-// import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { explorerPlugin } from '@graphiql/plugin-explorer';
+import { snippets } from './snippets';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
 
+/**
+ * A manual fetcher implementation, you should probably
+ * just use `createGraphiQLFetcher` from `@graphiql/toolkit
+ * @returns
+ */
 const fetcher = async (graphQLParams, options) => {
   const data = await fetch(
     'https://swapi-graphql.netlify.app/.netlify/functions/index',
@@ -31,12 +37,18 @@ const style = { height: '100vh' };
  * unless you need to pass it dynamic values from your react app,
  * then use the `useMemo` hook
  */
-const explorerPlugin = GraphiQLExplorerPlugin();
+const explorer = explorerPlugin();
+
+const exporter = codeExporterPlugin({ snippets });
 
 const App = () => {
   return (
-    // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
-    <GraphiQL style={style} plugins={[explorerPlugin]} fetcher={fetcher} />
+    <GraphiQL
+      style={style}
+      // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
+      plugins={[explorer, exporter]}
+      fetcher={fetcher}
+    />
   );
 };
 
