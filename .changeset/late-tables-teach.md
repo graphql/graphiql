@@ -3,12 +3,12 @@
 '@graphiql/plugin-explorer': minor
 ---
 
-*BREAKING CHANGE*: fix lifecycle issue in plugin-explorer, change implementation pattern
+**BREAKING CHANGE**: fix lifecycle issue in plugin-explorer, change implementation pattern
 
 `value` and `setValue` is no longer an implementation detail, and are handled internally by plugins.
 the plugin signature has changed slightly as well.
 
-now you can simplify implementations like these:
+now, instead of something like this:
 
 ```js
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
@@ -42,7 +42,7 @@ const App = () => {
 };
 ```
 
-is now as simple as:
+you can just do this:
 
 ```js
 import { explorerPlugin } from '@graphiql/plugin-explorer';
@@ -67,7 +67,7 @@ const App = () => {
 };
 ```
 
-more complex example with dynamic plugin config:
+or this, for more complex state-driven needs:
 
 ```js
 import { useMemo } from 'react'
