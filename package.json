@@ -47,6 +47,7 @@
     "build:graphiql-react": "yarn workspace @graphiql/react build",
     "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
+    "build-demo": "wsrun -m build-demo",
     "watch": "yarn build:watch",
     "watch-vscode": "yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
