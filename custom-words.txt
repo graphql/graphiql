@@ -1,4 +1,5 @@
 // (user-)names
+arthurgeron
 Divyendu
 Leko
 LekoArts
@@ -95,6 +96,7 @@ vitejs
 wonka
 urql
 tsup
+usememo
 
 // identifiers used in code and configs
 acmerc

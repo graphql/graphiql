@@ -8,7 +8,7 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
@@ -115,11 +115,12 @@ const styles = {
   },
 };
 
-function ExplorerPlugin(props: GraphiQLExplorerProps) {
-  const { setOperationName } = useEditorContext({ nonNull: true });
+export type GraphiQLExplorerPluginProps = Omit<GraphiQLExplorerProps, 'query'>;
+
+function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
+  const { setOperationName, queryEditor } = useEditorContext({ nonNull: true });
   const { schema } = useSchemaContext({ nonNull: true });
   const { run } = useExecutionContext({ nonNull: true });
-
   const handleRunOperation = useCallback(
     (operationName: string | null) => {
       if (operationName) {
@@ -128,6 +129,10 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
       run();
     },
     [run, setOperationName],
+  );
+  const handleEditOperation = useCallback(
+    (value: string) => queryEditor!.setValue(value),
+    [queryEditor],
   );
 
   return (
@@ -142,16 +147,16 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
       checkboxChecked={checkboxChecked}
       styles={styles}
       {...props}
+      // this might not work, we need this to re-render on query value changes
+      query={queryEditor!.getValue()}
+      // we should be setting query editor state to the editor, not sure how else to do this
+      onEdit={handleEditOperation}
     />
   );
 }
 
-export function useExplorerPlugin(props: GraphiQLExplorerProps) {
-  const propsRef = useRef(props);
-  propsRef.current = props;
-
-  const pluginRef = useRef<GraphiQLPlugin>();
-  pluginRef.current ||= {
+export function GraphiQLExplorerPlugin(props: GraphiQLExplorerPluginProps) {
+  return {
     title: 'GraphiQL Explorer',
     icon: () => (
       <svg height="1em" strokeWidth="1.5" viewBox="0 0 24 24" fill="none">
@@ -175,7 +180,6 @@ export function useExplorerPlugin(props: GraphiQLExplorerProps) {
         />
       </svg>
     ),
-    content: () => <ExplorerPlugin {...propsRef.current} />,
-  };
-  return pluginRef.current;
+    content: () => <ExplorerPlugin {...props} />,
+  } as GraphiQLPlugin;
 }

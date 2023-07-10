@@ -22,7 +22,7 @@ npm i -S react react-dom graphql
 ## Usage
 
 ```jsx
-import { useExplorerPlugin } from '@graphiql/plugin-explorer';
+import { GraphiQLExplorerPlugin } from '@graphiql/plugin-explorer';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { useState } from 'react';
@@ -34,21 +34,14 @@ const fetcher = createGraphiQLFetcher({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
-function GraphiQLWithExplorer() {
-  const [query, setQuery] = useState(DEFAULT_QUERY);
-  const explorerPlugin = useExplorerPlugin({
-    query,
-    onEdit: setQuery,
-  });
-  return (
-    <GraphiQL
-      fetcher={fetcher}
-      query={query}
-      onEditQuery={setQuery}
-      plugins={[explorerPlugin]}
-    />
-  );
-}
+return (
+  <GraphiQL
+    fetcher={fetcher}
+    query={query}
+    onEditQuery={setQuery}
+    plugins={[GraphiQLExplorerPlugin]}
+  />
+);
 ```
 
 ## CDN bundles
