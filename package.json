@@ -15,12 +15,12 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write",
+      "prettier --write --ignore-path .eslintignore",
       "jest --passWithNoTests",
       "yarn lint-cspell"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write",
+      "prettier --write --ignore-path .eslintignore",
       "yarn lint-cspell"
     ]
   },
