@@ -1,5 +1,5 @@
 ---
-'@graphiql/toolkit': patch
+'@graphiql/toolkit': minor
 ---
 
-add createLocalStorage util for custom storage namespace
+Add a new utility function `createLocalStorage` that creates a local storage with support for custom namespaces

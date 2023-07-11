@@ -4,8 +4,16 @@
 
 import { Storage } from './base';
 
-export function createLocalStorage(namespace: string): Storage {
-  // you can re-use storageKeyPrefix/storageKey in the methods below
+export type CreateLocalStorageOptions = {
+  /**
+   * specify a different storage namespace prefix from the default of 'graphiql' 
+   */
+  namespace?: string
+}
+/**
+ * generate a custom local storage adapter for GraphiQL `storage` prop.
+ */
+export function createLocalStorage({ namespace }: CreateLocalStorageOptions): Storage {
   const storageKeyPrefix = `${namespace}:`;
   const getStorageKey = (key: string) => `${storageKeyPrefix}${key}`;
 
