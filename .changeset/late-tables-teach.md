@@ -10,7 +10,7 @@ the plugin signature has changed slightly as well.
 
 now, instead of something like this:
 
-```js
+```jsx
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';
 import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
@@ -44,7 +44,7 @@ const App = () => {
 
 you can just do this:
 
-```js
+```jsx
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
@@ -69,7 +69,7 @@ const App = () => {
 
 or this, for more complex state-driven needs:
 
-```js
+```jsx
 import { useMemo } from 'react'
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';

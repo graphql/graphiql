@@ -10,16 +10,6 @@
         "printWidth": 80,
         "proseWrap": "preserve"
       }
-    },
-    {
-      "files": [
-        "**/.changeset/*.md",
-        "**/CHANGELOG.md",
-        "working-group/agendas/**/*.md"
-      ],
-      "options": {
-        "proseWrap": "never"
-      }
     }
   ]
 }
