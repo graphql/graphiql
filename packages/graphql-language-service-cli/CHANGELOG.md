@@ -1,5 +1,14 @@
 # graphql-language-service-cli
 
+## 3.3.25
+
+### Patch Changes
+
+- [#3322](https://github.com/graphql/graphiql/pull/3322) [`6939bac4`](https://github.com/graphql/graphiql/commit/6939bac4a9a849fe497260fd0702bdd95eefd943) Thanks [@acao](https://github.com/acao)! - Bypass babel typescript parsing errors to continue extracting graphql strings
+
+- Updated dependencies [[`6939bac4`](https://github.com/graphql/graphiql/commit/6939bac4a9a849fe497260fd0702bdd95eefd943)]:
+  - graphql-language-service-server@2.11.3
+
 ## 3.3.24
 
 ### Patch Changes
