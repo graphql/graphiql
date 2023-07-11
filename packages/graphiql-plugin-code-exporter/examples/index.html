@@ -47,7 +47,7 @@
       crossorigin="anonymous"
     ></script>
     <script
-      src="https://unpkg.com/@graphiql/plugin-code-exporter/dist/graphiql-plugin-code-exporter.umd.js"
+      src="https://unpkg.com/@graphiql/plugin-code-exporter/dist/index.umd.js"
       integrity="sha512-NwP+k36ExLYeIqp2lniZCblbz/FLJ/lQlBV55B6vafZWIYppwHUp1gCdvlaaUjV95RWPInQy4z/sIa56psJy/g=="
       crossorigin="anonymous"
     ></script>
@@ -100,21 +100,19 @@
       };
 
       var snippets = [exampleSnippetOne, exampleSnippetTwo];
+      var codeExporterPlugin = GraphiQLPluginCodeExporter.codeExporterPlugin({
+        snippets,
+      });
+
+      var query =
+        'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}';
 
       function GraphiQLWithExporter() {
-        var [query, setQuery] = React.useState(
-          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
-        );
-        var exporterPlugin = GraphiQLPluginCodeExporter.useExporterPlugin({
-          query: query,
-          snippets,
-        });
         return React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
-          plugins: [exporterPlugin],
-          query: query,
-          onEditQuery: setQuery,
+          plugins: [codeExporterPlugin],
+          defaultQuery: query,
         });
       }
 

@@ -8,7 +8,8 @@
       "packages/*",
       "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-nextjs",
-      "examples/monaco-graphql-react-vite"
+      "examples/monaco-graphql-react-vite",
+      "examples/graphiql-webpack"
     ]
   },
   "lint-staged": {
@@ -36,7 +37,6 @@
     "build-bundles": "yarn prebuild-bundles && wsrun -p -m -s build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql build-bundles-clean",
     "build-clean": "wsrun -m build-clean",
-    "build-demo": "wsrun -m -s build-demo",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
     "build:clean": "yarn tsc --clean && yarn tsc --clean resources/tsconfig.graphiql.json",
     "build:cm6-graphql": "yarn workspace cm6-graphql build",
@@ -46,6 +46,7 @@
     "build:graphiql-react": "yarn workspace @graphiql/react build",
     "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
+    "build-demo": "wsrun -m build-demo",
     "watch": "yarn build:watch",
     "watch-vscode": "yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",

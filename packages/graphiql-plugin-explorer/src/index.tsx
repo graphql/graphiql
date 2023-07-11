@@ -8,7 +8,7 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
@@ -115,11 +115,15 @@ const styles = {
   },
 };
 
-function ExplorerPlugin(props: GraphiQLExplorerProps) {
-  const { setOperationName } = useEditorContext({ nonNull: true });
+export type GraphiQLExplorerPluginProps = Omit<
+  Omit<GraphiQLExplorerProps, 'query'>,
+  'onEdit'
+>;
+
+function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
+  const { setOperationName, queryEditor } = useEditorContext({ nonNull: true });
   const { schema } = useSchemaContext({ nonNull: true });
   const { run } = useExecutionContext({ nonNull: true });
-
   const handleRunOperation = useCallback(
     (operationName: string | null) => {
       if (operationName) {
@@ -128,6 +132,11 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
       run();
     },
     [run, setOperationName],
+  );
+  // todo: document how to do this!
+  const handleEditOperation = useCallback(
+    (value: string) => queryEditor!.setValue(value),
+    [queryEditor],
   );
 
   return (
@@ -141,17 +150,15 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
       checkboxUnchecked={checkboxUnchecked}
       checkboxChecked={checkboxChecked}
       styles={styles}
+      query={queryEditor!.getValue()}
+      onEdit={handleEditOperation}
       {...props}
     />
   );
 }
 
-export function useExplorerPlugin(props: GraphiQLExplorerProps) {
-  const propsRef = useRef(props);
-  propsRef.current = props;
-
-  const pluginRef = useRef<GraphiQLPlugin>();
-  pluginRef.current ||= {
+export function explorerPlugin(props: GraphiQLExplorerPluginProps) {
+  return {
     title: 'GraphiQL Explorer',
     icon: () => (
       <svg height="1em" strokeWidth="1.5" viewBox="0 0 24 24" fill="none">
@@ -175,7 +182,6 @@ export function useExplorerPlugin(props: GraphiQLExplorerProps) {
         />
       </svg>
     ),
-    content: () => <ExplorerPlugin {...propsRef.current} />,
-  };
-  return pluginRef.current;
+    content: () => <ExplorerPlugin {...props} />,
+  } as GraphiQLPlugin;
 }
