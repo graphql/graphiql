@@ -13,7 +13,7 @@ now, instead of something like this:
 ```js
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';
-import { useCodeExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 
 const App = () => {
   const [query, setQuery] = React.useState('');
@@ -21,14 +21,14 @@ const App = () => {
     query,
     onEdit: setQuery,
   });
-  const exporterPlugin = useExporterPlugin({
+  const codeExporterPlugin = useExporterPlugin({
     query,
     snippets,
   });
 
   const plugins = React.useMemo(
-    () => [explorerPlugin, exporterPlugin],
-    [explorerPlugin, exporterPlugin],
+    () => [explorerPlugin, codeExporterPlugin],
+    [explorerPlugin, codeExporterPlugin],
   );
 
   return (

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { snippets } from './snippets';
-import { exporterPlugin } from '@graphiql/plugin-code-exporter';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
@@ -38,7 +38,7 @@ const style = { height: '100vh' };
  * then use the `useMemo` hook
  */
 const explorer = explorerPlugin();
-const exporter = exporterPlugin({ snippets });
+const exporter = codeExporterPlugin({ snippets });
 
 const App = () => {
   return (

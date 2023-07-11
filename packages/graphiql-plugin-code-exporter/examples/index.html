@@ -100,7 +100,7 @@
       };
 
       var snippets = [exampleSnippetOne, exampleSnippetTwo];
-      var exporterPlugin = GraphiQLPluginCodeExporter.exporterPlugin({
+      var codeExporterPlugin = GraphiQLPluginCodeExporter.codeExporterPlugin({
         snippets,
       });
 
@@ -111,7 +111,7 @@
         return React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
-          plugins: [exporterPlugin],
+          plugins: [codeExporterPlugin],
           defaultQuery: query,
         });
       }
