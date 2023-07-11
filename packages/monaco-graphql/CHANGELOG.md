@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.0
+
+### Minor Changes
+
+- [#3285](https://github.com/graphql/graphiql/pull/3285) [`d7f595e3`](https://github.com/graphql/graphiql/commit/d7f595e3034a05bcd739cdae590221d60bf55f19) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid bundling unnecessary languages — import `monaco-graphql/esm/monaco-editor` instead of `monaco-editor` to reduce your bundle size, as that imports only `graphql` and `json` languages and leaves out `ts`, `css`, `html`, and much more
+
 ## 1.2.4
 
 ### Patch Changes
