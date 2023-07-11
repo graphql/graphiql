@@ -27,7 +27,7 @@ for all details on available `props` and how to
 [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
 
 ```jsx
-import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { useState } from 'react';
@@ -86,20 +86,14 @@ ${getQuery(arg, 2)}
 
 const snippets = [exampleSnippetOne, exampleSnippetTwo];
 
+const exporter = codeExporterPlugin({
+  snippets,
+  codeMirrorTheme: 'graphiql',
+});
+
 function GraphiQLWithExplorer() {
-  const [query, setQuery] = useState(DEFAULT_QUERY);
-  const exporterPlugin = useExporterPlugin({
-    query,
-    snippets,
-    codeMirrorTheme: 'graphiql',
-  });
   return (
-    <GraphiQL
-      fetcher={fetcher}
-      query={query}
-      onEditQuery={setQuery}
-      plugins={[exporterPlugin]}
-    />
+    <GraphiQL fetcher={fetcher} defaultQuery={query} plugins={[exporter]} />
   );
 }
 ```

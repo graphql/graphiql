@@ -47,7 +47,7 @@
       crossorigin="anonymous"
     ></script>
     <script
-      src="https://unpkg.com/@graphiql/plugin-explorer@0.1.12/dist/graphiql-plugin-explorer.umd.js"
+      src="https://unpkg.com/@graphiql/plugin-explorer@0.1.12/dist/index.umd.js"
       integrity="sha512-Fjas/uSkzvsFjbv4jqU9nt4ulU7LDjiMAXW2YFTYD96NgKS1fhhAsGR4b2k2VaVLsE29aia3vyobAq9TNzusvA=="
       crossorigin="anonymous"
     ></script>
@@ -56,21 +56,16 @@
       var fetcher = GraphiQL.createFetcher({
         url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
       });
+      var defaultQuery =
+        'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}';
+      var explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
 
       function GraphiQLWithExplorer() {
-        var [query, setQuery] = React.useState(
-          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
-        );
-        var explorerPlugin = GraphiQLPluginExplorer.useExplorerPlugin({
-          query: query,
-          onEdit: setQuery,
-        });
         return React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
           plugins: [explorerPlugin],
-          query: query,
-          onEditQuery: setQuery,
+          defaultQuery: defaultQuery,
         });
       }
 

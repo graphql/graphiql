@@ -1,5 +1,5 @@
-import type { GraphiQLPlugin } from '@graphiql/react';
-import React, { useRef } from 'react';
+import { useEditorContext, type GraphiQLPlugin } from '@graphiql/react';
+import React from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';
@@ -7,12 +7,22 @@ import GraphiQLCodeExporter, {
 import './graphiql-code-exporter.d.ts';
 import './index.css';
 
-export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
-  const propsRef = useRef(props);
-  propsRef.current = props;
+type GraphiQLCodeExporterPluginProps = Omit<GraphiQLCodeExporterProps, 'query'>;
 
-  const pluginRef = useRef<GraphiQLPlugin>();
-  pluginRef.current ||= {
+function GraphiQLCodeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
+  const { queryEditor } = useEditorContext({ nonNull: true });
+
+  return (
+    <GraphiQLCodeExporter
+      codeMirrorTheme="graphiql"
+      {...props}
+      query={queryEditor!.getValue()}
+    />
+  );
+}
+
+export function codeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
+  return {
     title: 'GraphiQL Code Exporter',
     icon: () => (
       <svg
@@ -29,10 +39,8 @@ export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
         />
       </svg>
     ),
-    content: () => (
-      <GraphiQLCodeExporter codeMirrorTheme="graphiql" {...propsRef.current} />
-    ),
-  };
-
-  return pluginRef.current;
+    content() {
+      return <GraphiQLCodeExporterPlugin {...props} />;
+    },
+  } as GraphiQLPlugin;
 }

@@ -24,7 +24,12 @@ const RESTRICTED_IMPORTS = [
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
-  ignorePatterns: ['react-app-env.d.ts', 'next-env.d.ts'],
+  ignorePatterns: [
+    'react-app-env.d.ts',
+    'next-env.d.ts',
+    'changesets/**/*.md',
+    '**/CHANGELOG.md',
+  ],
   overrides: [
     {
       // Rules for all code files
