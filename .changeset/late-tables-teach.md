@@ -72,7 +72,6 @@ or this, for more complex state-driven needs:
 ```jsx
 import { useMemo } from 'react'
 import { explorerPlugin } from '@graphiql/plugin-explorer';
-import { snippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 
 const explorer = explorerPlugin();
