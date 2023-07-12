@@ -3,6 +3,7 @@ import {
   useEditorContext,
   useExecutionContext,
   useSchemaContext,
+  useOperationsEditorState,
 } from '@graphiql/react';
 import {
   Explorer as GraphiQLExplorer,
@@ -116,30 +117,29 @@ const styles = {
 };
 
 export type GraphiQLExplorerPluginProps = Omit<
-  Omit<GraphiQLExplorerProps, 'query'>,
-  'onEdit'
+  GraphiQLExplorerProps,
+  'onEdit' | 'query'
 >;
 
 function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
-  const { setOperationName, queryEditor } = useEditorContext({ nonNull: true });
+  const { setOperationName } = useEditorContext({ nonNull: true });
   const { schema } = useSchemaContext({ nonNull: true });
   const { run } = useExecutionContext({ nonNull: true });
+
+  // handle running the current operation from the plugin
   const handleRunOperation = useCallback(
     (operationName: string | null) => {
       if (operationName) {
+        // set the plugin-defined operation name before executing
         setOperationName(operationName);
       }
       run();
     },
     [run, setOperationName],
   );
-  // todo: document how to do this!
-  const handleEditOperation = useCallback(
-    (value: string) => queryEditor?.setValue(value),
-    [queryEditor],
-  );
 
-  const operationDocument = queryEditor?.getValue() ?? '';
+  // load the current editor tab state into the explorer
+  const [operationsString, handleEditOperations] = useOperationsEditorState();
 
   return (
     <GraphiQLExplorer
@@ -152,14 +152,16 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       checkboxUnchecked={checkboxUnchecked}
       checkboxChecked={checkboxChecked}
       styles={styles}
-      query={operationDocument}
-      onEdit={handleEditOperation}
+      query={operationsString}
+      onEdit={handleEditOperations}
       {...props}
     />
   );
 }
 
-export function explorerPlugin(props: GraphiQLExplorerPluginProps) {
+export function explorerPlugin(
+  props: GraphiQLExplorerPluginProps,
+): GraphiQLPlugin {
   return {
     title: 'GraphiQL Explorer',
     icon: () => (
@@ -185,5 +187,5 @@ export function explorerPlugin(props: GraphiQLExplorerPluginProps) {
       </svg>
     ),
     content: () => <ExplorerPlugin {...props} />,
-  } as GraphiQLPlugin;
+  };
 }

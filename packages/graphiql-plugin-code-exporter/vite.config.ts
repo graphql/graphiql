@@ -24,6 +24,7 @@ export default defineConfig({
       output: {
         chunkFileNames: '[name].[format].js',
         globals: {
+          '@graphiql/react': 'GraphiQL.React',
           graphql: 'GraphiQL.GraphQL',
           react: 'React',
           'react-dom': 'ReactDOM',

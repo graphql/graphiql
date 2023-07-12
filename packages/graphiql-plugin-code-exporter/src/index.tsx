@@ -1,4 +1,4 @@
-import { useEditorContext, type GraphiQLPlugin } from '@graphiql/react';
+import { useOperationsEditorState, type GraphiQLPlugin } from '@graphiql/react';
 import React from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
@@ -10,13 +10,12 @@ import './index.css';
 type GraphiQLCodeExporterPluginProps = Omit<GraphiQLCodeExporterProps, 'query'>;
 
 function GraphiQLCodeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
-  const { queryEditor } = useEditorContext({ nonNull: true });
-
+  const [operationsString] = useOperationsEditorState();
   return (
     <GraphiQLCodeExporter
       codeMirrorTheme="graphiql"
       {...props}
-      query={queryEditor!.getValue()}
+      query={operationsString}
     />
   );
 }

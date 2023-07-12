@@ -16,6 +16,8 @@ export {
   useCopyQuery,
   useMergeQuery,
   usePrettifyEditors,
+  useOperationsEditorState,
+  useVariablesEditorState,
 } from './hooks';
 export { useQueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
