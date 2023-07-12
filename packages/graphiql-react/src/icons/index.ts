@@ -29,6 +29,7 @@ import _SettingsIcon from './settings.svg';
 import _StarFilledIcon from './star-filled.svg';
 import _StarIcon from './star.svg';
 import _StopIcon from './stop.svg';
+import _TrashIcon from './trash.svg';
 import _TypeIcon from './type.svg';
 
 export const ArgumentIcon = generateIcon(_ArgumentIcon);
@@ -60,6 +61,7 @@ export const SettingsIcon = generateIcon(_SettingsIcon);
 export const StarFilledIcon = generateIcon(_StarFilledIcon, 'filled star icon');
 export const StarIcon = generateIcon(_StarIcon);
 export const StopIcon = generateIcon(_StopIcon);
+export const TrashIcon = generateIcon(_TrashIcon, 'trash icon');
 export const TypeIcon = generateIcon(_TypeIcon);
 
 function generateIcon(

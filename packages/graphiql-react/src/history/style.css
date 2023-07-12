@@ -1,6 +1,14 @@
 .graphiql-history-header {
   font-size: var(--font-size-h2);
   font-weight: var(--font-weight-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.graphiql-history-header button {
+  font-size: var(--font-size-inline-code);
+  padding: var(--px-6) var(--px-10);
 }
 
 .graphiql-history-items {

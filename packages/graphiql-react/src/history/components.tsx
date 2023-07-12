@@ -1,6 +1,5 @@
-import { QueryStoreItem } from '@graphiql/toolkit';
+import type { QueryStoreItem } from '@graphiql/toolkit';
 import {
-  Fragment,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -10,50 +9,109 @@ import {
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
-import { CloseIcon, PenIcon, StarFilledIcon, StarIcon } from '../icons';
-import { Tooltip, UnStyledButton } from '../ui';
+import {
+  CloseIcon,
+  PenIcon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from '../icons';
+import { Button, Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
 import './style.css';
 
 export function History() {
-  const { items } = useHistoryContext({ nonNull: true });
-  const reversedItems = items.slice().reverse();
+  const { items: all, deleteFromHistory } = useHistoryContext({
+    nonNull: true,
+  });
+
+  // Reverse items since we push them in so want the latest one at the top, and pass the
+  // original index in case multiple items share the same label so we can edit correct item
+  let items = all
+    .slice()
+    .map((item, i) => ({ ...item, index: i }))
+    .reverse();
+  const favorites = items.filter(item => item.favorite);
+  if (favorites.length) {
+    items = items.filter(item => !item.favorite);
+  }
+
+  const [clearStatus, setClearStatus] = useState<'success' | 'error' | null>(
+    null,
+  );
+  useEffect(() => {
+    if (clearStatus) {
+      // reset button after a couple seconds
+      setTimeout(() => {
+        setClearStatus(null);
+      }, 2000);
+    }
+  }, [clearStatus]);
+
+  const handleClearStatus = useCallback(() => {
+    try {
+      for (const item of items) {
+        deleteFromHistory(item, true);
+      }
+      setClearStatus('success');
+    } catch {
+      setClearStatus('error');
+    }
+  }, [deleteFromHistory, items]);
+
   return (
     <section aria-label="History" className="graphiql-history">
-      <div className="graphiql-history-header">History</div>
-      <ul className="graphiql-history-items">
-        {reversedItems.map((item, i) => {
-          return (
-            <Fragment key={`${i}:${item.label || item.query}`}>
-              <HistoryItem item={item} />
-              {/**
-               * The (reversed) items are ordered in a way that all favorites
-               * come first, so if the next item is not a favorite anymore we
-               * place a spacer between them to separate these groups.
-               */}
-              {item.favorite &&
-              reversedItems[i + 1] &&
-              !reversedItems[i + 1].favorite ? (
-                <div className="graphiql-history-item-spacer" />
-              ) : null}
-            </Fragment>
-          );
-        })}
-      </ul>
+      <div className="graphiql-history-header">
+        History
+        {(clearStatus || items.length > 0) && (
+          <Button
+            type="button"
+            state={clearStatus || undefined}
+            disabled={!items.length}
+            onClick={handleClearStatus}
+          >
+            {{
+              success: 'Cleared',
+              error: 'Failed to Clear',
+            }[clearStatus!] || 'Clear'}
+          </Button>
+        )}
+      </div>
+
+      {Boolean(favorites.length) && (
+        <ul className="graphiql-history-items">
+          {favorites.map(item => (
+            <HistoryItem item={item} key={item.index} />
+          ))}
+        </ul>
+      )}
+
+      {Boolean(favorites.length) && Boolean(items.length) && (
+        <div className="graphiql-history-item-spacer" />
+      )}
+
+      {Boolean(items.length) && (
+        <ul className="graphiql-history-items">
+          {items.map(item => (
+            <HistoryItem item={item} key={item.index} />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
 
 type QueryHistoryItemProps = {
-  item: QueryStoreItem;
+  item: QueryStoreItem & { index?: number };
 };
 
 export function HistoryItem(props: QueryHistoryItemProps) {
-  const { editLabel, toggleFavorite } = useHistoryContext({
-    nonNull: true,
-    caller: HistoryItem,
-  });
+  const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
+    useHistoryContext({
+      nonNull: true,
+      caller: HistoryItem,
+    });
   const { headerEditor, queryEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: HistoryItem,
@@ -75,7 +133,8 @@ export function HistoryItem(props: QueryHistoryItemProps) {
 
   const handleSave = useCallback(() => {
     setIsEditable(false);
-    editLabel({ ...props.item, label: inputRef.current?.value });
+    const { index, ...item } = props.item;
+    editLabel({ ...item, label: inputRef.current?.value }, index);
   }, [editLabel, props.item]);
 
   const handleClose = useCallback(() => {
@@ -96,7 +155,17 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       queryEditor?.setValue(query ?? '');
       variableEditor?.setValue(variables ?? '');
       headerEditor?.setValue(headers ?? '');
-    }, [props.item, queryEditor, variableEditor, headerEditor]);
+      setActive(props.item);
+    }, [headerEditor, props.item, queryEditor, setActive, variableEditor]);
+
+  const handleDeleteItemFromHistory: MouseEventHandler<HTMLButtonElement> =
+    useCallback(
+      e => {
+        e.stopPropagation();
+        deleteFromHistory(props.item);
+      },
+      [props.item, deleteFromHistory],
+    );
 
   const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
     useCallback(
@@ -134,13 +203,16 @@ export function HistoryItem(props: QueryHistoryItemProps) {
         </>
       ) : (
         <>
-          <UnStyledButton
-            type="button"
-            className="graphiql-history-item-label"
-            onClick={handleHistoryItemClick}
-          >
-            {displayName}
-          </UnStyledButton>
+          <Tooltip label="Set active">
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-label"
+              onClick={handleHistoryItemClick}
+              aria-label="Set active"
+            >
+              {displayName}
+            </UnStyledButton>
+          </Tooltip>
           <Tooltip label="Edit label">
             <UnStyledButton
               type="button"
@@ -167,6 +239,16 @@ export function HistoryItem(props: QueryHistoryItemProps) {
               ) : (
                 <StarIcon aria-hidden="true" />
               )}
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Delete from history">
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-action"
+              onClick={handleDeleteItemFromHistory}
+              aria-label="Delete from history"
+            >
+              <TrashIcon aria-hidden="true" />
             </UnStyledButton>
           </Tooltip>
         </>

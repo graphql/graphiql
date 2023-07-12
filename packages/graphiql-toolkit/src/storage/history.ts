@@ -68,12 +68,12 @@ export class HistoryStore {
     return true;
   }
 
-  updateHistory = (
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-  ) => {
+  updateHistory = ({
+    query,
+    variables,
+    headers,
+    operationName,
+  }: QueryStoreItem) => {
     if (
       !this.shouldSaveQuery(
         query,
@@ -95,14 +95,14 @@ export class HistoryStore {
     this.queries = historyQueries.concat(favoriteQueries);
   };
 
-  toggleFavorite(
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-    label?: string,
-    favorite?: boolean,
-  ) {
+  toggleFavorite({
+    query,
+    variables,
+    headers,
+    operationName,
+    label,
+    favorite,
+  }: QueryStoreItem) {
     const item: QueryStoreItem = {
       query,
       variables,
@@ -110,23 +110,28 @@ export class HistoryStore {
       operationName,
       label,
     };
-    if (!this.favorite.contains(item)) {
-      item.favorite = true;
-      this.favorite.push(item);
-    } else if (favorite) {
+    if (favorite) {
       item.favorite = false;
       this.favorite.delete(item);
+      this.history.push(item);
+    } else {
+      item.favorite = true;
+      this.favorite.push(item);
+      this.history.delete(item);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
 
   editLabel(
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-    label?: string,
-    favorite?: boolean,
+    {
+      query,
+      variables,
+      headers,
+      operationName,
+      label,
+      favorite,
+    }: QueryStoreItem,
+    index?: number,
   ) {
     const item = {
       query,
@@ -136,10 +141,37 @@ export class HistoryStore {
       label,
     };
     if (favorite) {
-      this.favorite.edit({ ...item, favorite });
+      this.favorite.edit({ ...item, favorite }, index);
     } else {
-      this.history.edit(item);
+      this.history.edit(item, index);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
   }
+
+  deleteHistory = (
+    { query, variables, headers, operationName, favorite }: QueryStoreItem,
+    clearFavorites = false,
+  ) => {
+    function deleteFromStore(store: QueryStore) {
+      const found = store.items.find(
+        x =>
+          x.query === query &&
+          x.variables === variables &&
+          x.headers === headers &&
+          x.operationName === operationName,
+      );
+      if (found) {
+        store.delete(found);
+      }
+    }
+
+    if (favorite || clearFavorites) {
+      deleteFromStore(this.favorite);
+    }
+    if (!favorite || clearFavorites) {
+      deleteFromStore(this.history);
+    }
+
+    this.queries = [...this.history.items, ...this.favorite.items];
+  };
 }
