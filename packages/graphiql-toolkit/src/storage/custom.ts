@@ -2,7 +2,7 @@
  * This function enables a custom namespace for localStorage
  */
 
-import { Storage } from "./base";
+import { Storage } from './base';
 
 export type CreateLocalStorageOptions = {
   /**
@@ -21,8 +21,8 @@ export function createLocalStorage({
 
   const storage: Storage = {
     setItem: (key, value) => localStorage.setItem(getStorageKey(key), value),
-    getItem: (key) => localStorage.getItem(getStorageKey(key)),
-    removeItem: (key) => localStorage.removeItem(getStorageKey(key)),
+    getItem: key => localStorage.getItem(getStorageKey(key)),
+    removeItem: key => localStorage.removeItem(getStorageKey(key)),
     get length() {
       let keys = 0;
       for (const key in window.localStorage) {
