@@ -1,5 +1,14 @@
 # @graphiql/plugin-explorer
 
+## 1.0.0
+
+### Patch Changes
+
+- [#3340](https://github.com/graphql/graphiql/pull/3340) [`59a898c0`](https://github.com/graphql/graphiql/commit/59a898c0ac5c7c78a4b81bb5d520bf18e10c880a) Thanks [@acao](https://github.com/acao)! - handle null editor in explorer plugin
+
+- Updated dependencies [[`9a38de29`](https://github.com/graphql/graphiql/commit/9a38de29fddf174ba9e793ac5852407537244f87)]:
+  - @graphiql/react@0.19.0
+
 ## 0.3.0
 
 ### Minor Changes
