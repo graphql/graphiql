@@ -1,5 +1,16 @@
 # @graphiql/react
 
+## 0.19.0
+
+### Minor Changes
+
+- [#3130](https://github.com/graphql/graphiql/pull/3130) [`9a38de29`](https://github.com/graphql/graphiql/commit/9a38de29fddf174ba9e793ac5852407537244f87) Thanks [@lesleydreyer](https://github.com/lesleydreyer)! - - Add a "clear history" button to clear all history as well as trash icons to clear individual history items
+
+  - Change so item is in history items or history favorites, not both
+  - Fix history label editing so if the same item is in the list more than once it edits the correct label
+  - Pass the entire history item in history functions (addToHistory, editLabel, toggleFavorite, etc.) so users building their own HistoryContext.Provider will get any additional props they added to the item in their customized functions
+  - Adds a "setActive" callback users can use to customize their UI when the history item is clicked
+
 ## 0.18.0
 
 ### Minor Changes
