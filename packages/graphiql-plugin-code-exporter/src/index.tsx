@@ -21,7 +21,9 @@ function GraphiQLCodeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
   );
 }
 
-export function codeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
+export function codeExporterPlugin(
+  props: GraphiQLCodeExporterPluginProps,
+): GraphiQLPlugin {
   return {
     title: 'GraphiQL Code Exporter',
     icon: () => (
@@ -42,5 +44,5 @@ export function codeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
     content() {
       return <GraphiQLCodeExporterPlugin {...props} />;
     },
-  } as GraphiQLPlugin;
+  };
 }
