@@ -6,18 +6,20 @@ import { Storage } from './base';
 
 export type CreateLocalStorageOptions = {
   /**
-   * specify a different storage namespace prefix from the default of 'graphiql' 
+   * specify a different storage namespace prefix from the default of 'graphiql'
    */
-  namespace?: string
-}
+  namespace?: string;
+};
 /**
  * generate a custom local storage adapter for GraphiQL `storage` prop.
  */
-export function createLocalStorage({ namespace }: CreateLocalStorageOptions): Storage {
+export function createLocalStorage({
+  namespace,
+}: CreateLocalStorageOptions): Storage {
   const storageKeyPrefix = `${namespace}:`;
   const getStorageKey = (key: string) => `${storageKeyPrefix}${key}`;
 
-  const storage = {
+  const storage: Storage = {
     setItem: (key, value) => localStorage.setItem(getStorageKey(key), value),
     getItem: key => localStorage.getItem(getStorageKey(key)),
     removeItem: key => localStorage.removeItem(getStorageKey(key)),
@@ -31,7 +33,7 @@ export function createLocalStorage({ namespace }: CreateLocalStorageOptions): St
       return keys;
     },
 
-    clear: () => {
+    clear() {
       // We only want to clear the namespaced items
       for (const key in window.localStorage) {
         if (key.indexOf(storageKeyPrefix) === 0) {
@@ -39,7 +41,7 @@ export function createLocalStorage({ namespace }: CreateLocalStorageOptions): St
         }
       }
     },
-  } as Storage;
+  };
 
   return storage;
 }
