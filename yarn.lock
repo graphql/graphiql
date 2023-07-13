@@ -2422,7 +2422,7 @@
   dependencies:
     "@changesets/types" "^5.2.0"
 
-"@changesets/changelog-github@^0.4.7":
+"@changesets/changelog-github@0.4.7":
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.4.7.tgz#4da67472eaa0dc1ccff91fe8ecd9846ce818ec7b"
   integrity sha512-UUG5sKwShs5ha1GFnayUpZNcDGWoY7F5XxhOEHS62sDPOtoHQZsG3j1nC5RxZ3M1URHA321cwVZHeXgu99Y3ew==
@@ -2431,7 +2431,7 @@
     "@changesets/types" "^5.2.0"
     dotenv "^8.1.0"
 
-"@changesets/cli@^2.25.2":
+"@changesets/cli@2.25.2":
   version "2.25.2"
   resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.25.2.tgz#fc5e894aa6f85c60749a035352dec3dcbd275c71"
   integrity sha512-ACScBJXI3kRyMd2R8n8SzfttDHi4tmKSwVwXBazJOylQItSRSF4cGmej2E4FVf/eNfGy6THkL9GzAahU9ErZrA==
