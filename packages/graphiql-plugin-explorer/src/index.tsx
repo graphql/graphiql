@@ -135,11 +135,9 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
   );
   // todo: document how to do this!
   const handleEditOperation = useCallback(
-    (value: string) => queryEditor?.setValue(value),
+    (value: string) => queryEditor!.setValue(value),
     [queryEditor],
   );
-
-  const operationDocument = queryEditor?.getValue() ?? '';
 
   return (
     <GraphiQLExplorer
@@ -152,7 +150,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       checkboxUnchecked={checkboxUnchecked}
       checkboxChecked={checkboxChecked}
       styles={styles}
-      query={operationDocument}
+      query={queryEditor!.getValue()}
       onEdit={handleEditOperation}
       {...props}
     />
