@@ -23,6 +23,7 @@
     "types"
   ],
   "scripts": {
+    "prebuild": "rimraf dist types",
     "dev": "vite",
     "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
     "preview": "vite preview"

@@ -38,6 +38,7 @@
     "types"
   ],
   "scripts": {
+    "prebuild": "rimraf dist types",
     "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
     "build": "tsc --emitDeclarationOnly && vite build"
   },
