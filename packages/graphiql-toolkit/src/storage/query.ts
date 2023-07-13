@@ -34,21 +34,7 @@ export class QueryStore {
     );
   }
 
-  edit(item: QueryStoreItem, index?: number) {
-    if (typeof index === 'number' && this.items[index]) {
-      const found = this.items[index];
-      if (
-        found.query === item.query &&
-        found.variables === item.variables &&
-        found.headers === item.headers &&
-        found.operationName === item.operationName
-      ) {
-        this.items.splice(index, 1, item);
-        this.save();
-        return;
-      }
-    }
-
+  edit(item: QueryStoreItem) {
     const itemIndex = this.items.findIndex(
       x =>
         x.query === item.query &&
