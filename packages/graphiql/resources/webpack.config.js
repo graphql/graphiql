@@ -12,7 +12,7 @@ const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
 
 const resultConfig = ({ isDev = false }) => {
-  const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
+  const isHMR = Boolean(isDev && process.env.WEBPACK_SERVE);
 
   const config = {
     mode: isDev ? 'development' : 'production',
@@ -126,8 +126,8 @@ const resultConfig = ({ isDev = false }) => {
   }
   return config;
 };
-
-module.exports = [
-  resultConfig({ isDev: true }),
-  resultConfig({ isDev: false }),
-];
+const configs = [resultConfig({ isDev: true })];
+if (!process.env.WEBPACK_SERVE) {
+  configs.push(resultConfig({ isDev: false }));
+}
+module.exports = configs;
