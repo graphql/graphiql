@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 0.3.1
+
+### Patch Changes
+
+- [#3350](https://github.com/graphql/graphiql/pull/3350) [`119775ed`](https://github.com/graphql/graphiql/commit/119775ed191ce075532a6e85cbfeac2364c0ba40) Thanks [@acao](https://github.com/acao)! - handle null editor in explorer plugin [(PR)](https://github.com/graphql/graphiql/pull/3340)
+
 ## 0.3.0
 
 ### Minor Changes
