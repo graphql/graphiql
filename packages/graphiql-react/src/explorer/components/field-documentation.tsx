@@ -24,7 +24,9 @@ export function FieldDocumentation(props: FieldDocumentationProps) {
           {props.field.description}
         </MarkdownContent>
       ) : null}
-      <DeprecationReason>{props.field.deprecationReason}</DeprecationReason>
+      <DeprecationReason preview={false}>
+        {props.field.deprecationReason}
+      </DeprecationReason>
       <ExplorerSection title="Type">
         <TypeLink type={props.field.type} />
       </ExplorerSection>
