@@ -75,7 +75,7 @@ function getSchemaUrl() {
     }
     return '/graphql';
   }
-  return '/.netlify/functions/schema-demo';
+  return '/.netlify/functions/graphql';
 }
 
 // Render <GraphiQL /> into the body.
