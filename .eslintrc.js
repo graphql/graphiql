@@ -29,6 +29,7 @@ module.exports = {
     'next-env.d.ts',
     'changesets/**/*.md',
     '**/CHANGELOG.md',
+    'functions/*',
   ],
   overrides: [
     {

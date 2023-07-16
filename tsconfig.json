@@ -1,9 +1,9 @@
 {
+  "extends": "./resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "composite": true
   },
   "files": [],
-  "include": [],
   "references": [
     {
       "path": "resources/tsconfig.build.esm.json"
