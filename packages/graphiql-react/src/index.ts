@@ -16,6 +16,8 @@ export {
   useQueryEditor,
   useResponseEditor,
   useVariableEditor,
+  useOperationsEditorState,
+  useVariablesEditorState,
   VariableEditor,
 } from './editor';
 export {

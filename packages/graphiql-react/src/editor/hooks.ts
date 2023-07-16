@@ -3,7 +3,7 @@ import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
@@ -331,4 +331,48 @@ export function useAutoCompleteLeafs({
 
     return result;
   }, [getDefaultFieldNames, queryEditor, schema]);
+}
+
+// https://react.dev/learn/you-might-not-need-an-effect
+
+/**
+ * useState-like hook for current tab operations editor state
+ */
+export function useOperationsEditorState(): [
+  opString: string,
+  handleEditOperations: (content: string) => void,
+] {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+  });
+  const opString = queryEditor?.getValue() ?? '';
+  const handleEditOperations = useCallback(
+    (value: string) => queryEditor?.setValue(value),
+    [queryEditor],
+  );
+  return useMemo(
+    () => [opString, handleEditOperations],
+    [opString, handleEditOperations],
+  );
+}
+
+/**
+ * useState-like hook for variables tab operations editor state
+ */
+export function useVariablesEditorState(): [
+  varsString: string,
+  handleEditVariables: (content: string) => void,
+] {
+  const { variableEditor } = useEditorContext({
+    nonNull: true,
+  });
+  const varsString = variableEditor?.getValue() ?? '';
+  const handleEditVariables = useCallback(
+    (value: string) => variableEditor?.setValue(value),
+    [variableEditor],
+  );
+  return useMemo(
+    () => [varsString, handleEditVariables],
+    [varsString, handleEditVariables],
+  );
 }
