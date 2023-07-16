@@ -1,5 +1,14 @@
 # @graphiql/plugin-code-exporter
 
+## 0.3.2
+
+### Patch Changes
+
+- [#3341](https://github.com/graphql/graphiql/pull/3341) [`e4a36207`](https://github.com/graphql/graphiql/commit/e4a362071edf1db53f87f271c523ab2f3a5c4717) Thanks [@acao](https://github.com/acao)! - Fix code exporter plugin on early init, add hooks
+
+- Updated dependencies [[`17069e7a`](https://github.com/graphql/graphiql/commit/17069e7a0224dbce3f5523630a898e093f5c47c9), [`e4a36207`](https://github.com/graphql/graphiql/commit/e4a362071edf1db53f87f271c523ab2f3a5c4717)]:
+  - @graphiql/react@0.19.1
+
 ## 0.3.1
 
 ### Patch Changes

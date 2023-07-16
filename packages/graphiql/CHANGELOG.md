@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.0.2
+
+### Patch Changes
+
+- [#3349](https://github.com/graphql/graphiql/pull/3349) [`17069e7a`](https://github.com/graphql/graphiql/commit/17069e7a0224dbce3f5523630a898e093f5c47c9) Thanks [@acao](https://github.com/acao)! - fix display of deprecation reason on field type docs
+
+- Updated dependencies [[`17069e7a`](https://github.com/graphql/graphiql/commit/17069e7a0224dbce3f5523630a898e093f5c47c9), [`ffb6486d`](https://github.com/graphql/graphiql/commit/ffb6486d1eab0be2bc8fdec366b5671a5d6504d1), [`e4a36207`](https://github.com/graphql/graphiql/commit/e4a362071edf1db53f87f271c523ab2f3a5c4717)]:
+  - @graphiql/react@0.19.1
+  - @graphiql/toolkit@0.9.0
+
 ## 3.0.1
 
 ### Patch Changes

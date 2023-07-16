@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.9.0
+
+### Minor Changes
+
+- [#3022](https://github.com/graphql/graphiql/pull/3022) [`ffb6486d`](https://github.com/graphql/graphiql/commit/ffb6486d1eab0be2bc8fdec366b5671a5d6504d1) Thanks [@heyacherry](https://github.com/heyacherry)! - Add a new utility function `createLocalStorage` that creates a local storage with support for custom namespaces
+
 ## 0.8.4
 
 ### Patch Changes
