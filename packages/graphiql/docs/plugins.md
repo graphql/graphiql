@@ -90,7 +90,7 @@ So we use that UMD global in our script:
   </body>
   <!-- be sure to include all the other imports, such as react, react-dom and graphiql itself, see /examples/graphiql-cdn -->
   <script
-    src="https://unpkg.com/my-schema-printer-plugin@0.1.12/dist/my-schema-printer-plugin.umd.js"
+    src="https://unpkg.com/my-schema-printer-plugin@0.1.12/dist/index.umd.js"
     crossorigin="anonymous"
   ></script>
 
