@@ -206,24 +206,27 @@ describe('MergeAst', () => {
   it('preserve directives on fragments', () => {
     const query = /* GraphQL */ `
       query Test($param: Boolean!) {
-        ...Fragment1 @include(if: $param)        
+        ...Fragment1 @include(if: $param)
       }
-      
+
       fragment Fragment1 on Test {
         id
-      }`;
+      }
+    `;
     const mergedQuery = stripWhitespace(/* GraphQL */ `
       query Test($param: Boolean!) {
-        ...on Test @include(if: $param) {
+        ... on Test @include(if: $param) {
           id
         }
-      }`);
+      }
+    `);
     const mergedQueryWithSchema = stripWhitespace(/* GraphQL */ `
       query Test($param: Boolean!) {
-        ...on Test @include(if: $param) {
+        ... on Test @include(if: $param) {
           id
         }
-      }`);
+      }
+    `);
     expect(parseMergeAndPrint(query)).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
