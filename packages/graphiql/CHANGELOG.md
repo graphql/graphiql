@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.3
+
+### Patch Changes
+
+- [#3359](https://github.com/graphql/graphiql/pull/3359) [`8ebedc9a`](https://github.com/graphql/graphiql/commit/8ebedc9a518581f3dcbaa440bcd829d4546c76db) Thanks [@acao](https://github.com/acao)! - export createLocalStorage in UMD bundle
+
 ## 3.0.2
 
 ### Patch Changes
