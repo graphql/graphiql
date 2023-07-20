@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import * as GraphiQLReact from '@graphiql/react';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './components/GraphiQL';
 
@@ -24,6 +24,12 @@ import './style.css';
  */
 // @ts-expect-error
 GraphiQL.createFetcher = createGraphiQLFetcher;
+
+/**
+ * This function is needed in order to easily generate a custom storage namespace
+ */
+// @ts-expect-error
+GraphiQL.createLocalStorage = createLocalStorage;
 
 /**
  * We also add the complete `graphiql-js` exports so that this instance of
