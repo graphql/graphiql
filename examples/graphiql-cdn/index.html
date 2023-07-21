@@ -37,7 +37,14 @@
       crossorigin
       src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
     ></script>
-
+    <script
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="https://unpkg.com/@graphiql/plugin-explorer/dist/index.umd.js"
+      crossorigin
+    ></script>
     <!--
       These two files can be found in the npm module, however you may wish to
       copy them directly into your environment, or perhaps include them in your
@@ -48,18 +55,18 @@
 
   <body>
     <div id="graphiql">Loading...</div>
-    <script
-      src="https://unpkg.com/graphiql/graphiql.min.js"
-      type="application/javascript"
-    ></script>
     <script>
       const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+      const fetcher = GraphiQL.createFetcher({
+        url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+        headers: { 'X-Example-Header': 'foo' },
+      });
+      const explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
       root.render(
         React.createElement(GraphiQL, {
-          fetcher: GraphiQL.createFetcher({
-            url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-          }),
+          fetcher,
           defaultEditorToolsVisibility: true,
+          plugins: [explorerPlugin],
         }),
       );
     </script>
