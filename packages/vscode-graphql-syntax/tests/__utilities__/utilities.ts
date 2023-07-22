@@ -2,9 +2,7 @@ import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import * as oniguruma from 'vscode-oniguruma';
 import * as tm from 'vscode-textmate';
-import packageJson from '../package.json' assert { type: 'json' };
-
-const ROOT = process.cwd();
+import packageJson from '../../package.json' assert { type: 'json' };
 
 export type Token = {
   text: string;
@@ -16,9 +14,9 @@ export async function tokenizeFile(
   grammarScopeName: string,
 ): Promise<Token[]> {
   const grammar = await getGrammar(grammarScopeName);
-  const lines = (await readFile(path.join(__dirname, file), 'utf8')).split(
-    '\n',
-  );
+  const lines = (
+    await readFile(path.join(__dirname, '..', file), 'utf8')
+  ).split('\n');
 
   const tokens: Token[] = [];
 
@@ -107,6 +105,6 @@ async function vscodeOnigurumaLib() {
 function loadConfiguration() {
   return packageJson.contributes.grammars.map(grammar => ({
     ...grammar,
-    path: path.join(ROOT, grammar.path),
+    path: path.join(__dirname, '..', '..', grammar.path),
   }));
 }

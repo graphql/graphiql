@@ -1,4 +1,4 @@
-import { Token } from './tests/utilities';
+import { Token } from './utilities';
 
 function formatTokens(tokens: Token[]): string {
   const maxLength = Math.max(...tokens.map(token => token.text.length));

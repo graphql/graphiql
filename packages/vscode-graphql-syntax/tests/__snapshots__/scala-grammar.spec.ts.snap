@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.scala grammar > should tokenize a simple scala file 1`] = `
+val query =   | 
+graphql       | keyword.interpolation.scala
+"""           | string.quoted.triple.scala
+              | meta.embedded.block.graphql meta.selectionset.graphql
+{             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+id            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+}             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+"""           | string.quoted.triple.scala
+val query2 =  | 
+gql           | keyword.interpolation.scala
+"""           | string.quoted.triple.scala
+              | meta.embedded.block.graphql meta.selectionset.graphql
+{             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+id            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+}             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+"""           | string.quoted.triple.scala
+val query3 =  | 
+schema        | keyword.interpolation.scala
+"""           | string.quoted.triple.scala
+              | meta.embedded.block.graphql meta.selectionset.graphql
+{             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+id            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+              | meta.embedded.block.graphql meta.selectionset.graphql
+}             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+"""           | string.quoted.triple.scala
+              | 
+val query =   | 
+"""           | string.quoted.triple.scala
+#graphql      | comment.line.graphql.js
+              | meta.selectionset.graphql
+{             | meta.selectionset.graphql punctuation.operation.graphql
+              | meta.selectionset.graphql
+id            | meta.selectionset.graphql variable.graphql
+              | meta.selectionset.graphql
+}             | meta.selectionset.graphql punctuation.operation.graphql
+"""           | string.quoted.triple.scala
+              | 
+`;

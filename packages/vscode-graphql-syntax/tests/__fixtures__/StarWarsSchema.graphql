@@ -1,0 +1,66 @@
+schema {
+  query: Query
+}
+
+directive @test(testArg: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @onArg on ARGUMENT_DEFINITION
+directive @onAllDefs on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | INTERFACE | UNION | ENUM_VALUE | INPUT_OBJECT | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+interface Character {
+  id: String!
+  name: String
+  friends: [Character]
+  appearsIn: [Episode]
+  secretBackstory: String
+}
+
+type Human implements Character {
+  id: String!
+  name: String
+  friends: [Character]
+  appearsIn: [Episode]
+  secretBackstory: String
+}
+
+type Droid implements Character {
+  id: String!
+  name: String
+  friends: [Character]
+  appearsIn: [Episode]
+  secretBackstory: String
+  primaryFunction: String
+  instructions: [String]!
+}
+
+input InputType {
+  key: String!
+  value: Int = 42
+}
+
+interface TestInterface {
+  testField: String!
+}
+
+interface AnotherInterface implements TestInterface {
+  testField: String!
+}
+
+type TestType implements TestInterface & AnotherInterface {
+  testField: String!
+}
+
+type Query {
+  hero(episode: Episode): Character
+  human(id: String!): Human
+  droid(id: String!): Droid
+  inputTypeTest(args: InputType = { key: "key" }): TestType
+  deprecatedField: TestType @deprecated(reason: "Use test instead.")
+}
+
+union TestUnion = Droid | TestType

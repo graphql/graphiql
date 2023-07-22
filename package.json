@@ -52,7 +52,7 @@
     "e2e:build": "yarn build && yarn workspace graphiql build-bundles",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
-    "jest": "jest --testPathIgnorePatterns cm6-graphql",
+    "jest": "jest",
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn pretty-check && yarn lint-cspell",
     "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
@@ -71,10 +71,11 @@
     "repo:resolve": "node scripts/set-resolution.js",
     "t": "yarn test",
     "test": "yarn jest",
-    "test:ci": "yarn build && jest --coverage && yarn workspace monaco-graphql test",
+    "test:ci": "yarn build && jest --coverage && yarn vitest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
     "tsc": "tsc --build",
+    "vitest": "yarn wsrun -p -m test",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack"
   },
   "devDependencies": {
