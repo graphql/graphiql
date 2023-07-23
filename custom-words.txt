@@ -83,6 +83,7 @@ lezer
 manypkg
 meros
 nullthrows
+onig
 ovsx
 picomatch
 pnpm

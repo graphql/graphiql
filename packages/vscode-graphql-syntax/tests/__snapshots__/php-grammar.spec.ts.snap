@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.php grammar > should tokenize a simple php file 1`] = `
+<!-- these seem horribly regressed. please someone fix this grammar! --> | 
+                                                                         | 
+$query =                                                                 | 
+<<<                                                                      | punctuation.section.embedded.begin.php punctuation.definition.string.php
+GRAPHQL                                                                  | punctuation.section.embedded.begin.php keyword.operator.heredoc.php
+                                                                         | meta.embedded.block.graphql
+query                                                                    | meta.embedded.block.graphql keyword.operation.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql
+site                                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                         | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+GRAPHQL                                                                  | punctuation.section.embedded.end.php keyword.operator.heredoc.php
+;                                                                        | 
+                                                                         | 
+$gql = <<<QUERY                                                          | 
+query {                                                                  | 
+    pokemon(name: "Pikachu") {                                           | 
+        id                                                               | 
+        number                                                           | 
+        name                                                             | 
+        attacks {                                                        | 
+            special {                                                    | 
+                name                                                     | 
+                type                                                     | 
+                damage                                                   | 
+            }                                                            | 
+        }                                                                | 
+    }                                                                    | 
+}                                                                        | 
+QUERY;                                                                   | 
+                                                                         | 
+                                                                         | 
+                                                                         | 
+`;

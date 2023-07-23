@@ -1,4 +1,4 @@
-/* eslint-disable jest/expect-expect */
+import { describe, it } from 'vitest';
 import { graphqlLanguage } from '../dist/index.js';
 import { fileTests } from '@lezer/generator/dist/test';
 
