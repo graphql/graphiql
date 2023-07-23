@@ -48,20 +48,20 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "dependencies": {
-    "@types/codemirror": "^5.60.8",
+    "@graphiql/toolkit": "^0.9.1",
     "@headlessui/react": "^1.7.15",
     "@radix-ui/react-dialog": "^1.0.4",
-    "@radix-ui/react-visually-hidden": "^1.0.3",
-    "@radix-ui/react-tooltip": "^1.0.6",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
-    "@graphiql/toolkit": "^0.9.1",
+    "@radix-ui/react-tooltip": "^1.0.6",
+    "@radix-ui/react-visually-hidden": "^1.0.3",
+    "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.0.9",
     "copy-to-clipboard": "^3.2.0",
+    "framer-motion": "^6.5.1",
     "graphql-language-service": "^5.1.7",
     "markdown-it": "^12.2.0",
-    "framer-motion": "^6.5.1",
     "set-value": "^4.1.0"
   },
   "devDependencies": {

@@ -34,10 +34,11 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
+    "execa": "^7.1.1",
     "graphql": "^16.4.0",
     "monaco-editor": "^0.39.0",
-    "vscode-languageserver-types": "^3.17.1",
-    "execa": "^7.1.1"
+    "prettier": "3.0.0-alpha.12",
+    "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

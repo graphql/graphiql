@@ -3,5 +3,6 @@
     // MIT, just lacking SPDX in manifest
     "valid-url",
     "argparse"
-  ]
+  ],
+  "dev": false
 }

@@ -1,0 +1,290 @@
+name: PR
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+      - name: Cache node modules
+        id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/Cypress
+          key: cypress-${{ runner.os }}
+      - run: yarn install --frozen-lockfile --immutable
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [install]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+
+      - run: yarn build
+      - uses: actions/cache@v3
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+
+  cspell:
+    name: CSpell
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - run: yarn lint-cspell
+
+  prettier:
+    name: Prettier
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - run: yarn pretty-check
+
+  jest:
+    name: Jest Unit Tests
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - run: yarn test --coverage
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+
+  vitest:
+    name: Vitest Unit Tests
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+
+      - uses: actions/cache@v3
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - run: yarn vitest
+
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - uses: actions/cache@v3
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - run: yarn eslint
+
+  e2e:
+    name: Cypress
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v3
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - uses: actions/cache@v3
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/Cypress
+          key: cypress-${{ runner.os }}
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          command: yarn e2e
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: packages/graphiql/cypress/screenshots
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-videos
+          path: packages/graphiql/cypress/videos
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+  canary:
+    name: Canary
+    runs-on: ubuntu-latest
+    # ensure the basic checks pass before running the canary
+    needs: [build, jest, eslint, vitest, e2e]
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - uses: actions/cache@v3
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - name: Setup NPM credentials
+        run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Release Canary
+        id: canary
+        uses: 'kamilkisiela/release-canary@master'
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          npm-script: 'yarn release:canary'
+          changesets: true
+      - name: Publish a message
+        if: steps.canary.outputs.released == 'true'
+        uses: 'dotansimha/pr-comment@master'
+        with:
+          commentKey: canary
+          message: |
+            The latest changes of this PR are available as canary in npm (based on the declared `changesets`):
+
+            ```
+            ${{ steps.canary.outputs.changesetsPublishedPackages}}
+            ```
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
+          bot: 'github-actions[bot]'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish a empty message
+        if: steps.canary.outputs.released == 'false'
+        uses: 'dotansimha/pr-comment@master'
+        with:
+          commentKey: canary
+          message: |
+            The latest changes of this PR are not available as canary, since there are no linked `changesets` for this PR.
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
+          bot: 'github-actions[bot]'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  license-check:
+    name: Check Licenses
+    runs-on: ubuntu-latest
+    needs: [install]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - run: yarn install --frozen-lockfile --immutable
+      - name: License Check
+        run: yarn license-check
+
+env:
+  BUILD-CACHE-LIST: |
+    packages/**/dist/**/*
+    packages/**/cjs/**/*
+    packages/**/esm/**/*
+    packages/**/types/**/*
+    packages/codemirror-graphql/*.js*
+    packages/codemirror-graphql/*.d.ts
+    packages/codemirror-graphql/cm6-legacy/**/*
+    packages/codemirror-graphql/results/**/*
+    packages/codemirror-graphql/variables/**/*
+    packages/codemirror-graphql/utils/**/*
+    !**/node_modules

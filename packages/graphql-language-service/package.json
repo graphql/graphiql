@@ -35,13 +35,13 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.17.1",
-    "nullthrows": "^1.0.0"
+    "nullthrows": "^1.0.0",
+    "vscode-languageserver-types": "^3.17.1"
   },
   "devDependencies": {
-    "@types/picomatch": "^2.3.0",
     "@types/benchmark": "^1.0.33",
     "@types/json-schema": "7.0.9",
+    "@types/picomatch": "^2.3.0",
     "benchmark": "^2.1.4",
     "graphql": "^16.4.0",
     "graphql-config": "5.0.2",
