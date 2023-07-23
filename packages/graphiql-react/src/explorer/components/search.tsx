@@ -70,9 +70,12 @@ export function Search() {
     [push],
   );
   const [isFocused, setIsFocused] = useState(false);
-  const handleFocus: FocusEventHandler = useCallback(e => {
-    setIsFocused(e.type === 'focus');
-  }, []);
+  const handleFocus: FocusEventHandler = useCallback(
+    e => {
+      setIsFocused(e.type === 'focus');
+    },
+    [setIsFocused],
+  );
 
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
@@ -101,7 +104,8 @@ export function Search() {
         <Combobox.Input
           autoComplete="off"
           onFocus={handleFocus}
-          onBlur={handleFocus}
+          // TODO: find a better way to handle onBlur
+          // onBlur={handleFocus}
           onChange={event => setSearchValue(event.target.value)}
           placeholder="&#x2318; K"
           ref={inputRef}
@@ -110,7 +114,7 @@ export function Search() {
         />
       </div>
 
-      {/* hide on blur */}
+      {/* display on focus */}
       {isFocused && (
         <Combobox.Options data-cy="doc-explorer-list">
           {results.within.length +
