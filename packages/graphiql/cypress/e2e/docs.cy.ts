@@ -46,6 +46,8 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Closes popover when blurring input', () => {
+    cy.dataCy('doc-explorer-input').focus();
+    cy.dataCy('doc-explorer-input').type('list');
     cy.dataCy('doc-explorer-input').blur();
     cy.dataCy('doc-explorer-list').should('not.exist');
   });

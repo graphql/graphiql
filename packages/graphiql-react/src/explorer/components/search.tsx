@@ -101,7 +101,6 @@ export function Search() {
         <Combobox.Input
           autoComplete="off"
           onFocus={handleFocus}
-          // TODO: find a better way to handle onBlur
           onBlur={handleFocus}
           onChange={event => setSearchValue(event.target.value)}
           placeholder="&#x2318; K"
