@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.9.1
+
+### Patch Changes
+
+- [#3298](https://github.com/graphql/graphiql/pull/3298) [`4cbdf183`](https://github.com/graphql/graphiql/commit/4cbdf18385d34ef9bc095c376936f92a62eb9e9b) Thanks [@esquevin](https://github.com/esquevin)! - Prevent OOM on merging complex queries
+
 ## 0.9.0
 
 ### Minor Changes

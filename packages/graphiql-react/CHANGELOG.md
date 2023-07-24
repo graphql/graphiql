@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.19.2
+
+### Patch Changes
+
+- [#3364](https://github.com/graphql/graphiql/pull/3364) [`d67c13f6`](https://github.com/graphql/graphiql/commit/d67c13f6e1f478b171801afd0767b98312db04c9) Thanks [@acao](https://github.com/acao)! - Fix search result bug on select, #33307
+
+- Updated dependencies [[`4cbdf183`](https://github.com/graphql/graphiql/commit/4cbdf18385d34ef9bc095c376936f92a62eb9e9b)]:
+  - @graphiql/toolkit@0.9.1
+
 ## 0.19.1
 
 ### Patch Changes
