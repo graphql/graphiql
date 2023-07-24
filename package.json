@@ -14,7 +14,7 @@
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
-      "eslint --fix",
+      "eslint --cache --fix",
       "prettier --write --ignore-path .eslintignore",
       "jest --passWithNoTests",
       "yarn lint-cspell"
