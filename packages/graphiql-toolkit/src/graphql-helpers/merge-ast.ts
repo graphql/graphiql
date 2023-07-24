@@ -124,7 +124,7 @@ export function mergeAst(
     }
   }
 
-  const visitors: ASTVisitor = {
+  const flattenVisitors: ASTVisitor = {
     SelectionSet(node: any) {
       const selectionSetType = typeInfo ? typeInfo.getParentType() : null;
       let { selections } = node;
@@ -134,6 +134,25 @@ export function mergeAst(
         selections,
         selectionSetType,
       );
+
+      return {
+        ...node,
+        selections,
+      };
+    },
+    FragmentDefinition() {
+      return null;
+    },
+  };
+
+  const flattenedAST = visit(
+    documentAST,
+    typeInfo ? visitWithTypeInfo(typeInfo, flattenVisitors) : flattenVisitors,
+  );
+
+  const deduplicateVisitors: ASTVisitor = {
+    SelectionSet(node: any) {
+      let { selections } = node;
 
       selections = uniqueBy(selections, selection =>
         selection.alias ? selection.alias.value : selection.name.value,
@@ -149,8 +168,5 @@ export function mergeAst(
     },
   };
 
-  return visit(
-    documentAST,
-    typeInfo ? visitWithTypeInfo(typeInfo, visitors) : visitors,
-  );
+  return visit(flattenedAST, deduplicateVisitors);
 }

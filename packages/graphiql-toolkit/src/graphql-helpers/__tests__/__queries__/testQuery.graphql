@@ -1,0 +1,687 @@
+query NBAHomepageQuery {
+  currentUser {
+    slug
+    ...NBAHomepageHeader_currentUser
+    ...NBAHomepageOverview_currentUser
+    __typename
+  }
+  nbaLiveFixture {
+    slug
+    ...NBAHomepageOverview_nbaLiveFixture
+    __typename
+  }
+  nbaOpenFixture {
+    slug
+    ...NBAHomepageOverview_nbaOpenFixture
+    __typename
+  }
+  nbaPastFixtures(first: 1) {
+    ...NBAHomepageOverview_nbaPastFixtures
+    __typename
+  }
+  cumulativeLeaderboards(sport: NBA) {
+    slug
+    ...NBAHomepageOverview_CumulativeLeaderboard
+    __typename
+  }
+}
+
+fragment NBAHomepageHeader_currentUser on CurrentUser {
+  id
+  slug
+  ...HomepageHeader_currentUser
+  nbaCardCounts {
+    ...HomepageHeader_CardCountsByRarity
+    __typename
+  }
+  __typename
+}
+
+fragment HomepageHeader_currentUser on CurrentUser {
+  id
+  slug
+  nickname
+  __typename
+}
+
+fragment HomepageHeader_CardCountsByRarity on CardCountsByRarity {
+  ...CardCounts_CardCountsByRarity
+  __typename
+}
+
+fragment CardCounts_CardCountsByRarity on CardCountsByRarity {
+  uniqueCount
+  superRareCount
+  rareCount
+  limitedCount
+  commonCount
+  __typename
+}
+
+fragment NBAHomepageOverview_CumulativeLeaderboard on CumulativeLeaderboard {
+  slug
+  currentCumulativeGameWeek
+  ...PostseasonLeadup_CumulativeLeaderboard
+  __typename
+}
+
+fragment PostseasonLeadup_CumulativeLeaderboard on CumulativeLeaderboard {
+  slug
+  displayName
+  ...PostseasonHeader_CumulativeLeaderboard
+  ...CumulativeLeaderboards_CumulativeLeaderboard
+  __typename
+}
+
+fragment PostseasonHeader_CumulativeLeaderboard on CumulativeLeaderboard {
+  slug
+  startGameWeek
+  endGameWeek
+  currentCumulativeGameWeek
+  myCumulativeLeaderboardRank {
+    id
+    projectedPrizeCredits
+    __typename
+  }
+  __typename
+}
+
+fragment CumulativeLeaderboards_CumulativeLeaderboard on CumulativeLeaderboard {
+  slug
+  ...CumulativeLeaderboardRank_CumulativeLeaderboard
+  myCumulativeLeaderboardRank {
+    id
+    cumulativeLeaderboard {
+      slug
+      ...CumulativeLeaderboardRank_CumulativeLeaderboard
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment CumulativeLeaderboardRank_CumulativeLeaderboard on CumulativeLeaderboard {
+  slug
+  displayName
+  iconImageUrl
+  startGameWeek
+  endGameWeek
+  participantsCount
+  leaderboardRarity
+  myCumulativeLeaderboardRank {
+    id
+    score
+    rank
+    projectedPrizeCredits
+    __typename
+  }
+  __typename
+}
+
+fragment NBAHomepageOverview_currentUser on CurrentUser {
+  slug
+  nbaMostRecentlyPlayedPastFixture {
+    slug
+    ...Past_NBAFixture
+    leaderboards {
+      slug
+      ...getLeaderboardScarcity_LeaderboardInterface
+      __typename
+    }
+    __typename
+  }
+  ...Upcoming_currentUser
+  __typename
+}
+
+fragment Past_NBAFixture on NBAFixture {
+  slug
+  gameWeek
+  leaderboards {
+    slug
+    ...getLeaderboardScarcity_LeaderboardInterface
+    ...Lineups_NBALeaderboard
+    __typename
+  }
+  __typename
+}
+
+fragment getLeaderboardScarcity_LeaderboardInterface on LeaderboardInterface {
+  slug
+  leaderboardRarity
+  __typename
+}
+
+fragment Lineups_NBALeaderboard on NBALeaderboard {
+  slug
+  isTraining
+  ...Lineup_NBALeaderboard
+  myLineups {
+    ...Homepage_Lineup_NBALineup
+    __typename
+  }
+  __typename
+}
+
+fragment Lineup_NBALeaderboard on NBALeaderboard {
+  slug
+  fixture {
+    slug
+    fixtureState
+    __typename
+  }
+  isUserEligible
+  lineupsCount
+  iconImageUrl
+  monochromeIconImageUrl
+  requirements {
+    ...getUnlockLink_NBALeaderboardRequirements
+    ...getCardScarcity_LeaderboardRequirementsInterface
+    __typename
+  }
+  ...Lineup_LeaderboardInterface
+  __typename
+}
+
+fragment getUnlockLink_NBALeaderboardRequirements on NBALeaderboardRequirements {
+  allowedConference
+  ...getAlgoliaFiltersForRequirements_NBALeaderboardRequirements
+  __typename
+}
+
+fragment getAlgoliaFiltersForRequirements_NBALeaderboardRequirements on NBALeaderboardRequirements {
+  allowedConference
+  ...getAlgoliaFiltersForRequirements_LeaderboardRequirementsInterface
+  __typename
+}
+
+fragment getAlgoliaFiltersForRequirements_LeaderboardRequirementsInterface on LeaderboardRequirementsInterface {
+  allowedRarities
+  minRarity {
+    minCount
+    rarity
+    __typename
+  }
+  playerAgeRequirements {
+    minAge
+    maxAge
+    __typename
+  }
+  __typename
+}
+
+fragment getCardScarcity_LeaderboardRequirementsInterface on LeaderboardRequirementsInterface {
+  allowedRarities
+  minRarity {
+    minCount
+    rarity
+    __typename
+  }
+  __typename
+}
+
+fragment Lineup_LeaderboardInterface on LeaderboardInterface {
+  slug
+  fixture {
+    slug
+    fixtureState
+    __typename
+  }
+  isUserEligible
+  lineupsCount
+  iconImageUrl
+  monochromeIconImageUrl
+  ...LineupHeader_LeaderboardInterface
+  requirements {
+    ...getCardScarcity_LeaderboardRequirementsInterface
+    __typename
+  }
+  ...LineupFooter_LeaderboardInterface
+  __typename
+}
+
+fragment LineupHeader_LeaderboardInterface on LeaderboardInterface {
+  slug
+  displayName
+  fixture {
+    slug
+    ...LineupDate_FixtureInterface
+    __typename
+  }
+  __typename
+}
+
+fragment LineupDate_FixtureInterface on FixtureInterface {
+  slug
+  startDate
+  endDate
+  __typename
+}
+
+fragment LineupFooter_LeaderboardInterface on LeaderboardInterface {
+  slug
+  fixture {
+    slug
+    fixtureState
+    __typename
+  }
+  ...formatCardRewards_LeaderboardInterface
+  ...formatFiatRewards_LeaderboardInterface
+  ...getLeaderboardIRLPrize_LeaderboardInterface
+  __typename
+}
+
+fragment formatCardRewards_LeaderboardInterface on LeaderboardInterface {
+  slug
+  prizePool {
+    uniqueCardsCount
+    superRareCardsCount
+    rareCardsCount
+    limitedCardsCount
+    commonCardsMaxThreshold
+    commonCardsCount
+    __typename
+  }
+  __typename
+}
+
+fragment formatFiatRewards_LeaderboardInterface on LeaderboardInterface {
+  slug
+  prizePool {
+    amountUSDCents
+    __typename
+  }
+  __typename
+}
+
+fragment getLeaderboardIRLPrize_LeaderboardInterface on LeaderboardInterface {
+  slug
+  displayName
+  fixture {
+    id
+    slug
+    gameWeek
+    __typename
+  }
+  __typename
+}
+
+fragment Homepage_Lineup_NBALineup on NBALineup {
+  id
+  rank
+  score
+  cards {
+    ...PlayerCard_NBACardInLineup
+    __typename
+  }
+  ...Homepage_Lineup_LineupInterface
+  __typename
+}
+
+fragment PlayerCard_NBACardInLineup on NBACardInLineup {
+  score
+  isMvp
+  card {
+    slug
+    ...Card_CardInterface
+    __typename
+  }
+  playerInFixture {
+    status {
+      statusIconType
+      upcomingGames {
+        id
+        __typename
+      }
+      inGame
+      isScoreFinal
+      __typename
+    }
+    __typename
+  }
+  ...PlayerCardScore_NBACardInLineup
+  __typename
+}
+
+fragment Card_CardInterface on CardInterface {
+  id
+  slug
+  fullImageUrl
+  player {
+    slug
+    displayName
+    __typename
+  }
+  __typename
+}
+
+fragment PlayerCardScore_NBACardInLineup on NBACardInLineup {
+  score
+  card {
+    slug
+    totalBonus
+    __typename
+  }
+  playerInFixture {
+    status {
+      statusIconType
+      hasTBDGames
+      upcomingGames {
+        id
+        __typename
+      }
+      gameStats {
+        score
+        game {
+          id
+          status
+          __typename
+        }
+        __typename
+      }
+      inGame
+      isScoreFinal
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment Homepage_Lineup_LineupInterface on LineupInterface {
+  id
+  rank
+  score
+  cards {
+    card {
+      slug
+      __typename
+    }
+    __typename
+  }
+  ...LineupFooter_LineupInterface
+  __typename
+}
+
+fragment LineupFooter_LineupInterface on LineupInterface {
+  id
+  projectedReward {
+    ...LineupFooterDumb_ProjectedReward
+    __typename
+  }
+  reward {
+    id
+    ...LineupFooterDumb_RewardInterface
+    __typename
+  }
+  accoladeString
+  __typename
+}
+
+fragment LineupFooterDumb_ProjectedReward on ProjectedReward {
+  ...RewardDescription_ProjectedReward
+  __typename
+}
+
+fragment RewardDescription_ProjectedReward on ProjectedReward {
+  tier
+  rarity
+  amountUSDCents
+  __typename
+}
+
+fragment LineupFooterDumb_RewardInterface on RewardInterface {
+  id
+  ...RewardDescription_RewardInterface
+  __typename
+}
+
+fragment RewardDescription_RewardInterface on RewardInterface {
+  id
+  tier
+  card {
+    slug
+    rarity
+    player {
+      slug
+      displayName
+      __typename
+    }
+    __typename
+  }
+  state
+  __typename
+}
+
+fragment Upcoming_currentUser on CurrentUser {
+  slug
+  ...CompetitionWithStarterPacks_currentUser
+  __typename
+}
+
+fragment CompetitionWithStarterPacks_currentUser on CurrentUser {
+  slug
+  nbaRecommendedStarterBundles(first: 3) {
+    id
+    ...StarterPack_CardBundleOffer
+    __typename
+  }
+  __typename
+}
+
+fragment StarterPack_CardBundleOffer on CardBundleOffer {
+  id
+  ...StarterBundleProjection_CardBundleOffer
+  __typename
+}
+
+fragment StarterBundleProjection_CardBundleOffer on CardBundleOffer {
+  id
+  rank
+  leaderboard {
+    slug
+    displayName
+    lineupsCount
+    fixture {
+      slug
+      gameWeek
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment NBAHomepageOverview_nbaLiveFixture on NBAFixture {
+  slug
+  ...Live_NBAFixture
+  leaderboards {
+    slug
+    ...getLeaderboardScarcity_LeaderboardInterface
+    ...getCardRarityToPromote_LeaderboardInterface
+    __typename
+  }
+  __typename
+}
+
+fragment Live_NBAFixture on NBAFixture {
+  slug
+  games {
+    ...Scoreboard_NBAGame
+    __typename
+  }
+  leaderboards {
+    slug
+    ...Lineups_NBALeaderboard
+    ...Scoreboard_NBALeaderboard
+    __typename
+  }
+  __typename
+}
+
+fragment Scoreboard_NBAGame on NBAGame {
+  id
+  quarter
+  isHalftime
+  ...Scoreboard_GameInterface
+  __typename
+}
+
+fragment Scoreboard_GameInterface on GameInterface {
+  id
+  status
+  startDate
+  ...ScoreboardGame_GameInterface
+  __typename
+}
+
+fragment ScoreboardGame_GameInterface on GameInterface {
+  id
+  status
+  startDate
+  homeScore
+  awayScore
+  homeTeam {
+    slug
+    name
+    abbreviation
+    svgUrl
+    __typename
+  }
+  awayTeam {
+    slug
+    name
+    abbreviation
+    svgUrl
+    __typename
+  }
+  __typename
+}
+
+fragment Scoreboard_NBALeaderboard on NBALeaderboard {
+  slug
+  myLineups {
+    id
+    games {
+      ...Scoreboard_GameWithCardInLineupInterface
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment Scoreboard_GameWithCardInLineupInterface on GameWithCardInLineupInterface {
+  game {
+    id
+    __typename
+  }
+  homeCardsInLineups {
+    card {
+      slug
+      __typename
+    }
+    __typename
+  }
+  awayCardsInLineups {
+    card {
+      slug
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment getCardRarityToPromote_LeaderboardInterface on LeaderboardInterface {
+  slug
+  leaderboardRarity
+  __typename
+}
+
+fragment NBAHomepageOverview_nbaOpenFixture on NBAFixture {
+  slug
+  ...Upcoming_NBAFixture
+  ...getRecommendedLeaderboards_NBAFixture
+  leaderboards {
+    slug
+    ...getCardRarityToPromote_LeaderboardInterface
+    __typename
+  }
+  __typename
+}
+
+fragment Upcoming_NBAFixture on NBAFixture {
+  slug
+  gameWeek
+  ...TimeUntilNextFixture_FixtureInterface
+  games {
+    ...Scoreboard_NBAGame
+    __typename
+  }
+  leaderboards {
+    slug
+    displayName
+    leaderboardRarity
+    isUserEligible
+    ...Scoreboard_NBALeaderboard
+    ...Lineups_NBALeaderboard
+    __typename
+  }
+  __typename
+}
+
+fragment TimeUntilNextFixture_FixtureInterface on FixtureInterface {
+  slug
+  gameWeek
+  startDate
+  __typename
+}
+
+fragment getRecommendedLeaderboards_NBAFixture on NBAFixture {
+  slug
+  leaderboards {
+    slug
+    __typename
+  }
+  myRecommendedLeaderboards(first: 5) {
+    slug
+    __typename
+  }
+  __typename
+}
+
+fragment NBAHomepageOverview_nbaPastFixtures on NBAFixtureConnection {
+  ...Upcoming_nbaPastFixtures
+  __typename
+}
+
+fragment Upcoming_nbaPastFixtures on NBAFixtureConnection {
+  nodes {
+    slug
+    gameWeek
+    ...PromotedPlayers_NBAFixture
+    __typename
+  }
+  __typename
+}
+
+fragment PromotedPlayers_NBAFixture on NBAFixture {
+  slug
+  playerFixtureStats(first: 15, order: SCORE, hideUnownedPlayers: false) {
+    nodes {
+      player {
+        slug
+        team {
+          slug
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
