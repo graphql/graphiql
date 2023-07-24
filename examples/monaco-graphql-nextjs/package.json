@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "prettier": "3.0.0-alpha.12",
-    "@graphiql/toolkit": "^0.9.0",
+    "@graphiql/toolkit": "^0.9.1",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.5.5",
     "jsonc-parser": "^3.2.0",
