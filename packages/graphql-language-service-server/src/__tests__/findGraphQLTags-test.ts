@@ -7,6 +7,7 @@
  *
  */
 
+import { Position, Range } from 'graphql-language-service';
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
@@ -351,6 +352,10 @@ query {id}`);
         }
     }
 `);
+
+    expect(JSON.stringify(contents[0].range)).toEqual(
+      JSON.stringify(new Range(new Position(2, 29), new Position(12, 0))),
+    );
   });
 
   it('no crash in Svelte files without <script>', async () => {
