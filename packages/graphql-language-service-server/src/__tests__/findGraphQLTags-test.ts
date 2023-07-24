@@ -315,15 +315,42 @@ query {id}`);
 
   it('finds queries in tagged templates in Svelte using normal <script>', async () => {
     const text = `
-<script>
-gql\`
-query {id}
-\`;
+    <script context="module">
+    const query = graphql(\`
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+\`)
+    export async function load({fetch}) {
+        return { 
+            props: {
+                _data: await fetch({
+                    text: query
+                })
+              }
+            }
+        }
+  
 </script>
 `;
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
-query {id}`);
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+`);
   });
 
   it('no crash in Svelte files without <script>', async () => {
