@@ -69,9 +69,9 @@ export function Search() {
     },
     [push],
   );
-  const [isFocused, setIsFocused] = useState(false);
+  const isFocused = useRef(false);
   const handleFocus: FocusEventHandler = useCallback(e => {
-    setIsFocused(e.type === 'focus');
+    isFocused.current = e.type === 'focus';
   }, []);
 
   const shouldSearchBoxAppear =
@@ -110,8 +110,8 @@ export function Search() {
         />
       </div>
 
-      {/* hide on blur */}
-      {isFocused && (
+      {/* display on focus */}
+      {isFocused.current && (
         <Combobox.Options data-cy="doc-explorer-list">
           {results.within.length +
             results.types.length +
