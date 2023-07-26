@@ -2137,7 +2137,7 @@ class RootView extends React.PureComponent<
   RootViewProps,
   { newOperationType: NewOperationType; displayTitleActions: boolean }
 > {
-  static state = { newOperationType: 'query', displayTitleActions: false };
+  state = { newOperationType: 'query', displayTitleActions: false };
   _previousOperationDef:
     | null
     | OperationDefinitionNode
@@ -2372,7 +2372,7 @@ class Explorer extends React.PureComponent<Props, State> {
     getDefaultScalarArgValue: defaultGetDefaultScalarArgValue,
   };
 
-  static state = {
+  state = {
     newOperationType: 'query',
     operation: null,
     operationToScrollTo: null,
@@ -2987,5 +2987,6 @@ class ExplorerWrapper extends React.PureComponent<Props, {}> {
     );
   }
 }
-
+export type { Props as GraphiQLExplorerProps };
+export { Explorer };
 export default ExplorerWrapper;
