@@ -12,14 +12,7 @@
 
 import * as React from 'react';
 
-import {
-  GraphQLObjectType,
-  isLeafType,
-  parse,
-  print,
-  Kind,
-  isNamedType,
-} from 'graphql';
+import { GraphQLObjectType, print, Kind, isNamedType } from 'graphql';
 
 import type {
   DocumentNode,
@@ -42,6 +35,9 @@ import {
   defaultValue,
   defaultGetDefaultScalarArgValue,
   capitalize,
+  DEFAULT_DOCUMENT,
+  memoizeParseQuery,
+  defaultGetDefaultFieldNames,
 } from './utils';
 import { RootView } from './root-view';
 import {
@@ -85,104 +81,6 @@ type State = {
   newOperationType: NewOperationType;
   operationToScrollTo: null | string;
 };
-
-function defaultGetDefaultFieldNames(type: GraphQLObjectType): Array<string> {
-  const fields = type.getFields();
-
-  // Is there an `id` field?
-  if (fields['id']) {
-    const res = ['id'];
-    if (fields['email']) {
-      res.push('email');
-    } else if (fields[Kind.NAME]) {
-      res.push(Kind.NAME);
-    }
-    return res;
-  }
-
-  // Is there an `edges` field?
-  if (fields['edges']) {
-    return ['edges'];
-  }
-
-  // Is there an `node` field?
-  if (fields['node']) {
-    return ['node'];
-  }
-
-  if (fields['nodes']) {
-    return ['nodes'];
-  }
-
-  // Include all leaf-type fields.
-  const leafFieldNames: string[] = [];
-  Object.keys(fields).forEach(fieldName => {
-    if (isLeafType(fields[fieldName].type)) {
-      leafFieldNames.push(fieldName);
-    }
-  });
-
-  if (!leafFieldNames.length) {
-    // No leaf fields, add typename so that the query stays valid
-    return ['__typename'];
-  }
-  return leafFieldNames.slice(0, 2); // Prevent too many fields from being added
-}
-
-function parseQuery(text: string): null | DocumentNode | Error {
-  try {
-    if (!text.trim()) {
-      return null;
-    }
-    return parse(
-      text,
-      // Tell graphql to not bother track locations when parsing, we don't need
-      // it and it's a tiny bit more expensive.
-      { noLocation: true },
-    );
-  } catch (e) {
-    return new Error(e);
-  }
-}
-
-const DEFAULT_OPERATION = {
-  kind: Kind.OPERATION_DEFINITION,
-  operation: 'query',
-  variableDefinitions: [],
-  name: { kind: Kind.NAME, value: 'MyQuery' },
-  directives: [],
-  selectionSet: {
-    kind: Kind.SELECTION_SET,
-    selections: [],
-  },
-} as OperationDefinitionNode;
-
-const DEFAULT_DOCUMENT = {
-  kind: Kind.DOCUMENT,
-  definitions: [DEFAULT_OPERATION],
-} as DocumentNode;
-
-let parseQueryMemoize: null | [string, DocumentNode] = null;
-function memoizeParseQuery(query: string): DocumentNode {
-  if (parseQueryMemoize && parseQueryMemoize[0] === query) {
-    return parseQueryMemoize[1];
-  } else {
-    const result = parseQuery(query);
-    if (!result) {
-      return DEFAULT_DOCUMENT;
-    } else if (result instanceof Error) {
-      if (parseQueryMemoize) {
-        // Most likely a temporarily invalid query while they type
-        return parseQueryMemoize[1];
-      } else {
-        return DEFAULT_DOCUMENT;
-      }
-    } else {
-      parseQueryMemoize = [query, result];
-      return result;
-    }
-  }
-}
 
 function Attribution() {
   return (

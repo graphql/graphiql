@@ -24,11 +24,9 @@ import {
   MakeDefaultArg,
   CommitOptions,
 } from './types';
-import {
-  defaultInputObjectFields,
-  unwrapInputType,
-  coerceArgValue,
-} from './utils';
+import { defaultInputObjectFields, unwrapInputType } from './utils';
+
+import { coerceArgValue } from './lib/coerce-arg-value';
 
 type ArgViewState = {};
 

@@ -22,11 +22,9 @@ import {
   Field,
   CommitOptions,
 } from './types';
-import {
-  coerceArgValue,
-  defaultInputObjectFields,
-  unwrapInputType,
-} from './utils';
+import { defaultInputObjectFields, unwrapInputType } from './utils';
+
+import { coerceArgValue } from './lib/coerce-arg-value';
 import { AbstractArgView } from './abstract-arg-view';
 
 type InputArgViewProps = {

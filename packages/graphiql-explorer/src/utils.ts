@@ -8,8 +8,8 @@ import {
   isRequiredInputField,
   Kind,
   isLeafType,
-  isScalarType,
   isEnumType,
+  parse,
 } from 'graphql';
 
 import type {
@@ -21,6 +21,9 @@ import type {
   GraphQLInputField,
   GraphQLOutputType,
   GraphQLInputType,
+  OperationDefinitionNode,
+  DocumentNode,
+  GraphQLObjectType,
 } from 'graphql';
 
 import { Field, GetDefaultScalarArgValue, MakeDefaultArg } from './types';
@@ -84,76 +87,6 @@ export function defaultInputObjectFields(
   return nodes;
 }
 
-export function coerceArgValue(
-  argType: GraphQLScalarType | GraphQLInputType,
-  value: string,
-): ValueNode;
-
-export function coerceArgValue(
-  argType: GraphQLEnumType,
-  value: unknown,
-): ValueNode;
-
-export function coerceArgValue(argType, value) {
-  // Handle the case where we're setting a variable as the value
-  if (typeof value !== 'string' && value.kind === Kind.VARIABLE_DEFINITION) {
-    return value.variable;
-  } else if (isScalarType(argType)) {
-    try {
-      switch (argType.name) {
-        case 'String':
-          return {
-            kind: Kind.STRING,
-            value: String(argType.parseValue(value)),
-          };
-        case 'Float':
-          return {
-            kind: Kind.FLOAT,
-            value: String(argType.parseValue(parseFloat(value))),
-          };
-        case 'Int':
-          return {
-            kind: Kind.INT,
-            value: String(argType.parseValue(parseInt(value, 10))),
-          };
-        case 'Boolean':
-          try {
-            const parsed = JSON.parse(value);
-            if (typeof parsed === 'boolean') {
-              return { kind: Kind.BOOLEAN, value: parsed };
-            } else {
-              return { kind: Kind.BOOLEAN, value: false };
-            }
-          } catch (e) {
-            return {
-              kind: Kind.BOOLEAN,
-              value: false,
-            };
-          }
-        default:
-          return {
-            kind: Kind.STRING,
-            value: String(argType.parseValue(value)),
-          };
-      }
-    } catch (e) {
-      console.error('error coercing arg value', e, value);
-      return { kind: Kind.STRING, value: value };
-    }
-  } else {
-    try {
-      const parsedValue = argType.parseValue(value);
-      if (parsedValue) {
-        return { kind: Kind.ENUM, value: String(parsedValue) };
-      } else {
-        return { kind: Kind.ENUM, value: argType.getValues()[0].name };
-      }
-    } catch (e) {
-      return { kind: Kind.ENUM, value: argType.getValues()[0].name };
-    }
-  }
-}
-
 export function defaultValue(
   argType: GraphQLEnumType | GraphQLScalarType,
 ): ValueNode {
@@ -185,4 +118,104 @@ export function defaultGetDefaultScalarArgValue(
 
 export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function defaultGetDefaultFieldNames(
+  type: GraphQLObjectType,
+): Array<string> {
+  const fields = type.getFields();
+
+  // Is there an `id` field?
+  if (fields['id']) {
+    const res = ['id'];
+    if (fields['email']) {
+      res.push('email');
+    } else if (fields[Kind.NAME]) {
+      res.push(Kind.NAME);
+    }
+    return res;
+  }
+
+  // Is there an `edges` field?
+  if (fields['edges']) {
+    return ['edges'];
+  }
+
+  // Is there an `node` field?
+  if (fields['node']) {
+    return ['node'];
+  }
+
+  if (fields['nodes']) {
+    return ['nodes'];
+  }
+
+  // Include all leaf-type fields.
+  const leafFieldNames: string[] = [];
+  Object.keys(fields).forEach(fieldName => {
+    if (isLeafType(fields[fieldName].type)) {
+      leafFieldNames.push(fieldName);
+    }
+  });
+
+  if (!leafFieldNames.length) {
+    // No leaf fields, add typename so that the query stays valid
+    return ['__typename'];
+  }
+  return leafFieldNames.slice(0, 2); // Prevent too many fields from being added
+}
+
+function parseQuery(text: string): null | DocumentNode | Error {
+  try {
+    if (!text.trim()) {
+      return null;
+    }
+    return parse(
+      text,
+      // Tell graphql to not bother track locations when parsing, we don't need
+      // it and it's a tiny bit more expensive.
+      { noLocation: true },
+    );
+  } catch (e) {
+    return new Error(e);
+  }
+}
+
+const DEFAULT_OPERATION = {
+  kind: Kind.OPERATION_DEFINITION,
+  operation: 'query',
+  variableDefinitions: [],
+  name: { kind: Kind.NAME, value: 'MyQuery' },
+  directives: [],
+  selectionSet: {
+    kind: Kind.SELECTION_SET,
+    selections: [],
+  },
+} as OperationDefinitionNode;
+
+export const DEFAULT_DOCUMENT = {
+  kind: Kind.DOCUMENT,
+  definitions: [DEFAULT_OPERATION],
+} as DocumentNode;
+
+let parseQueryMemoize: null | [string, DocumentNode] = null;
+export function memoizeParseQuery(query: string): DocumentNode {
+  if (parseQueryMemoize && parseQueryMemoize[0] === query) {
+    return parseQueryMemoize[1];
+  } else {
+    const result = parseQuery(query);
+    if (!result) {
+      return DEFAULT_DOCUMENT;
+    } else if (result instanceof Error) {
+      if (parseQueryMemoize) {
+        // Most likely a temporarily invalid query while they type
+        return parseQueryMemoize[1];
+      } else {
+        return DEFAULT_DOCUMENT;
+      }
+    } else {
+      parseQueryMemoize = [query, result];
+      return result;
+    }
+  }
 }
