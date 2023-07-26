@@ -2,5 +2,16 @@
   "name": "graphiql-explorer",
   "version": "0.9.1",
   "module": "dist/index.js",
-  "types": "types/index.d.ts"
+  "types": "types/index.d.ts",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "graphql": "^16.7.1"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "graphql": "^16.7.1"
+  }
 }
