@@ -5,22 +5,12 @@ import * as React from 'react';
 import {
   getNamedType,
   GraphQLObjectType,
-  isEnumType,
   isInputObjectType,
   isInterfaceType,
   isLeafType,
-  isNonNullType,
   isObjectType,
-  isRequiredInputField,
-  isScalarType,
   isUnionType,
-  isWrappingType,
-  parse,
-  print,
-  parseType,
-  visit,
   Kind,
-  isNamedType,
 } from 'graphql';
 
 import type {

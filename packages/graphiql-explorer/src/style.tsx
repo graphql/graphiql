@@ -1,7 +1,7 @@
 // cSpell:disable
 // Names match class names in graphiql app.css
 
-import * as React from 'react';
+import React from 'react';
 
 import { Colors } from './types';
 
