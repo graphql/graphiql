@@ -110,8 +110,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+          fail_ci_if_error: true
+          verbose: true
 
   vitest:
     name: Vitest Unit Tests
@@ -190,13 +190,14 @@ jobs:
         with:
           name: cypress-screenshots
           path: packages/graphiql/cypress/screenshots
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-videos
           path: packages/graphiql/cypress/videos
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+          if-no-files-found: ignore
+
   canary:
     name: Canary
     runs-on: ubuntu-latest
@@ -244,7 +245,7 @@ jobs:
           bot: 'github-actions[bot]'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish a empty message
+      - name: Publish an empty message
         if: steps.canary.outputs.released == 'false'
         uses: 'dotansimha/pr-comment@master'
         with:
