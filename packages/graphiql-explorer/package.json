@@ -1,0 +1,6 @@
+{
+  "name": "graphiql-explorer",
+  "version": "8.0.1",
+  "module": "dist/index.js",
+  "types": "types/index.d.ts"
+}
