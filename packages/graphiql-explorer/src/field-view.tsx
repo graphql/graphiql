@@ -348,11 +348,11 @@ export class FieldView extends React.PureComponent<
                 const typeName = type.name;
                 let newFragmentName = `${typeName}Fragment`;
 
-                const conflictingNameCount = (
-                  Object.values(applicableFragments) ?? []
-                ).filter((fragment: FragmentDefinitionNode) => {
-                  return fragment.name.value.startsWith(newFragmentName);
-                }).length;
+                const conflictingNameCount = (applicableFragments ?? [])
+                  // @ts-expect-error
+                  .filter((fragment: FragmentDefinitionNode) => {
+                    return fragment.name.value.startsWith(newFragmentName);
+                  }).length;
 
                 if (conflictingNameCount > 0) {
                   newFragmentName = `${newFragmentName}${conflictingNameCount}`;
@@ -458,7 +458,8 @@ export class FieldView extends React.PureComponent<
           {node}
           <div style={{ marginLeft: 16 }}>
             {!!applicableFragments
-              ? Object.values(applicableFragments).map(fragment => {
+              ? // @ts-expect-error
+                applicableFragments.map(fragment => {
                   const type = schema.getType(
                     fragment.typeCondition.name.value,
                   );

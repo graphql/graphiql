@@ -46,10 +46,10 @@ export type Colors = {
 };
 export type StyleConfig = {
   colors: Colors;
-  arrowOpen: React.ReactNode;
-  arrowClosed: React.ReactNode;
-  checkboxChecked: React.ReactNode;
-  checkboxUnchecked: React.ReactNode;
+  arrowOpen: React.ReactElement;
+  arrowClosed: React.ReactElement;
+  checkboxChecked: React.ReactElement;
+  checkboxUnchecked: React.ReactElement;
   styles: Styles;
 };
 

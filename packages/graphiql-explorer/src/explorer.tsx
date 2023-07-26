@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 
-import { GraphQLObjectType, print, Kind, isNamedType } from 'graphql';
+import { GraphQLObjectType, print, Kind } from 'graphql';
 
 import type {
   DocumentNode,
@@ -534,7 +534,7 @@ export class Explorer extends React.PureComponent<Props, State> {
             overflow: 'scroll',
           }}
         >
-          {relevantOperations.filter(isNamedType).map((operation, index) => {
+          {relevantOperations.map((operation, index) => {
             const operationName =
               operation && operation.name && operation.name.value;
 
@@ -578,6 +578,8 @@ export class Explorer extends React.PureComponent<Props, State> {
                 : operation?.kind === Kind.FRAGMENT_DEFINITION
                 ? fragmentFields
                 : null;
+
+            console.log(fields);
 
             const fragmentTypeName =
               operation?.kind === Kind.FRAGMENT_DEFINITION
