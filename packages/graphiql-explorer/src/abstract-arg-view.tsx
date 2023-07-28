@@ -22,7 +22,7 @@ import type {
   ValueNode,
 } from 'graphql';
 
-import { isRequiredArgument, unwrapInputType } from './utils';
+import { isRequiredArgument, unwrapInputType } from './lib/utils';
 import {
   Field,
   GetDefaultScalarArgValue,

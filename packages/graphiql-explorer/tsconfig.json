@@ -15,7 +15,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "declaration": true,
-    "declarationDir": "types",
     "jsx": "react",
     "composite": true,
     "outDir": "dist",

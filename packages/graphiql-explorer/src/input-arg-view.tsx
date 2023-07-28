@@ -22,7 +22,8 @@ import {
   Field,
   CommitOptions,
 } from './types';
-import { defaultInputObjectFields, unwrapInputType } from './utils';
+import { unwrapInputType } from './lib/utils';
+import { defaultInputObjectFields } from './lib/defaults';
 
 import { coerceArgValue } from './lib/coerce-arg-value';
 import { AbstractArgView } from './abstract-arg-view';
@@ -51,7 +52,7 @@ export class InputArgView extends React.PureComponent<InputArgViewProps, {}> {
     );
   };
 
-  _removeArg = (commit: boolean): DocumentNode => {
+  _removeArg = (_commit: boolean): DocumentNode => {
     const { selection } = this.props;
     const argSelection = this._getArgSelection();
     this._previousArgSelection = argSelection;
