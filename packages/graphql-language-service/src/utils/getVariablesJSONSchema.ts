@@ -130,6 +130,7 @@ class Marker {
 function getJSONSchemaFromGraphQLType(
   type: GraphQLInputType | GraphQLInputField,
   options?: JSONSchemaRunningOptions,
+  isNonNull?: boolean,
 ): DefinitionResult {
   let required = false;
   let definition: CombinedSchema = Object.create(null);
@@ -139,22 +140,48 @@ function getJSONSchemaFromGraphQLType(
   if ('defaultValue' in type && type.defaultValue !== undefined) {
     definition.default = type.defaultValue as JSONSchema4Type | undefined;
   }
+
   if (isEnumType(type)) {
-    definition.type = 'string';
     definition.enum = type.getValues().map(val => val.name);
+    if (!isNonNull) {
+      definition.enum.push(null);
+    }
   }
 
-  if (isScalarType(type) && scalarTypesMap[type.name]) {
-    definition.type = scalarTypesMap[type.name];
+  if (isScalarType(type)) {
+    // default scalars
+    if (scalarTypesMap[type.name]) {
+      if (isNonNull) {
+        definition.type = scalarTypesMap[type.name];
+      } else {
+        definition.type = [scalarTypesMap[type.name], 'null'];
+      }
+    } else {
+      // custom scalar can be of any type
+      // FIXME: allow custom scalars to be configured somewhere?
+      definition.type = ['string', 'number', 'boolean', 'integer'];
+      if (!isNonNull) {
+        // nullable
+        definition.type.push('null');
+      }
+    }
   }
+
   if (isListType(type)) {
-    definition.type = 'array';
+    if (isNonNull) {
+      definition.type = 'array';
+    } else {
+      definition.type = ['array', 'null'];
+    }
+
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
     );
     if (def.$ref) {
       definition.items = { $ref: def.$ref };
+    } else if (def.oneOf) {
+      definition.items = { oneOf: def.oneOf };
     } else {
       definition.items = def;
     }
@@ -164,11 +191,13 @@ function getJSONSchemaFromGraphQLType(
       }
     }
   }
+
   if (isNonNullType(type)) {
     required = true;
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
+      true,
     );
     definition = def;
     if (defs) {
@@ -177,9 +206,17 @@ function getJSONSchemaFromGraphQLType(
       }
     }
   }
+
   if (isInputObjectType(type)) {
-    definition.$ref = `#/definitions/${type.name}`;
-    if (options?.definitionMarker.mark(type.name)) {
+    if (isNonNull) {
+      definition.$ref = `#/definitions/${type.name}`;
+    } else {
+      definition.oneOf = [
+        { $ref: `#/definitions/${type.name}` },
+        { type: 'null' },
+      ];
+    }
+    if (options?.definitionMarker?.mark(type.name)) {
       const fields = type.getFields();
 
       const fieldDef: PropertiedJSON6 = {

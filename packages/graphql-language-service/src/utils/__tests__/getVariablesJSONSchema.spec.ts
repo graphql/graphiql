@@ -25,7 +25,15 @@ describe('getVariablesJSONSchema', () => {
   it('should handle scalar types', () => {
     const variableToType = collectVariables(
       schema,
-      parse(`query($id: ID, $string: String!, $boolean: Boolean, $number: Int!, $price: Float) {
+      parse(`query(
+          $id: ID,
+          $string: String!,
+          $boolean: Boolean,
+          $number: Int!,
+          $price: Float,
+          $custom: SomeCustomScalar,
+          $anotherCustom: SomeCustomScalar!
+        ) {
         characters{
           name
         }
@@ -34,11 +42,11 @@ describe('getVariablesJSONSchema', () => {
 
     const jsonSchema = getVariablesJSONSchema(variableToType);
 
-    expect(jsonSchema.required).toEqual(['string', 'number']);
+    expect(jsonSchema.required).toEqual(['string', 'number', 'anotherCustom']);
 
     expect(jsonSchema.properties).toEqual({
       boolean: {
-        type: 'boolean',
+        type: ['boolean', 'null'],
         description: 'Boolean',
       },
       string: {
@@ -51,7 +59,15 @@ describe('getVariablesJSONSchema', () => {
       },
       price: {
         description: 'Float',
-        type: 'number',
+        type: ['number', 'null'],
+      },
+      custom: {
+        description: 'SomeCustomScalar',
+        type: ['string', 'number', 'boolean', 'integer', 'null'],
+      },
+      anotherCustom: {
+        description: 'SomeCustomScalar!',
+        type: ['string', 'number', 'boolean', 'integer'],
       },
     });
   });
@@ -76,7 +92,7 @@ describe('getVariablesJSONSchema', () => {
         description: 'InputType!',
       },
       anotherInput: {
-        $ref: '#/definitions/InputType',
+        oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
         description: 'example input type\nInputType',
       },
     });
@@ -91,7 +107,7 @@ describe('getVariablesJSONSchema', () => {
           },
           value: {
             description: 'example value\nInt',
-            type: 'integer',
+            type: ['integer', 'null'],
             default: 42,
           },
           exampleObject: {
@@ -99,9 +115,12 @@ describe('getVariablesJSONSchema', () => {
             description: 'nesting a whole object!\nChildInputType!',
           },
           exampleList: {
-            type: 'array',
+            type: ['array', 'null'],
             items: {
-              $ref: '#/definitions/ChildInputType',
+              oneOf: [
+                { $ref: '#/definitions/ChildInputType' },
+                { type: 'null' },
+              ],
             },
             description: 'list type with default\n[ChildInputType]',
             default: [
@@ -115,7 +134,7 @@ describe('getVariablesJSONSchema', () => {
             type: 'array',
             description: '[String]!',
             items: {
-              type: 'string',
+              type: ['string', 'null'],
               description: 'String',
             },
             default: ['something'],
@@ -133,7 +152,7 @@ describe('getVariablesJSONSchema', () => {
             default: true,
           },
           favoriteBook: {
-            type: 'string',
+            type: ['string', 'null'],
             description: 'favorite book\nString',
             default: 'Where the wild things are',
           },
@@ -148,7 +167,7 @@ describe('getVariablesJSONSchema', () => {
   it('should handle input object types with markdown', () => {
     const variableToType = collectVariables(
       schema,
-      parse(`query($input: InputType!, $anotherInput: InputType, $episode: Episode) {
+      parse(`query($input: InputType!, $anotherInput: InputType, $episode: Episode, $anotherEpisode: Episode!) {
         characters {
           name
         }
@@ -159,7 +178,7 @@ describe('getVariablesJSONSchema', () => {
       useMarkdownDescription: true,
     });
 
-    expect(jsonSchema.required).toEqual(['input']);
+    expect(jsonSchema.required).toEqual(['input', 'anotherEpisode']);
 
     expect(jsonSchema.properties).toEqual({
       input: {
@@ -168,17 +187,21 @@ describe('getVariablesJSONSchema', () => {
         markdownDescription: mdTicks('InputType!'),
       },
       anotherInput: {
-        $ref: '#/definitions/InputType',
+        oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
         // description: 'example input type',
         // TODO: fix this for non-nulls?
         description: 'example input type\nInputType',
         markdownDescription: 'example input type\n```graphql\nInputType\n```',
       },
       episode: {
-        enum: ['NEWHOPE', 'EMPIRE', 'JEDI'],
+        enum: ['NEWHOPE', 'EMPIRE', 'JEDI', null],
         description: 'Episode',
-        type: 'string',
         markdownDescription: mdTicks('Episode'),
+      },
+      anotherEpisode: {
+        enum: ['NEWHOPE', 'EMPIRE', 'JEDI'],
+        description: 'Episode!',
+        markdownDescription: mdTicks('Episode!'),
       },
     });
     expect(jsonSchema.definitions).toEqual({
@@ -195,7 +218,7 @@ describe('getVariablesJSONSchema', () => {
           value: {
             description: 'example value\nInt',
             markdownDescription: `example value\n${mdTicks('Int')}`,
-            type: 'integer',
+            type: ['integer', 'null'],
             default: 42,
           },
           exampleObject: {
@@ -206,9 +229,12 @@ describe('getVariablesJSONSchema', () => {
             $ref: '#/definitions/ChildInputType',
           },
           exampleList: {
-            type: 'array',
+            type: ['array', 'null'],
             items: {
-              $ref: '#/definitions/ChildInputType',
+              oneOf: [
+                { $ref: '#/definitions/ChildInputType' },
+                { type: 'null' },
+              ],
             },
             description: 'list type with default\n[ChildInputType]',
             markdownDescription: `list type with default\n${mdTicks(
@@ -226,7 +252,7 @@ describe('getVariablesJSONSchema', () => {
             description: '[String]!',
             markdownDescription: mdTicks('[String]!'),
             items: {
-              type: 'string',
+              type: ['string', 'null'],
               description: 'String',
               markdownDescription: mdTicks('String'),
             },
@@ -243,7 +269,7 @@ describe('getVariablesJSONSchema', () => {
             default: 'Where the wild things are',
             description: 'favorite book\nString',
             markdownDescription: 'favorite book\n```graphql\nString\n```',
-            type: 'string',
+            type: ['string', 'null'],
           },
           isChild: {
             default: true,

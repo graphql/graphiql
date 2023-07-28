@@ -4,6 +4,8 @@ schema {
 
 directive @test(testArg: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+scalar SomeCustomScalar
+
 enum Episode {
   NEWHOPE
   EMPIRE
