@@ -36,11 +36,11 @@ import {
   AvailableFragments,
 } from './types';
 import {
-  defaultInputObjectFields,
   isRequiredArgument,
   unwrapInputType,
   unwrapOutputType,
-} from './utils';
+} from './lib/utils';
+import { defaultInputObjectFields } from './lib/defaults';
 
 import { Checkbox } from './checkbox';
 import { FragmentView } from './fragment-view';

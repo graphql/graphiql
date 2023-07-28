@@ -31,14 +31,13 @@ import {
   AvailableFragments,
   NewOperationType,
 } from './types';
+import { capitalize, DEFAULT_DOCUMENT, memoizeParseQuery } from './lib/utils';
+
 import {
   defaultValue,
   defaultGetDefaultScalarArgValue,
-  capitalize,
-  DEFAULT_DOCUMENT,
-  memoizeParseQuery,
   defaultGetDefaultFieldNames,
-} from './utils';
+} from './lib/defaults';
 import { RootView } from './root-view';
 import {
   defaultCheckboxChecked,

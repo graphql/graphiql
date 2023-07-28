@@ -13,7 +13,7 @@ import type {
   OperationDefinitionNode,
 } from 'graphql';
 
-import { capitalize } from './utils';
+import { capitalize } from './lib/utils';
 
 import { FieldView } from './field-view';
 import {

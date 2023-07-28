@@ -2,7 +2,7 @@
   "name": "graphiql-explorer",
   "version": "0.9.1",
   "module": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "peerDependencies": {
     "react": "^18.2.0",
