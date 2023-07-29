@@ -30,9 +30,14 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: yarn
           node-version: 16
-
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node_modules-${{hashFiles('yarn.lock')}}
+          restore-keys: node_modules-
       - name: Force GraphQL ${{ matrix.release }} solution
         run: yarn repo:resolve graphql@${{ matrix.release }}
 

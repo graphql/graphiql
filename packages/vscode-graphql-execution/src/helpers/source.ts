@@ -130,9 +130,11 @@ export class SourceHelper {
     try {
       const sources = await projectConfig.getDocuments();
       const { fragmentDefinitions } = this;
-
       for (const source of sources) {
-        visit(source.document as DocumentNode, {
+        if (!source.document) {
+          continue;
+        }
+        visit(source.document, {
           FragmentDefinition(node) {
             const existingDef = fragmentDefinitions.get(node.name.value);
             const newVal = print(node);

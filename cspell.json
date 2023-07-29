@@ -17,7 +17,8 @@
     "**/CHANGELOG.md",
     "**/package.json",
     "**/esbuild.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    ".vscode/extensions.json"
   ],
   "files": ["**/*.{js,cjs,mjs,ts,jsx,tsx,md,mdx,html,json,css,toml,yaml,yml}"]
 }

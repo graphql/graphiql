@@ -9,9 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "prettier": "3.0.0-alpha.12",
     "@graphiql/toolkit": "^0.9.1",
-    "graphql": "^16.6.0",
+    "graphql": "^16.4.0",
     "graphql-ws": "^5.5.5",
     "jsonc-parser": "^3.2.0",
     "marked": "^4.2.12",
@@ -19,13 +18,14 @@
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-graphql": "^1.3.0",
     "next": "13.4.7",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "prettier": "3.0.0-alpha.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.16.18",
+    "@types/node": "^16.18.4",
     "@types/react": "18.2.14",
     "next-global-css": "1.3.1",
-    "typescript": "5.1.3"
+    "typescript": "^4.6.3"
   }
 }

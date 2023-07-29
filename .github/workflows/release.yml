@@ -20,9 +20,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
+          cache: yarn
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache-modules
+        with:
+          path: node_modules
+          key: node_modules-${{hashFiles('yarn.lock')}}
+          restore-keys: node_modules-
       - run: yarn install --frozen-lockfile --immutable
-
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
