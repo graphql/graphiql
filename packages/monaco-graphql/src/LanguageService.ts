@@ -274,7 +274,10 @@ export class LanguageService {
         const documentAST = this.parse(documentText);
         const operationFacts = getOperationASTFacts(documentAST, schema.schema);
         if (operationFacts?.variableToType) {
-          return getVariablesJSONSchema(operationFacts.variableToType, options);
+          return getVariablesJSONSchema(operationFacts.variableToType, {
+            ...options,
+            customScalarSchemas: schema.customScalarSchemas,
+          });
         }
       } catch {}
     }
