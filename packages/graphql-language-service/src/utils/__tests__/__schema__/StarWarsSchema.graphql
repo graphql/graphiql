@@ -10,6 +10,20 @@ scalar Even
 scalar SpecialScalar
 scalar SpecialDate
 
+"""
+An input type with custom scalars
+"""
+input CustomScalarsInput {
+  """
+  example email
+  """
+  email: EmailAddress
+  """
+  example even
+  """
+  even: Even
+}
+
 enum Episode {
   NEWHOPE
   EMPIRE

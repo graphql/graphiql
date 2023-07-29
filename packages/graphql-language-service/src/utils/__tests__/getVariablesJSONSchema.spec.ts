@@ -83,7 +83,9 @@ describe('getVariablesJSONSchema', () => {
           $special: SpecialScalar!,
           $optionalSpecial: SpecialScalar,
           $specialDate: SpecialDate!,
-          $optionalSpecialDate: SpecialDate
+          $optionalSpecialDate: SpecialDate,
+          $customInput: CustomScalarsInput!,
+          $optionalCustomInput: CustomScalarsInput
         ) {
         characters{
           name
@@ -92,7 +94,7 @@ describe('getVariablesJSONSchema', () => {
     );
 
     const jsonSchema = getVariablesJSONSchema(variableToType, {
-      customScalarSchemaMappings: {
+      customScalarSchemas: {
         EmailAddress: {
           type: 'string',
           format: 'email',
@@ -127,7 +129,28 @@ describe('getVariablesJSONSchema', () => {
       'evenNumber',
       'special',
       'specialDate',
+      'customInput',
     ]);
+
+    expect(jsonSchema.definitions).toEqual({
+      CustomScalarsInput: {
+        description: 'CustomScalarsInput\nAn input type with custom scalars',
+        properties: {
+          email: {
+            description: 'example email\n\nEmailAddress',
+            format: 'email',
+            type: ['string', 'null'],
+          },
+          even: {
+            description: 'example even\n\nEven\nAn even number.',
+            multipleOf: 2,
+            type: ['integer', 'null'],
+          },
+        },
+        required: [],
+        type: 'object',
+      },
+    });
 
     expect(jsonSchema.properties).toEqual({
       email: {
@@ -143,12 +166,12 @@ describe('getVariablesJSONSchema', () => {
       evenNumber: {
         type: 'integer',
         multipleOf: 2,
-        description: 'An even number.\nEven!',
+        description: 'Even!\nAn even number.',
       },
       optionalEvenNumber: {
         type: ['integer', 'null'],
         multipleOf: 2,
-        description: 'An even number.\nEven',
+        description: 'Even\nAn even number.',
       },
       special: {
         type: ['string'],
@@ -161,7 +184,7 @@ describe('getVariablesJSONSchema', () => {
         description: 'SpecialScalar',
       },
       specialDate: {
-        description: 'A date or date time.\nSpecialDate!',
+        description: 'SpecialDate!\nA date or date time.',
         oneOf: [
           {
             type: 'string',
@@ -174,7 +197,7 @@ describe('getVariablesJSONSchema', () => {
         ],
       },
       optionalSpecialDate: {
-        description: 'A date or date time.\nSpecialDate',
+        description: 'SpecialDate\nA date or date time.',
         oneOf: [
           {
             type: 'string',
@@ -183,6 +206,21 @@ describe('getVariablesJSONSchema', () => {
           {
             type: 'string',
             format: 'date',
+          },
+          {
+            type: 'null',
+          },
+        ],
+      },
+      customInput: {
+        $ref: '#/definitions/CustomScalarsInput',
+        description: 'CustomScalarsInput!\nAn input type with custom scalars',
+      },
+      optionalCustomInput: {
+        description: 'CustomScalarsInput\nAn input type with custom scalars',
+        oneOf: [
+          {
+            $ref: '#/definitions/CustomScalarsInput',
           },
           {
             type: 'null',
@@ -209,30 +247,30 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       input: {
         $ref: '#/definitions/InputType',
-        description: 'example input type\nInputType!',
+        description: 'InputType!\nexample input type',
       },
       anotherInput: {
         oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
-        description: 'example input type\nInputType',
+        description: 'InputType\nexample input type',
       },
     });
     expect(jsonSchema.definitions).toEqual({
       InputType: {
         type: 'object',
-        description: 'example input type\nInputType',
+        description: 'InputType\nexample input type',
         properties: {
           key: {
-            description: 'example key\nString!',
+            description: 'example key\n\nString!',
             type: 'string',
           },
           value: {
-            description: 'example value\nInt',
+            description: 'example value\n\nInt',
             type: ['integer', 'null'],
             default: 42,
           },
           exampleObject: {
             $ref: '#/definitions/ChildInputType',
-            description: 'nesting a whole object!\nChildInputType!',
+            description: 'nesting a whole object!\n\nChildInputType!',
           },
           exampleList: {
             type: ['array', 'null'],
@@ -242,7 +280,7 @@ describe('getVariablesJSONSchema', () => {
                 { type: 'null' },
               ],
             },
-            description: 'list type with default\n[ChildInputType]',
+            description: 'list type with default\n\n[ChildInputType]',
             default: [
               {
                 isChild: false,
@@ -273,7 +311,7 @@ describe('getVariablesJSONSchema', () => {
           },
           favoriteBook: {
             type: ['string', 'null'],
-            description: 'favorite book\nString',
+            description: 'favorite book\n\nString',
             default: 'Where the wild things are',
           },
         },
@@ -303,13 +341,13 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       input: {
         $ref: '#/definitions/InputType',
-        description: 'example input type\nInputType!',
-        markdownDescription: 'example input type\n```graphql\nInputType!\n```',
+        description: 'InputType!\nexample input type',
+        markdownDescription: '```graphql\nInputType!\n```\nexample input type',
       },
       anotherInput: {
         oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
-        description: 'example input type\nInputType',
-        markdownDescription: 'example input type\n```graphql\nInputType\n```',
+        description: 'InputType\nexample input type',
+        markdownDescription: '```graphql\nInputType\n```\nexample input type',
       },
       episode: {
         enum: ['NEWHOPE', 'EMPIRE', 'JEDI', null],
@@ -325,23 +363,23 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.definitions).toEqual({
       InputType: {
         type: 'object',
-        description: 'example input type\nInputType',
-        markdownDescription: `example input type\n${mdTicks('InputType')}`,
+        description: 'InputType\nexample input type',
+        markdownDescription: `${mdTicks('InputType')}\nexample input type`,
         properties: {
           key: {
-            description: 'example key\nString!',
-            markdownDescription: `example key\n${mdTicks('String!')}`,
+            description: 'example key\n\nString!',
+            markdownDescription: `example key\n\n${mdTicks('String!')}`,
             type: 'string',
           },
           value: {
-            description: 'example value\nInt',
-            markdownDescription: `example value\n${mdTicks('Int')}`,
+            description: 'example value\n\nInt',
+            markdownDescription: `example value\n\n${mdTicks('Int')}`,
             type: ['integer', 'null'],
             default: 42,
           },
           exampleObject: {
-            description: 'nesting a whole object!\nChildInputType!',
-            markdownDescription: `nesting a whole object!\n${mdTicks(
+            description: 'nesting a whole object!\n\nChildInputType!',
+            markdownDescription: `nesting a whole object!\n\n${mdTicks(
               'ChildInputType!',
             )}`,
             $ref: '#/definitions/ChildInputType',
@@ -354,8 +392,8 @@ describe('getVariablesJSONSchema', () => {
                 { type: 'null' },
               ],
             },
-            description: 'list type with default\n[ChildInputType]',
-            markdownDescription: `list type with default\n${mdTicks(
+            description: 'list type with default\n\n[ChildInputType]',
+            markdownDescription: `list type with default\n\n${mdTicks(
               '[ChildInputType]',
             )}`,
             default: [
@@ -385,8 +423,8 @@ describe('getVariablesJSONSchema', () => {
         properties: {
           favoriteBook: {
             default: 'Where the wild things are',
-            description: 'favorite book\nString',
-            markdownDescription: 'favorite book\n```graphql\nString\n```',
+            description: 'favorite book\n\nString',
+            markdownDescription: 'favorite book\n\n```graphql\nString\n```',
             type: ['string', 'null'],
           },
           isChild: {
