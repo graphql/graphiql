@@ -6,6 +6,14 @@ directive @test(testArg: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 scalar SomeCustomScalar
 
+"""
+An email address. exmaple: hello@example.com
+"""
+scalar EmailAddress
+scalar Even
+scalar SpecialScalar
+scalar SpecialDate
+
 enum Episode {
   NEWHOPE
   EMPIRE

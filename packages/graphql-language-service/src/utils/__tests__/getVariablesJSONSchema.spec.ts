@@ -72,6 +72,126 @@ describe('getVariablesJSONSchema', () => {
     });
   });
 
+  it('should handle custom scalar schemas', () => {
+    const variableToType = collectVariables(
+      schema,
+      parse(`query(
+          $email: EmailAddress!,
+          $optionalEmail: EmailAddress,
+          $evenNumber: Even!,
+          $optionalEvenNumber: Even,
+          $special: SpecialScalar!,
+          $optionalSpecial: SpecialScalar,
+          $specialDate: SpecialDate!,
+          $optionalSpecialDate: SpecialDate
+        ) {
+        characters{
+          name
+        }
+       }`),
+    );
+
+    const jsonSchema = getVariablesJSONSchema(variableToType, {
+      customScalarSchemaMappings: {
+        EmailAddress: {
+          type: 'string',
+          format: 'email',
+        },
+        Even: {
+          type: 'integer',
+          multipleOf: 2,
+          description: 'An even number.',
+        },
+        SpecialScalar: {
+          type: ['string'],
+          minLength: 5,
+        },
+        SpecialDate: {
+          description: 'A date or date time.',
+          oneOf: [
+            {
+              type: 'string',
+              format: 'date-time',
+            },
+            {
+              type: 'string',
+              format: 'date',
+            },
+          ],
+        },
+      },
+    });
+
+    expect(jsonSchema.required).toEqual([
+      'email',
+      'evenNumber',
+      'special',
+      'specialDate',
+    ]);
+
+    expect(jsonSchema.properties).toEqual({
+      email: {
+        type: 'string',
+        format: 'email',
+        description: 'EmailAddress!',
+      },
+      optionalEmail: {
+        type: ['string', 'null'],
+        format: 'email',
+        description: 'EmailAddress',
+      },
+      evenNumber: {
+        type: 'integer',
+        multipleOf: 2,
+        description: 'An even number.\nEven!',
+      },
+      optionalEvenNumber: {
+        type: ['integer', 'null'],
+        multipleOf: 2,
+        description: 'An even number.\nEven',
+      },
+      special: {
+        type: ['string'],
+        minLength: 5,
+        description: 'SpecialScalar!',
+      },
+      optionalSpecial: {
+        type: ['string', 'null'],
+        minLength: 5,
+        description: 'SpecialScalar',
+      },
+      specialDate: {
+        description: 'A date or date time.\nSpecialDate!',
+        oneOf: [
+          {
+            type: 'string',
+            format: 'date-time',
+          },
+          {
+            type: 'string',
+            format: 'date',
+          },
+        ],
+      },
+      optionalSpecialDate: {
+        description: 'A date or date time.\nSpecialDate',
+        oneOf: [
+          {
+            type: 'string',
+            format: 'date-time',
+          },
+          {
+            type: 'string',
+            format: 'date',
+          },
+          {
+            type: 'null',
+          },
+        ],
+      },
+    });
+  });
+
   it('should handle input object types', () => {
     const variableToType = collectVariables(
       schema,
@@ -89,7 +209,7 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       input: {
         $ref: '#/definitions/InputType',
-        description: 'InputType!',
+        description: 'example input type\nInputType!',
       },
       anotherInput: {
         oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
@@ -183,13 +303,11 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       input: {
         $ref: '#/definitions/InputType',
-        description: 'InputType!',
-        markdownDescription: mdTicks('InputType!'),
+        description: 'example input type\nInputType!',
+        markdownDescription: 'example input type\n```graphql\nInputType!\n```',
       },
       anotherInput: {
         oneOf: [{ $ref: '#/definitions/InputType' }, { type: 'null' }],
-        // description: 'example input type',
-        // TODO: fix this for non-nulls?
         description: 'example input type\nInputType',
         markdownDescription: 'example input type\n```graphql\nInputType\n```',
       },
