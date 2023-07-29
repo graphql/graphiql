@@ -46,7 +46,7 @@ export type JSONSchemaOptions = {
   /**
    * Custom scalar schema mappings.
    */
-  customScalarSchemaMappings?: Record<string, JSONSchema6>;
+  customScalarSchemas?: Record<string, JSONSchema6>;
 };
 type JSONSchemaRunningOptions = JSONSchemaOptions & {
   definitionMarker: Marker;
@@ -161,10 +161,10 @@ function getJSONSchemaFromGraphQLType(
         definition.type = [scalarTypesMap[type.name], 'null'];
       }
     } else {
-      if (options?.customScalarSchemaMappings?.[type.name]) {
+      if (options?.customScalarSchemas?.[type.name]) {
         // deep clone
         definition = JSON.parse(
-          JSON.stringify(options.customScalarSchemaMappings[type.name]),
+          JSON.stringify(options.customScalarSchemas[type.name]),
         );
       } else {
         definition.type = ['string', 'number', 'boolean', 'integer'];
