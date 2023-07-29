@@ -311,6 +311,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       defaultHeaders: props.defaultHeaders,
       storage,
+      shouldPersistHeaders,
     });
     storeTabs(tabState);
 
