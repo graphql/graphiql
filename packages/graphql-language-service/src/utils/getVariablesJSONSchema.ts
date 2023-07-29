@@ -43,6 +43,10 @@ export type JSONSchemaOptions = {
    * whether to append a non-json schema valid 'markdownDescription` for `monaco-json`
    */
   useMarkdownDescription?: boolean;
+  /**
+   * Custom scalar schema mappings.
+   */
+  customScalarSchemaMappings?: Record<string, JSONSchema6>;
 };
 type JSONSchemaRunningOptions = JSONSchemaOptions & {
   definitionMarker: Marker;
@@ -157,12 +161,26 @@ function getJSONSchemaFromGraphQLType(
         definition.type = [scalarTypesMap[type.name], 'null'];
       }
     } else {
-      // custom scalar can be of any type
-      // FIXME: allow custom scalars to be configured somewhere?
-      definition.type = ['string', 'number', 'boolean', 'integer'];
+      if (options?.customScalarSchemaMappings?.[type.name]) {
+        // deep clone
+        definition = JSON.parse(
+          JSON.stringify(options.customScalarSchemaMappings[type.name]),
+        );
+      } else {
+        definition.type = ['string', 'number', 'boolean', 'integer'];
+      }
       if (!isNonNull) {
-        // nullable
-        definition.type.push('null');
+        if (Array.isArray(definition.type)) {
+          definition.type.push('null');
+        } else if (definition.type) {
+          definition.type = [definition.type, 'null'];
+        } else if (definition.oneOf) {
+          definition.oneOf.push({ type: 'null' });
+        } else {
+          definition = {
+            oneOf: [definition, { type: 'null' }],
+          };
+        }
       }
     }
   }
@@ -284,24 +302,38 @@ function getJSONSchemaFromGraphQLType(
       definitions[type.name] = fieldDef;
     }
   }
-  // append descriptions
-  if (
-    'description' in type &&
-    !isScalarType(type) &&
-    type.description &&
-    !definition.description
-  ) {
-    definition.description = type.description + '\n' + renderTypeToString(type);
-    if (options?.useMarkdownDescription) {
-      // @ts-expect-error
-      definition.markdownDescription =
-        type.description + '\n' + renderTypeToString(type, true);
-    }
-  } else {
-    definition.description = renderTypeToString(type);
-    if (options?.useMarkdownDescription) {
-      // @ts-expect-error
-      definition.markdownDescription = renderTypeToString(type, true);
+
+  if (!isNonNull) {
+    const ofType = isNonNullType(type) ? type.ofType : type;
+
+    // append to type descriptions
+    if (
+      'description' in ofType &&
+      !isScalarType(ofType) &&
+      ofType.description &&
+      !definition.description
+    ) {
+      definition.description =
+        ofType.description + '\n' + renderTypeToString(type);
+      if (options?.useMarkdownDescription) {
+        // @ts-expect-error
+        definition.markdownDescription =
+          ofType.description + '\n' + renderTypeToString(type, true);
+      }
+    } else if (definition.description) {
+      // append type to schema description
+      definition.description += '\n' + renderTypeToString(type);
+      if (options?.useMarkdownDescription) {
+        // @ts-expect-error
+        definition.markdownDescription =
+          definition.description + '\n' + renderTypeToString(type, true);
+      }
+    } else {
+      definition.description = renderTypeToString(type);
+      if (options?.useMarkdownDescription) {
+        // @ts-expect-error
+        definition.markdownDescription = renderTypeToString(type, true);
+      }
     }
   }
 
