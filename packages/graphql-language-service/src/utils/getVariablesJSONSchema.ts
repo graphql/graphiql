@@ -88,6 +88,34 @@ function renderType(into: string[], t: GraphQLInputType | GraphQLInputField) {
   }
 }
 
+function renderDefinitionDescription(
+  t: GraphQLInputType | GraphQLInputField,
+  useMarkdown?: boolean,
+  description?: string | undefined | null,
+) {
+  const into: string[] = [];
+
+  text(into, renderTypeToString(t, useMarkdown));
+
+  if (description) {
+    text(into, '\n');
+    text(into, description);
+  } else if (!isScalarType(t) && 'description' in t && t.description) {
+    text(into, '\n');
+    text(into, t.description);
+  } else if (
+    isNonNullType(t) &&
+    !isScalarType(t.ofType) &&
+    'description' in t.ofType &&
+    t.ofType.description
+  ) {
+    text(into, '\n');
+    text(into, t.ofType.description);
+  }
+
+  return into.join('');
+}
+
 function renderTypeToString(
   t: GraphQLInputType | GraphQLInputField,
   useMarkdown?: boolean,
@@ -242,20 +270,11 @@ function getJSONSchemaFromGraphQLType(
         properties: {},
         required: [],
       };
-      if (type.description) {
-        fieldDef.description =
-          type.description + '\n' + renderTypeToString(type);
-        if (options?.useMarkdownDescription) {
-          // @ts-expect-error
-          fieldDef.markdownDescription =
-            type.description + '\n' + renderTypeToString(type, true);
-        }
-      } else {
-        fieldDef.description = renderTypeToString(type);
-        if (options?.useMarkdownDescription) {
-          // @ts-expect-error
-          fieldDef.markdownDescription = renderTypeToString(type, true);
-        }
+
+      fieldDef.description = renderDefinitionDescription(type);
+      if (options?.useMarkdownDescription) {
+        // @ts-expect-error
+        fieldDef.markdownDescription = renderDefinitionDescription(type, true);
       }
 
       for (const fieldName of Object.keys(fields)) {
@@ -276,18 +295,18 @@ function getJSONSchemaFromGraphQLType(
           ...fieldDefinition,
         } as JSONSchema6;
 
-        const renderedField = renderTypeToString(field.type);
+        // prepend field description to type description
         fieldDef.properties[fieldName].description = field.description
-          ? field.description + '\n' + renderedField
-          : renderedField;
+          ? field.description + '\n\n' + typeDefinition.description
+          : typeDefinition.description;
+
         if (options?.useMarkdownDescription) {
-          const renderedFieldMarkdown = renderTypeToString(field.type, true);
-          fieldDef.properties[
-            fieldName
-            // @ts-expect-error
-          ].markdownDescription = field.description
-            ? field.description + '\n' + renderedFieldMarkdown
-            : renderedFieldMarkdown;
+          // @ts-expect-error
+          fieldDef.properties[fieldName].markdownDescription = field.description
+            ? // @ts-expect-error
+              field.description + '\n\n' + typeDefinition.markdownDescription
+            : // @ts-expect-error
+              typeDefinition.markdownDescription;
         }
 
         if (fieldRequired) {
@@ -304,36 +323,20 @@ function getJSONSchemaFromGraphQLType(
   }
 
   if (!isNonNull) {
-    const ofType = isNonNullType(type) ? type.ofType : type;
-
-    // append to type descriptions
-    if (
-      'description' in ofType &&
-      !isScalarType(ofType) &&
-      ofType.description &&
-      !definition.description
-    ) {
-      definition.description =
-        ofType.description + '\n' + renderTypeToString(type);
-      if (options?.useMarkdownDescription) {
-        // @ts-expect-error
-        definition.markdownDescription =
-          ofType.description + '\n' + renderTypeToString(type, true);
-      }
-    } else if (definition.description) {
-      // append type to schema description
-      definition.description += '\n' + renderTypeToString(type);
-      if (options?.useMarkdownDescription) {
-        // @ts-expect-error
-        definition.markdownDescription =
-          definition.description + '\n' + renderTypeToString(type, true);
-      }
-    } else {
-      definition.description = renderTypeToString(type);
-      if (options?.useMarkdownDescription) {
-        // @ts-expect-error
-        definition.markdownDescription = renderTypeToString(type, true);
-      }
+    // append to type descriptions, or schema description
+    const { description } = definition;
+    definition.description = renderDefinitionDescription(
+      type,
+      false,
+      description,
+    );
+    if (options?.useMarkdownDescription) {
+      // @ts-expect-error
+      definition.markdownDescription = renderDefinitionDescription(
+        type,
+        true,
+        description,
+      );
     }
   }
 
