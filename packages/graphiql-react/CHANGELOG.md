@@ -1,5 +1,17 @@
 # @graphiql/react
 
+## 0.19.3
+
+### Patch Changes
+
+- [#3371](https://github.com/graphql/graphiql/pull/3371) [`2348641c`](https://github.com/graphql/graphiql/commit/2348641c07748691c478ac5f67032b7e9081f9cb) Thanks [@acao](https://github.com/acao)! - Solves #2825, an old bug where new tabs were created on every refresh
+
+  the bug occurred when:
+
+  1. `shouldPersistHeaders` is not set to true
+  2. `headers` or `defaultHeaders` are provided as props
+  3. the user refreshes the browser
+
 ## 0.19.2
 
 ### Patch Changes
