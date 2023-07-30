@@ -33,7 +33,7 @@ The Explorer accepts a `colors` prop as a map of the class names in GraphiQL's c
 
 Example style map:
 
-```javascript
+```jsx
 <Explorer
   colors={{
     keyword: '#B11A04',
@@ -68,7 +68,7 @@ The defaults are
 
 arrowOpen
 
-```javascript
+```jsx
 <svg width="12" height="9">
   <path fill="#666" d="M 0 2 L 9 2 L 4.5 7.5 z" />
 </svg>
@@ -76,7 +76,7 @@ arrowOpen
 
 arrowClosed
 
-```javascript
+```jsx
 <svg width="12" height="9">
   <path fill="#666" d="M 0 0 L 0 9 L 5.5 4.5 z" />
 </svg>
@@ -84,7 +84,7 @@ arrowClosed
 
 checkboxChecked
 
-```javascript
+```jsx
 <svg
   style={{ marginRight: '3px', marginLeft: '-3px' }}
   width="12"
@@ -102,7 +102,7 @@ checkboxChecked
 
 checkboxUnchecked
 
-```javascript
+```jsx
 <svg
   style={{ marginRight: '3px', marginLeft: '-3px' }}
   width="12"
@@ -126,7 +126,7 @@ Pass the `styles` prop when you create the component. It's an object with two ke
 
 Example styles map:
 
-```javascript
+```jsx
 <Explorer
   styles={{
     buttonStyle: {
