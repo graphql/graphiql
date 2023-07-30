@@ -349,7 +349,7 @@ export function getVariablesJSONSchema(
   options?: JSONSchemaOptions,
 ): JSONSchema6 {
   const jsonSchema: PropertiedJSON6 = {
-    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $schema: 'http://json-schema.org/draft-04/schema',
     type: 'object',
     properties: {},
     required: [],
