@@ -310,7 +310,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      {props.toolbar?.additionalContent}
+      {props.toolbar?.additionalContent || null}
     </>
   );
 
@@ -384,17 +384,21 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     [pluginContext, pluginResize],
   );
 
-  const handleToolsTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
+  const handleVariablesTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
       if (editorToolsResize.hiddenElement === 'second') {
         editorToolsResize.setHiddenElement(null);
       }
-      setActiveSecondaryEditor(
-        event.currentTarget.dataset.name as 'variables' | 'headers',
-      );
-    },
-    [editorToolsResize],
-  );
+      setActiveSecondaryEditor('variables');
+    }, [editorToolsResize]);
+
+  const handleHeadersTabClick: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      if (editorToolsResize.hiddenElement === 'second') {
+        editorToolsResize.setHiddenElement(null);
+      }
+      setActiveSecondaryEditor('headers');
+    }, [editorToolsResize]);
 
   const toggleEditorTools: MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
@@ -502,74 +506,75 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               {PluginContent ? <PluginContent /> : null}
             </div>
           </div>
-          {pluginContext?.visiblePlugin && (
-            <div
-              className="graphiql-horizontal-drag-bar"
-              ref={pluginResize.dragBarRef}
-            />
-          )}
-          <div ref={pluginResize.secondRef} className="graphiql-sessions">
-            <div className="graphiql-session-header">
-              <Tabs
-                values={editorContext.tabs}
-                onReorder={handleReorder}
-                aria-label="Select active operation"
-              >
-                {editorContext.tabs.length > 1 && (
-                  <>
-                    {editorContext.tabs.map((tab, index) => (
-                      <Tab
-                        key={tab.id}
-                        value={tab}
-                        isActive={index === editorContext.activeTabIndex}
-                      >
-                        <Tab.Button
-                          aria-controls="graphiql-session"
-                          id={`graphiql-session-tab-${index}`}
-                          onClick={() => {
-                            executionContext.stop();
-                            editorContext.changeTab(index);
-                          }}
-                        >
-                          {tab.title}
-                        </Tab.Button>
-                        <Tab.Close
-                          onClick={() => {
-                            if (editorContext.activeTabIndex === index) {
-                              executionContext.stop();
-                            }
-                            editorContext.closeTab(index);
-                          }}
-                        />
-                      </Tab>
-                    ))}
-                    {addTab}
-                  </>
-                )}
-              </Tabs>
-              <div className="graphiql-session-header-right">
-                {editorContext.tabs.length === 1 && addTab}
-                {logo}
-              </div>
-            </div>
-            <div
-              role="tabpanel"
-              id="graphiql-session"
-              className="graphiql-session"
-              aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
-            >
-              <div ref={editorResize.firstRef}>
-                <div
-                  className={`graphiql-editors${
-                    editorContext.tabs.length === 1 ? ' full-height' : ''
-                  }`}
+          <div ref={pluginResize.dragBarRef}>
+            {pluginContext?.visiblePlugin ? (
+              <div className="graphiql-horizontal-drag-bar" />
+            ) : null}
+          </div>
+          <div ref={pluginResize.secondRef} style={{ minWidth: 0 }}>
+            <div className="graphiql-sessions">
+              <div className="graphiql-session-header">
+                <Tabs
+                  values={editorContext.tabs}
+                  onReorder={handleReorder}
+                  aria-label="Select active operation"
                 >
-                  <div ref={editorToolsResize.firstRef}>
-                    <section
-                      className="graphiql-query-editor"
-                      aria-label="Query Editor"
-                    >
-                      <div className="graphiql-query-editor-wrapper">
+                  {editorContext.tabs.length > 1 ? (
+                    <>
+                      {editorContext.tabs.map((tab, index) => (
+                        <Tab
+                          key={tab.id}
+                          value={tab}
+                          isActive={index === editorContext.activeTabIndex}
+                        >
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            onClick={() => {
+                              executionContext.stop();
+                              editorContext.changeTab(index);
+                            }}
+                          >
+                            {tab.title}
+                          </Tab.Button>
+                          <Tab.Close
+                            onClick={() => {
+                              if (editorContext.activeTabIndex === index) {
+                                executionContext.stop();
+                              }
+                              editorContext.closeTab(index);
+                            }}
+                          />
+                        </Tab>
+                      ))}
+                      {addTab}
+                    </>
+                  ) : null}
+                </Tabs>
+                <div className="graphiql-session-header-right">
+                  {editorContext.tabs.length === 1 ? (
+                    <div className="graphiql-add-tab-wrapper">{addTab}</div>
+                  ) : null}
+                  {logo}
+                </div>
+              </div>
+              <div
+                role="tabpanel"
+                id="graphiql-session"
+                className="graphiql-session"
+                aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
+              >
+                <div ref={editorResize.firstRef}>
+                  <div
+                    className={`graphiql-editors${
+                      editorContext.tabs.length === 1 ? ' full-height' : ''
+                    }`}
+                  >
+                    <div ref={editorToolsResize.firstRef}>
+                      <section
+                        className="graphiql-query-editor"
+                        aria-label="Query Editor"
+                      >
                         <OperationsEditor
                           editorTheme={props.editorTheme}
                           keyMap={props.keyMap}
@@ -578,49 +583,45 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                           onEdit={props.onEditQuery}
                           readOnly={props.readOnly}
                         />
-                      </div>
-                      <div
-                        className="graphiql-toolbar"
-                        role="toolbar"
-                        aria-label="Editor Commands"
-                      >
-                        <ExecuteButton />
-                        {toolbar}
-                      </div>
-                    </section>
-                  </div>
-
-                  <div ref={editorToolsResize.dragBarRef}>
-                    <div className="graphiql-editor-tools">
-                      <UnStyledButton
-                        type="button"
-                        className={
-                          activeSecondaryEditor === 'variables' &&
-                          editorToolsResize.hiddenElement !== 'second'
-                            ? 'active'
-                            : ''
-                        }
-                        onClick={handleToolsTabClick}
-                        data-name="variables"
-                      >
-                        Variables
-                      </UnStyledButton>
-                      {isHeadersEditorEnabled && (
+                        <div
+                          className="graphiql-toolbar"
+                          role="toolbar"
+                          aria-label="Editor Commands"
+                        >
+                          <ExecuteButton />
+                          {toolbar}
+                        </div>
+                      </section>
+                    </div>
+                    <div ref={editorToolsResize.dragBarRef}>
+                      <div className="graphiql-editor-tools">
                         <UnStyledButton
                           type="button"
                           className={
-                            activeSecondaryEditor === 'headers' &&
+                            activeSecondaryEditor === 'variables' &&
                             editorToolsResize.hiddenElement !== 'second'
                               ? 'active'
                               : ''
                           }
-                          onClick={handleToolsTabClick}
-                          data-name="headers"
+                          onClick={handleVariablesTabClick}
                         >
-                          Headers
+                          Variables
                         </UnStyledButton>
-                      )}
-
+                        {isHeadersEditorEnabled ? (
+                          <UnStyledButton
+                            type="button"
+                            className={
+                              activeSecondaryEditor === 'headers' &&
+                              editorToolsResize.hiddenElement !== 'second'
+                                ? 'active'
+                                : ''
+                            }
+                            onClick={handleHeadersTabClick}
+                          >
+                            Headers
+                          </UnStyledButton>
+                        ) : null}
+                      </div>
                       <Tooltip
                         label={
                           editorToolsResize.hiddenElement === 'second'
@@ -636,7 +637,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                               ? 'Show editor tools'
                               : 'Hide editor tools'
                           }
-                          className="graphiql-toggle-editor-tools"
                         >
                           {editorToolsResize.hiddenElement === 'second' ? (
                             <ChevronUpIcon
@@ -663,9 +663,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       >
                         <VariablesEditor
                           editorTheme={props.editorTheme}
-                          isHidden={activeSecondaryEditor !== 'headers'}
+                          isHidden={activeSecondaryEditor !== 'variables'}
                           keyMap={props.keyMap}
-                          onEdit={props.onEditHeaders}
+                          onEdit={props.onEditVariables}
+                          onClickReference={onClickReference}
                           readOnly={props.readOnly}
                         />
                         {isHeadersEditorEnabled && (
@@ -764,31 +765,33 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 Adjust how the interface looks like.
               </div>
             </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={theme === null ? 'active' : ''}
-                onClick={handleChangeTheme}
-              >
-                System
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'light' ? 'active' : ''}
-                data-theme="light"
-                onClick={handleChangeTheme}
-              >
-                Light
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'dark' ? 'active' : ''}
-                data-theme="dark"
-                onClick={handleChangeTheme}
-              >
-                Dark
-              </Button>
-            </ButtonGroup>
+            <div>
+              <ButtonGroup>
+                <Button
+                  type="button"
+                  className={theme === null ? 'active' : ''}
+                  onClick={handleChangeTheme}
+                >
+                  System
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'light' ? 'active' : ''}
+                  data-theme="light"
+                  onClick={handleChangeTheme}
+                >
+                  Light
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'dark' ? 'active' : ''}
+                  data-theme="dark"
+                  onClick={handleChangeTheme}
+                >
+                  Dark
+                </Button>
+              </ButtonGroup>
+            </div>
           </div>
           {storageContext ? (
             <div className="graphiql-dialog-section">
@@ -800,17 +803,20 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   Remove all locally stored data and start fresh.
                 </div>
               </div>
-              <Button
-                type="button"
-                state={clearStorageStatus || undefined}
-                disabled={clearStorageStatus === 'success'}
-                onClick={handleClearData}
-              >
-                {{
-                  success: 'Cleared data',
-                  error: 'Failed',
-                }[clearStorageStatus!] || 'Clear data'}
-              </Button>
+              <div>
+                <Button
+                  type="button"
+                  state={clearStorageStatus || undefined}
+                  disabled={clearStorageStatus === 'success'}
+                  onClick={handleClearData}
+                >
+                  {clearStorageStatus === 'success'
+                    ? 'Cleared data'
+                    : clearStorageStatus === 'error'
+                    ? 'Failed'
+                    : 'Clear data'}
+                </Button>
+              </div>
             </div>
           ) : null}
         </Dialog>
