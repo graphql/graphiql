@@ -184,13 +184,6 @@ function getJSONSchemaFromGraphQLType(
   const baseType = isNonNullType(type) ? type.ofType : type;
   const required = isNonNullType(type);
 
-  if (isEnumType(baseType)) {
-    definition.enum = baseType.getValues().map(val => val.name);
-    if (!required) {
-      definition.enum.push(null);
-    }
-  }
-
   if (isScalarType(baseType)) {
     //  scalars
     if (options?.scalarSchemas?.[baseType.name]) {
@@ -215,9 +208,12 @@ function getJSONSchemaFromGraphQLType(
         };
       }
     }
-  }
-
-  if (isListType(baseType)) {
+  } else if (isEnumType(baseType)) {
+    definition.enum = baseType.getValues().map(val => val.name);
+    if (!required) {
+      definition.enum.push(null);
+    }
+  } else if (isListType(baseType)) {
     if (required) {
       definition.type = 'array';
     } else {
@@ -240,9 +236,7 @@ function getJSONSchemaFromGraphQLType(
         definitions[defName] = defs[defName];
       }
     }
-  }
-
-  if (isInputObjectType(baseType)) {
+  } else if (isInputObjectType(baseType)) {
     if (required) {
       definition.$ref = `#/definitions/${baseType.name}`;
     } else {
@@ -292,7 +286,6 @@ function getJSONSchemaFromGraphQLType(
     }
   }
 
-  // TODO: test that this works?
   if ('defaultValue' in fieldOrType && fieldOrType.defaultValue !== undefined) {
     definition.default = fieldOrType.defaultValue as
       | JSONSchema4Type
