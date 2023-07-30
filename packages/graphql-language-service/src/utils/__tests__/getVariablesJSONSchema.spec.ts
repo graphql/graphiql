@@ -94,7 +94,7 @@ describe('getVariablesJSONSchema', () => {
     );
 
     const jsonSchema = getVariablesJSONSchema(variableToType, {
-      customScalarSchemas: {
+      scalarSchemas: {
         EmailAddress: {
           type: 'string',
           format: 'email',

@@ -276,7 +276,7 @@ export class LanguageService {
         if (operationFacts?.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType, {
             ...options,
-            customScalarSchemas: schema.customScalarSchemas,
+            scalarSchemas: schema.customScalarSchemas,
           });
         }
       } catch {}
