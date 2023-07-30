@@ -263,7 +263,7 @@ const { api } = monaco.languages.graphql;
 import 'monaco-graphql';
 
 // also this
-import { languages } from 'monaco-editor';
+import { languages } from 'monaco-graphql/esm/monaco-editor.js';
 // now the api will be available on the `monaco.languages` global
 const { api } = languages.graphql;
 ```
@@ -443,7 +443,7 @@ you'll want to create your own `my-graphql.worker.ts` file, and add your custom
 config such as `schemaLoader` to `createData`:
 
 ```ts
-import type { worker as WorkerNamespace } from 'monaco-editor';
+import type { worker as WorkerNamespace } from 'monaco-graphql/esm/monaco-editor.js';
 // @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 

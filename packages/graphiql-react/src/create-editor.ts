@@ -1,4 +1,4 @@
-import { editor as MONACO_EDITOR } from 'monaco-editor';
+import { editor as MONACO_EDITOR } from 'monaco-graphql/esm/monaco-editor.js';
 import {
   OPERATIONS_MODEL,
   VARIABLES_MODEL,

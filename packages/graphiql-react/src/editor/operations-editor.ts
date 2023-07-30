@@ -17,7 +17,7 @@ import {
   usePrettifyEditors,
 } from './hooks';
 import { WriteableEditorProps } from './types';
-import { KeyCode, KeyMod } from 'monaco-editor';
+import { KeyCode, KeyMod } from 'monaco-graphql/esm/monaco-editor.js';
 import { MONACO_GRAPHQL_API, OPERATIONS_MODEL } from '@/constants';
 import { createEditor } from '@/create-editor';
 

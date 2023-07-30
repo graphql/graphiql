@@ -13,7 +13,7 @@ import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
-import { editor as MONACO_EDITOR } from 'monaco-editor';
+import { editor as MONACO_EDITOR } from 'monaco-graphql/esm/monaco-editor.js';
 
 export function useSynchronizeValue(
   editor: MONACO_EDITOR.IStandaloneCodeEditor | null,

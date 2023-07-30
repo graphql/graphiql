@@ -1,6 +1,6 @@
 import { StorageAPI } from '@graphiql/toolkit';
 import { useCallback, useMemo } from 'react';
-import { editor } from 'monaco-editor';
+import { editor } from 'monaco-graphql/esm/monaco-editor.js';
 
 import debounce from '../utility/debounce';
 

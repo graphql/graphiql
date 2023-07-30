@@ -37,7 +37,7 @@ import {
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
-import { editor } from 'monaco-editor';
+import { editor } from 'monaco-graphql/esm/monaco-editor.js';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -264,17 +264,14 @@ export type EditorContextProviderProps = {
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
   const storage = useStorageContext();
-  const [headerEditor, setHeaderEditor] = useState<editor.IStandaloneCodeEditor | null>(
-    null,
-  );
+  const [headerEditor, setHeaderEditor] =
+    useState<editor.IStandaloneCodeEditor | null>(null);
   const [queryEditor, setQueryEditor] =
     useState<editor.IStandaloneCodeEditor | null>(null);
-  const [responseEditor, setResponseEditor] = useState<editor.IStandaloneCodeEditor | null>(
-    null,
-  );
-  const [variableEditor, setVariableEditor] = useState<editor.IStandaloneCodeEditor | null>(
-    null,
-  );
+  const [responseEditor, setResponseEditor] =
+    useState<editor.IStandaloneCodeEditor | null>(null);
+  const [variableEditor, setVariableEditor] =
+    useState<editor.IStandaloneCodeEditor | null>(null);
 
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
