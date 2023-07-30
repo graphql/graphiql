@@ -17,6 +17,7 @@ import {
 import { Field, GetDefaultScalarArgValue, MakeDefaultArg } from '../types';
 import { unwrapInputType } from './utils';
 
+// similar to GraphiQL getDefaultFieldNames
 export function defaultGetDefaultFieldNames(
   type: GraphQLObjectType,
 ): Array<string> {

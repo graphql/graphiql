@@ -8,7 +8,7 @@ import {
 
 import {
   ExplorerInner as GraphiQLExplorer,
-  type GraphiQLExplorerProps,
+  type GraphiQLExplorerInnerProps,
 } from 'graphiql-explorer';
 
 import React, { useCallback } from 'react';
@@ -118,8 +118,8 @@ const styles = {
 };
 
 export type GraphiQLExplorerPluginProps = Omit<
-  GraphiQLExplorerProps,
-  'onEdit' | 'query' | 'explorerIsOpen'
+  GraphiQLExplorerInnerProps,
+  'onEdit' | 'query'
 >;
 
 function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
@@ -146,7 +146,6 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
     <GraphiQLExplorer
       schema={schema}
       onRunOperation={handleRunOperation}
-      explorerIsOpen
       colors={colors}
       arrowOpen={arrowOpen}
       arrowClosed={arrowClosed}

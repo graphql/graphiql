@@ -9,10 +9,6 @@
   font-weight: var(--font-weight-medium);
 }
 
-.doc-explorer-rhs {
-  display: none;
-}
-
 .graphiql-explorer-root {
   font-family: var(--font-family-mono) !important;
   font-size: var(--font-size-body) !important;

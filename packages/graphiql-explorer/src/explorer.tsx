@@ -50,30 +50,63 @@ import {
 
 export type Props = {
   query: string;
-  width?: number;
-  title?: string;
+
   schema?: null | GraphQLSchema;
   onEdit: (edit: string) => void;
+  /**
+   * the same prop as GraphiQLProps.getDefaultFieldNames
+   * provide an array of field names to be expanded by default
+   */
   getDefaultFieldNames?: null | ((type: GraphQLObjectType) => Array<string>);
   getDefaultScalarArgValue?: null | GetDefaultScalarArgValue;
   makeDefaultArg?: null | MakeDefaultArg;
-  onToggleExplorer: () => void;
-  explorerIsOpen: boolean;
   onRunOperation?: (name: null | string) => void;
   colors?: null | Colors;
-  arrowOpen?: null | React.ReactNode;
-  arrowClosed?: null | React.ReactNode;
-  checkboxChecked?: null | React.ReactNode;
-  checkboxUnchecked?: null | React.ReactNode;
+  /**
+   * alternative arrowOpen icon
+   */
+  arrowOpen?: null | React.ReactElement;
+  /**
+   * alternative arrowClosed icon
+   */
+  arrowClosed?: null | React.ReactElement;
+  /**
+   * alternative checkboxChecked icon
+   */
+  checkboxChecked?: null | React.ReactElement;
+  /**
+   * alternative checkboxUnchecked icon
+   */
+  checkboxUnchecked?: null | React.ReactElement;
+  /**
+   * Provide custom styles.
+   * Soon to be replaced with stylesheets and css variables
+   */
   styles?: null | {
     explorerActionsStyle?: StyleMap;
     buttonStyle?: StyleMap;
     actionButtonStyle?: StyleMap;
   };
   showAttribution: boolean;
+  /**
+   * Decide whether to render the dropdown to add operations
+   */
   hideActions?: boolean;
+  /**
+   * Provide external fragments to be used in the explorer
+   */
   externalFragments?: FragmentDefinitionNode[];
 };
+
+export type WrapperProps = {
+  width?: number;
+  title?: string;
+  explorerIsOpen: boolean;
+  /**
+   * A hook for when explorer is toggled
+   */
+  onToggleExplorer: () => void;
+} & Props;
 
 type State = {
   operation: null | OperationDefinitionNode;
@@ -694,7 +727,7 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-export class ExplorerWrapper extends React.PureComponent<Props, {}> {
+export class ExplorerWrapper extends React.PureComponent<WrapperProps, {}> {
   static defaultValue = defaultValue;
   static defaultProps = {
     width: 320,

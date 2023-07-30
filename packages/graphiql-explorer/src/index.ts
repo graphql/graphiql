@@ -1,4 +1,7 @@
-export type { Props as GraphiQLExplorerProps } from './explorer';
+export type {
+  Props as GraphiQLExplorerInnerProps,
+  WrapperProps as GraphiQLExplorerProps,
+} from './explorer';
 export {
   Explorer as ExplorerInner,
   ExplorerWrapper as default,
