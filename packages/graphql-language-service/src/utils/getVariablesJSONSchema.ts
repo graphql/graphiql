@@ -114,7 +114,7 @@ function renderDefinitionDescription(
     text(into, '\n');
     text(into, type.description);
   } else if (
-    isNonNullType(type) &&
+    'ofType' in type &&
     !isScalarType(type.ofType) &&
     'description' in type.ofType &&
     type.ofType.description
@@ -224,13 +224,9 @@ function getJSONSchemaFromGraphQLType(
       baseType.ofType,
       options,
     );
-    if (def.$ref) {
-      definition.items = { $ref: def.$ref };
-    } else if (def.oneOf) {
-      definition.items = { oneOf: def.oneOf };
-    } else {
-      definition.items = def;
-    }
+
+    definition.items = def;
+
     if (defs) {
       for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];

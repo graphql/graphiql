@@ -275,6 +275,7 @@ describe('getVariablesJSONSchema', () => {
           exampleList: {
             type: ['array', 'null'],
             items: {
+              description: 'ChildInputType',
               oneOf: [
                 { $ref: '#/definitions/ChildInputType' },
                 { type: 'null' },
@@ -387,6 +388,8 @@ describe('getVariablesJSONSchema', () => {
           exampleList: {
             type: ['array', 'null'],
             items: {
+              description: 'ChildInputType',
+              markdownDescription: '```graphql\nChildInputType\n```',
               oneOf: [
                 { $ref: '#/definitions/ChildInputType' },
                 { type: 'null' },
