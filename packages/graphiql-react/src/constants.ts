@@ -1,5 +1,5 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
-import { editor, Uri } from 'monaco-graphql/esm/monaco-editor.js';
+import { editor, Uri } from 'monaco-editor';
 import { DEFAULT_QUERY } from './editor/context';
 
 const OPERATIONS_URI = 'operations.graphql';

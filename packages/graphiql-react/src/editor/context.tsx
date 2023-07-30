@@ -37,7 +37,7 @@ import {
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
-import { editor } from 'monaco-graphql/esm/monaco-editor.js';
+import { editor } from 'monaco-editor';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
