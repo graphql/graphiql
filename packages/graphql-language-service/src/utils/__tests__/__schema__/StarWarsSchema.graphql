@@ -9,6 +9,7 @@ scalar EmailAddress
 scalar Even
 scalar SpecialScalar
 scalar SpecialDate
+scalar FooBar
 
 """
 An input type with custom scalars

@@ -84,6 +84,8 @@ describe('getVariablesJSONSchema', () => {
           $optionalSpecial: SpecialScalar,
           $specialDate: SpecialDate!,
           $optionalSpecialDate: SpecialDate,
+          $foobar: FooBar!,
+          $optionalFoobar: FooBar,
           $customInput: CustomScalarsInput!,
           $optionalCustomInput: CustomScalarsInput
         ) {
@@ -108,6 +110,9 @@ describe('getVariablesJSONSchema', () => {
           type: ['string'],
           minLength: 5,
         },
+        FooBar: {
+          enum: ['foo', 'bar'],
+        },
         SpecialDate: {
           description: 'A date or date time.',
           oneOf: [
@@ -129,6 +134,7 @@ describe('getVariablesJSONSchema', () => {
       'evenNumber',
       'special',
       'specialDate',
+      'foobar',
       'customInput',
     ]);
 
@@ -182,6 +188,14 @@ describe('getVariablesJSONSchema', () => {
         type: ['string', 'null'],
         minLength: 5,
         description: 'SpecialScalar',
+      },
+      foobar: {
+        enum: ['foo', 'bar'],
+        description: 'FooBar!',
+      },
+      optionalFoobar: {
+        enum: ['foo', 'bar', null],
+        description: 'FooBar',
       },
       specialDate: {
         description: 'SpecialDate!\nA date or date time.',

@@ -200,6 +200,8 @@ function getJSONSchemaFromGraphQLType(
         definition.type.push('null');
       } else if (definition.type) {
         definition.type = [definition.type, 'null'];
+      } else if (definition.enum) {
+        definition.enum.push(null);
       } else if (definition.oneOf) {
         definition.oneOf.push({ type: 'null' });
       } else {
