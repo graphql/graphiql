@@ -1,7 +1,8 @@
 const { GenerateSW } = require('workbox-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const path = require('node:path');
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -64,11 +65,28 @@ module.exports = {
     extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'public', to: 'dist' }],
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, '/index.html.ejs'),
     }),
     new GenerateSW(),
-    new WebpackManifestPlugin(),
+    new WebpackManifestPlugin({
+      seed: {
+        name: 'GraphiQL PWA',
+        icons: [
+          {
+            src: 'logo.svg',
+            type: 'image/svg',
+            sizes: '400x400',
+          },
+        ],
+        start_url: './index.html',
+        display: 'standalone',
+        display_override: ['fullscreen', 'minimal-ui'],
+      },
+    }),
   ],
   devServer: {
     hot: true,

@@ -7,12 +7,25 @@ const removeQueryName = query =>
 
 const getQuery = (arg, spaceCount) => {
   const { operationDataList } = arg;
+  console.log(arg);
   const { query } = operationDataList[0];
   const anonymousQuery = removeQueryName(query);
   return (
     ' '.repeat(spaceCount) +
     anonymousQuery.replaceAll('\n', '\n' + ' '.repeat(spaceCount))
   );
+};
+
+const exampleSnippetZero = {
+  name: 'cURL',
+  language: 'shell',
+  codeMirrorMode: 'shell',
+  options: [],
+  generate: arg => `curl -g \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query":"${encodeURIComponent(getQuery(arg, 2))}"}' \
+  https://graphql.contentful.com/content/v1/spaces/mt0pmhki5db7`,
 };
 
 const exampleSnippetOne = {
@@ -38,4 +51,8 @@ const exampleSnippetTwo = {
   `,
 };
 
-export const snippets = [exampleSnippetOne, exampleSnippetTwo];
+export const snippets = [
+  exampleSnippetZero,
+  exampleSnippetOne,
+  exampleSnippetTwo,
+];
