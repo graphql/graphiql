@@ -78,7 +78,6 @@ module.exports = {
         icons: [
           {
             src: 'logo.svg',
-            type: 'image/svg',
             sizes: '400x400',
           },
         ],
