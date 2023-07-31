@@ -1,39 +1,38 @@
 import * as React from 'react';
 
-import { useStorageContext } from '@graphiql/react';
+import { useStorageContext, useSchemaContext } from '@graphiql/react';
 import { LAST_URL_KEY, PREV_URLS_KEY } from './constants';
 
 const SelectServer = ({ url, setUrl }) => {
   const inputRef = React.useRef(null);
   const storage = useStorageContext();
   const lastUrl = storage?.get(LAST_URL_KEY);
-  const previousUrls = JSON.parse(storage?.get(PREV_URLS_KEY)) ?? [];
+  const [inputValue, setInputValue] = React.useState(lastUrl ?? url);
+  const [previousUrls, setPreviousUrls] = React.useState(
+    JSON.parse(storage?.get(PREV_URLS_KEY)) ?? [],
+  );
   const [error, setError] = React.useState(null);
+
+  const schema = useSchemaContext();
+
+  const sameValue = inputValue.trim() === url;
+  console.log(schema);
 
   return (
     <div>
-      <h2>Select Server</h2>
+      <div className="plugin-title">Select Server</div>
       <div>
         <input
-          style={{
-            display: 'block',
-            width: '100%',
-            color: 'black',
-            padding: '0.5rem',
-          }}
+          className="select-server--input"
           ref={inputRef}
           defaultValue={lastUrl ?? url}
+          onChange={e => setInputValue(inputRef?.current?.value)}
         />
         {error ?? <div>{error}</div>}
       </div>
       <div>
         <button
-          style={{
-            display: 'block',
-            width: '100%',
-            color: 'black',
-            padding: '0.5rem',
-          }}
+          className={`select-server--button ${sameValue ? 'disabled' : ''}`}
           onClick={() => {
             const value = inputRef?.current?.value.trim();
             if (!value?.startsWith('http')) {
@@ -42,37 +41,95 @@ const SelectServer = ({ url, setUrl }) => {
             }
             setError(null);
             setUrl(value);
-            storage.set('lastURL', value);
+            storage.set(LAST_URL_KEY, value);
+            setInputValue(value);
             if (!previousUrls.includes(value)) {
               previousUrls.push(value);
               storage.set(PREV_URLS_KEY, JSON.stringify(previousUrls));
+
+              setPreviousUrls(previousUrls);
             }
           }}
+          disabled={sameValue}
+          aria-disabled={sameValue}
         >
           Change Schema URL
         </button>
+        {schema?.fetchError && (
+          <div>
+            <div className="select-server--schema-error">
+              There was an error fetching your schema:
+            </div>
+            <div className="select-server--schema-error">
+              <code>
+                {JSON.parse(schema.fetchError).errors.map(({ message }) => (
+                  <>{message}</>
+                ))}
+              </code>
+            </div>
+          </div>
+        )}
+        {schema?.schema && !schema?.isFetching && !schema?.fetchError && (
+          <div className="select-server--schema-success">
+            Schema retrieved successfully
+          </div>
+        )}
+        {schema?.isFetching && (
+          <div className="select-server--schema-loading">Schema loading...</div>
+        )}
       </div>
       <div>
         <h3>Previous Severs</h3>
         <ul style={{ padding: 0 }}>
           {previousUrls.map(prev => {
             return (
-              <li
-                className="prev-url"
-                style={{
-                  padding: '.5rem 0px',
-                  display: 'block',
-                  cursor: 'pointer',
-                }}
-                key={prev}
-                onClick={() => {
-                  storage.set('lastURL', prev);
-                  inputRef.current.value = prev;
-                  setError(null);
-                  setUrl(prev);
-                }}
-              >
-                <span>{prev}</span>
+              <li className="select-server--previous-entry" key={prev}>
+                <span
+                  onClick={() => {
+                    storage.set(LAST_URL_KEY, prev);
+                    inputRef.current.value = prev;
+                    setError(null);
+                    setUrl(prev);
+                    setInputValue(value);
+                  }}
+                >
+                  {prev}
+                </span>
+                <button
+                  title="Delete server URL from history"
+                  onClick={() => {
+                    if (previousUrls.includes(prev)) {
+                      const filteredPreviousUrls = previousUrls.filter(
+                        url => url !== prev,
+                      );
+                      storage.set(
+                        PREV_URLS_KEY,
+                        JSON.stringify(filteredPreviousUrls),
+                      );
+
+                      setPreviousUrls(filteredPreviousUrls);
+                    }
+                  }}
+                >
+                  <svg
+                    width="1em"
+                    height="5em"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fillRule="evenodd"
+                    aria-hidden="true"
+                    viewBox="0 0 23 23"
+                    clipRule="evenodd"
+                    style={{ height: '1em', width: '1em' }}
+                  >
+                    <title>trash icon</title>
+                    <path
+                      d="M19 24h-14c-1.104 0-2-.896-2-2v-17h-1v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2h-1v17c0 1.104-.896 2-2 2zm0-19h-14v16.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-16.5zm-7 7.586l3.293-3.293 1.414 1.414-3.293 3.293 3.293 3.293-1.414 1.414-3.293-3.293-3.293 3.293-1.414-1.414 3.293-3.293-3.293-3.293 1.414-1.414 3.293 3.293zm2-10.586h-4v1h4v-1z"
+                      fill="currentColor"
+                      strokeWidth="0.25"
+                      stroke="currentColor"
+                    ></path>
+                  </svg>
+                </button>
               </li>
             );
           })}

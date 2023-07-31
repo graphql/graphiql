@@ -11,12 +11,12 @@ import '@graphiql/plugin-code-exporter/dist/style.css';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorageContext } from '@graphiql/react';
 
+import './index.css';
 import { serverSelectPlugin } from './select-server-plugin';
 import { LAST_URL_KEY, STARTING_URL } from './constants';
 
 /**
- * A manual fetcher implementation, you should probably
- * just use `createGraphiQLFetcher` from `@graphiql/toolkit
+ * A manual fetcher implementation example
  * @returns
  */
 // const fetcher = async (graphQLParams, options) => {
@@ -49,6 +49,9 @@ const App = () => {
 
   const lastUrl = storage?.get(LAST_URL_KEY);
   const [currentUrl, setUrl] = React.useState(lastUrl ?? STARTING_URL);
+  // TODO: a breaking change where we make url an internal state concern, and then expose hooks
+  // so that you can handle/set URL state internally from a plugin
+  // fetcher could then pass a dynamic URL config object to the fetcher internally
   const exporter = React.useMemo(
     () =>
       codeExporterPlugin({ snippets: getSnippets({ serverUrl: currentUrl }) }),
