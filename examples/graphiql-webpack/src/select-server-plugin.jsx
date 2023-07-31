@@ -7,9 +7,10 @@ const SelectServer = ({ url, setUrl }) => {
   const inputRef = React.useRef(null);
   const storage = useStorageContext();
   const lastUrl = storage?.get(LAST_URL_KEY);
-  const [inputValue, setInputValue] = React.useState(lastUrl ?? url);
+  const currentUrl = lastUrl ?? url;
+  const [inputValue, setInputValue] = React.useState(currentUrl);
   const [previousUrls, setPreviousUrls] = React.useState(
-    JSON.parse(storage?.get(PREV_URLS_KEY)) ?? [],
+    JSON.parse(storage?.get(PREV_URLS_KEY)) ?? [currentUrl],
   );
   const [error, setError] = React.useState(null);
 
@@ -25,7 +26,7 @@ const SelectServer = ({ url, setUrl }) => {
         <input
           className="select-server--input"
           ref={inputRef}
-          defaultValue={lastUrl ?? url}
+          defaultValue={currentUrl}
           onChange={e => setInputValue(inputRef?.current?.value)}
         />
         {error ?? <div>{error}</div>}
