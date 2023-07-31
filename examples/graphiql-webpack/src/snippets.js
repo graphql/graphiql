@@ -16,43 +16,40 @@ const getQuery = (arg, spaceCount) => {
   );
 };
 
-const exampleSnippetZero = {
-  name: 'cURL',
-  language: 'shell',
-  codeMirrorMode: 'shell',
-  options: [],
-  generate: arg => `curl -g \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"query":"${encodeURIComponent(getQuery(arg, 2))}"}' \
-  https://graphql.contentful.com/content/v1/spaces/mt0pmhki5db7`,
-};
+export const getSnippets = ({ serverUrl }) => {
+  const exampleSnippetZero = {
+    name: 'cURL',
+    language: 'shell',
+    codeMirrorMode: 'shell',
+    options: [],
+    generate: arg => `curl -g \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"query": "${arg.operationDataList[0].query.replaceAll('\n', ' ')}"}' \
+    ${serverUrl}`,
+  };
 
-const exampleSnippetOne = {
-  name: 'Example One',
-  language: 'JavaScript',
-  codeMirrorMode: 'jsx',
-  options: [],
-  generate: arg => `export const query = graphql\`
-  ${getQuery(arg, 2)}
-  \`
-  `,
-};
+  const exampleSnippetOne = {
+    name: 'Example One',
+    language: 'JavaScript',
+    codeMirrorMode: 'jsx',
+    options: [],
+    generate: arg => `export const query = graphql\`
+    ${getQuery(arg, 2)}
+    \`
+    `,
+  };
 
-const exampleSnippetTwo = {
-  name: 'Example Two',
-  language: 'JavaScript',
-  codeMirrorMode: 'jsx',
-  options: [],
-  generate: arg => `import { graphql } from 'graphql'
-  export const query = graphql\`
-  ${getQuery(arg, 2)}
-  \`
-  `,
+  const exampleSnippetTwo = {
+    name: 'Example Two',
+    language: 'JavaScript',
+    codeMirrorMode: 'jsx',
+    options: [],
+    generate: arg => `import { graphql } from 'graphql'
+    export const query = graphql\`
+    ${getQuery(arg, 2)}
+    \`
+    `,
+  };
+  return [exampleSnippetZero, exampleSnippetOne, exampleSnippetTwo];
 };
-
-export const snippets = [
-  exampleSnippetZero,
-  exampleSnippetOne,
-  exampleSnippetTwo,
-];

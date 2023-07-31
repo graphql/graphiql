@@ -6,6 +6,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('node:path');
 const isDev = process.env.NODE_ENV === 'development';
 
+const prodPlugins = [];
+
+if (!isDev) {
+  prodPlugins.push(
+    new GenerateSW({
+      maximumFileSizeToCacheInBytes: 5000000000,
+    }),
+  );
+}
+
 module.exports = {
   entry: isDev
     ? [
@@ -15,7 +25,7 @@ module.exports = {
         './src/index.jsx', // the entry point of our app
       ]
     : './src/index.jsx',
-  mode: 'development',
+  mode: process.env.NODE_ENV,
   devtool: 'inline-source-map',
   performance: {
     hints: false,
@@ -65,13 +75,13 @@ module.exports = {
     extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
   },
   plugins: [
+    ...prodPlugins,
     new CopyPlugin({
       patterns: [{ from: 'public' }],
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, '/index.html.ejs'),
     }),
-    new GenerateSW(),
     new WebpackManifestPlugin({
       seed: {
         name: 'GraphiQL PWA',
