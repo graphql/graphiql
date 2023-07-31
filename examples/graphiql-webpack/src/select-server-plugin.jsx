@@ -27,7 +27,7 @@ const SelectServer = ({ url, setUrl }) => {
           className="select-server--input"
           ref={inputRef}
           defaultValue={currentUrl}
-          onChange={e => setInputValue(inputRef?.current?.value)}
+          onChange={e => setInputValue(e.target.value)}
         />
         {error ?? <div>{error}</div>}
       </div>
@@ -63,9 +63,9 @@ const SelectServer = ({ url, setUrl }) => {
             </div>
             <div className="select-server--schema-error">
               <code>
-                {JSON.parse(schema.fetchError).errors.map(({ message }) => (
-                  <>{message}</>
-                ))}
+                {JSON.parse(schema.fetchError).errors.map(
+                  ({ message }) => message,
+                )}
               </code>
             </div>
           </div>
@@ -91,7 +91,7 @@ const SelectServer = ({ url, setUrl }) => {
                     inputRef.current.value = prev;
                     setError(null);
                     setUrl(prev);
-                    setInputValue(value);
+                    setInputValue(prev);
                   }}
                 >
                   {prev}
@@ -99,17 +99,17 @@ const SelectServer = ({ url, setUrl }) => {
                 <button
                   title="Delete server URL from history"
                   onClick={() => {
-                    if (previousUrls.includes(prev)) {
-                      const filteredPreviousUrls = previousUrls.filter(
-                        url => url !== prev,
-                      );
-                      storage.set(
-                        PREV_URLS_KEY,
-                        JSON.stringify(filteredPreviousUrls),
-                      );
-
-                      setPreviousUrls(filteredPreviousUrls);
+                    if (!previousUrls.includes(prev)) {
+                      return;
                     }
+                    const filteredPreviousUrls = previousUrls.filter(
+                      prevUrl => prevUrl !== prev,
+                    );
+                    storage.set(
+                      PREV_URLS_KEY,
+                      JSON.stringify(filteredPreviousUrls),
+                    );
+                    setPreviousUrls(filteredPreviousUrls);
                   }}
                 >
                   <svg
@@ -128,7 +128,7 @@ const SelectServer = ({ url, setUrl }) => {
                       fill="currentColor"
                       strokeWidth="0.25"
                       stroke="currentColor"
-                    ></path>
+                    />
                   </svg>
                 </button>
               </li>
