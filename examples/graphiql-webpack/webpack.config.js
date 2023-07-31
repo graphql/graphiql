@@ -66,7 +66,7 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: 'public', to: 'dist' }],
+      patterns: [{ from: 'public' }],
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, '/index.html.ejs'),
@@ -85,6 +85,7 @@ module.exports = {
         start_url: './index.html',
         display: 'standalone',
         display_override: ['fullscreen', 'minimal-ui'],
+        'logo.svg': 'auto/logo.svg',
       },
     }),
   ],
