@@ -11,9 +11,24 @@ import '@graphiql/plugin-code-exporter/dist/style.css';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorageContext } from '@graphiql/react';
 
+export const STARTING_URL =
+  'https://swapi-graphql.netlify.app/.netlify/functions/index';
+
 import './index.css';
-import { serverSelectPlugin } from './select-server-plugin';
-import { LAST_URL_KEY, STARTING_URL } from './constants';
+import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(registration => {
+        console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
 
 /**
  * A manual fetcher implementation example
@@ -76,19 +91,6 @@ const App = () => {
     />
   );
 };
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js')
-      .then(registration => {
-        console.log('SW registered: ', registration);
-      })
-      .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
-}
 
 const root = createRoot(document.getElementById('root'));
 root.render(<App />);
