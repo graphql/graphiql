@@ -257,6 +257,7 @@ export class LanguageService {
         undefined,
         {
           useMarkdown: true,
+          typeLinks: true,
           ...options,
         },
       );

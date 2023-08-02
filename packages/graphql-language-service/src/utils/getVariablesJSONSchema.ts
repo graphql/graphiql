@@ -47,6 +47,10 @@ export type JSONSchemaOptions = {
    * Scalar schema mappings.
    */
   scalarSchemas?: Record<string, JSONSchema6>;
+  /**
+   * whether to append links to types in the markdown description
+   */
+  typeLinks?: boolean;
 };
 type JSONSchemaRunningOptions = JSONSchemaOptions & {
   definitionMarker: Marker;
@@ -92,6 +96,7 @@ function renderDefinitionDescription(
   t: GraphQLInputType | GraphQLInputField,
   useMarkdown?: boolean,
   description?: string | undefined | null,
+  typeLinks?: boolean,
 ) {
   const into: string[] = [];
 
@@ -104,7 +109,7 @@ function renderDefinitionDescription(
   }
 
   // type
-  text(into, renderTypeToString(type, useMarkdown));
+  text(into, renderTypeToString(type, useMarkdown, typeLinks));
 
   // type description
   if (description) {
@@ -129,13 +134,18 @@ function renderDefinitionDescription(
 function renderTypeToString(
   t: GraphQLInputType | GraphQLInputField,
   useMarkdown?: boolean,
+  typeLinks?: boolean,
 ) {
   const into: string[] = [];
-  if (useMarkdown) {
+  if (useMarkdown && typeLinks) {
+    text(into, '<a href="command">\n\n```graphql\n');
+  } else if (useMarkdown) {
     text(into, '```graphql\n');
   }
   renderType(into, t);
-  if (useMarkdown) {
+  if (useMarkdown && typeLinks) {
+    text(into, '\n```\n\n</a>');
+  } else if (useMarkdown) {
     text(into, '\n```');
   }
   return into.join('');

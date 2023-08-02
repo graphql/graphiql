@@ -288,9 +288,17 @@ export class HoverAdapter implements languages.HoverProvider {
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
+      // eslint-disable-next-line no-console
+      console.log(hoverItem.content);
       return {
         range: hoverItem.range,
-        contents: [{ value: hoverItem.content as string }],
+        contents: [
+          {
+            supportHtml: true,
+            isTrusted: true,
+            value: hoverItem.content as string,
+          },
+        ],
       };
     }
 
