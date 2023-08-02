@@ -237,7 +237,7 @@ MonacoGraphQL.setCompletionSettings({
 ```
 
 You can also experiment with the built-in `jsonc`? (JSON
-syntax that allows comments and trailing commas, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes
+syntax that allows comments and trailing commas, for `tsconfig.json`, etc.) and the 3rd party `monaco-yaml` language modes
 for completion of other types of variable input. you can also experiment with
 editor methods to parse detected input into different formats, etc (`yaml`
 pastes as `json`, etc.)
