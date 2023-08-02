@@ -53,7 +53,7 @@ yarn add monaco-graphql
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/initializeMode'; // `monaco-graphql/esm/initializeMode` still works
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
@@ -93,7 +93,8 @@ monaco.editor.create(document.getElementById('someElementId'), {
 
 ## Lazy Example
 
-The existing API works as before in terms of instantiating the schema
+The existing API works as before in terms of instantiating the schema.
+To avoid manually calling getWorker(), you can use the monaco editor plugins for webpack or vite (see examples, and below)
 
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -151,7 +152,7 @@ any given set of operations
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/full';
 
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
@@ -235,14 +236,40 @@ MonacoGraphQL.setCompletionSettings({
 });
 ```
 
-You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish
-syntax, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes
+You can also experiment with the built-in `jsonc`? (JSON
+syntax that allows comments and trailing commas, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes
 for completion of other types of variable input. you can also experiment with
 editor methods to parse detected input into different formats, etc (`yaml`
 pastes as `json`, etc.)
 
 You could of course prefer to generate a `jsonschema` form for variables input
 using a framework of your choice, instead of an editor. Enjoy!
+
+## `monaco-graphql/lite`
+
+You can also import a "lite" version, and manually enable only the monaco features you want!
+
+Warning: by default, completion and other features will not work, only highlighting and validation.
+
+```ts
+import { initializeMode } from 'monaco-graphql/lite';
+
+// enable completion
+import 'monaco-editor/esm/vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution';
+
+const api = initializeMode({
+  schemas: [
+    {
+      // anything that monaco.URI.from() is compatible with
+      uri: 'schema.graphql',
+      // match the monaco file uris for this schema.
+      // accepts specific filenames and anything `picomatch` supports.
+      fileMatch: ['operation.graphql'],
+      schema: myGraphqlSchema as GraphQLSchema,
+    },
+  ],
+});
+```
 
 ## `MonacoGraphQLAPI` ([typedoc](https://graphiql-test.netlify.app/typedoc/classes/monaco_graphql.monacoMonacoGraphQLAPI.html))
 
@@ -271,7 +298,7 @@ const { api } = languages.graphql;
 Otherwise, you can, like in the sync demo above:
 
 ```ts
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/full';
 
 const api = initializeMode(config);
 ```
@@ -299,7 +326,7 @@ monaco.languages.graphql.api.setSchemaConfig([
 or you can load the language features only when you have your schema
 
 ```ts
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/full';
 
 const schemas = [
   {

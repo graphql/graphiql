@@ -27,6 +27,3 @@ languages.onLanguage(LANGUAGE_ID, () => {
 
   (languages as any).graphql = { api };
 });
-/**
- * Register the language mode without schema or any settings, so you can configure them asynchronously.
- */
