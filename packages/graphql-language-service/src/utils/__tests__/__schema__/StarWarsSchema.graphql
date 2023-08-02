@@ -10,6 +10,7 @@ scalar Even
 scalar SpecialScalar
 scalar SpecialDate
 scalar FooBar
+scalar Foo
 
 """
 An input type with custom scalars

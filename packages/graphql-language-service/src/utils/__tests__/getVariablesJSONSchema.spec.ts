@@ -86,6 +86,8 @@ describe('getVariablesJSONSchema', () => {
           $optionalSpecialDate: SpecialDate,
           $foobar: FooBar!,
           $optionalFoobar: FooBar,
+          $foo: Foo!,
+          $optionalFoo: Foo,
           $customInput: CustomScalarsInput!,
           $optionalCustomInput: CustomScalarsInput
         ) {
@@ -113,6 +115,9 @@ describe('getVariablesJSONSchema', () => {
         FooBar: {
           enum: ['foo', 'bar'],
         },
+        Foo: {
+          const: 'foo',
+        },
         SpecialDate: {
           description: 'A date or date time.',
           oneOf: [
@@ -135,6 +140,7 @@ describe('getVariablesJSONSchema', () => {
       'special',
       'specialDate',
       'foobar',
+      'foo',
       'customInput',
     ]);
 
@@ -196,6 +202,14 @@ describe('getVariablesJSONSchema', () => {
       optionalFoobar: {
         enum: ['foo', 'bar', null],
         description: 'FooBar',
+      },
+      foo: {
+        const: 'foo',
+        description: 'Foo!',
+      },
+      optionalFoo: {
+        oneOf: [{ const: 'foo' }, { type: 'null' }],
+        description: 'Foo',
       },
       specialDate: {
         description: 'SpecialDate!\nA date or date time.',
