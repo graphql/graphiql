@@ -313,7 +313,11 @@ export function getVariablesJSONSchema(
   options?: JSONSchemaOptions,
 ): JSONSchema6 {
   const jsonSchema: PropertiedJSON6 = {
-    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    // this gets monaco-json validation working again
+    // otherwise it shows an error for newer schema draft versions
+    // variables and graphql types are simple and compatible with all versions of json schema
+    // since draft 4. package.json and many other schemas still use draft 4
+    $schema: 'http://json-schema.org/draft-04/schema',
     type: 'object',
     properties: {},
     required: [],

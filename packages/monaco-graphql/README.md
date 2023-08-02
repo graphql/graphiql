@@ -402,11 +402,19 @@ you'll can refer to the webpack configuration in the
 how it works with webpack and the official `monaco-editor-webpack-plugin`. there
 is probably an easier way to configure webpack `worker-loader` for this.
 
+**Notes:**
+
+- for additional features, please specify them in `features` for the webpack plugin, or import them directly
+- if you are trying to add `typescript` as a language, there is an outstanding [bug with the webpack plugin](https://github.com/microsoft/monaco-editor/issues/2738), see our [next.js example](../../examples/monaco-graphql-nextjs/next.config.js) for the workaround. do not specify `languages: ['typescript']` or `javascript`
+
 ### Vite
 
 You can configure vite to load `monaco-editor` json mode and even the language
 editor worker using
 [the example for our mode](https://github.com/vdesjs/vite-plugin-monaco-editor#options)
+
+Be sure to import additional editor features and language modes manually, as the vite plugin only allows you to specify `languageWorkers`.
+See the vite example to see how to add typescript support
 
 ## Web Frameworks
 

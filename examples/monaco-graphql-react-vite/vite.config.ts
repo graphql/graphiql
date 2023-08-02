@@ -10,7 +10,8 @@ export default defineConfig({
     react(),
     monacoEditorPlugin({
       publicPath: 'workers',
-      languageWorkers: ['json'],
+      // note that this only loads the worker, not the full main process language support
+      languageWorkers: ['json', 'typescript', 'editorWorkerService'],
       customWorkers: [
         {
           label: 'graphql',
