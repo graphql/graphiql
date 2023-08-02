@@ -28,6 +28,11 @@
       "require": "./*",
       "types": "./*"
     },
+    "./esm/graphql.worker": {
+      "import": "./esm/graphql.worker.js",
+      "require": "./dist/graphql.worker.js",
+      "types": "./esm/graphql.worker.d.ts"
+    },
     "./lite": {
       "import": "./esm/lite.js",
       "types": "./esm/lite.d.ts"
