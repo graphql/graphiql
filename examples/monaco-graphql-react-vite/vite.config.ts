@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     monacoEditorPlugin({
       publicPath: 'workers',
-      languageWorkers: ['json', 'editorWorkerService'],
+      languageWorkers: ['json'],
       customWorkers: [
         {
           label: 'graphql',
