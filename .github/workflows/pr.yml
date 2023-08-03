@@ -232,6 +232,8 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-script: 'yarn release:canary'
           changesets: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish a message
         if: steps.canary.outputs.released == 'true'
         uses: 'dotansimha/pr-comment@master'

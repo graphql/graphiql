@@ -73,7 +73,7 @@ async function updateVersions() {
   const changesets = (await readChangesets(cwd)).filter(change =>
     modifiedChangesets.includes(change.id),
   );
-  const isMain = process.env.GITHUB_REF_NAME?.includes('main');
+  // const isMain = process.env.GITHUB_REF_NAME?.includes('main');
 
   let vscodeRelease = false;
 
