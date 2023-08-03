@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
+    "declarationMap": true,
     "outDir": "tsc"
   },
   "include": ["src"],

@@ -10,12 +10,9 @@ import {
 } from 'graphql';
 import { useCallback, useState } from 'react';
 
-import {
-  Button,
-  MarkdownContent,
-  useSchemaContext,
-  ExplorerFieldDef,
-} from '@graphiql/react';
+import { Button, MarkdownContent, useSchemaContext } from '@graphiql/react';
+import { ExplorerFieldDef } from '../context';
+
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
 import { DeprecationReason } from './deprecation-reason';

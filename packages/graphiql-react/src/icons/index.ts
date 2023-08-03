@@ -10,8 +10,6 @@ import _DeprecatedArgumentIcon from './deprecated-argument.svg';
 import _DeprecatedEnumValueIcon from './deprecated-enum-value.svg';
 import _DeprecatedFieldIcon from './deprecated-field.svg';
 import _DirectiveIcon from './directive.svg';
-import _DocsFilledIcon from './docs-filled.svg';
-import _DocsIcon from './docs.svg';
 import _EnumValueIcon from './enum-value.svg';
 import _FieldIcon from './field.svg';
 import _HistoryIcon from './history.svg';
@@ -42,8 +40,6 @@ export const DeprecatedArgumentIcon = generateIcon(_DeprecatedArgumentIcon);
 export const DeprecatedEnumValueIcon = generateIcon(_DeprecatedEnumValueIcon);
 export const DeprecatedFieldIcon = generateIcon(_DeprecatedFieldIcon);
 export const DirectiveIcon = generateIcon(_DirectiveIcon);
-export const DocsFilledIcon = generateIcon(_DocsFilledIcon, 'filled docs icon');
-export const DocsIcon = generateIcon(_DocsIcon);
 export const EnumValueIcon = generateIcon(_EnumValueIcon);
 export const FieldIcon = generateIcon(_FieldIcon);
 export const HistoryIcon = generateIcon(_HistoryIcon);
@@ -64,7 +60,7 @@ export const StopIcon = generateIcon(_StopIcon);
 export const TrashIcon = generateIcon(_TrashIcon, 'trash icon');
 export const TypeIcon = generateIcon(_TypeIcon);
 
-function generateIcon(
+export function generateIcon(
   RawComponent: any,
   title = RawComponent.name
     // Icon component name starts with `Svg${CamelCaseFilename without .svg}`

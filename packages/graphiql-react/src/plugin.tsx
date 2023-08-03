@@ -6,9 +6,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { DocExplorer, useExplorerContext } from './explorer';
 import { History, useHistoryContext } from './history';
-import { DocsFilledIcon, DocsIcon, HistoryIcon } from './icons';
+import { HistoryIcon } from './icons';
 import { useStorageContext } from './storage';
 import { createContextHook, createNullableContext } from './utility/context';
 
@@ -29,18 +28,6 @@ export type GraphiQLPlugin = {
   title: string;
 };
 
-export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
-  title: 'Documentation Explorer',
-  icon: function Icon() {
-    const pluginContext = usePluginContext();
-    return pluginContext?.visiblePlugin === DOC_EXPLORER_PLUGIN ? (
-      <DocsFilledIcon />
-    ) : (
-      <DocsIcon />
-    );
-  },
-  content: DocExplorer,
-};
 export const HISTORY_PLUGIN: GraphiQLPlugin = {
   title: 'History',
   icon: HistoryIcon,
@@ -65,6 +52,10 @@ export type PluginContextType = {
    * The plugin which is currently visible.
    */
   visiblePlugin: GraphiQLPlugin | null;
+  /**
+   *  The plugin which is used to display the reference documentation when selecting a type
+   */
+  referencePlugin?: GraphiQLPlugin;
 };
 
 export const PluginContext =
@@ -90,23 +81,21 @@ export type PluginContextProviderProps = {
    * calling the `setVisiblePlugin` function provided by the context.
    */
   visiblePlugin?: GraphiQLPlugin | string;
+  /**
+   *  The plugin which is used to display the reference documentation when selecting a type
+   */
+  referencePlugin?: GraphiQLPlugin;
 };
 
 export function PluginContextProvider(props: PluginContextProviderProps) {
   const storage = useStorageContext();
-  const explorerContext = useExplorerContext();
   const historyContext = useHistoryContext();
 
-  const hasExplorerContext = Boolean(explorerContext);
   const hasHistoryContext = Boolean(historyContext);
   const plugins = useMemo(() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
 
-    if (hasExplorerContext) {
-      pluginList.push(DOC_EXPLORER_PLUGIN);
-      pluginTitles[DOC_EXPLORER_PLUGIN.title] = true;
-    }
     if (hasHistoryContext) {
       pluginList.push(HISTORY_PLUGIN);
       pluginTitles[HISTORY_PLUGIN.title] = true;
@@ -127,7 +116,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     }
 
     return pluginList;
-  }, [hasExplorerContext, hasHistoryContext, props.plugins]);
+  }, [hasHistoryContext, props.plugins]);
 
   const [visiblePlugin, internalSetVisiblePlugin] =
     useState<GraphiQLPlugin | null>(() => {

@@ -27,6 +27,8 @@ import {
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
 
+import type { SchemaReference } from 'graphql-language-service';
+
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
 export type SchemaContextType = {
@@ -57,6 +59,14 @@ export type SchemaContextType = {
    * valid if and only if this list is empty.
    */
   validationErrors: readonly GraphQLError[];
+  /**
+   * The last type selected by the user
+   */
+  schemaReference?: SchemaReference | null;
+  /**
+   * Set the current selected type
+   */
+  setSchemaReference(type: SchemaReference): void;
 };
 
 export const SchemaContext =
@@ -127,6 +137,9 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   const [schema, setSchema] = useState<MaybeGraphQLSchema>();
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const [schemaReference, setSchemaReference] =
+    useState<SchemaReference | null>(null);
 
   /**
    * A counter that is incremented each time introspection is triggered or the
@@ -347,8 +360,17 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       isFetching,
       schema,
       validationErrors,
+      schemaReference,
+      setSchemaReference,
     }),
-    [fetchError, introspect, isFetching, schema, validationErrors],
+    [
+      fetchError,
+      introspect,
+      isFetching,
+      schema,
+      validationErrors,
+      schemaReference,
+    ],
   );
 
   return (

@@ -27,8 +27,8 @@ import {
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
 } from 'graphql';
-import type { State, Maybe } from 'graphql-language-service';
-import forEachState from './forEachState';
+import type { State, Maybe } from '../';
+import { forEachState } from './forEachState';
 
 export interface TypeInfo {
   schema: GraphQLSchema;
@@ -47,7 +47,7 @@ export interface TypeInfo {
  * Utility for collecting rich type information given any token's state
  * from the graphql-mode parser.
  */
-export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
+export function getTokenTypeInfo(schema: GraphQLSchema, tokenState: State) {
   const info: TypeInfo = {
     schema,
     type: null,

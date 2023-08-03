@@ -1,6 +1,6 @@
 import { GraphQLType } from 'graphql';
 
-import { useExplorerContext } from '@graphiql/react';
+import { useExplorerContext } from '../context';
 import { renderType } from './utils';
 
 import './type-link.css';

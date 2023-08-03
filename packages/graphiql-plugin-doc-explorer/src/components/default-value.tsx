@@ -1,6 +1,6 @@
 import { astFromValue, print, ValueNode } from 'graphql';
 
-import { ExplorerFieldDef } from '@graphiql/react';
+import { ExplorerFieldDef } from '../context';
 
 import './default-value.css';
 

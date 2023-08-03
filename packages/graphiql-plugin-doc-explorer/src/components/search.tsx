@@ -20,8 +20,8 @@ import {
   MagnifyingGlassIcon,
   useSchemaContext,
   debounce,
-  useExplorerContext,
 } from '@graphiql/react';
+import { useExplorerContext } from '../context';
 
 import './search.css';
 import { renderType } from './utils';

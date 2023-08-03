@@ -2,16 +2,15 @@ import type { Editor, EditorChange } from 'codemirror';
 import type { IHint } from 'codemirror-graphql/hint';
 import {
   GraphQLNamedType,
-  GraphQLSchema,
   GraphQLType,
   isListType,
   isNonNullType,
 } from 'graphql';
 
-import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
-import { DOC_EXPLORER_PLUGIN, PluginContextType } from '../plugin';
+import { PluginContextType } from '../plugin';
 import { importCodeMirror } from './common';
+import { SchemaContextType } from '../schema';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
@@ -20,11 +19,12 @@ import { importCodeMirror } from './common';
 export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
-  schema: GraphQLSchema | null | undefined,
-  explorer: ExplorerContextType | null,
+  schemaContext: SchemaContextType | null,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ): void {
+  const { schema } = schemaContext ?? {};
+
   void importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
     let fieldName: HTMLSpanElement | null;
@@ -35,6 +35,7 @@ export function onHasCompletion(
     let description: HTMLDivElement | null;
     let deprecation: HTMLDivElement | null;
     let deprecationReason: HTMLDivElement | null;
+
     CodeMirror.on(
       data,
       'select',
@@ -244,20 +245,15 @@ export function onHasCompletion(
   });
 
   function onClickHintInformation(event: Event) {
-    if (
-      !schema ||
-      !explorer ||
-      !plugin ||
-      !(event.currentTarget instanceof HTMLElement)
-    ) {
+    if (!schema || !plugin || !(event.currentTarget instanceof HTMLElement)) {
       return;
     }
 
     const typeName = event.currentTarget.textContent || '';
     const type = schema.getType(typeName);
-    if (type) {
-      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      explorer.push({ name: type.name, def: type });
+    if (type && plugin.referencePlugin) {
+      plugin.setVisiblePlugin(plugin.referencePlugin);
+      schemaContext?.setSchemaReference({ kind: 'Type', type });
       callback?.(type);
     }
   }

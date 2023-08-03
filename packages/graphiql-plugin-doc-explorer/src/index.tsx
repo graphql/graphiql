@@ -1,15 +1,13 @@
-import {
-  usePluginContext,
-  type GraphiQLPlugin,
-  DocsFilledIcon,
-  DocsIcon,
-} from '@graphiql/react';
+import { usePluginContext, type GraphiQLPlugin } from '@graphiql/react';
+
+import { DocsFilledIcon, DocsIcon } from './icons';
 
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
 export { DeprecationReason } from './components/deprecation-reason';
 export { Directive } from './components/directive';
 import { DocExplorer } from './components/doc-explorer';
+import { ExplorerContext } from './context';
 export { FieldDocumentation } from './components/field-documentation';
 export { FieldLink } from './components/field-link';
 export { SchemaDocumentation } from './components/schema-documentation';
@@ -32,5 +30,9 @@ export const docExplorerPlugin: GraphiQLPlugin = {
       <DocsIcon />
     );
   },
-  content: DocExplorer,
+  content: (
+    <ExplorerContext>
+      <DocExplorer />
+    </ExplorerContext>
+  ),
 };

@@ -1,7 +1,9 @@
 import { GraphQLArgument } from 'graphql';
 import { useCallback, useState } from 'react';
 
-import { Button, MarkdownContent, ExplorerFieldDef } from '@graphiql/react';
+import { Button, MarkdownContent } from '@graphiql/react';
+
+import { ExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DeprecationReason } from './deprecation-reason';
 import { Directive } from './directive';

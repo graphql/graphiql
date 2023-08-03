@@ -1,12 +1,9 @@
 import { isType } from 'graphql';
 import { ReactNode } from 'react';
 
-import {
-  ChevronLeftIcon,
-  useSchemaContext,
-  Spinner,
-  useExplorerContext,
-} from '@graphiql/react';
+import { ChevronLeftIcon, useSchemaContext, Spinner } from '@graphiql/react';
+
+import { useExplorerContext } from '../context';
 
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';

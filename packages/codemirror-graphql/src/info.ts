@@ -19,19 +19,22 @@ import {
   GraphQLSchema,
   GraphQLType,
 } from 'graphql';
+
 import CodeMirror from 'codemirror';
 
-import getTypeInfo, { TypeInfo } from './utils/getTypeInfo';
 import {
+  getTokenTypeInfo,
   getArgumentReference,
   getDirectiveReference,
   getEnumValueReference,
   getFieldReference,
   getTypeReference,
-  SchemaReference,
-} from './utils/SchemaReference';
+  type SchemaReference,
+  type TypeInfo,
+  type Maybe,
+} from 'graphql-language-service';
+
 import './utils/info-addon';
-import type { Maybe } from 'graphql-language-service';
 
 export interface GraphQLInfoOptions {
   schema?: GraphQLSchema;
@@ -62,7 +65,7 @@ CodeMirror.registerHelper(
       return;
     }
     const { kind, step } = token.state;
-    const typeInfo = getTypeInfo(options.schema, token.state);
+    const typeInfo = getTokenTypeInfo(options.schema, token.state);
 
     // Given a Schema and a Token, produce the contents of an info tooltip.
     // To do this, create a div element that we will render "into" and then pass

@@ -1,4 +1,4 @@
-import { ExplorerFieldDef, useExplorerContext } from '@graphiql/react';
+import { ExplorerFieldDef, useExplorerContext } from '../context';
 
 import './field-link.css';
 
