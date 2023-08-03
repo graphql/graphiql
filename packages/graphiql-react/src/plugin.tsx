@@ -88,6 +88,7 @@ export type PluginContextProviderProps = {
 };
 
 export function PluginContextProvider(props: PluginContextProviderProps) {
+  const { referencePlugin } = props;
   const storage = useStorageContext();
   const historyContext = useHistoryContext();
 
@@ -171,8 +172,8 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
   }, [plugins, props.visiblePlugin, setVisiblePlugin]);
 
   const value = useMemo<PluginContextType>(
-    () => ({ plugins, setVisiblePlugin, visiblePlugin }),
-    [plugins, setVisiblePlugin, visiblePlugin],
+    () => ({ plugins, setVisiblePlugin, visiblePlugin, referencePlugin }),
+    [plugins, setVisiblePlugin, visiblePlugin, referencePlugin],
   );
 
   return (
