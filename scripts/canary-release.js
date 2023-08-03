@@ -70,10 +70,10 @@ async function updateVersions() {
   const packages = await getPackages(cwd);
   const config = await readConfig(cwd, packages);
   const modifiedChangesets = getRelevantChangesets(config.baseBranch);
+  console.log({ modifiedChangesets });
   const changesets = (await readChangesets(cwd)).filter(change =>
     modifiedChangesets.includes(change.id),
   );
-  // const isMain = process.env.GITHUB_REF_NAME?.includes('main');
 
   let vscodeRelease = false;
 
