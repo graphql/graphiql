@@ -370,6 +370,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       schema,
       validationErrors,
       schemaReference,
+      setSchemaReference,
     ],
   );
 

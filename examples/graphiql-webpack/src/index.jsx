@@ -91,6 +91,7 @@ const App = () => {
       style={style}
       // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
       plugins={[serverSelect, docExplorer, explorer, exporter]}
+      referencePlugin={docExplorer}
       fetcher={fetcher}
       shouldPersistHeaders
     />
