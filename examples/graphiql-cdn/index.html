@@ -21,7 +21,6 @@
         height: 100vh;
       }
     </style>
-
     <!--
       This GraphiQL example depends on Promise and fetch, which are available in
       modern browsers, but can be "polyfilled" for older browsers.
@@ -37,20 +36,28 @@
       crossorigin
       src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
     ></script>
-    <script
-      src="https://unpkg.com/graphiql/graphiql.min.js"
-      type="application/javascript"
-    ></script>
-    <script
-      src="https://unpkg.com/@graphiql/plugin-explorer/dist/index.umd.js"
-      crossorigin
-    ></script>
     <!--
       These two files can be found in the npm module, however you may wish to
       copy them directly into your environment, or perhaps include them in your
       favored resource bundler.
      -->
+    <script
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+      type="application/javascript"
+    ></script>
     <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+    <!-- 
+      These are imports for the GraphIQL Explorer plugin.
+     -->
+    <script
+      src="https://unpkg.com/@graphiql/plugin-explorer/dist/index.umd.js"
+      crossorigin
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@graphiql/plugin-explorer/dist/style.css"
+    />
   </head>
 
   <body>
