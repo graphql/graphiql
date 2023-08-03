@@ -1,6 +1,6 @@
 import { GraphQLNamedType, GraphQLType } from 'graphql';
 
-import { ExplorerContextType, ExplorerNavStackItem } from '@graphiql/react';
+import { ExplorerContextType, ExplorerNavStackItem } from '../../';
 
 export function mockExplorerContextValue(
   navStackItem: ExplorerNavStackItem,

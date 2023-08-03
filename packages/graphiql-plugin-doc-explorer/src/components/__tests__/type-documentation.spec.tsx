@@ -10,7 +10,8 @@ import {
   GraphQLUnionType,
 } from 'graphql';
 
-import { ExplorerContext, SchemaContext } from '@graphiql/react';
+import { SchemaContext } from '@graphiql/react';
+import { ExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
@@ -23,6 +24,7 @@ function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
         isFetching: false,
         schema: ExampleSchema,
         validationErrors: [],
+        setSchemaReference: () => null,
       }}
     >
       <ExplorerContext.Provider
