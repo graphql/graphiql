@@ -12,7 +12,13 @@ import { TypeDocumentation } from './type-documentation';
 
 import './doc-explorer.css';
 
-export function DocExplorer() {
+export type DocExplorerProps = {
+  /**
+   * Show all types on the schema documentation page below the schema.documentation?
+   */
+  showAllTypes?: boolean;
+};
+export function DocExplorer(props: DocExplorerProps) {
   const { fetchError, isFetching, schema, validationErrors } = useSchemaContext(
     { nonNull: true, caller: DocExplorer },
   );
@@ -46,7 +52,9 @@ export function DocExplorer() {
       </div>
     );
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDocumentation schema={schema} />;
+    content = (
+      <SchemaDocumentation schema={schema} showAllTypes={props?.showAllTypes} />
+    );
   } else if (isType(navItem.def)) {
     content = <TypeDocumentation type={navItem.def} />;
   } else if (navItem.def) {

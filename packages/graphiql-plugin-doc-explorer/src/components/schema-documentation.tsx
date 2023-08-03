@@ -11,6 +11,10 @@ type SchemaDocumentationProps = {
    * The schema that should be rendered.
    */
   schema: GraphQLSchema;
+  /**
+   * showAllTypes: Show all types on the schema documentation page below the schema.documentation?
+   */
+  showAllTypes?: boolean;
 };
 
 export function SchemaDocumentation(props: SchemaDocumentationProps) {
@@ -55,26 +59,28 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
           </div>
         )}
       </ExplorerSection>
-      <ExplorerSection title="All Schema Types">
-        {typeMap && (
-          <div>
-            {Object.values(typeMap).map(type => {
-              if (
-                ignoreTypesInAllSchema.includes(type.name) ||
-                type.name.startsWith('__')
-              ) {
-                return null;
-              }
+      {props?.showAllTypes && (
+        <ExplorerSection title="All Schema Types">
+          {typeMap && (
+            <div>
+              {Object.values(typeMap).map(type => {
+                if (
+                  ignoreTypesInAllSchema.includes(type.name) ||
+                  type.name.startsWith('__')
+                ) {
+                  return null;
+                }
 
-              return (
-                <div key={type.name}>
-                  <TypeLink type={type} />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </ExplorerSection>
+                return (
+                  <div key={type.name}>
+                    <TypeLink type={type} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </ExplorerSection>
+      )}
     </>
   );
 }

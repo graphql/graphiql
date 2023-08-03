@@ -1,8 +1,7 @@
 import { usePluginContext, type GraphiQLPlugin } from '@graphiql/react';
 
 import { DocsFilledIcon, DocsIcon } from './icons';
-import { DocExplorer } from './components/doc-explorer';
-import React from 'react';
+import { DocExplorer, DocExplorerProps } from './components/doc-explorer';
 
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
@@ -32,11 +31,13 @@ export type {
   ExplorerNavStackItem,
 } from './context';
 
-export { DocExplorer };
+export { DocExplorer, type DocExplorerProps };
 
 const DOC_EXPLORER_PLUGIN_TITLE = 'Documentation Explorer';
 
-export const docExplorerPlugin = (): GraphiQLPlugin => ({
+export const docExplorerPlugin = (
+  options?: DocExplorerProps,
+): GraphiQLPlugin => ({
   title: DOC_EXPLORER_PLUGIN_TITLE,
   icon: function Icon() {
     const pluginContext = usePluginContext();
@@ -48,7 +49,7 @@ export const docExplorerPlugin = (): GraphiQLPlugin => ({
   },
   content: () => (
     <ExplorerContextProvider>
-      <DocExplorer />
+      <DocExplorer {...options} />
     </ExplorerContextProvider>
   ),
 });
