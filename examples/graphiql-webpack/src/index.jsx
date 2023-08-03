@@ -4,10 +4,14 @@ import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
+import { docExplorerPlugin } from '@graphiql/plugin-doc-explorer';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
+import '@graphiql/plugin-doc-explorer/dist/style.css';
+
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorageContext } from '@graphiql/react';
 
@@ -58,6 +62,7 @@ const style = { height: '100vh' };
  * then use the `useMemo` hook
  */
 const explorer = explorerPlugin();
+const docExplorer = docExplorerPlugin();
 
 const App = () => {
   const storage = useStorageContext();
@@ -85,7 +90,7 @@ const App = () => {
     <GraphiQL
       style={style}
       // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
-      plugins={[serverSelect, explorer, exporter]}
+      plugins={[serverSelect, docExplorer, explorer, exporter]}
       fetcher={fetcher}
       shouldPersistHeaders
     />

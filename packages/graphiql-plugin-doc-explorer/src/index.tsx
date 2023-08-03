@@ -1,13 +1,13 @@
 import { usePluginContext, type GraphiQLPlugin } from '@graphiql/react';
 
 import { DocsFilledIcon, DocsIcon } from './icons';
+import { DocExplorer } from './components/doc-explorer';
+import React from 'react';
 
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
 export { DeprecationReason } from './components/deprecation-reason';
 export { Directive } from './components/directive';
-import { DocExplorer } from './components/doc-explorer';
-import { ExplorerContext } from './context';
 export { FieldDocumentation } from './components/field-documentation';
 export { FieldLink } from './components/field-link';
 export { SchemaDocumentation } from './components/schema-documentation';
@@ -16,11 +16,27 @@ export { ExplorerSection } from './components/section';
 export { TypeDocumentation } from './components/type-documentation';
 export { TypeLink } from './components/type-link';
 
+import {
+  ExplorerContext,
+  ExplorerContextProvider,
+  useExplorerContext,
+} from './context';
+
+export { ExplorerContext, ExplorerContextProvider, useExplorerContext };
+
+export type {
+  ExplorerContextType,
+  ExplorerContextProviderProps,
+  ExplorerFieldDef,
+  ExplorerNavStack,
+  ExplorerNavStackItem,
+} from './context';
+
 export { DocExplorer };
 
 const DOC_EXPLORER_PLUGIN_TITLE = 'Documentation Explorer';
 
-export const docExplorerPlugin: GraphiQLPlugin = {
+export const docExplorerPlugin = (): GraphiQLPlugin => ({
   title: DOC_EXPLORER_PLUGIN_TITLE,
   icon: function Icon() {
     const pluginContext = usePluginContext();
@@ -30,9 +46,9 @@ export const docExplorerPlugin: GraphiQLPlugin = {
       <DocsIcon />
     );
   },
-  content: (
-    <ExplorerContext>
+  content: () => (
+    <ExplorerContextProvider>
       <DocExplorer />
-    </ExplorerContext>
+    </ExplorerContextProvider>
   ),
-};
+});
