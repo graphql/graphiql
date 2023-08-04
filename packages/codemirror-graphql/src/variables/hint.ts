@@ -21,7 +21,7 @@ import {
 import type { State, Maybe } from 'graphql-language-service';
 import { IHints } from '../hint';
 
-import forEachState from '../utils/forEachState';
+import { forEachState } from 'graphql-language-service';
 import hintList from '../utils/hintList';
 
 export type VariableToType = Record<string, GraphQLInputType>;

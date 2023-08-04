@@ -4,7 +4,7 @@ import { DefaultValue } from './default-value';
 import { TypeLink } from './type-link';
 
 import './argument.css';
-import { MarkdownContent } from '../../ui';
+import { MarkdownContent } from '@graphiql/react';
 
 type ArgumentProps = {
   /**

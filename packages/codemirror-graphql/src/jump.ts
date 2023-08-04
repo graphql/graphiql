@@ -12,14 +12,14 @@
 
 import CodeMirror from 'codemirror';
 
-import getTypeInfo from './utils/getTypeInfo';
 import {
   getArgumentReference,
   getDirectiveReference,
   getEnumValueReference,
   getFieldReference,
   getTypeReference,
-} from './utils/SchemaReference';
+  getTokenTypeInfo,
+} from 'graphql-language-service';
 import './utils/jump-addon';
 import { GraphQLSchema } from 'graphql';
 import type { State } from 'graphql-language-service';
@@ -55,7 +55,7 @@ CodeMirror.registerHelper(
     // or directive) that token references.
     const { state } = token;
     const { kind, step } = state;
-    const typeInfo = getTypeInfo(options.schema, state);
+    const typeInfo = getTokenTypeInfo(options.schema, state);
 
     if (
       (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||

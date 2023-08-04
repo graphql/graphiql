@@ -6,11 +6,12 @@
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
     "build-demo": "webpack-cli && mkdirp ../../packages/graphiql/webpack && cp -r dist/** ../../packages/graphiql/webpack",
-    "start": "NODE_ENV=development webpack-dev-server"
+    "start": "PORT=8081 NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
     "@graphiql/plugin-code-exporter": "^0.3.4",
     "@graphiql/plugin-explorer": "^0.3.4",
+    "@graphiql/plugin-doc-explorer": "^0.1.0",
     "@graphiql/toolkit": "^0.9.1",
     "graphiql": "^3.0.5",
     "graphql": "^16.4.0",

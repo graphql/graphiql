@@ -1,4 +1,4 @@
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import type { SchemaReference } from 'graphql-language-service';
 import { useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';

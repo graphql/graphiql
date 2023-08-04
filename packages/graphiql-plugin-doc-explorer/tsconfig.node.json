@@ -1,0 +1,4 @@
+{
+  "extends": "@graphiql/plugin-utils/vite.config.tsconfig.json",
+  "include": ["vite.config.ts"]
+}

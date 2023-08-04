@@ -14,8 +14,12 @@ import {
   isUnionType,
 } from 'graphql';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSchemaContext } from '../schema';
-import { createContextHook, createNullableContext } from '../utility/context';
+import {
+  useSchemaContext,
+  createContextHook,
+  createNullableContext,
+  useStorageContext,
+} from '@graphiql/react';
 
 export type ExplorerFieldDef =
   | GraphQLField<{}, {}, {}>
@@ -72,24 +76,36 @@ export type ExplorerContextProviderProps = {
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
-  const { schema, validationErrors } = useSchemaContext({
+  const storage = useStorageContext();
+  const storedNavStackString = storage?.get('navStack');
+  let storedNavStack: ExplorerNavStack | null = null;
+  if (storedNavStackString) {
+    try {
+      storedNavStack = JSON.parse(storedNavStackString) as ExplorerNavStack;
+    } catch {}
+  }
+  const { schema, validationErrors, schemaReference } = useSchemaContext({
     nonNull: true,
     caller: ExplorerContextProvider,
   });
 
-  const [navStack, setNavStack] = useState<ExplorerNavStack>([
-    initialNavStackItem,
-  ]);
+  const [navStack, setNavStack] = useState<ExplorerNavStack>(
+    storedNavStack ?? [initialNavStackItem],
+  );
 
-  const push = useCallback((item: ExplorerNavStackItem) => {
-    setNavStack(currentState => {
-      const lastItem = currentState.at(-1)!;
-      return lastItem.def === item.def
-        ? // Avoid pushing duplicate items
-          currentState
-        : [...currentState, item];
-    });
-  }, []);
+  const push = useCallback(
+    (item: ExplorerNavStackItem) => {
+      setNavStack(currentState => {
+        const lastItem = currentState.at(-1)!;
+        return lastItem.def === item.def
+          ? // Avoid pushing duplicate items
+            currentState
+          : [...currentState, item];
+      });
+      storage?.set('navStack', JSON.stringify(navStack));
+    },
+    [navStack, storage],
+  );
 
   const pop = useCallback(() => {
     setNavStack(currentState =>
@@ -97,7 +113,37 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
         ? (currentState.slice(0, -1) as ExplorerNavStack)
         : currentState,
     );
-  }, []);
+    storage?.set('navStack', JSON.stringify(navStack));
+  }, [navStack, storage]);
+
+  useEffect(() => {
+    const reference = schemaReference;
+    if (!reference) {
+      return;
+    }
+    switch (reference.kind) {
+      case 'Type': {
+        push({ name: reference.type.name, def: reference.type });
+        break;
+      }
+      case 'Field': {
+        push({ name: reference.field.name, def: reference.field });
+        break;
+      }
+      case 'Argument': {
+        if (reference.field) {
+          push({ name: reference.field.name, def: reference.field });
+        }
+        break;
+      }
+      case 'EnumValue': {
+        if (reference.type) {
+          push({ name: reference.type.name, def: reference.type });
+        }
+        break;
+      }
+    }
+  }, [schemaReference, push]);
 
   const reset = useCallback(() => {
     setNavStack(currentState =>

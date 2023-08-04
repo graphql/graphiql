@@ -34,3 +34,17 @@ export {
   OperationFacts,
   QueryFacts,
 } from './getOperationFacts';
+
+export {
+  getArgumentReference,
+  getDirectiveReference,
+  getEnumValueReference,
+  getTypeReference,
+  getFieldReference,
+} from './SchemaReference';
+
+export type { FieldReference, SchemaReference } from './SchemaReference';
+
+export { getTokenTypeInfo, type TypeInfo } from './getTypeInfo';
+
+export { forEachState } from './forEachState';

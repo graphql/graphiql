@@ -104,24 +104,4 @@ export { CompletionItemKind, FileChangeTypeKind } from './types';
 /**
  * Utilities useful for language services across runtimes
  */
-export {
-  JSONSchema6,
-  JSONSchema6TypeName,
-  JSONSchemaOptions,
-  getASTNodeAtPosition,
-  getFragmentDependencies,
-  getFragmentDependenciesForAST,
-  getOperationASTFacts,
-  getOperationFacts,
-  getQueryFacts,
-  getVariablesJSONSchema,
-  offsetToPosition,
-  OperationFacts,
-  pointToOffset,
-  Position,
-  collectVariables,
-  validateWithCustomRules,
-  VariableToType,
-  QueryFacts,
-  Range,
-} from './utils';
+export * from './utils';

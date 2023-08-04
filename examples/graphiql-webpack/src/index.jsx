@@ -3,11 +3,15 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
+import { docExplorerPlugin } from '@graphiql/plugin-doc-explorer';
+
 import { snippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
+import '@graphiql/plugin-doc-explorer/dist/style.css';
 
 /**
  * A manual fetcher implementation, you should probably
@@ -38,6 +42,7 @@ const style = { height: '100vh' };
  * then use the `useMemo` hook
  */
 const explorer = explorerPlugin();
+const docExplorer = docExplorerPlugin();
 const exporter = codeExporterPlugin({ snippets });
 
 const App = () => {
@@ -45,7 +50,8 @@ const App = () => {
     <GraphiQL
       style={style}
       // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
-      plugins={[explorer, exporter]}
+      plugins={[docExplorer, explorer, exporter]}
+      referencePlugin={docExplorer}
       fetcher={fetcher}
     />
   );

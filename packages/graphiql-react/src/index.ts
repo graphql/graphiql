@@ -26,30 +26,12 @@ export {
   useExecutionContext,
 } from './execution';
 export {
-  Argument,
-  DefaultValue,
-  DeprecationReason,
-  Directive,
-  DocExplorer,
-  ExplorerContext,
-  ExplorerContextProvider,
-  ExplorerSection,
-  FieldDocumentation,
-  FieldLink,
-  SchemaDocumentation,
-  Search,
-  TypeDocumentation,
-  TypeLink,
-  useExplorerContext,
-} from './explorer';
-export {
   History,
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
 } from './history';
 export {
-  DOC_EXPLORER_PLUGIN,
   HISTORY_PLUGIN,
   PluginContext,
   PluginContextProvider,
@@ -67,7 +49,9 @@ export {
   useStorageContext,
 } from './storage';
 export { useTheme } from './theme';
+export { createContextHook, createNullableContext } from './utility/context';
 export { useDragResize } from './utility/resize';
+export { default as debounce } from './utility/debounce';
 
 export * from './icons';
 export * from './ui';
@@ -90,13 +74,6 @@ export type {
   ExecutionContextProviderProps,
   ExecutionContextType,
 } from './execution';
-export type {
-  ExplorerContextProviderProps,
-  ExplorerContextType,
-  ExplorerFieldDef,
-  ExplorerNavStack,
-  ExplorerNavStackItem,
-} from './explorer';
 export type {
   HistoryContextProviderProps,
   HistoryContextType,

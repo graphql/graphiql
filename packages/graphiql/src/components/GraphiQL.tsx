@@ -121,6 +121,7 @@ export function GraphiQL({
   validationRules,
   variables,
   visiblePlugin,
+  referencePlugin,
   defaultHeaders,
   ...props
 }: GraphiQLProps) {
@@ -159,6 +160,7 @@ export function GraphiQL({
       storage={storage}
       validationRules={validationRules}
       variables={variables}
+      referencePlugin={referencePlugin}
     >
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}

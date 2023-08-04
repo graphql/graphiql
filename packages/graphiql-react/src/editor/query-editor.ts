@@ -1,12 +1,14 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import type {
   DocumentNode,
   FragmentDefinitionNode,
   GraphQLSchema,
   ValidationRule,
 } from 'graphql';
-import { getOperationFacts } from 'graphql-language-service';
+import {
+  type SchemaReference,
+  getOperationFacts,
+} from 'graphql-language-service';
 import {
   MutableRefObject,
   useCallback,
@@ -16,9 +18,8 @@ import {
 } from 'react';
 
 import { useExecutionContext } from '../execution';
-import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
-import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
+import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
@@ -75,10 +76,11 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchemaContext({
+  const schemaContext = useSchemaContext({
     nonNull: true,
     caller: caller || useQueryEditor,
   });
+  const { schema } = schemaContext;
   const {
     externalFragments,
     initialQuery,
@@ -94,7 +96,6 @@ export function useQueryEditor(
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
-  const explorer = useExplorerContext();
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || useQueryEditor });
@@ -107,35 +108,14 @@ export function useQueryEditor(
   >(() => {});
   useEffect(() => {
     onClickReferenceRef.current = reference => {
-      if (!explorer || !plugin) {
+      if (!plugin?.referencePlugin) {
         return;
       }
-      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      switch (reference.kind) {
-        case 'Type': {
-          explorer.push({ name: reference.type.name, def: reference.type });
-          break;
-        }
-        case 'Field': {
-          explorer.push({ name: reference.field.name, def: reference.field });
-          break;
-        }
-        case 'Argument': {
-          if (reference.field) {
-            explorer.push({ name: reference.field.name, def: reference.field });
-          }
-          break;
-        }
-        case 'EnumValue': {
-          if (reference.type) {
-            explorer.push({ name: reference.type.name, def: reference.type });
-          }
-          break;
-        }
-      }
+      plugin.setVisiblePlugin(plugin.referencePlugin);
+      schemaContext.setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [explorer, onClickReference, plugin]);
+  }, [onClickReference, plugin, schemaContext]);
 
   useEffect(() => {
     let isActive = true;

@@ -3,10 +3,6 @@ import {
   ExecutionContextProvider,
   ExecutionContextProviderProps,
 } from './execution';
-import {
-  ExplorerContextProvider,
-  ExplorerContextProviderProps,
-} from './explorer/context';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { PluginContextProvider, PluginContextProviderProps } from './plugin';
 import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
@@ -14,7 +10,6 @@ import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
 export type GraphiQLProviderProps = EditorContextProviderProps &
   ExecutionContextProviderProps &
-  ExplorerContextProviderProps &
   HistoryContextProviderProps &
   PluginContextProviderProps &
   SchemaContextProviderProps &
@@ -48,6 +43,7 @@ export function GraphiQLProvider({
   validationRules,
   variables,
   visiblePlugin,
+  referencePlugin,
 }: GraphiQLProviderProps) {
   return (
     <StorageContextProvider storage={storage}>
@@ -80,15 +76,14 @@ export function GraphiQLProvider({
               fetcher={fetcher}
               operationName={operationName}
             >
-              <ExplorerContextProvider>
-                <PluginContextProvider
-                  onTogglePluginVisibility={onTogglePluginVisibility}
-                  plugins={plugins}
-                  visiblePlugin={visiblePlugin}
-                >
-                  {children}
-                </PluginContextProvider>
-              </ExplorerContextProvider>
+              <PluginContextProvider
+                onTogglePluginVisibility={onTogglePluginVisibility}
+                plugins={plugins}
+                visiblePlugin={visiblePlugin}
+                referencePlugin={referencePlugin}
+              >
+                {children}
+              </PluginContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
         </EditorContextProvider>

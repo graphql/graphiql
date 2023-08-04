@@ -70,5 +70,6 @@ module.exports = {
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.test.com', 'graphiql.com'],
+    port: 8081,
   },
 };

@@ -1,4 +1,4 @@
-import { MarkdownContent } from '../../ui';
+import { MarkdownContent } from '@graphiql/react';
 
 import './deprecation-reason.css';
 

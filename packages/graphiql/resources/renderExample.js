@@ -1,4 +1,4 @@
-/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+/* global React, ReactDOM, GraphiQL, GraphQLVersion, GraphiQLPluginDocExplorer */
 
 /**
  * UMD GraphiQL Example
@@ -84,6 +84,8 @@ function getSchemaUrl() {
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
 
+const docExplorerPlugin = GraphiQLPluginDocExplorer.docExplorerPlugin();
+
 root.render(
   React.createElement(GraphiQL, {
     fetcher: GraphiQL.createFetcher({
@@ -102,5 +104,7 @@ root.render(
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
+    plugins: [docExplorerPlugin],
+    referencePlugin: docExplorerPlugin,
   }),
 );

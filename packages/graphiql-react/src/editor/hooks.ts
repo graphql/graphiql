@@ -1,11 +1,10 @@
 import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import type { SchemaReference } from 'graphql-language-service';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
@@ -95,8 +94,7 @@ export function useCompletion(
   callback: ((reference: SchemaReference) => void) | null,
   caller: Function,
 ) {
-  const { schema } = useSchemaContext({ nonNull: true, caller });
-  const explorer = useExplorerContext();
+  const schemaContext = useSchemaContext({ nonNull: true, caller });
   const plugin = usePluginContext();
   useEffect(() => {
     if (!editor) {
@@ -107,8 +105,12 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      onHasCompletion(instance, changeObj, schema, explorer, plugin, type => {
-        callback?.({ kind: 'Type', type, schema: schema || undefined });
+      onHasCompletion(instance, changeObj, schemaContext, plugin, type => {
+        callback?.({
+          kind: 'Type',
+          type,
+          schema: schemaContext.schema || undefined,
+        });
       });
     };
     editor.on(
@@ -122,7 +124,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, explorer, plugin, schema]);
+  }, [callback, editor, plugin, schemaContext]);
 }
 
 type EmptyCallback = () => void;

@@ -13,8 +13,11 @@ import CodeMirror, { Hints, Hint } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import { FragmentDefinitionNode, GraphQLSchema, GraphQLType } from 'graphql';
-import type { Maybe } from 'graphql-language-service';
-import { getAutocompleteSuggestions, Position } from 'graphql-language-service';
+import {
+  getAutocompleteSuggestions,
+  Position,
+  type Maybe,
+} from 'graphql-language-service';
 
 export interface GraphQLHintOptions {
   schema?: GraphQLSchema;
