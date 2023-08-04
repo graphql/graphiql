@@ -10,6 +10,9 @@ import React from 'react';
 import { GraphiQL } from '../GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
+import { docExplorerPlugin } from '@graphiql/plugin-doc-explorer';
+
+const docExplorer = docExplorerPlugin();
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -104,7 +107,7 @@ describe('GraphiQL', () => {
 
       // Use a bad fetcher for our initial render
       const { rerender, container, getByLabelText } = render(
-        <GraphiQL fetcher={firstFetcher} />,
+        <GraphiQL fetcher={firstFetcher} plugins={[docExplorer]} />,
       );
 
       const showDocExplorerButton = getByLabelText(
@@ -179,6 +182,7 @@ describe('GraphiQL', () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
+          plugins={[docExplorer]}
           visiblePlugin="Documentation Explorer"
         />,
       );
@@ -321,7 +325,9 @@ describe('GraphiQL', () => {
         // @ts-expect-error missing properties from type 'DOMRect'
         .mockReturnValue({ left: 0, right: 1200 });
 
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} plugins={[docExplorer]} />,
+      );
 
       act(() => {
         fireEvent.click(

@@ -93,16 +93,19 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     storedNavStack ?? [initialNavStackItem],
   );
 
-  const push = useCallback((item: ExplorerNavStackItem) => {
-    setNavStack(currentState => {
-      const lastItem = currentState.at(-1)!;
-      return lastItem.def === item.def
-        ? // Avoid pushing duplicate items
-          currentState
-        : [...currentState, item];
-    });
-    storage?.set('navStack', JSON.stringify(navStack));
-  }, []);
+  const push = useCallback(
+    (item: ExplorerNavStackItem) => {
+      setNavStack(currentState => {
+        const lastItem = currentState.at(-1)!;
+        return lastItem.def === item.def
+          ? // Avoid pushing duplicate items
+            currentState
+          : [...currentState, item];
+      });
+      storage?.set('navStack', JSON.stringify(navStack));
+    },
+    [navStack, storage],
+  );
 
   const pop = useCallback(() => {
     setNavStack(currentState =>
@@ -111,7 +114,7 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
         : currentState,
     );
     storage?.set('navStack', JSON.stringify(navStack));
-  }, []);
+  }, [navStack, storage]);
 
   useEffect(() => {
     const reference = schemaReference;
