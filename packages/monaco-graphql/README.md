@@ -152,7 +152,7 @@ any given set of operations
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/full';
+import { initializeMode } from 'monaco-graphql/initializeMode';
 
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
@@ -298,7 +298,7 @@ const { api } = languages.graphql;
 Otherwise, you can, like in the sync demo above:
 
 ```ts
-import { initializeMode } from 'monaco-graphql/full';
+import { initializeMode } from 'monaco-graphql/initializeMode';
 
 const api = initializeMode(config);
 ```
@@ -326,7 +326,7 @@ monaco.languages.graphql.api.setSchemaConfig([
 or you can load the language features only when you have your schema
 
 ```ts
-import { initializeMode } from 'monaco-graphql/full';
+import { initializeMode } from 'monaco-graphql/initializeMode';
 
 const schemas = [
   {

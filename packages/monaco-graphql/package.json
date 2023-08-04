@@ -35,14 +35,17 @@
     },
     "./lite": {
       "import": "./esm/lite.js",
-      "types": "./esm/lite.d.ts"
+      "types": "./esm/lite.d.ts",
+      "require": "./dist/lite.js"
     },
     "./graphql.worker": {
+      "default": "./esm/graphql.worker.js",
       "import": "./esm/graphql.worker.js",
       "types": "./esm/graphql.worker.d.ts",
       "require": "./dist/graphql.worker.js"
     },
     "./initializeMode": {
+      "default": "./esm/initializeMode.js",
       "import": "./esm/initializeMode.js",
       "types": "./esm/initializeMode.d.ts",
       "require": "./dist/initializeMode.js"
