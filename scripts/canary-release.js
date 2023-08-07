@@ -70,7 +70,6 @@ async function updateVersions() {
   const packages = await getPackages(cwd);
   const config = await readConfig(cwd, packages);
   const modifiedChangesets = getRelevantChangesets(config.baseBranch);
-  console.log({ modifiedChangesets });
   const changesets = (await readChangesets(cwd)).filter(change =>
     modifiedChangesets.includes(change.id),
   );

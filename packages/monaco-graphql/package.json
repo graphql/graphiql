@@ -20,13 +20,14 @@
     ".": {
       "import": "./esm/monaco.contribution.js",
       "require": "./dist/monaco.contribution.js",
-      "types": "./esm/monaco.contribution.d.ts"
+      "types": "./esm/monaco.contribution.d.ts",
+      "default": "./dist/monaco.contribution.js"
     },
     "./*": {
-      "default": "./*",
       "import": "./*",
       "require": "./*",
-      "types": "./*"
+      "types": "./*",
+      "default": "./*"
     },
     "./esm/graphql.worker": {
       "import": "./esm/graphql.worker.js",
@@ -36,19 +37,20 @@
     "./lite": {
       "import": "./esm/lite.js",
       "types": "./esm/lite.d.ts",
-      "require": "./dist/lite.js"
+      "require": "./dist/lite.js",
+      "default": "./dist/lite.js"
     },
     "./graphql.worker": {
-      "default": "./esm/graphql.worker.js",
       "import": "./esm/graphql.worker.js",
       "types": "./esm/graphql.worker.d.ts",
-      "require": "./dist/graphql.worker.js"
+      "require": "./dist/graphql.worker.js",
+      "default": "./dist/graphql.worker.js"
     },
     "./initializeMode": {
-      "default": "./esm/initializeMode.js",
       "import": "./esm/initializeMode.js",
       "types": "./esm/initializeMode.d.ts",
-      "require": "./dist/initializeMode.js"
+      "require": "./dist/initializeMode.js",
+      "default": "./dist/initializeMode.js"
     }
   },
   "repository": {
