@@ -26,7 +26,7 @@ import { AllTypeInfo, IPosition } from '../types';
 import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
-export type HoverConfig = { useMarkdown?: boolean };
+export type HoverConfig = { useMarkdown?: boolean; typeLinks?: boolean };
 
 export function getHoverInformation(
   schema: GraphQLSchema,
@@ -53,25 +53,25 @@ export function getHoverInformation(
     (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
   ) {
     const into: string[] = [];
-    renderMdCodeStart(into, options);
+    renderMdCodeStart(into, options, typeInfo);
     renderField(into, typeInfo, options);
-    renderMdCodeEnd(into, options);
+    renderMdCodeEnd(into, options, typeInfo);
     renderDescription(into, options, typeInfo.fieldDef);
     return into.join('').trim();
   }
   if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     const into: string[] = [];
-    renderMdCodeStart(into, options);
+    renderMdCodeStart(into, options, typeInfo);
     renderDirective(into, typeInfo, options);
-    renderMdCodeEnd(into, options);
+    renderMdCodeEnd(into, options, typeInfo);
     renderDescription(into, options, typeInfo.directiveDef);
     return into.join('').trim();
   }
   if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     const into: string[] = [];
-    renderMdCodeStart(into, options);
+    renderMdCodeStart(into, options, typeInfo);
     renderArg(into, typeInfo, options);
-    renderMdCodeEnd(into, options);
+    renderMdCodeEnd(into, options, typeInfo);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
   }
@@ -81,35 +81,57 @@ export function getHoverInformation(
     'description' in typeInfo.enumValue
   ) {
     const into: string[] = [];
-    renderMdCodeStart(into, options);
+    renderMdCodeStart(into, options, typeInfo);
     renderEnumValue(into, typeInfo, options);
-    renderMdCodeEnd(into, options);
+    renderMdCodeEnd(into, options, typeInfo);
     renderDescription(into, options, typeInfo.enumValue);
     return into.join('').trim();
   }
   if (kind === 'NamedType' && typeInfo.type && 'description' in typeInfo.type) {
     const into: string[] = [];
-    renderMdCodeStart(into, options);
+    renderMdCodeStart(into, options, typeInfo);
     renderType(into, typeInfo, options, typeInfo.type);
-    renderMdCodeEnd(into, options);
+    renderMdCodeEnd(into, options, typeInfo);
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
   return '';
 }
 
-function renderMdCodeStart(into: string[], options: any) {
-  if (options.useMarkdown) {
+function renderMdCodeStart(
+  into: string[],
+  options: HoverConfig,
+  typeInfo: AllTypeInfo,
+) {
+  if (options.typeLinks && options.useMarkdown && typeInfo.type) {
+    text(into, '[```graphql\n');
+  } else if (options.useMarkdown) {
     text(into, '```graphql\n');
   }
 }
-function renderMdCodeEnd(into: string[], options: any) {
-  if (options.useMarkdown) {
+
+function renderMdCodeEnd(
+  into: string[],
+  options: HoverConfig,
+  typeInfo?: AllTypeInfo,
+) {
+  if (options.typeLinks && options.useMarkdown) {
+    text(
+      into,
+      `\n\`\`\`](command:DYNAMIC_1?${encodeURIComponent(
+        JSON.stringify({ type: typeInfo }),
+      )} "Show Documentation")`,
+    );
+  } else if (options.useMarkdown) {
     text(into, '\n```');
   }
 }
 
-function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderField(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: HoverConfig,
+) {
   renderQualifiedField(into, typeInfo, options);
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type!);
 }
@@ -117,7 +139,7 @@ function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
 function renderQualifiedField(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
 ) {
   if (!typeInfo.fieldDef) {
     return;
@@ -130,7 +152,11 @@ function renderQualifiedField(
   text(into, fieldName);
 }
 
-function renderDirective(into: string[], typeInfo: AllTypeInfo, _options: any) {
+function renderDirective(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  _options: HoverConfig,
+) {
   if (!typeInfo.directiveDef) {
     return;
   }
@@ -138,7 +164,11 @@ function renderDirective(into: string[], typeInfo: AllTypeInfo, _options: any) {
   text(into, name);
 }
 
-function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderArg(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: HoverConfig,
+) {
   if (typeInfo.directiveDef) {
     renderDirective(into, typeInfo, options);
   } else if (typeInfo.fieldDef) {
@@ -159,14 +189,18 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
 function renderTypeAnnotation(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
   t: GraphQLType,
 ) {
   text(into, ': ');
   renderType(into, typeInfo, options, t);
 }
 
-function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderEnumValue(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: HoverConfig,
+) {
   if (!typeInfo.enumValue) {
     return;
   }

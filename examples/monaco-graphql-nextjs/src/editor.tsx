@@ -68,6 +68,7 @@ const queryAction: editor.IActionDescriptor = {
     MODEL.response.setValue(JSON.stringify(data.value, null, 2));
   },
 };
+
 // set these early on so that initial variables with comments don't flash an error
 languages.json.jsonDefaults.setDiagnosticsOptions({
   allowComments: true,
@@ -96,6 +97,10 @@ export default function Editor(): ReactElement {
         ...DEFAULT_EDITOR_OPTIONS,
       });
       codeEditor.addAction(queryAction);
+      const commandId = codeEditor.addCommand(0, (_, type) =>
+        console.log(type.type),
+      );
+      console.log(commandId);
       MODEL.operations.onDidChangeContent(
         debounce(300, () => {
           localStorage.setItem(
