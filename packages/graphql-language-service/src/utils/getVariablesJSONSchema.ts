@@ -43,6 +43,10 @@ export type JSONSchemaOptions = {
    * whether to append a non-json schema valid 'markdownDescription` for `monaco-json`
    */
   useMarkdownDescription?: boolean;
+  /**
+   * Scalar schema mappings.
+   */
+  scalarSchemas?: Record<string, JSONSchema6>;
 };
 type JSONSchemaRunningOptions = JSONSchemaOptions & {
   definitionMarker: Marker;
@@ -84,6 +88,44 @@ function renderType(into: string[], t: GraphQLInputType | GraphQLInputField) {
   }
 }
 
+function renderDefinitionDescription(
+  t: GraphQLInputType | GraphQLInputField,
+  useMarkdown?: boolean,
+  description?: string | undefined | null,
+) {
+  const into: string[] = [];
+
+  const type = 'type' in t ? t.type : t;
+
+  // input field description
+  if ('type' in t && t.description) {
+    text(into, t.description);
+    text(into, '\n\n');
+  }
+
+  // type
+  text(into, renderTypeToString(type, useMarkdown));
+
+  // type description
+  if (description) {
+    text(into, '\n');
+    text(into, description);
+  } else if (!isScalarType(type) && 'description' in type && type.description) {
+    text(into, '\n');
+    text(into, type.description);
+  } else if (
+    'ofType' in type &&
+    !isScalarType(type.ofType) &&
+    'description' in type.ofType &&
+    type.ofType.description
+  ) {
+    text(into, '\n');
+    text(into, type.ofType.description);
+  }
+
+  return into.join('');
+}
+
 function renderTypeToString(
   t: GraphQLInputType | GraphQLInputField,
   useMarkdown?: boolean,
@@ -99,14 +141,14 @@ function renderTypeToString(
   return into.join('');
 }
 
-const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
-  Int: 'integer',
-  String: 'string',
-  Float: 'number',
-  ID: 'string',
-  Boolean: 'boolean',
+const defaultScalarTypesMap: { [key: string]: JSONSchema6 } = {
+  Int: { type: 'integer' },
+  String: { type: 'string' },
+  Float: { type: 'number' },
+  ID: { type: 'string' },
+  Boolean: { type: 'boolean' },
   // { "type": "string", "format": "date" } is not compatible with proposed DateTime GraphQL-Scalars.com spec
-  DateTime: 'string',
+  DateTime: { type: 'string' },
 };
 
 class Marker {
@@ -128,112 +170,106 @@ class Marker {
  * @returns {DefinitionResult}
  */
 function getJSONSchemaFromGraphQLType(
-  type: GraphQLInputType | GraphQLInputField,
+  fieldOrType: GraphQLInputType | GraphQLInputField,
   options?: JSONSchemaRunningOptions,
 ): DefinitionResult {
-  let required = false;
   let definition: CombinedSchema = Object.create(null);
   const definitions: Definitions = Object.create(null);
 
-  // TODO: test that this works?
-  if ('defaultValue' in type && type.defaultValue !== undefined) {
-    definition.default = type.defaultValue as JSONSchema4Type | undefined;
-  }
-  if (isEnumType(type)) {
-    definition.type = 'string';
-    definition.enum = type.getValues().map(val => val.name);
-  }
+  // field or type
+  const isField = 'type' in fieldOrType;
+  // type
+  const type = isField ? fieldOrType.type : fieldOrType;
+  // base type
+  const baseType = isNonNullType(type) ? type.ofType : type;
+  const required = isNonNullType(type);
 
-  if (isScalarType(type) && scalarTypesMap[type.name]) {
-    definition.type = scalarTypesMap[type.name];
-  }
-  if (isListType(type)) {
-    definition.type = 'array';
-    const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
-      type.ofType,
-      options,
-    );
-    if (def.$ref) {
-      definition.items = { $ref: def.$ref };
+  if (isScalarType(baseType)) {
+    //  scalars
+    if (options?.scalarSchemas?.[baseType.name]) {
+      // deep clone
+      definition = JSON.parse(
+        JSON.stringify(options.scalarSchemas[baseType.name]),
+      );
     } else {
-      definition.items = def;
+      // any
+      definition.type = ['string', 'number', 'boolean', 'integer'];
     }
-    if (defs) {
-      for (const defName of Object.keys(defs)) {
-        definitions[defName] = defs[defName];
+    if (!required) {
+      if (Array.isArray(definition.type)) {
+        definition.type.push('null');
+      } else if (definition.type) {
+        definition.type = [definition.type, 'null'];
+      } else if (definition.enum) {
+        definition.enum.push(null);
+      } else if (definition.oneOf) {
+        definition.oneOf.push({ type: 'null' });
+      } else {
+        definition = {
+          oneOf: [definition, { type: 'null' }],
+        };
       }
     }
-  }
-  if (isNonNullType(type)) {
-    required = true;
+  } else if (isEnumType(baseType)) {
+    definition.enum = baseType.getValues().map(val => val.name);
+    if (!required) {
+      definition.enum.push(null);
+    }
+  } else if (isListType(baseType)) {
+    if (required) {
+      definition.type = 'array';
+    } else {
+      definition.type = ['array', 'null'];
+    }
+
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
-      type.ofType,
+      baseType.ofType,
       options,
     );
-    definition = def;
+
+    definition.items = def;
+
     if (defs) {
       for (const defName of Object.keys(defs)) {
         definitions[defName] = defs[defName];
       }
     }
-  }
-  if (isInputObjectType(type)) {
-    definition.$ref = `#/definitions/${type.name}`;
-    if (options?.definitionMarker.mark(type.name)) {
-      const fields = type.getFields();
+  } else if (isInputObjectType(baseType)) {
+    if (required) {
+      definition.$ref = `#/definitions/${baseType.name}`;
+    } else {
+      definition.oneOf = [
+        { $ref: `#/definitions/${baseType.name}` },
+        { type: 'null' },
+      ];
+    }
+    if (options?.definitionMarker?.mark(baseType.name)) {
+      const fields = baseType.getFields();
 
       const fieldDef: PropertiedJSON6 = {
         type: 'object',
         properties: {},
         required: [],
       };
-      if (type.description) {
-        fieldDef.description =
-          type.description + '\n' + renderTypeToString(type);
-        if (options?.useMarkdownDescription) {
-          // @ts-expect-error
-          fieldDef.markdownDescription =
-            type.description + '\n' + renderTypeToString(type, true);
-        }
-      } else {
-        fieldDef.description = renderTypeToString(type);
-        if (options?.useMarkdownDescription) {
-          // @ts-expect-error
-          fieldDef.markdownDescription = renderTypeToString(type, true);
-        }
+
+      fieldDef.description = renderDefinitionDescription(baseType);
+      if (options?.useMarkdownDescription) {
+        // @ts-expect-error
+        fieldDef.markdownDescription = renderDefinitionDescription(
+          baseType,
+          true,
+        );
       }
 
       for (const fieldName of Object.keys(fields)) {
         const field = fields[fieldName];
         const {
           required: fieldRequired,
-          definition: typeDefinition,
-          definitions: typeDefinitions,
-        } = getJSONSchemaFromGraphQLType(field.type, options);
-
-        const {
           definition: fieldDefinition,
-          // definitions: fieldDefinitions,
+          definitions: typeDefinitions,
         } = getJSONSchemaFromGraphQLType(field, options);
 
-        fieldDef.properties[fieldName] = {
-          ...typeDefinition,
-          ...fieldDefinition,
-        } as JSONSchema6;
-
-        const renderedField = renderTypeToString(field.type);
-        fieldDef.properties[fieldName].description = field.description
-          ? field.description + '\n' + renderedField
-          : renderedField;
-        if (options?.useMarkdownDescription) {
-          const renderedFieldMarkdown = renderTypeToString(field.type, true);
-          fieldDef.properties[
-            fieldName
-            // @ts-expect-error
-          ].markdownDescription = field.description
-            ? field.description + '\n' + renderedFieldMarkdown
-            : renderedFieldMarkdown;
-        }
+        fieldDef.properties[fieldName] = fieldDefinition;
 
         if (fieldRequired) {
           fieldDef.required!.push(fieldName);
@@ -244,28 +280,30 @@ function getJSONSchemaFromGraphQLType(
           }
         }
       }
-      definitions[type.name] = fieldDef;
+      definitions[baseType.name] = fieldDef;
     }
   }
-  // append descriptions
-  if (
-    'description' in type &&
-    !isScalarType(type) &&
-    type.description &&
-    !definition.description
-  ) {
-    definition.description = type.description + '\n' + renderTypeToString(type);
-    if (options?.useMarkdownDescription) {
-      // @ts-expect-error
-      definition.markdownDescription =
-        type.description + '\n' + renderTypeToString(type, true);
-    }
-  } else {
-    definition.description = renderTypeToString(type);
-    if (options?.useMarkdownDescription) {
-      // @ts-expect-error
-      definition.markdownDescription = renderTypeToString(type, true);
-    }
+
+  if ('defaultValue' in fieldOrType && fieldOrType.defaultValue !== undefined) {
+    definition.default = fieldOrType.defaultValue as
+      | JSONSchema4Type
+      | undefined;
+  }
+
+  // append to type descriptions, or schema description
+  const { description } = definition;
+  definition.description = renderDefinitionDescription(
+    fieldOrType,
+    false,
+    description,
+  );
+  if (options?.useMarkdownDescription) {
+    // @ts-expect-error
+    definition.markdownDescription = renderDefinitionDescription(
+      fieldOrType,
+      true,
+      description,
+    );
   }
 
   return { required, definition, definitions };
@@ -326,6 +364,10 @@ export function getVariablesJSONSchema(
   const runtimeOptions: JSONSchemaRunningOptions = {
     ...options,
     definitionMarker: new Marker(),
+    scalarSchemas: {
+      ...defaultScalarTypesMap,
+      ...options?.scalarSchemas,
+    },
   };
 
   if (variableToType) {

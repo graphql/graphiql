@@ -49,6 +49,6 @@ return (
 
 ## CDN bundles
 
-You can also use add this plugin when using the
-[CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the
-[example HTML file](examples/index.html) that shows how you can do this.
+You can also use this plugin with `unpkg`, `jsdelivr`, and other CDNs.
+
+See the [example HTML file](examples/index.html) for this plugin

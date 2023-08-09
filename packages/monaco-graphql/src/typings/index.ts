@@ -9,6 +9,7 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
 } from 'graphql';
+import { JSONSchema6 } from 'graphql-language-service';
 import type { Options as PrettierConfig } from 'prettier';
 
 export type BaseSchemaConfig = {
@@ -64,6 +65,19 @@ export type SchemaConfig = {
    * A stringified introspection JSON result
    */
   introspectionJSONString?: string;
+  /**
+   * JSON schemas ued for custom scalars
+   * @example
+   * ```ts
+   * {
+   *  customScalarSchemas: {
+   *    DateTime: {
+   *      type": "string",
+   *      format": "date-time"
+   *    }
+   *  }
+   */
+  customScalarSchemas?: Record<string, JSONSchema6>;
 };
 
 /**
