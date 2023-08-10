@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
@@ -34,6 +35,7 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'react/jsx-runtime',
+        'monaco-graphql/esm/initializeMode',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies).filter(
@@ -43,6 +45,12 @@ export default defineConfig({
       output: {
         chunkFileNames: '[name].[format].js',
       },
+    },
+    emptyOutDir: false,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
     },
   },
 });

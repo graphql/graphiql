@@ -13,10 +13,11 @@ import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
+import { editor as MONACO_EDITOR } from 'monaco-editor';
 
 export function useSynchronizeValue(
-  editor: CodeMirrorEditor | null,
-  value: string | undefined,
+  editor: MONACO_EDITOR.IStandaloneCodeEditor | null,
+  value?: string,
 ) {
   useEffect(() => {
     if (editor && typeof value === 'string' && value !== editor.getValue()) {
@@ -31,9 +32,7 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   value: EditorConfiguration[K],
 ) {
   useEffect(() => {
-    if (editor) {
-      editor.setOption(option, value);
-    }
+    editor?.setOption(option, value);
   }, [editor, option, value]);
 }
 
@@ -130,7 +129,7 @@ type EmptyCallback = () => void;
 export function useKeyMap(
   editor: CodeMirrorEditor | null,
   keys: string[],
-  callback: EmptyCallback | undefined,
+  callback?: EmptyCallback,
 ) {
   useEffect(() => {
     if (!editor) {
@@ -194,6 +193,7 @@ export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
   });
   const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
   return useCallback(() => {
+    // @ts-expect-error FIXME: MONACO
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
     if (!documentAST || !query) {
@@ -298,35 +298,36 @@ export function useAutoCompleteLeafs({
       getDefaultFieldNames,
     );
     if (insertions && insertions.length > 0) {
-      queryEditor.operation(() => {
-        const cursor = queryEditor.getCursor();
-        const cursorIndex = queryEditor.indexFromPos(cursor);
-        queryEditor.setValue(result || '');
-        let added = 0;
-        const markers = insertions.map(({ index, string }) =>
-          queryEditor.markText(
-            queryEditor.posFromIndex(index + added),
-            queryEditor.posFromIndex(index + (added += string.length)),
-            {
-              className: 'auto-inserted-leaf',
-              clearOnEnter: true,
-              title: 'Automatically added leaf fields',
-            },
-          ),
-        );
-        setTimeout(() => {
-          for (const marker of markers) {
-            marker.clear();
-          }
-        }, 7000);
-        let newCursorIndex = cursorIndex;
-        for (const { index, string } of insertions) {
-          if (index < cursorIndex) {
-            newCursorIndex += string.length;
-          }
-        }
-        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-      });
+      // FIXME: MONACO
+      // queryEditor.operation(() => {
+      //   const cursor = queryEditor.getCursor();
+      //   const cursorIndex = queryEditor.indexFromPos(cursor);
+      //   queryEditor.setValue(result || '');
+      //   let added = 0;
+      //   const markers = insertions.map(({ index, string }) =>
+      //     queryEditor.markText(
+      //       queryEditor.posFromIndex(index + added),
+      //       queryEditor.posFromIndex(index + (added += string.length)),
+      //       {
+      //         className: 'auto-inserted-leaf',
+      //         clearOnEnter: true,
+      //         title: 'Automatically added leaf fields',
+      //       },
+      //     ),
+      //   );
+      //   setTimeout(() => {
+      //     for (const marker of markers) {
+      //       marker.clear();
+      //     }
+      //   }, 7000);
+      //   let newCursorIndex = cursorIndex;
+      //   for (const { index, string } of insertions) {
+      //     if (index < cursorIndex) {
+      //       newCursorIndex += string.length;
+      //     }
+      //   }
+      //   queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      // });
     }
 
     return result;

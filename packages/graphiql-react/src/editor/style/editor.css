@@ -11,3 +11,8 @@
     visibility: hidden;
   }
 }
+
+.monaco-editor {
+  /* otherwise editor could grow the width and not shrink it */
+  position: absolute;
+}

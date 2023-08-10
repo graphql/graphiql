@@ -16,6 +16,7 @@ export function ExecuteButton() {
       caller: ExecuteButton,
     });
 
+  // @ts-expect-error FIXME: MONACO
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
   const isRunning = isFetching || isSubscribed;
@@ -35,6 +36,7 @@ export function ExecuteButton() {
       </Tooltip>
 
       <DropdownMenu.Content>
+        {/* @ts-expect-error FIXME: MONACO */}
         {operations.map((operation, i) => {
           const opName = operation.name
             ? operation.name.value
@@ -47,6 +49,7 @@ export function ExecuteButton() {
                 if (
                   queryEditor &&
                   selectedOperationName &&
+                  // @ts-expect-error FIXME: MONACO
                   selectedOperationName !== queryEditor.operationName
                 ) {
                   setOperationName(selectedOperationName);

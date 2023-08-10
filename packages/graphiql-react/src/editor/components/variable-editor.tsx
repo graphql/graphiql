@@ -1,3 +1,4 @@
+// @ts-nocheck -- codemirror editor complain about type errors
 import { useEffect } from 'react';
 import { clsx } from 'clsx';
 
@@ -26,8 +27,8 @@ export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
   const ref = useVariableEditor(hookArgs, VariableEditor);
 
   useEffect(() => {
-    if (variableEditor && !isHidden) {
-      variableEditor.refresh();
+    if (!isHidden) {
+      variableEditor?.refresh();
     }
   }, [variableEditor, isHidden]);
 

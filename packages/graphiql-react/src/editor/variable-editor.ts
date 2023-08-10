@@ -1,3 +1,4 @@
+// @ts-nocheck -- codemirror editor complain about type errors
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 

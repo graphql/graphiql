@@ -1,9 +1,8 @@
 import { StorageAPI } from '@graphiql/toolkit';
 import { useCallback, useMemo } from 'react';
+import { editor } from 'monaco-editor';
 
 import debounce from '../utility/debounce';
-import { CodeMirrorEditorWithOperationFacts } from './context';
-import { CodeMirrorEditor } from './types';
 
 export type TabDefinition = {
   /**
@@ -194,16 +193,17 @@ export function useSynchronizeActiveTabValues({
   headerEditor,
   responseEditor,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-  responseEditor: CodeMirrorEditor | null;
+  queryEditor: editor.IStandaloneCodeEditor | null;
+  variableEditor: editor.IStandaloneCodeEditor | null;
+  headerEditor: editor.IStandaloneCodeEditor | null;
+  responseEditor: editor.IStandaloneCodeEditor | null;
 }) {
   return useCallback<(state: TabsState) => TabsState>(
     state => {
       const query = queryEditor?.getValue() ?? null;
       const variables = variableEditor?.getValue() ?? null;
       const headers = headerEditor?.getValue() ?? null;
+      // @ts-expect-error FIXME: MONACO
       const operationName = queryEditor?.operationName ?? null;
       const response = responseEditor?.getValue() ?? null;
       return setPropertiesInActiveTab(state, {
@@ -259,10 +259,10 @@ export function useSetEditorValues({
   headerEditor,
   responseEditor,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-  responseEditor: CodeMirrorEditor | null;
+  queryEditor: editor.IStandaloneCodeEditor | null;
+  variableEditor: editor.IStandaloneCodeEditor | null;
+  headerEditor: editor.IStandaloneCodeEditor | null;
+  responseEditor: editor.IStandaloneCodeEditor | null;
 }) {
   return useCallback(
     ({

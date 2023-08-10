@@ -38,8 +38,7 @@
     "types"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
+    "dev": "vite build --watch",
     "build": "tsc --emitDeclarationOnly && vite build"
   },
   "peerDependencies": {
@@ -49,6 +48,8 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^0.9.1",
+    "monaco-editor": "^0.39.0",
+    "monaco-graphql": "^1.2.3",
     "@headlessui/react": "^1.7.15",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",

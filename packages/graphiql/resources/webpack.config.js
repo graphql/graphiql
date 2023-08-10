@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const graphql = require('graphql');
 const rimraf = require('rimraf');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
@@ -105,6 +106,19 @@ const resultConfig = ({ isDev = false }) => {
           });
         }
       })(),
+      new MonacoWebpackPlugin({
+        languages: ['json', 'graphql'],
+        publicPath: '/',
+        customLanguages: [
+          {
+            label: 'graphql',
+            worker: {
+              id: 'graphql',
+              entry: 'monaco-graphql/esm/graphql.worker.js',
+            },
+          },
+        ],
+      }),
     ],
     resolve: {
       extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
