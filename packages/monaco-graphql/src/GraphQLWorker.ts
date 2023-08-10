@@ -74,7 +74,7 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: Position) {
+  public async doHover(uri: string, position: monaco.Position) {
     // `position` is 1-indexed
     try {
       const documentModel = this._getTextModel(uri);
