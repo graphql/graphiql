@@ -74,13 +74,16 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: monaco.Position) {
+  public async doHover(uri: string, position: Position) {
+    // `position` is 1-indexed
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
       if (!document) {
         return null;
       }
+      // `toGraphQLPosition()` subtracts one from both the line and the character
+      // so `graphQLPosition` is now 0-indexed
       const graphQLPosition = toGraphQLPosition(position);
 
       const hover = this._languageService.getHover(
@@ -94,8 +97,9 @@ export class GraphQLWorker {
         range: toMonacoRange(
           getRange(
             {
-              column: graphQLPosition.character,
-              line: graphQLPosition.line,
+              // we add one here because `getRange()` expects a 1-indexed position
+              column: graphQLPosition.character + 1,
+              line: graphQLPosition.line + 1,
             },
             document,
           ),
