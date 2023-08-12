@@ -1,0 +1,105 @@
+.plugin-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+}
+
+.plugin-subheading {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.select-server--button {
+  background-color: hsl(var(--color-primary));
+  border: 0 none;
+  display: block;
+  width: 100%;
+  color: hsl(var(--color-base));
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.select-server--button.disabled {
+  background-color: hsl(var(--color-base));
+  color: hsl(var(--color-primary));
+}
+
+.select-server--schema-error {
+  color: hsl(var(--color-error));
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.select-server--schema-error code {
+  padding: 0.5rem;
+  background-color: hsla(var(--color-base), var(--alpha-secondary));
+}
+
+.select-server--schema-success {
+  color: hsl(var(--color-success));
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.select-server--schema-loading {
+  color: hsl(var(--color-warning));
+  margin-top: 0.5rem;
+  display: block;
+}
+
+input.select-server--input {
+  display: block;
+  width: 100%;
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  padding: 0.5rem;
+  background-color: hsla(var(--color-primary), var(--alpha-background-medium));
+  border: 0 none;
+  font-size: 1.05rem;
+}
+
+.select-server--input-error {
+  color: hsl(var(--color-error));
+  margin-top: 0.5rem;
+  display: block;
+}
+
+li.select-server--previous-entry {
+  display: flex;
+  flex-direction: row;
+  flex-grow: inherit;
+  width: 100%;
+}
+
+li.select-server--previous-entry span {
+  display: flex;
+  cursor: pointer;
+  padding: 0.5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+li.select-server--previous-entry span:hover,
+li.select-server--previous-entry button:hover {
+  background-color: hsl(var(--color-primary));
+  color: hsl(var(--color-base));
+}
+
+li.select-server--previous-entry button {
+  background-color: transparent;
+  border: hsla(var(--color-neutral), 1);
+  display: flex;
+  color: hsla(var(--color-neutral), 1);
+  font-size: 1rem;
+  cursor: pinter;
+  padding: 0.5rem;
+}

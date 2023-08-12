@@ -21,6 +21,7 @@
 
 .graphiql-explorer-root > div:first-child {
   padding-left: var(--px-8);
+  overflow: hidden !important;
 }
 
 .graphiql-explorer-root input {
