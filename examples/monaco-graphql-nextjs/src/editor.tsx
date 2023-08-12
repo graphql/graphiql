@@ -6,6 +6,13 @@ import {
   KeyCode,
   languages,
 } from 'monaco-graphql/esm/monaco-editor';
+
+// to get typescript mode working
+import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
+import 'monaco-editor/esm/vs/editor/contrib/peekView/browser/peekView';
+import 'monaco-editor/esm/vs/editor/contrib/parameterHints/browser/parameterHints';
+import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
+
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import {
@@ -78,11 +85,14 @@ export default function Editor(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null);
   const variablesRef = useRef<HTMLDivElement>(null);
   const responseRef = useRef<HTMLDivElement>(null);
+  const typescriptRef = useRef<HTMLDivElement>(null);
   const [operationsEditor, setOperationsEditor] =
     useState<editor.IStandaloneCodeEditor>();
   const [variablesEditor, setVariablesEditor] =
     useState<editor.IStandaloneCodeEditor>();
   const [responseEditor, setResponseEditor] =
+    useState<editor.IStandaloneCodeEditor>();
+  const [typescriptEditor, setTypescriptEditor] =
     useState<editor.IStandaloneCodeEditor>();
   const [schema, setSchema] = useState<IntrospectionQuery>();
   const [loading, setLoading] = useState(false);
@@ -132,6 +142,18 @@ export default function Editor(): ReactElement {
         }),
       );
     }
+    if (!typescriptEditor) {
+      setTypescriptEditor(
+        editor.create(typescriptRef.current!, {
+          model: MODEL.typescript,
+          ...DEFAULT_EDITOR_OPTIONS,
+          smoothScrolling: true,
+          readOnly: false,
+          'semanticHighlighting.enabled': true,
+          language: 'typescript',
+        }),
+      );
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only run once on mount
   /**
    * Handle the initial schema load
@@ -156,7 +178,10 @@ export default function Editor(): ReactElement {
         <div ref={operationsRef} className="left-editor" />
         <div ref={variablesRef} className="left-editor" />
       </div>
-      <div ref={responseRef} className="pane" />
+      <div className="pane">
+        <div ref={responseRef} className="left-editor" />
+        <div ref={typescriptRef} className="left-editor" />
+      </div>
     </>
   );
 }

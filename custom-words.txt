@@ -130,6 +130,7 @@ matchingbracket
 middlewares
 modulemap
 newhope
+nextjs
 nocheck
 nocursor
 nonmatchingbracket

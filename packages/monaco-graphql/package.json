@@ -16,6 +16,43 @@
       "url": "https://github.com/acao"
     }
   ],
+  "exports": {
+    ".": {
+      "import": "./esm/monaco.contribution.js",
+      "require": "./dist/monaco.contribution.js",
+      "types": "./esm/monaco.contribution.d.ts",
+      "default": "./dist/monaco.contribution.js"
+    },
+    "./*": {
+      "import": "./*",
+      "require": "./*",
+      "types": "./*",
+      "default": "./*"
+    },
+    "./esm/graphql.worker": {
+      "import": "./esm/graphql.worker.js",
+      "require": "./dist/graphql.worker.js",
+      "types": "./esm/graphql.worker.d.ts"
+    },
+    "./lite": {
+      "import": "./esm/lite.js",
+      "types": "./esm/lite.d.ts",
+      "require": "./dist/lite.js",
+      "default": "./dist/lite.js"
+    },
+    "./graphql.worker": {
+      "import": "./esm/graphql.worker.js",
+      "types": "./esm/graphql.worker.d.ts",
+      "require": "./dist/graphql.worker.js",
+      "default": "./dist/graphql.worker.js"
+    },
+    "./initializeMode": {
+      "import": "./esm/initializeMode.js",
+      "types": "./esm/initializeMode.d.ts",
+      "require": "./dist/initializeMode.js",
+      "default": "./dist/initializeMode.js"
+    }
+  },
   "repository": {
     "url": "http://github.com/graphql/graphiql",
     "directory": "packages/monaco-graphql"
@@ -26,8 +63,7 @@
     "src"
   ],
   "scripts": {
-    "test": "vitest run",
-    "postbuild": "node scripts/patch-monaco-editor-types.mjs"
+    "test": "vitest run"
   },
   "dependencies": {
     "graphql-language-service": "^5.1.7",
