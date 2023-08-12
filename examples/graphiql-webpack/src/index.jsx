@@ -64,7 +64,7 @@ const App = () => {
 
   const lastUrl = storage?.get(LAST_URL_KEY);
   const [currentUrl, setUrl] = React.useState(lastUrl ?? STARTING_URL);
-  // TODO: a breaking change where we make url an internal state concern, and then expose hooks
+  // TODO: a breaking change where we make URL an internal state concern, and then expose hooks
   // so that you can handle/set URL state internally from a plugin
   // fetcher could then pass a dynamic URL config object to the fetcher internally
   const exporter = React.useMemo(
