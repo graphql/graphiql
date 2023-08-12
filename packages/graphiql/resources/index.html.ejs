@@ -5,7 +5,7 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
 -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>GraphiQL</title>
@@ -28,20 +28,30 @@
       If you do not want to rely on a CDN, you can host these files locally or
       include them directly in your favored resource bundler.
     -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <link rel="stylesheet" href="/plugins/explorer/style.css" />
     <!--
-      These two files can be found in the npm module, however you may wish to
-      copy them directly into your environment, or perhaps include them in your
-      favored resource bundler.
-     -->
+    These two files can be found in the npm module, however you may wish to copy
+    them directly into your environment, or perhaps include them in your favored
+    resource bundler. -->
   </head>
   <body>
     <div id="graphiql">Loading...</div>
     <script type="application/javascript">
       window.GraphQLVersion = <%= htmlWebpackPlugin.options.graphqlVersion %>
     </script>
+    <script
+      defer
+      src="/plugins/explorer/index.umd.js"
+      type="application/javascript"
+    ></script>
     <script
       defer
       src="/resources/renderExample.js"
