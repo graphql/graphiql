@@ -10,13 +10,6 @@ const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
 const schema = require('./schema');
 const { schema: badSchema } = require('./bad-schema');
-const { readdirSync } = require('node:fs');
-
-const plugins = readdirSync(path.join(__dirname, '../../'))
-  .filter(
-    p => p.startsWith('graphiql-plugin-') && p !== 'graphiql-plugin-utils',
-  )
-  .map(p => ({ path: p, pluginName: p.replace('graphiql-plugin-', '') }));
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
@@ -34,10 +27,4 @@ module.exports = function beforeDevServer(app, _server, _compiler) {
     '/resources/renderExample.js',
     express.static(path.join(__dirname, '../resources/renderExample.js')),
   );
-  for (const plugin of plugins) {
-    app.use(
-      `/plugins/${plugin.pluginName}/`,
-      express.static(path.join(__dirname, `../../${plugin.path}/dist/`)),
-    );
-  }
 };
