@@ -4,7 +4,7 @@ import { GraphQLSchema } from 'graphql';
 import { GqlExtensionsOptions } from './interfaces';
 
 const schemaEffect = StateEffect.define<GraphQLSchema | undefined>();
-const schemaStateField = StateField.define<GraphQLSchema | void>({
+export const schemaStateField = StateField.define<GraphQLSchema | void>({
   create() {},
   update(schema, tr) {
     for (const e of tr.effects) {
@@ -18,18 +18,20 @@ const schemaStateField = StateField.define<GraphQLSchema | void>({
 });
 
 const optionsEffect = StateEffect.define<GqlExtensionsOptions | undefined>();
-const optionsStateField = StateField.define<GqlExtensionsOptions | void>({
-  create() {},
-  update(opts, tr) {
-    for (const e of tr.effects) {
-      if (e.is(optionsEffect)) {
-        return e.value;
+export const optionsStateField = StateField.define<GqlExtensionsOptions | void>(
+  {
+    create() {},
+    update(opts, tr) {
+      for (const e of tr.effects) {
+        if (e.is(optionsEffect)) {
+          return e.value;
+        }
       }
-    }
 
-    return opts;
+      return opts;
+    },
   },
-});
+);
 export const updateSchema = (view: EditorView, schema?: GraphQLSchema) => {
   view.dispatch({
     effects: schemaEffect.of(schema),
