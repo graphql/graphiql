@@ -202,6 +202,31 @@ describe('MergeAst', () => {
     expect(removeParametersCommas(parseMergeAndPrint(query))).toBe(mergedQuery);
     expect(parseMergeAndPrint(query, sorareSchema)).toBe(mergedQueryWithSchema);
   });
+
+  it('preserve directives on fragments', () => {
+    const query = `
+      query Test($param: Boolean!) {
+        ...Fragment1 @include(if: $param)        
+      }
+      
+      fragment Fragment1 on Test {
+        id
+      }`;
+    const mergedQuery = stripWhitespace(`
+      query Test($param: Boolean!) {
+        ...on Test @include(if: $param) {
+          id
+        }
+      }`);
+    const mergedQueryWithSchema = stripWhitespace(`
+      query Test($param: Boolean!) {
+        ...on Test @include(if: $param) {
+          id
+        }
+      }`);
+    expect(parseMergeAndPrint(query)).toBe(mergedQuery);
+    expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
+  });
 });
 
 function parseMergeAndPrint(query: string, maybeSchema?: GraphQLSchema) {
