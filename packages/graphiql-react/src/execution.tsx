@@ -192,7 +192,7 @@ export function ExecutionContextProvider({
     history?.addToHistory({
       query,
       variables: variablesString,
-      // dz todo when adding extensions to history
+      extensions: extensionsString,
       headers: headersString,
       operationName: opName,
     });

@@ -8,11 +8,12 @@ export type HistoryContextType = {
   /**
    * Add an operation to the history.
    * @param operation The operation that was executed, consisting of the query,
-   * variables, headers, and operation name.
+   * variables, extensions, headers, and operation name.
    */
   addToHistory(operation: {
     query?: string;
     variables?: string;
+    extensions?: string;
     headers?: string;
     operationName?: string;
   }): void;
@@ -29,6 +30,7 @@ export type HistoryContextType = {
     args: {
       query?: string;
       variables?: string;
+      extensions?: string;
       headers?: string;
       operationName?: string;
       label?: string;
@@ -50,6 +52,7 @@ export type HistoryContextType = {
   toggleFavorite(args: {
     query?: string;
     variables?: string;
+    extensions?: string;
     headers?: string;
     operationName?: string;
     label?: string;
@@ -58,7 +61,7 @@ export type HistoryContextType = {
   /**
    * Delete an operation from the history.
    * @param args The operation that was executed, consisting of the query,
-   * variables, headers, and operation name.
+   * variables, extensions, headers, and operation name.
    * @param clearFavorites This is only if you press the 'clear' button
    */
   deleteFromHistory(args: QueryStoreItem, clearFavorites?: boolean): void;

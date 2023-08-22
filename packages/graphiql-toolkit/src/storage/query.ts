@@ -3,6 +3,7 @@ import { StorageAPI } from './base';
 export type QueryStoreItem = {
   query?: string;
   variables?: string;
+  extensions?: string;
   headers?: string;
   operationName?: string;
   label?: string;
@@ -29,6 +30,7 @@ export class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.extensions === item.extensions &&
         x.headers === item.headers &&
         x.operationName === item.operationName,
     );
@@ -40,6 +42,7 @@ export class QueryStore {
       if (
         found.query === item.query &&
         found.variables === item.variables &&
+        found.extensions === item.extensions &&
         found.headers === item.headers &&
         found.operationName === item.operationName
       ) {
@@ -53,6 +56,7 @@ export class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.extensions === item.extensions &&
         x.headers === item.headers &&
         x.operationName === item.operationName,
     );
@@ -67,6 +71,7 @@ export class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.extensions === item.extensions &&
         x.headers === item.headers &&
         x.operationName === item.operationName,
     );
