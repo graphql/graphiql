@@ -15,6 +15,10 @@ export type TabDefinition = {
    */
   variables?: string | null;
   /**
+   * The contents of the extensions editor of this tab.
+   */
+  extensions?: string | null;
+  /**
    * The contents of the headers editor of this tab.
    */
   headers?: string | null;
@@ -30,7 +34,7 @@ export type TabState = TabDefinition & {
   id: string;
   /**
    * A hash that is unique for a combination of the contents of the query
-   * editor, the variable editor and the header editor (i.e. all the editor
+   * editor, the variable editor, the extension editor, and the header editor (i.e. all the editor
    * where the contents are persisted in storage).
    */
   hash: string;
@@ -71,6 +75,7 @@ export function getDefaultTabState({
   defaultTabs,
   query,
   variables,
+  extensions,
   storage,
   shouldPersistHeaders,
 }: {
@@ -80,6 +85,7 @@ export function getDefaultTabState({
   defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
+  extensions: string | null;
   storage: StorageAPI | null;
   shouldPersistHeaders?: boolean;
 }) {
@@ -96,6 +102,7 @@ export function getDefaultTabState({
       const expectedHash = hashFromTabContents({
         query,
         variables,
+        extensions,
         headers: headersForHash,
       });
       let matchingTabIndex = -1;
@@ -105,6 +112,7 @@ export function getDefaultTabState({
         tab.hash = hashFromTabContents({
           query: tab.query,
           variables: tab.variables,
+          extensions: tab.extensions,
           headers: tab.headers,
         });
         if (tab.hash === expectedHash) {
@@ -191,11 +199,13 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
 export function useSynchronizeActiveTabValues({
   queryEditor,
   variableEditor,
+  extensionEditor,
   headerEditor,
   responseEditor,
 }: {
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   variableEditor: CodeMirrorEditor | null;
+  extensionEditor: CodeMirrorEditor | null;
   headerEditor: CodeMirrorEditor | null;
   responseEditor: CodeMirrorEditor | null;
 }) {
@@ -203,12 +213,14 @@ export function useSynchronizeActiveTabValues({
     state => {
       const query = queryEditor?.getValue() ?? null;
       const variables = variableEditor?.getValue() ?? null;
+      const extensions = extensionEditor?.getValue() ?? null;
       const headers = headerEditor?.getValue() ?? null;
       const operationName = queryEditor?.operationName ?? null;
       const response = responseEditor?.getValue() ?? null;
       return setPropertiesInActiveTab(state, {
         query,
         variables,
+        extensions,
         headers,
         response,
         operationName,
@@ -256,11 +268,13 @@ export function useStoreTabs({
 export function useSetEditorValues({
   queryEditor,
   variableEditor,
+  extensionEditor,
   headerEditor,
   responseEditor,
 }: {
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   variableEditor: CodeMirrorEditor | null;
+  extensionEditor: CodeMirrorEditor | null;
   headerEditor: CodeMirrorEditor | null;
   responseEditor: CodeMirrorEditor | null;
 }) {
@@ -268,26 +282,30 @@ export function useSetEditorValues({
     ({
       query,
       variables,
+      extensions,
       headers,
       response,
     }: {
       query: string | null;
       variables?: string | null;
+      extensions?: string | null;
       headers?: string | null;
       response: string | null;
     }) => {
       queryEditor?.setValue(query ?? '');
       variableEditor?.setValue(variables ?? '');
+      extensionEditor?.setValue(extensions ?? '');
       headerEditor?.setValue(headers ?? '');
       responseEditor?.setValue(response ?? '');
     },
-    [headerEditor, queryEditor, responseEditor, variableEditor],
+    [headerEditor, queryEditor, responseEditor, variableEditor, extensionEditor],
   );
 }
 
 export function createTab({
   query = null,
   variables = null,
+  extensions = null,
   headers = null,
 }: Partial<TabDefinition> = {}): TabState {
   return {
@@ -296,6 +314,7 @@ export function createTab({
     title: (query && fuzzyExtractOperationName(query)) || DEFAULT_TITLE,
     query,
     variables,
+    extensions,
     headers,
     operationName: null,
     response: null,
@@ -340,9 +359,10 @@ function guid(): string {
 function hashFromTabContents(args: {
   query: string | null;
   variables?: string | null;
+  extensions?: string | null;
   headers?: string | null;
 }): string {
-  return [args.query ?? '', args.variables ?? '', args.headers ?? ''].join('|');
+  return [args.query ?? '', args.variables ?? '', args.extensions ?? '', args.headers ?? ''].join('|');
 }
 
 export function fuzzyExtractOperationName(str: string): string | null {

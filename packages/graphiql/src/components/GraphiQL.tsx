@@ -678,6 +678,14 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                           readOnly={props.readOnly}
                         />
                       )}
+                      <ExtensionEditor
+                        editorTheme={props.editorTheme}
+                        // isHidden={activeSecondaryEditor !== 'headers'}
+                        isHidden={false}
+                        keyMap={props.keyMap}
+                        onEdit={props.onEditExtensions}
+                        readOnly={props.readOnly}
+                      />
                     </section>
                   </div>
                 </div>
