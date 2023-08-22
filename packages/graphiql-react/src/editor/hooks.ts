@@ -41,7 +41,7 @@ export function useChangeHandler(
   editor: CodeMirrorEditor | null,
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
-  tabProperty: 'variables' | 'headers',
+  tabProperty: 'variables' | 'headers' | 'extensions',
   caller: Function,
 ) {
   const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
