@@ -28,7 +28,7 @@ export class HistoryStore {
   private shouldSaveQuery(
     query?: string,
     variables?: string,
-    extensions?: string,
+    // extensions?: string, // dz todo: ask about saving strategy for extensions
     headers?: string,
     lastQuerySaved?: QueryStoreItem,
   ) {
@@ -80,7 +80,6 @@ export class HistoryStore {
       !this.shouldSaveQuery(
         query,
         variables,
-        extensions,
         headers,
         this.history.fetchRecent(),
       )

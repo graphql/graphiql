@@ -130,6 +130,7 @@ export function getDefaultTabState({
           title: operationName || DEFAULT_TITLE,
           query,
           variables,
+          extensions,
           headers,
           operationName,
           response: null,
@@ -148,6 +149,7 @@ export function getDefaultTabState({
           {
             query: query ?? defaultQuery,
             variables,
+            extensions,
             headers: headers ?? defaultHeaders,
           },
         ]
@@ -178,6 +180,7 @@ function isTabState(obj: any): obj is TabState {
     hasStringKey(obj, 'title') &&
     hasStringOrNullKey(obj, 'query') &&
     hasStringOrNullKey(obj, 'variables') &&
+    hasStringOrNullKey(obj, 'extensions') &&
     hasStringOrNullKey(obj, 'headers') &&
     hasStringOrNullKey(obj, 'operationName') &&
     hasStringOrNullKey(obj, 'response')
@@ -226,7 +229,7 @@ export function useSynchronizeActiveTabValues({
         operationName,
       });
     },
-    [queryEditor, variableEditor, headerEditor, responseEditor],
+    [queryEditor, variableEditor, extensionEditor, headerEditor, responseEditor],
   );
 }
 

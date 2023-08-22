@@ -212,7 +212,7 @@ type UsePrettifyEditorsArgs = {
 };
 
 export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
+  const { queryEditor, headerEditor, variableEditor, extensionEditor } = useEditorContext({
     nonNull: true,
     caller: caller || usePrettifyEditors,
   });
@@ -227,6 +227,23 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
         );
         if (prettifiedVariableEditorContent !== variableEditorContent) {
           variableEditor.setValue(prettifiedVariableEditorContent);
+        }
+      } catch {
+        /* Parsing JSON failed, skip prettification */
+      }
+    }
+
+    if (extensionEditor) {
+      const extensionEditorContent = extensionEditor.getValue();
+
+      try {
+        const prettifiedExtensionEditorContent = JSON.stringify(
+            JSON.parse(extensionEditorContent),
+            null,
+            2,
+        );
+        if (prettifiedExtensionEditorContent !== extensionEditorContent) {
+          extensionEditor.setValue(prettifiedExtensionEditorContent);
         }
       } catch {
         /* Parsing JSON failed, skip prettification */
@@ -258,7 +275,7 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
         queryEditor.setValue(prettifiedEditorContent);
       }
     }
-  }, [queryEditor, variableEditor, headerEditor]);
+  }, [queryEditor, variableEditor, headerEditor, extensionEditor]);
 }
 
 export type UseAutoCompleteLeafsArgs = {
