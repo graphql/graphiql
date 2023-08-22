@@ -14,6 +14,7 @@ import React, {
   ReactElement,
   useCallback,
   useState,
+  useEffect,
 } from 'react';
 
 import {
@@ -162,6 +163,7 @@ export function GraphiQL({
     >
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}
+        forcedTheme={props.forcedTheme}
         {...props}
       />
     </GraphiQLProvider>
@@ -209,6 +211,12 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
+    /**
+     * forcedTheme allows to enforce a specific theme for GraphiQL.
+     * This is useful when you want to make sure that GraphiQL is always
+     * rendered with a specific theme
+     */
+    forcedTheme?: 'light' | 'dark' | 'system';
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
@@ -224,6 +232,20 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const prettify = usePrettifyEditors();
 
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    switch (props.forcedTheme) {
+      case 'light':
+        setTheme('light');
+        break;
+      case 'dark':
+        setTheme('dark');
+        break;
+      case 'system':
+        setTheme(null);
+        break;
+    }
+  }, [props.forcedTheme, setTheme]);
 
   const PluginContent = pluginContext?.visiblePlugin?.content;
 
@@ -760,39 +782,41 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               </ButtonGroup>
             </div>
           ) : null}
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">Theme</div>
-              <div className="graphiql-dialog-section-caption">
-                Adjust how the interface looks like.
+          {!props.forcedTheme && (
+            <div className="graphiql-dialog-section">
+              <div>
+                <div className="graphiql-dialog-section-title">Theme</div>
+                <div className="graphiql-dialog-section-caption">
+                  Adjust how the interface looks like.
+                </div>
               </div>
+              <ButtonGroup>
+                <Button
+                  type="button"
+                  className={theme === null ? 'active' : ''}
+                  onClick={handleChangeTheme}
+                >
+                  System
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'light' ? 'active' : ''}
+                  data-theme="light"
+                  onClick={handleChangeTheme}
+                >
+                  Light
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'dark' ? 'active' : ''}
+                  data-theme="dark"
+                  onClick={handleChangeTheme}
+                >
+                  Dark
+                </Button>
+              </ButtonGroup>
             </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={theme === null ? 'active' : ''}
-                onClick={handleChangeTheme}
-              >
-                System
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'light' ? 'active' : ''}
-                data-theme="light"
-                onClick={handleChangeTheme}
-              >
-                Light
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'dark' ? 'active' : ''}
-                data-theme="dark"
-                onClick={handleChangeTheme}
-              >
-                Dark
-              </Button>
-            </ButtonGroup>
-          </div>
+          )}
           {storageContext ? (
             <div className="graphiql-dialog-section">
               <div>
