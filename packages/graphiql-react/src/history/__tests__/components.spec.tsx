@@ -8,12 +8,14 @@ import { Tooltip } from '../../ui';
 jest.mock('../../editor', () => {
   const mockedSetQueryEditor = jest.fn();
   const mockedSetVariableEditor = jest.fn();
+  const mockedSetExtensionEditor = jest.fn();
   const mockedSetHeaderEditor = jest.fn();
   return {
     useEditorContext() {
       return {
         queryEditor: { setValue: mockedSetQueryEditor },
         variableEditor: { setValue: mockedSetVariableEditor },
+        extensionEditor: { setValue: mockedSetExtensionEditor },
         headerEditor: { setValue: mockedSetHeaderEditor },
       };
     },
@@ -29,6 +31,8 @@ const mockQuery = /* GraphQL */ `
 `;
 
 const mockVariables = JSON.stringify({ string: 'string' });
+
+const mockExtensions = JSON.stringify({ myExtension: 'myString' });
 
 const mockHeaders = JSON.stringify({ foo: 'bar' });
 
@@ -50,6 +54,7 @@ const baseMockProps: QueryHistoryItemProps = {
   item: {
     query: mockQuery,
     variables: mockVariables,
+    extensions: mockExtensions,
     headers: mockHeaders,
     favorite: false,
   },
@@ -70,11 +75,14 @@ describe('QueryHistoryItem', () => {
     ?.setValue as jest.Mock;
   const mockedSetVariableEditor = useEditorContext()?.variableEditor
     ?.setValue as jest.Mock;
+  const mockedSetExtensionEditor = useEditorContext()?.extensionEditor
+      ?.setValue as jest.Mock;
   const mockedSetHeaderEditor = useEditorContext()?.headerEditor
     ?.setValue as jest.Mock;
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
     mockedSetVariableEditor.mockClear();
+    mockedSetExtensionEditor.mockClear();
     mockedSetHeaderEditor.mockClear();
   });
   it('renders operationName if label is not provided', () => {
@@ -111,6 +119,10 @@ describe('QueryHistoryItem', () => {
     expect(mockedSetVariableEditor).toHaveBeenCalledTimes(1);
     expect(mockedSetVariableEditor).toHaveBeenCalledWith(
       mockProps.item.variables,
+    );
+    expect(mockedSetExtensionEditor).toHaveBeenCalledTimes(1);
+    expect(mockedSetExtensionEditor).toHaveBeenCalledWith(
+        mockProps.item.extensions,
     );
     expect(mockedSetHeaderEditor).toHaveBeenCalledTimes(1);
     expect(mockedSetHeaderEditor).toHaveBeenCalledWith(mockProps.item.headers);
