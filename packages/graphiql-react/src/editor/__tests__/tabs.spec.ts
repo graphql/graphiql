@@ -139,6 +139,7 @@ describe('getDefaultTabState', () => {
             headers: '{"x-header":"foo"}',
             query: 'query Image { image }',
             variables: null,
+            extensions: '{"myExtension":"myString"}',
           },
         ],
         query: null,
@@ -158,6 +159,7 @@ describe('getDefaultTabState', () => {
           headers: '{"x-header":"foo"}',
           query: 'query Image { image }',
           title: 'Image',
+          extensions: '{"myExtension":"myString"}',
         }),
       ],
     });
