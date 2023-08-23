@@ -288,6 +288,39 @@ export class MessageProcessor {
     );
   }
 
+  async _getDiagnosticsForAllFileProjects(
+    contents: CachedContent[],
+    uri: Uri,
+    projects: GraphQLProjectConfig[],
+  ): Promise<Diagnostic[]> {
+    return (
+      await Promise.all(
+        contents.map(async ({ query, range }) => {
+          const project = this._languageService.getProjectForQuery(
+            query,
+            uri,
+            projects,
+          );
+
+          if (
+            project?.extensions?.languageService?.enableValidation !== false
+          ) {
+            const results = await this._languageService.getDiagnostics(
+              query,
+              uri,
+              this._isRelayCompatMode(query),
+            );
+            if (results && results.length > 0) {
+              return processDiagnosticsMessage(results, query, range);
+            }
+          }
+
+          return [];
+        }),
+      )
+    ).reduce((left, right) => left.concat(right), []);
+  }
+
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
@@ -359,35 +392,28 @@ export class MessageProcessor {
       return { uri, diagnostics };
     }
     try {
-      const project = this._graphQLCache.getProjectForFile(uri);
-      if (
-        this._isInitialized &&
-        project?.extensions?.languageService?.enableValidation !== false
-      ) {
-        await Promise.all(
-          contents.map(async ({ query, range }) => {
-            const results = await this._languageService.getDiagnostics(
-              query,
-              uri,
-              this._isRelayCompatMode(query),
-            );
-            if (results && results.length > 0) {
-              diagnostics.push(
-                ...processDiagnosticsMessage(results, query, range),
-              );
-            }
-          }),
+      const projects = this._languageService.getAllProjectsForFile(uri);
+
+      if (this._isInitialized) {
+        diagnostics.push(
+          ...(await this._getDiagnosticsForAllFileProjects(
+            contents,
+            uri,
+            projects,
+          )),
         );
       }
 
-      this._logger.log(
-        JSON.stringify({
-          type: 'usage',
-          messageType: 'textDocument/didOpenOrSave',
-          projectName: project?.name,
-          fileName: uri,
-        }),
-      );
+      for (const project of projects) {
+        this._logger.log(
+          JSON.stringify({
+            type: 'usage',
+            messageType: 'textDocument/didOpenOrSave',
+            projectName: project?.name,
+            fileName: uri,
+          }),
+        );
+      }
     } catch (err) {
       this._handleConfigError({ err, uri });
     }
@@ -416,7 +442,6 @@ export class MessageProcessor {
     }
     const { textDocument, contentChanges } = params;
     const { uri } = textDocument;
-    const project = this._graphQLCache.getProjectForFile(uri);
     try {
       const contentChange = contentChanges.at(-1)!;
 
@@ -438,34 +463,24 @@ export class MessageProcessor {
       await this._updateFragmentDefinition(uri, contents);
       await this._updateObjectTypeDefinition(uri, contents);
 
-      const diagnostics: Diagnostic[] = [];
+      const projects = this._languageService.getAllProjectsForFile(uri);
 
-      if (project?.extensions?.languageService?.enableValidation !== false) {
-        // Send the diagnostics onChange as well
-        await Promise.all(
-          contents.map(async ({ query, range }) => {
-            const results = await this._languageService.getDiagnostics(
-              query,
-              uri,
-              this._isRelayCompatMode(query),
-            );
-            if (results && results.length > 0) {
-              diagnostics.push(
-                ...processDiagnosticsMessage(results, query, range),
-              );
-            }
+      const diagnostics = await this._getDiagnosticsForAllFileProjects(
+        contents,
+        uri,
+        projects,
+      );
+
+      for (const project of projects) {
+        this._logger.log(
+          JSON.stringify({
+            type: 'usage',
+            messageType: 'textDocument/didChange',
+            projectName: project?.name,
+            fileName: uri,
           }),
         );
       }
-
-      this._logger.log(
-        JSON.stringify({
-          type: 'usage',
-          messageType: 'textDocument/didChange',
-          projectName: project?.name,
-          fileName: uri,
-        }),
-      );
 
       return { uri, diagnostics };
     } catch (err) {
@@ -502,16 +517,18 @@ export class MessageProcessor {
     if (this._textDocumentCache.has(uri)) {
       this._textDocumentCache.delete(uri);
     }
-    const project = this._graphQLCache.getProjectForFile(uri);
+    const projects = this._languageService.getAllProjectsForFile(uri);
 
-    this._logger.log(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'textDocument/didClose',
-        projectName: project?.name,
-        fileName: uri,
-      }),
-    );
+    for (const project of projects) {
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'textDocument/didClose',
+          projectName: project?.name,
+          fileName: uri,
+        }),
+      );
+    }
   }
 
   handleShutdownRequest(): void {
@@ -574,7 +591,10 @@ export class MessageProcessor {
       textDocument.uri,
     );
 
-    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
+    const project = this._languageService.getProjectForQuery(
+      textDocument.uri,
+      query,
+    );
 
     this._logger.log(
       JSON.stringify({
@@ -664,39 +684,28 @@ export class MessageProcessor {
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
 
-          const project = this._graphQLCache.getProjectForFile(uri);
-          await this._updateSchemaIfChanged(project, uri);
+          const projects = this._languageService.getAllProjectsForFile(uri);
+          await Promise.all(
+            projects.map(project => this._updateSchemaIfChanged(project, uri)),
+          );
 
-          let diagnostics: Diagnostic[] = [];
+          const diagnostics = await this._getDiagnosticsForAllFileProjects(
+            contents,
+            uri,
+            projects,
+          );
 
-          if (
-            project?.extensions?.languageService?.enableValidation !== false
-          ) {
-            diagnostics = (
-              await Promise.all(
-                contents.map(async ({ query, range }) => {
-                  const results = await this._languageService.getDiagnostics(
-                    query,
-                    uri,
-                    this._isRelayCompatMode(query),
-                  );
-                  if (results && results.length > 0) {
-                    return processDiagnosticsMessage(results, query, range);
-                  }
-                  return [];
-                }),
-              )
-            ).reduce((left, right) => left.concat(right), diagnostics);
+          for (const project of projects) {
+            this._logger.log(
+              JSON.stringify({
+                type: 'usage',
+                messageType: 'workspace/didChangeWatchedFiles',
+                projectName: project?.name,
+                fileName: uri,
+              }),
+            );
           }
 
-          this._logger.log(
-            JSON.stringify({
-              type: 'usage',
-              messageType: 'workspace/didChangeWatchedFiles',
-              projectName: project?.name,
-              fileName: uri,
-            }),
-          );
           return { uri, diagnostics };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
@@ -727,9 +736,13 @@ export class MessageProcessor {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
     const { textDocument, position } = params;
-    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
-    if (project) {
-      await this._cacheSchemaFilesForProject(project);
+    const projects = this._languageService.getAllProjectsForFile(
+      textDocument.uri,
+    );
+    if (projects.length > 0) {
+      await Promise.all(
+        projects.map(project => this._cacheSchemaFilesForProject(project)),
+      );
     }
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
@@ -802,14 +815,16 @@ export class MessageProcessor {
         })
       : [];
 
-    this._logger.log(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'textDocument/definition',
-        projectName: project?.name,
-        fileName: textDocument.uri,
-      }),
-    );
+    for (const project of projects) {
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'textDocument/definition',
+          projectName: project?.name,
+          fileName: textDocument.uri,
+        }),
+      );
+    }
     return formatted;
   }
 
