@@ -254,8 +254,7 @@ export function findGraphQLTags(
       }
     },
     TemplateLiteral(node: TemplateLiteral) {
-      const hasGraphQLPrefix =
-        node.quasis[0].value.raw.startsWith('#graphql\n');
+      const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith('#graphql');
       const hasGraphQLComment = Boolean(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
       );

@@ -56,6 +56,10 @@ import {
   SymbolKind,
 } from 'vscode-languageserver-types';
 
+import { fileURLToPath } from 'node:url';
+
+export const EXTENSION_NAME = 'languageService';
+
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
   [Kind.OPERATION_DEFINITION]: SymbolKind.Class,
@@ -96,11 +100,38 @@ export class GraphQLLanguageService {
     this._logger = logger;
   }
 
-  getConfigForURI(uri: Uri) {
-    const config = this._graphQLCache.getProjectForFile(uri);
-    if (config) {
-      return config;
+  getAllProjectsForFile(uri: Uri) {
+    const filePath = uri.startsWith('file:') ? fileURLToPath(uri) : uri;
+    const projects = Object.values(this._graphQLConfig.projects).filter(
+      project => project.match(filePath),
+    );
+
+    return projects.length > 0
+      ? projects
+      : // Fallback, this always finds at least 1 project
+        [this._graphQLConfig.getProjectForFile(filePath)];
+  }
+
+  getProjectForQuery(
+    query: string,
+    uri: Uri,
+    projects?: GraphQLProjectConfig[],
+  ) {
+    if (!query.startsWith('#graphql')) {
+      // Query is not annotated with #graphql.
+      // Skip suffix check and return the first project that matches the file.
+      return projects?.[0] ?? this._graphQLConfig.getProjectForFile(uri);
     }
+
+    return (projects || this.getAllProjectsForFile(uri)).find(project => {
+      const ext = project.hasExtension(EXTENSION_NAME)
+        ? project.extension(EXTENSION_NAME)
+        : null;
+
+      const suffix = ext?.gqlTagOptions?.annotationSuffix;
+
+      return query.startsWith(`#graphql${suffix ? ':' + suffix : ''}\n`);
+    });
   }
 
   public async getDiagnostics(
@@ -111,7 +142,7 @@ export class GraphQLLanguageService {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
     let documentHasExtensions = false;
-    const projectConfig = this.getConfigForURI(uri);
+    const projectConfig = this.getProjectForQuery(document, uri);
     // skip validation when there's nothing to validate, prevents noisy unexpected EOF errors
     if (!projectConfig || !document || document.trim().length < 2) {
       return [];
@@ -218,7 +249,7 @@ export class GraphQLLanguageService {
     position: IPosition,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
-    const projectConfig = this.getConfigForURI(filePath);
+    const projectConfig = this.getProjectForQuery(query, filePath);
     if (!projectConfig) {
       return [];
     }
@@ -255,7 +286,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
     options?: HoverConfig,
   ): Promise<Hover['contents']> {
-    const projectConfig = this.getConfigForURI(filePath);
+    const projectConfig = this.getProjectForQuery(query, filePath);
     if (!projectConfig) {
       return '';
     }
@@ -272,7 +303,7 @@ export class GraphQLLanguageService {
     position: IPosition,
     filePath: Uri,
   ): Promise<DefinitionQueryResult | null> {
-    const projectConfig = this.getConfigForURI(filePath);
+    const projectConfig = this.getProjectForQuery(query, filePath);
     if (!projectConfig) {
       return null;
     }
