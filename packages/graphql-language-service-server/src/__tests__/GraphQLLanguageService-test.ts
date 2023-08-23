@@ -10,7 +10,10 @@
 import { join } from 'node:path';
 
 import { GraphQLConfig } from 'graphql-config';
-import { GraphQLLanguageService } from '../GraphQLLanguageService';
+import {
+  EXTENSION_NAME,
+  GraphQLLanguageService,
+} from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
@@ -18,8 +21,23 @@ import { NoopLogger } from '../Logger';
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
   config: {
-    schema: './__schema__/StarWarsSchema.graphql',
-    documents: ['./queries/**', '**/*.graphql'],
+    projects: {
+      default: {
+        schema: './__schema__/StarWarsSchema.graphql',
+        documents: ['./queries/**', '**/*.graphql'],
+      },
+      another: {
+        schema: 'schema { query: Query } type Query { test: String }',
+        documents: ['./queries/**/*.ts', './somewhere/**/*.ts'],
+        extensions: {
+          [EXTENSION_NAME]: {
+            gqlTagOptions: {
+              annotationSuffix: 'test',
+            },
+          },
+        },
+      },
+    },
   },
 };
 
@@ -31,7 +49,7 @@ describe('GraphQLLanguageService', () => {
     },
 
     getGraphQLConfig() {
-      return new GraphQLConfig(MOCK_CONFIG, []);
+      return new GraphQLConfig(MOCK_CONFIG, [() => ({ name: EXTENSION_NAME })]);
     },
 
     getProjectForFile(uri: string) {
@@ -220,5 +238,36 @@ describe('GraphQLLanguageService', () => {
     expect(result[1].location.range.start.character).toEqual(4);
     expect(result[1].location.range.end.line).toEqual(4);
     expect(result[1].location.range.end.character).toEqual(5);
+  });
+
+  it('finds the correct project for the given query', () => {
+    const getProjectName = (query: string, path: string) =>
+      languageService.getProjectForQuery(query, path)?.name;
+
+    const QUERY_NO_SUFFIX = '#graphql\n query { test }';
+    const QUERY_TEST_SUFFIX = '#graphql:test\n query { test }';
+
+    const pathThatMatchesBothProjects = './queries/test.ts';
+    const pathThatMatchesOnlyProjectAnother = './somewhere/test.ts';
+
+    // Matches path for both projects:
+    // #graphql => default
+    expect(
+      getProjectName(QUERY_NO_SUFFIX, pathThatMatchesBothProjects),
+    ).toEqual('default');
+    // #graphql:test => another
+    expect(
+      getProjectName(QUERY_TEST_SUFFIX, pathThatMatchesBothProjects),
+    ).toEqual('another');
+
+    // Only matches path for project 'another':
+    // #graphql => undefined
+    expect(
+      getProjectName(QUERY_NO_SUFFIX, pathThatMatchesOnlyProjectAnother),
+    ).toEqual(undefined);
+    // #graphql:test => another
+    expect(
+      getProjectName(QUERY_TEST_SUFFIX, pathThatMatchesOnlyProjectAnother),
+    ).toEqual('another');
   });
 });
