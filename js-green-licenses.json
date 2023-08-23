@@ -2,7 +2,10 @@
   "packageAllowlist": [
     // MIT, just lacking SPDX in manifest
     "valid-url",
-    "argparse"
+    "argparse",
+    // MIT-0
+    "postcss-nesting",
+    "@csstools/selector-specificity"
   ],
   "dev": false
 }
