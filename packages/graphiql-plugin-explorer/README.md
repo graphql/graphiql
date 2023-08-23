@@ -37,14 +37,7 @@ const fetcher = createGraphiQLFetcher({
 // pass the explorer props here if you want
 const explorer = explorerPlugin();
 
-return (
-  <GraphiQL
-    fetcher={fetcher}
-    query={query}
-    onEditQuery={setQuery}
-    plugins={[explorer]}
-  />
-);
+return <GraphiQL fetcher={fetcher} plugins={[explorer]} />;
 ```
 
 ## CDN bundles
