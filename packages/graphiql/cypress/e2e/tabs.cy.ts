@@ -31,6 +31,12 @@ describe('Tabs', () => {
       .eq(1)
       .type('{"someHeader":"someValue"', { force: true });
 
+    // Enter extensions
+    cy.contains('Extensions').click();
+    cy.get('.graphiql-editor-tool textarea')
+        .eq(2)
+        .type('{"myExtension":"myString"', { force: true });
+
     // Run the query
     cy.clickExecuteQuery();
 
@@ -45,6 +51,7 @@ describe('Tabs', () => {
     cy.assertHasValues({
       query: '{id}',
       variablesString: '',
+      extensionsString: '',
       headersString: '',
       response: { data: { id: 'abc123' } },
     });
@@ -60,6 +67,7 @@ describe('Tabs', () => {
     cy.assertHasValues({
       query: 'query Foo {image}',
       variablesString: '{"someVar":42}',
+      extensionsString: '{"myExtension":"myString"}',
       headersString: '{"someHeader":"someValue"}',
       response: { data: { image: '/images/logo.svg' } },
     });
@@ -74,6 +82,7 @@ describe('Tabs', () => {
     cy.assertHasValues({
       query: '{id}',
       variablesString: '',
+      extensionsString: '',
       headersString: '',
       response: { data: { id: 'abc123' } },
     });
