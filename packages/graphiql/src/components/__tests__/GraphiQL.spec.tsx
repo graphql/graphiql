@@ -239,6 +239,18 @@ describe('GraphiQL', () => {
       });
     });
 
+    it('correctly displays extensions editor when using defaultEditorToolsVisibility prop', async () => {
+      const { container } = render(
+          <GraphiQL
+              fetcher={noOpFetcher}
+              defaultEditorToolsVisibility="extensions"
+          />,
+      );
+      await waitFor(() => {
+        expect(container.querySelector('[aria-label="Extensions"]')).toBeVisible();
+      });
+    });
+
     it('correctly displays headers editor when using defaultEditorToolsVisibility prop', async () => {
       const { container } = render(
         <GraphiQL
