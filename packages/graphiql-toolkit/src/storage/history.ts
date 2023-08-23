@@ -156,7 +156,14 @@ export class HistoryStore {
   }
 
   deleteHistory = (
-    { query, variables, extensions, headers, operationName, favorite }: QueryStoreItem,
+    {
+      query,
+      variables,
+      extensions,
+      headers,
+      operationName,
+      favorite,
+    }: QueryStoreItem,
     clearFavorites = false,
   ) => {
     function deleteFromStore(store: QueryStore) {

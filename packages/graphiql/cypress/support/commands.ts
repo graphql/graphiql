@@ -74,7 +74,14 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 
 Cypress.Commands.add(
   'assertHasValues',
-  ({ query, variables, variablesString, extensionsString, headersString, response }: Op) => {
+  ({
+    query,
+    variables,
+    variablesString,
+    extensionsString,
+    headersString,
+    response,
+  }: Op) => {
     cy.get('.graphiql-query-editor').should(element => {
       expect(normalize(element.get(0).innerText)).to.equal(
         codeWithLineNumbers(query),
@@ -101,24 +108,24 @@ Cypress.Commands.add(
         });
     }
     if (headersString !== undefined) {
-        cy.contains('Headers').click();
-        cy.get('.graphiql-editor-tool .graphiql-editor')
-            .eq(1)
-            .should(element => {
-                expect(normalize(element.get(0).innerText)).to.equal(
-                    codeWithLineNumbers(headersString),
-                );
-            });
+      cy.contains('Headers').click();
+      cy.get('.graphiql-editor-tool .graphiql-editor')
+        .eq(1)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(headersString),
+          );
+        });
     }
     if (extensionsString !== undefined) {
-        cy.contains('Extensions').click();
-        cy.get('.graphiql-editor-tool .graphiql-editor')
-            .eq(2)
-            .should(element => {
-                expect(normalize(element.get(0).innerText)).to.equal(
-                    codeWithLineNumbers(extensionsString),
-                );
-            });
+      cy.contains('Extensions').click();
+      cy.get('.graphiql-editor-tool .graphiql-editor')
+        .eq(2)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(extensionsString),
+          );
+        });
     }
     if (response !== undefined) {
       cy.get('.result-window').should(element => {

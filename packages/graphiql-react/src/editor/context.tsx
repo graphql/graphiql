@@ -296,9 +296,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const [variableEditor, setVariableEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
-  const [extensionEditor, setExtensionEditor] = useState<CodeMirrorEditor | null>(
-      null,
-  );
+  const [extensionEditor, setExtensionEditor] =
+    useState<CodeMirrorEditor | null>(null);
 
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
@@ -327,7 +326,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     const variables =
       props.variables ?? storage?.get(STORAGE_KEY_VARIABLES) ?? null;
     const extensions =
-        props.variables ?? storage?.get(STORAGE_KEY_EXTENSIONS) ?? null;
+      props.variables ?? storage?.get(STORAGE_KEY_EXTENSIONS) ?? null;
     const headers = props.headers ?? storage?.get(STORAGE_KEY_HEADERS) ?? null;
     const response = props.response ?? '';
 

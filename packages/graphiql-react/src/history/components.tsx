@@ -112,10 +112,11 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       nonNull: true,
       caller: HistoryItem,
     });
-  const { headerEditor, queryEditor, variableEditor, extensionEditor } = useEditorContext({
-    nonNull: true,
-    caller: HistoryItem,
-  });
+  const { headerEditor, queryEditor, variableEditor, extensionEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: HistoryItem,
+    });
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);
@@ -157,7 +158,14 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       extensionEditor?.setValue(extensions ?? '');
       headerEditor?.setValue(headers ?? '');
       setActive(props.item);
-    }, [headerEditor, props.item, queryEditor, setActive, variableEditor, extensionEditor]);
+    }, [
+      headerEditor,
+      props.item,
+      queryEditor,
+      setActive,
+      variableEditor,
+      extensionEditor,
+    ]);
 
   const handleDeleteItemFromHistory: MouseEventHandler<HTMLButtonElement> =
     useCallback(

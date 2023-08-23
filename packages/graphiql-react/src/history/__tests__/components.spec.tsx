@@ -76,7 +76,7 @@ describe('QueryHistoryItem', () => {
   const mockedSetVariableEditor = useEditorContext()?.variableEditor
     ?.setValue as jest.Mock;
   const mockedSetExtensionEditor = useEditorContext()?.extensionEditor
-      ?.setValue as jest.Mock;
+    ?.setValue as jest.Mock;
   const mockedSetHeaderEditor = useEditorContext()?.headerEditor
     ?.setValue as jest.Mock;
   beforeEach(() => {
@@ -122,7 +122,7 @@ describe('QueryHistoryItem', () => {
     );
     expect(mockedSetExtensionEditor).toHaveBeenCalledTimes(1);
     expect(mockedSetExtensionEditor).toHaveBeenCalledWith(
-        mockProps.item.extensions,
+      mockProps.item.extensions,
     );
     expect(mockedSetHeaderEditor).toHaveBeenCalledTimes(1);
     expect(mockedSetHeaderEditor).toHaveBeenCalledWith(mockProps.item.headers);

@@ -212,10 +212,11 @@ type UsePrettifyEditorsArgs = {
 };
 
 export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor, extensionEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || usePrettifyEditors,
-  });
+  const { queryEditor, headerEditor, variableEditor, extensionEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: caller || usePrettifyEditors,
+    });
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
@@ -238,9 +239,9 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
 
       try {
         const prettifiedExtensionEditorContent = JSON.stringify(
-            JSON.parse(extensionEditorContent),
-            null,
-            2,
+          JSON.parse(extensionEditorContent),
+          null,
+          2,
         );
         if (prettifiedExtensionEditorContent !== extensionEditorContent) {
           extensionEditor.setValue(prettifiedExtensionEditorContent);

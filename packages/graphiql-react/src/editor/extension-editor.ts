@@ -26,22 +26,19 @@ export type UseExtensionEditorArgs = WriteableEditorProps & {
 };
 
 export function useExtensionEditor(
-    {
-      editorTheme = DEFAULT_EDITOR_THEME,
-      keyMap = DEFAULT_KEY_MAP,
-      onEdit,
-      readOnly = false,
-    }: UseExtensionEditorArgs = {},
-    caller?: Function,
+  {
+    editorTheme = DEFAULT_EDITOR_THEME,
+    keyMap = DEFAULT_KEY_MAP,
+    onEdit,
+    readOnly = false,
+  }: UseExtensionEditorArgs = {},
+  caller?: Function,
 ) {
-  const {
-    initialExtensions,
-    extensionEditor,
-    setExtensionEditor,
-  } = useEditorContext({
-    nonNull: true,
-    caller: caller || useExtensionEditor,
-  });
+  const { initialExtensions, extensionEditor, setExtensionEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: caller || useExtensionEditor,
+    });
   const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: caller || useExtensionEditor });
   const prettify = usePrettifyEditors({ caller: caller || useExtensionEditor });
@@ -114,14 +111,18 @@ export function useExtensionEditor(
   useSynchronizeOption(extensionEditor, 'keyMap', keyMap);
 
   useChangeHandler(
-      extensionEditor,
-      onEdit,
-      STORAGE_KEY,
-      'extensions',
-      useExtensionEditor,
+    extensionEditor,
+    onEdit,
+    STORAGE_KEY,
+    'extensions',
+    useExtensionEditor,
   );
 
-  useKeyMap(extensionEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
+  useKeyMap(
+    extensionEditor,
+    ['Cmd-Enter', 'Ctrl-Enter'],
+    executionContext?.run,
+  );
   useKeyMap(extensionEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(extensionEditor, ['Shift-Ctrl-M'], merge);
 

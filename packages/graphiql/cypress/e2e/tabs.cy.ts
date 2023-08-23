@@ -34,8 +34,8 @@ describe('Tabs', () => {
     // Enter extensions
     cy.contains('Extensions').click();
     cy.get('.graphiql-editor-tool textarea')
-        .eq(2)
-        .type('{"myExtension":"myString"', { force: true });
+      .eq(2)
+      .type('{"myExtension":"myString"', { force: true });
 
     // Run the query
     cy.clickExecuteQuery();

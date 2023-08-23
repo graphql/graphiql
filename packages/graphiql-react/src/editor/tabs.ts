@@ -229,7 +229,13 @@ export function useSynchronizeActiveTabValues({
         operationName,
       });
     },
-    [queryEditor, variableEditor, extensionEditor, headerEditor, responseEditor],
+    [
+      queryEditor,
+      variableEditor,
+      extensionEditor,
+      headerEditor,
+      responseEditor,
+    ],
   );
 }
 
@@ -301,7 +307,13 @@ export function useSetEditorValues({
       headerEditor?.setValue(headers ?? '');
       responseEditor?.setValue(response ?? '');
     },
-    [headerEditor, queryEditor, responseEditor, variableEditor, extensionEditor],
+    [
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+      extensionEditor,
+    ],
   );
 }
 
@@ -365,7 +377,12 @@ function hashFromTabContents(args: {
   extensions?: string | null;
   headers?: string | null;
 }): string {
-  return [args.query ?? '', args.variables ?? '', args.extensions ?? '', args.headers ?? ''].join('|');
+  return [
+    args.query ?? '',
+    args.variables ?? '',
+    args.extensions ?? '',
+    args.headers ?? '',
+  ].join('|');
 }
 
 export function fuzzyExtractOperationName(str: string): string | null {

@@ -199,7 +199,11 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * By default the editor tools are initially shown when at least one of the
      * editors has contents.
      */
-    defaultEditorToolsVisibility?: boolean | 'variables' | 'extensions' | 'headers';
+    defaultEditorToolsVisibility?:
+      | boolean
+      | 'variables'
+      | 'extensions'
+      | 'headers';
     /**
      * Toggle if the headers editor should be shown inside the editor tools.
      * @default true
@@ -265,7 +269,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         return props.defaultEditorToolsVisibility ? undefined : 'second';
       }
 
-      return (editorContext.initialVariables || editorContext.initialExtensions || editorContext.initialHeaders)
+      return editorContext.initialVariables ||
+        editorContext.initialExtensions ||
+        editorContext.initialHeaders
         ? undefined
         : 'second';
     })(),
@@ -286,9 +292,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
     if (editorContext.initialVariables) {
       return 'variables';
-    } if (editorContext.initialHeaders && isHeadersEditorEnabled) {
+    }
+    if (editorContext.initialHeaders && isHeadersEditorEnabled) {
       return 'headers';
-    } if (editorContext.initialExtensions) {
+    }
+    if (editorContext.initialExtensions) {
       return 'extensions';
     }
     return 'variables';
@@ -333,13 +341,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const tabName = (currentTab: String) => {
     if (currentTab === 'variables') {
       return 'Variables';
-    } if (currentTab === 'extensions') {
+    }
+    if (currentTab === 'extensions') {
       return 'Extensions';
-    } if (currentTab === 'headers') {
+    }
+    if (currentTab === 'headers') {
       return 'Headers';
     }
   };
-  
+
   const onClickReference = useCallback(() => {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
@@ -412,7 +422,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         editorToolsResize.setHiddenElement(null);
       }
       setActiveSecondaryEditor(
-        event.currentTarget.dataset.name as 'variables' | 'extensions' | 'headers',
+        event.currentTarget.dataset.name as
+          | 'variables'
+          | 'extensions'
+          | 'headers',
       );
     },
     [editorToolsResize],
@@ -641,15 +654,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         </UnStyledButton>
                       )}
                       <UnStyledButton
-                          type="button"
-                          className={
-                            activeSecondaryEditor === 'extensions' &&
-                            editorToolsResize.hiddenElement !== 'second'
-                                ? 'active'
-                                : ''
-                          }
-                          onClick={handleToolsTabClick}
-                          data-name="extensions"
+                        type="button"
+                        className={
+                          activeSecondaryEditor === 'extensions' &&
+                          editorToolsResize.hiddenElement !== 'second'
+                            ? 'active'
+                            : ''
+                        }
+                        onClick={handleToolsTabClick}
+                        data-name="extensions"
                       >
                         Extensions
                       </UnStyledButton>
