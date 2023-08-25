@@ -124,15 +124,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
-  getProjectForFile = (uri: string): GraphQLProjectConfig => {
+  getProjectForFile = (uri: string): GraphQLProjectConfig | void => {
     try {
       return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
     } catch (err) {
       this._logger.error(
         `there was an error loading the project config for this file ${err}`,
       );
-      // @ts-expect-error
-      return null;
+      return;
     }
   };
 

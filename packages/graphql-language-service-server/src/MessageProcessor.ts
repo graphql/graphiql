@@ -665,7 +665,9 @@ export class MessageProcessor {
           await this._updateObjectTypeDefinition(uri, contents);
 
           const project = this._graphQLCache.getProjectForFile(uri);
-          await this._updateSchemaIfChanged(project, uri);
+          if (project) {
+            await this._updateSchemaIfChanged(project, uri);
+          }
 
           let diagnostics: Diagnostic[] = [];
 
