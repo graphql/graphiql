@@ -44,7 +44,7 @@ this repo._
    If you are focused on GraphiQL development, you can run —
 
    ```sh
-   yarn start-graphiql
+   yarn dev-graphiql
    ```
 
 5. Get coding! If you've added code, add tests. If you've changed APIs, update
