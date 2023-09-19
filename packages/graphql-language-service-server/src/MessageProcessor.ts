@@ -633,7 +633,7 @@ export class MessageProcessor {
 
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
-  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
+  ): Promise<Array<PublishDiagnosticsParams> | null> {
     if (
       this._isGraphQLConfigMissing ||
       !this._isInitialized ||
@@ -642,7 +642,15 @@ export class MessageProcessor {
       return null;
     }
 
-    return Promise.all(
+    const updatedSchemaProjects = new Map<
+      GraphQLProjectConfig,
+      {
+        updatedSchemaUris: string[];
+        cachedDocuments: Array<{ uri: string; document: CachedDocumentType }>;
+      }
+    >();
+
+    const changeRelatedParamsArr = await Promise.all(
       params.changes.map(async (change: FileEvent) => {
         if (
           this._isGraphQLConfigMissing ||
@@ -665,7 +673,21 @@ export class MessageProcessor {
           await this._updateObjectTypeDefinition(uri, contents);
 
           const project = this._graphQLCache.getProjectForFile(uri);
-          await this._updateSchemaIfChanged(project, uri);
+          const updatedSchema = await this._updateSchemaIfChanged(project, uri);
+          if (
+            project?.extensions?.languageService?.enableValidation !== false &&
+            updatedSchema
+          ) {
+            const projectData = updatedSchemaProjects.get(project);
+            if (projectData === undefined) {
+              updatedSchemaProjects.set(project, {
+                updatedSchemaUris: [uri],
+                cachedDocuments: [],
+              });
+            } else {
+              projectData.updatedSchemaUris.push(uri);
+            }
+          }
 
           let diagnostics: Diagnostic[] = [];
 
@@ -713,6 +735,86 @@ export class MessageProcessor {
         }
       }),
     );
+
+    const filteredChangeRelatedParamsArr: PublishDiagnosticsParams[] = [];
+    for (const changedRelatedParams of changeRelatedParamsArr) {
+      if (changedRelatedParams !== undefined) {
+        filteredChangeRelatedParamsArr.push(changedRelatedParams);
+      }
+    }
+
+    if (updatedSchemaProjects.size === 0) {
+      return filteredChangeRelatedParamsArr;
+    }
+
+    const paramsArrPromises: Array<Promise<PublishDiagnosticsParams[]>> = [];
+
+    // Group cached documents by project
+    for (const [
+      cachedDocumentUri,
+      cachedDocument,
+    ] of this._textDocumentCache.entries()) {
+      const project = this._graphQLCache.getProjectForFile(cachedDocumentUri);
+      const projectData = updatedSchemaProjects.get(project);
+      // Only add cached document if it is in a project with an
+      // updated schema but is not an updated schema in that project
+      if (
+        projectData !== undefined &&
+        !projectData.updatedSchemaUris.includes(cachedDocumentUri)
+      ) {
+        projectData.cachedDocuments.push({
+          uri: cachedDocumentUri,
+          document: cachedDocument,
+        });
+      }
+    }
+
+    // For each project, loop over cached documents that need diagnostics to be regenerated
+    for (const projectData of updatedSchemaProjects.values()) {
+      type RawDiagnostics = {
+        resultsPromise: Promise<Diagnostic[]>;
+        query: string;
+        range: RangeType | null;
+      };
+      const data: Array<{ rawDiagnosticsArr: RawDiagnostics[]; uri: string }> =
+        [];
+
+      for (const { uri, document } of projectData.cachedDocuments) {
+        const rawDiagnosticsArr = document.contents.map(({ query, range }) => ({
+          resultsPromise: this._languageService.getDiagnostics(
+            query,
+            uri,
+            this._isRelayCompatMode(query),
+          ),
+          query,
+          range,
+        }));
+        data.push({ rawDiagnosticsArr, uri });
+      }
+
+      const paramsArrPromise = Promise.all(
+        data.map(async ({ rawDiagnosticsArr, uri: cachedDocumentUri }) => {
+          const diagnosticsPromiseArr = rawDiagnosticsArr.map(
+            async ({ resultsPromise, query, range }) => {
+              const results = await resultsPromise;
+              return results && results.length > 0
+                ? processDiagnosticsMessage(results, query, range)
+                : [];
+            },
+          );
+          const diagnosticsArr = await Promise.all(diagnosticsPromiseArr);
+          const diagnostics = diagnosticsArr.flat();
+          return { uri: cachedDocumentUri, diagnostics };
+        }),
+      );
+
+      paramsArrPromises.push(paramsArrPromise);
+    }
+
+    const paramsArr = await Promise.all(paramsArrPromises);
+    const schemaUpdateRelatedParamsArr = paramsArr.flat();
+
+    return [...filteredChangeRelatedParamsArr, ...schemaUpdateRelatedParamsArr];
   }
 
   async handleDefinitionRequest(
@@ -1143,16 +1245,19 @@ export class MessageProcessor {
   async _updateSchemaIfChanged(
     project: GraphQLProjectConfig,
     uri: Uri,
-  ): Promise<void> {
+  ): Promise<boolean> {
+    let invalidatedSchema = false;
     await Promise.all(
       this._unwrapProjectSchema(project).map(async schema => {
         const schemaFilePath = path.resolve(project.dirpath, schema);
         const uriFilePath = URI.parse(uri).fsPath;
         if (uriFilePath === schemaFilePath) {
-          await this._graphQLCache.invalidateSchemaCacheForProject(project);
+          invalidatedSchema = true;
+          this._graphQLCache.invalidateSchemaCacheForProject(project);
         }
       }),
     );
+    return invalidatedSchema;
   }
 
   _unwrapProjectSchema(project: GraphQLProjectConfig): string[] {
