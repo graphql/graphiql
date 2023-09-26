@@ -165,7 +165,7 @@
     "vsce": "^2.13.0"
   },
   "dependencies": {
-    "graphql": "^16.4.0",
+    "graphql": "^16.8.1",
     "graphql-language-service-server": "^2.11.5",
     "vscode-languageclient": "8.0.2"
   }
