@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.11.5
+
+### Patch Changes
+
+- [#3413](https://github.com/graphql/graphiql/pull/3413) [`530ef47a`](https://github.com/graphql/graphiql/commit/530ef47ac6bbcb24cedc453bf802626d4a630e45) Thanks [@BPScott](https://github.com/BPScott)! - Fix crash when editing a file that does not belong to a project
+
 ## 2.11.4
 
 ### Patch Changes
