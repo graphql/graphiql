@@ -97,7 +97,7 @@
           "type": [
             "number"
           ],
-          "description": "Disables outlining and other expensive operations for files larger than this threshold (in bytes). Defaults to 1000000.",
+          "description": "Disables outlining and other expensive operations for files larger than this threshold (in bytes). Defaults to 1000000 (one million).",
           "default": 1000000
         },
         "vscode-graphql.rejectUnauthorized": {
