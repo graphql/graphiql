@@ -389,6 +389,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     });
   }, [
     defaultHeaders,
+    defaultQuery,
     onTabChange,
     setEditorValues,
     storeTabs,
