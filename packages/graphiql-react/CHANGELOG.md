@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.20.1
+
+### Patch Changes
+
+- [#3445](https://github.com/graphql/graphiql/pull/3445) [`39bf31d1`](https://github.com/graphql/graphiql/commit/39bf31d15b1e7fb5f235ec9adc1ce8081536de4a) Thanks [@acao](https://github.com/acao)! - Export new hooks
+
 ## 0.20.0
 
 ### Minor Changes
