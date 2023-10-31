@@ -337,10 +337,10 @@ export type InitialState = string | (() => string);
 
 // https://react.dev/learn/you-might-not-need-an-effect
 
-export const useEditorState = (
+export function useEditorState(
   editor: 'query' | 'variable' | 'header',
   initialState?: InitialState,
-) => {
+) {
   const context = useEditorContext({
     nonNull: true,
   });
@@ -364,7 +364,7 @@ export const useEditorState = (
     () => [valueString, handleEditorValue],
     [valueString, handleEditorValue],
   );
-};
+}
 
 /**
  * useState-like hook for current tab operations editor state
