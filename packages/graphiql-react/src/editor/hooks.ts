@@ -349,10 +349,11 @@ export const useEditorState = (
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue();
-  if (editorValue) {
+  if (editorValue && editorValue.length > 0) {
     valueString = editorValue;
   } else {
     valueString = initialValue || '';
+    editorInstance?.setValue(valueString);
   }
 
   const handleEditorValue = useCallback(
