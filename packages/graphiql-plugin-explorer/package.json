@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -32,13 +32,13 @@
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.20.0",
+    "@graphiql/react": "^0.20.1",
     "graphql": "^15.5.0 || ^16.0.0",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.20.0",
+    "@graphiql/react": "^0.20.1",
     "@vitejs/plugin-react": "^4.0.1",
     "graphql": "^16.4.0",
     "react": "^18.2.0",
