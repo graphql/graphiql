@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.20.0
+
+### Minor Changes
+
+- [#3443](https://github.com/graphql/graphiql/pull/3443) [`f6afd22d`](https://github.com/graphql/graphiql/commit/f6afd22d3f5a20089759042f16fd865646a32038) Thanks [@acao](https://github.com/acao)! - Add useHeadersEditorState and generic useEditorState hooks
+
 ## 0.19.4
 
 ### Patch Changes
