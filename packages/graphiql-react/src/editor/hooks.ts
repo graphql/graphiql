@@ -337,10 +337,10 @@ export type InitialState = string | (() => string);
 
 // https://react.dev/learn/you-might-not-need-an-effect
 
-export function useEditorState(
+export const useEditorState = (
   editor: 'query' | 'variable' | 'header',
   initialState?: InitialState,
-) {
+) => {
   const context = useEditorContext({
     nonNull: true,
   });
@@ -353,7 +353,9 @@ export function useEditorState(
     valueString = editorValue;
   } else {
     valueString = initialValue || '';
-    editorInstance?.setValue(valueString);
+    if (initialValue) {
+      editorInstance?.setValue(valueString);
+    }
   }
 
   const handleEditorValue = useCallback(
@@ -364,31 +366,31 @@ export function useEditorState(
     () => [valueString, handleEditorValue],
     [valueString, handleEditorValue],
   );
-}
+};
 
 /**
  * useState-like hook for current tab operations editor state
  */
-export function useOperationsEditorState(
+export const useOperationsEditorState = (
   initialState?: InitialState,
-): [operations: string, setOperations: (content: string) => void] {
+): [operations: string, setOperations: (content: string) => void] => {
   return useEditorState('query', initialState);
-}
+};
 
 /**
  * useState-like hook for current tab variables editor state
  */
-export function useVariablesEditorState(
+export const useVariablesEditorState = (
   initialState?: InitialState,
-): [variables: string, setVariables: (content: string) => void] {
+): [variables: string, setVariables: (content: string) => void] => {
   return useEditorState('variable', initialState);
-}
+};
 
 /**
  * useState-like hook for current tab variables editor state
  */
-export function useHeadersEditorState(
+export const useHeadersEditorState = (
   initialState?: InitialState,
-): [headers: string, setHeaders: (content: string) => void] {
+): [headers: string, setHeaders: (content: string) => void] => {
   return useEditorState('header', initialState);
-}
+};
