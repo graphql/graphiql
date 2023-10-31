@@ -11,7 +11,7 @@ import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
-import { useEditorContext } from './context';
+import { DEFAULT_QUERY, useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -349,7 +349,7 @@ export const useEditorState = (
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue();
-  if (editorValue && editorValue.length > 0) {
+  if (editorValue && editorValue.length > 0 && editorValue !== DEFAULT_QUERY) {
     valueString = editorValue;
   } else {
     valueString = initialValue || '';
