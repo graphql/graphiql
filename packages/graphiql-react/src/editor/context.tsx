@@ -348,7 +348,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
   useEffect(() => {
     const propValue = Boolean(props.shouldPersistHeaders);
-    if (lastShouldPersistHeadersProp.current !== propValue) {
+    if (lastShouldPersistHeadersProp?.current !== propValue) {
       setShouldPersistHeaders(propValue);
       lastShouldPersistHeadersProp.current = propValue;
     }

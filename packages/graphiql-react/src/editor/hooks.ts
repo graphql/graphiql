@@ -11,7 +11,7 @@ import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
-import { DEFAULT_QUERY, useEditorContext } from './context';
+import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -337,25 +337,16 @@ export type InitialState = string | (() => string);
 
 // https://react.dev/learn/you-might-not-need-an-effect
 
-export const useEditorState = (
-  editor: 'query' | 'variable' | 'header',
-  initialState?: InitialState,
-) => {
+export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
   const context = useEditorContext({
     nonNull: true,
   });
-  const initialValue =
-    typeof initialState === 'function' ? initialState() : initialState;
+
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
-  const editorValue = editorInstance?.getValue();
-  if (editorValue && editorValue.length > 0 && editorValue !== DEFAULT_QUERY) {
+  const editorValue = editorInstance?.getValue() ?? false;
+  if (editorValue && editorValue.length > 0) {
     valueString = editorValue;
-  } else {
-    valueString = initialValue || '';
-    if (initialValue) {
-      editorInstance?.setValue(valueString);
-    }
   }
 
   const handleEditorValue = useCallback(
@@ -371,26 +362,29 @@ export const useEditorState = (
 /**
  * useState-like hook for current tab operations editor state
  */
-export const useOperationsEditorState = (
-  initialState?: InitialState,
-): [operations: string, setOperations: (content: string) => void] => {
-  return useEditorState('query', initialState);
+export const useOperationsEditorState = (): [
+  operations: string,
+  setOperations: (content: string) => void,
+] => {
+  return useEditorState('query');
 };
 
 /**
  * useState-like hook for current tab variables editor state
  */
-export const useVariablesEditorState = (
-  initialState?: InitialState,
-): [variables: string, setVariables: (content: string) => void] => {
-  return useEditorState('variable', initialState);
+export const useVariablesEditorState = (): [
+  variables: string,
+  setVariables: (content: string) => void,
+] => {
+  return useEditorState('variable');
 };
 
 /**
  * useState-like hook for current tab variables editor state
  */
-export const useHeadersEditorState = (
-  initialState?: InitialState,
-): [headers: string, setHeaders: (content: string) => void] => {
-  return useEditorState('header', initialState);
+export const useHeadersEditorState = (): [
+  headers: string,
+  setHeaders: (content: string) => void,
+] => {
+  return useEditorState('header');
 };
