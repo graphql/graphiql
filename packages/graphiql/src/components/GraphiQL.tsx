@@ -78,6 +78,11 @@ export type GraphiQLToolbarConfig = {
    * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
    */
   additionalContent?: React.ReactNode;
+
+  /**
+   * same as above, except a component with access to context
+   */
+  additionalComponent?: React.JSXElementConstructor<any>;
 };
 
 /**
@@ -310,7 +315,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      {props.toolbar?.additionalContent}
+      {props.toolbar?.additionalContent && props.toolbar.additionalContent}
+      {props.toolbar?.additionalComponent && (
+        <props.toolbar.additionalComponent />
+      )}
     </>
   );
 
