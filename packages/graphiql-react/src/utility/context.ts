@@ -21,8 +21,7 @@ export function createContextHook<T>(context: Context<T | null>) {
     if (value === null && options?.nonNull) {
       throw new Error(
         `Tried to use \`${
-          // options.caller?.name || useGivenContext.caller.name
-          ''
+          options.caller?.name || useGivenContext.caller.name
         }\` without the necessary context. Make sure to render the \`${
           context.displayName
         }Provider\` component higher up the tree.`,
