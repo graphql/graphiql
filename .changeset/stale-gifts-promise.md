@@ -2,4 +2,4 @@
 '@graphiql/react': patch
 ---
 
-Fix initialState for new hooks
+Remove initialState for new hooks, add `additionalComponent` to toolbar to allow buttons to use context
