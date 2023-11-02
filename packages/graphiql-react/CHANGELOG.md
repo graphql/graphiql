@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.20.2
+
+### Patch Changes
+
+- [#3447](https://github.com/graphql/graphiql/pull/3447) [`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02) Thanks [@acao](https://github.com/acao)! - Remove initialState for new hooks, add `additionalComponent` to toolbar to allow buttons to use context
+
 ## 0.20.1
 
 ### Patch Changes
