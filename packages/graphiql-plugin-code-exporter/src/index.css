@@ -49,11 +49,11 @@
     }
   }
   & button.toolbar-button {
-    display: block;
     height: var(--toolbar-width) !important;
     width: var(--toolbar-width) !important;
     border-radius: var(--border-radius-4) !important;
     cursor: pointer;
+    display: inline-flex;
     font-size: unset !important;
     left: unset !important;
     margin-top: unset !important;
