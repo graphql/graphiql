@@ -1,4 +1,23 @@
 .graphiql-container,
+.CodeMirror-info,
+.CodeMirror-lint-tooltip,
+.graphiql-dialog,
+.graphiql-dialog-overlay,
+.graphiql-tooltip,
+[data-radix-popper-content-wrapper] {
+  /* Spacing */
+  --px-2: 2px;
+  --px-4: 4px;
+  --px-6: 6px;
+  --px-8: 8px;
+  --px-10: 10px;
+  --px-12: 12px;
+  --px-16: 16px;
+  --px-20: 20px;
+  --px-24: 24px;
+}
+
+.graphiql-container,
 .graphiql-container button,
 .graphiql-container input {
   color: #141823;
@@ -161,7 +180,7 @@
 .graphiql-container .variable-editor {
   display: flex;
   flex-direction: column;
-  height: 30px;
+/*  height: 30px;*/
   position: relative;
 }
 
@@ -174,9 +193,13 @@
   font-weight: bold;
   letter-spacing: 1px;
   line-height: 14px;
-  padding: 6px 0 8px 43px;
+  padding: 6px 0 8px 40px;
   text-transform: lowercase;
   user-select: none;
+}
+
+.graphiql-container .variable-editor-title button.graphiql-un-styled:hover {
+  background-color: #e1e1e1;
 }
 
 .graphiql-container .codemirrorWrap {
@@ -423,6 +446,16 @@
 
 .graphiql-container .CodeMirror-lines {
   padding: 20px 0;
+}
+
+.graphiql-un-styled, button.graphiql-un-styled {
+    all: unset;
+    border-radius: var(--border-radius-4);
+    cursor: pointer;
+}
+
+.graphiql-container .graphiql-editor-tools > button:not(.graphiql-toggle-editor-tools) {
+  padding: var(--px-8) var(--px-12);
 }
 
 .CodeMirror-hint-information .content {

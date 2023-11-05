@@ -59,8 +59,8 @@ export class VariableEditor extends React.Component {
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/addon/dialog/dialog');
     require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
+    // require('codemirror-graphql/variables/hint');
+    // require('codemirror-graphql/variables/lint');
     require('codemirror-graphql/variables/mode');
 
     this.editor = CodeMirror(this._node, {
@@ -203,7 +203,11 @@ export class VariableEditor extends React.Component {
    * Public API for retrieving the DOM client height for this component.
    */
   getClientHeight() {
-    return this._node && this._node.clientHeight;
+    if (this._node && this._node.clientHeight) {
+      return this._node && this._node.clientHeight;
+    } else {
+      return 200
+    }
   }
 
   _onKeyUp = (cm, event) => {
