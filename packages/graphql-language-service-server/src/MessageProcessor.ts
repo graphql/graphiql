@@ -664,47 +664,42 @@ export class MessageProcessor {
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
 
-          try {
-            const project = this._graphQLCache.getProjectForFile(uri);
-            if (project) {
-              await this._updateSchemaIfChanged(project, uri);
-            }
-
-            let diagnostics: Diagnostic[] = [];
-
-            if (
-              project?.extensions?.languageService?.enableValidation !== false
-            ) {
-              diagnostics = (
-                await Promise.all(
-                  contents.map(async ({ query, range }) => {
-                    const results = await this._languageService.getDiagnostics(
-                      query,
-                      uri,
-                      this._isRelayCompatMode(query),
-                    );
-                    if (results && results.length > 0) {
-                      return processDiagnosticsMessage(results, query, range);
-                    }
-                    return [];
-                  }),
-                )
-              ).reduce((left, right) => left.concat(right), diagnostics);
-            }
-
-            this._logger.log(
-              JSON.stringify({
-                type: 'usage',
-                messageType: 'workspace/didChangeWatchedFiles',
-                projectName: project?.name,
-                fileName: uri,
-              }),
-            );
-            return { uri, diagnostics };
-          } catch (err) {
-            this._handleConfigError({ err, uri });
-            return { uri, diagnostics: [] };
+          const project = this._graphQLCache.getProjectForFile(uri);
+          if (project) {
+            await this._updateSchemaIfChanged(project, uri);
           }
+
+          let diagnostics: Diagnostic[] = [];
+
+          if (
+            project?.extensions?.languageService?.enableValidation !== false
+          ) {
+            diagnostics = (
+              await Promise.all(
+                contents.map(async ({ query, range }) => {
+                  const results = await this._languageService.getDiagnostics(
+                    query,
+                    uri,
+                    this._isRelayCompatMode(query),
+                  );
+                  if (results && results.length > 0) {
+                    return processDiagnosticsMessage(results, query, range);
+                  }
+                  return [];
+                }),
+              )
+            ).reduce((left, right) => left.concat(right), diagnostics);
+          }
+
+          this._logger.log(
+            JSON.stringify({
+              type: 'usage',
+              messageType: 'workspace/didChangeWatchedFiles',
+              projectName: project?.name,
+              fileName: uri,
+            }),
+          );
+          return { uri, diagnostics };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
           await this._graphQLCache.updateFragmentDefinitionCache(
