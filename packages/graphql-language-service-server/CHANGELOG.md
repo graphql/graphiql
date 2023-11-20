@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.11.6
+
+### Patch Changes
+
+- [#3467](https://github.com/graphql/graphiql/pull/3467) [`75ccd72c`](https://github.com/graphql/graphiql/commit/75ccd72c660c3b20cafa38da01d18a91ea24c7db) Thanks [@A-N-uraag](https://github.com/A-N-uraag)! - Fixed crashing of LSP server on saving a schema with errors
+
 ## 2.11.5
 
 ### Patch Changes
