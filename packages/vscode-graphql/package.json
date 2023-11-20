@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.8.19",
+  "version": "0.8.20",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -166,7 +166,7 @@
   },
   "dependencies": {
     "graphql": "^16.4.0",
-    "graphql-language-service-server": "^2.11.5",
+    "graphql-language-service-server": "^2.11.6",
     "vscode-languageclient": "8.0.2"
   }
 }
