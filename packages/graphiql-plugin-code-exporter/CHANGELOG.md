@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 1.0.3
+
+### Patch Changes
+
+- [#3439](https://github.com/graphql/graphiql/pull/3439) [`d07d5fc0`](https://github.com/graphql/graphiql/commit/d07d5fc0cf764518bc1184ef168361cedf61540b) Thanks [@xonx4l](https://github.com/xonx4l)! - FIX: Unexpected duplicate CSS "display" property
+
 ## 1.0.2
 
 ### Patch Changes
