@@ -49,7 +49,14 @@ export const getOpts = (state: EditorState) => {
   return state.field(optionsStateField);
 };
 
+const defaultOpts: GqlExtensionsOptions = {
+  showErrorOnInvalidSchema: true,
+};
+
 export const stateExtensions = (
   schema?: GraphQLSchema,
   opts?: GqlExtensionsOptions,
-) => [schemaStateField.init(() => schema), optionsStateField.init(() => opts)];
+) => [
+  schemaStateField.init(() => schema),
+  optionsStateField.init(() => ({ ...defaultOpts, ...opts })),
+];
