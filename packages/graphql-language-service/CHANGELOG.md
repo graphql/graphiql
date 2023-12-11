@@ -1,5 +1,15 @@
 # graphql-language-service
 
+## 5.2.0
+
+### Minor Changes
+
+- [#3376](https://github.com/graphql/graphiql/pull/3376) [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c) Thanks [@bboure](https://github.com/bboure)! - Add support for custom scalars
+
+### Patch Changes
+
+- [#3376](https://github.com/graphql/graphiql/pull/3376) [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c) Thanks [@bboure](https://github.com/bboure)! - Fix Variables JSON Schema for null values
+
 ## 5.1.7
 
 ### Patch Changes

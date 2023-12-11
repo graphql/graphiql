@@ -1,5 +1,14 @@
 # cm6-graphql
 
+## 0.0.10
+
+### Patch Changes
+
+- [#3405](https://github.com/graphql/graphiql/pull/3405) [`3d4b9b75`](https://github.com/graphql/graphiql/commit/3d4b9b7551fd9bb38ef9f4a7c6c330366d43bbfa) Thanks [@imolorhe](https://github.com/imolorhe)! - relint when schema changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+
 ## 0.0.9
 
 ### Patch Changes
