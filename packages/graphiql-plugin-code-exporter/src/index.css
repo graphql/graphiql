@@ -49,7 +49,6 @@
     }
   }
   & button.toolbar-button {
-    display: block;
     height: var(--toolbar-width) !important;
     width: var(--toolbar-width) !important;
     border-radius: var(--border-radius-4) !important;

@@ -333,46 +333,58 @@ export function useAutoCompleteLeafs({
   }, [getDefaultFieldNames, queryEditor, schema]);
 }
 
+export type InitialState = string | (() => string);
+
 // https://react.dev/learn/you-might-not-need-an-effect
+
+export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+  const context = useEditorContext({
+    nonNull: true,
+  });
+
+  const editorInstance = context[`${editor}Editor` as const];
+  let valueString = '';
+  const editorValue = editorInstance?.getValue() ?? false;
+  if (editorValue && editorValue.length > 0) {
+    valueString = editorValue;
+  }
+
+  const handleEditorValue = useCallback(
+    (value: string) => editorInstance?.setValue(value),
+    [editorInstance],
+  );
+  return useMemo<[string, (val: string) => void]>(
+    () => [valueString, handleEditorValue],
+    [valueString, handleEditorValue],
+  );
+};
 
 /**
  * useState-like hook for current tab operations editor state
  */
-export function useOperationsEditorState(): [
-  opString: string,
-  handleEditOperations: (content: string) => void,
-] {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-  });
-  const opString = queryEditor?.getValue() ?? '';
-  const handleEditOperations = useCallback(
-    (value: string) => queryEditor?.setValue(value),
-    [queryEditor],
-  );
-  return useMemo(
-    () => [opString, handleEditOperations],
-    [opString, handleEditOperations],
-  );
-}
+export const useOperationsEditorState = (): [
+  operations: string,
+  setOperations: (content: string) => void,
+] => {
+  return useEditorState('query');
+};
 
 /**
- * useState-like hook for variables tab operations editor state
+ * useState-like hook for current tab variables editor state
  */
-export function useVariablesEditorState(): [
-  varsString: string,
-  handleEditVariables: (content: string) => void,
-] {
-  const { variableEditor } = useEditorContext({
-    nonNull: true,
-  });
-  const varsString = variableEditor?.getValue() ?? '';
-  const handleEditVariables = useCallback(
-    (value: string) => variableEditor?.setValue(value),
-    [variableEditor],
-  );
-  return useMemo(
-    () => [varsString, handleEditVariables],
-    [varsString, handleEditVariables],
-  );
-}
+export const useVariablesEditorState = (): [
+  variables: string,
+  setVariables: (content: string) => void,
+] => {
+  return useEditorState('variable');
+};
+
+/**
+ * useState-like hook for current tab variables editor state
+ */
+export const useHeadersEditorState = (): [
+  headers: string,
+  setHeaders: (content: string) => void,
+] => {
+  return useEditorState('header');
+};

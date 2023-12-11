@@ -684,29 +684,36 @@ export class MessageProcessor {
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
 
-          const projects = this._languageService.getAllProjectsForFile(uri);
-          await Promise.all(
-            projects.map(project => this._updateSchemaIfChanged(project, uri)),
-          );
-
-          const diagnostics = await this._getDiagnosticsForAllFileProjects(
-            contents,
-            uri,
-            projects,
-          );
-
-          for (const project of projects) {
-            this._logger.log(
-              JSON.stringify({
-                type: 'usage',
-                messageType: 'workspace/didChangeWatchedFiles',
-                projectName: project?.name,
-                fileName: uri,
-              }),
+          try {
+            const projects = this._languageService.getAllProjectsForFile(uri);
+            await Promise.all(
+              projects.map(project =>
+                this._updateSchemaIfChanged(project, uri),
+              ),
             );
-          }
 
-          return { uri, diagnostics };
+            const diagnostics = await this._getDiagnosticsForAllFileProjects(
+              contents,
+              uri,
+              projects,
+            );
+
+            for (const project of projects) {
+              this._logger.log(
+                JSON.stringify({
+                  type: 'usage',
+                  messageType: 'workspace/didChangeWatchedFiles',
+                  projectName: project?.name,
+                  fileName: uri,
+                }),
+              );
+            }
+
+            return { uri, diagnostics };
+          } catch (err) {
+            this._handleConfigError({ err, uri });
+            return { uri, diagnostics: [] };
+          }
         }
         if (change.type === FileChangeTypeKind.Deleted) {
           await this._graphQLCache.updateFragmentDefinitionCache(
@@ -844,6 +851,22 @@ export class MessageProcessor {
     if (!cachedDocument?.contents[0]) {
       return [];
     }
+
+    if (
+      this._settings.largeFileThreshold !== undefined &&
+      this._settings.largeFileThreshold <
+        cachedDocument.contents[0].query.length
+    ) {
+      return [];
+    }
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/documentSymbol',
+        fileName: textDocument.uri,
+      }),
+    );
 
     return this._languageService.getDocumentSymbols(
       cachedDocument.contents[0].query,
