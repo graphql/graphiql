@@ -837,6 +837,22 @@ export class MessageProcessor {
       return [];
     }
 
+    if (
+      this._settings.largeFileThreshold !== undefined &&
+      this._settings.largeFileThreshold <
+        cachedDocument.contents[0].query.length
+    ) {
+      return [];
+    }
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/documentSymbol',
+        fileName: textDocument.uri,
+      }),
+    );
+
     return this._languageService.getDocumentSymbols(
       cachedDocument.contents[0].query,
       textDocument.uri,
