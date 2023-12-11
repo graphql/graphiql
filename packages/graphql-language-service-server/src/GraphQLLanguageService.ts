@@ -88,6 +88,10 @@ function getKind(tree: OutlineTree) {
   return KIND_TO_SYMBOL_KIND[tree.kind];
 }
 
+function normalizeUri(uri: string) {
+  return uri.startsWith('file:') ? fileURLToPath(uri) : uri;
+}
+
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
@@ -101,7 +105,7 @@ export class GraphQLLanguageService {
   }
 
   getAllProjectsForFile(uri: Uri) {
-    const filePath = uri.startsWith('file:') ? fileURLToPath(uri) : uri;
+    const filePath = normalizeUri(uri);
     const projects = Object.values(this._graphQLConfig.projects).filter(
       project => project.match(filePath),
     );
@@ -120,7 +124,10 @@ export class GraphQLLanguageService {
     if (!query.startsWith('#graphql')) {
       // Query is not annotated with #graphql.
       // Skip suffix check and return the first project that matches the file.
-      return projects?.[0] ?? this._graphQLConfig.getProjectForFile(uri);
+      return (
+        projects?.[0] ??
+        this._graphQLConfig.getProjectForFile(normalizeUri(uri))
+      );
     }
 
     return (projects || this.getAllProjectsForFile(uri)).find(project => {
