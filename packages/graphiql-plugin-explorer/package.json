@@ -25,7 +25,7 @@
   "scripts": {
     "prebuild": "rimraf dist types",
     "dev": "vite",
-    "build": "vite build && UMD=true vite build",
+    "build": "tsc --emitDeclarationOnly && vite build && UMD=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -44,7 +44,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^4.3.9",
-    "@graphiql/plugin-utils": "^0.0.1"
+    "vite": "^4.3.9"
   }
 }

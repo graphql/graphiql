@@ -10,6 +10,7 @@ const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
 const schema = require('./schema');
 const { schema: badSchema } = require('./bad-schema');
+const { readdirSync } = require('node:fs');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
@@ -27,4 +28,20 @@ module.exports = function beforeDevServer(app, _server, _compiler) {
     '/resources/renderExample.js',
     express.static(path.join(__dirname, '../resources/renderExample.js')),
   );
+
+  readdirSync(path.join(__dirname, '../../'))
+    .filter(name => {
+      return name.startsWith('graphiql-plugin-');
+    })
+    .forEach(name => {
+      console.log({ name });
+      app.use(
+        `/plugins/${name}.js`,
+        express.static(path.join(__dirname, `../../${name}/dist/index.umd.js`)),
+      );
+      app.use(
+        `/plugins/${name}.css`,
+        express.static(path.join(__dirname, `../../${name}/dist/style.css`)),
+      );
+    });
 };

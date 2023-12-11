@@ -13,7 +13,7 @@ describe('monaco-editor', () => {
     // expect(lines[0]).toBe('$ vite build');
     // expect(lines[1]).toMatch(' building for production...');
     // expect(lines[2]).toBe('transforming...');
-    expect(lines[3]).toMatch('✓ 841 modules transformed.');
+    expect(lines[3]).toMatch('✓ 844 modules transformed.');
     // expect(lines[4]).toBe('rendering chunks...');
     // expect(lines[5]).toBe('computing gzip size...');
     // expect(lines[6]).toMatch('dist/index.html');

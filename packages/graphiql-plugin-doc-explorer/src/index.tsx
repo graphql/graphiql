@@ -1,7 +1,49 @@
+import React from 'react';
+
 import { usePluginContext, type GraphiQLPlugin } from '@graphiql/react';
 
 import { DocsFilledIcon, DocsIcon } from './icons';
 import { DocExplorer, DocExplorerProps } from './components/doc-explorer';
+
+import {
+  ExplorerContext,
+  ExplorerContextProvider,
+  useExplorerContext,
+} from './context';
+
+const DOC_EXPLORER_PLUGIN_TITLE = 'Documentation Explorer';
+
+function GraphiQLDocExplorer(options?: DocExplorerProps) {
+  return (
+    <ExplorerContextProvider>
+      <DocExplorer {...options} />
+    </ExplorerContextProvider>
+  );
+}
+
+function docExplorerPlugin(options?: DocExplorerProps): GraphiQLPlugin {
+  return {
+    title: DOC_EXPLORER_PLUGIN_TITLE,
+    icon: function Icon() {
+      const pluginContext = usePluginContext();
+      return pluginContext?.visiblePlugin?.title ===
+        DOC_EXPLORER_PLUGIN_TITLE ? (
+        <DocsFilledIcon />
+      ) : (
+        <DocsIcon />
+      );
+    },
+    content: () => <GraphiQLDocExplorer {...options} />,
+  };
+}
+
+export {
+  DocExplorer,
+  docExplorerPlugin,
+  ExplorerContext,
+  ExplorerContextProvider,
+  useExplorerContext,
+};
 
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
@@ -15,14 +57,7 @@ export { ExplorerSection } from './components/section';
 export { TypeDocumentation } from './components/type-documentation';
 export { TypeLink } from './components/type-link';
 
-import {
-  ExplorerContext,
-  ExplorerContextProvider,
-  useExplorerContext,
-} from './context';
-
-export { ExplorerContext, ExplorerContextProvider, useExplorerContext };
-
+export type { DocExplorerProps };
 export type {
   ExplorerContextType,
   ExplorerContextProviderProps,
@@ -30,26 +65,3 @@ export type {
   ExplorerNavStack,
   ExplorerNavStackItem,
 } from './context';
-
-export { DocExplorer, type DocExplorerProps };
-
-const DOC_EXPLORER_PLUGIN_TITLE = 'Documentation Explorer';
-
-export const docExplorerPlugin = (
-  options?: DocExplorerProps,
-): GraphiQLPlugin => ({
-  title: DOC_EXPLORER_PLUGIN_TITLE,
-  icon: function Icon() {
-    const pluginContext = usePluginContext();
-    return pluginContext?.visiblePlugin?.title === DOC_EXPLORER_PLUGIN_TITLE ? (
-      <DocsFilledIcon />
-    ) : (
-      <DocsIcon />
-    );
-  },
-  content: () => (
-    <ExplorerContextProvider>
-      <DocExplorer {...options} />
-    </ExplorerContextProvider>
-  ),
-});

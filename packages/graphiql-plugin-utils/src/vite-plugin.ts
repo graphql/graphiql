@@ -20,7 +20,7 @@ function graphiqlPluginConfig({
   return {
     name: 'vite-plugin-graphiql-plugin:build',
     enforce: 'pre',
-    async config(config) {
+    async config() {
       let packageJSON;
       // TODO: process.env.npm_package_json_path is no longer present in vite. study
       try {
@@ -37,51 +37,29 @@ function graphiqlPluginConfig({
           'The graphiql plugin vite plugin currently only works if you execute vite commands from the same directory as package.json',
         );
       }
-      const external = [];
-      const userExternal = config.build?.rollupOptions?.external;
-      if (userExternal) {
-        if (Array.isArray(userExternal)) {
-          external.push(...userExternal);
-        } else if (typeof userExternal === 'string') {
-          external.push(userExternal);
-        }
-      }
-      if (typeof config.css?.postcss === 'string') {
-        throw new Error('config.css.postcss passed as string, must be object');
-      }
       return {
-        ...config,
         css: {
-          ...config?.css,
           postcss: {
-            ...config?.css?.postcss,
-            plugins: [
-              ...(config?.css?.postcss?.plugins ?? []),
-              postCssNestingPlugin(),
-            ],
+            plugins: [postCssNestingPlugin()],
           },
         },
         esbuild: {
-          ...config?.esbuild,
           // We use function names for generating readable error messages, so we want
           // them to be preserved when building and minifying.
           keepNames: true,
         },
         build: {
-          ...config?.build,
           emptyOutDir: !IS_UMD,
           lib: {
-            ...config?.build?.lib,
             entry: 'src/index.tsx',
             fileName: 'index',
             name: umdExportName,
             formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
           },
           rollupOptions: {
-            ...config?.build?.rollupOptions,
             external: [
               'react-jsx-runtime',
-              ...external,
+              'graphiql',
               // Exclude peer dependencies and dependencies from bundle
               ...Object.keys(packageJSON.peerDependencies),
               ...(IS_UMD ? [] : Object.keys(packageJSON.dependencies)),
@@ -93,6 +71,7 @@ function graphiqlPluginConfig({
                 graphql: 'GraphiQL.GraphQL',
                 react: 'React',
                 'react-dom': 'ReactDOM',
+                graphiql: 'GraphiQL',
               },
             },
           },

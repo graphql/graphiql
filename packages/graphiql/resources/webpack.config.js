@@ -25,6 +25,7 @@ const resultConfig = ({ isDev = false }) => {
       libraryExport: 'default',
       filename: isDev ? 'graphiql.js' : 'graphiql.min.js',
     },
+    target: 'web',
     devServer: {
       hot: true,
       // bypass simple localhost CORS restrictions by setting

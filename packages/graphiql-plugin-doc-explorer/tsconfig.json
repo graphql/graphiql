@@ -1,8 +1,22 @@
 {
-  "extends": "@graphiql/plugin-utils/base.tsconfig.json",
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "jsx": "react-jsx"
-  }
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "jsx": "react"
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -83,7 +83,6 @@ function getSchemaUrl() {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-
 const docExplorerPlugin = GraphiQLPluginDocExplorer.docExplorerPlugin();
 
 root.render(
