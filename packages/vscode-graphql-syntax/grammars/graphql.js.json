@@ -1,6 +1,6 @@
 {
   "scopeName": "inline.graphql",
-  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte) -source.graphql -inline.graphql -string -comment",
+  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro) -source.graphql -inline.graphql -string -comment",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
@@ -28,7 +28,11 @@
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     },
     {
       "contentName": "meta.embedded.block.graphql",
@@ -53,7 +57,11 @@
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     },
     {
       "name": "taggedTemplates",
@@ -73,7 +81,11 @@
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     }
   ]
 }
