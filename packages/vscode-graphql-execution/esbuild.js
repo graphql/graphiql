@@ -46,6 +46,7 @@ build({
     'atpl',
     'liquor',
     'twig',
+    'graphql-config',
   ],
   format: 'cjs',
   sourcemap: true,
