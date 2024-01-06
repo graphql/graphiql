@@ -46,10 +46,13 @@ build({
     'atpl',
     'liquor',
     'twig',
-    'graphql-config',
   ],
   format: 'cjs',
   sourcemap: true,
+  define: { 'import.meta.url': '_importMetaUrl' },
+  banner: {
+    js: "const _importMetaUrl=require('url').pathToFileURL(__filename)",
+  },
 })
   .then(({ errors, warnings }) => {
     if (warnings.length) {
