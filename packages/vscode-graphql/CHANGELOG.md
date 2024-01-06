@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.8.21
+
+### Patch Changes
+
+- [#3480](https://github.com/graphql/graphiql/pull/3480) [`a1fced10`](https://github.com/graphql/graphiql/commit/a1fced10bf37a339709243a9576b3fdcae832fb8) Thanks [@craig-riecke](https://github.com/craig-riecke)! - Fix execution extension esbuild bundling
+
 ## 0.8.20
 
 ### Patch Changes
