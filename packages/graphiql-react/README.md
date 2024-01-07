@@ -130,6 +130,6 @@ elements background.
 If you want to develop with `@graphiql/react` locally - in particular when
 working on the `graphiql` package - all you need to do is run `yarn dev` in the
 package folder in a separate terminal. This will build the package using Vite.
-When using it in combination with `yarn start-graphiql` (running in the repo
+When using it in combination with `yarn dev-graphiql` (running in the repo
 root) this will give you auto-reloading when working on `graphiql` and
 `@graphiql/react` simultaneously.
