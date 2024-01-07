@@ -25,6 +25,9 @@
     },
     {
       "path": "../packages/graphql-language-service-cli/tsconfig.esm.json"
+    },
+    {
+      "path": "../packages/graphiql-explorer"
     }
   ]
 }

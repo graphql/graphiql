@@ -1,0 +1,27 @@
+{
+  "name": "graphiql-explorer",
+  "version": "0.10.0",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Daniel Woelfel",
+      "email": "daniel@onegraph.com"
+    },
+    {
+      "name": "Sean Grove",
+      "email": "sean@onegraph.com"
+    }
+  ],
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "graphql": "^15.0.0 || ^16.0.0"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "graphql": "^16.4.0"
+  }
+}

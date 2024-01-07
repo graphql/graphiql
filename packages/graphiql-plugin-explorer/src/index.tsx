@@ -5,13 +5,14 @@ import {
   useSchemaContext,
   useOperationsEditorState,
 } from '@graphiql/react';
+
 import {
-  Explorer as GraphiQLExplorer,
-  GraphiQLExplorerProps,
+  ExplorerInner as GraphiQLExplorer,
+  type GraphiQLExplorerInnerProps,
 } from 'graphiql-explorer';
+
 import React, { useCallback } from 'react';
 
-import './graphiql-explorer.d.ts';
 import './index.css';
 
 const colors = {
@@ -117,7 +118,7 @@ const styles = {
 };
 
 export type GraphiQLExplorerPluginProps = Omit<
-  GraphiQLExplorerProps,
+  GraphiQLExplorerInnerProps,
   'onEdit' | 'query'
 >;
 
@@ -145,16 +146,15 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
     <GraphiQLExplorer
       schema={schema}
       onRunOperation={handleRunOperation}
-      explorerIsOpen
       colors={colors}
       arrowOpen={arrowOpen}
       arrowClosed={arrowClosed}
       checkboxUnchecked={checkboxUnchecked}
       checkboxChecked={checkboxChecked}
       styles={styles}
+      {...props}
       query={operationsString}
       onEdit={handleEditOperations}
-      {...props}
     />
   );
 }
