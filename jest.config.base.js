@@ -30,6 +30,8 @@ module.exports = (dir, env = 'jsdom') => {
       '^cm6-graphql\\/src\\/([^]+)': `${__dirname}/packages/cm6-graphql/dist/$1`,
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
       '^-!svg-react-loader.*$': '<rootDir>/resources/jest/svgImportMock.js',
+      // because of the svelte compiler's export patterns i guess?
+      'svelte/compiler': `${__dirname}/node_modules/svelte/compiler.cjs`,
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
     testEnvironment: env,
