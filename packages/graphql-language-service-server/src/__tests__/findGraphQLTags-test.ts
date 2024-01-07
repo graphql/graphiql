@@ -13,10 +13,11 @@ import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 jest.mock('../Logger');
 
 import { NoopLogger } from '../Logger';
+import { SupportedExtensionsEnum } from '../constants';
 
 describe('findGraphQLTags', () => {
   const logger = new NoopLogger();
-  const findGraphQLTags = (text: string, ext: string) =>
+  const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
   it('finds queries in tagged templates', async () => {

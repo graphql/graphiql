@@ -35,7 +35,6 @@ describe('MessageProcessor', () => {
     // @ts-ignore
     connection: {},
     logger,
-    fileExtensions: ['js'],
     graphqlFileExtensions: ['graphql'],
     loadConfigOptions: { rootDir: __dirname },
   });
@@ -56,6 +55,7 @@ describe('MessageProcessor', () => {
       configDir: __dirname,
       config: gqlConfig,
       parser: parseDocument,
+      logger: new NoopLogger(),
     });
     messageProcessor._languageService = {
       // @ts-ignore
@@ -484,6 +484,7 @@ export function Example(arg: string) {
 }`;
 
     const contents = parseDocument(text, 'test.tsx');
+
     expect(contents[0].query).toEqual(`
 query Test {
   test {

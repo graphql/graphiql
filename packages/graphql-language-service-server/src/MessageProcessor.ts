@@ -53,13 +53,12 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
-  Logger,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
-import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
+import { parseDocument } from './parseDocument';
 
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'node:os';
@@ -72,6 +71,11 @@ import {
   ProjectNotFoundError,
 } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
+import {
+  DEFAULT_SUPPORTED_EXTENSIONS,
+  SupportedExtensionsEnum,
+} from './constants';
+import { NoopLogger, Logger } from './Logger';
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -93,7 +97,7 @@ export class MessageProcessor {
   _isInitialized = false;
   _isGraphQLConfigMissing: boolean | null = null;
   _willShutdown = false;
-  _logger: Logger;
+  _logger: Logger | NoopLogger;
   _extensions?: GraphQLExtensionDeclaration[];
   _parser: (text: string, uri: string) => CachedContent[];
   _tmpDir: string;
@@ -114,8 +118,8 @@ export class MessageProcessor {
     tmpDir,
     connection,
   }: {
-    logger: Logger;
-    fileExtensions: string[];
+    logger: Logger | NoopLogger;
+    fileExtensions: ReadonlyArray<SupportedExtensionsEnum>;
     graphqlFileExtensions: string[];
     loadConfigOptions: LoadConfigOptions;
     config?: GraphQLConfig;
@@ -788,7 +792,7 @@ export class MessageProcessor {
           if (parentRange && res.name) {
             const isInline = inlineFragments.includes(res.name);
             const isEmbedded = DEFAULT_SUPPORTED_EXTENSIONS.includes(
-              path.extname(textDocument.uri),
+              path.extname(textDocument.uri) as SupportedExtensionsEnum,
             );
             if (isInline && isEmbedded) {
               const vOffset = parentRange.start.line;
