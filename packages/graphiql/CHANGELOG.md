@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.1.0
+
+### Minor Changes
+
+- [#3408](https://github.com/graphql/graphiql/pull/3408) [`a8080197`](https://github.com/graphql/graphiql/commit/a80801970e095e493eb0fda7687766f103bf701e) Thanks [@TuvalSimha](https://github.com/TuvalSimha)! - Allow disabling tabs and added new prop `disableTabs`
+
 ## 3.0.10
 
 ### Patch Changes

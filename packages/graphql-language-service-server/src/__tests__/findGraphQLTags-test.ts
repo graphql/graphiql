@@ -7,15 +7,17 @@
  *
  */
 
+import { Position, Range } from 'graphql-language-service';
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
 import { NoopLogger } from '../Logger';
+import { SupportedExtensionsEnum } from '../constants';
 
 describe('findGraphQLTags', () => {
   const logger = new NoopLogger();
-  const findGraphQLTags = (text: string, ext: string) =>
+  const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
   it('finds queries in tagged templates', async () => {
@@ -315,15 +317,46 @@ query {id}`);
 
   it('finds queries in tagged templates in Svelte using normal <script>', async () => {
     const text = `
-<script>
-gql\`
-query {id}
-\`;
+    <script context="module">
+    const query = graphql(\`
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+\`)
+    export async function load({fetch}) {
+        return { 
+            props: {
+                _data: await fetch({
+                    text: query
+                })
+              }
+            }
+        }
+  
 </script>
 `;
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
-query {id}`);
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+`);
+
+    expect(JSON.stringify(contents[0].range)).toEqual(
+      JSON.stringify(new Range(new Position(2, 29), new Position(12, 0))),
+    );
   });
 
   it('no crash in Svelte files without <script>', async () => {
