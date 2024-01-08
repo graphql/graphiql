@@ -1,0 +1,266 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.markdown.codeblock grammar > should tokenize a simple markdown file 1`] = `
+# this is an MD file                                                          | 
+                                                                              | 
+It would be a shame if the word \`graphql\` accidentally triggered highlighting | 
+Looks like it doesn't though! good                                            | 
+                                                                              | 
+\`\`\`                                                                           | 
+graphql                                                                       | 
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`\`\`                                                                           | 
+                                                                              | 
+\`\`\`                                                                           | 
+gql                                                                           | 
+# comment                                                                     | meta.embedded.block.graphql comment.line.graphql.js
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`\`\`                                                                           | 
+                                                                              | 
+\`\`\`                                                                           | 
+GraphQL                                                                       | 
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+@directive                                                                    | meta.embedded.block.graphql meta.selectionset.graphql entity.name.function.directive.graphql
+(                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+first                                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+string                                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql
+type                                                                          | meta.embedded.block.graphql meta.type.interface.graphql keyword.type.graphql
+                                                                              | meta.embedded.block.graphql meta.type.interface.graphql
+Example                                                                       | meta.embedded.block.graphql meta.type.interface.graphql support.type.graphql
+                                                                              | meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql
+{                                                                             | meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+    something                                                                 | meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql
+}                                                                             | meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+\`\`\`                                                                           | 
+                                                                              | 
+# TODO: get tags inside of other code blocks working                          | 
+                                                                              | 
+\`\`\`                                                                           | 
+js                                                                            | 
+const var = 1;                                                                | meta.embedded.block.javascript
+                                                                              | meta.embedded.block.javascript
+graphql                                                                       | meta.embedded.block.javascript entity.name.function.tagged-template.js
+\`                                                                             | meta.embedded.block.javascript punctuation.definition.string.template.begin.js
+                                                                              | meta.embedded.block.javascript meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.javascript meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                                                             | meta.embedded.block.javascript punctuation.definition.string.template.end.js
+\`\`\`                                                                           | 
+                                                                              | 
+\`\`\`                                                                           | 
+TypeScript                                                                    | 
+const var: number = 1;                                                        | meta.embedded.block.typescript
+                                                                              | meta.embedded.block.typescript
+graphql                                                                       | meta.embedded.block.typescript entity.name.function.tagged-template.js
+\`                                                                             | meta.embedded.block.typescript punctuation.definition.string.template.begin.js
+                                                                              | meta.embedded.block.typescript meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.typescript meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.typescript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                                                             | meta.embedded.block.typescript punctuation.definition.string.template.end.js
+\`\`\`                                                                           | 
+                                                                              | 
+#                                                                             | 
+Python                                                                        | 
+                                                                              | meta.embedded.block.graphql
+\`\`\`python                                                                     | meta.embedded.block.graphql
+query =                                                                       | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+gql                                                                           | meta.embedded.block.graphql entity.name.function
+(                                                                             | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+"""                                                                           | meta.embedded.block.graphql meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+"""                                                                           | meta.embedded.block.graphql meta.embedded.block.graphql string.quoted.multi.python
+)                                                                             | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+query =                                                                       | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+gql                                                                           | meta.embedded.block.graphql entity.name.function
+(                                                                             | meta.embedded.block.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+)                                                                             | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+query =                                                                       | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+gql                                                                           | meta.embedded.block.graphql entity.name.function
+(                                                                             | meta.embedded.block.graphql
+'''                                                                           | meta.embedded.block.graphql meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'''                                                                           | meta.embedded.block.graphql meta.embedded.block.graphql string.quoted.multi.python
+)                                                                             | meta.embedded.block.graphql
+                                                                              | meta.embedded.block.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+#graphql                                                                      | meta.embedded.block.graphql comment.line.graphql.js
+                                                                              | meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql
+query =                                                                       | meta.embedded.block.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+#graphql                                                                      | meta.embedded.block.graphql comment.line.graphql.js
+                                                                              | meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'''                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql
+"""                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+#graphql                                                                      | meta.embedded.block.graphql comment.line.graphql.js
+                                                                              | meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+"""                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+                                                                              | meta.embedded.block.graphql
+"""                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+#graphql                                                                      | meta.embedded.block.graphql comment.line.graphql.js
+                                                                              | meta.embedded.block.graphql
+query                                                                         | meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | meta.embedded.block.graphql
+getContinents                                                                 | meta.embedded.block.graphql entity.name.function.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql
+continents                                                                    | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+code                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+}                                                                             | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+"""                                                                           | meta.embedded.block.graphql string.quoted.multi.python
+\`\`\`                                                                           | 
+                                                                              | 
+`;

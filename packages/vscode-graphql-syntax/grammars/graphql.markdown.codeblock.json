@@ -1,12 +1,13 @@
 {
   "fileTypes": [],
-  "scopeName": "markdown.graphql.codeblock",
+  "scopeName": "inline.graphql.markdown.codeblock",
   "injectionSelector": "L:markup.fenced_code.block.markdown",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
       "begin": "(gql|graphql|GraphQL)(\\s+[^`~]*)?$",
       "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+
       "patterns": [
         {
           "begin": "(^|\\G)(\\s*)(.*)",
@@ -14,6 +15,86 @@
           "patterns": [
             {
               "include": "source.graphql"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.javascript",
+      "begin": "(js|javascript|mjs|cjs|JavaScript)(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "patterns": [
+            {
+              "include": "inline.graphql"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.typescript",
+      "begin": "(ts|typescript|cts|TypeScript)(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "patterns": [
+            {
+              "include": "inline.graphql"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(python|py|Python)(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "patterns": [
+            {
+              "include": "inline.graphql.python"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(php|PHP)(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "patterns": [
+            {
+              "include": "inline.graphql.php"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(scala|Scala)(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "patterns": [
+            {
+              "include": "inline.graphql.scala"
             }
           ]
         }

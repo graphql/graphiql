@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-syntax",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "displayName": "GraphQL: Syntax Highlighting",
   "description": "Adds syntax highlighting support for .graphql & embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
   "publisher": "GraphQL",
@@ -94,10 +94,11 @@
         "injectTo": [
           "text.html.markdown"
         ],
-        "scopeName": "markdown.graphql.codeblock",
+        "scopeName": "inline.graphql.markdown.codeblock",
         "path": "./grammars/graphql.markdown.codeblock.json",
         "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
+          "meta.embedded.block.graphql": "graphql",
+          "meta.embedded.block.javascript": "javascript"
         }
       },
       {
@@ -107,7 +108,8 @@
         "scopeName": "inline.graphql.python",
         "path": "./grammars/graphql.python.json",
         "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
+          "meta.embedded.block.graphql": "graphql",
+          "meta.embedded.block.javascript": "javascript"
         }
       },
       {

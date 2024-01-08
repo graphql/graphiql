@@ -40,3 +40,14 @@ const queryWithLeadingComment = /* GraphQL */ `
     }
   }
 `;
+
+// TODO: fix this
+const queryWithLeadingAboveComment =
+  /* GraphQL */
+  `
+    query {
+      user(id: "5", name: boolean) {
+        something
+      }
+    }
+  `;
