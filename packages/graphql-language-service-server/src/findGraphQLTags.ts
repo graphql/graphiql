@@ -7,7 +7,7 @@
  *
  */
 
-import {
+import type {
   Expression,
   TaggedTemplateExpression,
   TemplateLiteral,

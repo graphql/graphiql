@@ -1,6 +1,7 @@
 import { parse, compileScript, SFCScriptBlock } from '@vue/compiler-sfc';
 import { RangeMapper, SourceParser } from './types';
 import { Position, Range } from 'graphql-language-service';
+import { BlockStatement, Statement } from '@babel/types';
 
 type ParseVueSFCResult =
   | { type: 'error'; errors: Error[] }
@@ -39,8 +40,8 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
   return {
     type: 'ok',
     scriptOffset: scriptBlock.loc.start.line - 1,
-    scriptSetupAst: scriptBlock?.scriptSetupAst,
-    scriptAst: scriptBlock?.scriptAst,
+    scriptSetupAst: scriptBlock?.scriptSetupAst as Statement[],
+    scriptAst: scriptBlock?.scriptAst as BlockStatement[],
   };
 }
 

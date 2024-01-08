@@ -102,15 +102,15 @@
     "vsce": "^2.13.0"
   },
   "dependencies": {
-    "@graphql-tools/code-file-loader": "8.0.1",
+    "@graphql-tools/code-file-loader": "8.0.3",
     "@urql/core": "2.6.1",
     "@whatwg-node/fetch": "0.2.8",
     "capitalize": "2.0.4",
     "cosmiconfig": "8.2.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
-    "graphql": "^16.4.0",
-    "graphql-config": "5.0.2",
+    "graphql": "^16.8.1",
+    "graphql-config": "5.0.3",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "svelte": "^4.1.1",
