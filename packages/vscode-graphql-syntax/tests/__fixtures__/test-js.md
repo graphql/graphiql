@@ -3,9 +3,9 @@
 ```js
 const variable = 1;
 
-graphql`
+const query = graphql`
   query {
-    something
+    something(arg: ${variable})
   }
 `;
 ```

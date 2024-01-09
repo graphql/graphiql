@@ -67,6 +67,46 @@ Example                                                                       | 
 ?>                                                                            | 
 \`\`\`                                                                           | 
                                                                               | 
+\`\`\`                                                                           | markup.fenced_code.block.rb punctuation.definition.markdown
+ruby                                                                          | markup.fenced_code.block.rb fenced_code.block.language.markdown
+ it "Should delimit queries" do                                               | markup.fenced_code.block.rb meta.embedded.block.rb
+    query3 =                                                                  | markup.fenced_code.block.rb meta.embedded.block.rb
+<<~'                                                                          | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql
+GRAPHQL                                                                       | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql entity.name.function.graphql
+'                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+datasets                                                                      | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+q                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+{                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+idEq                                                                          | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.object.key.graphql string.unquoted.graphql
+:                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql punctuation.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+3                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.numeric.float.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+}                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+)                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+id                                                                            | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+,                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.comma.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+daylight                                                                      | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                             | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+    GRAPHQL                                                                   | markup.fenced_code.block.rb meta.embedded.block.rb taggedTemplates punctuation.definition.string.end.ruby
+end                                                                           | markup.fenced_code.block.rb meta.embedded.block.rb
+                                                                              | markup.fenced_code.block.rb meta.embedded.block.rb
+\`\`\`                                                                           | markup.fenced_code.block.rb punctuation.definition.markdown
+                                                                              | 
 `;
 
 exports[`inline.graphql.markdown.codeblock grammar js > should tokenize a markdown file with javascript & typescript 1`] = `
@@ -74,7 +114,9 @@ exports[`inline.graphql.markdown.codeblock grammar js > should tokenize a markdo
                                                      | 
 \`\`\`                                                  | punctuation.definition.markdown
 js                                                   | fenced_code.block.language.markdown
-const var = 1;                                       | markup.fenced_code.block.javascript meta.embedded.block.javascript
+const variable = 1;                                  | markup.fenced_code.block.javascript meta.embedded.block.javascript
+                                                     | markup.fenced_code.block.javascript meta.embedded.block.javascript
+const query =                                        | markup.fenced_code.block.javascript meta.embedded.block.javascript
                                                      | markup.fenced_code.block.javascript meta.embedded.block.javascript
 graphql                                              | markup.fenced_code.block.javascript meta.embedded.block.javascript entity.name.function.tagged-template.js
 \`                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript punctuation.definition.string.template.begin.js
@@ -84,14 +126,23 @@ query                                                | markup.fenced_code.block.
 {                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
                                                      | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
 something                                            | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+arg                                                  | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ $                                                   | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+{                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+variable                                             | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
+}                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+)                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
                                                      | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
 }                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
 \`                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript punctuation.definition.string.template.end.js
+;                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript
 \`\`\`                                                  | punctuation.definition.markdown
                                                      | 
 \`\`\`                                                  | punctuation.definition.markdown
 tsx                                                  | fenced_code.block.language.markdown
-const var: number = 1;                               | markup.fenced_code.block.javascript meta.embedded.block.javascript
+const variable: number = 1;                          | markup.fenced_code.block.javascript meta.embedded.block.javascript
                                                      | markup.fenced_code.block.javascript meta.embedded.block.javascript
 graphql                                              | markup.fenced_code.block.javascript meta.embedded.block.javascript entity.name.function.tagged-template.js
 \`                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript punctuation.definition.string.template.begin.js
@@ -106,15 +157,16 @@ variable                                             | markup.fenced_code.block.
 :                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
  $                                                   | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
 {                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
-var                                                  | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
+variable                                             | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
 }                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
 )                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
                                                      | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql
 }                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
 \`                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript punctuation.definition.string.template.end.js
+;                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript
 const Component = () => {                            | markup.fenced_code.block.javascript meta.embedded.block.javascript
-    return <div> </div>                              | markup.fenced_code.block.javascript meta.embedded.block.javascript
-}                                                    | markup.fenced_code.block.javascript meta.embedded.block.javascript
+  return <div> </div>;                               | markup.fenced_code.block.javascript meta.embedded.block.javascript
+};                                                   | markup.fenced_code.block.javascript meta.embedded.block.javascript
 \`\`\`                                                  | punctuation.definition.markdown
                                                      | 
 ### TODO: svelte                                     | 

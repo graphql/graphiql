@@ -109,6 +109,42 @@
       ]
     },
     {
+      "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(ruby|rb)(\\s+[^`~]*)?$)",
+      "name": "markup.fenced_code.block.rb",
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown"
+        }
+      },
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        }
+      },
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.rb",
+          "patterns": [
+            {
+              "include": "inline.graphql.rb"
+            },
+            {
+              "include": "source.ruby"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(scala)(\\s+[^`~]*)?$)",
       "name": "markup.fenced_code.block.scala",
       "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",

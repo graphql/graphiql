@@ -30,6 +30,7 @@ module.exports = {
     'changesets/**/*.md',
     '**/CHANGELOG.md',
     'functions/*',
+    'packages/vscode-graphql-syntax/tests/__fixtures__/*',
   ],
   overrides: [
     {
