@@ -1,4 +1,14 @@
-<!-- these seem horribly regressed. please someone fix this grammar! -->
+<?php
+
+$graphql = graphql([
+    'query' => "{
+  post(idType: SLUG, id: 2) {
+    title
+    content
+    date
+  }
+}"
+]);
 
 $query = <<<GRAPHQL
   query {
@@ -25,4 +35,4 @@ query {
 }
 QUERY;
 
-
+?>

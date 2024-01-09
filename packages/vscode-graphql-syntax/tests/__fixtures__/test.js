@@ -1,6 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
+const variable = 'test';
+
 gql`
   query {
     user(id: "5", name: boolean) {
@@ -19,7 +21,7 @@ graphql`
 
 const graphql = graphql`
   query {
-    user(id: "5", name: boolean) {
+    user(id: "5", name: ${variable}) {
       something
     }
   }

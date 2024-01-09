@@ -97,8 +97,7 @@
         "scopeName": "inline.graphql.markdown.codeblock",
         "path": "./grammars/graphql.markdown.codeblock.json",
         "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql",
-          "meta.embedded.block.javascript": "javascript"
+          "meta.embedded.block.graphql": "graphql"
         }
       },
       {
@@ -108,8 +107,7 @@
         "scopeName": "inline.graphql.python",
         "path": "./grammars/graphql.python.json",
         "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql",
-          "meta.embedded.block.javascript": "javascript"
+          "meta.embedded.block.graphql": "graphql"
         }
       },
       {
@@ -128,6 +126,16 @@
         ],
         "scopeName": "inline.graphql.scala",
         "path": "./grammars/graphql.scala.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.ruby"
+        ],
+        "scopeName": "inline.graphql.rb",
+        "path": "./grammars/graphql.rb.json",
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }

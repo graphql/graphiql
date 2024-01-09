@@ -4,6 +4,8 @@ exports[`inline.graphql grammar > should tokenize a simple ecmascript file 1`] =
 /* eslint-disable */                 | 
 // @ts-nocheck                       | 
                                      | 
+const variable = 'test';             | 
+                                     | 
 gql                                  | entity.name.function.tagged-template.js
 \`                                    | punctuation.definition.string.template.begin.js
                                      | meta.embedded.block.graphql
@@ -89,7 +91,10 @@ id                                   | meta.embedded.block.graphql meta.selectio
                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
 name                                 | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
 :                                    | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+ $                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+{                                    | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+variable                             | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
+}                                    | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
 )                                    | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
 {                                    | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql

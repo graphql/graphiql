@@ -26,92 +26,14 @@ type Example {
 }
 ```
 
-# TODO: get tags inside of other code blocks working
-
-```js
-const var = 1;
-
-graphql`
+```php
+<?php
+  $query = <<<GRAPHQL
     query {
-      something
-    }
-`
-```
-
-```TypeScript
-const var: number = 1;
-
-graphql`
-    query {
-        something
-    }
-`
-```
-
-# Python
-
-```python
-query = gql(
-    """
-    query getContinents {
-      continents {
-        code
+      site {
         name
       }
     }
-  """
-)
-
-query = gql('''
-    query getContinents {
-      continents {
-        code
-        name
-      }
-    }
-'''
-)
-
-query = gql(
-'''
-    query getContinents {
-      continents {
-        code
-        name
-      }
-    }
-'''
-)
-
-'''#graphql
-    query getContinents {
-      continents {
-        code
-        name
-      }
-    }
-'''
-
-query = '''#graphql query getContinents {
-    continents {
-        code
-        name
-    }
-}'''
-
-"""#graphql
-    query getContinents {
-      continents {
-        code
-        name
-      }
-    }
-"""
-
-"""#graphql query getContinents {
-    continents {
-        code
-        name
-    }
-}"""
+  GRAPHQL;
+?>
 ```

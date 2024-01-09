@@ -1,17 +1,33 @@
 {
   "fileTypes": [],
   "scopeName": "inline.graphql.markdown.codeblock",
-  "injectionSelector": "L:markup.fenced_code.block.markdown",
+  "injectionSelector": "L:text.html.markdown",
   "patterns": [
     {
-      "contentName": "meta.embedded.block.graphql",
-      "begin": "(gql|graphql|GraphQL)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
-
+      "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(graphql|gql|GraphQL)(\\s+[^`~]*)?$)",
+      "name": "markup.fenced_code.block.markdown",
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown"
+        }
+      },
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        }
+      },
       "patterns": [
         {
           "begin": "(^|\\G)(\\s*)(.*)",
           "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.graphql",
           "patterns": [
             {
               "include": "source.graphql"
@@ -21,80 +37,108 @@
       ]
     },
     {
-      "contentName": "meta.embedded.block.javascript",
-      "begin": "(js|javascript|mjs|cjs|JavaScript)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(javascript|typescript|js|ts|jsx|tsx)(\\s+[^`~]*)?$)",
+      "contentName": "markup.fenced_code.block.javascript",
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown"
+        }
+      },
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        }
+      },
       "patterns": [
         {
           "begin": "(^|\\G)(\\s*)(.*)",
           "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.javascript",
           "patterns": [
             {
               "include": "inline.graphql"
+            },
+            {
+              "include": "source.js"
             }
           ]
         }
       ]
     },
     {
-      "contentName": "meta.embedded.block.typescript",
-      "begin": "(ts|typescript|cts|TypeScript)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
-      "patterns": [
-        {
-          "begin": "(^|\\G)(\\s*)(.*)",
-          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
-          "patterns": [
-            {
-              "include": "inline.graphql"
-            }
-          ]
+      "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(python|Python|py)(\\s+[^`~]*)?$)",
+      "name": "markup.fenced_code.block.python",
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown"
         }
-      ]
-    },
-    {
-      "contentName": "meta.embedded.block.graphql",
-      "begin": "(python|py|Python)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      },
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        }
+      },
       "patterns": [
         {
           "begin": "(^|\\G)(\\s*)(.*)",
           "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.python",
           "patterns": [
             {
               "include": "inline.graphql.python"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "contentName": "meta.embedded.block.graphql",
-      "begin": "(php|PHP)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
-      "patterns": [
-        {
-          "begin": "(^|\\G)(\\s*)(.*)",
-          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
-          "patterns": [
+            },
             {
-              "include": "inline.graphql.php"
+              "include": "source.python"
             }
           ]
         }
       ]
     },
     {
-      "contentName": "meta.embedded.block.graphql",
-      "begin": "(scala|Scala)(\\s+[^`~]*)?$",
-      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(scala)(\\s+[^`~]*)?$)",
+      "name": "markup.fenced_code.block.scala",
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown"
+        }
+      },
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown"
+        }
+      },
       "patterns": [
         {
           "begin": "(^|\\G)(\\s*)(.*)",
           "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.scala",
           "patterns": [
             {
               "include": "inline.graphql.scala"
+            },
+            {
+              "include": "source.scala"
             }
           ]
         }

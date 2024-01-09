@@ -8,3 +8,12 @@ describe('inline.graphql.markdown.codeblock grammar', () => {
     expect(result).toMatchSnapshot();
   });
 });
+
+describe('inline.graphql.markdown.codeblock grammar js', () => {
+  const scope = 'inline.graphql.markdown.codeblock';
+
+  it('should tokenize a markdown file with javascript & typescript', async () => {
+    const result = await tokenizeFile('__fixtures__/test-js.md', scope);
+    expect(result).toMatchSnapshot();
+  });
+});
