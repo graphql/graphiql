@@ -1,4 +1,5 @@
 /* eslint-disable */
+/* prettier-ignore */
 // @ts-nocheck
 
 const variable = 'test';
@@ -26,6 +27,18 @@ const graphql = graphql`
     }
   }
 `;
+
+const queryWithInlineComment = `#graphql
+ query {
+        user(id: "5", name: boolean) {
+            something
+        }
+    }
+`;
+
+const queryWithInlineComment = '#graphql query { id } ';
+
+const queryWithInlineComment = "#graphql query { id } ";
 
 const queryWithInlineComment = `#graphql
  query {

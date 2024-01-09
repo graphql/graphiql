@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.rb grammar > should tokenize a simple ruby file 1`] = `
+it "Should find datasets by ransack" do                            | 
+    dataset = Dataset.last                                         | 
+    query =                                                        | 
+<<~                                                                | taggedTemplates meta.embedded.block.graphql
+GRAPHQL                                                            | taggedTemplates punctuation.definition.string.end.ruby
+    {                                                              | 
+        datasets(q: { idEq: 3 }) { id, daylight }                  | 
+    }                                                              | 
+    GRAPHQL                                                        | 
+    data = Util.graphql_query(query)                               | 
+    expect(data['datasets'][0]["daylight"]).to eq dataset.daylight | 
+                                                                   | 
+    query2 =                                                       | 
+<<-                                                                | taggedTemplates meta.embedded.block.graphql
+GRAPHQL                                                            | taggedTemplates punctuation.definition.string.end.ruby
+    {                                                              | 
+        datasets(q: { idEq: #{dataset.id} }) { id, daylight }      | 
+    }                                                              | 
+    GRAPHQL                                                        | 
+                                                                   | 
+    query3 =                                                       | 
+<<~'                                                               | taggedTemplates meta.embedded.block.graphql
+GRAPHQL                                                            | taggedTemplates meta.embedded.block.graphql entity.name.function.graphql
+'                                                                  | taggedTemplates meta.embedded.block.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+datasets                                                           | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+q                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+{                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+idEq                                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.object.key.graphql string.unquoted.graphql
+:                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql punctuation.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql comment.line.graphql.js punctuation.whitespace.comment.leading.graphql
+#{dataset.id} }) { id, daylight }                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql comment.line.graphql.js
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql
+}                                                                  | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+    GRAPHQL                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+end                                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+                                                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+`;
