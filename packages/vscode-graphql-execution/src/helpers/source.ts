@@ -172,11 +172,36 @@ export class SourceHelper {
       } catch {}
     }
 
+    const regExpInline = new RegExp(
+      '`[\\n\\r\\s]*#graphql+([\\s\\S]+?)`',
+      'mg',
+    );
+
+    let inlineResult: RegExpExecArray | null;
+
+    while ((inlineResult = regExpInline.exec(text)) !== null) {
+      const contents = inlineResult[1];
+
+      // https://regex101.com/r/KFMXFg/2
+      if (contents.match('/${(.+)?}/g')) {
+        // We are ignoring operations with template variables for now
+        continue;
+      }
+      try {
+        processGraphQLString(contents, inlineResult.index + 1);
+
+        // no-op on exception, so that non-parse-able source files
+        // don't break the extension while editing
+      } catch {}
+    }
+
     for (const tag of tags) {
       // https://regex101.com/r/Pd5PaU/2
       const regExpGQL = new RegExp(tag + '\\s*`([\\s\\S]+?)`', 'mg');
+      // https://regex101.com/r/FvG9qc/1
 
       let result: RegExpExecArray | null;
+
       while ((result = regExpGQL.exec(text)) !== null) {
         const contents = result[1];
 
@@ -199,6 +224,7 @@ export class SourceHelper {
       const operations = ast.definitions.filter(
         def => def.kind === 'OperationDefinition',
       );
+
       for (const operation of operations) {
         const op = operation as any;
         const filteredAst = {

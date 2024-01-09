@@ -42,30 +42,31 @@ export function activate(context: ExtensionContext) {
   // const settings = workspace.getConfiguration("vscode-graphql-execution")
   // let provider: GraphQLCodeLensProvider;
   const registerCodeLens = () => {
-    context.subscriptions.push(
-      languages.registerCodeLensProvider(
-        [
-          'javascript',
-          'typescript',
-          'javascriptreact',
-          'typescriptreact',
-          'graphql',
-        ],
-        new GraphQLCodeLensProvider(outputChannel),
-      ),
+    const provider = languages.registerCodeLensProvider(
+      [
+        'javascript',
+        'typescript',
+        'javascriptreact',
+        'typescriptreact',
+        'graphql',
+      ],
+      new GraphQLCodeLensProvider(outputChannel),
     );
+    context.subscriptions.push(provider);
+    return provider;
   };
 
   // if (settings.showExecCodelens !== false) {
-  registerCodeLens();
+  const codeLensProvider = registerCodeLens();
+
   // }
 
   let commandContentProvider: GraphQLContentProvider;
 
   const registerContentProvider = () => {
-    return commands.registerCommand(
+    const provider = commands.registerCommand(
       'vscode-graphql-execution.contentProvider',
-      (literal: ExtractedTemplateLiteral) => {
+      async (literal: ExtractedTemplateLiteral) => {
         const uri = Uri.parse('graphql://authority/graphql');
 
         const panel = window.createWebviewPanel(
@@ -81,6 +82,7 @@ export function activate(context: ExtensionContext) {
           literal,
           panel,
         );
+        await commandContentProvider.loadProvider();
         const registration = workspace.registerTextDocumentContentProvider(
           'graphql',
           commandContentProvider,
@@ -89,23 +91,33 @@ export function activate(context: ExtensionContext) {
         panel.webview.html = commandContentProvider.getCurrentHtml();
       },
     );
+    context.subscriptions.push(provider);
+    return provider;
   };
 
-  const provider = registerContentProvider();
-  context.subscriptions.push(provider);
+  const contentProvider = registerContentProvider();
 
   // workspace.onDidChangeConfiguration(async () => {
   //   // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
   //   // if (newSettings.showExecCodeLens !== false) {
-  //     commandContentProvider.dispose()
+  //   provider.dispose();
   //   // }
   // });
+
   workspace.onDidSaveTextDocument(async e => {
     if (
       e.fileName.includes('graphql.config') ||
       e.fileName.includes('graphqlrc')
     ) {
-      await commandContentProvider.loadConfig();
+      if (contentProvider) {
+        await contentProvider.dispose();
+        registerContentProvider();
+      }
+
+      if (codeLensProvider) {
+        await codeLensProvider.dispose();
+        registerCodeLens();
+      }
     }
   });
 }
