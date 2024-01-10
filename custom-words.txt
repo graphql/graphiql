@@ -94,6 +94,7 @@ typedoc
 vite
 vitest
 vitejs
+vsix
 wonka
 urql
 tsup
@@ -228,3 +229,4 @@ unparsable
 randomthing
 codicon
 edcore
+tokenizes

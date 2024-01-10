@@ -1,6 +1,6 @@
 {
-  "fileTypes": ["php"],
-  "injectionSelector": "L:source -string -comment",
+  "scopeName": "inline.graphql.php",
+  "injectionSelector": "L:(meta.embedded.block.php | source.php -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
@@ -126,6 +126,5 @@
         }
       ]
     }
-  ],
-  "scopeName": "inline.graphql.php"
+  ]
 }
