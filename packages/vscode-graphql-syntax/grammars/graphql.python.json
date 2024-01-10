@@ -1,4 +1,5 @@
 {
+  "scopeName": "inline.graphql.python",
   "injectionSelector": "L:(meta.embedded.block.python | source.python -string -comment)",
   "patterns": [
     {
@@ -141,6 +142,5 @@
         }
       ]
     }
-  ],
-  "scopeName": "inline.graphql.python"
+  ]
 }

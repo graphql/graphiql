@@ -1,5 +1,5 @@
 {
-  "fileTypes": ["res", "resi"],
+  "scopeName": "inline.graphql.res",
   "injectionSelector": "L:(meta.embedded.block.rescript | source.rescript -string -comment)",
   "patterns": [
     {
@@ -20,6 +20,5 @@
       "end": "(\\`( )?\\))",
       "patterns": [{ "include": "source.graphql" }]
     }
-  ],
-  "scopeName": "inline.graphql.res"
+  ]
 }

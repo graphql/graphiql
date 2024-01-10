@@ -28,6 +28,17 @@ const graphql = graphql`
   }
 `;
 
+const graphql = graphql(`
+  query {
+    user(id: "5", name: ${variable}) {
+      something
+    }
+  }
+`);
+
+const query = /* GraphQL */ 'query { id } ';
+const query = graphql('query { id } ');
+
 const queryWithInlineComment = `#graphql
  query {
         user(id: "5", name: boolean) {
@@ -38,9 +49,18 @@ const queryWithInlineComment = `#graphql
 
 const queryWithInlineComment = '#graphql query { id } ';
 
-const queryWithInlineComment = "#graphql query { id } ";
+const queryWithInlineComment = '#graphql query { id } ';
 
 const queryWithInlineComment = `#graphql
+ query {
+        user(id: "5", name: boolean) {
+            something
+        }
+    }
+`;
+// TODO: fix this
+const queryWithInlineComment = `
+#graphql
  query {
         user(id: "5", name: boolean) {
             something

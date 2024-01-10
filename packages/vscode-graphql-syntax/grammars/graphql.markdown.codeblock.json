@@ -1,5 +1,4 @@
 {
-  "fileTypes": [],
   "scopeName": "inline.graphql.markdown.codeblock",
   "injectionSelector": "L:text.html.markdown -meta.embedded.block",
   "patterns": [

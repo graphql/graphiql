@@ -17,13 +17,16 @@ graphql<SomeGeneric>`
   }
 `;
 
-const graphql = graphql<SomeGeneric>`
+const query = graphql<SomeGeneric>`
   query {
     user(id: "5", name: boolean) {
       something
     }
   }
 `;
+
+// TODO: Fix this
+const query = graphql<Generic>('query { id }');
 
 const queryWithInlineComment = `#graphql
  query {

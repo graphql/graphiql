@@ -1,242 +1,333 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`inline.graphql grammar > should tokenize a simple ecmascript file 1`] = `
-/* eslint-disable */                                     | 
-/* prettier-ignore */                                    | 
-// @ts-nocheck                                           | 
-                                                         | 
-const variable = 'test';                                 | 
-                                                         | 
-gql                                                      | entity.name.function.tagged-template.js
-\`                                                        | punctuation.definition.string.template.begin.js
-                                                         | meta.embedded.block.graphql
-query                                                    | meta.embedded.block.graphql keyword.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                                                 | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-graphql                                                  | entity.name.function.tagged-template.js
-\`                                                        | punctuation.definition.string.template.begin.js
-                                                         | meta.embedded.block.graphql
-query                                                    | meta.embedded.block.graphql keyword.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                                                 | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-const graphql =                                          | 
-                                                         | 
-graphql                                                  | entity.name.function.tagged-template.js
-\`                                                        | punctuation.definition.string.template.begin.js
-                                                         | meta.embedded.block.graphql
-query                                                    | meta.embedded.block.graphql keyword.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- $                                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
-variable                                                 | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
-)                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-const queryWithInlineComment =                           | 
-\`                                                        | taggedTemplates punctuation.definition.string.template.begin.js
-#graphql                                                 | taggedTemplates comment.line.graphql.js
-                                                         | taggedTemplates meta.embedded.block.graphql
-query                                                    | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                                                 | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | taggedTemplates punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-const queryWithInlineComment =                           | 
-'                                                        | taggedTemplates punctuation.definition.string.template.begin.js
-#graphql                                                 | taggedTemplates comment.line.graphql.js
-                                                         | taggedTemplates meta.embedded.block.graphql
-query                                                    | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-id                                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql
-'                                                        | taggedTemplates punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-const queryWithInlineComment = "#graphql query { id } "; | 
-                                                         | 
-const queryWithInlineComment =                           | 
-\`                                                        | taggedTemplates punctuation.definition.string.template.begin.js
-#graphql                                                 | taggedTemplates comment.line.graphql.js
-                                                         | taggedTemplates meta.embedded.block.graphql
-query                                                    | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                                                 | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | taggedTemplates punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-const queryWithLeadingComment =                          | 
-                                                         | 
-/* GraphQL */                                            | comment.graphql.js
-                                                         | 
-\`                                                        | punctuation.definition.string.template.begin.js
-                                                         | meta.embedded.block.graphql
-query                                                    | meta.embedded.block.graphql keyword.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-user                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                                                 | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                                         | meta.embedded.block.graphql meta.selectionset.graphql
-}                                                        | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                                        | punctuation.definition.string.template.end.js
-;                                                        | 
-                                                         | 
-// TODO: fix this                                        | 
-const queryWithLeadingAboveComment =                     | 
-  /* GraphQL */                                          | 
-  \`                                                      | 
-    query {                                              | 
-      user(id: "5", name: boolean) {                     | 
-        something                                        | 
-      }                                                  | 
-    }                                                    | 
-  \`;                                                     | 
-                                                         | 
+/* eslint-disable */                   | 
+/* prettier-ignore */                  | 
+// @ts-nocheck                         | 
+                                       | 
+const variable = 'test';               | 
+                                       | 
+gql                                    | entity.name.function.tagged-template.js
+\`                                      | punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+graphql                                | entity.name.function.tagged-template.js
+\`                                      | punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+const graphql =                        | 
+                                       | 
+graphql                                | entity.name.function.tagged-template.js
+\`                                      | punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ $                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+variable                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+)                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+const graphql =                        | 
+                                       | 
+graphql                                | entity.name.function.tagged-template.js
+(                                      | 
+\`                                      | punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ $                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+variable                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql constant.character.enum.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.objectvalues.graphql meta.brace.curly.graphql
+)                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | punctuation.definition.string.template.end.js
+);                                     | 
+                                       | 
+const query =                          | 
+                                       | 
+/* GraphQL */                          | comment.graphql.js
+                                       | 
+'                                      | punctuation.definition.string.template.begin.js
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql
+'                                      | punctuation.definition.string.template.end.js
+;                                      | 
+const query =                          | 
+                                       | 
+graphql                                | entity.name.function.tagged-template.js
+(                                      | 
+'                                      | punctuation.definition.string.template.begin.js
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql
+'                                      | punctuation.definition.string.template.end.js
+);                                     | 
+                                       | 
+const queryWithInlineComment =         | 
+\`                                      | taggedTemplates punctuation.definition.string.template.begin.js
+#graphql                               | taggedTemplates comment.line.graphql.js
+                                       | taggedTemplates meta.embedded.block.graphql
+query                                  | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | taggedTemplates punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+const queryWithInlineComment =         | 
+'                                      | taggedTemplates punctuation.definition.string.template.begin.js
+#graphql                               | taggedTemplates comment.line.graphql.js
+                                       | taggedTemplates meta.embedded.block.graphql
+query                                  | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+id                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql
+'                                      | taggedTemplates punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+const queryWithInlineComment =         | 
+'                                      | taggedTemplates punctuation.definition.string.template.begin.js
+#graphql                               | taggedTemplates comment.line.graphql.js
+                                       | taggedTemplates meta.embedded.block.graphql
+query                                  | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+id                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql
+'                                      | taggedTemplates punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+const queryWithInlineComment =         | 
+\`                                      | taggedTemplates punctuation.definition.string.template.begin.js
+#graphql                               | taggedTemplates comment.line.graphql.js
+                                       | taggedTemplates meta.embedded.block.graphql
+query                                  | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | taggedTemplates punctuation.definition.string.template.end.js
+;                                      | 
+// TODO: fix this                      | 
+const queryWithInlineComment = \`       | 
+#graphql                               | 
+ query {                               | 
+        user(id: "5", name: boolean) { | 
+            something                  | 
+        }                              | 
+    }                                  | 
+\`;                                     | 
+                                       | 
+const queryWithLeadingComment =        | 
+                                       | 
+/* GraphQL */                          | comment.graphql.js
+                                       | 
+\`                                      | punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                     | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                   | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                      | punctuation.definition.string.template.end.js
+;                                      | 
+                                       | 
+// TODO: fix this                      | 
+const queryWithLeadingAboveComment =   | 
+  /* GraphQL */                        | 
+  \`                                    | 
+    query {                            | 
+      user(id: "5", name: boolean) {   | 
+        something                      | 
+      }                                | 
+    }                                  | 
+  \`;                                   | 
+                                       | 
 `;
 
 exports[`inline.graphql grammar > should tokenize a simple svelte file 1`] = `
@@ -265,177 +356,180 @@ hello                  | meta.embedded.block.graphql meta.selectionset.graphql v
 `;
 
 exports[`inline.graphql grammar > should tokenize a simple typescript file 1`] = `
-/* eslint-disable */            | 
-// @ts-nocheck                  | 
-                                | 
-gql                             | entity.name.function.tagged-template.js
-\`                               | punctuation.definition.string.template.begin.js
-                                | meta.embedded.block.graphql
-query                           | meta.embedded.block.graphql keyword.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-user                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                               | punctuation.definition.string.template.end.js
-;                               | 
-                                | 
-graphql                         | entity.name.function.tagged-template.js
-<SomeGeneric>                   | 
-\`                               | punctuation.definition.string.template.begin.js
-                                | meta.embedded.block.graphql
-query                           | meta.embedded.block.graphql keyword.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-user                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                               | punctuation.definition.string.template.end.js
-;                               | 
-                                | 
-const graphql =                 | 
-                                | 
-graphql                         | entity.name.function.tagged-template.js
-<SomeGeneric>                   | 
-\`                               | punctuation.definition.string.template.begin.js
-                                | meta.embedded.block.graphql
-query                           | meta.embedded.block.graphql keyword.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-user                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                               | punctuation.definition.string.template.end.js
-;                               | 
-                                | 
-const queryWithInlineComment =  | 
-\`                               | taggedTemplates punctuation.definition.string.template.begin.js
-#graphql                        | taggedTemplates comment.line.graphql.js
-                                | taggedTemplates meta.embedded.block.graphql
-query                           | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-{                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-user                            | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                              | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                            | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
-}                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                               | taggedTemplates punctuation.definition.string.template.end.js
-;                               | 
-                                | 
-const queryWithLeadingComment = | 
-                                | 
-/* GraphQL */                   | comment.graphql.js
-                                | 
-\`                               | punctuation.definition.string.template.begin.js
-                                | meta.embedded.block.graphql
-query                           | meta.embedded.block.graphql keyword.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-user                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
-(                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-id                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
-5                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
-"                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
-name                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
-:                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
- boolean                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
-)                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-{                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-something                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
-                                | meta.embedded.block.graphql meta.selectionset.graphql
-}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                               | punctuation.definition.string.template.end.js
-;                               | 
-                                | 
+/* eslint-disable */                            | 
+// @ts-nocheck                                  | 
+                                                | 
+gql                                             | entity.name.function.tagged-template.js
+\`                                               | punctuation.definition.string.template.begin.js
+                                                | meta.embedded.block.graphql
+query                                           | meta.embedded.block.graphql keyword.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+user                                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                               | punctuation.definition.string.template.end.js
+;                                               | 
+                                                | 
+graphql                                         | entity.name.function.tagged-template.js
+<SomeGeneric>                                   | 
+\`                                               | punctuation.definition.string.template.begin.js
+                                                | meta.embedded.block.graphql
+query                                           | meta.embedded.block.graphql keyword.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+user                                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                               | punctuation.definition.string.template.end.js
+;                                               | 
+                                                | 
+const query =                                   | 
+                                                | 
+graphql                                         | entity.name.function.tagged-template.js
+<SomeGeneric>                                   | 
+\`                                               | punctuation.definition.string.template.begin.js
+                                                | meta.embedded.block.graphql
+query                                           | meta.embedded.block.graphql keyword.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+user                                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                               | punctuation.definition.string.template.end.js
+;                                               | 
+                                                | 
+// TODO: Fix this                               | 
+const query = graphql<Generic>('query { id }'); | 
+                                                | 
+const queryWithInlineComment =                  | 
+\`                                               | taggedTemplates punctuation.definition.string.template.begin.js
+#graphql                                        | taggedTemplates comment.line.graphql.js
+                                                | taggedTemplates meta.embedded.block.graphql
+query                                           | taggedTemplates meta.embedded.block.graphql keyword.operation.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+{                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+user                                            | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                              | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                            | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                                        | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                                       | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql
+}                                               | taggedTemplates meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                               | taggedTemplates punctuation.definition.string.template.end.js
+;                                               | 
+                                                | 
+const queryWithLeadingComment =                 | 
+                                                | 
+/* GraphQL */                                   | comment.graphql.js
+                                                | 
+\`                                               | punctuation.definition.string.template.begin.js
+                                                | meta.embedded.block.graphql
+query                                           | meta.embedded.block.graphql keyword.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+user                                            | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+(                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+5                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+name                                            | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+ boolean                                        | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql constant.character.enum.graphql
+)                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+something                                       | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                               | punctuation.definition.string.template.end.js
+;                                               | 
+                                                | 
 `;
 
 exports[`inline.graphql grammar > should tokenize a simple vue sfc comp file 1`] = `
