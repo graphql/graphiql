@@ -1,5 +1,16 @@
 # graphql-language-service-cli
 
+## 3.3.29
+
+### Patch Changes
+
+- [#3488](https://github.com/graphql/graphiql/pull/3488) [`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e) Thanks [@acao](https://github.com/acao)! - Bump graphql & graphql-tools version to fix potential runtime security bugs
+
+- [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18) Thanks [@acao](https://github.com/acao)! - Fixes to svelte parsing, tag parsing refactor
+
+- Updated dependencies [[`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e), [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18)]:
+  - graphql-language-service-server@2.11.7
+
 ## 3.3.28
 
 ### Patch Changes
