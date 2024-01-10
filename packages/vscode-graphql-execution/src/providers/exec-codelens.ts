@@ -11,14 +11,15 @@ import {
 import { SourceHelper, ExtractedTemplateLiteral } from '../helpers/source';
 import capitalize from 'capitalize';
 import { GraphQLContentProvider } from './exec-content';
+import { ConfigHelper } from '../helpers/config';
 
 export class GraphQLCodeLensProvider implements CodeLensProvider {
-  outputChannel: OutputChannel;
   sourceHelper: SourceHelper;
   contentProvider?: GraphQLContentProvider;
-
-  constructor(outputChannel: OutputChannel) {
-    this.outputChannel = outputChannel;
+  constructor(
+    private outputChannel: OutputChannel,
+    private configHelper: ConfigHelper,
+  ) {
     this.sourceHelper = new SourceHelper(this.outputChannel);
   }
 
@@ -28,39 +29,38 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
     // for some reason, ProviderResult<CodeLens[]> doesn't work here
     // anymore after upgrading types
   ): Promise<CodeLens[]> {
-    this.contentProvider = new GraphQLContentProvider(
-      document.uri,
-      this.outputChannel,
-      // @ts-expect-error
-      { uri: document.uri.fsPath },
-    );
-    await this.contentProvider.loadConfig();
-    if (
-      !this.contentProvider.hasConfig ||
-      !(await this.contentProvider.loadEndpoint())
-    ) {
+    try {
+      const endpoints = await this.configHelper?.loadEndpoint(
+        document.uri.fsPath,
+      );
+      console.log(endpoints);
+      if (!endpoints?.url || endpoints.url === '') {
+        return [];
+      }
+      const literals: ExtractedTemplateLiteral[] =
+        this.sourceHelper.extractAllTemplateLiterals(document, [
+          'gql',
+          'graphql',
+          '/\\* GraphQL \\*/',
+        ]);
+      const results = literals.map(literal => {
+        return new CodeLens(
+          new Range(
+            new Position(literal.position.line, 0),
+            new Position(literal.position.line, 0),
+          ),
+          {
+            title: `Execute ${capitalize(literal.definition.operation)}`,
+            command: 'vscode-graphql-execution.contentProvider',
+            arguments: [literal],
+          },
+        );
+      });
+
+      return results;
+    } catch (err) {
+      this.outputChannel.appendLine(`${err}`);
       return [];
     }
-    const literals: ExtractedTemplateLiteral[] =
-      this.sourceHelper.extractAllTemplateLiterals(document, [
-        'gql',
-        'graphql',
-        '/\\* GraphQL \\*/',
-      ]);
-    const results = literals.map(literal => {
-      return new CodeLens(
-        new Range(
-          new Position(literal.position.line, 0),
-          new Position(literal.position.line, 0),
-        ),
-        {
-          title: `Execute ${capitalize(literal.definition.operation)}`,
-          command: 'vscode-graphql-execution.contentProvider',
-          arguments: [literal],
-        },
-      );
-    });
-
-    return results;
   }
 }

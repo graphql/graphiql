@@ -12,6 +12,7 @@ import {
 import { GraphQLContentProvider } from './providers/exec-content';
 import { GraphQLCodeLensProvider } from './providers/exec-codelens';
 import { ExtractedTemplateLiteral } from './helpers/source';
+import { ConfigHelper } from './helpers/config';
 
 function getConfig() {
   return workspace.getConfiguration(
@@ -25,6 +26,8 @@ export function activate(context: ExtensionContext) {
     'GraphQL Operation Execution',
   );
   const config = getConfig();
+
+  const graphqlConfigHelper = new ConfigHelper(outputChannel);
 
   if (config.debug) {
     // eslint-disable-next-line no-console
@@ -42,6 +45,7 @@ export function activate(context: ExtensionContext) {
   // const settings = workspace.getConfiguration("vscode-graphql-execution")
   // let provider: GraphQLCodeLensProvider;
   const registerCodeLens = () => {
+    console.log('re-registering codelens');
     const provider = languages.registerCodeLensProvider(
       [
         'javascript',
@@ -50,19 +54,21 @@ export function activate(context: ExtensionContext) {
         'typescriptreact',
         'graphql',
       ],
-      new GraphQLCodeLensProvider(outputChannel),
+      new GraphQLCodeLensProvider(outputChannel, graphqlConfigHelper),
     );
     context.subscriptions.push(provider);
     return provider;
   };
 
   // if (settings.showExecCodelens !== false) {
-  const codeLensProvider = registerCodeLens();
+  let codeLensProvider = registerCodeLens();
 
   // }
 
   let commandContentProvider: GraphQLContentProvider;
-
+  let registration: null | ReturnType<
+    typeof workspace.registerTextDocumentContentProvider
+  > = null;
   const registerContentProvider = () => {
     const provider = commands.registerCommand(
       'vscode-graphql-execution.contentProvider',
@@ -81,9 +87,10 @@ export function activate(context: ExtensionContext) {
           outputChannel,
           literal,
           panel,
+          graphqlConfigHelper,
         );
         await commandContentProvider.loadProvider();
-        const registration = workspace.registerTextDocumentContentProvider(
+        registration = workspace.registerTextDocumentContentProvider(
           'graphql',
           commandContentProvider,
         );
@@ -94,8 +101,6 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(provider);
     return provider;
   };
-
-  const contentProvider = registerContentProvider();
 
   // workspace.onDidChangeConfiguration(async () => {
   //   // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
@@ -109,15 +114,8 @@ export function activate(context: ExtensionContext) {
       e.fileName.includes('graphql.config') ||
       e.fileName.includes('graphqlrc')
     ) {
-      if (contentProvider) {
-        await contentProvider.dispose();
-        registerContentProvider();
-      }
-
-      if (codeLensProvider) {
-        await codeLensProvider.dispose();
-        registerCodeLens();
-      }
+      codeLensProvider.dispose();
+      codeLensProvider = registerCodeLens();
     }
   });
 }

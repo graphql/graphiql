@@ -1,5 +1,4 @@
 import {
-  workspace,
   OutputChannel,
   TextDocumentContentProvider,
   EventEmitter,
@@ -8,33 +7,41 @@ import {
   ProviderResult,
   window,
   WebviewPanel,
-  WorkspaceFolder,
 } from 'vscode';
-import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
-import { visit, VariableDefinitionNode } from 'graphql';
+import { visit, VariableDefinitionNode, DocumentNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
-import {
-  LanguageServiceExecutionExtension,
-  EndpointsExtension,
-} from '../helpers/extensions';
 
-import type { Endpoint, Endpoints } from '../helpers/extensions';
 import type { ExtractedTemplateLiteral } from '../helpers/source';
+import { ConfigHelper } from '../helpers/config';
 
 export type UserVariables = { [key: string]: GraphQLScalarTSType };
 
 // TODO: remove residue of previewHtml API https://github.com/microsoft/vscode/issues/62630
 // We update the panel directly now in place of a event based update API (we might make a custom event updater and remove panel dep though)
 export class GraphQLContentProvider implements TextDocumentContentProvider {
-  private uri: Uri;
-  private outputChannel: OutputChannel;
   private networkHelper: NetworkHelper;
   private sourceHelper: SourceHelper;
-  private panel?: WebviewPanel;
-  private rootDir: WorkspaceFolder | undefined;
-  private literal: ExtractedTemplateLiteral;
-  private _projectConfig: GraphQLProjectConfig | undefined;
+
+  constructor(
+    private uri: Uri,
+    private outputChannel: OutputChannel,
+    private literal: ExtractedTemplateLiteral,
+    private panel: WebviewPanel,
+    private configHelper: ConfigHelper,
+  ) {
+    this.sourceHelper = new SourceHelper(this.outputChannel);
+    this.networkHelper = new NetworkHelper(
+      this.outputChannel,
+      this.sourceHelper,
+    );
+    this.panel = panel;
+    if (this.panel) {
+      this.panel.webview.options = {
+        enableScripts: true,
+      };
+    }
+  }
 
   // Event emitter which invokes document updates
   private _onDidChange = new EventEmitter<Uri>();
@@ -51,10 +58,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     if (this.panel) {
       this.panel.webview.html = this.html;
     }
-  }
-
-  public get hasConfig() {
-    return Boolean(this._projectConfig);
   }
 
   async getVariablesFromUser(
@@ -80,50 +83,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     }
     return variables;
   }
-
-  async getEndpointName(endpointNames: string[]) {
-    // Endpoints extensions docs say that at least "default" will be there
-    let [endpointName] = endpointNames;
-    if (endpointNames.length > 1) {
-      const pickedValue = await window.showQuickPick(endpointNames, {
-        canPickMany: false,
-        ignoreFocusOut: true,
-        placeHolder: 'Select an endpoint',
-      });
-
-      if (pickedValue) {
-        endpointName = pickedValue;
-      }
-    }
-    return endpointName;
-  }
-
-  constructor(
-    uri: Uri,
-    outputChannel: OutputChannel,
-    literal: ExtractedTemplateLiteral,
-    panel?: WebviewPanel,
-  ) {
-    this.uri = uri;
-    this.outputChannel = outputChannel;
-    this.sourceHelper = new SourceHelper(this.outputChannel);
-    this.networkHelper = new NetworkHelper(
-      this.outputChannel,
-      this.sourceHelper,
-    );
-    this.panel = panel;
-
-    this.rootDir = workspace.getWorkspaceFolder(Uri.file(literal.uri));
-    this.literal = literal;
-    if (this.panel) {
-      this.panel.webview.options = {
-        enableScripts: true,
-      };
-    }
-  }
-
-  validUrlFromSchema(pathOrUrl: string) {
-    return /^https?:\/\//.test(pathOrUrl);
+  private collectVariableDefinitions(ast: DocumentNode) {
+    const variableDefinitionNodes: VariableDefinitionNode[] = [];
+    visit(ast, {
+      VariableDefinition(node: VariableDefinitionNode) {
+        variableDefinitionNodes.push(node);
+      },
+    });
+    return variableDefinitionNodes;
   }
 
   reportError(message: string) {
@@ -137,84 +104,28 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     this.updatePanel();
   }
 
-  async loadEndpoint(): Promise<Endpoint | null> {
-    let endpoints: Endpoints = this._projectConfig?.extensions?.endpoints;
-
-    if (!endpoints) {
-      endpoints = {
-        default: { url: '' },
-      } as Endpoints;
-
-      this.update(this.uri);
-      this.updatePanel();
-      if (this._projectConfig?.schema) {
-        this.outputChannel.appendLine(
-          "Warning: endpoints missing from graphql config. will try 'schema' value(s) instead",
-        );
-        const { schema } = this._projectConfig;
-        if (schema && Array.isArray(schema)) {
-          for (const s of schema) {
-            if (this.validUrlFromSchema(s as string)) {
-              endpoints.default.url = s.toString();
-            }
-          }
-        } else if (schema && this.validUrlFromSchema(schema as string)) {
-          endpoints.default.url = schema.toString();
-        }
-      } else if (endpoints?.default?.url) {
-        this.outputChannel.appendLine(
-          `Warning: No Endpoints configured. Attempting to execute operation with 'config.schema' value '${endpoints.default.url}'`,
-        );
-      } else {
-        this.reportError(
-          'Warning: No Endpoints configured. Config schema contains no URLs',
-        );
-        return null;
-      }
-    }
-    const endpointNames = Object.keys(endpoints);
-    if (endpointNames.length === 0) {
-      this.reportError(
-        'Error: endpoint data missing from graphql config endpoints extension',
-      );
-      return null;
-    }
-    const endpointName = await this.getEndpointName(endpointNames);
-    return endpoints[endpointName] || endpoints.default;
-  }
-
   async loadProvider() {
     try {
-      const rootDir = workspace.getWorkspaceFolder(Uri.file(this.literal.uri));
-      if (!rootDir) {
-        this.reportError('Error: this file is outside the workspace.');
-        return;
-      }
-
-      await this.loadConfig();
-      const projectConfig = this._projectConfig;
-
-      if (!projectConfig) {
-        return;
-      }
-
-      const endpoint = await this.loadEndpoint();
+      // run to clear any previous results or errors
+      this.update(this.uri);
+      this.updatePanel();
+      const projectConfig = await this.configHelper.loadConfig(
+        this.literal.uri,
+      );
+      const endpoint = await this.configHelper.loadEndpoint(this.literal.uri);
       if (endpoint?.url) {
-        const variableDefinitionNodes: VariableDefinitionNode[] = [];
-        visit(this.literal.ast, {
-          VariableDefinition(node: VariableDefinitionNode) {
-            variableDefinitionNodes.push(node);
-          },
-        });
+        const variableDefinitionNodes = this.collectVariableDefinitions(
+          this.literal.ast,
+        );
 
         const updateCallback = (data: string, operation: string) => {
+          let html = '';
           if (operation === 'subscription') {
-            this.html = `<pre>${data}</pre>` + this.html;
+            html = `<pre>${data}</pre>`;
           } else {
-            this.html += `<pre>${data}</pre>`;
+            html += `<pre>${data}</pre>`;
           }
-          this.update(this.uri);
-          this.updatePanel();
+          this.setContentAndUpdate(html);
         };
 
         if (variableDefinitionNodes.length > 0) {
@@ -244,29 +155,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       }
     } catch (err: unknown) {
       // @ts-expect-error
-      this.reportError(`Error: graphql operation failed\n ${err.toString()}`);
+      this.reportError(err.toString());
       return;
-    }
-  }
-
-  async loadConfig() {
-    const { rootDir, literal } = this;
-    if (!rootDir) {
-      this.reportError('Error: this file is outside the workspace.');
-      return;
-    }
-    const config = await loadConfig({
-      rootDir: rootDir.uri.fsPath,
-      throwOnEmpty: false,
-      throwOnMissing: false,
-      legacy: true,
-      extensions: [LanguageServiceExecutionExtension, EndpointsExtension],
-    });
-    this._projectConfig = config?.getProjectForFile(literal.uri);
-
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    if (!this._projectConfig?.schema) {
-      this.reportError('Error: schema from graphql config');
     }
   }
 
