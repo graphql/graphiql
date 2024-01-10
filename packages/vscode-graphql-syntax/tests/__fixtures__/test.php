@@ -1,5 +1,6 @@
 <?php
 
+## TODO: not yet supported
 $graphql = graphql([
     'query' => "{
   post(idType: SLUG, id: 2) {
@@ -18,6 +19,7 @@ $query = <<<GRAPHQL
   }
 GRAPHQL;
 
+## TODO: not yet supported
 $gql = <<<QUERY
 query {
     pokemon(name: "Pikachu") {

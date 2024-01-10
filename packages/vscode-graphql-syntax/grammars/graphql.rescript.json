@@ -1,6 +1,6 @@
 {
   "fileTypes": ["res", "resi"],
-  "injectionSelector": "L:source -string -comment",
+  "injectionSelector": "L:(meta.embedded.block.rescript | source.rescript -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",

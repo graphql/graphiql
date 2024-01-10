@@ -1,0 +1,35 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.reason grammar > should tokenize a simple reasonML file 1`] = `
+module VideoGames =                                            | 
+[%graphql                                                      | 
+  {|                                                           | meta.embedded.block.graphql
+                                                               | meta.embedded.block.graphql
+query                                                          | meta.embedded.block.graphql keyword.operation.graphql
+                                                               | meta.embedded.block.graphql
+VideoGames                                                     | meta.embedded.block.graphql entity.name.function.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                              | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql
+videoGames                                                     | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+id                                                             | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+title                                                          | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+developer                                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+completed                                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                                                              | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                               | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                              | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+|}                                                             | meta.embedded.block.graphql
+]                                                              | meta.embedded.block.graphql
+;                                                              | 
+                                                               | 
+module VideoGamesQuery = ReasonApollo.CreateQuery(VideoGames); | 
+                                                               | 
+`;

@@ -1,6 +1,6 @@
 {
-  "fileTypes": ["rb", "ru", "rakefile"],
-  "injectionSelector": "L:source -string -comment",
+  "scopeName": "inline.graphql.rb",
+  "injectionSelector": "L:(meta.embedded.block.ruby | source.ruby -string -comment)",
   "patterns": [
     {
       "name": "taggedTemplates",
@@ -19,6 +19,5 @@
       },
       "patterns": [{ "include": "source.graphql" }]
     }
-  ],
-  "scopeName": "inline.graphql.rb"
+  ]
 }

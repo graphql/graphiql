@@ -61,7 +61,8 @@
           "source.js.jsx",
           "source.tsx",
           "source.vue",
-          "source.svelte"
+          "source.svelte",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql",
         "path": "./grammars/graphql.js.json",
@@ -72,7 +73,8 @@
       {
         "injectTo": [
           "source.reason",
-          "source.ocaml"
+          "source.ocaml",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.re",
         "path": "./grammars/graphql.re.json",
@@ -82,7 +84,8 @@
       },
       {
         "injectTo": [
-          "source.rescript"
+          "source.rescript",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.res",
         "path": "./grammars/graphql.rescript.json",
@@ -102,7 +105,8 @@
       },
       {
         "injectTo": [
-          "source.python"
+          "source.python",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.python",
         "path": "./grammars/graphql.python.json",
@@ -112,7 +116,8 @@
       },
       {
         "injectTo": [
-          "text.html.php"
+          "text.html.php",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.php",
         "path": "./grammars/graphql.php.json",
@@ -122,7 +127,8 @@
       },
       {
         "injectTo": [
-          "source.scala"
+          "source.scala",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.scala",
         "path": "./grammars/graphql.scala.json",
@@ -132,7 +138,8 @@
       },
       {
         "injectTo": [
-          "source.ruby"
+          "source.ruby",
+          "text.html.markdown"
         ],
         "scopeName": "inline.graphql.rb",
         "path": "./grammars/graphql.rb.json",

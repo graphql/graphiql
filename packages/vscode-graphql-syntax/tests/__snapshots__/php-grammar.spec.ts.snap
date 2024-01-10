@@ -3,6 +3,7 @@
 exports[`inline.graphql.php grammar > should tokenize a simple php file 1`] = `
 <?php                          | 
                                | 
+## TODO: not yet supported     | 
 $graphql = graphql([           | 
     'query' => "{              | 
   post(idType: SLUG, id: 2) {  | 
@@ -33,6 +34,7 @@ name                           | meta.embedded.block.graphql meta.selectionset.g
 GRAPHQL                        | punctuation.section.embedded.end.php keyword.operator.heredoc.php
 ;                              | 
                                | 
+## TODO: not yet supported     | 
 $gql = <<<QUERY                | 
 query {                        | 
     pokemon(name: "Pikachu") { | 

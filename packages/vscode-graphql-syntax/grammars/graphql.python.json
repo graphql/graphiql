@@ -1,6 +1,5 @@
 {
-  "fileTypes": ["python"],
-  "injectionSelector": "L:source.python -string -comment",
+  "injectionSelector": "L:(meta.embedded.block.python | source.python -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",

@@ -8,9 +8,12 @@ const query = graphql`
     something(arg: ${variable})
   }
 `;
+const Component = () => {
+  return <div>{query}</div>;
+};
 ```
 
-```tsx
+```ts
 const variable: number = 1;
 
 graphql`
@@ -23,7 +26,7 @@ const Component = () => {
 };
 ```
 
-### TODO: svelte
+### svelte
 
 ```svelte
 <script>
@@ -39,7 +42,7 @@ const Component = () => {
 <h1>Hello {name}!</h1>
 ```
 
-## TODO: vue
+## vue
 
 ```vue
 <script>
