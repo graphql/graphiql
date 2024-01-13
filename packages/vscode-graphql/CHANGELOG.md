@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.8.25
+
+### Patch Changes
+
+- [#3503](https://github.com/graphql/graphiql/pull/3503) [`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84) Thanks [@acao](https://github.com/acao)! - Temporarily revert svelte parsing until we can fix bundling issues with svelte2tsx. For now we return to using the vue parser to parse svelte files which will invariably cause some issues, such as being off by several characters
+
+- Updated dependencies [[`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84)]:
+  - graphql-language-service-server@2.11.10
+
 ## 0.8.24
 
 ### Patch Changes
