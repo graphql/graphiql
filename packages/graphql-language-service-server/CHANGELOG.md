@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.11.8
+
+### Patch Changes
+
+- [#3498](https://github.com/graphql/graphiql/pull/3498) [`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b) Thanks [@acao](https://github.com/acao)! - Add typescript as a dependency for `svelte2tsx`
+
 ## 2.11.7
 
 ### Patch Changes
