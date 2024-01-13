@@ -17,7 +17,7 @@ import { Position, Range } from 'graphql-language-service';
 
 import { TAG_MAP } from './constants';
 import { ecmaParser, tsParser } from './parsers/babel';
-import { svelteParser } from './parsers/svelte';
+// import { svelteParser } from './parsers/svelte';
 import { vueParser } from './parsers/vue';
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
@@ -40,7 +40,9 @@ const parserMap = {
   '.tsx': tsParser,
   '.cts': tsParser,
   '.mts': tsParser,
-  '.svelte': svelteParser,
+  // disabled for now, until we can figure out how to get svelte2tsx working in esbuild bundle
+  // '.svelte': svelteParser,
+  '.svelte': vueParser,
   '.vue': vueParser,
 };
 

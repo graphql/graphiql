@@ -49,7 +49,6 @@ build({
     'atpl',
     'liquor',
     'twig',
-    'typescript',
   ],
 })
   .then(({ errors, warnings }) => {
