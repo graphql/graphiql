@@ -36,6 +36,7 @@
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0"
   },
+  "COMMENT": "please do not remove depenencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
@@ -56,7 +57,8 @@
     "vscode-uri": "^3.0.2",
     "svelte2tsx": "^0.6.27",
     "svelte": "^4.1.1",
-    "source-map-js": "1.0.2"
+    "source-map-js": "1.0.2",
+    "typescript": "4.3.5"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
