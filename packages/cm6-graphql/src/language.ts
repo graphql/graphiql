@@ -20,7 +20,7 @@ export const graphqlLanguage = LRLanguage.define({
       styleTags({
         Variable: t.variableName,
         BooleanValue: t.bool,
-        Description: t.docComment,
+        Description: t.string,
         StringValue: t.string,
         Comment: t.lineComment,
         IntValue: t.integer,
