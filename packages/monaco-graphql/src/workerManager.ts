@@ -18,7 +18,7 @@ export class WorkerManager {
   private _lastUsedTime = 0;
   private _configChangeListener: IDisposable;
   private _worker: editor.MonacoWebWorker<GraphQLWorker> | null = null;
-  private _client: GraphQLWorker | null = null;
+  private _client: Promise<GraphQLWorker> | null = null;
 
   constructor(defaults: MonacoGraphQLAPI) {
     this._defaults = defaults;
@@ -83,13 +83,13 @@ export class WorkerManager {
             },
           } as ICreateData,
         });
-        this._client = await this._worker.getProxy();
+        this._client = this._worker.getProxy();
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('error loading worker', error);
       }
     }
-    return this._client!;
+    return await this._client!;
   }
 
   async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
