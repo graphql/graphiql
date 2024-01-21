@@ -22,6 +22,7 @@ import {
   Range,
   Position,
   IPosition,
+  t,
 } from 'graphql-language-service';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
@@ -209,9 +210,11 @@ export class MessageProcessor {
   }
 
   async _updateGraphQLConfig() {
+    console.log('updating config');
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
     });
+
     const vscodeSettings = await this._connection.workspace.getConfiguration({
       section: 'vscode-graphql',
     });
@@ -219,7 +222,10 @@ export class MessageProcessor {
       require('dotenv').config({ path: settings.dotEnvPath });
     }
     this._settings = { ...settings, ...vscodeSettings };
-    const rootDir = this._settings?.load?.rootDir || this._rootPath;
+    const rootDir =
+      this._settings?.load?.rootDir ??
+      this._loadConfigOptions?.rootDir ??
+      this._rootPath;
     this._rootPath = rootDir;
     this._loadConfigOptions = {
       ...Object.keys(this._settings?.load ?? {}).reduce((agg, key) => {
@@ -232,6 +238,7 @@ export class MessageProcessor {
       rootDir,
     };
     try {
+      console.log(this._loadConfigOptions);
       // reload the graphql cache
       this._graphQLCache = await getGraphQLCache({
         parser: this._parser,
@@ -243,9 +250,9 @@ export class MessageProcessor {
         this._graphQLCache,
         this._logger,
       );
-      if (this._graphQLConfig || this._graphQLCache?.getGraphQLConfig) {
-        const config =
-          this._graphQLConfig ?? this._graphQLCache.getGraphQLConfig();
+      if (this._graphQLCache?.getGraphQLConfig()) {
+        const config = (this._graphQLConfig =
+          this._graphQLCache.getGraphQLConfig());
         await this._cacheAllProjectFiles(config);
       }
       this._isInitialized = true;
@@ -254,6 +261,7 @@ export class MessageProcessor {
     }
   }
   _handleConfigError({ err }: { err: unknown; uri?: string }) {
+    // console.log(err, typeof err);
     if (err instanceof ConfigNotFoundError || err instanceof ConfigEmptyError) {
       // TODO: obviously this needs to become a map by workspace from uri
       // for workspaces support
@@ -303,9 +311,9 @@ export class MessageProcessor {
       if (!this._isInitialized || !this._graphQLCache) {
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
-        if (this._isGraphQLConfigMissing === true) {
-          return null;
-        }
+        // if (this._isGraphQLConfigMissing === true) {
+        //   return null;
+        // }
         // then initial call to update graphql config
         await this._updateGraphQLConfig();
       }

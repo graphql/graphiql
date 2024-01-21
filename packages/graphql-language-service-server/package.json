@@ -64,6 +64,7 @@
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "mock-fs": "^5.2.0"
   }
 }
