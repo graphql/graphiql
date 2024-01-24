@@ -17,11 +17,11 @@ import { Position, Range } from 'graphql-language-service';
 
 import { TAG_MAP } from './constants';
 import { ecmaParser, tsParser } from './parsers/babel';
-// import { svelteParser } from './parsers/svelte';
 import { vueParser } from './parsers/vue';
 import { astroParser } from './parsers/astro';
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
+import { svelteParser } from './parsers/svelte';
 
 type TagResult = { tag: string; template: string; range: Range };
 
@@ -41,9 +41,7 @@ const parserMap = {
   '.tsx': tsParser,
   '.cts': tsParser,
   '.mts': tsParser,
-  // disabled for now, until we can figure out how to get svelte2tsx working in esbuild bundle
-  // '.svelte': svelteParser,
-  '.svelte': vueParser,
+  '.svelte': svelteParser,
   '.vue': vueParser,
   '.astro': astroParser,
 };
@@ -90,7 +88,6 @@ export function findGraphQLTags(
           if (parsed) {
             result.push(parsed);
           }
-          return;
         }
       }
 
@@ -133,7 +130,7 @@ export function findGraphQLTags(
       // check if the template literal is prefixed with #graphql
       const hasGraphQLPrefix =
         node.quasis[0].value.raw.startsWith('#graphql\n');
-      // check if the template expression has
+      // check if the template expression has /* GraphQL */ comment
       const hasGraphQLComment = Boolean(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
       );
@@ -148,7 +145,6 @@ export function findGraphQLTags(
   for (const ast of asts) {
     visit(ast, visitors);
   }
-
   return result;
 }
 
