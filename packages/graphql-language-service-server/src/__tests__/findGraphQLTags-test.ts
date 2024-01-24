@@ -20,6 +20,12 @@ describe('findGraphQLTags', () => {
   const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
+  it('returns empty for files without asts', () => {
+    const text = '// just a comment';
+    const contents = findGraphQLTags(text, '.js');
+    expect(contents.length).toEqual(0);
+  });
+
   it('finds queries in tagged templates', async () => {
     const text = `
 // @flow
