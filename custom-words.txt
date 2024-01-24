@@ -65,6 +65,8 @@ yoshiakis
 
 // packages and tools
 argparse
+astro
+astrojs
 changesets
 clsx
 codemirror

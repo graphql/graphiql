@@ -19,6 +19,7 @@ import { TAG_MAP } from './constants';
 import { ecmaParser, tsParser } from './parsers/babel';
 // import { svelteParser } from './parsers/svelte';
 import { vueParser } from './parsers/vue';
+import { astroParser } from './parsers/astro';
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
 
@@ -44,6 +45,7 @@ const parserMap = {
   // '.svelte': svelteParser,
   '.svelte': vueParser,
   '.vue': vueParser,
+  '.astro': astroParser,
 };
 
 export function findGraphQLTags(
