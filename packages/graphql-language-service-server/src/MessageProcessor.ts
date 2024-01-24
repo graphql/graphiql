@@ -22,7 +22,6 @@ import {
   Range,
   Position,
   IPosition,
-  t,
 } from 'graphql-language-service';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
