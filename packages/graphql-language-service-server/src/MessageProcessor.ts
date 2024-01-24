@@ -209,7 +209,6 @@ export class MessageProcessor {
   }
 
   async _updateGraphQLConfig() {
-    console.log('updating config');
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
     });
@@ -237,7 +236,6 @@ export class MessageProcessor {
       rootDir,
     };
     try {
-      console.log(this._loadConfigOptions);
       // reload the graphql cache
       this._graphQLCache = await getGraphQLCache({
         parser: this._parser,
