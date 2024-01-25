@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
 ## 1.2.3
 
 ### Patch Changes
