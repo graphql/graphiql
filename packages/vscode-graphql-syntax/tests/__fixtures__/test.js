@@ -86,3 +86,50 @@ const queryWithLeadingAboveComment =
       }
     }
   `;
+
+// TODO: fix this
+const queryWithDocString = `
+  """
+  GraphQL
+  """
+  query {
+    user(id: "5", name: boolean) {
+      something
+    }
+  }
+`;
+
+// TODO: fix this
+const queryFieldWithDocString = `
+  query {
+    """
+    GraphQL
+    """
+    user(id: "5", name: boolean) {
+      something
+    }
+  }
+`;
+
+// TODO: fix this
+const queryArgWithDocString = `
+  query {
+    user(
+      """
+      GraphQL
+      """
+      id: "5"
+      name: boolean
+    ) {
+      something
+    }
+  }
+`;
+
+// TODO: fix this
+const scalarWithDocString = `
+  """
+  GraphQL
+  """
+  scalar Date
+`;
