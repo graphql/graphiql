@@ -65,6 +65,8 @@ yoshiakis
 
 // packages and tools
 argparse
+astro
+astrojs
 changesets
 clsx
 codemirror
@@ -81,6 +83,8 @@ intellij
 jsdelivr
 lezer
 manypkg
+modulemap
+mockfs
 meros
 nullthrows
 onig
@@ -94,6 +98,7 @@ typedoc
 vite
 vitest
 vitejs
+vsix
 wonka
 urql
 tsup
@@ -128,7 +133,6 @@ listvalues
 marko
 matchingbracket
 middlewares
-modulemap
 newhope
 nextjs
 nocheck
@@ -228,3 +232,4 @@ unparsable
 randomthing
 codicon
 edcore
+tokenizes

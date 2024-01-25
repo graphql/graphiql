@@ -1,5 +1,8 @@
 /* eslint-disable */
+/* prettier-ignore */
 // @ts-nocheck
+
+const variable = 'test';
 
 gql`
   query {
@@ -19,13 +22,45 @@ graphql`
 
 const graphql = graphql`
   query {
-    user(id: "5", name: boolean) {
+    user(id: "5", name: ${variable}) {
       something
     }
   }
 `;
 
+const graphql = graphql(`
+  query {
+    user(id: "5", name: ${variable}) {
+      something
+    }
+  }
+`);
+
+const query = /* GraphQL */ 'query { id } ';
+const query = graphql('query { id } ');
+
 const queryWithInlineComment = `#graphql
+ query {
+        user(id: "5", name: boolean) {
+            something
+        }
+    }
+`;
+
+const queryWithInlineComment = '#graphql query { id } ';
+
+const queryWithInlineComment = '#graphql query { id } ';
+
+const queryWithInlineComment = `#graphql
+ query {
+        user(id: "5", name: boolean) {
+            something
+        }
+    }
+`;
+// TODO: fix this
+const queryWithInlineComment = `
+#graphql
  query {
         user(id: "5", name: boolean) {
             something
@@ -40,3 +75,14 @@ const queryWithLeadingComment = /* GraphQL */ `
     }
   }
 `;
+
+// TODO: fix this
+const queryWithLeadingAboveComment =
+  /* GraphQL */
+  `
+    query {
+      user(id: "5", name: boolean) {
+        something
+      }
+    }
+  `;

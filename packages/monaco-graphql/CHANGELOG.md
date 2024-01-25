@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.0
+
+### Minor Changes
+
+- [#3507](https://github.com/graphql/graphiql/pull/3507) [`7f05c102`](https://github.com/graphql/graphiql/commit/7f05c1022cd5ae74c5be450acacfb48121d01676) Thanks [@bboure](https://github.com/bboure)! - Fix race condition in the worker Manager
+
 ## 1.4.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # cm6-graphql
 
+## 0.0.13
+
+### Patch Changes
+
+- [#3505](https://github.com/graphql/graphiql/pull/3505) [`a562c96f`](https://github.com/graphql/graphiql/commit/a562c96fa3953d0301ad7b610028fa6c4a779bf6) Thanks [@Gasser-Aly](https://github.com/Gasser-Aly)! - fix: block strings syntax highlighting
+
 ## 0.0.12
 
 ### Patch Changes

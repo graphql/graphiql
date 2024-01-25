@@ -30,7 +30,6 @@ export const svelteParser: SourceParser = (text, uri, logger) => {
       new Position(end.line, end.column),
     );
   };
-
   try {
     return {
       asts: [babelParser(svelteResult.code, ['typescript'])],

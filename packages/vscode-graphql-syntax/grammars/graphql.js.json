@@ -1,24 +1,10 @@
 {
-  "fileTypes": [
-    "js",
-    "jsx",
-    "mjs",
-    "cjs",
-    "es6",
-    "es",
-    "esm",
-    "ts",
-    "tsx",
-    "vue",
-    "svelte",
-    "cts",
-    "mts"
-  ],
-  "injectionSelector": "L:source -string -comment",
+  "scopeName": "inline.graphql",
+  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro) -source.graphql -inline.graphql -string -comment",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)|(/\\* GraphQL \\*/))\\s*\\(?\\s*(`)",
+      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)|(/\\* GraphQL \\*/))\\s*\\(?\\s*(`|'|\")",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
@@ -36,17 +22,21 @@
           "name": "punctuation.definition.string.template.begin.js"
         }
       },
-      "end": "`",
+      "end": "(`|'|\")",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     },
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental))\\s*\\(?\\s*(?:<.*>)(`)",
+      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental))\\s*\\(?\\s*(?:<.*>)(`|'|\")",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
@@ -61,18 +51,22 @@
           "name": "punctuation.definition.string.template.begin.js"
         }
       },
-      "end": "`",
+      "end": "(`|'|\")",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     },
     {
       "name": "taggedTemplates",
       "contentName": "meta.embedded.block.graphql",
-      "begin": "(`|')(#graphql)",
+      "begin": "(`|'|\")(#graphql)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.string.template.begin.js"
@@ -81,14 +75,17 @@
           "name": "comment.line.graphql.js"
         }
       },
-      "end": "(`|')",
+      "end": "(`|'|\")",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"
         }
       },
-      "patterns": [{ "include": "source.graphql" }]
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
     }
-  ],
-  "scopeName": "inline.graphql"
+  ]
 }

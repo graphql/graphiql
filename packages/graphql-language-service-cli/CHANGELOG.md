@@ -1,5 +1,44 @@
 # graphql-language-service-cli
 
+## 3.3.33
+
+### Patch Changes
+
+- Updated dependencies [[`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3), [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56)]:
+  - graphql-language-service-server@2.12.0
+
+## 3.3.32
+
+### Patch Changes
+
+- Updated dependencies [[`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84)]:
+  - graphql-language-service-server@2.11.10
+
+## 3.3.31
+
+### Patch Changes
+
+- Updated dependencies [[`34d0a976`](https://github.com/graphql/graphiql/commit/34d0a97688d7b83949f34bb4b2effebe4bafae79)]:
+  - graphql-language-service-server@2.11.9
+
+## 3.3.30
+
+### Patch Changes
+
+- Updated dependencies [[`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b)]:
+  - graphql-language-service-server@2.11.8
+
+## 3.3.29
+
+### Patch Changes
+
+- [#3488](https://github.com/graphql/graphiql/pull/3488) [`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e) Thanks [@acao](https://github.com/acao)! - Bump graphql & graphql-tools version to fix potential runtime security bugs
+
+- [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18) Thanks [@acao](https://github.com/acao)! - Fixes to svelte parsing, tag parsing refactor
+
+- Updated dependencies [[`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e), [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18)]:
+  - graphql-language-service-server@2.11.7
+
 ## 3.3.28
 
 ### Patch Changes

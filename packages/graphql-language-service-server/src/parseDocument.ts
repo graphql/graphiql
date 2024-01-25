@@ -30,15 +30,16 @@ export function parseDocument(
   const ext = extname(
     uri,
   ) as unknown as (typeof DEFAULT_SUPPORTED_EXTENSIONS)[number];
+  if (!text || text === '') {
+    return [];
+  }
+
   if (fileExtensions.includes(ext)) {
     const templates = findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
   if (graphQLFileExtensions.includes(ext)) {
     const query = text;
-    if (!query && query !== '') {
-      return [];
-    }
     const lines = query.split('\n');
     const range = new Range(
       new Position(0, 0),
@@ -46,5 +47,5 @@ export function parseDocument(
     );
     return [{ query, range }];
   }
-  return [{ query: text, range: null }];
+  return [];
 }

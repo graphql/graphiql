@@ -113,3 +113,35 @@ Document(
 Document(
   OperationDefinition(SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))
 )
+
+
+
+# Test case for blockStringCharacter in a Description
+
+"""
+This is a block string description
+with multiple lines.
+It can contain any character except for \""".
+"""
+type Example {
+  id: ID
+}
+
+==>
+
+Document(
+  TypeSystemDefinition(
+    TypeDefinition(
+      ObjectTypeDefinition(
+        Description(StringValue),
+        TypeKeyword(type),
+        Name,
+        FieldsDefinition(
+          "{",
+          FieldDefinition(Name, NamedType(Name)),
+          "}"
+        )
+      )
+    )
+  )
+)

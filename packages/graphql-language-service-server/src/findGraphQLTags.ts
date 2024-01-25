@@ -17,10 +17,11 @@ import { Position, Range } from 'graphql-language-service';
 
 import { TAG_MAP } from './constants';
 import { ecmaParser, tsParser } from './parsers/babel';
-import { svelteParser } from './parsers/svelte';
 import { vueParser } from './parsers/vue';
+import { astroParser } from './parsers/astro';
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
+import { svelteParser } from './parsers/svelte';
 
 type TagResult = { tag: string; template: string; range: Range };
 
@@ -42,6 +43,7 @@ const parserMap = {
   '.mts': tsParser,
   '.svelte': svelteParser,
   '.vue': vueParser,
+  '.astro': astroParser,
 };
 
 export function findGraphQLTags(
@@ -55,9 +57,6 @@ export function findGraphQLTags(
   let rangeMapper = (range: Range) => range;
 
   const parser = parserMap[ext];
-  if (!parser) {
-    return [];
-  }
   const parserResult = parser(text, uri, logger);
   if (!parserResult) {
     return [];
@@ -67,7 +66,7 @@ export function findGraphQLTags(
   }
 
   const { asts } = parserResult;
-  if (!asts) {
+  if (!asts?.length) {
     return [];
   }
 
@@ -89,7 +88,6 @@ export function findGraphQLTags(
           if (parsed) {
             result.push(parsed);
           }
-          return;
         }
       }
 
@@ -103,6 +101,7 @@ export function findGraphQLTags(
           node.quasi.quasis.length > 1
             ? node.quasi.quasis.map(quasi => quasi.value.raw).join('')
             : node.quasi.quasis[0].value.raw;
+        // handle template literals with N line expressions
         if (loc && node.quasi.quasis.length > 1) {
           const last = node.quasi.quasis.pop();
           if (last?.loc?.end) {
@@ -130,7 +129,7 @@ export function findGraphQLTags(
     TemplateLiteral(node: TemplateLiteral) {
       // check if the template literal is prefixed with #graphql
       const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith('#graphql');
-      // check if the template expression has
+      // check if the template expression has /* GraphQL */ comment
       const hasGraphQLComment = Boolean(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
       );
@@ -145,7 +144,6 @@ export function findGraphQLTags(
   for (const ast of asts) {
     visit(ast, visitors);
   }
-
   return result;
 }
 
@@ -155,6 +153,8 @@ export function findGraphQLTags(
 function parseTemplateLiteral(node: TemplateLiteral, rangeMapper: RangeMapper) {
   const { loc } = node.quasis[0];
   if (loc) {
+    // handle template literals with N line expressions
+
     if (node.quasis.length > 1) {
       const last = node.quasis.pop();
       if (last?.loc?.end) {

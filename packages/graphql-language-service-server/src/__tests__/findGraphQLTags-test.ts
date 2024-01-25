@@ -20,6 +20,12 @@ describe('findGraphQLTags', () => {
   const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
+  it('returns empty for files without asts', () => {
+    const text = '// just a comment';
+    const contents = findGraphQLTags(text, '.js');
+    expect(contents.length).toEqual(0);
+  });
+
   it('finds queries in tagged templates', async () => {
     const text = `
 // @flow
@@ -480,5 +486,47 @@ export function Example(arg: string) {}`;
 
     const contents = findGraphQLTags(text, '.js');
     expect(contents.length).toEqual(0);
+  });
+  it('handles full svelte example', () => {
+    const text = `
+    <script>
+    import { ApolloClient, gql } from '@apollo/client';
+    import { setClient, getClient, query } from 'svelte-apollo';
+    import { onMount } from 'svelte';
+    let country;
+    const QUERY = gql\`
+        query GetCountryData {
+            countries(namePrefix: "America") {
+                edges {
+                    node {
+                        name
+                        flagImageUri
+                    }
+                }
+            }
+        }
+    \`;
+    const client = new ApolloClient({
+        uri: 'https://geodb-cities-graphql.p.rapidapi.com/',
+    });
+    setClient(client);
+    onMount(async () => {
+        const response = query(client, { query: QUERY });
+        country = response.data;
+    });
+</script>
+<div>
+    {#if country}
+        <h2>
+            {country.name}
+        </h2>
+        <img src={country.flagImageUri} alt="Country Flag" />
+    {:else}
+        <p>loading...</p>
+    {/if}
+</div>
+    `;
+    const contents = findGraphQLTags(text, '.svelte');
+    expect(contents.length).toEqual(1);
   });
 });
