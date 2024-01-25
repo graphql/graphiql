@@ -67,7 +67,8 @@ describe('MessageProcessor', () => {
         return [];
       },
       getAllProjectsForFile(uri: string) {
-        return [messageProcessor._graphQLCache.getProjectForFile(uri)];
+        const project = messageProcessor._graphQLCache.getProjectForFile(uri);
+        return project ? [project] : [];
       },
       getProjectForDocument(_query: string, uri: string) {
         return this.getAllProjectsForFile(uri)[0];
