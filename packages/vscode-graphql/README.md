@@ -142,7 +142,7 @@ module.exports = {
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]`
 is also valid.
 
-Normally, you want to point your `documents` to different files per project to ensure only one schema is used for the queries. However, you can also mix queries for different schemas in the same file by adding a `#graphql:<suffix>` comment to the query that matches the `languageService.gqlTagOptions.annotationSuffix` for the project:
+Normally, you would point your `documents` in each project to different files to ensure that only one schema is used for the queries. However, you can also mix queries for different schemas into the same file by adding a `#graphql:<suffix>` comment to each query, matching the `languageService.gqlTagOptions.annotationSuffix` for the project:
 
 ```ts
 // file.js
