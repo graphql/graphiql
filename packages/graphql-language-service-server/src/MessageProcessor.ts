@@ -300,7 +300,7 @@ export class MessageProcessor {
     return (
       await Promise.all(
         contents.map(async ({ query, range }) => {
-          const project = this._languageService.getProjectForQuery(
+          const project = this._languageService.getProjectForDocument(
             query,
             uri,
             projects,
@@ -595,7 +595,7 @@ export class MessageProcessor {
       textDocument.uri,
     );
 
-    const project = this._languageService.getProjectForQuery(
+    const project = this._languageService.getProjectForDocument(
       textDocument.uri,
       query,
     );

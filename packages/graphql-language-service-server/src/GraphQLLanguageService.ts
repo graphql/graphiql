@@ -116,12 +116,12 @@ export class GraphQLLanguageService {
         [this._graphQLConfig.getProjectForFile(filePath)];
   }
 
-  getProjectForQuery(
-    query: string,
+  getProjectForDocument(
+    document: string,
     uri: Uri,
     projects?: GraphQLProjectConfig[],
   ) {
-    if (!query.startsWith('#graphql')) {
+    if (!document.startsWith('#graphql')) {
       // Query is not annotated with #graphql.
       // Skip suffix check and return the first project that matches the file.
       return (
@@ -137,7 +137,7 @@ export class GraphQLLanguageService {
 
       const suffix = ext?.gqlTagOptions?.annotationSuffix;
 
-      return query.startsWith(`#graphql${suffix ? ':' + suffix : ''}\n`);
+      return document.startsWith(`#graphql${suffix ? ':' + suffix : ''}\n`);
     });
   }
 
@@ -149,7 +149,7 @@ export class GraphQLLanguageService {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
     let documentHasExtensions = false;
-    const projectConfig = this.getProjectForQuery(document, uri);
+    const projectConfig = this.getProjectForDocument(document, uri);
     // skip validation when there's nothing to validate, prevents noisy unexpected EOF errors
     if (!projectConfig || !document || document.trim().length < 2) {
       return [];
@@ -256,7 +256,7 @@ export class GraphQLLanguageService {
     position: IPosition,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
-    const projectConfig = this.getProjectForQuery(query, filePath);
+    const projectConfig = this.getProjectForDocument(query, filePath);
     if (!projectConfig) {
       return [];
     }
@@ -293,7 +293,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
     options?: HoverConfig,
   ): Promise<Hover['contents']> {
-    const projectConfig = this.getProjectForQuery(query, filePath);
+    const projectConfig = this.getProjectForDocument(query, filePath);
     if (!projectConfig) {
       return '';
     }
@@ -310,7 +310,7 @@ export class GraphQLLanguageService {
     position: IPosition,
     filePath: Uri,
   ): Promise<DefinitionQueryResult | null> {
-    const projectConfig = this.getProjectForQuery(query, filePath);
+    const projectConfig = this.getProjectForDocument(query, filePath);
     if (!projectConfig) {
       return null;
     }

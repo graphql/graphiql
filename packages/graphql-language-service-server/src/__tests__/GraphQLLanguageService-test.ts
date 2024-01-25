@@ -242,7 +242,7 @@ describe('GraphQLLanguageService', () => {
 
   it('finds the correct project for the given query', () => {
     const getProjectName = (query: string, path: string) =>
-      languageService.getProjectForQuery(query, path)?.name;
+      languageService.getProjectForDocument(query, path)?.name;
 
     const QUERY_NO_SUFFIX = '#graphql\n query { test }';
     const QUERY_TEST_SUFFIX = '#graphql:test\n query { test }';
