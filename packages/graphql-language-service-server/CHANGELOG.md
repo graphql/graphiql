@@ -1,5 +1,19 @@
 # graphql-language-service-server
 
+## 2.12.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
+### Patch Changes
+
+- [#3514](https://github.com/graphql/graphiql/pull/3514) [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56) Thanks [@acao](https://github.com/acao)! - fix svelte parsing, re-load config only on config changes
+
+  - fix esbuild bundling of `typescript` for `svelte2tsx`!
+  - confirm with manual testing of the vsix extension bundle ✅
+  - ensure that the server only attemps to parse opened/saved files when the server is activated or the file is a config file
+
 ## 2.11.10
 
 ### Patch Changes
