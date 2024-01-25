@@ -1,6 +1,4 @@
 import { babelParser } from './babel';
-// TODO: Remove this when we have a working svelte parsing implementation
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { svelte2tsx } from 'svelte2tsx';
 import { SourceMapConsumer } from 'source-map-js';
 import { Position, Range } from 'graphql-language-service';
@@ -32,7 +30,6 @@ export const svelteParser: SourceParser = (text, uri, logger) => {
       new Position(end.line, end.column),
     );
   };
-
   try {
     return {
       asts: [babelParser(svelteResult.code, ['typescript'])],
