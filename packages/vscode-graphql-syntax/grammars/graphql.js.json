@@ -36,7 +36,7 @@
     },
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental))\\s*(?:<.*>)\\s*\\(?\\s*(`|'|\")",
+      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental))\\s*(?:<.*>)\\s*(\\(\\s*[\\n\\s]*)?(`|'|\")",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
