@@ -4,7 +4,7 @@
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)|(/\\* GraphQL \\*/))\\s*\\(?\\s*(`|'|\")",
+      "begin": "\\s*+(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)|(/\\* GraphQL \\*/))\\s*(\\(\\s*[\\n\\s]*)?(`|'|\")",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
