@@ -457,9 +457,38 @@ something                       | meta.embedded.block.graphql meta.selectionset.
 \`                               | punctuation.definition.string.template.end.js
 ;                               | 
                                 | 
-// TODO: Fix this               | 
 const query = graphql<Generic>  | 
 (                               | 
+'                               | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
+query                           | meta.embedded.block.graphql keyword.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'                               | meta.embedded.block.graphql
+)                               | 
+;                               | 
+                                | 
+const query = graphql           | 
+(                               | 
+                                | meta.embedded.block.graphql
+'                               | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
+query                           | meta.embedded.block.graphql keyword.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'                               | meta.embedded.block.graphql
+)                               | 
+;                               | 
+                                | 
+const query = graphql<Generic>  | 
+(                               | 
+                                | meta.embedded.block.graphql
 '                               | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
 query                           | meta.embedded.block.graphql keyword.operation.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
