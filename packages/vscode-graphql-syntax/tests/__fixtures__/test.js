@@ -38,6 +38,9 @@ const graphql = graphql(`
 
 const query = /* GraphQL */ 'query { id } ';
 const query = graphql('query { id } ');
+const query = graphql(
+  'query { id } '
+);
 
 const queryWithInlineComment = `#graphql
  query {
@@ -58,7 +61,6 @@ const queryWithInlineComment = `#graphql
         }
     }
 `;
-// TODO: fix this
 const queryWithInlineComment = `
 #graphql
  query {
