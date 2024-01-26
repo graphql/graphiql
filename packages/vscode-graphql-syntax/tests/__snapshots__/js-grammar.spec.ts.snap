@@ -141,7 +141,7 @@ something                              | meta.embedded.block.graphql meta.select
 }                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
                                        | meta.embedded.block.graphql meta.selectionset.graphql
 }                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-\`                                      | meta.embedded.block.graphql
+\`                                      | meta.embedded.block.graphql punctuation.definition.string.template.end.js
 )                                      | 
 ;                                      | 
                                        | 
@@ -171,7 +171,7 @@ id                                     | meta.embedded.block.graphql meta.select
                                        | meta.embedded.block.graphql meta.selectionset.graphql
 }                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
                                        | meta.embedded.block.graphql
-'                                      | meta.embedded.block.graphql
+'                                      | meta.embedded.block.graphql punctuation.definition.string.template.end.js
 )                                      | 
 ;                                      | 
                                        | 
@@ -467,7 +467,7 @@ query                           | meta.embedded.block.graphql keyword.operation.
 id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
 }                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-'                               | meta.embedded.block.graphql
+'                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
 )                               | 
 ;                               | 
                                 | 
@@ -482,7 +482,7 @@ query                           | meta.embedded.block.graphql keyword.operation.
 id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
 }                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-'                               | meta.embedded.block.graphql
+'                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
 )                               | 
 ;                               | 
                                 | 
@@ -497,7 +497,7 @@ query                           | meta.embedded.block.graphql keyword.operation.
 id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
 }                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
-'                               | meta.embedded.block.graphql
+'                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
 )                               | 
 ;                               | 
                                 | 
