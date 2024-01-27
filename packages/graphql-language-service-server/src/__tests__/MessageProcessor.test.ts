@@ -18,7 +18,7 @@ import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
-import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
+import { GraphQLCache } from '../GraphQLCache';
 
 import { loadConfig } from 'graphql-config';
 
@@ -70,7 +70,7 @@ describe('MessageProcessor', () => {
       getDiagnostics(_query, _uri) {
         return [];
       },
-      async getHoverInformation(_query, position, uri) {
+      async getHoverInformation(_query, position, _uri) {
         return {
           contents: '```graphql\nField: hero\n```',
           range: new Range(position, position),
