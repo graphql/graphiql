@@ -11,7 +11,6 @@ import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
-import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
 import {
   CachedContent,
@@ -76,6 +75,7 @@ import {
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
+import glob from 'fast-glob';
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -984,29 +984,6 @@ export class MessageProcessor {
     }
     return path.resolve(projectTmpPath);
   }
-  /**
-   * Safely attempts to cache schema files based on a glob or path
-   * Exits without warning in several cases because these strings can be almost
-   * anything!
-   * @param uri
-   * @param project
-   */
-  private async _cacheSchemaPath(uri: string, project: GraphQLProjectConfig) {
-    try {
-      const files = await glob(uri);
-      if (files && files.length > 0) {
-        await Promise.all(
-          files.map(uriPath => this._cacheSchemaFile(uriPath, project)),
-        );
-      } else {
-        try {
-          await this._cacheSchemaFile(uri, project);
-        } catch {
-          // this string may be an SDL string even, how do we even evaluate this?
-        }
-      }
-    } catch {}
-  }
 
   private async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const config = project?.extensions?.languageService;
@@ -1033,7 +1010,7 @@ export class MessageProcessor {
       schemaEntry =>
         schemaEntry.endsWith('.graphql') || schemaEntry.endsWith('.gql'),
     );
-    // if we are cacheing the config schema, and it isn't a .graphql file, cache it
+    // if we are caching the config schema, and it isn't a .graphql file, cache it
     if (cacheSchemaFileForLookup && !sdlOnly) {
       await this._cacheConfigSchema(project);
     } else if (sdlOnly) {
@@ -1194,7 +1171,19 @@ export class MessageProcessor {
       schemas.push(...Object.keys(projectSchema));
     }
 
-    return schemas;
+    return schemas.reduce<string[]>((agg, schema) => {
+      const results = this._globIfFilePattern(schema);
+      return [...agg, ...results];
+    }, []);
+  }
+  private _globIfFilePattern(pattern: string) {
+    if (pattern.includes('*')) {
+      try {
+        return glob.sync(pattern);
+        // URLs may contain * characters
+      } catch {}
+    }
+    return [pattern];
   }
 
   private async _updateObjectTypeDefinition(
