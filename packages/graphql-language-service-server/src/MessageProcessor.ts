@@ -267,7 +267,7 @@ export class MessageProcessor {
       // this is the only case where we don't invalidate config;
       // TODO: per-project schema initialization status (PR is almost ready)
       this._logConfigError(
-        'Project not found for this file - make sure that a schema is present',
+        'Project not found for this file - make sure that a schema is present in the config file or for the project',
       );
     } else if (err instanceof ConfigInvalidError) {
       this._isGraphQLConfigMissing = true;
