@@ -167,6 +167,13 @@ describe('MessageProcessor', () => {
     );
     mockfs.restore();
     expect(pkgResult).toEqual(true);
+
+    mockfs({ [`${__dirname}/package.json`]: '{ }' });
+    const pkgFalseResult = await messageProcessor._isGraphQLConfigFile(
+      `file://${__dirname}/package.json`,
+    );
+    mockfs.restore();
+    expect(pkgFalseResult).toEqual(false);
   });
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;
