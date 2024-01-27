@@ -151,7 +151,23 @@ describe('MessageProcessor', () => {
     expect(capabilities.completionProvider.resolveProvider).toEqual(true);
     expect(capabilities.textDocumentSync).toEqual(1);
   });
+  it('detects a config file', async () => {
+    const result = await messageProcessor._isGraphQLConfigFile(
+      'graphql.config.js',
+    );
+    expect(result).toEqual(true);
+    const falseResult = await messageProcessor._isGraphQLConfigFile(
+      'graphql.js',
+    );
+    expect(falseResult).toEqual(false);
 
+    mockfs({ [`${__dirname}/package.json`]: '{"graphql": {}}' });
+    const pkgResult = await messageProcessor._isGraphQLConfigFile(
+      `file://${__dirname}/package.json`,
+    );
+    mockfs.restore();
+    expect(pkgResult).toEqual(true);
+  });
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;
     const query = 'test';
