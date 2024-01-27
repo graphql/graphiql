@@ -99,7 +99,7 @@
     "@types/ws": "8.2.2",
     "@vscode/vsce": "^2.22.1-2",
     "esbuild": "0.18.10",
-    "ovsx": "0.5.1"
+    "ovsx": "0.8.3"
   },
   "dependencies": {
     "@graphql-tools/code-file-loader": "8.0.3",
