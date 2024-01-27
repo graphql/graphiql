@@ -9,7 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
@@ -308,8 +308,10 @@ export class MessageProcessor {
       return fileMatch;
     }
     if (uri.match('package.json')?.length) {
-      const graphqlConfig = await import(URI.parse(uri).fsPath);
-      return Boolean(graphqlConfig?.graphql);
+      try {
+        const pkgConfig = await readFile(URI.parse(uri).fsPath, 'utf-8');
+        return Boolean(JSON.parse(pkgConfig)?.graphql);
+      } catch {}
     }
     return false;
   }
