@@ -65,6 +65,7 @@ yoshiakis
 
 // packages and tools
 argparse
+arrayish
 astro
 astrojs
 changesets
