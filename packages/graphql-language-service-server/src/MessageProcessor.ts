@@ -912,6 +912,7 @@ export class MessageProcessor {
       await Promise.all(
         documents.map(async ([uri]) => {
           const cachedDocument = this._getCachedDocument(uri);
+
           if (!cachedDocument) {
             return [];
           }
@@ -1233,7 +1234,7 @@ export class MessageProcessor {
   }
 }
 
-function processDiagnosticsMessage(
+export function processDiagnosticsMessage(
   results: Diagnostic[],
   query: string,
   range: RangeType | null,
