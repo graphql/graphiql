@@ -145,6 +145,25 @@ something                              | meta.embedded.block.graphql meta.select
 )                                      | 
 ;                                      | 
                                        | 
+const graphql = graphql                | 
+(                                      | 
+                                       | meta.embedded.block.graphql
+\`                                      | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
+                                       | meta.embedded.block.graphql
+query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+{                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+test                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+}                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql
+\`                                      | meta.embedded.block.graphql punctuation.definition.string.template.end.js
+,                                      | meta.embedded.block.graphql
+  [var1, var2]                         | meta.embedded.block.graphql
+)                                      | 
+;                                      | 
+                                       | 
 const query =                          | 
                                        | 
 /* GraphQL */                          | comment.graphql.js
@@ -512,6 +531,40 @@ id                              | meta.embedded.block.graphql meta.selectionset.
                                 | meta.embedded.block.graphql meta.selectionset.graphql
 }                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
 '                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
+)                               | 
+;                               | 
+                                | 
+const query = graphql           | 
+(                               | 
+\`                               | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
+                                | meta.embedded.block.graphql
+query                           | meta.embedded.block.graphql keyword.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
+)                               | 
+;                               | 
+                                | 
+const query = graphql           | 
+(                               | 
+                                | meta.embedded.block.graphql
+\`                               | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
+                                | meta.embedded.block.graphql
+query                           | meta.embedded.block.graphql keyword.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+{                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+id                              | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                | meta.embedded.block.graphql meta.selectionset.graphql
+}                               | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                | meta.embedded.block.graphql
+\`                               | meta.embedded.block.graphql punctuation.definition.string.template.end.js
+,                               | meta.embedded.block.graphql
+  [var1, var2]                  | meta.embedded.block.graphql
 )                               | 
 ;                               | 
                                 | 
