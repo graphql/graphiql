@@ -194,9 +194,6 @@ export class MessageProcessor {
         'no rootPath configured in extension or server, defaulting to cwd',
       );
     }
-    if (!serverCapabilities) {
-      throw new Error('GraphQL Language Server is not initialized.');
-    }
 
     this._logger.info(
       JSON.stringify({
@@ -327,7 +324,7 @@ export class MessageProcessor {
       params.textDocument.uri,
     );
     try {
-      if (!this._isInitialized || !this._graphQLCache) {
+      if (!this._isInitialized) {
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
         if (this._isGraphQLConfigMissing === true && !isGraphQLConfigFile) {
@@ -504,7 +501,7 @@ export class MessageProcessor {
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return;
     }
     // For every `textDocument/didClose` event, delete the cached entry.
@@ -550,7 +547,7 @@ export class MessageProcessor {
   async handleCompletionRequest(
     params: CompletionParams,
   ): Promise<CompletionList | Array<CompletionItem>> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return [];
     }
 
@@ -606,7 +603,7 @@ export class MessageProcessor {
   }
 
   async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return { contents: [] };
     }
 
@@ -743,7 +740,7 @@ export class MessageProcessor {
     params: TextDocumentPositionParams,
     _token?: CancellationToken,
   ): Promise<Array<Location>> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return [];
     }
 
@@ -840,7 +837,7 @@ export class MessageProcessor {
   async handleDocumentSymbolRequest(
     params: DocumentSymbolParams,
   ): Promise<Array<SymbolInformation>> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return [];
     }
 
@@ -900,7 +897,7 @@ export class MessageProcessor {
   async handleWorkspaceSymbolRequest(
     params: WorkspaceSymbolParams,
   ): Promise<Array<SymbolInformation>> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (!this._isInitialized) {
       return [];
     }
     // const config = await this._graphQLCache.getGraphQLConfig();

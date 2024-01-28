@@ -206,8 +206,26 @@ describe('MessageProcessor', () => {
       isIncomplete: false,
     });
   });
+  it('runs completion requests properly with no file present', async () => {
+    const test = {
+      position: new Position(0, 0),
+      textDocument: { uri: `${queryPathUri}/test13.graphql` },
+    };
+    const result = await messageProcessor.handleCompletionRequest(test);
+    expect(result).toEqual([]);
+  });
+  it('runs completion requests properly when not initialized', async () => {
+    const test = {
+      position: new Position(0, 3),
+      textDocument: { uri: `${queryPathUri}/test2.graphql` },
+    };
+    messageProcessor._isInitialized = false;
+    const result = await messageProcessor.handleCompletionRequest(test);
+    expect(result).toEqual([]);
+  });
 
   it('runs document symbol requests', async () => {
+    messageProcessor._isInitialized = true;
     const uri = `${queryPathUri}/test3.graphql`;
     const validQuery = `
   {
@@ -249,6 +267,29 @@ describe('MessageProcessor', () => {
       start: { line: 1, character: 2 },
       end: { line: 1, character: 4 },
     });
+  });
+  it('runs document symbol requests with no file present', async () => {
+    const test = {
+      textDocument: {
+        uri: `${queryPathUri}/test4.graphql`,
+        version: 0,
+      },
+    };
+
+    const result = await messageProcessor.handleDocumentSymbolRequest(test);
+    expect(result).toEqual([]);
+  });
+  it('runs document symbol requests when not initialized', async () => {
+    const test = {
+      textDocument: {
+        uri: `${queryPathUri}/test5.graphql`,
+        version: 0,
+      },
+    };
+    messageProcessor._isInitialized = false;
+    const result = await messageProcessor.handleDocumentSymbolRequest(test);
+    expect(result).toEqual([]);
+    messageProcessor._isInitialized = true;
   });
 
   it('properly changes the file cache with the didChange handler', async () => {
