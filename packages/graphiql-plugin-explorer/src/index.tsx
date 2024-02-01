@@ -9,7 +9,13 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+} from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
@@ -207,21 +213,31 @@ function useOptimisticOperationsEditorState(): ReturnType<
         setOperationsText(upstreamOperationsString);
       }
     }
-  }, [upstreamOperationsString, operationsString]);
+  }, [
+    upstreamOperationsString,
+    operationsString,
+    upstreamHandleEditOperations,
+  ]);
 
-  const handleEditOperations = useCallback((operationsString: string) => {
-    setOperationsText(operationsString);
-    if (
-      lastStateRef.current.pending === null &&
-      lastStateRef.current.last !== operationsString
-    ) {
-      // No pending updates and change has occurred... send it upstream
-      lastStateRef.current.pending = operationsString;
-      upstreamHandleEditOperations(operationsString);
-    }
-  }, []);
+  const handleEditOperations = useCallback(
+    (newOperationsString: string) => {
+      setOperationsText(newOperationsString);
+      if (
+        lastStateRef.current.pending === null &&
+        lastStateRef.current.last !== newOperationsString
+      ) {
+        // No pending updates and change has occurred... send it upstream
+        lastStateRef.current.pending = newOperationsString;
+        upstreamHandleEditOperations(newOperationsString);
+      }
+    },
+    [upstreamHandleEditOperations],
+  );
 
-  return [operationsString, handleEditOperations];
+  return useMemo(
+    () => [operationsString, handleEditOperations],
+    [operationsString, handleEditOperations],
+  );
 }
 
 export function explorerPlugin(
