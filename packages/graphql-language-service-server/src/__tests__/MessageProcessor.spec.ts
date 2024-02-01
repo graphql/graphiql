@@ -131,6 +131,7 @@ describe('MessageProcessor with no config', () => {
     });
     expect(messageProcessor._isInitialized).toEqual(false);
     expect(loggerSpy).toHaveBeenCalledTimes(1);
+
     // todo: get mockfs working with in-test file changes
     // mockfs({
     //   [mockRoot]: mockfs.directory({

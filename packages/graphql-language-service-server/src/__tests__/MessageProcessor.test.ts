@@ -20,13 +20,20 @@ jest.mock('../Logger');
 
 import { GraphQLCache } from '../GraphQLCache';
 
-import { loadConfig } from 'graphql-config';
+import {
+  ConfigInvalidError,
+  ConfigNotFoundError,
+  LoaderNoResultError,
+  ProjectNotFoundError,
+  loadConfig,
+} from 'graphql-config';
 
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { NoopLogger } from '../Logger';
 import { pathToFileURL } from 'node:url';
 import mockfs from 'mock-fs';
+import { join } from 'node:path';
 
 jest.mock('node:fs', () => ({
   ...jest.requireActual<typeof import('fs')>('fs'),
@@ -587,27 +594,89 @@ describe('MessageProcessor', () => {
       expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
   });
+  describe('_handleConfigErrors', () => {
+    it('handles missing config errors', async () => {
+      messageProcessor._handleConfigError({
+        err: new ConfigNotFoundError('test missing-config'),
+        uri: 'test',
+      });
 
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('test missing-config'),
+      );
+    });
+    it('handles missing project errors', async () => {
+      messageProcessor._handleConfigError({
+        err: new ProjectNotFoundError('test missing-project'),
+        uri: 'test',
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Project not found for this file'),
+      );
+    });
+    it('handles invalid config errors', async () => {
+      messageProcessor._handleConfigError({
+        err: new ConfigInvalidError('test invalid error'),
+        uri: 'test',
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid configuration'),
+      );
+    });
+    it('handles empty loader result errors', async () => {
+      messageProcessor._handleConfigError({
+        err: new LoaderNoResultError('test loader-error'),
+        uri: 'test',
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('test loader-error'),
+      );
+    });
+    it('handles generic errors', async () => {
+      messageProcessor._handleConfigError({
+        err: new Error('test loader-error'),
+        uri: 'test',
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('test loader-error'),
+      );
+    });
+  });
   describe('handleWatchedFilesChangedNotification', () => {
     const mockReadFileSync: jest.Mock =
       jest.requireMock('node:fs').readFileSync;
 
     beforeEach(() => {
-      mockReadFileSync.mockReturnValue('');
+      mockReadFileSync.mockReturnValue(' query { id }');
       messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._updateFragmentDefinition = jest.fn();
+      messageProcessor._isGraphQLConfigMissing = false;
+      messageProcessor._isInitialized = true;
     });
 
     it('skips config updates for normal file changes', async () => {
       await messageProcessor.handleWatchedFilesChangedNotification({
         changes: [
           {
-            uri: `${pathToFileURL('.')}/foo.graphql`,
+            uri: `${pathToFileURL(
+              join(__dirname, '__queries__'),
+            )}/test.graphql`,
             type: FileChangeType.Changed,
           },
         ],
       });
 
       expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._updateFragmentDefinition).toHaveBeenCalled();
     });
   });
 
