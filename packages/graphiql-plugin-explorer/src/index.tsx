@@ -9,7 +9,7 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
@@ -139,7 +139,8 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
   );
 
   // load the current editor tab state into the explorer
-  const [operationsString, handleEditOperations] = useOperationsEditorState();
+  const [operationsString, handleEditOperations] =
+    useOptimisticOperationsEditorState();
 
   return (
     <GraphiQLExplorer
@@ -157,6 +158,70 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       {...props}
     />
   );
+}
+
+/**
+ * Updating the operation state occurs after a delay, but we need the user to be
+ * able to type inputs consistently. We could debounce or throttle the input,
+ * but knowing at what rate to debounce or throttle is problematic. Instead, we
+ * do it at the fastest rate possible - we send the update and then we cache all
+ * further updates until we receive the response to our update.
+ */
+function useOptimisticOperationsEditorState(): ReturnType<
+  typeof useOperationsEditorState
+> {
+  // load the current editor tab state into the explorer
+  const [upstreamOperationsString, upstreamHandleEditOperations] =
+    useOperationsEditorState();
+
+  const lastStateRef = useRef({
+    /** The last thing that we sent upstream; we're expecting this back */
+    pending: null as string | null,
+    /** The last thing we received from upstream */
+    last: upstreamOperationsString,
+  });
+
+  const [operationsString, setOperationsText] = useState(
+    upstreamOperationsString,
+  );
+
+  useEffect(() => {
+    if (lastStateRef.current.last === upstreamOperationsString) {
+      // No change; ignore
+    } else {
+      lastStateRef.current.last = upstreamOperationsString;
+      if (lastStateRef.current.pending === null) {
+        // Gracefully accept update from upstream
+        setOperationsText(upstreamOperationsString);
+      } else if (lastStateRef.current.pending === upstreamOperationsString) {
+        // They received our update and sent it back to us - clear pending, and send next if appropriate
+        lastStateRef.current.pending = null;
+        if (upstreamOperationsString !== operationsString) {
+          // Change has occurred; upstream it
+          lastStateRef.current.pending = operationsString;
+          upstreamHandleEditOperations(operationsString);
+        }
+      } else {
+        // They got a different update; overwrite our local state (!!)
+        lastStateRef.current.pending = null;
+        setOperationsText(upstreamOperationsString);
+      }
+    }
+  }, [upstreamOperationsString, operationsString]);
+
+  const handleEditOperations = useCallback((operationsString: string) => {
+    setOperationsText(operationsString);
+    if (
+      lastStateRef.current.pending === null &&
+      lastStateRef.current.last !== operationsString
+    ) {
+      // No pending updates and change has occurred... send it upstream
+      lastStateRef.current.pending = operationsString;
+      upstreamHandleEditOperations(operationsString);
+    }
+  }, []);
+
+  return [operationsString, handleEditOperations];
 }
 
 export function explorerPlugin(
