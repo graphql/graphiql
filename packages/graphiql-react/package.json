@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
