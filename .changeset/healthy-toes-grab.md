@@ -2,4 +2,4 @@
 'monaco-graphql': patch
 ---
 
-Fix JSON diagnostics
+Fix JSON diagnostics for multiple editors
