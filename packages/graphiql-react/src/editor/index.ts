@@ -18,6 +18,7 @@ export {
   usePrettifyEditors,
   useEditorState,
   useOperationsEditorState,
+  useOptimisticState,
   useVariablesEditorState,
   useHeadersEditorState,
 } from './hooks';

@@ -18,6 +18,7 @@ export {
   useVariableEditor,
   useEditorState,
   useOperationsEditorState,
+  useOptimisticState,
   useVariablesEditorState,
   useHeadersEditorState,
   VariableEditor,
