@@ -396,8 +396,8 @@ export const useHeadersEditorState = (): [
  *
  * Use this as a wrapper around `useOperationsEditorState`,
  * `useVariablesEditorState`, or `useHeadersEditorState` if you anticipate
- * calling them with great frequency (e.g. due to mouse, keyboard or network
- * events).
+ * calling them with great frequency (due to, e.g., mouse, keyboard or
+ * network events).
  *
  * Example:
  *
