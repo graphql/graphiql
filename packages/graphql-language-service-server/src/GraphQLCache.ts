@@ -529,6 +529,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           query,
         };
       } catch {
+        console.log('parse error');
         return { ast: null, query };
       }
     });
@@ -664,14 +665,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schemaCacheKey = schemaKey as string;
 
       // Maybe use cache
-      if (this._schemaMap.has(schemaCacheKey)) {
-        schema = this._schemaMap.get(schemaCacheKey);
-        if (schema) {
-          return queryHasExtensions
-            ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-            : schema;
-        }
-      }
+      // if (this._schemaMap.has(schemaCacheKey)) {
+      //   schema = this._schemaMap.get(schemaCacheKey);
+      //   if (schema) {
+      //     return queryHasExtensions
+      //       ? this._extendSchema(schema, schemaPath, schemaCacheKey)
+      //       : schema;
+      //   }
+      // }
 
       // Read from disk
       schema = await projectConfig.getSchema();
@@ -691,9 +692,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schema = this._extendSchema(schema, schemaPath, schemaCacheKey);
     }
 
-    if (schemaCacheKey) {
-      this._schemaMap.set(schemaCacheKey, schema);
-    }
+    // if (schemaCacheKey) {
+    //   this._schemaMap.set(schemaCacheKey, schema);
+    // }
     return schema;
   };
 
