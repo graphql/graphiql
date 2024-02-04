@@ -24,9 +24,16 @@ const defaultMocks = {
     'node_modules/@babel/code-frame',
   ),
   'node_modules/@babel/highlight': mockfs.load('node_modules/@babel/highlight'),
-  '/tmp/graphql-language-service/test/projects': mockfs.directory({
-    mode: 0o777,
-  }),
+  'node_modules/jest-message-util': mockfs.load(
+    'node_modules/jest-message-util',
+  ),
+  // 'node_modules/jest-message-util/node_modules/stack-util': mockfs.load(
+  //   'node_modules/jest-message-util/node_modules/stack-util',
+  // ),
+  // 'node_modules/stack-util': mockfs.load('node_modules/stack-util'),
+  // '/tmp/graphql-language-service/test/projects': mockfs.directory({
+  //   mode: 0o777,
+  // }),
 };
 
 export class MockProject {

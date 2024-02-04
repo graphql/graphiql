@@ -5,8 +5,8 @@ jest.mock('../Logger');
 import { NoopLogger } from '../Logger';
 import mockfs from 'mock-fs';
 import { join } from 'node:path';
-import { MockLogger, MockProject } from './__utils__/MockProject';
-import { readFileSync, readdirSync } from 'node:fs';
+import { MockProject } from './__utils__/MockProject';
+import { readFileSync } from 'node:fs';
 
 describe('MessageProcessor with no config', () => {
   let messageProcessor: MessageProcessor;
@@ -168,14 +168,17 @@ describe('MessageProcessor with no config', () => {
   });
 });
 
-describe.only('project with simple config', () => {
+describe('project with simple config', () => {
   afterEach(() => {
     mockfs.restore();
   });
   it('caches files and schema with .graphql file config', async () => {
     const project = new MockProject({
       files: [
-        ['graphql.config.json', '{ "schema": "./schema.graphql" }'],
+        [
+          'graphql.config.json',
+          '{ "schema": "./schema.graphql", "documents": "./**.graphql" }',
+        ],
         [
           'schema.graphql',
           'type Query { foo: Foo }\n\ntype Foo { bar: String }',
@@ -196,20 +199,20 @@ describe.only('project with simple config', () => {
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
     expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
-    expect(Array.from(project.lsp._textDocumentCache)).toEqual([]);
+    expect(Array.from(project.lsp._textDocumentCache)[0][0]).toEqual(
+      project.uri('query.graphql'),
+    );
   });
   it('caches files and schema with a URL config', async () => {
     const project = new MockProject({
       files: [
         [
           'graphql.config.json',
-          '{ "schema": "https://rickandmortyapi.com/graphql" }',
+          '{ "schema": "https://rickandmortyapi.com/graphql", "documents": "./**.graphql" }',
         ],
-        [
-          'schema.graphql',
-          'type Query { foo: Foo }\n\ntype Foo { bar: String }',
-        ],
-        ['query.graphql', 'query { bar }'],
+
+        ['query.graphql', 'query { bar  }'],
+        ['fragments.graphql', 'fragment Ep on Episode { created }'],
       ],
     });
     await project.lsp.handleInitializeRequest({
@@ -221,6 +224,10 @@ describe.only('project with simple config', () => {
     });
     await project.lsp.handleDidOpenOrSaveNotification({
       textDocument: { uri: project.uri('query.graphql') },
+    });
+    await project.lsp.handleDidChangeNotification({
+      textDocument: { uri: project.uri('query.graphql'), version: 1 },
+      contentChanges: [{ text: 'query { episodes { results { ...Ep } }  }' }],
     });
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
@@ -231,5 +238,20 @@ describe.only('project with simple config', () => {
       ),
     );
     expect(file.toString('utf-8').length).toBeGreaterThan(0);
+    const hover = await project.lsp.handleHoverRequest({
+      position: {
+        character: 10,
+        line: 0,
+      },
+      textDocument: { uri: project.uri('query.graphql') },
+    });
+    expect(project.lsp._textDocumentCache.size).toEqual(3);
+
+    expect(hover.contents).toContain('Get the list of all episodes');
+    const definitions = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('query.graphql') },
+      position: { character: 33, line: 0 },
+    });
+    expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
   });
 });
