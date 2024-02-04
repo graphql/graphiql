@@ -5,6 +5,8 @@ jest.mock('../Logger');
 import { NoopLogger } from '../Logger';
 import mockfs from 'mock-fs';
 import { join } from 'node:path';
+import { MockLogger, MockProject } from './__utils__/MockProject';
+import { readFileSync, readdirSync } from 'node:fs';
 
 describe('MessageProcessor with no config', () => {
   let messageProcessor: MessageProcessor;
@@ -163,5 +165,71 @@ describe('MessageProcessor with no config', () => {
     //     /GraphQL Config file is not available in the provided config directory/,
     //   ),
     // );
+  });
+});
+
+describe.only('project with simple config', () => {
+  afterEach(() => {
+    mockfs.restore();
+  });
+  it('caches files and schema with .graphql file config', async () => {
+    const project = new MockProject({
+      files: [
+        ['graphql.config.json', '{ "schema": "./schema.graphql" }'],
+        [
+          'schema.graphql',
+          'type Query { foo: Foo }\n\ntype Foo { bar: String }',
+        ],
+        ['query.graphql', 'query { bar }'],
+      ],
+    });
+    await project.lsp.handleInitializeRequest({
+      rootPath: project.root,
+      rootUri: project.root,
+      capabilities: {},
+      processId: 200,
+      workspaceFolders: null,
+    });
+    await project.lsp.handleDidOpenOrSaveNotification({
+      textDocument: { uri: project.uri('query.graphql') },
+    });
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
+    expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
+    expect(Array.from(project.lsp._textDocumentCache)).toEqual([]);
+  });
+  it('caches files and schema with a URL config', async () => {
+    const project = new MockProject({
+      files: [
+        [
+          'graphql.config.json',
+          '{ "schema": "https://rickandmortyapi.com/graphql" }',
+        ],
+        [
+          'schema.graphql',
+          'type Query { foo: Foo }\n\ntype Foo { bar: String }',
+        ],
+        ['query.graphql', 'query { bar }'],
+      ],
+    });
+    await project.lsp.handleInitializeRequest({
+      rootPath: project.root,
+      rootUri: project.root,
+      capabilities: {},
+      processId: 200,
+      workspaceFolders: null,
+    });
+    await project.lsp.handleDidOpenOrSaveNotification({
+      textDocument: { uri: project.uri('query.graphql') },
+    });
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
+    expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
+    const file = readFileSync(
+      join(
+        '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql',
+      ),
+    );
+    expect(file.toString('utf-8').length).toBeGreaterThan(0);
   });
 });

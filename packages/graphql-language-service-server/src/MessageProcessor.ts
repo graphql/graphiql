@@ -7,8 +7,7 @@
  *
  */
 
-import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { URI } from 'vscode-uri';
@@ -147,7 +146,7 @@ export class MessageProcessor {
     }
 
     if (!existsSync(this._tmpDirBase)) {
-      void mkdirp(this._tmpDirBase);
+      mkdirSync(this._tmpDirBase);
     }
   }
   get connection(): Connection {
@@ -972,7 +971,9 @@ export class MessageProcessor {
     const basePath = path.join(this._tmpDirBase, workspaceName);
     let projectTmpPath = path.join(basePath, 'projects', project.name);
     if (!existsSync(projectTmpPath)) {
-      void mkdirp(projectTmpPath);
+      mkdirSync(projectTmpPath, {
+        recursive: true,
+      });
     }
     if (appendPath) {
       projectTmpPath = path.join(projectTmpPath, appendPath);
