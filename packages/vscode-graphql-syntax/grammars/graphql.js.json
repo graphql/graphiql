@@ -8,8 +8,8 @@
       "end": "\\)",
       "patterns": [
         {
-          "begin": "[`']",
-          "end": "[`']",
+          "begin": "(`|')",
+          "end": "(`|')",
           "beginCaptures": {
             "0": {
               "name": "punctuation.definition.string.template.begin.js"
@@ -30,7 +30,7 @@
     },
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*)|(/\\* GraphQL \\*/))\\s*[`']",
+      "begin": "\\s*+(?:(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*)|(/\\* GraphQL \\*/))\\s*(`|')",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
@@ -48,7 +48,7 @@
           "name": "punctuation.definition.string.template.begin.js"
         }
       },
-      "end": "[`']",
+      "end": "(`|')",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"
@@ -63,7 +63,7 @@
     {
       "name": "taggedTemplates",
       "contentName": "meta.embedded.block.graphql",
-      "begin": "[`'](#graphql)",
+      "begin": "(`|')(#graphql)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.string.template.begin.js"
@@ -72,7 +72,7 @@
           "name": "comment.line.graphql.js"
         }
       },
-      "end": "[`']",
+      "end": "(`|')",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"
