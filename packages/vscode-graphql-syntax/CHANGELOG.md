@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.2
+
+### Patch Changes
+
+- [#3529](https://github.com/graphql/graphiql/pull/3529) [`a38152ef`](https://github.com/graphql/graphiql/commit/a38152ef1248a480d5cad384780f82214a84f16d) Thanks [@acao](https://github.com/acao)! - fix triple double quote comment syntax by disabling inline double quote js strings for now
+
 ## 1.3.1
 
 ### Patch Changes
