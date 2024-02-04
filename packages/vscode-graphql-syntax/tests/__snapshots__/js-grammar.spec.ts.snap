@@ -112,6 +112,10 @@ const graphql = graphql                |
 (                                      | 
 \`                                      | meta.embedded.block.graphql punctuation.definition.string.template.begin.js
                                        | meta.embedded.block.graphql
+"""                                    | meta.embedded.block.graphql comment.line.graphql.js punctuation.whitespace.comment.leading.graphql
+ this is a comment                     | meta.embedded.block.graphql comment.line.graphql.js
+"""                                    | meta.embedded.block.graphql comment.line.graphql.js
+                                       | meta.embedded.block.graphql
 query                                  | meta.embedded.block.graphql keyword.operation.graphql
                                        | meta.embedded.block.graphql meta.selectionset.graphql
 {                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
@@ -322,6 +326,10 @@ const queryWithLeadingComment =        |
 query                                  | meta.embedded.block.graphql keyword.operation.graphql
                                        | meta.embedded.block.graphql meta.selectionset.graphql
 {                                      | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                       | meta.embedded.block.graphql meta.selectionset.graphql
+"""                                    | meta.embedded.block.graphql meta.selectionset.graphql comment.line.graphql.js punctuation.whitespace.comment.leading.graphql
+ this is a comment                     | meta.embedded.block.graphql meta.selectionset.graphql comment.line.graphql.js
+"""                                    | meta.embedded.block.graphql meta.selectionset.graphql comment.line.graphql.js
                                        | meta.embedded.block.graphql meta.selectionset.graphql
 user                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
 (                                      | meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql

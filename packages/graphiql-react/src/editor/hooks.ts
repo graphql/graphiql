@@ -3,7 +3,7 @@ import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
@@ -388,3 +388,76 @@ export const useHeadersEditorState = (): [
 ] => {
   return useEditorState('header');
 };
+
+/**
+ * Implements an optimistic caching strategy around a useState-like hook in
+ * order to prevent loss of updates when the hook has an internal delay and the
+ * update function is called again before the updated state is sent out.
+ *
+ * Use this as a wrapper around `useOperationsEditorState`,
+ * `useVariablesEditorState`, or `useHeadersEditorState` if you anticipate
+ * calling them with great frequency (due to, for instance, mouse, keyboard, or
+ * network events).
+ *
+ * Example:
+ *
+ * ```ts
+ * const [operationsString, handleEditOperations] =
+ *   useOptimisticState(useOperationsEditorState());
+ * ```
+ */
+export function useOptimisticState([
+  upstreamState,
+  upstreamSetState,
+]: ReturnType<typeof useEditorState>): ReturnType<typeof useEditorState> {
+  const lastStateRef = useRef({
+    /** The last thing that we sent upstream; we're expecting this back */
+    pending: null as string | null,
+    /** The last thing we received from upstream */
+    last: upstreamState,
+  });
+
+  const [state, setOperationsText] = useState(upstreamState);
+
+  useEffect(() => {
+    if (lastStateRef.current.last === upstreamState) {
+      // No change; ignore
+    } else {
+      lastStateRef.current.last = upstreamState;
+      if (lastStateRef.current.pending === null) {
+        // Gracefully accept update from upstream
+        setOperationsText(upstreamState);
+      } else if (lastStateRef.current.pending === upstreamState) {
+        // They received our update and sent it back to us - clear pending, and
+        // send next if appropriate
+        lastStateRef.current.pending = null;
+        if (upstreamState !== state) {
+          // Change has occurred; upstream it
+          lastStateRef.current.pending = state;
+          upstreamSetState(state);
+        }
+      } else {
+        // They got a different update; overwrite our local state (!!)
+        lastStateRef.current.pending = null;
+        setOperationsText(upstreamState);
+      }
+    }
+  }, [upstreamState, state, upstreamSetState]);
+
+  const setState = useCallback(
+    (newState: string) => {
+      setOperationsText(newState);
+      if (
+        lastStateRef.current.pending === null &&
+        lastStateRef.current.last !== newState
+      ) {
+        // No pending updates and change has occurred... send it upstream
+        lastStateRef.current.pending = newState;
+        upstreamSetState(newState);
+      }
+    },
+    [upstreamSetState],
+  );
+
+  return useMemo(() => [state, setState], [state, setState]);
+}

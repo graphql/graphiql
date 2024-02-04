@@ -4,6 +4,7 @@ import {
   useExecutionContext,
   useSchemaContext,
   useOperationsEditorState,
+  useOptimisticState,
 } from '@graphiql/react';
 import {
   Explorer as GraphiQLExplorer,
@@ -139,7 +140,9 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
   );
 
   // load the current editor tab state into the explorer
-  const [operationsString, handleEditOperations] = useOperationsEditorState();
+  const [operationsString, handleEditOperations] = useOptimisticState(
+    useOperationsEditorState(),
+  );
 
   return (
     <GraphiQLExplorer
