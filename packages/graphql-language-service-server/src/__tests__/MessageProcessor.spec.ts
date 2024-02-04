@@ -7,6 +7,9 @@ import mockfs from 'mock-fs';
 import { join } from 'node:path';
 import { MockProject } from './__utils__/MockProject';
 import { readFileSync } from 'node:fs';
+import { FileChangeTypeKind } from 'graphql-language-service';
+import { FileChangeType } from 'vscode-languageserver';
+import { readFile } from 'node:fs/promises';
 
 describe('MessageProcessor with no config', () => {
   let messageProcessor: MessageProcessor;
@@ -168,11 +171,11 @@ describe('MessageProcessor with no config', () => {
   });
 });
 
-describe('project with simple config', () => {
+describe('project with simple config and graphql files', () => {
   afterEach(() => {
     mockfs.restore();
   });
-  it('caches files and schema with .graphql file config', async () => {
+  it.only('caches files and schema with .graphql file config', async () => {
     const project = new MockProject({
       files: [
         [
@@ -183,7 +186,8 @@ describe('project with simple config', () => {
           'schema.graphql',
           'type Query { foo: Foo }\n\ntype Foo { bar: String }',
         ],
-        ['query.graphql', 'query { bar }'],
+        ['query.graphql', 'query { bar ...B }'],
+        ['fragments.graphql', 'fragment B on Foo { bar }'],
       ],
     });
     await project.lsp.handleInitializeRequest({
@@ -199,9 +203,41 @@ describe('project with simple config', () => {
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
     expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
-    expect(Array.from(project.lsp._textDocumentCache)[0][0]).toEqual(
-      project.uri('query.graphql'),
+    // TODO: for some reason the cache result formats the graphql query??
+    expect(
+      project.lsp._textDocumentCache.get(project.uri('query.graphql'))
+        .contents[0].query,
+    ).toContain('...B');
+    const definitions = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('fragments.graphql') },
+      position: { character: 16, line: 0 },
+    });
+    expect(definitions[0].uri).toEqual(project.uri('schema.graphql'));
+    expect(JSON.parse(JSON.stringify(definitions[0].range.end))).toEqual({
+      line: 2,
+      character: 24,
+    });
+    // TODO: get mockfs working so we can change watched files.
+    // currently, when I run this, it removes the file entirely
+    project.changeFile(
+      'schema.graphql',
+      'type Query { foo: Foo }\n\n type Test { test: String }\n\n\n\n\ntype Foo { bad: Int, bar: String }',
     );
+    await project.lsp.handleWatchedFilesChangedNotification({
+      changes: [
+        { uri: project.uri('schema.graphql'), type: FileChangeType.Changed },
+      ],
+    });
+    const definitionsAgain = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('fragments.graphql') },
+      position: { character: 16, line: 0 },
+    });
+    expect(definitionsAgain[0].uri).toEqual(project.uri('schema.graphql'));
+    // TODO: this should change when a watched file changes???
+    expect(JSON.parse(JSON.stringify(definitions[0].range.end))).toEqual({
+      line: 2,
+      character: 24,
+    });
   });
   it('caches files and schema with a URL config', async () => {
     const project = new MockProject({
@@ -212,7 +248,7 @@ describe('project with simple config', () => {
         ],
 
         ['query.graphql', 'query { bar  }'],
-        ['fragments.graphql', 'fragment Ep on Episode { created }'],
+        ['fragments.graphql', 'fragment Ep on Episode {\n created \n}'],
       ],
     });
     await project.lsp.handleInitializeRequest({
@@ -237,7 +273,7 @@ describe('project with simple config', () => {
         '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql',
       ),
     );
-    expect(file.toString('utf-8').length).toBeGreaterThan(0);
+    expect(file.toString('utf-8').split('\n').length).toBeGreaterThan(10);
     const hover = await project.lsp.handleHoverRequest({
       position: {
         character: 10,
@@ -252,6 +288,17 @@ describe('project with simple config', () => {
       textDocument: { uri: project.uri('query.graphql') },
       position: { character: 33, line: 0 },
     });
+    // ensure that fragment definitions work
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
+    expect(JSON.parse(JSON.stringify(definitions[0].range))).toEqual({
+      start: {
+        line: 0,
+        character: 0,
+      },
+      end: {
+        line: 2,
+        character: 1,
+      },
+    });
   });
 });

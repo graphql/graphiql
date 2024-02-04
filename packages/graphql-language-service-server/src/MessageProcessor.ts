@@ -146,7 +146,7 @@ export class MessageProcessor {
     }
 
     if (!existsSync(this._tmpDirBase)) {
-      mkdirSync(this._tmpDirBase);
+      void mkdirSync(this._tmpDirBase);
     }
   }
   get connection(): Connection {
@@ -671,9 +671,13 @@ export class MessageProcessor {
         ) {
           const { uri } = change;
 
-          const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
+          const text = await readFile(URI.parse(uri).fsPath, 'utf-8');
           const contents = this._parser(text, uri);
-
+          await this._invalidateCache(
+            { uri, version: 0 },
+            URI.parse(uri).fsPath,
+            contents,
+          );
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
 
@@ -720,16 +724,8 @@ export class MessageProcessor {
           }
         }
         if (change.type === FileChangeTypeKind.Deleted) {
-          await this._graphQLCache.updateFragmentDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().dirpath,
-            change.uri,
-            false,
-          );
-          await this._graphQLCache.updateObjectTypeDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().dirpath,
-            change.uri,
-            false,
-          );
+          await this._updateFragmentDefinition(change.uri, []);
+          await this._updateObjectTypeDefinition(change.uri, []);
         }
       }),
     );
@@ -1132,9 +1128,15 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
-
-    await this._graphQLCache.updateFragmentDefinition(rootDir, uri, contents);
+    const project = this._graphQLCache.getProjectForFile(uri);
+    if (project) {
+      const cacheKey = this._graphQLCache._cacheKeyForProject(project);
+      await this._graphQLCache.updateFragmentDefinition(
+        cacheKey,
+        uri,
+        contents,
+      );
+    }
   }
 
   private async _updateSchemaIfChanged(
@@ -1189,9 +1191,16 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
+    const project = await this._graphQLCache.getProjectForFile(uri);
+    if (project) {
+      const cacheKey = this._graphQLCache._cacheKeyForProject(project);
 
-    await this._graphQLCache.updateObjectTypeDefinition(rootDir, uri, contents);
+      await this._graphQLCache.updateObjectTypeDefinition(
+        cacheKey,
+        uri,
+        contents,
+      );
+    }
   }
 
   private _getCachedDocument(uri: string): CachedDocumentType | null {
