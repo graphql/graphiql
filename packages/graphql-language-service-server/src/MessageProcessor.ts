@@ -314,7 +314,7 @@ export class MessageProcessor {
 
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
-  ): Promise<PublishDiagnosticsParams | null> {
+  ): Promise<PublishDiagnosticsParams> {
     /**
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
@@ -327,7 +327,7 @@ export class MessageProcessor {
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
         if (this._isGraphQLConfigMissing === true && !isGraphQLConfigFile) {
-          return null;
+          return { uri: params.textDocument.uri, diagnostics: [] };
         }
         // then initial call to update graphql config
         await this._updateGraphQLConfig();
@@ -360,13 +360,10 @@ export class MessageProcessor {
       contents = this._parser(text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
-    } else {
-      if (isGraphQLConfigFile) {
-        this._logger.info('updating graphql config');
-        await this._updateGraphQLConfig();
-        return { uri, diagnostics: [] };
-      }
-      return null;
+    } else if (isGraphQLConfigFile) {
+      this._logger.info('updating graphql config');
+      await this._updateGraphQLConfig();
+      return { uri, diagnostics: [] };
     }
     if (!this._graphQLCache) {
       return { uri, diagnostics };
