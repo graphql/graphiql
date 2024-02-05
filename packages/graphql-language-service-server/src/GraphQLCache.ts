@@ -424,32 +424,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return patterns;
   };
 
-  async _updateGraphQLFileListCache(
-    graphQLFileMap: Map<Uri, GraphQLFileInfo>,
-    metrics: { size: number; mtime: number },
-    filePath: Uri,
-    exists: boolean,
-  ): Promise<Map<Uri, GraphQLFileInfo>> {
-    const fileAndContent = exists
-      ? await this.promiseToReadGraphQLFile(filePath)
-      : null;
-
-    const existingFile = graphQLFileMap.get(filePath);
-
-    // 3 cases for the cache invalidation: create/modify/delete.
-    // For create/modify, swap the existing entry if available;
-    // otherwise, just push in the new entry created.
-    // For delete, check `exists` and splice the file out.
-    if (existingFile && !exists) {
-      graphQLFileMap.delete(filePath);
-    } else if (fileAndContent) {
-      const graphQLFileInfo = { ...fileAndContent, ...metrics };
-      graphQLFileMap.set(filePath, graphQLFileInfo);
-    }
-
-    return graphQLFileMap;
-  }
-
   async updateFragmentDefinition(
     rootDir: Uri,
     filePath: Uri,
@@ -487,32 +461,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
           }
         }
       }
-    }
-  }
-
-  async updateFragmentDefinitionCache(
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ): Promise<void> {
-    const fileAndContent = exists
-      ? await this.promiseToReadGraphQLFile(filePath)
-      : null;
-    // In the case of fragment definitions, the cache could just map the
-    // definition name to the parsed ast, whether or not it existed
-    // previously.
-    // For delete, remove the entry from the set.
-    if (!exists) {
-      const cache = this._fragmentDefinitionsCache.get(rootDir);
-      if (cache) {
-        cache.delete(filePath);
-      }
-    } else if (fileAndContent?.queries) {
-      await this.updateFragmentDefinition(
-        rootDir,
-        filePath,
-        fileAndContent.queries,
-      );
     }
   }
 
@@ -664,18 +612,17 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (schemaPath && schemaKey) {
       schemaCacheKey = schemaKey as string;
 
-      // Maybe use cache
-      // if (this._schemaMap.has(schemaCacheKey)) {
-      //   schema = this._schemaMap.get(schemaCacheKey);
-      //   if (schema) {
-      //     return queryHasExtensions
-      //       ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-      //       : schema;
-      //   }
-      // }
-
       // Read from disk
       schema = await projectConfig.getSchema();
+
+      if (this._schemaMap.has(schemaCacheKey)) {
+        schema = this._schemaMap.get(schemaCacheKey);
+        if (schema) {
+          return queryHasExtensions
+            ? this._extendSchema(schema, schemaPath, schemaCacheKey)
+            : schema;
+        }
+      }
     }
 
     const customDirectives = projectConfig?.extensions?.customDirectives;

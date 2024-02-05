@@ -70,12 +70,6 @@ export interface GraphQLCache {
     contents: CachedContent[],
   ) => Promise<void>;
 
-  updateObjectTypeDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
   getFragmentDependencies: (
     query: string,
     fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
@@ -95,13 +89,6 @@ export interface GraphQLCache {
     filePath: Uri,
     contents: CachedContent[],
   ) => Promise<void>;
-
-  updateFragmentDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
   getSchema: (
     appName?: string,
     queryHasExtensions?: boolean,
