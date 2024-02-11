@@ -130,7 +130,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   getProjectForFile = (uri: string): GraphQLProjectConfig | void => {
     try {
-      return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
+      const project = this._graphQLConfig.getProjectForFile(
+        URI.parse(uri).fsPath,
+      );
+      if (!project.documents) {
+        this._logger.warn(
+          `No documents configured for project ${project.name}. Many features will not work correctly.`,
+        );
+      }
+      return project;
     } catch (err) {
       this._logger.error(
         `there was an error loading the project config for this file ${err}`,
@@ -502,32 +510,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
           }
         }
       }
-    }
-  }
-
-  async updateObjectTypeDefinitionCache(
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ): Promise<void> {
-    const fileAndContent = exists
-      ? await this.promiseToReadGraphQLFile(filePath)
-      : null;
-    // In the case of type definitions, the cache could just map the
-    // definition name to the parsed ast, whether or not it existed
-    // previously.
-    // For delete, remove the entry from the set.
-    if (!exists) {
-      const cache = this._typeDefinitionsCache.get(rootDir);
-      if (cache) {
-        cache.delete(filePath);
-      }
-    } else if (fileAndContent?.queries) {
-      await this.updateObjectTypeDefinition(
-        rootDir,
-        filePath,
-        fileAndContent.queries,
-      );
     }
   }
 

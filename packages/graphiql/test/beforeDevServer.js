@@ -9,12 +9,19 @@ const express = require('express');
 const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
 const schema = require('./schema');
-const { schema: badSchema } = require('./bad-schema');
+const { schema: badSchema, changedSchema } = require('./bad-schema');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
   app.post('/graphql', createHandler({ schema }));
   app.get('/graphql', createHandler({ schema }));
+
+  app.post('/changed/graphql', createHandler({ schema: changedSchema }));
+
+  app.post('/bad/graphql', (_req, res, next) => {
+    res.json({ data: badSchema });
+    next();
+  });
 
   app.post('/bad/graphql', (_req, res, next) => {
     res.json({ data: badSchema });

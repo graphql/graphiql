@@ -74,6 +74,8 @@
     "test:ci": "yarn build && jest --coverage && yarn vitest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
+    "test:spec": "TEST_ENV=spec yarn jest --testPathIgnorePatterns test.ts",
+    "test:unit": "yarn jest --testPathIgnorePatterns spec.ts",
     "tsc": "tsc --build",
     "vitest": "yarn wsrun -p -m test",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack"

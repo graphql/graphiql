@@ -7,7 +7,7 @@
  *
  */
 
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { URI } from 'vscode-uri';
@@ -71,6 +71,7 @@ import {
 import type { LoadConfigOptions } from './types';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
+  DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
@@ -242,12 +243,13 @@ export class MessageProcessor {
         this._graphQLCache,
         this._logger,
       );
-      if (this._graphQLConfig || this._graphQLCache?.getGraphQLConfig) {
-        const config =
-          this._graphQLConfig ?? this._graphQLCache.getGraphQLConfig();
+      const config = this._graphQLCache.getGraphQLConfig();
+      if (config) {
+        this._graphQLConfig = config;
         await this._cacheAllProjectFiles(config);
+        this._isInitialized = true;
+        this._isGraphQLConfigMissing = false;
       }
-      this._isInitialized = true;
     } catch (err) {
       this._handleConfigError({ err });
     }
@@ -939,19 +941,28 @@ export class MessageProcessor {
     fileUri: UnnormalizedTypeDefPointer,
     project: GraphQLProjectConfig,
   ) {
-    const uri = fileUri.toString();
+    try {
+      // const parsedUri = URI.file(fileUri.toString());
+      // console.log(readdirSync(project.dirpath), fileUri.toString());
+      // @ts-expect-error
+      const matches = await glob(fileUri, {
+        cwd: project.dirpath,
+        absolute: true,
+      });
+      const uri = matches[0];
+      let version = 1;
+      if (uri) {
+        const schemaUri = URI.file(uri).toString();
+        const schemaDocument = this._getCachedDocument(schemaUri);
 
-    const isFileUri = existsSync(uri);
-    let version = 1;
-    if (isFileUri) {
-      const schemaUri = URI.file(path.join(project.dirpath, uri)).toString();
-      const schemaDocument = this._getCachedDocument(schemaUri);
-
-      if (schemaDocument) {
-        version = schemaDocument.version++;
+        if (schemaDocument) {
+          version = schemaDocument.version++;
+        }
+        const schemaText = await readFile(uri, 'utf8');
+        await this._cacheSchemaText(schemaUri, schemaText, version);
       }
-      const schemaText = readFileSync(uri, 'utf8');
-      await this._cacheSchemaText(schemaUri, schemaText, version);
+    } catch {
+      // this._logger.error(String(err));
     }
   }
   private _getTmpProjectPath(
@@ -998,9 +1009,15 @@ export class MessageProcessor {
       this?._settings?.cacheSchemaFileForLookup ??
       true;
     const unwrappedSchema = this._unwrapProjectSchema(project);
-    const sdlOnly = unwrappedSchema.every(
-      schemaEntry =>
-        schemaEntry.endsWith('.graphql') || schemaEntry.endsWith('.gql'),
+    const allExtensions = [
+      ...DEFAULT_SUPPORTED_EXTENSIONS,
+      ...DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+    ];
+    // only local schema lookups if all of the schema entries are local files that we can resolve
+    const sdlOnly = unwrappedSchema.every(schemaEntry =>
+      allExtensions.some(
+        ext => !schemaEntry.startsWith('http') && schemaEntry.endsWith(ext),
+      ),
     );
     // if we are caching the config schema, and it isn't a .graphql file, cache it
     if (cacheSchemaFileForLookup && !sdlOnly) {
