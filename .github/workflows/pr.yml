@@ -86,8 +86,8 @@ jobs:
           key: modules-${{ github.sha }}
       - run: yarn pretty-check
 
-  jest-unit:
-    name: Jest Unit Tests
+  jest:
+    name: Jest Unit & Integration Tests
     runs-on: ubuntu-latest
     needs: [install]
     steps:
@@ -101,29 +101,7 @@ jobs:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - run: yarn test:unit --coverage
-      - uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          fail_ci_if_error: true
-          verbose: true
-  jest-spec:
-    name: Jest Integration Tests
-    runs-on: ubuntu-latest
-    needs: [install]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - id: cache-modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
-      - run: yarn test:spec --coverage
+      - run: yarn test --coverage
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
