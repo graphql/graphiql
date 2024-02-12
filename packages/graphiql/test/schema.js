@@ -230,115 +230,119 @@ And we have a cool logo:
 ![](/images/logo.svg)
 `.trim();
 
-const defaultFields = {
-  test: {
-    type: TestType,
-    description: '`test` field from `Test` type.',
-    resolve: () => ({}),
-  },
-  deferrable: {
-    type: DeferrableObject,
-    resolve: () => ({}),
-  },
-  streamable: {
-    type: new GraphQLList(Greeting),
-    args: {
-      delay: delayArgument(300),
+const TestType = new GraphQLObjectType({
+  name: 'Test',
+  description: 'Test type for testing\n New line works',
+  fields: () => ({
+    test: {
+      type: TestType,
+      description: '`test` field from `Test` type.',
+      resolve: () => ({}),
     },
-    resolve: async function* sayHiInSomeLanguages(_value, args) {
-      let i = 0;
-      for (const hi of [
-        'Hi',
-        '你好',
-        'Hola',
-        'أهلاً',
-        'Bonjour',
-        'سلام',
-        '안녕',
-        'Ciao',
-        'हेलो',
-        'Здорово',
-      ]) {
-        if (i > 2) {
-          await sleep(args.delay);
+    deferrable: {
+      type: DeferrableObject,
+      resolve: () => ({}),
+    },
+    streamable: {
+      type: new GraphQLList(Greeting),
+      args: {
+        delay: delayArgument(300),
+      },
+      resolve: async function* sayHiInSomeLanguages(_value, args) {
+        let i = 0;
+        for (const hi of [
+          'Hi',
+          '你好',
+          'Hola',
+          'أهلاً',
+          'Bonjour',
+          'سلام',
+          '안녕',
+          'Ciao',
+          'हेलो',
+          'Здорово',
+        ]) {
+          if (i > 2) {
+            await sleep(args.delay);
+          }
+          i++;
+          yield { text: hi };
         }
-        i++;
-        yield { text: hi };
-      }
-    },
-  },
-  person: {
-    type: Person,
-    resolve: () => ({ name: 'Mark' }),
-  },
-  longDescriptionType: {
-    type: TestType,
-    description: longDescription,
-    resolve: () => ({}),
-  },
-  union: {
-    type: TestUnion,
-    resolve: () => ({}),
-  },
-  id: {
-    type: GraphQLID,
-    description: 'id field from Test type.',
-    resolve: () => 'abc123',
-  },
-  isTest: {
-    type: GraphQLBoolean,
-    description: 'Is this a test schema? Sure it is.',
-    resolve: () => true,
-  },
-  image: {
-    type: GraphQLString,
-    description: 'field that returns an image URI.',
-    resolve: () => '/images/logo.svg',
-  },
-  deprecatedField: {
-    type: TestType,
-    description: 'This field is an example of a deprecated field',
-    deprecationReason: 'No longer in use, try `test` instead.',
-  },
-  alsoDeprecated: {
-    type: TestType,
-    description:
-      'This field is an example of a deprecated field with markdown in its deprecation reason',
-    deprecationReason: longDescription,
-  },
-  hasArgs: {
-    type: GraphQLString,
-    resolve(_value, args) {
-      return JSON.stringify(args);
-    },
-    args: {
-      string: { type: GraphQLString, description: 'A string' },
-      int: { type: GraphQLInt },
-      float: { type: GraphQLFloat },
-      boolean: { type: GraphQLBoolean },
-      id: { type: GraphQLID },
-      enum: { type: TestEnum },
-      object: { type: TestInputObject },
-      defaultValue: {
-        type: GraphQLString,
-        defaultValue: 'test default value',
-      },
-      // List
-      listString: { type: new GraphQLList(GraphQLString) },
-      listInt: { type: new GraphQLList(GraphQLInt) },
-      listFloat: { type: new GraphQLList(GraphQLFloat) },
-      listBoolean: { type: new GraphQLList(GraphQLBoolean) },
-      listID: { type: new GraphQLList(GraphQLID) },
-      listEnum: { type: new GraphQLList(TestEnum) },
-      listObject: { type: new GraphQLList(TestInputObject) },
-      deprecatedArg: {
-        type: GraphQLString,
-        deprecationReason: 'deprecated argument',
-        description: 'Hello!',
       },
     },
-  },
-};
+    person: {
+      type: Person,
+      resolve: () => ({ name: 'Mark' }),
+    },
+    longDescriptionType: {
+      type: TestType,
+      description: longDescription,
+      resolve: () => ({}),
+    },
+    union: {
+      type: TestUnion,
+      resolve: () => ({}),
+    },
+    id: {
+      type: GraphQLID,
+      description: 'id field from Test type.',
+      resolve: () => 'abc123',
+    },
+    isTest: {
+      type: GraphQLBoolean,
+      description: 'Is this a test schema? Sure it is.',
+      resolve: () => true,
+    },
+    image: {
+      type: GraphQLString,
+      description: 'field that returns an image URI.',
+      resolve: () => '/images/logo.svg',
+    },
+    deprecatedField: {
+      type: TestType,
+      description: 'This field is an example of a deprecated field',
+      deprecationReason: 'No longer in use, try `test` instead.',
+    },
+    alsoDeprecated: {
+      type: TestType,
+      description:
+        'This field is an example of a deprecated field with markdown in its deprecation reason',
+      deprecationReason: longDescription,
+    },
+    hasArgs: {
+      type: GraphQLString,
+      resolve(_value, args) {
+        return JSON.stringify(args);
+      },
+      args: {
+        string: { type: GraphQLString, description: 'A string' },
+        int: { type: GraphQLInt },
+        float: { type: GraphQLFloat },
+        boolean: { type: GraphQLBoolean },
+        id: { type: GraphQLID },
+        enum: { type: TestEnum },
+        object: { type: TestInputObject },
+        defaultValue: {
+          type: GraphQLString,
+          defaultValue: 'test default value',
+        },
+        // List
+        listString: { type: new GraphQLList(GraphQLString) },
+        listInt: { type: new GraphQLList(GraphQLInt) },
+        listFloat: { type: new GraphQLList(GraphQLFloat) },
+        listBoolean: { type: new GraphQLList(GraphQLBoolean) },
+        listID: { type: new GraphQLList(GraphQLID) },
+        listEnum: { type: new GraphQLList(TestEnum) },
+        listObject: { type: new GraphQLList(TestInputObject) },
+        deprecatedArg: {
+          type: GraphQLString,
+          deprecationReason: 'deprecated argument',
+          description: 'Hello!',
+        },
+      },
+    },
+  }),
+});
 
 const TestMutationType = new GraphQLObjectType({
   name: 'MutationType',
@@ -377,16 +381,6 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-const getTestType = (fields = defaultFields) => {
-  return new GraphQLObjectType({
-    name: 'Test',
-    description: 'Test type for testing\n New line works',
-    fields: () => fields,
-  });
-};
-
-const TestType = getTestType();
-
 const myTestSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
@@ -394,26 +388,4 @@ const myTestSchema = new GraphQLSchema({
   description: 'This is a test schema for GraphiQL',
 });
 
-const ChangedTestType = getTestType({
-  ...defaultFields,
-  newField: {
-    type: TestType,
-    resolve: () => ({}),
-  },
-  isTest: {
-    type: GraphQLString,
-    description: 'Is this a test schema? Sure it is.',
-    resolve: () => true,
-  },
-});
-
-const myChangedTestSchema = new GraphQLSchema({
-  query: ChangedTestType,
-  mutation: TestMutationType,
-  subscription: TestSubscriptionType,
-  description: 'This is a changed test schema for GraphiQL',
-});
-
 module.exports = myTestSchema;
-module.exports.changedSchema = myChangedTestSchema;
-module.exports.defaultFields = defaultFields;

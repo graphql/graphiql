@@ -73,7 +73,6 @@ describe('MessageProcessor with no config', () => {
     });
     expect(project.lsp._isInitialized).toEqual(true);
     expect(project.lsp._isGraphQLConfigMissing).toEqual(false);
-
     expect(project.lsp._graphQLCache).toBeDefined();
   });
 });
