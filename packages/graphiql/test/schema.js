@@ -73,6 +73,8 @@ const TestInputObject = new GraphQLInputObjectType({
   }),
 });
 
+module.exports.testInputObject = TestInputObject;
+
 const TestInterface = new GraphQLInterfaceType({
   name: 'TestInterface',
   description: 'Test interface.',
@@ -344,6 +346,23 @@ const TestType = new GraphQLObjectType({
   }),
 });
 
+module.exports.testType = TestType;
+
+const ChangedSchema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      ...TestType.fields,
+      isTest: {
+        type: GraphQLString,
+        description: 'This is changed to a string field',
+      },
+    },
+  }),
+});
+
+module.exports.changedSchema = ChangedSchema;
+
 const TestMutationType = new GraphQLObjectType({
   name: 'MutationType',
   description: 'This is a simple mutation type',
@@ -388,4 +407,4 @@ const myTestSchema = new GraphQLSchema({
   description: 'This is a test schema for GraphiQL',
 });
 
-module.exports = myTestSchema;
+module.exports.schema = myTestSchema;
