@@ -1,0 +1,151 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.markdown.codeblock grammar > should tokenize a simple markdown file 1`] = `
+# this is an MD file                                                          | 
+                                                                              | 
+It would be a shame if the word \`graphql\` accidentally triggered highlighting | 
+Looks like it doesn't though! good                                            | 
+                                                                              | 
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+graphql                                                                       | markup.fenced_code.block.markdown fenced_code.block.language.markdown
+query                                                                         | markup.fenced_code.block.markdown meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+}                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+                                                                              | 
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+gql                                                                           | markup.fenced_code.block.markdown fenced_code.block.language.markdown
+# comment                                                                     | markup.fenced_code.block.markdown meta.embedded.block.graphql comment.line.graphql.js
+query                                                                         | markup.fenced_code.block.markdown meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+}                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+                                                                              | 
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+GraphQL                                                                       | markup.fenced_code.block.markdown fenced_code.block.language.markdown
+query                                                                         | markup.fenced_code.block.markdown meta.embedded.block.graphql keyword.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+something                                                                     | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql
+@directive                                                                    | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql entity.name.function.directive.graphql
+(                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+first                                                                         | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql
+"                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+string                                                                        | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+}                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql
+type                                                                          | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql keyword.type.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql
+Example                                                                       | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql support.type.graphql
+                                                                              | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql
+{                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+    something                                                                 | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql
+}                                                                             | markup.fenced_code.block.markdown meta.embedded.block.graphql meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+\`\`\`                                                                           | markup.fenced_code.block.markdown punctuation.definition.markdown
+                                                                              | 
+\`\`\`php                                                                        | 
+<?php                                                                         | 
+  $query = <<<GRAPHQL                                                         | 
+    query {                                                                   | 
+      site {                                                                  | 
+        name                                                                  | 
+      }                                                                       | 
+    }                                                                         | 
+  GRAPHQL;                                                                    | 
+?>                                                                            | 
+\`\`\`                                                                           | 
+                                                                              | 
+\`\`\`ruby                                                                       | 
+ it "Should delimit queries" do                                               | 
+    query3 = <<~'GRAPHQL'                                                     | 
+    {                                                                         | 
+        datasets(q: { idEq: 3 }) { id, daylight }                             | 
+    }                                                                         | 
+    GRAPHQL                                                                   | 
+end                                                                           | 
+                                                                              | 
+\`\`\`                                                                           | 
+                                                                              | 
+`;
+
+exports[`inline.graphql.markdown.codeblock grammar js > should tokenize a markdown file with javascript & typescript 1`] = `
+# TODO: get tags inside of other code blocks working | 
+                                                     | 
+\`\`\`js                                                | 
+const variable = 1;                                  | 
+                                                     | 
+const query = graphql\`                               | 
+  query {                                            | 
+    something(arg: \${variable})                      | 
+  }                                                  | 
+\`;                                                   | 
+const Component = () => {                            | 
+  return <div>{query}</div>;                         | 
+};                                                   | 
+\`\`\`                                                  | 
+                                                     | 
+\`\`\`ts                                                | 
+const variable: number = 1;                          | 
+                                                     | 
+graphql\`                                             | 
+    query {                                          | 
+        something(variable: \${variable})             | 
+    }                                                | 
+\`;                                                   | 
+const Component = () => {                            | 
+  return <div> </div>;                               | 
+};                                                   | 
+\`\`\`                                                  | 
+                                                     | 
+### svelte                                           | 
+                                                     | 
+\`\`\`svelte                                            | 
+<script>                                             | 
+    const query = gql\`                               | 
+    query {                                          | 
+        hello                                        | 
+    }                                                | 
+    \`;                                               | 
+	let name = 'world';                                 | 
+    const query = \`\`                                 | 
+</script>                                            | 
+                                                     | 
+<h1>Hello {name}!</h1>                               | 
+\`\`\`                                                  | 
+                                                     | 
+## vue                                               | 
+                                                     | 
+\`\`\`vue                                               | 
+<script>                                             | 
+const query = gql\`                                   | 
+  query {                                            | 
+    hello                                            | 
+  }                                                  | 
+\`;                                                   | 
+export default {                                     | 
+  data() {                                           | 
+    return {                                         | 
+      message: 'Hello World!',                       | 
+    };                                               | 
+  },                                                 | 
+};                                                   | 
+</script>                                            | 
+                                                     | 
+<template>                                           | 
+  <h1>{{ message }}</h1>                             | 
+</template>                                          | 
+\`\`\`                                                  | 
+                                                     | 
+`;

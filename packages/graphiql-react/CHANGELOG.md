@@ -1,5 +1,37 @@
 # @graphiql/react
 
+## 0.20.3
+
+### Patch Changes
+
+- [#3526](https://github.com/graphql/graphiql/pull/3526) [`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775) Thanks [@benjie](https://github.com/benjie)! - Add new `useOptimisticState` hook that can wrap a useState-like hook to perform optimistic caching of state changes, this helps to avoid losing characters when the user is typing rapidly. Example of usage: `const [state, setState] = useOptimisticState(useOperationsEditorState());`
+
+## 0.20.2
+
+### Patch Changes
+
+- [#3447](https://github.com/graphql/graphiql/pull/3447) [`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02) Thanks [@acao](https://github.com/acao)! - Remove initialState for new hooks, add `additionalComponent` to toolbar to allow buttons to use context
+
+## 0.20.1
+
+### Patch Changes
+
+- [#3445](https://github.com/graphql/graphiql/pull/3445) [`39bf31d1`](https://github.com/graphql/graphiql/commit/39bf31d15b1e7fb5f235ec9adc1ce8081536de4a) Thanks [@acao](https://github.com/acao)! - Export new hooks
+
+## 0.20.0
+
+### Minor Changes
+
+- [#3443](https://github.com/graphql/graphiql/pull/3443) [`f6afd22d`](https://github.com/graphql/graphiql/commit/f6afd22d3f5a20089759042f16fd865646a32038) Thanks [@acao](https://github.com/acao)! - Add useHeadersEditorState and generic useEditorState hooks
+
+## 0.19.4
+
+### Patch Changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+  - codemirror-graphql@2.0.10
+
 ## 0.19.3
 
 ### Patch Changes

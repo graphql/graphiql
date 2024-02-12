@@ -4,6 +4,7 @@ import { GraphQLSchema } from 'graphql';
 import { ContextToken, CompletionItem } from 'graphql-language-service';
 import { Position } from './helpers';
 export interface GqlExtensionsOptions {
+  showErrorOnInvalidSchema?: boolean;
   onShowInDocs?: (field?: string, type?: string, parentType?: string) => void;
   onFillAllFields?: (
     view: EditorView,

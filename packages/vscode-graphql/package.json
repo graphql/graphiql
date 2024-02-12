@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.8.17",
+  "version": "0.9.1",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -93,6 +93,13 @@
           ],
           "description": "Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Disabled by default."
         },
+        "vscode-graphql.largeFileThreshold": {
+          "type": [
+            "number"
+          ],
+          "description": "Disables outlining and other expensive operations for files larger than this threshold (in bytes). Defaults to 1000000 (one million).",
+          "default": 1000000
+        },
         "vscode-graphql.rejectUnauthorized": {
           "type": [
             "boolean"
@@ -160,13 +167,14 @@
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
+    "@vscode/vsce": "^2.22.1-2",
     "esbuild": "0.18.10",
-    "ovsx": "0.5.1",
-    "vsce": "^2.13.0"
+    "ovsx": "0.8.3"
   },
   "dependencies": {
-    "graphql": "^16.4.0",
-    "graphql-language-service-server": "^2.11.3",
-    "vscode-languageclient": "8.0.2"
+    "graphql": "^16.8.1",
+    "graphql-language-service-server": "^2.12.0",
+    "vscode-languageclient": "8.0.2",
+    "typescript": "^5.3.3"
   }
 }

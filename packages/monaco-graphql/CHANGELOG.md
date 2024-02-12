@@ -1,5 +1,40 @@
 # Change Log
 
+## 1.5.1
+
+### Patch Changes
+
+- [#3523](https://github.com/graphql/graphiql/pull/3523) [`88d76cab`](https://github.com/graphql/graphiql/commit/88d76cabe57aa99f89f569cb2787e2f06e0ab9c5) Thanks [@bboure](https://github.com/bboure)! - Fix JSON diagnostics for multiple editors
+
+## 1.5.0
+
+### Minor Changes
+
+- [#3507](https://github.com/graphql/graphiql/pull/3507) [`7f05c102`](https://github.com/graphql/graphiql/commit/7f05c1022cd5ae74c5be450acacfb48121d01676) Thanks [@bboure](https://github.com/bboure)! - Fix race condition in the worker Manager
+
+## 1.4.0
+
+### Minor Changes
+
+- [#3376](https://github.com/graphql/graphiql/pull/3376) [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c) Thanks [@bboure](https://github.com/bboure)! - Add support for custom scalars
+
+### Patch Changes
+
+- [#3384](https://github.com/graphql/graphiql/pull/3384) [`31ded5e0`](https://github.com/graphql/graphiql/commit/31ded5e02ffb3334c22235fdb4285e926be0a98d) Thanks [@acao](https://github.com/acao)! - import only `editor.api` & basic features, add `monaco-graphql/lite`
+
+  - switch from exporting `edcore.js` to `editor.api.js` as recommended, and minimal features to get the editor working
+    - `edcore` imports `editor.all` which contains many monaco-editor features we don't use
+  - dynamic import of `json` language mode only if the user supplies configuration for json validation
+  - update monaco examples to show minimal `typescript` implementation alongside `graphql`
+  - add new simplified `exports` with backwards compatibility:
+    - `monaco-graphql/initializeMode`
+    - `monaco-graphql/graphql.worker`
+    - `monaco-graphql/monaco-editor`
+  - introduce `monaco-graphql/lite` for users who want the most minimum version possible, and to only import the features they need
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+
 ## 1.3.0
 
 ### Minor Changes

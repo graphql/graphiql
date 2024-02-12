@@ -27,7 +27,6 @@ import type {
   ObjectTypeInfo,
   Uri,
 } from 'graphql-language-service';
-import type { Logger } from 'vscode-languageserver';
 
 import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -48,6 +47,11 @@ import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
 import { CodeFileLoader } from '@graphql-tools/code-file-loader';
+import {
+  DEFAULT_SUPPORTED_EXTENSIONS,
+  DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+} from './constants';
+import { NoopLogger, Logger } from './Logger';
 
 const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For schema
@@ -68,7 +72,7 @@ export async function getGraphQLCache({
   config,
 }: {
   parser: typeof parseDocument;
-  logger: Logger;
+  logger: Logger | NoopLogger;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
@@ -98,7 +102,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
-  _logger: Logger;
+  _logger: Logger | NoopLogger;
 
   constructor({
     configDir,
@@ -109,7 +113,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     configDir: Uri;
     config: GraphQLConfig;
     parser: typeof parseDocument;
-    logger: Logger;
+    logger: Logger | NoopLogger;
   }) {
     this._configDir = configDir;
     this._graphQLConfig = config;
@@ -124,15 +128,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
-  getProjectForFile = (uri: string): GraphQLProjectConfig => {
+  getProjectForFile = (uri: string): GraphQLProjectConfig | void => {
     try {
       return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
     } catch (err) {
       this._logger.error(
         `there was an error loading the project config for this file ${err}`,
       );
-      // @ts-expect-error
-      return null;
+      return;
     }
   };
 
@@ -828,7 +831,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let queries: CachedContent[] = [];
     if (content.trim().length !== 0) {
       try {
-        queries = this._parser(content, filePath);
+        queries = this._parser(
+          content,
+          filePath,
+          DEFAULT_SUPPORTED_EXTENSIONS,
+          DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+          this._logger,
+        );
         if (queries.length === 0) {
           // still resolve with an empty ast
           return {

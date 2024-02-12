@@ -1,5 +1,100 @@
 # Change Log
 
+## 0.9.1
+
+### Patch Changes
+
+- [#3519](https://github.com/graphql/graphiql/pull/3519) [`8188e3e6`](https://github.com/graphql/graphiql/commit/8188e3e6fd979bcf2fbdf9568deb0c88d0df99e2) Thanks [@acao](https://github.com/acao)! - bump ovsx
+
+## 0.9.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
+### Patch Changes
+
+- [#3514](https://github.com/graphql/graphiql/pull/3514) [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56) Thanks [@acao](https://github.com/acao)! - fix svelte parsing, re-load config only on config changes
+
+  - fix esbuild bundling of `typescript` for `svelte2tsx`!
+  - confirm with manual testing of the vsix extension bundle ✅
+  - ensure that the server only attemps to parse opened/saved files when the server is activated or the file is a config file
+
+- Updated dependencies [[`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3), [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56)]:
+  - graphql-language-service-server@2.12.0
+
+## 0.8.25
+
+### Patch Changes
+
+- [#3503](https://github.com/graphql/graphiql/pull/3503) [`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84) Thanks [@acao](https://github.com/acao)! - Temporarily revert svelte parsing until we can fix bundling issues with svelte2tsx. For now we return to using the vue parser to parse svelte files which will invariably cause some issues, such as being off by several characters
+
+- Updated dependencies [[`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84)]:
+  - graphql-language-service-server@2.11.10
+
+## 0.8.24
+
+### Patch Changes
+
+- [#3500](https://github.com/graphql/graphiql/pull/3500) [`34d0a976`](https://github.com/graphql/graphiql/commit/34d0a97688d7b83949f34bb4b2effebe4bafae79) Thanks [@acao](https://github.com/acao)! - Add typescript as a dependency for `svelte2tsx`
+
+- Updated dependencies [[`34d0a976`](https://github.com/graphql/graphiql/commit/34d0a97688d7b83949f34bb4b2effebe4bafae79)]:
+  - graphql-language-service-server@2.11.9
+
+## 0.8.23
+
+### Patch Changes
+
+- [#3498](https://github.com/graphql/graphiql/pull/3498) [`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b) Thanks [@acao](https://github.com/acao)! - Add typescript as a dependency for `svelte2tsx`
+
+- Updated dependencies [[`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b)]:
+  - graphql-language-service-server@2.11.8
+
+## 0.8.22
+
+### Patch Changes
+
+- [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
+
+  - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
+  - make textmate injectors more performant and specific, eliminate redundant config
+
+  Big thanks to [@RedCMD](https://github.com/RedCMD) and [@aeschli](https://github.com/aeschli) for your help!
+
+- [#3488](https://github.com/graphql/graphiql/pull/3488) [`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e) Thanks [@acao](https://github.com/acao)! - Bump graphql & graphql-tools version to fix potential runtime security bugs
+
+- [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18) Thanks [@acao](https://github.com/acao)! - Fixes to svelte parsing, tag parsing refactor
+
+- Updated dependencies [[`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e), [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18)]:
+  - graphql-language-service-server@2.11.7
+
+## 0.8.21
+
+### Patch Changes
+
+- [#3480](https://github.com/graphql/graphiql/pull/3480) [`a1fced10`](https://github.com/graphql/graphiql/commit/a1fced10bf37a339709243a9576b3fdcae832fb8) Thanks [@craig-riecke](https://github.com/craig-riecke)! - Fix execution extension esbuild bundling
+
+## 0.8.20
+
+### Patch Changes
+
+- Updated dependencies [[`75ccd72c`](https://github.com/graphql/graphiql/commit/75ccd72c660c3b20cafa38da01d18a91ea24c7db)]:
+  - graphql-language-service-server@2.11.6
+
+## 0.8.19
+
+### Patch Changes
+
+- Updated dependencies [[`530ef47a`](https://github.com/graphql/graphiql/commit/530ef47ac6bbcb24cedc453bf802626d4a630e45)]:
+  - graphql-language-service-server@2.11.5
+
+## 0.8.18
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service-server@2.11.4
+
 ## 0.8.17
 
 ### Patch Changes

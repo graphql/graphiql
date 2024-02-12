@@ -41,11 +41,12 @@ import {
 } from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
+import { parseDocument } from './parseDocument';
 import {
-  parseDocument,
   DEFAULT_SUPPORTED_EXTENSIONS,
   DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
-} from './parseDocument';
+  SupportedExtensionsEnum,
+} from './constants';
 import { LoadConfigOptions } from './types';
 
 export interface ServerOptions {
@@ -81,7 +82,7 @@ export interface ServerOptions {
    * note that with vscode, this is also controlled by manifest and client configurations.
    * do not put full-file graphql extensions here!
    */
-  fileExtensions?: string[];
+  fileExtensions?: ReadonlyArray<SupportedExtensionsEnum>;
   /**
    * default: ['graphql'] - allowed file extensions for graphql, used by the parser
    */
@@ -245,7 +246,7 @@ type HandlerOptions = {
   logger: Logger;
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
-  fileExtensions?: string[];
+  fileExtensions?: ReadonlyArray<SupportedExtensionsEnum>;
   graphqlFileExtensions?: string[];
   tmpDir?: string;
   loadConfigOptions: LoadConfigOptions;

@@ -1,5 +1,32 @@
 # cm6-graphql
 
+## 0.0.13
+
+### Patch Changes
+
+- [#3505](https://github.com/graphql/graphiql/pull/3505) [`a562c96f`](https://github.com/graphql/graphiql/commit/a562c96fa3953d0301ad7b610028fa6c4a779bf6) Thanks [@Gasser-Aly](https://github.com/Gasser-Aly)! - fix: block strings syntax highlighting
+
+## 0.0.12
+
+### Patch Changes
+
+- [#3463](https://github.com/graphql/graphiql/pull/3463) [`e45ba17c`](https://github.com/graphql/graphiql/commit/e45ba17cb2f13e5a79d3e87b0f30ef92ec55d861) Thanks [@imolorhe](https://github.com/imolorhe)! - Create a lint diagnostic from invalid schema
+
+## 0.0.11
+
+### Patch Changes
+
+- [#3461](https://github.com/graphql/graphiql/pull/3461) [`129666a9`](https://github.com/graphql/graphiql/commit/129666a9a86690bb72226674d40215f24dc5f7ea) Thanks [@imolorhe](https://github.com/imolorhe)! - Wrap cm6-graphql lint logic in try..catch
+
+## 0.0.10
+
+### Patch Changes
+
+- [#3405](https://github.com/graphql/graphiql/pull/3405) [`3d4b9b75`](https://github.com/graphql/graphiql/commit/3d4b9b7551fd9bb38ef9f4a7c6c330366d43bbfa) Thanks [@imolorhe](https://github.com/imolorhe)! - relint when schema changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+
 ## 0.0.9
 
 ### Patch Changes

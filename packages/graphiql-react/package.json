@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.19.3",
+  "version": "0.20.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -57,10 +57,10 @@
     "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.0.9",
+    "codemirror-graphql": "^2.0.10",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^6.5.1",
-    "graphql-language-service": "^5.1.7",
+    "graphql-language-service": "^5.2.0",
     "markdown-it": "^12.2.0",
     "set-value": "^4.1.0"
   },
@@ -69,7 +69,7 @@
     "@testing-library/react": "14.0.0",
     "@types/set-value": "^4.0.1",
     "@vitejs/plugin-react": "^4.0.1",
-    "graphql": "^16.4.0",
+    "graphql": "^16.8.1",
     "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

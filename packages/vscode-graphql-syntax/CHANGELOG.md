@@ -1,5 +1,34 @@
 # vscode-graphql-syntax
 
+## 1.3.2
+
+### Patch Changes
+
+- [#3529](https://github.com/graphql/graphiql/pull/3529) [`a38152ef`](https://github.com/graphql/graphiql/commit/a38152ef1248a480d5cad384780f82214a84f16d) Thanks [@acao](https://github.com/acao)! - fix triple double quote comment syntax by disabling inline double quote js strings for now
+
+## 1.3.1
+
+### Patch Changes
+
+- [#3519](https://github.com/graphql/graphiql/pull/3519) [`8188e3e6`](https://github.com/graphql/graphiql/commit/8188e3e6fd979bcf2fbdf9568deb0c88d0df99e2) Thanks [@acao](https://github.com/acao)! - bump ovsx
+
+## 1.3.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
+## 1.2.3
+
+### Patch Changes
+
+- [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
+
+  - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
+  - make textmate injectors more performant and specific, eliminate redundant config
+
+  Big thanks to [@RedCMD](https://github.com/RedCMD) and [@aeschli](https://github.com/aeschli) for your help!
+
 ## 1.2.2
 
 ### Patch Changes
