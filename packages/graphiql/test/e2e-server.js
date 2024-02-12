@@ -10,7 +10,7 @@ const express = require('express');
 const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
 const { GraphQLError } = require('graphql');
-const schema = require('./schema');
+const { schema, changedSchema } = require('./schema');
 const app = express();
 const { schema: badSchema } = require('./bad-schema');
 const WebSocketsServer = require('./afterDevServer');
@@ -27,6 +27,11 @@ app.get(
 
 app.post('/bad/graphql', (_req, res, next) => {
   res.json({ data: badSchema });
+  next();
+});
+
+app.post('/changed/graphql', (_req, res, next) => {
+  res.json({ data: changedSchema });
   next();
 });
 
