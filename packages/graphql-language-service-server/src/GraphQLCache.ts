@@ -485,7 +485,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
           query,
         };
       } catch {
-        console.log('parse error');
         return { ast: null, query };
       }
     });
