@@ -198,7 +198,7 @@ jobs:
     name: Canary
     runs-on: ubuntu-latest
     # ensure the basic checks pass before running the canary
-    needs: [build, jest-unit, jest-spec, eslint, vitest, e2e]
+    needs: [build, jest, eslint, vitest, e2e]
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v3
