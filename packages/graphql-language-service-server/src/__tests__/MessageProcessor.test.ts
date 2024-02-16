@@ -338,7 +338,7 @@ describe('MessageProcessor', () => {
     const previousConfigurationValue = getConfigurationReturnValue;
     getConfigurationReturnValue = null;
     await expect(
-      messageProcessor.handleDidChangeConfiguration(),
+      messageProcessor.handleDidChangeConfiguration({ settings: [] }),
     ).resolves.toStrictEqual({});
     getConfigurationReturnValue = previousConfigurationValue;
   });
