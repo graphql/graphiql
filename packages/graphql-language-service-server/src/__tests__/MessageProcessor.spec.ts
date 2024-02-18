@@ -78,8 +78,16 @@ describe('MessageProcessor with no config', () => {
 });
 
 describe('project with simple config and graphql files', () => {
+  let app;
   afterEach(() => {
     mockfs.restore();
+  });
+  beforeAll(async () => {
+    app = await import('../../../graphiql/test/e2e-server');
+  });
+  afterAll(() => {
+    app.server.close();
+    app.wsServer.close();
   });
   it('caches files and schema with .graphql file config, and the schema updates with watched file changes', async () => {
     const project = new MockProject({
@@ -94,7 +102,6 @@ describe('project with simple config and graphql files', () => {
     });
     await project.init('query.graphql');
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
-    // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
     expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
     // TODO: for some reason the cache result formats the graphql query??
     const docCache = project.lsp._textDocumentCache;
@@ -208,31 +215,34 @@ describe('project with simple config and graphql files', () => {
   it('caches files and schema with a URL config', async () => {
     const project = new MockProject({
       files: [
-        ['query.graphql', 'query { bar  }'],
-        ['fragments.graphql', 'fragment Ep on Episode {\n created \n}'],
+        ['query.graphql', 'query { test { isTest, ...T } }'],
+        ['fragments.graphql', 'fragment T on Test {\n isTest \n}'],
         [
           'graphql.config.json',
-          '{ "schema": "https://rickandmortyapi.com/graphql", "documents": "./**.graphql" }',
+          '{ "schema": "http://localhost:3100/graphql", "documents": "./**.graphql" }',
         ],
       ],
     });
 
-    await project.init('query.graphql');
+    const initParams = await project.init('query.graphql');
+    expect(initParams.diagnostics).toEqual([]);
+
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
 
     const changeParams = await project.lsp.handleDidChangeNotification({
       textDocument: { uri: project.uri('query.graphql'), version: 1 },
-      contentChanges: [
-        { text: 'query { episodes { results { ...Ep, nop } }  }' },
-      ],
+      contentChanges: [{ text: 'query { test { isTest, ...T or }  }' }],
     });
     expect(changeParams?.diagnostics[0].message).toEqual(
-      'Cannot query field "nop" on type "Episode".',
+      'Cannot query field "or" on type "Test".',
     );
-    expect(project.lsp._logger.error).not.toHaveBeenCalled();
-    // console.log(project.lsp._graphQLCache.getSchema('schema.graphql'));
     expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
+
+    // schema file is present and contains schema
     const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
     expect(file.split('\n').length).toBeGreaterThan(10);
+
+    // hover works
     const hover = await project.lsp.handleHoverRequest({
       position: {
         character: 10,
@@ -240,14 +250,13 @@ describe('project with simple config and graphql files', () => {
       },
       textDocument: { uri: project.uri('query.graphql') },
     });
-    expect(project.lsp._textDocumentCache.size).toEqual(3);
+    expect(hover.contents).toContain('`test` field from `Test` type.');
 
-    expect(hover.contents).toContain('Get the list of all episodes');
+    // ensure that fragment definitions work
     const definitions = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('query.graphql') },
-      position: { character: 33, line: 0 },
+      position: { character: 26, line: 0 },
     });
-    // ensure that fragment definitions work
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
     expect(serializeRange(definitions[0].range)).toEqual({
       start: {
