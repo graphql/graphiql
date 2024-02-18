@@ -926,12 +926,18 @@ export class MessageProcessor {
     return Array.from(this._textDocumentCache);
   }
 
-  private async _cacheSchemaText(uri: string, text: string, version: number) {
+  private async _cacheSchemaText(
+    uri: string,
+    text: string,
+    version: number,
+    project?: GraphQLProjectConfig,
+  ) {
     try {
       const contents = this._parser(text, uri);
+      // console.log(uri, contents);
       if (contents.length > 0) {
         await this._invalidateCache({ version, uri }, uri, contents);
-        await this._updateObjectTypeDefinition(uri, contents);
+        await this._updateObjectTypeDefinition(uri, contents, project);
       }
     } catch (err) {
       this._logger.error(String(err));
@@ -1058,10 +1064,10 @@ export class MessageProcessor {
         schemaText = `# This is an automatically generated representation of your schema.\n# Any changes to this file will be overwritten and will not be\n# reflected in the resulting GraphQL schema\n\n${schemaText}`;
 
         const cachedSchemaDoc = this._getCachedDocument(uri);
-
+        this._graphQLCache._schemaMap.set(project.name, schema);
         if (!cachedSchemaDoc) {
           await writeFile(fsPath, schemaText, 'utf8');
-          await this._cacheSchemaText(uri, schemaText, 1);
+          await this._cacheSchemaText(uri, schemaText, 0, project);
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
@@ -1070,6 +1076,7 @@ export class MessageProcessor {
             uri,
             schemaText,
             cachedSchemaDoc.version++,
+            project,
           );
         }
       }
@@ -1206,11 +1213,12 @@ export class MessageProcessor {
   private async _updateObjectTypeDefinition(
     uri: Uri,
     contents: CachedContent[],
+    project?: GraphQLProjectConfig,
   ): Promise<void> {
-    const project = await this._graphQLCache.getProjectForFile(uri);
-    if (project) {
-      const cacheKey = this._graphQLCache._cacheKeyForProject(project);
-
+    const resolvedProject =
+      project ?? (await this._graphQLCache.getProjectForFile(uri));
+    if (resolvedProject) {
+      const cacheKey = this._graphQLCache._cacheKeyForProject(resolvedProject);
       await this._graphQLCache.updateObjectTypeDefinition(
         cacheKey,
         uri,
