@@ -1016,7 +1016,14 @@ export class MessageProcessor {
     // only local schema lookups if all of the schema entries are local files that we can resolve
     const sdlOnly = unwrappedSchema.every(schemaEntry =>
       allExtensions.some(
-        ext => !schemaEntry.startsWith('http') && schemaEntry.endsWith(ext),
+        // local schema file URIs for lookup don't start with http, and end with an extension that is not json but may
+        // be graphql, gql, ts, js, javascript, or even vue, svelte, etc.
+        // would be awesome to use tree sitter to expand our parser to other languages, and then we could support SDL literal
+        // definitions in other languages!
+        ext =>
+          !schemaEntry.startsWith('http') &&
+          schemaEntry.endsWith(ext) &&
+          ext !== 'json',
       ),
     );
     // if we are caching the config schema, and it isn't a .graphql file, cache it
