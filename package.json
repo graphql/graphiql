@@ -71,7 +71,7 @@
     "repo:fix": "manypkg fix",
     "repo:resolve": "node scripts/set-resolution.js",
     "t": "yarn test",
-    "test": "yarn e2e:server yarn jest",
+    "test": "yarn jest",
     "test:ci": "yarn build && jest --coverage && yarn vitest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
