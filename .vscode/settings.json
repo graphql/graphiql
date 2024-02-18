@@ -4,7 +4,7 @@
   "files.insertFinalNewline": true,
   "editor.trimAutoWhitespace": false,
   "coverage-gutters.showLineCoverage": true,
-  "coverage-gutters.coverageBaseDir": "coverage/jest",
+  "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.coverageFileNames": [
     "lcov.info",
     "cov.xml",
