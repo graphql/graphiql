@@ -6,6 +6,7 @@ import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { URI } from 'vscode-uri';
 
 const defaultFiles = [
   ['query.graphql', 'query { bar ...B }'],
@@ -133,8 +134,8 @@ describe('project with simple config and graphql files', () => {
         character: 0,
       },
       end: {
-        line: 0,
-        character: 25,
+        line: 2,
+        character: 1,
       },
     });
     // change the file to make the fragment invalid
@@ -265,6 +266,46 @@ describe('project with simple config and graphql files', () => {
       },
       end: {
         line: 2,
+        character: 1,
+      },
+    });
+
+    // TODO: super weird, the type definition cache isn't built until _after_ the first definitions request (for that file?)...
+    // this may be a bug just on init, or perhaps every definitions request is outdated???
+    // local schema file should be used for definitions
+
+    const typeDefinitions = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('fragments.graphql') },
+      position: { character: 15, line: 0 },
+    });
+
+    // TODO: these should return a type definition from the schema
+    //
+    expect(typeDefinitions[0].uri).toEqual(URI.parse(genSchemaPath).toString());
+
+    expect(serializeRange(typeDefinitions[0].range)).toEqual({
+      start: {
+        line: 10,
+        character: 0,
+      },
+      end: {
+        line: 98,
+        character: 1,
+      },
+    });
+
+    const schemaDefs = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: URI.parse(genSchemaPath).toString() },
+      position: { character: 20, line: 17 },
+    });
+    expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
+    expect(serializeRange(schemaDefs[0].range)).toEqual({
+      start: {
+        line: 100,
+        character: 0,
+      },
+      end: {
+        line: 108,
         character: 1,
       },
     });

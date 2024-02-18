@@ -433,11 +433,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   async updateFragmentDefinition(
-    rootDir: Uri,
+    projectCacheKey: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const cache = this._fragmentDefinitionsCache.get(rootDir);
+    const cache = this._fragmentDefinitionsCache.get(projectCacheKey);
     const asts = contents.map(({ query }) => {
       try {
         return {
@@ -455,29 +455,44 @@ export class GraphQLCache implements GraphQLCacheInterface {
           cache.delete(key);
         }
       }
-      for (const { ast, query } of asts) {
-        if (!ast) {
-          continue;
-        }
-        for (const definition of ast.definitions) {
-          if (definition.kind === Kind.FRAGMENT_DEFINITION) {
-            cache.set(definition.name.value, {
-              filePath,
-              content: query,
-              definition,
-            });
-          }
+      this._setFragmentCache(asts, cache, filePath);
+    } else {
+      const newFragmentCache = this._setFragmentCache(
+        asts,
+        new Map(),
+        filePath,
+      );
+      this._fragmentDefinitionsCache.set(projectCacheKey, newFragmentCache);
+    }
+  }
+  _setFragmentCache(
+    asts: { ast: DocumentNode | null; query: string }[],
+    fragmentCache: Map<string, FragmentInfo>,
+    filePath: string | undefined,
+  ) {
+    for (const { ast, query } of asts) {
+      if (!ast) {
+        continue;
+      }
+      for (const definition of ast.definitions) {
+        if (definition.kind === Kind.FRAGMENT_DEFINITION) {
+          fragmentCache.set(definition.name.value, {
+            filePath,
+            content: query,
+            definition,
+          });
         }
       }
     }
+    return fragmentCache;
   }
 
   async updateObjectTypeDefinition(
-    rootDir: Uri,
+    projectCacheKey: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const cache = this._typeDefinitionsCache.get(rootDir);
+    const cache = this._typeDefinitionsCache.get(projectCacheKey);
     const asts = contents.map(({ query }) => {
       try {
         return {
@@ -495,21 +510,32 @@ export class GraphQLCache implements GraphQLCacheInterface {
           cache.delete(key);
         }
       }
-      for (const { ast, query } of asts) {
-        if (!ast) {
-          continue;
-        }
-        for (const definition of ast.definitions) {
-          if (isTypeDefinitionNode(definition)) {
-            cache.set(definition.name.value, {
-              filePath,
-              content: query,
-              definition,
-            });
-          }
+      this._setDefinitionCache(asts, cache, filePath);
+    } else {
+      const newTypeCache = this._setDefinitionCache(asts, new Map(), filePath);
+      this._typeDefinitionsCache.set(projectCacheKey, newTypeCache);
+    }
+  }
+  _setDefinitionCache(
+    asts: { ast: DocumentNode | null; query: string }[],
+    typeCache: Map<string, ObjectTypeInfo>,
+    filePath: string | undefined,
+  ) {
+    for (const { ast, query } of asts) {
+      if (!ast) {
+        continue;
+      }
+      for (const definition of ast.definitions) {
+        if (isTypeDefinitionNode(definition)) {
+          typeCache.set(definition.name.value, {
+            filePath,
+            content: query,
+            definition,
+          });
         }
       }
     }
+    return typeCache;
   }
 
   _extendSchema(
