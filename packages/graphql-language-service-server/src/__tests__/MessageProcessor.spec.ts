@@ -303,7 +303,9 @@ describe('project with simple config and graphql files', () => {
         character: 1,
       },
     });
+    // lets remove the fragments file
     await project.deleteFile('fragments.graphql');
+    // and add a fragments.ts file
     await project.addFile(
       'fragments.ts',
       '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
@@ -318,7 +320,7 @@ describe('project with simple config and graphql files', () => {
       textDocument: { uri: project.uri('query.graphql') },
       position: { character: 26, line: 0 },
     });
-
+    // this one is really important
     expect(defsForTs[0].uri).toEqual(project.uri('fragments.ts'));
     expect(serializeRange(defsForTs[0].range)).toEqual({
       start: {
@@ -326,7 +328,6 @@ describe('project with simple config and graphql files', () => {
         character: 2,
       },
       end: {
-        // TODO! line is wrong, it expects 1 for some reason probably in the LanguageService here
         line: 5,
         character: 31,
       },
