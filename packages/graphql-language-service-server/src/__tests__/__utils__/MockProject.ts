@@ -2,6 +2,8 @@ import mockfs from 'mock-fs';
 import { MessageProcessor } from '../../MessageProcessor';
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { URI } from 'vscode-uri';
+import { FileChangeType } from 'vscode-languageserver';
+import { FileChangeTypeKind } from 'graphql-language-service';
 
 export type MockFile = [filename: string, text: string];
 
@@ -103,6 +105,74 @@ export class MockProject {
   changeFile(filename: string, text: string) {
     this.fileCache.set(filename, text);
     this.mockFiles();
+  }
+  async addFile(filename: string, text: string) {
+    this.fileCache.set(filename, text);
+    this.mockFiles();
+    await this.lsp.handleDidChangeNotification({
+      contentChanges: [
+        {
+          type: FileChangeTypeKind.Created,
+          text,
+        },
+      ],
+      textDocument: {
+        uri: this.uri(filename),
+        version: 2,
+      },
+    });
+  }
+  async changeWatchedFile(filename: string, text: string) {
+    this.changeFile(filename, text);
+    await this.lsp.handleWatchedFilesChangedNotification({
+      changes: [
+        {
+          uri: this.uri(filename),
+          type: FileChangeType.Changed,
+        },
+      ],
+    });
+  }
+  async saveOpenFile(filename: string, text: string) {
+    this.changeFile(filename, text);
+    await this.lsp.handleDidOpenOrSaveNotification({
+      textDocument: {
+        uri: this.uri(filename),
+        version: 2,
+        text,
+      },
+    });
+  }
+  async addWatchedFile(filename: string, text: string) {
+    this.changeFile(filename, text);
+    await this.lsp.handleDidChangeNotification({
+      contentChanges: [
+        {
+          type: FileChangeTypeKind.Created,
+          text,
+        },
+      ],
+      textDocument: {
+        uri: this.uri(filename),
+        version: 2,
+      },
+    });
+  }
+  async deleteFile(filename: string) {
+    this.fileCache.delete(filename);
+    this.mockFiles();
+    await this.lsp.handleDidChangeNotification({
+      contentChanges: [
+        {
+          type: FileChangeTypeKind.Deleted,
+          text: '',
+        },
+      ],
+      textDocument: {
+        uri: this.uri(filename),
+        version: 2,
+      },
+    });
   }
   get lsp() {
     return this.messageProcessor;

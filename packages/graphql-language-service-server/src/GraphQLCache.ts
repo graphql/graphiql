@@ -646,9 +646,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schema = this._extendSchema(schema, schemaPath, schemaCacheKey);
     }
 
-    // if (schemaCacheKey) {
-    //   this._schemaMap.set(schemaCacheKey, schema);
-    // }
+    if (schemaCacheKey) {
+      this._schemaMap.set(schemaCacheKey, schema);
+    }
     return schema;
   };
 

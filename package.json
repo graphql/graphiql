@@ -49,7 +49,6 @@
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
     "e2e": "yarn run e2e:build && yarn workspace graphiql e2e",
-    "e2e:server": "yarn workspace graphiql e2e-server",
     "e2e:build": "WEBPACK_SERVE=1 yarn workspace graphiql build-bundles",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
@@ -75,8 +74,6 @@
     "test:ci": "yarn build && jest --coverage && yarn vitest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
-    "test:spec": "TEST_ENV=spec yarn jest --testPathIgnorePatterns test.ts",
-    "test:unit": "yarn jest --testPathIgnorePatterns spec.ts",
     "tsc": "tsc --build",
     "vitest": "yarn wsrun -p -m test",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack"

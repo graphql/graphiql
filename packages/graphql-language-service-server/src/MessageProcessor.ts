@@ -672,8 +672,10 @@ export class MessageProcessor {
 
           const text = await readFile(URI.parse(uri).fsPath, 'utf-8');
           const contents = this._parser(text, uri);
+          const cachedDocument = this._textDocumentCache.get(uri);
+          const version = cachedDocument ? cachedDocument.version++ : 0;
           await this._invalidateCache(
-            { uri, version: 0 },
+            { uri, version },
             URI.parse(uri).fsPath,
             contents,
           );
@@ -796,10 +798,17 @@ export class MessageProcessor {
           if (parentRange && res.name) {
             const isInline = inlineFragments.includes(res.name);
             const isEmbedded = DEFAULT_SUPPORTED_EXTENSIONS.includes(
-              path.extname(textDocument.uri) as SupportedExtensionsEnum,
+              path.extname(res.path) as SupportedExtensionsEnum,
             );
-            if (isInline && isEmbedded) {
-              const vOffset = parentRange.start.line;
+
+            if (isEmbedded || isInline) {
+              const cachedDoc = this._getCachedDocument(
+                URI.parse(res.path).toString(),
+              );
+              const vOffset = isEmbedded
+                ? cachedDoc?.contents[0].range?.start.line ?? 0
+                : parentRange.start.line;
+
               defRange.setStart(
                 (defRange.start.line += vOffset),
                 defRange.start.character,

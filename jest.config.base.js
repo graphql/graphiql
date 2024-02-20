@@ -33,7 +33,7 @@ module.exports = (dir, env = 'jsdom') => {
       // because of the svelte compiler's export patterns i guess?
       'svelte/compiler': `${__dirname}/node_modules/svelte/compiler.cjs`,
     },
-    testMatch: ['**/*[-.](test|spec).[jt]s?(x)', '!**/cypress/**'],
+    testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
     testEnvironment: env,
     testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],

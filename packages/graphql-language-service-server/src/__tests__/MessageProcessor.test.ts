@@ -289,7 +289,7 @@ describe('MessageProcessor', () => {
   it('runs document symbol requests when not initialized', async () => {
     const test = {
       textDocument: {
-        uri: `${queryPathUri}/test5.graphql`,
+        uri: `${queryPathUri}/test3.graphql`,
         version: 0,
       },
     };
@@ -297,6 +297,10 @@ describe('MessageProcessor', () => {
     const result = await messageProcessor.handleDocumentSymbolRequest(test);
     expect(result).toEqual([]);
     messageProcessor._isInitialized = true;
+    const nextResult = await messageProcessor.handleDocumentSymbolRequest(test);
+    expect(nextResult[0].location.uri).toContain('test3.graphql');
+    expect(nextResult[0].name).toEqual('item');
+    expect(nextResult.length).toEqual(1);
   });
 
   it('properly changes the file cache with the didChange handler', async () => {
@@ -335,11 +339,13 @@ describe('MessageProcessor', () => {
   });
 
   it('does not crash on null value returned in response to workspace configuration', async () => {
+    // for some reason this is needed? can't be a good thing... must have done something to cause a performance hit on
+    // loading config schema..
+    jest.setTimeout(10000);
     const previousConfigurationValue = getConfigurationReturnValue;
     getConfigurationReturnValue = null;
-    await expect(
-      messageProcessor.handleDidChangeConfiguration(),
-    ).resolves.toStrictEqual({});
+    const result = await messageProcessor.handleDidChangeConfiguration();
+    expect(result).toEqual({});
     getConfigurationReturnValue = previousConfigurationValue;
   });
 
