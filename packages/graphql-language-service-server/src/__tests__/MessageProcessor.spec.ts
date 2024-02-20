@@ -220,7 +220,7 @@ describe('project with simple config and graphql files', () => {
         ['fragments.graphql', 'fragment T on Test {\n isTest \n}'],
         [
           'graphql.config.json',
-          '{ "schema": "http://localhost:3100/graphql", "documents": "./**.graphql" }',
+          '{ "schema": "http://localhost:3100/graphql", "documents": "./**" }',
         ],
       ],
     });
@@ -270,17 +270,11 @@ describe('project with simple config and graphql files', () => {
       },
     });
 
-    // TODO: super weird, the type definition cache isn't built until _after_ the first definitions request (for that file?)...
-    // this may be a bug just on init, or perhaps every definitions request is outdated???
-    // local schema file should be used for definitions
-
     const typeDefinitions = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('fragments.graphql') },
       position: { character: 15, line: 0 },
     });
 
-    // TODO: these should return a type definition from the schema
-    //
     expect(typeDefinitions[0].uri).toEqual(URI.parse(genSchemaPath).toString());
 
     expect(serializeRange(typeDefinitions[0].range)).toEqual({
@@ -307,6 +301,34 @@ describe('project with simple config and graphql files', () => {
       end: {
         line: 108,
         character: 1,
+      },
+    });
+    await project.deleteFile('fragments.graphql');
+    await project.addFile(
+      'fragments.ts',
+      '\n\nexport const fragment = \ngql`\n\n  fragment T on Test { isTest }\n`',
+    );
+
+    await project.lsp.handleWatchedFilesChangedNotification({
+      changes: [
+        { uri: project.uri('fragments.ts'), type: FileChangeType.Created },
+      ],
+    });
+    const defsForTs = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('query.graphql') },
+      position: { character: 26, line: 0 },
+    });
+
+    expect(defsForTs[0].uri).toEqual(project.uri('fragments.ts'));
+    expect(serializeRange(defsForTs[0].range)).toEqual({
+      start: {
+        line: 5,
+        character: 2,
+      },
+      end: {
+        // TODO! line is wrong, it expects 1 for some reason probably in the LanguageService here
+        line: 5,
+        character: 31,
       },
     });
   });
