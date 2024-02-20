@@ -306,7 +306,7 @@ describe('project with simple config and graphql files', () => {
     await project.deleteFile('fragments.graphql');
     await project.addFile(
       'fragments.ts',
-      '\n\nexport const fragment = \ngql`\n\n  fragment T on Test { isTest }\n`',
+      '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
     );
 
     await project.lsp.handleWatchedFilesChangedNotification({
