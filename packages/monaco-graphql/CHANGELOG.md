@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.1
+
+### Patch Changes
+
+- [#3523](https://github.com/graphql/graphiql/pull/3523) [`88d76cab`](https://github.com/graphql/graphiql/commit/88d76cabe57aa99f89f569cb2787e2f06e0ab9c5) Thanks [@bboure](https://github.com/bboure)! - Fix JSON diagnostics for multiple editors
+
 ## 1.5.0
 
 ### Minor Changes
