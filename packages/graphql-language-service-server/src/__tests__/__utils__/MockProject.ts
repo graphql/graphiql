@@ -4,6 +4,7 @@ import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { URI } from 'vscode-uri';
 import { FileChangeType } from 'vscode-languageserver';
 import { FileChangeTypeKind } from 'graphql-language-service';
+import { mock } from 'fetch-mock';
 
 export type MockFile = [filename: string, text: string];
 
@@ -83,7 +84,7 @@ export class MockProject {
     });
     return this.lsp.handleDidOpenOrSaveNotification({
       textDocument: {
-        uri: this.uri(filename || this.uri('query.graphql')),
+        uri: this.uri(filename || 'query.graphql'),
         version: 1,
         text: this.fileCache.get('query.graphql') || fileText,
       },
@@ -106,9 +107,19 @@ export class MockProject {
     this.fileCache.set(filename, text);
     this.mockFiles();
   }
-  async addFile(filename: string, text: string) {
+  async addFile(filename: string, text: string, watched = false) {
     this.fileCache.set(filename, text);
     this.mockFiles();
+    if (watched) {
+      await this.lsp.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: this.uri(filename),
+            type: FileChangeTypeKind.Created,
+          },
+        ],
+      });
+    }
     await this.lsp.handleDidChangeNotification({
       contentChanges: [
         {
@@ -159,19 +170,16 @@ export class MockProject {
     });
   }
   async deleteFile(filename: string) {
+    mockfs.restore();
     this.fileCache.delete(filename);
     this.mockFiles();
-    await this.lsp.handleDidChangeNotification({
-      contentChanges: [
+    await this.lsp.handleWatchedFilesChangedNotification({
+      changes: [
         {
-          type: FileChangeTypeKind.Deleted,
-          text: '',
+          type: FileChangeType.Deleted,
+          uri: this.uri(filename),
         },
       ],
-      textDocument: {
-        uri: this.uri(filename),
-        version: 2,
-      },
     });
   }
   get lsp() {

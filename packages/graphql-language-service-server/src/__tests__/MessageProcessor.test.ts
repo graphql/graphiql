@@ -219,7 +219,10 @@ describe('MessageProcessor', () => {
       textDocument: { uri: `${queryPathUri}/test13.graphql` },
     };
     const result = await messageProcessor.handleCompletionRequest(test);
-    expect(result).toEqual([]);
+    expect(result).toEqual({
+      items: [],
+      isIncomplete: false,
+    });
   });
   it('runs completion requests properly when not initialized', async () => {
     const test = {
@@ -228,7 +231,10 @@ describe('MessageProcessor', () => {
     };
     messageProcessor._isInitialized = false;
     const result = await messageProcessor.handleCompletionRequest(test);
-    expect(result).toEqual([]);
+    expect(result).toEqual({
+      items: [],
+      isIncomplete: false,
+    });
   });
 
   it('runs document symbol requests', async () => {
@@ -344,7 +350,7 @@ describe('MessageProcessor', () => {
     jest.setTimeout(10000);
     const previousConfigurationValue = getConfigurationReturnValue;
     getConfigurationReturnValue = null;
-    const result = await messageProcessor.handleDidChangeConfiguration();
+    const result = await messageProcessor.handleDidChangeConfiguration({});
     expect(result).toEqual({});
     getConfigurationReturnValue = previousConfigurationValue;
   });

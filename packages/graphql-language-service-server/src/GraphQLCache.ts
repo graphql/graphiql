@@ -601,10 +601,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   getSchema = async (
-    appName?: string,
+    projectName: string,
     queryHasExtensions?: boolean | null,
   ): Promise<GraphQLSchema | null> => {
-    const projectConfig = this._graphQLConfig.getProject(appName);
+    const projectConfig = this._graphQLConfig.getProject(projectName);
 
     if (!projectConfig) {
       return null;
@@ -668,7 +668,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   _getProjectName(projectConfig: GraphQLProjectConfig) {
-    return projectConfig || 'default';
+    return projectConfig?.name || 'default';
   }
 
   /**

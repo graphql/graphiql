@@ -32,7 +32,6 @@ import type {
   DidOpenTextDocumentParams,
   DidChangeConfigurationParams,
   Diagnostic,
-  CompletionItem,
   CompletionList,
   CancellationToken,
   Hover,
@@ -544,9 +543,9 @@ export class MessageProcessor {
 
   async handleCompletionRequest(
     params: CompletionParams,
-  ): Promise<CompletionList | Array<CompletionItem>> {
+  ): Promise<CompletionList> {
     if (!this._isInitialized) {
-      return [];
+      return { items: [], isIncomplete: false };
     }
 
     this.validateDocumentAndPosition(params);
@@ -560,7 +559,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      return [];
+      return { items: [], isIncomplete: false };
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -572,7 +571,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return [];
+      return { items: [], isIncomplete: false };
     }
 
     const { query, range } = found;
