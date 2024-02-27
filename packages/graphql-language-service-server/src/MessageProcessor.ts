@@ -975,8 +975,8 @@ export class MessageProcessor {
         const schemaText = await readFile(uri, 'utf8');
         await this._cacheSchemaText(schemaUri, schemaText, version);
       }
-    } catch {
-      // this._logger.error(String(err));
+    } catch (err) {
+      this._logger.error(String(err));
     }
   }
   private _getTmpProjectPath(
@@ -1184,7 +1184,6 @@ export class MessageProcessor {
       }),
     );
   }
-
   private _unwrapProjectSchema(project: GraphQLProjectConfig): string[] {
     const projectSchema = project.schema;
 

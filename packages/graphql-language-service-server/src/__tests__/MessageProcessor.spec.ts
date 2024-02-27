@@ -245,6 +245,8 @@ describe('project with simple config and graphql files', () => {
     expect(serializeRange(schemaDefinitionsAgain[0].range)).toEqual(
       fooLaterTypePosition,
     );
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
+
     // TODO: the position should change when a watched file changes???
   });
   it('caches files and schema with a URL config', async () => {
@@ -369,6 +371,7 @@ describe('project with simple config and graphql files', () => {
         character: 31,
       },
     });
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
     const project = new MockProject({
@@ -476,5 +479,7 @@ describe('project with simple config and graphql files', () => {
       position: { character: 21, line: 4 },
     });
     expect(serializeRange(schemaDefinition[0].range)).toEqual(fooTypePosition);
+
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });
 });
