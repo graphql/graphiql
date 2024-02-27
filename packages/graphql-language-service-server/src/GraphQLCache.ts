@@ -244,29 +244,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return fragmentDefinitions;
   };
 
-  getObjectTypeDependencies = async (
-    query: string,
-    objectTypeDefinitions?: Map<string, ObjectTypeInfo>,
-  ): Promise<Array<ObjectTypeInfo>> => {
-    // If there isn't context for object type references,
-    // return an empty array.
-    if (!objectTypeDefinitions) {
-      return [];
-    }
-    // If the query cannot be parsed, validations cannot happen yet.
-    // Return an empty array.
-    let parsedQuery;
-    try {
-      parsedQuery = parse(query);
-    } catch {
-      return [];
-    }
-    return this.getObjectTypeDependenciesForAST(
-      parsedQuery,
-      objectTypeDefinitions,
-    );
-  };
-
   getObjectTypeDependenciesForAST = async (
     parsedQuery: ASTNode,
     objectTypeDefinitions: Map<string, ObjectTypeInfo>,
