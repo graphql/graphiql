@@ -4,7 +4,6 @@ import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { URI } from 'vscode-uri';
 import { FileChangeType } from 'vscode-languageserver';
 import { FileChangeTypeKind } from 'graphql-language-service';
-import { mock } from 'fetch-mock';
 
 export type MockFile = [filename: string, text: string];
 
@@ -74,6 +73,7 @@ export class MockProject {
       loadConfigOptions: { rootDir: root },
     });
   }
+
   public async init(filename?: string, fileText?: string) {
     await this.lsp.handleInitializeRequest({
       rootPath: this.root,

@@ -31,7 +31,7 @@ const genSchemaPath =
 //   this may be cumbersome with offset position assertions but possible
 //   if we can create consistency that doesn't limit variability
 // - convert each it() into a nested describe() block (or a top level describe() in another file), and sprinkle in it() statements to replace comments
-// - fix TODO comments where bugs were found that couldn't be resolved quickly (2-4hr timebox)
+// - fix TODO comments where bugs were found that couldn't be resolved quickly (2-4hr time box)
 
 describe('MessageProcessor with no config', () => {
   afterEach(() => {
@@ -327,7 +327,7 @@ describe('project with simple config and graphql files', () => {
       position: { character: 20, line: 17 },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
-    // note: if the graphiql test schema changes, 
+    // note: if the graphiql test schema changes,
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
@@ -436,7 +436,10 @@ describe('project with simple config and graphql files', () => {
     //   'b/schema.graphql',
     //   schemaFile[1] + '\ntype Example1 { field:   }',
     // );
-    // TODO: this didn't work at all, how to register incomplete changes to model autocomplete, etc?
+    // TODO: this didn't work at all for multi project,
+    // whereas a schema change works above in a single schema context as per updating the cache
+    //
+    // how to register incomplete changes to model autocomplete, etc?
     // await project.lsp.handleWatchedFilesChangedNotification({
     //   changes: [
     //     { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
