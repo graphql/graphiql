@@ -50,11 +50,6 @@ export interface GraphQLCache {
 
   getProjectForFile: (uri: string) => GraphQLProjectConfig | void;
 
-  getObjectTypeDependencies: (
-    query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<ObjectTypeInfo[]>;
-
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
@@ -90,7 +85,7 @@ export interface GraphQLCache {
     contents: CachedContent[],
   ) => Promise<void>;
   getSchema: (
-    appName?: string,
+    appName: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
 }

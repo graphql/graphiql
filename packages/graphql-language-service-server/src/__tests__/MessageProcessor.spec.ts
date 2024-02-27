@@ -14,7 +14,7 @@ const defaultFiles = [
 ] as MockFile[];
 const schemaFile: MockFile = [
   'schema.graphql',
-  'type Query { foo: Foo }\n\ntype Foo { bar: String }',
+  'type Query { foo: Foo  }\n\ntype Foo { bar: String }',
 ];
 
 const genSchemaPath =
@@ -102,6 +102,22 @@ describe('project with simple config and graphql files', () => {
       ],
     });
     await project.init('query.graphql');
+    const initSchemaDefRequest = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('schema.graphql') },
+      position: { character: 19, line: 0 },
+    });
+    expect(initSchemaDefRequest.length).toEqual(1);
+    expect(initSchemaDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
+    expect(serializeRange(initSchemaDefRequest[0].range)).toEqual({
+      start: {
+        line: 2,
+        character: 0,
+      },
+      end: {
+        character: 24,
+        line: 2,
+      },
+    });
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
     // TODO: for some reason the cache result formats the graphql query??
@@ -151,8 +167,26 @@ describe('project with simple config and graphql files', () => {
     });
     const typeCache =
       project.lsp._graphQLCache._typeDefinitionsCache.get('/tmp/test-default');
-
     expect(typeCache?.get('Test')?.definition.name.value).toEqual('Test');
+
+    // test in-file schema defs! important!
+    const schemaDefRequest = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('schema.graphql') },
+      position: { character: 19, line: 0 },
+    });
+    expect(schemaDefRequest.length).toEqual(1);
+    expect(schemaDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
+    expect(serializeRange(schemaDefRequest[0].range)).toEqual({
+      start: {
+        line: 7,
+        character: 0,
+      },
+      end: {
+        character: 21,
+        line: 7,
+      },
+    });
+
     // TODO: this fragment should now be invalid
     const result = await project.lsp.handleDidOpenOrSaveNotification({
       textDocument: { uri: project.uri('fragments.graphql') },
@@ -237,7 +271,7 @@ describe('project with simple config and graphql files', () => {
     expect(changeParams?.diagnostics[0].message).toEqual(
       'Cannot query field "or" on type "Test".',
     );
-    expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
+    expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
 
     // schema file is present and contains schema
     const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
@@ -305,10 +339,11 @@ describe('project with simple config and graphql files', () => {
     });
     // lets remove the fragments file
     await project.deleteFile('fragments.graphql');
-    // and add a fragments.ts file
+    // and add a fragments.ts file, watched
     await project.addFile(
       'fragments.ts',
       '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
+      true,
     );
 
     await project.lsp.handleWatchedFilesChangedNotification({
@@ -332,5 +367,101 @@ describe('project with simple config and graphql files', () => {
         character: 31,
       },
     });
+  });
+  it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
+    const project = new MockProject({
+      files: [
+        [
+          'a/fragments.ts',
+          '\n\n\nexport const fragment = gql`\n\n  fragment TestFragment on Test { isTest }\n`',
+        ],
+        [
+          'a/query.ts',
+          '\n\n\nexport const query = gql`query { test() { isTest, ...T } }`',
+        ],
+
+        [
+          'b/query.ts',
+          'import graphql from "graphql"\n\n\nconst a = graphql` query example { test() { isTest ...T }  }`',
+        ],
+        [
+          'b/fragments.ts',
+          '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
+        ],
+        ['b/schema.graphql', schemaFile[1]],
+        [
+          'package.json',
+          `{ "graphql": { "projects": { 
+              "a": { "schema": "http://localhost:3100/graphql", "documents": "./a/**" }, 
+              "b": { "schema": "./b/schema.graphql", "documents": "./b/**" }  }
+            } 
+          }`,
+        ],
+        schemaFile,
+      ],
+    });
+
+    const initParams = await project.init('a/query.graphql');
+    expect(initParams.diagnostics).toEqual([]);
+
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    expect(await project.lsp._graphQLCache.getSchema('a')).toBeDefined();
+    const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
+      encoding: 'utf-8',
+    });
+    expect(file.split('\n').length).toBeGreaterThan(10);
+    // add a new typescript file with empty query to the b project
+    // and expect autocomplete to only show options for project b
+    await project.addFile(
+      'b/empty.ts',
+      'import gql from "graphql-tag"\ngql`query a {    }`',
+    );
+    const completion = await project.lsp.handleCompletionRequest({
+      textDocument: { uri: project.uri('b/empty.ts') },
+      position: { character: 13, line: 1 },
+    });
+
+    expect(completion.items?.length).toEqual(4);
+    expect(completion.items.map(i => i.label)).toEqual([
+      'foo',
+      '__typename',
+      '__schema',
+      '__type',
+    ]);
+
+    // TODO this didn't work at all, how to register incomplete changes to model autocomplete, etc?
+    // project.changeFile(
+    //   'b/schema.graphql',
+    //   schemaFile[1] + '\ntype Example1 { field:   }',
+    // );
+    // await project.lsp.handleWatchedFilesChangedNotification({
+    //   changes: [
+    //     { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
+    //   ],
+    // });
+    // better - fails on a graphql parsing error! annoying
+    // await project.lsp.handleDidChangeNotification({
+    //   textDocument: { uri: project.uri('b/schema.graphql'), version: 1 },
+    //   contentChanges: [
+    //     { text: schemaFile[1] + '\ntype Example1 { field:   }' },
+    //   ],
+    // });
+
+    // const schemaCompletion = await project.lsp.handleCompletionRequest({
+    //   textDocument: { uri: project.uri('b/schema.graphql') },
+    //   position: { character: 23, line: 3 },
+    // });
+    // expect(schemaCompletion.items.map(i => i.label)).toEqual([
+    //   'foo',
+    //   '__typename',
+    //   '__schema',
+    //   '__type',
+    // ]);
+    // this confirms that autocomplete respects cross-project boundaries for types
+    const schemaCompletion = await project.lsp.handleCompletionRequest({
+      textDocument: { uri: project.uri('b/schema.graphql') },
+      position: { character: 21, line: 0 },
+    });
+    expect(schemaCompletion.items.map(i => i.label)).toEqual(['Foo']);
   });
 });
