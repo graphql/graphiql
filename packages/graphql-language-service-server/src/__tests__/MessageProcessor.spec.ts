@@ -14,11 +14,24 @@ const defaultFiles = [
 ] as MockFile[];
 const schemaFile: MockFile = [
   'schema.graphql',
-  'type Query { foo: Foo  }\n\ntype Foo { bar: String }',
+  'type Query { foo: Foo, test: Test }\n\ntype Foo { bar: String }\n\ntype Test { test: Foo }',
 ];
+
+const fooTypePosition = {
+  start: { line: 2, character: 0 },
+  end: { line: 2, character: 24 },
+};
 
 const genSchemaPath =
   '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql';
+
+// TODO:
+// - reorganize into multiple files
+// - potentially a high level abstraction and/or it.each() for a pathway across configs, file extensions, etc.
+//   this may be cumbersome with offset position assertions but possible
+//   if we can create consistency that doesn't limit variability
+// - convert each it() into a nested describe() block (or a top level describe() in another file), and sprinkle in it() statements to replace comments
+// - fix TODO comments where bugs were found that couldn't be resolved quickly (2-4hr timebox)
 
 describe('MessageProcessor with no config', () => {
   afterEach(() => {
@@ -108,18 +121,11 @@ describe('project with simple config and graphql files', () => {
     });
     expect(initSchemaDefRequest.length).toEqual(1);
     expect(initSchemaDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
-    expect(serializeRange(initSchemaDefRequest[0].range)).toEqual({
-      start: {
-        line: 2,
-        character: 0,
-      },
-      end: {
-        character: 24,
-        line: 2,
-      },
-    });
+    expect(serializeRange(initSchemaDefRequest[0].range)).toEqual(
+      fooTypePosition,
+    );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
-    expect(await project.lsp._graphQLCache.getSchema()).toBeDefined();
+    expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
     // TODO: for some reason the cache result formats the graphql query??
     const docCache = project.lsp._textDocumentCache;
     expect(
@@ -131,10 +137,7 @@ describe('project with simple config and graphql files', () => {
     });
     expect(schemaDefinitions[0].uri).toEqual(project.uri('schema.graphql'));
 
-    expect(serializeRange(schemaDefinitions[0].range).end).toEqual({
-      line: 2,
-      character: 24,
-    });
+    expect(serializeRange(schemaDefinitions[0].range)).toEqual(fooTypePosition);
 
     // query definition request of fragment name jumps to the fragment definition
     const firstQueryDefRequest = await project.lsp.handleDefinitionRequest({
@@ -174,18 +177,16 @@ describe('project with simple config and graphql files', () => {
       textDocument: { uri: project.uri('schema.graphql') },
       position: { character: 19, line: 0 },
     });
+
+    const fooLaterTypePosition = {
+      start: { line: 7, character: 0 },
+      end: { line: 7, character: 21 },
+    };
     expect(schemaDefRequest.length).toEqual(1);
     expect(schemaDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
-    expect(serializeRange(schemaDefRequest[0].range)).toEqual({
-      start: {
-        line: 7,
-        character: 0,
-      },
-      end: {
-        character: 21,
-        line: 7,
-      },
-    });
+    expect(serializeRange(schemaDefRequest[0].range)).toEqual(
+      fooLaterTypePosition,
+    );
 
     // TODO: this fragment should now be invalid
     const result = await project.lsp.handleDidOpenOrSaveNotification({
@@ -241,10 +242,9 @@ describe('project with simple config and graphql files', () => {
       project.uri('schema.graphql'),
     );
 
-    expect(serializeRange(schemaDefinitionsAgain[0].range).end).toEqual({
-      line: 7,
-      character: 21,
-    });
+    expect(serializeRange(schemaDefinitionsAgain[0].range)).toEqual(
+      fooLaterTypePosition,
+    );
     // TODO: the position should change when a watched file changes???
   });
   it('caches files and schema with a URL config', async () => {
@@ -327,6 +327,8 @@ describe('project with simple config and graphql files', () => {
       position: { character: 20, line: 17 },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
+    // note: if the graphiql test schema changes, 
+    // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
         line: 100,
@@ -421,19 +423,20 @@ describe('project with simple config and graphql files', () => {
       position: { character: 13, line: 1 },
     });
 
-    expect(completion.items?.length).toEqual(4);
+    expect(completion.items?.length).toEqual(5);
     expect(completion.items.map(i => i.label)).toEqual([
       'foo',
+      'test',
       '__typename',
       '__schema',
       '__type',
     ]);
 
-    // TODO this didn't work at all, how to register incomplete changes to model autocomplete, etc?
     // project.changeFile(
     //   'b/schema.graphql',
     //   schemaFile[1] + '\ntype Example1 { field:   }',
     // );
+    // TODO: this didn't work at all, how to register incomplete changes to model autocomplete, etc?
     // await project.lsp.handleWatchedFilesChangedNotification({
     //   changes: [
     //     { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
@@ -457,11 +460,18 @@ describe('project with simple config and graphql files', () => {
     //   '__schema',
     //   '__type',
     // ]);
-    // this confirms that autocomplete respects cross-project boundaries for types
-    const schemaCompletion = await project.lsp.handleCompletionRequest({
+    // this confirms that autocomplete respects cross-project boundaries for types.
+    // it performs a definition request for the foo field in Query
+    const schemaCompletion1 = await project.lsp.handleCompletionRequest({
       textDocument: { uri: project.uri('b/schema.graphql') },
       position: { character: 21, line: 0 },
     });
-    expect(schemaCompletion.items.map(i => i.label)).toEqual(['Foo']);
+    expect(schemaCompletion1.items.map(i => i.label)).toEqual(['Foo']);
+    // it performs a definition request for the Foo type in Test.test
+    const schemaDefinition = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('b/schema.graphql') },
+      position: { character: 21, line: 4 },
+    });
+    expect(serializeRange(schemaDefinition[0].range)).toEqual(fooTypePosition);
   });
 });
