@@ -1,5 +1,11 @@
 # cm6-graphql
 
+## 0.0.14
+
+### Patch Changes
+
+- [#3534](https://github.com/graphql/graphiql/pull/3534) [`f4c98c1f`](https://github.com/graphql/graphiql/commit/f4c98c1f7c6df5a918479e641631e8fbc5b5a92e) Thanks [@johndcollett](https://github.com/johndcollett)! - fix: multiple argument syntax highlighting
+
 ## 0.0.13
 
 ### Patch Changes
