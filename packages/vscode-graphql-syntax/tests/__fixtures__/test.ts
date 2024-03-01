@@ -25,8 +25,26 @@ const query = graphql<SomeGeneric>`
   }
 `;
 
-// TODO: Fix this
 const query = graphql<Generic>('query { id }');
+
+const query = graphql(
+  'query { id }'
+);
+
+const query = graphql<Generic>(
+  'query { id }'
+);
+
+const query = graphql(`
+  query { id }
+`);
+
+const query = graphql(
+  `
+    query { id }
+  `,
+  [var1, var2]
+);
 
 const queryWithInlineComment = `#graphql
  query {

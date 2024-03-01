@@ -26,6 +26,50 @@ const Component = () => {
 };
 ```
 
+```js
+const variable = 1;
+
+const queryA = graphql(`
+  query {
+    something(arg: ${variable})
+  }
+`);
+
+const queryB = graphql(
+  `
+    query {
+      something(arg: ${variable})
+    }
+  `
+);
+
+const queryC = graphql(
+  'query { something(arg: ${variable}) }'
+);
+```
+
+```ts
+const variable: number = 1;
+
+const queryA = graphql(`
+  query {
+    something(arg: ${variable})
+  }
+`);
+
+const queryB = graphql(
+  `
+    query {
+      something(arg: ${variable})
+    }
+  `
+);
+
+const queryC = graphql(
+  'query { something(arg: ${variable}) }'
+);
+```
+
 ### svelte
 
 ```svelte
