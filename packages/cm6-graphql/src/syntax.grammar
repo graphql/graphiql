@@ -291,7 +291,7 @@ Directive { DirectiveName Arguments? }
 Arguments { "(" Argument+ ")"}
 
 // https://spec.graphql.org/October2021/#Argument
-Argument { ArgumentAttributeName ":" value }
+Argument { ArgumentAttributeName ":" value comma? }
 
 ArgumentAttributeName { name }
 
