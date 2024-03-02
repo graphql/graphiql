@@ -63,7 +63,6 @@ import {
   ConfigEmptyError,
   ConfigInvalidError,
   ConfigNotFoundError,
-  GraphQLExtensionDeclaration,
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
@@ -88,24 +87,22 @@ function toPosition(position: VscodePosition): IPosition {
 }
 
 export class MessageProcessor {
-  _connection: Connection;
-  _graphQLCache!: GraphQLCache;
-  _graphQLConfig: GraphQLConfig | undefined;
-  _languageService!: GraphQLLanguageService;
-  _textDocumentCache = new Map<string, CachedDocumentType>();
-  _isInitialized = false;
-  _isGraphQLConfigMissing: boolean | null = null;
-  _willShutdown = false;
-  _logger: Logger | NoopLogger;
-  _extensions?: GraphQLExtensionDeclaration[];
-  _parser: (text: string, uri: string) => CachedContent[];
-  _tmpDir: string;
-  _tmpUriBase: string;
-  _tmpDirBase: string;
-  _loadConfigOptions: LoadConfigOptions;
-  _schemaCacheInit = false;
-  _rootPath: string = process.cwd();
-  _settings: any;
+  private _connection: Connection;
+  private _graphQLCache!: GraphQLCache;
+  private _languageService!: GraphQLLanguageService;
+  private _textDocumentCache = new Map<string, CachedDocumentType>();
+  private _isInitialized = false;
+  private _isGraphQLConfigMissing: boolean | null = null;
+  private _willShutdown = false;
+  private _logger: Logger | NoopLogger;
+  private _parser: (text: string, uri: string) => CachedContent[];
+  private _tmpDir: string;
+  private _tmpUriBase: string;
+  private _tmpDirBase: string;
+  private _loadConfigOptions: LoadConfigOptions;
+  private _schemaCacheInit = false;
+  private _rootPath: string = process.cwd();
+  private _settings: any;
 
   constructor({
     logger,
@@ -128,7 +125,6 @@ export class MessageProcessor {
   }) {
     this._connection = connection;
     this._logger = logger;
-    this._graphQLConfig = config;
     this._parser = (text, uri) => {
       const p = parser ?? parseDocument;
       return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
@@ -138,12 +134,6 @@ export class MessageProcessor {
     this._tmpUriBase = URI.file(this._tmpDirBase).toString();
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
-    if (
-      loadConfigOptions.extensions &&
-      loadConfigOptions.extensions?.length > 0
-    ) {
-      this._extensions = loadConfigOptions.extensions;
-    }
 
     if (!existsSync(this._tmpDirBase)) {
       void mkdirSync(this._tmpDirBase);
@@ -156,7 +146,7 @@ export class MessageProcessor {
     this._connection = connection;
   }
 
-  async handleInitializeRequest(
+  public async handleInitializeRequest(
     params: InitializeParams,
     _token?: CancellationToken,
     configDir?: string,
@@ -244,7 +234,6 @@ export class MessageProcessor {
       );
       const config = this._graphQLCache.getGraphQLConfig();
       if (config) {
-        this._graphQLConfig = config;
         await this._cacheAllProjectFiles(config);
         this._isInitialized = true;
         this._isGraphQLConfigMissing = false;
@@ -312,29 +301,44 @@ export class MessageProcessor {
     }
     return false;
   }
+  private async _loadConfigOrSkip(uri: string) {
+    try {
+      const isGraphQLConfigFile = await this._isGraphQLConfigFile(uri);
 
-  async handleDidOpenOrSaveNotification(
+      if (!this._isInitialized) {
+        if (this._isGraphQLConfigMissing === true && !isGraphQLConfigFile) {
+          return true;
+        }
+        // don't try to initialize again if we've already tried
+        // and the graphql config file or package.json entry isn't even there
+        await this._updateGraphQLConfig();
+        return isGraphQLConfigFile;
+      }
+      // if it has initialized, but this is another config file change, then let's handle it
+      if (isGraphQLConfigFile) {
+        await this._updateGraphQLConfig();
+      }
+      return isGraphQLConfigFile;
+    } catch (err) {
+      this._logger.error(String(err));
+      // return true if it's a graphql config file so we don't treat
+      // this as a non-config file if it is one
+      return true;
+    }
+  }
+
+  public async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams> {
     /**
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
      */
-    const isGraphQLConfigFile = await this._isGraphQLConfigFile(
-      params.textDocument.uri,
-    );
-    try {
-      if (!this._isInitialized) {
-        // don't try to initialize again if we've already tried
-        // and the graphql config file or package.json entry isn't even there
-        if (this._isGraphQLConfigMissing === true && !isGraphQLConfigFile) {
-          return { uri: params.textDocument.uri, diagnostics: [] };
-        }
-        // then initial call to update graphql config
-        await this._updateGraphQLConfig();
-      }
-    } catch (err) {
-      this._logger.error(String(err));
+    const shouldSkip = await this._loadConfigOrSkip(params.textDocument.uri);
+    // if we're loading config or the config is missing or there's an error
+    // don't do anything else
+    if (shouldSkip) {
+      return { uri: params.textDocument.uri, diagnostics: [] };
     }
 
     // Here, we set the workspace settings in memory,
@@ -361,20 +365,13 @@ export class MessageProcessor {
       contents = this._parser(text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
-    } else if (isGraphQLConfigFile) {
-      this._logger.info('updating graphql config');
-      await this._updateGraphQLConfig();
-      return { uri, diagnostics: [] };
     }
     if (!this._graphQLCache) {
       return { uri, diagnostics };
     }
     try {
       const project = this._graphQLCache.getProjectForFile(uri);
-      if (
-        this._isInitialized &&
-        project?.extensions?.languageService?.enableValidation !== false
-      ) {
+      if (project?.extensions?.languageService?.enableValidation !== false) {
         await Promise.all(
           contents.map(async ({ query, range }) => {
             const results = await this._languageService.getDiagnostics(
@@ -406,7 +403,7 @@ export class MessageProcessor {
     return { uri, diagnostics };
   }
 
-  async handleDidChangeNotification(
+  public async handleDidChangeNotification(
     params: DidChangeTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
     if (
@@ -497,7 +494,7 @@ export class MessageProcessor {
     return {};
   }
 
-  handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
+  public handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
     if (!this._isInitialized) {
       return;
     }
@@ -525,11 +522,11 @@ export class MessageProcessor {
     );
   }
 
-  handleShutdownRequest(): void {
+  public handleShutdownRequest(): void {
     this._willShutdown = true;
   }
 
-  handleExitNotification(): void {
+  public handleExitNotification(): void {
     process.exit(this._willShutdown ? 0 : 1);
   }
 
@@ -541,7 +538,7 @@ export class MessageProcessor {
     }
   }
 
-  async handleCompletionRequest(
+  public async handleCompletionRequest(
     params: CompletionParams,
   ): Promise<CompletionList> {
     if (!this._isInitialized) {
@@ -599,7 +596,9 @@ export class MessageProcessor {
     return { items: result, isIncomplete: false };
   }
 
-  async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
+  public async handleHoverRequest(
+    params: TextDocumentPositionParams,
+  ): Promise<Hover> {
     if (!this._isInitialized) {
       return { contents: [] };
     }
@@ -642,7 +641,7 @@ export class MessageProcessor {
     };
   }
 
-  async handleWatchedFilesChangedNotification(
+  public async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
     if (
@@ -655,13 +654,9 @@ export class MessageProcessor {
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
-        if (
-          this._isGraphQLConfigMissing ||
-          !this._isInitialized ||
-          !this._graphQLCache
-        ) {
-          this._logger.warn('No cache available for handleWatchedFilesChanged');
-          return;
+        const shouldSkip = await this._loadConfigOrSkip(change.uri);
+        if (shouldSkip) {
+          return { uri: change.uri, diagnostics: [] };
         }
         if (
           change.type === FileChangeTypeKind.Created ||
@@ -731,7 +726,7 @@ export class MessageProcessor {
     );
   }
 
-  async handleDefinitionRequest(
+  public async handleDefinitionRequest(
     params: TextDocumentPositionParams,
     _token?: CancellationToken,
   ): Promise<Array<Location>> {
@@ -836,7 +831,7 @@ export class MessageProcessor {
     return formatted;
   }
 
-  async handleDocumentSymbolRequest(
+  public async handleDocumentSymbolRequest(
     params: DocumentSymbolParams,
   ): Promise<Array<SymbolInformation>> {
     if (!this._isInitialized) {
@@ -896,7 +891,7 @@ export class MessageProcessor {
   //    );
   // }
 
-  async handleWorkspaceSymbolRequest(
+  public async handleWorkspaceSymbolRequest(
     params: WorkspaceSymbolParams,
   ): Promise<Array<SymbolInformation>> {
     if (!this._isInitialized) {

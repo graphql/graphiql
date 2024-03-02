@@ -42,8 +42,7 @@ describe('MessageProcessor with no config', () => {
       files: [...defaultFiles, ['graphql.config.json', '']],
     });
     await project.init();
-    expect(project.lsp._isInitialized).toEqual(false);
-    expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
+
     expect(project.lsp._logger.info).toHaveBeenCalledTimes(1);
     expect(project.lsp._logger.error).toHaveBeenCalledTimes(1);
     expect(project.lsp._logger.error).toHaveBeenCalledWith(
@@ -51,20 +50,23 @@ describe('MessageProcessor with no config', () => {
         /GraphQL Config file is not available in the provided config directory/,
       ),
     );
+    expect(project.lsp._isInitialized).toEqual(false);
+    expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
   });
   it('fails to initialize with no config file present', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
     });
     await project.init();
-    expect(project.lsp._isInitialized).toEqual(false);
-    expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
+
     expect(project.lsp._logger.error).toHaveBeenCalledTimes(1);
     expect(project.lsp._logger.error).toHaveBeenCalledWith(
       expect.stringMatching(
         /GraphQL Config file is not available in the provided config directory/,
       ),
     );
+    expect(project.lsp._isInitialized).toEqual(false);
+    expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
   });
   it('initializes when presented with a valid config later', async () => {
     const project = new MockProject({
@@ -246,9 +248,8 @@ describe('project with simple config and graphql files', () => {
       fooLaterTypePosition,
     );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
-
-    // TODO: the position should change when a watched file changes???
   });
+
   it('caches files and schema with a URL config', async () => {
     const project = new MockProject({
       files: [
@@ -262,9 +263,9 @@ describe('project with simple config and graphql files', () => {
     });
 
     const initParams = await project.init('query.graphql');
-    expect(initParams.diagnostics).toEqual([]);
-
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
+
+    expect(initParams.diagnostics).toEqual([]);
 
     const changeParams = await project.lsp.handleDidChangeNotification({
       textDocument: { uri: project.uri('query.graphql'), version: 1 },
@@ -373,6 +374,7 @@ describe('project with simple config and graphql files', () => {
     });
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });
+
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
     const project = new MockProject({
       files: [

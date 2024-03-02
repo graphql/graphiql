@@ -548,6 +548,54 @@ describe('MessageProcessor', () => {
     });
   });
 
+  describe('_loadConfigOrSkip', () => {
+    const mockReadFileSync: jest.Mock =
+      jest.requireMock('node:fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._updateGraphQLConfig = jest.fn();
+    });
+
+    it('loads config if not initialized', async () => {
+      messageProcessor._isInitialized = false;
+
+      const result = await messageProcessor._loadConfigOrSkip(
+        `${pathToFileURL('.')}/graphql.config.js`,
+      );
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      // we want to return true here to skip further processing, because it's just a config file change
+      expect(result).toEqual(true);
+    });
+
+    it('loads config if a file change occurs and the server is not initialized', async () => {
+      messageProcessor._isInitialized = false;
+
+      const result = await messageProcessor._loadConfigOrSkip(
+        `${pathToFileURL('.')}/file.ts`,
+      );
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      // here we have a non-config file, so we don't want to skip, because we need to run diagnostics etc
+      expect(result).toEqual(false);
+    });
+    it('config file change updates server config even if the server is already initialized', async () => {
+      messageProcessor._isInitialized = true;
+      const result = await messageProcessor._loadConfigOrSkip(
+        `${pathToFileURL('.')}/graphql.config.ts`,
+      );
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(true);
+    });
+    it('skips if the server is already initialized', async () => {
+      messageProcessor._isInitialized = true;
+      const result = await messageProcessor._loadConfigOrSkip(
+        `${pathToFileURL('.')}/myFile.ts`,
+      );
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(result).toEqual(false);
+    });
+  });
+
   describe('handleDidOpenOrSaveNotification', () => {
     const mockReadFileSync: jest.Mock =
       jest.requireMock('node:fs').readFileSync;
@@ -555,6 +603,7 @@ describe('MessageProcessor', () => {
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
       messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._loadConfigOrSkip = jest.fn();
     });
     it('updates config for standard config filename changes', async () => {
       await messageProcessor.handleDidOpenOrSaveNotification({
@@ -565,8 +614,7 @@ describe('MessageProcessor', () => {
           text: '',
         },
       });
-
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._loadConfigOrSkip).toHaveBeenCalled();
     });
 
     it('updates config for custom config filename changes', async () => {
@@ -582,7 +630,9 @@ describe('MessageProcessor', () => {
         },
       });
 
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._loadConfigOrSkip).toHaveBeenCalledWith(
+        expect.stringContaining(customConfigName),
+      );
     });
 
     it('handles config requests with no config', async () => {
@@ -606,6 +656,7 @@ describe('MessageProcessor', () => {
       expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
   });
+
   describe('_handleConfigErrors', () => {
     it('handles missing config errors', async () => {
       messageProcessor._handleConfigError({
@@ -698,7 +749,6 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._graphQLConfig = undefined;
       messageProcessor._isGraphQLConfigMissing = true;
       messageProcessor._parser = jest.fn();
     });
@@ -722,7 +772,6 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._graphQLConfig = undefined;
       messageProcessor._isGraphQLConfigMissing = true;
       messageProcessor._parser = jest.fn();
     });
