@@ -3,11 +3,22 @@
   "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro) -source.graphql -inline.graphql -string -comment",
   "patterns": [
     {
-      "contentName": "meta.embedded.block.graphql",
-      "begin": "(?<=(?:(?:Relay\\??\\.)QL|gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*)\\(",
+      "begin": "\\s*+(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*\\(",
       "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.other.class.js"
+        },
+        "2": {
+          "name": "entity.name.function.tagged-template.js"
+        },
+        "3": {
+          "name": "entity.name.function.tagged-template.js"
+        }
+      },
       "patterns": [
         {
+          "contentName": "meta.embedded.block.graphql",
           "begin": "(`|')",
           "end": "(`|')",
           "beginCaptures": {
@@ -24,6 +35,14 @@
             {
               "include": "source.graphql"
             }
+          ]
+        },
+        {
+          "patterns": [
+            { "include": "source.js" },
+            { "include": "source.ts" },
+            { "include": "source.js.jsx" },
+            { "include": "source.tsx" }
           ]
         }
       ]
