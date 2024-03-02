@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.9.2
+
+### Patch Changes
+
+- [#3543](https://github.com/graphql/graphiql/pull/3543) [`defc126b`](https://github.com/graphql/graphiql/commit/defc126b107961d7a4ba093b35b1d77bb7018a79) Thanks [@acao](https://github.com/acao)! - Temporarily revert a syntax highlighting bugfix that caused more bugs
+
 ## 0.9.1
 
 ### Patch Changes
