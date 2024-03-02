@@ -37,12 +37,16 @@ const graphql = graphql(`
   }
 `);
 
+const after1 = 'after';
+
 const graphql = graphql(
   `
     query($id: ID!) { test }
   `,
   [var1, var2]
 );
+
+const after2 = 'after';
 
 const query = /* GraphQL */ 'query { id } ';
 const query = graphql('query($id: ID!) { id } ');
