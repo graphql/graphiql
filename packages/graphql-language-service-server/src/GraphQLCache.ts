@@ -20,7 +20,6 @@ import {
 } from 'graphql';
 import type {
   CachedContent,
-  GraphQLCache as GraphQLCacheInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
@@ -93,7 +92,7 @@ export async function getGraphQLCache({
   });
 }
 
-export class GraphQLCache implements GraphQLCacheInterface {
+export class GraphQLCache {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
@@ -596,8 +595,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (schemaPath && schemaKey) {
       schemaCacheKey = schemaKey as string;
 
-      // Read from disk
-      schema = await projectConfig.getSchema();
+      try {
+        // Read from disk
+        schema = await projectConfig.getSchema();
+      } catch {
+        // // if there is an error reading the schema, just use the last valid schema
+        // schema = this._schemaMap.get(schemaCacheKey);
+      }
 
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);

@@ -483,38 +483,6 @@ describe('project with simple config and graphql files', () => {
       '__schema',
       '__type',
     ]);
-
-    // project.changeFile(
-    //   'b/schema.graphql',
-    //   schemaFile[1] + '\ntype Example1 { field:   }',
-    // );
-    // TODO: this didn't work at all for multi project,
-    // whereas a schema change works above in a single schema context as per updating the cache
-    //
-    // how to register incomplete changes to model autocomplete, etc?
-    // await project.lsp.handleWatchedFilesChangedNotification({
-    //   changes: [
-    //     { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
-    //   ],
-    // });
-    // better - fails on a graphql parsing error! annoying
-    // await project.lsp.handleDidChangeNotification({
-    //   textDocument: { uri: project.uri('b/schema.graphql'), version: 1 },
-    //   contentChanges: [
-    //     { text: schemaFile[1] + '\ntype Example1 { field:   }' },
-    //   ],
-    // });
-
-    // const schemaCompletion = await project.lsp.handleCompletionRequest({
-    //   textDocument: { uri: project.uri('b/schema.graphql') },
-    //   position: { character: 23, line: 3 },
-    // });
-    // expect(schemaCompletion.items.map(i => i.label)).toEqual([
-    //   'foo',
-    //   '__typename',
-    //   '__schema',
-    //   '__type',
-    // ]);
     // this confirms that autocomplete respects cross-project boundaries for types.
     // it performs a definition request for the foo field in Query
     const schemaCompletion1 = await project.lsp.handleCompletionRequest({
@@ -528,6 +496,39 @@ describe('project with simple config and graphql files', () => {
       position: { character: 21, line: 4 },
     });
     expect(serializeRange(schemaDefinition[0].range)).toEqual(fooTypePosition);
+
+    // simulate a watched schema file change (codegen, etc)
+    project.changeFile(
+      'b/schema.graphql',
+      schemaFile[1] + '\ntype Example1 { field:    }',
+    );
+    await project.lsp.handleWatchedFilesChangedNotification({
+      changes: [
+        { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
+      ],
+    });
+    // TODO: repeat this with other changes to the schema file and use a
+    // didChange event to see if the schema updates properly as well
+    // await project.lsp.handleDidChangeNotification({
+    //   textDocument: { uri: project.uri('b/schema.graphql'), version: 1 },
+    //   contentChanges: [
+    //     { text: schemaFile[1] + '\ntype Example1 { field:    }' },
+    //   ],
+    // });
+    // console.log(project.fileCache.get('b/schema.graphql'));
+    const schemaCompletion = await project.lsp.handleCompletionRequest({
+      textDocument: { uri: project.uri('b/schema.graphql') },
+      position: { character: 25, line: 5 },
+    });
+    // TODO: SDL completion still feels incomplete here... where is Int?
+    // where is self-referential Example1?
+    expect(schemaCompletion.items.map(i => i.label)).toEqual([
+      'Query',
+      'Foo',
+      'String',
+      'Test',
+      'Boolean',
+    ]);
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });

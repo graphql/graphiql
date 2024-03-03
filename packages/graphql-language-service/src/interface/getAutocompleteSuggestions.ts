@@ -399,34 +399,27 @@ export function getAutocompleteSuggestions(
 
   const unwrappedState = unwrapType(state);
 
-  if (
-    (mode === GraphQLDocumentMode.TYPE_SYSTEM &&
-      !unwrappedState.needsAdvance &&
-      kind === RuleKinds.NAMED_TYPE) ||
-    kind === RuleKinds.LIST_TYPE
-  ) {
-    if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
-      return hintList(
-        token,
-        Object.values(schema.getTypeMap())
-          .filter(type => isOutputType(type) && !type.name.startsWith('__'))
-          .map(type => ({
-            label: type.name,
-            kind: CompletionItemKind.Function,
-          })),
-      );
-    }
-    if (unwrappedState.kind === RuleKinds.INPUT_VALUE_DEF) {
-      return hintList(
-        token,
-        Object.values(schema.getTypeMap())
-          .filter(type => isInputType(type) && !type.name.startsWith('__'))
-          .map(type => ({
-            label: type.name,
-            kind: CompletionItemKind.Function,
-          })),
-      );
-    }
+  if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(type => isOutputType(type) && !type.name.startsWith('__'))
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+  if (unwrappedState.kind === RuleKinds.INPUT_VALUE_DEF) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(type => isInputType(type) && !type.name.startsWith('__'))
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
   }
 
   // Variable definition types
