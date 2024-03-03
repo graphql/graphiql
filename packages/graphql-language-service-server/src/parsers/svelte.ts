@@ -4,7 +4,7 @@ import { SourceMapConsumer } from 'source-map-js';
 import { Position, Range } from 'graphql-language-service';
 import type { RangeMapper, SourceParser } from './types';
 
-export const svelteParser: SourceParser = (text, uri, _logger) => {
+export const svelteParser: SourceParser = (text, uri, logger) => {
   const svelteResult = svelte2tsx(text, {
     filename: uri,
   });
@@ -35,11 +35,11 @@ export const svelteParser: SourceParser = (text, uri, _logger) => {
       asts: [babelParser(svelteResult.code, ['typescript'])],
       rangeMapper,
     };
-  } catch {
-    // logger.error(
-    //   `Could not parse the Svelte file at ${uri} to extract the graphql tags:`,
-    // );
-    // logger.error(String(error));
+  } catch (error) {
+    logger.info(
+      `Could not parse the Svelte file at ${uri} to extract the graphql tags:`,
+    );
+    logger.info(String(error));
     return null;
   }
 };

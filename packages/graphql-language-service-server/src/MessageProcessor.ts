@@ -255,8 +255,14 @@ export class MessageProcessor {
       const config = this._graphQLCache.getGraphQLConfig();
       if (config) {
         await this._cacheAllProjectFiles(config);
+        // TODO: per project lazy instantiation.
+        // we had it working before, but it seemed like it caused bugs
+        // which were caused by something else.
+        // thus. _isInitialized should be replaced with something like
+        // projectHasInitialized: (projectName: string) => boolean
         this._isInitialized = true;
         this._isGraphQLConfigMissing = false;
+        this._logger.info('GraphQL Language Server caches initialized');
       }
     } catch (err) {
       this._handleConfigError({ err });
@@ -387,9 +393,6 @@ export class MessageProcessor {
         // i think this is because if the file change is empty, it doesn't get parsed
         // TODO: this could be related to a bug in how we are calling didOpenOrSave in our tests
         // that doesn't reflect the real runtime behavior
-        // if (!text || text.length < 1) {
-        //   return { uri, diagnostics };
-        // }
 
         const { contents } = await this._parseAndCacheFile(
           uri,
@@ -963,8 +966,8 @@ export class MessageProcessor {
         await this._invalidateCache({ version, uri }, uri, contents);
         await this._updateObjectTypeDefinition(uri, contents, project);
       }
-    } catch {
-      //  this._logger.error(String(err));
+    } catch (err) {
+      this._logger.error(String(err));
     }
   }
   private async _cacheSchemaFile(
@@ -1158,8 +1161,19 @@ export class MessageProcessor {
       return Promise.all(
         Object.keys(config.projects).map(async projectName => {
           const project = config.getProject(projectName);
+
           await this._cacheSchemaFilesForProject(project);
-          await this._cacheDocumentFilesforProject(project);
+          if (project.documents?.length) {
+            await this._cacheDocumentFilesforProject(project);
+          } else {
+            this._logger.warn(
+              [
+                `No 'documents' config found for project: ${projectName}.`,
+                'Fragments and query documents cannot be detected.',
+                'LSP server will only perform some partial validation and SDL features.',
+              ].join('\n'),
+            );
+          }
         }),
       );
     }
