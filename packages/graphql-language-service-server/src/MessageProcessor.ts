@@ -474,20 +474,23 @@ export class MessageProcessor {
 
       if (project?.extensions?.languageService?.enableValidation !== false) {
         // Send the diagnostics onChange as well
-        await Promise.all(
-          contents.map(async ({ query, range }) => {
-            const results = await this._languageService.getDiagnostics(
-              query,
-              uri,
-              this._isRelayCompatMode(query),
-            );
-            if (results && results.length > 0) {
-              diagnostics.push(
-                ...processDiagnosticsMessage(results, query, range),
+        try {
+          await Promise.all(
+            contents.map(async ({ query, range }) => {
+              const results = await this._languageService.getDiagnostics(
+                query,
+                uri,
+                this._isRelayCompatMode(query),
               );
-            }
-          }),
-        );
+              if (results && results.length > 0) {
+                diagnostics.push(
+                  ...processDiagnosticsMessage(results, query, range),
+                );
+              }
+              // skip diagnostic errors, usually related to parsing incomplete fragments
+            }),
+          );
+        } catch {}
       }
 
       this._logger.log(
@@ -600,6 +603,7 @@ export class MessageProcessor {
     if (range) {
       position.line -= range.start.line;
     }
+
     const result = await this._languageService.getAutocompleteSuggestions(
       query,
       toPosition(position),
@@ -729,9 +733,8 @@ export class MessageProcessor {
 
               return { uri, diagnostics };
             }
-          } catch (err) {
-            this._handleConfigError({ err, uri });
-          }
+            // skip diagnostics errors usually from incomplete files
+          } catch {}
           return { uri, diagnostics: [] };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
@@ -1191,7 +1194,13 @@ export class MessageProcessor {
         const schemaFilePath = path.resolve(project.dirpath, schema);
         const uriFilePath = URI.parse(uri).fsPath;
         if (uriFilePath === schemaFilePath) {
-          await this._graphQLCache.invalidateSchemaCacheForProject(project);
+          try {
+            const file = await readFile(schemaFilePath, 'utf-8');
+            // only invalidate the schema cache if we can actually parse the file
+            // otherwise, leave the last valid one in place
+            parse(file, { noLocation: true });
+            this._graphQLCache.invalidateSchemaCacheForProject(project);
+          } catch {}
         }
       }),
     );
