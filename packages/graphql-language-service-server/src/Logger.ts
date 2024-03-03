@@ -19,39 +19,6 @@ export class Logger implements VSCodeLogger {
     debug?: boolean,
   ) {
     this.logLevel = debug ? 1 : 0;
-    // first detect the debug flag on initialization
-    void (async () => {
-      try {
-        const config = await this._connection?.workspace?.getConfiguration(
-          'vscode-graphql',
-        );
-        const debugSetting = config?.get('debug');
-        if (debugSetting === true) {
-          this.logLevel = 1;
-        }
-        if (debugSetting === false || debugSetting === null) {
-          this.logLevel = 0;
-        }
-      } catch {
-        // ignore
-      }
-    })();
-    // then watch for it to change. doesn't require re-creating the logger!
-    this._connection?.onDidChangeConfiguration(config => {
-      const debugSetting =
-        config?.settings && config.settings['vscode-graphql']?.debug;
-      // if it's undefined, it's not being passed
-      if (debugSetting === undefined) {
-        return;
-      }
-      // if it's true, set it to 1, we will eventually do log levels properly
-      if (debugSetting === true) {
-        this.logLevel = 1;
-      }
-      if (debugSetting === false || debugSetting === null) {
-        this.logLevel = 0;
-      }
-    });
   }
 
   error(message: string): void {
@@ -71,6 +38,12 @@ export class Logger implements VSCodeLogger {
       this._connection.console.log(message);
     }
   }
+  set level(level: number) {
+    this.logLevel = level;
+  }
+  get level() {
+    return this.logLevel;
+  }
 }
 
 export class NoopLogger implements VSCodeLogger {
@@ -78,4 +51,8 @@ export class NoopLogger implements VSCodeLogger {
   warn() {}
   info() {}
   log() {}
+  set level(_level: number) {}
+  get level() {
+    return 0;
+  }
 }
