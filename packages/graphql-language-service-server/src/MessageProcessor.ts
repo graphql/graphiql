@@ -225,6 +225,8 @@ export class MessageProcessor {
     };
 
     try {
+      // now we have the settings so we can re-build the logger
+      this._logger.level = this._settings?.debug === true ? 1 : 0;
       // createServer() can be called with a custom config object, and
       // this is a public interface that may be used by customized versions of the server
       if (this._providedConfig) {
