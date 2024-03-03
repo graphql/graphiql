@@ -86,7 +86,10 @@ export class MockProject {
       textDocument: {
         uri: this.uri(filename || 'query.graphql'),
         version: 1,
-        text: this.fileCache.get('query.graphql') || fileText,
+        text:
+          this.fileCache.get('query.graphql') ||
+          (filename && this.fileCache.get(filename)) ||
+          fileText,
       },
     });
   }

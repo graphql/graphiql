@@ -116,7 +116,13 @@ describe('project with simple config and graphql files', () => {
         ...defaultFiles,
       ],
     });
-    await project.init('query.graphql');
+    const results = await project.init('query.graphql');
+    expect(results.diagnostics[0].message).toEqual(
+      'Cannot query field "bar" on type "Query".',
+    );
+    expect(results.diagnostics[1].message).toEqual(
+      'Fragment "B" cannot be spread here as objects of type "Query" can never be of type "Foo".',
+    );
     const initSchemaDefRequest = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('schema.graphql') },
       position: { character: 19, line: 0 },
@@ -190,11 +196,52 @@ describe('project with simple config and graphql files', () => {
       fooLaterTypePosition,
     );
 
+    // change the file to make the fragment invalid
+    project.changeFile(
+      'schema.graphql',
+      // now Foo has a bad field, the fragment should be invalid
+      'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
+    );
+    // await project.lsp.handleWatchedFilesChangedNotification({
+    //   changes: [
+    //     {
+    //       type: FileChangeType.Changed,
+    //       uri: project.uri('schema.graphql'),
+    //     },
+    //   ],
+    // });
+    await project.lsp.handleDidChangeNotification({
+      contentChanges: [
+        {
+          type: FileChangeType.Changed,
+          text: 'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
+        },
+      ],
+      textDocument: { uri: project.uri('schema.graphql'), version: 1 },
+    });
+
+    const schemaDefRequest2 = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('schema.graphql') },
+      position: { character: 19, line: 0 },
+    });
+
+    const fooLaterTypePosition2 = {
+      start: { line: 8, character: 0 },
+      end: { line: 8, character: 21 },
+    };
+    expect(schemaDefRequest2.length).toEqual(1);
+    expect(schemaDefRequest2[0].uri).toEqual(project.uri('schema.graphql'));
+    expect(serializeRange(schemaDefRequest2[0].range)).toEqual(
+      fooLaterTypePosition2,
+    );
+
     // TODO: this fragment should now be invalid
     const result = await project.lsp.handleDidOpenOrSaveNotification({
       textDocument: { uri: project.uri('fragments.graphql') },
     });
-    expect(result.diagnostics).toEqual([]);
+    expect(result.diagnostics[0].message).toEqual(
+      'Cannot query field "bar" on type "Foo". Did you mean "bad"?',
+    );
     const generatedFile = existsSync(join(genSchemaPath));
     // this generated file should not exist because the schema is local!
     expect(generatedFile).toEqual(false);
@@ -245,7 +292,7 @@ describe('project with simple config and graphql files', () => {
     );
 
     expect(serializeRange(schemaDefinitionsAgain[0].range)).toEqual(
-      fooLaterTypePosition,
+      fooLaterTypePosition2,
     );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });
@@ -384,7 +431,7 @@ describe('project with simple config and graphql files', () => {
         ],
         [
           'a/query.ts',
-          '\n\n\nexport const query = gql`query { test() { isTest, ...T } }`',
+          '\n\n\nexport const query = graphql`query { test { isTest ...T } }`',
         ],
 
         [
@@ -408,8 +455,8 @@ describe('project with simple config and graphql files', () => {
       ],
     });
 
-    const initParams = await project.init('a/query.graphql');
-    expect(initParams.diagnostics).toEqual([]);
+    const initParams = await project.init('a/query.ts');
+    expect(initParams.diagnostics[0].message).toEqual('Unknown fragment "T".');
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('a')).toBeDefined();

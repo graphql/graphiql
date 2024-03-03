@@ -41,15 +41,15 @@ function parseAstro(source: string): ParseAstroResult {
   return { type: 'error', errors: ['Could not find frontmatter block'] };
 }
 
-export const astroParser: SourceParser = (text, uri, logger) => {
+export const astroParser: SourceParser = (text, _uri, _logger) => {
   const parseAstroResult = parseAstro(text);
   if (parseAstroResult.type === 'error') {
-    logger.error(
-      `Could not parse the astro file at ${uri} to extract the graphql tags:`,
-    );
-    for (const error of parseAstroResult.errors) {
-      logger.error(String(error));
-    }
+    // logger.error(
+    //   `Could not parse the astro file at ${uri} to extract the graphql tags:`,
+    // );
+    // for (const error of parseAstroResult.errors) {
+    //   logger.error(String(error));
+    // }
     return null;
   }
 

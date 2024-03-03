@@ -45,16 +45,16 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
   };
 }
 
-export const vueParser: SourceParser = (text, uri, logger) => {
+export const vueParser: SourceParser = (text, _uri, _logger) => {
   const asts = [];
   const parseVueSFCResult = parseVueSFC(text);
   if (parseVueSFCResult.type === 'error') {
-    logger.error(
-      `Could not parse the vue file at ${uri} to extract the graphql tags:`,
-    );
-    for (const error of parseVueSFCResult.errors) {
-      logger.error(String(error));
-    }
+    // logger.error(
+    //   `Could not parse the vue file at ${uri} to extract the graphql tags:`,
+    // );
+    // for (const error of parseVueSFCResult.errors) {
+    //   logger.error(String(error));
+    // }
     return null;
   }
 
