@@ -97,12 +97,11 @@ export class MessageProcessor {
   private _logger: Logger | NoopLogger;
   private _parser: (text: string, uri: string) => CachedContent[];
   private _tmpDir: string;
-  private _tmpUriBase: string;
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
-  private _schemaCacheInit = false;
   private _rootPath: string = process.cwd();
   private _settings: any;
+  private _providedConfig?: GraphQLConfig;
 
   constructor({
     logger,
@@ -123,6 +122,9 @@ export class MessageProcessor {
     tmpDir?: string;
     connection: Connection;
   }) {
+    if (config) {
+      this._providedConfig = config;
+    }
     this._connection = connection;
     this._logger = logger;
     this._parser = (text, uri) => {
@@ -131,7 +133,6 @@ export class MessageProcessor {
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = URI.file(this._tmpDirBase).toString();
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
 
@@ -193,8 +194,8 @@ export class MessageProcessor {
 
     return serverCapabilities;
   }
-
-  async _updateGraphQLConfig() {
+  // TODO next: refactor (most of) this into the `GraphQLCache` class
+  async _initializeGraphQLCaches() {
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
     });
@@ -205,6 +206,8 @@ export class MessageProcessor {
     if (settings?.dotEnvPath) {
       require('dotenv').config({ path: settings.dotEnvPath });
     }
+    // TODO: eventually we will instantiate an instance of this per workspace,
+    // so rootDir should become that workspace's rootDir
     this._settings = { ...settings, ...vscodeSettings };
     const rootDir = this._settings?.load?.rootDir.length
       ? this._settings?.load?.rootDir
@@ -220,18 +223,35 @@ export class MessageProcessor {
       }, this._settings.load ?? {}),
       rootDir,
     };
-    try {
-      // reload the graphql cache
-      this._graphQLCache = await getGraphQLCache({
-        parser: this._parser,
-        loadConfigOptions: this._loadConfigOptions,
 
-        logger: this._logger,
-      });
-      this._languageService = new GraphQLLanguageService(
-        this._graphQLCache,
-        this._logger,
-      );
+    try {
+      // createServer() can be called with a custom config object, and
+      // this is a public interface that may be used by customized versions of the server
+      if (this._providedConfig) {
+        this._graphQLCache = new GraphQLCache({
+          config: this._providedConfig,
+          logger: this._logger,
+          parser: this._parser,
+          configDir: rootDir,
+        });
+        this._languageService = new GraphQLLanguageService(
+          this._graphQLCache,
+          this._logger,
+        );
+      } else {
+        // reload the graphql cache
+        this._graphQLCache = await getGraphQLCache({
+          parser: this._parser,
+          loadConfigOptions: this._loadConfigOptions,
+
+          logger: this._logger,
+        });
+        this._languageService = new GraphQLLanguageService(
+          this._graphQLCache,
+          this._logger,
+        );
+      }
+
       const config = this._graphQLCache.getGraphQLConfig();
       if (config) {
         await this._cacheAllProjectFiles(config);
@@ -243,7 +263,6 @@ export class MessageProcessor {
     }
   }
   private _handleConfigError({ err }: { err: unknown; uri?: string }) {
-    // console.log(err, typeof err);
     if (err instanceof ConfigNotFoundError || err instanceof ConfigEmptyError) {
       // TODO: obviously this needs to become a map by workspace from uri
       // for workspaces support
@@ -311,12 +330,12 @@ export class MessageProcessor {
         }
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
-        await this._updateGraphQLConfig();
+        await this._initializeGraphQLCaches();
         return isGraphQLConfigFile;
       }
       // if it has initialized, but this is another config file change, then let's handle it
       if (isGraphQLConfigFile) {
-        await this._updateGraphQLConfig();
+        await this._initializeGraphQLCaches();
       }
       return isGraphQLConfigFile;
     } catch (err) {
@@ -330,15 +349,18 @@ export class MessageProcessor {
   public async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams> {
+    const { textDocument } = params;
+    const { uri } = textDocument;
+
     /**
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
      */
-    const shouldSkip = await this._loadConfigOrSkip(params.textDocument.uri);
+    const shouldSkip = await this._loadConfigOrSkip(uri);
     // if we're loading config or the config is missing or there's an error
     // don't do anything else
     if (shouldSkip) {
-      return { uri: params.textDocument.uri, diagnostics: [] };
+      return { uri, diagnostics: [] };
     }
 
     // Here, we set the workspace settings in memory,
@@ -347,45 +369,49 @@ export class MessageProcessor {
     // We aren't able to use initialization event for this
     // and the config change event is after the fact.
 
-    if (!params?.textDocument) {
+    if (!textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
-    const { textDocument } = params;
-    const { uri } = textDocument;
 
     const diagnostics: Diagnostic[] = [];
 
-    let contents: CachedContent[] = [];
-    const text = 'text' in textDocument && textDocument.text;
-    // Create/modify the cached entry if text is provided.
-    // Otherwise, try searching the cache to perform diagnostics.
-    if (text) {
-      // textDocument/didSave does not pass in the text content.
-      // Only run the below function if text is passed in.
-      contents = this._parser(text, uri);
-
-      await this._invalidateCache(textDocument, uri, contents);
-    }
-    if (!this._graphQLCache) {
+    if (!this._isInitialized) {
       return { uri, diagnostics };
     }
     try {
       const project = this._graphQLCache.getProjectForFile(uri);
-      if (project?.extensions?.languageService?.enableValidation !== false) {
-        await Promise.all(
-          contents.map(async ({ query, range }) => {
-            const results = await this._languageService.getDiagnostics(
-              query,
-              uri,
-              this._isRelayCompatMode(query),
-            );
-            if (results && results.length > 0) {
-              diagnostics.push(
-                ...processDiagnosticsMessage(results, query, range),
-              );
-            }
-          }),
+
+      if (project) {
+        const text = 'text' in textDocument && textDocument.text;
+        // for some reason if i try to tell to not parse empty files, it breaks :shrug:
+        // i think this is because if the file change is empty, it doesn't get parsed
+        // TODO: this could be related to a bug in how we are calling didOpenOrSave in our tests
+        // that doesn't reflect the real runtime behavior
+        // if (!text || text.length < 1) {
+        //   return { uri, diagnostics };
+        // }
+
+        const { contents } = await this._parseAndCacheFile(
+          uri,
+          project,
+          text as string,
         );
+        if (project?.extensions?.languageService?.enableValidation !== false) {
+          await Promise.all(
+            contents.map(async ({ query, range }) => {
+              const results = await this._languageService.getDiagnostics(
+                query,
+                uri,
+                this._isRelayCompatMode(query),
+              );
+              if (results && results.length > 0) {
+                diagnostics.push(
+                  ...processDiagnosticsMessage(results, query, range),
+                );
+              }
+            }),
+          );
+        }
       }
 
       this._logger.log(
@@ -396,11 +422,11 @@ export class MessageProcessor {
           fileName: uri,
         }),
       );
+      return { uri, diagnostics };
     } catch (err) {
       this._handleConfigError({ err, uri });
+      return { uri, diagnostics };
     }
-
-    return { uri, diagnostics };
   }
 
   public async handleDidChangeNotification(
@@ -424,27 +450,25 @@ export class MessageProcessor {
     }
     const { textDocument, contentChanges } = params;
     const { uri } = textDocument;
-    const project = this._graphQLCache.getProjectForFile(uri);
+
     try {
-      const contentChange = contentChanges.at(-1)!;
+      const project = this._graphQLCache.getProjectForFile(uri);
+      if (!project) {
+        return { uri, diagnostics: [] };
+      }
 
       // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.
 
       // If it's a .js file, try parsing the contents to see if GraphQL queries
       // exist. If not found, delete from the cache.
-      const contents = this._parser(contentChange.text, uri);
-      // If it's a .graphql file, proceed normally and invalidate the cache.
-      await this._invalidateCache(textDocument, uri, contents);
-
-      const cachedDocument = this._getCachedDocument(uri);
-
-      if (!cachedDocument) {
-        return null;
-      }
-
-      await this._updateFragmentDefinition(uri, contents);
-      await this._updateObjectTypeDefinition(uri, contents);
+      const { contents } = await this._parseAndCacheFile(
+        uri,
+        project,
+        contentChanges.at(-1)!.text,
+      );
+      // // If it's a .graphql file, proceed normally and invalidate the cache.
+      // await this._invalidateCache(textDocument, uri, contents);
 
       const diagnostics: Diagnostic[] = [];
 
@@ -484,7 +508,7 @@ export class MessageProcessor {
   async handleDidChangeConfiguration(
     _params: DidChangeConfigurationParams,
   ): Promise<DidChangeConfigurationRegistrationOptions> {
-    await this._updateGraphQLConfig();
+    await this._initializeGraphQLCaches();
     this._logger.log(
       JSON.stringify({
         type: 'usage',
@@ -641,18 +665,30 @@ export class MessageProcessor {
     };
   }
 
+  private async _parseAndCacheFile(
+    uri: string,
+    project: GraphQLProjectConfig,
+    text?: string,
+  ) {
+    try {
+      const fileText = text || (await readFile(URI.parse(uri).fsPath, 'utf-8'));
+      const contents = this._parser(fileText, uri);
+      const cachedDocument = this._textDocumentCache.get(uri);
+      const version = cachedDocument ? cachedDocument.version++ : 0;
+      await this._invalidateCache({ uri, version }, uri, contents);
+      await this._updateFragmentDefinition(uri, contents);
+      await this._updateObjectTypeDefinition(uri, contents, project);
+      await this._updateSchemaIfChanged(project, uri);
+      return { contents, version };
+    } catch {
+      return { contents: [], version: 0 };
+    }
+  }
+
   public async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
-    if (
-      this._isGraphQLConfigMissing ||
-      !this._isInitialized ||
-      !this._graphQLCache
-    ) {
-      return null;
-    }
-
-    return Promise.all(
+    const resultsForChanges = Promise.all(
       params.changes.map(async (change: FileEvent) => {
         const shouldSkip = await this._loadConfigOrSkip(change.uri);
         if (shouldSkip) {
@@ -664,59 +700,39 @@ export class MessageProcessor {
         ) {
           const { uri } = change;
 
-          const text = await readFile(URI.parse(uri).fsPath, 'utf-8');
-          const contents = this._parser(text, uri);
-          const cachedDocument = this._textDocumentCache.get(uri);
-          const version = cachedDocument ? cachedDocument.version++ : 0;
-          await this._invalidateCache(
-            { uri, version },
-            URI.parse(uri).fsPath,
-            contents,
-          );
-          await this._updateFragmentDefinition(uri, contents);
-          await this._updateObjectTypeDefinition(uri, contents);
-
           try {
+            let diagnostics: Diagnostic[] = [];
             const project = this._graphQLCache.getProjectForFile(uri);
             if (project) {
-              await this._updateSchemaIfChanged(project, uri);
+              // Important! Use system file uri not file path here!!!!
+              const { contents } = await this._parseAndCacheFile(uri, project);
+              if (
+                project?.extensions?.languageService?.enableValidation !== false
+              ) {
+                diagnostics = (
+                  await Promise.all(
+                    contents.map(async ({ query, range }) => {
+                      const results =
+                        await this._languageService.getDiagnostics(
+                          query,
+                          uri,
+                          this._isRelayCompatMode(query),
+                        );
+                      if (results && results.length > 0) {
+                        return processDiagnosticsMessage(results, query, range);
+                      }
+                      return [];
+                    }),
+                  )
+                ).reduce((left, right) => left.concat(right), diagnostics);
+              }
+
+              return { uri, diagnostics };
             }
-
-            let diagnostics: Diagnostic[] = [];
-
-            if (
-              project?.extensions?.languageService?.enableValidation !== false
-            ) {
-              diagnostics = (
-                await Promise.all(
-                  contents.map(async ({ query, range }) => {
-                    const results = await this._languageService.getDiagnostics(
-                      query,
-                      uri,
-                      this._isRelayCompatMode(query),
-                    );
-                    if (results && results.length > 0) {
-                      return processDiagnosticsMessage(results, query, range);
-                    }
-                    return [];
-                  }),
-                )
-              ).reduce((left, right) => left.concat(right), diagnostics);
-            }
-
-            this._logger.log(
-              JSON.stringify({
-                type: 'usage',
-                messageType: 'workspace/didChangeWatchedFiles',
-                projectName: project?.name,
-                fileName: uri,
-              }),
-            );
-            return { uri, diagnostics };
           } catch (err) {
             this._handleConfigError({ err, uri });
-            return { uri, diagnostics: [] };
           }
+          return { uri, diagnostics: [] };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
           await this._updateFragmentDefinition(change.uri, []);
@@ -724,6 +740,14 @@ export class MessageProcessor {
         }
       }),
     );
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'workspace/didChangeWatchedFiles',
+        files: params.changes.map(change => change.uri),
+      }),
+    );
+    return resultsForChanges;
   }
 
   public async handleDefinitionRequest(
@@ -739,9 +763,6 @@ export class MessageProcessor {
     }
     const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
-    if (project) {
-      await this._cacheSchemaFilesForProject(project);
-    }
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
       return [];
@@ -897,8 +918,6 @@ export class MessageProcessor {
     if (!this._isInitialized) {
       return [];
     }
-    // const config = await this._graphQLCache.getGraphQLConfig();
-    // await this._cacheAllProjectFiles(config);
 
     if (params.query !== '') {
       const documents = this._getTextDocuments();
@@ -937,13 +956,12 @@ export class MessageProcessor {
   ) {
     try {
       const contents = this._parser(text, uri);
-      // console.log(uri, contents);
       if (contents.length > 0) {
         await this._invalidateCache({ version, uri }, uri, contents);
         await this._updateObjectTypeDefinition(uri, contents, project);
       }
-    } catch (err) {
-      this._logger.error(String(err));
+    } catch {
+      //  this._logger.error(String(err));
     }
   }
   private async _cacheSchemaFile(
@@ -952,7 +970,6 @@ export class MessageProcessor {
   ) {
     try {
       // const parsedUri = URI.file(fileUri.toString());
-      // console.log(readdirSync(project.dirpath), fileUri.toString());
       // @ts-expect-error
       const matches = await glob(fileUri, {
         cwd: project.dirpath,

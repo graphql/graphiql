@@ -48,6 +48,7 @@ describe('MessageProcessor', () => {
     logger,
     graphqlFileExtensions: ['graphql'],
     loadConfigOptions: { rootDir: __dirname },
+    config: null,
   });
 
   const queryPathUri = pathToFileURL(`${__dirname}/__queries__`);
@@ -57,9 +58,10 @@ describe('MessageProcessor', () => {
     }
   }
   `;
-
+  let gqlConfig;
   beforeEach(async () => {
-    const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
+    gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
+
     // loadConfig.mockRestore();
     messageProcessor._settings = { load: {} };
     messageProcessor._graphQLCache = new GraphQLCache({
@@ -460,6 +462,35 @@ describe('MessageProcessor', () => {
     const result = await messageProcessor.handleHoverRequest(test);
     expect(result).toEqual({ contents: [] });
   });
+  it('handles provided config', async () => {
+    const msgProcessor = new MessageProcessor({
+      // @ts-ignore
+      connection: {
+        workspace: {
+          getConfiguration() {
+            return {};
+          },
+        },
+      },
+      logger,
+      graphqlFileExtensions: ['graphql'],
+      loadConfigOptions: { rootDir: __dirname },
+      config: gqlConfig,
+    });
+    expect(msgProcessor._providedConfig).toBeTruthy();
+    await msgProcessor.handleInitializeRequest(
+      // @ts-ignore
+      {
+        rootPath: __dirname,
+      },
+      null,
+      __dirname,
+    );
+    await msgProcessor.handleDidChangeConfiguration({
+      settings: {},
+    });
+    expect(msgProcessor._graphQLCache).toBeTruthy();
+  });
 
   it('runs workspace symbol requests', async () => {
     const msgProcessor = new MessageProcessor({
@@ -554,7 +585,7 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._initializeGraphQLCaches = jest.fn();
     });
 
     it('loads config if not initialized', async () => {
@@ -563,7 +594,9 @@ describe('MessageProcessor', () => {
       const result = await messageProcessor._loadConfigOrSkip(
         `${pathToFileURL('.')}/graphql.config.js`,
       );
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalledTimes(
+        1,
+      );
       // we want to return true here to skip further processing, because it's just a config file change
       expect(result).toEqual(true);
     });
@@ -574,7 +607,9 @@ describe('MessageProcessor', () => {
       const result = await messageProcessor._loadConfigOrSkip(
         `${pathToFileURL('.')}/file.ts`,
       );
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalledTimes(
+        1,
+      );
       // here we have a non-config file, so we don't want to skip, because we need to run diagnostics etc
       expect(result).toEqual(false);
     });
@@ -583,7 +618,9 @@ describe('MessageProcessor', () => {
       const result = await messageProcessor._loadConfigOrSkip(
         `${pathToFileURL('.')}/graphql.config.ts`,
       );
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalledTimes(1);
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalledTimes(
+        1,
+      );
       expect(result).toEqual(true);
     });
     it('skips if the server is already initialized', async () => {
@@ -591,7 +628,7 @@ describe('MessageProcessor', () => {
       const result = await messageProcessor._loadConfigOrSkip(
         `${pathToFileURL('.')}/myFile.ts`,
       );
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(result).toEqual(false);
     });
   });
@@ -602,7 +639,7 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._initializeGraphQLCaches = jest.fn();
       messageProcessor._loadConfigOrSkip = jest.fn();
     });
     it('updates config for standard config filename changes', async () => {
@@ -642,7 +679,7 @@ describe('MessageProcessor', () => {
         settings: [],
       });
 
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalled();
 
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
@@ -653,7 +690,7 @@ describe('MessageProcessor', () => {
         },
       });
 
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalled();
     });
   });
 
@@ -664,7 +701,7 @@ describe('MessageProcessor', () => {
         uri: 'test',
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining('test missing-config'),
       );
@@ -675,7 +712,7 @@ describe('MessageProcessor', () => {
         uri: 'test',
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining('Project not found for this file'),
       );
@@ -686,7 +723,7 @@ describe('MessageProcessor', () => {
         uri: 'test',
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining('Invalid configuration'),
       );
@@ -697,7 +734,7 @@ describe('MessageProcessor', () => {
         uri: 'test',
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining('test loader-error'),
       );
@@ -708,7 +745,7 @@ describe('MessageProcessor', () => {
         uri: 'test',
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.stringContaining('test loader-error'),
       );
@@ -720,7 +757,7 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue(' query { id }');
-      messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._initializeGraphQLCaches = jest.fn();
       messageProcessor._updateFragmentDefinition = jest.fn();
       messageProcessor._isGraphQLConfigMissing = false;
       messageProcessor._isInitialized = true;
@@ -738,7 +775,7 @@ describe('MessageProcessor', () => {
         ],
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._initializeGraphQLCaches).not.toHaveBeenCalled();
       expect(messageProcessor._updateFragmentDefinition).toHaveBeenCalled();
     });
   });

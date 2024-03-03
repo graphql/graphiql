@@ -11,26 +11,26 @@ export const babelParser = (text: string, plugins?: ParserPlugin[]) => {
   return parse(text, PARSER_OPTIONS);
 };
 
-export const ecmaParser: SourceParser = (text, uri, logger) => {
+export const ecmaParser: SourceParser = (text, _uri, _logger) => {
   try {
     return { asts: [babelParser(text, ['flow', 'flowComments'])] };
-  } catch (error) {
-    logger.error(
-      `Could not parse the JavaScript file at ${uri} to extract the graphql tags:`,
-    );
-    logger.error(String(error));
+  } catch {
+    // logger.error(
+    //   `Could not parse the JavaScript file at ${uri} to extract the graphql tags:`,
+    // );
+    // logger.error(String(error));
     return null;
   }
 };
 
-export const tsParser: SourceParser = (text, uri, logger) => {
+export const tsParser: SourceParser = (text, _uri, _logger) => {
   try {
     return { asts: [babelParser(text, ['typescript'])] };
-  } catch (error) {
-    logger.error(
-      `Could not parse the TypeScript file at ${uri} to extract the graphql tags:`,
-    );
-    logger.error(String(error));
+  } catch {
+    // logger.error(
+    //   `Could not parse the TypeScript file at ${uri} to extract the graphql tags:`,
+    // );
+    // logger.error(String(error));
     return null;
   }
 };
