@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
