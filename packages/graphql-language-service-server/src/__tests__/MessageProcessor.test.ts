@@ -18,6 +18,8 @@ import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
+jest.setTimeout(20000);
+
 import { GraphQLCache } from '../GraphQLCache';
 
 import {

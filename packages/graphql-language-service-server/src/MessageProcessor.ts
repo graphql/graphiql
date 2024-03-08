@@ -203,15 +203,18 @@ export class MessageProcessor {
     const vscodeSettings = await this._connection.workspace.getConfiguration({
       section: 'vscode-graphql',
     });
-    if (settings?.dotEnvPath) {
-      require('dotenv').config({ path: settings.dotEnvPath });
-    }
+
     // TODO: eventually we will instantiate an instance of this per workspace,
     // so rootDir should become that workspace's rootDir
     this._settings = { ...settings, ...vscodeSettings };
     const rootDir = this._settings?.load?.rootDir.length
       ? this._settings?.load?.rootDir
       : this._rootPath;
+    if (settings?.dotEnvPath) {
+      require('dotenv').config({
+        path: path.resolve(rootDir, settings.dotEnvPath),
+      });
+    }
     this._rootPath = rootDir;
     this._loadConfigOptions = {
       ...Object.keys(this._settings?.load ?? {}).reduce((agg, key) => {
