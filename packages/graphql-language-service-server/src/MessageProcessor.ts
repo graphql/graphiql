@@ -20,6 +20,7 @@ import {
   Range,
   Position,
   IPosition,
+  GraphQLFileInfo,
 } from 'graphql-language-service';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
@@ -50,6 +51,7 @@ import type {
   WorkspaceSymbolParams,
   Connection,
   DidChangeConfigurationRegistrationOptions,
+  TextDocumentContentChangeEvent,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -248,7 +250,7 @@ export class MessageProcessor {
         this._graphQLCache = await getGraphQLCache({
           parser: this._parser,
           loadConfigOptions: this._loadConfigOptions,
-
+          settings: this._settings,
           logger: this._logger,
         });
         this._languageService = new GraphQLLanguageService(
@@ -390,8 +392,9 @@ export class MessageProcessor {
       return { uri, diagnostics };
     }
     try {
+      console.log('and here');
       const project = this._graphQLCache.getProjectForFile(uri);
-
+      console.log('and here 1');
       if (project) {
         const text = 'text' in textDocument && textDocument.text;
         // for some reason if i try to tell to not parse empty files, it breaks :shrug:
@@ -402,19 +405,20 @@ export class MessageProcessor {
         const { contents } = await this._parseAndCacheFile(
           uri,
           project,
-          text as string,
+          // text as string,
         );
+        console.log('and here 2');
         if (project?.extensions?.languageService?.enableValidation !== false) {
           await Promise.all(
-            contents.map(async ({ query, range }) => {
+            contents.map(async ({ documentString, range }) => {
               const results = await this._languageService.getDiagnostics(
-                query,
+                documentString,
                 uri,
-                this._isRelayCompatMode(query),
+                this._isRelayCompatMode(documentString),
               );
               if (results && results.length > 0) {
                 diagnostics.push(
-                  ...processDiagnosticsMessage(results, query, range),
+                  ...processDiagnosticsMessage(results, documentString, range),
                 );
               }
             }),
@@ -473,7 +477,7 @@ export class MessageProcessor {
       const { contents } = await this._parseAndCacheFile(
         uri,
         project,
-        contentChanges.at(-1)!.text,
+        contentChanges,
       );
       // // If it's a .graphql file, proceed normally and invalidate the cache.
       // await this._invalidateCache(textDocument, uri, contents);
@@ -483,16 +487,17 @@ export class MessageProcessor {
       if (project?.extensions?.languageService?.enableValidation !== false) {
         // Send the diagnostics onChange as well
         try {
+          console.log({ contents });
           await Promise.all(
-            contents.map(async ({ query, range }) => {
+            contents.map(async ({ documentString, range }) => {
               const results = await this._languageService.getDiagnostics(
-                query,
+                documentString,
                 uri,
-                this._isRelayCompatMode(query),
+                this._isRelayCompatMode(documentString),
               );
               if (results && results.length > 0) {
                 diagnostics.push(
-                  ...processDiagnosticsMessage(results, query, range),
+                  ...processDiagnosticsMessage(results, documentString, range),
                 );
               }
               // skip diagnostic errors, usually related to parsing incomplete fragments
@@ -590,30 +595,34 @@ export class MessageProcessor {
     // Treat the computed list always complete.
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
+    console.log({ cachedDocument, uri: textDocument.uri });
     if (!cachedDocument) {
       return { items: [], isIncomplete: false };
     }
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
+      console.log({ currentRange, position: toPosition(position) });
       if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
+
+    console.log({ found });
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
       return { items: [], isIncomplete: false };
     }
 
-    const { query, range } = found;
+    const { documentString, range } = found;
 
     if (range) {
       position.line -= range.start.line;
     }
 
     const result = await this._languageService.getAutocompleteSuggestions(
-      query,
+      documentString,
       toPosition(position),
       textDocument.uri,
     );
@@ -660,13 +669,13 @@ export class MessageProcessor {
       return { contents: [] };
     }
 
-    const { query, range } = found;
+    const { documentString, range } = found;
 
     if (range) {
       position.line -= range.start.line;
     }
     const result = await this._languageService.getHoverInformation(
-      query,
+      documentString,
       toPosition(position),
       textDocument.uri,
       { useMarkdown: true },
@@ -680,18 +689,24 @@ export class MessageProcessor {
   private async _parseAndCacheFile(
     uri: string,
     project: GraphQLProjectConfig,
-    text?: string,
+    changes?: TextDocumentContentChangeEvent[],
   ) {
     try {
-      const fileText = text || (await readFile(URI.parse(uri).fsPath, 'utf-8'));
-      const contents = this._parser(fileText, uri);
-      const cachedDocument = this._textDocumentCache.get(uri);
-      const version = cachedDocument ? cachedDocument.version++ : 0;
-      await this._invalidateCache({ uri, version }, uri, contents);
-      await this._updateFragmentDefinition(uri, contents);
-      await this._updateObjectTypeDefinition(uri, contents, project);
+      // const fileText = text || (await readFile(URI.parse(uri).fsPath, 'utf-8'));
+      // const contents = this._parser(fileText, uri);
+      // const cachedDocument = this._textDocumentCache.get(uri);
+      // const version = cachedDocument ? cachedDocument.version++ : 0;
+      // await this._invalidateCache({ uri, version }, uri, contents);
+      // await this._updateFragmentDefinition(uri, contents);
+      // await this._updateObjectTypeDefinition(uri, contents, project);
+
+      const result = await this._graphQLCache.readAndCacheFile(uri, changes);
       await this._updateSchemaIfChanged(project, uri);
-      return { contents, version };
+
+      if (result) {
+        return { contents: result.contents ?? [], version: 0 };
+      }
+      return { contents: [], version: 0 };
     } catch {
       return { contents: [], version: 0 };
     }
@@ -718,20 +733,25 @@ export class MessageProcessor {
             if (project) {
               // Important! Use system file uri not file path here!!!!
               const { contents } = await this._parseAndCacheFile(uri, project);
+              console.log({ contents, uri }, 'watched');
               if (
                 project?.extensions?.languageService?.enableValidation !== false
               ) {
                 diagnostics = (
                   await Promise.all(
-                    contents.map(async ({ query, range }) => {
+                    contents.map(async ({ documentString, range }) => {
                       const results =
                         await this._languageService.getDiagnostics(
-                          query,
+                          documentString,
                           uri,
-                          this._isRelayCompatMode(query),
+                          this._isRelayCompatMode(documentString),
                         );
                       if (results && results.length > 0) {
-                        return processDiagnosticsMessage(results, query, range);
+                        return processDiagnosticsMessage(
+                          results,
+                          documentString,
+                          range,
+                        );
                       }
                       return [];
                     }),
@@ -746,6 +766,8 @@ export class MessageProcessor {
           return { uri, diagnostics: [] };
         }
         if (change.type === FileChangeTypeKind.Deleted) {
+          const cache = await this._getDocumentCacheForFile(change.uri);
+          cache?.delete(change.uri);
           await this._updateFragmentDefinition(change.uri, []);
           await this._updateObjectTypeDefinition(change.uri, []);
         }
@@ -775,42 +797,51 @@ export class MessageProcessor {
     const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     const cachedDocument = this._getCachedDocument(textDocument.uri);
+    console.log({ cachedDocument });
     if (!cachedDocument) {
       return [];
     }
 
     const found = cachedDocument.contents.find(content => {
-      const currentRange = content.range;
-      if (currentRange?.containsPosition(toPosition(position))) {
+      console.log(content.range, toPosition(position));
+      const currentRange = content?.range;
+      if (
+        currentRange &&
+        currentRange?.containsPosition(toPosition(position))
+      ) {
         return true;
       }
     });
+
+    console.log({ found }, 'definition');
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
       return [];
     }
 
-    const { query, range: parentRange } = found;
-    if (parentRange) {
-      position.line -= parentRange.start.line;
-    }
+    const { documentString, range: parentRange } = found;
+    // if (parentRange) {
+    //   position.line -= parentRange.start.line;
+    // }
 
     let result = null;
 
     try {
       result = await this._languageService.getDefinition(
-        query,
+        documentString,
         toPosition(position),
         textDocument.uri,
       );
-    } catch {
+      console.log({ result });
+    } catch (err) {
+      console.error(err);
       // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
     }
 
     const inlineFragments: string[] = [];
     try {
-      visit(parse(query), {
+      visit(parse(documentString), {
         FragmentDefinition(node: FragmentDefinitionNode) {
           inlineFragments.push(node.name.value);
         },
@@ -822,7 +853,7 @@ export class MessageProcessor {
           const defRange = res.range as Range;
 
           if (parentRange && res.name) {
-            const isInline = inlineFragments.includes(res.name);
+            const isInline = inlineFragments?.includes(res.name);
             const isEmbedded = DEFAULT_SUPPORTED_EXTENSIONS.includes(
               path.extname(res.path) as SupportedExtensionsEnum,
             );
@@ -834,6 +865,7 @@ export class MessageProcessor {
               const vOffset = isEmbedded
                 ? cachedDoc?.contents[0].range?.start.line ?? 0
                 : parentRange.start.line;
+              console.log({ defRange });
 
               defRange.setStart(
                 (defRange.start.line += vOffset),
@@ -883,7 +915,7 @@ export class MessageProcessor {
     if (
       this._settings.largeFileThreshold !== undefined &&
       this._settings.largeFileThreshold <
-        cachedDocument.contents[0].query.length
+        cachedDocument.contents[0].documentString.length
     ) {
       return [];
     }
@@ -897,7 +929,7 @@ export class MessageProcessor {
     );
 
     return this._languageService.getDocumentSymbols(
-      cachedDocument.contents[0].query,
+      cachedDocument.contents[0].documentString,
       textDocument.uri,
     );
   }
@@ -941,7 +973,7 @@ export class MessageProcessor {
             return [];
           }
           const docSymbols = await this._languageService.getDocumentSymbols(
-            cachedDocument.contents[0].query,
+            cachedDocument.contents[0].documentString,
             uri,
           );
           symbols.push(...docSymbols);
@@ -1095,7 +1127,7 @@ export class MessageProcessor {
         schemaText = `# This is an automatically generated representation of your schema.\n# Any changes to this file will be overwritten and will not be\n# reflected in the resulting GraphQL schema\n\n${schemaText}`;
 
         const cachedSchemaDoc = this._getCachedDocument(uri);
-        this._graphQLCache._schemaMap.set(project.name, schema);
+        this._graphQLCache._schemaMap.set(project.name, { schema });
         if (!cachedSchemaDoc) {
           await writeFile(fsPath, schemaText, 'utf8');
           await this._cacheSchemaText(uri, schemaText, 0, project);
@@ -1141,7 +1173,7 @@ export class MessageProcessor {
 
           // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
-          if (!contents[0]?.query) {
+          if (!contents[0]?.documentString) {
             return;
           }
           await this._updateObjectTypeDefinition(uri, contents);
@@ -1166,11 +1198,26 @@ export class MessageProcessor {
       return Promise.all(
         Object.keys(config.projects).map(async projectName => {
           const project = config.getProject(projectName);
+          const cacheKey = this._graphQLCache._cacheKeyForProject(project);
+          const { objectTypeDefinitions, graphQLFileMap, fragmentDefinitions } =
+            await this._graphQLCache._buildCachesFromInputDirs(
+              project.dirpath,
+              project,
+            );
 
-          await this._cacheSchemaFilesForProject(project);
-          if (project.documents?.length) {
-            await this._cacheDocumentFilesforProject(project);
-          } else {
+          this._graphQLCache._typeDefinitionsCache.set(
+            cacheKey,
+            objectTypeDefinitions,
+          );
+          this._graphQLCache._graphQLFileListCache.set(
+            cacheKey,
+            graphQLFileMap,
+          );
+          this._graphQLCache._fragmentDefinitionsCache.set(
+            cacheKey,
+            fragmentDefinitions,
+          );
+          if (!project.documents) {
             this._logger.warn(
               [
                 `No 'documents' config found for project: ${projectName}.`,
@@ -1185,7 +1232,7 @@ export class MessageProcessor {
   }
   _isRelayCompatMode(query: string): boolean {
     return (
-      query.includes('RelayCompat') || query.includes('react-relay/compat')
+      query?.includes('RelayCompat') || query?.includes('react-relay/compat')
     );
   }
 
@@ -1274,12 +1321,23 @@ export class MessageProcessor {
     }
   }
 
+  private _getDocumentCacheForFile(
+    uri: string,
+  ): Map<string, GraphQLFileInfo> | undefined {
+    const project = this._graphQLCache.getProjectForFile(uri);
+    if (project) {
+      return this._graphQLCache._graphQLFileListCache.get(
+        this._graphQLCache._cacheKeyForProject(project),
+      );
+    }
+  }
+
   private _getCachedDocument(uri: string): CachedDocumentType | null {
-    if (this._textDocumentCache.has(uri)) {
-      const cachedDocument = this._textDocumentCache.get(uri);
-      if (cachedDocument) {
-        return cachedDocument;
-      }
+    const fileCache = this._getDocumentCacheForFile(uri);
+    console.log(fileCache);
+    const cachedDocument = fileCache?.get(uri);
+    if (cachedDocument) {
+      return cachedDocument;
     }
 
     return null;
@@ -1289,8 +1347,21 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<Map<string, CachedDocumentType> | null> {
-    if (this._textDocumentCache.has(uri)) {
-      const cachedDocument = this._textDocumentCache.get(uri);
+    console.log('invalidate');
+    let documentCache = this._getDocumentCacheForFile(uri);
+    if (!documentCache) {
+      const project = await this._graphQLCache.getProjectForFile(uri);
+      if (!project) {
+        return null;
+      }
+      documentCache = new Map();
+      this._graphQLCache._graphQLFileListCache.set(
+        this._graphQLCache._cacheKeyForProject(project),
+        documentCache,
+      );
+    }
+    if (documentCache?.has(uri)) {
+      const cachedDocument = documentCache.get(uri);
       if (
         cachedDocument &&
         textDocument &&
@@ -1299,13 +1370,13 @@ export class MessageProcessor {
       ) {
         // Current server capabilities specify the full sync of the contents.
         // Therefore always overwrite the entire content.
-        return this._textDocumentCache.set(uri, {
+        return documentCache.set(uri, {
           version: textDocument.version,
           contents,
         });
       }
     }
-    return this._textDocumentCache.set(uri, {
+    return documentCache.set(uri, {
       version: textDocument.version ?? 0,
       contents,
     });

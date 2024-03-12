@@ -196,12 +196,12 @@ describe('MessageProcessor', () => {
   });
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;
-    const query = 'test';
+    const documentString = 'test';
     messageProcessor._textDocumentCache.set(uri, {
       version: 0,
       contents: [
         {
-          query,
+          documentString,
           range: new Range(new Position(0, 0), new Position(0, 0)),
         },
       ],
@@ -213,7 +213,7 @@ describe('MessageProcessor', () => {
     };
     const result = await messageProcessor.handleCompletionRequest(test);
     expect(result).toEqual({
-      items: [{ label: `${query} at ${uri}` }],
+      items: [{ label: `${documentString} at ${uri}` }],
       isIncomplete: false,
     });
   });
@@ -264,7 +264,7 @@ describe('MessageProcessor', () => {
       version: 0,
       contents: [
         {
-          query: validQuery,
+          documentString: validQuery,
           range: new Range(new Position(0, 0), new Position(0, 0)),
         },
       ],
@@ -319,7 +319,7 @@ describe('MessageProcessor', () => {
       version: 1,
       contents: [
         {
-          query: '',
+          documentString: '',
           range: new Range(new Position(0, 0), new Position(0, 0)),
         },
       ],
@@ -394,7 +394,7 @@ describe('MessageProcessor', () => {
       version: 1,
       contents: [
         {
-          query: validQuery,
+          documentString: validQuery,
           range: new Range(new Position(0, 0), new Position(20, 4)),
         },
       ],
@@ -430,7 +430,7 @@ describe('MessageProcessor', () => {
       version: 1,
       contents: [
         {
-          query: validQuery,
+          documentString: validQuery,
           range: new Range(new Position(0, 0), new Position(20, 4)),
         },
       ],

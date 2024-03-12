@@ -77,6 +77,7 @@ export async function activate(context: ExtensionContext) {
         ),
         // TODO: load ignore
         // These ignore node_modules and .git by default
+        // json is included so we can detect  potential `graphql` config changes to package.json
         workspace.createFileSystemWatcher(
           '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts,*.json,*.astro}',
         ),

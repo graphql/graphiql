@@ -179,7 +179,7 @@ describe('GraphQLCache', () => {
         '});';
       const contents = parseDocument(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
-        parse(contents[0].query),
+        parse(contents[0].documentString),
         fragmentDefinitions,
       );
       expect(result.length).toEqual(2);

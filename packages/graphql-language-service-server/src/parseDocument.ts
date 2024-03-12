@@ -10,6 +10,7 @@ import {
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger } from './Logger';
+import { parse } from 'graphql';
 
 /**
  * Helper functions to perform requested services from client/server.
@@ -36,7 +37,10 @@ export function parseDocument(
 
   if (fileExtensions.includes(ext)) {
     const templates = findGraphQLTags(text, ext, uri, logger);
-    return templates.map(({ template, range }) => ({ query: template, range }));
+    return templates.map(({ template, range }) => ({
+      documentString: template,
+      range,
+    }));
   }
   if (graphQLFileExtensions.includes(ext)) {
     const query = text;
@@ -45,7 +49,7 @@ export function parseDocument(
       new Position(0, 0),
       new Position(lines.length - 1, lines.at(-1)!.length - 1),
     );
-    return [{ query, range }];
+    return [{ documentString: query, range }];
   }
   return [];
 }
