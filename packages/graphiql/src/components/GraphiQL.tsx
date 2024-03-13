@@ -102,6 +102,7 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
 
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
+  confirmCloseTab,
   defaultQuery,
   defaultTabs,
   externalFragments,
@@ -138,6 +139,7 @@ export function GraphiQL({
 
   return (
     <GraphiQLProvider
+      confirmCloseTab={confirmCloseTab}
       getDefaultFieldNames={getDefaultFieldNames}
       dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
@@ -545,11 +547,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                             {tab.title}
                           </Tab.Button>
                           <Tab.Close
-                            onClick={() => {
-                              if (editorContext.activeTabIndex === index) {
-                                executionContext.stop();
+                            onClick={async () => {
+                              if (
+                                await editorContext.closeTabConfirmation(index)
+                              ) {
+                                if (editorContext.activeTabIndex === index) {
+                                  executionContext.stop();
+                                }
+                                editorContext.closeTab(index);
                               }
-                              editorContext.closeTab(index);
                             }}
                           />
                         </Tab>
