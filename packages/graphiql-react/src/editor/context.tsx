@@ -56,6 +56,14 @@ export type EditorContextType = TabsState & {
    */
   changeTab(index: number): void;
   /**
+   * When the user clicks a close tab button, this function is invoked with
+   * the index of the tab that is about to be closed. It returns a promise
+   * that should resolve to `true` (meaning the tab may be closed) or `false`
+   * (meaning the tab may not be closed).
+   * @param index The index of the tab that should be closed.
+   */
+  closeTabConfirmation(index: number): Promise<boolean>;
+  /**
    * Move a tab to a new spot.
    * @param newOrder The new order for the tabs.
    */
@@ -212,6 +220,14 @@ export type EditorContextProviderProps = {
    * @param operationName The operation name after it has been changed.
    */
   onEditOperationName?(operationName: string): void;
+  /**
+   * When the user clicks a close tab button, this function is invoked with
+   * the index of the tab that is about to be closed. It returns a promise
+   * that should resolve to `true` (meaning the tab may be closed) or `false`
+   * (meaning the tab may not be closed).
+   * @param index The index of the tab that should be closed.
+   */
+  confirmCloseTab?(index: number): Promise<boolean>;
   /**
    * Invoked when the state of the tabs changes. Possible triggers are:
    * - Updating any editor contents inside the currently active tab
@@ -423,6 +439,19 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     [onTabChange, setEditorValues, storeTabs],
   );
 
+  const closeTabConfirmation = useCallback<
+    EditorContextType['closeTabConfirmation']
+  >(
+    async index => {
+      if (props.confirmCloseTab) {
+        const confirmation = await props.confirmCloseTab(index);
+        return confirmation;
+      }
+      return true;
+    },
+    [props.confirmCloseTab],
+  );
+
   const closeTab = useCallback<EditorContextType['closeTab']>(
     index => {
       setTabState(current => {
@@ -498,6 +527,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       addTab,
       changeTab,
       moveTab,
+      closeTabConfirmation,
       closeTab,
       updateActiveTabValues,
 
