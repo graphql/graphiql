@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.5
+
+### Patch Changes
+
+- [#3545](https://github.com/graphql/graphiql/pull/3545) [`e9fc21ab`](https://github.com/graphql/graphiql/commit/e9fc21ab5f403a3e26cec555b29e5fb9db436838) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
 ## 1.3.4
 
 ### Patch Changes
