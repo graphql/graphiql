@@ -106,9 +106,11 @@ export interface IRange {
   setStart(line: number, character: number): void;
   containsPosition(position: IPosition): boolean;
 }
+
 export type CachedContent = {
-  query: string;
-  range: IRange | null;
+  documentString: string;
+  range?: IRange;
+  ast?: DocumentNode;
 };
 
 // GraphQL Language Service related types
@@ -121,12 +123,16 @@ export type GraphQLFileMetadata = {
 };
 
 export type GraphQLFileInfo = {
-  filePath: Uri;
-  content: string;
-  asts: DocumentNode[];
-  queries: CachedContent[];
+  // file:// uri string
+  filePath?: Uri;
+  // file system path
+  fsPath?: string;
+  source: string;
+  // asts: DocumentNode[];
+  contents: CachedContent[];
   size: number;
   mtime: number;
+  version: number;
 };
 
 export type AllTypeInfo = {
@@ -144,7 +150,10 @@ export type AllTypeInfo = {
 };
 
 export type FragmentInfo = {
+  // file:// uri string
   filePath?: Uri;
+  // file system path
+  fsPath?: string;
   content: string;
   definition: FragmentDefinitionNode;
 };
@@ -156,7 +165,10 @@ export type NamedTypeInfo = {
 };
 
 export type ObjectTypeInfo = {
+  // file:// uri string
   filePath?: Uri;
+  // file system path
+  fsPath?: string;
   content: string;
   definition: TypeDefinitionNode;
 };

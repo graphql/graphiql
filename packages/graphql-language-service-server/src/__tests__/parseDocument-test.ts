@@ -21,7 +21,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.js');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -49,7 +49,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.js');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         
@@ -77,7 +77,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.ts');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -109,7 +109,7 @@ describe('parseDocument', () => {
     }`;
 
     const contents = parseDocument(text, 'test.tsx');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -142,7 +142,7 @@ describe('parseDocument', () => {
 
     const contents = parseDocument(text, 'test.tsx');
 
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -175,7 +175,7 @@ describe('parseDocument', () => {
     }`;
 
     const contents = parseDocument(text, 'test.tsx');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -210,7 +210,7 @@ describe('parseDocument', () => {
     }`;
 
     const contents = parseDocument(text, 'test.tsx');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -241,7 +241,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.js');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value
@@ -270,7 +270,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.ts');
-    expect(contents[0].query).toEqual(`#graphql
+    expect(contents[0].documentString).toEqual(`#graphql
     query Test {
       test {
         value
@@ -299,7 +299,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.ts');
-    expect(contents[0].query).toEqual(`
+    expect(contents[0].documentString).toEqual(`
     query Test {
       test {
         value

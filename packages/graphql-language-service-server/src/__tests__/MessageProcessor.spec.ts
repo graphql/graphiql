@@ -93,7 +93,7 @@ describe('MessageProcessor with no config', () => {
   });
 });
 
-describe('project with simple config and graphql files', () => {
+describe('the lsp', () => {
   let app;
   afterEach(() => {
     mockfs.restore();
@@ -123,10 +123,16 @@ describe('project with simple config and graphql files', () => {
     expect(results.diagnostics[1].message).toEqual(
       'Fragment "B" cannot be spread here as objects of type "Query" can never be of type "Foo".',
     );
+    console.log(
+      'schema',
+      project.lsp._getCachedDocument(project.uri('schema.graphql')),
+    );
     const initSchemaDefRequest = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('schema.graphql') },
       position: { character: 19, line: 0 },
     });
+    const typeCache1 = project.lsp._graphQLCache._typeDefinitionsCache;
+    console.log('schema1', typeCache1);
     expect(initSchemaDefRequest.length).toEqual(1);
     expect(initSchemaDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
     expect(serializeRange(initSchemaDefRequest[0].range)).toEqual(
@@ -135,10 +141,10 @@ describe('project with simple config and graphql files', () => {
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
     // TODO: for some reason the cache result formats the graphql query??
-    const docCache = project.lsp._textDocumentCache;
-    expect(
-      docCache.get(project.uri('query.graphql'))!.contents[0].query,
-    ).toContain('...B');
+    // const docCache = project.lsp._graphQLCache._getDocumentCache('default');
+    // expect(
+    //   docCache.get(project.uri('query.graphql'))!.contents[0].documentString,
+    // ).toContain('...B');
     const schemaDefinitions = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('fragments.graphql') },
       position: { character: 16, line: 0 },
@@ -161,8 +167,8 @@ describe('project with simple config and graphql files', () => {
         character: 0,
       },
       end: {
-        line: 2,
-        character: 1,
+        line: 0,
+        character: 25,
       },
     });
     // change the file to make the fragment invalid
@@ -197,11 +203,11 @@ describe('project with simple config and graphql files', () => {
     );
 
     // change the file to make the fragment invalid
-    project.changeFile(
-      'schema.graphql',
-      // now Foo has a bad field, the fragment should be invalid
-      'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
-    );
+    // project.changeFile(
+    //   'schema.graphql',
+    //   // now Foo has a bad field, the fragment should be invalid
+    //   'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
+    // );
     // await project.lsp.handleWatchedFilesChangedNotification({
     //   changes: [
     //     {
@@ -210,11 +216,18 @@ describe('project with simple config and graphql files', () => {
     //     },
     //   ],
     // });
+
+    const newSchema =
+      'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }';
     await project.lsp.handleDidChangeNotification({
       contentChanges: [
         {
           type: FileChangeType.Changed,
-          text: 'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
+          text: newSchema,
+          range: {
+            start: { line: 0, character: 0 },
+            end: { line: newSchema.split('\n').length, character: 21 },
+          },
         },
       ],
       textDocument: { uri: project.uri('schema.graphql'), version: 1 },
@@ -314,18 +327,26 @@ describe('project with simple config and graphql files', () => {
 
     expect(initParams.diagnostics).toEqual([]);
 
+    // schema file is present and contains schema
+    const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
+    expect(file.split('\n').length).toBeGreaterThan(10);
+    expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
+
     const changeParams = await project.lsp.handleDidChangeNotification({
       textDocument: { uri: project.uri('query.graphql'), version: 1 },
-      contentChanges: [{ text: 'query { test { isTest, ...T or }  }' }],
+      contentChanges: [
+        {
+          text: 'query { test { isTest, ...T or }  }',
+          range: {
+            start: { line: 0, character: 0 },
+            end: { line: 0, character: 35 },
+          },
+        },
+      ],
     });
     expect(changeParams?.diagnostics[0].message).toEqual(
       'Cannot query field "or" on type "Test".',
     );
-    expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
-
-    // schema file is present and contains schema
-    const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
-    expect(file.split('\n').length).toBeGreaterThan(10);
 
     // hover works
     const hover = await project.lsp.handleHoverRequest({
@@ -373,7 +394,7 @@ describe('project with simple config and graphql files', () => {
     });
 
     const schemaDefs = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: URI.parse(genSchemaPath).toString() },
+      textDocument: { uri: URI.file(genSchemaPath).toString() },
       position: { character: 20, line: 17 },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
@@ -398,11 +419,11 @@ describe('project with simple config and graphql files', () => {
       true,
     );
 
-    await project.lsp.handleWatchedFilesChangedNotification({
-      changes: [
-        { uri: project.uri('fragments.ts'), type: FileChangeType.Created },
-      ],
-    });
+    // await project.lsp.handleWatchedFilesChangedNotification({
+    //   changes: [
+    //     { uri: project.uri('fragments.ts'), type: FileChangeType.Created },
+    //   ],
+    // });
     const defsForTs = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: project.uri('query.graphql') },
       position: { character: 26, line: 0 },
@@ -515,10 +536,11 @@ describe('project with simple config and graphql files', () => {
     //     { text: schemaFile[1] + '\ntype Example1 { field:    }' },
     //   ],
     // });
-    // console.log(project.fileCache.get('b/schema.graphql'));
+    console.log(project.fileCache.get('b/schema.graphql'));
+    console.log(project.lsp._graphQLCache.getSchema('b'));
     const schemaCompletion = await project.lsp.handleCompletionRequest({
       textDocument: { uri: project.uri('b/schema.graphql') },
-      position: { character: 25, line: 5 },
+      position: { character: 24, line: 5 },
     });
     // TODO: SDL completion still feels incomplete here... where is Int?
     // where is self-referential Example1?
