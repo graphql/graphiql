@@ -63,6 +63,9 @@
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
+    "@graphql-tools/graphql-file-loader": "^8.0.1",
+    "@graphql-tools/url-loader": "^8.0.2",
+    "@graphql-tools/utils": "^10.1.2",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@types/mock-fs": "^4.13.4",

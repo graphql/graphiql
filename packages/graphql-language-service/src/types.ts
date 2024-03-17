@@ -108,8 +108,8 @@ export interface IRange {
 }
 export type CachedContent = {
   documentString: string;
-  range: IRange | null;
-  ast: DocumentNode | null;
+  range?: IRange;
+  ast?: DocumentNode;
 };
 
 // GraphQL Language Service related types

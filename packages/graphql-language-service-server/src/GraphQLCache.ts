@@ -18,19 +18,16 @@ import {
   parse,
   visit,
   Location,
-  SourceLocation,
-  Token,
-  // Source,
   Source as GraphQLSource,
   printSchema,
 } from 'graphql';
 import type {
   CachedContent,
-  GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
   ObjectTypeInfo,
   Uri,
+  IRange,
 } from 'graphql-language-service';
 import { gqlPluckFromCodeString } from '@graphql-tools/graphql-tag-pluck';
 import { Position, Range } from 'graphql-language-service';
@@ -42,6 +39,8 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
   GraphQLExtensionDeclaration,
+  DocumentPointer,
+  SchemaPointer,
 } from 'graphql-config';
 import { Source } from '@graphql-tools/utils';
 
@@ -63,11 +62,7 @@ import {
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import path, { extname, resolve } from 'node:path';
-import { file } from '@babel/types';
-import {
-  TextDocumentChangeEvent,
-  TextDocumentContentChangeEvent,
-} from 'vscode-languageserver';
+import { TextDocumentContentChangeEvent } from 'vscode-languageserver';
 import { existsSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 
@@ -85,7 +80,6 @@ const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
 };
 
 // Maximum files to read when processing GraphQL files.
-const MAX_READS = 200;
 
 const graphqlRangeFromLocation = (location: Location): Range => {
   const locOffset = location.source.locationOffset;
@@ -314,7 +308,6 @@ export class GraphQLCache {
     const projectCacheKey = this._cacheKeyForProject(project);
     const projectCache = this._graphQLFileListCache.get(projectCacheKey);
     const ast = parse(text);
-    console.log({ uri });
     if (projectCache) {
       const lines = text.split('\n');
       projectCache.set(uri, {
@@ -327,7 +320,7 @@ export class GraphQLCache {
             ast,
             range: new Range(
               new Position(0, 0),
-              new Position(lines.length, lines.at(-1)?.length),
+              new Position(lines.length, lines.at(-1).length),
             ),
           },
         ],
@@ -535,6 +528,36 @@ export class GraphQLCache {
     return objectTypeDefinitions;
   };
 
+  private async loadTypeDefs(
+    project: GraphQLProjectConfig,
+    pointer:
+      | DocumentPointer
+      | SchemaPointer
+      | UnnormalizedTypeDefPointer
+      | UnnormalizedTypeDefPointer[]
+      | DocumentPointer[]
+      | SchemaPointer[]
+      | string,
+    target: 'documents' | 'schema',
+  ): Promise<Source[]> {
+    if (typeof pointer === 'string') {
+      try {
+        const { fsPath } = URI.parse(pointer);
+        return this.loadTypeDefs(project, fsPath, target);
+      } catch {}
+    }
+    // @ts-expect-error these are always here. better typings soon
+    return project._extensionsRegistry.loaders[target].loadTypeDefs(pointer, {
+      cwd: project.dirpath,
+      includes: project.include,
+      excludes: project.exclude,
+      includeSources: true,
+      assumeValid: false,
+      noLocation: false,
+      assumeValidSDL: false,
+    });
+  }
+
   public async readAndCacheFile(
     uri: string,
     changes?: TextDocumentContentChangeEvent[],
@@ -580,26 +603,27 @@ export class GraphQLCache {
           )
         ) {
           const result = await gqlPluckFromCodeString(uri, newFileText);
-          const source = new GraphQLSource(result[0].body, result[0].name);
-          source.locationOffset = result[0].locationOffset;
 
-          const lines = result[0].body.split('\n');
-          let document = null;
-          try {
-            document = parse(source);
-          } catch (err) {
-            console.error(err);
-          }
-          console.log({ offset: result[0].locationOffset });
-          fileContents = [
-            {
-              rawSDL: result[0].body,
+          fileContents = result.map(plucked => {
+            const source = new GraphQLSource(plucked.body, plucked.name);
+            source.locationOffset = plucked.locationOffset;
+            let document = null;
+            try {
+              document = parse(source);
+            } catch (err) {
+              console.error(err);
+              return;
+            }
+
+            const lines = plucked.body.split('\n');
+            return {
+              rawSDL: plucked.body,
               document,
               range: graphqlRangeFromLocation({
                 source: {
-                  body: result[0].body,
-                  locationOffset: result[0].locationOffset,
-                  name: result[0].name,
+                  body: plucked.body,
+                  locationOffset: plucked.locationOffset,
+                  name: plucked.name,
                 },
                 startToken: {
                   line: 0,
@@ -607,11 +631,11 @@ export class GraphQLCache {
                 },
                 endToken: {
                   line: lines.length,
-                  column: lines.at(-1)?.length,
+                  column: lines.at(-1)?.length ?? 0,
                 },
               }),
-            },
-          ];
+            };
+          });
         } else if (
           DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS.includes(
             extname(uri) as SupportedExtensionsEnum,
@@ -642,17 +666,7 @@ export class GraphQLCache {
       }
     } else {
       try {
-        fileContents =
-          await project._extensionsRegistry.loaders.schema.loadTypeDefs(
-            URI.parse(uri).fsPath,
-            {
-              cwd: project.dirpath,
-              includeSources: true,
-              assumeValid: false,
-              noLocation: false,
-              assumeValidSDL: false,
-            },
-          );
+        fileContents = await this.loadTypeDefs(project, uri, 'schema');
       } catch {
         fileContents = this._parser(
           await readFile(URI.parse(uri).fsPath, { encoding: 'utf-8' }),
@@ -665,20 +679,9 @@ export class GraphQLCache {
           };
         });
       }
-
       if (!fileContents?.length) {
         try {
-          fileContents =
-            await project._extensionsRegistry.loaders.documents.loadTypeDefs(
-              URI.parse(uri).fsPath,
-              {
-                cwd: project.dirpath,
-                includeSources: true,
-                assumeValid: false,
-                assumeValidSDL: false,
-                noLocation: false,
-              },
-            );
+          fileContents = await this.loadTypeDefs(project, uri, 'documents');
         } catch {
           fileContents = this._parser(
             await readFile(URI.parse(uri).fsPath, { encoding: 'utf-8' }),
@@ -692,20 +695,27 @@ export class GraphQLCache {
           });
         }
       }
-      if (!fileContents.length) {
-        return null;
-      }
+    }
+    if (!fileContents?.length) {
+      return null;
     }
 
-    const asts = fileContents.map((doc: Source) => {
-      return {
-        ast: doc.document!,
-        documentString: doc.document?.loc?.source.body ?? doc.rawSDL,
-        range: doc.document?.loc
-          ? graphqlRangeFromLocation(doc.document?.loc)
-          : doc.range ?? null,
-      };
-    });
+    const asts = fileContents
+      .map(doc => {
+        return {
+          ast: doc?.document,
+          documentString: doc?.document?.loc?.source.body ?? doc?.rawSDL,
+          range: doc?.document?.loc
+            ? graphqlRangeFromLocation(doc?.document?.loc)
+            : // @ts-expect-error
+              doc?.range ?? null,
+        };
+      })
+      .filter(doc => Boolean(doc.documentString)) as {
+      documentString: string;
+      ast?: DocumentNode;
+      range?: IRange;
+    }[];
 
     this._setFragmentCache(
       asts,
@@ -754,18 +764,13 @@ export class GraphQLCache {
     try {
       let documents: Source[] = [];
 
-      if (!options?.schemaOnly) {
+      if (!options?.schemaOnly && projectConfig.documents) {
         try {
-          documents =
-            await projectConfig._extensionsRegistry.loaders.documents.loadTypeDefs(
-              projectConfig.documents,
-              {
-                noLocation: false,
-                assumeValid: false,
-                assumeValidSDL: false,
-                includeSources: true,
-              },
-            );
+          documents = await this.loadTypeDefs(
+            projectConfig,
+            projectConfig.documents,
+            'documents',
+          );
         } catch (err) {
           this._logger.log(String(err));
         }
@@ -774,16 +779,11 @@ export class GraphQLCache {
       let schemaDocuments: Source[] = [];
       // cache schema files
       try {
-        schemaDocuments =
-          await projectConfig._extensionsRegistry.loaders.schema.loadTypeDefs(
-            projectConfig.schema,
-            {
-              noLocation: false,
-              assumeValid: false,
-              assumeValidSDL: false,
-              includeSources: true,
-            },
-          );
+        schemaDocuments = await this.loadTypeDefs(
+          projectConfig,
+          projectConfig.schema,
+          'schema',
+        );
       } catch (err) {
         this._logger.log(String(err));
       }
@@ -831,7 +831,7 @@ export class GraphQLCache {
               });
             } else if (isTypeDefinitionNode(definition)) {
               objectTypeDefinitions.set(definition.name.value, {
-                uri: filePath,
+                // uri: filePath,
                 filePath,
                 fsPath,
                 content,
@@ -909,17 +909,24 @@ export class GraphQLCache {
     contents: Array<CachedContent>,
   ): Promise<void> {
     const cache = this._fragmentDefinitionsCache.get(projectCacheKey);
-    const asts = contents.map(({ documentString, range, ast }) => {
-      try {
-        return {
-          ast: ast ?? parse(documentString),
-          documentString,
-          range,
-        };
-      } catch {
-        return { ast: null, documentString, range };
-      }
-    });
+    const asts = contents
+      .map(({ documentString, range, ast }) => {
+        try {
+          return {
+            ast: ast ?? parse(documentString),
+            documentString,
+            range,
+          };
+        } catch {
+          return { ast: null, documentString, range };
+        }
+      })
+      .filter(doc => Boolean(doc.documentString)) as {
+      documentString: string;
+      ast?: DocumentNode;
+      range?: IRange;
+    }[];
+
     if (cache) {
       // first go through the fragment list to delete the ones from this file
       for (const [key, value] of cache.entries()) {
@@ -1113,7 +1120,7 @@ export class GraphQLCache {
         schema.schema = await projectConfig.getSchema();
       } catch {
         // // if there is an error reading the schema, just use the last valid schema
-        schema = this._schemaMap.get(schemaCacheKey);
+        schema = this._schemaMap.get(schemaCacheKey)!;
       }
     }
 
@@ -1166,7 +1173,6 @@ export class GraphQLCache {
         ext => !schemaEntry.startsWith('http') && schemaEntry.endsWith(ext),
       ),
     );
-    console.log({ unwrappedSchema, sdlOnly, cacheSchemaFileForLookup });
     if (!sdlOnly && cacheSchemaFileForLookup) {
       const result = await this._cacheConfigSchema(projectConfig);
       if (result) {
