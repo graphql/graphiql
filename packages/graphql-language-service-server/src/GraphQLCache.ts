@@ -320,7 +320,7 @@ export class GraphQLCache {
             ast,
             range: new Range(
               new Position(0, 0),
-              new Position(lines.length, lines.at(-1).length),
+              new Position(lines.length, lines.at(-1)?.length ?? 0),
             ),
           },
         ],
@@ -332,7 +332,7 @@ export class GraphQLCache {
       projectCache.delete(project.schema.toString());
 
       this._setDefinitionCache(
-        [{ documentString: text, ast, range: null }],
+        [{ documentString: text, ast, range: undefined }],
         this._typeDefinitionsCache.get(projectCacheKey) || new Map(),
         uri,
       );
@@ -543,7 +543,20 @@ export class GraphQLCache {
     if (typeof pointer === 'string') {
       try {
         const { fsPath } = URI.parse(pointer);
-        return this.loadTypeDefs(project, fsPath, target);
+        // @ts-expect-error these are always here. better typings soon
+
+        return project._extensionsRegistry.loaders[target].loadTypeDefs(
+          fsPath,
+          {
+            cwd: project.dirpath,
+            includes: project.include,
+            excludes: project.exclude,
+            includeSources: true,
+            assumeValid: false,
+            noLocation: false,
+            assumeValidSDL: false,
+          },
+        );
       } catch {}
     }
     // @ts-expect-error these are always here. better typings soon
@@ -802,7 +815,12 @@ export class GraphQLCache {
           let fsPath = doc.location;
           let filePath;
           const isNetwork = doc.location.startsWith('http');
-          if (isNetwork) {
+          if (!isNetwork) {
+            try {
+              fsPath = resolve(rootDir, doc.location);
+            } catch {}
+            filePath = URI.file(fsPath).toString();
+          } else {
             filePath = this._getTmpProjectPath(
               projectConfig,
               true,
@@ -813,11 +831,6 @@ export class GraphQLCache {
               false,
               'generated-schema.graphql',
             );
-          } else {
-            try {
-              fsPath = resolve(rootDir, doc.location);
-            } catch {}
-            filePath = URI.file(fsPath).toString();
           }
 
           const content = doc.document.loc?.source.body ?? '';

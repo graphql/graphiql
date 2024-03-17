@@ -310,7 +310,7 @@ describe('the lsp', () => {
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
   });
 
-  it.only('caches files and schema with a URL config', async () => {
+  it('caches files and schema with a URL config', async () => {
     const project = new MockProject({
       files: [
         ['query.graphql', 'query { test { isTest, ...T } }'],
@@ -481,10 +481,10 @@ describe('the lsp', () => {
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('a')).toBeDefined();
-    // const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
-    //   encoding: 'utf-8',
-    // });
-    // expect(file.split('\n').length).toBeGreaterThan(10);
+    const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
+      encoding: 'utf-8',
+    });
+    expect(file.split('\n').length).toBeGreaterThan(10);
     // add a new typescript file with empty query to the b project
     // and expect autocomplete to only show options for project b
     await project.addFile(
