@@ -106,6 +106,7 @@ export interface IRange {
   setStart(line: number, character: number): void;
   containsPosition(position: IPosition): boolean;
 }
+
 export type CachedContent = {
   documentString: string;
   range?: IRange;

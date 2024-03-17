@@ -802,12 +802,7 @@ export class GraphQLCache {
           let fsPath = doc.location;
           let filePath;
           const isNetwork = doc.location.startsWith('http');
-          if (!isNetwork) {
-            try {
-              fsPath = resolve(rootDir, doc.location);
-            } catch {}
-            filePath = URI.file(fsPath).toString();
-          } else {
+          if (isNetwork) {
             filePath = this._getTmpProjectPath(
               projectConfig,
               true,
@@ -818,6 +813,11 @@ export class GraphQLCache {
               false,
               'generated-schema.graphql',
             );
+          } else {
+            try {
+              fsPath = resolve(rootDir, doc.location);
+            } catch {}
+            filePath = URI.file(fsPath).toString();
           }
 
           const content = doc.document.loc?.source.body ?? '';

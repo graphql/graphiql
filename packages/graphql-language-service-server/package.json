@@ -42,6 +42,10 @@
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
+    "@graphql-tools/graphql-tag-pluck": "^8.3.0",
+    "@graphql-tools/graphql-file-loader": "^8.0.1",
+    "@graphql-tools/url-loader": "^8.0.2",
+    "@graphql-tools/utils": "^10.1.2",
     "@vue/compiler-sfc": "^3.4.5",
     "astrojs-compiler-sync": "^0.3.5",
     "cosmiconfig-toml-loader": "^1.0.0",
@@ -63,9 +67,6 @@
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
-    "@graphql-tools/graphql-file-loader": "^8.0.1",
-    "@graphql-tools/url-loader": "^8.0.2",
-    "@graphql-tools/utils": "^10.1.2",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@types/mock-fs": "^4.13.4",

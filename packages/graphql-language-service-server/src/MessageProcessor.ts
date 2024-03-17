@@ -392,22 +392,16 @@ export class MessageProcessor {
       return { uri, diagnostics };
     }
     try {
-      console.log('and here');
       const project = this._graphQLCache.getProjectForFile(uri);
-      console.log('and here 1');
       if (project) {
-        const text = 'text' in textDocument && textDocument.text;
+        // the disk is always valid here, so the textDocument.text isn't useful I don't think
+        // const text = 'text' in textDocument && textDocument.text;
         // for some reason if i try to tell to not parse empty files, it breaks :shrug:
         // i think this is because if the file change is empty, it doesn't get parsed
         // TODO: this could be related to a bug in how we are calling didOpenOrSave in our tests
         // that doesn't reflect the real runtime behavior
 
-        const { contents } = await this._parseAndCacheFile(
-          uri,
-          project,
-          // text as string,
-        );
-        console.log('and here 2');
+        const { contents } = await this._parseAndCacheFile(uri, project);
         if (project?.extensions?.languageService?.enableValidation !== false) {
           await Promise.all(
             contents.map(async ({ documentString, range }) => {
@@ -487,7 +481,6 @@ export class MessageProcessor {
       if (project?.extensions?.languageService?.enableValidation !== false) {
         // Send the diagnostics onChange as well
         try {
-          console.log({ contents });
           await Promise.all(
             contents.map(async ({ documentString, range }) => {
               const results = await this._languageService.getDiagnostics(
@@ -595,20 +588,16 @@ export class MessageProcessor {
     // Treat the computed list always complete.
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    console.log({ cachedDocument, uri: textDocument.uri });
     if (!cachedDocument) {
       return { items: [], isIncomplete: false };
     }
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      console.log({ currentRange, position: toPosition(position) });
       if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
-
-    console.log({ found });
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
@@ -797,23 +786,16 @@ export class MessageProcessor {
     const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    console.log({ cachedDocument });
     if (!cachedDocument) {
       return [];
     }
 
     const found = cachedDocument.contents.find(content => {
-      console.log(content.range, toPosition(position));
       const currentRange = content?.range;
-      if (
-        currentRange &&
-        currentRange?.containsPosition(toPosition(position))
-      ) {
+      if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
-
-    console.log({ found }, 'definition');
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
@@ -833,9 +815,7 @@ export class MessageProcessor {
         toPosition(position),
         textDocument.uri,
       );
-      console.log({ result });
-    } catch (err) {
-      console.error(err);
+    } catch {
       // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
     }
 
@@ -865,7 +845,6 @@ export class MessageProcessor {
               const vOffset = isEmbedded
                 ? cachedDoc?.contents[0].range?.start.line ?? 0
                 : parentRange.start.line;
-              console.log({ defRange });
 
               defRange.setStart(
                 (defRange.start.line += vOffset),
@@ -1333,11 +1312,15 @@ export class MessageProcessor {
   }
 
   private _getCachedDocument(uri: string): CachedDocumentType | null {
-    const fileCache = this._getDocumentCacheForFile(uri);
-    console.log(fileCache);
-    const cachedDocument = fileCache?.get(uri);
-    if (cachedDocument) {
-      return cachedDocument;
+    const project = this._graphQLCache.getProjectForFile(uri);
+    if (project) {
+      const cachedDocument = this._graphQLCache._getCachedDocument(
+        uri,
+        project,
+      );
+      if (cachedDocument) {
+        return cachedDocument;
+      }
     }
 
     return null;
@@ -1347,7 +1330,6 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<Map<string, CachedDocumentType> | null> {
-    console.log('invalidate');
     let documentCache = this._getDocumentCacheForFile(uri);
     if (!documentCache) {
       const project = await this._graphQLCache.getProjectForFile(uri);
@@ -1386,7 +1368,7 @@ export class MessageProcessor {
 export function processDiagnosticsMessage(
   results: Diagnostic[],
   query: string,
-  range: RangeType | null,
+  range?: RangeType,
 ): Diagnostic[] {
   const queryLines = query.split('\n');
   const totalLines = queryLines.length;
