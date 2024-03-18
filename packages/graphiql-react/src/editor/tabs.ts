@@ -278,7 +278,9 @@ export function useSetEditorValues({
     }) => {
       queryEditor?.setValue(query ?? '');
       variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? headerEditor?.getValue() ?? '');
+      if (headerEditor && headers?.length) {
+        headerEditor.setValue(headers);
+      }
       responseEditor?.setValue(response ?? '');
     },
     [headerEditor, queryEditor, responseEditor, variableEditor],
