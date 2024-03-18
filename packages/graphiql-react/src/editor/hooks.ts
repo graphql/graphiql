@@ -41,7 +41,7 @@ export function useChangeHandler(
   editor: CodeMirrorEditor | null,
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
-  tabProperty: 'variables' | 'headers',
+  tabProperty: 'variables' | 'headers' | 'extensions',
   caller: Function,
 ) {
   const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
@@ -212,10 +212,11 @@ type UsePrettifyEditorsArgs = {
 };
 
 export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || usePrettifyEditors,
-  });
+  const { queryEditor, headerEditor, variableEditor, extensionEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: caller || usePrettifyEditors,
+    });
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
@@ -227,6 +228,23 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
         );
         if (prettifiedVariableEditorContent !== variableEditorContent) {
           variableEditor.setValue(prettifiedVariableEditorContent);
+        }
+      } catch {
+        /* Parsing JSON failed, skip prettification */
+      }
+    }
+
+    if (extensionEditor) {
+      const extensionEditorContent = extensionEditor.getValue();
+
+      try {
+        const prettifiedExtensionEditorContent = JSON.stringify(
+          JSON.parse(extensionEditorContent),
+          null,
+          2,
+        );
+        if (prettifiedExtensionEditorContent !== extensionEditorContent) {
+          extensionEditor.setValue(prettifiedExtensionEditorContent);
         }
       } catch {
         /* Parsing JSON failed, skip prettification */
@@ -258,7 +276,7 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
         queryEditor.setValue(prettifiedEditorContent);
       }
     }
-  }, [queryEditor, variableEditor, headerEditor]);
+  }, [queryEditor, variableEditor, headerEditor, extensionEditor]);
 }
 
 export type UseAutoCompleteLeafsArgs = {
