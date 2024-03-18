@@ -29,6 +29,7 @@ Supported features include:
 - Support for `gql` `graphql` and other template tags inside javascript,
   typescript, jsx, ts, vue and svelte files, and an interface to allow custom
   parsing of all files.
+- Support multiple GraphQL APIs in the same file via annotation suffixes.
 
 ## Installation and Usage
 
@@ -187,6 +188,9 @@ export default {
         languageService: {
           cacheSchemaFileForLookup: true,
           enableValidation: false,
+          gqlTagOptions: {
+            annotationSuffix: 'my-project',
+          },
         },
       },
     },
@@ -237,17 +241,36 @@ via `initializationOptions` in nvim.coc. The options are mostly designed to
 configure graphql-config's load parameters, the only thing we can't configure
 with graphql config. The final option can be set in `graphql-config` as well
 
-| Parameter                                 | Default                         | Description                                                                                                                                                       |
-| ----------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `graphql-config.load.baseDir`             | workspace root or process.cwd() | the path where graphql config looks for config files                                                                                                              |
-| `graphql-config.load.filePath`            | `null`                          | exact filepath of the config file.                                                                                                                                |
-| `graphql-config.load.configName`          | `graphql`                       | config name prefix instead of `graphql`                                                                                                                           |
-| `graphql-config.load.legacy`              | `true`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
-| `graphql-config.dotEnvPath`               | `null`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
-| `vscode-graphql.cacheSchemaFileForLookup` | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls |
+| Parameter                                       | Default                         | Description                                                                                                                                                                                                                   |
+| ----------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `graphql-config.load.baseDir`                   | workspace root or process.cwd() | the path where graphql config looks for config files                                                                                                                                                                          |
+| `graphql-config.load.filePath`                  | `null`                          | exact filepath of the config file.                                                                                                                                                                                            |
+| `graphql-config.load.configName`                | `graphql`                       | config name prefix instead of `graphql`                                                                                                                                                                                       |
+| `graphql-config.load.legacy`                    | `true`                          | backwards compatibility with `graphql-config@2`                                                                                                                                                                               |
+| `graphql-config.dotEnvPath`                     | `null`                          | backwards compatibility with `graphql-config@2`                                                                                                                                                                               |
+| `vscode-graphql.cacheSchemaFileForLookup`       | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls                                                             |
+| `vscode-graphql.gqlTagOptions.annotationSuffix` | `null`                          | establish a suffix to match queries to a project schema using `#graphql:<suffix>` comment. Only the first matching project for a given query is used, thus supporting multiple queries for different schemas in the same file |
 
 all the `graphql-config.load.*` configuration values come from static
 `loadConfig()` options in graphql config.
+
+Use the `gqlTagOptions.annotationSuffix` option to mix queries for different schemas in the same file. Each query annotated with the `#graphql:<suffix>` comment will be matched to the first project with the same suffix:
+
+```ts
+// file.js
+
+const queryForDefaultProject = `#graphql
+  query { something }
+`;
+
+const queryForDbProject = `#graphql:db
+  query { something }
+`;
+
+const queryForCmsProject = `#graphql:cms
+  query { something }
+`;
+```
 
 (more coming soon!)
 

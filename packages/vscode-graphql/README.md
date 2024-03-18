@@ -128,6 +128,11 @@ module.exports = {
             },
           },
         ],
+        languageService: {
+          gqlTagOptions: {
+            annotationSuffix: 'db',
+          },
+        },
       },
     },
   },
@@ -136,6 +141,24 @@ module.exports = {
 
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]`
 is also valid.
+
+Normally, you would point your `documents` in each project to different files to ensure that only one schema is used for the queries. However, you can also mix queries for different schemas into the same file by adding a `#graphql:<suffix>` comment to each query, matching the `languageService.gqlTagOptions.annotationSuffix` for the project:
+
+```ts
+// file.js
+
+const queryForDefaultProject = `#graphql
+  query { something }
+`;
+
+const queryForDbProject = `#graphql:db
+  query { something }
+`;
+
+const queryForCmsProject = `#graphql:cms
+  query { something }
+`;
+```
 
 ## Frequently Asked Questions
 
@@ -300,14 +323,14 @@ further!
 This plugin uses the
 [GraphQL language server](https://github.com/graphql/graphql-language-service-server)
 
-1.  Clone the repository - https://github.com/graphql/graphiql
-1.  `yarn`
-1.  Run "VScode Extension" launcher in vscode
-1.  This will open another VSCode instance with extension enabled
-1.  Open a project with a graphql config file - ":electric_plug: graphql" in
-    VSCode status bar indicates that the extension is in use
-1.  Logs for GraphQL language service will appear in output section under
-    GraphQL Language Service
+1. Clone the repository - <https://github.com/graphql/graphiql>
+1. `yarn`
+1. Run "VScode Extension" launcher in vscode
+1. This will open another VSCode instance with extension enabled
+1. Open a project with a graphql config file - ":electric_plug: graphql" in
+   VSCode status bar indicates that the extension is in use
+1. Logs for GraphQL language service will appear in output section under
+   GraphQL Language Service
 
 ### Contributing back to this project
 
