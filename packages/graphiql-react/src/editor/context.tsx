@@ -37,6 +37,7 @@ import {
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+import { useExecutionContext } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -279,6 +280,7 @@ export type EditorContextProviderProps = {
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
   const storage = useStorageContext();
+  const executionContext = useExecutionContext();
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
@@ -376,7 +378,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const { onTabChange, defaultHeaders, children } = props;
+  const { onTabChange, confirmCloseTab, defaultHeaders, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
     variableEditor,
@@ -443,29 +445,41 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     EditorContextType['closeTabConfirmation']
   >(
     async index => {
-      if (props.confirmCloseTab) {
-        const confirmation = await props.confirmCloseTab(index);
+      if (confirmCloseTab) {
+        const confirmation = await confirmCloseTab(index);
         return confirmation;
       }
       return true;
     },
-    [props.confirmCloseTab],
+    [confirmCloseTab],
   );
 
   const closeTab = useCallback<EditorContextType['closeTab']>(
-    index => {
-      setTabState(current => {
-        const updated = {
-          tabs: current.tabs.filter((_tab, i) => index !== i),
-          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]);
-        onTabChange?.(updated);
-        return updated;
-      });
+    async index => {
+      if (await closeTabConfirmation(index)) {
+        if (index === tabState.activeTabIndex) {
+          executionContext?.stop();
+        }
+        setTabState(current => {
+          const updated = {
+            tabs: current.tabs.filter((_tab, i) => index !== i),
+            activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+          };
+          storeTabs(updated);
+          setEditorValues(updated.tabs[updated.activeTabIndex]);
+          onTabChange?.(updated);
+          return updated;
+        });
+      }
     },
-    [onTabChange, setEditorValues, storeTabs],
+    [
+      onTabChange,
+      setEditorValues,
+      storeTabs,
+      closeTabConfirmation,
+      tabState.activeTabIndex,
+      executionContext,
+    ],
   );
 
   const updateActiveTabValues = useCallback<
@@ -558,6 +572,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       addTab,
       changeTab,
       moveTab,
+      closeTabConfirmation,
       closeTab,
       updateActiveTabValues,
 

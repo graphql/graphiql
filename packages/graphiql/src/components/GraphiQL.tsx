@@ -582,16 +582,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                             {tab.title}
                           </Tab.Button>
                           <Tab.Close
-                            onClick={async () => {
-                              if (
-                                await editorContext.closeTabConfirmation(index)
-                              ) {
-                                if (editorContext.activeTabIndex === index) {
-                                  executionContext.stop();
-                                }
-                                editorContext.closeTab(index);
-                              }
-                            }}
+                            onClick={() => editorContext.closeTab(index)}
                           />
                         </Tab>
                       ))}
