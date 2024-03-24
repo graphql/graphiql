@@ -49,6 +49,8 @@ export default {
 };
 ```
 
+same for .json, .toml, etc
+
 ## Additional Features
 
 - Loads the LSP server upon detecting a `graphql-config` file at root level or in a
@@ -66,7 +68,13 @@ export default {
 For more help with configuring the language server,
 [the language server readme](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server/README.md)
 is the source of truth for all settings used by all editors which use the
-language server. The [`graphql-config`](https://graphql-config.com/) docs are also very helpful.
+language server.
+
+This includes LSP settings provided by extensions like `vscode-graphql`, nvim, etc.
+
+There are a number of configurations that can be provided from both editor settings or the graphql config file, and the editor setting takes precedence, to allow users to override their graphql config file settings in a user context as needed.
+
+The [`graphql-config`](https://graphql-config.com/) docs are also very helpful for the config file.
 
 ### Advanced Example
 

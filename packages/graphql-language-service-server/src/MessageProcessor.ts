@@ -7,8 +7,8 @@
  *
  */
 
-import { existsSync, writeFileSync, mkdirSync } from 'node:fs';
-import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync, mkdirSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { URI } from 'vscode-uri';
 import {
@@ -69,11 +69,11 @@ import {
 import type { LoadConfigOptions } from './types';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
-  DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import glob from 'fast-glob';
+import { isProjectSDLOnly, unwrapProjectSchema } from './common';
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -227,6 +227,20 @@ export class MessageProcessor {
       rootDir,
     };
 
+    const onSchemaChange = async (project: GraphQLProjectConfig) => {
+      const { cacheSchemaFileForLookup } =
+        this.getCachedSchemaSettings(project);
+      if (!cacheSchemaFileForLookup) {
+        return;
+      }
+      const unwrappedSchema = unwrapProjectSchema(project);
+      const sdlOnly = isProjectSDLOnly(unwrappedSchema);
+      if (sdlOnly) {
+        return;
+      }
+      return this.cacheConfigSchemaFile(project);
+    };
+
     try {
       // now we have the settings so we can re-build the logger
       this._logger.level = this._settings?.debug === true ? 1 : 0;
@@ -238,6 +252,7 @@ export class MessageProcessor {
           logger: this._logger,
           parser: this._parser,
           configDir: rootDir,
+          onSchemaChange,
         });
         this._languageService = new GraphQLLanguageService(
           this._graphQLCache,
@@ -248,15 +263,14 @@ export class MessageProcessor {
         this._graphQLCache = await getGraphQLCache({
           parser: this._parser,
           loadConfigOptions: this._loadConfigOptions,
-
           logger: this._logger,
+          onSchemaChange,
         });
         this._languageService = new GraphQLLanguageService(
           this._graphQLCache,
           this._logger,
         );
       }
-
       const config = this._graphQLCache.getGraphQLConfig();
       if (config) {
         await this._cacheAllProjectFiles(config);
@@ -995,7 +1009,7 @@ export class MessageProcessor {
         if (schemaDocument) {
           version = schemaDocument.version++;
         }
-        const schemaText = await readFile(uri, 'utf8');
+        const schemaText = await readFile(uri, 'utf-8');
         await this._cacheSchemaText(schemaUri, schemaText, version);
       }
     } catch (err) {
@@ -1025,6 +1039,27 @@ export class MessageProcessor {
     return path.resolve(projectTmpPath);
   }
 
+  private getCachedSchemaSettings(project: GraphQLProjectConfig) {
+    const config = project?.extensions?.languageService;
+    let cacheSchemaFileForLookup = true;
+    let schemaCacheTTL = 1000 * 30;
+
+    if (
+      config?.cacheSchemaFileForLookup === false ||
+      this?._settings?.cacheSchemaFileForLookup === false
+    ) {
+      cacheSchemaFileForLookup = false;
+    }
+    // nullish coalescing allows 0 to be a valid value here
+    if (config?.schemaCacheTTL) {
+      schemaCacheTTL = config.schemaCacheTTL;
+    }
+    if (this?._settings?.schemaCacheTTL) {
+      schemaCacheTTL = this._settings.schemaCacheTTL;
+    }
+    return { cacheSchemaFileForLookup, schemaCacheTTL };
+  }
+
   private async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const config = project?.extensions?.languageService;
     /**
@@ -1041,26 +1076,33 @@ export class MessageProcessor {
      *
      * it is disabled by default
      */
-    const cacheSchemaFileForLookup =
-      config?.cacheSchemaFileForLookup ??
-      this?._settings?.cacheSchemaFileForLookup ??
-      true;
-    const unwrappedSchema = this._unwrapProjectSchema(project);
-    const allExtensions = [
-      ...DEFAULT_SUPPORTED_EXTENSIONS,
-      ...DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
-    ];
+    const { cacheSchemaFileForLookup } = this.getCachedSchemaSettings(project);
+    const unwrappedSchema = unwrapProjectSchema(project);
+
     // only local schema lookups if all of the schema entries are local files
-    const sdlOnly = unwrappedSchema.every(schemaEntry =>
-      allExtensions.some(
-        // local schema file URIs for lookup don't start with http, and end with an extension.
-        // though it isn't often used, technically schema config could include a remote .graphql file
-        ext => !schemaEntry.startsWith('http') && schemaEntry.endsWith(ext),
-      ),
+    const sdlOnly = isProjectSDLOnly(unwrappedSchema);
+
+    const uri = this._getTmpProjectPath(
+      project,
+      true,
+      'generated-schema.graphql',
     );
+    const fsPath = this._getTmpProjectPath(
+      project,
+      false,
+      'generated-schema.graphql',
+    );
+    // invalidate the cache for the generated schema file
+    // whether or not the user will continue using this feature
+    // because sdlOnly needs this file to be removed as well if the user is switching schemas
+    // this._textDocumentCache.delete(uri);
+    // skip exceptions if the file doesn't exist
+    try {
+      // await rm(fsPath, { force: true });
+    } catch {}
     // if we are caching the config schema, and it isn't a .graphql file, cache it
     if (cacheSchemaFileForLookup && !sdlOnly) {
-      await this._cacheConfigSchema(project);
+      await this.cacheConfigSchemaFile(project);
     } else if (sdlOnly) {
       await Promise.all(
         unwrappedSchema.map(async schemaEntry =>
@@ -1074,7 +1116,7 @@ export class MessageProcessor {
    * from GraphQLCache.getSchema()
    * @param project {GraphQLProjectConfig}
    */
-  private async _cacheConfigSchema(project: GraphQLProjectConfig) {
+  private async cacheConfigSchemaFile(project: GraphQLProjectConfig) {
     try {
       const schema = await this._graphQLCache.getSchema(project.name);
       if (schema) {
@@ -1097,12 +1139,21 @@ export class MessageProcessor {
         const cachedSchemaDoc = this._getCachedDocument(uri);
         this._graphQLCache._schemaMap.set(project.name, schema);
         if (!cachedSchemaDoc) {
-          await writeFile(fsPath, schemaText, 'utf8');
+          try {
+            await mkdir(path.dirname(fsPath), { recursive: true });
+          } catch {}
+
+          await writeFile(fsPath, schemaText, {
+            encoding: 'utf-8',
+          });
           await this._cacheSchemaText(uri, schemaText, 0, project);
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
-          writeFileSync(fsPath, schemaText, 'utf8');
+          try {
+            await mkdir(path.dirname(fsPath), {});
+          } catch {}
+          await writeFile(fsPath, schemaText, 'utf-8');
           await this._cacheSchemaText(
             uri,
             schemaText,
@@ -1112,6 +1163,7 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
+      console.log(err);
       this._logger.error(String(err));
     }
   }
@@ -1209,7 +1261,7 @@ export class MessageProcessor {
     uri: Uri,
   ): Promise<void> {
     await Promise.all(
-      this._unwrapProjectSchema(project).map(async schema => {
+      unwrapProjectSchema(project).map(async schema => {
         const schemaFilePath = path.resolve(project.dirpath, schema);
         const uriFilePath = URI.parse(uri).fsPath;
         if (uriFilePath === schemaFilePath) {
@@ -1223,38 +1275,6 @@ export class MessageProcessor {
         }
       }),
     );
-  }
-  private _unwrapProjectSchema(project: GraphQLProjectConfig): string[] {
-    const projectSchema = project.schema;
-
-    const schemas: string[] = [];
-    if (typeof projectSchema === 'string') {
-      schemas.push(projectSchema);
-    } else if (Array.isArray(projectSchema)) {
-      for (const schemaEntry of projectSchema) {
-        if (typeof schemaEntry === 'string') {
-          schemas.push(schemaEntry);
-        } else if (schemaEntry) {
-          schemas.push(...Object.keys(schemaEntry));
-        }
-      }
-    } else {
-      schemas.push(...Object.keys(projectSchema));
-    }
-
-    return schemas.reduce<string[]>((agg, schema) => {
-      const results = this._globIfFilePattern(schema);
-      return [...agg, ...results];
-    }, []);
-  }
-  private _globIfFilePattern(pattern: string) {
-    if (pattern.includes('*')) {
-      try {
-        return glob.sync(pattern);
-        // URLs may contain * characters
-      } catch {}
-    }
-    return [pattern];
   }
 
   private async _updateObjectTypeDefinition(

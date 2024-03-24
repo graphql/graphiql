@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -107,6 +107,13 @@
           "description": "Fail the request on invalid certificate",
           "default": true
         },
+        "vscode-graphql.schemaCacheTTL": {
+          "type": [
+            "number"
+          ],
+          "description": "Schema cache ttl in milliseconds before requesting a fresh schema when caching the local schema file is enabled. Defaults to 30000 (30 seconds).",
+          "default": 30000
+        },
         "graphql-config.load.rootDir": {
           "type": [
             "string"
@@ -161,7 +168,7 @@
     "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish $(ls -1 *.vsix | tail -n 1) --pat $OVSX_PAT",
+    "open-vsx:publish": "ovsx publish $(ls -1 *.vsix | sort -V | tail -n 1) --pat $OVSX_PAT",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {

@@ -52,6 +52,7 @@ describe('MessageProcessor with no config', () => {
     );
     expect(project.lsp._isInitialized).toEqual(false);
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
+    project.lsp.handleShutdownRequest();
   });
   it('fails to initialize with no config file present', async () => {
     const project = new MockProject({
@@ -67,6 +68,7 @@ describe('MessageProcessor with no config', () => {
     );
     expect(project.lsp._isInitialized).toEqual(false);
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
+    project.lsp.handleShutdownRequest();
   });
   it('initializes when presented with a valid config later', async () => {
     const project = new MockProject({
@@ -90,6 +92,7 @@ describe('MessageProcessor with no config', () => {
     expect(project.lsp._isInitialized).toEqual(true);
     expect(project.lsp._isGraphQLConfigMissing).toEqual(false);
     expect(project.lsp._graphQLCache).toBeDefined();
+    project.lsp.handleShutdownRequest();
   });
 });
 
@@ -195,7 +198,7 @@ describe('project with simple config and graphql files', () => {
     expect(serializeRange(schemaDefRequest[0].range)).toEqual(
       fooLaterTypePosition,
     );
-
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // change the file to make the fragment invalid
     project.changeFile(
       'schema.graphql',
@@ -295,6 +298,7 @@ describe('project with simple config and graphql files', () => {
       fooLaterTypePosition2,
     );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    project.lsp.handleShutdownRequest();
   });
 
   it('caches files and schema with a URL config', async () => {
@@ -420,6 +424,7 @@ describe('project with simple config and graphql files', () => {
       },
     });
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    project.lsp.handleShutdownRequest();
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
@@ -496,7 +501,7 @@ describe('project with simple config and graphql files', () => {
       position: { character: 21, line: 4 },
     });
     expect(serializeRange(schemaDefinition[0].range)).toEqual(fooTypePosition);
-
+    expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // simulate a watched schema file change (codegen, etc)
     project.changeFile(
       'b/schema.graphql',
@@ -531,5 +536,6 @@ describe('project with simple config and graphql files', () => {
     ]);
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
+    project.lsp.handleShutdownRequest();
   });
 });

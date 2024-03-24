@@ -63,7 +63,8 @@
           "source.vue",
           "source.svelte",
           "source.astro",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql",
         "path": "./grammars/graphql.js.json",
@@ -75,7 +76,8 @@
         "injectTo": [
           "source.reason",
           "source.ocaml",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.re",
         "path": "./grammars/graphql.re.json",
@@ -86,7 +88,8 @@
       {
         "injectTo": [
           "source.rescript",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.res",
         "path": "./grammars/graphql.rescript.json",
@@ -96,7 +99,8 @@
       },
       {
         "injectTo": [
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.markdown.codeblock",
         "path": "./grammars/graphql.markdown.codeblock.json",
@@ -107,7 +111,8 @@
       {
         "injectTo": [
           "source.python",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.python",
         "path": "./grammars/graphql.python.json",
@@ -118,7 +123,8 @@
       {
         "injectTo": [
           "text.html.php",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.php",
         "path": "./grammars/graphql.php.json",
@@ -129,7 +135,8 @@
       {
         "injectTo": [
           "source.scala",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.scala",
         "path": "./grammars/graphql.scala.json",

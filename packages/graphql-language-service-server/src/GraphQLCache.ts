@@ -45,18 +45,29 @@ import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
-import { CodeFileLoader } from '@graphql-tools/code-file-loader';
+import {
+  CodeFileLoader,
+  CodeFileLoaderConfig,
+} from '@graphql-tools/code-file-loader';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
+import { LRUCache } from 'lru-cache';
+
+const codeLoaderConfig: CodeFileLoaderConfig = {
+  noSilentErrors: false,
+  pluckConfig: {
+    skipIndent: true,
+  },
+};
 
 const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For schema
-  api.loaders.schema.register(new CodeFileLoader());
+  api.loaders.schema.register(new CodeFileLoader(codeLoaderConfig));
   // For documents
-  api.loaders.documents.register(new CodeFileLoader());
+  api.loaders.documents.register(new CodeFileLoader(codeLoaderConfig));
 
   return { name: 'languageService' };
 };
@@ -64,16 +75,20 @@ const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
+export type OnSchemaChange = (project: GraphQLProjectConfig) => void;
+
 export async function getGraphQLCache({
   parser,
   logger,
   loadConfigOptions,
   config,
+  onSchemaChange,
 }: {
   parser: typeof parseDocument;
   logger: Logger | NoopLogger;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
+  onSchemaChange?: OnSchemaChange;
 }): Promise<GraphQLCache> {
   const graphQLConfig =
     config ||
@@ -89,6 +104,7 @@ export async function getGraphQLCache({
     config: graphQLConfig!,
     parser,
     logger,
+    onSchemaChange,
   });
 }
 
@@ -102,27 +118,36 @@ export class GraphQLCache {
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
   _logger: Logger | NoopLogger;
+  _onSchemaChange?: OnSchemaChange;
 
   constructor({
     configDir,
     config,
     parser,
     logger,
+    onSchemaChange,
   }: {
     configDir: Uri;
     config: GraphQLConfig;
     parser: typeof parseDocument;
     logger: Logger | NoopLogger;
+    onSchemaChange?: OnSchemaChange;
   }) {
     this._configDir = configDir;
     this._graphQLConfig = config;
     this._graphQLFileListCache = new Map();
-    this._schemaMap = new Map();
+    this._schemaMap = new LRUCache({
+      max: 20,
+      ttl: 1000 * 30,
+      ttlAutopurge: true,
+      updateAgeOnGet: false,
+    });
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
     this._parser = parser;
     this._logger = logger;
+    this._onSchemaChange = onSchemaChange;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
@@ -600,11 +625,12 @@ export class GraphQLCache {
         schema = await projectConfig.getSchema();
       } catch {
         // // if there is an error reading the schema, just use the last valid schema
-        // schema = this._schemaMap.get(schemaCacheKey);
+        schema = this._schemaMap.get(schemaCacheKey);
       }
 
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);
+
         if (schema) {
           return queryHasExtensions
             ? this._extendSchema(schema, schemaPath, schemaCacheKey)
@@ -629,6 +655,7 @@ export class GraphQLCache {
 
     if (schemaCacheKey) {
       this._schemaMap.set(schemaCacheKey, schema);
+      await this._onSchemaChange?.(projectConfig);
     }
     return schema;
   };
@@ -761,7 +788,7 @@ export class GraphQLCache {
   promiseToReadGraphQLFile = async (
     filePath: Uri,
   ): Promise<GraphQLFileInfo> => {
-    const content = await readFile(URI.parse(filePath).fsPath, 'utf8');
+    const content = await readFile(URI.parse(filePath).fsPath, 'utf-8');
 
     const asts: DocumentNode[] = [];
     let queries: CachedContent[] = [];
