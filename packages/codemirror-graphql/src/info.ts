@@ -299,6 +299,9 @@ function text(
       // want clicking the node to navigate anywhere.
       node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
       node.addEventListener('click', (e: MouseEvent) => {
+        // Although an href of 'javascript:void 0' should never navigate away from the page,
+        //   that is not always the case: https://github.com/graphql/graphiql/issues/3565
+        e.preventDefault();
         onClick(ref, e);
       });
     } else {
