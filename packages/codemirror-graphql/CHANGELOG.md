@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.11
+
+### Patch Changes
+
+- [#3567](https://github.com/graphql/graphiql/pull/3567) [`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - tooltip a tag's click listener calls event.preventDefault() to stop navigating away from page
+
 ## 2.0.10
 
 ### Patch Changes
