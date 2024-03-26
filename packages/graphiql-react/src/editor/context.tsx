@@ -366,14 +366,27 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const { onTabChange, defaultHeaders, children } = props;
+  const {
+    onTabChange,
+    headers,
+    query,
+    defaultHeaders,
+    defaultQuery,
+    children,
+  } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
+        tabs: [
+          ...updatedValues.tabs,
+          createTab({
+            headers: headers ?? defaultHeaders,
+            query: query ?? defaultQuery ?? DEFAULT_QUERY,
+          }),
+        ],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);
@@ -382,7 +395,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       return updated;
     });
   }, [
+    headers,
+    query,
     defaultHeaders,
+    defaultQuery,
     onTabChange,
     setEditorValues,
     storeTabs,
