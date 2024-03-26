@@ -1,5 +1,12 @@
 # @graphiql/plugin-explorer
 
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @graphiql/react@0.20.4
+
 ## 1.0.3
 
 ### Patch Changes
