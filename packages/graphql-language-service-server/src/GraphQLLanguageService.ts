@@ -29,7 +29,6 @@ import {
   IPosition,
   Outline,
   OutlineTree,
-  GraphQLCache,
   getAutocompleteSuggestions,
   getHoverInformation,
   HoverConfig,
@@ -46,6 +45,8 @@ import {
   getTokenAtPosition,
   getTypeInfo,
 } from 'graphql-language-service';
+
+import type { GraphQLCache } from './GraphQLCache';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
@@ -223,30 +224,31 @@ export class GraphQLLanguageService {
       return [];
     }
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
-    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
-      projectConfig,
-    );
-
-    const fragmentInfo = Array.from(fragmentDefinitions).map(
-      ([, info]) => info.definition,
-    );
-
-    if (schema) {
-      return getAutocompleteSuggestions(
-        schema,
-        query,
-        position,
-        undefined,
-        fragmentInfo,
-        {
-          uri: filePath,
-          fillLeafsOnComplete:
-            projectConfig?.extensions?.languageService?.fillLeafsOnComplete ??
-            false,
-        },
-      );
+    if (!schema) {
+      return [];
     }
-    return [];
+    let fragmentInfo = [] as Array<FragmentDefinitionNode>;
+    try {
+      const fragmentDefinitions =
+        await this._graphQLCache.getFragmentDefinitions(projectConfig);
+      fragmentInfo = Array.from(fragmentDefinitions).map(
+        ([, info]) => info.definition,
+      );
+    } catch {}
+
+    return getAutocompleteSuggestions(
+      schema,
+      query,
+      position,
+      undefined,
+      fragmentInfo,
+      {
+        uri: filePath,
+        fillLeafsOnComplete:
+          projectConfig?.extensions?.languageService?.fillLeafsOnComplete ??
+          false,
+      },
+    );
   }
 
   public async getHoverInformation(

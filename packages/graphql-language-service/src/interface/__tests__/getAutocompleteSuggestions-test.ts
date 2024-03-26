@@ -607,10 +607,62 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'TestType' },
         { label: 'TestUnion' },
       ]));
+    // TODO: shouldn't TestType and TestUnion be available here?
+    it('provides correct filtered suggestions on object fields in regular SDL files', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
+          uri: 'schema.graphql',
+        }),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct unfiltered suggestions on object fields in regular SDL files', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: ', new Position(0, 22), [], {
+          uri: 'schema.graphql',
+        }),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Boolean' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Episode' },
+        { label: 'Human' },
+        { label: 'Int' },
+        // TODO: maybe filter out types attached to top level schema?
+        { label: 'Query' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
     it('provides correct suggestions on object fields that are arrays', () =>
       expect(
         testSuggestions('type Type {\n  aField: []', new Position(0, 25), [], {
           uri: 'schema.graphqls',
+        }),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Boolean' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Episode' },
+        { label: 'Human' },
+        { label: 'Int' },
+        { label: 'Query' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct suggestions on object fields that are arrays in SDL context', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: []', new Position(0, 25), [], {
+          uri: 'schema.graphql',
         }),
       ).toEqual([
         { label: 'AnotherInterface' },

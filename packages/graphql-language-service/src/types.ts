@@ -50,11 +50,6 @@ export interface GraphQLCache {
 
   getProjectForFile: (uri: string) => GraphQLProjectConfig | void;
 
-  getObjectTypeDependencies: (
-    query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<ObjectTypeInfo[]>;
-
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
@@ -68,12 +63,6 @@ export interface GraphQLCache {
     rootDir: Uri,
     filePath: Uri,
     contents: CachedContent[],
-  ) => Promise<void>;
-
-  updateObjectTypeDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
   ) => Promise<void>;
 
   getFragmentDependencies: (
@@ -95,15 +84,8 @@ export interface GraphQLCache {
     filePath: Uri,
     contents: CachedContent[],
   ) => Promise<void>;
-
-  updateFragmentDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
   getSchema: (
-    appName?: string,
+    appName: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
 }

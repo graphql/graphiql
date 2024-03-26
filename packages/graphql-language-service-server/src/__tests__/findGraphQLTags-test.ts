@@ -529,4 +529,36 @@ export function Example(arg: string) {}`;
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents.length).toEqual(1);
   });
+  it('handles full astro example', () => {
+    const text = `
+    ---
+    const gql = String.raw;
+    const response = await fetch("https://swapi-graphql.netlify.app/.netlify/functions/index",
+      {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          query: gql\`
+            query getFilm ($id:ID!) {
+              film(id: $id) {
+                title
+                releaseDate
+              }
+            }
+          \`,
+          variables: {
+            id: "XM6MQ==",
+          },
+        }),
+      });
+
+    const json = await response.json();
+    const { film } = json.data;
+    ---
+    <h1>Fetching information about Star Wars: A New Hope</h1>
+    <h2>Title: {film.title}</h2>
+    <p>Year: {film.releaseDate}</p>`;
+    const contents = findGraphQLTags(text, '.astro');
+    expect(contents.length).toEqual(1);
+  });
 });

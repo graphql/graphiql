@@ -124,7 +124,6 @@ export async function getDefinitionQueryResultForFragmentSpread(
     ({ filePath, content, definition }) =>
       getDefinitionForFragmentDefinition(filePath || '', content, definition),
   );
-
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, fragment)),

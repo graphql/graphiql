@@ -36,10 +36,10 @@ export const svelteParser: SourceParser = (text, uri, logger) => {
       rangeMapper,
     };
   } catch (error) {
-    logger.error(
+    logger.info(
       `Could not parse the Svelte file at ${uri} to extract the graphql tags:`,
     );
-    logger.error(String(error));
+    logger.info(String(error));
     return null;
   }
 };

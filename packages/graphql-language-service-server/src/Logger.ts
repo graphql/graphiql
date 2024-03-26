@@ -11,7 +11,15 @@ import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { Connection } from 'vscode-languageserver';
 
 export class Logger implements VSCodeLogger {
-  constructor(private _connection: Connection) {}
+  // TODO: allow specifying exact log level?
+  // for now this is to handle the debug setting
+  private logLevel: number;
+  constructor(
+    private _connection: Connection,
+    debug?: boolean,
+  ) {
+    this.logLevel = debug ? 1 : 0;
+  }
 
   error(message: string): void {
     this._connection.console.error(message);
@@ -26,7 +34,15 @@ export class Logger implements VSCodeLogger {
   }
 
   log(message: string): void {
-    this._connection.console.log(message);
+    if (this.logLevel > 0) {
+      this._connection.console.log(message);
+    }
+  }
+  set level(level: number) {
+    this.logLevel = level;
+  }
+  get level() {
+    return this.logLevel;
   }
 }
 
@@ -35,4 +51,8 @@ export class NoopLogger implements VSCodeLogger {
   warn() {}
   info() {}
   log() {}
+  set level(_level: number) {}
+  get level() {
+    return 0;
+  }
 }

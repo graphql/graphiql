@@ -102,6 +102,14 @@ export interface ServerOptions {
    * the temporary directory that the server writes to for logs and caching schema
    */
   tmpDir?: string;
+
+  /**
+   * debug mode
+   *
+   * same as with the client reference implementation, the debug setting controls logging output
+   * this allows all logger.info() messages to come through. by default, the highest level is warn
+   */
+  debug?: true;
 }
 
 /**
@@ -217,7 +225,7 @@ async function initializeHandlers({
   options,
 }: InitializerParams): Promise<Connection> {
   const connection = createConnection(reader, writer);
-  const logger = new Logger(connection);
+  const logger = new Logger(connection, options.debug);
 
   try {
     await addHandlers({ connection, logger, ...options });

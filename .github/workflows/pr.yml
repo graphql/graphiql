@@ -87,7 +87,7 @@ jobs:
       - run: yarn pretty-check
 
   jest:
-    name: Jest Unit Tests
+    name: Jest Unit & Integration Tests
     runs-on: ubuntu-latest
     needs: [install]
     steps:

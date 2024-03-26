@@ -44,11 +44,11 @@ function parseAstro(source: string): ParseAstroResult {
 export const astroParser: SourceParser = (text, uri, logger) => {
   const parseAstroResult = parseAstro(text);
   if (parseAstroResult.type === 'error') {
-    logger.error(
+    logger.info(
       `Could not parse the astro file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseAstroResult.errors) {
-      logger.error(String(error));
+      logger.info(String(error));
     }
     return null;
   }
