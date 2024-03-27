@@ -360,13 +360,14 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
+  const { onTabChange, defaultHeaders, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
     variableEditor,
     headerEditor,
     responseEditor,
+    defaultHeaders,
   });
-  const { onTabChange, defaultHeaders, children } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
