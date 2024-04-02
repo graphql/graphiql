@@ -66,6 +66,9 @@ import {
   RuleKinds,
   RuleKind,
   ContextTokenForCodeMirror,
+  ParserOptions,
+  LexRules,
+  ParseRules,
 } from '../parser';
 
 import {
@@ -968,18 +971,70 @@ export function getTokenAtPosition(
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
-  const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (
-      index !== cursor.line ||
-      stream.getCurrentPosition() + offset < cursor.character + 1
-    ) {
-      return;
+
+  /** Returns whether a token is before, at or after the cursor */
+  function compareTokenPositionToCursor(
+    line: number,
+    col: number,
+  ): 'before' | 'at' | 'after' {
+    if (line < cursor.line) {
+      return 'before';
     }
-    styleAtCursor = style;
-    stateAtCursor = { ...state };
-    stringAtCursor = stream.current();
-    return 'BREAK';
-  });
+    if (line > cursor.line) {
+      return 'after';
+    }
+
+    if (col < cursor.character) {
+      return 'before';
+    }
+    if (col > cursor.character) {
+      return 'after';
+    }
+    return 'at';
+  }
+
+  let lastString: string | null = null;
+  let lastState: State | null = null;
+  let lastStyle: string | null = null;
+  const token = runOnlineParser(
+    queryText,
+    (stream, state, style, index) => {
+      const compare = compareTokenPositionToCursor(
+        index,
+        stream.getCurrentPosition() + offset,
+      );
+
+      if (compare === 'before') {
+        // The token is before the cursor, keep track of it
+        lastState = state;
+        lastStyle = style;
+        lastString = stream.current();
+        return;
+      }
+
+      // The token is at or after the cursor, we return the last token before the cursor
+      if (
+        index !== cursor.line ||
+        stream.getCurrentPosition() + offset < cursor.character + 1
+      ) {
+        return;
+      }
+
+      styleAtCursor = lastStyle;
+      stateAtCursor = { ...lastState };
+      stringAtCursor = lastString;
+      return 'BREAK';
+    },
+    {
+      // Don't swallow whitespace to have the token positions match that of the
+      // original query text, so we can compare them with the cursor position.
+      eatWhitespace: () => false,
+      // TODO should ParserOptions have optional fields instead?
+      lexRules: LexRules,
+      parseRules: ParseRules,
+      editorConfig: {},
+    },
+  );
 
   // Return the state/style of parsed token in case those at cursor aren't
   // available.
@@ -1009,9 +1064,10 @@ type callbackFnType = (
 export function runOnlineParser(
   queryText: string,
   callback: callbackFnType,
+  options?: ParserOptions,
 ): ContextToken {
   const lines = queryText.split('\n');
-  const parser = onlineParser();
+  const parser = onlineParser(options);
   let state = parser.startState();
   let style = '';
 
