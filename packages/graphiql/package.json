@@ -50,7 +50,7 @@
     "@graphiql/react": "^0.20.4",
     "@graphiql/toolkit": "^0.9.1",
     "graphql-language-service": "^5.2.0",
-    "markdown-it": "^12.2.0"
+    "markdown-it": "^14.1.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
@@ -62,7 +62,7 @@
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@types/codemirror": "^0.0.90",
-    "@types/markdown-it": "^12.2.3",
+    "@types/markdown-it": "^13.0.7",
     "@types/node": "^16.18.4",
     "@types/testing-library__jest-dom": "5.14.5",
     "babel-loader": "^9.1.2",
