@@ -1,5 +1,16 @@
 # Change Log
 
+## 3.2.0
+
+### Minor Changes
+
+- [#3569](https://github.com/graphql/graphiql/pull/3569) [`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Update to markdown-it 14.x
+
+### Patch Changes
+
+- Updated dependencies [[`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5)]:
+  - @graphiql/react@0.21.0
+
 ## 3.1.2
 
 ### Patch Changes
