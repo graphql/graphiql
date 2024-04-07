@@ -1061,7 +1061,7 @@ export class MessageProcessor {
   }
 
   private async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
-    const config = project?.extensions?.languageService;
+    // const config = project?.extensions?.languageService;
     /**
      * By default, we look for schema definitions in SDL files
      *
@@ -1082,16 +1082,16 @@ export class MessageProcessor {
     // only local schema lookups if all of the schema entries are local files
     const sdlOnly = isProjectSDLOnly(unwrappedSchema);
 
-    const uri = this._getTmpProjectPath(
-      project,
-      true,
-      'generated-schema.graphql',
-    );
-    const fsPath = this._getTmpProjectPath(
-      project,
-      false,
-      'generated-schema.graphql',
-    );
+    // const uri = this._getTmpProjectPath(
+    //   project,
+    //   true,
+    //   'generated-schema.graphql',
+    // );
+    // const fsPath = this._getTmpProjectPath(
+    //   project,
+    //   false,
+    //   'generated-schema.graphql',
+    // );
     // invalidate the cache for the generated schema file
     // whether or not the user will continue using this feature
     // because sdlOnly needs this file to be removed as well if the user is switching schemas
@@ -1163,7 +1163,6 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
-      console.log(err);
       this._logger.error(String(err));
     }
   }
