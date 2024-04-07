@@ -111,7 +111,7 @@
           "type": [
             "number"
           ],
-          "description": "Schema cache ttl in milliseconds before requesting a fresh schema when caching the local schema file is enabled. Defaults to 30000 (30 seconds).",
+          "description": "Schema cache ttl in milliseconds - the interval before requesting a fresh schema when caching the local schema file is enabled. Defaults to 30000 (30 seconds).",
           "default": 30000
         },
         "graphql-config.load.rootDir": {

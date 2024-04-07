@@ -118,27 +118,28 @@ const typeSystemKinds: Kind[] = [
   Kind.INPUT_OBJECT_TYPE_EXTENSION,
 ];
 
-const hasTypeSystemDefinitions = (sdl: string | undefined) => {
-  let hasTypeSystemDef = false;
+const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
+  let mode = GraphQLDocumentMode.UNKNOWN;
   if (sdl) {
     try {
       visit(parse(sdl), {
         enter(node) {
           if (node.kind === 'Document') {
+            mode = GraphQLDocumentMode.EXECUTABLE;
             return;
           }
           if (typeSystemKinds.includes(node.kind)) {
-            hasTypeSystemDef = true;
+            mode = GraphQLDocumentMode.TYPE_SYSTEM;
             return BREAK;
           }
           return false;
         },
       });
     } catch {
-      return hasTypeSystemDef;
+      return mode;
     }
   }
-  return hasTypeSystemDef;
+  return mode;
 };
 
 export type AutocompleteSuggestionOptions = {
@@ -170,8 +171,6 @@ export function getAutocompleteSuggestions(
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
-  const mode = options?.mode || getDocumentMode(queryText, options?.uri);
-
   // relieve flow errors by checking if `state` exists
   if (!state) {
     return [];
@@ -179,13 +178,17 @@ export function getAutocompleteSuggestions(
 
   const { kind, step, prevState } = state;
   const typeInfo = getTypeInfo(schema, token.state);
+  const mode = options?.mode || getDocumentMode(queryText, options?.uri);
 
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
     if (mode === GraphQLDocumentMode.TYPE_SYSTEM) {
       return getSuggestionsForTypeSystemDefinitions(token);
     }
-    return getSuggestionsForExecutableDefinitions(token);
+    if (mode === GraphQLDocumentMode.EXECUTABLE) {
+      return getSuggestionsForExecutableDefinitions(token);
+    }
+    return getSuggestionsForUnknownDocumentMode(token);
   }
 
   if (kind === RuleKinds.EXTEND_DEF) {
@@ -469,38 +472,45 @@ const getInsertText = (field: GraphQLField<null, null>) => {
   return null;
 };
 
+const typeSystemCompletionItems = [
+  { label: 'type', kind: CompletionItemKind.Function },
+  { label: 'interface', kind: CompletionItemKind.Function },
+  { label: 'union', kind: CompletionItemKind.Function },
+  { label: 'input', kind: CompletionItemKind.Function },
+  { label: 'scalar', kind: CompletionItemKind.Function },
+  { label: 'schema', kind: CompletionItemKind.Function },
+];
+
+const executableCompletionItems = [
+  { label: 'query', kind: CompletionItemKind.Function },
+  { label: 'mutation', kind: CompletionItemKind.Function },
+  { label: 'subscription', kind: CompletionItemKind.Function },
+  { label: 'fragment', kind: CompletionItemKind.Function },
+  { label: '{', kind: CompletionItemKind.Constructor },
+];
+
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForTypeSystemDefinitions(token: ContextToken) {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
-    { label: 'type', kind: CompletionItemKind.Function },
-    { label: 'interface', kind: CompletionItemKind.Function },
-    { label: 'union', kind: CompletionItemKind.Function },
-    { label: 'input', kind: CompletionItemKind.Function },
-    { label: 'scalar', kind: CompletionItemKind.Function },
-    { label: 'schema', kind: CompletionItemKind.Function },
+    ...typeSystemCompletionItems,
   ]);
 }
 
 function getSuggestionsForExecutableDefinitions(token: ContextToken) {
+  return hintList(token, executableCompletionItems);
+}
+
+function getSuggestionsForUnknownDocumentMode(token: ContextToken) {
   return hintList(token, [
-    { label: 'query', kind: CompletionItemKind.Function },
-    { label: 'mutation', kind: CompletionItemKind.Function },
-    { label: 'subscription', kind: CompletionItemKind.Function },
-    { label: 'fragment', kind: CompletionItemKind.Function },
-    { label: '{', kind: CompletionItemKind.Constructor },
+    { label: 'extend', kind: CompletionItemKind.Function },
+    ...executableCompletionItems,
+    ...typeSystemCompletionItems,
   ]);
 }
 
 function getSuggestionsForExtensionDefinitions(token: ContextToken) {
-  return hintList(token, [
-    { label: 'type', kind: CompletionItemKind.Function },
-    { label: 'interface', kind: CompletionItemKind.Function },
-    { label: 'union', kind: CompletionItemKind.Function },
-    { label: 'input', kind: CompletionItemKind.Function },
-    { label: 'scalar', kind: CompletionItemKind.Function },
-    { label: 'schema', kind: CompletionItemKind.Function },
-  ]);
+  return hintList(token, typeSystemCompletionItems);
 }
 
 function getSuggestionsForFieldNames(
@@ -1280,6 +1290,7 @@ export function getTypeInfo(
 export enum GraphQLDocumentMode {
   TYPE_SYSTEM = 'TYPE_SYSTEM',
   EXECUTABLE = 'EXECUTABLE',
+  UNKNOWN = 'UNKNOWN',
 }
 
 function getDocumentMode(
@@ -1289,9 +1300,7 @@ function getDocumentMode(
   if (uri?.endsWith('.graphqls')) {
     return GraphQLDocumentMode.TYPE_SYSTEM;
   }
-  return hasTypeSystemDefinitions(documentText)
-    ? GraphQLDocumentMode.TYPE_SYSTEM
-    : GraphQLDocumentMode.EXECUTABLE;
+  return getParsedMode(documentText);
 }
 
 function unwrapType(state: State): State {

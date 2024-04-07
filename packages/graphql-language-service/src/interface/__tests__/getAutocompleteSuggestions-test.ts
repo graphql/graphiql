@@ -147,10 +147,17 @@ describe('getAutocompleteSuggestions', () => {
     it('provides correct initial keywords', () => {
       expect(testSuggestions('', new Position(0, 0))).toEqual([
         { label: '{' },
+        { label: 'extend' },
         { label: 'fragment' },
+        { label: 'input' },
+        { label: 'interface' },
         { label: 'mutation' },
         { label: 'query' },
+        { label: 'scalar' },
+        { label: 'schema' },
         { label: 'subscription' },
+        { label: 'type' },
+        { label: 'union' },
       ]);
 
       expect(testSuggestions('q', new Position(0, 1))).toEqual([
@@ -159,9 +166,9 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
-    it('provides correct suggestions at where the cursor is', () => {
+    it('provides correct top level suggestions when a simple query is already present', () => {
       // Below should provide initial keywords
-      expect(testSuggestions(' {}', new Position(0, 0))).toEqual([
+      expect(testSuggestions(' { id }', new Position(0, 0))).toEqual([
         { label: '{' },
         { label: 'fragment' },
         { label: 'mutation' },
@@ -501,7 +508,7 @@ describe('getAutocompleteSuggestions', () => {
   });
 
   describe('with SDL types', () => {
-    it('provides correct initial keywords', () => {
+    it('provides correct initial keywords w/ graphqls', () => {
       expect(
         testSuggestions('', new Position(0, 0), [], { uri: 'schema.graphqls' }),
       ).toEqual([
@@ -510,6 +517,25 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'interface' },
         { label: 'scalar' },
         { label: 'schema' },
+        { label: 'type' },
+        { label: 'union' },
+      ]);
+    });
+
+    it('provides correct initial keywords w/out graphqls', () => {
+      expect(
+        testSuggestions('', new Position(0, 0), [], { uri: 'schema.graphql' }),
+      ).toEqual([
+        { label: '{' },
+        { label: 'extend' },
+        { label: 'fragment' },
+        { label: 'input' },
+        { label: 'interface' },
+        { label: 'mutation' },
+        { label: 'query' },
+        { label: 'scalar' },
+        { label: 'schema' },
+        { label: 'subscription' },
         { label: 'type' },
         { label: 'union' },
       ]);
@@ -595,10 +621,22 @@ describe('getAutocompleteSuggestions', () => {
       expect(testSuggestions('type Type @', new Position(0, 11))).toEqual([
         { label: 'onAllDefs' },
       ]));
-    it('provides correct suggestions on object fields', () =>
+    it('provides correct suggestions on object field w/ .graphqls', () =>
       expect(
         testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
           uri: 'schema.graphqls',
+        }),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct suggestions on object fields', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
+          uri: 'schema.graphql',
         }),
       ).toEqual([
         { label: 'Episode' },

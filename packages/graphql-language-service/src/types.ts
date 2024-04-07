@@ -38,6 +38,7 @@ import type {
   GraphQLProjectConfig,
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
+import { GraphQLDocumentMode } from './interface';
 
 export type {
   GraphQLConfig,
