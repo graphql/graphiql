@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -161,7 +161,7 @@
     "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
+    "open-vsx:publish": "ovsx publish --extensionFile $(ls -1 *.vsix | tail -n 1) --pat $OVSX_PAT",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {

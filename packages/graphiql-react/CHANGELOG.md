@@ -1,5 +1,18 @@
 # @graphiql/react
 
+## 0.21.0
+
+### Minor Changes
+
+- [#3569](https://github.com/graphql/graphiql/pull/3569) [`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Update to markdown-it 14.x
+
+## 0.20.4
+
+### Patch Changes
+
+- Updated dependencies [[`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03)]:
+  - codemirror-graphql@2.0.11
+
 ## 0.20.3
 
 ### Patch Changes

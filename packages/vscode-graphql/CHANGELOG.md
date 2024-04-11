@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.9.3
+
+### Patch Changes
+
+- [#3549](https://github.com/graphql/graphiql/pull/3549) [`e5efc97e`](https://github.com/graphql/graphiql/commit/e5efc97e10ba237d8209859a24cda826b9899832) Thanks [@acao](https://github.com/acao)! - Fix OpenVSX build by re-using the vsce build (astro compiler bug)
+
+## 0.9.2
+
+### Patch Changes
+
+- [#3543](https://github.com/graphql/graphiql/pull/3543) [`defc126b`](https://github.com/graphql/graphiql/commit/defc126b107961d7a4ba093b35b1d77bb7018a79) Thanks [@acao](https://github.com/acao)! - Temporarily revert a syntax highlighting bugfix that caused more bugs
+
 ## 0.9.1
 
 ### Patch Changes
