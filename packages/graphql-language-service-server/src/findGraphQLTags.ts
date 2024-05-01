@@ -179,12 +179,6 @@ export function findGraphQLTags(
 const getReplacementString = (quasi: string, nextQuasi: string) => {
   const trimmed = quasi.trimEnd();
   const trimmedNext = nextQuasi.trimStart();
-  console.log({
-    trimmed,
-    trimmedNext,
-    endsWith: trimmed.endsWith('{'),
-    startsWith: trimmedNext.startsWith('}'),
-  });
   // only actually empty leaf field expressions
   if (trimmed.endsWith('{') && trimmedNext.startsWith('}')) {
     return quasi + '__typename';

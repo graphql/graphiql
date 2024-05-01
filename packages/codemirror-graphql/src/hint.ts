@@ -74,7 +74,7 @@ CodeMirror.registerHelper(
     editor: CodeMirror.Editor,
     options: GraphQLHintOptions,
   ): IHints | undefined => {
-    const { schema, externalFragments } = options;
+    const { schema, externalFragments, autocompleteOptions } = options;
     if (!schema) {
       return;
     }
@@ -95,7 +95,7 @@ CodeMirror.registerHelper(
       position,
       token,
       externalFragments,
-      options?.autocompleteOptions,
+      autocompleteOptions,
     );
 
     const results = {

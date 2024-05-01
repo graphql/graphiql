@@ -82,12 +82,12 @@ function getExpectedSuggestions(list: IHint[]) {
 }
 
 describe('graphql-hint', () => {
-  it.skip('attaches a GraphQL hint function with correct mode/hint options', () => {
+  it('attaches a GraphQL hint function with correct mode/hint options', () => {
     const editor = createEditorWithHint();
     expect(editor.getHelpers(editor.getCursor(), 'hint')).not.toHaveLength(0);
   });
 
-  it.skip('provides correct initial keywords for executable definitions', async () => {
+  it('provides correct initial keywords for executable definitions', async () => {
     const suggestions = await getHintSuggestions(
       '',
       { line: 0, ch: 0 },
@@ -104,7 +104,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct initial keywords for unknown definitions', async () => {
+  it('provides correct initial keywords for unknown definitions', async () => {
     const suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
     const list = [
       { text: 'extend' },
@@ -124,14 +124,14 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct initial keywords after filtered', async () => {
+  it('provides correct initial keywords after filtered', async () => {
     const suggestions = await getHintSuggestions('q', { line: 0, ch: 1 });
     const list = [{ text: '{' }, { text: 'query' }];
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct field name suggestions', async () => {
+  it('provides correct field name suggestions', async () => {
     const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     const list = [
       {
@@ -187,7 +187,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct field name suggestions after filtered', async () => {
+  it('provides correct field name suggestions after filtered', async () => {
     const suggestions = await getHintSuggestions('{ i', { line: 0, ch: 3 });
     const list = [
       {
@@ -215,7 +215,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct field name suggestions when using aliases', async () => {
+  it('provides correct field name suggestions when using aliases', async () => {
     const suggestions = await getHintSuggestions('{ aliasTest: first { ', {
       line: 0,
       ch: 21,
@@ -247,7 +247,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct field name suggestion indentation', async () => {
+  it('provides correct field name suggestion indentation', async () => {
     const suggestions = await getHintSuggestions('{\n  ', { line: 1, ch: 2 });
     expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
     expect(suggestions?.to).toEqual({ line: 1, ch: 2, sticky: null });
@@ -863,7 +863,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct field name suggestion inside type-less inline fragment', async () => {
+  it('provides correct field name suggestion inside type-less inline fragment', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on First { ... { ',
       { line: 0, ch: 30 },
@@ -896,7 +896,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct boolean suggestions', async () => {
+  it('provides correct boolean suggestions', async () => {
     const suggestions1 = await getHintSuggestions('{ hasArgs(listBoolean: [ ', {
       line: 0,
       ch: 27,
@@ -945,7 +945,7 @@ describe('graphql-hint', () => {
     expect(suggestions3?.list).toEqual(expectedSuggestions3);
   });
 
-  it.skip('provides correct variable type suggestions', async () => {
+  it('provides correct variable type suggestions', async () => {
     const suggestions = await getHintSuggestions('query($foo: ', {
       line: 0,
       ch: 12,
@@ -992,7 +992,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it.skip('provides correct variable type suggestions inside list type', async () => {
+  it('provides correct variable type suggestions inside list type', async () => {
     const suggestions = await getHintSuggestions('query($foo: [ ', {
       line: 0,
       ch: 14,
@@ -1038,7 +1038,7 @@ describe('graphql-hint', () => {
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
-  it.skip('provides no suggestions', async () => {
+  it('provides no suggestions', async () => {
     const list: IHint[] = [];
     const expectedSuggestions = getExpectedSuggestions(list);
 
@@ -1093,7 +1093,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions7?.list).toEqual(expectedSuggestions);
   });
-  it.skip('provides variable completion for arguments', async () => {
+  it('provides variable completion for arguments', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },
@@ -1108,7 +1108,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions9?.list).toEqual(expectedSuggestions);
   });
-  it.skip('provides variable completion for arguments with $', async () => {
+  it('provides variable completion for arguments with $', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },
@@ -1123,7 +1123,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions9?.list).toEqual(expectedSuggestions);
   });
-  it.skip('provides correct field name suggestions for an interface type', async () => {
+  it('provides correct field name suggestions for an interface type', async () => {
     const suggestions = await getHintSuggestions(
       '{ first { ... on TestInterface { ',
       {

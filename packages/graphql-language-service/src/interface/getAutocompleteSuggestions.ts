@@ -130,7 +130,6 @@ const typeSystemKinds: Kind[] = [
 
 const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
   let mode = GraphQLDocumentMode.UNKNOWN;
-  console.log(mode);
   if (sdl) {
     try {
       visit(parse(sdl), {
@@ -199,7 +198,6 @@ export function getAutocompleteSuggestions(
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
-  console.log(token.state.kind);
   // relieve flow errors by checking if `state` exists
   if (!state) {
     return [];

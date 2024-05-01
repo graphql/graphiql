@@ -53,7 +53,6 @@ query Test {
     ...FragmentsComment
     }
 }
-
 `);
   });
 

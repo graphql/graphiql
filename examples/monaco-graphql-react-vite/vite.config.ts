@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
-import { resolve } from 'node:path';
-import { realpathSync } from 'node:fs';
 
 export default defineConfig({
   build: {
