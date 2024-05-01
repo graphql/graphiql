@@ -87,6 +87,35 @@ query Test {
     `);
   });
 
+  it('finds queries in call expressions with with newlines preceding the template', async () => {
+    const text = `
+    import {gql} from 'react-apollo';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = gql(
+  \`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \`);
+    
+    export function Example(arg: string) {}`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    `);
+  });
+
   it('finds queries in #graphql-annotated templates', async () => {
     const text = `
 import {gql} from 'react-apollo';

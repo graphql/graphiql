@@ -1,4 +1,3 @@
-/** prettier-ignore-file */
 import { parseDocument } from '../parseDocument';
 
 describe('parseDocument', () => {
@@ -89,8 +88,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it
-  ('parseDocument finds queries in tagged templates using tsx', async () => {
+  it('parseDocument finds queries in tagged templates using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -304,7 +302,7 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.ts');
-    /* prettier-ignore-start */
+    // please let me keep this whitespace prettier!
     expect(contents[0].query).toEqual(/* GraphQL */ `
       query Test {
         test {
@@ -314,7 +312,6 @@ describe('parseDocument', () => {
       }
     
     `);
-    /* prettier-ignore-end */
   });
 
   it('parseDocument ignores non gql tagged templates', async () => {

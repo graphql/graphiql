@@ -22,6 +22,11 @@ const fooTypePosition = {
   end: { line: 2, character: 24 },
 };
 
+const fooInlineTypePosition = {
+  start: { line: 5, character: 0 },
+  end: { line: 5, character: 24 },
+};
+
 const genSchemaPath =
   '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql';
 
@@ -96,7 +101,7 @@ describe('MessageProcessor with no config', () => {
   });
 });
 
-describe('project with simple config and graphql files', () => {
+describe('MessageProcessor with config', () => {
   let app;
   afterEach(() => {
     mockfs.restore();
@@ -447,12 +452,15 @@ describe('project with simple config and graphql files', () => {
           'b/fragments.ts',
           '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
         ],
-        ['b/schema.graphql', schemaFile[1]],
+        [
+          'b/schema.ts',
+          `\n\nexport const schema = gql(\`\n${schemaFile[1]}\`)`,
+        ],
         [
           'package.json',
           `{ "graphql": { "projects": { 
               "a": { "schema": "http://localhost:3100/graphql", "documents": "./a/**" }, 
-              "b": { "schema": "./b/schema.graphql", "documents": "./b/**" }  }
+              "b": { "schema": "./b/schema.ts", "documents": "./b/**" }  }
             } 
           }`,
         ],
@@ -491,25 +499,29 @@ describe('project with simple config and graphql files', () => {
     // this confirms that autocomplete respects cross-project boundaries for types.
     // it performs a definition request for the foo field in Query
     const schemaCompletion1 = await project.lsp.handleCompletionRequest({
-      textDocument: { uri: project.uri('b/schema.graphql') },
-      position: { character: 21, line: 0 },
+      textDocument: { uri: project.uri('b/schema.ts') },
+      position: { character: 21, line: 3 },
     });
     expect(schemaCompletion1.items.map(i => i.label)).toEqual(['Foo']);
     // it performs a definition request for the Foo type in Test.test
     const schemaDefinition = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: project.uri('b/schema.graphql') },
-      position: { character: 21, line: 4 },
+      textDocument: { uri: project.uri('b/schema.ts') },
+      position: { character: 21, line: 6 },
     });
-    expect(serializeRange(schemaDefinition[0].range)).toEqual(fooTypePosition);
+    expect(serializeRange(schemaDefinition[0].range)).toEqual(
+      fooInlineTypePosition,
+    );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     // simulate a watched schema file change (codegen, etc)
     project.changeFile(
-      'b/schema.graphql',
-      schemaFile[1] + '\ntype Example1 { field:    }',
+      'b/schema.ts',
+      `\n\nexport const schema = gql(\`\n${
+        schemaFile[1] + '\ntype Example1 { field:    }'
+      }\`\n)`,
     );
     await project.lsp.handleWatchedFilesChangedNotification({
       changes: [
-        { uri: project.uri('b/schema.graphql'), type: FileChangeType.Changed },
+        { uri: project.uri('b/schema.ts'), type: FileChangeType.Changed },
       ],
     });
     // TODO: repeat this with other changes to the schema file and use a
@@ -522,8 +534,8 @@ describe('project with simple config and graphql files', () => {
     // });
     // console.log(project.fileCache.get('b/schema.graphql'));
     const schemaCompletion = await project.lsp.handleCompletionRequest({
-      textDocument: { uri: project.uri('b/schema.graphql') },
-      position: { character: 25, line: 5 },
+      textDocument: { uri: project.uri('b/schema.ts') },
+      position: { character: 25, line: 8 },
     });
     // TODO: SDL completion still feels incomplete here... where is Int?
     // where is self-referential Example1?
