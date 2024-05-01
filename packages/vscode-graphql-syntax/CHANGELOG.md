@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.6
+
+### Patch Changes
+
+- [#3592](https://github.com/graphql/graphiql/pull/3592) [`5e521080`](https://github.com/graphql/graphiql/commit/5e52108038d8d5e97f8d21a9c22bb9048fa377f0) Thanks [@acao](https://github.com/acao)! - Remove ruby support for code highlighting, users should use `ruby-lsp` for graphql highlighting instead!
+
 ## 1.3.5
 
 ### Patch Changes
