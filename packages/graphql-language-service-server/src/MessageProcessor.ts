@@ -162,7 +162,7 @@ export class MessageProcessor {
         documentSymbolProvider: true,
         completionProvider: {
           resolveProvider: true,
-          triggerCharacters: [' ', ':', '$', '(', '@'],
+          triggerCharacters: [' ', ':', '$', '(', '@', '\n'],
         },
         definitionProvider: true,
         textDocumentSync: 1,
@@ -830,11 +830,9 @@ export class MessageProcessor {
         },
       });
     } catch {}
-
     const formatted = result
       ? result.definitions.map(res => {
           const defRange = res.range as Range;
-
           if (parentRange && res.name) {
             const isInline = inlineFragments.includes(res.name);
             const isEmbedded = DEFAULT_SUPPORTED_EXTENSIONS.includes(
@@ -1138,11 +1136,11 @@ export class MessageProcessor {
 
         const cachedSchemaDoc = this._getCachedDocument(uri);
         this._graphQLCache._schemaMap.set(project.name, schema);
-        if (!cachedSchemaDoc) {
-          try {
-            await mkdir(path.dirname(fsPath), { recursive: true });
-          } catch {}
+        try {
+          await mkdir(path.dirname(fsPath), { recursive: true });
+        } catch {}
 
+        if (!cachedSchemaDoc) {
           await writeFile(fsPath, schemaText, {
             encoding: 'utf-8',
           });
@@ -1150,9 +1148,6 @@ export class MessageProcessor {
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
-          try {
-            await mkdir(path.dirname(fsPath), {});
-          } catch {}
           await writeFile(fsPath, schemaText, 'utf-8');
           await this._cacheSchemaText(
             uri,

@@ -1,3 +1,4 @@
+/** prettier-ignore-file */
 import { parseDocument } from '../parseDocument';
 
 describe('parseDocument', () => {
@@ -52,7 +53,7 @@ describe('parseDocument', () => {
     expect(contents[0].query).toEqual(`
     query Test {
       test {
-        
+        __typename
       }
     }
     `);
@@ -88,7 +89,8 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in tagged templates using tsx', async () => {
+  it
+  ('parseDocument finds queries in tagged templates using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -218,6 +220,7 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -248,6 +251,7 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -277,6 +281,7 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -287,26 +292,29 @@ describe('parseDocument', () => {
     import A from './A';
     
     const QUERY: string = /* GraphQL */ \`
-    query Test {
-      test {
-        value
-        ...FragmentsComment
+      query Test {
+        test {
+          value
+          ...FragmentsComment
+        }
       }
-    }
     \${A.fragments.test}
     \`
     
     export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.ts');
-    expect(contents[0].query).toEqual(`
-    query Test {
-      test {
-        value
-        ...FragmentsComment
+    /* prettier-ignore-start */
+    expect(contents[0].query).toEqual(/* GraphQL */ `
+      query Test {
+        test {
+          value
+          ...FragmentsComment
+        }
       }
-    }
+    
     `);
+    /* prettier-ignore-end */
   });
 
   it('parseDocument ignores non gql tagged templates', async () => {

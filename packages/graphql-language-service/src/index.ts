@@ -41,6 +41,7 @@ export {
   SuggestionCommand,
   AutocompleteSuggestionOptions,
   validateQuery,
+  GraphQLDocumentMode,
 } from './interface';
 
 /**

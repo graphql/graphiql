@@ -38,7 +38,8 @@ import type {
   GraphQLProjectConfig,
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
-import { GraphQLDocumentMode } from './interface';
+
+export { GraphQLDocumentMode } from './interface';
 
 export type {
   GraphQLConfig,
@@ -175,6 +176,8 @@ export type CompletionItem = CompletionItemType & {
   deprecationReason?: string | null;
   type?: GraphQLType;
   command?: CompletionItemType['command'];
+  // if label differs from what should be inserted
+  rawInsert?: string;
 };
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
@@ -187,6 +190,7 @@ export type Definition = {
   name?: string;
   language?: string;
   projectRoot?: Uri;
+  locator?: string;
 };
 
 // Outline view

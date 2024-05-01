@@ -50,7 +50,8 @@ export function getHoverInformation(
   // it to various rendering functions.
   if (
     (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
-    (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
+    (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef) ||
+    (kind === 'ObjectField' && step === 0 && typeInfo.fieldDef)
   ) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
@@ -65,6 +66,14 @@ export function getHoverInformation(
     renderDirective(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.directiveDef);
+    return into.join('').trim();
+  }
+  if (kind === 'Variable' && typeInfo.type) {
+    const into: string[] = [];
+    renderMdCodeStart(into, options);
+    renderType(into, typeInfo, options, typeInfo.type);
+    renderMdCodeEnd(into, options);
+    renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
   if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
@@ -109,7 +118,11 @@ function renderMdCodeEnd(into: string[], options: any) {
   }
 }
 
-function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
+export function renderField(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any,
+) {
   renderQualifiedField(into, typeInfo, options);
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type!);
 }
@@ -130,7 +143,11 @@ function renderQualifiedField(
   text(into, fieldName);
 }
 
-function renderDirective(into: string[], typeInfo: AllTypeInfo, _options: any) {
+export function renderDirective(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  _options: any,
+) {
   if (!typeInfo.directiveDef) {
     return;
   }
@@ -138,7 +155,7 @@ function renderDirective(into: string[], typeInfo: AllTypeInfo, _options: any) {
   text(into, name);
 }
 
-function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
+export function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (typeInfo.directiveDef) {
     renderDirective(into, typeInfo, options);
   } else if (typeInfo.fieldDef) {
@@ -166,7 +183,11 @@ function renderTypeAnnotation(
   renderType(into, typeInfo, options, t);
 }
 
-function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
+export function renderEnumValue(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any,
+) {
   if (!typeInfo.enumValue) {
     return;
   }
@@ -176,7 +197,7 @@ function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
   text(into, name);
 }
 
-function renderType(
+export function renderType(
   into: string[],
   typeInfo: AllTypeInfo,
   options: any,

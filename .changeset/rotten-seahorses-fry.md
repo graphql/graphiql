@@ -20,7 +20,7 @@ It also solves several bugs regarding loading config types, and properly restart
 
 **Notes**
 
-1. If possible, configuring for your locally running framework or a registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use a lazy polling approach.
+1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
 
 ### Known Bugs Fixed
 

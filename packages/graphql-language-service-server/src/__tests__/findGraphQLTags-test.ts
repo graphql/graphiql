@@ -53,6 +53,7 @@ query Test {
     ...FragmentsComment
     }
 }
+
 `);
   });
 
@@ -83,6 +84,7 @@ query Test {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -112,6 +114,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -122,9 +125,7 @@ import {B} from 'B';
 import A from './A';
 
 
-const QUERY: string = 
-/* GraphQL */ 
-\`
+const QUERY: string = /* GraphQL */ \`
 query Test {
   test {
     value
@@ -144,6 +145,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 

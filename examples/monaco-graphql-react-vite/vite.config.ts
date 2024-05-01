@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import { resolve } from 'node:path';
+import { realpathSync } from 'node:fs';
 
 export default defineConfig({
   build: {
@@ -19,5 +21,24 @@ export default defineConfig({
         },
       ],
     }),
+    watchPackages(['monaco-graphql', 'graphql-language-service']),
   ],
 });
+
+function watchPackages(packageNames: string[]) {
+  let isWatching = false;
+
+  return {
+    name: 'vite-plugin-watch-packages',
+
+    buildStart() {
+      if (!isWatching) {
+        for (const packageName of packageNames) {
+          this.addWatchFile(require.resolve(packageName));
+        }
+
+        isWatching = true;
+      }
+    },
+  };
+}

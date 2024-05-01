@@ -32,6 +32,10 @@ import {
   // KnownArgumentNamesOnDirectivesRule,
   UniqueArgumentNamesRule,
   UniqueInputFieldNamesRule,
+  UniqueVariableNamesRule,
+  FragmentsOnCompositeTypesRule,
+  ProvidedRequiredArgumentsRule,
+
   // ProvidedRequiredArgumentsOnDirectivesRule,
 } from 'graphql';
 
@@ -49,6 +53,9 @@ const specifiedSDLRules = [
   // KnownArgumentNamesOnDirectivesRule,
   UniqueArgumentNamesRule,
   UniqueInputFieldNamesRule,
+  UniqueVariableNamesRule,
+  FragmentsOnCompositeTypesRule,
+  ProvidedRequiredArgumentsRule,
   // ProvidedRequiredArgumentsOnDirectivesRule,
 ];
 

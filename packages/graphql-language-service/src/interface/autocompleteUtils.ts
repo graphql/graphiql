@@ -104,7 +104,12 @@ function filterAndSortList<T extends CompletionItemBase>(
   list: Array<T>,
   text: string,
 ): Array<T> {
-  if (!text) {
+  if (
+    !text ||
+    text.trim() === '' ||
+    text.trim() === ':' ||
+    text.trim() === '{'
+  ) {
     return filterNonEmpty<T>(list, entry => !entry.isDeprecated);
   }
 

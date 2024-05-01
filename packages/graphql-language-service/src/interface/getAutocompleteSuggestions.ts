@@ -24,7 +24,7 @@ import {
   DirectiveLocation,
   GraphQLArgument,
   isListType,
-  isNonNullType,
+  // isNonNullType,
   isScalarType,
   isObjectType,
   isUnionType,
@@ -48,6 +48,15 @@ import {
   visit,
   BREAK,
   parse,
+  // GraphQLString,
+  // GraphQLNonNull,
+  // GraphQLInt,
+  // GraphQLFloat,
+  // getArgumentValues,
+  // GraphQLOutputType,
+  // GraphQLInputType,
+  // GraphQLOutputType,
+  // getArgumentValues,
 } from 'graphql';
 
 import {
@@ -75,6 +84,7 @@ import {
   hintList,
   objectValues,
 } from './autocompleteUtils';
+import { InsertTextMode } from 'vscode-languageserver-types';
 
 export const SuggestionCommand = {
   command: 'editor.action.triggerSuggest',
@@ -120,6 +130,7 @@ const typeSystemKinds: Kind[] = [
 
 const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
   let mode = GraphQLDocumentMode.UNKNOWN;
+  console.log(mode);
   if (sdl) {
     try {
       visit(parse(sdl), {
@@ -143,10 +154,27 @@ const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
 };
 
 export type AutocompleteSuggestionOptions = {
+  /**
+   * EXPERIMENTAL: Automatically fill required leaf nodes recursively
+   * upon triggering code completion events.
+   *
+   *
+   * - [x] fills required nodes
+   * - [x] automatically expands relay-style node/edge fields
+   * - [ ] automatically jumps to first required argument field
+   *      - then, continues to prompt for required argument fields
+   *      - (fixing this will make it non-experimental)
+   *      - when it runs out of arguments, or you choose `{` as a completion option
+   *        that appears when all required arguments are supplied, the argument
+   *        selection closes `)` and the leaf field expands again `{ \n| }`
+   */
   fillLeafsOnComplete?: boolean;
-  schema?: GraphQLSchema;
   uri?: string;
   mode?: GraphQLDocumentMode;
+};
+
+type InternalAutocompleteOptions = AutocompleteSuggestionOptions & {
+  schema?: GraphQLSchema;
 };
 
 /**
@@ -164,13 +192,14 @@ export function getAutocompleteSuggestions(
   const opts = {
     ...options,
     schema,
-  };
+  } as InternalAutocompleteOptions;
+
   const token: ContextToken =
     contextToken || getTokenAtPosition(queryText, cursor, 1);
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
-
+  console.log(token.state.kind);
   // relieve flow errors by checking if `state` exists
   if (!state) {
     return [];
@@ -314,7 +343,9 @@ export function getAutocompleteSuggestions(
         argDefs.map(
           (argDef: GraphQLArgument): CompletionItem => ({
             label: argDef.name,
-            insertText: argDef.name + ': ',
+            insertText: getInputInsertText(argDef.name + ': ', argDef.type),
+            insertTextMode: InsertTextMode.adjustIndentation,
+            insertTextFormat: InsertTextFormat.Snippet,
             command: SuggestionCommand,
             detail: String(argDef.type),
             documentation: argDef.description ?? undefined,
@@ -342,9 +373,13 @@ export function getAutocompleteSuggestions(
       objectFields.map(field => ({
         label: field.name,
         detail: String(field.type),
-        documentation: field.description ?? undefined,
+        documentation: field?.description ?? undefined,
         kind: completionKind,
         type: field.type,
+        insertText: getInputInsertText(field.name + ': ', field.type),
+        insertTextMode: InsertTextMode.adjustIndentation,
+        insertTextFormat: InsertTextFormat.Snippet,
+        command: SuggestionCommand,
       })),
     );
   }
@@ -358,7 +393,7 @@ export function getAutocompleteSuggestions(
   ) {
     return getSuggestionsForInputValues(token, typeInfo, queryText, schema);
   }
-  // complete for all variables available in the query
+  // complete for all variables available in the query scoped to this
   if (kind === RuleKinds.VARIABLE && step === 1) {
     const namedInputType = getNamedType(typeInfo.inputType!);
     const variableDefinitions = getVariableCompletions(
@@ -410,10 +445,12 @@ export function getAutocompleteSuggestions(
         .map(type => ({
           label: type.name,
           kind: CompletionItemKind.Function,
+          insertText: type.name + '\n',
+          insertTextMode: InsertTextMode.adjustIndentation,
         })),
     );
   }
-  if (unwrappedState.kind === RuleKinds.INPUT_VALUE_DEF) {
+  if (unwrappedState.kind === RuleKinds.INPUT_VALUE_DEF && step === 2) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -421,6 +458,9 @@ export function getAutocompleteSuggestions(
         .map(type => ({
           label: type.name,
           kind: CompletionItemKind.Function,
+          insertText: type.name + '\n$1',
+          insertTextMode: InsertTextMode.adjustIndentation,
+          insertTextFormat: InsertTextFormat.Snippet,
         })),
     );
   }
@@ -442,35 +482,75 @@ export function getAutocompleteSuggestions(
   if (kind === RuleKinds.DIRECTIVE) {
     return getSuggestionsForDirective(token, state, schema, kind);
   }
+  if (kind === RuleKinds.DIRECTIVE_DEF) {
+    return getSuggestionsForDirectiveArguments(token, state, schema, kind);
+  }
 
   return [];
 }
 
-const insertSuffix = ' {\n  $1\n}';
+const insertSuffix = (n?: number) => ` {\n   $${n ?? 1}\n}`;
 
-/**
- * Choose carefully when to insert the `insertText`!
- * @param field
- * @returns
- */
-const getInsertText = (field: GraphQLField<null, null>) => {
-  const { type } = field;
-  if (isCompositeType(type)) {
-    return insertSuffix;
+const getInsertText = (
+  prefix: string,
+  type?: GraphQLType,
+  fallback?: string,
+): string => {
+  if (!type) {
+    return fallback ?? prefix;
   }
-  if (isListType(type) && isCompositeType(type.ofType)) {
-    return insertSuffix;
+
+  const namedType = getNamedType(type);
+  if (
+    isObjectType(namedType) ||
+    isInputObjectType(namedType) ||
+    isListType(namedType) ||
+    isAbstractType(namedType)
+  ) {
+    return prefix + insertSuffix();
   }
-  if (isNonNullType(type)) {
-    if (isCompositeType(type.ofType)) {
-      return insertSuffix;
-    }
-    if (isListType(type.ofType) && isCompositeType(type.ofType.ofType)) {
-      return insertSuffix;
-    }
-  }
-  return null;
+
+  return fallback ?? prefix;
 };
+
+const getInputInsertText = (
+  prefix: string,
+  type: GraphQLType,
+  fallback?: string,
+): string => {
+  // if (isScalarType(type) && type.name === GraphQLString.name) {
+  //   return prefix + '"$1"';
+  // }
+  if (isListType(type)) {
+    const baseType = getNamedType(type.ofType);
+    return prefix + `[${getInsertText('', baseType, '$1')}]`;
+  }
+  return getInsertText(prefix, type, fallback);
+};
+
+// /**
+//  * Choose carefully when to insert the `insertText`!
+//  * @param field
+//  * @returns
+//  */
+// const getInsertText = (field: GraphQLField<null, null>) => {
+//   const { type } = field;
+//   if (isCompositeType(type)) {
+//     return insertSuffix();
+//   }
+//   if (isListType(type) && isCompositeType(type.ofType)) {
+//     return insertSuffix();
+//   }
+//   if (isNonNullType(type)) {
+//     if (isCompositeType(type.ofType)) {
+//       return insertSuffix();
+//     }
+//     if (isListType(type.ofType) && isCompositeType(type.ofType.ofType)) {
+//       return insertSuffix();
+//     }
+//   }
+//   return null;
+// };
 
 const typeSystemCompletionItems = [
   { label: 'type', kind: CompletionItemKind.Function },
@@ -513,13 +593,18 @@ function getSuggestionsForExtensionDefinitions(token: ContextToken) {
   return hintList(token, typeSystemCompletionItems);
 }
 
+// const getFieldInsertText = (field: GraphQLField<null, null>) => {
+//   return field.name + '($1) {\n\n  \n}';
+// };
+
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
-  options?: AutocompleteSuggestionOptions,
+  options?: InternalAutocompleteOptions,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const { parentType } = typeInfo;
+    // const { parentType, fieldDef, argDefs } = typeInfo;
     let fields: GraphQLField<null, null>[] = [];
     if ('getFields' in parentType) {
       fields = objectValues<GraphQLField<null, null>>(
@@ -542,23 +627,58 @@ function getSuggestionsForFieldNames(
           sortText: String(index) + field.name,
           label: field.name,
           detail: String(field.type),
+
           documentation: field.description ?? undefined,
           deprecated: Boolean(field.deprecationReason),
           isDeprecated: Boolean(field.deprecationReason),
           deprecationReason: field.deprecationReason,
           kind: CompletionItemKind.Field,
+          labelDetails: {
+            detail: field.type.toString().endsWith('!') ? 'NonNull' : undefined,
+            description: field.description ?? undefined,
+          },
           type: field.type,
         };
 
-        if (options?.fillLeafsOnComplete) {
-          // TODO: fillLeafs capability
-          const insertText = getInsertText(field);
-          if (insertText) {
-            suggestion.insertText = field.name + insertText;
-            suggestion.insertTextFormat = InsertTextFormat.Snippet;
-            suggestion.command = SuggestionCommand;
-          }
-        }
+        // const hasArgs =
+        //   token.state.needsAdvance &&
+        //   // @ts-expect-error
+        //   parentType?._fields[field?.name];
+
+        // if (!hasArgs) {
+        //   suggestion.insertText = getInsertText(
+        //     field.name,
+        //     field.type,
+        //     field.name + '\n',
+        //   );
+        // }
+
+        // const requiredArgs = field.args.filter(arg =>
+        //   arg.type.toString().endsWith('!'),
+        // );
+        // if (
+        //   hasArgs &&
+        //   requiredArgs.length &&
+        //   !argDefs?.find(d => requiredArgs.find(a => d.name === a.name))
+        // ) {
+        //   suggestion.insertText = getFieldInsertText(field);
+        // }
+
+        // if (suggestion.insertText) {
+        //   suggestion.insertTextFormat = InsertTextFormat.Snippet;
+        //   suggestion.insertTextMode = InsertTextMode.adjustIndentation;
+        //   suggestion.command = SuggestionCommand;
+        // }
+
+        // if (options?.fillLeafsOnComplete) {
+        //   // TODO: fillLeafs capability
+        //   const insertText = getInsertText(field);
+        //   if (insertText) {
+        //     suggestion.insertText = field.name + insertText;
+        //     suggestion.insertTextFormat = InsertTextFormat.Snippet;
+        //     suggestion.command = SuggestionCommand;
+        //   }
+        // }
 
         return suggestion;
       }),
@@ -579,7 +699,7 @@ function getSuggestionsForInputValues(
     queryText,
     schema,
     token,
-  ).filter(v => v.detail === namedInputType.name);
+  ).filter(v => v.detail === namedInputType?.name);
 
   if (namedInputType instanceof GraphQLEnumType) {
     const values = namedInputType.getValues();
@@ -854,6 +974,7 @@ export function getVariableCompletions(
   let variableName: null | string = null;
   let variableType: GraphQLInputObjectType | undefined | null;
   const definitions: Record<string, any> = Object.create({});
+
   runOnlineParser(queryText, (_, state: State) => {
     // TODO: gather this as part of `AllTypeInfo`, as I don't think it's optimal to re-run the parser like this
     if (state?.kind === RuleKinds.VARIABLE && state.name) {
@@ -869,12 +990,17 @@ export function getVariableCompletions(
     }
 
     if (variableName && variableType && !definitions[variableName]) {
-      // append `$` if the `token.string` is not already `$`
-
+      // append `$` if the `token.string` is not already `$`, or describing a variable
+      // this appears to take care of it everywhere
+      const replaceString =
+        token.string === '$' || token?.state?.kind === 'Variable'
+          ? variableName
+          : '$' + variableName;
       definitions[variableName] = {
         detail: variableType.toString(),
-        insertText: token.string === '$' ? variableName : '$' + variableName,
-        label: variableName, // keep label the same for `codemirror-graphql`
+        insertText: replaceString,
+        label: '$' + variableName,
+        rawInsert: replaceString,
         type: variableType,
         kind: CompletionItemKind.Variable,
       } as CompletionItem;
@@ -961,6 +1087,23 @@ function getSuggestionsForDirective(
     );
   }
   return [];
+}
+
+function getSuggestionsForDirectiveArguments(
+  token: ContextToken,
+  state: State,
+  schema: GraphQLSchema,
+  _kind: string,
+): Array<CompletionItem> {
+  const directive = schema.getDirectives().find(d => d.name === state.name);
+  return hintList(
+    token,
+    directive?.args.map(arg => ({
+      label: arg.name,
+      documentation: arg.description || '',
+      kind: CompletionItemKind.Field,
+    })) || [],
+  );
 }
 
 export function getTokenAtPosition(
@@ -1230,6 +1373,10 @@ export function getTypeInfo(
         }
         inputType = argDef?.type;
         break;
+      case RuleKinds.VARIABLE_DEFINITION:
+      case RuleKinds.VARIABLE:
+        type = inputType;
+        break;
       // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
         const enumType = getNamedType(inputType!);
@@ -1258,7 +1405,9 @@ export function getTypeInfo(
         const objectField =
           state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
         inputType = objectField?.type;
-
+        // @ts-expect-error
+        fieldDef = objectField as GraphQLField<null, null>;
+        type = fieldDef ? fieldDef.type : null;
         break;
       case RuleKinds.NAMED_TYPE:
         if (state.name) {

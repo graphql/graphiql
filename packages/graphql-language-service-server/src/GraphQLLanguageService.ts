@@ -20,6 +20,7 @@ import {
   parse,
   print,
   isTypeDefinitionNode,
+  ArgumentNode,
 } from 'graphql';
 
 import {
@@ -56,6 +57,7 @@ import {
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
+import { getDefinitionQueryResultForArgument } from 'graphql-language-service/src/interface';
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
@@ -324,6 +326,16 @@ export class GraphQLLanguageService {
             projectConfig,
             position,
           );
+
+        case Kind.ARGUMENT:
+          return this._getDefinitionForArgument(
+            query,
+            ast,
+            node,
+            filePath,
+            projectConfig,
+            position,
+          );
       }
     }
     return null;
@@ -438,6 +450,45 @@ export class GraphQLLanguageService {
         fieldName,
         parentTypeName,
         dependencies,
+        typeInfo,
+      );
+
+      return result;
+    }
+
+    return null;
+  }
+
+  async _getDefinitionForArgument(
+    query: string,
+    _ast: DocumentNode,
+    _node: ArgumentNode,
+    _filePath: Uri,
+    projectConfig: GraphQLProjectConfig,
+    position: IPosition,
+  ) {
+    const token = getTokenAtPosition(query, position);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
+
+    const typeInfo = getTypeInfo(schema!, token.state);
+    const fieldName = typeInfo.fieldDef?.name;
+    const argumentName = typeInfo.argDef?.name;
+
+    if (typeInfo && fieldName && argumentName) {
+      const parentTypeName = (typeInfo.parentType as any).toString();
+
+      const objectTypeDefinitions =
+        await this._graphQLCache.getObjectTypeDefinitions(projectConfig);
+
+      // TODO: need something like getObjectTypeDependenciesForAST?
+      const dependencies = [...objectTypeDefinitions.values()];
+
+      const result = await getDefinitionQueryResultForArgument(
+        argumentName,
+        fieldName,
+        parentTypeName,
+        dependencies,
+        typeInfo,
       );
 
       return result;
