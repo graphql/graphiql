@@ -361,6 +361,7 @@ function mergeIncrementalResult(
     for (const item of incrementalResult.items) {
       setValue(executionResult, path.join('.'), item);
       // Increment the last path segment (the array index) to merge the next item at the next index
+      // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
       (path[path.length - 1] as number)++;
     }
   }
