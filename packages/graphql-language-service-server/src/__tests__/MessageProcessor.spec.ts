@@ -160,6 +160,7 @@ describe('MessageProcessor with config', () => {
       textDocument: { uri: project.uri('query.graphql') },
       position: { character: 16, line: 0 },
     });
+
     expect(firstQueryDefRequest[0].uri).toEqual(
       project.uri('fragments.graphql'),
     );
@@ -173,6 +174,7 @@ describe('MessageProcessor with config', () => {
         character: 1,
       },
     });
+
     // change the file to make the fragment invalid
     project.changeFile(
       'schema.graphql',
@@ -256,7 +258,7 @@ describe('MessageProcessor with config', () => {
     // simulating codegen
     project.changeFile(
       'fragments.graphql',
-      'fragment A on Foo { bar }\n\nfragment B on Test { test }',
+      'fragment A on Foo { bad }\n\nfragment B on Test { test }',
     );
     await project.lsp.handleWatchedFilesChangedNotification({
       changes: [
@@ -271,6 +273,21 @@ describe('MessageProcessor with config', () => {
       );
     expect(fragCache?.get('A')?.definition.name.value).toEqual('A');
     expect(fragCache?.get('B')?.definition.name.value).toEqual('B');
+    const queryFieldDefRequest = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('fragments.graphql') },
+      position: { character: 22, line: 0 },
+    });
+    expect(queryFieldDefRequest[0].uri).toEqual(project.uri('schema.graphql'));
+    expect(serializeRange(queryFieldDefRequest[0].range)).toEqual({
+      start: {
+        line: 8,
+        character: 11,
+      },
+      end: {
+        line: 8,
+        character: 19,
+      },
+    });
 
     // on the second request, the position has changed
     const secondQueryDefRequest = await project.lsp.handleDefinitionRequest({
@@ -348,7 +365,7 @@ describe('MessageProcessor with config', () => {
 
     // ensure that fragment definitions work
     const definitions = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: project.uri('query.graphql') },
+      textDocument: { uri: project.uri('query.graphql') }, // console.log(project.uri('query.graphql'))
       position: { character: 26, line: 0 },
     });
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));

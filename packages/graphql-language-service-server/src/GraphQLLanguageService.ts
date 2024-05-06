@@ -21,6 +21,7 @@ import {
   print,
   isTypeDefinitionNode,
   ArgumentNode,
+  typeFromAST,
 } from 'graphql';
 
 import {
@@ -41,7 +42,6 @@ import {
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
   getDefinitionQueryResultForField,
-  DefinitionQueryResult,
   getASTNodeAtPosition,
   getTokenAtPosition,
   getTypeInfo,
@@ -57,7 +57,10 @@ import {
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
-import { getDefinitionQueryResultForArgument } from 'graphql-language-service/src/interface';
+import {
+  DefinitionQueryResponse,
+  getDefinitionQueryResultForArgument,
+} from 'graphql-language-service/src/interface';
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
@@ -275,12 +278,17 @@ export class GraphQLLanguageService {
     query: string,
     position: IPosition,
     filePath: Uri,
-  ): Promise<DefinitionQueryResult | null> {
+  ): Promise<DefinitionQueryResponse | null> {
     const projectConfig = this.getConfigForURI(filePath);
+
     if (!projectConfig) {
       return null;
     }
 
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
+    if (!schema) {
+      return null;
+    }
     let ast;
     try {
       ast = parse(query);
@@ -289,36 +297,40 @@ export class GraphQLLanguageService {
     }
 
     const node = getASTNodeAtPosition(query, ast, position);
+    // @ts-expect-error
+    const type = node && typeFromAST(schema, node);
+
+    let queryResult: DefinitionQueryResponse | null = null;
     if (node) {
       switch (node.kind) {
         case Kind.FRAGMENT_SPREAD:
-          return this._getDefinitionForFragmentSpread(
+          queryResult = await this._getDefinitionForFragmentSpread(
             query,
             ast,
             node,
             filePath,
             projectConfig,
           );
-
+          break;
         case Kind.FRAGMENT_DEFINITION:
         case Kind.OPERATION_DEFINITION:
-          return getDefinitionQueryResultForDefinitionNode(
+          queryResult = getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
             node,
           );
-
+          break;
         case Kind.NAMED_TYPE:
-          return this._getDefinitionForNamedType(
+          queryResult = await this._getDefinitionForNamedType(
             query,
             ast,
             node,
             filePath,
             projectConfig,
           );
-
+          break;
         case Kind.FIELD:
-          return this._getDefinitionForField(
+          queryResult = await this._getDefinitionForField(
             query,
             ast,
             node,
@@ -326,9 +338,9 @@ export class GraphQLLanguageService {
             projectConfig,
             position,
           );
-
+          break;
         case Kind.ARGUMENT:
-          return this._getDefinitionForArgument(
+          queryResult = await this._getDefinitionForArgument(
             query,
             ast,
             node,
@@ -336,7 +348,15 @@ export class GraphQLLanguageService {
             projectConfig,
             position,
           );
+          break;
       }
+    }
+    if (queryResult) {
+      return {
+        ...queryResult,
+        node,
+        type,
+      };
     }
     return null;
   }
@@ -396,7 +416,7 @@ export class GraphQLLanguageService {
     node: NamedTypeNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null> {
+  ): Promise<DefinitionQueryResponse | null> {
     const objectTypeDefinitions =
       await this._graphQLCache.getObjectTypeDefinitions(projectConfig);
 
@@ -414,13 +434,11 @@ export class GraphQLLanguageService {
         definition,
       }));
 
-    const result = await getDefinitionQueryResultForNamedType(
+    return getDefinitionQueryResultForNamedType(
       query,
       node,
       dependencies.concat(localOperationDefinitionInfos),
     );
-
-    return result;
   }
 
   async _getDefinitionForField(
@@ -446,14 +464,11 @@ export class GraphQLLanguageService {
       // TODO: need something like getObjectTypeDependenciesForAST?
       const dependencies = [...objectTypeDefinitions.values()];
 
-      const result = await getDefinitionQueryResultForField(
+      return getDefinitionQueryResultForField(
         fieldName,
         parentTypeName,
         dependencies,
-        typeInfo,
       );
-
-      return result;
     }
 
     return null;
@@ -483,15 +498,12 @@ export class GraphQLLanguageService {
       // TODO: need something like getObjectTypeDependenciesForAST?
       const dependencies = [...objectTypeDefinitions.values()];
 
-      const result = await getDefinitionQueryResultForArgument(
+      return getDefinitionQueryResultForArgument(
         argumentName,
         fieldName,
         parentTypeName,
         dependencies,
-        typeInfo,
       );
-
-      return result;
     }
 
     return null;
@@ -503,7 +515,7 @@ export class GraphQLLanguageService {
     node: FragmentSpreadNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null> {
+  ): Promise<DefinitionQueryResponse | null> {
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
       projectConfig,
     );
@@ -528,13 +540,11 @@ export class GraphQLLanguageService {
       }),
     );
 
-    const result = await getDefinitionQueryResultForFragmentSpread(
+    return getDefinitionQueryResultForFragmentSpread(
       query,
       node,
       dependencies.concat(localFragInfos),
     );
-
-    return result;
   }
   async getOutline(documentText: string): Promise<Outline | null> {
     return getOutline(documentText);

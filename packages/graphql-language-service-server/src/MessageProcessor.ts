@@ -57,7 +57,14 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument } from './parseDocument';
 
-import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
+import {
+  printSchema,
+  visit,
+  parse,
+  FragmentDefinitionNode,
+  GraphQLType,
+  ASTNode,
+} from 'graphql';
 import { tmpdir } from 'node:os';
 import {
   ConfigEmptyError,
@@ -82,6 +89,31 @@ type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
 };
+
+type AdditionalLocateInfo = {
+  node?: ASTNode | null;
+  type?: GraphQLType | null;
+  project: GraphQLProjectConfig;
+};
+
+type RelayLSPLocateCommand = (
+  // either Type, Type.field or Type.field(argument)
+  projectName: string,
+  typeName: string,
+  info: AdditionalLocateInfo,
+) => string;
+
+type GraphQLLocateCommand = (
+  projectName: string,
+  typeName: string,
+  info: AdditionalLocateInfo,
+) => {
+  range: RangeType;
+  uri: string;
+};
+
+type LocateCommand = RelayLSPLocateCommand | GraphQLLocateCommand;
+
 function toPosition(position: VscodePosition): IPosition {
   return new Position(position.line, position.character);
 }
@@ -789,7 +821,7 @@ export class MessageProcessor {
     const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    if (!cachedDocument) {
+    if (!cachedDocument || !project) {
       return [];
     }
 
@@ -830,6 +862,10 @@ export class MessageProcessor {
         },
       });
     } catch {}
+
+    const locateCommand = project?.extensions?.languageService
+      ?.locateCommand as LocateCommand | undefined;
+
     const formatted = result
       ? result.definitions.map(res => {
           const defRange = res.range as Range;
@@ -857,10 +893,48 @@ export class MessageProcessor {
               );
             }
           }
+          if (locateCommand && result.printedName) {
+            try {
+              const locateResult = locateCommand(
+                project.name,
+                result.printedName,
+                {
+                  node: result.node,
+                  type: result.type,
+                  project,
+                },
+              );
+              if (typeof locateResult === 'string') {
+                const [uri, startLine, endLine] = locateResult.split(':');
+                return {
+                  uri,
+                  range: new Range(
+                    new Position(parseInt(startLine, 10), 0),
+                    new Position(parseInt(endLine, 10), 0),
+                  ),
+                };
+              }
+              return (
+                locateResult || {
+                  uri: res.path,
+                  range: defRange,
+                }
+              );
+            } catch (error) {
+              this._logger.error(
+                'There was an error executing user defined locateCommand\n\n' +
+                  (error as Error).toString(),
+              );
+              return {
+                uri: res.path,
+                range: defRange,
+              };
+            }
+          }
           return {
             uri: res.path,
             range: defRange,
-          } as Location;
+          };
         })
       : [];
 

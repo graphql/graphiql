@@ -20,24 +20,23 @@ import {
   // isNamedType,
   // ArgumentNode,
   InputValueDefinitionNode,
+  GraphQLType,
 } from 'graphql';
 
-import {
-  Definition,
-  FragmentInfo,
-  Uri,
-  ObjectTypeInfo,
-  AllTypeInfo,
-} from '../types';
+import { Definition, FragmentInfo, Uri, ObjectTypeInfo } from '../types';
 
 import { locToRange, offsetToPosition, Range, Position } from '../utils';
-import { renderType } from './getHoverInformation';
 // import { getTypeInfo } from './getAutocompleteSuggestions';
 
 export type DefinitionQueryResult = {
   queryRange: Range[];
   definitions: Definition[];
   printedName?: string;
+};
+
+export type DefinitionQueryResponse = DefinitionQueryResult & {
+  node?: ASTNode | null;
+  type?: GraphQLType | null;
 };
 
 export const LANGUAGE = 'GraphQL';
@@ -89,7 +88,6 @@ export async function getDefinitionQueryResultForField(
   fieldName: string,
   typeName: string,
   dependencies: Array<ObjectTypeInfo>,
-  typeInfo: AllTypeInfo,
 ): Promise<DefinitionQueryResult> {
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === typeName,
@@ -114,9 +112,7 @@ export async function getDefinitionQueryResultForField(
       getDefinitionForFieldDefinition(filePath || '', content, fieldDefinition),
     );
   }
-  const printed: string[] = [];
-  // @ts-expect-error
-  renderType(printed, typeInfo, { useMarkdown: false }, typeInfo.fieldDef);
+
   return {
     definitions,
     // TODO: seems like it's not using
@@ -130,7 +126,6 @@ export async function getDefinitionQueryResultForArgument(
   fieldName: string,
   typeName: string,
   dependencies: Array<ObjectTypeInfo>,
-  typeInfo: AllTypeInfo,
 ): Promise<DefinitionQueryResult> {
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === typeName,
@@ -159,14 +154,12 @@ export async function getDefinitionQueryResultForArgument(
       ),
     );
   }
-  const printed: string[] = [];
-  // @ts-expect-error
-  renderType(printed, typeInfo, { useMarkdown: false }, typeInfo.fieldDef);
+
   return {
     definitions,
     // TODO: seems like it's not using
     queryRange: [],
-    printedName: [typeName, fieldName].join('.'),
+    printedName: `${[typeName, fieldName].join('.')}(${argumentName})`,
   };
 }
 
