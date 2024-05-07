@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.22.0
+
+### Minor Changes
+
+- [#3580](https://github.com/graphql/graphiql/pull/3580) [`d48f4ef5`](https://github.com/graphql/graphiql/commit/d48f4ef56578dad7ec90f33458353791e463ef7b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Implement correct merging of incremental responses (@defer/@stream)
+
 ## 0.21.0
 
 ### Minor Changes
