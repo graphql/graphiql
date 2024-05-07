@@ -1,13 +1,17 @@
 import {
   Fetcher,
-  FetcherResultPayload,
   formatError,
   formatResult,
   isAsyncIterable,
   isObservable,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import { ExecutionResult, FragmentDefinitionNode, print } from 'graphql';
+import {
+  ExecutionResult,
+  FragmentDefinitionNode,
+  GraphQLError,
+  print,
+} from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
@@ -183,7 +187,7 @@ export function ExecutionContextProvider({
     });
 
     try {
-      let fullResponse: FetcherResultPayload = { data: {} };
+      const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
         // A different query was dispatched in the meantime, so don't
         // show the results of this one.
@@ -202,40 +206,8 @@ export function ExecutionContextProvider({
         }
 
         if (maybeMultipart) {
-          const payload: FetcherResultPayload = {
-            data: fullResponse.data,
-          };
-          const maybeErrors = [
-            ...(fullResponse?.errors || []),
-            ...maybeMultipart.flatMap(i => i.errors).filter(Boolean),
-          ];
-
-          if (maybeErrors.length) {
-            payload.errors = maybeErrors;
-          }
-
           for (const part of maybeMultipart) {
-            // We pull out errors here, so we dont include it later
-            const { path, data, errors, ...rest } = part;
-            if (path) {
-              if (!data) {
-                throw new Error(
-                  `Expected part to contain a data property, but got ${part}`,
-                );
-              }
-
-              setValue(payload.data, path, data, { merge: true });
-            } else if (data) {
-              // If there is no path, we don't know what to do with the payload,
-              // so we just set it.
-              payload.data = data;
-            }
-
-            // Ensures we also bring extensions and alike along for the ride
-            fullResponse = {
-              ...payload,
-              ...rest,
-            };
+            mergeIncrementalResult(fullResponse, part);
           }
 
           setIsFetching(false);
@@ -360,4 +332,62 @@ function tryParseJsonObject({
     throw new Error(errorMessageType);
   }
   return parsed;
+}
+
+type IncrementalResult = {
+  data?: Record<string, unknown> | null;
+  errors?: ReadonlyArray<GraphQLError>;
+  extensions?: Record<string, unknown>;
+  hasNext?: boolean;
+  path?: ReadonlyArray<string | number>;
+  incremental?: ReadonlyArray<IncrementalResult>;
+  label?: string;
+  items?: ReadonlyArray<Record<string, unknown>> | null;
+};
+
+/**
+ * @param executionResult The complete execution result object which will be
+ * mutated by merging the contents of the incremental result.
+ * @param incrementalResult The incremental result that will be merged into the
+ * complete execution result.
+ */
+function mergeIncrementalResult(
+  executionResult: ExecutionResult,
+  incrementalResult: IncrementalResult,
+): void {
+  const path = ['data', ...(incrementalResult.path ?? [])];
+
+  if (incrementalResult.items) {
+    for (const item of incrementalResult.items) {
+      setValue(executionResult, path.join('.'), item);
+      // Increment the last path segment (the array index) to merge the next item at the next index
+      // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
+      (path[path.length - 1] as number)++;
+    }
+  }
+
+  if (incrementalResult.data) {
+    setValue(executionResult, path.join('.'), incrementalResult.data, {
+      merge: true,
+    });
+  }
+
+  if (incrementalResult.errors) {
+    executionResult.errors ||= [];
+    (executionResult.errors as GraphQLError[]).push(
+      ...incrementalResult.errors,
+    );
+  }
+
+  if (incrementalResult.extensions) {
+    setValue(executionResult, 'extensions', incrementalResult.extensions, {
+      merge: true,
+    });
+  }
+
+  if (incrementalResult.incremental) {
+    for (const incrementalSubResult of incrementalResult.incremental) {
+      mergeIncrementalResult(executionResult, incrementalSubResult);
+    }
+  }
 }
