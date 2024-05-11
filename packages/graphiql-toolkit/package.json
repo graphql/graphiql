@@ -24,7 +24,7 @@
     "meros": "^1.1.4"
   },
   "devDependencies": {
-    "graphql": "^16.4.0",
+    "graphql": "^16.8.1",
     "graphql-ws": "^5.5.5",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0"

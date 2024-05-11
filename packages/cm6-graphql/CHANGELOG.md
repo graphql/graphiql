@@ -1,5 +1,29 @@
 # cm6-graphql
 
+## 0.0.14
+
+### Patch Changes
+
+- [#3534](https://github.com/graphql/graphiql/pull/3534) [`f4c98c1f`](https://github.com/graphql/graphiql/commit/f4c98c1f7c6df5a918479e641631e8fbc5b5a92e) Thanks [@johndcollett](https://github.com/johndcollett)! - fix: multiple argument syntax highlighting
+
+## 0.0.13
+
+### Patch Changes
+
+- [#3505](https://github.com/graphql/graphiql/pull/3505) [`a562c96f`](https://github.com/graphql/graphiql/commit/a562c96fa3953d0301ad7b610028fa6c4a779bf6) Thanks [@Gasser-Aly](https://github.com/Gasser-Aly)! - fix: block strings syntax highlighting
+
+## 0.0.12
+
+### Patch Changes
+
+- [#3463](https://github.com/graphql/graphiql/pull/3463) [`e45ba17c`](https://github.com/graphql/graphiql/commit/e45ba17cb2f13e5a79d3e87b0f30ef92ec55d861) Thanks [@imolorhe](https://github.com/imolorhe)! - Create a lint diagnostic from invalid schema
+
+## 0.0.11
+
+### Patch Changes
+
+- [#3461](https://github.com/graphql/graphiql/pull/3461) [`129666a9`](https://github.com/graphql/graphiql/commit/129666a9a86690bb72226674d40215f24dc5f7ea) Thanks [@imolorhe](https://github.com/imolorhe)! - Wrap cm6-graphql lint logic in try..catch
+
 ## 0.0.10
 
 ### Patch Changes

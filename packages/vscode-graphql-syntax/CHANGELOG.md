@@ -1,5 +1,58 @@
 # vscode-graphql-syntax
 
+## 1.3.6
+
+### Patch Changes
+
+- [#3592](https://github.com/graphql/graphiql/pull/3592) [`5e521080`](https://github.com/graphql/graphiql/commit/5e52108038d8d5e97f8d21a9c22bb9048fa377f0) Thanks [@acao](https://github.com/acao)! - Remove ruby support for code highlighting, users should use `ruby-lsp` for graphql highlighting instead!
+
+## 1.3.5
+
+### Patch Changes
+
+- [#3545](https://github.com/graphql/graphiql/pull/3545) [`e9fc21ab`](https://github.com/graphql/graphiql/commit/e9fc21ab5f403a3e26cec555b29e5fb9db436838) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
+## 1.3.4
+
+### Patch Changes
+
+- [#3543](https://github.com/graphql/graphiql/pull/3543) [`defc126b`](https://github.com/graphql/graphiql/commit/defc126b107961d7a4ba093b35b1d77bb7018a79) Thanks [@acao](https://github.com/acao)! - Temporarily revert a syntax highlighting bugfix that caused more bugs
+
+## 1.3.3
+
+### Patch Changes
+
+- [#3518](https://github.com/graphql/graphiql/pull/3518) [`e502c41e`](https://github.com/graphql/graphiql/commit/e502c41e68440e7331cfc74d8c78fd092f3354a8) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
+## 1.3.2
+
+### Patch Changes
+
+- [#3529](https://github.com/graphql/graphiql/pull/3529) [`a38152ef`](https://github.com/graphql/graphiql/commit/a38152ef1248a480d5cad384780f82214a84f16d) Thanks [@acao](https://github.com/acao)! - fix triple double quote comment syntax by disabling inline double quote js strings for now
+
+## 1.3.1
+
+### Patch Changes
+
+- [#3519](https://github.com/graphql/graphiql/pull/3519) [`8188e3e6`](https://github.com/graphql/graphiql/commit/8188e3e6fd979bcf2fbdf9568deb0c88d0df99e2) Thanks [@acao](https://github.com/acao)! - bump ovsx
+
+## 1.3.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
+## 1.2.3
+
+### Patch Changes
+
+- [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
+
+  - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
+  - make textmate injectors more performant and specific, eliminate redundant config
+
+  Big thanks to [@RedCMD](https://github.com/RedCMD) and [@aeschli](https://github.com/aeschli) for your help!
+
 ## 1.2.2
 
 ### Patch Changes

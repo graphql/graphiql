@@ -1,5 +1,36 @@
 # @graphiql/react
 
+## 0.22.0
+
+### Minor Changes
+
+- [#3580](https://github.com/graphql/graphiql/pull/3580) [`d48f4ef5`](https://github.com/graphql/graphiql/commit/d48f4ef56578dad7ec90f33458353791e463ef7b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Implement correct merging of incremental responses (@defer/@stream)
+
+## 0.21.0
+
+### Minor Changes
+
+- [#3569](https://github.com/graphql/graphiql/pull/3569) [`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Update to markdown-it 14.x
+
+## 0.20.4
+
+### Patch Changes
+
+- Updated dependencies [[`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03)]:
+  - codemirror-graphql@2.0.11
+
+## 0.20.3
+
+### Patch Changes
+
+- [#3526](https://github.com/graphql/graphiql/pull/3526) [`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775) Thanks [@benjie](https://github.com/benjie)! - Add new `useOptimisticState` hook that can wrap a useState-like hook to perform optimistic caching of state changes, this helps to avoid losing characters when the user is typing rapidly. Example of usage: `const [state, setState] = useOptimisticState(useOperationsEditorState());`
+
+## 0.20.2
+
+### Patch Changes
+
+- [#3447](https://github.com/graphql/graphiql/pull/3447) [`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02) Thanks [@acao](https://github.com/acao)! - Remove initialState for new hooks, add `additionalComponent` to toolbar to allow buttons to use context
+
 ## 0.20.1
 
 ### Patch Changes

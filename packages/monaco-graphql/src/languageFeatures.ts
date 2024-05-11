@@ -150,12 +150,17 @@ export class DiagnosticsAdapter {
         schema: jsonSchema,
         fileMatch: variablesUris,
       };
+      const currentSchemas =
+        languages.json.jsonDefaults.diagnosticsOptions.schemas?.filter(
+          s => s.uri !== schemaUri,
+        ) || [];
+
       // TODO: export from api somehow?
       languages.json.jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
         ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
-        schemas: [configResult],
+        schemas: [...currentSchemas, configResult],
         enableSchemaRequest: false,
       });
     }

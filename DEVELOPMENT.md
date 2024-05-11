@@ -44,7 +44,7 @@ this repo._
    If you are focused on GraphiQL development, you can run —
 
    ```sh
-   yarn start-graphiql
+   yarn dev-graphiql
    ```
 
 5. Get coding! If you've added code, add tests. If you've changed APIs, update
@@ -89,7 +89,7 @@ First, you'll need to `yarn build` all the packages from the root.
 
 Then, you can run these commands:
 
-- `yarn start-graphiql` — which will launch `webpack` dev server for graphiql
+- `yarn dev-graphiql` — which will launch `webpack` dev server for graphiql
   from the root
 
 > The GraphiQL UI is available at http://localhost:8080/dev.html

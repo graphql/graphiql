@@ -1,5 +1,42 @@
 # @graphiql/plugin-explorer
 
+## 3.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`d48f4ef5`](https://github.com/graphql/graphiql/commit/d48f4ef56578dad7ec90f33458353791e463ef7b)]:
+  - @graphiql/react@0.22.0
+
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5)]:
+  - @graphiql/react@0.21.0
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @graphiql/react@0.20.4
+
+## 1.0.3
+
+### Patch Changes
+
+- [#3526](https://github.com/graphql/graphiql/pull/3526) [`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775) Thanks [@benjie](https://github.com/benjie)! - Fix bug whereby typing quickly into explorer sidebar would result in characters being dropped.
+
+- Updated dependencies [[`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775)]:
+  - @graphiql/react@0.20.3
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02)]:
+  - @graphiql/react@0.20.2
+
 ## 1.0.1
 
 ### Patch Changes
