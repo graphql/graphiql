@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -33,13 +33,13 @@
     "graphiql-code-exporter": "^3.0.3"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.22.0",
+    "@graphiql/react": "^0.22.1",
     "graphql": "^15.5.0 || ^16.0.0",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.22.0",
+    "@graphiql/react": "^0.22.1",
     "@vitejs/plugin-react": "^4.0.1",
     "graphql": "^16.8.1",
     "postcss-nesting": "^10.1.7",

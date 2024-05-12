@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.22.1
+
+### Patch Changes
+
+- [#3597](https://github.com/graphql/graphiql/pull/3597) [`224b43f5`](https://github.com/graphql/graphiql/commit/224b43f5473456f264a82998d48a34a441537f54) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix TypeScript type of the `label` prop of the `Tooltip` component
+
 ## 0.22.0
 
 ### Minor Changes
