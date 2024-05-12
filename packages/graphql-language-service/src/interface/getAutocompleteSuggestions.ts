@@ -345,7 +345,9 @@ export function getAutocompleteSuggestions(
             insertTextMode: InsertTextMode.adjustIndentation,
             insertTextFormat: InsertTextFormat.Snippet,
             command: SuggestionCommand,
-            detail: String(argDef.type),
+            labelDetails: {
+              detail: ' ' + String(argDef.type),
+            },
             documentation: argDef.description ?? undefined,
             kind: CompletionItemKind.Variable,
             type: argDef.type,
@@ -526,6 +528,27 @@ const getInputInsertText = (
   return getInsertText(prefix, type, fallback);
 };
 
+/**
+ * generates a TextSnippet for a field with possible required arguments
+ * that dynamically adjusts to the number of required arguments
+ * @param field
+ * @returns
+ */
+const getFieldInsertText = (field: GraphQLField<null, null>) => {
+  const requiredArgs = field.args.filter(arg =>
+    arg.type.toString().endsWith('!'),
+  );
+  if (!requiredArgs.length) {
+    return;
+  }
+  return (
+    field.name +
+    `(${requiredArgs.map(
+      (arg, i) => `${arg.name}: $${i + 1}`,
+    )}) ${getInsertText('', field.type, '\n')}`
+  );
+};
+
 // /**
 //  * Choose carefully when to insert the `insertText`!
 //  * @param field
@@ -591,10 +614,6 @@ function getSuggestionsForExtensionDefinitions(token: ContextToken) {
   return hintList(token, typeSystemCompletionItems);
 }
 
-// const getFieldInsertText = (field: GraphQLField<null, null>) => {
-//   return field.name + '($1) {\n\n  \n}';
-// };
-
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
@@ -617,6 +636,7 @@ function getSuggestionsForFieldNames(
     if (parentType === options?.schema?.getQueryType()) {
       fields.push(SchemaMetaFieldDef, TypeMetaFieldDef);
     }
+
     return hintList(
       token,
       fields.map<CompletionItem>((field, index) => {
@@ -632,51 +652,34 @@ function getSuggestionsForFieldNames(
           deprecationReason: field.deprecationReason,
           kind: CompletionItemKind.Field,
           labelDetails: {
-            detail: field.type.toString().endsWith('!') ? 'NonNull' : undefined,
-            description: field.description ?? undefined,
+            detail: ' ' + field.type.toString(),
           },
           type: field.type,
         };
+        if (options?.fillLeafsOnComplete) {
+          // const hasArgs =
+          //   // token.state.needsAdvance &&
+          //   // @ts-expect-error
+          //   parentType?._fields[field?.name];
 
-        // const hasArgs =
-        //   token.state.needsAdvance &&
-        //   // @ts-expect-error
-        //   parentType?._fields[field?.name];
+          suggestion.insertText = getFieldInsertText(field);
 
-        // if (!hasArgs) {
-        //   suggestion.insertText = getInsertText(
-        //     field.name,
-        //     field.type,
-        //     field.name + '\n',
-        //   );
-        // }
+          // eslint-disable-next-line logical-assignment-operators
+          if (!suggestion.insertText) {
+            suggestion.insertText = getInsertText(
+              field.name,
+              field.type,
+              // if we are replacing a field with arguments, we don't want the extra line
+              field.name + (token.state.needsAdvance ? '' : '\n'),
+            );
+          }
 
-        // const requiredArgs = field.args.filter(arg =>
-        //   arg.type.toString().endsWith('!'),
-        // );
-        // if (
-        //   hasArgs &&
-        //   requiredArgs.length &&
-        //   !argDefs?.find(d => requiredArgs.find(a => d.name === a.name))
-        // ) {
-        //   suggestion.insertText = getFieldInsertText(field);
-        // }
-
-        // if (suggestion.insertText) {
-        //   suggestion.insertTextFormat = InsertTextFormat.Snippet;
-        //   suggestion.insertTextMode = InsertTextMode.adjustIndentation;
-        //   suggestion.command = SuggestionCommand;
-        // }
-
-        // if (options?.fillLeafsOnComplete) {
-        //   // TODO: fillLeafs capability
-        //   const insertText = getInsertText(field);
-        //   if (insertText) {
-        //     suggestion.insertText = field.name + insertText;
-        //     suggestion.insertTextFormat = InsertTextFormat.Snippet;
-        //     suggestion.command = SuggestionCommand;
-        //   }
-        // }
+          if (suggestion.insertText) {
+            suggestion.insertTextFormat = InsertTextFormat.Snippet;
+            suggestion.insertTextMode = InsertTextMode.adjustIndentation;
+            suggestion.command = SuggestionCommand;
+          }
+        }
 
         return suggestion;
       }),

@@ -35,8 +35,6 @@ import {
   UniqueVariableNamesRule,
   FragmentsOnCompositeTypesRule,
   ProvidedRequiredArgumentsRule,
-
-  // ProvidedRequiredArgumentsOnDirectivesRule,
 } from 'graphql';
 
 const specifiedSDLRules = [
@@ -56,7 +54,6 @@ const specifiedSDLRules = [
   UniqueVariableNamesRule,
   FragmentsOnCompositeTypesRule,
   ProvidedRequiredArgumentsRule,
-  // ProvidedRequiredArgumentsOnDirectivesRule,
 ];
 
 /**

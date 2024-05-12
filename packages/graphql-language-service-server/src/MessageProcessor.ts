@@ -81,6 +81,7 @@ import {
 import { NoopLogger, Logger } from './Logger';
 import glob from 'fast-glob';
 import { isProjectSDLOnly, unwrapProjectSchema } from './common';
+import { DefinitionQueryResponse } from 'graphql-language-service/src/interface';
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -101,7 +102,7 @@ type RelayLSPLocateCommand = (
   projectName: string,
   typeName: string,
   info: AdditionalLocateInfo,
-) => string;
+) => `${string}:${string}:${string}` | `${string}:${string}` | string;
 
 type GraphQLLocateCommand = (
   projectName: string,
@@ -842,7 +843,7 @@ export class MessageProcessor {
       position.line -= parentRange.start.line;
     }
 
-    let result = null;
+    let result: DefinitionQueryResponse | null = null;
 
     try {
       result = await this._languageService.getDefinition(
@@ -893,7 +894,7 @@ export class MessageProcessor {
               );
             }
           }
-          if (locateCommand && result.printedName) {
+          if (locateCommand && result && result?.printedName) {
             try {
               const locateResult = locateCommand(
                 project.name,
@@ -905,7 +906,8 @@ export class MessageProcessor {
                 },
               );
               if (typeof locateResult === 'string') {
-                const [uri, startLine, endLine] = locateResult.split(':');
+                const [uri, startLine = '1', endLine = '1'] =
+                  locateResult.split(':');
                 return {
                   uri,
                   range: new Range(

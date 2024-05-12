@@ -293,7 +293,6 @@ describe('getAutocompleteSuggestions', () => {
       expect(result).toEqual([
         {
           label: 'id',
-          detail: 'String!',
           insertText: 'id: ',
           command: suggestionCommand,
           insertTextFormat: 2,
@@ -309,7 +308,6 @@ describe('getAutocompleteSuggestions', () => {
       expect(result).toEqual([
         {
           label: 'id',
-          detail: 'String!',
           command: suggestionCommand,
           insertText: 'id: ',
           insertTextFormat: 2,
