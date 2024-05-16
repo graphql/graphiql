@@ -128,8 +128,7 @@ export function findGraphQLTags(
     },
     TemplateLiteral(node: TemplateLiteral) {
       // check if the template literal is prefixed with #graphql
-      const hasGraphQLPrefix =
-        node.quasis[0].value.raw.startsWith('#graphql\n');
+      const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith('#graphql');
       // check if the template expression has /* GraphQL */ comment
       const hasGraphQLComment = Boolean(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),

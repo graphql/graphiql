@@ -68,6 +68,13 @@ describe('MessageProcessor', () => {
       getDiagnostics(_query, _uri) {
         return [];
       },
+      getAllProjectsForFile(uri: string) {
+        const project = messageProcessor._graphQLCache.getProjectForFile(uri);
+        return project ? [project] : [];
+      },
+      getProjectForDocument(_query: string, uri: string) {
+        return this.getAllProjectsForFile(uri)[0];
+      },
       async getDocumentSymbols(_query: string, uri: string) {
         return [
           {

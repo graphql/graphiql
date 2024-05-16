@@ -47,6 +47,7 @@ import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
 import { CodeFileLoader } from '@graphql-tools/code-file-loader';
+import { EXTENSION_NAME } from './GraphQLLanguageService';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
@@ -59,7 +60,7 @@ const LanguageServiceExtension: GraphQLExtensionDeclaration = api => {
   // For documents
   api.loaders.documents.register(new CodeFileLoader());
 
-  return { name: 'languageService' };
+  return { name: EXTENSION_NAME };
 };
 
 // Maximum files to read when processing GraphQL files.
