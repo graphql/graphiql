@@ -81,7 +81,7 @@ function useIncrementsEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme]);
+  }, [editorTheme, increment.payload]);
 
   useSynchronizeOption(editor, 'keyMap', keyMap);
 
