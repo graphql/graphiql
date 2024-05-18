@@ -542,6 +542,7 @@ export class GraphQLLanguageService {
       dependencies.concat(localFragInfos),
     );
   }
+
   async getOutline(documentText: string): Promise<Outline | null> {
     return getOutline(documentText);
   }

@@ -253,6 +253,45 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it('provides correct field name suggestions with insertText', () => {
+      const result = testSuggestions('{ ', new Position(0, 2), [], {
+        ignoreInsert: false,
+        fillLeafsOnComplete: true,
+      });
+      expect(result).toEqual([
+        {
+          label: '__typename',
+          detail: 'String!',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: '__typename\n',
+        },
+        {
+          ...expectedResults.droid,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'droid(id: $1)  {\n   $1\n}',
+        },
+        {
+          ...expectedResults.hero,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'hero {\n   $1\n}',
+        },
+        {
+          ...expectedResults.human,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'human(id: $1)  {\n   $1\n}',
+        },
+        {
+          ...expectedResults.inputTypeTest,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'inputTypeTest {\n   $1\n}',
+        },
+      ]);
+    });
     it('provides correct type suggestions for fragments', () => {
       const result = testSuggestions('fragment test on ', new Position(0, 17));
 
