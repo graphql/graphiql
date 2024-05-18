@@ -14,6 +14,7 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
+import { GraphQLEnumType } from 'graphql';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -71,6 +72,16 @@ describe('GraphQLLanguageService', () => {
                 start: 293,
                 end: 335,
               },
+              arguments: [
+                {
+                  name: { value: 'arg' },
+                  loc: {
+                    start: 293,
+                    end: 335,
+                  },
+                  type: GraphQLEnumType,
+                },
+              ],
             },
           ],
 

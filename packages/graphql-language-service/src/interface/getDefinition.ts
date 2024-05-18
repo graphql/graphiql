@@ -127,21 +127,16 @@ export async function getDefinitionQueryResultForArgument(
   typeName: string,
   dependencies: Array<ObjectTypeInfo>,
 ): Promise<DefinitionQueryResult> {
-  const defNodes = dependencies.filter(
+  dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === typeName,
   );
 
-  if (defNodes.length === 0) {
-    throw new Error(`Definition not found for GraphQL type ${typeName}`);
-  }
-
   const definitions: Array<Definition> = [];
 
-  for (const { filePath, content, definition } of defNodes) {
+  for (const { filePath, content, definition } of dependencies) {
     const argDefinition = (definition as ObjectTypeDefinitionNode).fields
       ?.find(item => item.name.value === fieldName)
       ?.arguments?.find(item => item.name.value === argumentName);
-
     if (argDefinition == null) {
       continue;
     }
@@ -154,7 +149,6 @@ export async function getDefinitionQueryResultForArgument(
       ),
     );
   }
-
   return {
     definitions,
     // TODO: seems like it's not using

@@ -45,6 +45,8 @@ import {
   getASTNodeAtPosition,
   getTokenAtPosition,
   getTypeInfo,
+  DefinitionQueryResponse,
+  getDefinitionQueryResultForArgument,
 } from 'graphql-language-service';
 
 import type { GraphQLCache } from './GraphQLCache';
@@ -57,10 +59,6 @@ import {
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
-import {
-  DefinitionQueryResponse,
-  getDefinitionQueryResultForArgument,
-} from 'graphql-language-service/src/interface';
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
@@ -488,10 +486,7 @@ export class GraphQLLanguageService {
     const typeInfo = getTypeInfo(schema!, token.state);
     const fieldName = typeInfo.fieldDef?.name;
     const argumentName = typeInfo.argDef?.name;
-
     if (typeInfo && fieldName && argumentName) {
-      const parentTypeName = (typeInfo.parentType as any).toString();
-
       const objectTypeDefinitions =
         await this._graphQLCache.getObjectTypeDefinitions(projectConfig);
 
@@ -501,7 +496,8 @@ export class GraphQLLanguageService {
       return getDefinitionQueryResultForArgument(
         argumentName,
         fieldName,
-        parentTypeName,
+        // @ts-expect-error - typeInfo is not typed correctly
+        typeInfo.argDef?.type?.name,
         dependencies,
       );
     }

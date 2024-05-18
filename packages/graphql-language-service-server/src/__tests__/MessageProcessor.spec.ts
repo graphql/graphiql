@@ -420,7 +420,7 @@ describe('MessageProcessor with config', () => {
     // and add a fragments.ts file, watched
     await project.addFile(
       'fragments.ts',
-      '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest }\n`',
+      '\n\n\nexport const fragment = gql`\n\n  fragment T on Test { isTest } \n query { hasArgs(string: "") }\n`',
       true,
     );
 
@@ -445,6 +445,12 @@ describe('MessageProcessor with config', () => {
         character: 31,
       },
     });
+    const defsForArgs = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('fragments.ts') },
+      position: { character: 19, line: 6 },
+    });
+
+    expect(defsForArgs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     project.lsp.handleShutdownRequest();
   });
