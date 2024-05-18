@@ -6,7 +6,13 @@ import {
   isObservable,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import { ExecutionResult, FragmentDefinitionNode, print } from 'graphql';
+import {
+  ExecutionResult,
+  FragmentDefinitionNode,
+  getOperationAST,
+  OperationTypeNode,
+  print,
+} from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
@@ -195,6 +201,12 @@ export function ExecutionContextProvider({
 
     const opName = operationName ?? queryEditor.operationName ?? undefined;
 
+    let isSubscription = false;
+    if (queryEditor.documentAST) {
+      const operation = getOperationAST(queryEditor.documentAST, opName);
+      isSubscription = operation?.operation === OperationTypeNode.SUBSCRIPTION;
+    }
+
     history?.addToHistory({
       query,
       variables: variablesString,
@@ -247,15 +259,35 @@ export function ExecutionContextProvider({
         },
       );
 
+      // Subscriptions are always considered streamed responses
+      let isStreaming = isSubscription;
+
       const value = await Promise.resolve(fetch);
       if (isObservable(value)) {
         // If the fetcher returned an Observable, then subscribe to it, calling
         // the callback on each next value, and handling both errors and the
         // completion of the Observable.
+        //
+        // Note: The naming of the React state assumes that in this case the
+        // operation is a subscription (which in practice it most likely is),
+        // but technically it can also be a query or mutation where the fetcher
+        // decided to return an observable with either a single payload or
+        // multiple payloads (defer/stream). As the naming is part of the
+        // public API of this context we decide not to change it until defer/
+        // stream is officially part of the GraphQL spec.
         setSubscription(
           value.subscribe({
             next(result) {
-              handleResponse(result, true);
+              handleResponse(
+                result,
+                // If the initial payload contains `hasNext` for a query or
+                // mutation then we know it's a streamed response.
+                isStreaming || result.hasNext,
+              );
+
+              // If there's more than one payload then we're streaming, so set
+              // this flag to `true` for any future calls to `next`.
+              isStreaming = true;
             },
             error(error: Error) {
               setIsFetching(false);
@@ -274,9 +306,20 @@ export function ExecutionContextProvider({
         setSubscription({
           unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
         });
+
         for await (const result of value) {
-          handleResponse(result, true);
+          handleResponse(
+            result,
+            // If the initial payload contains `hasNext` for a query or
+            // mutation then we know it's a streamed response.
+            isStreaming || result.hasNext,
+          );
+
+          // If there's more than one payload then we're streaming, so set this
+          // flag to `true` for any future loop iterations.
+          isStreaming = true;
         }
+
         setIsFetching(false);
         setSubscription(null);
       } else {
