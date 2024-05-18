@@ -41,6 +41,7 @@ type Droid implements Character {
 input InputType {
   key: String!
   value: Int = 42
+  obj: InputType
 }
 
 interface TestInterface {

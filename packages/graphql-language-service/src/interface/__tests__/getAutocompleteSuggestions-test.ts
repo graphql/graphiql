@@ -528,7 +528,20 @@ describe('getAutocompleteSuggestions', () => {
       expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
     });
 
-    it('provides correct testInput suggestions', () => {
+    it('provides correct directive field suggestions', () => {
+      expect(
+        testSuggestions('{ test @deprecated(', new Position(0, 19)),
+      ).toEqual([
+        {
+          command: suggestionCommand,
+          label: 'reason',
+          insertTextFormat: 2,
+          insertText: 'reason: ',
+        },
+      ]);
+    });
+
+    it('provides correct testInput type field suggestions', () => {
       expect(
         testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
       ).toEqual([
@@ -538,6 +551,41 @@ describe('getAutocompleteSuggestions', () => {
           insertText: 'key: ',
           insertTextFormat: 2,
           command: suggestionCommand,
+        },
+        {
+          detail: 'InputType',
+          label: 'obj',
+          insertText: 'obj:  {\n   $1\n}',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+        },
+        {
+          label: 'value',
+          detail: 'Int',
+          insertText: 'value: ',
+          insertTextFormat: 2,
+          command: suggestionCommand,
+        },
+      ]);
+    });
+
+    it('provides correct nested testInput type field suggestions', () => {
+      expect(
+        testSuggestions('{ inputTypeTest(args: { obj: {', new Position(0, 30)),
+      ).toEqual([
+        {
+          label: 'key',
+          detail: 'String!',
+          insertText: 'key: ',
+          insertTextFormat: 2,
+          command: suggestionCommand,
+        },
+        {
+          detail: 'InputType',
+          label: 'obj',
+          insertText: 'obj:  {\n   $1\n}',
+          command: suggestionCommand,
+          insertTextFormat: 2,
         },
         {
           label: 'value',
@@ -705,6 +753,38 @@ describe('getAutocompleteSuggestions', () => {
       expect(testSuggestions('type Type @', new Position(0, 11))).toEqual([
         { label: 'onAllDefs' },
       ]));
+    it('provides correct suggestions on object field w/ .graphqls', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
+          uri: 'schema.graphqls',
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+
+    it('provides correct argument type suggestions on directive definitions', () =>
+      expect(
+        testSuggestions(
+          'directive @skip(if: ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT',
+          new Position(0, 19),
+          [],
+          {
+            ignoreInsert: true,
+          },
+        ),
+      ).toEqual([
+        { label: 'Boolean' },
+        { label: 'Episode' },
+        { label: 'InputType' },
+        { label: 'Int' },
+        { label: 'String' },
+      ]));
+
     it('provides correct suggestions on object field w/ .graphqls', () =>
       expect(
         testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {

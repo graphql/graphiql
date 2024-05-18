@@ -654,6 +654,7 @@ function getSuggestionsForFieldNames(
           labelDetails: {
             detail: ' ' + field.type.toString(),
           },
+
           type: field.type,
         };
         if (options?.fillLeafsOnComplete) {
