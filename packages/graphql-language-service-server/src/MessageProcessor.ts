@@ -894,12 +894,14 @@ export class MessageProcessor {
               );
             }
           }
+
           if (locateCommand && result && result?.printedName) {
             const locateResult = this._getCustomLocateResult(
               project,
               result,
               locateCommand,
             );
+
             if (locateResult) {
               return locateResult;
             }

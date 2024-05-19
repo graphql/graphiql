@@ -33,6 +33,10 @@ const modules = [
   'js-tokens',
   'escape-string-regexp',
   'jest-worker',
+  'jiti',
+  'cosmiconfig',
+  'minimatch',
+  'tslib',
 ];
 const defaultMocks = modules.reduce((acc, module) => {
   acc[`node_modules/${module}`] = mockfs.load(`node_modules/${module}`);

@@ -122,6 +122,7 @@ describe('MessageProcessor', () => {
       ): Promise<DefinitionQueryResult> {
         return {
           queryRange: [new Range(position, position)],
+          printedName: 'example',
           definitions: [
             {
               position,
@@ -486,6 +487,21 @@ describe('MessageProcessor', () => {
     expect(customResult3.range.start.character).toEqual(2);
     expect(customResult3.range.end.line).toEqual(4);
     expect(customResult3.range.end.character).toEqual(4);
+    const oldGetProject = messageProcessor._graphQLCache.getProjectForFile;
+
+    messageProcessor._graphQLCache.getProjectForFile = jest.fn(() => ({
+      schema: project.schema,
+      documents: project.documents,
+      dirpath: project.dirpath,
+      extensions: {
+        languageService: { locateCommand: () => 'foo:3:4' },
+      },
+    }));
+    const result2 = await messageProcessor.handleDefinitionRequest(test);
+    expect(result2[0].range.start.line).toBe(3);
+    expect(result2[0].range.end.line).toBe(4);
+    expect(result2[0].range.end.character).toBe(0);
+    messageProcessor._graphQLCache.getProjectForFile = oldGetProject;
   });
   it('runs hover requests', async () => {
     const validQuery = `
