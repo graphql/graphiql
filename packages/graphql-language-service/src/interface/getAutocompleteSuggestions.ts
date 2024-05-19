@@ -445,7 +445,9 @@ export function getAutocompleteSuggestions(
         .map(type => ({
           label: type.name,
           kind: CompletionItemKind.Function,
-          insertText: type.name + '\n',
+          insertText: options?.fillLeafsOnComplete
+            ? type.name + '\n'
+            : undefined,
           insertTextMode: InsertTextMode.adjustIndentation,
         })),
     );
@@ -458,7 +460,9 @@ export function getAutocompleteSuggestions(
         .map(type => ({
           label: type.name,
           kind: CompletionItemKind.Function,
-          insertText: type.name + '\n$1',
+          insertText: options?.fillLeafsOnComplete
+            ? type.name + '\n$1'
+            : undefined,
           insertTextMode: InsertTextMode.adjustIndentation,
           insertTextFormat: InsertTextFormat.Snippet,
         })),
@@ -482,9 +486,9 @@ export function getAutocompleteSuggestions(
   if (kind === RuleKinds.DIRECTIVE) {
     return getSuggestionsForDirective(token, state, schema, kind);
   }
-  if (kind === RuleKinds.DIRECTIVE_DEF) {
-    return getSuggestionsForDirectiveArguments(token, state, schema, kind);
-  }
+  // if (kind === RuleKinds.DIRECTIVE_DEF) {
+  //   return getSuggestionsForDirectiveArguments(token, state, schema, kind);
+  // }
 
   return [];
 }
@@ -840,7 +844,7 @@ function getSuggestionsForImplements(
         kind: CompletionItemKind.Interface,
         type,
       } as CompletionItem;
-      if (type?.description) {
+      if (type?.description && type.description.length) {
         result.documentation = type.description;
       }
       // TODO: should we report what an interface implements in CompletionItem.detail?
@@ -894,7 +898,7 @@ function getSuggestionsForFragmentTypeConditions(
       const namedType = getNamedType(type);
       return {
         label: String(type),
-        documentation: namedType?.description || '',
+        documentation: namedType?.description as string | undefined,
         kind: CompletionItemKind.Field,
       };
     }),
@@ -945,7 +949,9 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
+      labelDetails: {
+        detail: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
+      },
       kind: CompletionItemKind.Field,
       type: typeMap[frag.typeCondition.name.value],
     })),
@@ -1063,7 +1069,7 @@ function getSuggestionsForVariableDefinition(
     // TODO: couldn't get Exclude<> working here
     inputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
-      documentation: type.description!,
+      documentation: type?.description?.length ? type.description : undefined,
       kind: CompletionItemKind.Variable,
     })),
   );
@@ -1083,7 +1089,9 @@ function getSuggestionsForDirective(
       token,
       directives.map(directive => ({
         label: directive.name,
-        documentation: directive.description || '',
+        documentation: directive?.description?.length
+          ? directive.description
+          : undefined,
         kind: CompletionItemKind.Function,
       })),
     );
@@ -1091,22 +1099,24 @@ function getSuggestionsForDirective(
   return [];
 }
 
-function getSuggestionsForDirectiveArguments(
-  token: ContextToken,
-  state: State,
-  schema: GraphQLSchema,
-  _kind: string,
-): Array<CompletionItem> {
-  const directive = schema.getDirectives().find(d => d.name === state.name);
-  return hintList(
-    token,
-    directive?.args.map(arg => ({
-      label: arg.name,
-      documentation: arg.description || '',
-      kind: CompletionItemKind.Field,
-    })) || [],
-  );
-}
+// I thought this added functionality somewhere, but I couldn't write any tests
+// to execute it. I think it's handled as Arguments
+// function getSuggestionsForDirectiveArguments(
+//   token: ContextToken,
+//   state: State,
+//   schema: GraphQLSchema,
+//   _kind: string,
+// ): Array<CompletionItem> {
+//   const directive = schema.getDirectives().find(d => d.name === state.name);
+//   return hintList(
+//     token,
+//     directive?.args.map(arg => ({
+//       label: arg.name,
+//       documentation: arg.description || '',
+//       kind: CompletionItemKind.Field,
+//     })) || [],
+//   );
+// }
 
 export function getTokenAtPosition(
   queryText: string,

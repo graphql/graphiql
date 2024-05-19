@@ -19,6 +19,7 @@ enum Color {
 union UnionType = String | Float | Boolean
 
 interface TestInterface {
+  # hello
   id: String!
 }
 
