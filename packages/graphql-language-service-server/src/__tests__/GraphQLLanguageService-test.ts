@@ -38,7 +38,29 @@ describe('GraphQLLanguageService', () => {
     getProjectForFile(uri: string) {
       return this.getGraphQLConfig().getProjectForFile(uri);
     },
-
+    getFragmentDefinitions() {
+      const definitions = new Map();
+      definitions.set('TestFragment', {
+        filePath: 'fake file path',
+        content: 'fake file content',
+        definition: {
+          kind: 'FragmentDefinition',
+          name: {
+            value: 'TestFragment',
+          },
+          loc: {
+            start: 293,
+            end: 335,
+          },
+        },
+      });
+      return definitions;
+    },
+    // setting the defs here in duplicate as with object types below
+    // leads to duplicates, perhaps related to a bug, or perhaps just a test bug?
+    getFragmentDependenciesForAST() {
+      return [];
+    },
     getObjectTypeDefinitions() {
       const definitions = new Map();
 
@@ -172,6 +194,23 @@ describe('GraphQLLanguageService', () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
       { line: 0, character: 28 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(definitionQueryResult?.definitions.length).toEqual(1);
+  });
+
+  it('runs definition service on fragment definition', async () => {
+    const definitionQueryResult = await languageService.getDefinition(
+      'fragment TestFragment on Human { name }',
+      { line: 0, character: 14 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    expect(definitionQueryResult?.definitions.length).toEqual(1);
+  });
+  it('runs definition service on fragment spread', async () => {
+    const definitionQueryResult = await languageService.getDefinition(
+      'fragment TestFragment on Human { name }\nquery { ...TestFragment }',
+      { line: 1, character: 14 } as Position,
       './queries/definitionQuery.graphql',
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
