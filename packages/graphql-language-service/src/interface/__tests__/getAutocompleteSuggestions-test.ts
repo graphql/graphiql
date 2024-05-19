@@ -118,7 +118,7 @@ describe('getAutocompleteSuggestions', () => {
         if (suggestion.command && !options?.ignoreInsert) {
           response.command = suggestion.command;
         }
-        if (suggestion.documentation) {
+        if (suggestion.documentation?.length) {
           response.documentation = suggestion.documentation;
         }
         if (suggestion.labelDetails && !options?.ignoreInsert) {
@@ -531,6 +531,7 @@ describe('getAutocompleteSuggestions', () => {
         {
           label: 'Foo',
           detail: 'Human',
+          documentation: 'fragment Foo on Human',
           labelDetails: { detail: 'fragment Foo on Human' },
         },
       ]);
@@ -543,6 +544,8 @@ describe('getAutocompleteSuggestions', () => {
         {
           label: 'Foo',
           detail: 'Human',
+          documentation: 'fragment Foo on Human',
+
           labelDetails: { detail: 'fragment Foo on Human' },
         },
       ]);
@@ -557,6 +560,8 @@ describe('getAutocompleteSuggestions', () => {
         {
           label: 'Foo',
           detail: 'Human',
+          documentation: 'fragment Foo on Human',
+
           labelDetails: { detail: 'fragment Foo on Human' },
         },
       ]);
@@ -582,11 +587,13 @@ describe('getAutocompleteSuggestions', () => {
         {
           label: 'CharacterDetails',
           detail: 'Human',
+          documentation: 'fragment CharacterDetails on Human',
           labelDetails: { detail: 'fragment CharacterDetails on Human' },
         },
         {
           label: 'CharacterDetails2',
           detail: 'Human',
+          documentation: 'fragment CharacterDetails2 on Human',
           labelDetails: { detail: 'fragment CharacterDetails2 on Human' },
         },
       ]);
