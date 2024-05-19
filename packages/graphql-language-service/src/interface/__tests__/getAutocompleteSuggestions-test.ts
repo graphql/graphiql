@@ -545,7 +545,6 @@ describe('getAutocompleteSuggestions', () => {
           label: 'Foo',
           detail: 'Human',
           documentation: 'fragment Foo on Human',
-
           labelDetails: { detail: 'fragment Foo on Human' },
         },
       ]);
@@ -561,7 +560,6 @@ describe('getAutocompleteSuggestions', () => {
           label: 'Foo',
           detail: 'Human',
           documentation: 'fragment Foo on Human',
-
           labelDetails: { detail: 'fragment Foo on Human' },
         },
       ]);
@@ -854,19 +852,6 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'String' },
       ]));
 
-    it('provides correct suggestions on object field w/ .graphqls', () =>
-      expect(
-        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
-          uri: 'schema.graphqls',
-          ignoreInsert: true,
-        }),
-      ).toEqual([
-        { label: 'Episode' },
-        { label: 'String' },
-        { label: 'TestInterface' },
-        { label: 'TestType' },
-        { label: 'TestUnion' },
-      ]));
     it('provides correct suggestions on object fields', () =>
       expect(
         testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {

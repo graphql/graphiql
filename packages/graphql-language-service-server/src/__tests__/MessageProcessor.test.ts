@@ -459,14 +459,14 @@ describe('MessageProcessor', () => {
       { definitions: result, printedName: 'example' },
       () => 'hello',
     );
-    expect(customResult.uri).toEqual(`hello`);
+    expect(customResult.uri).toEqual('hello');
 
     const customResult2 = messageProcessor._getCustomLocateResult(
       project,
       { definitions: result, printedName: 'example' },
       () => 'hello:2:4',
     );
-    expect(customResult2.uri).toEqual(`hello`);
+    expect(customResult2.uri).toEqual('hello');
     expect(customResult2.range.start.line).toEqual(2);
     expect(customResult2.range.start.character).toEqual(0);
     expect(customResult2.range.end.line).toEqual(4);
@@ -482,7 +482,7 @@ describe('MessageProcessor', () => {
         },
       }),
     );
-    expect(customResult3.uri).toEqual(`hello1`);
+    expect(customResult3.uri).toEqual('hello1');
     expect(customResult3.range.start.line).toEqual(2);
     expect(customResult3.range.start.character).toEqual(2);
     expect(customResult3.range.end.line).toEqual(4);
