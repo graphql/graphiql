@@ -410,6 +410,83 @@ describe('MessageProcessor', () => {
     const result = await messageProcessor.handleDefinitionRequest(test);
     await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
+
+  it('retrieves custom results from locateCommand', async () => {
+    jest.setTimeout(10000);
+    const validQuery = `
+  {
+    hero(episode: EMPIRE){
+      ...testFragment
+    }
+  }
+  `;
+
+    const newDocument = {
+      textDocument: {
+        text: validQuery,
+        uri: `${queryPathUri}/test3.graphql`,
+        version: 1,
+      },
+    };
+    messageProcessor._getCachedDocument = (_uri: string) => ({
+      version: 1,
+      contents: [
+        {
+          query: validQuery,
+          range: new Range(new Position(0, 0), new Position(20, 4)),
+        },
+      ],
+    });
+
+    await messageProcessor.handleDidOpenOrSaveNotification(newDocument);
+
+    const test = {
+      position: new Position(3, 15),
+      textDocument: newDocument.textDocument,
+    };
+    const result = await messageProcessor._languageService.getDefinition(
+      validQuery,
+      test.position,
+      test.textDocument.uri,
+    );
+    const project = messageProcessor._graphQLCache.getProjectForFile(
+      test.textDocument.uri,
+    )!;
+
+    const customResult = messageProcessor._getCustomLocateResult(
+      project,
+      { definitions: result, printedName: 'example' },
+      () => 'hello',
+    );
+    expect(customResult.uri).toEqual(`hello`);
+
+    const customResult2 = messageProcessor._getCustomLocateResult(
+      project,
+      { definitions: result, printedName: 'example' },
+      () => 'hello:2:4',
+    );
+    expect(customResult2.uri).toEqual(`hello`);
+    expect(customResult2.range.start.line).toEqual(2);
+    expect(customResult2.range.start.character).toEqual(0);
+    expect(customResult2.range.end.line).toEqual(4);
+
+    const customResult3 = messageProcessor._getCustomLocateResult(
+      project,
+      { definitions: result, printedName: 'example' },
+      () => ({
+        uri: 'hello1',
+        range: {
+          start: { character: 2, line: 2 },
+          end: { character: 4, line: 4 },
+        },
+      }),
+    );
+    expect(customResult3.uri).toEqual(`hello1`);
+    expect(customResult3.range.start.line).toEqual(2);
+    expect(customResult3.range.start.character).toEqual(2);
+    expect(customResult3.range.end.line).toEqual(4);
+    expect(customResult3.range.end.character).toEqual(4);
+  });
   it('runs hover requests', async () => {
     const validQuery = `
   {

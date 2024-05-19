@@ -895,42 +895,13 @@ export class MessageProcessor {
             }
           }
           if (locateCommand && result && result?.printedName) {
-            try {
-              const locateResult = locateCommand(
-                project.name,
-                result.printedName,
-                {
-                  node: result.node,
-                  type: result.type,
-                  project,
-                },
-              );
-              if (typeof locateResult === 'string') {
-                const [uri, startLine = '1', endLine = '1'] =
-                  locateResult.split(':');
-                return {
-                  uri,
-                  range: new Range(
-                    new Position(parseInt(startLine, 10), 0),
-                    new Position(parseInt(endLine, 10), 0),
-                  ),
-                };
-              }
-              return (
-                locateResult || {
-                  uri: res.path,
-                  range: defRange,
-                }
-              );
-            } catch (error) {
-              this._logger.error(
-                'There was an error executing user defined locateCommand\n\n' +
-                  (error as Error).toString(),
-              );
-              return {
-                uri: res.path,
-                range: defRange,
-              };
+            const locateResult = this._getCustomLocateResult(
+              project,
+              result,
+              locateCommand,
+            );
+            if (locateResult) {
+              return locateResult;
             }
           }
           return {
@@ -949,6 +920,39 @@ export class MessageProcessor {
       }),
     );
     return formatted;
+  }
+  _getCustomLocateResult(
+    project: GraphQLProjectConfig,
+    result: DefinitionQueryResponse,
+    locateCommand: LocateCommand,
+  ) {
+    if (!result.printedName) {
+      return null;
+    }
+    try {
+      const locateResult = locateCommand(project.name, result.printedName, {
+        node: result.node,
+        type: result.type,
+        project,
+      });
+      if (typeof locateResult === 'string') {
+        const [uri, startLine = '1', endLine = '1'] = locateResult.split(':');
+        return {
+          uri,
+          range: new Range(
+            new Position(parseInt(startLine, 10), 0),
+            new Position(parseInt(endLine, 10), 0),
+          ),
+        };
+      }
+      return locateResult;
+    } catch (error) {
+      this._logger.error(
+        'There was an error executing user defined locateCommand\n\n' +
+          (error as Error).toString(),
+      );
+      return null;
+    }
   }
 
   public async handleDocumentSymbolRequest(
