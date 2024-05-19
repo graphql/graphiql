@@ -74,7 +74,9 @@ export class MockProject {
         },
       },
       logger: new MockLogger(),
-      loadConfigOptions: { rootDir: root },
+      loadConfigOptions: {
+        rootDir: root,
+      },
     });
   }
 

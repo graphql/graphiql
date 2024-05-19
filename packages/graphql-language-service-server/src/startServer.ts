@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import * as net from 'node:net';
 import { MessageProcessor } from './MessageProcessor';
 import { GraphQLConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
@@ -36,7 +35,7 @@ import {
   DocumentSymbolRequest,
   PublishDiagnosticsParams,
   WorkspaceSymbolRequest,
-  createConnection,
+  createConnection as createLanguageServerConnection,
   Connection,
 } from 'vscode-languageserver/node';
 
@@ -48,20 +47,28 @@ import {
   SupportedExtensionsEnum,
 } from './constants';
 import { LoadConfigOptions } from './types';
+import { createConnection } from 'node:net';
 
 export interface ServerOptions {
   /**
-   * port for the LSP server to run on. required if using method socket
+   * socket, streams, or node (ipc).
+   * @default 'node'
+   */
+  method?: 'socket' | 'stream' | 'node';
+  /**
+   * (socket only) port for the LSP server to run on. required if using method socket
    */
   port?: number;
   /**
-   * hostname if using socker
+   * (socket only) hostname for the LSP server to run on.
+   * @default '127.0.0.1'
    */
   hostname?: string;
   /**
-   * socket, streams, or node (ipc). `node` by default.
+   * (socket only) encoding for the LSP server to use.
+   * @default 'utf-8'
    */
-  method?: 'socket' | 'stream' | 'node';
+  encoding?: 'utf-8' | 'ascii';
   /**
    * `LoadConfigOptions` from `graphql-config@3` to use when we `loadConfig()`
    * uses process.cwd() by default for `rootDir` option.
@@ -69,22 +76,23 @@ export interface ServerOptions {
    */
   loadConfigOptions?: LoadConfigOptions;
   /**
-   * (deprecated: use loadConfigOptions.rootDir now) the directory where graphql-config is found
+   * @deprecated use loadConfigOptions.rootDir now) the directory where graphql-config is found
    */
   configDir?: string;
   /**
-   * (deprecated: use loadConfigOptions.extensions now) array of functions to transform the graphql-config and add extensions dynamically
+   * @deprecated use loadConfigOptions.extensions
    */
   extensions?: GraphQLExtensionDeclaration[];
   /**
-   * default: ['.js', '.jsx', '.tsx', '.ts', '.mjs']
    * allowed file extensions for embedded graphql, used by the parser.
    * note that with vscode, this is also controlled by manifest and client configurations.
    * do not put full-file graphql extensions here!
+   * @default ['.js', '.jsx', '.tsx', '.ts', '.mjs']
    */
   fileExtensions?: ReadonlyArray<SupportedExtensionsEnum>;
   /**
-   * default: ['graphql'] - allowed file extensions for graphql, used by the parser
+   * allowed file extensions for full-file graphql, used by the parser.
+   * @default ['graphql', 'graphqls', 'gql'  ]
    */
   graphqlFileExtensions?: string[];
   /**
@@ -123,10 +131,14 @@ export type MappedServerOptions = Omit<ServerOptions, 'loadConfigOptions'> & {
  * Legacy mappings for < 2.5.0
  * @param options {ServerOptions}
  */
-const buildOptions = (options: ServerOptions): MappedServerOptions => {
+export const buildOptions = (options: ServerOptions): MappedServerOptions => {
   const serverOptions = { ...options } as MappedServerOptions;
+
   if (serverOptions.loadConfigOptions) {
     const { extensions, rootDir } = serverOptions.loadConfigOptions;
+    if (extensions) {
+      serverOptions.loadConfigOptions.extensions = extensions;
+    }
     if (!rootDir) {
       if (serverOptions.configDir) {
         serverOptions.loadConfigOptions.rootDir = serverOptions.configDir;
@@ -134,16 +146,10 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
         serverOptions.loadConfigOptions.rootDir = process.cwd();
       }
     }
-    if (serverOptions.extensions) {
-      serverOptions.loadConfigOptions.extensions = [
-        ...serverOptions.extensions,
-        ...(extensions || []),
-      ];
-    }
   } else {
     serverOptions.loadConfigOptions = {
       rootDir: options.configDir || process.cwd(),
-      extensions: [],
+      extensions: serverOptions.extensions || [],
     };
   }
   return serverOptions;
@@ -156,7 +162,7 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
  * @returns {Promise<void>}
  */
 export default async function startServer(
-  options: ServerOptions,
+  options?: ServerOptions,
 ): Promise<void> {
   if (!options?.method) {
     return;
@@ -176,25 +182,13 @@ export default async function startServer(
         process.exit(1);
       }
 
-      const { port, hostname } = options;
-      const socket = net
-        .createServer(async client => {
-          client.setEncoding('utf8');
-          reader = new SocketMessageReader(client);
-          writer = new SocketMessageWriter(client);
-          client.on('end', () => {
-            socket.close();
-            process.exit(0);
-          });
-          const s = await initializeHandlers({
-            reader,
-            writer,
-            options: finalOptions,
-          });
-          s.listen();
-        })
-        .listen(port, hostname);
-      return;
+      const { port, hostname, encoding } = options;
+      const socket = createConnection(port, hostname ?? '127.0.01');
+
+      reader = new SocketMessageReader(socket, encoding ?? 'utf-8');
+      writer = new SocketMessageWriter(socket, encoding ?? 'utf-8');
+
+      break;
     case 'stream':
       reader = new StreamMessageReader(process.stdin);
       writer = new StreamMessageWriter(process.stdout);
@@ -202,15 +196,15 @@ export default async function startServer(
     default:
       reader = new IPCMessageReader(process);
       writer = new IPCMessageWriter(process);
+
       break;
   }
-
-  const serverWithHandlers = await initializeHandlers({
+  const streamServer = await initializeHandlers({
     reader,
     writer,
     options: finalOptions,
   });
-  serverWithHandlers.listen();
+  streamServer.listen();
 }
 
 type InitializerParams = {
@@ -219,12 +213,12 @@ type InitializerParams = {
   options: MappedServerOptions;
 };
 
-async function initializeHandlers({
+export async function initializeHandlers({
   reader,
   writer,
   options,
 }: InitializerParams): Promise<Connection> {
-  const connection = createConnection(reader, writer);
+  const connection = createLanguageServerConnection(reader, writer);
   const logger = new Logger(connection, options.debug);
 
   try {
@@ -266,7 +260,7 @@ type HandlerOptions = {
  *
  * @param options {HandlerOptions}
  */
-async function addHandlers({
+export async function addHandlers({
   connection,
   logger,
   config,
@@ -314,8 +308,9 @@ async function addHandlers({
     },
   );
 
-  connection.onNotification(DidCloseTextDocumentNotification.type, params =>
-    messageProcessor.handleDidCloseNotification(params),
+  connection.onNotification(
+    DidCloseTextDocumentNotification.type,
+    messageProcessor.handleDidCloseNotification,
   );
   connection.onRequest(ShutdownRequest.type, () =>
     messageProcessor.handleShutdownRequest(),
