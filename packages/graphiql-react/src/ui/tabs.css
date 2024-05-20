@@ -2,11 +2,26 @@
   display: flex;
   align-items: center;
   overflow-x: auto;
-  padding: var(--px-12);
+  scrollbar-color: #88888888 transparent;
+  padding: 0 var(--px-12);
+  margin: 0;
 
   & > :not(:first-child) {
     margin-left: var(--px-12);
   }
+}
+
+/* Safari scrollbars */
+.graphiql-tabs::-webkit-scrollbar-track,
+.graphiql-tabs::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+.graphiql-tabs::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  padding: 3px;
+  box-shadow: inset 0 0 99px 99px #88888888;
+  border: solid 3px transparent;
 }
 
 .graphiql-tab {

@@ -64,6 +64,7 @@
   margin: var(--px-16);
   margin-left: 0;
   min-width: 0;
+  overflow: hidden;
 }
 
 /* The session header containing tabs and the logo */
