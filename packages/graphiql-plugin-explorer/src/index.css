@@ -1,6 +1,6 @@
 .docExplorerWrap {
-  height: unset !important;
-  min-width: unset !important;
+  height: 100% !important;
+  min-width: auto !important;
   width: unset !important;
 }
 
@@ -17,22 +17,65 @@
   font-family: var(--font-family-mono) !important;
   font-size: var(--font-size-body) !important;
   padding: 0 !important;
+  flex: 1;
 }
 
 .graphiql-explorer-root > div:first-child {
   padding-left: var(--px-8);
-  overflow: hidden !important;
+  overflow: auto !important;
+  scrollbar-color: #88888888 transparent;
+}
+
+/* Safari scrollbars */
+.graphiql-explorer-root>div:first-child::-webkit-scrollbar-track,
+.graphiql-explorer-root>div:first-child::-webkit-scrollbar,
+.graphiql-explorer-root>div:first-child::-webkit-scrollbar-corner{
+  background-color: transparent;
+}
+
+.graphiql-explorer-root>div:first-child::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  padding: 3px;
+  box-shadow: inset 0 0 99px 99px #88888888;
+  border: solid 3px transparent;
 }
 
 .graphiql-explorer-root input {
   background: hsl(var(--color-base));
+  padding: 1px 0;
+  font-family: inherit;
 }
 
 .graphiql-explorer-root select {
-  background-color: hsl(var(--color-base));
+  background-color: hsl(var(--color-base)) !important;
   border: 1px solid hsla(var(--color-neutral), var(--alpha-secondary));
   border-radius: var(--border-radius-4);
   color: hsl(var(--color-neutral));
   margin: 0 var(--px-4);
   padding: var(--px-4) var(--px-6);
+}
+
+.doc-explorer-contents {
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto !important;
+}
+
+.doc-explorer-title-bar {
+  flex: 0;
+}
+
+.graphiql-explorer-root > div:last-child {
+  min-height: auto !important;
+  max-height: auto !important;
+  flex: 0;
+}
+
+.graphiql-explorer-root .graphiql-operation-title-bar button {
+  padding: 1px 6px;
+}
+
+.graphiql-explorer-root .graphiql-explorer-node button {
+  padding: 1px 6px;
 }

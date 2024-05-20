@@ -106,7 +106,7 @@ const styles = {
     fontSize: '1em',
   },
   explorerActionsStyle: {
-    padding: 'var(--px-8) var(--px-4)',
+    padding: 'var(--px-8) var(--px-4) 0',
   },
   actionButtonStyle: {
     backgroundColor: 'transparent',
