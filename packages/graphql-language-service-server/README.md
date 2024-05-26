@@ -123,6 +123,10 @@ further customization:
 ```ts
 import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
 
+const config = await loadConfig({
+  ...options here
+})
+
 await startServer({
   method: 'node',
   // or instead of configName, an exact path (relative from rootDir or absolute)
@@ -131,7 +135,7 @@ await startServer({
   // configDir: '',
   loadConfigOptions: {
     // any of the options for graphql-config@3 `loadConfig()`
-
+    schema: await config.getSchema()
     // rootDir is same as `configDir` before, the path where the graphql config file would be found by cosmic-config
     rootDir: 'config/',
     // or - the relative or absolute path to your file
@@ -162,6 +166,22 @@ module.exports = {
       cacheSchemaFileForLookup: true,
       // undefined by default which has the same effect as `true`, set to `false` if you are already using // `graphql-eslint` or some other tool for validating graphql in your IDE. Must be explicitly `false` to disable this feature, not just "falsy"
       enableValidation: true,
+      // (experimental) enhanced auto expansion of graphql leaf fields and arguments
+      fillLeafsOnComplete: true,
+      // instead of jumping directly to the SDL file, you can override definition peek/jump results to point to different files or locations
+      // (for example, source files for your schema in any language!)
+      // based on Relay vscode's pathToLocateCommand
+      locateCommand: (projectName, typePath, info) => {
+        // pass more info, such as GraphQLType with the ast node. info.project is also available if you need it
+        const { path, range } = ourLookupUtility(
+          projectName,
+          typePath,
+          info.type.node,
+        );
+        return { uri: path, range }; // range.start.line/range.end.character/etc, base 1
+        // you can also return relay LSP style
+        return '/path/to/file.py:20:23';
+      },
     },
   },
 };
