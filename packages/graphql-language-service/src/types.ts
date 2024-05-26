@@ -39,7 +39,7 @@ import type {
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
 
-export { GraphQLDocumentMode } from './interface';
+export { GraphQLDocumentMode } from './parser';
 
 export type {
   GraphQLConfig,

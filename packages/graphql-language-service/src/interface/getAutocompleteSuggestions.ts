@@ -23,7 +23,6 @@ import {
   Kind,
   DirectiveLocation,
   GraphQLArgument,
-  isListType,
   // isNonNullType,
   isScalarType,
   isObjectType,
@@ -34,29 +33,17 @@ import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLInputObjectType,
-  GraphQLList,
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
   assertAbstractType,
   doTypesOverlap,
   getNamedType,
-  getNullableType,
   isAbstractType,
   isCompositeType,
   isInputType,
   visit,
-  BREAK,
   parse,
-  // GraphQLString,
-  // GraphQLNonNull,
-  // GraphQLInt,
-  // GraphQLFloat,
-  // getArgumentValues,
-  // GraphQLOutputType,
-  // GraphQLInputType,
-  // GraphQLOutputType,
-  // getArgumentValues,
 } from 'graphql';
 
 import {
@@ -67,24 +54,31 @@ import {
   InsertTextFormat,
 } from '../types';
 
-import {
-  CharacterStream,
-  onlineParser,
+import type {
   ContextToken,
   State,
-  RuleKinds,
   RuleKind,
   ContextTokenForCodeMirror,
 } from '../parser';
-
 import {
-  forEachState,
+  getTypeInfo,
+  runOnlineParser,
+  RuleKinds,
+  getContextAtPosition,
   getDefinitionState,
-  getFieldDef,
+  GraphQLDocumentMode,
+} from '../parser';
+import {
   hintList,
   objectValues,
+  getInputInsertText,
+  getFieldInsertText,
+  getInsertText,
 } from './autocompleteUtils';
+
 import { InsertTextMode } from 'vscode-languageserver-types';
+
+export { runOnlineParser, getTypeInfo };
 
 export const SuggestionCommand = {
   command: 'editor.action.triggerSuggest',
@@ -105,51 +99,6 @@ const collectFragmentDefs = (op: string | undefined) => {
     }
   }
   return externalFragments;
-};
-
-const typeSystemKinds: Kind[] = [
-  // TypeSystemDefinition
-  Kind.SCHEMA_DEFINITION,
-  Kind.OPERATION_TYPE_DEFINITION,
-  Kind.SCALAR_TYPE_DEFINITION,
-  Kind.OBJECT_TYPE_DEFINITION,
-  Kind.INTERFACE_TYPE_DEFINITION,
-  Kind.UNION_TYPE_DEFINITION,
-  Kind.ENUM_TYPE_DEFINITION,
-  Kind.INPUT_OBJECT_TYPE_DEFINITION,
-  Kind.DIRECTIVE_DEFINITION,
-  // TypeSystemExtension
-  Kind.SCHEMA_EXTENSION,
-  Kind.SCALAR_TYPE_EXTENSION,
-  Kind.OBJECT_TYPE_EXTENSION,
-  Kind.INTERFACE_TYPE_EXTENSION,
-  Kind.UNION_TYPE_EXTENSION,
-  Kind.ENUM_TYPE_EXTENSION,
-  Kind.INPUT_OBJECT_TYPE_EXTENSION,
-];
-
-const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
-  let mode = GraphQLDocumentMode.UNKNOWN;
-  if (sdl) {
-    try {
-      visit(parse(sdl), {
-        enter(node) {
-          if (node.kind === 'Document') {
-            mode = GraphQLDocumentMode.EXECUTABLE;
-            return;
-          }
-          if (typeSystemKinds.includes(node.kind)) {
-            mode = GraphQLDocumentMode.TYPE_SYSTEM;
-            return BREAK;
-          }
-          return false;
-        },
-      });
-    } catch {
-      return mode;
-    }
-  }
-  return mode;
 };
 
 export type AutocompleteSuggestionOptions = {
@@ -193,19 +142,19 @@ export function getAutocompleteSuggestions(
     schema,
   } as InternalAutocompleteOptions;
 
-  const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor, 1);
-
-  const state =
-    token.state.kind === 'Invalid' ? token.state.prevState : token.state;
-  // relieve flow errors by checking if `state` exists
-  if (!state) {
+  const context = getContextAtPosition(
+    queryText,
+    cursor,
+    schema,
+    contextToken,
+    options,
+  );
+  if (!context) {
     return [];
   }
+  const { state, typeInfo, mode, token } = context;
 
   const { kind, step, prevState } = state;
-  const typeInfo = getTypeInfo(schema, token.state);
-  const mode = options?.mode || getDocumentMode(queryText, options?.uri);
 
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
@@ -492,90 +441,6 @@ export function getAutocompleteSuggestions(
 
   return [];
 }
-
-const insertSuffix = (n?: number) => ` {\n   $${n ?? 1}\n}`;
-
-const getInsertText = (
-  prefix: string,
-  type?: GraphQLType,
-  fallback?: string,
-): string => {
-  if (!type) {
-    return fallback ?? prefix;
-  }
-
-  const namedType = getNamedType(type);
-  if (
-    isObjectType(namedType) ||
-    isInputObjectType(namedType) ||
-    isListType(namedType) ||
-    isAbstractType(namedType)
-  ) {
-    return prefix + insertSuffix();
-  }
-
-  return fallback ?? prefix;
-};
-
-const getInputInsertText = (
-  prefix: string,
-  type: GraphQLType,
-  fallback?: string,
-): string => {
-  // if (isScalarType(type) && type.name === GraphQLString.name) {
-  //   return prefix + '"$1"';
-  // }
-  if (isListType(type)) {
-    const baseType = getNamedType(type.ofType);
-    return prefix + `[${getInsertText('', baseType, '$1')}]`;
-  }
-  return getInsertText(prefix, type, fallback);
-};
-
-/**
- * generates a TextSnippet for a field with possible required arguments
- * that dynamically adjusts to the number of required arguments
- * @param field
- * @returns
- */
-const getFieldInsertText = (field: GraphQLField<null, null>) => {
-  const requiredArgs = field.args.filter(arg =>
-    arg.type.toString().endsWith('!'),
-  );
-  if (!requiredArgs.length) {
-    return;
-  }
-  return (
-    field.name +
-    `(${requiredArgs.map(
-      (arg, i) => `${arg.name}: $${i + 1}`,
-    )}) ${getInsertText('', field.type, '\n')}`
-  );
-};
-
-// /**
-//  * Choose carefully when to insert the `insertText`!
-//  * @param field
-//  * @returns
-//  */
-// const getInsertText = (field: GraphQLField<null, null>) => {
-//   const { type } = field;
-//   if (isCompositeType(type)) {
-//     return insertSuffix();
-//   }
-//   if (isListType(type) && isCompositeType(type.ofType)) {
-//     return insertSuffix();
-//   }
-//   if (isNonNullType(type)) {
-//     if (isCompositeType(type.ofType)) {
-//       return insertSuffix();
-//     }
-//     if (isListType(type.ofType) && isCompositeType(type.ofType.ofType)) {
-//       return insertSuffix();
-//     }
-//   }
-//   return null;
-// };
 
 const typeSystemCompletionItems = [
   { label: 'type', kind: CompletionItemKind.Function },
@@ -1117,91 +982,6 @@ function getSuggestionsForDirectiveArguments(
   );
 }
 
-export function getTokenAtPosition(
-  queryText: string,
-  cursor: IPosition,
-  offset = 0,
-): ContextToken {
-  let styleAtCursor = null;
-  let stateAtCursor = null;
-  let stringAtCursor = null;
-  const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (
-      index !== cursor.line ||
-      stream.getCurrentPosition() + offset < cursor.character + 1
-    ) {
-      return;
-    }
-    styleAtCursor = style;
-    stateAtCursor = { ...state };
-    stringAtCursor = stream.current();
-    return 'BREAK';
-  });
-
-  // Return the state/style of parsed token in case those at cursor aren't
-  // available.
-  return {
-    start: token.start,
-    end: token.end,
-    string: stringAtCursor || token.string,
-    state: stateAtCursor || token.state,
-    style: styleAtCursor || token.style,
-  };
-}
-
-/**
- * Provides an utility function to parse a given query text and construct a
- * `token` context object.
- * A token context provides useful information about the token/style that
- * CharacterStream currently possesses, as well as the end state and style
- * of the token.
- */
-type callbackFnType = (
-  stream: CharacterStream,
-  state: State,
-  style: string,
-  index: number,
-) => void | 'BREAK';
-
-export function runOnlineParser(
-  queryText: string,
-  callback: callbackFnType,
-): ContextToken {
-  const lines = queryText.split('\n');
-  const parser = onlineParser();
-  let state = parser.startState();
-  let style = '';
-
-  let stream: CharacterStream = new CharacterStream('');
-
-  for (let i = 0; i < lines.length; i++) {
-    stream = new CharacterStream(lines[i]);
-    while (!stream.eol()) {
-      style = parser.token(stream, state);
-      const code = callback(stream, state, style, i);
-      if (code === 'BREAK') {
-        break;
-      }
-    }
-
-    // Above while loop won't run if there is an empty line.
-    // Run the callback one more time to catch this.
-    callback(stream, state, style, i);
-
-    if (!state.kind) {
-      state = parser.startState();
-    }
-  }
-
-  return {
-    start: stream.getStartOfToken(),
-    end: stream.getCurrentPosition(),
-    string: stream.current(),
-    state,
-    style,
-  };
-}
-
 export function canUseDirective(
   state: State['prevState'],
   directive: GraphQLDirective,
@@ -1258,209 +1038,6 @@ export function canUseDirective(
   }
 
   return false;
-}
-
-// Utility for collecting rich type information given any token's state
-// from the graphql-mode parser.
-export function getTypeInfo(
-  schema: GraphQLSchema,
-  tokenState: State,
-): AllTypeInfo {
-  let argDef: AllTypeInfo['argDef'];
-  let argDefs: AllTypeInfo['argDefs'];
-  let directiveDef: AllTypeInfo['directiveDef'];
-  let enumValue: AllTypeInfo['enumValue'];
-  let fieldDef: AllTypeInfo['fieldDef'];
-  let inputType: AllTypeInfo['inputType'];
-  let objectTypeDef: AllTypeInfo['objectTypeDef'];
-  let objectFieldDefs: AllTypeInfo['objectFieldDefs'];
-  let parentType: AllTypeInfo['parentType'];
-  let type: AllTypeInfo['type'];
-  let interfaceDef: AllTypeInfo['interfaceDef'];
-  forEachState(tokenState, state => {
-    switch (state.kind) {
-      case RuleKinds.QUERY:
-      case 'ShortQuery':
-        type = schema.getQueryType();
-        break;
-      case RuleKinds.MUTATION:
-        type = schema.getMutationType();
-        break;
-      case RuleKinds.SUBSCRIPTION:
-        type = schema.getSubscriptionType();
-        break;
-      case RuleKinds.INLINE_FRAGMENT:
-      case RuleKinds.FRAGMENT_DEFINITION:
-        if (state.type) {
-          type = schema.getType(state.type);
-        }
-        break;
-      case RuleKinds.FIELD:
-      case RuleKinds.ALIASED_FIELD: {
-        if (!type || !state.name) {
-          fieldDef = null;
-        } else {
-          fieldDef = parentType
-            ? getFieldDef(schema, parentType, state.name)
-            : null;
-          type = fieldDef ? fieldDef.type : null;
-        }
-        break;
-      }
-      case RuleKinds.SELECTION_SET:
-        parentType = getNamedType(type!);
-        break;
-      case RuleKinds.DIRECTIVE:
-        directiveDef = state.name ? schema.getDirective(state.name) : null;
-        break;
-
-      case RuleKinds.INTERFACE_DEF:
-        if (state.name) {
-          objectTypeDef = null;
-          interfaceDef = new GraphQLInterfaceType({
-            name: state.name,
-            interfaces: [],
-            fields: {},
-          });
-        }
-
-        break;
-
-      case RuleKinds.OBJECT_TYPE_DEF:
-        if (state.name) {
-          interfaceDef = null;
-          objectTypeDef = new GraphQLObjectType({
-            name: state.name,
-            interfaces: [],
-            fields: {},
-          });
-        }
-
-        break;
-      case RuleKinds.ARGUMENTS: {
-        if (state.prevState) {
-          switch (state.prevState.kind) {
-            case RuleKinds.FIELD:
-              argDefs = fieldDef && (fieldDef.args as GraphQLArgument[]);
-              break;
-            case RuleKinds.DIRECTIVE:
-              argDefs =
-                directiveDef && (directiveDef.args as GraphQLArgument[]);
-              break;
-            // TODO: needs more tests
-            case RuleKinds.ALIASED_FIELD: {
-              const name = state.prevState?.name;
-              if (!name) {
-                argDefs = null;
-                break;
-              }
-              const field = parentType
-                ? getFieldDef(schema, parentType, name)
-                : null;
-              if (!field) {
-                argDefs = null;
-                break;
-              }
-              argDefs = field.args as GraphQLArgument[];
-              break;
-            }
-            default:
-              argDefs = null;
-              break;
-          }
-        } else {
-          argDefs = null;
-        }
-        break;
-      }
-      case RuleKinds.ARGUMENT:
-        if (argDefs) {
-          for (let i = 0; i < argDefs.length; i++) {
-            if (argDefs[i].name === state.name) {
-              argDef = argDefs[i];
-              break;
-            }
-          }
-        }
-        inputType = argDef?.type;
-        break;
-      case RuleKinds.VARIABLE_DEFINITION:
-      case RuleKinds.VARIABLE:
-        type = inputType;
-        break;
-      // TODO: needs tests
-      case RuleKinds.ENUM_VALUE:
-        const enumType = getNamedType(inputType!);
-        enumValue =
-          enumType instanceof GraphQLEnumType
-            ? enumType
-                .getValues()
-                .find((val: GraphQLEnumValue) => val.value === state.name)
-            : null;
-        break;
-      // TODO: needs tests
-      case RuleKinds.LIST_VALUE:
-        const nullableType = getNullableType(inputType!);
-        inputType =
-          nullableType instanceof GraphQLList ? nullableType.ofType : null;
-        break;
-      case RuleKinds.OBJECT_VALUE:
-        const objectType = getNamedType(inputType!);
-        objectFieldDefs =
-          objectType instanceof GraphQLInputObjectType
-            ? objectType.getFields()
-            : null;
-        break;
-      // TODO: needs tests
-      case RuleKinds.OBJECT_FIELD:
-        const objectField =
-          state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
-        inputType = objectField?.type;
-        // @ts-expect-error
-        fieldDef = objectField as GraphQLField<null, null>;
-        type = fieldDef ? fieldDef.type : null;
-        break;
-      case RuleKinds.NAMED_TYPE:
-        if (state.name) {
-          type = schema.getType(state.name);
-        }
-        // TODO: collect already extended interfaces of the type/interface we're extending
-        //  here to eliminate them from the completion list
-        // because "type A extends B & C &" should not show completion options for B & C still.
-
-        break;
-    }
-  });
-
-  return {
-    argDef,
-    argDefs,
-    directiveDef,
-    enumValue,
-    fieldDef,
-    inputType,
-    objectFieldDefs,
-    parentType,
-    type,
-    interfaceDef,
-    objectTypeDef,
-  };
-}
-
-export enum GraphQLDocumentMode {
-  TYPE_SYSTEM = 'TYPE_SYSTEM',
-  EXECUTABLE = 'EXECUTABLE',
-  UNKNOWN = 'UNKNOWN',
-}
-
-function getDocumentMode(
-  documentText: string,
-  uri?: string,
-): GraphQLDocumentMode {
-  if (uri?.endsWith('.graphqls')) {
-    return GraphQLDocumentMode.TYPE_SYSTEM;
-  }
-  return getParsedMode(documentText);
 }
 
 function unwrapType(state: State): State {

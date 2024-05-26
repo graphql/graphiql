@@ -128,7 +128,7 @@ export class MessageProcessor {
   private _isGraphQLConfigMissing: boolean | null = null;
   private _willShutdown = false;
   private _logger: Logger | NoopLogger;
-  private _parser: (text: string, uri: string) => CachedContent[];
+  private _parser: (text: string, uri: string) => Promise<CachedContent[]>;
   private _tmpDir: string;
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
@@ -160,7 +160,7 @@ export class MessageProcessor {
     }
     this._connection = connection;
     this._logger = logger;
-    this._parser = (text, uri) => {
+    this._parser = async (text, uri) => {
       const p = parser ?? parseDocument;
       return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
     };
@@ -731,7 +731,7 @@ export class MessageProcessor {
   ) {
     try {
       const fileText = text || (await readFile(URI.parse(uri).fsPath, 'utf-8'));
-      const contents = this._parser(fileText, uri);
+      const contents = await this._parser(fileText, uri);
       const cachedDocument = this._textDocumentCache.get(uri);
       const version = cachedDocument ? cachedDocument.version++ : 0;
       await this._invalidateCache({ uri, version }, uri, contents);
@@ -1060,7 +1060,7 @@ export class MessageProcessor {
     project?: GraphQLProjectConfig,
   ) {
     try {
-      const contents = this._parser(text, uri);
+      const contents = await this._parser(text, uri);
       if (contents.length > 0) {
         await this._invalidateCache({ version, uri }, uri, contents);
         await this._updateObjectTypeDefinition(uri, contents, project);
@@ -1268,7 +1268,7 @@ export class MessageProcessor {
           const uri = URI.file(filePath).toString();
 
           // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
-          const contents = this._parser(document.rawSDL, uri);
+          const contents = await this._parser(document.rawSDL, uri);
           if (!contents[0]?.query) {
             return;
           }

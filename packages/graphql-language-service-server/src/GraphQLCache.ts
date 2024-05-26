@@ -622,7 +622,19 @@ export class GraphQLCache {
 
       try {
         // Read from disk
-        schema = await projectConfig.getSchema();
+        schema = await projectConfig.loadSchema(
+          projectConfig.schema,
+          'GraphQLSchema',
+          {
+            assumeValid: true,
+            assumeValidSDL: true,
+            experimentalFragmentVariables: true,
+            sort: false,
+            includeSources: true,
+            allowLegacySDLEmptyFields: true,
+            allowLegacySDLImplementsInterfaces: true,
+          },
+        );
       } catch {
         // // if there is an error reading the schema, just use the last valid schema
         schema = this._schemaMap.get(schemaCacheKey);
@@ -794,7 +806,7 @@ export class GraphQLCache {
     let queries: CachedContent[] = [];
     if (content.trim().length !== 0) {
       try {
-        queries = this._parser(
+        queries = await this._parser(
           content,
           filePath,
           DEFAULT_SUPPORTED_EXTENSIONS,

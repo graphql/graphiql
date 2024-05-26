@@ -1,7 +1,9 @@
-import { parse } from 'astrojs-compiler-sync';
 import { Position, Range } from 'graphql-language-service';
 import { RangeMapper, SourceParser } from './types';
 import { babelParser } from './babel';
+import { parse } from 'astrojs-compiler-sync';
+
+// import { teardown } from '@astrojs/compiler/dist/node';
 
 type ParseAstroResult =
   | { type: 'error'; errors: string[] }
@@ -14,6 +16,7 @@ type ParseAstroResult =
 function parseAstro(source: string): ParseAstroResult {
   // eslint-disable-next-line unicorn/no-useless-undefined
   const { ast, diagnostics } = parse(source, undefined);
+
   if (diagnostics.some(d => d.severity === /* Error */ 1)) {
     return {
       type: 'error',

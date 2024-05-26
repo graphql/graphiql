@@ -9,76 +9,15 @@
 
 import {
   GraphQLField,
-  GraphQLSchema,
   GraphQLType,
-  isCompositeType,
-  SchemaMetaFieldDef,
-  TypeMetaFieldDef,
-  TypeNameMetaFieldDef,
+  isListType,
+  isObjectType,
+  isInputObjectType,
+  getNamedType,
+  isAbstractType,
 } from 'graphql';
-import { CompletionItemBase, AllTypeInfo } from '../types';
-import { ContextTokenUnion, State } from '../parser';
-
-// Utility for returning the state representing the Definition this token state
-// is within, if any.
-export function getDefinitionState(
-  tokenState: State,
-): State | null | undefined {
-  let definitionState;
-
-  // TODO - couldn't figure this one out
-  forEachState(tokenState, (state: State): void => {
-    switch (state.kind) {
-      case 'Query':
-      case 'ShortQuery':
-      case 'Mutation':
-      case 'Subscription':
-      case 'FragmentDefinition':
-        definitionState = state;
-        break;
-    }
-  });
-
-  return definitionState;
-}
-
-// Gets the field definition given a type and field name
-export function getFieldDef(
-  schema: GraphQLSchema,
-  type: GraphQLType,
-  fieldName: string,
-): GraphQLField<any, any> | null | undefined {
-  if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
-    return SchemaMetaFieldDef;
-  }
-  if (fieldName === TypeMetaFieldDef.name && schema.getQueryType() === type) {
-    return TypeMetaFieldDef;
-  }
-  if (fieldName === TypeNameMetaFieldDef.name && isCompositeType(type)) {
-    return TypeNameMetaFieldDef;
-  }
-  if ('getFields' in type) {
-    return type.getFields()[fieldName] as any;
-  }
-
-  return null;
-}
-
-// Utility for iterating through a CodeMirror parse state stack bottom-up.
-export function forEachState(
-  stack: State,
-  fn: (state: State) => AllTypeInfo | null | void,
-): void {
-  const reverseStateStack = [];
-  let state: State | null | undefined = stack;
-  while (state?.kind) {
-    reverseStateStack.push(state);
-    state = state.prevState;
-  }
-  for (let i = reverseStateStack.length - 1; i >= 0; i--) {
-    fn(reverseStateStack[i]);
-  }
-}
+import { CompletionItemBase } from '../types';
+import { ContextTokenUnion } from '../parser';
 
 export function objectValues<T>(object: Record<string, T>): Array<T> {
   const keys = Object.keys(object);
@@ -205,3 +144,63 @@ function lexicalDistance(a: string, b: string): number {
 
   return d[aLength][bLength];
 }
+
+const insertSuffix = (n?: number) => ` {\n   $${n ?? 1}\n}`;
+
+export const getInsertText = (
+  prefix: string,
+  type?: GraphQLType,
+  fallback?: string,
+): string => {
+  if (!type) {
+    return fallback ?? prefix;
+  }
+
+  const namedType = getNamedType(type);
+  if (
+    isObjectType(namedType) ||
+    isInputObjectType(namedType) ||
+    isListType(namedType) ||
+    isAbstractType(namedType)
+  ) {
+    return prefix + insertSuffix();
+  }
+
+  return fallback ?? prefix;
+};
+
+export const getInputInsertText = (
+  prefix: string,
+  type: GraphQLType,
+  fallback?: string,
+): string => {
+  // if (isScalarType(type) && type.name === GraphQLString.name) {
+  //   return prefix + '"$1"';
+  // }
+  if (isListType(type)) {
+    const baseType = getNamedType(type.ofType);
+    return prefix + `[${getInsertText('', baseType, '$1')}]`;
+  }
+  return getInsertText(prefix, type, fallback);
+};
+
+/**
+ * generates a TextSnippet for a field with possible required arguments
+ * that dynamically adjusts to the number of required arguments
+ * @param field
+ * @returns
+ */
+export const getFieldInsertText = (field: GraphQLField<null, null>) => {
+  const requiredArgs = field.args.filter(arg =>
+    arg.type.toString().endsWith('!'),
+  );
+  if (!requiredArgs.length) {
+    return;
+  }
+  return (
+    field.name +
+    `(${requiredArgs.map(
+      (arg, i) => `${arg.name}: $${i + 1}`,
+    )}) ${getInsertText('', field.type, '\n')}`
+  );
+};

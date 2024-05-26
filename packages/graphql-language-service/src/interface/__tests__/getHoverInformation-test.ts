@@ -101,6 +101,14 @@ describe('getHoverInformation', () => {
     expect(actual).toEqual('Query.parameterizedField(id: String!)');
   });
 
+  it('provides enum parameter type information', () => {
+    const actual = testHover(
+      'query { parameterizedField(id: "foo", enum: GREEN) { testField } }',
+      new Position(0, 46),
+    );
+    expect(actual).toEqual('Color.GREEN');
+  });
+
   it('provides variable type information', () => {
     const actual = testHover(
       'query($who: String!) { parameterizedField(id: $who) { testField } }',

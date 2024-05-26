@@ -20,11 +20,11 @@ import {
   GraphQLField,
   GraphQLFieldConfig,
 } from 'graphql';
-import { ContextToken } from '../parser';
+import type { ContextToken } from '../parser';
 import { AllTypeInfo, IPosition } from '../types';
 
 import { Hover } from 'vscode-languageserver-types';
-import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
+import { getContextAtPosition } from '../parser';
 
 export type HoverConfig = { useMarkdown?: boolean };
 
@@ -35,15 +35,13 @@ export function getHoverInformation(
   contextToken?: ContextToken,
   config?: HoverConfig,
 ): Hover['contents'] {
-  const token = contextToken || getTokenAtPosition(queryText, cursor);
-
-  if (!schema || !token || !token.state) {
+  const options = { ...config, schema };
+  const context = getContextAtPosition(queryText, cursor, schema, contextToken);
+  if (!context) {
     return '';
   }
-
+  const { typeInfo, token } = context;
   const { kind, step } = token.state;
-  const typeInfo = getTypeInfo(schema, token.state);
-  const options = { ...config, schema };
 
   // Given a Schema and a Token, produce the contents of an info tooltip.
   // To do this, create a div element that we will render "into" and then pass

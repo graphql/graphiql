@@ -7,6 +7,35 @@ import { serializeRange } from './__utils__/utils';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { URI } from 'vscode-uri';
+import { GraphQLSchema, introspectionFromSchema } from 'graphql';
+import fetchMock from 'fetch-mock';
+
+jest.mock('@whatwg-node/fetch', () => {
+  const { AbortController } = require('node-abort-controller');
+
+  return {
+    fetch: require('fetch-mock').fetchHandler,
+    AbortController,
+    TextDecoder: global.TextDecoder,
+  };
+});
+
+const mockSchema = (schema: GraphQLSchema) => {
+  const introspectionResult = {
+    data: introspectionFromSchema(schema, {
+      descriptions: true,
+    }),
+  };
+  fetchMock.mock({
+    matcher: '*',
+    response: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: introspectionResult,
+    },
+  });
+};
 
 const defaultFiles = [
   ['query.graphql', 'query { bar ...B }'],
@@ -41,6 +70,7 @@ const genSchemaPath =
 describe('MessageProcessor with no config', () => {
   afterEach(() => {
     mockfs.restore();
+    fetchMock.restore();
   });
   it('fails to initialize with empty config file', async () => {
     const project = new MockProject({
@@ -102,17 +132,17 @@ describe('MessageProcessor with no config', () => {
 });
 
 describe('MessageProcessor with config', () => {
-  let app;
   afterEach(() => {
     mockfs.restore();
+    fetchMock.restore();
   });
-  beforeAll(async () => {
-    app = await import('../../../graphiql/test/e2e-server');
-  });
-  afterAll(() => {
-    app.server.close();
-    app.wsServer.close();
-  });
+  // beforeAll(async () => {
+  //   app = await import('../../../graphiql/test/e2e-server');
+  // });
+  // afterAll(() => {
+  //   app.server.close();
+  //   app.wsServer.close();
+  // });
   it('caches files and schema with .graphql file config, and the schema updates with watched file changes', async () => {
     const project = new MockProject({
       files: [
@@ -324,6 +354,8 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches files and schema with a URL config', async () => {
+    mockSchema(require('../../../graphiql/test/schema'));
+
     const project = new MockProject({
       files: [
         ['query.graphql', 'query { test { isTest, ...T } }'],
@@ -389,29 +421,29 @@ describe('MessageProcessor with config', () => {
 
     expect(serializeRange(typeDefinitions[0].range)).toEqual({
       start: {
-        line: 10,
+        line: 11,
         character: 0,
       },
       end: {
-        line: 98,
+        line: 102,
         character: 1,
       },
     });
 
     const schemaDefs = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: URI.parse(genSchemaPath).toString() },
-      position: { character: 20, line: 17 },
+      position: { character: 20, line: 18 },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
     // note: if the graphiql test schema changes,
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 100,
+        line: 104,
         character: 0,
       },
       end: {
-        line: 108,
+        line: 112,
         character: 1,
       },
     });
@@ -456,6 +488,8 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
+    mockSchema(require('../../../graphiql/test/schema'));
+
     const project = new MockProject({
       files: [
         [

@@ -22,14 +22,11 @@ export {
   getDefinitionQueryResultForNamedType,
   getDefinitionQueryResultForField,
   getDefinitionQueryResultForArgument,
-  getDefinitionState,
   getDiagnostics,
-  getFieldDef,
   getFragmentDefinitions,
   getHoverInformation,
   getOutline,
   getRange,
-  getTokenAtPosition,
   getTypeInfo,
   getVariableCompletions,
   SEVERITY,
@@ -43,7 +40,6 @@ export {
   SuggestionCommand,
   AutocompleteSuggestionOptions,
   validateQuery,
-  GraphQLDocumentMode,
 } from './interface';
 
 /**
@@ -60,6 +56,10 @@ export {
   list,
   t,
   opt,
+  getTokenAtPosition,
+  GraphQLDocumentMode,
+  getDefinitionState,
+  getFieldDef,
 } from './parser';
 
 export type {

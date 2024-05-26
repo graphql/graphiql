@@ -41,7 +41,7 @@ type Query {
   """
   thing: TestType
   listOfThing: [TestType!]
-  parameterizedField(id: String!): TestType
+  parameterizedField(id: String!, enum: Color): TestType
   cluck: Chicken
   unionField: UnionType
 }
