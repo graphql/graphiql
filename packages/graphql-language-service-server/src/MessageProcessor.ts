@@ -128,7 +128,7 @@ export class MessageProcessor {
   private _isGraphQLConfigMissing: boolean | null = null;
   private _willShutdown = false;
   private _logger: Logger | NoopLogger;
-  private _parser: (text: string, uri: string) => Promise<CachedContent[]>;
+  private _parser: (text: string, uri: string) => CachedContent[];
   private _tmpDir: string;
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
@@ -160,7 +160,7 @@ export class MessageProcessor {
     }
     this._connection = connection;
     this._logger = logger;
-    this._parser = async (text, uri) => {
+    this._parser = (text, uri) => {
       const p = parser ?? parseDocument;
       return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
     };
