@@ -13,7 +13,6 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: Cache node modules
         id: cache-modules
@@ -37,8 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -59,8 +57,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -76,8 +72,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -93,8 +87,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -117,8 +109,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -140,8 +131,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -205,8 +195,6 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - id: cache-modules
         uses: actions/cache@v3
         with:
@@ -264,8 +252,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - id: cache-modules
         uses: actions/cache@v3
         with:
