@@ -93,7 +93,7 @@ jobs:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - run: yarn test --showConfig && yarn test --coverage
+      - run: yarn test --coverage
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
