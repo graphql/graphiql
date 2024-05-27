@@ -43,7 +43,7 @@ module.exports = (dir, env = 'jsdom') => {
       'node_modules',
       '__tests__',
       'resources',
-      'test',
+
       'examples',
       '.d.ts',
       'types.ts',

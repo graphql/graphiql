@@ -1,9 +1,49 @@
-import type { GraphQLExtensionDeclaration, loadConfig } from 'graphql-config';
+import type {
+  GraphQLExtensionDeclaration,
+  loadConfig,
+  GraphQLProjectConfig,
+} from 'graphql-config';
 export type LoadConfigOptions = Parameters<typeof loadConfig>[0];
 import { GraphQLConfig } from 'graphql-config';
-
+import { ASTNode, GraphQLType } from 'graphql';
 import { parseDocument } from './parseDocument';
 import { SupportedExtensionsEnum } from './constants';
+
+// base 1
+type RangeType = {
+  start: {
+    line: number;
+    character: number;
+  };
+  end: {
+    line: number;
+    character: number;
+  };
+};
+
+type AdditionalLocateInfo = {
+  node?: ASTNode | null;
+  type?: GraphQLType | null;
+  project: GraphQLProjectConfig;
+};
+
+type RelayLSPLocateCommand = (
+  // either Type, Type.field or Type.field(argument)
+  projectName: string,
+  typeName: string,
+  info: AdditionalLocateInfo,
+) => `${string}:${string}:${string}` | `${string}:${string}` | string;
+
+type GraphQLLocateCommand = (
+  projectName: string,
+  typeName: string,
+  info: AdditionalLocateInfo,
+) => {
+  range: RangeType;
+  uri: string;
+};
+
+export type LocateCommand = RelayLSPLocateCommand | GraphQLLocateCommand;
 
 export interface ServerOptions {
   /**

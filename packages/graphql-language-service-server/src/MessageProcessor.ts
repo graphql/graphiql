@@ -57,14 +57,7 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument } from './parseDocument';
 
-import {
-  printSchema,
-  visit,
-  parse,
-  FragmentDefinitionNode,
-  GraphQLType,
-  ASTNode,
-} from 'graphql';
+import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'node:os';
 import {
   ConfigEmptyError,
@@ -73,7 +66,7 @@ import {
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
-import type { LoadConfigOptions } from './types';
+import type { LoadConfigOptions, LocateCommand } from './types';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   SupportedExtensionsEnum,
@@ -90,30 +83,6 @@ type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
 };
-
-type AdditionalLocateInfo = {
-  node?: ASTNode | null;
-  type?: GraphQLType | null;
-  project: GraphQLProjectConfig;
-};
-
-type RelayLSPLocateCommand = (
-  // either Type, Type.field or Type.field(argument)
-  projectName: string,
-  typeName: string,
-  info: AdditionalLocateInfo,
-) => `${string}:${string}:${string}` | `${string}:${string}` | string;
-
-type GraphQLLocateCommand = (
-  projectName: string,
-  typeName: string,
-  info: AdditionalLocateInfo,
-) => {
-  range: RangeType;
-  uri: string;
-};
-
-type LocateCommand = RelayLSPLocateCommand | GraphQLLocateCommand;
 
 function toPosition(position: VscodePosition): IPosition {
   return new Position(position.line, position.character);
