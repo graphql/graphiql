@@ -6,13 +6,13 @@
 
 Introduce `locateCommand` based on Relay LSP `pathToLocateCommand`:
 
-Now with `<graphql config>.extensions.languageService.locateCommand`, you can specify either the [existing signature](https://marketplace.visualstudio.com/items?itemName=meta.relay#relay.pathtolocatecommand-default-null) for relay, with the same callback parameters and return signature.
+Now with `<graphql config>.extensions.languageService.locateCommand`, you can specify either the [existing signature](https://marketplace.visualstudio.com/items?itemName=meta.relay#relay.pathtolocatecommand-default-null) for relay, with the same callback parameters and return signature (of a string delimited by `:` characters), or you can return an object with {uri, range} for the exact set of coordinates for the destination range. the function can be sync or async.
 
 Relay LSP currently supports `Type` and `Type.field` for the 2nd argument. Ours also returns `Type.field(argument)` as a point of reference. It works with object types, input types, fragments, executable definitions and their fields, and should work for directive definitions as well.
 
 In the case of unnamed types such as fragment spreads, they return the name of the implemented type currently, but I'm curious what users prefer here. I assumed that some people may want to not be limited to only using this for SDL type definition lookups. Also look soon to see `locateCommand` support added for symbols, outline, and coming references and implementations.
 
-The module at the path you specify in relay LSP for `pathToLocateCommand` should work as such
+The module at the path you specify in relay LSP for `pathToLocateCommand` should work as such.
 
 ```ts
 // import it
