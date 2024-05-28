@@ -1,5 +1,131 @@
 # graphql-language-service-cli
 
+## 3.4.0
+
+### Minor Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fix many schema and fragment lifecycle issues, not all of them, but many related to cacheing. Note: this makes `cacheSchemaForLookup` enabled by default again for schema first contexts.
+
+  This fixes multiple cacheing bugs, upon addomg some in-depth integration test coverage for the LSP server. It also solves several bugs regarding loading config types, and properly restarts the server and invalidates schema when there are config changes.
+
+  ### Bugfix Summary
+
+  - configurable polling updates for network and other code first schema configuration, set to a 30s interval by default. powered by `schemaCacheTTL` which can be configured in the IDE settings (vscode, nvim) or in the graphql config file. (1)
+  - jump to definition in embedded files offset bug, for both fragments and code files with SDL strings
+  - cache invalidation for fragments (fragment lookup/autcoomplete data is more accurate, but incomplete/invalid fragments still do not autocomplete or validate, and remember fragment options always filter/validate by the `on` type!)
+  - schema cache invalidation for schema files - schema updates as you change the SDL files, and the generated file for code first by the `schemaCacheTTL` setting
+  - schema definition lookups & autocomplete crossing over into the wrong project
+
+  **Notes**
+
+  1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
+
+  ### Known Bugs Fixed
+
+  - #3318
+  - #2357
+  - #3469
+  - #2422
+  - #2820
+  - many more!
+
+  ### Test Improvements
+
+  - new, high level integration spec suite for the LSP with a matching test utility
+  - more unit test coverage
+  - **total increased test coverage of about 25% in the LSP server codebase.**
+  - many "happy paths" covered for both schema and code first contexts
+  - many bugs revealed (and their source)
+
+  ### What's next?
+
+  Another stage of the rewrite is already almost ready. This will fix even more bugs and improve memory usage, eliminate redundant parsing and ensure that graphql config's loaders do _all_ of the parsing and heavy lifting, thus honoring all the configs as well. It also significantly reduces the code complexity.
+
+  There is also a plan to match Relay LSP's lookup config for either IDE (vscode, nvm, etc) settings as they provide, or by loading modules into your `graphql-config`!
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Introduce `locateCommand` based on Relay LSP `pathToLocateCommand`:
+
+  Now with `<graphql config>.extensions.languageService.locateCommand`, you can specify either the [existing signature](https://marketplace.visualstudio.com/items?itemName=meta.relay#relay.pathtolocatecommand-default-null) for relay, with the same callback parameters and return signature (of a string delimited by `:` characters), or you can return an object with {uri, range} for the exact set of coordinates for the destination range. the function can be sync or async.
+
+  Relay LSP currently supports `Type` and `Type.field` for the 2nd argument. Ours also returns `Type.field(argument)` as a point of reference. It works with object types, input types, fragments, executable definitions and their fields, and should work for directive definitions as well.
+
+  In the case of unnamed types such as fragment spreads, they return the name of the implemented type currently, but I'm curious what users prefer here. I assumed that some people may want to not be limited to only using this for SDL type definition lookups. Also look soon to see `locateCommand` support added for symbols, outline, and coming references and implementations.
+
+  The module at the path you specify in relay LSP for `pathToLocateCommand` should work as such.
+
+  ```ts
+  // import it
+  import { locateCommand } from './graphql/tooling/lsp/locate.js';
+  export default {
+    languageService: {
+      locateCommand,
+    },
+
+    projects: {
+      a: {
+        schema: 'https://localhost:8000/graphql',
+        documents: './a/**/*.{ts,tsx,jsx,js,graphql}',
+      },
+      b: {
+        schema: './schema/ascode.ts',
+        documents: './b/**/*.{ts,tsx,jsx,js,graphql}',
+      },
+    },
+  };
+  ```
+
+  ```ts
+  // or define it inline
+
+  import { type LocateCommand } from 'graphql-language-service-server';
+
+  // relay LSP style
+  const locateCommand = (projectName: string, typePath: string) => {
+    const { path, startLine, endLine } = ourLookupUtility(
+      projectName,
+      typePath,
+    );
+    return `${path}:${startLine}:${endLine}`;
+  };
+
+  // an example with our alternative return signature
+  const locateCommand: LocateCommand = (projectName, typePath, info) => {
+    // pass more info, such as GraphQLType with the ast node. info.project is also available if you need it
+    const { path, range } = ourLookupUtility(
+      projectName,
+      typePath,
+      info.type.node,
+    );
+    return { uri: path, range }; // range.start.line/range.end.line
+  };
+
+  export default {
+    languageService: {
+      locateCommand,
+    },
+    schema: 'https://localhost:8000/graphql',
+    documents: './**/*.{ts,tsx,jsx,js,graphql}',
+  };
+  ```
+
+  Passing a string as a module path to resolve is coming in a follow-up release. Then it can be used with `.yml`, `.toml`, `.json`, `package.json#graphql`, etc
+
+  For now this was a quick baseline for a feature asked for in multiple channels!
+
+  Let us know how this works, and about any other interoperability improvements between our graphql LSP and other language servers (relay, intellij, etc) used by you and colleauges in your engineering organisations. We are trying our best to keep up with the awesome innovations they have 👀!
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d), [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d), [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service-server@2.13.0
+  - graphql-language-service@5.2.1
+
 ## 3.3.33
 
 ### Patch Changes
