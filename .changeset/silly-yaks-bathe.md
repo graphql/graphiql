@@ -1,7 +1,7 @@
 ---
 'graphql-language-service': patch
 'graphql-language-service-server': patch
-'graphql-language-service-server-cli': patch
+'graphql-language-service-cli': patch
 'codemirror-graphql': patch
 'cm6-graphql': patch
 'monaco-graphql': patch
