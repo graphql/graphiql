@@ -1,5 +1,6 @@
 ---
 'graphql-language-service-server': minor
+'graphql-language-service-cli': patch
 'vscode-graphql': patch
 ---
 
@@ -40,13 +41,13 @@ export default {
 import { type LocateCommand } from 'graphql-language-service-server';
 
 // relay LSP style
-const languageCommand = (projectName: string, typePath: string) => {
+const locateCommand = (projectName: string, typePath: string) => {
   const { path, startLine, endLine } = ourLookupUtility(projectName, typePath);
   return `${path}:${startLine}:${endLine}`;
 };
 
 // an example with our alternative return signature
-const languageCommand: LocateCommand = (projectName, typePath, info) => {
+const locateCommand: LocateCommand = (projectName, typePath, info) => {
   // pass more info, such as GraphQLType with the ast node. info.project is also available if you need it
   const { path, range } = ourLookupUtility(
     projectName,
