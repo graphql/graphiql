@@ -34,11 +34,10 @@ Supported features include:
 
 ### Dependencies
 
-An LSP compatible client with its own file watcher, that sends watch
-notifications to the server.
-
-**DROPPED**: GraphQL Language Service no longer depends on
-[Watchman](https://facebook.github.io/watchman/)
+- An LSP compatible client with its own file watcher, that sends watch
+  notifications to the server, such as vscode or nvim, or sublime-lsp.
+- Node.js `^18.18.0 || >=20.9.0` or later is required.
+- (for now) a graphql config file is required
 
 ### Installation
 
