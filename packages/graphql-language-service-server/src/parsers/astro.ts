@@ -1,7 +1,9 @@
-import { parse } from 'astrojs-compiler-sync';
 import { Position, Range } from 'graphql-language-service';
 import { RangeMapper, SourceParser } from './types';
 import { babelParser } from './babel';
+import { parse } from 'astrojs-compiler-sync';
+
+// import { teardown } from '@astrojs/compiler/dist/node';
 
 type ParseAstroResult =
   | { type: 'error'; errors: string[] }
@@ -14,6 +16,7 @@ type ParseAstroResult =
 function parseAstro(source: string): ParseAstroResult {
   // eslint-disable-next-line unicorn/no-useless-undefined
   const { ast, diagnostics } = parse(source, undefined);
+
   if (diagnostics.some(d => d.severity === /* Error */ 1)) {
     return {
       type: 'error',
@@ -44,11 +47,11 @@ function parseAstro(source: string): ParseAstroResult {
 export const astroParser: SourceParser = (text, uri, logger) => {
   const parseAstroResult = parseAstro(text);
   if (parseAstroResult.type === 'error') {
-    logger.error(
+    logger.info(
       `Could not parse the astro file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseAstroResult.errors) {
-      logger.error(String(error));
+      logger.info(String(error));
     }
     return null;
   }

@@ -15,12 +15,12 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --cache --fix",
-      "prettier --write --ignore-path .eslintignore",
+      "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
       "jest --passWithNoTests",
       "yarn lint-cspell"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write --ignore-path .eslintignore",
+      "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
       "yarn lint-cspell"
     ]
   },
@@ -43,7 +43,7 @@
     "build:watch": "yarn tsc --watch",
     "build-demo": "wsrun -m build-demo",
     "watch": "yarn build:watch",
-    "watch-vscode": "yarn workspace vscode-graphql compile",
+    "watch-vscode": "yarn tsc && yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",
@@ -62,7 +62,7 @@
     "prepublishOnly": "./scripts/prepublish.sh",
     "postbuild": "wsrun --exclude-missing postbuild",
     "pretty": "yarn pretty-check --write",
-    "pretty-check": "prettier --cache --check --ignore-path .gitignore --ignore-path .eslintignore .",
+    "pretty-check": "prettier --cache --check --ignore-path .gitignore --ignore-path resources/prettierignore --ignore-path .eslintignore .",
     "ci:version": "yarn changeset version && yarn build && yarn format",
     "release": "yarn build && yarn build-bundles && (wsrun release --exclude-missing --serial --recursive --changedSince main -- || true) && yarn changeset publish",
     "release:canary": "(node scripts/canary-release.js && yarn build-bundles && yarn changeset publish --tag canary) || echo Skipping Canary...",

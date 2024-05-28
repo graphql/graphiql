@@ -9,7 +9,7 @@
   "dictionaryDefinitions": [
     {
       "name": "custom-words",
-      "path": "./custom-words.txt",
+      "path": "./resources/custom-words.txt",
       "addWords": true
     }
   ],

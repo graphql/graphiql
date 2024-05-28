@@ -16,15 +16,27 @@ import {
   TypeDefinitionNode,
   ObjectTypeDefinitionNode,
   FieldDefinitionNode,
+  // printType,
+  // isNamedType,
+  // ArgumentNode,
+  InputValueDefinitionNode,
+  GraphQLType,
 } from 'graphql';
 
 import { Definition, FragmentInfo, Uri, ObjectTypeInfo } from '../types';
 
 import { locToRange, offsetToPosition, Range, Position } from '../utils';
+// import { getTypeInfo } from './getAutocompleteSuggestions';
 
 export type DefinitionQueryResult = {
   queryRange: Range[];
   definitions: Definition[];
+  printedName?: string;
+};
+
+export type DefinitionQueryResponse = DefinitionQueryResult & {
+  node?: ASTNode | null;
+  type?: GraphQLType | null;
 };
 
 export const LANGUAGE = 'GraphQL';
@@ -68,6 +80,7 @@ export async function getDefinitionQueryResultForNamedType(
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, node)),
+    printedName: name,
   };
 }
 
@@ -104,6 +117,43 @@ export async function getDefinitionQueryResultForField(
     definitions,
     // TODO: seems like it's not using
     queryRange: [],
+    printedName: [typeName, fieldName].join('.'),
+  };
+}
+
+export async function getDefinitionQueryResultForArgument(
+  argumentName: string,
+  fieldName: string,
+  typeName: string,
+  dependencies: Array<ObjectTypeInfo>,
+): Promise<DefinitionQueryResult> {
+  dependencies.filter(
+    ({ definition }) => definition.name && definition.name.value === typeName,
+  );
+
+  const definitions: Array<Definition> = [];
+
+  for (const { filePath, content, definition } of dependencies) {
+    const argDefinition = (definition as ObjectTypeDefinitionNode).fields
+      ?.find(item => item.name.value === fieldName)
+      ?.arguments?.find(item => item.name.value === argumentName);
+    if (argDefinition == null) {
+      continue;
+    }
+
+    definitions.push(
+      getDefinitionForArgumentDefinition(
+        filePath || '',
+        content,
+        argDefinition,
+      ),
+    );
+  }
+  return {
+    definitions,
+    // TODO: seems like it's not using
+    queryRange: [],
+    printedName: `${[typeName, fieldName].join('.')}(${argumentName})`,
   };
 }
 
@@ -124,10 +174,10 @@ export async function getDefinitionQueryResultForFragmentSpread(
     ({ filePath, content, definition }) =>
       getDefinitionForFragmentDefinition(filePath || '', content, definition),
   );
-
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, fragment)),
+    printedName: name,
   };
 }
 
@@ -139,6 +189,7 @@ export function getDefinitionQueryResultForDefinitionNode(
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
     queryRange: definition.name ? [getRange(text, definition.name)] : [],
+    printedName: definition.name?.value,
   };
 }
 
@@ -201,3 +252,23 @@ function getDefinitionForFieldDefinition(
     projectRoot: path,
   };
 }
+// GraphQLString,
+// eslint-disable-next-line sonarjs/no-identical-functions
+function getDefinitionForArgumentDefinition(
+  path: Uri,
+  text: string,
+  definition: InputValueDefinitionNode,
+): Definition {
+  const { name } = definition;
+  assert(name, 'Expected ASTNode to have a Name.');
+  return {
+    path,
+    position: getPosition(text, definition),
+    range: getRange(text, definition),
+    name: name.value || '',
+    language: LANGUAGE,
+    // This is a file inside the project root, good enough for now
+    projectRoot: path,
+  };
+}
+// GraphQLString,

@@ -7,28 +7,9 @@ Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
 
-### General features
+### `.graphql`, `.gql` file extension support and `gql`/`graphql` tagged template literal support for tsx, jsx, ts, js
 
-> _Operation Execution will be re-introduced in a new extension_
-
-- Load the extension on detecting `graphql-config file` at root level or in a
-  parent level directory
-- Load the extension in `.graphql`, `.gql files`
-- Load the extension detecting `gql` tag in js, ts, jsx, tsx, vue files
-- Load the extension inside `gql`/`graphql` fenced code blocks in markdown files
-- NO LONGER SUPPORTED - execute query/mutation/subscription operations, embedded
-  or in graphql files - we will be recommending other extensions for this.
-- pre-load schema and document definitions
-- Support [`graphql-config`](https://graphql-config.com/) files with one project
-  and multiple projects (multi-workspace roots with multiple graphql config
-  files not yet supported)
-- the language service re-starts on saved changes to vscode settings and/or
-  graphql config!
-
-### `.graphql`, `.gql` file extension support
-
-- syntax highlighting (type, query, mutation, interface, union, enum, scalar,
-  fragments, directives)
+- syntax highlighting (provided by `vscode-graphql-syntax`)
 - autocomplete suggestions
 - validation against schema
 - snippets (interface, type, input, enum, union)
@@ -36,59 +17,51 @@ Ecosystem with VSCode for an awesome developer experience.
 - go to definition support (input, enum, type)
 - outline support
 
-### `gql`/`graphql` tagged template literal support for tsx, jsx, ts, js
+## Getting Started
 
-- syntax highlighting (type, query, mutation, interface, union, enum, scalar,
-  fragments, directives)
-- autocomplete suggestions
-- validation against schema
-- snippets
-- hover support
-- go to definition for fragments and input types
-- outline support
+> **This extension requires a graphql-config file**.
 
-## Usage
+To support language features like completion and "go-to definition" across multiple files,
+please include `documents` in the `graphql-config` file default or per-project
 
-**This extension requires a graphql-config file**.
+### Simplest Config Example
 
-Install the
-[VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql).
-
-(Watchman is no longer required, you can uninstall it now)
-
-As of `vscode-graphql@0.3.0` we support `graphql-config@3`. You can read more
-about that [here](https://www.graphql-config.com/docs/user/user-usage). Because
-it now uses `cosmiconfig` there are plenty of new options for loading config
-files:
-
-```
-graphql.config.json
-graphql.config.js
-graphql.config.yaml
-graphql.config.yml
-.graphqlrc (YAML or JSON)
-.graphqlrc.json
-.graphqlrc.yaml
-.graphqlrc.yml
-.graphqlrc.js
-graphql property in package.json
+```yaml
+# .graphqlrc.yml or graphql.config.yml
+schema: 'schema.graphql'
+documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
 ```
 
-the file needs to be placed at the project root by default, but you can
-configure paths per project. see the FAQ below for details.
+`package.json`:
 
-Previous versions of this extension support `graphql-config@2` format, which
-follows
-[legacy configuration patterns](https://github.com/kamilkisiela/graphql-config/tree/legacy#usage)
+```json
+"graphql": {
+  "schema": "https://localhost:3001",
+  "documents": "**/*.{graphql,js,ts,jsx,tsx}"
+},
+```
 
-If you need legacy support for `.graphqlconfig` files or older graphql-config
-formats, see [this FAQ answer](#legacy). If you are missing legacy
-`graphql-config` features, please consult
-[the `graphql-config` repository](https://github.com/kamilkisiela/graphql-config).
+```ts
+// .graphqlrc.ts or graphql.config.ts
+export default {
+  schema: 'schema.graphql',
+  documents: '**/*.{graphql,js,ts,jsx,tsx}',
+};
+```
 
-To support language features like "go-to definition" across multiple files,
-please include `documents` key in the `graphql-config` file default or
-per-project (this was `include` in 2.0).
+same for .json, .toml, etc
+
+## Additional Features
+
+- Loads the LSP server upon detecting a `graphql-config` file at root level or in a
+  parent level directory, or a `package.json` file with `graphql` config
+- Loads `.graphql`, `.gql` files, and detects `gql`, `graphql` tags and `/** GraphQL */` and `#graphql` comments in js, ts, jsx, tsx, vue files
+- pre-load schema and fragment definitions
+- Support [`graphql-config`](https://graphql-config.com/) files with one project
+  and multiple projects (multi-workspace roots with multiple graphql config
+  files not yet supported)
+- the language service re-starts on saved changes to vscode settings and/or
+  graphql config!
 
 ## Configuration Examples
 
@@ -97,19 +70,22 @@ For more help with configuring the language server,
 is the source of truth for all settings used by all editors which use the
 language server.
 
-### Simple Example
+This includes LSP settings provided by extensions like `vscode-graphql`, nvim, etc.
 
-```yaml
-# .graphqlrc.yml
-schema: 'schema.graphql'
-documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
-```
+There are a number of configurations that can be provided from both editor settings or the graphql config file, and the editor setting takes precedence, to allow users to override their graphql config file settings in a user context as needed.
+
+The [`graphql-config`](https://graphql-config.com/) docs are also very helpful for the config file.
 
 ### Advanced Example
 
-```js
-// graphql.config.js
-module.exports = {
+Multi-project can be used for both local files, URL defined schema, or both
+
+```ts
+import dotenv from 'dotenv';
+dotenv.config();
+
+// .graphqlrc.ts or graphql.config.ts
+export default {
   projects: {
     app: {
       schema: ['src/schema.graphql', 'directives.graphql'],
@@ -119,15 +95,15 @@ module.exports = {
       schema: 'src/generated/db.graphql',
       documents: ['src/db/**/*.graphql', 'my/fragments.graphql'],
       extensions: {
-        codegen: [
-          {
-            generator: 'graphql-binding',
-            language: 'typescript',
-            output: {
-              binding: 'src/generated/db.ts',
+        // for use with `vscode-graphql-execution`, for example:
+        endpoints: {
+          default: {
+            url: 'https://localhost:3001/graphql/',
+            headers: {
+              Authorization: `Bearer ${process.env.API_TOKEN}`,
             },
           },
-        ],
+        },
       },
     },
   },
@@ -139,66 +115,9 @@ is also valid.
 
 ## Frequently Asked Questions
 
-<span id="legacy" />
-
-### I can't load `.graphqlconfig` files anymore
-
-> Note: this option has been set to be enabled by default, however
-> `graphql-config` maintainers do not want to continue to support the legacy
-> format (mostly kept for companies where intellij users are stuck on the old
-> config format), so please migrate to the new `graphql-config` format as soon
-> as possible!
-
-If you need to use a legacy config file, then you just need to enable legacy
-mode for `graphql-config`:
-
-```json
-"graphql-config.load.legacy": true
-```
-
-### Go to definition is not working for my URL
-
-You can try the new experimental `cacheSchemaFileForLookup` option. NOTE: this
-will disable all definition lookup for local SDL graphql schema files, and
-_only_ perform lookup of the result an SDL result of `graphql-config`
-`getSchema()`
-
-To enable, add this to your settings:
-
-```json
-"vscode-graphql.cacheSchemaFileForLookup": true,
-```
-
-you can also use graphql config if you need to mix and match these settings:
-
-```yml
-schema: 'http://myschema.com/graphql'
-extensions:
-  languageService:
-    cacheSchemaFileForLookup: true
-projects:
-  project1:
-    schema: 'project1/schema/schema.graphql'
-    documents: 'project1/queries/**/*.{graphql,tsx,jsx,ts,js}'
-    extensions:
-      languageService:
-        cacheSchemaFileForLookup: false
-
-  project2:
-    schema: 'https://api.spacex.land/graphql/'
-    documents: 'project2/queries.graphql'
-    extensions:
-      endpoints:
-        default:
-          url: 'https://api.spacex.land/graphql/'
-      languageService:
-        # Do project configs inherit parent config?
-        cacheSchemaFileForLookup: true
-```
-
 ### The extension fails with errors about duplicate types
 
-Make sure that you aren't including schema files in the `documents` blob
+Your object types must be unique per project (as they must be unique per schema), and your fragment names must also be unique per project.
 
 ### The extension fails with errors about missing scalars, directives, etc
 
@@ -232,6 +151,7 @@ You can search a folder for any of the matching config file names listed above:
 
 ```json
 "graphql-config.load.rootDir": "./config"
+"graphql-config.envFilePath": "./config/.dev.env"
 ```
 
 Or a specific filepath:
@@ -253,39 +173,15 @@ which would search for `./config/.acmerc`, `.config/.acmerc.js`,
 If you have multiple projects, you need to define one top-level config that
 defines all project configs using `projects`
 
-### How do I highlight an embedded graphql string?
+### How do I enable language features for an embedded graphql string?
 
-If you aren't using a template tag function such as `gql` or `graphql`, and just
-want to use a plain string, you can use an inline `#graphql` comment:
-
-```ts
-const myQuery = `#graphql
-  query {
-    something
-  }
-`;
-```
-
-or
-
-```ts
-const myQuery =
-  /* GraphQL */
-
-  `
-    query {
-      something
-    }
-  `;
-```
+Please refer to the `vscode-graphql-syntax` reference files ([js](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.js),[ts](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.ts),[svelte](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.svelte),[vue](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.vue)) to learn our template tag, comment and other graphql delimiter patterns for the file types that the language server supports. The syntax highlighter currently supports more languages than the language server. If you notice any places where one or the other doesn't work, please report it!
 
 ## Known Issues
 
-- the output channel occasionally shows "definition not found" when you first
-  start the language service, but once the definition cache is built for each
-  project, definition lookup will work. so if a "peek definition" fails when you
-  first start the editor or when you first install the extension, just try the
-  definition lookup again.
+- the locally generated schema file for definition lookup currently does not re-generate on schema changes. this will be fixed soon.
+- multi-root workspaces support will be added soon as well.
+- some graphql-config options aren't always honored, this will also be fixed soon
 
 ## Attribution
 
@@ -312,7 +208,7 @@ This plugin uses the
 ### Contributing back to this project
 
 This repository is managed by EasyCLA. Project participants must sign the free
-([GraphQL Specification Membership agreement](https://preview-spec-membership.graphql.org)
+([GraphQL Specification Membership agreement](https://preview-spec-membership.graphql.org))
 before making a contribution. You only need to do this one time, and it can be
 signed by
 [individual contributors](http://individual-spec-membership.graphql.org/) or

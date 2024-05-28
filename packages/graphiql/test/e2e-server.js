@@ -43,7 +43,9 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 app.use(express.static(path.resolve(__dirname, '../')));
 app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
 
-app.listen(process.env.PORT || 0, function () {
+// messy but it allows close
+const server = require('node:http').createServer(app);
+server.listen(process.env.PORT || 3100, function () {
   const { port } = this.address();
 
   console.log(`Started on http://localhost:${port}/`);
@@ -56,5 +58,7 @@ app.listen(process.env.PORT || 0, function () {
     process.exit();
   });
 });
+const wsServer = WebSocketsServer();
 
-WebSocketsServer();
+module.exports.server = server;
+module.exports.wsServer = wsServer;

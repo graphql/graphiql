@@ -147,6 +147,8 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
             ? info.objectFieldDefs[state.name]
             : null;
         info.inputType = objectField?.type;
+        // @ts-expect-error
+        info.fieldDef = objectField;
         break;
       case 'NamedType':
         info.type = state.name ? schema.getType(state.name) : null;

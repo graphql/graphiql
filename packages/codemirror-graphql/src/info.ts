@@ -63,13 +63,13 @@ CodeMirror.registerHelper(
     }
     const { kind, step } = token.state;
     const typeInfo = getTypeInfo(options.schema, token.state);
-
     // Given a Schema and a Token, produce the contents of an info tooltip.
     // To do this, create a div element that we will render "into" and then pass
     // it to various rendering functions.
     if (
       (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
-      (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
+      (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef) ||
+      (kind === 'ObjectField' && step === 0 && typeInfo.fieldDef)
     ) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
@@ -79,6 +79,7 @@ CodeMirror.registerHelper(
       renderDescription(into, options, typeInfo.fieldDef as any);
       return into;
     }
+
     if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';

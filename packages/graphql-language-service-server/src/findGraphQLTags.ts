@@ -83,7 +83,12 @@ export function findGraphQLTags(
         'arguments' in node
       ) {
         const templateLiteral = node.arguments[0];
-        if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
+        if (
+          templateLiteral &&
+          (templateLiteral.type === 'TemplateLiteral' ||
+            templateLiteral.type === 'TaggedTemplateExpression')
+        ) {
+          // @ts-expect-error
           const parsed = parseTemplateLiteral(templateLiteral, rangeMapper);
           if (parsed) {
             result.push(parsed);
@@ -97,9 +102,19 @@ export function findGraphQLTags(
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
         const { loc } = node.quasi.quasis[0];
+
         const template =
           node.quasi.quasis.length > 1
-            ? node.quasi.quasis.map(quasi => quasi.value.raw).join('')
+            ? node.quasi.quasis
+                .map((quasi, i) =>
+                  i === node.quasi.quasis?.length - 1
+                    ? quasi.value.raw
+                    : getReplacementString(
+                        quasi.value.raw,
+                        node.quasi.quasis[i + 1].value.raw,
+                      ),
+                )
+                .join('')
             : node.quasi.quasis[0].value.raw;
         // handle template literals with N line expressions
         if (loc && node.quasi.quasis.length > 1) {
@@ -148,6 +163,28 @@ export function findGraphQLTags(
   return result;
 }
 
+/*
+ Here we inject replacements for template tag literal expressions, 
+ so that graphql parse & thus validation can be performed, 
+ and we don't get <EOF> or expected name parse errors
+ 
+ TODO: other user reported cases to consider:
+ 1. operation field argument values - though we recommend graphql variables
+ 2. fragment spreads (maybe fragment variables will help solve this?)
+ 
+ these might be extra difficult because they may require type introspection
+ 3. directive argument default values
+ 5. default argument values for input types
+*/
+const getReplacementString = (quasi: string, nextQuasi: string) => {
+  const trimmed = quasi.trimEnd();
+  const trimmedNext = nextQuasi.trimStart();
+  // only actually empty leaf field expressions
+  if (trimmed.endsWith('{') && trimmedNext.startsWith('}')) {
+    return quasi + '__typename';
+  }
+  return quasi;
+};
 /**
  * Parses a Babel AST template literal into a GraphQL tag.
  */
@@ -157,15 +194,20 @@ function parseTemplateLiteral(node: TemplateLiteral, rangeMapper: RangeMapper) {
     // handle template literals with N line expressions
 
     if (node.quasis.length > 1) {
-      const last = node.quasis.pop();
+      const quasis = [...node.quasis];
+      const last = quasis.pop();
       if (last?.loc?.end) {
         loc.end = last.loc.end;
       }
     }
-    const template =
-      node.quasis.length > 1
-        ? node.quasis.map(quasi => quasi.value.raw).join('')
-        : node.quasis[0].value.raw;
+    const template = node.quasis
+      .map((quasi, i) =>
+        i === node.quasis?.length - 1
+          ? quasi.value.raw
+          : getReplacementString(quasi.value.raw, node.quasis[i + 1].value.raw),
+      )
+      .join('');
+
     const range = rangeMapper(
       new Range(
         new Position(loc.start.line - 1, loc.start.column),

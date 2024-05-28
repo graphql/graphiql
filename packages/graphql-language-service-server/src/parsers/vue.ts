@@ -49,11 +49,11 @@ export const vueParser: SourceParser = (text, uri, logger) => {
   const asts = [];
   const parseVueSFCResult = parseVueSFC(text);
   if (parseVueSFCResult.type === 'error') {
-    logger.error(
+    logger.info(
       `Could not parse the vue file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseVueSFCResult.errors) {
-      logger.error(String(error));
+      logger.info(String(error));
     }
     return null;
   }

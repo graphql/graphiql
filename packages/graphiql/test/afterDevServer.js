@@ -10,4 +10,5 @@ module.exports = function afterDevServer(_app, _server, _compiler) {
   });
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useServer({ schema }, wsServer);
+  return wsServer;
 };

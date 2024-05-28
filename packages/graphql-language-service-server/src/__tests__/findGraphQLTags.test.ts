@@ -83,6 +83,36 @@ query Test {
         ...FragmentsComment
       }
     }
+    
+    `);
+  });
+
+  it('finds queries in call expressions with with newlines preceding the template', async () => {
+    const text = `
+    import {gql} from 'react-apollo';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = gql(
+  \`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \`);
+    
+    export function Example(arg: string) {}`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
     `);
   });
 
@@ -112,6 +142,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -122,9 +153,7 @@ import {B} from 'B';
 import A from './A';
 
 
-const QUERY: string = 
-/* GraphQL */ 
-\`
+const QUERY: string = /* GraphQL */ \`
 query Test {
   test {
     value
@@ -144,6 +173,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -527,6 +557,38 @@ export function Example(arg: string) {}`;
 </div>
     `;
     const contents = findGraphQLTags(text, '.svelte');
+    expect(contents.length).toEqual(1);
+  });
+  it('handles full astro example', () => {
+    const text = `
+    ---
+    const gql = String.raw;
+    const response = await fetch("https://swapi-graphql.netlify.app/.netlify/functions/index",
+      {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          query: gql\`
+            query getFilm ($id:ID!) {
+              film(id: $id) {
+                title
+                releaseDate
+              }
+            }
+          \`,
+          variables: {
+            id: "XM6MQ==",
+          },
+        }),
+      });
+
+    const json = await response.json();
+    const { film } = json.data;
+    ---
+    <h1>Fetching information about Star Wars: A New Hope</h1>
+    <h2>Title: {film.title}</h2>
+    <p>Year: {film.releaseDate}</p>`;
+    const contents = findGraphQLTags(text, '.astro');
     expect(contents.length).toEqual(1);
   });
 });

@@ -13,12 +13,16 @@ import CodeMirror, { Hints, Hint } from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 
 import { FragmentDefinitionNode, GraphQLSchema, GraphQLType } from 'graphql';
-import type { Maybe } from 'graphql-language-service';
+import type {
+  AutocompleteSuggestionOptions,
+  Maybe,
+} from 'graphql-language-service';
 import { getAutocompleteSuggestions, Position } from 'graphql-language-service';
 
 export interface GraphQLHintOptions {
   schema?: GraphQLSchema;
   externalFragments?: string | FragmentDefinitionNode[];
+  autocompleteOptions?: AutocompleteSuggestionOptions;
 }
 
 interface IHint extends Hint {
@@ -70,7 +74,7 @@ CodeMirror.registerHelper(
     editor: CodeMirror.Editor,
     options: GraphQLHintOptions,
   ): IHints | undefined => {
-    const { schema, externalFragments } = options;
+    const { schema, externalFragments, autocompleteOptions } = options;
     if (!schema) {
       return;
     }
@@ -91,11 +95,13 @@ CodeMirror.registerHelper(
       position,
       token,
       externalFragments,
+      autocompleteOptions,
     );
 
     const results = {
       list: rawResults.map(item => ({
-        text: item.label,
+        // important! for when the label is different from the insert text
+        text: item?.rawInsert ?? item.label,
         type: item.type,
         description: item.documentation,
         isDeprecated: item.isDeprecated,

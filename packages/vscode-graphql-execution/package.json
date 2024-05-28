@@ -87,7 +87,7 @@
     "vsce:package": "yarn compile && vsce package --yarn",
     "vsce:prepublish": "yarn run vsce:package",
     "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish --yarn -i . --pat $OVSX_PAT",
+    "open-vsx:publish": "ovsx publish $(ls -1 *.vsix | sort -V | tail -n 1) --pat $OVSX_PAT",
     "release": "yarn run compile && yarn run vsce:publish && yarn run open-vsx:publish"
   },
   "devDependencies": {

@@ -15,10 +15,10 @@ export const ecmaParser: SourceParser = (text, uri, logger) => {
   try {
     return { asts: [babelParser(text, ['flow', 'flowComments'])] };
   } catch (error) {
-    logger.error(
+    logger.info(
       `Could not parse the JavaScript file at ${uri} to extract the graphql tags:`,
     );
-    logger.error(String(error));
+    logger.info(String(error));
     return null;
   }
 };
@@ -27,10 +27,10 @@ export const tsParser: SourceParser = (text, uri, logger) => {
   try {
     return { asts: [babelParser(text, ['typescript'])] };
   } catch (error) {
-    logger.error(
+    logger.info(
       `Could not parse the TypeScript file at ${uri} to extract the graphql tags:`,
     );
-    logger.error(String(error));
+    logger.info(String(error));
     return null;
   }
 };
