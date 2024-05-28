@@ -1,7 +1,7 @@
 ---
 'graphql-language-service-server': minor
 'vscode-graphql': minor
-'graphql-language-service-server-cli': minor
+'graphql-language-service-cli': minor
 ---
 
 Fix many schema and fragment lifecycle issues, not all of them, but many related to cacheing.
