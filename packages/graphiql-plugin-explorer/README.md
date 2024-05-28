@@ -25,7 +25,6 @@ npm i -S react react-dom graphql
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import { useState } from 'react';
 
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
