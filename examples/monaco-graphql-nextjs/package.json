@@ -16,7 +16,7 @@
     "marked": "^4.2.12",
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "monaco-graphql": "^1.5.1",
+    "monaco-graphql": "^1.5.2",
     "next": "13.4.7",
     "prettier": "3.0.0-alpha.12",
     "react": "^18.2.0",

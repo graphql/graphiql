@@ -1,6 +1,6 @@
 {
   "name": "cm6-graphql",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
     "build": "cm-buildhelper src/index.ts",
@@ -16,7 +16,7 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "graphql-language-service": "^5.2.0"
+    "graphql-language-service": "^5.2.1"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "6.2.0",
