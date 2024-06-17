@@ -212,7 +212,7 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     showPersistHeadersSettings?: boolean;
     /**
-     * forcedTheme allows to enforce a specific theme for GraphiQL.
+     * forcedTheme allows enforcement of a specific theme for GraphiQL.
      * This is useful when you want to make sure that GraphiQL is always
      * rendered with a specific theme
      */
