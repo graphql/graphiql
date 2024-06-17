@@ -15,6 +15,7 @@ import React, {
   useCallback,
   useState,
   useEffect,
+  useMemo,
 } from 'react';
 
 import {
@@ -235,7 +236,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
-  const forcedTheme = props.forcedTheme; // eslint-disable-line prefer-destructuring
+  const forcedTheme = useMemo(
+    () =>
+      props.forcedTheme && THEMES.includes(props.forcedTheme)
+        ? props.forcedTheme
+        : undefined,
+    [props.forcedTheme],
+  );
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
