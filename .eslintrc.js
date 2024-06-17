@@ -359,6 +359,7 @@ module.exports = {
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/non-nullable-type-assertion-style': 'error',
         '@typescript-eslint/consistent-type-assertions': 'error',
+        '@typescript-eslint/no-duplicate-type-constituents': 'error',
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',

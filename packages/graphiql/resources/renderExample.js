@@ -102,5 +102,6 @@ root.render(
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
+    forcedTheme: parameters.forcedTheme,
   }),
 );
