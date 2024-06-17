@@ -787,7 +787,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <div>
                 <div className="graphiql-dialog-section-title">Theme</div>
                 <div className="graphiql-dialog-section-caption">
-                  Adjust how the interface looks like.
+                  Adjust how the interface appears.
                 </div>
               </div>
               <ButtonGroup>
