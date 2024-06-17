@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.0
+
+### Minor Changes
+
+- [#3407](https://github.com/graphql/graphiql/pull/3407) [`115c1c02`](https://github.com/graphql/graphiql/commit/115c1c0281b3bcba6d2ae13f0df51e2cb1d0c24c) Thanks [@TuvalSimha](https://github.com/TuvalSimha)! - Add a new prop to GraphiQL component: `forcedTheme` to force the theme and hide the theme switcher.
+
 ## 3.2.3
 
 ### Patch Changes
