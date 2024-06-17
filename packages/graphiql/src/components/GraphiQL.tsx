@@ -223,8 +223,10 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * This is useful when you want to make sure that GraphiQL is always
      * rendered with a specific theme
      */
-    forcedTheme?: 'light' | 'dark' | 'system';
+    forcedTheme?: (typeof THEMES)[number];
   };
+
+const THEMES = ['light', 'dark', 'system'] as const;
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -233,6 +235,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
+  const forcedTheme = props.forcedTheme; // eslint-disable-line prefer-destructuring
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
@@ -241,18 +244,12 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    switch (props.forcedTheme) {
-      case 'light':
-        setTheme('light');
-        break;
-      case 'dark':
-        setTheme('dark');
-        break;
-      case 'system':
-        setTheme(null);
-        break;
+    if (forcedTheme === 'system') {
+      setTheme(null);
+    } else if (forcedTheme === 'light' || forcedTheme === 'dark') {
+      setTheme(forcedTheme);
     }
-  }, [props.forcedTheme, setTheme]);
+  }, [forcedTheme, setTheme]);
 
   const PluginContent = pluginContext?.visiblePlugin?.content;
 
@@ -794,7 +791,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               </ButtonGroup>
             </div>
           ) : null}
-          {!props.forcedTheme && (
+          {!forcedTheme && (
             <div className="graphiql-dialog-section">
               <div>
                 <div className="graphiql-dialog-section-title">Theme</div>
