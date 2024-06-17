@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.22.3
+
+### Patch Changes
+
+- [#3624](https://github.com/graphql/graphiql/pull/3624) [`335d830c`](https://github.com/graphql/graphiql/commit/335d830c2a4e551ef97fbeff8ed7c538ff5cd4af) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix doc explorer search input is cut off while clicking on autocomplete results
+
 ## 0.22.2
 
 ### Patch Changes
