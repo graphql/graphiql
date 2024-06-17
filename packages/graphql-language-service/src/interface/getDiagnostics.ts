@@ -75,7 +75,6 @@ export function getDiagnostics(
           );
   }
   const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
-
   try {
     ast = parse(enhancedQuery);
   } catch (error) {

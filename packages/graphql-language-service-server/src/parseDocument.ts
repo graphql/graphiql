@@ -1,41 +1,15 @@
 import { extname } from 'node:path';
 import type { CachedContent } from 'graphql-language-service';
 import { Range, Position } from 'graphql-language-service';
-import type { Logger } from 'vscode-languageserver';
+import type { Logger } from './Logger';
 
-import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
+import { findGraphQLTags } from './findGraphQLTags';
+import {
+  DEFAULT_SUPPORTED_EXTENSIONS,
+  DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+  SupportedExtensionsEnum,
+} from './constants';
 import { NoopLogger } from './Logger';
-
-export const DEFAULT_SUPPORTED_EXTENSIONS = [
-  '.js',
-  '.cjs',
-  '.mjs',
-  '.es',
-  '.esm',
-  '.es6',
-  '.ts',
-  '.jsx',
-  '.tsx',
-  '.vue',
-  '.svelte',
-  '.cts',
-  '.mts',
-];
-
-/**
- * .graphql is the officially recommended extension for graphql files
- *
- * .gql and .graphqls are included for compatibility for commonly used extensions
- *
- * GQL is a registered trademark of Google, and refers to Google Query Language.
- * GraphQL Foundation does *not* recommend using this extension or acronym for
- * referring to GraphQL.
- */
-export const DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS = [
-  '.graphql',
-  '.graphqls',
-  '.gql',
-];
 
 /**
  * Helper functions to perform requested services from client/server.
@@ -47,25 +21,25 @@ export const DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS = [
 export function parseDocument(
   text: string,
   uri: string,
-  fileExtensions: string[] = DEFAULT_SUPPORTED_EXTENSIONS,
+  fileExtensions: ReadonlyArray<SupportedExtensionsEnum> = DEFAULT_SUPPORTED_EXTENSIONS,
   graphQLFileExtensions: string[] = DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
-  logger: Logger = new NoopLogger(),
+  logger: Logger | NoopLogger = new NoopLogger(),
 ): CachedContent[] {
-  // Check if the text content includes a GraphQLV query.
+  // Check if the text content includes a GraphQL query.
   // If the text doesn't include GraphQL queries, do not proceed.
-  const ext = extname(uri);
+  const ext = extname(
+    uri,
+  ) as unknown as (typeof DEFAULT_SUPPORTED_EXTENSIONS)[number];
+  if (!text || text === '') {
+    return [];
+  }
+
   if (fileExtensions.includes(ext)) {
-    if (DEFAULT_TAGS.includes(text)) {
-      return [];
-    }
     const templates = findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
   if (graphQLFileExtensions.includes(ext)) {
     const query = text;
-    if (!query && query !== '') {
-      return [];
-    }
     const lines = query.split('\n');
     const range = new Range(
       new Position(0, 0),
@@ -73,5 +47,5 @@ export function parseDocument(
     );
     return [{ query, range }];
   }
-  return [{ query: text, range: null }];
+  return [];
 }

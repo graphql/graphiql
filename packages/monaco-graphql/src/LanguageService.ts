@@ -15,7 +15,10 @@ import {
   Source,
 } from 'graphql';
 import picomatch from 'picomatch-browser';
-import type { IPosition } from 'graphql-language-service';
+import type {
+  AutocompleteSuggestionOptions,
+  IPosition,
+} from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -46,7 +49,7 @@ export class LanguageService {
   private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
     null;
   private _externalFragmentDefinitionsString: string | null = null;
-  private _fillLeafsOnComplete?: boolean = false;
+  private _completionSettings: AutocompleteSuggestionOptions;
   constructor({
     parser,
     schemas,
@@ -54,6 +57,7 @@ export class LanguageService {
     externalFragmentDefinitions,
     customValidationRules,
     fillLeafsOnComplete,
+    completionSettings,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -63,7 +67,11 @@ export class LanguageService {
     if (parser) {
       this._parser = parser;
     }
-    this._fillLeafsOnComplete = fillLeafsOnComplete;
+    this._completionSettings = {
+      ...completionSettings,
+      fillLeafsOnComplete:
+        completionSettings?.fillLeafsOnComplete ?? fillLeafsOnComplete,
+    };
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -214,7 +222,7 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      { uri, fillLeafsOnComplete: this._fillLeafsOnComplete },
+      { uri, ...this._completionSettings },
     );
   };
   /**

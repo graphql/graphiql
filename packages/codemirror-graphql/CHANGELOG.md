@@ -1,5 +1,31 @@
 # Change Log
 
+## 2.0.12
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service@5.2.1
+
+## 2.0.11
+
+### Patch Changes
+
+- [#3567](https://github.com/graphql/graphiql/pull/3567) [`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - tooltip a tag's click listener calls event.preventDefault() to stop navigating away from page
+
+## 2.0.10
+
+### Patch Changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+
 ## 2.0.9
 
 ### Patch Changes

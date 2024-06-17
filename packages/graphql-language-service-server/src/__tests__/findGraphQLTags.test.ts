@@ -7,16 +7,24 @@
  *
  */
 
+import { Position, Range } from 'graphql-language-service';
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 jest.mock('../Logger');
 
 import { NoopLogger } from '../Logger';
+import { SupportedExtensionsEnum } from '../constants';
 
 describe('findGraphQLTags', () => {
   const logger = new NoopLogger();
-  const findGraphQLTags = (text: string, ext: string) =>
+  const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
+
+  it('returns empty for files without asts', () => {
+    const text = '// just a comment';
+    const contents = findGraphQLTags(text, '.js');
+    expect(contents.length).toEqual(0);
+  });
 
   it('finds queries in tagged templates', async () => {
     const text = `
@@ -75,6 +83,36 @@ query Test {
         ...FragmentsComment
       }
     }
+    
+    `);
+  });
+
+  it('finds queries in call expressions with with newlines preceding the template', async () => {
+    const text = `
+    import {gql} from 'react-apollo';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = gql(
+  \`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \`);
+    
+    export function Example(arg: string) {}`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
     `);
   });
 
@@ -104,6 +142,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -114,9 +153,7 @@ import {B} from 'B';
 import A from './A';
 
 
-const QUERY: string = 
-/* GraphQL */ 
-\`
+const QUERY: string = /* GraphQL */ \`
 query Test {
   test {
     value
@@ -136,6 +173,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -315,15 +353,46 @@ query {id}`);
 
   it('finds queries in tagged templates in Svelte using normal <script>', async () => {
     const text = `
-<script>
-gql\`
-query {id}
-\`;
+    <script context="module">
+    const query = graphql(\`
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+\`)
+    export async function load({fetch}) {
+        return { 
+            props: {
+                _data: await fetch({
+                    text: query
+                })
+              }
+            }
+        }
+  
 </script>
 `;
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
-query {id}`);
+    query AllCharacters {
+        characters {
+            results {
+                name
+                id
+                image
+            }
+        }
+    }
+`);
+
+    expect(JSON.stringify(contents[0].range)).toEqual(
+      JSON.stringify(new Range(new Position(2, 29), new Position(12, 0))),
+    );
   });
 
   it('no crash in Svelte files without <script>', async () => {
@@ -447,5 +516,79 @@ export function Example(arg: string) {}`;
 
     const contents = findGraphQLTags(text, '.js');
     expect(contents.length).toEqual(0);
+  });
+  it('handles full svelte example', () => {
+    const text = `
+    <script>
+    import { ApolloClient, gql } from '@apollo/client';
+    import { setClient, getClient, query } from 'svelte-apollo';
+    import { onMount } from 'svelte';
+    let country;
+    const QUERY = gql\`
+        query GetCountryData {
+            countries(namePrefix: "America") {
+                edges {
+                    node {
+                        name
+                        flagImageUri
+                    }
+                }
+            }
+        }
+    \`;
+    const client = new ApolloClient({
+        uri: 'https://geodb-cities-graphql.p.rapidapi.com/',
+    });
+    setClient(client);
+    onMount(async () => {
+        const response = query(client, { query: QUERY });
+        country = response.data;
+    });
+</script>
+<div>
+    {#if country}
+        <h2>
+            {country.name}
+        </h2>
+        <img src={country.flagImageUri} alt="Country Flag" />
+    {:else}
+        <p>loading...</p>
+    {/if}
+</div>
+    `;
+    const contents = findGraphQLTags(text, '.svelte');
+    expect(contents.length).toEqual(1);
+  });
+  it('handles full astro example', () => {
+    const text = `
+    ---
+    const gql = String.raw;
+    const response = await fetch("https://swapi-graphql.netlify.app/.netlify/functions/index",
+      {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          query: gql\`
+            query getFilm ($id:ID!) {
+              film(id: $id) {
+                title
+                releaseDate
+              }
+            }
+          \`,
+          variables: {
+            id: "XM6MQ==",
+          },
+        }),
+      });
+
+    const json = await response.json();
+    const { film } = json.data;
+    ---
+    <h1>Fetching information about Star Wars: A New Hope</h1>
+    <h2>Title: {film.title}</h2>
+    <p>Year: {film.releaseDate}</p>`;
+    const contents = findGraphQLTags(text, '.astro');
+    expect(contents.length).toEqual(1);
   });
 });

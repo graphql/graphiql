@@ -1,6 +1,6 @@
 {
-  "fileTypes": ["scala"],
-  "injectionSelector": "L:source -string -comment",
+  "scopeName": "inline.graphql.scala",
+  "injectionSelector": "L:(meta.embedded.block.scala | source.scala -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
@@ -70,6 +70,5 @@
         }
       ]
     }
-  ],
-  "scopeName": "inline.graphql.scala"
+  ]
 }

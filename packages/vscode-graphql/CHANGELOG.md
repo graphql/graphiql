@@ -1,5 +1,237 @@
 # Change Log
 
+## 0.11.0
+
+### Minor Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fix many schema and fragment lifecycle issues, not all of them, but many related to cacheing. Note: this makes `cacheSchemaForLookup` enabled by default again for schema first contexts.
+
+  This fixes multiple cacheing bugs, upon addomg some in-depth integration test coverage for the LSP server. It also solves several bugs regarding loading config types, and properly restarts the server and invalidates schema when there are config changes.
+
+  ### Bugfix Summary
+
+  - configurable polling updates for network and other code first schema configuration, set to a 30s interval by default. powered by `schemaCacheTTL` which can be configured in the IDE settings (vscode, nvim) or in the graphql config file. (1)
+  - jump to definition in embedded files offset bug, for both fragments and code files with SDL strings
+  - cache invalidation for fragments (fragment lookup/autcoomplete data is more accurate, but incomplete/invalid fragments still do not autocomplete or validate, and remember fragment options always filter/validate by the `on` type!)
+  - schema cache invalidation for schema files - schema updates as you change the SDL files, and the generated file for code first by the `schemaCacheTTL` setting
+  - schema definition lookups & autocomplete crossing over into the wrong project
+
+  **Notes**
+
+  1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
+
+  ### Known Bugs Fixed
+
+  - #3318
+  - #2357
+  - #3469
+  - #2422
+  - #2820
+  - many more!
+
+  ### Test Improvements
+
+  - new, high level integration spec suite for the LSP with a matching test utility
+  - more unit test coverage
+  - **total increased test coverage of about 25% in the LSP server codebase.**
+  - many "happy paths" covered for both schema and code first contexts
+  - many bugs revealed (and their source)
+
+  ### What's next?
+
+  Another stage of the rewrite is already almost ready. This will fix even more bugs and improve memory usage, eliminate redundant parsing and ensure that graphql config's loaders do _all_ of the parsing and heavy lifting, thus honoring all the configs as well. It also significantly reduces the code complexity.
+
+  There is also a plan to match Relay LSP's lookup config for either IDE (vscode, nvm, etc) settings as they provide, or by loading modules into your `graphql-config`!
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Introduce `locateCommand` based on Relay LSP `pathToLocateCommand`:
+
+  Now with `<graphql config>.extensions.languageService.locateCommand`, you can specify either the [existing signature](https://marketplace.visualstudio.com/items?itemName=meta.relay#relay.pathtolocatecommand-default-null) for relay, with the same callback parameters and return signature (of a string delimited by `:` characters), or you can return an object with {uri, range} for the exact set of coordinates for the destination range. the function can be sync or async.
+
+  Relay LSP currently supports `Type` and `Type.field` for the 2nd argument. Ours also returns `Type.field(argument)` as a point of reference. It works with object types, input types, fragments, executable definitions and their fields, and should work for directive definitions as well.
+
+  In the case of unnamed types such as fragment spreads, they return the name of the implemented type currently, but I'm curious what users prefer here. I assumed that some people may want to not be limited to only using this for SDL type definition lookups. Also look soon to see `locateCommand` support added for symbols, outline, and coming references and implementations.
+
+  The module at the path you specify in relay LSP for `pathToLocateCommand` should work as such.
+
+  ```ts
+  // import it
+  import { locateCommand } from './graphql/tooling/lsp/locate.js';
+  export default {
+    languageService: {
+      locateCommand,
+    },
+
+    projects: {
+      a: {
+        schema: 'https://localhost:8000/graphql',
+        documents: './a/**/*.{ts,tsx,jsx,js,graphql}',
+      },
+      b: {
+        schema: './schema/ascode.ts',
+        documents: './b/**/*.{ts,tsx,jsx,js,graphql}',
+      },
+    },
+  };
+  ```
+
+  ```ts
+  // or define it inline
+
+  import { type LocateCommand } from 'graphql-language-service-server';
+
+  // relay LSP style
+  const locateCommand = (projectName: string, typePath: string) => {
+    const { path, startLine, endLine } = ourLookupUtility(
+      projectName,
+      typePath,
+    );
+    return `${path}:${startLine}:${endLine}`;
+  };
+
+  // an example with our alternative return signature
+  const locateCommand: LocateCommand = (projectName, typePath, info) => {
+    // pass more info, such as GraphQLType with the ast node. info.project is also available if you need it
+    const { path, range } = ourLookupUtility(
+      projectName,
+      typePath,
+      info.type.node,
+    );
+    return { uri: path, range }; // range.start.line/range.end.line
+  };
+
+  export default {
+    languageService: {
+      locateCommand,
+    },
+    schema: 'https://localhost:8000/graphql',
+    documents: './**/*.{ts,tsx,jsx,js,graphql}',
+  };
+  ```
+
+  Passing a string as a module path to resolve is coming in a follow-up release. Then it can be used with `.yml`, `.toml`, `.json`, `package.json#graphql`, etc
+
+  For now this was a quick baseline for a feature asked for in multiple channels!
+
+  Let us know how this works, and about any other interoperability improvements between our graphql LSP and other language servers (relay, intellij, etc) used by you and colleauges in your engineering organisations. We are trying our best to keep up with the awesome innovations they have 👀!
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d), [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d), [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service-server@2.13.0
+
+## 0.9.3
+
+### Patch Changes
+
+- [#3549](https://github.com/graphql/graphiql/pull/3549) [`e5efc97e`](https://github.com/graphql/graphiql/commit/e5efc97e10ba237d8209859a24cda826b9899832) Thanks [@acao](https://github.com/acao)! - Fix OpenVSX build by re-using the vsce build (astro compiler bug)
+
+## 0.9.2
+
+### Patch Changes
+
+- [#3543](https://github.com/graphql/graphiql/pull/3543) [`defc126b`](https://github.com/graphql/graphiql/commit/defc126b107961d7a4ba093b35b1d77bb7018a79) Thanks [@acao](https://github.com/acao)! - Temporarily revert a syntax highlighting bugfix that caused more bugs
+
+## 0.9.1
+
+### Patch Changes
+
+- [#3519](https://github.com/graphql/graphiql/pull/3519) [`8188e3e6`](https://github.com/graphql/graphiql/commit/8188e3e6fd979bcf2fbdf9568deb0c88d0df99e2) Thanks [@acao](https://github.com/acao)! - bump ovsx
+
+## 0.9.0
+
+### Minor Changes
+
+- [#3475](https://github.com/graphql/graphiql/pull/3475) [`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3) Thanks [@XiNiHa](https://github.com/XiNiHa)! - Add Astro file support
+
+### Patch Changes
+
+- [#3514](https://github.com/graphql/graphiql/pull/3514) [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56) Thanks [@acao](https://github.com/acao)! - fix svelte parsing, re-load config only on config changes
+
+  - fix esbuild bundling of `typescript` for `svelte2tsx`!
+  - confirm with manual testing of the vsix extension bundle ✅
+  - ensure that the server only attemps to parse opened/saved files when the server is activated or the file is a config file
+
+- Updated dependencies [[`98af5307`](https://github.com/graphql/graphiql/commit/98af53071bb27afc0afc82d66f539c1ac08315b3), [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56)]:
+  - graphql-language-service-server@2.12.0
+
+## 0.8.25
+
+### Patch Changes
+
+- [#3503](https://github.com/graphql/graphiql/pull/3503) [`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84) Thanks [@acao](https://github.com/acao)! - Temporarily revert svelte parsing until we can fix bundling issues with svelte2tsx. For now we return to using the vue parser to parse svelte files which will invariably cause some issues, such as being off by several characters
+
+- Updated dependencies [[`6c7adf85`](https://github.com/graphql/graphiql/commit/6c7adf85c10d92cd3708a6dab44cb5b0f965fb84)]:
+  - graphql-language-service-server@2.11.10
+
+## 0.8.24
+
+### Patch Changes
+
+- [#3500](https://github.com/graphql/graphiql/pull/3500) [`34d0a976`](https://github.com/graphql/graphiql/commit/34d0a97688d7b83949f34bb4b2effebe4bafae79) Thanks [@acao](https://github.com/acao)! - Add typescript as a dependency for `svelte2tsx`
+
+- Updated dependencies [[`34d0a976`](https://github.com/graphql/graphiql/commit/34d0a97688d7b83949f34bb4b2effebe4bafae79)]:
+  - graphql-language-service-server@2.11.9
+
+## 0.8.23
+
+### Patch Changes
+
+- [#3498](https://github.com/graphql/graphiql/pull/3498) [`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b) Thanks [@acao](https://github.com/acao)! - Add typescript as a dependency for `svelte2tsx`
+
+- Updated dependencies [[`3bfb2877`](https://github.com/graphql/graphiql/commit/3bfb28777457f783852dfe5c9af739470194d33b)]:
+  - graphql-language-service-server@2.11.8
+
+## 0.8.22
+
+### Patch Changes
+
+- [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
+
+  - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
+  - make textmate injectors more performant and specific, eliminate redundant config
+
+  Big thanks to [@RedCMD](https://github.com/RedCMD) and [@aeschli](https://github.com/aeschli) for your help!
+
+- [#3488](https://github.com/graphql/graphiql/pull/3488) [`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e) Thanks [@acao](https://github.com/acao)! - Bump graphql & graphql-tools version to fix potential runtime security bugs
+
+- [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18) Thanks [@acao](https://github.com/acao)! - Fixes to svelte parsing, tag parsing refactor
+
+- Updated dependencies [[`d5028be2`](https://github.com/graphql/graphiql/commit/d5028be252ed385af972e090dda22788835da71e), [`22771f35`](https://github.com/graphql/graphiql/commit/22771f35d00e4f80cb851e2a1f93db074e238e18)]:
+  - graphql-language-service-server@2.11.7
+
+## 0.8.21
+
+### Patch Changes
+
+- [#3480](https://github.com/graphql/graphiql/pull/3480) [`a1fced10`](https://github.com/graphql/graphiql/commit/a1fced10bf37a339709243a9576b3fdcae832fb8) Thanks [@craig-riecke](https://github.com/craig-riecke)! - Fix execution extension esbuild bundling
+
+## 0.8.20
+
+### Patch Changes
+
+- Updated dependencies [[`75ccd72c`](https://github.com/graphql/graphiql/commit/75ccd72c660c3b20cafa38da01d18a91ea24c7db)]:
+  - graphql-language-service-server@2.11.6
+
+## 0.8.19
+
+### Patch Changes
+
+- Updated dependencies [[`530ef47a`](https://github.com/graphql/graphiql/commit/530ef47ac6bbcb24cedc453bf802626d4a630e45)]:
+  - graphql-language-service-server@2.11.5
+
+## 0.8.18
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service-server@2.11.4
+
 ## 0.8.17
 
 ### Patch Changes

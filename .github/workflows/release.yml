@@ -19,7 +19,6 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: Cache node modules
         uses: actions/cache@v3

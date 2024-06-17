@@ -1,5 +1,72 @@
 # @graphiql/react
 
+## 0.22.2
+
+### Patch Changes
+
+- [#3602](https://github.com/graphql/graphiql/pull/3602) [`03ab3a6b`](https://github.com/graphql/graphiql/commit/03ab3a6b76378591ef79a828d80cc69b0b8f2842) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid using deprecated Component.defaultProps for icon titles
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service@5.2.1
+  - codemirror-graphql@2.0.12
+
+## 0.22.1
+
+### Patch Changes
+
+- [#3597](https://github.com/graphql/graphiql/pull/3597) [`224b43f5`](https://github.com/graphql/graphiql/commit/224b43f5473456f264a82998d48a34a441537f54) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix TypeScript type of the `label` prop of the `Tooltip` component
+
+## 0.22.0
+
+### Minor Changes
+
+- [#3580](https://github.com/graphql/graphiql/pull/3580) [`d48f4ef5`](https://github.com/graphql/graphiql/commit/d48f4ef56578dad7ec90f33458353791e463ef7b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Implement correct merging of incremental responses (@defer/@stream)
+
+## 0.21.0
+
+### Minor Changes
+
+- [#3569](https://github.com/graphql/graphiql/pull/3569) [`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Update to markdown-it 14.x
+
+## 0.20.4
+
+### Patch Changes
+
+- Updated dependencies [[`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03)]:
+  - codemirror-graphql@2.0.11
+
+## 0.20.3
+
+### Patch Changes
+
+- [#3526](https://github.com/graphql/graphiql/pull/3526) [`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775) Thanks [@benjie](https://github.com/benjie)! - Add new `useOptimisticState` hook that can wrap a useState-like hook to perform optimistic caching of state changes, this helps to avoid losing characters when the user is typing rapidly. Example of usage: `const [state, setState] = useOptimisticState(useOperationsEditorState());`
+
+## 0.20.2
+
+### Patch Changes
+
+- [#3447](https://github.com/graphql/graphiql/pull/3447) [`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02) Thanks [@acao](https://github.com/acao)! - Remove initialState for new hooks, add `additionalComponent` to toolbar to allow buttons to use context
+
+## 0.20.1
+
+### Patch Changes
+
+- [#3445](https://github.com/graphql/graphiql/pull/3445) [`39bf31d1`](https://github.com/graphql/graphiql/commit/39bf31d15b1e7fb5f235ec9adc1ce8081536de4a) Thanks [@acao](https://github.com/acao)! - Export new hooks
+
+## 0.20.0
+
+### Minor Changes
+
+- [#3443](https://github.com/graphql/graphiql/pull/3443) [`f6afd22d`](https://github.com/graphql/graphiql/commit/f6afd22d3f5a20089759042f16fd865646a32038) Thanks [@acao](https://github.com/acao)! - Add useHeadersEditorState and generic useEditorState hooks
+
+## 0.19.4
+
+### Patch Changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+  - codemirror-graphql@2.0.10
+
 ## 0.19.3
 
 ### Patch Changes

@@ -1,5 +1,93 @@
 # Change Log
 
+## 3.2.3
+
+### Patch Changes
+
+- Updated dependencies [[`03ab3a6b`](https://github.com/graphql/graphiql/commit/03ab3a6b76378591ef79a828d80cc69b0b8f2842), [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - @graphiql/react@0.22.2
+  - graphql-language-service@5.2.1
+
+## 3.2.2
+
+### Patch Changes
+
+- Updated dependencies [[`224b43f5`](https://github.com/graphql/graphiql/commit/224b43f5473456f264a82998d48a34a441537f54)]:
+  - @graphiql/react@0.22.1
+
+## 3.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`d48f4ef5`](https://github.com/graphql/graphiql/commit/d48f4ef56578dad7ec90f33458353791e463ef7b)]:
+  - @graphiql/react@0.22.0
+
+## 3.2.0
+
+### Minor Changes
+
+- [#3569](https://github.com/graphql/graphiql/pull/3569) [`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5) Thanks [@AaronMoat](https://github.com/AaronMoat)! - Update to markdown-it 14.x
+
+### Patch Changes
+
+- Updated dependencies [[`5d051054`](https://github.com/graphql/graphiql/commit/5d05105469c3f0cbeb5e294da1cf6ff2355e4eb5)]:
+  - @graphiql/react@0.21.0
+
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @graphiql/react@0.20.4
+
+## 3.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b6ea316`](https://github.com/graphql/graphiql/commit/2b6ea3166c8d8e152f16d87c878aa8a66f1b3775)]:
+  - @graphiql/react@0.20.3
+
+## 3.1.0
+
+### Minor Changes
+
+- [#3408](https://github.com/graphql/graphiql/pull/3408) [`a8080197`](https://github.com/graphql/graphiql/commit/a80801970e095e493eb0fda7687766f103bf701e) Thanks [@TuvalSimha](https://github.com/TuvalSimha)! - Allow disabling tabs and added new prop `disableTabs`
+
+## 3.0.10
+
+### Patch Changes
+
+- [#3439](https://github.com/graphql/graphiql/pull/3439) [`d07d5fc0`](https://github.com/graphql/graphiql/commit/d07d5fc0cf764518bc1184ef168361cedf61540b) Thanks [@xonx4l](https://github.com/xonx4l)! - FIX: Unexpected duplicate CSS "display" property
+
+## 3.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`e89c432d`](https://github.com/graphql/graphiql/commit/e89c432d8d2b91f087b683360f23e0686462bc02)]:
+  - @graphiql/react@0.20.2
+
+## 3.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`39bf31d1`](https://github.com/graphql/graphiql/commit/39bf31d15b1e7fb5f235ec9adc1ce8081536de4a)]:
+  - @graphiql/react@0.20.1
+
+## 3.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`f6afd22d`](https://github.com/graphql/graphiql/commit/f6afd22d3f5a20089759042f16fd865646a32038)]:
+  - @graphiql/react@0.20.0
+
+## 3.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c), [`7b00774a`](https://github.com/graphql/graphiql/commit/7b00774affad1f25253ce49f1f48c9e3f372808c)]:
+  - graphql-language-service@5.2.0
+  - @graphiql/react@0.19.4
+
 ## 3.0.5
 
 ### Patch Changes

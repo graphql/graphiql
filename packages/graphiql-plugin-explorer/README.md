@@ -25,7 +25,6 @@ npm i -S react react-dom graphql
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import { useState } from 'react';
 
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
@@ -37,14 +36,7 @@ const fetcher = createGraphiQLFetcher({
 // pass the explorer props here if you want
 const explorer = explorerPlugin();
 
-return (
-  <GraphiQL
-    fetcher={fetcher}
-    query={query}
-    onEditQuery={setQuery}
-    plugins={[explorer]}
-  />
-);
+return <GraphiQL fetcher={fetcher} plugins={[explorer]} />;
 ```
 
 ## CDN bundles
