@@ -115,17 +115,11 @@ export default async function startServer(
       writer = new SocketMessageWriter(socket, encoding ?? 'utf-8');
 
       break;
+
     case 'stream':
-      const server = createLanguageServerConnection(
-        // @ts-expect-error this still works, just a type mismatch
-        process.stdin,
-        process.stderr,
-        {
-          connectionStrategy: 'stdio',
-        },
-      );
-      server.listen();
-      return server;
+      reader = new StreamMessageReader(process.stdin);
+      writer = new StreamMessageWriter(process.stdout);
+      break;
 
     default:
       reader = new IPCMessageReader(process);

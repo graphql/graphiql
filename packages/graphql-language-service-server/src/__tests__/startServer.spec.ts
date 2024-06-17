@@ -1,5 +1,7 @@
 import startServer from '../startServer';
-
+// TODO: test more if needed?
+// these currently just ensure that the server doesn't crash
+// on init in various
 describe('startServer', () => {
   let c;
   afterEach(async () => {
