@@ -1,5 +1,14 @@
 # graphql-language-service-cli
 
+## 3.4.1
+
+### Patch Changes
+
+- [#3628](https://github.com/graphql/graphiql/pull/3628) [`7fad662f`](https://github.com/graphql/graphiql/commit/7fad662f77eae9f842bb55cb93cb98df33bbc1ed) Thanks [@acao](https://github.com/acao)! - fix the lsp stream interface for stdin/out (neovim, etc)
+
+- Updated dependencies [[`7fad662f`](https://github.com/graphql/graphiql/commit/7fad662f77eae9f842bb55cb93cb98df33bbc1ed)]:
+  - graphql-language-service-server@2.13.1
+
 ## 3.4.0
 
 ### Minor Changes
