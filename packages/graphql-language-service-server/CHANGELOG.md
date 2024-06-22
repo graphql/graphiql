@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.13.1
+
+### Patch Changes
+
+- [#3628](https://github.com/graphql/graphiql/pull/3628) [`7fad662f`](https://github.com/graphql/graphiql/commit/7fad662f77eae9f842bb55cb93cb98df33bbc1ed) Thanks [@acao](https://github.com/acao)! - fix the lsp stream interface for stdin/out (neovim, etc)
+
 ## 2.13.0
 
 ### Minor Changes
