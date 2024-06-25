@@ -706,7 +706,6 @@ export class MessageProcessor {
       await this._invalidateCache({ uri, version }, uri, contents);
       await this._updateFragmentDefinition(uri, contents);
       await this._updateObjectTypeDefinition(uri, contents, project);
-      await this._updateSchemaIfChanged(project, uri);
       return { contents, version };
     } catch {
       return { contents: [], version: 0 };
@@ -1299,27 +1298,6 @@ export class MessageProcessor {
         contents,
       );
     }
-  }
-
-  private async _updateSchemaIfChanged(
-    project: GraphQLProjectConfig,
-    uri: Uri,
-  ): Promise<void> {
-    await Promise.all(
-      unwrapProjectSchema(project).map(async schema => {
-        const schemaFilePath = path.resolve(project.dirpath, schema);
-        const uriFilePath = URI.parse(uri).fsPath;
-        if (uriFilePath === schemaFilePath) {
-          try {
-            const file = await readFile(schemaFilePath, 'utf-8');
-            // only invalidate the schema cache if we can actually parse the file
-            // otherwise, leave the last valid one in place
-            parse(file, { noLocation: true });
-            this._graphQLCache.invalidateSchemaCacheForProject(project);
-          } catch {}
-        }
-      }),
-    );
   }
 
   private async _updateObjectTypeDefinition(
