@@ -79,7 +79,7 @@
     "html-webpack-plugin": "^5.5.0",
     "identity-obj-proxy": "^3.0.0",
     "mini-css-extract-plugin": "^2.7.2",
-    "postcss": "8.4.21",
+    "postcss": "8.4.31",
     "postcss-import": "15.1.0",
     "postcss-loader": "7.0.2",
     "postcss-preset-env": "^8.0.1",
