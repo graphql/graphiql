@@ -1,0 +1,31 @@
+.graphiql-increments-editors {
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-16);
+}
+
+.graphiql-increment-editor {
+  padding: var(--px-4) 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.graphiql-increment-editor + .graphiql-increment-editor {
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
+}
+
+.graphiql-increment-editor-toggle,
+button.graphiql-increment-editor-toggle {
+  padding: var(--px-2) var(--px-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.graphiql-increment-editor-chevron {
+  height: var(--px-12);
+  width: var(--px-12);
+  margin-left: var(--px-4);
+}

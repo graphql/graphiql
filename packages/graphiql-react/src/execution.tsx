@@ -9,17 +9,22 @@ import {
 import {
   ExecutionResult,
   FragmentDefinitionNode,
-  GraphQLError,
+  getOperationAST,
+  OperationTypeNode,
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import setValue from 'set-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { UseAutoCompleteLeafsArgs } from './editor/hooks';
+import { IncrementalPayload } from './editor/tabs';
 import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
+import {
+  IncrementalResult,
+  mergeIncrementalResult,
+} from './utility/incremental';
 
 export type ExecutionContextType = {
   /**
@@ -30,8 +35,9 @@ export type ExecutionContextType = {
   isFetching: boolean;
   /**
    * If there is currently a GraphQL request in-flight. For multi-part
-   * requests like subscriptions, this will be `true` until the last batch
-   * has been fetched or the connection is closed from the client.
+   * requests (subscriptions, defer, stream, etc.), this will be `true` until
+   * the last batch has been fetched or the connection is closed from the
+   * client.
    */
   isSubscribed: boolean;
   /**
@@ -119,9 +125,25 @@ export function ExecutionContextProvider({
       return;
     }
 
-    const setResponse = (value: string) => {
+    // Clear any incremental results of previous runs
+    updateActiveTabValues({ incrementalPayloads: [] });
+
+    const startTime = Date.now();
+    const incrementalPayloads: IncrementalPayload[] = [];
+    const setResponse = (
+      value: string,
+      incrementalPayload?: ExecutionResult | IncrementalResult[],
+    ) => {
       responseEditor.setValue(value);
-      updateActiveTabValues({ response: value });
+
+      if (incrementalPayload) {
+        incrementalPayloads.push({
+          timing: Date.now() - startTime,
+          payload: incrementalPayload,
+        });
+      }
+
+      updateActiveTabValues({ response: value, incrementalPayloads });
     };
 
     queryIdRef.current += 1;
@@ -179,6 +201,12 @@ export function ExecutionContextProvider({
 
     const opName = operationName ?? queryEditor.operationName ?? undefined;
 
+    let isSubscription = false;
+    if (queryEditor.documentAST) {
+      const operation = getOperationAST(queryEditor.documentAST, opName);
+      isSubscription = operation?.operation === OperationTypeNode.SUBSCRIPTION;
+    }
+
     history?.addToHistory({
       query,
       variables: variablesString,
@@ -188,9 +216,9 @@ export function ExecutionContextProvider({
 
     try {
       const fullResponse: ExecutionResult = {};
-      const handleResponse = (result: ExecutionResult) => {
-        // A different query was dispatched in the meantime, so don't
-        // show the results of this one.
+      const handleResponse = (result: ExecutionResult, isStreaming = false) => {
+        // A different query was dispatched in the meantime, so discard the
+        // results of this one.
         if (queryId !== queryIdRef.current) {
           return;
         }
@@ -211,11 +239,11 @@ export function ExecutionContextProvider({
           }
 
           setIsFetching(false);
-          setResponse(formatResult(fullResponse));
+          setResponse(formatResult(fullResponse), maybeMultipart);
         } else {
           const response = formatResult(result);
           setIsFetching(false);
-          setResponse(response);
+          setResponse(response, isStreaming ? result : undefined);
         }
       };
 
@@ -231,15 +259,35 @@ export function ExecutionContextProvider({
         },
       );
 
+      // Subscriptions are always considered streamed responses
+      let isStreaming = isSubscription;
+
       const value = await Promise.resolve(fetch);
       if (isObservable(value)) {
         // If the fetcher returned an Observable, then subscribe to it, calling
         // the callback on each next value, and handling both errors and the
         // completion of the Observable.
+        //
+        // Note: The naming of the React state assumes that in this case the
+        // operation is a subscription (which in practice it most likely is),
+        // but technically it can also be a query or mutation where the fetcher
+        // decided to return an observable with either a single payload or
+        // multiple payloads (defer/stream). As the naming is part of the
+        // public API of this context we decide not to change it until defer/
+        // stream is officially part of the GraphQL spec.
         setSubscription(
           value.subscribe({
             next(result) {
-              handleResponse(result);
+              handleResponse(
+                result,
+                // If the initial payload contains `hasNext` for a query or
+                // mutation then we know it's a streamed response.
+                isStreaming || result.hasNext,
+              );
+
+              // If there's more than one payload then we're streaming, so set
+              // this flag to `true` for any future calls to `next`.
+              isStreaming = true;
             },
             error(error: Error) {
               setIsFetching(false);
@@ -258,9 +306,20 @@ export function ExecutionContextProvider({
         setSubscription({
           unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
         });
+
         for await (const result of value) {
-          handleResponse(result);
+          handleResponse(
+            result,
+            // If the initial payload contains `hasNext` for a query or
+            // mutation then we know it's a streamed response.
+            isStreaming || result.hasNext,
+          );
+
+          // If there's more than one payload then we're streaming, so set this
+          // flag to `true` for any future loop iterations.
+          isStreaming = true;
         }
+
         setIsFetching(false);
         setSubscription(null);
       } else {
@@ -332,62 +391,4 @@ function tryParseJsonObject({
     throw new Error(errorMessageType);
   }
   return parsed;
-}
-
-type IncrementalResult = {
-  data?: Record<string, unknown> | null;
-  errors?: ReadonlyArray<GraphQLError>;
-  extensions?: Record<string, unknown>;
-  hasNext?: boolean;
-  path?: ReadonlyArray<string | number>;
-  incremental?: ReadonlyArray<IncrementalResult>;
-  label?: string;
-  items?: ReadonlyArray<Record<string, unknown>> | null;
-};
-
-/**
- * @param executionResult The complete execution result object which will be
- * mutated by merging the contents of the incremental result.
- * @param incrementalResult The incremental result that will be merged into the
- * complete execution result.
- */
-function mergeIncrementalResult(
-  executionResult: ExecutionResult,
-  incrementalResult: IncrementalResult,
-): void {
-  const path = ['data', ...(incrementalResult.path ?? [])];
-
-  if (incrementalResult.items) {
-    for (const item of incrementalResult.items) {
-      setValue(executionResult, path.join('.'), item);
-      // Increment the last path segment (the array index) to merge the next item at the next index
-      // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
-      (path[path.length - 1] as number)++;
-    }
-  }
-
-  if (incrementalResult.data) {
-    setValue(executionResult, path.join('.'), incrementalResult.data, {
-      merge: true,
-    });
-  }
-
-  if (incrementalResult.errors) {
-    executionResult.errors ||= [];
-    (executionResult.errors as GraphQLError[]).push(
-      ...incrementalResult.errors,
-    );
-  }
-
-  if (incrementalResult.extensions) {
-    setValue(executionResult, 'extensions', incrementalResult.extensions, {
-      merge: true,
-    });
-  }
-
-  if (incrementalResult.incremental) {
-    for (const incrementalSubResult of incrementalResult.incremental) {
-      mergeIncrementalResult(executionResult, incrementalSubResult);
-    }
-  }
 }
