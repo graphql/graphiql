@@ -163,7 +163,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
 }
 
 export function explorerPlugin(
-  props: GraphiQLExplorerPluginProps,
+  props?: GraphiQLExplorerPluginProps,
 ): GraphiQLPlugin {
   return {
     title: 'GraphiQL Explorer',
