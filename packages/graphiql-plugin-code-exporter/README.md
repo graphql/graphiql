@@ -9,14 +9,14 @@ into the GraphiQL UI.
 Use your favorite package manager to install the package:
 
 ```sh
-npm i -S @graphiql/plugin-code-exporter
+npm install @graphiql/plugin-code-exporter
 ```
 
 The following packages are peer dependencies, so make sure you have them
 installed as well:
 
 ```sh
-npm i -S react react-dom graphql
+npm install react react-dom graphql
 ```
 
 ## Usage
@@ -27,11 +27,10 @@ for all details on available `props` and how to
 [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
 
 ```jsx
-import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
-import { GraphiQL } from 'graphiql';
 import { useState } from 'react';
-
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
 
@@ -39,10 +38,10 @@ const fetcher = createGraphiQLFetcher({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
-/*
-Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for details
-*/
-
+/**
+ * Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for
+ * details
+ */
 const removeQueryName = query =>
   query.replace(
     /^[^{(]+([{(])/,
@@ -91,7 +90,7 @@ const exporter = codeExporterPlugin({
   codeMirrorTheme: 'graphiql',
 });
 
-function GraphiQLWithExplorer() {
+function GraphiQLWithCodeExporter() {
   return (
     <GraphiQL fetcher={fetcher} defaultQuery={query} plugins={[exporter]} />
   );

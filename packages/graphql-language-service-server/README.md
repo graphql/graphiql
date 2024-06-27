@@ -42,7 +42,7 @@ Supported features include:
 ### Installation
 
 ```bash
-npm install --save graphql-language-service-server
+npm install graphql-language-service-server
 # or
 yarn add graphql-language-service-server
 ```
