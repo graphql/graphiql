@@ -1,0 +1,14 @@
+<svg
+  width="15"
+  height="15"
+  viewBox="0 0 15 15"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="currentColor"
+>
+  <circle cx="7.5" cy="7.5" r="7.5" />
+  <path
+    d="M4.64641 7.00106L6.8801 9.23256L10.5017 5.61325"
+    stroke="white"
+    stroke-width="1.5"
+  />
+</svg>

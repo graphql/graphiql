@@ -1,11 +1,20 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 import packageJSON from './package.json';
 
 const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins: [
+    react({ jsxRuntime: 'classic' }),
+    svgr({
+      exportAsDefault: true,
+      svgrOptions: {
+        titleProp: true,
+      },
+    }),
+  ],
   build: {
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
