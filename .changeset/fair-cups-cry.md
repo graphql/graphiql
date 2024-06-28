@@ -4,4 +4,4 @@
 '@graphiql/react': patch
 ---
 
-use `hsl` instead `hsla` when alpha is `1`
+when alpha is `1`, use `hsl` instead of `hsla`
