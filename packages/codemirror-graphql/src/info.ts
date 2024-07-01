@@ -100,8 +100,7 @@ CodeMirror.registerHelper(
     }
     if (
       kind === 'EnumValue' &&
-      typeInfo.enumValue &&
-      typeInfo.enumValue.description
+      typeInfo.enumValue?.description
     ) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
