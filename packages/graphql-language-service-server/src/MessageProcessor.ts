@@ -1358,7 +1358,6 @@ export class MessageProcessor {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (
         cachedDocument &&
-        textDocument &&
         textDocument?.version &&
         cachedDocument.version < textDocument.version
       ) {

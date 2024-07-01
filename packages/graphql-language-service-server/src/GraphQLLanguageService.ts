@@ -201,8 +201,6 @@ export class GraphQLLanguageService {
       typeof extensions.customValidationRules === 'function'
     ) {
       customRules = extensions.customValidationRules(this._graphQLConfig);
-
-      /* eslint-enable no-implicit-coercion */
     }
     const schema = await this._graphQLCache.getSchema(
       projectName,

@@ -127,10 +127,6 @@ export async function getDefinitionQueryResultForArgument(
   typeName: string,
   dependencies: Array<ObjectTypeInfo>,
 ): Promise<DefinitionQueryResult> {
-  dependencies.filter(
-    ({ definition }) => definition.name && definition.name.value === typeName,
-  );
-
   const definitions: Array<Definition> = [];
 
   for (const { filePath, content, definition } of dependencies) {
