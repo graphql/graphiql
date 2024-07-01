@@ -1010,9 +1010,7 @@ export class MessageProcessor {
           symbols.push(...docSymbols);
         }),
       );
-      return symbols.filter(
-        symbol => symbol?.name?.includes(params.query),
-      );
+      return symbols.filter(symbol => symbol?.name?.includes(params.query));
     }
 
     return [];
