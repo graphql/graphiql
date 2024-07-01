@@ -442,25 +442,30 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const typeSystemCompletionItems = [
-  { label: 'type', kind: CompletionItemKind.Function },
-  { label: 'interface', kind: CompletionItemKind.Function },
-  { label: 'union', kind: CompletionItemKind.Function },
-  { label: 'input', kind: CompletionItemKind.Function },
-  { label: 'scalar', kind: CompletionItemKind.Function },
-  { label: 'schema', kind: CompletionItemKind.Function },
-];
+const typeSystemCompletionItems: { label: string; kind: CompletionItemKind }[] =
+  [
+    { label: 'type', kind: CompletionItemKind.Function },
+    { label: 'interface', kind: CompletionItemKind.Function },
+    { label: 'union', kind: CompletionItemKind.Function },
+    { label: 'input', kind: CompletionItemKind.Function },
+    { label: 'scalar', kind: CompletionItemKind.Function },
+    { label: 'schema', kind: CompletionItemKind.Function },
+  ];
 
-const executableCompletionItems = [
-  { label: 'query', kind: CompletionItemKind.Function },
-  { label: 'mutation', kind: CompletionItemKind.Function },
-  { label: 'subscription', kind: CompletionItemKind.Function },
-  { label: 'fragment', kind: CompletionItemKind.Function },
-  { label: '{', kind: CompletionItemKind.Constructor },
-];
+const executableCompletionItems: { label: string; kind: CompletionItemKind }[] =
+  [
+    { label: 'query', kind: CompletionItemKind.Function },
+    { label: 'mutation', kind: CompletionItemKind.Function },
+    { label: 'subscription', kind: CompletionItemKind.Function },
+    { label: 'fragment', kind: CompletionItemKind.Function },
+    { label: '{', kind: CompletionItemKind.Constructor },
+  ];
 
 // Helper functions to get suggestions for each kinds
-function getSuggestionsForTypeSystemDefinitions(token: ContextToken) {
+function getSuggestionsForTypeSystemDefinitions(token: ContextToken): {
+  label: string;
+  kind: CompletionItemKind;
+}[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...typeSystemCompletionItems,
@@ -471,7 +476,10 @@ function getSuggestionsForExecutableDefinitions(token: ContextToken) {
   return hintList(token, executableCompletionItems);
 }
 
-function getSuggestionsForUnknownDocumentMode(token: ContextToken) {
+function getSuggestionsForUnknownDocumentMode(token: ContextToken): {
+  label: string;
+  kind: CompletionItemKind;
+}[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...executableCompletionItems,
