@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.3.3
+
+### Patch Changes
+
+- Updated dependencies [[`fdec377f`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d)]:
+  - @graphiql/react@0.22.5
+  - graphql-language-service@5.2.2
+
 ## 3.3.2
 
 ### Patch Changes
@@ -457,7 +465,7 @@
   - `GraphiQL.MenuItem`: You can use the `ToolbarMenu.Item` component from `@graphiql/react` instead.
   - `GraphiQL.Group`: Grouping multiple buttons side-by-side is not provided out-of-the box anymore in the new GraphiQL UI. If you want to implement a similar feature in the new vertical toolbar you can do so by adding your own styles for your custom toolbar elements. Example:
     ```jsx
-    import { GraphiQL } from 'graphiql';
+    import { GraphiQL } from "graphiql";
     function CustomGraphiQL() {
       return (
         <GraphiQL>
@@ -916,7 +924,7 @@
   **Usage example:**
 
   ```tsx
-  <GraphiQL onSchemaChange={schema => console.log(schema)} />
+  <GraphiQL onSchemaChange={(schema) => console.log(schema)} />
   ```
 
 ## 1.5.20

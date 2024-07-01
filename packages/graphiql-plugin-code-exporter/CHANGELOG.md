@@ -1,5 +1,12 @@
 # @graphiql/plugin-code-exporter
 
+## 3.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`fdec377f`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d)]:
+  - @graphiql/react@0.22.5
+
 ## 3.0.4
 
 ### Patch Changes
@@ -132,12 +139,12 @@
   now, instead of something like this:
 
   ```jsx
-  import { useExplorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
+  import { useExplorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { useExporterPlugin } from "@graphiql/plugin-code-exporter";
 
   const App = () => {
-    const [query, setQuery] = React.useState('');
+    const [query, setQuery] = React.useState("");
     const explorerPlugin = useExplorerPlugin({
       query,
       onEdit: setQuery,
@@ -166,17 +173,17 @@
   you can just do this:
 
   ```jsx
-  import { explorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-  import { createGraphiQLFetcher } from '@graphiql/toolkit';
+  import { explorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { codeExporterPlugin } from "@graphiql/plugin-code-exporter";
+  import { createGraphiQLFetcher } from "@graphiql/toolkit";
 
   // only invoke these inside the component lifecycle
   // if there are dynamic values, and then use useMemo() (see below)
   const explorer = explorerPlugin();
   const exporter = codeExporterPlugin({ snippets });
 
-  const fetcher = createGraphiQLFetcher({ url: '/graphql' });
+  const fetcher = createGraphiQLFetcher({ url: "/graphql" });
 
   const App = () => {
     return <GraphiQL plugins={[explorer, exporter]} fetcher={fetcher} />;
@@ -186,13 +193,13 @@
   or this, for more complex state-driven needs:
 
   ```jsx
-  import { useMemo } from 'react';
-  import { explorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+  import { useMemo } from "react";
+  import { explorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { codeExporterPlugin } from "@graphiql/plugin-code-exporter";
 
   const explorer = explorerPlugin();
-  const fetcher = createGraphiQLFetcher({ url: '/graphql' });
+  const fetcher = createGraphiQLFetcher({ url: "/graphql" });
 
   const App = () => {
     const { snippets } = useMyUserSuppliedState();
