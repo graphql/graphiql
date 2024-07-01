@@ -5,10 +5,10 @@
   "dependencies": {
     "@graphiql/toolkit": "^0.9.1",
     "graphql": "^16.8.1",
-    "graphql-language-service": "^5.2.1",
+    "graphql-language-service": "^5.2.2",
     "jsonc-parser": "^3.2.0",
     "monaco-editor": "^0.39.0",
-    "monaco-graphql": "^1.5.2",
+    "monaco-graphql": "^1.5.3",
     "prettier": "3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
