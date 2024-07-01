@@ -101,9 +101,9 @@ export class MockProject {
   }
   private mockFiles() {
     const mockFiles = { ...defaultMocks };
-    Array.from(this.fileCache).map(([filename, text]) => {
+    for (const [filename, text] of this.fileCache) {
       mockFiles[this.filePath(filename)] = text;
-    });
+    }
     mockfs(mockFiles);
   }
   public filePath(filename: string) {

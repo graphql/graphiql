@@ -144,7 +144,6 @@ module.exports = {
         'no-useless-call': 'error',
         'no-useless-concat': 'error',
         'no-useless-return': 'off',
-        '@typescript-eslint/prefer-optional-chain': 'error',
         'no-warning-comments': 'off',
         radix: 'error',
         'require-await': 'off',
@@ -355,6 +354,7 @@ module.exports = {
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
+        '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/non-nullable-type-assertion-style': 'error',

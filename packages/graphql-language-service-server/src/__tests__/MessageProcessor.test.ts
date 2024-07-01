@@ -450,7 +450,7 @@ describe('MessageProcessor', () => {
     );
     const project = messageProcessor._graphQLCache.getProjectForFile(
       test.textDocument.uri,
-    )!;
+    );
 
     const customResult = messageProcessor._getCustomLocateResult(
       project,
