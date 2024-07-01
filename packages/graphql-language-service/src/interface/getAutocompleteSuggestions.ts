@@ -442,44 +442,42 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const typeSystemCompletionItems: { label: string; kind: CompletionItemKind }[] =
-  [
-    { label: 'type', kind: CompletionItemKind.Function },
-    { label: 'interface', kind: CompletionItemKind.Function },
-    { label: 'union', kind: CompletionItemKind.Function },
-    { label: 'input', kind: CompletionItemKind.Function },
-    { label: 'scalar', kind: CompletionItemKind.Function },
-    { label: 'schema', kind: CompletionItemKind.Function },
-  ];
+const typeSystemCompletionItems: CompletionItem[] = [
+  { label: 'type', kind: CompletionItemKind.Function },
+  { label: 'interface', kind: CompletionItemKind.Function },
+  { label: 'union', kind: CompletionItemKind.Function },
+  { label: 'input', kind: CompletionItemKind.Function },
+  { label: 'scalar', kind: CompletionItemKind.Function },
+  { label: 'schema', kind: CompletionItemKind.Function },
+];
 
-const executableCompletionItems: { label: string; kind: CompletionItemKind }[] =
-  [
-    { label: 'query', kind: CompletionItemKind.Function },
-    { label: 'mutation', kind: CompletionItemKind.Function },
-    { label: 'subscription', kind: CompletionItemKind.Function },
-    { label: 'fragment', kind: CompletionItemKind.Function },
-    { label: '{', kind: CompletionItemKind.Constructor },
-  ];
+const executableCompletionItems: CompletionItem[] = [
+  { label: 'query', kind: CompletionItemKind.Function },
+  { label: 'mutation', kind: CompletionItemKind.Function },
+  { label: 'subscription', kind: CompletionItemKind.Function },
+  { label: 'fragment', kind: CompletionItemKind.Function },
+  { label: '{', kind: CompletionItemKind.Constructor },
+];
 
 // Helper functions to get suggestions for each kinds
-function getSuggestionsForTypeSystemDefinitions(token: ContextToken): {
-  label: string;
-  kind: CompletionItemKind;
-}[] {
+function getSuggestionsForTypeSystemDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...typeSystemCompletionItems,
   ]);
 }
 
-function getSuggestionsForExecutableDefinitions(token: ContextToken) {
+function getSuggestionsForExecutableDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, executableCompletionItems);
 }
 
-function getSuggestionsForUnknownDocumentMode(token: ContextToken): {
-  label: string;
-  kind: CompletionItemKind;
-}[] {
+function getSuggestionsForUnknownDocumentMode(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...executableCompletionItems,
@@ -487,7 +485,9 @@ function getSuggestionsForUnknownDocumentMode(token: ContextToken): {
   ]);
 }
 
-function getSuggestionsForExtensionDefinitions(token: ContextToken) {
+function getSuggestionsForExtensionDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, typeSystemCompletionItems);
 }
 
@@ -495,7 +495,7 @@ function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   options?: InternalAutocompleteOptions,
-): Array<CompletionItem> {
+): CompletionItem[] {
   if (typeInfo.parentType) {
     const { parentType } = typeInfo;
     // const { parentType, fieldDef, argDefs } = typeInfo;
