@@ -1,5 +1,16 @@
 # @graphiql/plugin-explorer
 
+## 3.1.0
+
+### Minor Changes
+
+- [#3633](https://github.com/graphql/graphiql/pull/3633) [`8849a15b`](https://github.com/graphql/graphiql/commit/8849a15b6e80fe1b34e8250e74a56b85ccdb6ac6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - adjust `@graphiql/plugin-explorer` styles
+
+### Patch Changes
+
+- Updated dependencies [[`adf0ba01`](https://github.com/graphql/graphiql/commit/adf0ba019902dcac2e49ccee69b79a6665c4766d)]:
+  - @graphiql/react@0.22.4
+
 ## 3.0.3
 
 ### Patch Changes
