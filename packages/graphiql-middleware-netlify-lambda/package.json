@@ -1,0 +1,10 @@
+{
+  "name": "graphiql-middleware-netlify-lambda",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "netlify-lambda": "^1.6.3",
+    "typescript": "^3.8.3"
+  }
+}
