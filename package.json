@@ -140,7 +140,6 @@
     "wsrun": "^5.2.4"
   },
   "resolutions": {
-    "@babel/traverse": "^7.23.2",
-    "vscode-languageserver-types": "3.17.4"
+    "@babel/traverse": "^7.23.2"
   }
 }
