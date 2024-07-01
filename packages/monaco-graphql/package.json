@@ -73,7 +73,7 @@
     "execa": "^7.1.1",
     "graphql": "^16.8.1",
     "monaco-editor": "^0.39.0",
-    "prettier": "3.0.0-alpha.12",
+    "prettier": "3.3.2",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {

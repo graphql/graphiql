@@ -118,9 +118,8 @@ export class NetworkHelper {
         operationTypes.push(node.operation);
       },
     });
-    const fragmentDefinitions = await this.sourceHelper.getFragmentDefinitions(
-      projectConfig,
-    );
+    const fragmentDefinitions =
+      await this.sourceHelper.getFragmentDefinitions(projectConfig);
 
     if (fragmentDefinitions) {
       const fragmentInfos = await getFragmentDependenciesForAST(
