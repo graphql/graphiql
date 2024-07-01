@@ -167,9 +167,8 @@ export class GraphQLLanguageService {
 
     // If there's a matching config, proceed to prepare to run validation
     let source = document;
-    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
-      projectConfig,
-    );
+    const fragmentDefinitions =
+      await this._graphQLCache.getFragmentDefinitions(projectConfig);
 
     const fragmentDependencies =
       await this._graphQLCache.getFragmentDependencies(
@@ -512,9 +511,8 @@ export class GraphQLLanguageService {
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
   ): Promise<DefinitionQueryResponse | null> {
-    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
-      projectConfig,
-    );
+    const fragmentDefinitions =
+      await this._graphQLCache.getFragmentDefinitions(projectConfig);
 
     const dependencies = await this._graphQLCache.getFragmentDependenciesForAST(
       ast,

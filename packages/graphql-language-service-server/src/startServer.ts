@@ -228,9 +228,8 @@ export async function addHandlers({
   connection.onNotification(
     DidChangeTextDocumentNotification.type,
     async params => {
-      const diagnostics = await messageProcessor.handleDidChangeNotification(
-        params,
-      );
+      const diagnostics =
+        await messageProcessor.handleDidChangeNotification(params);
       reportDiagnostics(diagnostics, connection);
     },
   );

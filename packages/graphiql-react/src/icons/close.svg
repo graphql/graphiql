@@ -1,4 +1,10 @@
-<svg height="1em" viewBox="0 0 14 14" stroke="currentColor" stroke-width="3" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1L12.9998 12.9997" />
-<path d="M13 1L1.00079 13.0003" />
+<svg
+  height="1em"
+  viewBox="0 0 14 14"
+  stroke="currentColor"
+  stroke-width="3"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path d="M1 1L12.9998 12.9997" />
+  <path d="M13 1L1.00079 13.0003" />
 </svg>
