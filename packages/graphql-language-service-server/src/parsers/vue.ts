@@ -40,7 +40,7 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
   return {
     type: 'ok',
     scriptOffset: scriptBlock.loc.start.line - 1,
-    scriptSetupAst: scriptBlock?.scriptSetupAst as Statement[],
+    scriptSetupAst: scriptBlock?.scriptSetupAst!,
     scriptAst: scriptBlock?.scriptAst as BlockStatement[],
   };
 }
