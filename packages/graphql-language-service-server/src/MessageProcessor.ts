@@ -1011,7 +1011,7 @@ export class MessageProcessor {
         }),
       );
       return symbols.filter(
-        symbol => symbol?.name && symbol.name.includes(params.query),
+        symbol => symbol?.name?.includes(params.query),
       );
     }
 

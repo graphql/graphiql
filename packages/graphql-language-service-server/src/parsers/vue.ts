@@ -8,8 +8,8 @@ type ParseVueSFCResult =
   | {
       type: 'ok';
       scriptOffset: number;
-      scriptSetupAst?: import('@babel/types').Statement[];
-      scriptAst?: import('@babel/types').Statement[];
+      scriptSetupAst?: Statement[];
+      scriptAst?: Statement[];
     };
 
 export function parseVueSFC(source: string): ParseVueSFCResult {
@@ -40,8 +40,8 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
   return {
     type: 'ok',
     scriptOffset: scriptBlock.loc.start.line - 1,
-    scriptSetupAst: scriptBlock?.scriptSetupAst!,
-    scriptAst: scriptBlock?.scriptAst as BlockStatement[],
+    scriptSetupAst: scriptBlock.scriptSetupAst,
+    scriptAst: scriptBlock.scriptAst as BlockStatement[],
   };
 }
 
