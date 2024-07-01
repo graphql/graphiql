@@ -121,15 +121,15 @@ body.graphiql-dark [data-radix-popper-content-wrapper] {
 .graphiql-dialog {
   &,
   &:is(button) {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
     font-family: var(--font-family);
     font-size: var(--font-size-body);
-    font-weight: var(----font-weight-regular);
+    font-weight: var(--font-weight-regular);
     line-height: var(--line-height);
   }
 
   & input {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
     font-family: var(--font-family);
     font-size: var(--font-size-caption);
 

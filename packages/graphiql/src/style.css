@@ -33,7 +33,7 @@
 }
 
 .graphiql-container .graphiql-sidebar button.active {
-  color: hsla(var(--color-neutral), 1);
+  color: hsl(var(--color-neutral));
 }
 
 .graphiql-container .graphiql-sidebar button:not(:first-child) {
@@ -169,7 +169,7 @@ button.graphiql-tab-add > svg {
 }
 
 .graphiql-container .graphiql-editor-tools button.active {
-  color: hsla(var(--color-neutral), 1);
+  color: hsl(var(--color-neutral));
 }
 
 /* The tab buttons to switch between editor tools */
