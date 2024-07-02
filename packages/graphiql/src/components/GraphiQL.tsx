@@ -188,7 +188,7 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
 
 export type GraphiQLInterfaceProps = WriteableEditorProps &
   AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
-  Pick<UseQueryEditorArgs, 'onCopyQuery'> &
+  Pick<UseQueryEditorArgs, 'onCopyQuery' | 'onPrettifyQuery'> &
   AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
   AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
   Pick<UseResponseEditorArgs, 'responseTooltip'> & {
@@ -246,7 +246,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
-  const prettify = usePrettifyEditors();
+  const prettify = usePrettifyEditors({ onPrettifyQuery: props.onPrettifyQuery });
 
   const { theme, setTheme } = useTheme();
 
@@ -612,6 +612,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         keyMap={props.keyMap}
                         onClickReference={onClickReference}
                         onCopyQuery={props.onCopyQuery}
+                        onPrettifyQuery={props.onPrettifyQuery}
                         onEdit={props.onEditQuery}
                         readOnly={props.readOnly}
                       />
