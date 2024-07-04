@@ -1,8 +1,9 @@
 .graphiql-tabs {
   display: flex;
   align-items: center;
-  gap: var(--px-10);
-  padding: var(--px-12);
+  gap: var(--px-8);
+  padding: var(--px-8) 0;
+  margin: 0 var(--px-8) /* when using padding while scrolling tab items will overflow to padding area */;
   overflow-x: auto;
   list-style: none;
 }

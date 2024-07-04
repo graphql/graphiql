@@ -452,18 +452,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, []);
 
-  const addTab = (
-    <Tooltip label="Add tab">
-      <UnStyledButton
-        type="button"
-        className="graphiql-tab-add"
-        onClick={handleAddTab}
-        aria-label="Add tab"
-      >
-        <PlusIcon aria-hidden="true" />
-      </UnStyledButton>
-    </Tooltip>
-  );
+  const hasMultipleTabs = editorContext.tabs.length > 1;
 
   return (
     <Tooltip.Provider>
@@ -546,7 +535,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {!props.disableTabs && (
+              {!props.disableTabs && hasMultipleTabs && (
                 <Tabs
                   values={editorContext.tabs}
                   onReorder={handleReorder}
@@ -583,12 +572,49 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       {addTab}
                     </>
                   )}
+                  {editorContext.tabs.map((tab, index) => (
+                    <Tab
+                      key={tab.id}
+                      value={tab}
+                      isActive={index === editorContext.activeTabIndex}
+                    >
+                      <Tab.Button
+                        aria-controls="graphiql-session"
+                        id={`graphiql-session-tab-${index}`}
+                        onClick={() => {
+                          executionContext.stop();
+                          editorContext.changeTab(index);
+                        }}
+                      >
+                        {tab.title}
+                      </Tab.Button>
+                      <Tab.Close
+                        onClick={() => {
+                          if (editorContext.activeTabIndex === index) {
+                            executionContext.stop();
+                          }
+                          editorContext.closeTab(index);
+                        }}
+                      />
+                    </Tab>
+                  ))}
                 </Tabs>
               )}
               <div className="graphiql-session-header-right">
                 {editorContext.tabs.length === 1 && addTab}
                 {logo}
               </div>
+              <Tooltip label="Add tab">
+                <UnStyledButton
+                  type="button"
+                  className="graphiql-tab-add"
+                  onClick={handleAddTab}
+                  aria-label="Add tab"
+                >
+                  <PlusIcon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+              {logo}
             </div>
             <div
               role="tabpanel"
@@ -598,9 +624,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             >
               <div ref={editorResize.firstRef}>
                 <div
-                  className={`graphiql-editors${
-                    editorContext.tabs.length === 1 ? ' full-height' : ''
-                  }`}
+                  className="graphiql-editors"
+                  style={
+                    hasMultipleTabs
+                      ? { borderTopLeftRadius: 0, borderTopRightRadius: 0 }
+                      : {
+                          marginTop:
+                            'calc(var(--px-8) - var(--session-header-height))',
+                        }
+                  }
                 >
                   <div ref={editorToolsResize.firstRef}>
                     <section
