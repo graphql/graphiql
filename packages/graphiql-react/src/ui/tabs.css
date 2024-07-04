@@ -4,13 +4,17 @@
   gap: var(--px-10);
   padding: var(--px-12);
   overflow-x: auto;
+  list-style: none;
+}
+
+.graphiql-tab,
+.graphiql-tab-wrapper {
+  border-top-left-radius: var(--border-radius-8);
+  border-top-right-radius: var(--border-radius-8);
 }
 
 .graphiql-tab {
   background: hsla(var(--color-neutral), var(--alpha-background-light));
-  border-top-left-radius: var(--border-radius-8);
-  border-top-right-radius: var(--border-radius-8);
-  overflow: hidden;
 
   .graphiql-tab-wrapper {
     color: hsla(var(--color-neutral), var(--alpha-secondary));
@@ -19,42 +23,37 @@
     display: flex;
     align-items: center;
     backdrop-filter: blur(9999px);
-    padding-right: 28px;
   }
 
   &:hover,
+  &:focus-within,
   &.graphiql-tab-active {
     background: hsla(var(--color-neutral), 0.2);
     color: hsl(var(--color-neutral));
-  }
 
-  .graphiql-tab-close {
-    position: absolute;
-    right: var(--px-4);
-    display: none;
-  }
-
-  &.graphiql-tab-active,
-  &:hover {
     .graphiql-tab-close {
       display: block;
     }
   }
 
   .graphiql-tab-button {
+    border-top-left-radius: var(--border-radius-8) !important;
+    border-top-right-radius: var(--border-radius-8) !important;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: var(--px-4) 0 var(--px-4) var(--px-8);
-  }
+    padding: var(--px-4) 28px var(--px-4) var(--px-8);
 
-  .graphiql-tab-button:hover,
-  .graphiql-tab-close:hover {
-    background: none;
+    &:hover {
+      background: none;
+    }
   }
 
   .graphiql-tab-close {
+    position: absolute;
+    right: var(--px-4);
+    display: none;
     padding: var(--px-6);
+    line-height: 0;
 
     & > svg {
       height: var(--px-8);
