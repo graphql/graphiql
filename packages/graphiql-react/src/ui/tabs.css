@@ -9,19 +9,18 @@
 
 .graphiql-tab,
 .graphiql-tab-wrapper {
-  border-top-left-radius: var(--border-radius-8);
-  border-top-right-radius: var(--border-radius-8);
+  border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
 }
 
 .graphiql-tab {
   background: hsla(var(--color-neutral), var(--alpha-background-light));
 
   .graphiql-tab-wrapper {
-    color: hsla(var(--color-neutral), var(--alpha-secondary));
-    max-width: 140px;
     position: relative;
     display: flex;
     align-items: center;
+    max-width: 140px;
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
     backdrop-filter: blur(9999px);
   }
 
@@ -37,8 +36,7 @@
   }
 
   .graphiql-tab-button {
-    border-top-left-radius: var(--border-radius-8) !important;
-    border-top-right-radius: var(--border-radius-8) !important;
+    border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: var(--px-4) 28px var(--px-4) var(--px-8);
