@@ -1,46 +1,69 @@
 .graphiql-tabs {
   display: flex;
   align-items: center;
-  overflow-x: auto;
+  gap: var(--px-10);
   padding: var(--px-12);
-
-  & > :not(:first-child) {
-    margin-left: var(--px-12);
-  }
+  overflow-x: auto;
 }
 
 .graphiql-tab {
-  align-items: stretch;
-  border-radius: var(--border-radius-8);
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  display: flex;
+  background: hsla(var(--color-neutral), var(--alpha-background-light));
+  border-top-left-radius: var(--border-radius-8);
+  border-top-right-radius: var(--border-radius-8);
+  overflow: hidden;
 
-  & > button.graphiql-tab-close {
-    visibility: hidden;
-  }
-  &.graphiql-tab-active > button.graphiql-tab-close,
-  &:hover > button.graphiql-tab-close,
-  &:focus-within > button.graphiql-tab-close {
-    visibility: unset;
+  .graphiql-tab-wrapper {
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
+    max-width: 140px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(9999px);
+    padding-right: 28px;
   }
 
+  &:hover,
   &.graphiql-tab-active {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
-    color: hsla(var(--color-neutral), 1);
+    background: hsla(var(--color-neutral), 0.2);
+    color: hsl(var(--color-neutral));
   }
-}
 
-button.graphiql-tab-button {
-  padding: var(--px-4) 0 var(--px-4) var(--px-8);
-}
+  .graphiql-tab-close {
+    position: absolute;
+    right: var(--px-4);
+    display: none;
+  }
 
-button.graphiql-tab-close {
-  align-items: center;
-  display: flex;
-  padding: var(--px-4) var(--px-8);
+  &.graphiql-tab-active,
+  &:hover {
+    .graphiql-tab-close {
+      display: block;
+    }
+  }
 
-  & > svg {
-    height: var(--px-8);
-    width: var(--px-8);
+  .graphiql-tab-button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: var(--px-4) 0 var(--px-4) var(--px-8);
+  }
+
+  .graphiql-tab-button:hover,
+  .graphiql-tab-close:hover {
+    background: none;
+  }
+
+  .graphiql-tab-close {
+    padding: var(--px-6);
+
+    & > svg {
+      height: var(--px-8);
+      width: var(--px-8);
+    }
+
+    &:hover {
+      background: hsla(var(--color-neutral), 0.3);
+      color: hsl(var(--color-neutral));
+    }
   }
 }
