@@ -541,42 +541,12 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   onReorder={handleReorder}
                   aria-label="Select active operation"
                 >
-                  {editorContext.tabs.length > 1 && (
-                    <>
-                      {editorContext.tabs.map((tab, index) => (
-                        <Tab
-                          key={tab.id}
-                          value={tab}
-                          isActive={index === editorContext.activeTabIndex}
-                        >
-                          <Tab.Button
-                            aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            onClick={() => {
-                              executionContext.stop();
-                              editorContext.changeTab(index);
-                            }}
-                          >
-                            {tab.title}
-                          </Tab.Button>
-                          <Tab.Close
-                            onClick={() => {
-                              if (editorContext.activeTabIndex === index) {
-                                executionContext.stop();
-                              }
-                              editorContext.closeTab(index);
-                            }}
-                          />
-                        </Tab>
-                      ))}
-                      {addTab}
-                    </>
-                  )}
                   {editorContext.tabs.map((tab, index) => (
                     <Tab
                       key={tab.id}
                       value={tab}
                       isActive={index === editorContext.activeTabIndex}
+                      className={tab.className}
                     >
                       <Tab.Button
                         aria-controls="graphiql-session"
@@ -600,14 +570,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   ))}
                 </Tabs>
               )}
-              <div className="graphiql-session-header-right">
-                {editorContext.tabs.length === 1 && addTab}
-                {logo}
-              </div>
               <Tooltip label="Add tab">
                 <UnStyledButton
                   type="button"
                   className="graphiql-tab-add"
+                  // @ts-expect-error
                   onClick={handleAddTab}
                   aria-label="Add tab"
                 >
