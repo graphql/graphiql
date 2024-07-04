@@ -573,7 +573,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <UnStyledButton
                   type="button"
                   className="graphiql-tab-add"
-                  // @ts-expect-error
                   onClick={handleAddTab}
                   aria-label="Add tab"
                 >
