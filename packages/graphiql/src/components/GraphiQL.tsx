@@ -546,7 +546,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       key={tab.id}
                       value={tab}
                       isActive={index === editorContext.activeTabIndex}
-                      className={tab.className}
                     >
                       <Tab.Button
                         aria-controls="graphiql-session"
