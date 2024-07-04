@@ -72,7 +72,7 @@
   display: flex;
   justify-content: flex-end;
   height: var(--session-header-height);
-  
+
   .graphiql-tabs + .graphiql-tab-add {
     margin-right: auto;
   }
@@ -88,7 +88,6 @@ button.graphiql-tab-add {
     width: var(--px-16);
   }
 }
-
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
