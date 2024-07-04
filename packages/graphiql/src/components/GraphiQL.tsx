@@ -535,50 +535,54 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {!props.disableTabs && hasMultipleTabs && (
-                <Tabs
-                  values={editorContext.tabs}
-                  onReorder={handleReorder}
-                  aria-label="Select active operation"
-                >
-                  {editorContext.tabs.map((tab, index) => (
-                    <Tab
-                      key={tab.id}
-                      value={tab}
-                      isActive={index === editorContext.activeTabIndex}
+              {!props.disableTabs && (
+                <>
+                  {hasMultipleTabs && (
+                    <Tabs
+                      values={editorContext.tabs}
+                      onReorder={handleReorder}
+                      aria-label="Select active operation"
                     >
-                      <Tab.Button
-                        aria-controls="graphiql-session"
-                        id={`graphiql-session-tab-${index}`}
-                        onClick={() => {
-                          executionContext.stop();
-                          editorContext.changeTab(index);
-                        }}
-                      >
-                        {tab.title}
-                      </Tab.Button>
-                      <Tab.Close
-                        onClick={() => {
-                          if (editorContext.activeTabIndex === index) {
-                            executionContext.stop();
-                          }
-                          editorContext.closeTab(index);
-                        }}
-                      />
-                    </Tab>
-                  ))}
-                </Tabs>
+                      {editorContext.tabs.map((tab, index) => (
+                        <Tab
+                          key={tab.id}
+                          value={tab}
+                          isActive={index === editorContext.activeTabIndex}
+                        >
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            onClick={() => {
+                              executionContext.stop();
+                              editorContext.changeTab(index);
+                            }}
+                          >
+                            {tab.title}
+                          </Tab.Button>
+                          <Tab.Close
+                            onClick={() => {
+                              if (editorContext.activeTabIndex === index) {
+                                executionContext.stop();
+                              }
+                              editorContext.closeTab(index);
+                            }}
+                          />
+                        </Tab>
+                      ))}
+                    </Tabs>
+                  )}
+                  <Tooltip label="Add tab">
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-add"
+                      onClick={handleAddTab}
+                      aria-label="Add tab"
+                    >
+                      <PlusIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                </>
               )}
-              <Tooltip label="Add tab">
-                <UnStyledButton
-                  type="button"
-                  className="graphiql-tab-add"
-                  onClick={handleAddTab}
-                  aria-label="Add tab"
-                >
-                  <PlusIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
               {logo}
             </div>
             <div
