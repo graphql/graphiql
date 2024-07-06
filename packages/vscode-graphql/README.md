@@ -36,7 +36,7 @@ documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
 
 ```json
 "graphql": {
-  "schema": "https://localhost:3001",
+  "schema": "https://localhost:3001/graphql",
   "documents": "**/*.{graphql,js,ts,jsx,tsx}"
 },
 ```
@@ -57,24 +57,21 @@ same for .json, .toml, etc
   parent level directory, or a `package.json` file with `graphql` config
 - Loads `.graphql`, `.gql` files, and detects `gql`, `graphql` tags and `/** GraphQL */` and `#graphql` comments in js, ts, jsx, tsx, vue files
 - pre-load schema and fragment definitions
-- Support [`graphql-config`](https://graphql-config.com/) files with one project
-  and multiple projects (multi-workspace roots with multiple graphql config
-  files not yet supported)
-- the language service re-starts on saved changes to vscode settings and/or
-  graphql config!
+- Support [`graphql-config`](https://graphql-config.com/) files with one or multiple projects (multi-root workspaces are not yet supported)
+- the language service re-starts on saved changes to vscode settings and/or graphql config!
 
-## Configuration Examples
+## Configuration
 
-For more help with configuring the language server,
-[the language server readme](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server/README.md)
-is the source of truth for all settings used by all editors which use the
-language server.
-
-This includes LSP settings provided by extensions like `vscode-graphql`, nvim, etc.
-
-There are a number of configurations that can be provided from both editor settings or the graphql config file, and the editor setting takes precedence, to allow users to override their graphql config file settings in a user context as needed.
-
-The [`graphql-config`](https://graphql-config.com/) docs are also very helpful for the config file.
+| Parameter                                 | Default                                           | Description                                                                                                                                                                                                                                                                                         |
+| ----------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `graphql-config.load.baseDir`             | workspace root or process.cwd()                   | the path where graphql config looks for config files                                                                                                                                                                                                                                                |
+| `graphql-config.load.filePath`            | `null`                                            | exact filepath of the config file.                                                                                                                                                                                                                                                                  |
+| `graphql-config.load.configName`          | `graphql`                                         | config name prefix instead of `graphql`                                                                                                                                                                                                                                                             |
+| `graphql-config.load.legacy`              | `true`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
+| `graphql-config.dotEnvPath`               | `null`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
+| `vscode-graphql.cacheSchemaFileForLookup` | `true` if `schema` contains non-sdl files or urls | generate an SDL file based on your graphql-config schema configuration for definition lookup and other features. enabled by default when your `schema` config are urls or introspection json, or if you have any non-local SDL files in `schema`                                                    |
+| `vscode-graphql.schemaCacheTTL`           | `30000`                                           | an integer value in milleseconds for the desired minimum cache lifetime for all schemas, which also causes the generated file to be re-written. set to 30s by default. effectively a "lazy" form of polling. if you are developing a schema alongside client queries, you may want to decrease this |
+| `vscode-graphql.debug`                    | `false`                                           | show more verbose log output in the output channel                                                                                                                                                                                                                                                  |
 
 ### Advanced Example
 
@@ -95,7 +92,6 @@ export default {
       schema: 'src/generated/db.graphql',
       documents: ['src/db/**/*.graphql', 'my/fragments.graphql'],
       extensions: {
-        // for use with `vscode-graphql-execution`, for example:
         endpoints: {
           default: {
             url: 'https://localhost:3001/graphql/',

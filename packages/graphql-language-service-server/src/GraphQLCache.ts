@@ -108,7 +108,10 @@ export async function getGraphQLCache({
     parser,
     logger,
     onSchemaChange,
-    schemaCacheTTL,
+    schemaCacheTTL:
+      schemaCacheTTL ??
+      // @ts-expect-error TODO: add types for extension configs
+      config?.extensions?.get('languageService')?.schemaCacheTTL,
   });
 }
 
