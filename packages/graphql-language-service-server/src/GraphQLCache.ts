@@ -55,6 +55,7 @@ import {
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import { LRUCache } from 'lru-cache';
+// import { is } from '@babel/types';
 
 const codeLoaderConfig: CodeFileLoaderConfig = {
   noSilentErrors: false,
@@ -83,12 +84,14 @@ export async function getGraphQLCache({
   loadConfigOptions,
   config,
   onSchemaChange,
+  schemaCacheTTL,
 }: {
   parser: typeof parseDocument;
   logger: Logger | NoopLogger;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
   onSchemaChange?: OnSchemaChange;
+  schemaCacheTTL?: number;
 }): Promise<GraphQLCache> {
   const graphQLConfig =
     config ||
@@ -105,6 +108,7 @@ export async function getGraphQLCache({
     parser,
     logger,
     onSchemaChange,
+    schemaCacheTTL,
   });
 }
 
@@ -119,6 +123,7 @@ export class GraphQLCache {
   _parser: typeof parseDocument;
   _logger: Logger | NoopLogger;
   _onSchemaChange?: OnSchemaChange;
+  _schemaCacheTTL?: number;
 
   constructor({
     configDir,
@@ -126,19 +131,21 @@ export class GraphQLCache {
     parser,
     logger,
     onSchemaChange,
+    schemaCacheTTL,
   }: {
     configDir: Uri;
     config: GraphQLConfig;
     parser: typeof parseDocument;
     logger: Logger | NoopLogger;
     onSchemaChange?: OnSchemaChange;
+    schemaCacheTTL?: number;
   }) {
     this._configDir = configDir;
     this._graphQLConfig = config;
     this._graphQLFileListCache = new Map();
     this._schemaMap = new LRUCache({
       max: 20,
-      ttl: 1000 * 30,
+      ttl: schemaCacheTTL ?? 1000 * 30,
       ttlAutopurge: true,
       updateAgeOnGet: false,
     });
@@ -602,10 +609,10 @@ export class GraphQLCache {
   }
 
   getSchema = async (
-    projectName: string,
+    appName?: string,
     queryHasExtensions?: boolean | null,
   ): Promise<GraphQLSchema | null> => {
-    const projectConfig = this._graphQLConfig.getProject(projectName);
+    const projectConfig = this._graphQLConfig.getProject(appName);
 
     if (!projectConfig) {
       return null;
@@ -620,35 +627,18 @@ export class GraphQLCache {
     if (schemaPath && schemaKey) {
       schemaCacheKey = schemaKey as string;
 
-      try {
-        // Read from disk
-        schema = await projectConfig.loadSchema(
-          projectConfig.schema,
-          'GraphQLSchema',
-          {
-            assumeValid: true,
-            assumeValidSDL: true,
-            experimentalFragmentVariables: true,
-            sort: false,
-            includeSources: true,
-            allowLegacySDLEmptyFields: true,
-            allowLegacySDLImplementsInterfaces: true,
-          },
-        );
-      } catch {
-        // // if there is an error reading the schema, just use the last valid schema
-        schema = this._schemaMap.get(schemaCacheKey);
-      }
-
+      // Maybe use cache
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);
-
         if (schema) {
           return queryHasExtensions
             ? this._extendSchema(schema, schemaPath, schemaCacheKey)
             : schema;
         }
       }
+
+      // Read from disk
+      schema = await projectConfig.getSchema();
     }
 
     const customDirectives = projectConfig?.extensions?.customDirectives;
@@ -667,7 +657,9 @@ export class GraphQLCache {
 
     if (schemaCacheKey) {
       this._schemaMap.set(schemaCacheKey, schema);
-      await this._onSchemaChange?.(projectConfig);
+      if (this._onSchemaChange) {
+        this._onSchemaChange(projectConfig);
+      }
     }
     return schema;
   };
