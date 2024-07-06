@@ -31,7 +31,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   private outputChannel: OutputChannel;
   private networkHelper: NetworkHelper;
   private sourceHelper: SourceHelper;
-  private panel: WebviewPanel;
+  private panel?: WebviewPanel;
   private rootDir: WorkspaceFolder | undefined;
   private literal: ExtractedTemplateLiteral;
   private _projectConfig: GraphQLProjectConfig | undefined;
@@ -48,7 +48,13 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   }
 
   updatePanel() {
-    this.panel.webview.html = this.html;
+    if (this.panel) {
+      this.panel.webview.html = this.html;
+    }
+  }
+
+  public get hasConfig() {
+    return Boolean(this._projectConfig);
   }
 
   async getVariablesFromUser(
@@ -96,7 +102,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     uri: Uri,
     outputChannel: OutputChannel,
     literal: ExtractedTemplateLiteral,
-    panel: WebviewPanel,
+    panel?: WebviewPanel,
   ) {
     this.uri = uri;
     this.outputChannel = outputChannel;
@@ -106,16 +112,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.sourceHelper,
     );
     this.panel = panel;
+
     this.rootDir = workspace.getWorkspaceFolder(Uri.file(literal.uri));
     this.literal = literal;
-    this.panel.webview.options = {
-      enableScripts: true,
-    };
-
-    // eslint-disable-next-line promise/prefer-await-to-then -- can't use async in constructor
-    this.loadProvider().catch(err => {
-      this.html = err.toString();
-    });
+    if (this.panel) {
+      this.panel.webview.options = {
+        enableScripts: true,
+      };
+    }
   }
 
   validUrlFromSchema(pathOrUrl: string) {
@@ -169,7 +173,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       }
     }
     const endpointNames = Object.keys(endpoints);
-
     if (endpointNames.length === 0) {
       this.reportError(
         'Error: endpoint data missing from graphql config endpoints extension',
@@ -252,7 +255,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       this.reportError('Error: this file is outside the workspace.');
       return;
     }
-
     const config = await loadConfig({
       rootDir: rootDir.uri.fsPath,
       throwOnEmpty: false,
