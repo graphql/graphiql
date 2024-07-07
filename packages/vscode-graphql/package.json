@@ -174,7 +174,7 @@
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
-    "@vscode/vsce": "^2.29.0",
+    "@vscode/vsce": "^2.22.1-2",
     "esbuild": "0.18.10",
     "ovsx": "0.8.3"
   },

@@ -12,7 +12,7 @@ on mass file changes, network schema is overfetching because the schema cache is
 
 to address this, we debounce the new `onSchemaChange` event by 400ms
 
-note that `schemaCacheTTL` can only be set in the extension settings or in the config file
+note that `schemaCacheTTL` can only be set in extension settings or graphql config at the top level - it will be ignored if configured per-project in the graphql config
 
 **Code Improvements**
 

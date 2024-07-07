@@ -154,8 +154,8 @@
   "devDependencies": {
     "vscode-oniguruma": "^1.7.0",
     "vscode-textmate": "^9.0.0",
-    "ovsx": "0.8.3",
-    "@vscode/vsce": "^2.29.0"
+    "ovsx": "^0.3.0",
+    "@vscode/vsce": "^2.22.1-2"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
