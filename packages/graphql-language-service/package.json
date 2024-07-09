@@ -35,11 +35,13 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
+    "debounce-promise": "^3.1.2",
     "nullthrows": "^1.0.0",
     "vscode-languageserver-types": "^3.17.1"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.33",
+    "@types/debounce-promise": "^3.1.9",
     "@types/json-schema": "7.0.9",
     "@types/picomatch": "^2.3.0",
     "benchmark": "^2.1.4",
