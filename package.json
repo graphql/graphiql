@@ -76,7 +76,8 @@
     "test:watch": "yarn jest --watch",
     "tsc": "tsc --build",
     "vitest": "yarn wsrun -p -m test",
-    "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack"
+    "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack",
+    "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
     "@arthurgeron/eslint-plugin-react-usememo": "^2.4.0",
@@ -137,6 +138,7 @@
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
     "vitest": "^0.32.2",
+    "wgutils": "^0.1.7",
     "wsrun": "^5.2.4"
   },
   "resolutions": {
