@@ -54,7 +54,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.tsx',
   '.vue',
   '.svelte',
-  '.astro',
+  // '.astro',
   '.cts',
   '.mts',
 ] as const;
