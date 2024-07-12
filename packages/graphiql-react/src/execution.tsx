@@ -91,6 +91,7 @@ export function ExecutionContextProvider({
     queryEditor,
     responseEditor,
     variableEditor,
+    extensionEditor,
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
   const history = useHistoryContext();
@@ -145,6 +146,19 @@ export function ExecutionContextProvider({
       return;
     }
 
+    const extensionsString = extensionEditor?.getValue();
+    let extensions: Record<string, unknown> | undefined;
+    try {
+      extensions = tryParseJsonObject({
+        json: extensionsString,
+        errorMessageParse: 'Extensions are invalid JSON',
+        errorMessageType: 'Extensions are not a JSON object.',
+      });
+    } catch (error) {
+      setResponse(error instanceof Error ? error.message : `${error}`);
+      return;
+    }
+
     const headersString = headerEditor?.getValue();
     let headers: Record<string, unknown> | undefined;
     try {
@@ -182,6 +196,7 @@ export function ExecutionContextProvider({
     history?.addToHistory({
       query,
       variables: variablesString,
+      extensions: extensionsString,
       headers: headersString,
       operationName: opName,
     });
@@ -223,6 +238,7 @@ export function ExecutionContextProvider({
         {
           query,
           variables,
+          extensions,
           operationName: opName,
         },
         {
@@ -284,6 +300,7 @@ export function ExecutionContextProvider({
     subscription,
     updateActiveTabValues,
     variableEditor,
+    extensionEditor,
   ]);
 
   const isSubscribed = Boolean(subscription);

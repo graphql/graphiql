@@ -110,6 +110,7 @@ describe('getDefaultTabState', () => {
         headers: null,
         query: null,
         variables: null,
+        extensions: null,
         storage: null,
       }),
     ).toEqual({
@@ -138,10 +139,12 @@ describe('getDefaultTabState', () => {
             headers: '{"x-header":"foo"}',
             query: 'query Image { image }',
             variables: null,
+            extensions: '{"myExtension":"myString"}',
           },
         ],
         query: null,
         variables: null,
+        extensions: null,
         storage: null,
       }),
     ).toEqual({
@@ -156,6 +159,7 @@ describe('getDefaultTabState', () => {
           headers: '{"x-header":"foo"}',
           query: 'query Image { image }',
           title: 'Image',
+          extensions: '{"myExtension":"myString"}',
         }),
       ],
     });

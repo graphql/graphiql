@@ -28,6 +28,7 @@ export class HistoryStore {
   private shouldSaveQuery(
     query?: string,
     variables?: string,
+    // extensions?: string, // dz todo: ask about saving strategy for extensions
     headers?: string,
     lastQuerySaved?: QueryStoreItem,
   ) {
@@ -71,6 +72,7 @@ export class HistoryStore {
   updateHistory = ({
     query,
     variables,
+    extensions,
     headers,
     operationName,
   }: QueryStoreItem) => {
@@ -87,6 +89,7 @@ export class HistoryStore {
     this.history.push({
       query,
       variables,
+      extensions,
       headers,
       operationName,
     });
@@ -98,6 +101,7 @@ export class HistoryStore {
   toggleFavorite({
     query,
     variables,
+    extensions,
     headers,
     operationName,
     label,
@@ -106,6 +110,7 @@ export class HistoryStore {
     const item: QueryStoreItem = {
       query,
       variables,
+      extensions,
       headers,
       operationName,
       label,
@@ -126,6 +131,7 @@ export class HistoryStore {
     {
       query,
       variables,
+      extensions,
       headers,
       operationName,
       label,
@@ -136,6 +142,7 @@ export class HistoryStore {
     const item = {
       query,
       variables,
+      extensions,
       headers,
       operationName,
       label,
@@ -149,7 +156,14 @@ export class HistoryStore {
   }
 
   deleteHistory = (
-    { query, variables, headers, operationName, favorite }: QueryStoreItem,
+    {
+      query,
+      variables,
+      extensions,
+      headers,
+      operationName,
+      favorite,
+    }: QueryStoreItem,
     clearFavorites = false,
   ) => {
     function deleteFromStore(store: QueryStore) {
@@ -157,6 +171,7 @@ export class HistoryStore {
         x =>
           x.query === query &&
           x.variables === variables &&
+          x.extensions === extensions &&
           x.headers === headers &&
           x.operationName === operationName,
       );

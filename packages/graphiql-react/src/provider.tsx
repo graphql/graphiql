@@ -47,6 +47,7 @@ export function GraphiQLProvider({
   storage,
   validationRules,
   variables,
+  extensions,
   visiblePlugin,
 }: GraphiQLProviderProps) {
   return (
@@ -65,6 +66,7 @@ export function GraphiQLProvider({
           shouldPersistHeaders={shouldPersistHeaders}
           validationRules={validationRules}
           variables={variables}
+          extensions={extensions}
         >
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
