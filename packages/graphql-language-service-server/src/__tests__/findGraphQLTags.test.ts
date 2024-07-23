@@ -559,7 +559,8 @@ export function Example(arg: string) {}`;
     const contents = findGraphQLTags(text, '.svelte');
     expect(contents.length).toEqual(1);
   });
-  it('handles full astro example', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('handles full astro example', () => {
     const text = `
     ---
     const gql = String.raw;

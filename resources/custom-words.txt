@@ -94,6 +94,7 @@ hola
 htmling
 hurrell
 hyohyeon
+ical
 imolorhe
 inno
 intellij
@@ -218,6 +219,7 @@ vitest
 vizag
 vsix
 websockets
+wgutils
 wincent
 wonka
 yoshiakis
