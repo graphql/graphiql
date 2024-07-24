@@ -225,6 +225,10 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * rendered with a specific theme
      */
     forcedTheme?: (typeof THEMES)[number];
+    /**
+     * Additional class names which will be appended to the container element.
+     */
+    className?: string;
   };
 
 const THEMES = ['light', 'dark', 'system'] as const;
@@ -465,9 +469,14 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     </Tooltip>
   );
 
+  const className = props.className ? ` ${props.className}` : '';
+
   return (
     <Tooltip.Provider>
-      <div data-testid="graphiql-container" className="graphiql-container">
+      <div
+        data-testid="graphiql-container"
+        className={`graphiql-container${className}`}
+      >
         <div className="graphiql-sidebar">
           <div className="graphiql-sidebar-section">
             {pluginContext?.plugins.map((plugin, index) => {
