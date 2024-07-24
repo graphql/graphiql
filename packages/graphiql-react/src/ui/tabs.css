@@ -17,6 +17,11 @@
 .graphiql-tab {
   background: hsla(var(--color-neutral), var(--alpha-background-light));
 
+  /* disable shrinking while changing the operation name */
+  &:not(:focus-within) {
+    transform: none !important;
+  }
+
   .graphiql-tab-wrapper {
     position: relative;
     display: flex;
