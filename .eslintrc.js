@@ -133,7 +133,14 @@ module.exports = {
         'no-octal-escape': 'error',
         'no-param-reassign': 'error',
         'no-proto': 'error',
-        'no-restricted-properties': 'off',
+        'no-restricted-properties': [
+          'error',
+          {
+            object: 'window',
+            property: 'localStorage',
+            message: 'Use `localStorage` instead',
+          },
+        ],
         'no-return-assign': 'error',
         'no-return-await': 'error',
         'no-script-url': 'error',
