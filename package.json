@@ -29,9 +29,7 @@
       "pre-commit": "lint-staged"
     }
   },
-  "engines": {
-    "npm": "please_use_yarn_instead"
-  },
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
