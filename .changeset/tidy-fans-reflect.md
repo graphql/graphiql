@@ -4,4 +4,4 @@
 "@graphiql/react": patch
 ---
 
-set `build.minify: false` for cjs/esm builds since minified variable names changes every time
+set `build.minify: false` for cjs/esm builds since minified variable names change every build time
