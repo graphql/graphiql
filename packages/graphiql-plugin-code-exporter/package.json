@@ -40,12 +40,12 @@
   },
   "devDependencies": {
     "@graphiql/react": "^0.22.4",
-    "@vitejs/plugin-react": "^4.0.1",
+    "@vitejs/plugin-react": "^4.3.1",
     "graphql": "^16.8.1",
     "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^4.3.9"
+    "vite": "^5.3.4"
   }
 }
