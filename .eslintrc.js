@@ -54,8 +54,8 @@ module.exports = {
       extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:import/recommended',
-        'plugin:import/typescript',
+        'plugin:import-x/recommended',
+        'plugin:import-x/typescript',
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
         'plugin:react/jsx-runtime',
@@ -65,7 +65,6 @@ module.exports = {
         'promise',
         'sonarjs',
         'unicorn',
-        '@arthurgeron/react-usememo',
         'sonar',
         '@shopify',
       ],
@@ -81,10 +80,6 @@ module.exports = {
         '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
         '@shopify/prefer-class-properties': 'off', // enable after https://github.com/Shopify/web-configs/issues/387 will be fixed
         'sonarjs/no-inverted-boolean-check': 'error',
-        '@arthurgeron/react-usememo/require-usememo': [
-          'error',
-          { checkHookCalls: false },
-        ],
         // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
         'no-console': 'error',
         'no-constant-binary-expression': 'error',
@@ -287,9 +282,9 @@ module.exports = {
 
         'sonarjs/no-ignored-return': 'error',
         'unicorn/no-array-push-push': 'error',
-        'import/no-extraneous-dependencies': 'error',
-        'import/no-duplicates': 'error',
-        'import/no-named-as-default': 'error',
+        'import-x/no-extraneous-dependencies': 'error',
+        'import-x/no-duplicates': 'error',
+        'import-x/no-named-as-default': 'error',
         'prefer-object-spread': 'error',
         // React rules
         'react/no-unused-state': 'error',
@@ -342,10 +337,15 @@ module.exports = {
         'sonar/prefer-promise-shorthand': 'error',
         'sonar/no-dead-store': 'error',
         'unicorn/prefer-node-protocol': 'error',
-        'import/no-unresolved': [
+        'import-x/no-unresolved': [
           'error',
           { ignore: ['^node:', '\\.svg\\?react$'] },
         ],
+        'no-extra-boolean-cast': [
+          'error',
+          { enforceForInnerExpressions: true },
+        ],
+        'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
@@ -409,7 +409,6 @@ module.exports = {
       rules: {
         'jest/no-conditional-expect': 'off',
         'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
-        '@arthurgeron/react-usememo/require-usememo': 'off',
       },
     },
     {
@@ -426,14 +425,14 @@ module.exports = {
         'no-console': 'off',
         'no-new': 'off',
         'no-alert': 'off',
-        'import/no-unresolved': 'off',
+        'import-x/no-unresolved': 'off',
       },
     },
     {
       // Rule for ignoring imported dependencies from tests files
       files: ['**/__tests__/**', 'webpack.config.js', '**/tests/**'],
       rules: {
-        'import/no-extraneous-dependencies': 'off',
+        'import-x/no-extraneous-dependencies': 'off',
       },
     },
     {
@@ -443,7 +442,7 @@ module.exports = {
         'packages/vscode-graphql-execution/**',
       ],
       rules: {
-        'import/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
+        'import-x/no-unresolved': ['error', { ignore: ['^node:', 'vscode'] }],
       },
     },
     {
@@ -484,14 +483,13 @@ module.exports = {
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
       rules: {
-        'import/no-extraneous-dependencies': 'off',
+        'import-x/no-extraneous-dependencies': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
-        'import/no-unresolved': 'off',
+        'import-x/no-unresolved': 'off',
         'no-console': 'off',
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         'react-hooks/rules-of-hooks': 'off',
-        '@arthurgeron/react-usememo/require-usememo': 'off',
         'sonar/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
       },
