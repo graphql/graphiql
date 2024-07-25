@@ -342,7 +342,10 @@ module.exports = {
         'sonar/prefer-promise-shorthand': 'error',
         'sonar/no-dead-store': 'error',
         'unicorn/prefer-node-protocol': 'error',
-        'import/no-unresolved': ['error', { ignore: ['^node:'] }],
+        'import/no-unresolved': [
+          'error',
+          { ignore: ['^node:', '\\.svg\\?react$'] },
+        ],
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
