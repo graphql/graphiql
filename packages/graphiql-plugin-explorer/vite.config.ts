@@ -16,6 +16,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {
