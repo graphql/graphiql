@@ -1,6 +1,6 @@
 ---
-"@graphiql/plugin-code-exporter": minor
-"@graphiql/plugin-explorer": minor
+"@graphiql/plugin-code-exporter": patch
+"@graphiql/plugin-explorer": patch
 "@graphiql/react": minor
 ---
 
