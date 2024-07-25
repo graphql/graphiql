@@ -42,7 +42,7 @@ export const DeprecatedArgumentIcon = generateIcon(_DeprecatedArgumentIcon);
 export const DeprecatedEnumValueIcon = generateIcon(_DeprecatedEnumValueIcon);
 export const DeprecatedFieldIcon = generateIcon(_DeprecatedFieldIcon);
 export const DirectiveIcon = generateIcon(_DirectiveIcon);
-export const DocsFilledIcon = generateIcon(_DocsFilledIcon, 'filled docs icon');
+export const DocsFilledIcon = generateIcon(_DocsFilledIcon);
 export const DocsIcon = generateIcon(_DocsIcon);
 export const EnumValueIcon = generateIcon(_EnumValueIcon);
 export const FieldIcon = generateIcon(_FieldIcon);
@@ -58,7 +58,7 @@ export const PrettifyIcon = generateIcon(_PrettifyIcon);
 export const ReloadIcon = generateIcon(_ReloadIcon);
 export const RootTypeIcon = generateIcon(_RootTypeIcon);
 export const SettingsIcon = generateIcon(_SettingsIcon);
-export const StarFilledIcon = generateIcon(_StarFilledIcon, 'filled star icon');
+export const StarFilledIcon = generateIcon(_StarFilledIcon);
 export const StarIcon = generateIcon(_StarIcon);
 export const StopIcon = generateIcon(_StopIcon);
 export const TrashIcon = generateIcon(_TrashIcon);
@@ -66,14 +66,16 @@ export const TypeIcon = generateIcon(_TypeIcon);
 
 function generateIcon(
   RawComponent: FC<SVGProps<SVGSVGElement> & { title?: string }>,
-  title = RawComponent.name
-    // Icon component name starts with `Svg${CamelCaseFilename without .svg}`
-    .replace('Svg', '')
-    // Insert a space before all caps
-    .replaceAll(/([A-Z])/g, ' $1')
-    .trimStart()
-    .toLowerCase() + ' icon',
 ): FC<ComponentProps<'svg'>> {
+  const title =
+    RawComponent.name
+      // Icon component name starts with `Svg${CamelCaseFilename without .svg}`
+      .replace('Svg', '')
+      // Insert a space before all caps
+      .replaceAll(/([A-Z])/g, ' $1')
+      .trimStart()
+      .toLowerCase() + ' icon';
+
   function IconComponent(props: ComponentProps<'svg'>) {
     return <RawComponent title={title} {...props} />;
   }
