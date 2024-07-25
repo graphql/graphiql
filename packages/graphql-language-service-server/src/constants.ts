@@ -54,10 +54,11 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.tsx',
   '.vue',
   '.svelte',
-  '.astro',
+  // '.astro',
   '.cts',
   '.mts',
 ] as const;
+
 export type SupportedExtensions = typeof DEFAULT_SUPPORTED_EXTENSIONS;
 export type SupportedExtensionsEnum =
   (typeof DEFAULT_SUPPORTED_EXTENSIONS)[number];

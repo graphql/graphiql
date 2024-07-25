@@ -18,7 +18,7 @@ import { Position, Range } from 'graphql-language-service';
 import { TAG_MAP } from './constants';
 import { ecmaParser, tsParser } from './parsers/babel';
 import { vueParser } from './parsers/vue';
-import { astroParser } from './parsers/astro';
+// import { astroParser } from './parsers/astro';
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
 import { svelteParser } from './parsers/svelte';
@@ -43,7 +43,7 @@ const parserMap = {
   '.mts': tsParser,
   '.svelte': svelteParser,
   '.vue': vueParser,
-  '.astro': astroParser,
+  // '.astro': astroParser,
 };
 
 export function findGraphQLTags(

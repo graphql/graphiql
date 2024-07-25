@@ -12,10 +12,10 @@ import {
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
 
-import ArrowIcon from './icons/arrow.svg';
-import FolderPlusIcon from './icons/folder-plus.svg';
-import CheckboxUncheckedIcon from './icons/checkbox-unchecked.svg';
-import CheckboxCheckedIcon from './icons/checkbox-checked.svg';
+import ArrowIcon from './icons/arrow.svg?react';
+import FolderPlusIcon from './icons/folder-plus.svg?react';
+import CheckboxUncheckedIcon from './icons/checkbox-unchecked.svg?react';
+import CheckboxCheckedIcon from './icons/checkbox-checked.svg?react';
 
 import './graphiql-explorer.d.ts';
 import './index.css';
@@ -34,7 +34,6 @@ const colors = {
   atom: 'hsl(var(--color-tertiary))',
 };
 
-/* eslint-disable @arthurgeron/react-usememo/require-usememo */
 const arrowOpen = (
   <ArrowIcon style={{ width: 'var(--px-16)', transform: 'rotate(90deg)' }} />
 );
@@ -47,7 +46,6 @@ const checkboxChecked = (
     style={{ fill: 'hsl(var(--color-info))', marginRight: 'var(--px-4)' }}
   />
 );
-/* eslint-enable @arthurgeron/react-usememo/require-usememo */
 
 const styles: Record<string, CSSProperties> = {
   buttonStyle: {
