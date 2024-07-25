@@ -9,7 +9,8 @@
   "include": [
     "packages/*/src/*/__tests__/**/*.ts",
     "packages/*/src/__tests__/**/*.ts",
-    "packages/*/vite.config.ts",
+    "packages/*/vite.config.mts",
+    "packages/*/vitest.config.mts",
     "examples/*/vite.config.ts",
     "packages/graphiql/src/components/__tests__/**/*.ts",
     "packages/graphiql/src/components/__tests__/**/*.tsx",

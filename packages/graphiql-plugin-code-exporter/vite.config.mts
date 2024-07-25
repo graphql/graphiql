@@ -1,27 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
 import packageJSON from './package.json';
 
 const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
-  plugins: [
-    react({ jsxRuntime: 'classic' }),
-    svgr({
-      exportAsDefault: true,
-      svgrOptions: {
-        titleProp: true,
-      },
-    }),
-  ],
+  plugins: [react({ jsxRuntime: 'classic' })],
   build: {
+    minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {
       entry: 'src/index.tsx',
       fileName: 'index',
-      name: 'GraphiQLPluginExplorer',
+      name: 'GraphiQLPluginCodeExporter',
       formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
     },
     rollupOptions: {
