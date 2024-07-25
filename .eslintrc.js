@@ -35,7 +35,7 @@ module.exports = {
   overrides: [
     {
       // Rules for all code files
-      files: ['**/*.{js,jsx,ts,tsx}'],
+      files: ['**/*.{js,jsx,ts,tsx,mts,cts}'],
       parserOptions: {
         ecmaVersion: 6,
       },
@@ -360,7 +360,7 @@ module.exports = {
     },
     {
       // Rules that requires type information
-      files: ['**/*.{ts,tsx}'],
+      files: ['**/*.{ts,tsx,mts,cts}'],
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {

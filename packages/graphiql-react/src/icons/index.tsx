@@ -1,4 +1,4 @@
-import { ComponentProps, FC } from 'react';
+import { ComponentProps, FC, SVGProps } from 'react';
 
 import _ArgumentIcon from './argument.svg?react';
 import _ChevronDownIcon from './chevron-down.svg?react';
@@ -61,11 +61,11 @@ export const SettingsIcon = generateIcon(_SettingsIcon);
 export const StarFilledIcon = generateIcon(_StarFilledIcon, 'filled star icon');
 export const StarIcon = generateIcon(_StarIcon);
 export const StopIcon = generateIcon(_StopIcon);
-export const TrashIcon = generateIcon(_TrashIcon, 'trash icon');
+export const TrashIcon = generateIcon(_TrashIcon);
 export const TypeIcon = generateIcon(_TypeIcon);
 
 function generateIcon(
-  RawComponent: any,
+  RawComponent: FC<SVGProps<SVGSVGElement> & { title?: string }>,
   title = RawComponent.name
     // Icon component name starts with `Svg${CamelCaseFilename without .svg}`
     .replace('Svg', '')
@@ -77,6 +77,7 @@ function generateIcon(
   function IconComponent(props: ComponentProps<'svg'>) {
     return <RawComponent title={title} {...props} />;
   }
+
   IconComponent.displayName = RawComponent.name;
   return IconComponent;
 }
