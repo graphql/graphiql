@@ -65,6 +65,7 @@
     "set-value": "^4.1.0"
   },
   "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "14.0.0",
     "@types/set-value": "^4.0.1",
@@ -74,7 +75,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.4",
+    "vite": "^5.3.5",
     "vite-plugin-svgr": "^4.2.0"
   }
 }
