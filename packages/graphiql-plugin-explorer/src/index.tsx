@@ -34,7 +34,6 @@ const colors = {
   atom: 'hsl(var(--color-tertiary))',
 };
 
-/* eslint-disable @arthurgeron/react-usememo/require-usememo */
 const arrowOpen = (
   <ArrowIcon style={{ width: 'var(--px-16)', transform: 'rotate(90deg)' }} />
 );
@@ -47,7 +46,6 @@ const checkboxChecked = (
     style={{ fill: 'hsl(var(--color-info))', marginRight: 'var(--px-4)' }}
   />
 );
-/* eslint-enable @arthurgeron/react-usememo/require-usememo */
 
 const styles: Record<string, CSSProperties> = {
   buttonStyle: {
