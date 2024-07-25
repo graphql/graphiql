@@ -61,13 +61,7 @@ module.exports = {
         'plugin:react/jsx-runtime',
         'prettier',
       ],
-      plugins: [
-        'promise',
-        'sonarjs',
-        'unicorn',
-        'sonar',
-        '@shopify',
-      ],
+      plugins: ['promise', 'sonarjs', 'unicorn', 'sonar', '@shopify'],
       globals: {
         atom: false,
         document: false,
