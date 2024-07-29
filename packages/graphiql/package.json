@@ -99,6 +99,6 @@
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1",
-    "ws": "8.8.1"
+    "ws": "8.17.1"
   }
 }
