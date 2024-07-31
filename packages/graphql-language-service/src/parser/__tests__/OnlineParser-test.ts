@@ -66,6 +66,49 @@ describe('onlineParser', () => {
 
       t.eol();
     });
+    
+    it('parses schema extension bare', () => {
+      const { t } = getUtils(`
+        extend schema
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaDef' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with operation defs', () => {
+      const { t } = getUtils(`
+        extend schema {
+          query: SomeType
+        }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaDef' });
+      t.punctuation('{');
+
+      t.keyword('query', { kind: 'OperationTypeDef' });
+      t.punctuation(':');
+      t.name('SomeType');
+
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaDef' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.eol();
+    });
 
     it('parses short query', () => {
       const { t } = getUtils(`
