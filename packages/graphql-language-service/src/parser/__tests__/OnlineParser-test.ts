@@ -66,7 +66,7 @@ describe('onlineParser', () => {
 
       t.eol();
     });
-    
+
     it('parses schema extension bare', () => {
       const { t } = getUtils(`
         extend schema
@@ -106,6 +106,28 @@ describe('onlineParser', () => {
       t.keyword('extend', { kind: 'ExtendDef' });
       t.keyword('schema', { kind: 'SchemaDef' });
       expectDirective({ t }, { name: 'someDirective' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications without root operation definitions, followed by a type definition', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+        
+        type A { field: String }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaDef' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.keyword('type', { kind: 'ObjectTypeDef' });
+      t.name('A');
+      t.punctuation('{');
+      t.property('field', { kind: 'FieldDef' });
+      t.punctuation(':');
+      t.name('String', { kind: 'NamedType' });
+      t.punctuation('}');
 
       t.eol();
     });
