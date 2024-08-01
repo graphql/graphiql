@@ -1,5 +1,22 @@
 # @graphiql/react
 
+## 0.23.0
+
+### Minor Changes
+
+- [#3657](https://github.com/graphql/graphiql/pull/3657) [`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update vite to v5
+
+### Patch Changes
+
+- [#3637](https://github.com/graphql/graphiql/pull/3637) [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update eslint plugins and fix errors
+
+- [#3656](https://github.com/graphql/graphiql/pull/3656) [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set `build.minify: false` for cjs/esm builds since minified variable names change every build time
+
+- Updated dependencies [[`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`56c6f45`](https://github.com/graphql/graphiql/commit/56c6f4571dd0dfda307ed11c5afb8c837ad928b0)]:
+  - codemirror-graphql@2.0.13
+  - graphql-language-service@5.2.2
+  - @graphiql/toolkit@0.9.2
+
 ## 0.22.4
 
 ### Patch Changes

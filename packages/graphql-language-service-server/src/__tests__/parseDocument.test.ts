@@ -1,7 +1,7 @@
 import { parseDocument } from '../parseDocument';
 
 describe('parseDocument', () => {
-  it('parseDocument finds queries in tagged templates', () => {
+  it('parseDocument finds queries in tagged templates', async () => {
     const text = `
     // @flow
     import {gql} from 'react-apollo';
@@ -20,7 +20,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -32,7 +32,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in tagged templates in leaf', () => {
+  it('parseDocument finds queries in tagged templates in leaf', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import type {B} from 'B';
@@ -48,7 +48,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -58,7 +58,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in tagged templates using typescript', () => {
+  it('parseDocument finds queries in tagged templates using typescript', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -76,7 +76,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
+    const contents = await parseDocument(text, 'test.ts');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -88,7 +88,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in tagged templates using tsx', () => {
+  it('parseDocument finds queries in tagged templates using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -108,7 +108,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -120,7 +120,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in multi-expression tagged templates using tsx', () => {
+  it('parseDocument finds queries in multi-expression tagged templates using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -140,7 +140,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
 
     expect(contents[0].query).toEqual(`
     query Test {
@@ -153,7 +153,7 @@ describe('parseDocument', () => {
     }`);
   });
   // TODO: why an extra line here?
-  it('parseDocument finds queries in multi-expression tagged template with declarations with using tsx', () => {
+  it('parseDocument finds queries in multi-expression tagged template with declarations with using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -174,7 +174,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -186,7 +186,7 @@ describe('parseDocument', () => {
     }`);
   });
 
-  it('parseDocument finds queries in multi-expression template strings using tsx', () => {
+  it('parseDocument finds queries in multi-expression template strings using tsx', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -209,7 +209,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -222,7 +222,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in call expressions with template literals', () => {
+  it('parseDocument finds queries in call expressions with template literals', async () => {
     const text = `
     // @flow
     import {gql} from 'react-apollo';
@@ -241,7 +241,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -253,7 +253,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument finds queries in #graphql-annotated templates', () => {
+  it('parseDocument finds queries in #graphql-annotated templates', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -271,7 +271,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
+    const contents = await parseDocument(text, 'test.ts');
     expect(contents[0].query).toEqual(`#graphql
     query Test {
       test {
@@ -282,8 +282,7 @@ describe('parseDocument', () => {
     
     `);
   });
-
-  it('parseDocument finds queries in /*GraphQL*/-annotated templates', () => {
+  it('parseDocument finds queries in /*GraphQL*/-annotated templates', async () => {
     const text = `
     import {gql} from 'react-apollo';
     import {B} from 'B';
@@ -301,8 +300,10 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
+    const contents = await parseDocument(text, 'test.ts');
     // please let me keep this whitespace prettier!
+    // note: if this test suddenly starts failing, it's because some auto-formatting configuration ignored
+    // our `.prettierignore` file, as the whitespace below Test query is expected
     expect(contents[0].query).toEqual(/* GraphQL */ `
       query Test {
         test {
@@ -314,7 +315,7 @@ describe('parseDocument', () => {
     `);
   });
 
-  it('parseDocument ignores non gql tagged templates', () => {
+  it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
     // @flow
     import randomThing from 'package';
@@ -333,11 +334,11 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
-  it('parseDocument ignores non gql call expressions with template literals', () => {
+  it('parseDocument ignores non gql call expressions with template literals', async () => {
     const text = `
     // @flow
     import randomthing from 'package';
@@ -356,11 +357,11 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
-  it('an unparsable JS/TS file does not throw and bring down the server', () => {
+  it('an unparsable JS/TS file does not throw and bring down the server', async () => {
     const text = `
     // @flow
     import type randomThing fro 'package';
@@ -376,31 +377,31 @@ describe('parseDocument', () => {
     }
     \${A.frag`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
-  it('an empty file is ignored', () => {
+  it('an empty file is ignored', async () => {
     const text = '';
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
-  it('a whitespace only file with empty asts is ignored', () => {
+  it('a whitespace only file with empty asts is ignored', async () => {
     const text = `
     
     `;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
-  it('an ignored file is ignored', () => {
+  it('an ignored file is ignored', async () => {
     const text = `
     something
     `;
-    const contents = parseDocument(text, 'test.txt');
+    const contents = await parseDocument(text, 'test.txt');
     expect(contents.length).toEqual(0);
   });
 });

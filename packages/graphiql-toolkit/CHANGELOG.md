@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.9.2
+
+### Patch Changes
+
+- [#3646](https://github.com/graphql/graphiql/pull/3646) [`56c6f45`](https://github.com/graphql/graphiql/commit/56c6f4571dd0dfda307ed11c5afb8c837ad928b0) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `localStorage` over `window.localStorage`
+
 ## 0.9.1
 
 ### Patch Changes
