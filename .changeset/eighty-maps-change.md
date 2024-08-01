@@ -4,6 +4,8 @@
 'vscode-graphql': patch
 ---
 
+several LSP fixes and improvements:
+
 **Bugfixes**
 
 debounce schema change events to fix codegen bugs to fix #3622
