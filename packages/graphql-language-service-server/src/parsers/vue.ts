@@ -1,4 +1,4 @@
-import { parse, compileScript, SFCScriptBlock } from '@vue/compiler-sfc';
+import { parse, compileScript, SFCScriptBlock } from 'vue/compiler-sfc';
 import { RangeMapper, SourceParser } from './types';
 import { Position, Range } from 'graphql-language-service';
 import { BlockStatement, Statement } from '@babel/types';

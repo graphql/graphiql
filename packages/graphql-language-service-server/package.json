@@ -38,12 +38,10 @@
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
-    "@astrojs/compiler": "^2.8.0",
+    "@astrojs/compiler": "^2.10.1",
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
-    "@vue/compiler-sfc": "^3.4.5",
-    "astrojs-compiler-sync": "^1.0.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
     "fast-glob": "^3.2.7",
@@ -61,7 +59,8 @@
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
     "vscode-languageserver-types": "^3.17.2",
-    "vscode-uri": "^3.0.2"
+    "vscode-uri": "^3.0.2",
+    "vue": "^3.2.0"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
