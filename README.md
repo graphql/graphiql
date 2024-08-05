@@ -1,3 +1,5 @@
+![GraphQLConf 2024 Banner: September 10-12, San Francisco. Hosted by the GraphQL Foundation](https://github.com/user-attachments/assets/bdb8cd5d-5186-4ece-b06b-b00a499b7868)
+
 <!-- @format -->
 
 # GraphQL IDE Monorepo
