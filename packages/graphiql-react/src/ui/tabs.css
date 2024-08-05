@@ -5,13 +5,14 @@
   align-items: center;
   gap: var(--px-8);
   /* reset browser defaults */
-  padding:0;
+  padding: 0;
   margin: 0;
   list-style: none;
 }
 
 /* trick to shrink multiple tabs, instead of overflow container */
-.graphiql-tabs, .graphiql-tab {
+.graphiql-tabs,
+.graphiql-tab {
   min-width: 0;
 }
 
@@ -69,14 +70,14 @@
       background: var(--bg);
       color: hsl(var(--color-neutral));
       overflow: hidden; /* bg in `:before` will not overflow from radius area */
-      
+
       /* trick to add 2nd bg with opacity */
       &:before {
         content: '';
         position: absolute;
         inset: 0;
         z-index: -1;
-        background:  hsla(var(--color-neutral), 0.3);
+        background: hsla(var(--color-neutral), 0.3);
       }
     }
   }
