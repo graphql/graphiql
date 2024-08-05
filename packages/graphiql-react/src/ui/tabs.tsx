@@ -3,7 +3,6 @@ import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../icons';
 import { UnStyledButton } from './button';
-import { Tooltip } from './tooltip';
 
 import './tabs.css';
 
@@ -28,7 +27,7 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
         className,
       )}
     >
-      <div className="graphiql-tab-wrapper">{children}</div>
+      {children}
     </Reorder.Item>
   ),
 );
@@ -51,17 +50,15 @@ TabButton.displayName = 'Tab.Button';
 
 const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
   (props, ref) => (
-    <Tooltip label="Close Tab">
-      <UnStyledButton
-        aria-label="Close Tab"
-        {...props}
-        ref={ref}
-        type="button"
-        className={clsx('graphiql-tab-close', props.className)}
-      >
-        <CloseIcon />
-      </UnStyledButton>
-    </Tooltip>
+    <UnStyledButton
+      aria-label="Close Tab"
+      {...props}
+      ref={ref}
+      type="button"
+      className={clsx('graphiql-tab-close', props.className)}
+    >
+      <CloseIcon />
+    </UnStyledButton>
   ),
 );
 TabClose.displayName = 'Tab.Close';

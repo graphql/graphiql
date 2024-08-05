@@ -553,39 +553,40 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       aria-label="Select active operation"
                     >
                       {editorContext.tabs.map((tab, index) => (
-                        <Tab
-                          key={tab.id}
-                          value={tab}
-                          isActive={index === editorContext.activeTabIndex}
-                        >
-                          <Tab.Button
-                            aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            onClick={() => {
-                              executionContext.stop();
-                              editorContext.changeTab(index);
-                            }}
+                        <Tooltip key={tab.id} label={tab.title}>
+                          <Tab
+                            value={tab}
+                            isActive={index === editorContext.activeTabIndex}
                           >
-                            {tab.title}
-                          </Tab.Button>
-                          <Tab.Close
-                            onClick={() => {
-                              if (editorContext.activeTabIndex === index) {
+                            <Tab.Button
+                              aria-controls="graphiql-session"
+                              id={`graphiql-session-tab-${index}`}
+                              onClick={() => {
                                 executionContext.stop();
-                              }
-                              editorContext.closeTab(index);
-                            }}
-                          />
-                        </Tab>
+                                editorContext.changeTab(index);
+                              }}
+                            >
+                              {tab.title}
+                            </Tab.Button>
+                            <Tab.Close
+                              onClick={() => {
+                                if (editorContext.activeTabIndex === index) {
+                                  executionContext.stop();
+                                }
+                                editorContext.closeTab(index);
+                              }}
+                            />
+                          </Tab>
+                        </Tooltip>
                       ))}
                     </Tabs>
                   )}
-                  <Tooltip label="Add tab">
+                  <Tooltip label="New tab">
                     <UnStyledButton
                       type="button"
                       className="graphiql-tab-add"
                       onClick={handleAddTab}
-                      aria-label="Add tab"
+                      aria-label="New tab"
                     >
                       <PlusIcon aria-hidden="true" />
                     </UnStyledButton>

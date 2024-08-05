@@ -72,6 +72,8 @@
   display: flex;
   justify-content: flex-end;
   height: var(--session-header-height);
+  padding: var(--px-8) var(--px-8) 0;
+  gap: var(--px-8);
 
   .graphiql-tabs + .graphiql-tab-add {
     margin-right: auto;
@@ -94,13 +96,15 @@ button.graphiql-tab-add {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
-  padding: var(--px-12) var(--px-16);
 }
 
 /* Undo default link styling for the default GraphiQL logo link */
 .graphiql-container .graphiql-logo .graphiql-logo-link {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   text-decoration: none;
+  &:focus {
+    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
+  }
 }
 
 /* The editor of the session */

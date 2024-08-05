@@ -1,40 +1,36 @@
 .graphiql-tabs {
+  --bg: hsl(var(--color-base));
+
   display: flex;
   align-items: center;
   gap: var(--px-8);
-  padding: var(--px-8) 0;
-  margin: 0 var(--px-8)
-    /* when using padding while scrolling, tab items will overflow to padding area */;
-  overflow-x: auto;
+  /* reset browser defaults */
+  padding:0;
+  margin: 0;
   list-style: none;
 }
 
-.graphiql-tab,
-.graphiql-tab-wrapper {
-  border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
+/* trick to shrink multiple tabs, instead of overflow container */
+.graphiql-tabs, .graphiql-tab {
+  min-width: 0;
 }
 
 .graphiql-tab {
+  border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
   background: hsla(var(--color-neutral), var(--alpha-background-light));
+  position: relative;
+  display: flex;
+  max-width: 140px;
 
   /* disable shrinking while changing the operation name */
   &:not(:focus-within) {
     transform: none !important;
   }
 
-  .graphiql-tab-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    max-width: 140px;
-    color: hsla(var(--color-neutral), var(--alpha-secondary));
-    backdrop-filter: blur(9999px);
-  }
-
   &:hover,
   &:focus-within,
   &.graphiql-tab-active {
-    background: hsla(var(--color-neutral), 0.2);
+    background: var(--bg);
     color: hsl(var(--color-neutral));
 
     .graphiql-tab-close {
@@ -46,7 +42,7 @@
     border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: var(--px-4) 28px var(--px-4) var(--px-8);
+    padding: var(--px-4) var(--px-8);
 
     &:hover {
       background: none;
@@ -55,8 +51,12 @@
 
   .graphiql-tab-close {
     position: absolute;
-    right: var(--px-4);
+    right: min(var(--px-4), 5%);
+    top: 50%;
+    transform: translateY(-50%);
     display: none;
+    background: var(--bg);
+    box-shadow: -10px 0 10px 0 var(--bg);
     padding: var(--px-6);
     line-height: 0;
 
@@ -66,8 +66,18 @@
     }
 
     &:hover {
-      background: hsla(var(--color-neutral), 0.3);
+      background: var(--bg);
       color: hsl(var(--color-neutral));
+      overflow: hidden; /* bg in `:before` will not overflow from radius area */
+      
+      /* trick to add 2nd bg with opacity */
+      &:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:  hsla(var(--color-neutral), 0.3);
+      }
     }
   }
 }
