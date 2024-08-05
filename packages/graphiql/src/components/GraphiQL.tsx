@@ -40,6 +40,7 @@ import {
   Spinner,
   Tab,
   Tabs,
+  Theme,
   ToolbarButton,
   Tooltip,
   UnStyledButton,
@@ -218,6 +219,7 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
+    defaultTheme?: Theme;
     disableTabs?: boolean;
     /**
      * forcedTheme allows enforcement of a specific theme for GraphiQL.
@@ -252,7 +254,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme(props.defaultTheme);
 
   useEffect(() => {
     if (forcedTheme === 'system') {
