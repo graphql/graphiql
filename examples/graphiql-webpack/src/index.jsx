@@ -5,7 +5,7 @@ import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import 'graphiql/graphiql.css';
+import 'graphiql/style.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';

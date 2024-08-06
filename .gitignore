@@ -44,3 +44,4 @@ packages/codemirror-graphql/*.map
 packages/graphiql/cypress/screenshots/
 packages/graphiql/cypress/videos/
 packages/graphiql/typedoc/
+packages/graphiql/webpack/
