@@ -35,10 +35,18 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
   next();
 });
 
-app.use(express.static(path.resolve(__dirname, '../')));
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../resources/dev.html'));
-});
+const IS_DEV = process.env.npm_lifecycle_script.endsWith(' vite');
+
+if (IS_DEV) {
+  app.get('/', (req, res) => {
+    res.redirect('http://localhost:5173');
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../resources/dev.html'));
+  });
+  app.use(express.static(path.resolve(__dirname, '../')));
+}
 
 // messy but it allows close
 const server = createServer(app);

@@ -34,7 +34,7 @@
   "scripts": {
     "cypress-open": "yarn e2e-server 'cypress open'",
     "build": "vite build && UMD=true vite build",
-    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' 'vite'",
+    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'"
   },
