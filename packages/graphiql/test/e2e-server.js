@@ -36,7 +36,9 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 });
 
 app.use(express.static(path.resolve(__dirname, '../')));
-app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../resources/dev.html'));
+});
 
 // messy but it allows close
 const server = createServer(app);

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/test/images/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphiQL</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      #graphiql {
+        height: 100dvh;
+      }
+
+      .loading {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="graphiql">
+      <div class="loading">Loading…</div>
+    </div>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom/client';
+      import GraphiQL from '../src/cdn';
+
+      Object.assign(globalThis, {
+        React,
+        ReactDOM,
+        GraphiQL,
+      });
+    </script>
+    <script type="module" src="./renderExample.js"></script>
+  </body>
+</html>

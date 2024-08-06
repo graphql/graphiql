@@ -1,4 +1,4 @@
-/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+/* global React, ReactDOM, GraphiQL */
 
 /**
  * UMD GraphiQL Example
@@ -83,6 +83,7 @@ function getSchemaUrl() {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
   React.createElement(GraphiQL, {
@@ -100,7 +101,7 @@ root.render(
     defaultEditorToolsVisibility: true,
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
-    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    inputValueDeprecation: !graphqlVersion.includes('15.5'),
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),
