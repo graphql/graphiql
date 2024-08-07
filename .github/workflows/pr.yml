@@ -25,7 +25,7 @@ jobs:
         with:
           path: |
             ~/.cache/Cypress
-          key: cypress-${{ runner.os }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - run: yarn install --frozen-lockfile --immutable
 
   build:
@@ -165,7 +165,7 @@ jobs:
         with:
           path: |
             ~/.cache/Cypress
-          key: cypress-${{ runner.os }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
