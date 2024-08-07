@@ -7,6 +7,7 @@ const IS_UMD = process.env.UMD === 'true';
 export default defineConfig({
   plugins: [react({ jsxRuntime: 'classic' })],
   build: {
+    minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {

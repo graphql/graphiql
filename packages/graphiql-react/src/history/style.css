@@ -26,7 +26,7 @@
   height: 34px;
 
   &:hover {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
     background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
@@ -91,7 +91,7 @@ button.graphiql-history-item-action {
   padding: var(--px-8) var(--px-6);
 
   &:hover {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
   }
 
   & > svg {

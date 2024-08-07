@@ -19,12 +19,8 @@ export default defineConfig({
       plugins: [postCssNestingPlugin()],
     },
   },
-  esbuild: {
-    // We use function names for generating readable error messages, so we want
-    // them to be preserved when building and minifying.
-    keepNames: true,
-  },
   build: {
+    minify: false,
     sourcemap: true,
     lib: {
       entry: 'src/index.ts',

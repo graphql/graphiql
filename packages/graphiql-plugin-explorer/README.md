@@ -9,23 +9,22 @@ GraphiQL UI.
 Use your favorite package manager to install the package:
 
 ```sh
-npm i -S @graphiql/plugin-explorer
+npm install @graphiql/plugin-explorer
 ```
 
 The following packages are peer dependencies, so make sure you have them
 installed as well:
 
 ```sh
-npm i -S react react-dom graphql
+npm install react react-dom graphql
 ```
 
 ## Usage
 
 ```jsx
-import { explorerPlugin } from '@graphiql/plugin-explorer';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { explorerPlugin } from '@graphiql/plugin-explorer';
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 
@@ -33,10 +32,12 @@ const fetcher = createGraphiQLFetcher({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
-// pass the explorer props here if you want
+// Pass the explorer props here if you want
 const explorer = explorerPlugin();
 
-return <GraphiQL fetcher={fetcher} plugins={[explorer]} />;
+function GraphiQLWithExplorer() {
+  return <GraphiQL fetcher={fetcher} plugins={[explorer]} />;
+}
 ```
 
 ## CDN bundles

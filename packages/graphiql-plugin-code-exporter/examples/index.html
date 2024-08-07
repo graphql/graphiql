@@ -76,9 +76,9 @@
       }
 
       var exampleSnippetOne = {
-        name: `Example One`,
-        language: `JavaScript`,
-        codeMirrorMode: `jsx`,
+        name: 'Example One',
+        language: 'JavaScript',
+        codeMirrorMode: 'jsx',
         options: [],
         generate: arg => `export const query = graphql\`
       ${getQuery(arg, 2)}
@@ -87,9 +87,9 @@
       };
 
       var exampleSnippetTwo = {
-        name: `Example Two`,
-        language: `JavaScript`,
-        codeMirrorMode: `jsx`,
+        name: 'Example Two',
+        language: 'JavaScript',
+        codeMirrorMode: 'jsx',
         options: [],
         generate: arg => `import { graphql } from 'graphql'
 
@@ -107,7 +107,7 @@
       var query =
         'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}';
 
-      function GraphiQLWithExporter() {
+      function GraphiQLWithCodeExporter() {
         return React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
@@ -117,7 +117,7 @@
       }
 
       const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-      root.render(React.createElement(GraphiQLWithExporter));
+      root.render(React.createElement(GraphiQLWithCodeExporter));
     </script>
   </body>
 </html>

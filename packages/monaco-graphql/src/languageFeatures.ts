@@ -42,8 +42,7 @@ export class DiagnosticsAdapter {
       const modelUri = model.uri.toString();
       // if the config changes, this adapter will be re-instantiated, so we only need to check this once
       const jsonValidationForModel =
-        defaults.diagnosticSettings?.validateVariablesJSON &&
-        defaults.diagnosticSettings.validateVariablesJSON[modelUri];
+        defaults.diagnosticSettings?.validateVariablesJSON?.[modelUri];
       // once on adding a model, this is also fired when schema or other config changes
       onChangeTimeout = setTimeout(() => {
         void this._doValidate(model.uri, modeId, jsonValidationForModel);

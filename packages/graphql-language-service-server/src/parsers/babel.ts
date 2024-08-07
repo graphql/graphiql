@@ -3,7 +3,7 @@ import { BABEL_PLUGINS, PARSER_OPTIONS } from '../constants';
 import { SourceParser } from './types';
 
 export const babelParser = (text: string, plugins?: ParserPlugin[]) => {
-  const babelPlugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
+  const babelPlugins = [...BABEL_PLUGINS];
   if (plugins) {
     babelPlugins.push(...plugins);
   }

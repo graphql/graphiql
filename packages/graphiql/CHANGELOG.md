@@ -1,5 +1,27 @@
 # Change Log
 
+## 3.4.0
+
+### Minor Changes
+
+- [#3643](https://github.com/graphql/graphiql/pull/3643) [`82f1ecc`](https://github.com/graphql/graphiql/commit/82f1eccb52e328241cee93389c58154b9f2e8730) Thanks [@dimaMachina](https://github.com/dimaMachina)! - add `className` prop. Additional class names which will be appended to the GraphiQL container element
+
+### Patch Changes
+
+- Updated dependencies [[`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f), [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`56c6f45`](https://github.com/graphql/graphiql/commit/56c6f4571dd0dfda307ed11c5afb8c837ad928b0), [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f)]:
+  - @graphiql/react@0.23.0
+  - graphql-language-service@5.2.2
+  - @graphiql/toolkit@0.9.2
+
+## 3.3.2
+
+### Patch Changes
+
+- [#3634](https://github.com/graphql/graphiql/pull/3634) [`adf0ba01`](https://github.com/graphql/graphiql/commit/adf0ba019902dcac2e49ccee69b79a6665c4766d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - when alpha is `1`, use `hsl` instead of `hsla`
+
+- Updated dependencies [[`adf0ba01`](https://github.com/graphql/graphiql/commit/adf0ba019902dcac2e49ccee69b79a6665c4766d)]:
+  - @graphiql/react@0.22.4
+
 ## 3.3.1
 
 ### Patch Changes

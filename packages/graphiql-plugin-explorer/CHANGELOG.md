@@ -1,5 +1,27 @@
 # @graphiql/plugin-explorer
 
+## 3.1.1
+
+### Patch Changes
+
+- [#3657](https://github.com/graphql/graphiql/pull/3657) [`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update vite to v5
+
+- [#3656](https://github.com/graphql/graphiql/pull/3656) [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set `build.minify: false` for cjs/esm builds since minified variable names change every build time
+
+- Updated dependencies [[`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f), [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f)]:
+  - @graphiql/react@0.23.0
+
+## 3.1.0
+
+### Minor Changes
+
+- [#3633](https://github.com/graphql/graphiql/pull/3633) [`8849a15b`](https://github.com/graphql/graphiql/commit/8849a15b6e80fe1b34e8250e74a56b85ccdb6ac6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - adjust `@graphiql/plugin-explorer` styles
+
+### Patch Changes
+
+- Updated dependencies [[`adf0ba01`](https://github.com/graphql/graphiql/commit/adf0ba019902dcac2e49ccee69b79a6665c4766d)]:
+  - @graphiql/react@0.22.4
+
 ## 3.0.3
 
 ### Patch Changes

@@ -177,7 +177,7 @@ describe('GraphQLCache', () => {
         '    `,\n' +
         '  },\n' +
         '});';
-      const contents = parseDocument(text, 'test.js');
+      const contents = await parseDocument(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
         parse(contents[0].query),
         fragmentDefinitions,

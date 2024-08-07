@@ -172,13 +172,11 @@ describe('MessageProcessor', () => {
     expect(capabilities.textDocumentSync).toEqual(1);
   });
   it('detects a config file', async () => {
-    const result = await messageProcessor._isGraphQLConfigFile(
-      'graphql.config.js',
-    );
+    const result =
+      await messageProcessor._isGraphQLConfigFile('graphql.config.js');
     expect(result).toEqual(true);
-    const falseResult = await messageProcessor._isGraphQLConfigFile(
-      'graphql.js',
-    );
+    const falseResult =
+      await messageProcessor._isGraphQLConfigFile('graphql.js');
     expect(falseResult).toEqual(false);
 
     mockfs({ [`${__dirname}/package.json`]: '{"graphql": {}}' });
@@ -452,7 +450,7 @@ describe('MessageProcessor', () => {
     );
     const project = messageProcessor._graphQLCache.getProjectForFile(
       test.textDocument.uri,
-    )!;
+    );
 
     const customResult = messageProcessor._getCustomLocateResult(
       project,

@@ -7,8 +7,15 @@ import { serializeRange } from './__utils__/utils';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { URI } from 'vscode-uri';
-import { GraphQLSchema, introspectionFromSchema } from 'graphql';
+import {
+  GraphQLSchema,
+  buildASTSchema,
+  introspectionFromSchema,
+  parse,
+} from 'graphql';
 import fetchMock from 'fetch-mock';
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 jest.mock('@whatwg-node/fetch', () => {
   const { AbortController } = require('node-abort-controller');
@@ -26,7 +33,7 @@ const mockSchema = (schema: GraphQLSchema) => {
       descriptions: true,
     }),
   };
-  fetchMock.mock({
+  return fetchMock.mock({
     matcher: '*',
     response: {
       headers: {
@@ -523,6 +530,7 @@ describe('MessageProcessor with config', () => {
         ],
         schemaFile,
       ],
+      settings: { schemaCacheTTL: 500 },
     });
 
     const initParams = await project.init('a/query.ts');
@@ -530,10 +538,29 @@ describe('MessageProcessor with config', () => {
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('a')).toBeDefined();
+
+    fetchMock.restore();
+    mockSchema(
+      buildASTSchema(
+        parse(
+          'type example100 { string: String } type Query { example: example100 }',
+        ),
+      ),
+    );
+    await project.lsp.handleWatchedFilesChangedNotification({
+      changes: [
+        { uri: project.uri('a/fragments.ts'), type: FileChangeType.Changed },
+      ],
+    });
+    await sleep(1000);
+    expect(
+      (await project.lsp._graphQLCache.getSchema('a')).getType('example100'),
+    ).toBeTruthy();
+    await sleep(1000);
     const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
       encoding: 'utf-8',
     });
-    expect(file.split('\n').length).toBeGreaterThan(10);
+    expect(file).toContain('example100');
     // add a new typescript file with empty query to the b project
     // and expect autocomplete to only show options for project b
     await project.addFile(

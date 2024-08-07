@@ -84,7 +84,6 @@ const App = () => {
   return (
     <GraphiQL
       style={style}
-      // eslint-disable-next-line @arthurgeron/react-usememo/require-usememo
       plugins={[serverSelect, explorer, exporter]}
       fetcher={fetcher}
       shouldPersistHeaders

@@ -82,7 +82,7 @@
     cursor: pointer;
     text-decoration: none;
     padding: var(--px-8) var(--px-12);
-    color: hsla(var(--color-neutral), 1) !important;
+    color: hsl(var(--color-neutral)) !important;
     border-radius: var(--border-radius-4) !important;
     &:hover {
       background-color: hsla(

@@ -6,6 +6,7 @@
  */
 
 /* eslint-disable no-console */
+const { createServer } = require('node:http');
 const express = require('express');
 const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
@@ -17,13 +18,7 @@ const WebSocketsServer = require('./afterDevServer');
 
 // Server
 app.post('/graphql', createHandler({ schema }));
-
-app.get(
-  '/graphql',
-  createHandler({
-    schema,
-  }),
-);
+app.get('/graphql', createHandler({ schema }));
 
 app.post('/bad/graphql', (_req, res, next) => {
   res.json({ data: badSchema });
@@ -44,7 +39,8 @@ app.use(express.static(path.resolve(__dirname, '../')));
 app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
 
 // messy but it allows close
-const server = require('node:http').createServer(app);
+const server = createServer(app);
+
 server.listen(process.env.PORT || 3100, function () {
   const { port } = this.address();
 
@@ -58,7 +54,5 @@ server.listen(process.env.PORT || 3100, function () {
     process.exit();
   });
 });
-const wsServer = WebSocketsServer();
 
-module.exports.server = server;
-module.exports.wsServer = wsServer;
+WebSocketsServer();

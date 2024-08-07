@@ -442,7 +442,7 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
-const typeSystemCompletionItems = [
+const typeSystemCompletionItems: CompletionItem[] = [
   { label: 'type', kind: CompletionItemKind.Function },
   { label: 'interface', kind: CompletionItemKind.Function },
   { label: 'union', kind: CompletionItemKind.Function },
@@ -451,7 +451,7 @@ const typeSystemCompletionItems = [
   { label: 'schema', kind: CompletionItemKind.Function },
 ];
 
-const executableCompletionItems = [
+const executableCompletionItems: CompletionItem[] = [
   { label: 'query', kind: CompletionItemKind.Function },
   { label: 'mutation', kind: CompletionItemKind.Function },
   { label: 'subscription', kind: CompletionItemKind.Function },
@@ -460,18 +460,24 @@ const executableCompletionItems = [
 ];
 
 // Helper functions to get suggestions for each kinds
-function getSuggestionsForTypeSystemDefinitions(token: ContextToken) {
+function getSuggestionsForTypeSystemDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...typeSystemCompletionItems,
   ]);
 }
 
-function getSuggestionsForExecutableDefinitions(token: ContextToken) {
+function getSuggestionsForExecutableDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, executableCompletionItems);
 }
 
-function getSuggestionsForUnknownDocumentMode(token: ContextToken) {
+function getSuggestionsForUnknownDocumentMode(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
     ...executableCompletionItems,
@@ -479,7 +485,9 @@ function getSuggestionsForUnknownDocumentMode(token: ContextToken) {
   ]);
 }
 
-function getSuggestionsForExtensionDefinitions(token: ContextToken) {
+function getSuggestionsForExtensionDefinitions(
+  token: ContextToken,
+): CompletionItem[] {
   return hintList(token, typeSystemCompletionItems);
 }
 
@@ -487,7 +495,7 @@ function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   options?: InternalAutocompleteOptions,
-): Array<CompletionItem> {
+): CompletionItem[] {
   if (typeInfo.parentType) {
     const { parentType } = typeInfo;
     // const { parentType, fieldDef, argDefs } = typeInfo;
