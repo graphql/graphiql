@@ -8,8 +8,8 @@
  *
  * It is used by:
  * - the netlify demo
- * - end to end tests
- * - webpack dev server
+ * - end-to-end tests
+ * - vite dev server
  */
 
 // Parse the search string to get url parameters.
