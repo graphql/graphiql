@@ -169,7 +169,6 @@ export function GraphiQL({
     >
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}
-        disableTabs={props.disableTabs ?? false}
         forcedTheme={props.forcedTheme}
         {...props}
       />
@@ -218,7 +217,6 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
-    disableTabs?: boolean;
     /**
      * forcedTheme allows enforcement of a specific theme for GraphiQL.
      * This is useful when you want to make sure that GraphiQL is always
@@ -541,55 +539,51 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {!props.disableTabs && (
-                <>
-                  {hasMultipleTabs && (
-                    <Tabs
-                      values={editorContext.tabs}
-                      onReorder={handleReorder}
-                      aria-label="Select active operation"
-                    >
-                      {editorContext.tabs.map((tab, index) => (
-                        <Tooltip key={tab.id} label={tab.title}>
-                          <Tab
-                            value={tab}
-                            isActive={index === editorContext.activeTabIndex}
-                          >
-                            <Tab.Button
-                              aria-controls="graphiql-session"
-                              id={`graphiql-session-tab-${index}`}
-                              onClick={() => {
-                                executionContext.stop();
-                                editorContext.changeTab(index);
-                              }}
-                            >
-                              {tab.title}
-                            </Tab.Button>
-                            <Tab.Close
-                              onClick={() => {
-                                if (editorContext.activeTabIndex === index) {
-                                  executionContext.stop();
-                                }
-                                editorContext.closeTab(index);
-                              }}
-                            />
-                          </Tab>
-                        </Tooltip>
-                      ))}
-                    </Tabs>
-                  )}
-                  <Tooltip label="New tab">
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-add"
-                      onClick={handleAddTab}
-                      aria-label="New tab"
-                    >
-                      <PlusIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                </>
+              {hasMultipleTabs && (
+                <Tabs
+                  values={editorContext.tabs}
+                  onReorder={handleReorder}
+                  aria-label="Select active operation"
+                >
+                  {editorContext.tabs.map((tab, index) => (
+                    <Tooltip key={tab.id} label={tab.title}>
+                      <Tab
+                        value={tab}
+                        isActive={index === editorContext.activeTabIndex}
+                      >
+                        <Tab.Button
+                          aria-controls="graphiql-session"
+                          id={`graphiql-session-tab-${index}`}
+                          onClick={() => {
+                            executionContext.stop();
+                            editorContext.changeTab(index);
+                          }}
+                        >
+                          {tab.title}
+                        </Tab.Button>
+                        <Tab.Close
+                          onClick={() => {
+                            if (editorContext.activeTabIndex === index) {
+                              executionContext.stop();
+                            }
+                            editorContext.closeTab(index);
+                          }}
+                        />
+                      </Tab>
+                    </Tooltip>
+                  ))}
+                </Tabs>
               )}
+              <Tooltip label="New tab">
+                <UnStyledButton
+                  type="button"
+                  className="graphiql-tab-add"
+                  onClick={handleAddTab}
+                  aria-label="New tab"
+                >
+                  <PlusIcon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
               {logo}
             </div>
             <div
