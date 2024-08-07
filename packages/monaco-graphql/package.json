@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "execa": "^7.1.1",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "monaco-editor": "^0.39.0",
     "prettier": "3.3.2",
     "vscode-languageserver-types": "^3.17.1"
