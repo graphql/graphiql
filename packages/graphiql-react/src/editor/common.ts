@@ -3,11 +3,9 @@ import { KeyMap } from './types';
 export const DEFAULT_EDITOR_THEME = 'graphiql';
 export const DEFAULT_KEY_MAP: KeyMap = 'sublime';
 
-let isMacOs = false;
-
-if (typeof window === 'object') {
-  isMacOs = window.navigator.platform.toLowerCase().indexOf('mac') === 0;
-}
+const isMacOs =
+  typeof navigator !== 'undefined' &&
+  navigator.platform.toLowerCase().indexOf('mac') === 0;
 
 export const commonKeys = {
   // Persistent search box in Query Editor
@@ -30,10 +28,10 @@ export async function importCodeMirror(
   addons: Promise<any>[],
   options?: { useCommonAddons?: boolean },
 ) {
-  const CodeMirror = await import('codemirror').then(c =>
+  const CodeMirror = await import('codemirror').then(mod =>
     // Depending on bundler and settings the dynamic import either returns a
     // function (e.g. parcel) or an object containing a `default` property
-    typeof c === 'function' ? c : c.default,
+    typeof mod === 'function' ? mod : mod.default,
   );
   await Promise.all(
     options?.useCommonAddons === false
