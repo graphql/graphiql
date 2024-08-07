@@ -67,7 +67,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^6.7.3",
     "cssnano": "^5.1.15",
-    "cypress": "^12.6.0",
+    "cypress": "^13.13.2",
     "express": "^4.19.2",
     "fork-ts-checker-webpack-plugin": "7.3.0",
     "graphql": "^16.8.1",
