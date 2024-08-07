@@ -5,12 +5,13 @@ import commonjs from 'vite-plugin-commonjs';
 
 const umdConfig = defineConfig({
   define: {
-    'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+    // https://github.com/graphql/graphql-js/blob/16.x.x/website/docs/tutorials/going-to-production.md#vite
+    'globalThis.process': 'true',
+    'process.env.NODE_ENV': '"production"',
   },
   // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
   plugins: [commonjs()],
   build: {
-    minify: true,
     sourcemap: true,
     emptyOutDir: false,
     lib: {
