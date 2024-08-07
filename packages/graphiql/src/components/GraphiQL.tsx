@@ -462,10 +462,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   return (
     <Tooltip.Provider>
-      <div
-        data-testid="graphiql-container"
-        className={`graphiql-container${className}`}
-      >
+      <div className={`graphiql-container${className}`}>
         <div className="graphiql-sidebar">
           <div className="graphiql-sidebar-section">
             {pluginContext?.plugins.map((plugin, index) => {
