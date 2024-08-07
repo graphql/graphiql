@@ -1,6 +1,6 @@
 {
   "name": "example-monaco-graphql-webpack",
-  "version": "1.1.1",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
