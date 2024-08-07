@@ -1,4 +1,4 @@
-.changeset/
+.changeset/*.md
 
 # ignore working-group dir markdown so it's easier for people to edit from the UI
 working-group/
