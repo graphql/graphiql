@@ -1,5 +1,5 @@
 ---
-"graphiql": minor
+"graphiql": major
 "@graphiql/react": minor
 ---
 
