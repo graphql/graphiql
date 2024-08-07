@@ -865,8 +865,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 }
 
 const modifier =
-  typeof window !== 'undefined' &&
-  window.navigator.platform.toLowerCase().indexOf('mac') === 0
+  typeof navigator !== 'undefined' &&
+  navigator.platform.toLowerCase().indexOf('mac') === 0
     ? 'Cmd'
     : 'Ctrl';
 
