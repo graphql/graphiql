@@ -14,7 +14,7 @@
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
-      "ESLINT_USE_FLAT_CONFIG=false eslint --cache --fix",
+      "cross-env ESLINT_USE_FLAT_CONFIG=false eslint --cache --fix",
       "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
       "jest --passWithNoTests",
       "yarn lint-cspell"
