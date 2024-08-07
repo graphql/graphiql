@@ -77,6 +77,8 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
+    "identity-obj-proxy": "^3.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
