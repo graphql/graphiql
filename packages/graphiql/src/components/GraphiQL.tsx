@@ -946,22 +946,16 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
   );
 }
 
-GraphiQLLogo.displayName = 'GraphiQLLogo';
-
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{props.children}</>;
 }
 
-GraphiQLToolbar.displayName = 'GraphiQLToolbar';
-
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="graphiql-footer">{props.children}</div>;
 }
-
-GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(
