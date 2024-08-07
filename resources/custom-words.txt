@@ -114,6 +114,7 @@ linenumber
 linenumbers
 linkify
 listbox
+lightningcss
 listvalues
 lostplan
 maint
