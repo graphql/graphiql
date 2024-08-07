@@ -1,46 +1,84 @@
 .graphiql-tabs {
+  --bg: hsl(var(--color-base));
+
   display: flex;
   align-items: center;
-  overflow-x: auto;
-  padding: var(--px-12);
+  gap: var(--px-8);
+  /* reset browser defaults */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 
-  & > :not(:first-child) {
-    margin-left: var(--px-12);
-  }
+/* trick to shrink multiple tabs, instead of overflow container */
+.graphiql-tabs,
+.graphiql-tab {
+  min-width: 0;
 }
 
 .graphiql-tab {
-  align-items: stretch;
-  border-radius: var(--border-radius-8);
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
+  background: hsla(var(--color-neutral), var(--alpha-background-light));
+  position: relative;
   display: flex;
+  max-width: 140px;
 
-  & > button.graphiql-tab-close {
-    visibility: hidden;
-  }
-  &.graphiql-tab-active > button.graphiql-tab-close,
-  &:hover > button.graphiql-tab-close,
-  &:focus-within > button.graphiql-tab-close {
-    visibility: unset;
+  /* disable shrinking while changing the operation name */
+  &:not(:focus-within) {
+    transform: none !important;
   }
 
+  &:hover,
+  &:focus-within,
   &.graphiql-tab-active {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
-    color: hsla(var(--color-neutral), 1);
+    background: var(--bg);
+    color: hsl(var(--color-neutral));
+
+    .graphiql-tab-close {
+      display: block;
+    }
   }
-}
 
-button.graphiql-tab-button {
-  padding: var(--px-4) 0 var(--px-4) var(--px-8);
-}
+  .graphiql-tab-button {
+    border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: var(--px-4) var(--px-8);
 
-button.graphiql-tab-close {
-  align-items: center;
-  display: flex;
-  padding: var(--px-4) var(--px-8);
+    &:hover {
+      background: none;
+    }
+  }
 
-  & > svg {
-    height: var(--px-8);
-    width: var(--px-8);
+  .graphiql-tab-close {
+    position: absolute;
+    right: min(var(--px-4), 5%);
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    background: var(--bg);
+    box-shadow: -10px 0 10px 0 var(--bg);
+    padding: var(--px-6);
+    line-height: 0;
+
+    & > svg {
+      height: var(--px-8);
+      width: var(--px-8);
+    }
+
+    &:hover {
+      background: var(--bg);
+      color: hsl(var(--color-neutral));
+      overflow: hidden; /* bg in `:before` will not overflow from radius area */
+
+      /* trick to add 2nd bg with opacity */
+      &:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: hsla(var(--color-neutral), 0.3);
+      }
+    }
   }
 }
