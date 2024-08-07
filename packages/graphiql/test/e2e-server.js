@@ -7,8 +7,9 @@
 
 /* eslint-disable no-console */
 const { createServer } = require('node:http');
-const express = require('express');
+const fs = require('node:fs');
 const path = require('node:path');
+const express = require('express');
 const { createHandler } = require('graphql-http/lib/use/express');
 const { GraphQLError } = require('graphql');
 const schema = require('./schema');
@@ -35,17 +36,43 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
   next();
 });
 
-const IS_DEV = process.env.npm_lifecycle_script.endsWith(' vite');
+// On CI we test the UMD build
+if (process.env.CI === 'true') {
+  const indexHtml = fs.readFileSync(
+    path.join(__dirname, '..', 'index.html'),
+    'utf8',
+  );
+  const start = '<!--umd-replace-start-->';
+  const end = '<!--umd-replace-end-->';
+  const contentToReplace = indexHtml.slice(
+    indexHtml.indexOf(start),
+    indexHtml.indexOf(end) + end.length,
+  );
 
-if (IS_DEV) {
+  const indexHtmlWithUmd = indexHtml.replace(
+    contentToReplace,
+    /* HTML */ `
+      <script
+        crossorigin
+        src="https://unpkg.com/react@18/umd/react.development.js"
+      ></script>
+      <script
+        crossorigin
+        src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      ></script>
+      <link href="/dist/style.css" rel="stylesheet" />
+      <script src="/dist/index.umd.js"></script>
+    `,
+  );
+
+  app.get('/', (req, res) => {
+    res.send(indexHtmlWithUmd);
+  });
+  app.use(express.static(path.join(__dirname, '..')));
+} else {
   app.get('/', (req, res) => {
     res.redirect('http://localhost:5173');
   });
-} else {
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../resources/dev.html'));
-  });
-  app.use(express.static(path.resolve(__dirname, '../')));
 }
 
 // messy but it allows close
