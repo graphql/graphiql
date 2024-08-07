@@ -22,22 +22,20 @@
         font-size: 4rem;
       }
     </style>
-  </head>
-  <body>
-    <div id="graphiql">
-      <div class="loading">Loading…</div>
-    </div>
+    <!--umd-replace-start-->
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
       import GraphiQL from './src/cdn';
 
-      Object.assign(globalThis, {
-        React,
-        ReactDOM,
-        GraphiQL,
-      });
+      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
     </script>
+    <!--umd-replace-end-->
+  </head>
+  <body>
+    <div id="graphiql">
+      <div class="loading">Loading…</div>
+    </div>
     <script type="module" src="resources/renderExample.js"></script>
   </body>
 </html>
