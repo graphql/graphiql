@@ -130,8 +130,6 @@ button.graphiql-tab-add > svg {
 
 /* The query editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
-  border-bottom: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
   padding: var(--px-16);
   column-gap: var(--px-16);
   display: flex;
@@ -157,6 +155,8 @@ button.graphiql-tab-add > svg {
 
 /* The tab bar for editor tools */
 .graphiql-container .graphiql-editor-tools {
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
   cursor: row-resize;
   display: flex;
   width: 100%;
@@ -176,7 +176,8 @@ button.graphiql-tab-add > svg {
 .graphiql-container
   .graphiql-editor-tools
   > button:not(.graphiql-toggle-editor-tools) {
-  padding: var(--px-8) var(--px-12);
+  padding-left: var(--px-12);
+  padding-right: var(--px-12);
 }
 
 .graphiql-container .graphiql-editor-tools .graphiql-toggle-editor-tools {
@@ -337,4 +338,21 @@ button.graphiql-tab-add > svg {
 /* Avoid showing native tooltips for icons with titles */
 .graphiql-container svg {
   pointer-events: none;
+}
+
+/* The section for incremental payloads */
+.graphiql-incremental-payloads-toggle {
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  padding: var(--px-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: row-resize;
+}
+
+.graphiql-incremental-payloads {
+  overflow-y: auto;
+  flex-direction: column;
+  flex-basis: 0px !important;
 }

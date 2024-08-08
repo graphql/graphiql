@@ -5,6 +5,7 @@ export {
   EditorContextProvider,
   HeaderEditor,
   ImagePreview,
+  IncrementsEditors,
   QueryEditor,
   ResponseEditor,
   useAutoCompleteLeafs,
@@ -80,6 +81,8 @@ export type {
   CommonEditorProps,
   EditorContextProviderProps,
   EditorContextType,
+  IncrementalPayload,
+  IncrementsEditorsProps,
   KeyMap,
   ResponseTooltipType,
   TabsState,
@@ -116,3 +119,4 @@ export type {
   StorageContextType,
 } from './storage';
 export type { Theme } from './theme';
+export type { IncrementalResult } from './utility/incremental';

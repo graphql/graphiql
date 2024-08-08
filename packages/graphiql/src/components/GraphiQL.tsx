@@ -29,6 +29,7 @@ import {
   GraphiQLProvider,
   GraphiQLProviderProps,
   HeaderEditor,
+  IncrementsEditors,
   KeyboardShortcutIcon,
   MergeIcon,
   PlusIcon,
@@ -302,6 +303,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     sizeThresholdSecond: 60,
     storageKey: 'secondaryEditorFlex',
   });
+  const incrementalPayloadsResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'vertical',
+    initiallyHidden: 'second',
+    sizeThresholdSecond: 60,
+    storageKey: 'responseToolsFlex',
+  });
 
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
     'variables' | 'headers'
@@ -357,6 +365,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const footer = children.find(child =>
     isChildComponentType(child, GraphiQL.Footer),
   );
+
+  const incrementalPayloads =
+    editorContext.tabs[editorContext.activeTabIndex].incrementalPayloads || [];
 
   const onClickReference = useCallback(() => {
     if (pluginResize.hiddenElement === 'first') {
@@ -442,6 +453,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         editorToolsResize.hiddenElement === 'second' ? null : 'second',
       );
     }, [editorToolsResize]);
+
+  const toggleIncrementalPayloads: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      incrementalPayloadsResize.setHiddenElement(
+        incrementalPayloadsResize.hiddenElement === 'second' ? null : 'second',
+      );
+    }, [incrementalPayloadsResize]);
 
   const handleOpenShortKeysDialog = useCallback((isOpen: boolean) => {
     if (!isOpen) {
@@ -737,12 +755,60 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
               <div ref={editorResize.secondRef}>
                 <div className="graphiql-response">
-                  {executionContext.isFetching ? <Spinner /> : null}
-                  <ResponseEditor
-                    editorTheme={props.editorTheme}
-                    responseTooltip={props.responseTooltip}
-                    keyMap={props.keyMap}
-                  />
+                  <div
+                    ref={incrementalPayloadsResize.firstRef}
+                    style={{ flexDirection: 'column' }}
+                  >
+                    {executionContext.isFetching ? <Spinner /> : null}
+                    <ResponseEditor
+                      editorTheme={props.editorTheme}
+                      responseTooltip={props.responseTooltip}
+                      keyMap={props.keyMap}
+                    />
+                  </div>
+
+                  {incrementalPayloads.length === 0 ? null : (
+                    <div
+                      className="graphiql-incremental-payloads-toggle"
+                      ref={incrementalPayloadsResize.dragBarRef}
+                    >
+                      <span>Incremental payloads</span>
+                      <UnStyledButton
+                        type="button"
+                        onClick={toggleIncrementalPayloads}
+                        aria-label={
+                          incrementalPayloadsResize.hiddenElement === 'second'
+                            ? 'Show incremental payloads'
+                            : 'Hide incremental payloads'
+                        }
+                        className="graphiql-toggle-editor-tools"
+                      >
+                        {incrementalPayloadsResize.hiddenElement ===
+                        'second' ? (
+                          <ChevronUpIcon
+                            className="graphiql-chevron-icon"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <ChevronDownIcon
+                            className="graphiql-chevron-icon"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </UnStyledButton>
+                    </div>
+                  )}
+
+                  <section
+                    className="graphiql-incremental-payloads"
+                    ref={incrementalPayloadsResize.secondRef}
+                  >
+                    <IncrementsEditors
+                      incrementalPayloads={incrementalPayloads}
+                      editorTheme={props.editorTheme}
+                      keyMap={props.keyMap}
+                    />
+                  </section>
                   {footer}
                 </div>
               </div>

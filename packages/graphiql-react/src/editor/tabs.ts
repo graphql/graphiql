@@ -1,7 +1,9 @@
 import { StorageAPI } from '@graphiql/toolkit';
+import { ExecutionResult } from 'graphql';
 import { useCallback, useMemo } from 'react';
 
 import debounce from '../utility/debounce';
+import { IncrementalResult } from '../utility/incremental';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
@@ -47,6 +49,27 @@ export type TabState = TabDefinition & {
    * The contents of the response editor of this tab.
    */
   response: string | null;
+  /**
+   * While being subscribed to a multi-part request (subscription, defer,
+   * stream, etc.) this list will accumulate all incremental results received
+   * from the server, including a client-generated timestamp for when the
+   * increment was received. Each time a new request starts to run, this list
+   * will be cleared.
+   */
+  incrementalPayloads?: IncrementalPayload[] | null;
+};
+
+export type IncrementalPayload = {
+  /**
+   * The number of milliseconds that went by between sending the request and
+   * receiving this increment.
+   */
+  timing: number;
+  /**
+   * The execution result (for subscriptions), or the list of incremental
+   * results (for @defer/@stream).
+   */
+  payload: ExecutionResult | IncrementalResult[];
 };
 
 /**
@@ -125,6 +148,7 @@ export function getDefaultTabState({
           headers,
           operationName,
           response: null,
+          incrementalPayloads: [],
         });
         parsed.activeTabIndex = parsed.tabs.length - 1;
       }
@@ -172,7 +196,8 @@ function isTabState(obj: any): obj is TabState {
     hasStringOrNullKey(obj, 'variables') &&
     hasStringOrNullKey(obj, 'headers') &&
     hasStringOrNullKey(obj, 'operationName') &&
-    hasStringOrNullKey(obj, 'response')
+    hasStringOrNullKey(obj, 'response') &&
+    hasIncrementalPayloads(obj)
   );
 }
 
@@ -186,6 +211,31 @@ function hasStringKey(obj: Record<string, any>, key: string) {
 
 function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
+}
+
+function hasIncrementalPayloads(obj: Record<string, any>) {
+  const { incrementalPayloads } = obj;
+
+  // Not having any values is fine
+  if (incrementalPayloads === undefined || incrementalPayloads === null) {
+    return true;
+  }
+
+  // Anything other than an array is bad
+  if (!Array.isArray(incrementalPayloads)) {
+    return false;
+  }
+
+  return incrementalPayloads.every(
+    item =>
+      item &&
+      typeof item === 'object' &&
+      'timing' in item &&
+      typeof item.timing === 'number' &&
+      'payload' in item &&
+      item.payload &&
+      typeof item.payload === 'object',
+  );
 }
 
 export function useSynchronizeActiveTabValues({
@@ -225,6 +275,7 @@ export function serializeTabState(
   return JSON.stringify(tabState, (key, value) =>
     key === 'hash' ||
     key === 'response' ||
+    key === 'incrementalPayloads' ||
     (!shouldPersistHeaders && key === 'headers')
       ? null
       : value,
@@ -301,6 +352,7 @@ export function createTab({
     headers,
     operationName: null,
     response: null,
+    incrementalPayloads: [],
   };
 }
 
