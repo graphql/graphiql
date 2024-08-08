@@ -10,7 +10,7 @@ import type {
   HandlerContext as NetlifyHandlerContext,
 } from '@netlify/functions';
 
-import schema from '../packages/graphiql/test/schema';
+import { schema } from '../packages/graphiql/test/schema.js';
 
 /**
  * Handler options when using the netlify adapter
