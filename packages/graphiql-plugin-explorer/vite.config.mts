@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import packageJSON from './package.json';
+import dts from 'vite-plugin-dts';
 
 const IS_UMD = process.env.UMD === 'true';
 
@@ -14,6 +15,7 @@ export default defineConfig({
         titleProp: true,
       },
     }),
+    dts(),
   ],
   build: {
     minify: IS_UMD ? 'esbuild' : false,
