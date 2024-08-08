@@ -67,7 +67,7 @@
     "start-server-and-test": "^1.10.11",
     "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
     "vite-plugin-commonjs": "^0.10.1",
     "vite-plugin-dts": "^4.0.1",
     "ws": "8.17.1"
