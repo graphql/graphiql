@@ -14,7 +14,7 @@ const fetcher = async graphQLParams => {
       credentials: 'same-origin',
     },
   );
-  return await response.json();
+  return response.json();
 };
 
 const App = () => <GraphiQL fetcher={fetcher} />;
