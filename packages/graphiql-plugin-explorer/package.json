@@ -18,15 +18,13 @@
     "explorer"
   ],
   "files": [
-    "dist",
-    "src",
-    "types"
+    "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
     "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
-    "preview": "vite preview"
+    "build": "node resources/copy-types.mjs && vite build && UMD=true vite build",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "graphiql-explorer": "^0.9.0"
