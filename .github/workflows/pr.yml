@@ -167,7 +167,7 @@ jobs:
             ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           install: false
           command: yarn e2e
