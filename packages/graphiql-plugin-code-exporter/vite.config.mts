@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import packageJSON from './package.json';
+import dts from 'vite-plugin-dts';
 
 const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins: [react({ jsxRuntime: 'classic' }), dts()],
   build: {
     minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
