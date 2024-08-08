@@ -18,13 +18,13 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "types": "./types/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
     "./font/roboto.css": "./font/roboto.css",
     "./font/fira-code.css": "./font/fira-code.css",
     "./dist/style.css": "./dist/style.css"
   },
-  "types": "types/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "keywords": [
     "react",
     "graphql",
@@ -33,14 +33,13 @@
   ],
   "files": [
     "dist",
-    "font",
-    "src",
-    "types"
+    "font"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
-    "build": "tsc --emitDeclarationOnly && vite build"
+    "dev": "vite",
+    "build": "vite build",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

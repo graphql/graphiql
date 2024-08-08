@@ -35,6 +35,8 @@
     "cypress-open": "yarn dev 'cypress open'",
     "build": "vite build && UMD=true vite build",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'"
   },
@@ -67,7 +69,7 @@
     "typescript": "^4.6.3",
     "vite": "^5.3.5",
     "vite-plugin-commonjs": "^0.10.1",
-    "vite-plugin-dts": "^3.9.1",
+    "vite-plugin-dts": "^4.0.1",
     "ws": "8.17.1"
   }
 }
