@@ -280,9 +280,7 @@ export function useSetEditorValues({
     }) => {
       queryEditor?.setValue(query ?? '');
       variableEditor?.setValue(variables ?? '');
-      if (typeof headers === 'string' || typeof defaultHeaders === 'string') {
-        headerEditor?.setValue(headers ?? defaultHeaders);
-      }
+      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
       responseEditor?.setValue(response ?? '');
     },
     [headerEditor, queryEditor, responseEditor, variableEditor, defaultHeaders],
