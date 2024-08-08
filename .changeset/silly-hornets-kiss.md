@@ -2,4 +2,4 @@
 '@graphiql/react': patch
 ---
 
-Do not clear default headers when switching between tabs
+do not clear `defaultHeaders` when switching between tabs upon reload
