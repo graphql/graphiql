@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.23.1
+
+### Patch Changes
+
+- [#3552](https://github.com/graphql/graphiql/pull/3552) [`6a0a5e5`](https://github.com/graphql/graphiql/commit/6a0a5e590b7b526af8a66c59a27ec3d0144af572) Thanks [@klippx](https://github.com/klippx)! - do not clear `defaultHeaders` when switching between tabs upon reload
+
 ## 0.23.0
 
 ### Minor Changes
