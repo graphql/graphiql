@@ -1,10 +1,8 @@
-import React from 'react';
 import { GraphiQL } from 'graphiql';
-import type { Fetcher } from '@graphiql/toolkit';
 import 'graphiql/style.css';
 
-const fetcher: Fetcher = async graphQLParams => {
-  const data = await fetch(
+const fetcher = async graphQLParams => {
+  const response = await fetch(
     'https://swapi-graphql.netlify.app/.netlify/functions/index',
     {
       method: 'POST',
@@ -16,7 +14,7 @@ const fetcher: Fetcher = async graphQLParams => {
       credentials: 'same-origin',
     },
   );
-  return data.json().catch(() => data.text());
+  return response.json();
 };
 
 const App = () => <GraphiQL fetcher={fetcher} />;
