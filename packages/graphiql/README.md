@@ -63,8 +63,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 With `unpkg`/`jsdelivr`, etc.:
 
 ```html
-<link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
-<script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js"></script>
+<link href="https://unpkg.com/graphiql/dist/style.css" rel="stylesheet" />
+<script crossorigin src="https://unpkg.com/graphiql/dist/index.umd.js"></script>
 ```
 
 (see: Usage UMD Bundle below for more required script tags)
@@ -107,7 +107,7 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import 'graphiql/graphiql.css';
+import 'graphiql/style.css';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 
