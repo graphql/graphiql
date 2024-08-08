@@ -41,6 +41,8 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 
 // On CI we test the UMD build
 if (process.env.CI === 'true') {
+  const __dirname = import.meta.dirname;
+
   const indexHtml = fs.readFileSync(
     path.join(__dirname, '..', 'index.html'),
     'utf8',
