@@ -18,7 +18,9 @@ export default defineConfig({
     dts(),
   ],
   build: {
-    minify: IS_UMD ? 'esbuild' : false,
+    minify: IS_UMD
+      ? 'terser' // produce better bundle size than esbuild
+      : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {
