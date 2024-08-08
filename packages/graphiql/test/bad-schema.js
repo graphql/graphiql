@@ -1,4 +1,4 @@
-module.exports.schema = {
+export const badSchema = {
   __schema: {
     queryType: {
       name: 'Query',

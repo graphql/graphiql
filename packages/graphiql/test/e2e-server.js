@@ -5,17 +5,20 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-console */
-const { createServer } = require('node:http');
-const fs = require('node:fs');
-const path = require('node:path');
-const express = require('express');
-const { createHandler } = require('graphql-http/lib/use/express');
-const { GraphQLError } = require('graphql');
-const schema = require('./schema');
+/* eslint-disable no-console, import-x/no-extraneous-dependencies */
+import { createServer } from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import express from 'express';
+import { GraphQLError } from 'graphql';
+import { createHandler } from 'graphql-http/lib/use/express';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { WebSocketServer } from 'ws';
+
+import { schema } from './schema.js';
+import { badSchema } from './bad-schema.js';
+
 const app = express();
-const { schema: badSchema } = require('./bad-schema');
-const WebSocketsServer = require('./afterDevServer');
 
 // Server
 app.post('/graphql', createHandler({ schema }));
@@ -81,7 +84,7 @@ const server = createServer(app);
 server.listen(process.env.PORT || 3100, function () {
   const { port } = this.address();
 
-  console.log(`Started on http://localhost:${port}/`);
+  console.log(`Started on http://localhost:${port}`);
   console.log('PID', process.pid);
 
   process.once('SIGINT', () => {
@@ -92,4 +95,10 @@ server.listen(process.env.PORT || 3100, function () {
   });
 });
 
-WebSocketsServer();
+const wsServer = new WebSocketServer({
+  path: '/subscriptions',
+  port: 8081,
+});
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+useServer({ schema }, wsServer);
