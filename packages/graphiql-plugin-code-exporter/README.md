@@ -31,7 +31,7 @@ import { useState } from 'react';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import 'graphiql/graphiql.css';
+import 'graphiql/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
 
 const fetcher = createGraphiQLFetcher({

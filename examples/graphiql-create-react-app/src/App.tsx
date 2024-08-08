@@ -1,7 +1,7 @@
 import React from 'react';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
-import 'graphiql/graphiql.min.css';
+import 'graphiql/style.css';
 
 const fetcher: Fetcher = async graphQLParams => {
   const data = await fetch(
