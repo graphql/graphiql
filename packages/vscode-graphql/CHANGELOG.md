@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.11.3
+
+### Patch Changes
+
+- [#3703](https://github.com/graphql/graphiql/pull/3703) [`590a987`](https://github.com/graphql/graphiql/commit/590a987811b5ddcc37f5b76900dd2b8dba802f91) Thanks [@acao](https://github.com/acao)! - use `filepath` instead of `filePath` for `graphql-config`
+
+- Updated dependencies [[`590a987`](https://github.com/graphql/graphiql/commit/590a987811b5ddcc37f5b76900dd2b8dba802f91)]:
+  - graphql-language-service-server@2.13.3
+
 ## 0.11.2
 
 ### Patch Changes

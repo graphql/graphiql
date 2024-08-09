@@ -23,8 +23,4 @@ export type {
 } from './components/GraphiQL';
 export type { GraphiQLProviderProps } from '@graphiql/react';
 
-export {
-  GraphiQLInterface,
-  GraphiQL,
-  GraphiQL as default,
-} from './components/GraphiQL';
+export { GraphiQLInterface, GraphiQL } from './components/GraphiQL';
