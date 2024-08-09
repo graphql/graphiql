@@ -8,7 +8,7 @@
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
     "react",
@@ -18,15 +18,14 @@
     "explorer"
   ],
   "files": [
-    "dist",
-    "src",
-    "types"
+    "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
     "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
-    "preview": "vite preview"
+    "build": "vite build && UMD=true vite build",
+    "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "graphiql-explorer": "^0.9.0"
@@ -44,7 +43,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.1",
     "vite-plugin-svgr": "^4.2.0"
   }
 }

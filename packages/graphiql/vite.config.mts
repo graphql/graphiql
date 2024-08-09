@@ -12,6 +12,7 @@ const umdConfig = defineConfig({
   // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
   plugins: [commonjs()],
   build: {
+    minify: 'terser', // produce less bundle size
     sourcemap: true,
     emptyOutDir: false,
     lib: {

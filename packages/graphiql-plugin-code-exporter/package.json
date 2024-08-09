@@ -9,7 +9,7 @@
   "author": "LekoArts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
     "react",
@@ -19,15 +19,14 @@
     "explorer"
   ],
   "files": [
-    "dist",
-    "src",
-    "types"
+    "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
     "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
-    "preview": "vite preview"
+    "build": "vite build && UMD=true vite build",
+    "prebuild": "yarn types:check",
+    "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "graphiql-code-exporter": "^3.0.3"
@@ -46,6 +45,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.1"
   }
 }
