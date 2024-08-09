@@ -15,14 +15,13 @@
   "module": "dist/index.mjs",
   "exports": {
     "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    "./font/*": "./font/*",
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
-    },
-    "./font/roboto.css": "./font/roboto.css",
-    "./font/fira-code.css": "./font/fira-code.css",
-    "./dist/style.css": "./dist/style.css"
+    }
   },
   "types": "dist/types/index.d.ts",
   "keywords": [
