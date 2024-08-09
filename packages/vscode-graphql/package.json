@@ -120,7 +120,7 @@
           ],
           "description": "Base dir for graphql config loadConfig(), to look for config files or package.json"
         },
-        "graphql-config.load.filePath": {
+        "graphql-config.load.filepath": {
           "type": [
             "string"
           ],
