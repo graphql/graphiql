@@ -1,5 +1,62 @@
 # Change Log
 
+## 4.0.0-alpha.0
+
+### Major Changes
+
+- [#3706](https://github.com/graphql/graphiql/pull/3706) [`343dd59`](https://github.com/graphql/graphiql/commit/343dd599ee10b0670cd7ab4dfaa65344f0d48c84) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove default export
+
+  ## Migration
+
+  ### Before
+
+  ```jsx
+  import GraphiQL from 'graphiql';
+  ```
+
+  ### After
+
+  ```jsx
+  import { GraphiQL } from 'graphiql';
+  ```
+
+- [#3687](https://github.com/graphql/graphiql/pull/3687) [`09e7004`](https://github.com/graphql/graphiql/commit/09e700403beb6c7290d165df33a2455ac2196971) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `disableTabs` option
+
+- [#3688](https://github.com/graphql/graphiql/pull/3688) [`0fdd9b9`](https://github.com/graphql/graphiql/commit/0fdd9b9f32513d96281f577a5d9bd2fefb5f05d4) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `data-testid="graphiql-container"`
+
+- [#3679](https://github.com/graphql/graphiql/pull/3679) [`5d90e0e`](https://github.com/graphql/graphiql/commit/5d90e0eed58214c5926e6e0edb196971b15b1121) Thanks [@dimaMachina](https://github.com/dimaMachina)! - migrate from `webpack` to `vite`
+
+  changed exports
+
+  ```diff
+  -graphiql/graphiql.css
+  +graphiql/style.css
+  ```
+
+  changed cdn paths, `dist/index.umd.js` and `dist/style.css` are minified
+
+  ```diff
+  -https://unpkg.com/graphiql/graphiql.js
+  -https://unpkg.com/graphiql/graphiql.min.js
+  +https://unpkg.com/graphiql/dist/index.umd.js
+  -https://unpkg.com/graphiql/graphiql.css
+  -https://unpkg.com/graphiql/graphiql.min.css
+  +https://unpkg.com/graphiql/dist/style.css
+  ```
+
+- [#3644](https://github.com/graphql/graphiql/pull/3644) [`3c1a345`](https://github.com/graphql/graphiql/commit/3c1a345acd9bf07b45bc230009cb57c51c425673) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - new looks of tabs
+
+  - fix `disableTabs` when `Add tab` button is still shown
+
+### Patch Changes
+
+- [#3683](https://github.com/graphql/graphiql/pull/3683) [`8efb873`](https://github.com/graphql/graphiql/commit/8efb873458489ce3497d917bcafd4ad8dfcbe6c8) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update graphql to `16.9.0` and use vite `define` configuration to remove development code from cdn bundle
+
+- [#3692](https://github.com/graphql/graphiql/pull/3692) [`82bc961`](https://github.com/graphql/graphiql/commit/82bc961a33c4e9da29dffb4a603035a4909f49ad) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - prefer `location` over `window.location`
+  - prefer `navigator` over `window.navigator`
+- Updated dependencies [[`00415d2`](https://github.com/graphql/graphiql/commit/00415d2940c4d76a4a9e683e9fa0504ba97dd627), [`9baf1f0`](https://github.com/graphql/graphiql/commit/9baf1f0fc9f32404fbb8bf57b3d1c2c2c8778ddb), [`8ff87d7`](https://github.com/graphql/graphiql/commit/8ff87d7b6b3d5d12b539612a39ca3abf7e631106), [`82bc961`](https://github.com/graphql/graphiql/commit/82bc961a33c4e9da29dffb4a603035a4909f49ad), [`3c1a345`](https://github.com/graphql/graphiql/commit/3c1a345acd9bf07b45bc230009cb57c51c425673)]:
+  - @graphiql/react@1.0.0-alpha.0
+
 ## 3.4.1
 
 ### Patch Changes

@@ -15,7 +15,24 @@
     "monaco-graphql": "1.5.3",
     "vscode-graphql": "0.11.2",
     "vscode-graphql-execution": "0.2.6",
-    "vscode-graphql-syntax": "1.3.6"
+    "vscode-graphql-syntax": "1.3.6",
+    "example-graphiql-webpack": "0.0.0",
+    "example-monaco-graphql-nextjs": "0.0.0",
+    "example-monaco-graphql-react-vite": "0.0.0",
+    "example-monaco-graphql-webpack": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "breezy-chicken-crash",
+    "flat-lies-heal",
+    "gentle-bugs-mix",
+    "good-vans-refuse",
+    "green-pugs-worry",
+    "hungry-spiders-cheat",
+    "metal-glasses-bow",
+    "orange-rivers-draw",
+    "poor-ghosts-jump",
+    "rich-jobs-kick",
+    "spotty-bulldogs-confess",
+    "thirty-spoons-call"
+  ]
 }

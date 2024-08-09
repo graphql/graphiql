@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.4.1",
+  "version": "4.0.0-alpha.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -41,7 +41,7 @@
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'"
   },
   "dependencies": {
-    "@graphiql/react": "^0.23.1"
+    "@graphiql/react": "^1.0.0-alpha.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
