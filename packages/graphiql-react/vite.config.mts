@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
 import packageJSON from './package.json';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
@@ -12,6 +13,10 @@ export default defineConfig({
       svgrOptions: {
         titleProp: true,
       },
+    }),
+    dts({
+      outDir: ['dist/types'],
+      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
     }),
   ],
   css: {
@@ -37,7 +42,7 @@ export default defineConfig({
         ),
       ],
       output: {
-        chunkFileNames: '[name].[format].js',
+        chunkFileNames: '[format]/[name].js',
       },
     },
   },

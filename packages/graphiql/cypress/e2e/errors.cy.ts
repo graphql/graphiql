@@ -31,7 +31,7 @@ describe('Errors', () => {
     cy.visit('/?bad=true');
     /**
      * We can't use `cy.assertQueryResult` here because the stack contains line
-     * and column numbers of the `graphiql.min.js` bundle which are not stable.
+     * and column numbers of the `index.umd.js` bundle which are not stable.
      */
     cy.get('section.result-window').should(element => {
       expect(element.get(0).innerText).to.contain(

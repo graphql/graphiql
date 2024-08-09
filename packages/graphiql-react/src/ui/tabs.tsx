@@ -2,9 +2,7 @@ import { forwardRef, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../icons';
-import { createComponentGroup } from '../utility/component-group';
 import { UnStyledButton } from './button';
-import { Tooltip } from './tooltip';
 
 import './tabs.css';
 
@@ -21,7 +19,7 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
       {...props}
       ref={ref}
       value={value}
-      aria-selected={isActive ? 'true' : undefined}
+      aria-selected={isActive}
       role="tab"
       className={clsx(
         'graphiql-tab',
@@ -38,36 +36,34 @@ TabRoot.displayName = 'Tab';
 const TabButton = forwardRef<
   HTMLButtonElement,
   JSX.IntrinsicElements['button']
->((props, ref) => (
+>(({ children, className, ...props }, ref) => (
   <UnStyledButton
     {...props}
     ref={ref}
     type="button"
-    className={clsx('graphiql-tab-button', props.className)}
+    className={clsx('graphiql-tab-button', className)}
   >
-    {props.children}
+    {children}
   </UnStyledButton>
 ));
 TabButton.displayName = 'Tab.Button';
 
 const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
   (props, ref) => (
-    <Tooltip label="Close Tab">
-      <UnStyledButton
-        aria-label="Close Tab"
-        {...props}
-        ref={ref}
-        type="button"
-        className={clsx('graphiql-tab-close', props.className)}
-      >
-        <CloseIcon />
-      </UnStyledButton>
-    </Tooltip>
+    <UnStyledButton
+      aria-label="Close Tab"
+      {...props}
+      ref={ref}
+      type="button"
+      className={clsx('graphiql-tab-close', props.className)}
+    >
+      <CloseIcon />
+    </UnStyledButton>
   ),
 );
 TabClose.displayName = 'Tab.Close';
 
-export const Tab = createComponentGroup(TabRoot, {
+export const Tab = Object.assign(TabRoot, {
   Button: TabButton,
   Close: TabClose,
 });

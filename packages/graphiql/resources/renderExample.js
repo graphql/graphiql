@@ -1,4 +1,4 @@
-/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+/* global React, ReactDOM, GraphiQL */
 
 /**
  * UMD GraphiQL Example
@@ -8,13 +8,13 @@
  *
  * It is used by:
  * - the netlify demo
- * - end to end tests
- * - webpack dev server
+ * - end-to-end tests
+ * - vite dev server
  */
 
 // Parse the search string to get url parameters.
 const parameters = {};
-for (const entry of window.location.search.slice(1).split('&')) {
+for (const entry of location.search.slice(1).split('&')) {
   const eq = entry.indexOf('=');
   if (eq >= 0) {
     parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
@@ -60,22 +60,22 @@ function updateURL() {
 }
 
 function getSchemaUrl() {
-  const isDev = window.location.hostname.match(/localhost$/);
+  const isDev = /localhost$/.test(location.hostname);
 
-  if (isDev) {
-    // This supports an e2e test which ensures that invalid schemas do not load.
-    if (parameters.bad === 'true') {
-      return '/bad/graphql';
-    }
-    if (parameters['http-error'] === 'true') {
-      return '/http-error/graphql';
-    }
-    if (parameters['graphql-error'] === 'true') {
-      return '/graphql-error/graphql';
-    }
-    return '/graphql';
+  if (!isDev) {
+    return '/.netlify/functions/graphql';
   }
-  return '/.netlify/functions/graphql';
+  // This supports an e2e test which ensures that invalid schemas do not load.
+  if (parameters.bad === 'true') {
+    return '/bad/graphql';
+  }
+  if (parameters['http-error'] === 'true') {
+    return '/http-error/graphql';
+  }
+  if (parameters['graphql-error'] === 'true') {
+    return '/graphql-error/graphql';
+  }
+  return '/graphql';
 }
 
 // Render <GraphiQL /> into the body.
@@ -83,6 +83,7 @@ function getSchemaUrl() {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
   React.createElement(GraphiQL, {
@@ -100,7 +101,7 @@ root.render(
     defaultEditorToolsVisibility: true,
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
-    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    inputValueDeprecation: !graphqlVersion.includes('15.5'),
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),

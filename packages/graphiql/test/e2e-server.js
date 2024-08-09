@@ -5,16 +5,20 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-console */
-const { createServer } = require('node:http');
-const express = require('express');
-const path = require('node:path');
-const { createHandler } = require('graphql-http/lib/use/express');
-const { GraphQLError } = require('graphql');
-const schema = require('./schema');
+/* eslint-disable no-console, import-x/no-extraneous-dependencies */
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import express from 'express';
+import { GraphQLError } from 'graphql';
+import { createHandler } from 'graphql-http/lib/use/express';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { WebSocketServer } from 'ws';
+
+import { schema } from './schema.js';
+import { badSchema } from './bad-schema.js';
+
 const app = express();
-const { schema: badSchema } = require('./bad-schema');
-const WebSocketsServer = require('./afterDevServer');
 
 // Server
 app.post('/graphql', createHandler({ schema }));
@@ -35,8 +39,16 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
   next();
 });
 
-app.use(express.static(path.resolve(__dirname, '../')));
-app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
+// On CI we test the UMD build
+if (process.env.CI === 'true') {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20
+  app.use(express.static(path.join(__dirname, '..')));
+} else {
+  app.get('/', (req, res) => {
+    res.redirect('http://localhost:5173');
+  });
+}
 
 // messy but it allows close
 const server = createServer(app);
@@ -44,7 +56,7 @@ const server = createServer(app);
 server.listen(process.env.PORT || 3100, function () {
   const { port } = this.address();
 
-  console.log(`Started on http://localhost:${port}/`);
+  console.log(`Started on http://localhost:${port}`);
   console.log('PID', process.pid);
 
   process.once('SIGINT', () => {
@@ -55,4 +67,10 @@ server.listen(process.env.PORT || 3100, function () {
   });
 });
 
-WebSocketsServer();
+const wsServer = new WebSocketServer({
+  path: '/subscriptions',
+  port: 8081,
+});
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+useServer({ schema }, wsServer);

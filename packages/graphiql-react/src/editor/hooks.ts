@@ -333,8 +333,6 @@ export function useAutoCompleteLeafs({
   }, [getDefaultFieldNames, queryEditor, schema]);
 }
 
-export type InitialState = string | (() => string);
-
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
