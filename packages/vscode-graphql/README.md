@@ -153,7 +153,7 @@ You can search a folder for any of the matching config file names listed above:
 Or a specific filepath:
 
 ```json
-"graphql-config.load.filePath": "./config/my-graphql-config.js"
+"graphql-config.load.filepath": "./config/my-graphql-config.js"
 ```
 
 Or a different `configName` that allows different formats:
