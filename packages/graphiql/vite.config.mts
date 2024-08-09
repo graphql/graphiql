@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, PluginOption } from 'vite';
 import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
 import commonjs from 'vite-plugin-commonjs';
@@ -65,7 +65,37 @@ const esmConfig = defineConfig({
       },
     },
   },
-  plugins: [dts({ rollupTypes: true })],
+  plugins: [htmlPlugin(), dts({ rollupTypes: true })],
 });
+
+function htmlPlugin(): PluginOption {
+  return {
+    name: 'html-replace-umd-with-src',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        const start = '<!--vite-replace-start-->';
+        const end = '<!--vite-replace-end-->';
+        const contentToReplace = html.slice(
+          html.indexOf(start),
+          html.indexOf(end) + end.length,
+        );
+        return html.replace(
+          contentToReplace,
+          /* HTML */ `
+            <script type="module">
+              import React from 'react';
+              import ReactDOM from 'react-dom/client';
+              import GraphiQL from './src/cdn';
+
+              Object.assign(globalThis, { React, ReactDOM, GraphiQL });
+            </script>
+            <link href="/src/style.css" rel="stylesheet" />
+          `,
+        );
+      },
+    },
+  };
+}
 
 export default process.env.UMD === 'true' ? umdConfig : esmConfig;

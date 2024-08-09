@@ -45,11 +45,10 @@ export function createHandler<Context extends OperationContext = undefined>(
         statusCode: init.status,
       };
     } catch (err) {
-      // The handler should'nt throw errors.
+      // The handler shouldn't throw errors.
       // If you wish to handle them differently, consider implementing your own request handler.
       console.error(
-        'Internal error occurred during request handling. ' +
-          'Please check your implementation.',
+        'Internal error occurred during request handling. Please check your implementation.',
         err,
       );
       return { statusCode: 500 };

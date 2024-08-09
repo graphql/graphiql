@@ -7,9 +7,7 @@
 
 /* eslint-disable no-console, import-x/no-extraneous-dependencies */
 import { createServer } from 'node:http';
-import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { GraphQLError } from 'graphql';
 import { createHandler } from 'graphql-http/lib/use/express';
@@ -42,39 +40,6 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 
 // On CI we test the UMD build
 if (process.env.CI === 'true') {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20
-
-  const indexHtml = fs.readFileSync(
-    path.join(__dirname, '..', 'index.html'),
-    'utf8',
-  );
-  const start = '<!--umd-replace-start-->';
-  const end = '<!--umd-replace-end-->';
-  const contentToReplace = indexHtml.slice(
-    indexHtml.indexOf(start),
-    indexHtml.indexOf(end) + end.length,
-  );
-
-  const indexHtmlWithUmd = indexHtml.replace(
-    contentToReplace,
-    /* HTML */ `
-      <script
-        crossorigin
-        src="https://unpkg.com/react@18/umd/react.development.js"
-      ></script>
-      <script
-        crossorigin
-        src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-      ></script>
-      <link href="/dist/style.css" rel="stylesheet" />
-      <script src="/dist/index.umd.js"></script>
-    `,
-  );
-
-  app.get('/', (req, res) => {
-    res.send(indexHtmlWithUmd);
-  });
   app.use(express.static(path.join(__dirname, '..')));
 } else {
   app.get('/', (req, res) => {
