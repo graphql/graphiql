@@ -22,7 +22,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch",
     "build": "vite build && UMD=true vite build",
     "prebuild": "yarn types:check",
     "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts",
