@@ -6,7 +6,10 @@ import dts from 'vite-plugin-dts';
 const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' }), dts()],
+  plugins: [
+    react({ jsxRuntime: 'classic' }),
+    !IS_UMD && dts({ rollupTypes: true }),
+  ],
   build: {
     minify: IS_UMD
       ? 'terser' // produce better bundle size than esbuild

@@ -36,7 +36,7 @@
     "font"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch",
     "build": "vite build",
     "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit"

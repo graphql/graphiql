@@ -15,7 +15,7 @@ export default defineConfig({
         titleProp: true,
       },
     }),
-    dts(),
+    !IS_UMD && dts({ rollupTypes: true }),
   ],
   build: {
     minify: IS_UMD
