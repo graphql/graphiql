@@ -22,15 +22,18 @@
         font-size: 4rem;
       }
     </style>
-    <!--umd-replace-start-->
-    <script type="module">
-      import React from 'react';
-      import ReactDOM from 'react-dom/client';
-      import GraphiQL from './src/cdn';
-
-      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
-    </script>
-    <!--umd-replace-end-->
+    <!--vite-replace-start-->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="/dist/index.umd.js"></script>
+    <link href="/dist/style.css" rel="stylesheet" />
+    <!--vite-replace-end-->
   </head>
   <body>
     <div id="graphiql">

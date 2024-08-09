@@ -1,3 +1,7 @@
+@import '@graphiql/react/font/roboto.css';
+@import '@graphiql/react/font/fira-code.css';
+@import '@graphiql/react/style.css';
+
 /* Everything */
 .graphiql-container {
   background-color: hsl(var(--color-base));

@@ -61,7 +61,7 @@ function MyGraphQLIDE() {
 ```
 
 The package also ships the necessary CSS that all its UI components need. You
-can import them from `@graphiql/react/dist/style.css`.
+can import them from `@graphiql/react/style.css`.
 
 > **Note**: In order for these styles to apply, the UI components need to be
 > rendered inside an element that has a class name `graphiql-container`.
