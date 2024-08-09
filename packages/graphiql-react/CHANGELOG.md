@@ -1,5 +1,35 @@
 # @graphiql/react
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- [#3709](https://github.com/graphql/graphiql/pull/3709) [`9baf1f0`](https://github.com/graphql/graphiql/commit/9baf1f0fc9f32404fbb8bf57b3d1c2c2c8778ddb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - `style.css` import was changed
+
+  ## Migration
+
+  ```diff
+  -import '@graphiql/react/dist/style.css';
+  +import '@graphiql/react/style.css';
+  ```
+
+### Minor Changes
+
+- [#3702](https://github.com/graphql/graphiql/pull/3702) [`00415d2`](https://github.com/graphql/graphiql/commit/00415d2940c4d76a4a9e683e9fa0504ba97dd627) Thanks [@dimaMachina](https://github.com/dimaMachina)! - generate types with `vite-plugin-dts`
+
+- [#3644](https://github.com/graphql/graphiql/pull/3644) [`3c1a345`](https://github.com/graphql/graphiql/commit/3c1a345acd9bf07b45bc230009cb57c51c425673) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - new looks of tabs
+
+  - fix `disableTabs` when `Add tab` button is still shown
+
+### Patch Changes
+
+- [#3705](https://github.com/graphql/graphiql/pull/3705) [`8ff87d7`](https://github.com/graphql/graphiql/commit/8ff87d7b6b3d5d12b539612a39ca3abf7e631106) Thanks [@dimaMachina](https://github.com/dimaMachina)! - use `vite build --watch` instead of `vite` for `dev` script because we don't need development server for them
+
+  do not use `vite-plugin-dts` when generating umd build
+
+- [#3692](https://github.com/graphql/graphiql/pull/3692) [`82bc961`](https://github.com/graphql/graphiql/commit/82bc961a33c4e9da29dffb4a603035a4909f49ad) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - prefer `location` over `window.location`
+  - prefer `navigator` over `window.navigator`
+
 ## 0.23.1
 
 ### Patch Changes
