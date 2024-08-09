@@ -4,6 +4,8 @@
 
 remove default export
 
+## Migration
+
 ### Before
 
 ```jsx
