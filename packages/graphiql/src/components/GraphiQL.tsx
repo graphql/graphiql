@@ -454,69 +454,63 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, []);
 
-  const hasMultipleTabs = editorContext.tabs.length > 1;
-
   const className = props.className ? ` ${props.className}` : '';
 
   return (
     <Tooltip.Provider>
       <div className={`graphiql-container${className}`}>
         <div className="graphiql-sidebar">
-          <div className="graphiql-sidebar-section">
-            {pluginContext?.plugins.map((plugin, index) => {
-              const isVisible = plugin === pluginContext.visiblePlugin;
-              const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
-              const Icon = plugin.icon;
-              return (
-                <Tooltip key={plugin.title} label={label}>
-                  <UnStyledButton
-                    type="button"
-                    className={isVisible ? 'active' : ''}
-                    onClick={handlePluginClick}
-                    data-index={index}
-                    aria-label={label}
-                  >
-                    <Icon aria-hidden="true" />
-                  </UnStyledButton>
-                </Tooltip>
-              );
-            })}
-          </div>
-          <div className="graphiql-sidebar-section">
-            <Tooltip label="Re-fetch GraphQL schema">
-              <UnStyledButton
-                type="button"
-                disabled={schemaContext.isFetching}
-                onClick={handleRefetchSchema}
-                aria-label="Re-fetch GraphQL schema"
-              >
-                <ReloadIcon
-                  className={schemaContext.isFetching ? 'graphiql-spin' : ''}
-                  aria-hidden="true"
-                />
-              </UnStyledButton>
-            </Tooltip>
-            <Tooltip label="Open short keys dialog">
-              <UnStyledButton
-                type="button"
-                data-value="short-keys"
-                onClick={handleShowDialog}
-                aria-label="Open short keys dialog"
-              >
-                <KeyboardShortcutIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-            <Tooltip label="Open settings dialog">
-              <UnStyledButton
-                type="button"
-                data-value="settings"
-                onClick={handleShowDialog}
-                aria-label="Open settings dialog"
-              >
-                <SettingsIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-          </div>
+          {pluginContext?.plugins.map((plugin, index) => {
+            const isVisible = plugin === pluginContext.visiblePlugin;
+            const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
+            return (
+              <Tooltip key={plugin.title} label={label}>
+                <UnStyledButton
+                  type="button"
+                  className={isVisible ? 'active' : ''}
+                  onClick={handlePluginClick}
+                  data-index={index}
+                  aria-label={label}
+                >
+                  <plugin.icon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+            );
+          })}
+          <Tooltip label="Re-fetch GraphQL schema">
+            <UnStyledButton
+              type="button"
+              disabled={schemaContext.isFetching}
+              onClick={handleRefetchSchema}
+              aria-label="Re-fetch GraphQL schema"
+              style={{ marginTop: 'auto' }}
+            >
+              <ReloadIcon
+                className={schemaContext.isFetching ? 'graphiql-spin' : ''}
+                aria-hidden="true"
+              />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open short keys dialog">
+            <UnStyledButton
+              type="button"
+              data-value="short-keys"
+              onClick={handleShowDialog}
+              aria-label="Open short keys dialog"
+            >
+              <KeyboardShortcutIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open settings dialog">
+            <UnStyledButton
+              type="button"
+              data-value="settings"
+              onClick={handleShowDialog}
+              aria-label="Open settings dialog"
+            >
+              <SettingsIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
         </div>
         <div className="graphiql-main">
           <div
@@ -539,41 +533,42 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {hasMultipleTabs && (
-                <Tabs
-                  values={editorContext.tabs}
-                  onReorder={handleReorder}
-                  aria-label="Select active operation"
-                >
-                  {editorContext.tabs.map((tab, index) => (
-                    <Tooltip key={tab.id} label={tab.title}>
-                      <Tab
-                        value={tab}
-                        isActive={index === editorContext.activeTabIndex}
+              <Tabs
+                values={editorContext.tabs}
+                onReorder={handleReorder}
+                aria-label="Select active operation"
+              >
+                {editorContext.tabs.map((tab, index, tabs) => (
+                  <Tab
+                    key={tab.id}
+                    value={tab}
+                    isActive={index === editorContext.activeTabIndex}
+                  >
+                    <Tooltip label={tab.title}>
+                      <Tab.Button
+                        aria-controls="graphiql-session"
+                        id={`graphiql-session-tab-${index}`}
+                        onClick={() => {
+                          executionContext.stop();
+                          editorContext.changeTab(index);
+                        }}
                       >
-                        <Tab.Button
-                          aria-controls="graphiql-session"
-                          id={`graphiql-session-tab-${index}`}
-                          onClick={() => {
-                            executionContext.stop();
-                            editorContext.changeTab(index);
-                          }}
-                        >
-                          {tab.title}
-                        </Tab.Button>
-                        <Tab.Close
-                          onClick={() => {
-                            if (editorContext.activeTabIndex === index) {
-                              executionContext.stop();
-                            }
-                            editorContext.closeTab(index);
-                          }}
-                        />
-                      </Tab>
+                        {tab.title}
+                      </Tab.Button>
                     </Tooltip>
-                  ))}
-                </Tabs>
-              )}
+                    {tabs.length > 1 && (
+                      <Tab.Close
+                        onClick={() => {
+                          if (editorContext.activeTabIndex === index) {
+                            executionContext.stop();
+                          }
+                          editorContext.closeTab(index);
+                        }}
+                      />
+                    )}
+                  </Tab>
+                ))}
+              </Tabs>
               <Tooltip label="New tab">
                 <UnStyledButton
                   type="button"
@@ -593,17 +588,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
               <div ref={editorResize.firstRef}>
-                <div
-                  className="graphiql-editors"
-                  style={
-                    hasMultipleTabs
-                      ? { borderTopLeftRadius: 0, borderTopRightRadius: 0 }
-                      : {
-                          marginTop:
-                            'calc(var(--px-8) - var(--session-header-height))',
-                        }
-                  }
-                >
+                <div className="graphiql-editors">
                   <div ref={editorToolsResize.firstRef}>
                     <section
                       className="graphiql-query-editor"
