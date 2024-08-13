@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 1.0.0-alpha.1
+
+### Minor Changes
+
+- [#3717](https://github.com/graphql/graphiql/pull/3717) [`bf0c4e7`](https://github.com/graphql/graphiql/commit/bf0c4e7236f4a68448063aa0c6a4ed439e869a9f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `createComponentGroup` utility in favour `Object.assign`
+
 ## 1.0.0-alpha.0
 
 ### Major Changes
