@@ -410,13 +410,13 @@ describe('GraphiQL', () => {
   });
 
   describe('Tabs', () => {
-    it('show tabs if there are more than one', async () => {
+    it('show tabs', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
         expect(
           container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
-        ).toHaveLength(0);
+        ).toHaveLength(1);
       });
 
       act(() => {
@@ -492,7 +492,7 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         expect(
           container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
-        ).toHaveLength(0);
+        ).toHaveLength(1);
         expect(
           container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
         ).toHaveLength(0);

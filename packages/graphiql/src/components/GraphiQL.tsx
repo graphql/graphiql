@@ -538,7 +538,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 onReorder={handleReorder}
                 aria-label="Select active operation"
               >
-                {editorContext.tabs.map((tab, index) => (
+                {editorContext.tabs.map((tab, index, tabs) => (
                   <Tab
                     key={tab.id}
                     value={tab}
@@ -556,14 +556,16 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         {tab.title}
                       </Tab.Button>
                     </Tooltip>
-                    <Tab.Close
-                      onClick={() => {
-                        if (editorContext.activeTabIndex === index) {
-                          executionContext.stop();
-                        }
-                        editorContext.closeTab(index);
-                      }}
-                    />
+                    {tabs.length > 1 && (
+                      <Tab.Close
+                        onClick={() => {
+                          if (editorContext.activeTabIndex === index) {
+                            executionContext.stop();
+                          }
+                          editorContext.closeTab(index);
+                        }}
+                      />
+                    )}
                   </Tab>
                 ))}
               </Tabs>
