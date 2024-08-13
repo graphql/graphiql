@@ -364,7 +364,7 @@ const pathsMap = new WeakMap<
  * @param incrementalResult The incremental result that will be merged into the
  * complete execution result.
  */
-export function mergeIncrementalResult(
+function mergeIncrementalResult(
   executionResult: IncrementalResult,
   incrementalResult: IncrementalResult,
 ): void {
