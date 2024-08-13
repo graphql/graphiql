@@ -64,6 +64,7 @@
 
 /* The session header containing tabs and the logo */
 .graphiql-container .graphiql-session-header {
+  position: relative;
   align-items: center;
   display: flex;
   padding: var(--px-8) var(--px-8) 0;
@@ -73,6 +74,7 @@
 /* The button to add a new tab */
 button.graphiql-tab-add {
   padding: var(--px-4);
+
   & > svg {
     color: hsla(var(--color-neutral), var(--alpha-secondary));
     display: block;
@@ -83,7 +85,8 @@ button.graphiql-tab-add {
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
-  margin-left: auto;
+  position: absolute;
+  right: 0;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
@@ -93,6 +96,7 @@ button.graphiql-tab-add {
 .graphiql-container .graphiql-logo .graphiql-logo-link {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   text-decoration: none;
+
   &:focus {
     outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
   }
