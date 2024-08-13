@@ -70,9 +70,9 @@ const esmConfig = defineConfig({
 function htmlPlugin(): PluginOption {
   const htmlForVite = /* HTML */ `
     <script type="module">
-      import React from "react";
-      import ReactDOM from "react-dom/client";
-      import GraphiQL from "./src/cdn";
+      import React from 'react';
+      import ReactDOM from 'react-dom/client';
+      import GraphiQL from './src/cdn';
 
       Object.assign(globalThis, { React, ReactDOM, GraphiQL });
     </script>
