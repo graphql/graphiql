@@ -1,7 +1,6 @@
 import { clsx } from 'clsx';
 import { forwardRef, ReactElement } from 'react';
 import { CloseIcon } from '../icons';
-import { createComponentGroup } from '../utility/component-group';
 import { UnStyledButton } from './button';
 import * as D from '@radix-ui/react-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -40,7 +39,7 @@ export function DialogRoot({
   );
 }
 
-export const Dialog = createComponentGroup(DialogRoot, {
+export const Dialog = Object.assign(DialogRoot, {
   Close: DialogClose,
   Title: D.Title,
   Trigger: D.Trigger,

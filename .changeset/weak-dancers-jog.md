@@ -6,13 +6,13 @@ Remove `toolbar.additionalContent` and `toolbar.additionalComponent` props in fa
 
 ## Migration from `toolbar.additionalContent`
 
-#### Before
+### Before
 
 ```jsx
 <GraphiQL toolbar={{ additionalContent: <button>My button</button> }} />
 ```
 
-#### After
+### After
 
 ```jsx
 <GraphiQL>
@@ -29,9 +29,9 @@ Remove `toolbar.additionalContent` and `toolbar.additionalComponent` props in fa
 </GraphiQL>
 ```
 
-### Migration from `toolbar.additionalComponent`
+## Migration from `toolbar.additionalComponent`
 
-#### Before
+### Before
 
 ```jsx
 <GraphiQL
@@ -43,7 +43,7 @@ Remove `toolbar.additionalContent` and `toolbar.additionalComponent` props in fa
 />
 ```
 
-#### After
+### After
 
 ```jsx
 <GraphiQL>
