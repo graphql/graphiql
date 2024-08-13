@@ -12,11 +12,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { WebSocketServer } from 'ws';
-import {
-  execute,
-  experimentalExecuteIncrementally,
-  version,
-} from 'graphql';
+import { execute, experimentalExecuteIncrementally, version } from 'graphql';
 import {
   getGraphQLParameters,
   processRequest,
@@ -24,7 +20,6 @@ import {
 } from 'graphql-helix'; // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 
 import { schema } from './schema.js';
-
 
 const app = express();
 
