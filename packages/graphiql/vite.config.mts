@@ -58,9 +58,6 @@ const esmConfig = defineConfig({
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
-      '/bad/graphql': 'http://localhost:8080',
-      '/http-error/graphql': 'http://localhost:8080',
-      '/graphql-error/graphql': 'http://localhost:8080',
       '/subscriptions': {
         target: 'ws://localhost:8081',
         ws: true,
@@ -71,6 +68,17 @@ const esmConfig = defineConfig({
 });
 
 function htmlPlugin(): PluginOption {
+  const htmlForVite = /* HTML */ `
+    <script type="module">
+      import React from "react";
+      import ReactDOM from "react-dom/client";
+      import GraphiQL from "./src/cdn";
+
+      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
+    </script>
+    <link href="/src/style.css" rel="stylesheet" />
+  `;
+
   return {
     name: 'html-replace-umd-with-src',
     transformIndexHtml: {
@@ -82,19 +90,7 @@ function htmlPlugin(): PluginOption {
           html.indexOf(start),
           html.indexOf(end) + end.length,
         );
-        return html.replace(
-          contentToReplace,
-          /* HTML */ `
-            <script type="module">
-              import React from 'react';
-              import ReactDOM from 'react-dom/client';
-              import GraphiQL from './src/cdn';
-
-              Object.assign(globalThis, { React, ReactDOM, GraphiQL });
-            </script>
-            <link href="/src/style.css" rel="stylesheet" />
-          `,
-        );
+        return html.replace(contentToReplace, htmlForVite);
       },
     },
   };
