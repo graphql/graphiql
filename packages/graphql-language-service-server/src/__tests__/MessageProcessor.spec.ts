@@ -362,10 +362,7 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches files and schema with a URL config', async () => {
-    const enableExperimentalIncrementalDelivery =
-      !version.startsWith('15') && !version.startsWith('16');
-
-    const offset = enableExperimentalIncrementalDelivery ? 25 : 0;
+    const offset = parseInt(version, 10) > 16 ? 25 : 0;
 
     mockSchema(require('../../../graphiql/test/schema'));
 

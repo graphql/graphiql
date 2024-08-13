@@ -2,7 +2,7 @@ import { version } from 'graphql';
 
 let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe;
 
-if (version.startsWith('15') || version.startsWith('16')) {
+if (parseInt(version, 10) < 17) {
   describeOrSkip = describe.skip;
 }
 

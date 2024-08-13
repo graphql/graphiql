@@ -65,9 +65,7 @@ describe('graphql-lint', () => {
             new GraphQLError(
               'I like turtles.',
               // @ts-expect-error
-              version.startsWith('16') || version.startsWith('15')
-                ? node
-                : { nodes: node },
+              parseInt(version, 10) > 16 ? { nodes: node } : node,
             ),
           );
         }

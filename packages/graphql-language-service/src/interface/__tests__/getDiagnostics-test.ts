@@ -91,9 +91,9 @@ describe('getDiagnostics', () => {
                 new GraphQLError(
                   'This is a custom error.',
                   // @ts-expect-error
-                  version.startsWith('16') || version.startsWith('15')
-                    ? definition
-                    : { nodes: definition },
+                  parseInt(version, 10) > 16
+                    ? { nodes: definition }
+                    : definition,
                 ),
               );
             }
@@ -169,9 +169,7 @@ describe('getDiagnostics', () => {
             new GraphQLError(
               'No query allowed.',
               // @ts-expect-error
-              version.startsWith('16') || version.startsWith('15')
-                ? node.name
-                : { nodes: node.name },
+              parseInt(version, 10) > 16 ? { nodes: node } : node,
             ),
           );
         }

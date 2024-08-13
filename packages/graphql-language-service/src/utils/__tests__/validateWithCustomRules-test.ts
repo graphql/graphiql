@@ -39,9 +39,7 @@ describe('validateWithCustomRules', () => {
               new GraphQLError(
                 'Argument ID must be a number written in string type.',
                 // @ts-expect-error
-                version.startsWith('16') || version.startsWith('15')
-                  ? node
-                  : { nodes: node },
+                parseInt(version, 10) > 16 ? { nodes: node } : node,
               ),
             );
           }

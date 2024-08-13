@@ -27,12 +27,10 @@ const {
   version,
 } = graphql;
 
-const enableExperimentalIncrementalDelivery =
-  !version.startsWith('15') && !version.startsWith('16');
-
-const directives = enableExperimentalIncrementalDelivery
-  ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
-  : specifiedDirectives;
+const directives =
+  parseInt(version, 10) > 16
+    ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
+    : specifiedDirectives;
 
 // Test Schema
 const TestEnum = new GraphQLEnumType({

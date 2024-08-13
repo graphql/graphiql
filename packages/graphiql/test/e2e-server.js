@@ -20,31 +20,29 @@ const {
   getGraphQLParameters,
   processRequest,
   sendResult,
-} = require('graphql-helix');
+} = require('graphql-helix'); // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 const WebSocketsServer = require('./afterDevServer');
 
-const enableExperimentalIncrementalDelivery =
-  !version.startsWith('15') && !version.startsWith('16');
+const customExecute =
+  parseInt(version, 10) > 16
+    ? async (...args) => {
+        const result = await experimentalExecuteIncrementally(...args);
 
-const customExecute = enableExperimentalIncrementalDelivery
-  ? async (...args) => {
-      const result = await experimentalExecuteIncrementally(...args);
+        if (!('subsequentResults' in result)) {
+          return result;
+        }
 
-      if (!('subsequentResults' in result)) {
-        return result;
+        const { initialResult, subsequentResults } = result;
+        if (typeof subsequentResults[Symbol.asyncIterator] !== 'function') {
+          return result;
+        }
+
+        return (async function* () {
+          yield initialResult;
+          yield* subsequentResults;
+        })();
       }
-
-      const { initialResult, subsequentResults } = result;
-      if (typeof subsequentResults[Symbol.asyncIterator] !== 'function') {
-        return result;
-      }
-
-      return (async function* () {
-        yield initialResult;
-        yield* subsequentResults;
-      })();
-    }
-  : execute;
+    : execute;
 
 async function handler(req, res) {
   const request = {
