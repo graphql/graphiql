@@ -78,6 +78,7 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
+    "graphql-http": "^1.22.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",

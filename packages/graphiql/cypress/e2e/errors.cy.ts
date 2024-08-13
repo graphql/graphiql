@@ -28,6 +28,7 @@ describe('Errors', () => {
     cy.intercept('/graphql', {
       body: { errors: [new GraphQLError('Something unexpected happened...')] },
     });
+    cy.visit('/');
     cy.assertQueryResult({
       errors: [{ message: 'Something unexpected happened...' }],
     });
