@@ -1,5 +1,87 @@
 # Change Log
 
+## 4.0.0-alpha.1
+
+### Major Changes
+
+- [#3713](https://github.com/graphql/graphiql/pull/3713) [`27bbc51`](https://github.com/graphql/graphiql/commit/27bbc51a69504ffa9c6efbb17f112668f38fe52d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - show tabs even there is only 1 tab
+
+- [#3707](https://github.com/graphql/graphiql/pull/3707) [`3c901c1`](https://github.com/graphql/graphiql/commit/3c901c104123750f45bcd64ade5b0ab9706d3146) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Remove `toolbar.additionalContent` and `toolbar.additionalComponent` props in favor of `GraphiQL.Toolbar` render props.
+
+  ## Migration from `toolbar.additionalContent`
+
+  #### Before
+
+  ```jsx
+  <GraphiQL toolbar={{ additionalContent: <button>My button</button> }} />
+  ```
+
+  #### After
+
+  ```jsx
+  <GraphiQL>
+    <GraphiQL.Toolbar>
+      {({ merge, prettify, copy }) => (
+        <>
+          {prettify}
+          {merge}
+          {copy}
+          <button>My button</button>
+        </>
+      )}
+    </GraphiQL.Toolbar>
+  </GraphiQL>
+  ```
+
+  ### Migration from `toolbar.additionalComponent`
+
+  #### Before
+
+  ```jsx
+  <GraphiQL
+    toolbar={{
+      additionalComponent: function MyComponentWithAccessToContext() {
+        return <button>My button</button>;
+      },
+    }}
+  />
+  ```
+
+  #### After
+
+  ```jsx
+  <GraphiQL>
+    <GraphiQL.Toolbar>
+      {({ merge, prettify, copy }) => (
+        <>
+          {prettify}
+          {merge}
+          {copy}
+          <MyComponentWithAccessToContext />
+        </>
+      )}
+    </GraphiQL.Toolbar>
+  </GraphiQL>
+  ```
+
+  ***
+
+  Additionally, you can sort default toolbar buttons in different order or remove unneeded buttons for you:
+
+  ```jsx
+  <GraphiQL>
+    <GraphiQL.Toolbar>
+      {({ prettify, copy }) => (
+        <>
+          {copy /* Copy button will be first instead of default last */}
+          {/* Merge button is removed from toolbar */}
+          {prettify}
+        </>
+      )}
+    </GraphiQL.Toolbar>
+  </GraphiQL>
+  ```
+
 ## 4.0.0-alpha.0
 
 ### Major Changes
