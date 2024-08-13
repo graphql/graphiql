@@ -15,6 +15,7 @@ import {
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
+import getValue from 'get-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { UseAutoCompleteLeafsArgs } from './editor/hooks';
@@ -343,7 +344,19 @@ type IncrementalResult = {
   incremental?: ReadonlyArray<IncrementalResult>;
   label?: string;
   items?: ReadonlyArray<Record<string, unknown>> | null;
+  pending?: ReadonlyArray<{ id: string; path: ReadonlyArray<string | number> }>;
+  completed?: ReadonlyArray<{
+    id: string;
+    errors?: ReadonlyArray<GraphQLError>;
+  }>;
+  id?: string;
+  subPath?: ReadonlyArray<string | number>;
 };
+
+const pathsMap = new WeakMap<
+  ExecutionResult,
+  Map<string, ReadonlyArray<string | number>>
+>();
 
 /**
  * @param executionResult The complete execution result object which will be
@@ -352,22 +365,64 @@ type IncrementalResult = {
  * complete execution result.
  */
 function mergeIncrementalResult(
-  executionResult: ExecutionResult,
+  executionResult: IncrementalResult,
   incrementalResult: IncrementalResult,
 ): void {
-  const path = ['data', ...(incrementalResult.path ?? [])];
+  let path: ReadonlyArray<string | number> | undefined = [
+    'data',
+    ...(incrementalResult.path ?? []),
+  ];
 
-  if (incrementalResult.items) {
-    for (const item of incrementalResult.items) {
-      setValue(executionResult, path.join('.'), item);
-      // Increment the last path segment (the array index) to merge the next item at the next index
-      // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
-      (path[path.length - 1] as number)++;
+  for (const result of [executionResult, incrementalResult]) {
+    if (result.pending) {
+      let paths = pathsMap.get(executionResult);
+      if (paths === undefined) {
+        paths = new Map();
+        pathsMap.set(executionResult, paths);
+      }
+
+      for (const { id, path: pendingPath } of result.pending) {
+        paths.set(id, ['data', ...pendingPath]);
+      }
     }
   }
 
-  if (incrementalResult.data) {
-    setValue(executionResult, path.join('.'), incrementalResult.data, {
+  const { items } = incrementalResult;
+  if (items) {
+    const { id } = incrementalResult;
+    if (id) {
+      path = pathsMap.get(executionResult)?.get(id);
+      if (path === undefined) {
+        throw new Error('Invalid incremental delivery format.');
+      }
+
+      const list = getValue(executionResult, path.join('.'));
+      list.push(...items);
+    } else {
+      path = ['data', ...(incrementalResult.path ?? [])];
+      for (const item of items) {
+        setValue(executionResult, path.join('.'), item);
+        // Increment the last path segment (the array index) to merge the next item at the next index
+        // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
+        (path[path.length - 1] as number)++;
+      }
+    }
+  }
+
+  const { data } = incrementalResult;
+  if (data) {
+    const { id } = incrementalResult;
+    if (id) {
+      path = pathsMap.get(executionResult)?.get(id);
+      if (path === undefined) {
+        throw new Error('Invalid incremental delivery format.');
+      }
+      const { subPath } = incrementalResult;
+      if (subPath !== undefined) {
+        path = [...path, ...subPath];
+      }
+    }
+    setValue(executionResult, path.join('.'), data, {
       merge: true,
     });
   }
@@ -388,6 +443,18 @@ function mergeIncrementalResult(
   if (incrementalResult.incremental) {
     for (const incrementalSubResult of incrementalResult.incremental) {
       mergeIncrementalResult(executionResult, incrementalSubResult);
+    }
+  }
+
+  if (incrementalResult.completed) {
+    // Remove tracking and add additional errors
+    for (const { id, errors } of incrementalResult.completed) {
+      pathsMap.get(executionResult)?.delete(id);
+
+      if (errors) {
+        executionResult.errors ||= [];
+        (executionResult.errors as GraphQLError[]).push(...errors);
+      }
     }
   }
 }

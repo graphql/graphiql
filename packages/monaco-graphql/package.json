@@ -71,13 +71,13 @@
   },
   "devDependencies": {
     "execa": "^7.1.1",
-    "graphql": "^16.8.1",
+    "graphql": "^17.0.0-alpha.5",
     "monaco-editor": "^0.39.0",
     "prettier": "3.3.2",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "monaco-editor": ">= 0.20.0 < 1",
     "prettier": "^2.8.0 || ^3.0.0"
   }

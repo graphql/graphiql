@@ -30,7 +30,7 @@
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.1.0",
     "esbuild": "0.18.10",
-    "graphql": "^16.8.1",
+    "graphql": "^17.0.0-alpha.5",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-esbuild": "^4.9.1",
@@ -44,7 +44,7 @@
     "@codemirror/state": "6.2.0",
     "@codemirror/view": "6.2.1",
     "@lezer/highlight": "^1.0.0",
-    "graphql": "^16.5.0"
+    "graphql": "^16.5.0 || ^17.0.0-alpha.2"
   },
   "license": "MIT"
 }

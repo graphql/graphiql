@@ -9,31 +9,68 @@
 const { createServer } = require('node:http');
 const express = require('express');
 const path = require('node:path');
-const { createHandler } = require('graphql-http/lib/use/express');
-const { GraphQLError } = require('graphql');
+const {
+  execute,
+  experimentalExecuteIncrementally,
+  version,
+} = require('graphql');
 const schema = require('./schema');
 const app = express();
-const { schema: badSchema } = require('./bad-schema');
+const {
+  getGraphQLParameters,
+  processRequest,
+  sendResult,
+} = require('graphql-helix'); // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 const WebSocketsServer = require('./afterDevServer');
 
+const customExecute =
+  parseInt(version, 10) > 16
+    ? async (...args) => {
+        const result = await experimentalExecuteIncrementally(...args);
+
+        if (!('subsequentResults' in result)) {
+          return result;
+        }
+
+        const { initialResult, subsequentResults } = result;
+        if (typeof subsequentResults[Symbol.asyncIterator] !== 'function') {
+          return result;
+        }
+
+        return (async function* () {
+          yield initialResult;
+          yield* subsequentResults;
+        })();
+      }
+    : execute;
+
+async function handler(req, res) {
+  const request = {
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    query: req.query,
+  };
+
+  const { operationName, query, variables } = getGraphQLParameters(request);
+
+  const result = await processRequest({
+    operationName,
+    query,
+    variables,
+    request,
+    schema,
+    execute: customExecute,
+  });
+
+  sendResult(result, res);
+}
+
 // Server
-app.post('/graphql', createHandler({ schema }));
-app.get('/graphql', createHandler({ schema }));
+app.use(express.json());
 
-app.post('/bad/graphql', (_req, res, next) => {
-  res.json({ data: badSchema });
-  next();
-});
-
-app.post('/http-error/graphql', (_req, res, next) => {
-  res.status(502).send('Bad Gateway');
-  next();
-});
-
-app.post('/graphql-error/graphql', (_req, res, next) => {
-  res.json({ errors: [new GraphQLError('Something unexpected happened...')] });
-  next();
-});
+app.post('/graphql', handler);
+app.get('/graphql', handler);
 
 app.use(express.static(path.resolve(__dirname, '../')));
 app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));

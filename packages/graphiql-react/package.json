@@ -43,7 +43,7 @@
     "build": "tsc --emitDeclarationOnly && vite build"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
@@ -60,17 +60,19 @@
     "codemirror-graphql": "^2.0.13",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^6.5.1",
+    "get-value": "^3.0.1",
     "graphql-language-service": "^5.2.2",
     "markdown-it": "^14.1.0",
     "set-value": "^4.1.0"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.2",
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/react": "14.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "@types/get-value": "^3.0.5",
     "@types/set-value": "^4.0.1",
     "@vitejs/plugin-react": "^4.3.1",
-    "graphql": "^16.8.1",
+    "graphql": "^17.0.0-alpha.5",
     "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
