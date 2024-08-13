@@ -16,32 +16,24 @@
 .graphiql-container .graphiql-sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: var(--px-8);
   width: var(--sidebar-width);
-}
-
-.graphiql-container .graphiql-sidebar .graphiql-sidebar-section {
-  display: flex;
-  flex-direction: column;
   gap: var(--px-8);
+  overflow-y: scroll;
 }
 
-.graphiql-container .graphiql-sidebar button {
+.graphiql-container .graphiql-sidebar > button {
   display: flex;
   align-items: center;
   justify-content: center;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   height: calc(var(--sidebar-width) - (2 * var(--px-8)));
   width: calc(var(--sidebar-width) - (2 * var(--px-8)));
+  flex-shrink: 0;
 }
 
 .graphiql-container .graphiql-sidebar button.active {
   color: hsl(var(--color-neutral));
-}
-
-.graphiql-container .graphiql-sidebar button:not(:first-child) {
-  margin-top: var(--px-4);
 }
 
 .graphiql-container .graphiql-sidebar button > svg {
@@ -75,7 +67,6 @@
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  height: var(--session-header-height);
   padding: var(--px-8) var(--px-8) 0;
   gap: var(--px-8);
 
@@ -121,7 +112,7 @@ button.graphiql-tab-add {
 /* All editors (query, variable, headers) */
 .graphiql-container .graphiql-editors {
   background-color: hsl(var(--color-base));
-  border-radius: var(--border-radius-12);
+  border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
   box-shadow: var(--popover-box-shadow);
   display: flex;
   flex: 1;
@@ -141,10 +132,13 @@ button.graphiql-tab-add {
 /* The vertical toolbar next to the query editor */
 .graphiql-container .graphiql-toolbar {
   width: var(--toolbar-width);
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-8);
 }
 
-.graphiql-container .graphiql-toolbar > * + * {
-  margin-top: var(--px-8);
+.graphiql-container .graphiql-toolbar > button {
+  flex-shrink: 0;
 }
 
 /* The toolbar icons */
