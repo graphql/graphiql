@@ -20,7 +20,16 @@ import {
   GraphQLString,
   GraphQLID,
   GraphQLList,
+  GraphQLDeferDirective,
+  GraphQLStreamDirective,
+  specifiedDirectives,
+  version,
 } from 'graphql';
+
+const directives =
+  parseInt(version, 10) > 16
+    ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
+    : specifiedDirectives;
 
 // Test Schema
 const TestEnum = new GraphQLEnumType({
@@ -387,4 +396,5 @@ export const schema = new GraphQLSchema({
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
   description: 'This is a test schema for GraphiQL',
+  directives,
 });

@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.13.3",
+  "version": "2.14.0",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -34,7 +34,7 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
@@ -47,7 +47,7 @@
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
     "graphql-config": "5.0.3",
-    "graphql-language-service": "^5.2.2",
+    "graphql-language-service": "^5.3.0",
     "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
@@ -68,7 +68,7 @@
     "@types/mock-fs": "^4.13.4",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.0-alpha.5",
     "mock-fs": "^5.2.0"
   }
 }

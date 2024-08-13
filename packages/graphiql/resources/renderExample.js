@@ -62,20 +62,10 @@ function updateURL() {
 function getSchemaUrl() {
   const isDev = /localhost$/.test(location.hostname);
 
-  if (!isDev) {
-    return '/.netlify/functions/graphql';
+  if (isDev) {
+    return '/graphql';
   }
-  // This supports an e2e test which ensures that invalid schemas do not load.
-  if (parameters.bad === 'true') {
-    return '/bad/graphql';
-  }
-  if (parameters['http-error'] === 'true') {
-    return '/http-error/graphql';
-  }
-  if (parameters['graphql-error'] === 'true') {
-    return '/graphql-error/graphql';
-  }
-  return '/graphql';
+  return '/.netlify/functions/graphql';
 }
 
 // Render <GraphiQL /> into the body.
