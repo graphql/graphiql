@@ -66,13 +66,8 @@
 .graphiql-container .graphiql-session-header {
   align-items: center;
   display: flex;
-  justify-content: flex-end;
   padding: var(--px-8) var(--px-8) 0;
   gap: var(--px-8);
-
-  .graphiql-tabs + .graphiql-tab-add {
-    margin-right: auto;
-  }
 }
 
 /* The button to add a new tab */
@@ -88,6 +83,7 @@ button.graphiql-tab-add {
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
+  margin-left: auto;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
