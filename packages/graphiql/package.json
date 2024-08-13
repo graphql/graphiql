@@ -69,7 +69,6 @@
     "fork-ts-checker-webpack-plugin": "7.3.0",
     "graphql": "^17.0.0-alpha.5",
     "graphql-helix": "^1.13.0",
-    "graphql-http": "^1.19.0",
     "graphql-subscriptions": "^2.0.0",
     "html-webpack-plugin": "^5.5.0",
     "identity-obj-proxy": "^3.0.0",
