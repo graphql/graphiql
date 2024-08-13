@@ -1,10 +1,9 @@
 import { version } from 'graphql';
 
-let describeOrSkip = describe.skip;
+let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe;
 
-// TODO: disable when defer/stream is merged to graphql
-if (version.includes('stream')) {
-  describeOrSkip = describe;
+if (version.startsWith('15') || version.startsWith('16')) {
+  describeOrSkip = describe.skip;
 }
 
 describeOrSkip('IncrementalDelivery support via fetcher', () => {
@@ -52,7 +51,6 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
           },
         ],
       },
-      hasNext: false,
     };
 
     it('Expects slower streams to resolve in several increments, and the payloads to patch properly', () => {
@@ -99,7 +97,6 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
               'Oops, this took 1 seconds longer than I thought it would!',
           },
         },
-        hasNext: false,
       });
     });
 
@@ -164,7 +161,6 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
             age: 1000,
           },
         },
-        hasNext: false,
       });
     });
   });

@@ -17,6 +17,7 @@ import {
   ValidationContext,
   ASTVisitor,
   FragmentDefinitionNode,
+  version,
 } from 'graphql';
 import path from 'node:path';
 
@@ -87,7 +88,13 @@ describe('getDiagnostics', () => {
             for (const definition of node.definitions) {
               // add a custom error to every definition
               validationContext.reportError(
-                new GraphQLError('This is a custom error.', definition),
+                new GraphQLError(
+                  'This is a custom error.',
+                  // @ts-expect-error
+                  version.startsWith('16') || version.startsWith('15')
+                    ? definition
+                    : { nodes: definition },
+                ),
               );
             }
             return false;
@@ -158,7 +165,15 @@ describe('getDiagnostics', () => {
     const noQueryRule = (context: ValidationContext): ASTVisitor => ({
       OperationDefinition(node) {
         if (node.operation === 'query') {
-          context.reportError(new GraphQLError('No query allowed.', node.name));
+          context.reportError(
+            new GraphQLError(
+              'No query allowed.',
+              // @ts-expect-error
+              version.startsWith('16') || version.startsWith('15')
+                ? node.name
+                : { nodes: node.name },
+            ),
+          );
         }
       },
     });

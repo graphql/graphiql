@@ -14,6 +14,7 @@ import {
   GraphQLSchema,
   ValidationContext,
   ArgumentNode,
+  version,
 } from 'graphql';
 import { join } from 'node:path';
 
@@ -37,7 +38,10 @@ describe('validateWithCustomRules', () => {
             context.reportError(
               new GraphQLError(
                 'Argument ID must be a number written in string type.',
-                [node],
+                // @ts-expect-error
+                version.startsWith('16') || version.startsWith('15')
+                  ? node
+                  : { nodes: node },
               ),
             );
           }

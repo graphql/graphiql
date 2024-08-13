@@ -11,7 +11,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { GraphQLError, OperationDefinitionNode } from 'graphql';
+import { GraphQLError, OperationDefinitionNode, version } from 'graphql';
 import '../lint';
 import '../mode';
 import { TestSchema } from './testSchema';
@@ -61,7 +61,15 @@ describe('graphql-lint', () => {
     const noMutationOperationRule = (context: any) => ({
       OperationDefinition(node: OperationDefinitionNode) {
         if (node.operation === 'mutation') {
-          context.reportError(new GraphQLError('I like turtles.', node));
+          context.reportError(
+            new GraphQLError(
+              'I like turtles.',
+              // @ts-expect-error
+              version.startsWith('16') || version.startsWith('15')
+                ? node
+                : { nodes: node },
+            ),
+          );
         }
         return false;
       },

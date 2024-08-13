@@ -179,7 +179,7 @@
     "ovsx": "0.8.3"
   },
   "dependencies": {
-    "graphql": "^16.8.1",
+    "graphql": "^16.8.1 || ^17.0.0-alpha.2",
     "graphql-language-service-server": "^2.13.3",
     "vscode-languageclient": "8.0.2",
     "typescript": "^5.3.3"

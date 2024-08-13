@@ -1,8 +1,12 @@
-import { version } from 'graphql';
+import { GraphQLError, version } from 'graphql';
 
 describe('Errors', () => {
   it('Should show an error when the HTTP request fails', () => {
-    cy.visit('/?http-error=true');
+    cy.intercept('/graphql', {
+      statusCode: 502,
+      body: 'Bad Gateway',
+    });
+    cy.visit('/');
     cy.assertQueryResult({
       errors: [
         {
@@ -21,6 +25,9 @@ describe('Errors', () => {
   });
 
   it('Should show an error when introspection fails', () => {
+    cy.intercept('/graphql', {
+      body: { errors: [new GraphQLError('Something unexpected happened...')] },
+    });
     cy.visit('/?graphql-error=true');
     cy.assertQueryResult({
       errors: [{ message: 'Something unexpected happened...' }],
@@ -28,16 +35,17 @@ describe('Errors', () => {
   });
 
   it('Should show an error when the schema is invalid', () => {
-    cy.visit('/?bad=true');
+    cy.intercept('/graphql', { fixture: 'bad-schema.json' });
+    cy.visit('/');
     /**
      * We can't use `cy.assertQueryResult` here because the stack contains line
      * and column numbers of the `graphiql.min.js` bundle which are not stable.
      */
     cy.get('section.result-window').should(element => {
       expect(element.get(0).innerText).to.contain(
-        version.startsWith('16.')
-          ? 'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.domain)>\\" does not.'
-          : 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but \\"<img src=x onerror=alert(document.domain)>\\" does not.',
+        version.startsWith('15')
+          ? 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but \\"<img src=x onerror=alert(document.domain)>\\" does not.'
+          : 'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.domain)>\\" does not.',
       );
     });
   });

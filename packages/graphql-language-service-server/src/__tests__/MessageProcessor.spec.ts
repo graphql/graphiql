@@ -12,6 +12,7 @@ import {
   buildASTSchema,
   introspectionFromSchema,
   parse,
+  version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
 
@@ -361,6 +362,11 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches files and schema with a URL config', async () => {
+    const enableExperimentalIncrementalDelivery =
+      !version.startsWith('15') && !version.startsWith('16');
+
+    const offset = enableExperimentalIncrementalDelivery ? 25 : 0;
+
     mockSchema(require('../../../graphiql/test/schema'));
 
     const project = new MockProject({
@@ -428,29 +434,29 @@ describe('MessageProcessor with config', () => {
 
     expect(serializeRange(typeDefinitions[0].range)).toEqual({
       start: {
-        line: 11,
+        line: 11 + offset,
         character: 0,
       },
       end: {
-        line: 102,
+        line: 102 + offset,
         character: 1,
       },
     });
 
     const schemaDefs = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: URI.parse(genSchemaPath).toString() },
-      position: { character: 20, line: 18 },
+      position: { character: 20, line: 18 + offset },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
     // note: if the graphiql test schema changes,
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 104,
+        line: 104 + offset,
         character: 0,
       },
       end: {
-        line: 112,
+        line: 112 + offset,
         character: 1,
       },
     });

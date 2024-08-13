@@ -24,13 +24,13 @@
     "meros": "^1.1.4"
   },
   "devDependencies": {
-    "graphql": "^16.8.1",
+    "graphql": "^17.0.0-alpha.5",
     "graphql-ws": "^5.5.5",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "graphql-ws": ">= 4.5.0"
   },
   "peerDependenciesMeta": {

@@ -34,7 +34,7 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
@@ -68,7 +68,7 @@
     "@types/mock-fs": "^4.13.4",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
-    "graphql": "^16.8.1",
+    "graphql": "^17.0.0-alpha.5",
     "mock-fs": "^5.2.0"
   }
 }
