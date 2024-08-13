@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.0.0-alpha.2
+
+### Patch Changes
+
+- [#3716](https://github.com/graphql/graphiql/pull/3716) [`cc2808f`](https://github.com/graphql/graphiql/commit/cc2808f9b0d9ac0f98603299ec67e2a659cbfcd7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - use `position: absolute` for `.graphiql-logo` class
+
+- Updated dependencies [[`bf0c4e7`](https://github.com/graphql/graphiql/commit/bf0c4e7236f4a68448063aa0c6a4ed439e869a9f)]:
+  - @graphiql/react@1.0.0-alpha.1
+
 ## 4.0.0-alpha.1
 
 ### Major Changes
