@@ -5,6 +5,8 @@ import commonjs from 'vite-plugin-commonjs';
 
 const umdConfig = defineConfig({
   define: {
+    // graphql v17
+    'globalThis.process.env.NODE_ENV': 'true',
     // https://github.com/graphql/graphql-js/blob/16.x.x/website/docs/tutorials/going-to-production.md#vite
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
