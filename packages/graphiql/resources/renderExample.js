@@ -48,6 +48,14 @@ function onTabChange(tabsState) {
   updateURL();
 }
 
+async function confirmCloseTab(_index) {
+  // eslint-disable-next-line no-alert
+  if (window.confirm('Are you sure you want to close this tab?')) {
+    return true;
+  }
+  return false;
+}
+
 function updateURL() {
   const newSearch = Object.entries(parameters)
     .filter(([_key, value]) => value)
@@ -101,6 +109,7 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    confirmCloseTab,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),
