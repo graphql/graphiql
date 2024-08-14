@@ -142,8 +142,8 @@ function annotations(
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
         : 'variable' in node && node.variable !== undefined
-        ? node.variable
-        : node;
+          ? node.variable
+          : node;
     if (highlightNode) {
       invariant(
         error.locations,

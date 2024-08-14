@@ -29,7 +29,7 @@ const simpleIntrospection = {
 };
 
 beforeEach(() => {
-  window.localStorage.clear();
+  localStorage.clear();
 });
 
 describe('GraphiQL', () => {

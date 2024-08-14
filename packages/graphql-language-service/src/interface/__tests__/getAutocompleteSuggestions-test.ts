@@ -19,11 +19,18 @@ import {
   GraphQLSchema,
   parse,
   version as graphQLVersion,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLBoolean,
+  GraphQLDeprecatedDirective,
+  GraphQLSkipDirective,
+  GraphQLIncludeDirective,
 } from 'graphql';
 import { Position } from '../../utils';
 import path from 'node:path';
 
 import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
+// import { InsertTextFormat } from 'vscode-languageserver-types';
 
 const expectedResults = {
   droid: {
@@ -50,6 +57,15 @@ const expectedResults = {
     label: 'friends',
     detail: '[Character]',
   },
+  union: {
+    label: 'union',
+    detail: 'TestUnion',
+  },
+  __typename: {
+    label: '__typename',
+    detail: 'String!',
+    documentation: 'The name of the current Object type at runtime.',
+  },
 };
 
 const suggestionCommand = {
@@ -74,7 +90,7 @@ describe('getAutocompleteSuggestions', () => {
     query: string,
     point: Position,
     externalFragments?: FragmentDefinitionNode[],
-    options?: AutocompleteSuggestionOptions,
+    options?: AutocompleteSuggestionOptions & { ignoreInsert?: boolean },
   ): Array<CompletionItem> {
     return getAutocompleteSuggestions(
       schema,
@@ -93,30 +109,40 @@ describe('getAutocompleteSuggestions', () => {
         if (suggestion.detail) {
           response.detail = String(suggestion.detail);
         }
-        if (suggestion.insertText) {
+        if (suggestion.insertText && !options?.ignoreInsert) {
           response.insertText = suggestion.insertText;
         }
-        if (suggestion.insertTextFormat) {
+        if (suggestion.insertTextFormat && !options?.ignoreInsert) {
           response.insertTextFormat = suggestion.insertTextFormat;
         }
-        if (suggestion.command) {
+        if (suggestion.command && !options?.ignoreInsert) {
           response.command = suggestion.command;
         }
+        if (suggestion.documentation?.length) {
+          response.documentation = suggestion.documentation;
+        }
+        if (suggestion.labelDetails && !options?.ignoreInsert) {
+          response.labelDetails = suggestion.labelDetails;
+        }
+
         return response;
       });
   }
   describe('with Operation types', () => {
     const expectedDirectiveSuggestions = [
-      { label: 'include' },
-      { label: 'skip' },
+      { label: 'include', documentation: GraphQLIncludeDirective.description },
+      { label: 'skip', documentation: GraphQLSkipDirective.description },
     ];
 
     // TODO: remove this once defer and stream are merged to `graphql`
     if (graphQLVersion.startsWith('16.0.0-experimental-stream-defer')) {
+      // @ts-expect-error
       expectedDirectiveSuggestions.push({ label: 'stream' }, { label: 'test' });
     } else {
+      // @ts-expect-error
       expectedDirectiveSuggestions.push({ label: 'test' });
     }
+
     it('provides correct sortText response', () => {
       const result = getAutocompleteSuggestions(
         schema,
@@ -137,7 +163,7 @@ describe('getAutocompleteSuggestions', () => {
         },
 
         {
-          sortText: '6__schema',
+          sortText: '7__schema',
           label: '__schema',
           detail: '__Schema!',
         },
@@ -147,10 +173,17 @@ describe('getAutocompleteSuggestions', () => {
     it('provides correct initial keywords', () => {
       expect(testSuggestions('', new Position(0, 0))).toEqual([
         { label: '{' },
+        { label: 'extend' },
         { label: 'fragment' },
+        { label: 'input' },
+        { label: 'interface' },
         { label: 'mutation' },
         { label: 'query' },
+        { label: 'scalar' },
+        { label: 'schema' },
         { label: 'subscription' },
+        { label: 'type' },
+        { label: 'union' },
       ]);
 
       expect(testSuggestions('q', new Position(0, 1))).toEqual([
@@ -159,9 +192,9 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
-    it('provides correct suggestions at where the cursor is', () => {
+    it('provides correct top level suggestions when a simple query is already present', () => {
       // Below should provide initial keywords
-      expect(testSuggestions(' {}', new Position(0, 0))).toEqual([
+      expect(testSuggestions(' { id }', new Position(0, 0))).toEqual([
         { label: '{' },
         { label: 'fragment' },
         { label: 'mutation' },
@@ -170,12 +203,17 @@ describe('getAutocompleteSuggestions', () => {
       ]);
 
       // Below should provide root field names
-      expect(testSuggestions(' {}', new Position(0, 2))).toEqual([
-        { label: '__typename', detail: 'String!' },
+      expect(
+        testSuggestions(' {}', new Position(0, 2), [], {
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        expectedResults.__typename,
         expectedResults.droid,
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.union,
       ]);
 
       // Test for query text with empty lines
@@ -187,29 +225,39 @@ describe('getAutocompleteSuggestions', () => {
   }
       `,
           new Position(2, 0),
+          [],
+          {
+            ignoreInsert: true,
+          },
         ),
       ).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.droid,
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.union,
       ]);
     });
 
     it('provides correct field name suggestions', () => {
-      const result = testSuggestions('{ ', new Position(0, 2));
+      const result = testSuggestions('{ ', new Position(0, 2), [], {
+        ignoreInsert: true,
+      });
       expect(result).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.droid,
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.union,
       ]);
     });
 
     it('provides correct field name suggestions after filtered', () => {
-      const result = testSuggestions('{ h ', new Position(0, 3));
+      const result = testSuggestions('{ h ', new Position(0, 3), [], {
+        ignoreInsert: true,
+      });
       expect(result).toEqual([expectedResults.hero, expectedResults.human]);
     });
 
@@ -217,10 +265,14 @@ describe('getAutocompleteSuggestions', () => {
       const result = testSuggestions(
         '{ alias: human(id: "1") { ',
         new Position(0, 26),
+        [],
+        {
+          ignoreInsert: true,
+        },
       );
 
       expect(result).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.appearsIn,
         expectedResults.friends,
         { label: 'id', detail: 'String!' },
@@ -229,6 +281,59 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it('provides correct field name suggestions with insertText', () => {
+      const result = testSuggestions('{ ', new Position(0, 2), [], {
+        ignoreInsert: false,
+        fillLeafsOnComplete: true,
+      });
+      expect(result).toEqual([
+        {
+          ...expectedResults.__typename,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: '__typename\n',
+          labelDetails: { detail: ' String!' },
+        },
+        {
+          ...expectedResults.droid,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'droid(id: $1)  {\n   $1\n}',
+          labelDetails: { detail: ' Droid' },
+        },
+        {
+          ...expectedResults.hero,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'hero {\n   $1\n}',
+          labelDetails: { detail: ' Character' },
+        },
+        {
+          ...expectedResults.human,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'human(id: $1)  {\n   $1\n}',
+          labelDetails: { detail: ' Human' },
+        },
+        {
+          ...expectedResults.inputTypeTest,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'inputTypeTest {\n   $1\n}',
+          labelDetails: { detail: ' TestType' },
+        },
+        {
+          label: 'union',
+          insertTextFormat: 2,
+          insertText: 'union {\n   $1\n}',
+          detail: 'TestUnion',
+          command: suggestionCommand,
+          labelDetails: {
+            detail: ' TestUnion',
+          },
+        },
+      ]);
+    });
     it('provides correct type suggestions for fragments', () => {
       const result = testSuggestions('fragment test on ', new Position(0, 17));
 
@@ -248,10 +353,14 @@ describe('getAutocompleteSuggestions', () => {
       const result = testSuggestions(
         'fragment test on Human { ',
         new Position(0, 25),
+        [],
+        {
+          ignoreInsert: true,
+        },
       );
 
       expect(result).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.appearsIn,
         expectedResults.friends,
         { label: 'id', detail: 'String!' },
@@ -265,9 +374,10 @@ describe('getAutocompleteSuggestions', () => {
       expect(result).toEqual([
         {
           label: 'id',
-          detail: 'String!',
           insertText: 'id: ',
           command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' String!' },
         },
       ]);
     });
@@ -280,26 +390,37 @@ describe('getAutocompleteSuggestions', () => {
       expect(result).toEqual([
         {
           label: 'id',
-          detail: 'String!',
           command: suggestionCommand,
           insertText: 'id: ',
+          insertTextFormat: 2,
+          labelDetails: { detail: ' String!' },
         },
       ]);
     });
-
+    const metaArgs = [
+      {
+        label: '__DirectiveLocation',
+        documentation:
+          'A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.',
+      },
+      {
+        label: '__TypeKind',
+        documentation:
+          'An enum describing what kind of type a given `__Type` is.',
+      },
+    ];
     it('provides correct input type suggestions', () => {
       const result = testSuggestions(
         'query($exampleVariable: ) { ',
         new Position(0, 24),
       );
       expect(result).toEqual([
-        { label: '__DirectiveLocation' },
-        { label: '__TypeKind' },
-        { label: 'Boolean' },
+        ...metaArgs,
+        { label: 'Boolean', documentation: GraphQLBoolean.description },
         { label: 'Episode' },
         { label: 'InputType' },
-        { label: 'Int' },
-        { label: 'String' },
+        { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'String', documentation: GraphQLString.description },
       ]);
     });
 
@@ -309,11 +430,11 @@ describe('getAutocompleteSuggestions', () => {
         new Position(0, 26),
       );
       expect(result).toEqual([
-        { label: '__DirectiveLocation' },
-        { label: '__TypeKind' },
+        ...metaArgs,
+
         { label: 'InputType' },
-        { label: 'Int' },
-        { label: 'String' },
+        { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'String', documentation: GraphQLString.description },
       ]);
     });
 
@@ -378,7 +499,7 @@ describe('getAutocompleteSuggestions', () => {
         new Position(0, 51),
       );
       expect(result).toEqual([
-        { label: 'ep', insertText: '$ep', detail: 'Episode' },
+        { label: '$ep', insertText: 'ep', detail: 'Episode' },
       ]);
     });
 
@@ -388,8 +509,9 @@ describe('getAutocompleteSuggestions', () => {
         new Position(0, 55),
       );
       expect(result).toEqual([
+        { label: '$episode', detail: 'Episode', insertText: '$episode' },
         { label: 'EMPIRE', detail: 'Episode' },
-        { label: 'episode', detail: 'Episode', insertText: '$episode' },
+
         { label: 'JEDI', detail: 'Episode' },
         { label: 'NEWHOPE', detail: 'Episode' },
         // no $id here, it's not compatible :P
@@ -405,13 +527,27 @@ describe('getAutocompleteSuggestions', () => {
           `${fragmentDef} query { human(id: "1") { ...`,
           new Position(0, 57),
         ),
-      ).toEqual([{ label: 'Foo', detail: 'Human' }]);
+      ).toEqual([
+        {
+          label: 'Foo',
+          detail: 'Human',
+          documentation: 'fragment Foo on Human',
+          labelDetails: { detail: 'fragment Foo on Human' },
+        },
+      ]);
       expect(
         testSuggestions(
           `query { human(id: "1") { ... }} ${fragmentDef}`,
           new Position(0, 28),
         ),
-      ).toEqual([{ label: 'Foo', detail: 'Human' }]);
+      ).toEqual([
+        {
+          label: 'Foo',
+          detail: 'Human',
+          documentation: 'fragment Foo on Human',
+          labelDetails: { detail: 'fragment Foo on Human' },
+        },
+      ]);
 
       // Test on abstract type
       expect(
@@ -419,7 +555,14 @@ describe('getAutocompleteSuggestions', () => {
           `${fragmentDef} query { hero(episode: JEDI) { ...`,
           new Position(0, 62),
         ),
-      ).toEqual([{ label: 'Foo', detail: 'Human' }]);
+      ).toEqual([
+        {
+          label: 'Foo',
+          detail: 'Human',
+          documentation: 'fragment Foo on Human',
+          labelDetails: { detail: 'fragment Foo on Human' },
+        },
+      ]);
     });
 
     it('provides correct fragment name suggestions for external fragments', () => {
@@ -439,8 +582,18 @@ describe('getAutocompleteSuggestions', () => {
       );
 
       expect(result).toEqual([
-        { label: 'CharacterDetails', detail: 'Human' },
-        { label: 'CharacterDetails2', detail: 'Human' },
+        {
+          label: 'CharacterDetails',
+          detail: 'Human',
+          documentation: 'fragment CharacterDetails on Human',
+          labelDetails: { detail: 'fragment CharacterDetails on Human' },
+        },
+        {
+          label: 'CharacterDetails2',
+          detail: 'Human',
+          documentation: 'fragment CharacterDetails2 on Human',
+          labelDetails: { detail: 'fragment CharacterDetails2 on Human' },
+        },
       ]);
     });
 
@@ -460,13 +613,55 @@ describe('getAutocompleteSuggestions', () => {
       expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
     });
 
-    it('provides correct testInput suggestions', () => {
+    it('provides correct directive field suggestions', () => {
+      expect(
+        testSuggestions('{ test @deprecated(', new Position(0, 19)),
+      ).toEqual([
+        {
+          command: suggestionCommand,
+          label: 'reason',
+          insertTextFormat: 2,
+          insertText: 'reason: ',
+          documentation: GraphQLDeprecatedDirective.args[0].description,
+          labelDetails: {
+            detail: ' String',
+          },
+        },
+      ]);
+    });
+    const inputArgs = [
+      {
+        label: 'key',
+        detail: 'String!',
+        insertText: 'key: ',
+        insertTextFormat: 2,
+        command: suggestionCommand,
+      },
+      {
+        detail: 'InputType',
+        label: 'obj',
+        insertText: 'obj:  {\n   $1\n}',
+        command: suggestionCommand,
+        insertTextFormat: 2,
+      },
+      {
+        label: 'value',
+        detail: 'Int',
+        insertText: 'value: ',
+        insertTextFormat: 2,
+        command: suggestionCommand,
+      },
+    ];
+    it('provides correct testInput type field suggestions', () => {
       expect(
         testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
-      ).toEqual([
-        { label: 'key', detail: 'String!' },
-        { label: 'value', detail: 'Int' },
-      ]);
+      ).toEqual(inputArgs);
+    });
+
+    it('provides correct nested testInput type field suggestions', () => {
+      expect(
+        testSuggestions('{ inputTypeTest(args: { obj: {', new Position(0, 30)),
+      ).toEqual(inputArgs);
     });
 
     it('provides correct field name suggestion inside inline fragment', () => {
@@ -474,9 +669,13 @@ describe('getAutocompleteSuggestions', () => {
         testSuggestions(
           'fragment Foo on Character { ... on Human { }}',
           new Position(0, 42),
+          [],
+          {
+            ignoreInsert: true,
+          },
         ),
       ).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.appearsIn,
         expectedResults.friends,
         { label: 'id', detail: 'String!' },
@@ -486,9 +685,16 @@ describe('getAutocompleteSuggestions', () => {
 
       // Type-less inline fragment assumes the type automatically
       expect(
-        testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
+        testSuggestions(
+          'fragment Foo on Droid { ... { ',
+          new Position(0, 30),
+          [],
+          {
+            ignoreInsert: true,
+          },
+        ),
       ).toEqual([
-        { label: '__typename', detail: 'String!' },
+        expectedResults.__typename,
         expectedResults.appearsIn,
         expectedResults.friends,
         { label: 'id', detail: 'String!' },
@@ -501,7 +707,7 @@ describe('getAutocompleteSuggestions', () => {
   });
 
   describe('with SDL types', () => {
-    it('provides correct initial keywords', () => {
+    it('provides correct initial keywords w/ graphqls', () => {
       expect(
         testSuggestions('', new Position(0, 0), [], { uri: 'schema.graphqls' }),
       ).toEqual([
@@ -510,6 +716,25 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'interface' },
         { label: 'scalar' },
         { label: 'schema' },
+        { label: 'type' },
+        { label: 'union' },
+      ]);
+    });
+
+    it('provides correct initial keywords w/out graphqls', () => {
+      expect(
+        testSuggestions('', new Position(0, 0), [], { uri: 'schema.graphql' }),
+      ).toEqual([
+        { label: '{' },
+        { label: 'extend' },
+        { label: 'fragment' },
+        { label: 'input' },
+        { label: 'interface' },
+        { label: 'mutation' },
+        { label: 'query' },
+        { label: 'scalar' },
+        { label: 'schema' },
+        { label: 'subscription' },
         { label: 'type' },
         { label: 'union' },
       ]);
@@ -595,13 +820,81 @@ describe('getAutocompleteSuggestions', () => {
       expect(testSuggestions('type Type @', new Position(0, 11))).toEqual([
         { label: 'onAllDefs' },
       ]));
-    it('provides correct suggestions on object fields', () =>
+    it('provides correct suggestions on object field w/ .graphqls', () =>
       expect(
         testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
           uri: 'schema.graphqls',
+          ignoreInsert: true,
         }),
       ).toEqual([
         { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+
+    it('provides correct argument type suggestions on directive definitions', () =>
+      expect(
+        testSuggestions(
+          'directive @skip(if: ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT',
+          new Position(0, 19),
+          [],
+          {
+            ignoreInsert: true,
+          },
+        ),
+      ).toEqual([
+        { label: 'Boolean' },
+        { label: 'Episode' },
+        { label: 'InputType' },
+        { label: 'Int' },
+        { label: 'String' },
+      ]));
+
+    it('provides correct suggestions on object fields', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
+          uri: 'schema.graphql',
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    // TODO: shouldn't TestType and TestUnion be available here?
+    it('provides correct filtered suggestions on object fields in regular SDL files', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: s', new Position(0, 23), [], {
+          uri: 'schema.graphql',
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct unfiltered suggestions on object fields in regular SDL files', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: ', new Position(0, 22), [], {
+          uri: 'schema.graphql',
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Boolean' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Episode' },
+        { label: 'Human' },
+        { label: 'Int' },
+        // TODO: maybe filter out types attached to top level schema?
+        { label: 'Query' },
         { label: 'String' },
         { label: 'TestInterface' },
         { label: 'TestType' },
@@ -611,6 +904,27 @@ describe('getAutocompleteSuggestions', () => {
       expect(
         testSuggestions('type Type {\n  aField: []', new Position(0, 25), [], {
           uri: 'schema.graphqls',
+          ignoreInsert: true,
+        }),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Boolean' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Episode' },
+        { label: 'Human' },
+        { label: 'Int' },
+        { label: 'Query' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct suggestions on object fields that are arrays in SDL context', () =>
+      expect(
+        testSuggestions('type Type {\n  aField: []', new Position(0, 25), [], {
+          uri: 'schema.graphql',
+          ignoreInsert: true,
         }),
       ).toEqual([
         { label: 'AnotherInterface' },
@@ -631,12 +945,18 @@ describe('getAutocompleteSuggestions', () => {
         testSuggestions('input Type {\n  aField: s', new Position(0, 23), [], {
           uri: 'schema.graphqls',
         }),
-      ).toEqual([{ label: 'Episode' }, { label: 'String' }]));
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String', documentation: GraphQLString.description },
+      ]));
     it('provides correct directive suggestions on args definitions', () =>
       expect(
         testSuggestions('type Type { field(arg: String @', new Position(0, 31)),
       ).toEqual([
-        { label: 'deprecated' },
+        {
+          label: 'deprecated',
+          documentation: GraphQLDeprecatedDirective.description,
+        },
         { label: 'onAllDefs' },
         { label: 'onArg' },
       ]));

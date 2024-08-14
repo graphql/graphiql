@@ -145,3 +145,13 @@ Document(
     )
   )
 )
+
+# multiple arguments separated by a commas
+
+{
+  picture(width: 200, height: 100)
+}
+
+==>
+
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,IntValue),Argument(ArgumentAttributeName,IntValue),")"))),"}")))

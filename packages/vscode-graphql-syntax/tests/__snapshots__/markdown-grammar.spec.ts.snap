@@ -67,17 +67,6 @@ Example                                                                       | 
 ?>                                                                            | 
 \`\`\`                                                                           | 
                                                                               | 
-\`\`\`ruby                                                                       | 
- it "Should delimit queries" do                                               | 
-    query3 = <<~'GRAPHQL'                                                     | 
-    {                                                                         | 
-        datasets(q: { idEq: 3 }) { id, daylight }                             | 
-    }                                                                         | 
-    GRAPHQL                                                                   | 
-end                                                                           | 
-                                                                              | 
-\`\`\`                                                                           | 
-                                                                              | 
 `;
 
 exports[`inline.graphql.markdown.codeblock grammar js > should tokenize a markdown file with javascript & typescript 1`] = `

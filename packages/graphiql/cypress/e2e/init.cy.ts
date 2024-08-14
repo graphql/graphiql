@@ -49,7 +49,8 @@ describe('GraphiQL On Initialization', () => {
     cy.assertQueryResult(mockSuccess);
   });
   it('Shows the expected error when the schema is invalid', () => {
-    cy.visit('/?bad=true');
+    cy.intercept('/graphql', { fixture: 'bad-schema.json' });
+    cy.visit('/');
     cy.get('section.result-window').should(element => {
       expect(element.get(0).innerText).to.contain('Names must');
     });

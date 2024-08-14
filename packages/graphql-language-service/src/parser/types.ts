@@ -84,6 +84,7 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   IMPLEMENTS: 'Implements',
   VARIABLE_DEFINITIONS: 'VariableDefinitions',
   TYPE: 'Type',
+  VARIABLE: 'Variable',
 };
 
 export type _AdditionalRuleKinds = {
@@ -115,6 +116,7 @@ export type _AdditionalRuleKinds = {
   IMPLEMENTS: 'Implements';
   VARIABLE_DEFINITIONS: 'VariableDefinitions';
   TYPE: 'Type';
+  VARIABLE: 'Variable';
 };
 
 export const RuleKinds = {
@@ -122,7 +124,8 @@ export const RuleKinds = {
   ...AdditionalRuleKinds,
 };
 
-export type _RuleKinds = typeof Kind & typeof AdditionalRuleKinds;
+export type _RuleKinds = Omit<typeof Kind, 'VARIABLE'> &
+  typeof AdditionalRuleKinds;
 
 export type RuleKind = _RuleKinds[keyof _RuleKinds];
 export type RuleKindEnum = RuleKind;

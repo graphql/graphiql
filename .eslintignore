@@ -1,4 +1,4 @@
-.changeset/
+.changeset/*.md
 
 # ignore working-group dir markdown so it's easier for people to edit from the UI
 working-group/
@@ -6,3 +6,4 @@ packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql
 CHANGELOG.md
 **/CHANGELOG.md
 packages/vscode-graphql-syntax/tests/__fixtures__/
+packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts
