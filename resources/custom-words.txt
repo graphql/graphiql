@@ -219,6 +219,7 @@ vitejs
 vitest
 vizag
 vsix
+webp
 websockets
 wgutils
 wincent
