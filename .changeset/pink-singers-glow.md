@@ -1,6 +1,6 @@
 ---
-"@graphiql/react": patch
-"graphiql": patch
+"@graphiql/react": minor
+"graphiql": minor
 ---
 
 Add webp support to graphiql results image-preview
