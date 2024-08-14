@@ -19,7 +19,7 @@
   padding: var(--px-8);
   width: var(--sidebar-width);
   gap: var(--px-8);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .graphiql-container .graphiql-sidebar > button {
