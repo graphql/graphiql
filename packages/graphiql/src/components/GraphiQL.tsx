@@ -569,6 +569,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             </div>
             <div
               role="tabpanel"
+              id="graphiql-session"
               className="graphiql-session"
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
