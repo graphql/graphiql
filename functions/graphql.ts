@@ -11,6 +11,7 @@ import type {
 } from '@netlify/functions';
 
 import { schema } from '../packages/graphiql/test/schema.js';
+import { customExecute } from '../packages/graphiql/test/execute.js';
 
 /**
  * Handler options when using the netlify adapter
@@ -56,4 +57,4 @@ export function createHandler<Context extends OperationContext = undefined>(
   };
 }
 
-export const handler = createHandler({ schema });
+export const handler = createHandler({ schema, execute: customExecute });

@@ -68,7 +68,7 @@
     "@types/mock-fs": "^4.13.4",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
-    "graphql": "^17.0.0-alpha.5",
+    "graphql": "^17.0.0-alpha.7",
     "mock-fs": "^5.2.0"
   }
 }

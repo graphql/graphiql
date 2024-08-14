@@ -30,7 +30,7 @@
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.1.0",
     "esbuild": "0.18.10",
-    "graphql": "^17.0.0-alpha.5",
+    "graphql": "^17.0.0-alpha.7",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-esbuild": "^4.9.1",

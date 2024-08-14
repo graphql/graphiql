@@ -56,7 +56,7 @@
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
     "express": "^4.19.2",
-    "graphql": "^17.0.0-alpha.5",
+    "graphql": "^17.0.0-alpha.7",
     "graphql-helix": "^1.13.0",
     "graphql-subscriptions": "^2.0.0",
     "postcss": "8.4.31",
