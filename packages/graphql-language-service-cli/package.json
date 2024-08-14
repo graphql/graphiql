@@ -42,6 +42,6 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "graphql": "^17.0.0-alpha.5"
+    "graphql": "^17.0.0-alpha.7"
   }
 }
