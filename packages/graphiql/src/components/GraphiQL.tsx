@@ -533,6 +533,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   >
                     <Tab.Button
                       aria-controls="graphiql-session"
+                      id={`graphiql-session-tab-${index}`}
                       title={tab.title}
                       onClick={() => {
                         executionContext.stop();
