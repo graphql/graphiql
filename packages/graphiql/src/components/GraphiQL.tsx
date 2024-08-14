@@ -533,7 +533,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   >
                     <Tab.Button
                       aria-controls="graphiql-session"
-                      id={`graphiql-session-tab-${index}`}
                       title={tab.title}
                       onClick={() => {
                         executionContext.stop();
@@ -569,7 +568,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             </div>
             <div
               role="tabpanel"
-              id="graphiql-session"
               className="graphiql-session"
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
