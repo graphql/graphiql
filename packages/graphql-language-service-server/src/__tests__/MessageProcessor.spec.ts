@@ -1,9 +1,11 @@
+import { readFile, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import mockfs from 'mock-fs';
 import { MockFile, MockProject } from './__utils__/MockProject';
 import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { URI } from 'vscode-uri';
 import {
   GraphQLSchema,
@@ -61,8 +63,14 @@ const fooInlineTypePosition = {
   end: { line: 5, character: 24 },
 };
 
-const genSchemaPath =
-  '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql';
+const genSchemaPath = path.join(
+  tmpdir(),
+  'graphql-language-service',
+  'test',
+  'projects',
+  'default',
+  'generated-schema.graphql',
+);
 
 // TODO:
 // - reorganize into multiple files
@@ -73,10 +81,18 @@ const genSchemaPath =
 // - fix TODO comments where bugs were found that couldn't be resolved quickly (2-4hr time box)
 
 describe('MessageProcessor with no config', () => {
+  beforeAll(async () => {
+    await rm(path.join(tmpdir(), 'graphql-language-service'), {
+      recursive: true,
+      force: true,
+    });
+  });
+
   afterEach(() => {
     mockfs.restore();
     fetchMock.restore();
   });
+
   it('fails to initialize with empty config file', async () => {
     const project = new MockProject({
       files: [...defaultFiles, ['graphql.config.json', '']],
@@ -94,6 +110,7 @@ describe('MessageProcessor with no config', () => {
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
     project.lsp.handleShutdownRequest();
   });
+
   it('fails to initialize with no config file present', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
@@ -110,6 +127,7 @@ describe('MessageProcessor with no config', () => {
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
     project.lsp.handleShutdownRequest();
   });
+
   it('initializes when presented with a valid config later', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
@@ -141,13 +159,7 @@ describe('MessageProcessor with config', () => {
     mockfs.restore();
     fetchMock.restore();
   });
-  // beforeAll(async () => {
-  //   app = await import('../../../graphiql/test/e2e-server');
-  // });
-  // afterAll(() => {
-  //   app.server.close();
-  //   app.wsServer.close();
-  // });
+
   it('caches files and schema with .graphql file config, and the schema updates with watched file changes', async () => {
     const project = new MockProject({
       files: [
@@ -247,14 +259,7 @@ describe('MessageProcessor with config', () => {
       // now Foo has a bad field, the fragment should be invalid
       'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
     );
-    // await project.lsp.handleWatchedFilesChangedNotification({
-    //   changes: [
-    //     {
-    //       type: FileChangeType.Changed,
-    //       uri: project.uri('schema.graphql'),
-    //     },
-    //   ],
-    // });
+
     await project.lsp.handleDidChangeNotification({
       contentChanges: [
         {
@@ -372,7 +377,6 @@ describe('MessageProcessor with config', () => {
         ],
       ],
     });
-
     const initParams = await project.init('query.graphql');
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
 
@@ -423,7 +427,6 @@ describe('MessageProcessor with config', () => {
       textDocument: { uri: project.uri('fragments.graphql') },
       position: { character: 15, line: 0 },
     });
-
     expect(typeDefinitions[0].uri).toEqual(URI.parse(genSchemaPath).toString());
 
     expect(serializeRange(typeDefinitions[0].range)).toEqual({
