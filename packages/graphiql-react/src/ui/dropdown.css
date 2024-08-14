@@ -12,7 +12,7 @@
     calc(var(--radix-dropdown-menu-content-available-height) - 10px),
     400px
   );
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .graphiql-dropdown-item {
