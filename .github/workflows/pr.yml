@@ -10,23 +10,22 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
           cache: yarn
       - name: Cache node modules
         id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cache/Cypress
-          key: cypress-${{ runner.os }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - run: yarn install --frozen-lockfile --immutable
 
   build:
@@ -35,19 +34,18 @@ jobs:
     needs: [install]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
 
       - run: yarn build
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -57,12 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -74,12 +70,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -87,22 +81,20 @@ jobs:
       - run: yarn pretty-check
 
   jest:
-    name: Jest Unit Tests
+    name: Jest Unit & Integration Tests
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
       - run: yarn test --coverage
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
@@ -115,18 +107,17 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -138,17 +129,16 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -160,34 +150,34 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cache/Cypress
-          key: cypress-${{ runner.os }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           install: false
           command: yarn e2e
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: packages/graphiql/cypress/screenshots
           if-no-files-found: ignore
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-videos
@@ -201,19 +191,17 @@ jobs:
     needs: [build, jest, eslint, vitest, e2e]
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/setup-node@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -262,12 +250,10 @@ jobs:
     needs: [install]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
       - id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules

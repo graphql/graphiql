@@ -1,12 +1,12 @@
 {
   "name": "example-graphiql-create-react-app",
-  "version": "0.1.11-alpha.8",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "graphiql": "^2.2.0",
-    "graphql": "^16.4.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "graphiql": "^3.4.0",
+    "graphql": "^16.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -26,7 +26,6 @@
     ]
   },
   "devDependencies": {
-    "eslint-config-react-app": "^5.2.1",
-    "worker-loader": "^2.0.0"
+    "eslint-config-react-app": "^7.0.1"
   }
 }

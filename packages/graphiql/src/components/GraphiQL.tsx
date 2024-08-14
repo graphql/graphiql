@@ -14,6 +14,8 @@ import React, {
   ReactElement,
   useCallback,
   useState,
+  useEffect,
+  useMemo,
 } from 'react';
 
 import {
@@ -78,6 +80,11 @@ export type GraphiQLToolbarConfig = {
    * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
    */
   additionalContent?: React.ReactNode;
+
+  /**
+   * same as above, except a component with access to context
+   */
+  additionalComponent?: React.JSXElementConstructor<any>;
 };
 
 /**
@@ -162,6 +169,8 @@ export function GraphiQL({
     >
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}
+        disableTabs={props.disableTabs ?? false}
+        forcedTheme={props.forcedTheme}
         {...props}
       />
     </GraphiQLProvider>
@@ -209,7 +218,20 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
+    disableTabs?: boolean;
+    /**
+     * forcedTheme allows enforcement of a specific theme for GraphiQL.
+     * This is useful when you want to make sure that GraphiQL is always
+     * rendered with a specific theme
+     */
+    forcedTheme?: (typeof THEMES)[number];
+    /**
+     * Additional class names which will be appended to the container element.
+     */
+    className?: string;
   };
+
+const THEMES = ['light', 'dark', 'system'] as const;
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -218,12 +240,27 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
+  const forcedTheme = useMemo(
+    () =>
+      props.forcedTheme && THEMES.includes(props.forcedTheme)
+        ? props.forcedTheme
+        : undefined,
+    [props.forcedTheme],
+  );
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    if (forcedTheme === 'system') {
+      setTheme(null);
+    } else if (forcedTheme === 'light' || forcedTheme === 'dark') {
+      setTheme(forcedTheme);
+    }
+  }, [forcedTheme, setTheme]);
 
   const PluginContent = pluginContext?.visiblePlugin?.content;
 
@@ -311,6 +348,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       {props.toolbar?.additionalContent}
+      {props.toolbar?.additionalComponent && (
+        <props.toolbar.additionalComponent />
+      )}
     </>
   );
 
@@ -429,9 +469,14 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     </Tooltip>
   );
 
+  const className = props.className ? ` ${props.className}` : '';
+
   return (
     <Tooltip.Provider>
-      <div data-testid="graphiql-container" className="graphiql-container">
+      <div
+        data-testid="graphiql-container"
+        className={`graphiql-container${className}`}
+      >
         <div className="graphiql-sidebar">
           <div className="graphiql-sidebar-section">
             {pluginContext?.plugins.map((plugin, index) => {
@@ -510,43 +555,45 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              <Tabs
-                values={editorContext.tabs}
-                onReorder={handleReorder}
-                aria-label="Select active operation"
-              >
-                {editorContext.tabs.length > 1 && (
-                  <>
-                    {editorContext.tabs.map((tab, index) => (
-                      <Tab
-                        key={tab.id}
-                        value={tab}
-                        isActive={index === editorContext.activeTabIndex}
-                      >
-                        <Tab.Button
-                          aria-controls="graphiql-session"
-                          id={`graphiql-session-tab-${index}`}
-                          onClick={() => {
-                            executionContext.stop();
-                            editorContext.changeTab(index);
-                          }}
+              {!props.disableTabs && (
+                <Tabs
+                  values={editorContext.tabs}
+                  onReorder={handleReorder}
+                  aria-label="Select active operation"
+                >
+                  {editorContext.tabs.length > 1 && (
+                    <>
+                      {editorContext.tabs.map((tab, index) => (
+                        <Tab
+                          key={tab.id}
+                          value={tab}
+                          isActive={index === editorContext.activeTabIndex}
                         >
-                          {tab.title}
-                        </Tab.Button>
-                        <Tab.Close
-                          onClick={() => {
-                            if (editorContext.activeTabIndex === index) {
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            onClick={() => {
                               executionContext.stop();
-                            }
-                            editorContext.closeTab(index);
-                          }}
-                        />
-                      </Tab>
-                    ))}
-                    {addTab}
-                  </>
-                )}
-              </Tabs>
+                              editorContext.changeTab(index);
+                            }}
+                          >
+                            {tab.title}
+                          </Tab.Button>
+                          <Tab.Close
+                            onClick={() => {
+                              if (editorContext.activeTabIndex === index) {
+                                executionContext.stop();
+                              }
+                              editorContext.closeTab(index);
+                            }}
+                          />
+                        </Tab>
+                      ))}
+                      {addTab}
+                    </>
+                  )}
+                </Tabs>
+              )}
               <div className="graphiql-session-header-right">
                 {editorContext.tabs.length === 1 && addTab}
                 {logo}
@@ -760,39 +807,41 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               </ButtonGroup>
             </div>
           ) : null}
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">Theme</div>
-              <div className="graphiql-dialog-section-caption">
-                Adjust how the interface looks like.
+          {!forcedTheme && (
+            <div className="graphiql-dialog-section">
+              <div>
+                <div className="graphiql-dialog-section-title">Theme</div>
+                <div className="graphiql-dialog-section-caption">
+                  Adjust how the interface appears.
+                </div>
               </div>
+              <ButtonGroup>
+                <Button
+                  type="button"
+                  className={theme === null ? 'active' : ''}
+                  onClick={handleChangeTheme}
+                >
+                  System
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'light' ? 'active' : ''}
+                  data-theme="light"
+                  onClick={handleChangeTheme}
+                >
+                  Light
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'dark' ? 'active' : ''}
+                  data-theme="dark"
+                  onClick={handleChangeTheme}
+                >
+                  Dark
+                </Button>
+              </ButtonGroup>
             </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={theme === null ? 'active' : ''}
-                onClick={handleChangeTheme}
-              >
-                System
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'light' ? 'active' : ''}
-                data-theme="light"
-                onClick={handleChangeTheme}
-              >
-                Light
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'dark' ? 'active' : ''}
-                data-theme="dark"
-                onClick={handleChangeTheme}
-              >
-                Dark
-              </Button>
-            </ButtonGroup>
-          </div>
+          )}
           {storageContext ? (
             <div className="graphiql-dialog-section">
               <div>

@@ -348,7 +348,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
   useEffect(() => {
     const propValue = Boolean(props.shouldPersistHeaders);
-    if (lastShouldPersistHeadersProp.current !== propValue) {
+    if (lastShouldPersistHeadersProp?.current !== propValue) {
       setShouldPersistHeaders(propValue);
       lastShouldPersistHeadersProp.current = propValue;
     }
@@ -360,13 +360,14 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
+  const { onTabChange, defaultHeaders, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
     variableEditor,
     headerEditor,
     responseEditor,
+    defaultHeaders,
   });
-  const { onTabChange, defaultHeaders, children } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
@@ -556,7 +557,7 @@ export const useEditorContext = createContextHook(EditorContext);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
 
-const DEFAULT_QUERY = `# Welcome to GraphiQL
+export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # GraphiQL is an in-browser tool for writing, validating, and
 # testing GraphQL queries.

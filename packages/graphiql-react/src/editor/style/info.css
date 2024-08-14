@@ -4,7 +4,7 @@
   border: var(--popover-border);
   border-radius: var(--border-radius-8);
   box-shadow: var(--popover-box-shadow);
-  color: hsla(var(--color-neutral), 1);
+  color: hsl(var(--color-neutral));
   max-height: 300px;
   max-width: 400px;
   opacity: 0;

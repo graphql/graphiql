@@ -39,6 +39,8 @@ import type {
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
 
+export { GraphQLDocumentMode } from './parser';
+
 export type {
   GraphQLConfig,
   GraphQLProjectConfig,
@@ -49,11 +51,6 @@ export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;
 
   getProjectForFile: (uri: string) => GraphQLProjectConfig | void;
-
-  getObjectTypeDependencies: (
-    query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<ObjectTypeInfo[]>;
 
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
@@ -68,12 +65,6 @@ export interface GraphQLCache {
     rootDir: Uri,
     filePath: Uri,
     contents: CachedContent[],
-  ) => Promise<void>;
-
-  updateObjectTypeDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
   ) => Promise<void>;
 
   getFragmentDependencies: (
@@ -95,15 +86,8 @@ export interface GraphQLCache {
     filePath: Uri,
     contents: CachedContent[],
   ) => Promise<void>;
-
-  updateFragmentDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
   getSchema: (
-    appName?: string,
+    appName: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
 }
@@ -192,6 +176,8 @@ export type CompletionItem = CompletionItemType & {
   deprecationReason?: string | null;
   type?: GraphQLType;
   command?: CompletionItemType['command'];
+  // if label differs from what should be inserted
+  rawInsert?: string;
 };
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
@@ -204,6 +190,7 @@ export type Definition = {
   name?: string;
   language?: string;
   projectRoot?: Uri;
+  locator?: string;
 };
 
 // Outline view
@@ -262,34 +249,34 @@ export type FileChangeType = FileChangeTypeKind[FileChangeTypeKeys];
 // copied from `microsoft/vscode-languageserver-types` to prevent import issues
 
 /**
- * The kind of a completion entry.
+ * The kind of completion entry.
  */
 export namespace CompletionItemKind {
-  export const Text = 1 as const;
-  export const Method = 2 as const;
-  export const Function = 3 as const;
-  export const Constructor = 4 as const;
-  export const Field = 5 as const;
-  export const Variable = 6 as const;
-  export const Class = 7 as const;
-  export const Interface = 8 as const;
-  export const Module = 9 as const;
-  export const Property = 10 as const;
-  export const Unit = 11 as const;
-  export const Value = 12 as const;
-  export const Enum = 13 as const;
-  export const Keyword = 14 as const;
-  export const Snippet = 15 as const;
-  export const Color = 16 as const;
-  export const File = 17 as const;
-  export const Reference = 18 as const;
-  export const Folder = 19 as const;
-  export const EnumMember = 20 as const;
-  export const Constant = 21 as const;
-  export const Struct = 22 as const;
-  export const Event = 23 as const;
-  export const Operator = 24 as const;
-  export const TypeParameter = 25 as const;
+  export const Text = 1;
+  export const Method = 2;
+  export const Function = 3;
+  export const Constructor = 4;
+  export const Field = 5;
+  export const Variable = 6;
+  export const Class = 7;
+  export const Interface = 8;
+  export const Module = 9;
+  export const Property = 10;
+  export const Unit = 11;
+  export const Value = 12;
+  export const Enum = 13;
+  export const Keyword = 14;
+  export const Snippet = 15;
+  export const Color = 16;
+  export const File = 17;
+  export const Reference = 18;
+  export const Folder = 19;
+  export const EnumMember = 20;
+  export const Constant = 21;
+  export const Struct = 22;
+  export const Event = 23;
+  export const Operator = 24;
+  export const TypeParameter = 25;
 }
 
 export type CompletionItemKind =

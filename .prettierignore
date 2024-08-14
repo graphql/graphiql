@@ -1,0 +1,2 @@
+# removing this will break tests b/c of whitespace changes + format on save/commit, etc
+packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts

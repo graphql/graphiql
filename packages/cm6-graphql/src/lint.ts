@@ -1,16 +1,43 @@
 import { Diagnostic, linter } from '@codemirror/lint';
 import { getDiagnostics } from 'graphql-language-service';
 import { Position, posToOffset } from './helpers';
-import { getSchema, optionsStateField, schemaStateField } from './state';
+import {
+  getOpts,
+  getSchema,
+  optionsStateField,
+  schemaStateField,
+} from './state';
 import { Extension } from '@codemirror/state';
+import { validateSchema } from 'graphql';
 
 const SEVERITY = ['error', 'warning', 'info'] as const;
 
 export const lint: Extension = linter(
   view => {
     const schema = getSchema(view.state);
+    const options = getOpts(view.state);
     if (!schema) {
       return [];
+    }
+    const validationErrors = validateSchema(schema);
+    if (validationErrors.length) {
+      if (!options?.showErrorOnInvalidSchema) {
+        return [];
+      }
+
+      const combinedError = validationErrors.map(error => {
+        return error.message;
+      });
+
+      return [
+        {
+          from: 0,
+          to: view.state.doc.length,
+          severity: 'error',
+          message: combinedError.join('\n'),
+          actions: [], // TODO:
+        },
+      ];
     }
     const results = getDiagnostics(view.state.doc.toString(), schema);
 

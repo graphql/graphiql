@@ -13,8 +13,8 @@ build({
   outdir: 'out/',
   format: 'cjs',
   sourcemap: true,
-  // Avoid bundling @vue/compiler-sfc's dynamic dependencies
   external: [
+    // Avoid bundling @vue/compiler-sfc's dynamic dependencies
     'squirrelly',
     'teacup',
     'coffee-script',

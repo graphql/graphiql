@@ -6,7 +6,10 @@ import type {
   GraphQLSchema,
   ValidationRule,
 } from 'graphql';
-import { getOperationFacts } from 'graphql-language-service';
+import {
+  getOperationFacts,
+  GraphQLDocumentMode,
+} from 'graphql-language-service';
 import {
   MutableRefObject,
   useCallback,
@@ -186,6 +189,10 @@ export function useQueryEditor(
           completeSingle: false,
           container,
           externalFragments: undefined,
+          autocompleteOptions: {
+            // for the query editor, restrict to executable type definitions
+            mode: GraphQLDocumentMode.EXECUTABLE,
+          },
         },
         info: {
           schema: undefined,

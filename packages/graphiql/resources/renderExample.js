@@ -63,16 +63,6 @@ function getSchemaUrl() {
   const isDev = window.location.hostname.match(/localhost$/);
 
   if (isDev) {
-    // This supports an e2e test which ensures that invalid schemas do not load.
-    if (parameters.bad === 'true') {
-      return '/bad/graphql';
-    }
-    if (parameters['http-error'] === 'true') {
-      return '/http-error/graphql';
-    }
-    if (parameters['graphql-error'] === 'true') {
-      return '/graphql-error/graphql';
-    }
     return '/graphql';
   }
   return '/.netlify/functions/graphql';
@@ -102,5 +92,6 @@ root.render(
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,
+    forcedTheme: parameters.forcedTheme,
   }),
 );
