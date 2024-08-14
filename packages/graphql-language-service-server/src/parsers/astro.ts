@@ -1,7 +1,7 @@
-import { parse } from 'astrojs-compiler-sync';
 import { Position, Range } from 'graphql-language-service';
 import { RangeMapper, SourceParser } from './types';
 import { babelParser } from './babel';
+import { parse } from '@astrojs/compiler';
 
 type ParseAstroResult =
   | { type: 'error'; errors: string[] }
@@ -11,9 +11,11 @@ type ParseAstroResult =
       scriptAst: any[];
     };
 
-function parseAstro(source: string): ParseAstroResult {
-  // eslint-disable-next-line unicorn/no-useless-undefined
-  const { ast, diagnostics } = parse(source, undefined);
+async function parseAstro(source: string): Promise<ParseAstroResult> {
+  const { ast, diagnostics } = await parse(source, {
+    position: false, // defaults to `true`
+  });
+
   if (diagnostics.some(d => d.severity === /* Error */ 1)) {
     return {
       type: 'error',
@@ -41,14 +43,14 @@ function parseAstro(source: string): ParseAstroResult {
   return { type: 'error', errors: ['Could not find frontmatter block'] };
 }
 
-export const astroParser: SourceParser = (text, uri, logger) => {
-  const parseAstroResult = parseAstro(text);
+export const astroParser: SourceParser = async (text, uri, logger) => {
+  const parseAstroResult = await parseAstro(text);
   if (parseAstroResult.type === 'error') {
-    logger.error(
+    logger.info(
       `Could not parse the astro file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseAstroResult.errors) {
-      logger.error(String(error));
+      logger.info(String(error));
     }
     return null;
   }

@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.12.0",
+  "version": "2.14.0",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -34,39 +34,41 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
   },
-  "COMMENT": "please do not remove depenencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
+  "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
-    "@astrojs/compiler": "^2.5.0",
+    "@astrojs/compiler": "^2.10.1",
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
-    "@vue/compiler-sfc": "^3.4.5",
-    "astrojs-compiler-sync": "^0.3.5",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
     "graphql-config": "5.0.3",
-    "graphql-language-service": "^5.2.0",
+    "graphql-language-service": "^5.3.0",
+    "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
     "svelte": "^4.1.1",
     "svelte2tsx": "^0.7.0",
+    "typescript": "^5.3.3",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
     "vscode-languageserver-types": "^3.17.2",
     "vscode-uri": "^3.0.2",
-    "typescript": "^5.3.3"
+    "vue": "^3.2.0"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
+    "@types/mock-fs": "^4.13.4",
     "cross-env": "^7.0.2",
-    "graphql": "^16.8.1",
+    "debounce-promise": "^3.1.2",
+    "graphql": "^17.0.0-alpha.7",
     "mock-fs": "^5.2.0"
   }
 }

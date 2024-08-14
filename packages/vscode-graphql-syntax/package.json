@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-syntax",
-  "version": "1.3.1",
+  "version": "1.3.6",
   "displayName": "GraphQL: Syntax Highlighting",
   "description": "Adds syntax highlighting support for .graphql & embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
   "publisher": "GraphQL",
@@ -63,7 +63,8 @@
           "source.vue",
           "source.svelte",
           "source.astro",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql",
         "path": "./grammars/graphql.js.json",
@@ -75,7 +76,8 @@
         "injectTo": [
           "source.reason",
           "source.ocaml",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.re",
         "path": "./grammars/graphql.re.json",
@@ -86,7 +88,8 @@
       {
         "injectTo": [
           "source.rescript",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.res",
         "path": "./grammars/graphql.rescript.json",
@@ -96,7 +99,8 @@
       },
       {
         "injectTo": [
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.markdown.codeblock",
         "path": "./grammars/graphql.markdown.codeblock.json",
@@ -107,7 +111,8 @@
       {
         "injectTo": [
           "source.python",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.python",
         "path": "./grammars/graphql.python.json",
@@ -118,7 +123,8 @@
       {
         "injectTo": [
           "text.html.php",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.php",
         "path": "./grammars/graphql.php.json",
@@ -129,21 +135,11 @@
       {
         "injectTo": [
           "source.scala",
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.derivative"
         ],
         "scopeName": "inline.graphql.scala",
         "path": "./grammars/graphql.scala.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "source.ruby",
-          "text.html.markdown"
-        ],
-        "scopeName": "inline.graphql.rb",
-        "path": "./grammars/graphql.rb.json",
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
@@ -159,7 +155,7 @@
     "vscode-oniguruma": "^1.7.0",
     "vscode-textmate": "^9.0.0",
     "ovsx": "^0.3.0",
-    "@vscode/vsce": "^2.23.0"
+    "@vscode/vsce": "^2.22.1-2"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {

@@ -39,8 +39,8 @@ function createState(options: GraphQLInfoOptions) {
       options instanceof Function
         ? { render: options }
         : options === true
-        ? {}
-        : options,
+          ? {}
+          : options,
   };
 }
 

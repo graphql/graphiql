@@ -97,10 +97,10 @@ li.select-server--previous-entry button:hover {
 
 li.select-server--previous-entry button {
   background-color: transparent;
-  border: hsla(var(--color-neutral), 1);
+  border: hsl(var(--color-neutral));
   display: flex;
-  color: hsla(var(--color-neutral), 1);
+  color: hsl(var(--color-neutral));
   font-size: 1rem;
-  cursor: pinter;
+  cursor: pointer;
   padding: 0.5rem;
 }

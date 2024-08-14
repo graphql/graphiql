@@ -32,6 +32,7 @@ import {
   UnionFirst,
   UnionSecond,
 } from './testSchema';
+import { GraphQLDocumentMode } from 'graphql-language-service';
 
 function createEditorWithHint() {
   return CodeMirror(document.createElement('div'), {
@@ -45,7 +46,11 @@ function createEditorWithHint() {
   });
 }
 
-function getHintSuggestions(queryString: string, cursor: CodeMirror.Position) {
+function getHintSuggestions(
+  queryString: string,
+  cursor: CodeMirror.Position,
+  opts?: GraphQLHintOptions,
+) {
   const editor = createEditorWithHint();
 
   return new Promise<IHints | undefined>(resolve => {
@@ -54,7 +59,7 @@ function getHintSuggestions(queryString: string, cursor: CodeMirror.Position) {
       cm: CodeMirror.Editor,
       options: GraphQLHintOptions,
     ) => {
-      const result = graphqlHint(cm, options);
+      const result = graphqlHint(cm, { ...opts, ...options });
       resolve(result);
       CodeMirror.hint.graphql = graphqlHint;
       return result;
@@ -82,14 +87,38 @@ describe('graphql-hint', () => {
     expect(editor.getHelpers(editor.getCursor(), 'hint')).not.toHaveLength(0);
   });
 
-  it('provides correct initial keywords', async () => {
-    const suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
+  it('provides correct initial keywords for executable definitions', async () => {
+    const suggestions = await getHintSuggestions(
+      '',
+      { line: 0, ch: 0 },
+      { autocompleteOptions: { mode: GraphQLDocumentMode.EXECUTABLE } },
+    );
     const list = [
       { text: 'query' },
       { text: 'mutation' },
       { text: 'subscription' },
       { text: 'fragment' },
       { text: '{' },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions?.list).toEqual(expectedSuggestions);
+  });
+
+  it('provides correct initial keywords for unknown definitions', async () => {
+    const suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
+    const list = [
+      { text: 'extend' },
+      { text: 'query' },
+      { text: 'mutation' },
+      { text: 'subscription' },
+      { text: 'fragment' },
+      { text: '{' },
+      { text: 'type' },
+      { text: 'interface' },
+      { text: 'union' },
+      { text: 'input' },
+      { text: 'scalar' },
+      { text: 'schema' },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions?.list).toEqual(expectedSuggestions);
@@ -946,8 +975,8 @@ describe('graphql-hint', () => {
         description:
           'The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.',
       },
-      { text: 'TestEnum' },
-      { text: 'TestInput' },
+      { text: 'TestEnum', description: '' },
+      { text: 'TestInput', description: '' },
       {
         text: '__TypeKind',
         description:
@@ -993,8 +1022,8 @@ describe('graphql-hint', () => {
         description:
           'The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.',
       },
-      { text: 'TestEnum' },
-      { text: 'TestInput' },
+      { text: 'TestEnum', description: '' },
+      { text: 'TestInput', description: '' },
       {
         text: '__TypeKind',
         description:

@@ -1,16 +1,21 @@
 import {
   Fetcher,
-  FetcherResultPayload,
   formatError,
   formatResult,
   isAsyncIterable,
   isObservable,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import { ExecutionResult, FragmentDefinitionNode, print } from 'graphql';
+import {
+  ExecutionResult,
+  FragmentDefinitionNode,
+  GraphQLError,
+  print,
+} from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
+import getValue from 'get-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { UseAutoCompleteLeafsArgs } from './editor/hooks';
@@ -183,7 +188,7 @@ export function ExecutionContextProvider({
     });
 
     try {
-      let fullResponse: FetcherResultPayload = { data: {} };
+      const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
         // A different query was dispatched in the meantime, so don't
         // show the results of this one.
@@ -202,40 +207,8 @@ export function ExecutionContextProvider({
         }
 
         if (maybeMultipart) {
-          const payload: FetcherResultPayload = {
-            data: fullResponse.data,
-          };
-          const maybeErrors = [
-            ...(fullResponse?.errors || []),
-            ...maybeMultipart.flatMap(i => i.errors).filter(Boolean),
-          ];
-
-          if (maybeErrors.length) {
-            payload.errors = maybeErrors;
-          }
-
           for (const part of maybeMultipart) {
-            // We pull out errors here, so we dont include it later
-            const { path, data, errors, ...rest } = part;
-            if (path) {
-              if (!data) {
-                throw new Error(
-                  `Expected part to contain a data property, but got ${part}`,
-                );
-              }
-
-              setValue(payload.data, path, data, { merge: true });
-            } else if (data) {
-              // If there is no path, we don't know what to do with the payload,
-              // so we just set it.
-              payload.data = data;
-            }
-
-            // Ensures we also bring extensions and alike along for the ride
-            fullResponse = {
-              ...payload,
-              ...rest,
-            };
+            mergeIncrementalResult(fullResponse, part);
           }
 
           setIsFetching(false);
@@ -360,4 +333,128 @@ function tryParseJsonObject({
     throw new Error(errorMessageType);
   }
   return parsed;
+}
+
+type IncrementalResult = {
+  data?: Record<string, unknown> | null;
+  errors?: ReadonlyArray<GraphQLError>;
+  extensions?: Record<string, unknown>;
+  hasNext?: boolean;
+  path?: ReadonlyArray<string | number>;
+  incremental?: ReadonlyArray<IncrementalResult>;
+  label?: string;
+  items?: ReadonlyArray<Record<string, unknown>> | null;
+  pending?: ReadonlyArray<{ id: string; path: ReadonlyArray<string | number> }>;
+  completed?: ReadonlyArray<{
+    id: string;
+    errors?: ReadonlyArray<GraphQLError>;
+  }>;
+  id?: string;
+  subPath?: ReadonlyArray<string | number>;
+};
+
+const pathsMap = new WeakMap<
+  ExecutionResult,
+  Map<string, ReadonlyArray<string | number>>
+>();
+
+/**
+ * @param executionResult The complete execution result object which will be
+ * mutated by merging the contents of the incremental result.
+ * @param incrementalResult The incremental result that will be merged into the
+ * complete execution result.
+ */
+function mergeIncrementalResult(
+  executionResult: IncrementalResult,
+  incrementalResult: IncrementalResult,
+): void {
+  let path: ReadonlyArray<string | number> | undefined = [
+    'data',
+    ...(incrementalResult.path ?? []),
+  ];
+
+  for (const result of [executionResult, incrementalResult]) {
+    if (result.pending) {
+      let paths = pathsMap.get(executionResult);
+      if (paths === undefined) {
+        paths = new Map();
+        pathsMap.set(executionResult, paths);
+      }
+
+      for (const { id, path: pendingPath } of result.pending) {
+        paths.set(id, ['data', ...pendingPath]);
+      }
+    }
+  }
+
+  const { items } = incrementalResult;
+  if (items) {
+    const { id } = incrementalResult;
+    if (id) {
+      path = pathsMap.get(executionResult)?.get(id);
+      if (path === undefined) {
+        throw new Error('Invalid incremental delivery format.');
+      }
+
+      const list = getValue(executionResult, path.join('.'));
+      list.push(...items);
+    } else {
+      path = ['data', ...(incrementalResult.path ?? [])];
+      for (const item of items) {
+        setValue(executionResult, path.join('.'), item);
+        // Increment the last path segment (the array index) to merge the next item at the next index
+        // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
+        (path[path.length - 1] as number)++;
+      }
+    }
+  }
+
+  const { data } = incrementalResult;
+  if (data) {
+    const { id } = incrementalResult;
+    if (id) {
+      path = pathsMap.get(executionResult)?.get(id);
+      if (path === undefined) {
+        throw new Error('Invalid incremental delivery format.');
+      }
+      const { subPath } = incrementalResult;
+      if (subPath !== undefined) {
+        path = [...path, ...subPath];
+      }
+    }
+    setValue(executionResult, path.join('.'), data, {
+      merge: true,
+    });
+  }
+
+  if (incrementalResult.errors) {
+    executionResult.errors ||= [];
+    (executionResult.errors as GraphQLError[]).push(
+      ...incrementalResult.errors,
+    );
+  }
+
+  if (incrementalResult.extensions) {
+    setValue(executionResult, 'extensions', incrementalResult.extensions, {
+      merge: true,
+    });
+  }
+
+  if (incrementalResult.incremental) {
+    for (const incrementalSubResult of incrementalResult.incremental) {
+      mergeIncrementalResult(executionResult, incrementalSubResult);
+    }
+  }
+
+  if (incrementalResult.completed) {
+    // Remove tracking and add additional errors
+    for (const { id, errors } of incrementalResult.completed) {
+      pathsMap.get(executionResult)?.delete(id);
+
+      if (errors) {
+        executionResult.errors ||= [];
+        (executionResult.errors as GraphQLError[]).push(...errors);
+      }
+    }
+  }
 }

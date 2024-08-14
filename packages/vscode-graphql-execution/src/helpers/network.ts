@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag';
 import { fetch } from '@whatwg-node/fetch';
 import { Agent } from 'node:https';
 import * as ws from 'ws';
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import-x/no-extraneous-dependencies
 import { pipe, subscribe } from 'wonka';
 
 import { Endpoint } from './extensions';
@@ -118,9 +118,8 @@ export class NetworkHelper {
         operationTypes.push(node.operation);
       },
     });
-    const fragmentDefinitions = await this.sourceHelper.getFragmentDefinitions(
-      projectConfig,
-    );
+    const fragmentDefinitions =
+      await this.sourceHelper.getFragmentDefinitions(projectConfig);
 
     if (fragmentDefinitions) {
       const fragmentInfos = await getFragmentDependenciesForAST(

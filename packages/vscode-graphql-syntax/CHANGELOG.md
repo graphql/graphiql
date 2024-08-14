@@ -1,5 +1,35 @@
 # vscode-graphql-syntax
 
+## 1.3.6
+
+### Patch Changes
+
+- [#3592](https://github.com/graphql/graphiql/pull/3592) [`5e521080`](https://github.com/graphql/graphiql/commit/5e52108038d8d5e97f8d21a9c22bb9048fa377f0) Thanks [@acao](https://github.com/acao)! - Remove ruby support for code highlighting, users should use `ruby-lsp` for graphql highlighting instead!
+
+## 1.3.5
+
+### Patch Changes
+
+- [#3545](https://github.com/graphql/graphiql/pull/3545) [`e9fc21ab`](https://github.com/graphql/graphiql/commit/e9fc21ab5f403a3e26cec555b29e5fb9db436838) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
+## 1.3.4
+
+### Patch Changes
+
+- [#3543](https://github.com/graphql/graphiql/pull/3543) [`defc126b`](https://github.com/graphql/graphiql/commit/defc126b107961d7a4ba093b35b1d77bb7018a79) Thanks [@acao](https://github.com/acao)! - Temporarily revert a syntax highlighting bugfix that caused more bugs
+
+## 1.3.3
+
+### Patch Changes
+
+- [#3518](https://github.com/graphql/graphiql/pull/3518) [`e502c41e`](https://github.com/graphql/graphiql/commit/e502c41e68440e7331cfc74d8c78fd092f3354a8) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
+## 1.3.2
+
+### Patch Changes
+
+- [#3529](https://github.com/graphql/graphiql/pull/3529) [`a38152ef`](https://github.com/graphql/graphiql/commit/a38152ef1248a480d5cad384780f82214a84f16d) Thanks [@acao](https://github.com/acao)! - fix triple double quote comment syntax by disabling inline double quote js strings for now
+
 ## 1.3.1
 
 ### Patch Changes
