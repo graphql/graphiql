@@ -204,8 +204,7 @@ const sleep = async timeout =>
   new Promise(resolve => setTimeout(resolve, timeout));
 
 const longDescription = `
-The \`longDescriptionType\` field on the \`Test\` type has a long,
-verbose, description to test inline field docs.
+The \`longDescriptionType\` field on the \`Test\` type has a long, verbose, description to test inline field docs.
 
 > We want to test several \`markdown\` styles!
 
