@@ -10,39 +10,15 @@ const { createServer } = require('node:http');
 const express = require('express');
 const path = require('node:path');
 const {
-  execute,
-  experimentalExecuteIncrementally,
-  version,
-} = require('graphql');
-const schema = require('./schema');
-const app = express();
-const {
   getGraphQLParameters,
   processRequest,
   sendResult,
 } = require('graphql-helix'); // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 const WebSocketsServer = require('./afterDevServer');
+const schema = require('./schema');
+const { customExecute } = require('./execute');
 
-const customExecute =
-  parseInt(version, 10) > 16
-    ? async (...args) => {
-        const result = await experimentalExecuteIncrementally(...args);
-
-        if (!('subsequentResults' in result)) {
-          return result;
-        }
-
-        const { initialResult, subsequentResults } = result;
-        if (typeof subsequentResults[Symbol.asyncIterator] !== 'function') {
-          return result;
-        }
-
-        return (async function* () {
-          yield initialResult;
-          yield* subsequentResults;
-        })();
-      }
-    : execute;
+const app = express();
 
 async function handler(req, res) {
   const request = {
