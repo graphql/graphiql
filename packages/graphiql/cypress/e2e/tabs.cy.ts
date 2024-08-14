@@ -61,7 +61,7 @@ describe('Tabs', () => {
       query: 'query Foo {image}',
       variablesString: '{"someVar":42}',
       headersString: '{"someHeader":"someValue"}',
-      response: { data: { image: '/images/logo.svg' } },
+      response: { data: { image: '/resources/logo.svg' } },
     });
 
     // Close tab

@@ -86,7 +86,7 @@ button.graphiql-tab-add {
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
   position: absolute;
-  right: 0;
+  right: var(--px-16);
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
