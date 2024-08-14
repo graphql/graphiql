@@ -531,18 +531,17 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                     value={tab}
                     isActive={index === editorContext.activeTabIndex}
                   >
-                    <Tooltip label={tab.title}>
-                      <Tab.Button
-                        aria-controls="graphiql-session"
-                        id={`graphiql-session-tab-${index}`}
-                        onClick={() => {
-                          executionContext.stop();
-                          editorContext.changeTab(index);
-                        }}
-                      >
-                        {tab.title}
-                      </Tab.Button>
-                    </Tooltip>
+                    <Tab.Button
+                      aria-controls="graphiql-session"
+                      id={`graphiql-session-tab-${index}`}
+                      title={tab.title}
+                      onClick={() => {
+                        executionContext.stop();
+                        editorContext.changeTab(index);
+                      }}
+                    >
+                      {tab.title}
+                    </Tab.Button>
                     {tabs.length > 1 && (
                       <Tab.Close
                         onClick={() => {
