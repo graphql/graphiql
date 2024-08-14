@@ -105,7 +105,7 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
       This tests that;
       1. user ({name}) => { name }
       2. user ({age}) => { name, age }
-      3. user.friends.0 ({name}) => { name, age, friends: [{name}] } <- can sometimes happen before 4, due the the promise race
+      3. user.friends.0 ({name}) => { name, age, friends: [{name}] } <- can sometimes happen before 4, due the promise race
       4. user.friends.0 ({age}) => { name, age, friends: [{name, age}] }
 
       This shows us that we can deep merge defers, deep merge streams, and also deep merge defers inside streams
