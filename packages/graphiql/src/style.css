@@ -103,7 +103,7 @@ button.graphiql-tab-add {
 }
 
 /* The editor of the session */
-.graphiql-container .graphiql-session {
+.graphiql-container #graphiql-session {
   display: flex;
   flex: 1;
   padding: 0 var(--px-8) var(--px-8);
