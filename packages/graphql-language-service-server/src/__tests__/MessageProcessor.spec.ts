@@ -388,7 +388,7 @@ describe('MessageProcessor with config', () => {
     expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
 
     // schema file is present and contains schema
-    const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
+    const file = await readFile(genSchemaPath, 'utf8');
     expect(file.split('\n').length).toBeGreaterThan(10);
 
     // hover works
