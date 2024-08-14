@@ -1,5 +1,4 @@
 import mockfs from 'mock-fs';
-import { join } from 'node:path';
 import { MockFile, MockProject } from './__utils__/MockProject';
 import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
@@ -30,9 +29,7 @@ jest.mock('@whatwg-node/fetch', () => {
 
 const mockSchema = (schema: GraphQLSchema) => {
   const introspectionResult = {
-    data: introspectionFromSchema(schema, {
-      descriptions: true,
-    }),
+    data: introspectionFromSchema(schema, { descriptions: true }),
   };
   return fetchMock.mock({
     matcher: '*',
@@ -45,10 +42,10 @@ const mockSchema = (schema: GraphQLSchema) => {
   });
 };
 
-const defaultFiles = [
+const defaultFiles: MockFile[] = [
   ['query.graphql', 'query { bar ...B }'],
   ['fragments.graphql', 'fragment B on Foo { bar }'],
-] as MockFile[];
+];
 const schemaFile: MockFile = [
   'schema.graphql',
   'type Query { foo: Foo, test: Test }\n\ntype Foo { bar: String }\n\ntype Test { test: Foo }',
@@ -290,7 +287,7 @@ describe('MessageProcessor with config', () => {
     expect(result.diagnostics[0].message).toEqual(
       'Cannot query field "bar" on type "Foo". Did you mean "bad"?',
     );
-    const generatedFile = existsSync(join(genSchemaPath));
+    const generatedFile = existsSync(genSchemaPath);
     // this generated file should not exist because the schema is local!
     expect(generatedFile).toEqual(false);
     // simulating codegen
@@ -391,7 +388,7 @@ describe('MessageProcessor with config', () => {
     expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
 
     // schema file is present and contains schema
-    const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
+    const file = await readFile(genSchemaPath, 'utf8');
     expect(file.split('\n').length).toBeGreaterThan(10);
 
     // hover works
@@ -406,9 +403,10 @@ describe('MessageProcessor with config', () => {
 
     // ensure that fragment definitions work
     const definitions = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: project.uri('query.graphql') }, // console.log(project.uri('query.graphql'))
+      textDocument: { uri: project.uri('query.graphql') },
       position: { character: 26, line: 0 },
     });
+
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
     expect(serializeRange(definitions[0].range)).toEqual({
       start: {
@@ -559,9 +557,7 @@ describe('MessageProcessor with config', () => {
       (await project.lsp._graphQLCache.getSchema('a')).getType('example100'),
     ).toBeTruthy();
     await sleep(1000);
-    const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
-      encoding: 'utf-8',
-    });
+    const file = await readFile(genSchemaPath.replace('default', 'a'), 'utf8');
     expect(file).toContain('example100');
     // add a new typescript file with empty query to the b project
     // and expect autocomplete to only show options for project b
