@@ -33,7 +33,7 @@
   "scripts": {
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
-    "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql build-bundles-clean",
+    "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}'",
     "build-clean": "yarn tsc --clean",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
     "build:nontsc": "yarn wsrun:noexamples --exclude-missing --serial build",
@@ -46,8 +46,7 @@
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
-    "e2e": "yarn run e2e:build && yarn workspace graphiql e2e",
-    "e2e:build": "WEBPACK_SERVE=1 yarn workspace graphiql build-bundles",
+    "e2e": "yarn workspace graphiql e2e",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 ESLINT_USE_FLAT_CONFIG=false eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
     "jest": "jest",
@@ -78,6 +77,8 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
+    "identity-obj-proxy": "^3.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "graphql-http": "^1.22.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",

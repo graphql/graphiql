@@ -1,10 +1,7 @@
-const {
-  execute,
-  experimentalExecuteIncrementally,
-  version,
-} = require('graphql');
+/* eslint-disable import-x/no-extraneous-dependencies */
+import { execute, experimentalExecuteIncrementally, version } from 'graphql';
 
-const customExecute =
+export const customExecute =
   parseInt(version, 10) > 16
     ? async (...args) => {
         const result = await experimentalExecuteIncrementally(...args);
@@ -24,5 +21,3 @@ const customExecute =
         })();
       }
     : execute;
-
-module.exports = { customExecute };

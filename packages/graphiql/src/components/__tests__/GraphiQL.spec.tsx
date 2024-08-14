@@ -410,13 +410,13 @@ describe('GraphiQL', () => {
   });
 
   describe('Tabs', () => {
-    it('show tabs if there are more than one', async () => {
+    it('show tabs', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
         expect(
           container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
-        ).toHaveLength(0);
+        ).toHaveLength(1);
       });
 
       act(() => {
@@ -492,7 +492,7 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         expect(
           container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
-        ).toHaveLength(0);
+        ).toHaveLength(1);
         expect(
           container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
         ).toHaveLength(0);
@@ -599,28 +599,6 @@ describe('GraphiQL', () => {
           expect(getByText('My Exported Type Logo')).toBeInTheDocument();
         });
       });
-
-      it('can be overridden using a named component', async () => {
-        const WrappedLogo = () => {
-          return (
-            <div className="test-wrapper">
-              <GraphiQL.Logo>My Named Component Logo</GraphiQL.Logo>
-            </div>
-          );
-        };
-        WrappedLogo.displayName = 'GraphiQLLogo';
-
-        const { container, getByText } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <WrappedLogo />
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
-          expect(getByText('My Named Component Logo')).toBeInTheDocument();
-        });
-      });
     });
 
     describe('GraphiQL.Toolbar', () => {
@@ -628,41 +606,12 @@ describe('GraphiQL', () => {
         const { container } = render(
           <GraphiQL fetcher={noOpFetcher}>
             <GraphiQL.Toolbar>
-              <ToolbarButton label="My Fun Label" />
+              {() => <ToolbarButton label="My Fun Label" />}
             </GraphiQL.Toolbar>
           </GraphiQL>,
         );
 
         await waitFor(() => {
-          expect(
-            container.querySelectorAll(
-              '[role="toolbar"] .graphiql-toolbar-button',
-            ),
-          ).toHaveLength(1);
-        });
-      });
-
-      it('can be overridden using a named component', async () => {
-        const WrappedToolbar = () => {
-          return (
-            <div className="test-wrapper">
-              <GraphiQL.Toolbar>
-                <ToolbarButton label="My Fun Label" />
-              </GraphiQL.Toolbar>
-              ,
-            </div>
-          );
-        };
-        WrappedToolbar.displayName = 'GraphiQLToolbar';
-
-        const { container } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <WrappedToolbar />
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
           expect(
             container.querySelectorAll(
               '[role="toolbar"] .graphiql-toolbar-button',
@@ -683,33 +632,6 @@ describe('GraphiQL', () => {
         );
 
         await waitFor(() => {
-          expect(
-            container.querySelectorAll('.graphiql-footer button'),
-          ).toHaveLength(1);
-        });
-      });
-
-      it('can be overridden using a named component', async () => {
-        const WrappedFooter = () => {
-          return (
-            <div className="test-wrapper">
-              <GraphiQL.Footer data-test-selector="override-footer">
-                <ToolbarButton label="My Fun Label" />
-              </GraphiQL.Footer>
-              ,
-            </div>
-          );
-        };
-        WrappedFooter.displayName = 'GraphiQLFooter';
-
-        const { container } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <WrappedFooter />
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
           expect(
             container.querySelectorAll('.graphiql-footer button'),
           ).toHaveLength(1);

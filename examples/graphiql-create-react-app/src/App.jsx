@@ -1,5 +1,5 @@
 import { GraphiQL } from 'graphiql';
-import 'graphiql/graphiql.css';
+import 'graphiql/style.css';
 
 const fetcher = async graphQLParams => {
   const response = await fetch(

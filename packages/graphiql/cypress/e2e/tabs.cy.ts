@@ -67,8 +67,8 @@ describe('Tabs', () => {
     // Close tab
     cy.get('#graphiql-session-tab-1 + .graphiql-tab-close').click();
 
-    // Assert that no tab visible when there's only one session
-    cy.get('#graphiql-session-tab-0').should('not.exist');
+    // Assert that tab close button not visible when there is only 1 tab
+    cy.get('#graphiql-session-tab-0 + .graphiql-tab-close').should('not.exist');
 
     // Assert editor values
     cy.assertHasValues({

@@ -4,11 +4,11 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import './style.css';
 
 /**
  * GraphiQL
  */
-
 export { GraphiQLProvider } from '@graphiql/react';
 
 /**
@@ -20,8 +20,4 @@ export type {
 } from './components/GraphiQL';
 export type { GraphiQLProviderProps } from '@graphiql/react';
 
-export {
-  GraphiQLInterface,
-  GraphiQL,
-  GraphiQL as default,
-} from './components/GraphiQL';
+export { GraphiQLInterface, GraphiQL } from './components/GraphiQL';

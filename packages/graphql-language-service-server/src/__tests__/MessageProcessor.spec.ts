@@ -1,7 +1,6 @@
 import mockfs from 'mock-fs';
 import { join } from 'node:path';
 import { MockFile, MockProject } from './__utils__/MockProject';
-// import { readFileSync } from 'node:fs';
 import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
 import { readFile } from 'node:fs/promises';
@@ -15,6 +14,7 @@ import {
   version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
+import { schema as graphiqlSchema } from '../../../graphiql/test/schema';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -363,8 +363,7 @@ describe('MessageProcessor with config', () => {
 
   it('caches files and schema with a URL config', async () => {
     const offset = parseInt(version, 10) > 16 ? 25 : 0;
-
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [
@@ -498,7 +497,7 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [

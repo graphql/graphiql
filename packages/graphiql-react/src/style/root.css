@@ -68,7 +68,6 @@
   /* Layout */
   --sidebar-width: 60px;
   --toolbar-width: 40px;
-  --session-header-height: 51px;
 }
 
 @media (prefers-color-scheme: dark) {

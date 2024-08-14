@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.5.0",
+  "version": "4.0.0-alpha.3",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -17,37 +17,31 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "esm/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "esm",
-    "src",
-    "graphiql.js",
-    "graphiql.min.js",
-    "graphiql.min.js.map",
-    "graphiql.css",
-    "graphiql.min.css",
-    "graphiql.min.css.map"
+    "dist"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
-    "analyze-bundle": "cross-env NODE_ENV=production ANALYZE=1 yarn webpack -p",
-    "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
-    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-webpack",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
-    "build-bundles-webpack": "cross-env yarn webpack --mode development --bail",
-    "build-cjs": "tsc",
-    "build-clean": "rimraf esm dist webpack *.html",
-    "build-esm": "tsc --project ./tsconfig.esm.json",
-    "check": "tsc --noEmit",
-    "cypress-open": "yarn e2e-server 'cypress open'",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
+    "cypress-open": "yarn dev 'cypress open'",
+    "build": "vite build && UMD=true vite build",
+    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit",
     "e2e": "yarn e2e-server 'cypress run'",
-    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "webpack": "webpack-cli --config resources/webpack.config.js"
+    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'"
   },
   "dependencies": {
-    "@graphiql/react": "^0.24.0"
+    "@graphiql/react": "^1.0.0-alpha.2"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
@@ -59,39 +53,23 @@
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@types/testing-library__jest-dom": "5.14.5",
-    "babel-loader": "^9.1.2",
-    "babel-plugin-macros": "^3.1.0",
     "cross-env": "^7.0.2",
-    "css-loader": "^6.7.3",
-    "cssnano": "^5.1.15",
     "cypress": "^13.13.2",
     "express": "^4.19.2",
-    "fork-ts-checker-webpack-plugin": "7.3.0",
     "graphql": "^17.0.0-alpha.7",
     "graphql-helix": "^1.13.0",
     "graphql-subscriptions": "^2.0.0",
-    "html-webpack-plugin": "^5.5.0",
-    "identity-obj-proxy": "^3.0.0",
-    "mini-css-extract-plugin": "^2.7.2",
     "postcss": "8.4.31",
     "postcss-import": "15.1.0",
-    "postcss-loader": "7.0.2",
-    "postcss-preset-env": "^8.0.1",
+    "postcss-lightningcss": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-loader": "^4.12.20",
-    "react-test-renderer": "^18.2.0",
-    "require-context.macro": "^1.2.2",
-    "rimraf": "^3.0.2",
-    "serve": "^11.3.0",
     "start-server-and-test": "^1.10.11",
-    "style-loader": "^3.3.1",
     "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
-    "webpack": "5.76.0",
-    "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1",
+    "vite": "^5.4.0",
+    "vite-plugin-commonjs": "^0.10.1",
+    "vite-plugin-dts": "^4.0.1",
     "ws": "8.17.1"
   }
 }

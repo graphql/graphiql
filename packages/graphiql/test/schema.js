@@ -6,9 +6,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const graphql = require('graphql');
-
-const {
+// eslint-disable-next-line import-x/no-extraneous-dependencies
+import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLUnionType,
@@ -25,7 +24,7 @@ const {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} = graphql;
+} from 'graphql';
 
 const directives =
   parseInt(version, 10) > 16
@@ -392,12 +391,10 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-const myTestSchema = new GraphQLSchema({
+export const schema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
   description: 'This is a test schema for GraphiQL',
   directives,
 });
-
-module.exports = myTestSchema;

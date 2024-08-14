@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^0.10.0",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "jsonc-parser": "^3.2.0",
     "marked": "^4.2.12",

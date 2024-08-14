@@ -1,3 +1,7 @@
+@import '@graphiql/react/font/roboto.css';
+@import '@graphiql/react/font/fira-code.css';
+@import '@graphiql/react/style.css';
+
 /* Everything */
 .graphiql-container {
   background-color: hsl(var(--color-base));
@@ -12,32 +16,24 @@
 .graphiql-container .graphiql-sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: var(--px-8);
   width: var(--sidebar-width);
-}
-
-.graphiql-container .graphiql-sidebar .graphiql-sidebar-section {
-  display: flex;
-  flex-direction: column;
   gap: var(--px-8);
+  overflow-y: auto;
 }
 
-.graphiql-container .graphiql-sidebar button {
+.graphiql-container .graphiql-sidebar > button {
   display: flex;
   align-items: center;
   justify-content: center;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   height: calc(var(--sidebar-width) - (2 * var(--px-8)));
   width: calc(var(--sidebar-width) - (2 * var(--px-8)));
+  flex-shrink: 0;
 }
 
 .graphiql-container .graphiql-sidebar button.active {
   color: hsl(var(--color-neutral));
-}
-
-.graphiql-container .graphiql-sidebar button:not(:first-child) {
-  margin-top: var(--px-4);
 }
 
 .graphiql-container .graphiql-sidebar button > svg {
@@ -68,43 +64,42 @@
 
 /* The session header containing tabs and the logo */
 .graphiql-container .graphiql-session-header {
+  position: relative;
   align-items: center;
   display: flex;
-  justify-content: space-between;
-  height: var(--session-header-height);
+  padding: var(--px-8) var(--px-8) 0;
+  gap: var(--px-8);
 }
 
 /* The button to add a new tab */
 button.graphiql-tab-add {
-  height: 100%;
   padding: var(--px-4);
-}
 
-button.graphiql-tab-add > svg {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  display: block;
-  height: var(--px-16);
-  width: var(--px-16);
-}
-
-/* The right-hand-side of the session header */
-.graphiql-container .graphiql-session-header-right {
-  align-items: center;
-  display: flex;
+  & > svg {
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
+    display: block;
+    height: var(--px-16);
+    width: var(--px-16);
+  }
 }
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
+  position: absolute;
+  right: 0;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
-  padding: var(--px-12) var(--px-16);
 }
 
 /* Undo default link styling for the default GraphiQL logo link */
 .graphiql-container .graphiql-logo .graphiql-logo-link {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   text-decoration: none;
+
+  &:focus {
+    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
+  }
 }
 
 /* The editor of the session */
@@ -117,15 +112,11 @@ button.graphiql-tab-add > svg {
 /* All editors (query, variable, headers) */
 .graphiql-container .graphiql-editors {
   background-color: hsl(var(--color-base));
-  border-radius: calc(var(--border-radius-12));
+  border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
   box-shadow: var(--popover-box-shadow);
   display: flex;
   flex: 1;
   flex-direction: column;
-}
-
-.graphiql-container .graphiql-editors.full-height {
-  margin-top: calc(var(--px-8) - var(--session-header-height));
 }
 
 /* The query editor and the toolbar */
@@ -141,10 +132,13 @@ button.graphiql-tab-add > svg {
 /* The vertical toolbar next to the query editor */
 .graphiql-container .graphiql-toolbar {
   width: var(--toolbar-width);
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-8);
 }
 
-.graphiql-container .graphiql-toolbar > * + * {
-  margin-top: var(--px-8);
+.graphiql-container .graphiql-toolbar > button {
+  flex-shrink: 0;
 }
 
 /* The toolbar icons */

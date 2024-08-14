@@ -129,6 +129,16 @@ module.exports = {
             property: 'localStorage',
             message: 'Use `localStorage` instead',
           },
+          {
+            object: 'window',
+            property: 'location',
+            message: 'Use `location` instead',
+          },
+          {
+            object: 'window',
+            property: 'navigator',
+            message: 'Use `navigator` instead',
+          },
         ],
         'no-return-assign': 'error',
         'no-return-await': 'error',

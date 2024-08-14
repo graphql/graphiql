@@ -52,6 +52,7 @@ codicon
 colmena
 combobox
 cshaver
+crossorigin
 dedenting
 delivr
 devx
@@ -114,6 +115,7 @@ linenumber
 linenumbers
 linkify
 listbox
+lightningcss
 listvalues
 lostplan
 maint

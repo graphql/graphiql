@@ -9,17 +9,18 @@
     "start": "NODE_ENV=development webpack-cli serve"
   },
   "dependencies": {
-    "@graphiql/plugin-code-exporter": "^3.1.0",
-    "@graphiql/plugin-explorer": "^3.2.0",
+    "@graphiql/plugin-code-exporter": "^4.0.0-alpha.0",
+    "@graphiql/plugin-explorer": "^4.0.0-alpha.0",
     "@graphiql/toolkit": "^0.10.0",
-    "@graphiql/react": "^0.24.0",
-    "graphiql": "^3.5.0",
-    "graphql": "^16.8.1",
+    "@graphiql/react": "^1.0.0-alpha.2",
+    "graphiql": "^4.0.0-alpha.3",
+    "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "react": "^18.2.0",
     "regenerator-runtime": "^0.13.9"
   },
   "devDependencies": {
+    "react-hot-loader": "^4.13.1",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.20.2",

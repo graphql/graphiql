@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import packageJSON from './package.json';
+import dts from 'vite-plugin-dts';
 
 const IS_UMD = process.env.UMD === 'true';
 
@@ -14,9 +15,12 @@ export default defineConfig({
         titleProp: true,
       },
     }),
+    !IS_UMD && dts({ rollupTypes: true }),
   ],
   build: {
-    minify: IS_UMD ? 'esbuild' : false,
+    minify: IS_UMD
+      ? 'terser' // produce better bundle size than esbuild
+      : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {

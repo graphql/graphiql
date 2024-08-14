@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.24.0",
+  "version": "1.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -15,16 +15,15 @@
   "module": "dist/index.mjs",
   "exports": {
     "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    "./font/*": "./font/*",
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "types": "./types/index.d.ts"
-    },
-    "./font/roboto.css": "./font/roboto.css",
-    "./font/fira-code.css": "./font/fira-code.css",
-    "./dist/style.css": "./dist/style.css"
+      "types": "./dist/types/index.d.ts"
+    }
   },
-  "types": "types/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "keywords": [
     "react",
     "graphql",
@@ -33,14 +32,13 @@
   ],
   "files": [
     "dist",
-    "font",
-    "src",
-    "types"
+    "font"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
-    "build": "tsc --emitDeclarationOnly && vite build"
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
@@ -59,7 +57,7 @@
     "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.1.0",
     "copy-to-clipboard": "^3.2.0",
-    "framer-motion": "^6.5.1",
+    "framer-motion": "^10.0.0",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.0",
     "markdown-it": "^14.1.0",
@@ -77,7 +75,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.1",
     "vite-plugin-svgr": "^4.2.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "3.1.0",
+  "version": "4.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -9,7 +9,7 @@
   "author": "LekoArts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
     "react",
@@ -19,33 +19,42 @@
     "explorer"
   ],
   "files": [
-    "dist",
-    "src",
-    "types"
+    "dist"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
-    "preview": "vite preview"
+    "dev": "vite build --watch",
+    "build": "vite build && UMD=true vite build",
+    "prebuild": "yarn types:check",
+    "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "graphiql-code-exporter": "^3.0.3"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.24.0",
+    "@graphiql/react": "^1.0.0-alpha.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.24.0",
+    "@graphiql/react": "^1.0.0-alpha.1",
     "@vitejs/plugin-react": "^4.3.1",
     "graphql": "^17.0.0-alpha.7",
     "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.1"
   }
 }

@@ -6,7 +6,6 @@
  */
 
 import React, {
-  ComponentType,
   Fragment,
   MouseEventHandler,
   PropsWithChildren,
@@ -16,6 +15,10 @@ import React, {
   useState,
   useEffect,
   useMemo,
+  version,
+  Children,
+  JSX,
+  cloneElement,
 } from 'react';
 
 import {
@@ -61,7 +64,7 @@ import {
   WriteableEditorProps,
 } from '@graphiql/react';
 
-const majorVersion = parseInt(React.version.slice(0, 2), 10);
+const majorVersion = parseInt(version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
   throw new Error(
@@ -72,20 +75,6 @@ if (majorVersion < 16) {
     ].join('\n'),
   );
 }
-
-export type GraphiQLToolbarConfig = {
-  /**
-   * This content will be rendered after the built-in buttons of the toolbar.
-   * Note that this will not apply if you provide a completely custom toolbar
-   * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
-   */
-  additionalContent?: React.ReactNode;
-
-  /**
-   * same as above, except a component with access to context
-   */
-  additionalComponent?: React.JSXElementConstructor<any>;
-};
 
 /**
  * API docs for this live here:
@@ -101,7 +90,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
@@ -137,7 +125,18 @@ export function GraphiQL({
       'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
     );
   }
-
+  // @ts-expect-error -- Prop is removed
+  if (props.toolbar?.additionalContent) {
+    throw new TypeError(
+      '`toolbar.additionalContent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+    );
+  }
+  // @ts-expect-error -- Prop is removed
+  if (props.toolbar?.additionalComponent) {
+    throw new TypeError(
+      '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+    );
+  }
   return (
     <GraphiQLProvider
       getDefaultFieldNames={getDefaultFieldNames}
@@ -169,7 +168,6 @@ export function GraphiQL({
     >
       <GraphiQLInterface
         showPersistHeadersSettings={shouldPersistHeaders !== false}
-        disableTabs={props.disableTabs ?? false}
         forcedTheme={props.forcedTheme}
         {...props}
       />
@@ -209,16 +207,10 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     isHeadersEditorEnabled?: boolean;
     /**
-     * An object that allows configuration of the toolbar next to the query
-     * editor.
-     */
-    toolbar?: GraphiQLToolbarConfig;
-    /**
      * Indicates if settings for persisting headers should appear in the
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
-    disableTabs?: boolean;
     /**
      * forcedTheme allows enforcement of a specific theme for GraphiQL.
      * This is useful when you want to make sure that GraphiQL is always
@@ -247,11 +239,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         : undefined,
     [props.forcedTheme],
   );
-
-  const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors();
-
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -325,37 +312,35 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     'success' | 'error' | null
   >(null);
 
-  const children = React.Children.toArray(props.children);
-
-  const logo = children.find(child =>
-    isChildComponentType(child, GraphiQL.Logo),
-  ) || <GraphiQL.Logo />;
-
-  const toolbar = children.find(child =>
-    isChildComponentType(child, GraphiQL.Toolbar),
-  ) || (
-    <>
-      <ToolbarButton onClick={prettify} label="Prettify query (Shift-Ctrl-P)">
-        <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-      </ToolbarButton>
-      <ToolbarButton
-        onClick={merge}
-        label="Merge fragments into query (Shift-Ctrl-M)"
-      >
-        <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-      </ToolbarButton>
-      <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
-        <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-      </ToolbarButton>
-      {props.toolbar?.additionalContent}
-      {props.toolbar?.additionalComponent && (
-        <props.toolbar.additionalComponent />
-      )}
-    </>
-  );
-
-  const footer = children.find(child =>
-    isChildComponentType(child, GraphiQL.Footer),
+  const {
+    logo = <GraphiQL.Logo />,
+    // @ts-expect-error -- Prop exists but hidden for users
+    toolbar = <GraphiQL.Toolbar onCopyQuery={props.onCopyQuery} />,
+    footer,
+  } = useMemo(
+    () =>
+      Children.toArray(props.children).reduce<{
+        logo?: ReactNode;
+        toolbar?: ReactNode;
+        footer?: ReactNode;
+      }>((acc, curr) => {
+        switch (getChildComponentType(curr)) {
+          case GraphiQL.Logo:
+            acc.logo = curr;
+            break;
+          case GraphiQL.Toolbar:
+            // @ts-expect-error -- fix type error
+            acc.toolbar = cloneElement(curr, {
+              onCopyQuery: props.onCopyQuery,
+            });
+            break;
+          case GraphiQL.Footer:
+            acc.footer = curr;
+            break;
+        }
+        return acc;
+      }, {}),
+    [props.children, props.onCopyQuery],
   );
 
   const onClickReference = useCallback(() => {
@@ -456,83 +441,63 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
   }, []);
 
-  const addTab = (
-    <Tooltip label="Add tab">
-      <UnStyledButton
-        type="button"
-        className="graphiql-tab-add"
-        onClick={handleAddTab}
-        aria-label="Add tab"
-      >
-        <PlusIcon aria-hidden="true" />
-      </UnStyledButton>
-    </Tooltip>
-  );
-
   const className = props.className ? ` ${props.className}` : '';
 
   return (
     <Tooltip.Provider>
-      <div
-        data-testid="graphiql-container"
-        className={`graphiql-container${className}`}
-      >
+      <div className={`graphiql-container${className}`}>
         <div className="graphiql-sidebar">
-          <div className="graphiql-sidebar-section">
-            {pluginContext?.plugins.map((plugin, index) => {
-              const isVisible = plugin === pluginContext.visiblePlugin;
-              const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
-              const Icon = plugin.icon;
-              return (
-                <Tooltip key={plugin.title} label={label}>
-                  <UnStyledButton
-                    type="button"
-                    className={isVisible ? 'active' : ''}
-                    onClick={handlePluginClick}
-                    data-index={index}
-                    aria-label={label}
-                  >
-                    <Icon aria-hidden="true" />
-                  </UnStyledButton>
-                </Tooltip>
-              );
-            })}
-          </div>
-          <div className="graphiql-sidebar-section">
-            <Tooltip label="Re-fetch GraphQL schema">
-              <UnStyledButton
-                type="button"
-                disabled={schemaContext.isFetching}
-                onClick={handleRefetchSchema}
-                aria-label="Re-fetch GraphQL schema"
-              >
-                <ReloadIcon
-                  className={schemaContext.isFetching ? 'graphiql-spin' : ''}
-                  aria-hidden="true"
-                />
-              </UnStyledButton>
-            </Tooltip>
-            <Tooltip label="Open short keys dialog">
-              <UnStyledButton
-                type="button"
-                data-value="short-keys"
-                onClick={handleShowDialog}
-                aria-label="Open short keys dialog"
-              >
-                <KeyboardShortcutIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-            <Tooltip label="Open settings dialog">
-              <UnStyledButton
-                type="button"
-                data-value="settings"
-                onClick={handleShowDialog}
-                aria-label="Open settings dialog"
-              >
-                <SettingsIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-          </div>
+          {pluginContext?.plugins.map((plugin, index) => {
+            const isVisible = plugin === pluginContext.visiblePlugin;
+            const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
+            return (
+              <Tooltip key={plugin.title} label={label}>
+                <UnStyledButton
+                  type="button"
+                  className={isVisible ? 'active' : ''}
+                  onClick={handlePluginClick}
+                  data-index={index}
+                  aria-label={label}
+                >
+                  <plugin.icon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+            );
+          })}
+          <Tooltip label="Re-fetch GraphQL schema">
+            <UnStyledButton
+              type="button"
+              disabled={schemaContext.isFetching}
+              onClick={handleRefetchSchema}
+              aria-label="Re-fetch GraphQL schema"
+              style={{ marginTop: 'auto' }}
+            >
+              <ReloadIcon
+                className={schemaContext.isFetching ? 'graphiql-spin' : ''}
+                aria-hidden="true"
+              />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open short keys dialog">
+            <UnStyledButton
+              type="button"
+              data-value="short-keys"
+              onClick={handleShowDialog}
+              aria-label="Open short keys dialog"
+            >
+              <KeyboardShortcutIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open settings dialog">
+            <UnStyledButton
+              type="button"
+              data-value="settings"
+              onClick={handleShowDialog}
+              aria-label="Open settings dialog"
+            >
+              <SettingsIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
         </div>
         <div className="graphiql-main">
           <div
@@ -555,49 +520,52 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {!props.disableTabs && (
-                <Tabs
-                  values={editorContext.tabs}
-                  onReorder={handleReorder}
-                  aria-label="Select active operation"
+              <Tabs
+                values={editorContext.tabs}
+                onReorder={handleReorder}
+                aria-label="Select active operation"
+              >
+                {editorContext.tabs.map((tab, index, tabs) => (
+                  <Tab
+                    key={tab.id}
+                    value={tab}
+                    isActive={index === editorContext.activeTabIndex}
+                  >
+                    <Tab.Button
+                      aria-controls="graphiql-session"
+                      id={`graphiql-session-tab-${index}`}
+                      title={tab.title}
+                      onClick={() => {
+                        executionContext.stop();
+                        editorContext.changeTab(index);
+                      }}
+                    >
+                      {tab.title}
+                    </Tab.Button>
+                    {tabs.length > 1 && (
+                      <Tab.Close
+                        onClick={() => {
+                          if (editorContext.activeTabIndex === index) {
+                            executionContext.stop();
+                          }
+                          editorContext.closeTab(index);
+                        }}
+                      />
+                    )}
+                  </Tab>
+                ))}
+              </Tabs>
+              <Tooltip label="New tab">
+                <UnStyledButton
+                  type="button"
+                  className="graphiql-tab-add"
+                  onClick={handleAddTab}
+                  aria-label="New tab"
                 >
-                  {editorContext.tabs.length > 1 && (
-                    <>
-                      {editorContext.tabs.map((tab, index) => (
-                        <Tab
-                          key={tab.id}
-                          value={tab}
-                          isActive={index === editorContext.activeTabIndex}
-                        >
-                          <Tab.Button
-                            aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            onClick={() => {
-                              executionContext.stop();
-                              editorContext.changeTab(index);
-                            }}
-                          >
-                            {tab.title}
-                          </Tab.Button>
-                          <Tab.Close
-                            onClick={() => {
-                              if (editorContext.activeTabIndex === index) {
-                                executionContext.stop();
-                              }
-                              editorContext.closeTab(index);
-                            }}
-                          />
-                        </Tab>
-                      ))}
-                      {addTab}
-                    </>
-                  )}
-                </Tabs>
-              )}
-              <div className="graphiql-session-header-right">
-                {editorContext.tabs.length === 1 && addTab}
-                {logo}
-              </div>
+                  <PlusIcon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+              {logo}
             </div>
             <div
               role="tabpanel"
@@ -606,11 +574,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
               <div ref={editorResize.firstRef}>
-                <div
-                  className={`graphiql-editors${
-                    editorContext.tabs.length === 1 ? ' full-height' : ''
-                  }`}
-                >
+                <div className="graphiql-editors">
                   <div ref={editorToolsResize.firstRef}>
                     <section
                       className="graphiql-query-editor"
@@ -872,8 +836,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 }
 
 const modifier =
-  typeof window !== 'undefined' &&
-  window.navigator.platform.toLowerCase().indexOf('mac') === 0
+  typeof navigator !== 'undefined' &&
+  navigator.platform.toLowerCase().indexOf('mac') === 0
     ? 'Cmd'
     : 'Ctrl';
 
@@ -934,53 +898,94 @@ function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
 }
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
-  return (
-    <div className="graphiql-logo">
-      {props.children || (
-        <a
-          className="graphiql-logo-link"
-          href="https://github.com/graphql/graphiql"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Graph
-          <em>i</em>
-          QL
-        </a>
-      )}
-    </div>
-  );
+function GraphiQLLogo<TProps>({
+  children = (
+    <a
+      className="graphiql-logo-link"
+      href="https://github.com/graphql/graphiql"
+      target="_blank"
+      rel="noreferrer"
+    >
+      Graph
+      <em>i</em>
+      QL
+    </a>
+  ),
+}: PropsWithChildren<TProps>) {
+  return <div className="graphiql-logo">{children}</div>;
 }
 
-GraphiQLLogo.displayName = 'GraphiQLLogo';
+type ToolbarRenderProps = (props: {
+  prettify: ReactNode;
+  copy: ReactNode;
+  merge: ReactNode;
+}) => JSX.Element;
+
+const DefaultToolbarRenderProps: ToolbarRenderProps = ({
+  prettify,
+  copy,
+  merge,
+}) => (
+  <>
+    {prettify}
+    {merge}
+    {copy}
+  </>
+);
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{props.children}</>;
-}
+function GraphiQLToolbar({
+  children = DefaultToolbarRenderProps,
+  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
+  onCopyQuery,
+}: {
+  children?: ToolbarRenderProps;
+}) {
+  if (typeof children !== 'function') {
+    throw new TypeError(
+      'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
+    );
+  }
+  const onCopy = useCopyQuery({ onCopyQuery });
+  const onMerge = useMergeQuery();
+  const onPrettify = usePrettifyEditors();
 
-GraphiQLToolbar.displayName = 'GraphiQLToolbar';
+  const prettify = (
+    <ToolbarButton onClick={onPrettify} label="Prettify query (Shift-Ctrl-P)">
+      <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+    </ToolbarButton>
+  );
+
+  const merge = (
+    <ToolbarButton
+      onClick={onMerge}
+      label="Merge fragments into query (Shift-Ctrl-M)"
+    >
+      <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+    </ToolbarButton>
+  );
+
+  const copy = (
+    <ToolbarButton onClick={onCopy} label="Copy query (Shift-Ctrl-C)">
+      <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+    </ToolbarButton>
+  );
+
+  return children({ prettify, copy, merge });
+}
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="graphiql-footer">{props.children}</div>;
 }
 
-GraphiQLFooter.displayName = 'GraphiQLFooter';
-
-// Determines if the React child is of the same type of the provided React component
-function isChildComponentType<T extends ComponentType>(
-  child: any,
-  component: T,
-): child is T {
+function getChildComponentType(child: ReactNode) {
   if (
-    child?.type?.displayName &&
-    child.type.displayName === component.displayName
+    child &&
+    typeof child === 'object' &&
+    'type' in child &&
+    typeof child.type === 'function'
   ) {
-    return true;
+    return child.type;
   }
-
-  return child.type === component;
 }
