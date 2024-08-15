@@ -13,15 +13,9 @@
  */
 
 // Parse the search string to get url parameters.
-const parameters = {};
-for (const entry of location.search.slice(1).split('&')) {
-  const eq = entry.indexOf('=');
-  if (eq >= 0) {
-    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-      entry.slice(eq + 1),
-    );
-  }
-}
+const parameters = Object.fromEntries(
+  new URLSearchParams(location.search).entries(),
+);
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
@@ -46,6 +40,11 @@ function onTabChange(tabsState) {
   parameters.variables = activeTab.variables;
   parameters.headers = activeTab.headers;
   updateURL();
+}
+
+function confirmCloseTab(index) {
+  // eslint-disable-next-line no-alert
+  return confirm(`Are you sure you want to close tab with index ${index}?`);
 }
 
 function updateURL() {
@@ -92,6 +91,8 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: !graphqlVersion.includes('15.5'),
+    confirmCloseTab:
+      parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),

@@ -92,6 +92,7 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
  */
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
+  confirmCloseTab,
   defaultQuery,
   defaultTabs,
   externalFragments,
@@ -167,6 +168,7 @@ export function GraphiQL({
       variables={variables}
     >
       <GraphiQLInterface
+        confirmCloseTab={confirmCloseTab}
         showPersistHeadersSettings={shouldPersistHeaders !== false}
         forcedTheme={props.forcedTheme}
         {...props}
@@ -212,18 +214,28 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     showPersistHeadersSettings?: boolean;
     /**
-     * forcedTheme allows enforcement of a specific theme for GraphiQL.
+     * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
      * This is useful when you want to make sure that GraphiQL is always
-     * rendered with a specific theme
+     * rendered with a specific theme.
      */
     forcedTheme?: (typeof THEMES)[number];
     /**
      * Additional class names which will be appended to the container element.
      */
     className?: string;
+    /**
+     * When the user clicks a close tab button, this function is invoked with
+     * the index of the tab that is about to be closed. It can return a promise
+     * that should resolve to `true` (meaning the tab may be closed) or `false`
+     * (meaning the tab may not be closed).
+     * @param index The index of the tab that should be closed.
+     */
+    confirmCloseTab?(index: number): Promise<boolean> | boolean;
   };
 
 const THEMES = ['light', 'dark', 'system'] as const;
+
+const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -393,9 +405,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   );
 
   const handlePluginClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    e => {
+    event => {
       const context = pluginContext!;
-      const pluginIndex = Number(e.currentTarget.dataset.index!);
+      const pluginIndex = Number(event.currentTarget.dataset.index!);
       const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
       const isVisible = plugin === context.visiblePlugin;
       if (isVisible) {
@@ -442,6 +454,48 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   }, []);
 
   const className = props.className ? ` ${props.className}` : '';
+  const confirmClose = props.confirmCloseTab;
+
+  const handleTabClose: MouseEventHandler<HTMLButtonElement> = useCallback(
+    async event => {
+      const tabButton = event.currentTarget
+        .previousSibling as HTMLButtonElement;
+      const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
+
+      /** TODO:
+       * Move everything after into `editorContext.closeTab` once zustand will be used instead of
+       * React context, since now we can't use execution context inside editor context, since editor
+       * context is used in execution context.
+       */
+      const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
+
+      if (!shouldCloseTab) {
+        return;
+      }
+
+      if (editorContext.activeTabIndex === index) {
+        executionContext.stop();
+      }
+      editorContext.closeTab(index);
+    },
+    [confirmClose, editorContext, executionContext],
+  );
+
+  const handleTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      const index = Number(
+        event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''),
+      );
+      /** TODO:
+       * Move everything after into `editorContext.changeTab` once zustand will be used instead of
+       * React context, since now we can't use execution context inside editor context, since editor
+       * context is used in execution context.
+       */
+      executionContext.stop();
+      editorContext.changeTab(index);
+    },
+    [editorContext, executionContext],
+  );
 
   return (
     <Tooltip.Provider>
@@ -535,23 +589,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       aria-controls="graphiql-session"
                       id={`graphiql-session-tab-${index}`}
                       title={tab.title}
-                      onClick={() => {
-                        executionContext.stop();
-                        editorContext.changeTab(index);
-                      }}
+                      onClick={handleTabClick}
                     >
                       {tab.title}
                     </Tab.Button>
-                    {tabs.length > 1 && (
-                      <Tab.Close
-                        onClick={() => {
-                          if (editorContext.activeTabIndex === index) {
-                            executionContext.stop();
-                          }
-                          editorContext.closeTab(index);
-                        }}
-                      />
-                    )}
+                    {tabs.length > 1 && <Tab.Close onClick={handleTabClose} />}
                   </Tab>
                 ))}
               </Tabs>
@@ -570,7 +612,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <div
               role="tabpanel"
               id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
+              aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.activeTabIndex}`}
             >
               <div ref={editorResize.firstRef}>
                 <div className="graphiql-editors">
