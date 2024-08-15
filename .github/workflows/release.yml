@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, graphiql-v4]
 permissions: {}
 jobs:
   release:
@@ -14,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: yarn
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-modules
         with:
           path: node_modules

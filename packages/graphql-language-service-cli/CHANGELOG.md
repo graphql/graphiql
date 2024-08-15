@@ -1,5 +1,44 @@
 # graphql-language-service-cli
 
+## 3.5.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - graphql-language-service-server@2.14.0
+  - graphql-language-service@5.3.0
+
+## 3.4.2
+
+### Patch Changes
+
+- [#3647](https://github.com/graphql/graphiql/pull/3647) [`ba5720b`](https://github.com/graphql/graphiql/commit/ba5720b430ed1c888ff64c67aa4b9a36083b9ed0) Thanks [@acao](https://github.com/acao)! - several LSP fixes and improvements:
+
+  **Bugfixes**
+
+  debounce schema change events to fix codegen bugs to fix #3622
+
+  on mass file changes, network schema is overfetching because the schema cache is now invalidated on every watched schema file change
+
+  to address this, we debounce the new `onSchemaChange` event by 400ms
+
+  note that `schemaCacheTTL` can only be set in extension settings or graphql config at the top level - it will be ignored if configured per-project in the graphql config
+
+  **Code Improvements**
+
+  - Fixes flaky tests, and `schemaCacheTTL` setting not being passed to the cache
+  - Adds a test to validate network schema changes are reflected in the cache
+
+- Updated dependencies [[`ba5720b`](https://github.com/graphql/graphiql/commit/ba5720b430ed1c888ff64c67aa4b9a36083b9ed0), [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`e2c04c7`](https://github.com/graphql/graphiql/commit/e2c04c7c2dc5109ff0446d9a6a010ffdffed1e44)]:
+  - graphql-language-service-server@2.13.2
+  - graphql-language-service@5.2.2
+
 ## 3.4.1
 
 ### Patch Changes

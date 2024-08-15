@@ -1,5 +1,55 @@
 # Change Log
 
+## 3.6.0
+
+### Minor Changes
+
+- [#3563](https://github.com/graphql/graphiql/pull/3563) [`4fb231f`](https://github.com/graphql/graphiql/commit/4fb231fb9619544974d81be9a2e7d92e37ab7426) Thanks [@klippx](https://github.com/klippx)! - Add new prop `confirmCloseTab` to allow control of closing tabs
+
+- [#3532](https://github.com/graphql/graphiql/pull/3532) [`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c) Thanks [@Cr4xy](https://github.com/Cr4xy)! - Add webp support to graphiql results image-preview
+
+### Patch Changes
+
+- Updated dependencies [[`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c)]:
+  - @graphiql/react@0.25.0
+
+## 3.5.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - @graphiql/react@0.24.0
+
+## 3.4.1
+
+### Patch Changes
+
+- [#3675](https://github.com/graphql/graphiql/pull/3675) [`676f910`](https://github.com/graphql/graphiql/commit/676f910638eed5177146045d028a74e623884b45) Thanks [@dimaMachina](https://github.com/dimaMachina)! - move `@graphiql/toolkit` to `devDependecies` because umd build is bundled with all dependencies in one file
+
+- [#3655](https://github.com/graphql/graphiql/pull/3655) [`5450e6b`](https://github.com/graphql/graphiql/commit/5450e6b547add41a9dd89145934e79576b5544e6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused dependencies `graphql-language-service` and `markdown-it`
+
+- Updated dependencies [[`6a0a5e5`](https://github.com/graphql/graphiql/commit/6a0a5e590b7b526af8a66c59a27ec3d0144af572)]:
+  - @graphiql/react@0.23.1
+
+## 3.4.0
+
+### Minor Changes
+
+- [#3643](https://github.com/graphql/graphiql/pull/3643) [`82f1ecc`](https://github.com/graphql/graphiql/commit/82f1eccb52e328241cee93389c58154b9f2e8730) Thanks [@dimaMachina](https://github.com/dimaMachina)! - add `className` prop. Additional class names which will be appended to the GraphiQL container element
+
+### Patch Changes
+
+- Updated dependencies [[`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f), [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`56c6f45`](https://github.com/graphql/graphiql/commit/56c6f4571dd0dfda307ed11c5afb8c837ad928b0), [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f)]:
+  - @graphiql/react@0.23.0
+  - graphql-language-service@5.2.2
+  - @graphiql/toolkit@0.9.2
+
 ## 3.3.2
 
 ### Patch Changes

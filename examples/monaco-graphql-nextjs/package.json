@@ -9,14 +9,14 @@
     "start": "next start"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.9.1",
+    "@graphiql/toolkit": "^0.10.0",
     "graphql": "^16.8.1",
     "graphql-ws": "^5.5.5",
     "jsonc-parser": "^3.2.0",
     "marked": "^4.2.12",
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "monaco-graphql": "^1.5.2",
+    "monaco-graphql": "^1.6.0",
     "next": "13.4.7",
     "prettier": "3.3.2",
     "react": "^18.2.0",
