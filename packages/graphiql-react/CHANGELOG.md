@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 1.0.0-alpha.3
+
+### Patch Changes
+
+- [#3414](https://github.com/graphql/graphiql/pull/3414) [`f8b719f`](https://github.com/graphql/graphiql/commit/f8b719f215a79038d1b2a54ddfef461fd849a912) Thanks [@leonardehrenfried](https://github.com/leonardehrenfried)! - Respect Markdown format: ignore single newline
+
+- [#3730](https://github.com/graphql/graphiql/pull/3730) [`360a038`](https://github.com/graphql/graphiql/commit/360a0385d4ef0105beb8e76044a78f5cd43c9448) Thanks [@dimaMachina](https://github.com/dimaMachina)! - rollback `position: absolute` style for `.graphiql-logo` because tabs will behind logo
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes

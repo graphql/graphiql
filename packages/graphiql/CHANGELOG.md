@@ -1,5 +1,22 @@
 # Change Log
 
+## 4.0.0-alpha.4
+
+### Minor Changes
+
+- [#3728](https://github.com/graphql/graphiql/pull/3728) [`a1a5208`](https://github.com/graphql/graphiql/commit/a1a5208aeebe4ff622e83cd355f8b4e9b7fa011c) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `.graphiql-session` class
+
+### Patch Changes
+
+- [#3414](https://github.com/graphql/graphiql/pull/3414) [`f8b719f`](https://github.com/graphql/graphiql/commit/f8b719f215a79038d1b2a54ddfef461fd849a912) Thanks [@leonardehrenfried](https://github.com/leonardehrenfried)! - Respect Markdown format: ignore single newline
+
+- [#3730](https://github.com/graphql/graphiql/pull/3730) [`360a038`](https://github.com/graphql/graphiql/commit/360a0385d4ef0105beb8e76044a78f5cd43c9448) Thanks [@dimaMachina](https://github.com/dimaMachina)! - rollback `position: absolute` style for `.graphiql-logo` because tabs will behind logo
+
+- [#3726](https://github.com/graphql/graphiql/pull/3726) [`196e9a0`](https://github.com/graphql/graphiql/commit/196e9a081ffc0df16a5537c8ec0fb622fc3ba0b0) Thanks [@dimaMachina](https://github.com/dimaMachina)! - use `right: var(--px-16)` instead of `right: 0` for `.graphiql-logo`
+
+- Updated dependencies [[`f8b719f`](https://github.com/graphql/graphiql/commit/f8b719f215a79038d1b2a54ddfef461fd849a912), [`360a038`](https://github.com/graphql/graphiql/commit/360a0385d4ef0105beb8e76044a78f5cd43c9448)]:
+  - @graphiql/react@1.0.0-alpha.3
+
 ## 4.0.0-alpha.3
 
 ### Patch Changes
