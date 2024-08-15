@@ -3,4 +3,4 @@
 '@graphiql/react': minor
 ---
 
-Allow control of closing tabs
+Add new prop `confirmCloseTab` to allow control of closing tabs

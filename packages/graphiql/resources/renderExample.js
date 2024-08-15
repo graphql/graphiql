@@ -48,13 +48,14 @@ function onTabChange(tabsState) {
   updateURL();
 }
 
-async function confirmCloseTab(_index) {
+function confirmCloseTab(index) {
   // eslint-disable-next-line no-alert
-  if (window.confirm('Are you sure you want to close this tab?')) {
-    return true;
-  }
-  return false;
+  return confirm(`Are you sure you want to close tab with index ${index}?`);
 }
+
+const searchParams = Object.fromEntries(
+  new URLSearchParams(location.search).entries(),
+);
 
 function updateURL() {
   const newSearch = Object.entries(parameters)
@@ -109,7 +110,7 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
-    confirmCloseTab,
+    confirmCloseTab: searchParams.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),
