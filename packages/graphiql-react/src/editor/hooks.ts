@@ -14,17 +14,6 @@ import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
 
-export function useSynchronizeValue(
-  editor: CodeMirrorEditor | null,
-  value: string | undefined,
-) {
-  useEffect(() => {
-    if (editor && typeof value === 'string' && value !== editor.getValue()) {
-      editor.setValue(value);
-    }
-  }, [editor, value]);
-}
-
 export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   editor: CodeMirrorEditor | null,
   option: K,
