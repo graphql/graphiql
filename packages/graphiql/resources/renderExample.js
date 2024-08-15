@@ -95,5 +95,6 @@ root.render(
       parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
+    defaultQuery: parameters.defaultQuery,
   }),
 );
