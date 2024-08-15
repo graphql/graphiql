@@ -43,6 +43,7 @@ import {
   Spinner,
   Tab,
   Tabs,
+  Theme,
   ToolbarButton,
   Tooltip,
   UnStyledButton,
@@ -213,6 +214,7 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * settings modal.
      */
     showPersistHeadersSettings?: boolean;
+    defaultTheme?: Theme;
     /**
      * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
      * This is useful when you want to make sure that GraphiQL is always
@@ -251,7 +253,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         : undefined,
     [props.forcedTheme],
   );
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme(props.defaultTheme);
 
   useEffect(() => {
     if (forcedTheme === 'system') {

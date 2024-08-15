@@ -96,5 +96,6 @@ root.render(
     onTabChange,
     forcedTheme: parameters.forcedTheme,
     defaultQuery: parameters.defaultQuery,
+    defaultTheme: parameters.defaultTheme,
   }),
 );
