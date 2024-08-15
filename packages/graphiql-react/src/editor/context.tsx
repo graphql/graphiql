@@ -360,14 +360,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const {
-    onTabChange,
-    headers,
-    query,
-    defaultHeaders,
-    defaultQuery,
-    children,
-  } = props;
+  const { onTabChange, defaultHeaders, defaultQuery, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
     variableEditor,
@@ -384,8 +377,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         tabs: [
           ...updatedValues.tabs,
           createTab({
-            headers: headers ?? defaultHeaders,
-            query: query ?? defaultQuery ?? DEFAULT_QUERY,
+            headers: defaultHeaders,
+            query: defaultQuery ?? DEFAULT_QUERY,
           }),
         ],
         activeTabIndex: updatedValues.tabs.length,
@@ -396,8 +389,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       return updated;
     });
   }, [
-    headers,
-    query,
     defaultHeaders,
     defaultQuery,
     onTabChange,
