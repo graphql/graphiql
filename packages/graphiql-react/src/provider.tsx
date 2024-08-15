@@ -22,7 +22,6 @@ export type GraphiQLProviderProps = EditorContextProviderProps &
 
 export function GraphiQLProvider({
   children,
-  confirmCloseTab,
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
   defaultHeaders,
@@ -54,7 +53,6 @@ export function GraphiQLProvider({
     <StorageContextProvider storage={storage}>
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <EditorContextProvider
-          confirmCloseTab={confirmCloseTab}
           defaultQuery={defaultQuery}
           defaultHeaders={defaultHeaders}
           defaultTabs={defaultTabs}
