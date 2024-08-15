@@ -7,7 +7,7 @@ import { useStorageContext } from './storage';
  */
 export type Theme = 'light' | 'dark' | null;
 
-export function useTheme(defaultTheme?: Theme) {
+export function useTheme(defaultTheme: Theme = null) {
   const storageContext = useStorageContext();
 
   const [theme, setThemeInternal] = useState<Theme>(() => {
@@ -26,10 +26,7 @@ export function useTheme(defaultTheme?: Theme) {
           // Remove the invalid stored value
           storageContext.set(STORAGE_KEY, '');
         }
-        if (defaultTheme) {
-          return defaultTheme;
-        }
-        return null;
+        return defaultTheme;
     }
   });
 
