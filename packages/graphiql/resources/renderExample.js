@@ -47,6 +47,10 @@ function confirmCloseTab(index) {
   return confirm(`Are you sure you want to close tab with index ${index}?`);
 }
 
+function onPrettifyQuery(query) {
+  return query.replaceAll(/([ \n])+/g, ' ');
+}
+
 function updateURL() {
   const newSearch = Object.entries(parameters)
     .filter(([_key, value]) => value)
@@ -93,6 +97,8 @@ root.render(
     inputValueDeprecation: !graphqlVersion.includes('15.5'),
     confirmCloseTab:
       parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
+    onPrettifyQuery:
+      parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
     defaultQuery: parameters.defaultQuery,

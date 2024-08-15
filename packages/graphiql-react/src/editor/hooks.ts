@@ -204,14 +204,23 @@ export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
   }, [queryEditor, schema]);
 }
 
-type UsePrettifyEditorsArgs = {
+export type UsePrettifyEditorsArgs = {
   /**
    * This is only meant to be used internally in `@graphiql/react`.
    */
   caller?: Function;
+  /**
+   * Invoked when the prettify callback is invoked
+   * @param query The current value of the query editor.
+   * @returns {string} The formatted query
+   */
+  onPrettifyQuery?: (query: string) => string;
 };
 
-export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
+export function usePrettifyEditors({
+  caller,
+  onPrettifyQuery,
+}: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: caller || usePrettifyEditors,
@@ -252,13 +261,15 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
 
     if (queryEditor) {
       const editorContent = queryEditor.getValue();
-      const prettifiedEditorContent = print(parse(editorContent));
+      const prettifiedEditorContent = onPrettifyQuery
+        ? onPrettifyQuery(editorContent)
+        : print(parse(editorContent));
 
       if (prettifiedEditorContent !== editorContent) {
         queryEditor.setValue(prettifiedEditorContent);
       }
     }
-  }, [queryEditor, variableEditor, headerEditor]);
+  }, [queryEditor, variableEditor, headerEditor, onPrettifyQuery]);
 }
 
 export type UseAutoCompleteLeafsArgs = {
