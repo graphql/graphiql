@@ -22,6 +22,7 @@
     "example-monaco-graphql-webpack": "0.0.0"
   },
   "changesets": [
+    "add-on-prettify-callback",
     "breezy-chicken-crash",
     "few-steaks-clap",
     "flat-lies-heal",
