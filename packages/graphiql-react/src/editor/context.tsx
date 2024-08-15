@@ -19,7 +19,6 @@ import {
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
-import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
 import {
   createTab,
@@ -235,19 +234,27 @@ export type EditorContextProviderProps = {
 export function EditorContextProvider(props: EditorContextProviderProps) {
   // @ts-expect-error -- Prop is removed
   if (props.query) {
-    throw new TypeError('`query` was removed. Use `queryEditor.setValue(query)` instead.');
+    throw new TypeError(
+      '`query` was removed. Use `queryEditor.setValue(query)` instead.',
+    );
   }
   // @ts-expect-error -- Prop is removed
   if (props.variables) {
-    throw new TypeError('`variables` was removed. Use `variableEditor.setValue(variables)` instead.');
+    throw new TypeError(
+      '`variables` was removed. Use `variableEditor.setValue(variables)` instead.',
+    );
   }
   // @ts-expect-error -- Prop is removed
   if (props.headers) {
-    throw new TypeError('`headers` was removed. Use `headerEditor.setValue(headers)` instead.');
+    throw new TypeError(
+      '`headers` was removed. Use `headerEditor.setValue(headers)` instead.',
+    );
   }
   // @ts-expect-error -- Prop is removed
   if (props.response) {
-    throw new TypeError('`response` was removed. Use `responseEditor.setValue(response)` instead.');
+    throw new TypeError(
+      '`response` was removed. Use `responseEditor.setValue(response)` instead.',
+    );
   }
   const storage = useStorageContext();
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
