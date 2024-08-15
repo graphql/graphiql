@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.25.0
+
+### Minor Changes
+
+- [#3532](https://github.com/graphql/graphiql/pull/3532) [`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c) Thanks [@Cr4xy](https://github.com/Cr4xy)! - Add webp support to graphiql results image-preview
+
 ## 0.24.0
 
 ### Minor Changes

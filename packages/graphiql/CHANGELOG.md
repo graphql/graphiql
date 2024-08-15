@@ -1,5 +1,18 @@
 # Change Log
 
+## 3.6.0
+
+### Minor Changes
+
+- [#3563](https://github.com/graphql/graphiql/pull/3563) [`4fb231f`](https://github.com/graphql/graphiql/commit/4fb231fb9619544974d81be9a2e7d92e37ab7426) Thanks [@klippx](https://github.com/klippx)! - Add new prop `confirmCloseTab` to allow control of closing tabs
+
+- [#3532](https://github.com/graphql/graphiql/pull/3532) [`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c) Thanks [@Cr4xy](https://github.com/Cr4xy)! - Add webp support to graphiql results image-preview
+
+### Patch Changes
+
+- Updated dependencies [[`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c)]:
+  - @graphiql/react@0.25.0
+
 ## 3.5.0
 
 ### Minor Changes
