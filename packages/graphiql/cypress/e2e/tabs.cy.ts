@@ -99,7 +99,7 @@ describe('Tabs', () => {
 
       cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
 
-      cy.get('.graphiql-tab-button').should('have.length', 1);
+      cy.get('.graphiql-tab-button').should('have.length', 0);
     });
   });
 });
