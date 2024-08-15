@@ -37,7 +37,7 @@ async function render() {
     .getElementById('toolbar')
     ?.setAttribute('style', 'display: inline-flex');
 
-  const toolbar = document.getElementById('toolbar')!;
+  const toolbar = document.getElementById('toolbar');
   const editors = createEditors();
   const {
     operationModel,

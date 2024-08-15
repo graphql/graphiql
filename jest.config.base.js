@@ -37,13 +37,14 @@ module.exports = (dir, env = 'jsdom') => {
     testEnvironment: env,
     testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],
+    transformIgnorePatterns: ['node_modules/(!@astrojs/compiler)'],
     coveragePathIgnorePatterns: [
       'dist',
       'esm',
       'node_modules',
       '__tests__',
       'resources',
-      'test',
+
       'examples',
       '.d.ts',
       'types.ts',

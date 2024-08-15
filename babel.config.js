@@ -6,7 +6,7 @@ const envConfig = {
 
 if (process.env.ESM) {
   envConfig.modules = false;
-  envConfig.targets = { node: true };
+  envConfig.targets = { node: 'current' };
   envConfig.bugfixes = true;
 }
 
@@ -36,7 +36,10 @@ module.exports = {
   },
   plugins: [
     require.resolve('@babel/plugin-proposal-class-properties'),
+
     require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
     require.resolve('@babel/plugin-proposal-optional-chaining'),
+    require.resolve('@babel/plugin-transform-private-methods'),
+    ['babel-plugin-transform-import-meta', { module: 'ES6' }],
   ],
 };

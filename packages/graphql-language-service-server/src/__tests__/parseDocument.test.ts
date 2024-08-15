@@ -20,7 +20,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -48,11 +48,11 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
-        
+        __typename
       }
     }
     `);
@@ -76,7 +76,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
+    const contents = await parseDocument(text, 'test.ts');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -108,7 +108,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -140,7 +140,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
 
     expect(contents[0].query).toEqual(`
     query Test {
@@ -174,7 +174,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -209,7 +209,7 @@ describe('parseDocument', () => {
       return <div>{QUERY}</div>
     }`;
 
-    const contents = parseDocument(text, 'test.tsx');
+    const contents = await parseDocument(text, 'test.tsx');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -218,6 +218,7 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -240,7 +241,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
     query Test {
       test {
@@ -248,6 +249,7 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
 
@@ -269,7 +271,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
+    const contents = await parseDocument(text, 'test.ts');
     expect(contents[0].query).toEqual(`#graphql
     query Test {
       test {
@@ -277,9 +279,9 @@ describe('parseDocument', () => {
         ...FragmentsComment
       }
     }
+    
     `);
   });
-
   it('parseDocument finds queries in /*GraphQL*/-annotated templates', async () => {
     const text = `
     import {gql} from 'react-apollo';
@@ -287,25 +289,29 @@ describe('parseDocument', () => {
     import A from './A';
     
     const QUERY: string = /* GraphQL */ \`
-    query Test {
-      test {
-        value
-        ...FragmentsComment
+      query Test {
+        test {
+          value
+          ...FragmentsComment
+        }
       }
-    }
     \${A.fragments.test}
     \`
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.ts');
-    expect(contents[0].query).toEqual(`
-    query Test {
-      test {
-        value
-        ...FragmentsComment
+    const contents = await parseDocument(text, 'test.ts');
+    // please let me keep this whitespace prettier!
+    // note: if this test suddenly starts failing, it's because some auto-formatting configuration ignored
+    // our `.prettierignore` file, as the whitespace below Test query is expected
+    expect(contents[0].query).toEqual(/* GraphQL */ `
+      query Test {
+        test {
+          value
+          ...FragmentsComment
+        }
       }
-    }
+    
     `);
   });
 
@@ -328,7 +334,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -351,7 +357,7 @@ describe('parseDocument', () => {
     
     export function Example(arg: string) {}`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -371,14 +377,14 @@ describe('parseDocument', () => {
     }
     \${A.frag`;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
   it('an empty file is ignored', async () => {
     const text = '';
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -387,7 +393,7 @@ describe('parseDocument', () => {
     
     `;
 
-    const contents = parseDocument(text, 'test.js');
+    const contents = await parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -395,7 +401,7 @@ describe('parseDocument', () => {
     const text = `
     something
     `;
-    const contents = parseDocument(text, 'test.txt');
+    const contents = await parseDocument(text, 'test.txt');
     expect(contents.length).toEqual(0);
   });
 });

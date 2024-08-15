@@ -19,5 +19,24 @@ export default defineConfig({
         },
       ],
     }),
+    watchPackages(['monaco-graphql', 'graphql-language-service']),
   ],
 });
+
+function watchPackages(packageNames: string[]) {
+  let isWatching = false;
+
+  return {
+    name: 'vite-plugin-watch-packages',
+
+    buildStart() {
+      if (!isWatching) {
+        for (const packageName of packageNames) {
+          this.addWatchFile(require.resolve(packageName));
+        }
+
+        isWatching = true;
+      }
+    },
+  };
+}

@@ -20,9 +20,9 @@ describe('findGraphQLTags', () => {
   const findGraphQLTags = (text: string, ext: SupportedExtensionsEnum) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
-  it('returns empty for files without asts', () => {
+  it('returns empty for files without asts', async () => {
     const text = '// just a comment';
-    const contents = findGraphQLTags(text, '.js');
+    const contents = await findGraphQLTags(text, '.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -45,7 +45,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.js');
+    const contents = await findGraphQLTags(text, '.js');
     expect(contents[0].template).toEqual(`
 query Test {
     test {
@@ -75,9 +75,39 @@ query Test {
     
     export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.js');
+    const contents = await findGraphQLTags(text, '.js');
     expect(contents[0].template).toEqual(`
     query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    
+    `);
+  });
+
+  it('finds queries in call expressions with with newlines preceding the template', async () => {
+    const text = `
+    import {gql} from 'react-apollo';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = gql(
+  \`
+  query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \`);
+    
+    export function Example(arg: string) {}`;
+
+    const contents = await findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(`
+  query Test {
       test {
         value
         ...FragmentsComment
@@ -104,7 +134,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(`#graphql
 query Test {
   test {
@@ -112,6 +142,7 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
@@ -122,9 +153,7 @@ import {B} from 'B';
 import A from './A';
 
 
-const QUERY: string = 
-/* GraphQL */ 
-\`
+const QUERY: string = /* GraphQL */ \`
 query Test {
   test {
     value
@@ -136,7 +165,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(`
 query Test {
   test {
@@ -144,13 +173,14 @@ query Test {
     ...FragmentsComment
   }
 }
+
 `);
   });
 
   it('finds queries with nested graphql.experimental template tag expression', async () => {
     const text = 'const query = graphql.experimental` query {} `';
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(' query {} ');
   });
 
@@ -161,7 +191,7 @@ query Test {
       const query = graphql\` query {} \` 
     
     `;
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
 
     expect(contents[0].template).toEqual(' query {} ');
   });
@@ -212,7 +242,7 @@ class Todo2{}
    class AppModule {}
       const query = graphql\` query {} \` 
     `;
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
 
     expect(contents[0].template).toEqual(' query {} ');
   });
@@ -222,7 +252,7 @@ class Todo2{}
   else: () => gql\` query {} \`
 }`;
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(' query {} ');
   });
 
@@ -231,7 +261,7 @@ class Todo2{}
   else: () => graphql\` query {} \`
 })`;
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(' query {} ');
   });
 
@@ -243,7 +273,7 @@ query {id}
 \`;
 </script>
 `;
-    const contents = findGraphQLTags(text, '.vue');
+    const contents = await findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
     expect(contents[0].range.start.line).toEqual(2);
@@ -260,7 +290,7 @@ query {id}
 \`;
 </script>
 `;
-    const contents = findGraphQLTags(text, '.vue');
+    const contents = await findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
     expect(contents[0].range.start.line).toEqual(4);
@@ -275,7 +305,7 @@ query {id}
 \`;
 </script>
 `;
-    const contents = findGraphQLTags(text, '.vue');
+    const contents = await findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
     expect(contents[0].range.start.line).toEqual(2);
@@ -292,7 +322,7 @@ query {id}
 \`;
 </script>
 `;
-    const contents = findGraphQLTags(text, '.vue');
+    const contents = await findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
     expect(contents[0].range.start.line).toEqual(4);
@@ -316,7 +346,7 @@ export default defineComponent({
 </script>
 `;
 
-    const contents = findGraphQLTags(text, '.vue');
+    const contents = await findGraphQLTags(text, '.vue');
     expect(contents[0].template).toEqual(`
 query {id}`);
   });
@@ -347,7 +377,7 @@ query {id}`);
   
 </script>
 `;
-    const contents = findGraphQLTags(text, '.svelte');
+    const contents = await findGraphQLTags(text, '.svelte');
     expect(contents[0].template).toEqual(`
     query AllCharacters {
         characters {
@@ -372,7 +402,12 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    const contents = await baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new NoopLogger(),
+    );
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -389,7 +424,12 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    const contents = await baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new NoopLogger(),
+    );
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -406,7 +446,12 @@ query {id}`);
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
-    const contents = baseFindGraphQLTags(text, '.svelte', '', new NoopLogger());
+    const contents = await baseFindGraphQLTags(
+      text,
+      '.svelte',
+      '',
+      new NoopLogger(),
+    );
     // We should have no contents
     expect(contents).toMatchObject([]);
 
@@ -422,7 +467,7 @@ query {id}`);
 })
 const query = graphql\`query myQuery {}\``;
 
-    const contents = findGraphQLTags(text, '.ts');
+    const contents = await findGraphQLTags(text, '.ts');
 
     expect(contents.length).toEqual(2);
 
@@ -461,7 +506,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.js');
+    const contents = await findGraphQLTags(text, '.js');
     expect(contents.length).toEqual(0);
   });
 
@@ -484,10 +529,10 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = findGraphQLTags(text, '.js');
+    const contents = await findGraphQLTags(text, '.js');
     expect(contents.length).toEqual(0);
   });
-  it('handles full svelte example', () => {
+  it('handles full svelte example', async () => {
     const text = `
     <script>
     import { ApolloClient, gql } from '@apollo/client';
@@ -526,7 +571,40 @@ export function Example(arg: string) {}`;
     {/if}
 </div>
     `;
-    const contents = findGraphQLTags(text, '.svelte');
+    const contents = await findGraphQLTags(text, '.svelte');
+    expect(contents.length).toEqual(1);
+  });
+
+  it('handles full astro example', async () => {
+    const text = `
+    ---
+    const gql = String.raw;
+    const response = await fetch("https://swapi-graphql.netlify.app/.netlify/functions/index",
+      {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          query: gql\`
+            query getFilm ($id:ID!) {
+              film(id: $id) {
+                title
+                releaseDate
+              }
+            }
+          \`,
+          variables: {
+            id: "XM6MQ==",
+          },
+        }),
+      });
+
+    const json = await response.json();
+    const { film } = json.data;
+    ---
+    <h1>Fetching information about Star Wars: A New Hope</h1>
+    <h2>Title: {film.title}</h2>
+    <p>Year: {film.releaseDate}</p>`;
+    const contents = await findGraphQLTags(text, '.astro');
     expect(contents.length).toEqual(1);
   });
 });

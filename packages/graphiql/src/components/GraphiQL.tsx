@@ -14,6 +14,8 @@ import React, {
   ReactElement,
   useCallback,
   useState,
+  useEffect,
+  useMemo,
 } from 'react';
 
 import {
@@ -99,9 +101,9 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
+  confirmCloseTab,
   defaultQuery,
   defaultTabs,
   externalFragments,
@@ -166,8 +168,10 @@ export function GraphiQL({
       variables={variables}
     >
       <GraphiQLInterface
+        confirmCloseTab={confirmCloseTab}
         showPersistHeadersSettings={shouldPersistHeaders !== false}
         disableTabs={props.disableTabs ?? false}
+        forcedTheme={props.forcedTheme}
         {...props}
       />
     </GraphiQLProvider>
@@ -216,7 +220,29 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     showPersistHeadersSettings?: boolean;
     disableTabs?: boolean;
+    /**
+     * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
+     * This is useful when you want to make sure that GraphiQL is always
+     * rendered with a specific theme.
+     */
+    forcedTheme?: (typeof THEMES)[number];
+    /**
+     * Additional class names which will be appended to the container element.
+     */
+    className?: string;
+    /**
+     * When the user clicks a close tab button, this function is invoked with
+     * the index of the tab that is about to be closed. It can return a promise
+     * that should resolve to `true` (meaning the tab may be closed) or `false`
+     * (meaning the tab may not be closed).
+     * @param index The index of the tab that should be closed.
+     */
+    confirmCloseTab?(index: number): Promise<boolean> | boolean;
   };
+
+const THEMES = ['light', 'dark', 'system'] as const;
+
+const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -225,12 +251,27 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
+  const forcedTheme = useMemo(
+    () =>
+      props.forcedTheme && THEMES.includes(props.forcedTheme)
+        ? props.forcedTheme
+        : undefined,
+    [props.forcedTheme],
+  );
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    if (forcedTheme === 'system') {
+      setTheme(null);
+    } else if (forcedTheme === 'light' || forcedTheme === 'dark') {
+      setTheme(forcedTheme);
+    }
+  }, [forcedTheme, setTheme]);
 
   const PluginContent = pluginContext?.visiblePlugin?.content;
 
@@ -317,7 +358,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       <ToolbarButton onClick={copy} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      {props.toolbar?.additionalContent && props.toolbar.additionalContent}
+      {props.toolbar?.additionalContent}
       {props.toolbar?.additionalComponent && (
         <props.toolbar.additionalComponent />
       )}
@@ -378,9 +419,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   );
 
   const handlePluginClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    e => {
+    event => {
       const context = pluginContext!;
-      const pluginIndex = Number(e.currentTarget.dataset.index!);
+      const pluginIndex = Number(event.currentTarget.dataset.index!);
       const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
       const isVisible = plugin === context.visiblePlugin;
       if (isVisible) {
@@ -439,15 +480,61 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     </Tooltip>
   );
 
+  const className = props.className ? ` ${props.className}` : '';
+  const confirmClose = props.confirmCloseTab;
+
+  const handleTabClose: MouseEventHandler<HTMLButtonElement> = useCallback(
+    async event => {
+      const tabButton = event.currentTarget
+        .previousSibling as HTMLButtonElement;
+      const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
+
+      /** TODO:
+       * Move everything after into `editorContext.closeTab` once zustand will be used instead of
+       * React context, since now we can't use execution context inside editor context, since editor
+       * context is used in execution context.
+       */
+      const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
+
+      if (!shouldCloseTab) {
+        return;
+      }
+
+      if (editorContext.activeTabIndex === index) {
+        executionContext.stop();
+      }
+      editorContext.closeTab(index);
+    },
+    [confirmClose, editorContext, executionContext],
+  );
+
+  const handleTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    event => {
+      const index = Number(
+        event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''),
+      );
+      /** TODO:
+       * Move everything after into `editorContext.changeTab` once zustand will be used instead of
+       * React context, since now we can't use execution context inside editor context, since editor
+       * context is used in execution context.
+       */
+      executionContext.stop();
+      editorContext.changeTab(index);
+    },
+    [editorContext, executionContext],
+  );
+
   return (
     <Tooltip.Provider>
-      <div data-testid="graphiql-container" className="graphiql-container">
+      <div
+        data-testid="graphiql-container"
+        className={`graphiql-container${className}`}
+      >
         <div className="graphiql-sidebar">
           <div className="graphiql-sidebar-section">
             {pluginContext?.plugins.map((plugin, index) => {
               const isVisible = plugin === pluginContext.visiblePlugin;
               const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
-              const Icon = plugin.icon;
               return (
                 <Tooltip key={plugin.title} label={label}>
                   <UnStyledButton
@@ -457,7 +544,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                     data-index={index}
                     aria-label={label}
                   >
-                    <Icon aria-hidden="true" />
+                    <plugin.icon aria-hidden="true" />
                   </UnStyledButton>
                 </Tooltip>
               );
@@ -520,7 +607,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           )}
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
-              {props.disableTabs ? null : (
+              {!props.disableTabs && (
                 <Tabs
                   values={editorContext.tabs}
                   onReorder={handleReorder}
@@ -536,22 +623,12 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         >
                           <Tab.Button
                             aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            onClick={() => {
-                              executionContext.stop();
-                              editorContext.changeTab(index);
-                            }}
+                            id={`${TAB_CLASS_PREFIX}${index}`}
+                            onClick={handleTabClick}
                           >
                             {tab.title}
                           </Tab.Button>
-                          <Tab.Close
-                            onClick={() => {
-                              if (editorContext.activeTabIndex === index) {
-                                executionContext.stop();
-                              }
-                              editorContext.closeTab(index);
-                            }}
-                          />
+                          <Tab.Close onClick={handleTabClose} />
                         </Tab>
                       ))}
                       {addTab}
@@ -566,9 +643,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             </div>
             <div
               role="tabpanel"
-              id="graphiql-session"
+              id="graphiql-session" // used by aria-controls="graphiql-session"
               className="graphiql-session"
-              aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
+              aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.activeTabIndex}`}
             >
               <div ref={editorResize.firstRef}>
                 <div
@@ -772,39 +849,41 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               </ButtonGroup>
             </div>
           ) : null}
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">Theme</div>
-              <div className="graphiql-dialog-section-caption">
-                Adjust how the interface looks like.
+          {!forcedTheme && (
+            <div className="graphiql-dialog-section">
+              <div>
+                <div className="graphiql-dialog-section-title">Theme</div>
+                <div className="graphiql-dialog-section-caption">
+                  Adjust how the interface appears.
+                </div>
               </div>
+              <ButtonGroup>
+                <Button
+                  type="button"
+                  className={theme === null ? 'active' : ''}
+                  onClick={handleChangeTheme}
+                >
+                  System
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'light' ? 'active' : ''}
+                  data-theme="light"
+                  onClick={handleChangeTheme}
+                >
+                  Light
+                </Button>
+                <Button
+                  type="button"
+                  className={theme === 'dark' ? 'active' : ''}
+                  data-theme="dark"
+                  onClick={handleChangeTheme}
+                >
+                  Dark
+                </Button>
+              </ButtonGroup>
             </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={theme === null ? 'active' : ''}
-                onClick={handleChangeTheme}
-              >
-                System
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'light' ? 'active' : ''}
-                data-theme="light"
-                onClick={handleChangeTheme}
-              >
-                Light
-              </Button>
-              <Button
-                type="button"
-                className={theme === 'dark' ? 'active' : ''}
-                data-theme="dark"
-                onClick={handleChangeTheme}
-              >
-                Dark
-              </Button>
-            </ButtonGroup>
-          </div>
+          )}
           {storageContext ? (
             <div className="graphiql-dialog-section">
               <div>
