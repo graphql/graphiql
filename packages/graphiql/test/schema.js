@@ -6,6 +6,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+const graphql = require('graphql');
+
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -19,7 +21,16 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-} = require('graphql');
+  GraphQLDeferDirective,
+  GraphQLStreamDirective,
+  specifiedDirectives,
+  version,
+} = graphql;
+
+const directives =
+  parseInt(version, 10) > 16
+    ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
+    : specifiedDirectives;
 
 // Test Schema
 const TestEnum = new GraphQLEnumType({
@@ -386,6 +397,7 @@ const myTestSchema = new GraphQLSchema({
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
   description: 'This is a test schema for GraphiQL',
+  directives,
 });
 
 module.exports = myTestSchema;

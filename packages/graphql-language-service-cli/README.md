@@ -53,7 +53,7 @@ yarn global add graphql-language-service-cli
 with `npm`:
 
 ```sh
-npm i -g graphql-language-service-cli
+npm install -g graphql-language-service-cli
 ```
 
 either will install the `graphql-lsp` bin globally

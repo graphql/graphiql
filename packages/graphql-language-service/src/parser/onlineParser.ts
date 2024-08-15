@@ -315,7 +315,6 @@ function isList(state: State): boolean | null | undefined {
     Array.isArray(state.rule) &&
     typeof state.rule[state.step] !== 'string' &&
     (state.rule[state.step] as Rule);
-  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
   return step && step.isList;
 }
 

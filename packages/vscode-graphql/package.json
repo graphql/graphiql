@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.10.2",
+  "version": "0.12.0",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -120,7 +120,7 @@
           ],
           "description": "Base dir for graphql config loadConfig(), to look for config files or package.json"
         },
-        "graphql-config.load.filePath": {
+        "graphql-config.load.filepath": {
           "type": [
             "string"
           ],
@@ -179,8 +179,8 @@
     "ovsx": "0.8.3"
   },
   "dependencies": {
-    "graphql": "^16.8.1",
-    "graphql-language-service-server": "^2.12.0",
+    "graphql": "^16.8.1 || ^17.0.0-alpha.2",
+    "graphql-language-service-server": "^2.14.0",
     "vscode-languageclient": "8.0.2",
     "typescript": "^5.3.3"
   }

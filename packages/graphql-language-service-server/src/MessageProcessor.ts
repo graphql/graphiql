@@ -75,6 +75,7 @@ import { NoopLogger, Logger } from './Logger';
 import glob from 'fast-glob';
 import { isProjectSDLOnly, unwrapProjectSchema } from './common';
 import { DefinitionQueryResponse } from 'graphql-language-service/src/interface';
+import { default as debounce } from 'debounce-promise';
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -97,7 +98,7 @@ export class MessageProcessor {
   private _isGraphQLConfigMissing: boolean | null = null;
   private _willShutdown = false;
   private _logger: Logger | NoopLogger;
-  private _parser: (text: string, uri: string) => CachedContent[];
+  private _parser: (text: string, uri: string) => Promise<CachedContent[]>;
   private _tmpDir: string;
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
@@ -129,7 +130,7 @@ export class MessageProcessor {
     }
     this._connection = connection;
     this._logger = logger;
-    this._parser = (text, uri) => {
+    this._parser = async (text, uri) => {
       const p = parser ?? parseDocument;
       return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
     };
@@ -229,7 +230,7 @@ export class MessageProcessor {
       rootDir,
     };
 
-    const onSchemaChange = async (project: GraphQLProjectConfig) => {
+    const onSchemaChange = debounce(async (project: GraphQLProjectConfig) => {
       const { cacheSchemaFileForLookup } =
         this.getCachedSchemaSettings(project);
       if (!cacheSchemaFileForLookup) {
@@ -241,7 +242,7 @@ export class MessageProcessor {
         return;
       }
       return this.cacheConfigSchemaFile(project);
-    };
+    }, 400);
 
     try {
       // now we have the settings so we can re-build the logger
@@ -255,6 +256,7 @@ export class MessageProcessor {
           parser: this._parser,
           configDir: rootDir,
           onSchemaChange,
+          schemaCacheTTL: this._settings?.schemaCacheTTL,
         });
         this._languageService = new GraphQLLanguageService(
           this._graphQLCache,
@@ -267,6 +269,7 @@ export class MessageProcessor {
           loadConfigOptions: this._loadConfigOptions,
           logger: this._logger,
           onSchemaChange,
+          schemaCacheTTL: this._settings?.schemaCacheTTL,
         });
         this._languageService = new GraphQLLanguageService(
           this._graphQLCache,
@@ -1010,9 +1013,7 @@ export class MessageProcessor {
           symbols.push(...docSymbols);
         }),
       );
-      return symbols.filter(
-        symbol => symbol?.name && symbol.name.includes(params.query),
-      );
+      return symbols.filter(symbol => symbol?.name?.includes(params.query));
     }
 
     return [];
@@ -1309,6 +1310,7 @@ export class MessageProcessor {
       unwrapProjectSchema(project).map(async schema => {
         const schemaFilePath = path.resolve(project.dirpath, schema);
         const uriFilePath = URI.parse(uri).fsPath;
+
         if (uriFilePath === schemaFilePath) {
           try {
             const file = await readFile(schemaFilePath, 'utf-8');
@@ -1358,7 +1360,6 @@ export class MessageProcessor {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (
         cachedDocument &&
-        textDocument &&
         textDocument?.version &&
         cachedDocument.version < textDocument.version
       ) {

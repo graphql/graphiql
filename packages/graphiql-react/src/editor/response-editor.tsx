@@ -105,9 +105,11 @@ export function useResponseEditor(
 
           // We can't refactor to root.unmount() from React 18 because we support React 16/17 too
           if (!infoElements.length) {
+            // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
             ReactDOM.unmountComponentAtNode(tooltipDiv);
             return null;
           }
+          // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
           ReactDOM.render(infoElements, tooltipDiv);
           return tooltipDiv;
         },

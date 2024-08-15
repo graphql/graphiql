@@ -1,6 +1,6 @@
 describe('Tabs', () => {
   it('Should store editor contents when switching between tabs', () => {
-    cy.visit('/?query=');
+    cy.visit('/?defaultQuery=&query=');
 
     // Assert that no tab visible when there's only one session
     cy.get('#graphiql-session-tab-0').should('not.exist');
@@ -76,6 +76,30 @@ describe('Tabs', () => {
       variablesString: '',
       headersString: '',
       response: { data: { id: 'abc123' } },
+    });
+  });
+
+  describe('confirmCloseTab()', () => {
+    it('should keep tab when `Cancel` was clicked', () => {
+      cy.on('window:confirm', () => false);
+      cy.visit('/?confirmCloseTab=true');
+
+      cy.get('.graphiql-tab-add').click();
+
+      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
+
+      cy.get('.graphiql-tab-button').should('have.length', 2);
+    });
+
+    it('should close tab when `OK` was clicked', () => {
+      cy.on('window:confirm', () => true);
+      cy.visit('/?confirmCloseTab=true');
+
+      cy.get('.graphiql-tab-add').click();
+
+      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
+
+      cy.get('.graphiql-tab-button').should('have.length', 0);
     });
   });
 });

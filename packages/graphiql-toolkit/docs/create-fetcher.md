@@ -15,7 +15,7 @@ specification, and the most popular transport spec proposals.
 You can install `@graphiql/toolkit` using your favorite package manager:
 
 ```bash
-npm install --save @graphiql/toolkit
+npm install @graphiql/toolkit
 ```
 
 ## Getting Started
@@ -50,7 +50,7 @@ root.render(<App />);
 First you'll need to install `graphql-ws` as a peer dependency:
 
 ```bash
-npm install --save graphql-ws
+npm install graphql-ws
 ```
 
 Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws`
@@ -193,7 +193,7 @@ root.render(<App />);
 Note that you will need to install the client separately:
 
 ```bash
-npm install --save subscriptions-transport-ws
+npm install subscriptions-transport-ws
 ```
 
 ### Custom `fetcher` Example

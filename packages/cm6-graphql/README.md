@@ -11,7 +11,7 @@ autocomplete and linting powered by your GraphQL Schema.
 ### Getting Started
 
 ```sh
-npm install --save cm6-graphql
+npm install cm6-graphql
 ```
 
 [CodeMirror 6](https://codemirror.net/) customization is done through

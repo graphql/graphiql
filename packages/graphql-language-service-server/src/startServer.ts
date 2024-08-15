@@ -116,16 +116,9 @@ export default async function startServer(
 
       break;
     case 'stream':
-      const server = createLanguageServerConnection(
-        // @ts-expect-error this still works, just a type mismatch
-        process.stdin,
-        process.stderr,
-        {
-          connectionStrategy: 'stdio',
-        },
-      );
-      server.listen();
-      return server;
+      reader = new StreamMessageReader(process.stdin);
+      writer = new StreamMessageWriter(process.stdout);
+      break;
 
     default:
       reader = new IPCMessageReader(process);
@@ -235,9 +228,8 @@ export async function addHandlers({
   connection.onNotification(
     DidChangeTextDocumentNotification.type,
     async params => {
-      const diagnostics = await messageProcessor.handleDidChangeNotification(
-        params,
-      );
+      const diagnostics =
+        await messageProcessor.handleDidChangeNotification(params);
       reportDiagnostics(diagnostics, connection);
     },
   );

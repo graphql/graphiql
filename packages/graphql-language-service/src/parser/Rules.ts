@@ -121,8 +121,8 @@ export const ParseRules: { [name: string]: ParseRule } = {
         ? 'InlineFragment'
         : 'FragmentSpread'
       : stream.match(/[\s\u00a0,]*:/, false)
-      ? 'AliasedField'
-      : 'Field';
+        ? 'AliasedField'
+        : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.
   AliasedField: [

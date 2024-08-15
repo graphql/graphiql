@@ -8,20 +8,14 @@
  *
  * It is used by:
  * - the netlify demo
- * - end to end tests
+ * - end-to-end tests
  * - webpack dev server
  */
 
 // Parse the search string to get url parameters.
-const parameters = {};
-for (const entry of window.location.search.slice(1).split('&')) {
-  const eq = entry.indexOf('=');
-  if (eq >= 0) {
-    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-      entry.slice(eq + 1),
-    );
-  }
-}
+const parameters = Object.fromEntries(
+  new URLSearchParams(location.search).entries(),
+);
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
@@ -48,6 +42,11 @@ function onTabChange(tabsState) {
   updateURL();
 }
 
+function confirmCloseTab(index) {
+  // eslint-disable-next-line no-alert
+  return confirm(`Are you sure you want to close tab with index ${index}?`);
+}
+
 function updateURL() {
   const newSearch = Object.entries(parameters)
     .filter(([_key, value]) => value)
@@ -63,16 +62,6 @@ function getSchemaUrl() {
   const isDev = window.location.hostname.match(/localhost$/);
 
   if (isDev) {
-    // This supports an e2e test which ensures that invalid schemas do not load.
-    if (parameters.bad === 'true') {
-      return '/bad/graphql';
-    }
-    if (parameters['http-error'] === 'true') {
-      return '/http-error/graphql';
-    }
-    if (parameters['graphql-error'] === 'true') {
-      return '/graphql-error/graphql';
-    }
     return '/graphql';
   }
   return '/.netlify/functions/graphql';
@@ -101,6 +90,10 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    confirmCloseTab:
+      parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
+    forcedTheme: parameters.forcedTheme,
+    defaultQuery: parameters.defaultQuery,
   }),
 );

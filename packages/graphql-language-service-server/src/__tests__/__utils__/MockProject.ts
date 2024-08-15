@@ -57,7 +57,7 @@ export class MockProject {
   }: {
     files: Files;
     root?: string;
-    settings?: [name: string, vale: any][];
+    settings?: Record<string, any>;
   }) {
     this.root = root;
     this.fileCache = new Map(files);
@@ -100,10 +100,14 @@ export class MockProject {
     });
   }
   private mockFiles() {
-    const mockFiles = { ...defaultMocks };
-    Array.from(this.fileCache).map(([filename, text]) => {
+    const mockFiles = {
+      ...defaultMocks,
+      // without this, the generated schema file may not be cleaned up by previous tests
+      '/tmp/graphql-language-service': mockfs.directory(),
+    };
+    for (const [filename, text] of this.fileCache) {
       mockFiles[this.filePath(filename)] = text;
-    });
+    }
     mockfs(mockFiles);
   }
   public filePath(filename: string) {
