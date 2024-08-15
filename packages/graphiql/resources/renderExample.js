@@ -110,7 +110,8 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
-    confirmCloseTab: searchParams.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
+    confirmCloseTab:
+      searchParams.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),

@@ -1,47 +1,5 @@
 describe('Tabs', () => {
-  describe('confirmCloseTab()', () => {
-    it('should keep tab when `Cancel` was clicked', () => {
-      cy.on('window:confirm', () => false);
-      cy.visit('/?confirmCloseTab=true');
-
-      cy.get('.graphiql-tab-add').click();
-
-      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
-
-      cy.get('.graphiql-tab-button').should('have.length', 2);
-    });
-
-    it('should close tab when `OK` was clicked', () => {
-      cy.on('window:confirm', () => true);
-      cy.visit('/?confirmCloseTab=true');
-
-      cy.get('.graphiql-tab-add').click();
-
-      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
-
-      cy.get('.graphiql-tab-button').should('have.length', 1);
-    });
-  })
-
   it('Should store editor contents when switching between tabs', () => {
-    let count = 0;
-
-    cy.on('window:confirm', str => {
-      count += 1;
-      switch (count) {
-        case 1:
-          expect(str).to.eq('Are you sure you want to close this tab?');
-          // reject the initial attempt to close the tab
-          return false;
-        case 2:
-          expect(str).to.eq('Are you sure you want to close this tab?');
-          // approve the second attempt to close the tab
-          return true;
-        default:
-          return true;
-      }
-    });
-
     cy.visit('/?query=');
 
     // Assert that no tab visible when there's only one session
@@ -106,13 +64,7 @@ describe('Tabs', () => {
       response: { data: { image: '/images/logo.svg' } },
     });
 
-    // Close tab (this will get rejected)
-    cy.get('#graphiql-session-tab-1 + .graphiql-tab-close').click();
-
-    // Tab is still visible
-    cy.get('#graphiql-session-tab-1 + .graphiql-tab-close').should('exist');
-
-    // Close tab (this will get accepted)
+    // Close tab
     cy.get('#graphiql-session-tab-1 + .graphiql-tab-close').click();
 
     // Assert that no tab visible when there's only one session
@@ -124,6 +76,30 @@ describe('Tabs', () => {
       variablesString: '',
       headersString: '',
       response: { data: { id: 'abc123' } },
+    });
+  });
+
+  describe('confirmCloseTab()', () => {
+    it('should keep tab when `Cancel` was clicked', () => {
+      cy.on('window:confirm', () => false);
+      cy.visit('/?confirmCloseTab=true');
+
+      cy.get('.graphiql-tab-add').click();
+
+      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
+
+      cy.get('.graphiql-tab-button').should('have.length', 2);
+    });
+
+    it('should close tab when `OK` was clicked', () => {
+      cy.on('window:confirm', () => true);
+      cy.visit('/?confirmCloseTab=true');
+
+      cy.get('.graphiql-tab-add').click();
+
+      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
+
+      cy.get('.graphiql-tab-button').should('have.length', 1);
     });
   });
 });
