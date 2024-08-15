@@ -189,7 +189,7 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
 
 export type GraphiQLInterfaceProps = WriteableEditorProps &
   AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
-  Pick<UseQueryEditorArgs, 'onCopyQuery'> &
+  Pick<UseQueryEditorArgs, 'onCopyQuery' | 'onPrettifyQuery'> &
   AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
   AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
   Pick<UseResponseEditorArgs, 'responseTooltip'> & {
@@ -328,8 +328,13 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   const {
     logo = <GraphiQL.Logo />,
-    // @ts-expect-error -- Prop exists but hidden for users
-    toolbar = <GraphiQL.Toolbar onCopyQuery={props.onCopyQuery} />,
+    toolbar = (
+      <GraphiQL.Toolbar
+        // @ts-expect-error -- Prop exists but hidden for users
+        onCopyQuery={props.onCopyQuery}
+        onPrettifyQuery={props.onPrettifyQuery}
+      />
+    ),
     footer,
   } = useMemo(
     () =>
@@ -346,6 +351,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             // @ts-expect-error -- fix type error
             acc.toolbar = cloneElement(curr, {
               onCopyQuery: props.onCopyQuery,
+              onPrettifyQuery: props.onPrettifyQuery,
             });
             break;
           case GraphiQL.Footer:
@@ -354,7 +360,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         }
         return acc;
       }, {}),
-    [props.children, props.onCopyQuery],
+    [props.children, props.onCopyQuery, props.onPrettifyQuery],
   );
 
   const onClickReference = useCallback(() => {
@@ -628,6 +634,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         keyMap={props.keyMap}
                         onClickReference={onClickReference}
                         onCopyQuery={props.onCopyQuery}
+                        onPrettifyQuery={props.onPrettifyQuery}
                         onEdit={props.onEditQuery}
                         readOnly={props.readOnly}
                       />
@@ -981,6 +988,8 @@ function GraphiQLToolbar({
   children = DefaultToolbarRenderProps,
   // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
   onCopyQuery,
+  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onPrettifyQuery
+  onPrettifyQuery,
 }: {
   children?: ToolbarRenderProps;
 }) {
@@ -991,7 +1000,7 @@ function GraphiQLToolbar({
   }
   const onCopy = useCopyQuery({ onCopyQuery });
   const onMerge = useMergeQuery();
-  const onPrettify = usePrettifyEditors();
+  const onPrettify = usePrettifyEditors({ onPrettifyQuery });
 
   const prettify = (
     <ToolbarButton onClick={onPrettify} label="Prettify query (Shift-Ctrl-P)">
