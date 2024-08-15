@@ -64,7 +64,7 @@
 
 /* The session header containing tabs and the logo */
 .graphiql-container .graphiql-session-header {
-  position: relative;
+  height: var(--session-header-height);
   align-items: center;
   display: flex;
   padding: var(--px-8) var(--px-8) 0;
@@ -85,8 +85,7 @@ button.graphiql-tab-add {
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
-  position: absolute;
-  right: var(--px-16);
+  margin-left: auto;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
