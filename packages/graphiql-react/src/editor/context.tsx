@@ -56,14 +56,6 @@ export type EditorContextType = TabsState & {
    */
   changeTab(index: number): void;
   /**
-   * When the user clicks a close tab button, this function is invoked with
-   * the index of the tab that is about to be closed. It returns a promise
-   * that should resolve to `true` (meaning the tab may be closed) or `false`
-   * (meaning the tab may not be closed).
-   * @param index The index of the tab that should be closed.
-   */
-  closeTabConfirmation(index: number): Promise<boolean>;
-  /**
    * Move a tab to a new spot.
    * @param newOrder The new order for the tabs.
    */
@@ -87,7 +79,7 @@ export type EditorContextType = TabsState & {
   ): void;
 
   /**
-   * The CodeMirror editor instance for the headers' editor.
+   * The CodeMirror editor instance for the headers editor.
    */
   headerEditor: CodeMirrorEditor | null;
   /**
@@ -101,11 +93,11 @@ export type EditorContextType = TabsState & {
    */
   responseEditor: CodeMirrorEditor | null;
   /**
-   * The CodeMirror editor instance for the variables' editor.
+   * The CodeMirror editor instance for the variables editor.
    */
   variableEditor: CodeMirrorEditor | null;
   /**
-   * Set the CodeMirror editor instance for the headers' editor.
+   * Set the CodeMirror editor instance for the headers editor.
    */
   setHeaderEditor(newEditor: CodeMirrorEditor): void;
   /**
@@ -117,7 +109,7 @@ export type EditorContextType = TabsState & {
    */
   setResponseEditor(newEditor: CodeMirrorEditor): void;
   /**
-   * Set the CodeMirror editor instance for the variables' editor.
+   * Set the CodeMirror editor instance for the variables editor.
    */
   setVariableEditor(newEditor: CodeMirrorEditor): void;
 
@@ -215,19 +207,11 @@ export type EditorContextProviderProps = {
   /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
-   * - Selecting an operation for execution in a document that contains multiple
+   * - Selecting a operation for execution in a document that contains multiple
    *   operation definitions
    * @param operationName The operation name after it has been changed.
    */
   onEditOperationName?(operationName: string): void;
-  /**
-   * When the user clicks a close tab button, this function is invoked with
-   * the index of the tab that is about to be closed. It returns a promise
-   * that should resolve to `true` (meaning the tab may be closed) or `false`
-   * (meaning the tab may not be closed).
-   * @param index The index of the tab that should be closed.
-   */
-  confirmCloseTab?(index: number): Promise<boolean>;
   /**
    * Invoked when the state of the tabs changes. Possible triggers are:
    * - Updating any editor contents inside the currently active tab
@@ -376,14 +360,13 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const { onTabChange, defaultHeaders, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
     variableEditor,
     headerEditor,
     responseEditor,
-    defaultHeaders,
   });
+  const { onTabChange, defaultHeaders, children } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
@@ -437,19 +420,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       });
     },
     [onTabChange, setEditorValues, storeTabs],
-  );
-
-  const closeTabConfirmation = useCallback<
-    EditorContextType['closeTabConfirmation']
-  >(
-    async index => {
-      if (props.confirmCloseTab) {
-        const confirmation = await props.confirmCloseTab(index);
-        return confirmation;
-      }
-      return true;
-    },
-    [props.confirmCloseTab],
   );
 
   const closeTab = useCallback<EditorContextType['closeTab']>(
@@ -527,7 +497,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       addTab,
       changeTab,
       moveTab,
-      closeTabConfirmation,
       closeTab,
       updateActiveTabValues,
 
