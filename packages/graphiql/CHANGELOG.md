@@ -1,5 +1,16 @@
 # Change Log
 
+## 4.0.0-alpha.5
+
+### Minor Changes
+
+- [#3733](https://github.com/graphql/graphiql/pull/3733) [`8dbddb5`](https://github.com/graphql/graphiql/commit/8dbddb50273720d76f895af6b783b04204c68e03) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Add support for `onPrettifyQuery` callback to enable customised query formatting
+
+### Patch Changes
+
+- Updated dependencies [[`8dbddb5`](https://github.com/graphql/graphiql/commit/8dbddb50273720d76f895af6b783b04204c68e03)]:
+  - @graphiql/react@1.0.0-alpha.4
+
 ## 4.0.0-alpha.4
 
 ### Minor Changes
