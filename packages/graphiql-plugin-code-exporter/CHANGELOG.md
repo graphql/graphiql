@@ -1,5 +1,12 @@
 # @graphiql/plugin-code-exporter
 
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`959ed21`](https://github.com/graphql/graphiql/commit/959ed21815682fc439f64d78e23e603a8f313a6f), [`9aef83a`](https://github.com/graphql/graphiql/commit/9aef83a32aeb5f193a3ff0f191c95d09eb0d70b6)]:
+  - @graphiql/react@0.26.0
+
 ## 3.1.1
 
 ### Patch Changes
