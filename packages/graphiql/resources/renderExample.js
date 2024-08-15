@@ -8,20 +8,14 @@
  *
  * It is used by:
  * - the netlify demo
- * - end to end tests
+ * - end-to-end tests
  * - webpack dev server
  */
 
 // Parse the search string to get url parameters.
-const parameters = {};
-for (const entry of window.location.search.slice(1).split('&')) {
-  const eq = entry.indexOf('=');
-  if (eq >= 0) {
-    parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-      entry.slice(eq + 1),
-    );
-  }
-}
+const parameters = Object.fromEntries(
+  new URLSearchParams(location.search).entries(),
+);
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
@@ -46,6 +40,11 @@ function onTabChange(tabsState) {
   parameters.variables = activeTab.variables;
   parameters.headers = activeTab.headers;
   updateURL();
+}
+
+function confirmCloseTab(index) {
+  // eslint-disable-next-line no-alert
+  return confirm(`Are you sure you want to close tab with index ${index}?`);
 }
 
 function updateURL() {
@@ -91,6 +90,8 @@ root.render(
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    confirmCloseTab:
+      parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
   }),

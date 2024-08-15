@@ -225,6 +225,7 @@ wgutils
 wincent
 wonka
 yoshiakis
+zustand
 zdravo
 Здорово
 أهلاً
