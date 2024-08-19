@@ -1,5 +1,5 @@
 <!--
- *  Copyright (c) 2021 GraphQL Contributors
+ *  Copyright (c) 2024 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -8,29 +8,25 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title></title>
+    <title>GraphiQL Plugin Explorer Demo</title>
     <style>
       body {
-        height: 100%;
         margin: 0;
-        width: 100%;
-        overflow: hidden;
+        overflow: hidden; /* in Firefox */
       }
 
       #graphiql {
-        height: 100vh;
+        height: 100dvh;
+      }
+
+      .loading {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
       }
     </style>
-
-    <link rel="stylesheet" href="https://unpkg.com/graphiql/dist/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@graphiql/plugin-explorer/dist/style.css"
-    />
-  </head>
-
-  <body>
-    <div id="graphiql">Loading...</div>
 
     <script
       crossorigin
@@ -42,34 +38,45 @@
     ></script>
 
     <script
-      src="https://unpkg.com/graphiql/dist/index.umd.js"
+      src="https://unpkg.com/graphiql@4.0.0-alpha.5/dist/index.umd.js"
       crossorigin
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/graphiql@4.0.0-alpha.5/dist/style.css"
+    />
+
     <script
-      src="https://unpkg.com/@graphiql/plugin-explorer/dist/index.umd.js"
-      integrity="sha512-Fjas/uSkzvsFjbv4jqU9nt4ulU7LDjiMAXW2YFTYD96NgKS1fhhAsGR4b2k2VaVLsE29aia3vyobAq9TNzusvA=="
-      crossorigin="anonymous"
+      src="https://unpkg.com/@graphiql/plugin-explorer@4.0.0-alpha.0/dist/index.umd.js"
+      crossorigin
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@graphiql/plugin-explorer@4.0.0-alpha.0/dist/style.css"
+    />
+  </head>
+
+  <body>
+    <div id="graphiql">
+      <div class="loading">Loading…</div>
+    </div>
 
     <script>
-      var fetcher = GraphiQL.createFetcher({
+      const fetcher = GraphiQL.createFetcher({
         url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
       });
-      var defaultQuery =
-        'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}';
-      var explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
+      const explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
 
-      function GraphiQLWithExplorer() {
-        return React.createElement(GraphiQL, {
+      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+      root.render(
+        React.createElement(GraphiQL, {
           fetcher: fetcher,
           defaultEditorToolsVisibility: true,
           plugins: [explorerPlugin],
-          defaultQuery: defaultQuery,
-        });
-      }
-
-      const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-      root.render(React.createElement(GraphiQLWithExplorer));
+          defaultQuery:
+            'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
+        }),
+      );
     </script>
   </body>
 </html>
