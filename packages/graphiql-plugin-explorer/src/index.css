@@ -31,6 +31,10 @@
   padding-top: var(--px-16);
 }
 
+.graphiql-explorer-root > div {
+  overflow: auto !important; /* override overflow: scroll */
+}
+
 .graphiql-explorer-root input {
   background: unset;
 }
@@ -44,16 +48,23 @@
   padding: var(--px-4) var(--px-6);
 }
 
-.graphiql-operation-title-bar .toolbar-button {
-  line-height: 0;
-  margin-left: var(--px-8);
-  color: hsla(var(--color-neutral), var(--alpha-secondary, 0.6));
-  font-size: var(--font-size-h3);
-  vertical-align: middle;
+.toolbar-button {
+  all: unset;
+  cursor: pointer;
+  line-height: 0 !important;
+  margin-left: var(--px-6);
+  color: hsl(var(--color-primary));
+  font-size: var(--font-size-h3) !important;
+}
+
+.graphiql-explorer-slug .toolbar-button,
+.graphiql-explorer-graphql-arguments .toolbar-button {
+  font-size: inherit !important;
 }
 
 .graphiql-explorer-graphql-arguments input {
   line-height: 0;
+  min-width: 5rem;
 }
 
 .graphiql-explorer-actions {
