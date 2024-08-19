@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 4.0.0-alpha.1
+
+### Patch Changes
+
+- [#3738](https://github.com/graphql/graphiql/pull/3738) [`eaa415c`](https://github.com/graphql/graphiql/commit/eaa415cce5c3baecea76068c02953884eec5ba2e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - improve explorer styles
+
 ## 4.0.0-alpha.0
 
 ### Major Changes
