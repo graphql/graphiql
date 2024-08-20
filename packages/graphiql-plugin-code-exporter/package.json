@@ -27,7 +27,7 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
