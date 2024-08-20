@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 4.0.0-alpha.1
+
+### Patch Changes
+
+- [#3740](https://github.com/graphql/graphiql/pull/3740) [`3c12ce0`](https://github.com/graphql/graphiql/commit/3c12ce01eb3b2ec9a317a2fea2bb92602b748a8b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix types incorrect types entry
+
 ## 4.0.0-alpha.0
 
 ### Major Changes
