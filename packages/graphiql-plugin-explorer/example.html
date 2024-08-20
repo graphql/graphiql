@@ -68,15 +68,20 @@
       const explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
 
       const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-      root.render(
-        React.createElement(GraphiQL, {
-          fetcher: fetcher,
-          defaultEditorToolsVisibility: true,
-          plugins: [explorerPlugin],
-          defaultQuery:
-            'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
-        }),
-      );
+      const app = React.createElement(GraphiQL, {
+        fetcher,
+        defaultEditorToolsVisibility: true,
+        plugins: [explorerPlugin],
+        defaultQuery: `query AllFilms {
+  allFilms {
+    films {
+      title
+    }
+  }
+}`,
+      });
+
+      root.render(app);
     </script>
   </body>
 </html>

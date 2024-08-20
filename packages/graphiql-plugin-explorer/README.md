@@ -44,4 +44,4 @@ function GraphiQLWithExplorer() {
 
 You can also use this plugin with `unpkg`, `jsdelivr`, and other CDNs.
 
-See the [example HTML file](examples/index.html) for this plugin
+See the [example HTML file](./example.html) for this plugin

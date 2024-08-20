@@ -64,7 +64,7 @@
 
 .graphiql-explorer-graphql-arguments input {
   line-height: 0;
-  min-width: 5rem;
+  min-width: 2rem;
 }
 
 .graphiql-explorer-actions {
