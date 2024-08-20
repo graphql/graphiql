@@ -57,14 +57,14 @@ function htmlPlugin(): PluginOption {
   const require = createRequire(import.meta.url);
 
   const graphiqlPath = require
-    .resolve('graphiql')
-    .replace('/dist/index.js', '');
+    .resolve('graphiql/package.json')
+    .replace('/package.json', '');
 
   const htmlForVite = `<link rel="stylesheet" href="${graphiqlPath}/src/style.css" />
 <script type="module">
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import GraphiQL from '${graphiqlPath}/src/cdn.ts';
+import GraphiQL from '${graphiqlPath}/src/cdn';
 import * as GraphiQLPluginExplorer from './src';
 
 Object.assign(globalThis, { React, ReactDOM, GraphiQL, GraphiQLPluginExplorer });
