@@ -38,30 +38,27 @@
     ></script>
 
     <script
-      src="https://unpkg.com/graphiql@4.0.0-alpha.5/dist/index.umd.js"
+      src="https://unpkg.com/graphiql/dist/index.umd.js"
       crossorigin
     ></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/graphiql@4.0.0-alpha.5/dist/style.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/graphiql/dist/style.css" />
 
     <script
-      src="https://unpkg.com/@graphiql/plugin-explorer@4.0.0-alpha.0/dist/index.umd.js"
+      src="https://unpkg.com/@graphiql/plugin-explorer/dist/index.umd.js"
       crossorigin
     ></script>
     <link
       rel="stylesheet"
-      href="https://unpkg.com/@graphiql/plugin-explorer@4.0.0-alpha.0/dist/style.css"
+      href="https://unpkg.com/@graphiql/plugin-explorer/dist/style.css"
     />
   </head>
 
   <body>
     <div id="graphiql">
-      <div class="loading">Loading…</div>
+      <div class="loading">Loading...</div>
     </div>
 
-    <script>
+    <script type="module">
       const fetcher = GraphiQL.createFetcher({
         url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
       });
