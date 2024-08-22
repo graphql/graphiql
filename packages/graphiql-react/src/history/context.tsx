@@ -120,7 +120,7 @@ export function HistoryContextProvider({
         setItems(historyStore.queries);
       },
     }),
-    [items],
+    [items, historyStore],
   );
 
   return (
