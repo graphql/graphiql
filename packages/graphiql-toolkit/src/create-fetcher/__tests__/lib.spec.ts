@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { Mock } from 'vitest';
 import { parse } from 'graphql';
 import {
   isSubscriptionWithName,
@@ -12,9 +12,12 @@ vi.mock('graphql-ws');
 
 vi.mock('subscriptions-transport-ws');
 
-import { createClient } from 'graphql-ws';
+import { createClient as _createClient } from 'graphql-ws';
 
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { SubscriptionClient as _SubscriptionClient } from 'subscriptions-transport-ws';
+
+const createClient = _createClient as Mock<typeof _createClient>;
+const SubscriptionClient = _SubscriptionClient as Mock;
 
 const exampleWithSubscription = parse(/* GraphQL */ `
   subscription Example {
@@ -49,16 +52,16 @@ describe('createWebsocketsFetcherFromUrl', () => {
   });
 
   it('creates a websockets client using provided url', async () => {
+    // @ts-expect-error
     createClient.mockReturnValue(true);
     await createWebsocketsFetcherFromUrl('wss://example.com');
-    // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
 
   it('creates a websockets client using provided url that fails', async () => {
+    // @ts-expect-error
     createClient.mockReturnValue(false);
     expect(await createWebsocketsFetcherFromUrl('wss://example.com')).toThrow();
-    // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
 });
@@ -68,20 +71,22 @@ describe('getWsFetcher', () => {
     vi.resetAllMocks();
   });
   it('provides an observable wsClient when custom wsClient option is provided', async () => {
+    // @ts-expect-error
     createClient.mockReturnValue(true);
+    // @ts-expect-error
     await getWsFetcher({ url: '', wsClient: true });
-    // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
   });
   it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', async () => {
+    // @ts-expect-error
     createClient.mockReturnValue(true);
     await getWsFetcher({ url: '', legacyClient: true });
-    // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
 
   it('if subscriptionsUrl is provided, create a client on the fly', async () => {
+    // @ts-expect-error
     createClient.mockReturnValue(true);
     await getWsFetcher({ url: '', subscriptionUrl: 'wss://example' });
     expect(createClient.mock.calls[0]).toEqual([
