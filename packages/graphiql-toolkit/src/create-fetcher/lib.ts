@@ -182,7 +182,7 @@ export const createMultipartFetcher = (
  */
 export const getWsFetcher = (
   options: CreateFetcherOptions,
-  fetcherOpts: FetcherOpts | undefined,
+  fetcherOpts?: FetcherOpts,
 ): Fetcher | void => {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
