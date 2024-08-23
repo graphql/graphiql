@@ -3,9 +3,12 @@ import { QueryStore } from '../query';
 
 class StorageMock {
   shouldThrow: () => boolean;
+  // @ts-expect-error
   count: number;
   map = {};
+  // @ts-expect-error
   storage: Storage;
+
   constructor(shouldThrow: () => boolean) {
     this.shouldThrow = shouldThrow;
   }
@@ -19,7 +22,7 @@ class StorageMock {
         isQuotaError: true,
       };
     }
-
+    // @ts-expect-error
     this.map[key] = value;
 
     return {
@@ -29,6 +32,7 @@ class StorageMock {
   }
 
   get(key: string) {
+    // @ts-expect-error
     return this.map[key] || null;
   }
 }
@@ -47,6 +51,7 @@ describe('QueryStore', () => {
 
     it('will fail silently on quota error', () => {
       let i = 0;
+      // @ts-expect-error
       const store = new QueryStore('normal', new StorageMock(() => i > 4));
 
       for (; i < 10; i++) {
@@ -78,6 +83,7 @@ describe('QueryStore', () => {
       let retryCounter = 0;
       const store = new QueryStore(
         'normal',
+        // @ts-expect-error
         new StorageMock(() => {
           retryCounter++;
           return shouldThrow();
@@ -110,6 +116,7 @@ describe('QueryStore', () => {
       let retryCounter = 0;
       const store = new QueryStore(
         'normal',
+        // @ts-expect-error
         new StorageMock(() => {
           retryCounter++;
           return shouldThrow();

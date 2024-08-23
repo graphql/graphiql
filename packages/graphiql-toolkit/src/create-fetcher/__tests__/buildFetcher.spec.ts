@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { Mock } from 'vitest';
 import { parse, getIntrospectionQuery } from 'graphql';
 import { createGraphiQLFetcher } from '../createFetcher';
 
@@ -11,13 +11,13 @@ vi.mock('graphql-ws');
 vi.mock('subscriptions-transport-ws');
 
 import {
-  createWebsocketsFetcherFromUrl,
-  createMultipartFetcher,
-  createSimpleFetcher,
-  createWebsocketsFetcherFromClient,
-  createLegacyWebsocketsFetcher,
+  createWebsocketsFetcherFromUrl as _createWebsocketsFetcherFromUrl,
+  createMultipartFetcher as _createMultipartFetcher,
+  createSimpleFetcher as _createSimpleFetcher,
+  createWebsocketsFetcherFromClient as _createWebsocketsFetcherFromClient,
+  createLegacyWebsocketsFetcher as _createLegacyWebsocketsFetcher,
 } from '../lib';
-import { createClient } from 'graphql-ws';
+import { createClient as _createClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const serverURL = 'http://localhost:3000/graphql';
@@ -25,11 +25,30 @@ const wssURL = 'ws://localhost:3000/graphql';
 
 const exampleIntrospectionDocument = parse(getIntrospectionQuery());
 
+const createWebsocketsFetcherFromUrl = _createWebsocketsFetcherFromUrl as Mock<
+  typeof _createWebsocketsFetcherFromUrl
+>;
+const createMultipartFetcher = _createMultipartFetcher as Mock<
+  typeof _createMultipartFetcher
+>;
+const createSimpleFetcher = _createSimpleFetcher as Mock<
+  typeof _createSimpleFetcher
+>;
+const createClient = _createClient as Mock<typeof _createClient>;
+const createWebsocketsFetcherFromClient =
+  _createWebsocketsFetcherFromClient as Mock<
+    typeof _createWebsocketsFetcherFromClient
+  >;
+const createLegacyWebsocketsFetcher = _createLegacyWebsocketsFetcher as Mock<
+  typeof _createLegacyWebsocketsFetcher
+>;
+
 describe('createGraphiQLFetcher', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });
   it('returns fetcher without websocket client by default', () => {
+    // @ts-expect-error
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
     createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
@@ -39,6 +58,7 @@ describe('createGraphiQLFetcher', () => {
   });
 
   it('returns simple fetcher for introspection', async () => {
+    // @ts-expect-error
     createSimpleFetcher.mockReturnValue(async () => 'hey!');
     const fetcher = createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
@@ -55,6 +75,7 @@ describe('createGraphiQLFetcher', () => {
     expect(res).toEqual('hey!');
   });
   it('returns fetcher without websocket client or multipart', () => {
+    // @ts-expect-error
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
     createGraphiQLFetcher({ url: serverURL, enableIncrementalDelivery: false });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
@@ -64,6 +85,7 @@ describe('createGraphiQLFetcher', () => {
     ]);
   });
   it('returns fetcher with websocket client', () => {
+    // @ts-expect-error
     createWebsocketsFetcherFromUrl.mockReturnValue('Client1');
 
     const args = {
@@ -78,7 +100,9 @@ describe('createGraphiQLFetcher', () => {
   });
 
   it('returns fetcher with custom wsClient', () => {
+    // @ts-expect-error
     createClient.mockReturnValue('WSClient');
+    // @ts-expect-error
     createWebsocketsFetcherFromUrl.mockReturnValue('CustomWSSFetcher');
 
     const wsClient = createClient({ url: wssURL });
@@ -95,7 +119,9 @@ describe('createGraphiQLFetcher', () => {
   });
 
   it('returns fetcher with custom legacyClient', () => {
+    // @ts-expect-error
     createClient.mockReturnValue('WSClient');
+    // @ts-expect-error
     createLegacyWebsocketsFetcher.mockReturnValue('CustomWSSFetcher');
 
     const legacyClient = new SubscriptionClient(wssURL);

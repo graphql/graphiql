@@ -12,6 +12,5 @@
     "moduleResolution": "node",
     "types": ["vitest/globals"]
   },
-  "include": ["src", "tsup.config.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src", "tsup.config.ts", "vitest.config.mts"]
 }
