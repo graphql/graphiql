@@ -1,4 +1,3 @@
-// eslint-disable-next-line import-x/no-unresolved -- fix later
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({

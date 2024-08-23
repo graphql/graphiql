@@ -333,7 +333,7 @@ module.exports = {
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
-          { ignore: ['^node:', '\\.svg\\?react$'] },
+          { ignore: ['^node:', '\\.svg\\?react$', 'vitest/config'] },
         ],
         'no-extra-boolean-cast': [
           'error',

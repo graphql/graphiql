@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { parse } from 'graphql';
 import {
   isSubscriptionWithName,
@@ -7,9 +8,9 @@ import {
 
 import 'isomorphic-fetch';
 
-jest.mock('graphql-ws');
+vi.mock('graphql-ws');
 
-jest.mock('subscriptions-transport-ws');
+vi.mock('subscriptions-transport-ws');
 
 import { createClient } from 'graphql-ws';
 
@@ -44,7 +45,7 @@ describe('isSubscriptionWithName', () => {
 
 describe('createWebsocketsFetcherFromUrl', () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('creates a websockets client using provided url', async () => {
@@ -64,7 +65,7 @@ describe('createWebsocketsFetcherFromUrl', () => {
 
 describe('getWsFetcher', () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
   it('provides an observable wsClient when custom wsClient option is provided', async () => {
     createClient.mockReturnValue(true);
@@ -92,10 +93,17 @@ describe('getWsFetcher', () => {
 
 describe('missing `graphql-ws` dependency', () => {
   it('should throw a nice error', async () => {
-    jest.resetModules();
-    jest.doMock('graphql-ws', () => {
-      // eslint-disable-next-line no-throw-literal
-      throw { code: 'MODULE_NOT_FOUND' };
+    vi.resetModules();
+    vi.doMock('graphql-ws', () => {
+      // While throwing an error directly inside this callback `code` is attached in `cause`
+      // property e.g. `Error.cause.code`, so I throw an error on calling `createClient` instead
+
+      return {
+        createClient: vi.fn().mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw { code: 'MODULE_NOT_FOUND' };
+        }),
+      };
     });
 
     await expect(
