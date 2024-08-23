@@ -79,10 +79,7 @@ export const createWebsocketsFetcherFromUrl = (
     };
 
     // TODO: defaults?
-    wsClient = createClient({
-      url,
-      connectionParams,
-    });
+    wsClient = createClient({ url, connectionParams });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
     if (errorHasCode(err) && err.code === 'MODULE_NOT_FOUND') {
