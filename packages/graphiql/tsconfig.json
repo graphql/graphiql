@@ -12,9 +12,6 @@
   "exclude": ["**/__tests__/**", "**/dist/**.*", "cypress/**"],
   "references": [
     {
-      "path": "../graphiql-toolkit"
-    },
-    {
       "path": "../codemirror-graphql"
     },
     {

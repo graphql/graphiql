@@ -22,9 +22,6 @@
       "path": "../codemirror-graphql"
     },
     {
-      "path": "../graphiql-toolkit"
-    },
-    {
       "path": "../graphql-language-service"
     }
   ]

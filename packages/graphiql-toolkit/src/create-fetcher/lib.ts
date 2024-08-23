@@ -32,7 +32,7 @@ const errorHasCode = (err: unknown): err is { code: string } => {
  */
 export const isSubscriptionWithName = (
   document: DocumentNode,
-  name: string | undefined,
+  name?: string,
 ): boolean => {
   let isSubscription = false;
   visit(document, {
@@ -97,12 +97,10 @@ export const createWebsocketsFetcherFromUrl = (
 
 /**
  * Create ws/s fetcher using provided wsClient implementation
- *
- * @param wsClient {Client}
- * @returns {Fetcher}
  */
 export const createWebsocketsFetcherFromClient =
-  (wsClient: Client) => (graphQLParams: FetcherParams) =>
+  (wsClient: Client): Fetcher =>
+  (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
       wsClient.subscribe(graphQLParams, {
         ...sink,
@@ -125,12 +123,9 @@ export const createWebsocketsFetcherFromClient =
 /**
  * Allow legacy websockets protocol client, but no definitions for it,
  * as the library is deprecated and has security issues
- *
- * @param legacyWsClient
- * @returns
  */
 export const createLegacyWebsocketsFetcher =
-  (legacyWsClient: { request: (params: FetcherParams) => unknown }) =>
+  (legacyWsClient: { request: (params: FetcherParams) => unknown }): Fetcher =>
   (graphQLParams: FetcherParams) => {
     const observable = legacyWsClient.request(graphQLParams);
     return makeAsyncIterableIteratorFromSink<ExecutionResult>(
@@ -139,11 +134,8 @@ export const createLegacyWebsocketsFetcher =
     );
   };
 /**
- * create a fetcher with the `IncrementalDelivery` HTTP/S spec for
+ * Create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`
- *
- * @param options {CreateFetcherOptions}
- * @returns {Fetcher}
  */
 export const createMultipartFetcher = (
   options: CreateFetcherOptions,
@@ -187,13 +179,11 @@ export const createMultipartFetcher = (
 
 /**
  * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
- * @param options {CreateFetcherOptions}
- * @returns
  */
 export const getWsFetcher = (
   options: CreateFetcherOptions,
   fetcherOpts: FetcherOpts | undefined,
-) => {
+): Fetcher | void => {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
