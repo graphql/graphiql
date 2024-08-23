@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.11.0-alpha.0
+
+### Minor Changes
+
+- [#3746](https://github.com/graphql/graphiql/pull/3746) [`2ad4e75`](https://github.com/graphql/graphiql/commit/2ad4e7505385fefd252b9aa8ea2233cbaeca7f6a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - compile with `tsup` instead of `tsc`
+
 ## 0.10.0
 
 ### Minor Changes

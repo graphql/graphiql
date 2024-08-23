@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 1.0.0-alpha.5
+
+### Patch Changes
+
+- [#3743](https://github.com/graphql/graphiql/pull/3743) [`7275c19`](https://github.com/graphql/graphiql/commit/7275c19b174f06bd031f49b33912c1babf29ccb0) Thanks [@dimaMachina](https://github.com/dimaMachina)! - create instance of `new HistoryStore` and `new StorageAPI` only on mount, use function with `useState`
+
+- Updated dependencies [[`2ad4e75`](https://github.com/graphql/graphiql/commit/2ad4e7505385fefd252b9aa8ea2233cbaeca7f6a)]:
+  - @graphiql/toolkit@0.11.0-alpha.0
+
 ## 1.0.0-alpha.4
 
 ### Minor Changes
