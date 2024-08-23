@@ -54,7 +54,6 @@ Cypress.Commands.add('dataCy', value => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
-  cy.wait(500)
   return cy.get('.graphiql-execute-button').click();
 });
 

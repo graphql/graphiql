@@ -58,25 +58,23 @@ const esmConfig = defineConfig({
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
-      '/graphql/stream': 'http://localhost:8080/graphql/stream',
       '/subscriptions': {
         target: 'ws://localhost:8081',
         ws: true,
       },
     },
   },
-  plugins: [htmlPlugin(), commonjs(), dts({ rollupTypes: true })],
+  plugins: [htmlPlugin(), dts({ rollupTypes: true })],
 });
 
 function htmlPlugin(): PluginOption {
   const htmlForVite = /* HTML */ `
     <script type="module">
-      import React from "react";
-      import ReactDOM from "react-dom/client";
-      import GraphiQL from "./src/cdn";
-      import { createClient } from "graphql-sse";
+      import React from 'react';
+      import ReactDOM from 'react-dom/client';
+      import GraphiQL from './src/cdn';
 
-      Object.assign(globalThis,{ React, ReactDOM, GraphiQL, graphqlSse: { createClient } });
+      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
     </script>
     <link href="/src/style.css" rel="stylesheet" />
   `;

@@ -62,81 +62,28 @@ function updateURL() {
   history.replaceState(null, null, `?${newSearch}`);
 }
 
+function getSchemaUrl() {
+  const isDev = /localhost$/.test(location.hostname);
+
+  if (isDev) {
+    return '/graphql';
+  }
+  return '/.netlify/functions/graphql';
+}
+
 // Render <GraphiQL /> into the body.
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
-
-const { version: graphqlVersion } = GraphiQL.GraphQL;
-
-const url = /localhost$/.test(location.hostname)
-  ? '/graphql'
-  : '/.netlify/functions/graphql';
-
-const fetcher = GraphiQL.createFetcher({
-  url,
-  subscriptionUrl: 'ws://localhost:8081/subscriptions',
-});
-
-const sseClient = graphqlSse.createClient({
-  singleConnection: true, // or use false if you have an HTTP/2 server
-  url: 'http://localhost:8080/graphql/stream',
-  retryAttempts: 0,
-  lazy: false, // connect as soon as the page opens
-});
-
-function subscribe(payload) {
-  let deferred = null;
-  const pending = [];
-  let throwMe = null;
-  let done = false;
-
-  const dispose = sseClient.subscribe(payload, {
-    next(data) {
-      pending.push(data);
-      deferred?.resolve(false);
-    },
-    error(err) {
-      throwMe = err;
-      deferred?.reject(throwMe);
-    },
-    complete() {
-      done = true;
-      deferred?.resolve(true);
-    },
-  });
-
-  return {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    async next() {
-      if (done) {
-        return { done: true, value: undefined };
-      }
-      if (throwMe) {
-        throw throwMe;
-      }
-      if (pending.length) {
-        return { value: pending.shift() };
-      }
-      return (await new Promise(
-        (resolve, reject) => (deferred = { resolve, reject }),
-      ))
-        ? { done: true, value: undefined }
-        : { value: pending.shift() };
-    },
-    async return() {
-      dispose();
-      return { done: true, value: undefined };
-    },
-  };
-}
+const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
   React.createElement(GraphiQL, {
-    fetcher: subscribe,
+    fetcher: GraphiQL.createFetcher({
+      url: getSchemaUrl(),
+      subscriptionUrl: 'ws://localhost:8081/subscriptions',
+    }),
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,

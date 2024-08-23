@@ -397,29 +397,3 @@ export const schema = new GraphQLSchema({
   description: 'This is a test schema for GraphiQL',
   directives,
 });
-
-export const sseSchema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      hello: {
-        type: GraphQLString,
-        resolve: () => 'world',
-      },
-    },
-  }),
-  subscription: new GraphQLObjectType({
-    name: 'Subscription',
-    fields: {
-      greetings: {
-        type: GraphQLString,
-        subscribe: async function* () {
-          for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-            await sleep(500)
-            yield { greetings: hi };
-          }
-        },
-      },
-    },
-  }),
-});
