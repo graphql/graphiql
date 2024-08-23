@@ -68,15 +68,16 @@ export const createSimpleFetcher =
     return data.json();
   };
 
-export const createWebsocketsFetcherFromUrl = (
+export async function createWebsocketsFetcherFromUrl(
   url: string,
   connectionParams?: ClientOptions['connectionParams'],
-) => {
+): Promise<Fetcher | void> {
   let wsClient;
   try {
-    const { createClient } = require('graphql-ws') as {
-      createClient: typeof createClientType;
-    };
+    const { createClient } =
+      process.env.USE_IMPORT === 'false'
+        ? (require('graphql-ws') as { createClient: typeof createClientType })
+        : await import('graphql-ws');
 
     // TODO: defaults?
     wsClient = createClient({ url, connectionParams });
@@ -90,7 +91,7 @@ export const createWebsocketsFetcherFromUrl = (
     // eslint-disable-next-line no-console
     console.error(`Error creating websocket client for ${url}`, err);
   }
-};
+}
 
 /**
  * Create ws/s fetcher using provided wsClient implementation
@@ -177,10 +178,10 @@ export const createMultipartFetcher = (
 /**
  * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
  */
-export const getWsFetcher = (
+export async function getWsFetcher(
   options: CreateFetcherOptions,
   fetcherOpts?: FetcherOpts,
-): Fetcher | void => {
+): Promise<Fetcher | void> {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
@@ -194,4 +195,4 @@ export const getWsFetcher = (
   if (legacyWebsocketsClient) {
     return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
   }
-};
+}
