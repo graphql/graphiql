@@ -1,13 +1,14 @@
+import { vi } from 'vitest';
 import { parse, getIntrospectionQuery } from 'graphql';
 import { createGraphiQLFetcher } from '../createFetcher';
 
 import 'isomorphic-fetch';
 
-jest.mock('../lib');
+vi.mock('../lib');
 
-jest.mock('graphql-ws');
+vi.mock('graphql-ws');
 
-jest.mock('subscriptions-transport-ws');
+vi.mock('subscriptions-transport-ws');
 
 import {
   createWebsocketsFetcherFromUrl,
@@ -26,7 +27,7 @@ const exampleIntrospectionDocument = parse(getIntrospectionQuery());
 
 describe('createGraphiQLFetcher', () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
   it('returns fetcher without websocket client by default', () => {
     createWebsocketsFetcherFromUrl.mockReturnValue(true);

@@ -22,7 +22,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "prebuild": "yarn types:check",
-    "types:check": "tsc --noEmit"
+    "types:check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",

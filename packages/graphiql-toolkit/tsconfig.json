@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "allowJs": true,
     "lib": ["es2022", "dom"],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": ["vitest/globals"]
   },
   "include": ["src", "tsup.config.ts"],
   "exclude": ["**/*.spec.ts"]

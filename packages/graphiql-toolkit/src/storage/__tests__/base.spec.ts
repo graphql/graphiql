@@ -79,7 +79,7 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result.error!.message).toEqual('Error: Terrible Error');
     expect(result.isQuotaError).toBe(false);
   });
 
@@ -93,7 +93,7 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result.error!.message).toEqual('QuotaExceededError: Terrible Error');
     expect(result.isQuotaError).toBe(true);
   });
 });
