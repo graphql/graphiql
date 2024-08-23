@@ -27,7 +27,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
 
-  return (graphQLParams, fetcherOpts) => {
+  return async (graphQLParams, fetcherOpts) => {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
       return (options.schemaFetcher || simpleFetcher)(
         graphQLParams,
@@ -41,7 +41,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         )
       : false;
     if (isSubscription) {
-      const wsFetcher = getWsFetcher(options, fetcherOpts);
+      const wsFetcher = await getWsFetcher(options, fetcherOpts);
 
       if (!wsFetcher) {
         throw new Error(

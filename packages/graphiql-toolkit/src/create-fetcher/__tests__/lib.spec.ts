@@ -15,7 +15,7 @@ import { createClient } from 'graphql-ws';
 
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-const exampleWithSubscription = /* GraphQL */ parse(`
+const exampleWithSubscription = parse(/* GraphQL */ `
   subscription Example {
     example
   }
@@ -47,9 +47,9 @@ describe('createWebsocketsFetcherFromUrl', () => {
     jest.resetAllMocks();
   });
 
-  it('creates a websockets client using provided url', () => {
+  it('creates a websockets client using provided url', async () => {
     createClient.mockReturnValue(true);
-    createWebsocketsFetcherFromUrl('wss://example.com');
+    await createWebsocketsFetcherFromUrl('wss://example.com');
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
@@ -66,23 +66,23 @@ describe('getWsFetcher', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-  it('provides an observable wsClient when custom wsClient option is provided', () => {
+  it('provides an observable wsClient when custom wsClient option is provided', async () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({ url: '', wsClient: true });
+    await getWsFetcher({ url: '', wsClient: true });
     // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
   });
-  it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', () => {
+  it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', async () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({ url: '', legacyClient: true });
+    await getWsFetcher({ url: '', legacyClient: true });
     // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
 
-  it('if subscriptionsUrl is provided, create a client on the fly', () => {
+  it('if subscriptionsUrl is provided, create a client on the fly', async () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({ url: '', subscriptionUrl: 'wss://example' });
+    await getWsFetcher({ url: '', subscriptionUrl: 'wss://example' });
     expect(createClient.mock.calls[0]).toEqual([
       { connectionParams: {}, url: 'wss://example' },
     ]);
@@ -98,7 +98,7 @@ describe('missing graphql-ws dependency', () => {
       throw { code: 'MODULE_NOT_FOUND' };
     });
 
-    expect(() => createWebsocketsFetcherFromUrl('wss://example.com')).toThrow(
+    expect(createWebsocketsFetcherFromUrl('wss://example.com')).rejects.toThrow(
       /You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'/,
     );
   });
