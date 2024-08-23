@@ -67,10 +67,7 @@ const url = 'https://my-schema.com/graphql';
 
 const subscriptionUrl = 'wss://my-schema.com/graphql';
 
-const fetcher = createGraphiQLFetcher({
-  url,
-  subscriptionUrl,
-});
+const fetcher = createGraphiQLFetcher({ url, subscriptionUrl });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
@@ -209,10 +206,7 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const url = 'https://my-schema.com/graphql';
 
-const fetcher = createGraphiQLFetcher({
-  url,
-  fetch,
-});
+const fetcher = createGraphiQLFetcher({ url, fetch });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 

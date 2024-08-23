@@ -68,19 +68,13 @@ describe('getWsFetcher', () => {
   });
   it('provides an observable wsClient when custom wsClient option is provided', () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({
-      url: '',
-      wsClient: true,
-    });
+    getWsFetcher({ url: '', wsClient: true });
     // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
   });
   it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({
-      url: '',
-      legacyClient: true,
-    });
+    getWsFetcher({ url: '', legacyClient: true });
     // @ts-ignore
     expect(createClient.mock.calls).toHaveLength(0);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
@@ -88,10 +82,7 @@ describe('getWsFetcher', () => {
 
   it('if subscriptionsUrl is provided, create a client on the fly', () => {
     createClient.mockReturnValue(true);
-    getWsFetcher({
-      url: '',
-      subscriptionUrl: 'wss://example',
-    });
+    getWsFetcher({ url: '', subscriptionUrl: 'wss://example' });
     expect(createClient.mock.calls[0]).toEqual([
       { connectionParams: {}, url: 'wss://example' },
     ]);
