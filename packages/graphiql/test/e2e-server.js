@@ -15,7 +15,7 @@ const {
   sendResult,
 } = require('graphql-helix'); // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 const WebSocketsServer = require('./afterDevServer');
-const { schema, sseSchema } = require('./schema');
+const { schema } = require('./schema');
 const { customExecute } = require('./execute');
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 const { createHandler } = require('graphql-sse/lib/use/express');
