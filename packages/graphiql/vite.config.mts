@@ -1,7 +1,6 @@
 import { defineConfig, PluginOption } from 'vite';
 import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
-import commonjs from 'vite-plugin-commonjs';
 
 const umdConfig = defineConfig({
   define: {
@@ -11,8 +10,6 @@ const umdConfig = defineConfig({
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
-  // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
-  plugins: [commonjs()],
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
