@@ -400,4 +400,4 @@ const myTestSchema = new GraphQLSchema({
   directives,
 });
 
-exports.schema = myTestSchema;
+module.exports = myTestSchema;
