@@ -250,24 +250,24 @@ const handleTabValueChange: ComponentProps<'input'>['onChange'] = event => {
 };
 
 const handleTabValueKeyDown: ComponentProps<'input'>['onKeyDown'] = event => {
-  if (event.key === 'Enter' || event.key === 'Escape') {
-    const input = event.currentTarget;
-
-    if (!input.value) {
-      input.value = input.defaultValue;
-      // @ts-expect-error
-      handleTabValueChange(event);
-    }
-    input.blur();
+  if (event.key !== 'Enter' && event.key !== 'Escape') {
+    return;
   }
+  const input = event.currentTarget;
+
+  if (!input.value) {
+    input.value = input.defaultValue;
+    // @ts-expect-error
+    handleTabValueChange(event);
+  }
+  input.blur();
 };
 
 const handleTabDoubleClickAndBlur = (
   event: MouseEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>,
 ) => {
-  const isBlur = event.type === 'blur';
   const input = event.currentTarget;
-  input.readOnly = isBlur;
+  input.readOnly = event.type === 'blur';
 };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
