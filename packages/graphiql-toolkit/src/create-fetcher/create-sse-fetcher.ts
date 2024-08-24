@@ -5,6 +5,9 @@ import type {
 } from 'graphql-sse';
 import { Fetcher, FetcherParams } from './types';
 
+/**
+ * Based on https://gist.github.com/enisdenjo/d7bc1a013433502349d2763c3d2f2b79
+ */
 export async function createSseFetcher(opts: ClientOptions): Promise<Fetcher> {
   const { createClient } =
     process.env.USE_IMPORT === 'false'
