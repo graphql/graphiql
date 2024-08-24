@@ -17,6 +17,7 @@ const {
 const WebSocketsServer = require('./afterDevServer');
 const { schema, sseSchema } = require('./schema');
 const { customExecute } = require('./execute');
+// eslint-disable-next-line import-x/no-extraneous-dependencies
 const { createHandler } = require('graphql-sse/lib/use/express');
 
 const app = express();
