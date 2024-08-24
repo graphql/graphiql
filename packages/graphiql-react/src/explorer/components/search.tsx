@@ -24,6 +24,7 @@ import { useExplorerContext } from '../context';
 
 import './search.css';
 import { renderType } from './utils';
+import { isMacOs } from '../../utility/is-macos';
 
 export function Search() {
   const { explorerNavStack, push } = useExplorerContext({
@@ -103,7 +104,7 @@ export function Search() {
           onFocus={handleFocus}
           onBlur={handleFocus}
           onChange={event => setSearchValue(event.target.value)}
-          placeholder="&#x2318; K"
+          placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
           ref={inputRef}
           value={searchValue}
           data-cy="doc-explorer-input"

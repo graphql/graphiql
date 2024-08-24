@@ -10,17 +10,13 @@ const path = require('node:path');
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 const { createHandler } = require('graphql-http/lib/use/express');
 const schema = require('./schema');
-const badSchema = require('../cypress/fixtures/bad-schema.json');
+const { customExecute } = require('./execute');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
   // GraphQL Server
-  app.post('/graphql', createHandler({ schema }));
-  app.get('/graphql', createHandler({ schema }));
-
-  app.post('/bad/graphql', (_req, res, next) => {
-    res.json({ data: badSchema });
-    next();
-  });
+  const handler = createHandler({ schema, execute: customExecute });
+  app.post('/graphql', handler);
+  app.get('/graphql', handler);
 
   app.use('/images', express.static(path.join(__dirname, 'images')));
 
