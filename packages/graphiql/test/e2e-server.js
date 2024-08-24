@@ -67,7 +67,7 @@ app.use('/graphql/stream', (req, res, next) => {
 });
 
 // Create the GraphQL over SSE handler
-const sseHandler = createHandler({ schema: sseSchema });
+const sseHandler = createHandler({ schema, execute: customExecute });
 // Serve all methods on `/graphql/stream`
 app.use('/graphql/stream', sseHandler);
 
