@@ -6,11 +6,12 @@ import {
   isSubscriptionWithName,
   getWsFetcher,
 } from './lib';
+import { createSseFetcher } from './create-sse-fetcher';
 
 /**
- * build a GraphiQL fetcher that is:
+ * Build a GraphiQL fetcher that is:
  * - backwards compatible
- * - optionally supports graphql-ws or `
+ * - optionally supports graphql-ws or graphql-sse
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   const httpFetch =
@@ -40,7 +41,13 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
           graphQLParams.operationName || undefined,
         )
       : false;
+
     if (isSubscription) {
+      if (options.sseUrl) {
+        const sseFetcher = await createSseFetcher({ url: options.sseUrl });
+        return sseFetcher(graphQLParams);
+      }
+
       const wsFetcher = await getWsFetcher(options, fetcherOpts);
 
       if (!wsFetcher) {

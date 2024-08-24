@@ -10498,6 +10498,11 @@ graphql-http@^1.22.1:
   resolved "https://registry.yarnpkg.com/graphql-http/-/graphql-http-1.22.1.tgz#3857ac75366e55db189cfe09ade9cc4c4f2cfd09"
   integrity sha512-4Jor+LRbA7SfSaw7dfDUs2UBzvWg3cKrykfHRgKsOIvQaLuf+QOcG2t3Mx5N9GzSNJcuqMqJWz0ta5+BryEmXg==
 
+graphql-sse@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/graphql-sse/-/graphql-sse-2.5.3.tgz#c3557803f2db306d8ac87fd3bc089b6d4bac8353"
+  integrity sha512-5IcFW3e7fPOG7oFkK1v3X1wWtCJArQKB/H1UJeNotjy7a/9EYA5K+EiHJF1BiDSVNx7y64bd0FlDETrNBSvIHQ==
+
 graphql-subscriptions@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/graphql-subscriptions/-/graphql-subscriptions-2.0.0.tgz#11ec181d475852d8aec879183e8e1eb94f2eb79a"

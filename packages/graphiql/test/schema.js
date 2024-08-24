@@ -5,9 +5,6 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
-const graphql = require('graphql');
-
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -25,12 +22,7 @@ const {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} = graphql;
-
-const directives =
-  parseInt(version, 10) > 16
-    ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
-    : specifiedDirectives;
+} = require('graphql');
 
 // Test Schema
 const TestEnum = new GraphQLEnumType({
@@ -392,12 +384,20 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-const myTestSchema = new GraphQLSchema({
+const schemaConfig = {
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
   description: 'This is a test schema for GraphiQL',
-  directives,
+};
+
+exports.schema = new GraphQLSchema({
+  ...schemaConfig,
+  directives:
+    parseInt(version, 10) > 16
+      ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
+      : specifiedDirectives,
 });
 
-module.exports = myTestSchema;
+// Same schema but without defer/stream directives
+exports.sseSchema = new GraphQLSchema(schemaConfig);

@@ -9,7 +9,7 @@ const express = require('express');
 const path = require('node:path');
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 const { createHandler } = require('graphql-http/lib/use/express');
-const schema = require('./schema');
+const { schema } = require('./schema');
 const badSchema = require('../cypress/fixtures/bad-schema.json');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
