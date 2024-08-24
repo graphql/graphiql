@@ -1,4 +1,10 @@
 describe('IncrementalDelivery support via fetcher', () => {
+  const testSubscription = /* GraphQL */ `
+    subscription Test {
+      message
+    }
+  `;
+
   function assertResponse() {
     for (const message of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
       cy.assertQueryResult({ data: { message } });
@@ -6,24 +12,12 @@ describe('IncrementalDelivery support via fetcher', () => {
   }
 
   it('should work with ws', () => {
-    const testSubscription = /* GraphQL */ `
-      subscription TestSubscription {
-        message
-      }
-    `;
-
     cy.visit(`/?query=${testSubscription}`);
     cy.clickExecuteQuery();
     assertResponse();
   });
 
   it('should work with sse', () => {
-    const testSubscription = /* GraphQL */ `
-      subscription Test {
-        message
-      }
-    `;
-
     cy.visit(
       `/?sseUrl=http://localhost:8080/graphql/stream&query=${testSubscription}`,
     );
