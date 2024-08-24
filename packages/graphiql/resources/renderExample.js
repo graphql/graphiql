@@ -78,7 +78,7 @@ root.render(
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
       subscriptionUrl: 'ws://localhost:8081/subscriptions',
-      sseUrl: parameters.sseUrl
+      sseUrl: parameters.sseUrl,
     }),
     query: parameters.query,
     variables: parameters.variables,
