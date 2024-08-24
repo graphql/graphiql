@@ -19,6 +19,9 @@ import React, {
   Children,
   JSX,
   cloneElement,
+  MouseEvent,
+  FocusEvent,
+  ComponentProps,
 } from 'react';
 
 import {
@@ -239,6 +242,33 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
 const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
+
+const handleTabValueChange: ComponentProps<'input'>['onChange'] = event => {
+  const input = event.target;
+  // Should be at least 1 character wide, otherwise will throw DOMException
+  input.size = Math.max(1, input.value.length - 1);
+};
+
+const handleTabValueKeyDown: ComponentProps<'input'>['onKeyDown'] = event => {
+  if (event.key !== 'Enter' && event.key !== 'Escape') {
+    return;
+  }
+  const input = event.currentTarget;
+
+  if (!input.value) {
+    input.value = input.defaultValue;
+    // @ts-expect-error
+    handleTabValueChange(event);
+  }
+  input.blur();
+};
+
+const handleTabDoubleClickAndBlur = (
+  event: MouseEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>,
+) => {
+  const input = event.currentTarget;
+  input.readOnly = event.type === 'blur';
+};
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
@@ -490,7 +520,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     [confirmClose, editorContext, executionContext],
   );
 
-  const handleTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+  const handleTabClick: MouseEventHandler<HTMLInputElement> = useCallback(
     event => {
       const index = Number(
         event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''),
@@ -594,14 +624,25 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                     value={tab}
                     isActive={index === editorContext.activeTabIndex}
                   >
-                    <Tab.Button
+                    <input
+                      key={tab.title}
+                      className="graphiql-tab-input"
                       aria-controls="graphiql-session"
                       id={`graphiql-session-tab-${index}`}
                       title={tab.title}
+                      defaultValue={tab.title}
+                      size={Math.max(tab.title.length - 1, 1)}
+                      onChange={handleTabValueChange}
+                      onKeyDown={handleTabValueKeyDown}
+                      onDoubleClick={handleTabDoubleClickAndBlur}
+                      onBlur={handleTabDoubleClickAndBlur}
                       onClick={handleTabClick}
-                    >
-                      {tab.title}
-                    </Tab.Button>
+                      // Can be writable only after double click
+                      readOnly
+                      // Disable autocomplete for tab names
+                      autoComplete="off"
+                    />
+
                     {tabs.length > 1 && <Tab.Close onClick={handleTabClose} />}
                   </Tab>
                 ))}

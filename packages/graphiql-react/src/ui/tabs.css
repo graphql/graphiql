@@ -16,12 +16,34 @@
   min-width: 0;
 }
 
+.graphiql-tab-input {
+  all: unset;
+  width: 100%;
+  padding: var(--px-4) 28px var(--px-4) var(--px-8);
+  border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
+
+  &:focus {
+    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
+  }
+
+  &[readonly] {
+    cursor: pointer;
+    /* remove selection when focusing */
+    &::selection {
+      user-select: none;
+    }
+  }
+}
+
+.graphiql-tab:has(input[readonly]) {
+  max-width: 140px;
+}
+
 .graphiql-tab {
   border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
   background: hsla(var(--color-neutral), var(--alpha-background-light));
   position: relative;
   display: flex;
-  max-width: 140px;
 
   /* disable shrinking while changing the operation name */
   &:not(:focus-within) {
