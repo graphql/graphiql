@@ -1,5 +1,15 @@
 # @graphiql/toolkit
 
+## 0.11.0
+
+### Minor Changes
+
+- [#3747](https://github.com/graphql/graphiql/pull/3747) [`21c4409`](https://github.com/graphql/graphiql/commit/21c44096c0c0b23cea955a574d1110cb19ab6405) Thanks [@dimaMachina](https://github.com/dimaMachina)! - do not include `require` statements in ESM build, include `import` in esm and `require` in cjs builds
+
+  make `getWsFetcher`, `createWebsocketsFetcherFromUrl` async
+
+- [#3746](https://github.com/graphql/graphiql/pull/3746) [`2ad4e75`](https://github.com/graphql/graphiql/commit/2ad4e7505385fefd252b9aa8ea2233cbaeca7f6a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - compile with `tsup` instead of `tsc`
+
 ## 0.10.0
 
 ### Minor Changes

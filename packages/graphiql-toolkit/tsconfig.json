@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2017",
     "module": "ESNext",
     "declaration": true,
     "noEmit": true,
@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "allowJs": true,
     "lib": ["es2022", "dom"],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": ["vitest/globals"]
   },
-  "include": ["src", "tsup.config.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src", "tsup.config.ts", "vitest.config.mts"]
 }

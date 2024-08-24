@@ -63,6 +63,7 @@ import {
   UseVariableEditorArgs,
   VariableEditor,
   WriteableEditorProps,
+  isMacOs,
 } from '@graphiql/react';
 
 const majorVersion = parseInt(version.slice(0, 2), 10);
@@ -885,11 +886,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   );
 }
 
-const modifier =
-  typeof navigator !== 'undefined' &&
-  navigator.platform.toLowerCase().indexOf('mac') === 0
-    ? 'Cmd'
-    : 'Ctrl';
+const modifier = isMacOs ? '⌘' : 'Ctrl';
 
 const SHORT_KEYS = Object.entries({
   'Search in editor': [modifier, 'F'],

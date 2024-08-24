@@ -1,11 +1,8 @@
 import { KeyMap } from './types';
+import { isMacOs } from '../utility/is-macos';
 
 export const DEFAULT_EDITOR_THEME = 'graphiql';
 export const DEFAULT_KEY_MAP: KeyMap = 'sublime';
-
-const isMacOs =
-  typeof navigator !== 'undefined' &&
-  navigator.platform.toLowerCase().indexOf('mac') === 0;
 
 export const commonKeys = {
   // Persistent search box in Query Editor

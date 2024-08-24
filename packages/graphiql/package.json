@@ -49,7 +49,7 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.10.0",
+    "@graphiql/toolkit": "^0.11.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@types/testing-library__jest-dom": "5.14.5",
