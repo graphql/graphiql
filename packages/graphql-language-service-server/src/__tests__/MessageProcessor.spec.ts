@@ -367,7 +367,7 @@ describe('MessageProcessor with config', () => {
   it('caches files and schema with a URL config', async () => {
     const offset = parseInt(version, 10) > 16 ? 25 : 0;
 
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(require('../../../graphiql/test/schema').schema);
 
     const project = new MockProject({
       files: [
@@ -499,7 +499,7 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(require('../../../graphiql/test/schema').schema);
 
     const project = new MockProject({
       files: [
