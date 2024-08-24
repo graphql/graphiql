@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",

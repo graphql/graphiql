@@ -1,5 +1,13 @@
 # cm6-graphql
 
+## 0.1.1
+
+### Patch Changes
+
+- [#3751](https://github.com/graphql/graphiql/pull/3751) [`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893) Thanks [@dimaMachina](https://github.com/dimaMachina)! - replace deprecated `navigator.platform` with `navigator.userAgent`
+
+  fix placeholder `⌘ K` in doc explorer search input for non mac devices, replace by `Ctrl K`
+
 ## 0.1.0
 
 ### Minor Changes
