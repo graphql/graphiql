@@ -77,8 +77,8 @@ root.render(
   React.createElement(GraphiQL, {
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
-      subscriptionUrl: 'ws://localhost:8081/subscriptions',
-      sseUrl: parameters.sseUrl,
+      subscriptionUrl:
+        parameters.subscriptionUrl || 'ws://localhost:8081/subscriptions',
     }),
     query: parameters.query,
     variables: parameters.variables,

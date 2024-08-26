@@ -19,7 +19,7 @@ describe('IncrementalDelivery support via fetcher', () => {
 
   it('should work with sse', () => {
     cy.visit(
-      `/?sseUrl=http://localhost:8080/graphql/stream&query=${testSubscription}`,
+      `/?subscriptionUrl=http://localhost:8080/graphql/stream&query=${testSubscription}`,
     );
     cy.clickExecuteQuery();
     assertResponse();

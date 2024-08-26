@@ -81,13 +81,9 @@ export interface CreateFetcherOptions {
    */
   url: string;
   /**
-   * url for websocket subscription requests
+   * url for websocket subscription requests or SSE
    */
   subscriptionUrl?: string;
-  /**
-   * url for graphql-sse
-   */
-  sseUrl?: string;
   /**
    * `wsClient` implementation that matches `ws-graphql` signature,
    * whether via `createClient()` itself or another client.
