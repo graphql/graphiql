@@ -43,7 +43,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
       : false;
 
     if (isSubscription) {
-      if (options.sseUrl) {
+      if (!options.subscriptionUrl.startsWith('ws')) {
         const sseFetcher = await createSseFetcher({ url: options.sseUrl });
         return sseFetcher(graphQLParams);
       }
