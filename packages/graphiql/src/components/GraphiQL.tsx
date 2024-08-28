@@ -100,7 +100,6 @@ export function GraphiQL({
   externalFragments,
   fetcher,
   getDefaultFieldNames,
-  headers,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -110,14 +109,11 @@ export function GraphiQL({
   onTogglePluginVisibility,
   operationName,
   plugins,
-  query,
-  response,
   schema,
   schemaDescription,
   shouldPersistHeaders,
   storage,
   validationRules,
-  variables,
   visiblePlugin,
   defaultHeaders,
   ...props
@@ -149,7 +145,6 @@ export function GraphiQL({
       defaultTabs={defaultTabs}
       externalFragments={externalFragments}
       fetcher={fetcher}
-      headers={headers}
       inputValueDeprecation={inputValueDeprecation}
       introspectionQueryName={introspectionQueryName}
       maxHistoryLength={maxHistoryLength}
@@ -160,14 +155,11 @@ export function GraphiQL({
       plugins={plugins}
       visiblePlugin={visiblePlugin}
       operationName={operationName}
-      query={query}
-      response={response}
       schema={schema}
       schemaDescription={schemaDescription}
       shouldPersistHeaders={shouldPersistHeaders}
       storage={storage}
       validationRules={validationRules}
-      variables={variables}
     >
       <GraphiQLInterface
         confirmCloseTab={confirmCloseTab}

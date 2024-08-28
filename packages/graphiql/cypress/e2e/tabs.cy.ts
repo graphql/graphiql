@@ -1,6 +1,6 @@
 describe('Tabs', () => {
   it('Should store editor contents when switching between tabs', () => {
-    cy.visit('/?defaultQuery=&query=');
+    cy.visit('/?query=');
 
     // Assert that tab visible when there's only one session
     cy.get('.graphiql-tab-button').eq(0).should('exist');

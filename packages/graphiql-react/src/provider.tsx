@@ -29,7 +29,6 @@ export function GraphiQLProvider({
   externalFragments,
   fetcher,
   getDefaultFieldNames,
-  headers,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -39,14 +38,11 @@ export function GraphiQLProvider({
   onTogglePluginVisibility,
   operationName,
   plugins,
-  query,
-  response,
   schema,
   schemaDescription,
   shouldPersistHeaders,
   storage,
   validationRules,
-  variables,
   visiblePlugin,
 }: GraphiQLProviderProps) {
   return (
@@ -57,14 +53,10 @@ export function GraphiQLProvider({
           defaultHeaders={defaultHeaders}
           defaultTabs={defaultTabs}
           externalFragments={externalFragments}
-          headers={headers}
           onEditOperationName={onEditOperationName}
           onTabChange={onTabChange}
-          query={query}
-          response={response}
           shouldPersistHeaders={shouldPersistHeaders}
           validationRules={validationRules}
-          variables={variables}
         >
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}

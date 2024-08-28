@@ -19,7 +19,6 @@ import {
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
-import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
 import {
   createTab,
@@ -182,13 +181,6 @@ export type EditorContextProviderProps = {
    */
   externalFragments?: string | FragmentDefinitionNode[];
   /**
-   * This prop can be used to set the contents of the headers editor. Every
-   * time this prop changes, the contents of the headers editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  headers?: string;
-  /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
    * there is no tab state persisted in storage.
@@ -222,20 +214,6 @@ export type EditorContextProviderProps = {
    */
   onTabChange?(tabState: TabsState): void;
   /**
-   * This prop can be used to set the contents of the query editor. Every time
-   * this prop changes, the contents of the query editor are replaced. Note
-   * that the editor contents can be changed in between these updates by typing
-   * in the editor.
-   */
-  query?: string;
-  /**
-   * This prop can be used to set the contents of the response editor. Every
-   * time this prop changes, the contents of the response editor are replaced.
-   * Note that the editor contents can change in between these updates by
-   * executing queries that will show a response.
-   */
-  response?: string;
-  /**
    * This prop toggles if the contents of the headers editor are persisted in
    * storage.
    * @default false
@@ -248,20 +226,36 @@ export type EditorContextProviderProps = {
    */
   validationRules?: ValidationRule[];
   /**
-   * This prop can be used to set the contents of the variables editor. Every
-   * time this prop changes, the contents of the variables editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  variables?: string;
-
-  /**
    * Headers to be set when opening a new tab
    */
   defaultHeaders?: string;
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
+  // @ts-expect-error -- Prop is removed
+  if (props.query) {
+    throw new TypeError(
+      '`query` was removed. Use `queryEditor.setValue(query)` instead.',
+    );
+  }
+  // @ts-expect-error -- Prop is removed
+  if (props.variables) {
+    throw new TypeError(
+      '`variables` was removed. Use `variableEditor.setValue(variables)` instead.',
+    );
+  }
+  // @ts-expect-error -- Prop is removed
+  if (props.headers) {
+    throw new TypeError(
+      '`headers` was removed. Use `headerEditor.setValue(headers)` instead.',
+    );
+  }
+  // @ts-expect-error -- Prop is removed
+  if (props.response) {
+    throw new TypeError(
+      '`response` was removed. Use `responseEditor.setValue(response)` instead.',
+    );
+  }
   const storage = useStorageContext();
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
@@ -284,11 +278,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     },
   );
 
-  useSynchronizeValue(headerEditor, props.headers);
-  useSynchronizeValue(queryEditor, props.query);
-  useSynchronizeValue(responseEditor, props.response);
-  useSynchronizeValue(variableEditor, props.variables);
-
   const storeTabs = useStoreTabs({
     storage,
     shouldPersistHeaders,
@@ -297,11 +286,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   // We store this in state but never update it. By passing a function we only
   // need to compute it lazily during the initial render.
   const [initialState] = useState(() => {
-    const query = props.query ?? storage?.get(STORAGE_KEY_QUERY) ?? null;
-    const variables =
-      props.variables ?? storage?.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage?.get(STORAGE_KEY_HEADERS) ?? null;
-    const response = props.response ?? '';
+    const query = storage?.get(STORAGE_KEY_QUERY) ?? null;
+    const variables = storage?.get(STORAGE_KEY_VARIABLES) ?? null;
+    const headers = storage?.get(STORAGE_KEY_HEADERS) ?? null;
 
     const tabState = getDefaultTabState({
       query,
@@ -322,7 +309,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         '',
       variables: variables ?? '',
       headers: headers ?? props.defaultHeaders ?? '',
-      response,
+      response: '',
       tabState,
     };
   });
