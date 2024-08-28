@@ -26,15 +26,7 @@ export type SchemaState = {
    * from the introspection result.
    */
   fetchError: string | null;
-  /**
-   * Trigger building the GraphQL schema. This might trigger an introspection
-   * request if no schema is passed via props and if using a schema is not
-   * explicitly disabled by passing `null` as value for the `schema` prop. If
-   * there is a schema (either fetched using introspection or passed via props)
-   * it will be validated, unless this is explicitly skipped using the
-   * `dangerouslyAssumeSchemaIsValid` prop.
-   */
-  introspect(): void;
+
   /**
    * If there currently is an introspection request in-flight.
    */
@@ -52,33 +44,38 @@ export type SchemaState = {
   requestCounter: number;
 };
 
-export type IntrospectionArgs = {
+export type SchemaStateActions = {
   /**
-   * Can be used to set the equally named option for introspecting a GraphQL
-   * server.
-   * @default false
-   * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
+   * Trigger introspection and schema building.
+   * This should be called on your framework's mount event,
+   * such as in a useEffect with empty dependencies in react
    */
-  inputValueDeprecation?: boolean;
+  didMount(): void;
   /**
-   * Can be used to set a custom operation name for the introspection query.
+   * Trigger building the GraphQL schema. This might trigger an introspection
+   * request if no schema is passed via props and if using a schema is not
+   * explicitly disabled by passing `null` as value for the `schema` prop. If
+   * there is a schema (either fetched using introspection or passed via props)
+   * it will be validated, unless this is explicitly skipped using the
+   * `dangerouslyAssumeSchemaIsValid` prop.
    */
-  introspectionQueryName?: string;
-  /**
-   * Can be used to set the equally named option for introspecting a GraphQL
-   * server.
-   * @default false
-   * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
-   */
-  schemaDescription?: boolean;
+  introspect(): void;
 };
 
-export const schemaSlice: ImmerStateCreator<SchemaState> = set => ({
+export type SchemaSlice = SchemaState & SchemaStateActions;
+
+export const defaultSchemaState: SchemaState = {
   isFetching: false,
   fetchError: null,
   schema: null,
   validationErrors: [],
   requestCounter: 0,
+};
+
+export const schemaSlice: ImmerStateCreator<
+  SchemaState & SchemaStateActions
+> = set => ({
+  ...defaultSchemaState,
 
   didMount: () => {
     set(state => {
@@ -203,7 +200,10 @@ export const schemaSlice: ImmerStateCreator<SchemaState> = set => ({
 
           try {
             const newSchema = buildClientSchema(introspectionData);
-            state.schema.schema = newSchema;
+            set(state => {
+              state.schema.schema = newSchema;
+            });
+
             state.options.onSchemaChange?.(newSchema);
           } catch (error) {
             state.schema.fetchError = formatError(error);
