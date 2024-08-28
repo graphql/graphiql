@@ -1,4 +1,30 @@
-import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
+import {
+  fillLeafs,
+  GetDefaultFieldNamesFn,
+  mergeAst,
+  createGraphiQLStore,
+  CommonState,
+  OptionsState,
+} from '@graphiql/toolkit';
+
+import { StoreApi } from 'zustand/vanilla';
+import { useStore } from 'zustand/react';
+
+// move this to @graphiql/react ofc
+export const useGraphiQLStore = (options: Partial<OptionsState>) => {
+  return createGraphiQLStore(options);
+};
+
+export const useGraphiQLStoreSelector = <T extends CommonState>(
+  store: StoreApi<T>,
+  selector: (state: T) => any,
+) => {
+  return useStore(store, selector);
+};
+
+export const useSchemaStore = (options: Partial<OptionsState>) => {
+  return useGraphiQLStoreSelector(useGraphiQLStore(options), s => s.schema);
+};
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -347,11 +373,9 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  const context = useEditorContext({
-    nonNull: true,
-  });
+  const context = useGraphiQLStore();
 
-  const editorInstance = context[`${editor}Editor` as const];
+  const editorInstance = context.editors[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

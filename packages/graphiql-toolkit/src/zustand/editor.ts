@@ -25,6 +25,7 @@ import {
 import { CodeMirrorEditor } from '../codemirror/types';
 
 import { ImmerStateCreator } from './store';
+import { DEFAULT_QUERY } from '../constants';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -34,6 +35,29 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 };
 
 export type EditorState = {
+  /**
+   * The CodeMirror editor instance for the headers editor.
+   */
+  headerEditor: CodeMirrorEditor | null;
+  /**
+   * The CodeMirror editor instance for the query editor. This editor also
+   * stores the operation facts that are derived from the current editor
+   * contents.
+   */
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  /**
+   * The CodeMirror editor instance for the response editor.
+   */
+  responseEditor: CodeMirrorEditor | null;
+  /**
+   * The CodeMirror editor instance for the variables editor.
+   */
+  variableEditor: CodeMirrorEditor | null;
+
+  tabsState: TabsState;
+};
+
+export type EditorStoreActions = {
   /**
    * Add a new tab.
    */
@@ -67,24 +91,6 @@ export type EditorState = {
   ): void;
 
   /**
-   * The CodeMirror editor instance for the headers editor.
-   */
-  headerEditor: CodeMirrorEditor | null;
-  /**
-   * The CodeMirror editor instance for the query editor. This editor also
-   * stores the operation facts that are derived from the current editor
-   * contents.
-   */
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  /**
-   * The CodeMirror editor instance for the response editor.
-   */
-  responseEditor: CodeMirrorEditor | null;
-  /**
-   * The CodeMirror editor instance for the variables editor.
-   */
-  variableEditor: CodeMirrorEditor | null;
-  /**
    * Set the CodeMirror editor instance for the headers editor.
    */
   setHeaderEditor(newEditor: CodeMirrorEditor): void;
@@ -107,42 +113,6 @@ export type EditorState = {
   setOperationName(operationName: string): void;
 
   /**
-   * The contents of the headers editor when initially rendering the provider
-   * component.
-   */
-  initialHeaders: string;
-  /**
-   * The contents of the query editor when initially rendering the provider
-   * component.
-   */
-  initialQuery: string;
-  /**
-   * The contents of the response editor when initially rendering the provider
-   * component.
-   */
-  initialResponse: string;
-  /**
-   * The contents of the variables editor when initially rendering the provider
-   * component.
-   */
-  initialVariables: string;
-
-  /**
-   * A map of fragment definitions using the fragment name as key which are
-   * made available to include in the query.
-   */
-  externalFragments: Map<string, FragmentDefinitionNode>;
-  /**
-   * A list of custom validation rules that are run in addition to the rules
-   * provided by the GraphQL spec.
-   */
-  validationRules: ValidationRule[];
-
-  /**
-   * If the contents of the headers editor are persisted in storage.
-   */
-  shouldPersistHeaders: boolean;
-  /**
    * Changes if headers should be persisted.
    */
   setShouldPersistHeaders(persist: boolean): void;
@@ -155,12 +125,16 @@ export type EditorState = {
     variables?: string;
     response?: string;
   }) => void;
-
-  tabsState: TabsState;
   synchronizeActiveTabValues: () => void;
+  setQueryValue: (query: string) => void;
+  setVariablesValue: (variables: string) => void;
+  setHeadersValue: (headers: string) => void;
+  setResponseValue: (response: string) => void;
 };
 
-export const editorSlice: ImmerStateCreator<EditorState> = set => ({
+export type EditorSlice = EditorState & EditorStoreActions;
+
+export const defaultEditorState = {
   headerEditor: null,
   queryEditor: null,
   responseEditor: null,
@@ -180,6 +154,12 @@ export const editorSlice: ImmerStateCreator<EditorState> = set => ({
     storage: null,
     shouldPersistHeaders: false,
   }),
+  externalFragments: new Map(),
+  validationRules: [],
+};
+
+export const editorSlice: ImmerStateCreator<EditorSlice> = set => ({
+  ...defaultEditorState,
   setHeaderEditor(newEditor) {
     set(state => {
       state.editor.headerEditor = newEditor;
@@ -234,8 +214,8 @@ export const editorSlice: ImmerStateCreator<EditorState> = set => ({
         tabs: [
           ...tabs,
           createTab({
-            headers: defaultHeaders,
-            query: defaultQuery ?? DEFAULT_QUERY,
+            headers: state.options.defaultHeaders,
+            query: state.options.defaultQuery ?? DEFAULT_QUERY,
           }),
         ],
         activeTabIndex: tabs.length,
@@ -297,6 +277,44 @@ export const editorSlice: ImmerStateCreator<EditorState> = set => ({
       );
     });
   },
-  externalFragments: new Map(),
-  validationRules: [],
+  setQueryValue(query) {
+    set(state => {
+      state.editor.tabsState = setPropertiesInActiveTab(
+        state.editor.tabsState,
+        {
+          query,
+        },
+      );
+    });
+  },
+  setHeadersValue(headers) {
+    set(state => {
+      state.editor.tabsState = setPropertiesInActiveTab(
+        state.editor.tabsState,
+        {
+          headers,
+        },
+      );
+    });
+  },
+  setResponseValue(response) {
+    set(state => {
+      state.editor.tabsState = setPropertiesInActiveTab(
+        state.editor.tabsState,
+        {
+          response,
+        },
+      );
+    });
+  },
+  setVariablesValue(variables) {
+    set(state => {
+      state.editor.tabsState = setPropertiesInActiveTab(
+        state.editor.tabsState,
+        {
+          variables,
+        },
+      );
+    });
+  },
 });

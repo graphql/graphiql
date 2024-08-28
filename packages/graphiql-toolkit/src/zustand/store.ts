@@ -1,28 +1,23 @@
 import { enableMapSet } from 'immer';
 import { fileSlice, FilesState } from './files';
 
-import { StateCreator, create } from 'zustand';
+import { StateCreator, createStore } from 'zustand/vanilla';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { executionSlice, ExecutionState } from './execution';
-import { editorSlice, EditorState } from './editor';
-import { optionsSlice, OptionsState } from './options';
-import { schemaSlice, SchemaState } from './schema';
+import { EditorSlice, editorSlice } from './editor';
+import { OptionsSlice, optionsSlice, OptionsState } from './options';
+import { SchemaSlice, schemaSlice } from './schema';
 
 export type CommonState = {
   files: FilesState;
   execution: ExecutionState;
-  editor: EditorState;
-  options: OptionsState
-  schema: SchemaState
+  editor: EditorSlice;
+  options: OptionsSlice;
+  schema: SchemaSlice;
 };
 
-export type ImmerStateCreator<T> = StateCreator<
-  CommonState,
-  [['zustand/immer', never], never],
-  [],
-  T
->;
+export { OptionsState };
 
 enableMapSet();
 
@@ -33,18 +28,41 @@ export type GraphiQLStoreOptions = {
   initialState?: Partial<CommonState>;
 };
 
-export const createGraphiQLStore = (options: GraphiQLStoreOptions) => {
-  return create<CommonState>()(immer(
-    devtools((...args) => ({
-      files: fileSlice(...args),
-      execution: executionSlice(...args),
-      editor: editorSlice(...args),
-      options: optionsSlice(...args),
-      schema: schemaSlice(...args),
-    })),
-  )),
-}
-// move this to @graphiql/react ofc
-export const useGraphiQLStore = (options: GraphiQLStoreOptions) => {
-  return createGraphiQLStore(options);
+export const createGraphiQLStore = (options: Partial<OptionsState>) => {
+  return createStore<CommonState>()(
+    immer(
+      devtools((...args) => ({
+        options: optionsSlice(options)(...args),
+        files: fileSlice(...args),
+        execution: executionSlice(...args),
+        editor: editorSlice(...args),
+        schema: schemaSlice(...args),
+      })),
+    ),
+  );
 };
+
+// Utilities
+
+export type ImmerStateCreator<T> = StateCreator<
+  CommonState,
+  [['zustand/immer', never], never],
+  [],
+  T
+>;
+
+// // TODO: adopt this pattern in the rest of the codebase?
+// // also look into useShallow
+// type WithSelectors<S> = S extends { getState: () => infer T }
+//   ? S & { use: { [K in keyof T]: () => T[K] } }
+//   : never;
+
+//   export const createSelectors = <S extends StoreApi<object>>(_store: S) => {
+//     const store = _store as WithSelectors<typeof _store>;
+//     store.use = {};
+//     for (const k of Object.keys(store.getState())) {
+//       (store.use as any)[k] = () => useStore(_store, s => s[k as keyof typeof s]);
+//     }
+
+//     return store;
+//   };
