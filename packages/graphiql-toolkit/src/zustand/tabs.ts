@@ -1,15 +1,14 @@
 import { StorageAPI } from '@graphiql/toolkit';
 import { useCallback, useMemo } from 'react';
 
-import { debounce } from '@graphiql/toolkit';
-import { CodeMirrorEditorWithOperationFacts } from './context';
-import { CodeMirrorEditor } from './types';
+import debounce from '../utility/debounce';
+import { CodeMirrorEditor } from '../codemirror/types';
 
 export type TabDefinition = {
   /**
    * The contents of the query editor of this tab.
    */
-  query: string | null;
+  query?: string | null;
   /**
    * The contents of the variable editor of this tab.
    */

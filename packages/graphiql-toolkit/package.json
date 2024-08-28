@@ -1,7 +1,7 @@
 {
   "name": "@graphiql/toolkit",
   "version": "0.11.0",
-  "description": "Utility to build a fetcher for GraphiQL",
+  "description": "Framework agnostic domain logic, utilities & helpers for building clients like GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
   ],
@@ -27,7 +27,9 @@
   },
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",
-    "meros": "^1.1.4"
+    "meros": "^1.1.4",
+    "zustand": ">= 4.5.5",
+    "immer": ">= 10.1.1"
   },
   "devDependencies": {
     "graphql": "^17.0.0-alpha.7",

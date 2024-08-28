@@ -24,7 +24,7 @@ import { markdown } from '../markdown';
 import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import { debounce } from '@graphiql/toolkit';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
