@@ -49,7 +49,7 @@ export const createGraphiQLStore = (options?: UserOptions) => {
     // let's get everything working first
     files: fileSlice(...args),
     execution: executionSlice(...args),
-    editor: editorSlice(...args),
+    editor: editorSlice(options)(...args),
     schema: schemaSlice(...args),
   }));
 };

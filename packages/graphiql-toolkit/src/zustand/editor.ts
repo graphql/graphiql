@@ -12,7 +12,7 @@ import {
 
 import { CodeMirrorEditor } from '../codemirror/types';
 
-import { GraphiQLState, ImmerStateCreator } from './store';
+import { GraphiQLState, ImmerStateCreator, UserOptions } from './store';
 import { DEFAULT_QUERY } from '../constants';
 import { produce } from 'immer';
 
@@ -123,7 +123,7 @@ export type EditorStoreActions = {
 
 export type EditorSlice = EditorState & EditorStoreActions;
 
-export const defaultEditorState = {
+export const getDefaultEditorState = (options?: UserOptions) => ({
   headerEditor: null,
   queryEditor: null,
   responseEditor: null,
@@ -134,7 +134,7 @@ export const defaultEditorState = {
   initialHeaders: '',
   shouldPersistHeaders: false,
   tabsState: getDefaultTabState({
-    defaultQuery: '',
+    defaultQuery: options?.defaultQuery ?? DEFAULT_QUERY,
     defaultHeaders: '',
     headers: null,
     query: null,
@@ -144,202 +144,204 @@ export const defaultEditorState = {
   }),
   externalFragments: new Map(),
   validationRules: [],
-};
-
-export const editorSlice: ImmerStateCreator<EditorSlice> = set => ({
-  ...defaultEditorState,
-  setHeaderEditor(newEditor) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.headerEditor = newEditor;
-      }),
-    );
-  },
-  setQueryEditor(newEditor) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.queryEditor = newEditor;
-      }),
-    );
-  },
-  setResponseEditor(newEditor) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.responseEditor = newEditor;
-      }),
-    );
-  },
-  setVariableEditor(newEditor) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.variableEditor = newEditor;
-      }),
-    );
-  },
-  setOperationName(operationName) {
-    set(
-      produce((state: GraphiQLState) => {
-        if (state.editor.queryEditor) {
-          state.editor.queryEditor.operationName = operationName;
-        }
-        state.editor.updateActiveTabValues({ operationName });
-      }),
-    );
-  },
-  setShouldPersistHeaders(persist) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.options.shouldPersistHeaders = persist;
-      }),
-    );
-  },
-  updateActiveTabValues: partialTab =>
-    set(
-      produce((state: GraphiQLState) => {
-        const updated = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          partialTab,
-        );
-        state.options.onTabChange?.(updated);
-        return updated;
-      }),
-    ),
-
-  addTab: () => {
-    // Make sure the current tab stores the latest values
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.synchronizeActiveTabValues();
-        const { tabs } = state.editor.tabsState;
-        const updated: TabsState = {
-          tabs: [
-            ...tabs,
-            createTab({
-              headers: state.options.defaultHeaders,
-              query: state.options.defaultQuery ?? DEFAULT_QUERY,
-            }),
-          ],
-          activeTabIndex: tabs.length,
-        };
-        state.editor.tabsState = updated;
-        state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
-        state.options.onTabChange?.(updated);
-      }),
-    );
-  },
-  synchronizeActiveTabValues() {
-    set(
-      produce((state: GraphiQLState) => {
-        const { queryEditor, variableEditor, headerEditor, responseEditor } =
-          state.editor;
-        state.editor.tabsState = synchronizeActiveTabValues({
-          queryEditor,
-          variableEditor,
-          headerEditor,
-          responseEditor,
-          currentState: state.editor.tabsState,
-        });
-      }),
-    );
-  },
-  changeTab(index) {
-    set(
-      produce((state: GraphiQLState) => {
-        const updated = {
-          ...state.editor.tabsState,
-          activeTabIndex: index,
-        };
-        state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
-        state.options.onTabChange?.(updated);
-      }),
-    );
-  },
-  moveTab(newOrder) {
-    set(
-      produce((state: GraphiQLState) => {
-        const updated = {
-          ...state.editor.tabsState,
-          tabs: newOrder,
-        };
-        state.editor.tabsState = updated;
-        state.options.onTabChange?.(updated);
-      }),
-    );
-  },
-  closeTab(index) {
-    set(
-      produce((state: GraphiQLState) => {
-        const updated = {
-          ...state.editor.tabsState,
-          tabs: state.editor.tabsState.tabs.filter((_, i) => i !== index),
-          activeTabIndex:
-            state.editor.tabsState.activeTabIndex === index
-              ? Math.max(0, index - 1)
-              : state.editor.tabsState.activeTabIndex,
-        };
-        state.editor.tabsState = updated;
-        state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
-        state.options.onTabChange?.(updated);
-      }),
-    );
-  },
-
-  setEditorValues(newEditorState) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.tabsState = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          newEditorState,
-        );
-      }),
-    );
-  },
-  setQueryValue(query) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.tabsState = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          {
-            query,
-          },
-        );
-      }),
-    );
-  },
-  setHeadersValue(headers) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.tabsState = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          {
-            headers,
-          },
-        );
-      }),
-    );
-  },
-  setResponseValue(response) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.tabsState = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          {
-            response,
-          },
-        );
-      }),
-    );
-  },
-  setVariablesValue(variables) {
-    set(
-      produce((state: GraphiQLState) => {
-        state.editor.tabsState = setPropertiesInActiveTab(
-          state.editor.tabsState,
-          {
-            variables,
-          },
-        );
-      }),
-    );
-  },
 });
+
+export const editorSlice =
+  (options?: UserOptions): ImmerStateCreator<EditorSlice> =>
+  set => ({
+    ...getDefaultEditorState(options),
+    setHeaderEditor(newEditor) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.headerEditor = newEditor;
+        }),
+      );
+    },
+    setQueryEditor(newEditor) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.queryEditor = newEditor;
+        }),
+      );
+    },
+    setResponseEditor(newEditor) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.responseEditor = newEditor;
+        }),
+      );
+    },
+    setVariableEditor(newEditor) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.variableEditor = newEditor;
+        }),
+      );
+    },
+    setOperationName(operationName) {
+      set(
+        produce((state: GraphiQLState) => {
+          if (state.editor.queryEditor) {
+            state.editor.queryEditor.operationName = operationName;
+          }
+          state.editor.updateActiveTabValues({ operationName });
+        }),
+      );
+    },
+    setShouldPersistHeaders(persist) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.options.shouldPersistHeaders = persist;
+        }),
+      );
+    },
+    updateActiveTabValues: partialTab =>
+      set(
+        produce((state: GraphiQLState) => {
+          const updated = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            partialTab,
+          );
+          state.options.onTabChange?.(updated);
+          return updated;
+        }),
+      ),
+
+    addTab: () => {
+      // Make sure the current tab stores the latest values
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.synchronizeActiveTabValues();
+          const { tabs } = state.editor.tabsState;
+          const updated: TabsState = {
+            tabs: [
+              ...tabs,
+              createTab({
+                headers: state.options.defaultHeaders,
+                query: state.options.defaultQuery ?? DEFAULT_QUERY,
+              }),
+            ],
+            activeTabIndex: tabs.length,
+          };
+          state.editor.tabsState = updated;
+          state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
+          state.options.onTabChange?.(updated);
+        }),
+      );
+    },
+    synchronizeActiveTabValues() {
+      set(
+        produce((state: GraphiQLState) => {
+          const { queryEditor, variableEditor, headerEditor, responseEditor } =
+            state.editor;
+          state.editor.tabsState = synchronizeActiveTabValues({
+            queryEditor,
+            variableEditor,
+            headerEditor,
+            responseEditor,
+            currentState: state.editor.tabsState,
+          });
+        }),
+      );
+    },
+    changeTab(index) {
+      set(
+        produce((state: GraphiQLState) => {
+          const updated = {
+            ...state.editor.tabsState,
+            activeTabIndex: index,
+          };
+          state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
+          state.options.onTabChange?.(updated);
+        }),
+      );
+    },
+    moveTab(newOrder) {
+      set(
+        produce((state: GraphiQLState) => {
+          const updated = {
+            ...state.editor.tabsState,
+            tabs: newOrder,
+          };
+          state.editor.tabsState = updated;
+          state.options.onTabChange?.(updated);
+        }),
+      );
+    },
+    closeTab(index) {
+      set(
+        produce((state: GraphiQLState) => {
+          const updated = {
+            ...state.editor.tabsState,
+            tabs: state.editor.tabsState.tabs.filter((_, i) => i !== index),
+            activeTabIndex:
+              state.editor.tabsState.activeTabIndex === index
+                ? Math.max(0, index - 1)
+                : state.editor.tabsState.activeTabIndex,
+          };
+          state.editor.tabsState = updated;
+          state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
+          state.options.onTabChange?.(updated);
+        }),
+      );
+    },
+
+    setEditorValues(newEditorState) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.tabsState = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            newEditorState,
+          );
+        }),
+      );
+    },
+    setQueryValue(query) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.tabsState = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            {
+              query,
+            },
+          );
+        }),
+      );
+    },
+    setHeadersValue(headers) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.tabsState = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            {
+              headers,
+            },
+          );
+        }),
+      );
+    },
+    setResponseValue(response) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.tabsState = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            {
+              response,
+            },
+          );
+        }),
+      );
+    },
+    setVariablesValue(variables) {
+      set(
+        produce((state: GraphiQLState) => {
+          state.editor.tabsState = setPropertiesInActiveTab(
+            state.editor.tabsState,
+            {
+              variables,
+            },
+          );
+        }),
+      );
+    },
+  });
