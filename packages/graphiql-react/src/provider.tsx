@@ -12,7 +12,8 @@ import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { PluginContextProvider, PluginContextProviderProps } from './plugin';
 
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef } from 'react';
+import { useStore } from 'zustand';
 
 export type GraphiQLProviderProps = UserOptions &
   ExplorerContextProviderProps &
@@ -101,6 +102,10 @@ export function GraphiQLProvider({
       fetchOptions,
     }),
   ).current;
+  const state = useStore(store);
+  useEffect(() => {
+    state.schema.introspect();
+  }, [state.execution.fetcher]);
   return (
     <GraphiQLStoreContext.Provider value={store}>
       <StorageContextProvider storage={storage}>
