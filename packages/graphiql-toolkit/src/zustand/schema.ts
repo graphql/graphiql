@@ -98,8 +98,13 @@ export const schemaSlice: ImmerStateCreator<
      * prop is passed an introspection result, we do continue but skip the
      * introspection request.
      */
+    set(
+      produce((state: GraphiQLState) => {
+        state.schema.requestCounter++;
+      }),
+    );
 
-    const counter = ++get().schema.requestCounter;
+    const counter = get().schema.requestCounter;
 
     const maybeIntrospectionData = options.schema;
 
