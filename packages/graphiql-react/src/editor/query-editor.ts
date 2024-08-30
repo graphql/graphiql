@@ -29,7 +29,6 @@ import {
   CodeMirrorType,
   WriteableEditorProps,
 } from '@graphiql/toolkit';
-import { useStore } from 'zustand/react';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
@@ -46,14 +45,13 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useSynchronizeOption,
-  useGraphiQLStore,
-  useExecution,
-  useSchema,
-  useEditor,
-  useOptions,
 } from './hooks';
 
 import { normalizeWhitespace } from './whitespace';
+import { useSchemaContext } from '../schema';
+import { useEditorContext } from './context';
+import { useExecutionContext } from '../execution';
+import { useOptionsContext } from '../hooks';
 
 export type UseQueryEditorArgs = WriteableEditorProps &
   Pick<UseCopyQueryArgs, 'onCopyQuery'> &
@@ -84,18 +82,19 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchema();
+  const { schema } = useSchemaContext();
   const {
     queryEditor,
     setOperationName,
     setQueryEditor,
     variableEditor,
     updateActiveTabValues,
-  } = useEditor();
+  } = useEditorContext();
 
-  const { externalFragments, initialQuery, validationRules } = useOptions();
+  const { externalFragments, initialQuery, validationRules } =
+    useOptionsContext();
 
-  const executionContext = useExecution();
+  const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
@@ -159,7 +158,7 @@ export function useQueryEditor(
       if (!isActive) {
         return;
       }
-
+      // @ts-expect-error TODO: codemirror type issue
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
@@ -224,24 +223,33 @@ export function useQueryEditor(
 
       newEditor.addKeyMap({
         'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
+          // @ts-expect-error TODO: codemirror types
+          newEditor.showHint({
+            completeSingle: true,
+            container,
+          });
         },
         'Ctrl-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Alt-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Shift-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Shift-Alt-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
         if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
+          // @ts-expect-error TODO: codemirror types
           editorInstance.execCommand('autocomplete');
         }
       });

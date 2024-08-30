@@ -2,16 +2,12 @@ import {
   fillLeafs,
   GetDefaultFieldNamesFn,
   mergeAst,
-  createGraphiQLStore,
-  UserOptions,
   synchronizeActiveTabValues,
   CodeMirrorEditorWithOperationFacts,
   TabsState,
   CodeMirrorEditor,
-  GraphiQLState,
+  debounce,
 } from '@graphiql/toolkit';
-
-import { useStore } from 'zustand/react';
 
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
@@ -23,33 +19,9 @@ import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
 
 import { useStorageContext } from '../storage';
-import { debounce } from '@graphiql/toolkit';
 import { onHasCompletion } from './completion';
-
-// move this to @graphiql/react ofc
-export const useGraphiQLStore = (options?: UserOptions) => {
-  return createGraphiQLStore(options);
-};
-
-export const useSchema = () => {
-  const store = useGraphiQLStore();
-  return useStore(store, state => state.schema);
-};
-
-export const useOptions = () => {
-  const store = useGraphiQLStore();
-  return useStore(store, state => state.options);
-};
-
-export const useEditor = () => {
-  const store = useGraphiQLStore();
-  return useStore(store, state => state.editor);
-};
-
-export const useExecution = () => {
-  const store = useGraphiQLStore();
-  return useStore(store, state => state.execution);
-};
+import { useEditorContext } from './context';
+import { useSchemaContext } from '../schema';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -69,6 +41,7 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
 ) {
   useEffect(() => {
     if (editor) {
+      // @ts-expect-error TODO: fix codemirror type
       editor.setOption(option, value);
     }
   }, [editor, option, value]);
@@ -81,7 +54,7 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
   caller: Function,
 ) {
-  const { updateActiveTabValues } = useEditor();
+  const { updateActiveTabValues } = useEditorContext();
   const storage = useStorageContext();
 
   useEffect(() => {
@@ -132,7 +105,7 @@ export function useCompletion(
   callback: ((reference: SchemaReference) => void) | null,
   caller: Function,
 ) {
-  const { schema } = useSchema();
+  const { schema } = useSchemaContext();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
   useEffect(() => {
@@ -192,7 +165,7 @@ export type UseCopyQueryArgs = {
 };
 
 export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
-  const { queryEditor } = useEditor();
+  const { queryEditor } = useEditorContext();
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -211,10 +184,10 @@ type UseMergeQueryArgs = {
    */
   caller?: Function;
 };
-
+// TODO: see if caller is still needed
 export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
-  const { queryEditor } = useEditor();
-  const { schema } = useSchema();
+  const { queryEditor } = useEditorContext();
+  const { schema } = useSchemaContext();
   return useCallback(() => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
@@ -243,9 +216,7 @@ export function usePrettifyEditors({
   caller,
   onPrettifyQuery,
 }: UsePrettifyEditorsArgs = {}) {
-  const store = useGraphiQLStore();
-  const editors = useStore(store, state => state.editor);
-  const { queryEditor, headerEditor, variableEditor } = editors;
+  const { queryEditor, headerEditor, variableEditor } = useEditorContext();
 
   return useCallback(() => {
     if (variableEditor) {
@@ -335,8 +306,8 @@ export function useAutoCompleteLeafs({
   getDefaultFieldNames,
   caller,
 }: UseAutoCompleteLeafsArgs = {}) {
-  const { queryEditor } = useEditor();
-  const { schema } = useSchema();
+  const { queryEditor } = useEditorContext();
+  const { schema } = useSchemaContext();
 
   return useCallback(() => {
     if (!queryEditor) {
@@ -388,7 +359,7 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  const editors = useEditor();
+  const editors = useEditorContext();
 
   const editorInstance = editors[`${editor}Editor` as const];
   let valueString = '';

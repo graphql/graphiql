@@ -17,7 +17,8 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { CodeMirrorType, WriteableEditorProps } from './types';
+import { CodeMirrorType, WriteableEditorProps } from '@graphiql/toolkit';
+import { useOptionsContext } from '../hooks';
 
 export type UseVariableEditorArgs = WriteableEditorProps & {
   /**
@@ -43,11 +44,8 @@ export function useVariableEditor(
   }: UseVariableEditorArgs = {},
   caller?: Function,
 ) {
-  const { initialVariables, variableEditor, setVariableEditor } =
-    useEditorContext({
-      nonNull: true,
-      caller: caller || useVariableEditor,
-    });
+  const { variableEditor, setVariableEditor } = useEditorContext();
+  const { initialVariables } = useOptionsContext();
   const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: caller || useVariableEditor });
   const prettify = usePrettifyEditors({ caller: caller || useVariableEditor });
@@ -66,7 +64,7 @@ export function useVariableEditor(
       if (!isActive) {
         return;
       }
-
+      // @ts-expect-error TODO: fix codemirror type
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
@@ -123,7 +121,7 @@ export function useVariableEditor(
           editorInstance.execCommand('autocomplete');
         }
       });
-
+      // @ts-expect-error TODO: fix codemirror type
       setVariableEditor(newEditor);
     });
 
