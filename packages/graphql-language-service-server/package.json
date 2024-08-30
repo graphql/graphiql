@@ -53,7 +53,7 @@
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
-    "svelte": "^4.1.1",
+    "svelte": "^4.2.19",
     "svelte2tsx": "^0.7.0",
     "typescript": "^5.3.3",
     "vscode-jsonrpc": "^8.0.1",
