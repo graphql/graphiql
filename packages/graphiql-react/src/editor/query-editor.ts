@@ -44,6 +44,8 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useSynchronizeOption,
+  useGraphiQLStore,
+  useGraphiQLStoreSelector,
 } from './hooks';
 import {
   CodeMirrorEditor,
@@ -81,10 +83,8 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useQueryEditor,
-  });
+  const store = useGraphiQLStore();
+  const { schema } = useGraphiQLStoreSelector(store, state => state.schema);
   const {
     externalFragments,
     initialQuery,

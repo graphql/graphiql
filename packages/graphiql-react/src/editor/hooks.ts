@@ -3,28 +3,29 @@ import {
   GetDefaultFieldNamesFn,
   mergeAst,
   createGraphiQLStore,
-  CommonState,
-  OptionsState,
+  UserOptions,
+  synchronizeActiveTabValues,
+  CodeMirrorEditorWithOperationFacts,
+  TabsState,
+  CodeMirrorEditor,
+  GraphiQLState,
 } from '@graphiql/toolkit';
 
 import { StoreApi } from 'zustand/vanilla';
 import { useStore } from 'zustand/react';
 
 // move this to @graphiql/react ofc
-export const useGraphiQLStore = (options: Partial<OptionsState>) => {
+export const useGraphiQLStore = (options?: UserOptions): GraphiQLState => {
   return createGraphiQLStore(options);
 };
 
-export const useGraphiQLStoreSelector = <T extends CommonState>(
+export const useGraphiQLStoreSelector = <T extends GraphiQLState>(
   store: StoreApi<T>,
   selector: (state: T) => any,
 ) => {
   return useStore(store, selector);
 };
 
-export const useSchemaStore = (options: Partial<OptionsState>) => {
-  return useGraphiQLStoreSelector(useGraphiQLStore(options), s => s.schema);
-};
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -38,7 +39,6 @@ import { useStorageContext } from '../storage';
 import { debounce } from '@graphiql/toolkit';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
-import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -247,10 +247,10 @@ export function usePrettifyEditors({
   caller,
   onPrettifyQuery,
 }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || usePrettifyEditors,
-  });
+  const store = useGraphiQLStore();
+  const editors = useGraphiQLStoreSelector(store, state => state.editor);
+  const { queryEditor, headerEditor, variableEditor } = editors;
+
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
@@ -298,6 +298,30 @@ export function usePrettifyEditors({
   }, [queryEditor, variableEditor, headerEditor, onPrettifyQuery]);
 }
 
+export function useSynchronizeActiveTabValues({
+  queryEditor,
+  variableEditor,
+  headerEditor,
+  responseEditor,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  variableEditor: CodeMirrorEditor | null;
+  headerEditor: CodeMirrorEditor | null;
+  responseEditor: CodeMirrorEditor | null;
+}) {
+  return useCallback<(state: TabsState) => TabsState>(
+    state => {
+      return synchronizeActiveTabValues({
+        currentState: state,
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        responseEditor,
+      });
+    },
+    [queryEditor, variableEditor, headerEditor, responseEditor],
+  );
+}
 export type UseAutoCompleteLeafsArgs = {
   /**
    * A function to determine which field leafs are automatically added when
@@ -375,7 +399,7 @@ export function useAutoCompleteLeafs({
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
   const context = useGraphiQLStore();
 
-  const editorInstance = context.editors[`${editor}Editor` as const];
+  const editorInstance = context.editor[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

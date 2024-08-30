@@ -1,4 +1,6 @@
 import type { Editor } from 'codemirror';
+import { DocumentNode, OperationDefinitionNode } from 'graphql';
+import { VariableToType } from 'graphql-language-service';
 
 export type CodeMirrorType = typeof import('codemirror');
 
@@ -26,4 +28,11 @@ export type WriteableEditorProps = CommonEditorProps & {
    * @default false
    */
   readOnly?: boolean;
+};
+
+export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
+  documentAST: DocumentNode | null;
+  operationName: string | null;
+  operations: OperationDefinitionNode[] | null;
+  variableToType: VariableToType | null;
 };

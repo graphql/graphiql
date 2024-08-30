@@ -1,4 +1,4 @@
-import { enableMapSet } from 'immer';
+import { enableMapSet, produce } from 'immer';
 import { fileSlice, FilesState } from './files';
 
 import { StateCreator, createStore } from 'zustand/vanilla';
@@ -6,10 +6,15 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { executionSlice, ExecutionState } from './execution';
 import { EditorSlice, editorSlice } from './editor';
-import { OptionsSlice, optionsSlice, OptionsState } from './options';
+export type { UserOptions } from './options';
+import { OptionsSlice, optionsSlice, UserOptions } from './options';
 import { SchemaSlice, schemaSlice } from './schema';
 
-export type CommonState = {
+export type { TabsState, TabState, TabDefinition } from './tabs';
+
+export { synchronizeActiveTabValues } from './tabs';
+
+export type GraphiQLState = {
   files: FilesState;
   execution: ExecutionState;
   editor: EditorSlice;
@@ -17,19 +22,10 @@ export type CommonState = {
   schema: SchemaSlice;
 };
 
-export { OptionsState };
-
 enableMapSet();
 
-export type GraphiQLStoreOptions = {
-  /**
-   * The initial state of the store.
-   */
-  initialState?: Partial<CommonState>;
-};
-
-export const createGraphiQLStore = (options: Partial<OptionsState>) => {
-  return createStore<CommonState>()(
+export const createGraphiQLStore = (options?: UserOptions) => {
+  return createStore<GraphiQLState>()(
     immer(
       devtools((...args) => ({
         options: optionsSlice(options)(...args),
@@ -42,10 +38,16 @@ export const createGraphiQLStore = (options: Partial<OptionsState>) => {
   );
 };
 
+export const produceState = <T extends GraphiQLState>(
+  callback: (state: T) => void,
+): ReturnType<typeof produce> => {
+  return produce(callback);
+};
+
 // Utilities
 
 export type ImmerStateCreator<T> = StateCreator<
-  CommonState,
+  GraphiQLState,
   [['zustand/immer', never], never],
   [],
   T

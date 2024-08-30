@@ -1,4 +1,4 @@
-import { ImmerStateCreator } from './store';
+import { GraphiQLState, ImmerStateCreator } from './store';
 
 import {
   createGraphiQLFetcher,
@@ -20,6 +20,7 @@ import {
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import setValue from 'set-value';
 import getValue from 'get-value';
+import { produce } from 'immer';
 
 export type ExecutionState = {
   /**
@@ -187,7 +188,10 @@ function mergeIncrementalResult(
   }
 }
 
-export const executionSlice: ImmerStateCreator<ExecutionState> = set => ({
+export const executionSlice: ImmerStateCreator<ExecutionState> = (
+  set,
+  get,
+) => ({
   isFetching: false,
   isSubscribed: false,
   operationName: null,
@@ -195,194 +199,239 @@ export const executionSlice: ImmerStateCreator<ExecutionState> = set => ({
   subscription: null,
   queryId: 0,
   setFetcher: (fetcher: Fetcher) => {
-    set(state => {
-      state.execution.fetcher = fetcher;
-    });
+    set(
+      produce((state: GraphiQLState) => {
+        state.execution.fetcher = fetcher;
+      }),
+    );
   },
 
-  run: () => {
-    set(async state => {
-      const { queryEditor, responseEditor, variableEditor, headerEditor } =
-        state.editor;
-      if (!queryEditor || !responseEditor) {
-        return;
-      }
+  run: async () => {
+    const { queryEditor, responseEditor, variableEditor, headerEditor } =
+      get().editor;
+    if (!queryEditor || !responseEditor) {
+      return;
+    }
 
-      // If there's an active subscription, unsubscribe it and return
-      if (state.execution.subscription) {
-        stop();
-        return;
-      }
+    const options = get().options;
 
-      const setResponse = (value: string) => {
-        responseEditor.setValue(value);
-        state.editor.updateActiveTabValues({ response: value });
+    // If there's an active subscription, unsubscribe it and return
+    if (get().execution.subscription) {
+      stop();
+      return;
+    }
+
+    const setResponse = (value: string) => {
+      responseEditor.setValue(value);
+      get().editor.updateActiveTabValues({ response: value });
+    };
+
+    set(
+      produce(state => {
+        state.execution.queryId += 1;
+      }),
+    );
+
+    const queryId = get().execution.queryId;
+
+    // Use the edited query after autoCompleteLeafs() runs or,
+    // in case autoCompletion fails (the function returns undefined),
+    // the current query from the editor.
+    let query = get().execution.autocompleteLeafs() || queryEditor.getValue();
+
+    const variablesString = variableEditor?.getValue();
+    let variables: Record<string, unknown> | undefined;
+    try {
+      variables = tryParseJsonObject({
+        json: variablesString,
+        errorMessageParse: 'Variables are invalid JSON',
+        errorMessageType: 'Variables are not a JSON object.',
+      });
+    } catch (error) {
+      setResponse(error instanceof Error ? error.message : `${error}`);
+      return;
+    }
+
+    const headersString = headerEditor?.getValue();
+    let headers: Record<string, unknown> | undefined;
+    try {
+      headers = tryParseJsonObject({
+        json: headersString,
+        errorMessageParse: 'Headers are invalid JSON',
+        errorMessageType: 'Headers are not a JSON object.',
+      });
+    } catch (error) {
+      setResponse(error instanceof Error ? error.message : `${error}`);
+      return;
+    }
+
+    if (options.externalFragments) {
+      const fragmentDependencies = queryEditor.documentAST
+        ? getFragmentDependenciesForAST(
+            queryEditor.documentAST,
+            options.externalFragments,
+          )
+        : [];
+      if (fragmentDependencies.length > 0) {
+        query +=
+          '\n' +
+          fragmentDependencies
+            .map((node: FragmentDefinitionNode) => print(node))
+            .join('\n');
+      }
+    }
+    set(
+      produce((state: GraphiQLState) => {
+        state.execution.isFetching = true;
+      }),
+    );
+    setResponse('');
+
+    const opName =
+      get().execution.operationName ?? queryEditor.operationName ?? undefined;
+
+    // TODO: move this to a plugin later
+    // history?.addToHistory({
+    //   query,
+    //   variables: variablesString,
+    //   headers: headersString,
+    //   operationName: opName,
+    // });
+
+    try {
+      const fullResponse: ExecutionResult = {};
+      const handleResponse = (result: ExecutionResult) => {
+        // A different query was dispatched in the meantime, so don't
+        // show the results of this one.
+        if (queryId !== get().execution.queryId) {
+          return;
+        }
+
+        let maybeMultipart = Array.isArray(result) ? result : false;
+        if (
+          !maybeMultipart &&
+          typeof result === 'object' &&
+          result !== null &&
+          'hasNext' in result
+        ) {
+          maybeMultipart = [result];
+        }
+
+        if (maybeMultipart) {
+          for (const part of maybeMultipart) {
+            mergeIncrementalResult(fullResponse, part);
+          }
+          set(
+            produce(state => {
+              state.execution.isFetching = false;
+            }),
+          );
+          setResponse(formatResult(fullResponse));
+        } else {
+          const response = formatResult(result);
+          set(
+            produce(state => {
+              state.execution.isFetching = false;
+            }),
+          );
+          setResponse(response);
+        }
       };
 
-      state.execution.queryId += 1;
-      const queryId = state.execution.queryId;
+      const fetch = options.fetcher(
+        {
+          query,
+          variables,
+          operationName: opName,
+        },
+        {
+          headers: headers ?? undefined,
+          documentAST: queryEditor.documentAST ?? undefined,
+        },
+      );
 
-      // Use the edited query after autoCompleteLeafs() runs or,
-      // in case autoCompletion fails (the function returns undefined),
-      // the current query from the editor.
-      let query = state.execution.autocompleteLeafs() || queryEditor.getValue();
+      const value = await Promise.resolve(fetch);
+      if (isObservable(value)) {
+        // If the fetcher returned an Observable, then subscribe to it, calling
+        // the callback on each next value, and handling both errors and the
+        // completion of the Observable.
+        set(
+          produce((state: GraphiQLState) => {
+            state.execution.subscription = value.subscribe({
+              next(result) {
+                handleResponse(result);
+              },
+              error(error: Error) {
+                set(
+                  produce((state: GraphiQLState) => {
+                    state.execution.isFetching = false;
+                    state.execution.subscription = null;
+                  }),
+                );
 
-      const variablesString = variableEditor?.getValue();
-      let variables: Record<string, unknown> | undefined;
-      try {
-        variables = tryParseJsonObject({
-          json: variablesString,
-          errorMessageParse: 'Variables are invalid JSON',
-          errorMessageType: 'Variables are not a JSON object.',
-        });
-      } catch (error) {
-        setResponse(error instanceof Error ? error.message : `${error}`);
-        return;
-      }
-
-      const headersString = headerEditor?.getValue();
-      let headers: Record<string, unknown> | undefined;
-      try {
-        headers = tryParseJsonObject({
-          json: headersString,
-          errorMessageParse: 'Headers are invalid JSON',
-          errorMessageType: 'Headers are not a JSON object.',
-        });
-      } catch (error) {
-        setResponse(error instanceof Error ? error.message : `${error}`);
-        return;
-      }
-
-      if (state.options.externalFragments) {
-        const fragmentDependencies = queryEditor.documentAST
-          ? getFragmentDependenciesForAST(
-              queryEditor.documentAST,
-              state.options.externalFragments,
-            )
-          : [];
-        if (fragmentDependencies.length > 0) {
-          query +=
-            '\n' +
-            fragmentDependencies
-              .map((node: FragmentDefinitionNode) => print(node))
-              .join('\n');
-        }
-      }
-      set(state => {
-        state.execution.isFetching = true;
-      });
-      setResponse('');
-
-      const opName =
-        state.execution.operationName ?? queryEditor.operationName ?? undefined;
-
-      // TODO: move this to a plugin later
-      // history?.addToHistory({
-      //   query,
-      //   variables: variablesString,
-      //   headers: headersString,
-      //   operationName: opName,
-      // });
-
-      try {
-        const fullResponse: ExecutionResult = {};
-        const handleResponse = (result: ExecutionResult) => {
-          // A different query was dispatched in the meantime, so don't
-          // show the results of this one.
-          if (queryId !== state.execution.queryId) {
-            return;
-          }
-
-          let maybeMultipart = Array.isArray(result) ? result : false;
-          if (
-            !maybeMultipart &&
-            typeof result === 'object' &&
-            result !== null &&
-            'hasNext' in result
-          ) {
-            maybeMultipart = [result];
-          }
-
-          if (maybeMultipart) {
-            for (const part of maybeMultipart) {
-              mergeIncrementalResult(fullResponse, part);
-            }
-
-            state.execution.isFetching = false;
-            setResponse(formatResult(fullResponse));
-          } else {
-            const response = formatResult(result);
-            state.execution.isFetching = false;
-            setResponse(response);
-          }
-        };
-        const fetch = state.options.fetcher(
-          {
-            query,
-            variables,
-            operationName: opName,
-          },
-          {
-            headers: headers ?? undefined,
-            documentAST: queryEditor.documentAST ?? undefined,
-          },
+                if (error) {
+                  setResponse(formatError(error));
+                }
+              },
+              complete() {
+                set(
+                  produce((state: GraphiQLState) => {
+                    state.execution.isFetching = false;
+                    state.execution.subscription = null;
+                  }),
+                );
+              },
+            });
+          }),
+        );
+      } else if (isAsyncIterable(value)) {
+        set(
+          produce((state: GraphiQLState) => {
+            state.execution.subscription = {
+              unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+            };
+          }),
         );
 
-        const value = await Promise.resolve(fetch);
-        if (isObservable(value)) {
-          // If the fetcher returned an Observable, then subscribe to it, calling
-          // the callback on each next value, and handling both errors and the
-          // completion of the Observable.
-          state.execution.subscription = value.subscribe({
-            next(result) {
-              handleResponse(result);
-            },
-            error(error: Error) {
-              state.execution.isFetching = false;
-              if (error) {
-                setResponse(formatError(error));
-              }
-              state.execution.subscription = null;
-            },
-            complete() {
-              state.execution.isFetching = false;
-              state.execution.subscription = null;
-            },
-          });
-        } else if (isAsyncIterable(value)) {
-          state.execution.subscription = {
-            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
-          };
-          for await (const result of value) {
-            handleResponse(result);
-          }
-          set(state => {
-            state.execution.isFetching = false;
-          });
-          state.execution.isFetching = false;
-          state.execution.subscription = null;
-        } else {
-          handleResponse(value);
+        for await (const result of value) {
+          handleResponse(result);
         }
-      } catch (error) {
-        set(state => {
+        set(
+          produce((state: GraphiQLState) => {
+            state.execution.isFetching = false;
+          }),
+        );
+        set(
+          produce((state: GraphiQLState) => {
+            state.execution.isFetching = false;
+            state.execution.subscription = null;
+          }),
+        );
+      } else {
+        handleResponse(value);
+      }
+    } catch (error) {
+      set(
+        produce((state: GraphiQLState) => {
           state.execution.isFetching = true;
           state.execution.isSubscribed = false;
-        });
-        setResponse(formatError(error));
-      }
-    });
+        }),
+      );
+      setResponse(formatError(error));
+    }
   },
   stop: () => {
-    set(state => {
-      state.execution.isFetching = false;
-    });
+    set(
+      produce((state: GraphiQLState) => {
+        state.execution.isFetching = false;
+      }),
+    );
   },
   autocompleteLeafs: () => {
     let completionResult: string | undefined;
     set(state => {
       const { schema } = state.schema;
-      const { queryEditor } = state.editors;
+      const { queryEditor } = state.editor;
 
       if (!queryEditor) {
         return;
@@ -390,9 +439,10 @@ export const executionSlice: ImmerStateCreator<ExecutionState> = set => ({
 
       const query = queryEditor.getValue();
       const { insertions, result } = fillLeafs(
+        // @ts-expect-error WriteableDraft error
         schema,
         query,
-        state.options.getDefaultFieldNames,
+        get().options.getDefaultFieldNames,
       );
       completionResult = result;
       if (insertions && insertions.length > 0) {

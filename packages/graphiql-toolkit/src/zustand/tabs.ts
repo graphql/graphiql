@@ -2,21 +2,24 @@ import { StorageAPI } from '@graphiql/toolkit';
 import { useCallback, useMemo } from 'react';
 
 import debounce from '../utility/debounce';
-import { CodeMirrorEditor } from '../codemirror/types';
+import {
+  CodeMirrorEditor,
+  CodeMirrorEditorWithOperationFacts,
+} from '../codemirror/types';
 
 export type TabDefinition = {
   /**
    * The contents of the query editor of this tab.
    */
-  query?: string | null;
+  query: string | null;
   /**
    * The contents of the variable editor of this tab.
    */
-  variables?: string | null;
+  variables: string | null;
   /**
    * The contents of the headers editor of this tab.
    */
-  headers?: string | null;
+  headers: string | null;
 };
 
 /**
@@ -185,31 +188,6 @@ function hasStringKey(obj: Record<string, any>, key: string) {
 
 function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
-}
-
-export function useSynchronizeActiveTabValues({
-  queryEditor,
-  variableEditor,
-  headerEditor,
-  responseEditor,
-}: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-  responseEditor: CodeMirrorEditor | null;
-}) {
-  return useCallback<(state: TabsState) => TabsState>(
-    state => {
-      return synchronizeActiveTabValues({
-        currentState: state,
-        queryEditor,
-        variableEditor,
-        headerEditor,
-        responseEditor,
-      });
-    },
-    [queryEditor, variableEditor, headerEditor, responseEditor],
-  );
 }
 
 export function synchronizeActiveTabValues({

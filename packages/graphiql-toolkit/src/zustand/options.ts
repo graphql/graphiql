@@ -1,6 +1,6 @@
 import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
 import { TabDefinition, TabsState } from './tabs';
-import { ImmerStateCreator, SliceCreator } from './store';
+import { GraphiQLState, ImmerStateCreator } from './store';
 import {
   createGraphiQLFetcher,
   Fetcher,
@@ -8,6 +8,7 @@ import {
 } from '../create-fetcher';
 import { GetDefaultFieldNamesFn } from '../graphql-helpers';
 import { DEFAULT_QUERY } from '../constants';
+import { produce } from 'immer';
 
 /**
  * TODO: I like grouping these options and unioning the types,
@@ -199,15 +200,17 @@ function mapOptionsToState(options: UserOptions): UserOptions {
 }
 
 type SliceWithOptions = (
-  options: UserOptions,
+  options?: UserOptions,
 ) => ImmerStateCreator<OptionsSlice>;
 
 export const optionsSlice: SliceWithOptions = userOpts => set => ({
   ...defaultOptionsState,
-  // ...userOpts,
+  ...userOpts,
   configure: (options: UserOptions) => {
-    set(state => {
-      Object.assign(state, mapOptionsToState(options));
-    });
+    set(
+      produce((state: GraphiQLState) => {
+        Object.assign(state, mapOptionsToState(options));
+      }),
+    );
   },
 });
