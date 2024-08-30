@@ -133,12 +133,10 @@ export const defaultEditorState = {
   initialVariables: '',
   initialHeaders: '',
   shouldPersistHeaders: false,
-  tabs: [],
   tabsState: getDefaultTabState({
     defaultQuery: '',
     defaultHeaders: '',
     headers: null,
-    defaultTabs: [],
     query: null,
     variables: null,
     storage: null,

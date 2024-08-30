@@ -200,7 +200,7 @@ export type OptionsSlice = OptionsState &
   // fetcher is always present, just not required
   OptionsStateActions;
 
-const defaultOptionsState = {
+export const defaultOptionsState = {
   editorTheme: 'graphiql',
   keyMap: 'sublime',
   readOnly: false,
@@ -212,7 +212,6 @@ const defaultOptionsState = {
   validationRules: [],
   shouldPersistHeaders: false,
   defaultQuery: DEFAULT_QUERY,
-  defaultTabs: [],
   schema: null,
   fetcher: defaultFetcher,
 } as OptionsState;

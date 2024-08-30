@@ -499,9 +499,13 @@ function useSynchronizeExternalFragments(
   externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
+  let fragments = externalFragments;
+  if (!fragments) {
+    fragments = new Map();
+  }
   const externalFragmentList = useMemo(
-    () => [...externalFragments.values()],
-    [externalFragments],
+    () => [...fragments.values()],
+    [fragments],
   );
 
   useEffect(() => {
