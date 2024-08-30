@@ -103,26 +103,7 @@ export function GraphiQLProvider({
     }),
   ).current;
   const state = useStore(store);
-  state.options.configure({
-    defaultQuery,
-    defaultHeaders,
-    defaultTabs,
-    externalFragments,
-    fetcher,
-    getDefaultFieldNames,
-    headers,
-    inputValueDeprecation,
-    introspectionQueryName,
-    onEditOperationName,
-    onSchemaChange,
-    onTabChange,
-    schema,
-    schemaDescription,
-    shouldPersistHeaders,
-    validationRules,
-    dangerouslyAssumeSchemaIsValid,
-    fetchOptions,
-  });
+
   useEffect(() => {
     state.schema.introspect();
   }, [state.execution.fetcher]);

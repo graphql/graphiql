@@ -252,8 +252,8 @@ export const editorSlice =
             activeTabIndex: index,
           };
           state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
-          state.options.onTabChange?.(updated);
           state.editor.tabsState = updated;
+          state.options.onTabChange?.(updated);
         }),
       );
     },
