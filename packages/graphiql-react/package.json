@@ -54,13 +54,15 @@
     "@radix-ui/react-visually-hidden": "^1.0.3",
     "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
+    "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.1.1",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^10.0.0",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.0",
     "markdown-it": "^14.1.0",
-    "set-value": "^4.1.0"
+    "set-value": "^4.1.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@babel/helper-string-parser": "^7.19.4",

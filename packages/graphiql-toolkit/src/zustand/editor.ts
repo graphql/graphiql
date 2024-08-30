@@ -1,22 +1,13 @@
 import { synchronizeActiveTabValues, TabState } from './tabs';
 
-import {
-  DocumentNode,
-  FragmentDefinitionNode,
-  OperationDefinitionNode,
-  ValidationRule,
-} from 'graphql';
+import { DocumentNode, OperationDefinitionNode } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
 
 import {
   createTab,
   getDefaultTabState,
   setPropertiesInActiveTab,
-  TabDefinition,
   TabsState,
-  clearHeadersFromTabs,
-  serializeTabState,
-  STORAGE_KEY as STORAGE_KEY_TABS,
 } from './tabs';
 
 import { CodeMirrorEditor } from '../codemirror/types';

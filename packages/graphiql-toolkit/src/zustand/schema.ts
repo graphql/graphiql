@@ -5,7 +5,7 @@ import {
   formatError,
   formatResult,
   isPromise,
-} from '@graphiql/toolkit';
+} from '../';
 import {
   buildClientSchema,
   getIntrospectionQuery,
@@ -18,8 +18,7 @@ import {
 
 import { GraphiQLState, ImmerStateCreator } from './store';
 import { IntrospectionOptions } from './options';
-import { G } from 'vitest/dist/chunks/reporters.C_zwCd4j';
-import { castDraft, produce } from 'immer';
+import { produce } from 'immer';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 

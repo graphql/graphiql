@@ -28,7 +28,7 @@ export type {
   ResponseTooltipType,
   UseResponseEditorArgs,
 } from './response-editor';
-export type { TabsState } from './tabs';
+export type { TabsState } from '@graphiql/toolkit';
 export type { UseVariableEditorArgs } from './variable-editor';
 
 export type { CommonEditorProps, KeyMap, WriteableEditorProps } from './types';

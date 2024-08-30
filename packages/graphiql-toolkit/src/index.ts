@@ -7,3 +7,4 @@ export * from './codemirror/types';
 export { default as debounce } from './utility/debounce';
 // TODO: move the most useful utilities from graphiql to here
 export * from './zustand/store';
+export * from './zustand/tabs';

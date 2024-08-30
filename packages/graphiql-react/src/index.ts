@@ -22,6 +22,7 @@ export {
   VariableEditor,
 } from './editor';
 export { useExecutionContext } from './execution';
+export { useOptionsContext } from './hooks';
 export {
   Argument,
   DefaultValue,

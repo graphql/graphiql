@@ -1,4 +1,4 @@
-import { StorageAPI } from '@graphiql/toolkit';
+import { StorageAPI } from '../';
 import { useCallback, useMemo } from 'react';
 
 import debounce from '../utility/debounce';

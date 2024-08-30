@@ -1,6 +1,6 @@
 import { enableMapSet, produce } from 'immer';
 
-import { StateCreator, StoreApi, createStore } from 'zustand/vanilla';
+import { StateCreator, createStore } from 'zustand/vanilla';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
@@ -12,10 +12,6 @@ import { EditorSlice, editorSlice } from './editor';
 import { fileSlice, FilesState } from './files';
 import { SchemaSlice, schemaSlice } from './schema';
 import { createStorage } from './storage/idb-store';
-
-export type { TabsState, TabState, TabDefinition } from './tabs';
-
-export { synchronizeActiveTabValues } from './tabs';
 
 export type GraphiQLState = {
   files: FilesState;
