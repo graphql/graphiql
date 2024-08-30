@@ -220,7 +220,7 @@ function EnumValue({ value }: { value: GraphQLEnumValue }) {
 }
 
 function PossibleTypes({ type }: { type: GraphQLNamedType }) {
-  const { schema } = useSchemaContext({ nonNull: true });
+  const { schema } = useSchemaContext();
   if (!schema || !isAbstractType(type)) {
     return null;
   }

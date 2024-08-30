@@ -112,10 +112,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       nonNull: true,
       caller: HistoryItem,
     });
-  const { headerEditor, queryEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: HistoryItem,
-  });
+  const { headerEditor, queryEditor, variableEditor } = useEditorContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);

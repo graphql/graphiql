@@ -5,11 +5,7 @@ export {
   ResponseEditor,
   VariableEditor,
 } from './components';
-export {
-  EditorContext,
-  EditorContextProvider,
-  useEditorContext,
-} from './context';
+export { useEditorContext } from './context';
 export { useHeaderEditor } from './header-editor';
 export {
   useAutoCompleteLeafs,
@@ -26,7 +22,6 @@ export { useQueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
 export { useVariableEditor } from './variable-editor';
 
-export type { EditorContextType, EditorContextProviderProps } from './context';
 export type { UseHeaderEditorArgs } from './header-editor';
 export type { UseQueryEditorArgs } from './query-editor';
 export type {

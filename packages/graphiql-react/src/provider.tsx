@@ -3,7 +3,6 @@ import {
   GraphiQLState,
   UserOptions,
 } from '@graphiql/toolkit';
-import { EditorContextProvider, EditorContextProviderProps } from './editor';
 
 import {
   ExplorerContextProvider,
@@ -55,7 +54,10 @@ export function GraphiQLProvider({
   defaultHeaders,
   defaultTabs,
   externalFragments,
+  // @ts-expect-error TODO: fix fetcher type
   fetcher,
+  // @ts-expect-error TODO: types
+  fetchOptions,
   getDefaultFieldNames,
   headers,
   inputValueDeprecation,
@@ -96,6 +98,7 @@ export function GraphiQLProvider({
       shouldPersistHeaders,
       validationRules,
       dangerouslyAssumeSchemaIsValid,
+      fetchOptions,
     }),
   ).current;
   return (

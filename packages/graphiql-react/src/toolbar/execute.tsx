@@ -6,15 +6,9 @@ import { DropdownMenu, Tooltip } from '../ui';
 import './execute.css';
 
 export function ExecuteButton() {
-  const { queryEditor, setOperationName } = useEditorContext({
-    nonNull: true,
-    caller: ExecuteButton,
-  });
+  const { queryEditor, setOperationName } = useEditorContext();
   const { isFetching, isSubscribed, operationName, run, stop } =
-    useExecutionContext({
-      nonNull: true,
-      caller: ExecuteButton,
-    });
+    useExecutionContext();
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';

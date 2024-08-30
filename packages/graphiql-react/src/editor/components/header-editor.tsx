@@ -17,10 +17,7 @@ type HeaderEditorProps = UseHeaderEditorArgs & {
 };
 
 export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
-  const { headerEditor } = useEditorContext({
-    nonNull: true,
-    caller: HeaderEditor,
-  });
+  const { headerEditor } = useEditorContext();
   const ref = useHeaderEditor(hookArgs, HeaderEditor);
 
   useEffect(() => {

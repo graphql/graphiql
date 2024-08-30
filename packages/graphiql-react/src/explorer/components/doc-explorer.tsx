@@ -13,9 +13,9 @@ import { TypeDocumentation } from './type-documentation';
 import './doc-explorer.css';
 
 export function DocExplorer() {
-  const { fetchError, isFetching, schema, validationErrors } = useSchemaContext(
-    { nonNull: true, caller: DocExplorer },
-  );
+  const { fetchError, isFetching, schema, validationErrors } =
+    useSchemaContext();
+
   const { explorerNavStack, pop } = useExplorerContext({
     nonNull: true,
     caller: DocExplorer,

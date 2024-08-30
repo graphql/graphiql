@@ -1,8 +1,10 @@
-import { StorageAPI } from '@graphiql/toolkit';
+import {
+  StorageAPI,
+  CodeMirrorEditorWithOperationFacts,
+} from '@graphiql/toolkit';
 import { useCallback, useMemo } from 'react';
 
 import { debounce } from '@graphiql/toolkit';
-import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
 export type TabDefinition = {

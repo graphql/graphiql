@@ -72,10 +72,7 @@ export type ExplorerContextProviderProps = {
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
-  const { schema, validationErrors } = useSchemaContext({
-    nonNull: true,
-    caller: ExplorerContextProvider,
-  });
+  const { schema, validationErrors } = useSchemaContext();
 
   const [navStack, setNavStack] = useState<ExplorerNavStack>([
     initialNavStackItem,

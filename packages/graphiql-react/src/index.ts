@@ -1,8 +1,6 @@
 import './style/root.css';
 
 export {
-  EditorContext,
-  EditorContextProvider,
   HeaderEditor,
   ImagePreview,
   QueryEditor,
@@ -23,11 +21,7 @@ export {
   useHeadersEditorState,
   VariableEditor,
 } from './editor';
-export {
-  ExecutionContext,
-  ExecutionContextProvider,
-  useExecutionContext,
-} from './execution';
+export { useExecutionContext } from './execution';
 export {
   Argument,
   DefaultValue,
@@ -59,11 +53,7 @@ export {
   usePluginContext,
 } from './plugin';
 export { GraphiQLProvider } from './provider';
-export {
-  SchemaContext,
-  SchemaContextProvider,
-  useSchemaContext,
-} from './schema';
+export { useSchemaContext } from './schema';
 export {
   StorageContext,
   StorageContextProvider,
@@ -79,8 +69,6 @@ export * from './toolbar';
 
 export type {
   CommonEditorProps,
-  EditorContextProviderProps,
-  EditorContextType,
   KeyMap,
   ResponseTooltipType,
   TabsState,
@@ -90,10 +78,6 @@ export type {
   UseVariableEditorArgs,
   WriteableEditorProps,
 } from './editor';
-export type {
-  ExecutionContextProviderProps,
-  ExecutionContextType,
-} from './execution';
 export type {
   ExplorerContextProviderProps,
   ExplorerContextType,
@@ -111,7 +95,6 @@ export type {
   PluginContextProviderProps,
 } from './plugin';
 export type { GraphiQLProviderProps } from './provider';
-export type { SchemaContextProviderProps, SchemaContextType } from './schema';
 export type {
   StorageContextProviderProps,
   StorageContextType,

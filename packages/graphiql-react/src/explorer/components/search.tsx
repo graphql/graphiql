@@ -176,10 +176,7 @@ export function useSearchResults(caller?: Function) {
     nonNull: true,
     caller: caller || useSearchResults,
   });
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useSearchResults,
-  });
+  const { schema } = useSchemaContext();
 
   const navItem = explorerNavStack.at(-1)!;
 
