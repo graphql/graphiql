@@ -54,7 +54,6 @@
     "@radix-ui/react-visually-hidden": "^1.0.3",
     "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
-    "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.1.1",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^10.0.0",

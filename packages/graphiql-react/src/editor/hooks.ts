@@ -11,20 +11,7 @@ import {
   GraphiQLState,
 } from '@graphiql/toolkit';
 
-import { StoreApi } from 'zustand/vanilla';
 import { useStore } from 'zustand/react';
-
-// move this to @graphiql/react ofc
-export const useGraphiQLStore = (options?: UserOptions): GraphiQLState => {
-  return createGraphiQLStore(options);
-};
-
-export const useGraphiQLStoreSelector = <T extends GraphiQLState>(
-  store: StoreApi<T>,
-  selector: (state: T) => any,
-) => {
-  return useStore(store, selector);
-};
 
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
@@ -34,11 +21,35 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
+
 import { useStorageContext } from '../storage';
 import { debounce } from '@graphiql/toolkit';
 import { onHasCompletion } from './completion';
-import { useEditorContext } from './context';
+
+// move this to @graphiql/react ofc
+export const useGraphiQLStore = (options?: UserOptions) => {
+  return createGraphiQLStore(options);
+};
+
+export const useSchema = () => {
+  const store = useGraphiQLStore();
+  return useStore(store, state => state.schema);
+};
+
+export const useOptions = () => {
+  const store = useGraphiQLStore();
+  return useStore(store, state => state.options);
+};
+
+export const useEditor = () => {
+  const store = useGraphiQLStore();
+  return useStore(store, state => state.editor);
+};
+
+export const useExecution = () => {
+  const store = useGraphiQLStore();
+  return useStore(store, state => state.execution);
+};
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -70,7 +81,7 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
   caller: Function,
 ) {
-  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
+  const { updateActiveTabValues } = useEditor();
   const storage = useStorageContext();
 
   useEffect(() => {
@@ -121,7 +132,7 @@ export function useCompletion(
   callback: ((reference: SchemaReference) => void) | null,
   caller: Function,
 ) {
-  const { schema } = useSchemaContext({ nonNull: true, caller });
+  const { schema } = useSchema();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
   useEffect(() => {
@@ -137,17 +148,8 @@ export function useCompletion(
         callback?.({ kind: 'Type', type, schema: schema || undefined });
       });
     };
-    editor.on(
-      // @ts-expect-error @TODO additional args for hasCompletion event
-      'hasCompletion',
-      handleCompletion,
-    );
-    return () =>
-      editor.off(
-        // @ts-expect-error @TODO additional args for hasCompletion event
-        'hasCompletion',
-        handleCompletion,
-      );
+    editor.on('hasCompletion', handleCompletion);
+    return () => editor.off('hasCompletion', handleCompletion);
   }, [callback, editor, explorer, plugin, schema]);
 }
 
@@ -190,10 +192,7 @@ export type UseCopyQueryArgs = {
 };
 
 export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useCopyQuery,
-  });
+  const { queryEditor } = useEditor();
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -214,11 +213,8 @@ type UseMergeQueryArgs = {
 };
 
 export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useMergeQuery,
-  });
-  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
+  const { queryEditor } = useEditor();
+  const { schema } = useSchema();
   return useCallback(() => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
@@ -248,7 +244,7 @@ export function usePrettifyEditors({
   onPrettifyQuery,
 }: UsePrettifyEditorsArgs = {}) {
   const store = useGraphiQLStore();
-  const editors = useGraphiQLStoreSelector(store, state => state.editor);
+  const editors = useStore(store, state => state.editor);
   const { queryEditor, headerEditor, variableEditor } = editors;
 
   return useCallback(() => {
@@ -339,14 +335,9 @@ export function useAutoCompleteLeafs({
   getDefaultFieldNames,
   caller,
 }: UseAutoCompleteLeafsArgs = {}) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
+  const { queryEditor } = useEditor();
+  const { schema } = useSchema();
+
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -397,9 +388,9 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  const context = useGraphiQLStore();
+  const editors = useEditor();
 
-  const editorInstance = context.editor[`${editor}Editor` as const];
+  const editorInstance = editors[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

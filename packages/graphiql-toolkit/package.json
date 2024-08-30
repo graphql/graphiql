@@ -28,8 +28,10 @@
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",
     "meros": "^1.1.4",
-    "zustand": ">= 4.5.5",
-    "immer": ">= 10.1.1"
+    "zustand": "^4.5.5",
+    "immer": "^10.1.1",
+    "idb-keyval": "^6.2.1",
+    "codemirror": "^5.65.3"
   },
   "devDependencies": {
     "graphql": "^17.0.0-alpha.7",

@@ -18,23 +18,25 @@ import {
   useRef,
 } from 'react';
 
-import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
 import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import { debounce } from '@graphiql/toolkit';
+import {
+  debounce,
+  CodeMirrorEditorWithOperationFacts,
+  CodeMirrorEditor,
+  CodeMirrorType,
+  WriteableEditorProps,
+} from '@graphiql/toolkit';
+import { useStore } from 'zustand/react';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import {
-  CodeMirrorEditorWithOperationFacts,
-  useEditorContext,
-} from './context';
+
 import {
   useCompletion,
   useCopyQuery,
@@ -45,13 +47,12 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
   useGraphiQLStore,
-  useGraphiQLStoreSelector,
+  useExecution,
+  useSchema,
+  useEditor,
+  useOptions,
 } from './hooks';
-import {
-  CodeMirrorEditor,
-  CodeMirrorType,
-  WriteableEditorProps,
-} from './types';
+
 import { normalizeWhitespace } from './whitespace';
 
 export type UseQueryEditorArgs = WriteableEditorProps &
@@ -83,22 +84,18 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const store = useGraphiQLStore();
-  const { schema } = useGraphiQLStoreSelector(store, state => state.schema);
+  const { schema } = useSchema();
   const {
-    externalFragments,
-    initialQuery,
     queryEditor,
     setOperationName,
     setQueryEditor,
-    validationRules,
     variableEditor,
     updateActiveTabValues,
-  } = useEditorContext({
-    nonNull: true,
-    caller: caller || useQueryEditor,
-  });
-  const executionContext = useExecutionContext();
+  } = useEditor();
+
+  const { externalFragments, initialQuery, validationRules } = useOptions();
+
+  const executionContext = useExecution();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
@@ -223,7 +220,7 @@ export function useQueryEditor(
             // empty
           },
         },
-      }) as CodeMirrorEditorWithOperationFacts;
+      }) as unknown as CodeMirrorEditorWithOperationFacts;
 
       newEditor.addKeyMap({
         'Cmd-Space'() {

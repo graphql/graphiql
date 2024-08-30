@@ -1,14 +1,17 @@
 import { enableMapSet, produce } from 'immer';
-import { fileSlice, FilesState } from './files';
 
-import { StateCreator, createStore } from 'zustand/vanilla';
-import { devtools } from 'zustand/middleware';
+import { StateCreator, StoreApi, createStore } from 'zustand/vanilla';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+
 import { executionSlice, ExecutionState } from './execution';
-import { EditorSlice, editorSlice } from './editor';
 export type { UserOptions } from './options';
+
 import { OptionsSlice, optionsSlice, UserOptions } from './options';
+import { EditorSlice, editorSlice } from './editor';
+import { fileSlice, FilesState } from './files';
 import { SchemaSlice, schemaSlice } from './schema';
+import { createStorage } from './storage/idb-store';
 
 export type { TabsState, TabState, TabDefinition } from './tabs';
 
@@ -24,18 +27,34 @@ export type GraphiQLState = {
 
 enableMapSet();
 
-export const createGraphiQLStore = (options?: UserOptions) => {
+const middlewares = (
+  fn: ImmerStateCreator<GraphiQLState>,
+  options?: UserOptions,
+) => {
+  const storage =
+    options?.storage ?? createStorage(options?.storageKeyPrefix ?? 'graphiql');
   return createStore<GraphiQLState>()(
     immer(
-      devtools((...args) => ({
-        options: optionsSlice(options)(...args),
-        files: fileSlice(...args),
-        execution: executionSlice(...args),
-        editor: editorSlice(...args),
-        schema: schemaSlice(...args),
-      })),
+      devtools(
+        persist(fn, {
+          storage: createJSONStorage(() => storage),
+          name: 'graphiql',
+        }),
+      ),
     ),
   );
+};
+
+export const createGraphiQLStore = (options?: UserOptions) => {
+  return middlewares((...args) => ({
+    options: optionsSlice(options)(...args),
+    // TODO: files slices are not yet used by editor slice (or any slice) yet.
+    // let's get everything working first
+    files: fileSlice(...args),
+    execution: executionSlice(...args),
+    editor: editorSlice(...args),
+    schema: schemaSlice(...args),
+  }));
 };
 
 export const produceState = <T extends GraphiQLState>(

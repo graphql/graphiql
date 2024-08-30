@@ -36,19 +36,22 @@ export type IntrospectionOptions = {
   schemaDescription?: boolean;
 };
 
-export type FetcherOptions = {
-  /**
-   * The fetcher function that is used to send the request to the server.
-   * See the `createGraphiQLFetcher` function for an example of a fetcher
-   * TODO: link to fetcher documentation
-   */
-  fetcher: Fetcher;
-
-  /**
-   * config to pass to the fetcher. overrides fetcher if provided.
-   */
-  fetchOptions?: CreateFetcherOptions;
-};
+// you can supply either or neither of these options, never both
+export type FetcherOptions =
+  | {
+      /**
+       * The fetcher function that is used to send the request to the server.
+       * See the `createGraphiQLFetcher` function for an example of a fetcher
+       * TODO: link to fetcher documentation
+       */
+      fetcher?: Fetcher;
+    }
+  | {
+      /**
+       * config to pass to the fetcher. overrides fetcher if provided.
+       */
+      fetchOptions?: CreateFetcherOptions;
+    };
 
 type GeneralUserOptions = {
   /**
@@ -134,6 +137,19 @@ type GeneralUserOptions = {
    * @default false
    */
   dangerouslyAssumeSchemaIsValid?: boolean;
+
+  /**
+   * optional custom storage key for the graphiql state - will determine the name of the idb storage
+   */
+
+  storageKeyPrefix?: string;
+  /**
+   * Provide a custom storage API.
+   * @default `localStorage`
+   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#storage-2|API docs}
+   * for details on the required interface.
+   */
+  storage?: Storage;
   /**
    * A function to determine which field leafs are automatically added when
    * trying to execute a query with missing selection sets. It will be called
@@ -156,7 +172,7 @@ type GeneralUserOptions = {
 
 export type OptionsState = GeneralUserOptions &
   FetcherOptions &
-  IntrospectionOptions;
+  IntrospectionOptions & { fetcher: Fetcher };
 
 export type UserOptions = Partial<GeneralUserOptions> &
   FetcherOptions &
@@ -164,14 +180,25 @@ export type UserOptions = Partial<GeneralUserOptions> &
 
 export type OptionsStateActions = {
   /**
-   * Configure the options state with the provided options.
+   * Configure the options state with the provided options, patching the previous config
    */
   configure(options: UserOptions): void;
+
+  /**
+   * Set the options state with the provided options, resetting other options to defaults
+   */
+  setConfig(options: UserOptions): void;
 };
+
+// new fallback default allows no fetcher to be supplied
+// and uses the conventional relative /graphql path
+const defaultFetcher = createGraphiQLFetcher({ url: '/graphql' });
 
 export type GraphiQLStoreOptions = OptionsState;
 
-export type OptionsSlice = OptionsState & OptionsStateActions;
+export type OptionsSlice = OptionsState &
+  // fetcher is always present, just not required
+  OptionsStateActions;
 
 const defaultOptionsState = {
   editorTheme: 'graphiql',
@@ -187,15 +214,22 @@ const defaultOptionsState = {
   defaultQuery: DEFAULT_QUERY,
   defaultTabs: [],
   schema: null,
-  fetcher: createGraphiQLFetcher({ url: '/graphql' }),
+  fetcher: defaultFetcher,
 } as OptionsState;
 
-function mapOptionsToState(options: UserOptions): UserOptions {
+function mapOptionsToState(options: UserOptions) {
+  let fetcher: Fetcher;
+  if ('fetchOptions' in options && options.fetchOptions) {
+    fetcher = createGraphiQLFetcher(options.fetchOptions);
+  } else if ('fetcher' in options && options.fetcher) {
+    fetcher = options.fetcher;
+  } else {
+    fetcher = defaultFetcher;
+  }
+
   return {
     ...options,
-    fetcher: options?.fetchOptions
-      ? createGraphiQLFetcher(options.fetchOptions)
-      : options?.fetcher ?? createGraphiQLFetcher({ url: '/graphql' }),
+    fetcher,
   };
 }
 
@@ -205,11 +239,22 @@ type SliceWithOptions = (
 
 export const optionsSlice: SliceWithOptions = userOpts => set => ({
   ...defaultOptionsState,
-  ...userOpts,
+  ...mapOptionsToState(userOpts ? userOpts : {}),
   configure: (options: UserOptions) => {
     set(
       produce((state: GraphiQLState) => {
-        Object.assign(state, mapOptionsToState(options));
+        Object.assign(state.options, mapOptionsToState(options));
+      }),
+    );
+  },
+  setConfig: (options: UserOptions) => {
+    set(
+      produce((state: GraphiQLState) => {
+        state.options = {
+          ...Object.assign(defaultOptionsState, mapOptionsToState(options)),
+          configure: state.options.configure,
+          setConfig: state.options.setConfig,
+        };
       }),
     );
   },
