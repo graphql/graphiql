@@ -236,25 +236,28 @@ type SliceWithOptions = (
   options?: UserOptions,
 ) => ImmerStateCreator<OptionsSlice>;
 
-export const optionsSlice: SliceWithOptions = userOpts => set => ({
-  ...defaultOptionsState,
-  ...mapOptionsToState(userOpts ? userOpts : {}),
-  configure: (options: UserOptions) => {
-    set(
-      produce((state: GraphiQLState) => {
-        Object.assign(state.options, mapOptionsToState(options));
-      }),
-    );
-  },
-  setConfig: (options: UserOptions) => {
-    set(
-      produce((state: GraphiQLState) => {
-        state.options = {
-          ...Object.assign(defaultOptionsState, mapOptionsToState(options)),
-          configure: state.options.configure,
-          setConfig: state.options.setConfig,
-        };
-      }),
-    );
-  },
-});
+export const optionsSlice: SliceWithOptions = userOpts => set => {
+  console.log({ userOpts });
+  return {
+    ...defaultOptionsState,
+    ...mapOptionsToState(userOpts ? userOpts : {}),
+    configure: (options: UserOptions) => {
+      set(
+        produce((state: GraphiQLState) => {
+          Object.assign(state.options, mapOptionsToState(options));
+        }),
+      );
+    },
+    setConfig: (options: UserOptions) => {
+      set(
+        produce((state: GraphiQLState) => {
+          state.options = {
+            ...Object.assign(defaultOptionsState, mapOptionsToState(options)),
+            configure: state.options.configure,
+            setConfig: state.options.setConfig,
+          };
+        }),
+      );
+    },
+  };
+};

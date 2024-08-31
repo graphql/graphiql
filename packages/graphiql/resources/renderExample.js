@@ -35,7 +35,6 @@ function onEditHeaders(newHeaders) {
 }
 
 function onTabChange(tabsState) {
-  console.log({ tabsState });
   const activeTab = tabsState.tabs[tabsState.activeTabIndex];
   parameters.query = activeTab.query;
   parameters.variables = activeTab.variables;

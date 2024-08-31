@@ -108,17 +108,8 @@ export type EditorStoreActions = {
   /**
    * Set the provided editor values to the cm editor state, for example, on tab change
    */
-  setEditorValues: (newEditorState: {
-    query: string | null;
-    headers: string | null;
-    variables: string | null;
-    response?: string | null;
-  }) => void;
-  synchronizeActiveTabValues: () => void;
-  setQueryValue: (query: string) => void;
-  setVariablesValue: (variables: string) => void;
-  setHeadersValue: (headers: string) => void;
-  setResponseValue: (response: string) => void;
+  setEditorValues: (newEditorState: TabState) => void;
+  synchronizeActiveTabValues: (newEditorState: TabsState) => void;
 };
 
 export type EditorSlice = EditorState & EditorStoreActions;
@@ -148,7 +139,7 @@ export const getDefaultEditorState = (options?: UserOptions) => ({
 
 export const editorSlice =
   (options?: UserOptions): ImmerStateCreator<EditorSlice> =>
-  set => ({
+  (set, get) => ({
     ...getDefaultEditorState(options),
     setHeaderEditor(newEditor) {
       set(
@@ -207,43 +198,6 @@ export const editorSlice =
         }),
       ),
 
-    addTab: () => {
-      // Make sure the current tab stores the latest values
-      set(
-        produce((state: GraphiQLState) => {
-          state.editor.synchronizeActiveTabValues();
-          const { tabs } = state.editor.tabsState;
-          const updated: TabsState = {
-            tabs: [
-              ...tabs,
-              createTab({
-                headers: state.options.defaultHeaders,
-                query: state.options.defaultQuery ?? DEFAULT_QUERY,
-              }),
-            ],
-            activeTabIndex: tabs.length,
-          };
-          state.editor.tabsState = updated;
-          state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
-          state.options.onTabChange?.(updated);
-        }),
-      );
-    },
-    synchronizeActiveTabValues() {
-      set(
-        produce((state: GraphiQLState) => {
-          const { queryEditor, variableEditor, headerEditor, responseEditor } =
-            state.editor;
-          state.editor.tabsState = synchronizeActiveTabValues({
-            queryEditor,
-            variableEditor,
-            headerEditor,
-            responseEditor,
-            currentState: state.editor.tabsState,
-          });
-        }),
-      );
-    },
     changeTab(index) {
       set(
         produce((state: GraphiQLState) => {
@@ -251,8 +205,36 @@ export const editorSlice =
             ...state.editor.tabsState,
             activeTabIndex: index,
           };
+          console.log(updated, updated.tabs[updated.activeTabIndex]);
           state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
           state.editor.tabsState = updated;
+
+          state.options.onTabChange?.(updated);
+        }),
+      );
+    },
+    addTab: () => {
+      // Make sure the current tab stores the latest values
+      set(
+        produce((state: GraphiQLState) => {
+          const updatedValues = synchronizeActiveTabValues({
+            ...state.editor,
+            currentState: state.editor.tabsState,
+          });
+          const updated: TabsState = {
+            tabs: [
+              ...updatedValues.tabs,
+              createTab({
+                headers: state.options.defaultHeaders,
+                query: get().options.defaultQuery ?? DEFAULT_QUERY,
+              }),
+            ],
+            activeTabIndex: updatedValues.tabs.length,
+          };
+          console.log(updated, updated.tabs[updated.activeTabIndex]);
+          state.editor.tabsState = updated;
+
+          state.editor.setEditorValues(updated.tabs[updated.activeTabIndex]);
           state.options.onTabChange?.(updated);
         }),
       );
@@ -286,62 +268,35 @@ export const editorSlice =
         }),
       );
     },
-
+    synchronizeActiveTabValues(newEditorState) {
+      set(
+        produce((state: GraphiQLState) => {
+          const { queryEditor, variableEditor, headerEditor, responseEditor } =
+            state.editor;
+          state.editor.tabsState = synchronizeActiveTabValues({
+            queryEditor,
+            variableEditor,
+            headerEditor,
+            responseEditor,
+            currentState: newEditorState,
+          });
+        }),
+      );
+    },
+    // TODO this is not passing the tab state where it should be, I missed something simple here!
+    // trying to get this and the above working without react hooks
     setEditorValues(newEditorState) {
       set(
         produce((state: GraphiQLState) => {
-          state.editor.tabsState = setPropertiesInActiveTab(
-            state.editor.tabsState,
-            newEditorState,
+          const { queryEditor, variableEditor, headerEditor, responseEditor } =
+            state.editor;
+
+          queryEditor?.setValue(newEditorState.query ?? '');
+          variableEditor?.setValue(newEditorState.variables ?? '');
+          headerEditor?.setValue(
+            newEditorState.headers ?? state.options.defaultHeaders ?? '',
           );
-        }),
-      );
-    },
-    setQueryValue(query) {
-      set(
-        produce((state: GraphiQLState) => {
-          state.editor.tabsState = setPropertiesInActiveTab(
-            state.editor.tabsState,
-            {
-              query,
-            },
-          );
-        }),
-      );
-    },
-    setHeadersValue(headers) {
-      set(
-        produce((state: GraphiQLState) => {
-          state.editor.tabsState = setPropertiesInActiveTab(
-            state.editor.tabsState,
-            {
-              headers,
-            },
-          );
-        }),
-      );
-    },
-    setResponseValue(response) {
-      set(
-        produce((state: GraphiQLState) => {
-          state.editor.tabsState = setPropertiesInActiveTab(
-            state.editor.tabsState,
-            {
-              response,
-            },
-          );
-        }),
-      );
-    },
-    setVariablesValue(variables) {
-      set(
-        produce((state: GraphiQLState) => {
-          state.editor.tabsState = setPropertiesInActiveTab(
-            state.editor.tabsState,
-            {
-              variables,
-            },
-          );
+          responseEditor?.setValue(newEditorState.response ?? '');
         }),
       );
     },
