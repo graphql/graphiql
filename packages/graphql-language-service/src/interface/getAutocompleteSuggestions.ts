@@ -422,6 +422,7 @@ export function getAutocompleteSuggestions(
   if (
     (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
     (kind === RuleKinds.LIST_TYPE && step === 1) ||
+    (kind === RuleKinds.FRAGMENT_DEFINITION && step === 3) ||
     (kind === RuleKinds.NAMED_TYPE &&
       prevState &&
       (prevState.kind === RuleKinds.VARIABLE_DEFINITION ||

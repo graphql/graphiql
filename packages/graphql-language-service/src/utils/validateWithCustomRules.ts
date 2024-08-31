@@ -10,6 +10,7 @@
 import {
   ValidationRule,
   DocumentNode,
+  // TODO: this should contain fragment-arguments rules
   specifiedRules,
   validate,
   GraphQLError,
