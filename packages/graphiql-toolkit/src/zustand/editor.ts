@@ -109,7 +109,7 @@ export type EditorStoreActions = {
    * Set the provided editor values to the cm editor state, for example, on tab change
    */
   setEditorValues: (newEditorState: TabState) => void;
-  synchronizeActiveTabValues: (newEditorState: TabsState) => void;
+  synchronizeActiveTabValues: (newEditorState: TabsState) => TabsState;
 };
 
 export type EditorSlice = EditorState & EditorStoreActions;
@@ -217,10 +217,9 @@ export const editorSlice =
       // Make sure the current tab stores the latest values
       set(
         produce((state: GraphiQLState) => {
-          const updatedValues = synchronizeActiveTabValues({
-            ...state.editor,
-            currentState: state.editor.tabsState,
-          });
+          const updatedValues = state.editor.synchronizeActiveTabValues(
+            state.editor.tabsState,
+          );
           const updated: TabsState = {
             tabs: [
               ...updatedValues.tabs,
@@ -269,19 +268,15 @@ export const editorSlice =
       );
     },
     synchronizeActiveTabValues(newEditorState) {
-      set(
-        produce((state: GraphiQLState) => {
-          const { queryEditor, variableEditor, headerEditor, responseEditor } =
-            state.editor;
-          state.editor.tabsState = synchronizeActiveTabValues({
-            queryEditor,
-            variableEditor,
-            headerEditor,
-            responseEditor,
-            currentState: newEditorState,
-          });
-        }),
-      );
+      const { queryEditor, variableEditor, headerEditor, responseEditor } =
+        get().editor;
+      return synchronizeActiveTabValues({
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        responseEditor,
+        currentState: newEditorState,
+      });
     },
     // TODO this is not passing the tab state where it should be, I missed something simple here!
     // trying to get this and the above working without react hooks

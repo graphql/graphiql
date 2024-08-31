@@ -32,11 +32,11 @@ const middlewares = (
   return createStore<GraphiQLState>()(
     immer(
       devtools(
-        fn,
-        // persist(fn, {
-        //   storage: createJSONStorage(() => storage),
-        //   name: 'graphiql',
-        // }),
+        // fn,
+        persist(fn, {
+          storage: createJSONStorage(() => storage),
+          name: 'graphiql',
+        }),
       ),
     ),
   );

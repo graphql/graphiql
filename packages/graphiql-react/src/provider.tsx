@@ -12,7 +12,7 @@ import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { PluginContextProvider, PluginContextProviderProps } from './plugin';
 
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
 
 export type GraphiQLProviderProps = UserOptions &
@@ -80,50 +80,32 @@ export function GraphiQLProvider({
   variables,
   visiblePlugin,
 }: GraphiQLProviderProps) {
-  const store = useRef(
-    createGraphiQLStore({
-      defaultQuery,
-      defaultHeaders,
-      defaultTabs,
-      externalFragments,
-      fetcher,
-      getDefaultFieldNames,
-      headers,
-      inputValueDeprecation,
-      introspectionQueryName,
-      onEditOperationName,
-      onSchemaChange,
-      onTabChange,
-      schema,
-      schemaDescription,
-      shouldPersistHeaders,
-      validationRules,
-      dangerouslyAssumeSchemaIsValid,
-      fetchOptions,
-    }),
-  ).current;
+  const store = useMemo(
+    () =>
+      createGraphiQLStore({
+        defaultQuery,
+        defaultHeaders,
+        defaultTabs,
+        externalFragments,
+        fetcher,
+        getDefaultFieldNames,
+        headers,
+        inputValueDeprecation,
+        introspectionQueryName,
+        onEditOperationName,
+        onSchemaChange,
+        onTabChange,
+        schema,
+        schemaDescription,
+        shouldPersistHeaders,
+        validationRules,
+        dangerouslyAssumeSchemaIsValid,
+        fetchOptions,
+      }),
+    [defaultQuery],
+  );
 
   const state = useStore(store);
-  state.options.configure({
-    defaultQuery,
-    defaultHeaders,
-    defaultTabs,
-    externalFragments,
-    fetcher,
-    getDefaultFieldNames,
-    headers,
-    inputValueDeprecation,
-    introspectionQueryName,
-    onEditOperationName,
-    onSchemaChange,
-    onTabChange,
-    schema,
-    schemaDescription,
-    shouldPersistHeaders,
-    validationRules,
-    dangerouslyAssumeSchemaIsValid,
-    fetchOptions,
-  });
 
   useEffect(() => {
     state.schema.introspect();
