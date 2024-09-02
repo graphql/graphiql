@@ -81,7 +81,7 @@ export interface CreateFetcherOptions {
    */
   url: string;
   /**
-   * url for websocket subscription requests
+   * url for websocket subscription requests or SSE
    */
   subscriptionUrl?: string;
   /**

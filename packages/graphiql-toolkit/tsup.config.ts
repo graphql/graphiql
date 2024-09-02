@@ -4,7 +4,6 @@ const opts: Options = {
   entry: ['src/**/*.ts', '!**/__tests__'],
   bundle: false,
   clean: true,
-  dts: true,
   minifySyntax: true,
 };
 
@@ -17,6 +16,7 @@ export default defineConfig([
     env: {
       USE_IMPORT: 'true',
     },
+    dts: true,
   },
   {
     ...opts,
