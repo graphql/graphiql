@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 import { useStorageContext } from '../storage';
-import debounce from './debounce';
+import { debounce } from '@graphiql/toolkit';
 
 type ResizableElement = 'first' | 'second';
 

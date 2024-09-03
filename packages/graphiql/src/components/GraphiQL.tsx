@@ -54,6 +54,7 @@ import {
   UseHeaderEditorArgs,
   useMergeQuery,
   usePluginContext,
+  useOptionsContext,
   usePrettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
@@ -65,6 +66,7 @@ import {
   WriteableEditorProps,
   isMacOs,
 } from '@graphiql/react';
+import { Fetcher } from '@graphiql/toolkit';
 
 const majorVersion = parseInt(version.slice(0, 2), 10);
 
@@ -84,7 +86,7 @@ if (majorVersion < 16) {
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
 export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
-  GraphiQLInterfaceProps;
+  GraphiQLInterfaceProps & { fetcher: Fetcher };
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -242,9 +244,10 @@ const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
-  const editorContext = useEditorContext({ nonNull: true });
-  const executionContext = useExecutionContext({ nonNull: true });
-  const schemaContext = useSchemaContext({ nonNull: true });
+  const editorContext = useEditorContext();
+  const optionsContext = useOptionsContext();
+  const executionContext = useExecutionContext();
+  const schemaContext = useSchemaContext();
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
   const forcedTheme = useMemo(
@@ -297,7 +300,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         return props.defaultEditorToolsVisibility ? undefined : 'second';
       }
 
-      return editorContext.initialVariables || editorContext.initialHeaders
+      return optionsContext.initialVariables || optionsContext.initialHeaders
         ? undefined
         : 'second';
     })(),
@@ -314,8 +317,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     ) {
       return props.defaultEditorToolsVisibility;
     }
-    return !editorContext.initialVariables &&
-      editorContext.initialHeaders &&
+    return !optionsContext.initialVariables &&
+      optionsContext.initialHeaders &&
       isHeadersEditorEnabled
       ? 'headers'
       : 'variables';
@@ -482,7 +485,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
         return;
       }
 
-      if (editorContext.activeTabIndex === index) {
+      if (editorContext.tabsState.activeTabIndex === index) {
         executionContext.stop();
       }
       editorContext.closeTab(index);
@@ -584,15 +587,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs
-                values={editorContext.tabs}
+                values={editorContext.tabsState.tabs}
                 onReorder={handleReorder}
                 aria-label="Select active operation"
               >
-                {editorContext.tabs.map((tab, index, tabs) => (
+                {editorContext.tabsState.tabs.map((tab, index, tabs) => (
                   <Tab
                     key={tab.id}
                     value={tab}
-                    isActive={index === editorContext.activeTabIndex}
+                    isActive={index === editorContext.tabsState.activeTabIndex}
                   >
                     <Tab.Button
                       aria-controls="graphiql-session"
@@ -621,7 +624,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <div
               role="tabpanel"
               id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.activeTabIndex}`}
+              aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.tabsState.activeTabIndex}`}
             >
               <div ref={editorResize.firstRef}>
                 <div className="graphiql-editors">
@@ -805,7 +808,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <Button
                   type="button"
                   id="enable-persist-headers"
-                  className={editorContext.shouldPersistHeaders ? 'active' : ''}
+                  className={
+                    optionsContext.shouldPersistHeaders ? 'active' : ''
+                  }
                   data-value="true"
                   onClick={handlePersistHeaders}
                 >
@@ -814,7 +819,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <Button
                   type="button"
                   id="disable-persist-headers"
-                  className={editorContext.shouldPersistHeaders ? '' : 'active'}
+                  className={
+                    optionsContext.shouldPersistHeaders ? '' : 'active'
+                  }
                   onClick={handlePersistHeaders}
                 >
                   Off

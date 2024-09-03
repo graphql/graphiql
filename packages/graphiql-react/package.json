@@ -61,7 +61,8 @@
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.0",
     "markdown-it": "^14.1.0",
-    "set-value": "^4.1.0"
+    "set-value": "^4.1.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@babel/helper-string-parser": "^7.19.4",

@@ -16,6 +16,7 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
+import { useOptionsContext } from '../hooks';
 
 export type UseHeaderEditorArgs = WriteableEditorProps & {
   /**
@@ -34,15 +35,8 @@ export function useHeaderEditor(
   }: UseHeaderEditorArgs = {},
   caller?: Function,
 ) {
-  const {
-    initialHeaders,
-    headerEditor,
-    setHeaderEditor,
-    shouldPersistHeaders,
-  } = useEditorContext({
-    nonNull: true,
-    caller: caller || useHeaderEditor,
-  });
+  const { headerEditor, setHeaderEditor } = useEditorContext();
+  const { initialHeaders, shouldPersistHeaders } = useOptionsContext();
   const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: caller || useHeaderEditor });
   const prettify = usePrettifyEditors({ caller: caller || useHeaderEditor });
@@ -103,7 +97,7 @@ export function useHeaderEditor(
           editorInstance.execCommand('autocomplete');
         }
       });
-
+      // @ts-expect-error TODO: fix codemirror type
       setHeaderEditor(newEditor);
     });
 

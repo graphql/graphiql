@@ -1,4 +1,14 @@
-import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
+import {
+  fillLeafs,
+  GetDefaultFieldNamesFn,
+  mergeAst,
+  synchronizeActiveTabValues,
+  CodeMirrorEditorWithOperationFacts,
+  TabsState,
+  CodeMirrorEditor,
+  debounce,
+} from '@graphiql/toolkit';
+
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -7,12 +17,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
+
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
-import { CodeMirrorEditor } from './types';
+import { useSchemaContext } from '../schema';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -32,6 +41,7 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
 ) {
   useEffect(() => {
     if (editor) {
+      // @ts-expect-error TODO: fix codemirror type
       editor.setOption(option, value);
     }
   }, [editor, option, value]);
@@ -44,7 +54,7 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
   caller: Function,
 ) {
-  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
+  const { updateActiveTabValues } = useEditorContext();
   const storage = useStorageContext();
 
   useEffect(() => {
@@ -95,7 +105,7 @@ export function useCompletion(
   callback: ((reference: SchemaReference) => void) | null,
   caller: Function,
 ) {
-  const { schema } = useSchemaContext({ nonNull: true, caller });
+  const { schema } = useSchemaContext();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
   useEffect(() => {
@@ -111,17 +121,8 @@ export function useCompletion(
         callback?.({ kind: 'Type', type, schema: schema || undefined });
       });
     };
-    editor.on(
-      // @ts-expect-error @TODO additional args for hasCompletion event
-      'hasCompletion',
-      handleCompletion,
-    );
-    return () =>
-      editor.off(
-        // @ts-expect-error @TODO additional args for hasCompletion event
-        'hasCompletion',
-        handleCompletion,
-      );
+    editor.on('hasCompletion', handleCompletion);
+    return () => editor.off('hasCompletion', handleCompletion);
   }, [callback, editor, explorer, plugin, schema]);
 }
 
@@ -164,10 +165,7 @@ export type UseCopyQueryArgs = {
 };
 
 export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useCopyQuery,
-  });
+  const { queryEditor } = useEditorContext();
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -186,13 +184,10 @@ type UseMergeQueryArgs = {
    */
   caller?: Function;
 };
-
+// TODO: see if caller is still needed
 export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useMergeQuery,
-  });
-  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
+  const { queryEditor } = useEditorContext();
+  const { schema } = useSchemaContext();
   return useCallback(() => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
@@ -221,10 +216,8 @@ export function usePrettifyEditors({
   caller,
   onPrettifyQuery,
 }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || usePrettifyEditors,
-  });
+  const { queryEditor, headerEditor, variableEditor } = useEditorContext();
+
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
@@ -272,6 +265,30 @@ export function usePrettifyEditors({
   }, [queryEditor, variableEditor, headerEditor, onPrettifyQuery]);
 }
 
+export function useSynchronizeActiveTabValues({
+  queryEditor,
+  variableEditor,
+  headerEditor,
+  responseEditor,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  variableEditor: CodeMirrorEditor | null;
+  headerEditor: CodeMirrorEditor | null;
+  responseEditor: CodeMirrorEditor | null;
+}) {
+  return useCallback<(state: TabsState) => TabsState>(
+    state => {
+      return synchronizeActiveTabValues({
+        currentState: state,
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        responseEditor,
+      });
+    },
+    [queryEditor, variableEditor, headerEditor, responseEditor],
+  );
+}
 export type UseAutoCompleteLeafsArgs = {
   /**
    * A function to determine which field leafs are automatically added when
@@ -289,14 +306,9 @@ export function useAutoCompleteLeafs({
   getDefaultFieldNames,
   caller,
 }: UseAutoCompleteLeafsArgs = {}) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
+  const { queryEditor } = useEditorContext();
+  const { schema } = useSchemaContext();
+
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -347,11 +359,9 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  const context = useEditorContext({
-    nonNull: true,
-  });
+  const editors = useEditorContext();
 
-  const editorInstance = context[`${editor}Editor` as const];
+  const editorInstance = editors[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

@@ -18,7 +18,7 @@ import {
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
-import debounce from '../../utility/debounce';
+import { debounce } from '@graphiql/toolkit';
 
 import { useExplorerContext } from '../context';
 
@@ -176,10 +176,7 @@ export function useSearchResults(caller?: Function) {
     nonNull: true,
     caller: caller || useSearchResults,
   });
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useSearchResults,
-  });
+  const { schema } = useSchemaContext();
 
   const navItem = explorerNavStack.at(-1)!;
 

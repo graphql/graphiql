@@ -18,23 +18,24 @@ import {
   useRef,
 } from 'react';
 
-import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
 import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import {
+  debounce,
+  CodeMirrorEditorWithOperationFacts,
+  CodeMirrorEditor,
+  CodeMirrorType,
+  WriteableEditorProps,
+} from '@graphiql/toolkit';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import {
-  CodeMirrorEditorWithOperationFacts,
-  useEditorContext,
-} from './context';
+
 import {
   useCompletion,
   useCopyQuery,
@@ -45,12 +46,12 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import {
-  CodeMirrorEditor,
-  CodeMirrorType,
-  WriteableEditorProps,
-} from './types';
+
 import { normalizeWhitespace } from './whitespace';
+import { useSchemaContext } from '../schema';
+import { useEditorContext } from './context';
+import { useExecutionContext } from '../execution';
+import { useOptionsContext } from '../hooks';
 
 export type UseQueryEditorArgs = WriteableEditorProps &
   Pick<UseCopyQueryArgs, 'onCopyQuery'> &
@@ -81,23 +82,18 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useQueryEditor,
-  });
+  const { schema } = useSchemaContext();
   const {
-    externalFragments,
-    initialQuery,
     queryEditor,
     setOperationName,
     setQueryEditor,
-    validationRules,
     variableEditor,
     updateActiveTabValues,
-  } = useEditorContext({
-    nonNull: true,
-    caller: caller || useQueryEditor,
-  });
+  } = useEditorContext();
+
+  const { externalFragments, initialQuery, validationRules } =
+    useOptionsContext();
+
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
@@ -162,7 +158,7 @@ export function useQueryEditor(
       if (!isActive) {
         return;
       }
-
+      // @ts-expect-error TODO: codemirror type issue
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
@@ -223,28 +219,37 @@ export function useQueryEditor(
             // empty
           },
         },
-      }) as CodeMirrorEditorWithOperationFacts;
+      }) as unknown as CodeMirrorEditorWithOperationFacts;
 
       newEditor.addKeyMap({
         'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
+          // @ts-expect-error TODO: codemirror types
+          newEditor.showHint({
+            completeSingle: true,
+            container,
+          });
         },
         'Ctrl-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Alt-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Shift-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
         'Shift-Alt-Space'() {
+          // @ts-expect-error TODO: codemirror types
           newEditor.showHint({ completeSingle: true, container });
         },
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
         if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
+          // @ts-expect-error TODO: codemirror types
           editorInstance.execCommand('autocomplete');
         }
       });
@@ -494,9 +499,13 @@ function useSynchronizeExternalFragments(
   externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
+  let fragments = externalFragments;
+  if (!fragments) {
+    fragments = new Map();
+  }
   const externalFragmentList = useMemo(
-    () => [...externalFragments.values()],
-    [externalFragments],
+    () => [...fragments.values()],
+    [fragments],
   );
 
   useEffect(() => {

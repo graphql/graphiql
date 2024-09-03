@@ -12,13 +12,14 @@ import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
 import { DOC_EXPLORER_PLUGIN, PluginContextType } from '../plugin';
 import { importCodeMirror } from './common';
+import { CodeMirrorEditor } from '@graphiql/toolkit';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
  * about the type and description for the selected context.
  */
 export function onHasCompletion(
-  _cm: Editor,
+  _cm: CodeMirrorEditor,
   data: EditorChange | undefined,
   schema: GraphQLSchema | null | undefined,
   explorer: ExplorerContextType | null,

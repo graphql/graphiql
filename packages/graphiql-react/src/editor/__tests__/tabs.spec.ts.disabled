@@ -1,11 +1,12 @@
-import { StorageAPI } from '@graphiql/toolkit';
+import { StorageAPI, getDefaultTabState } from '@graphiql/toolkit';
 import {
   createTab,
   fuzzyExtractOperationName,
-  getDefaultTabState,
   clearHeadersFromTabs,
   STORAGE_KEY,
 } from '../tabs';
+
+// TODO: move to toolkit
 
 describe('createTab', () => {
   it('creates with default title', () => {

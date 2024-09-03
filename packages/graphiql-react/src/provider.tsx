@@ -1,24 +1,52 @@
-import { EditorContextProvider, EditorContextProviderProps } from './editor';
 import {
-  ExecutionContextProvider,
-  ExecutionContextProviderProps,
-} from './execution';
+  createGraphiQLStore,
+  GraphiQLState,
+  UserOptions,
+} from '@graphiql/toolkit';
+
 import {
   ExplorerContextProvider,
   ExplorerContextProviderProps,
 } from './explorer/context';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { PluginContextProvider, PluginContextProviderProps } from './plugin';
-import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
-import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
-export type GraphiQLProviderProps = EditorContextProviderProps &
-  ExecutionContextProviderProps &
+import { StorageContextProvider, StorageContextProviderProps } from './storage';
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
+import { useStore } from 'zustand';
+
+export type GraphiQLProviderProps = UserOptions &
   ExplorerContextProviderProps &
   HistoryContextProviderProps &
   PluginContextProviderProps &
-  SchemaContextProviderProps &
-  StorageContextProviderProps;
+  StorageContextProviderProps &
+  DeprecatedControlledProps;
+
+export type DeprecatedControlledProps = {
+  /**
+   * @deprecated Use hooks for controlled state
+   */
+  operationName?: string;
+  /**
+   * @deprecated Use hooks for controlled state, or defaultQuery for default state
+   */
+  query?: string;
+  /**
+   * @deprecated Use hooks for controlled state
+   */
+  response?: string;
+  /**
+   * @deprecated Use hooks instead, or defaultVariables for default state
+   */
+  variables?: string;
+  /**
+   * @deprecated Use hooks for controlled state, or defaultHeaders for default state
+   */
+};
+
+export const GraphiQLStoreContext = createContext<ReturnType<
+  typeof createGraphiQLStore
+> | null>(null);
 
 export function GraphiQLProvider({
   children,
@@ -27,7 +55,10 @@ export function GraphiQLProvider({
   defaultHeaders,
   defaultTabs,
   externalFragments,
+  // @ts-expect-error TODO: fix fetcher type
   fetcher,
+  // @ts-expect-error TODO: types
+  fetchOptions,
   getDefaultFieldNames,
   headers,
   inputValueDeprecation,
@@ -49,50 +80,49 @@ export function GraphiQLProvider({
   variables,
   visiblePlugin,
 }: GraphiQLProviderProps) {
+  const store = useRef(
+    createGraphiQLStore({
+      defaultQuery,
+      defaultHeaders,
+      defaultTabs,
+      externalFragments,
+      fetcher,
+      getDefaultFieldNames,
+      headers,
+      inputValueDeprecation,
+      introspectionQueryName,
+      onEditOperationName,
+      onSchemaChange,
+      onTabChange,
+      schema,
+      schemaDescription,
+      shouldPersistHeaders,
+      validationRules,
+      dangerouslyAssumeSchemaIsValid,
+      fetchOptions,
+    }),
+  ).current;
+
+  const state = useStore(store);
+
+  useEffect(() => {
+    state.schema.introspect();
+  }, [fetcher]);
   return (
-    <StorageContextProvider storage={storage}>
-      <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
-        <EditorContextProvider
-          defaultQuery={defaultQuery}
-          defaultHeaders={defaultHeaders}
-          defaultTabs={defaultTabs}
-          externalFragments={externalFragments}
-          headers={headers}
-          onEditOperationName={onEditOperationName}
-          onTabChange={onTabChange}
-          query={query}
-          response={response}
-          shouldPersistHeaders={shouldPersistHeaders}
-          validationRules={validationRules}
-          variables={variables}
-        >
-          <SchemaContextProvider
-            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-            fetcher={fetcher}
-            inputValueDeprecation={inputValueDeprecation}
-            introspectionQueryName={introspectionQueryName}
-            onSchemaChange={onSchemaChange}
-            schema={schema}
-            schemaDescription={schemaDescription}
-          >
-            <ExecutionContextProvider
-              getDefaultFieldNames={getDefaultFieldNames}
-              fetcher={fetcher}
-              operationName={operationName}
+    <GraphiQLStoreContext.Provider value={store}>
+      <StorageContextProvider storage={storage}>
+        <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
+          <ExplorerContextProvider>
+            <PluginContextProvider
+              onTogglePluginVisibility={onTogglePluginVisibility}
+              plugins={plugins}
+              visiblePlugin={visiblePlugin}
             >
-              <ExplorerContextProvider>
-                <PluginContextProvider
-                  onTogglePluginVisibility={onTogglePluginVisibility}
-                  plugins={plugins}
-                  visiblePlugin={visiblePlugin}
-                >
-                  {children}
-                </PluginContextProvider>
-              </ExplorerContextProvider>
-            </ExecutionContextProvider>
-          </SchemaContextProvider>
-        </EditorContextProvider>
-      </HistoryContextProvider>
-    </StorageContextProvider>
+              {children}
+            </PluginContextProvider>
+          </ExplorerContextProvider>
+        </HistoryContextProvider>
+      </StorageContextProvider>
+    </GraphiQLStoreContext.Provider>
   );
 }

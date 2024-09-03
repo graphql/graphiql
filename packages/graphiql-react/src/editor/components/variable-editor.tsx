@@ -19,10 +19,7 @@ type VariableEditorProps = UseVariableEditorArgs & {
 };
 
 export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
-  const { variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: VariableEditor,
-  });
+  const { variableEditor } = useEditorContext();
   const ref = useVariableEditor(hookArgs, VariableEditor);
 
   useEffect(() => {

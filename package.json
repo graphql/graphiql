@@ -38,7 +38,7 @@
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc packages",
     "build:nontsc": "yarn wsrun:noexamples --exclude-missing --serial build",
     "build:clean": "yarn tsc --clean",
-    "build:watch": "yarn tsc --watch",
+    "build:watch": "yarn wsrun:noexamples --done-criteria '\"Build success in|built in\"' -t dev",
     "build-demo": "wsrun -m build-demo",
     "watch": "yarn build:watch",
     "watch-vscode": "yarn tsc && yarn workspace vscode-graphql compile",

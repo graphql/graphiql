@@ -14,6 +14,7 @@ import { ImagePreview } from './components';
 import { useEditorContext } from './context';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
+import { useOptionsContext } from '../hooks';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -42,15 +43,10 @@ export function useResponseEditor(
   }: UseResponseEditorArgs = {},
   caller?: Function,
 ) {
-  const { fetchError, validationErrors } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useResponseEditor,
-  });
-  const { initialResponse, responseEditor, setResponseEditor } =
-    useEditorContext({
-      nonNull: true,
-      caller: caller || useResponseEditor,
-    });
+  const { fetchError, validationErrors } = useSchemaContext();
+  const { responseEditor, setResponseEditor } = useEditorContext();
+  const { initialResponse } = useOptionsContext();
+
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
@@ -133,6 +129,7 @@ export function useResponseEditor(
         extraKeys: commonKeys,
       });
 
+      // @ts-expect-error TODO: fix codemirror type
       setResponseEditor(newEditor);
     });
 
