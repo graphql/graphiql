@@ -80,36 +80,34 @@ export function GraphiQLProvider({
   variables,
   visiblePlugin,
 }: GraphiQLProviderProps) {
-  const store = useMemo(
-    () =>
-      createGraphiQLStore({
-        defaultQuery,
-        defaultHeaders,
-        defaultTabs,
-        externalFragments,
-        fetcher,
-        getDefaultFieldNames,
-        headers,
-        inputValueDeprecation,
-        introspectionQueryName,
-        onEditOperationName,
-        onSchemaChange,
-        onTabChange,
-        schema,
-        schemaDescription,
-        shouldPersistHeaders,
-        validationRules,
-        dangerouslyAssumeSchemaIsValid,
-        fetchOptions,
-      }),
-    [defaultQuery],
-  );
+  const store = useRef(
+    createGraphiQLStore({
+      defaultQuery,
+      defaultHeaders,
+      defaultTabs,
+      externalFragments,
+      fetcher,
+      getDefaultFieldNames,
+      headers,
+      inputValueDeprecation,
+      introspectionQueryName,
+      onEditOperationName,
+      onSchemaChange,
+      onTabChange,
+      schema,
+      schemaDescription,
+      shouldPersistHeaders,
+      validationRules,
+      dangerouslyAssumeSchemaIsValid,
+      fetchOptions,
+    }),
+  ).current;
 
   const state = useStore(store);
 
   useEffect(() => {
     state.schema.introspect();
-  }, [state.execution.fetcher]);
+  }, [fetcher]);
   return (
     <GraphiQLStoreContext.Provider value={store}>
       <StorageContextProvider storage={storage}>

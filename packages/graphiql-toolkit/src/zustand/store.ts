@@ -32,11 +32,35 @@ const middlewares = (
   return createStore<GraphiQLState>()(
     immer(
       devtools(
-        // fn,
-        persist(fn, {
-          storage: createJSONStorage(() => storage),
-          name: 'graphiql',
-        }),
+        fn,
+        // TODO: more issues with persist middleware
+        // persist(fn, {
+        //   storage: createJSONStorage(() => storage),
+        //   name: 'graphiql',
+        //   onRehydrateStorage: state => {
+        //     return {
+        //       ...state,
+        //       editor: {
+        //         ...state,
+
+        //       }
+        //     }
+        //   // partialize: state => {
+        //   //   const {
+        //   //     editor: {
+        //   //       queryEditor,
+        //   //       variableEditor,
+        //   //       headerEditor,
+        //   //       responseEditor,
+        //   //       ...editorState
+        //   //     },
+        //   //   } = state;
+        //   //   console.log(state);
+        //   //   return {
+        //   //     editor: editorState,
+        //   //   };
+        //   // },
+        // }),
       ),
     ),
   );
