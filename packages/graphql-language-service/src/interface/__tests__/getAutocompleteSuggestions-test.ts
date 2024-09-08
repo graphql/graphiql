@@ -49,6 +49,10 @@ const expectedResults = {
     label: 'inputTypeTest',
     detail: 'TestType',
   },
+  oneOfInputTypeTest: {
+    detail: 'String',
+    label: 'oneOfInputTypeTest',
+  },
   appearsIn: {
     label: 'appearsIn',
     detail: '[Episode]',
@@ -163,7 +167,7 @@ describe('getAutocompleteSuggestions', () => {
         },
 
         {
-          sortText: '7__schema',
+          sortText: '8__schema',
           label: '__schema',
           detail: '__Schema!',
         },
@@ -213,6 +217,7 @@ describe('getAutocompleteSuggestions', () => {
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.oneOfInputTypeTest,
         expectedResults.union,
       ]);
 
@@ -236,6 +241,7 @@ describe('getAutocompleteSuggestions', () => {
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.oneOfInputTypeTest,
         expectedResults.union,
       ]);
     });
@@ -250,6 +256,7 @@ describe('getAutocompleteSuggestions', () => {
         expectedResults.hero,
         expectedResults.human,
         expectedResults.inputTypeTest,
+        expectedResults.oneOfInputTypeTest,
         expectedResults.union,
       ]);
     });
@@ -321,6 +328,13 @@ describe('getAutocompleteSuggestions', () => {
           insertTextFormat: 2,
           insertText: 'inputTypeTest {\n   $1\n}',
           labelDetails: { detail: ' TestType' },
+        },
+        {
+          ...expectedResults.oneOfInputTypeTest,
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          insertText: 'oneOfInputTypeTest\n',
+          labelDetails: { detail: ' String' },
         },
         {
           label: 'union',
@@ -419,7 +433,9 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'Boolean', documentation: GraphQLBoolean.description },
         { label: 'Episode' },
         { label: 'InputType' },
+
         { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'OneOfInputType' },
         { label: 'String', documentation: GraphQLString.description },
       ]);
     });
@@ -433,7 +449,9 @@ describe('getAutocompleteSuggestions', () => {
         ...metaArgs,
 
         { label: 'InputType' },
+
         { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'OneOfInputType' },
         { label: 'String', documentation: GraphQLString.description },
       ]);
     });
@@ -654,7 +672,7 @@ describe('getAutocompleteSuggestions', () => {
     ];
     it('provides correct testInput type field suggestions', () => {
       expect(
-        testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
+        testSuggestions('{ inputTypeTest(args: { ', new Position(0, 24)),
       ).toEqual(inputArgs);
     });
 
@@ -662,6 +680,21 @@ describe('getAutocompleteSuggestions', () => {
       expect(
         testSuggestions('{ inputTypeTest(args: { obj: {', new Position(0, 30)),
       ).toEqual(inputArgs);
+    });
+
+    it('provides correct oneOf input type field suggestions', () => {
+      expect(
+        testSuggestions('{ oneOfInputTypeTest(oneOf: {', new Position(0, 29)),
+      ).toEqual(inputArgs);
+    });
+
+    it('provides no more field suggestions once a oneOf field is chosen', () => {
+      expect(
+        testSuggestions(
+          '{ oneOfInputTypeTest(oneOf: { value: 2 ',
+          new Position(0, 40),
+        ),
+      ).toEqual([]);
     });
 
     it('provides correct field name suggestion inside inline fragment', () => {
@@ -813,6 +846,7 @@ describe('getAutocompleteSuggestions', () => {
     it('provides input objects to be extended', () => {
       expect(testSuggestions('extend input ', new Position(0, 13))).toEqual([
         { label: 'InputType' },
+        { label: 'OneOfInputType' },
       ]);
     });
 
@@ -847,8 +881,10 @@ describe('getAutocompleteSuggestions', () => {
       ).toEqual([
         { label: 'Boolean' },
         { label: 'Episode' },
+
         { label: 'InputType' },
         { label: 'Int' },
+        { label: 'OneOfInputType' },
         { label: 'String' },
       ]));
 

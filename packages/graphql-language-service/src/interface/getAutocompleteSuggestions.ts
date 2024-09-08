@@ -317,6 +317,15 @@ export function getAutocompleteSuggestions(
       kind === RuleKinds.OBJECT_VALUE
         ? CompletionItemKind.Value
         : CompletionItemKind.Field;
+    // @oneOf logic!
+    if (
+      typeInfo?.inputType &&
+      'isOneOf' in typeInfo.inputType &&
+      typeInfo.inputType.isOneOf === true &&
+      context.token.string !== '{'
+    ) {
+      return [];
+    }
     return hintList(
       token,
       objectFields.map(field => ({
