@@ -315,6 +315,8 @@ export function getAutocompleteSuggestions(
     // @oneOf logic!
     console.log(state.prevState?.prevState?.kind, !!typeInfo.inputType);
     if (
+      typeInfo?.inputType &&
+      'isOneOf' in typeInfo.inputType &&
       typeInfo?.inputType?.isOneOf === true &&
       (state.prevState?.prevState?.kind !== 'Argument' || token.string !== '{')
     ) {

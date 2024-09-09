@@ -245,13 +245,14 @@ export function getTypeInfo(
             ? objectType.getFields()
             : null;
         inputType = objectType;
-        console.log(inputType);
         break;
       // TODO: needs tests
       case RuleKinds.OBJECT_FIELD:
         const objectField =
           state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
-        inputType = objectField?.type;
+        if (objectField?.type) {
+          inputType = objectField?.type;
+        }
         // @ts-expect-error
         fieldDef = objectField as GraphQLField<null, null>;
         type = fieldDef ? fieldDef.type : null;

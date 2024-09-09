@@ -704,14 +704,14 @@ describe('getAutocompleteSuggestions', () => {
 
     // TODO: decide if we want this. Discussing with @benjie, we might want to actually give the user flexibility here,
     // instead of being strict
-    // it('provides no more field suggestions once a oneOf field is chose and a user begins typing another field', () => {
-    //   expect(
-    //     testSuggestions(
-    //       '{ oneOfInputTypeTest(oneOf: { value: 2 d',
-    //       new Position(0, 40),
-    //     ),
-    //   ).toEqual([]);
-    // });
+    it('provides no more field suggestions once a oneOf field is chose and a user begins typing another field', () => {
+      expect(
+        testSuggestions(
+          '{ oneOfInputTypeTest(oneOf: { value: 2 d',
+          new Position(0, 40),
+        ),
+      ).toEqual([]);
+    });
 
     it('provides correct field name suggestion inside inline fragment', () => {
       expect(

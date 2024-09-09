@@ -29,8 +29,6 @@ import type {
   GraphQLObjectType,
   GraphQLType,
   GraphQLDirective,
-  GraphQLInputType,
-  GraphQLInputObjectType,
 } from 'graphql';
 
 export type Maybe<T> = T | null | undefined;
