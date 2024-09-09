@@ -312,18 +312,18 @@ export function getAutocompleteSuggestions(
       (kind === RuleKinds.OBJECT_FIELD && step === 0)) &&
     typeInfo.objectFieldDefs
   ) {
-    // @oneOf logic!
-    console.log(state.prevState?.prevState?.kind, !!typeInfo.inputType);
+    const { inputType, objectFieldDefs } = typeInfo;
+    const { string: tokenString } = token;
     if (
-      typeInfo?.inputType &&
-      'isOneOf' in typeInfo.inputType &&
-      typeInfo?.inputType?.isOneOf === true &&
-      (state.prevState?.prevState?.kind !== 'Argument' || token.string !== '{')
+      inputType &&
+      'isOneOf' in inputType &&
+      inputType?.isOneOf === true &&
+      (prevState?.prevState?.kind !== 'Argument' || tokenString !== '{')
     ) {
       // return empty array early if a oneOf field has already been provided
       return [];
     }
-    const objectFields = objectValues(typeInfo.objectFieldDefs);
+    const objectFields = objectValues(objectFieldDefs);
     const completionKind =
       kind === RuleKinds.OBJECT_VALUE
         ? CompletionItemKind.Value
