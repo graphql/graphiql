@@ -213,8 +213,11 @@ export function getTypeInfo(
             }
           }
         }
-        inputType = argDef?.type;
+        if (argDef?.type) {
+          inputType = argDef.type;
+        }
         break;
+
       case RuleKinds.VARIABLE_DEFINITION:
       case RuleKinds.VARIABLE:
         type = inputType;
@@ -241,6 +244,8 @@ export function getTypeInfo(
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()
             : null;
+        inputType = objectType;
+        console.log(inputType);
         break;
       // TODO: needs tests
       case RuleKinds.OBJECT_FIELD:

@@ -47,7 +47,7 @@ input InputType {
 }
 
 input OneOfInputType @oneOf {
-  key: String!
+  key: String
   value: Int
   obj: InputType
 }
