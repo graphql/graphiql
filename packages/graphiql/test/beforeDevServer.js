@@ -7,7 +7,6 @@
 
 const express = require('express');
 const path = require('node:path');
-// eslint-disable-next-line import-x/no-extraneous-dependencies
 const { createHandler } = require('graphql-http/lib/use/express');
 const schema = require('./schema');
 const { customExecute } = require('./execute');
