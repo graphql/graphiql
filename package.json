@@ -144,7 +144,6 @@
   "resolutions": {
     "@babel/traverse": "^7.23.2",
     "vscode-languageserver-types": "3.17.3",
-    "markdown-it": "14.1.0",
-    "graphql": "17.0.0-alpha.7"
+    "markdown-it": "14.1.0"
   }
 }

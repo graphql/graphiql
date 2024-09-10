@@ -14,7 +14,7 @@
     "@graphiql/toolkit": "^0.11.0",
     "@graphiql/react": "^0.26.2",
     "graphiql": "^3.7.1",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "react": "^18.2.0",
     "regenerator-runtime": "^0.13.9"
