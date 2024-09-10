@@ -390,6 +390,7 @@ function useIntrospectionQuery({
     let query = getIntrospectionQuery({
       inputValueDeprecation,
       schemaDescription,
+      oneOf: true,
     });
     if (introspectionQueryName) {
       query = query.replace('query IntrospectionQuery', `query ${queryName}`);
