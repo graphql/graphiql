@@ -10509,6 +10509,11 @@ graphql-config@5.0.3:
     string-env-interpolation "^1.0.1"
     tslib "^2.4.0"
 
+"graphql-for-export@npm:graphql@^16.9.0":
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.9.0.tgz#1c310e63f16a49ce1fbb230bd0a000e99f6f115f"
+  integrity sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==
+
 graphql-helix@^1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/graphql-helix/-/graphql-helix-1.13.0.tgz#e64dad5ef5f622ef38c97fa033f56f3d953c0104"

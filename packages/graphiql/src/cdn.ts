@@ -6,7 +6,7 @@
  */
 import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
-import * as GraphQL from 'graphql';
+import * as GraphQL from 'graphql-for-export';
 import { GraphiQL } from './components/GraphiQL';
 
 import '@graphiql/react/font/roboto.css';
