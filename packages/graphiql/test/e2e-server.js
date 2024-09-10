@@ -9,38 +9,14 @@
 const { createServer } = require('node:http');
 const express = require('express');
 const path = require('node:path');
-const {
-  getGraphQLParameters,
-  processRequest,
-  sendResult,
-} = require('graphql-helix'); // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
+const { createHandler } = require('graphql-http/lib/use/express');
 const WebSocketsServer = require('./afterDevServer');
 const schema = require('./schema');
 const { customExecute } = require('./execute');
 
 const app = express();
 
-async function handler(req, res) {
-  const request = {
-    body: req.body,
-    headers: req.headers,
-    method: req.method,
-    query: req.query,
-  };
-
-  const { operationName, query, variables } = getGraphQLParameters(request);
-
-  const result = await processRequest({
-    operationName,
-    query,
-    variables,
-    request,
-    schema,
-    execute: customExecute,
-  });
-
-  sendResult(result, res);
-}
+const handler = createHandler({ schema, execute: customExecute });
 
 // Server
 app.use(express.json());
