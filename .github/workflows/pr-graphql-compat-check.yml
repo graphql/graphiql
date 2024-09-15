@@ -23,7 +23,13 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        release: ['^16', '17.0.0-alpha.7']
+        release:
+          # test against the latest 16.x version, which might be newer than what we have
+          - '^16'
+          # test against the oldest version we support
+          - '^16.0.0'
+          # test against the latest alpha
+          - '^17.0.0-alpha'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
