@@ -7,7 +7,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack-cli",
     "start": "cross-env NODE_ENV=development webpack-cli serve",
-    "build-demo": "yarn build && mkdirp ../../packages/graphiql/monaco && copy dist ../../packages/graphiql/monaco/"
+    "build-demo": "yarn build && mkdirp ../../packages/graphiql/monaco && cp -r dist/* ../../packages/graphiql/monaco/"
   },
   "dependencies": {
     "graphql": "^16.9.0",
