@@ -1,11 +1,11 @@
 import { version } from 'graphql';
 
 let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe;
+// TODO: add support to graphql-http for IncrementalDelivery first
+// if (parseInt(version, 10) < 17) {
 
-if (parseInt(version, 10) < 17) {
-  // TODO: add support to graphql-http for IncrementalDelivery first
-  // describeOrSkip = describe.skip;
-}
+describeOrSkip = describe.skip;
+// }
 
 describeOrSkip('IncrementalDelivery support via fetcher', () => {
   describe('When operation contains @stream', () => {
