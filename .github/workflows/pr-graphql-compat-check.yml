@@ -24,7 +24,12 @@ jobs:
     strategy:
       matrix:
         release:
-          ['15.5.3', '^15.8.0', '16.1.0', '16.2.0', '16.3.0', '17.0.0-alpha.7']
+          # test against the latest 16.x version, which might be newer than what we have
+          - '^16'
+          # test against the oldest version we support
+          - '^16.0.0'
+          # test against the latest alpha
+          - '^17.0.0-alpha'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
