@@ -6,7 +6,8 @@
   "description": "A simple monaco example with webpack and typescript",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack-cli",
-    "start": "cross-env NODE_ENV=development webpack-cli serve"
+    "start": "cross-env NODE_ENV=development webpack-cli serve",
+    "build-demo": "yarn build && mkdirp ../../packages/graphiql/monaco && cp -r dist/* ../../packages/graphiql/monaco/"
   },
   "dependencies": {
     "graphql": "^16.9.0",

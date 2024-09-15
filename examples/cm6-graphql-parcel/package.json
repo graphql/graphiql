@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "start": "parcel src/index.html -p 8080",
-    "build": "parcel build src/index.html --public-url /"
+    "build": "parcel build src/index.html --public-url /",
+    "build-demo": "yarn build && mkdirp ../../packages/graphiql/cm6 && cp -r dist ../../packages/graphiql/cm6/"
   },
   "browserslist": {
     "production": [
