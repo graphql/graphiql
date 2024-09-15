@@ -34,7 +34,7 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
+    "graphql": "^16.0.0"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {

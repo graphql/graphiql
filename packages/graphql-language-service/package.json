@@ -32,7 +32,7 @@
     "graphql": "./dist/temp-bin.js"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
+    "graphql": "^16.0.0"
   },
   "dependencies": {
     "debounce-promise": "^3.1.2",

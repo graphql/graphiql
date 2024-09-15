@@ -44,7 +44,7 @@
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/highlight": "^1.0.0",
-    "graphql": "^16.5.0 || ^17.0.0-alpha.2"
+    "graphql": "^16.5.0"
   },
   "license": "MIT"
 }

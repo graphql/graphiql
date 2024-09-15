@@ -77,7 +77,7 @@
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
+    "graphql": "^16.0.0",
     "monaco-editor": ">= 0.20.0 < 1",
     "prettier": "^2.8.0 || ^3.0.0"
   }
