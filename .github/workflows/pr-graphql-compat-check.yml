@@ -24,8 +24,6 @@ jobs:
     strategy:
       matrix:
         release:
-          # try last stable 15 release again
-          - '^15'
           # test against the latest 16.x version, which might be newer than what we have
           - '^16'
           # test against the oldest version we support
