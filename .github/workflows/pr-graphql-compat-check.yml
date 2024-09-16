@@ -24,10 +24,12 @@ jobs:
     strategy:
       matrix:
         release:
-          # test against the latest 16.x version, which might be newer than what we have
-          - '^16'
-          # test against the oldest version we support
-          - '^16.0.0'
+          # 15 stable tests work now!
+          - '15'
+          # test against the latest 16.x stable version, which might be newer than what we have
+          - '16'
+          # test against the oldest version we support (this might fail)
+          - '^15.8.0'
           # test against the latest alpha
           - '^17.0.0-alpha'
     steps:
