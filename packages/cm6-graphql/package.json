@@ -31,7 +31,7 @@
     "@lezer/lr": "^1.0.0",
     "esbuild": "0.18.10",
     "graphql": "^16.9.0",
-    "rollup": "^2.60.2",
+    "rollup": "^3.29.5",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-esbuild": "^4.9.1",
     "rollup-plugin-ts": "^2.0.4",
