@@ -56,7 +56,7 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('schema', { kind: 'SchemaDef' });
-      t.punctuation('{');
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
 
       t.keyword('query', { kind: 'OperationTypeDef' });
       t.punctuation(':');
@@ -73,7 +73,7 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('extend', { kind: 'ExtendDef' });
-      t.keyword('schema', { kind: 'SchemaDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
 
       t.eol();
     });
@@ -86,8 +86,8 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('extend', { kind: 'ExtendDef' });
-      t.keyword('schema', { kind: 'SchemaDef' });
-      t.punctuation('{');
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
 
       t.keyword('query', { kind: 'OperationTypeDef' });
       t.punctuation(':');
@@ -104,7 +104,7 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('extend', { kind: 'ExtendDef' });
-      t.keyword('schema', { kind: 'SchemaDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
       expectDirective({ t }, { name: 'someDirective' });
 
       t.eol();
@@ -118,7 +118,7 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('extend', { kind: 'ExtendDef' });
-      t.keyword('schema', { kind: 'SchemaDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
       expectDirective({ t }, { name: 'someDirective' });
 
       t.keyword('type', { kind: 'ObjectTypeDef' });
@@ -127,7 +127,7 @@ describe('onlineParser', () => {
       t.property('field', { kind: 'FieldDef' });
       t.punctuation(':');
       t.name('String', { kind: 'NamedType' });
-      t.punctuation('}');
+      t.punctuation('}', { kind: 'Document' });
 
       t.eol();
     });
