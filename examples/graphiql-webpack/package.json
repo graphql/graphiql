@@ -1,6 +1,6 @@
 {
   "name": "example-graphiql-webpack",
-  "version": "1.1.1-alpha.8",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
@@ -9,12 +9,12 @@
     "start": "NODE_ENV=development webpack-cli serve"
   },
   "dependencies": {
-    "@graphiql/plugin-code-exporter": "^3.0.4",
-    "@graphiql/plugin-explorer": "^3.1.0",
-    "@graphiql/toolkit": "^0.9.1",
-    "@graphiql/react": "^0.22.4",
-    "graphiql": "^3.3.2",
-    "graphql": "^16.8.1",
+    "@graphiql/plugin-code-exporter": "^3.1.2",
+    "@graphiql/plugin-explorer": "^3.2.2",
+    "@graphiql/toolkit": "^0.11.0",
+    "@graphiql/react": "^0.26.2",
+    "graphiql": "^3.7.1",
+    "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "react": "^18.2.0",
     "regenerator-runtime": "^0.13.9"

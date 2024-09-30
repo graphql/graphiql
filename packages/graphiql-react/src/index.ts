@@ -71,6 +71,7 @@ export {
 } from './storage';
 export { useTheme } from './theme';
 export { useDragResize } from './utility/resize';
+export { isMacOs } from './utility/is-macos';
 
 export * from './icons';
 export * from './ui';

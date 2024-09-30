@@ -1,20 +1,21 @@
 {
   "name": "example-monaco-graphql-webpack",
-  "version": "1.1.1",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack-cli",
-    "start": "cross-env NODE_ENV=development webpack-cli serve"
+    "start": "cross-env NODE_ENV=development webpack-cli serve",
+    "build-demo": "yarn build && mkdirp ../../packages/graphiql/monaco && cp -r dist/* ../../packages/graphiql/monaco/"
   },
   "dependencies": {
-    "graphql": "^16.8.1",
-    "graphql-language-service": "^5.2.1",
+    "graphql": "^16.9.0",
+    "graphql-language-service": "^5.3.0",
     "json-schema": "^0.4.0",
     "jsonc-parser": "^3.2.0",
     "monaco-editor": "^0.39.0",
-    "monaco-graphql": "^1.5.2",
+    "monaco-graphql": "^1.6.0",
     "prettier": "3.3.2"
   },
   "devDependencies": {

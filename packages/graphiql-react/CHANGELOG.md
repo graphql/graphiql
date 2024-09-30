@@ -1,5 +1,88 @@
 # @graphiql/react
 
+## 0.26.2
+
+### Patch Changes
+
+- [#3751](https://github.com/graphql/graphiql/pull/3751) [`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893) Thanks [@dimaMachina](https://github.com/dimaMachina)! - replace deprecated `navigator.platform` with `navigator.userAgent`
+
+  fix placeholder `⌘ K` in doc explorer search input for non mac devices, replace by `Ctrl K`
+
+- Updated dependencies [[`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893)]:
+  - codemirror-graphql@2.1.1
+
+## 0.26.1
+
+### Patch Changes
+
+- [#3743](https://github.com/graphql/graphiql/pull/3743) [`7275c19`](https://github.com/graphql/graphiql/commit/7275c19b174f06bd031f49b33912c1babf29ccb0) Thanks [@dimaMachina](https://github.com/dimaMachina)! - create instance of `new HistoryStore` and `new StorageAPI` only on mount, use function with `useState`
+
+- Updated dependencies [[`21c4409`](https://github.com/graphql/graphiql/commit/21c44096c0c0b23cea955a574d1110cb19ab6405), [`2ad4e75`](https://github.com/graphql/graphiql/commit/2ad4e7505385fefd252b9aa8ea2233cbaeca7f6a)]:
+  - @graphiql/toolkit@0.11.0
+
+## 0.26.0
+
+### Minor Changes
+
+- [#3619](https://github.com/graphql/graphiql/pull/3619) [`9aef83a`](https://github.com/graphql/graphiql/commit/9aef83a32aeb5f193a3ff0f191c95d09eb0d70b6) Thanks [@Yahkob](https://github.com/Yahkob)! - add new prop `defaultTheme` to set the default color preference theme
+
+### Patch Changes
+
+- [#3441](https://github.com/graphql/graphiql/pull/3441) [`959ed21`](https://github.com/graphql/graphiql/commit/959ed21815682fc439f64d78e23e603a8f313a6f) Thanks [@cimdalli](https://github.com/cimdalli)! - fix: set query editor to `defaultQuery` while adding a new tab or GraphiQL's default query
+
+  ```graphql
+  # Welcome to GraphiQL
+  #
+  # GraphiQL is an in-browser tool for writing, validating, and
+  # testing GraphQL queries.
+
+  ...
+  ```
+
+## 0.25.0
+
+### Minor Changes
+
+- [#3532](https://github.com/graphql/graphiql/pull/3532) [`7404e8e`](https://github.com/graphql/graphiql/commit/7404e8e6c62b06107f452142493297ec70f1649c) Thanks [@Cr4xy](https://github.com/Cr4xy)! - Add webp support to graphiql results image-preview
+
+## 0.24.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - graphql-language-service@5.3.0
+  - codemirror-graphql@2.1.0
+  - @graphiql/toolkit@0.10.0
+
+## 0.23.1
+
+### Patch Changes
+
+- [#3552](https://github.com/graphql/graphiql/pull/3552) [`6a0a5e5`](https://github.com/graphql/graphiql/commit/6a0a5e590b7b526af8a66c59a27ec3d0144af572) Thanks [@klippx](https://github.com/klippx)! - do not clear `defaultHeaders` when switching between tabs upon reload
+
+## 0.23.0
+
+### Minor Changes
+
+- [#3657](https://github.com/graphql/graphiql/pull/3657) [`5bc7b84`](https://github.com/graphql/graphiql/commit/5bc7b84531b6404553787615d61a5cbcc96c1d6f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update vite to v5
+
+### Patch Changes
+
+- [#3637](https://github.com/graphql/graphiql/pull/3637) [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update eslint plugins and fix errors
+
+- [#3656](https://github.com/graphql/graphiql/pull/3656) [`93c7e9f`](https://github.com/graphql/graphiql/commit/93c7e9fd224cb4f1e9a86b3391efc1e0ef6e1e3f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set `build.minify: false` for cjs/esm builds since minified variable names change every build time
+
+- Updated dependencies [[`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d), [`56c6f45`](https://github.com/graphql/graphiql/commit/56c6f4571dd0dfda307ed11c5afb8c837ad928b0)]:
+  - codemirror-graphql@2.0.13
+  - graphql-language-service@5.2.2
+  - @graphiql/toolkit@0.9.2
+
 ## 0.22.4
 
 ### Patch Changes

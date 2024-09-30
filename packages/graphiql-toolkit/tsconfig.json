@@ -1,21 +1,16 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "composite": true,
-    "jsx": "react",
-    "target": "es5",
-    "baseUrl": ".",
-    "strictPropertyInitialization": false
+    "target": "es2017",
+    "module": "ESNext",
+    "declaration": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "lib": ["es2022", "dom"],
+    "moduleResolution": "node",
+    "types": ["vitest/globals"]
   },
-  "include": ["src"],
-  "exclude": [
-    "**/__tests__/**",
-    "**/dist/**.*",
-    "**/*.spec.ts",
-    "**/*.spec.js",
-    "**/*-test.ts",
-    "**/*-test.js"
-  ]
+  "include": ["src", "tsup.config.ts", "vitest.config.mts"]
 }

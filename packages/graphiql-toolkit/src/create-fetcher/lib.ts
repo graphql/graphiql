@@ -32,7 +32,7 @@ const errorHasCode = (err: unknown): err is { code: string } => {
  */
 export const isSubscriptionWithName = (
   document: DocumentNode,
-  name: string | undefined,
+  name?: string,
 ): boolean => {
   let isSubscription = false;
   visit(document, {
@@ -68,21 +68,19 @@ export const createSimpleFetcher =
     return data.json();
   };
 
-export const createWebsocketsFetcherFromUrl = (
+export async function createWebsocketsFetcherFromUrl(
   url: string,
   connectionParams?: ClientOptions['connectionParams'],
-) => {
+): Promise<Fetcher | void> {
   let wsClient;
   try {
-    const { createClient } = require('graphql-ws') as {
-      createClient: typeof createClientType;
-    };
+    const { createClient } =
+      process.env.USE_IMPORT === 'false'
+        ? (require('graphql-ws') as { createClient: typeof createClientType })
+        : await import('graphql-ws');
 
     // TODO: defaults?
-    wsClient = createClient({
-      url,
-      connectionParams,
-    });
+    wsClient = createClient({ url, connectionParams });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
     if (errorHasCode(err) && err.code === 'MODULE_NOT_FOUND') {
@@ -93,16 +91,14 @@ export const createWebsocketsFetcherFromUrl = (
     // eslint-disable-next-line no-console
     console.error(`Error creating websocket client for ${url}`, err);
   }
-};
+}
 
 /**
  * Create ws/s fetcher using provided wsClient implementation
- *
- * @param wsClient {Client}
- * @returns {Fetcher}
  */
 export const createWebsocketsFetcherFromClient =
-  (wsClient: Client) => (graphQLParams: FetcherParams) =>
+  (wsClient: Client): Fetcher =>
+  (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
       wsClient.subscribe(graphQLParams, {
         ...sink,
@@ -125,12 +121,9 @@ export const createWebsocketsFetcherFromClient =
 /**
  * Allow legacy websockets protocol client, but no definitions for it,
  * as the library is deprecated and has security issues
- *
- * @param legacyWsClient
- * @returns
  */
 export const createLegacyWebsocketsFetcher =
-  (legacyWsClient: { request: (params: FetcherParams) => unknown }) =>
+  (legacyWsClient: { request: (params: FetcherParams) => unknown }): Fetcher =>
   (graphQLParams: FetcherParams) => {
     const observable = legacyWsClient.request(graphQLParams);
     return makeAsyncIterableIteratorFromSink<ExecutionResult>(
@@ -139,11 +132,8 @@ export const createLegacyWebsocketsFetcher =
     );
   };
 /**
- * create a fetcher with the `IncrementalDelivery` HTTP/S spec for
+ * Create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`
- *
- * @param options {CreateFetcherOptions}
- * @returns {Fetcher}
  */
 export const createMultipartFetcher = (
   options: CreateFetcherOptions,
@@ -187,13 +177,11 @@ export const createMultipartFetcher = (
 
 /**
  * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
- * @param options {CreateFetcherOptions}
- * @returns
  */
-export const getWsFetcher = (
+export async function getWsFetcher(
   options: CreateFetcherOptions,
-  fetcherOpts: FetcherOpts | undefined,
-) => {
+  fetcherOpts?: FetcherOpts,
+): Promise<Fetcher | void> {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
@@ -207,4 +195,4 @@ export const getWsFetcher = (
   if (legacyWebsocketsClient) {
     return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
   }
-};
+}

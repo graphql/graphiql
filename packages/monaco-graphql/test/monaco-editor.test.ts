@@ -1,4 +1,5 @@
 import { $ } from 'execa';
+import { version } from 'graphql';
 
 // eslint-disable-next-line no-control-regex
 const ANSI_COLOR_REGEX = /\u001b\[\d+m/g;
@@ -13,7 +14,9 @@ describe('monaco-editor', () => {
     // expect(lines[0]).toBe('$ vite build');
     // expect(lines[1]).toMatch(' building for production...');
     // expect(lines[2]).toBe('transforming...');
-    expect(lines[3]).toMatch('✓ 843 modules transformed.');
+    expect(lines[3]).toMatch(
+      `✓ ${parseInt(version, 10) > 16 ? 862 : 850} modules transformed.`,
+    );
     // expect(lines[4]).toBe('rendering chunks...');
     // expect(lines[5]).toBe('computing gzip size...');
     // expect(lines[6]).toMatch('dist/index.html');

@@ -11,27 +11,15 @@ import {
  * build a GraphiQL fetcher that is:
  * - backwards compatible
  * - optionally supports graphql-ws or `
- *
- * @param options {CreateFetcherOptions}
- * @returns {Fetcher}
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
-  let httpFetch;
-  if (typeof window !== 'undefined' && window.fetch) {
-    httpFetch = window.fetch;
-  }
-  if (
-    options?.enableIncrementalDelivery === null ||
-    options.enableIncrementalDelivery !== false
-  ) {
-    options.enableIncrementalDelivery = true;
-  }
-  if (options.fetch) {
-    httpFetch = options.fetch;
-  }
+  const httpFetch =
+    options.fetch || (typeof window !== 'undefined' && window.fetch);
   if (!httpFetch) {
     throw new Error('No valid fetcher implementation available');
   }
+  options.enableIncrementalDelivery =
+    options.enableIncrementalDelivery !== false;
   // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
@@ -39,7 +27,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
 
-  return (graphQLParams, fetcherOpts) => {
+  return async (graphQLParams, fetcherOpts) => {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
       return (options.schemaFetcher || simpleFetcher)(
         graphQLParams,
@@ -53,7 +41,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         )
       : false;
     if (isSubscription) {
-      const wsFetcher = getWsFetcher(options, fetcherOpts);
+      const wsFetcher = await getWsFetcher(options, fetcherOpts);
 
       if (!wsFetcher) {
         throw new Error(

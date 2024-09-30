@@ -38,7 +38,7 @@
 
   &:not(:focus-within) [role='combobox'] {
     height: 24px;
-    width: 4ch;
+    width: 5ch;
   }
 
   & [role='combobox']:focus {

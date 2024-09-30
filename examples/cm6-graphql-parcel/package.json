@@ -1,13 +1,14 @@
 {
   "name": "example-cm6-graphql-parcel",
-  "version": "1.1.10-alpha.8",
+  "version": "0.0.0",
   "license": "MIT",
   "description": "GraphiQL Parcel Example",
   "main": "index.js",
   "private": true,
   "scripts": {
     "start": "parcel src/index.html -p 8080",
-    "build": "parcel build src/index.html --public-url /"
+    "build": "parcel build src/index.html --public-url /",
+    "build-demo": "yarn build && mkdirp ../../packages/graphiql/cm6 && cp -r dist ../../packages/graphiql/cm6/"
   },
   "browserslist": {
     "production": [
@@ -29,7 +30,7 @@
     "@codemirror/theme-one-dark": "6.0.0",
     "@codemirror/view": "6.1.2",
     "cm6-graphql": "0.0.1",
-    "graphql": "^16.8.1"
+    "graphql": "^16.9.0"
   },
   "devDependencies": {
     "parcel": "^2.6.2",

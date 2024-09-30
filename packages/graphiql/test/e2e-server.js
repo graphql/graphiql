@@ -10,30 +10,19 @@ const { createServer } = require('node:http');
 const express = require('express');
 const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
-const { GraphQLError } = require('graphql');
-const schema = require('./schema');
-const app = express();
-const { schema: badSchema } = require('./bad-schema');
 const WebSocketsServer = require('./afterDevServer');
+const schema = require('./schema');
+const { customExecute } = require('./execute');
+
+const app = express();
+
+const handler = createHandler({ schema, execute: customExecute });
 
 // Server
-app.post('/graphql', createHandler({ schema }));
-app.get('/graphql', createHandler({ schema }));
+app.use(express.json());
 
-app.post('/bad/graphql', (_req, res, next) => {
-  res.json({ data: badSchema });
-  next();
-});
-
-app.post('/http-error/graphql', (_req, res, next) => {
-  res.status(502).send('Bad Gateway');
-  next();
-});
-
-app.post('/graphql-error/graphql', (_req, res, next) => {
-  res.json({ errors: [new GraphQLError('Something unexpected happened...')] });
-  next();
-});
+app.post('/graphql', handler);
+app.get('/graphql', handler);
 
 app.use(express.static(path.resolve(__dirname, '../')));
 app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));

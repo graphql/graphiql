@@ -84,5 +84,5 @@ function tokenToURL(token: Token) {
 }
 
 function isImageURL(url: URL) {
-  return /(bmp|gif|jpeg|jpg|png|svg)$/.test(url.pathname);
+  return /\.(bmp|gif|jpe?g|png|svg|webp)$/.test(url.pathname);
 }

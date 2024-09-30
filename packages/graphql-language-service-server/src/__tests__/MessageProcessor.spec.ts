@@ -1,17 +1,18 @@
+import { readFile, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import mockfs from 'mock-fs';
-import { join } from 'node:path';
 import { MockFile, MockProject } from './__utils__/MockProject';
-// import { readFileSync } from 'node:fs';
 import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { URI } from 'vscode-uri';
 import {
   GraphQLSchema,
   buildASTSchema,
   introspectionFromSchema,
   parse,
+  version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
 
@@ -63,8 +64,14 @@ const fooInlineTypePosition = {
   end: { line: 5, character: 24 },
 };
 
-const genSchemaPath =
-  '/tmp/graphql-language-service/test/projects/default/generated-schema.graphql';
+const genSchemaPath = path.join(
+  tmpdir(),
+  'graphql-language-service',
+  'test',
+  'projects',
+  'default',
+  'generated-schema.graphql',
+);
 
 // TODO:
 // - reorganize into multiple files
@@ -75,10 +82,18 @@ const genSchemaPath =
 // - fix TODO comments where bugs were found that couldn't be resolved quickly (2-4hr time box)
 
 describe('MessageProcessor with no config', () => {
+  beforeAll(async () => {
+    await rm(path.join(tmpdir(), 'graphql-language-service'), {
+      recursive: true,
+      force: true,
+    });
+  });
+
   afterEach(() => {
     mockfs.restore();
     fetchMock.restore();
   });
+
   it('fails to initialize with empty config file', async () => {
     const project = new MockProject({
       files: [...defaultFiles, ['graphql.config.json', '']],
@@ -96,6 +111,7 @@ describe('MessageProcessor with no config', () => {
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
     project.lsp.handleShutdownRequest();
   });
+
   it('fails to initialize with no config file present', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
@@ -112,6 +128,7 @@ describe('MessageProcessor with no config', () => {
     expect(project.lsp._isGraphQLConfigMissing).toEqual(true);
     project.lsp.handleShutdownRequest();
   });
+
   it('initializes when presented with a valid config later', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
@@ -143,13 +160,7 @@ describe('MessageProcessor with config', () => {
     mockfs.restore();
     fetchMock.restore();
   });
-  // beforeAll(async () => {
-  //   app = await import('../../../graphiql/test/e2e-server');
-  // });
-  // afterAll(() => {
-  //   app.server.close();
-  //   app.wsServer.close();
-  // });
+
   it('caches files and schema with .graphql file config, and the schema updates with watched file changes', async () => {
     const project = new MockProject({
       files: [
@@ -249,14 +260,7 @@ describe('MessageProcessor with config', () => {
       // now Foo has a bad field, the fragment should be invalid
       'type Query { foo: Foo, test: Test }\n\n type Test { test: String }\n\n\n\n\n\ntype Foo { bad: Int }',
     );
-    // await project.lsp.handleWatchedFilesChangedNotification({
-    //   changes: [
-    //     {
-    //       type: FileChangeType.Changed,
-    //       uri: project.uri('schema.graphql'),
-    //     },
-    //   ],
-    // });
+
     await project.lsp.handleDidChangeNotification({
       contentChanges: [
         {
@@ -289,7 +293,7 @@ describe('MessageProcessor with config', () => {
     expect(result.diagnostics[0].message).toEqual(
       'Cannot query field "bar" on type "Foo". Did you mean "bad"?',
     );
-    const generatedFile = existsSync(join(genSchemaPath));
+    const generatedFile = existsSync(genSchemaPath);
     // this generated file should not exist because the schema is local!
     expect(generatedFile).toEqual(false);
     // simulating codegen
@@ -361,6 +365,8 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches files and schema with a URL config', async () => {
+    const offset = parseInt(version, 10) > 16 ? 25 : 0;
+
     mockSchema(require('../../../graphiql/test/schema'));
 
     const project = new MockProject({
@@ -373,7 +379,6 @@ describe('MessageProcessor with config', () => {
         ],
       ],
     });
-
     const initParams = await project.init('query.graphql');
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
 
@@ -389,7 +394,7 @@ describe('MessageProcessor with config', () => {
     expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
 
     // schema file is present and contains schema
-    const file = await readFile(join(genSchemaPath), { encoding: 'utf-8' });
+    const file = await readFile(genSchemaPath, 'utf8');
     expect(file.split('\n').length).toBeGreaterThan(10);
 
     // hover works
@@ -423,34 +428,33 @@ describe('MessageProcessor with config', () => {
       textDocument: { uri: project.uri('fragments.graphql') },
       position: { character: 15, line: 0 },
     });
-
     expect(typeDefinitions[0].uri).toEqual(URI.parse(genSchemaPath).toString());
 
     expect(serializeRange(typeDefinitions[0].range)).toEqual({
       start: {
-        line: 11,
+        line: 11 + offset,
         character: 0,
       },
       end: {
-        line: 102,
+        line: 102 + offset,
         character: 1,
       },
     });
 
     const schemaDefs = await project.lsp.handleDefinitionRequest({
       textDocument: { uri: URI.parse(genSchemaPath).toString() },
-      position: { character: 20, line: 18 },
+      position: { character: 20, line: 18 + offset },
     });
     expect(schemaDefs[0].uri).toEqual(URI.parse(genSchemaPath).toString());
     // note: if the graphiql test schema changes,
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 104,
+        line: 104 + offset,
         character: 0,
       },
       end: {
-        line: 112,
+        line: 112 + offset,
         character: 1,
       },
     });
@@ -557,9 +561,7 @@ describe('MessageProcessor with config', () => {
       (await project.lsp._graphQLCache.getSchema('a')).getType('example100'),
     ).toBeTruthy();
     await sleep(1000);
-    const file = await readFile(join(genSchemaPath.replace('default', 'a')), {
-      encoding: 'utf-8',
-    });
+    const file = await readFile(genSchemaPath.replace('default', 'a'), 'utf8');
     expect(file).toContain('example100');
     // add a new typescript file with empty query to the b project
     // and expect autocomplete to only show options for project b

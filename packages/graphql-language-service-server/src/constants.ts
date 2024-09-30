@@ -1,4 +1,5 @@
 import type { ParserOptions, ParserPlugin } from '@babel/parser';
+
 // Attempt to be as inclusive as possible of source text.
 export const PARSER_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
@@ -54,7 +55,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.tsx',
   '.vue',
   '.svelte',
-  // '.astro',
+  '.astro',
   '.cts',
   '.mts',
 ] as const;

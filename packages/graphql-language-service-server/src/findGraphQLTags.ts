@@ -16,12 +16,10 @@ import type {
 import { Position, Range } from 'graphql-language-service';
 
 import { TAG_MAP } from './constants';
-import { ecmaParser, tsParser } from './parsers/babel';
-import { vueParser } from './parsers/vue';
-// import { astroParser } from './parsers/astro';
+
 import type { Logger, NoopLogger } from './Logger';
 import { RangeMapper } from './parsers/types';
-import { svelteParser } from './parsers/svelte';
+import { parserMap } from './parsers';
 
 type TagResult = { tag: string; template: string; range: Range };
 
@@ -29,35 +27,18 @@ interface TagVisitors {
   [type: string]: (node: any) => void;
 }
 
-const parserMap = {
-  '.js': ecmaParser,
-  '.jsx': ecmaParser,
-  '.mjs': ecmaParser,
-  '.es': ecmaParser,
-  '.es6': ecmaParser,
-  '.esm': ecmaParser,
-  '.cjs': ecmaParser,
-  '.ts': tsParser,
-  '.tsx': tsParser,
-  '.cts': tsParser,
-  '.mts': tsParser,
-  '.svelte': svelteParser,
-  '.vue': vueParser,
-  // '.astro': astroParser,
-};
-
-export function findGraphQLTags(
+export async function findGraphQLTags(
   text: string,
   ext: keyof typeof parserMap,
   uri: string,
   logger: Logger | NoopLogger,
-): TagResult[] {
+): Promise<TagResult[]> {
   const result: TagResult[] = [];
 
   let rangeMapper = (range: Range) => range;
 
   const parser = parserMap[ext];
-  const parserResult = parser(text, uri, logger);
+  const parserResult = await parser(text, uri, logger);
   if (!parserResult) {
     return [];
   }

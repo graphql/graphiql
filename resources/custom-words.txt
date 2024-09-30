@@ -155,6 +155,7 @@ pnpm
 postbuild
 pratap
 prebuild
+prettierignore
 proto
 qlapi
 qlid
@@ -218,11 +219,13 @@ vitejs
 vitest
 vizag
 vsix
+webp
 websockets
 wgutils
 wincent
 wonka
 yoshiakis
+zustand
 zdravo
 Здорово
 أهلاً

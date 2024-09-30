@@ -258,11 +258,13 @@ export function useSetEditorValues({
   variableEditor,
   headerEditor,
   responseEditor,
+  defaultHeaders,
 }: {
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   variableEditor: CodeMirrorEditor | null;
   headerEditor: CodeMirrorEditor | null;
   responseEditor: CodeMirrorEditor | null;
+  defaultHeaders?: string;
 }) {
   return useCallback(
     ({
@@ -278,10 +280,10 @@ export function useSetEditorValues({
     }) => {
       queryEditor?.setValue(query ?? '');
       variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? '');
+      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
       responseEditor?.setValue(response ?? '');
     },
-    [headerEditor, queryEditor, responseEditor, variableEditor],
+    [headerEditor, queryEditor, responseEditor, variableEditor, defaultHeaders],
   );
 }
 
