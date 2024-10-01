@@ -143,7 +143,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
 
   Arguments: [p('('), list('Argument'), p(')')],
   Argument: [name('attribute'), p(':'), 'Value'],
-  FragmentSpread: [p('...'), name('def'), list('Directive')],
+  FragmentSpread: [p('...'), name('def'), opt('Arguments'), list('Directive')],
   InlineFragment: [
     p('...'),
     opt('TypeCondition'),
@@ -154,6 +154,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
   FragmentDefinition: [
     word('fragment'),
     opt(butNot(name('def'), [word('on')])),
+    opt('VariableDefinitions'),
     'TypeCondition',
     list('Directive'),
     'SelectionSet',
