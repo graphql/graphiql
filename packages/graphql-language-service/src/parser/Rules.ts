@@ -239,14 +239,8 @@ export const ParseRules: { [name: string]: ParseRule } = {
   Implements: [word('implements'), list('NamedType', p('&'))],
   DirectiveLocation: [name('string-2')],
   // GraphQL schema language
-  SchemaDef: [
-    word('schema'),
-    list('Directive'),
-    p('{'),
-    list('OperationTypeDef'),
-    p('}'),
-  ],
-
+  SchemaDef: [word('schema'), list('Directive'), 'OperationTypeDefs'],
+  OperationTypeDefs: [p('{'), list('OperationTypeDef'), p('}')],
   OperationTypeDef: [name('keyword'), p(':'), name('atom')],
   ScalarDef: [word('scalar'), name('atom'), list('Directive')],
   ObjectTypeDef: [
@@ -322,7 +316,11 @@ export const ParseRules: { [name: string]: ParseRule } = {
         return Kind.INPUT_OBJECT_TYPE_EXTENSION;
     }
   },
-  [Kind.SCHEMA_EXTENSION]: ['SchemaDef'],
+  [Kind.SCHEMA_EXTENSION]: [
+    word('schema'),
+    list('Directive'),
+    opt('OperationTypeDefs'),
+  ],
   [Kind.SCALAR_TYPE_EXTENSION]: ['ScalarDef'],
   [Kind.OBJECT_TYPE_EXTENSION]: ['ObjectTypeDef'],
   [Kind.INTERFACE_TYPE_EXTENSION]: ['InterfaceDef'],
