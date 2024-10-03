@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.12.1
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0
+
+- Updated dependencies [[`6b88593`](https://github.com/graphql/graphiql/commit/6b88593310b863e31679c3cc1b5c6dc85f04b9a6), [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b)]:
+  - graphql-language-service-server@2.15.0
+
 ## 0.12.0
 
 ### Minor Changes
