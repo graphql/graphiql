@@ -1,5 +1,21 @@
 # cm6-graphql
 
+## 0.2.0
+
+### Minor Changes
+
+- [#3762](https://github.com/graphql/graphiql/pull/3762) [`76b3cc8`](https://github.com/graphql/graphiql/commit/76b3cc872dedd667504f58c9313a86bada7688d6) Thanks [@mavenskylab](https://github.com/mavenskylab)! - The cm6-graphql package currently specifies exact versions for its peer dependencies on @codemirror packages. This is causing conflicts when projects use newer versions of these packages, leading to multiple instances being installed.
+
+- [#3782](https://github.com/graphql/graphiql/pull/3782) [`6b88593`](https://github.com/graphql/graphiql/commit/6b88593310b863e31679c3cc1b5c6dc85f04b9a6) Thanks [@acao](https://github.com/acao)! - officially deprecate graphql@15 support, as our types and other runtime capabilities ceased to be compatible in 2022 or 2023, but the regression tests were disabled
+  `graphql-language-service` is where the bug is, which is used by all of the libraries and applications in `graphiql` monorepo.
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0
+
+- Updated dependencies [[`6b88593`](https://github.com/graphql/graphiql/commit/6b88593310b863e31679c3cc1b5c6dc85f04b9a6), [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b)]:
+  - graphql-language-service@5.4.0
+
 ## 0.1.1
 
 ### Patch Changes
