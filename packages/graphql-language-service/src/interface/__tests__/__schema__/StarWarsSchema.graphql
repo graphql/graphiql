@@ -46,6 +46,12 @@ input InputType {
   obj: InputType
 }
 
+input OneOfInputType @oneOf {
+  key: String
+  value: Int
+  obj: InputType
+}
+
 interface TestInterface {
   """
   example
@@ -69,6 +75,7 @@ type Query {
   inputTypeTest(args: InputType = { key: "key" }): TestType
   deprecatedField: TestType @deprecated(reason: "Use test instead.")
   union: TestUnion
+  oneOfInputTypeTest(oneOf: OneOfInputType): String
 }
 
 union TestUnion = Droid | TestType

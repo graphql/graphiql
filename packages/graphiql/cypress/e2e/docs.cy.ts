@@ -22,7 +22,7 @@ describe('GraphiQL DocExplorer - search', () => {
   beforeEach(() => {
     cy.get('.graphiql-sidebar button').eq(0).click();
     cy.dataCy('doc-explorer-input').type('test');
-    cy.dataCy('doc-explorer-option').should('have.length', 7);
+    cy.dataCy('doc-explorer-option').should('have.length', 8);
   });
 
   it('Searches docs for values', () => {
