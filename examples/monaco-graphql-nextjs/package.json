@@ -17,7 +17,7 @@
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-graphql": "^1.6.0",
-    "next": "13.4.7",
+    "next": "14.1.1",
     "prettier": "3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
