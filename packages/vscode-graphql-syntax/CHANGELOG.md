@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.7
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0 for bundled libraries & tests
+
 ## 1.3.6
 
 ### Patch Changes

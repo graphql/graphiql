@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.12.1
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0 for bundled libraries & tests
+
 ## 0.12.0
 
 ### Minor Changes
