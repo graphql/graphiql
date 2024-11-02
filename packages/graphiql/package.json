@@ -50,7 +50,7 @@
     "@graphiql/react": "^0.26.2"
   },
   "peerDependencies": {
-    "graphql": "^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
