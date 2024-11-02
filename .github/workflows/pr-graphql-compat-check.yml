@@ -1,4 +1,4 @@
-name: Build & Test PR w/ GraphQL Regressions
+name: Build & Test PR w/ GraphQL Peer Compatibility
 on:
   push:
     # only on merge to main.
@@ -45,13 +45,13 @@ jobs:
           path: node_modules
           key: node_modules-${{hashFiles('yarn.lock')}}
           restore-keys: node_modules-
-      - name: Force GraphQL ${{ matrix.release }} solution
+      - name: Resolve GraphQL ${{ matrix.release }} to test
         run: yarn repo:resolve graphql@${{ matrix.release }}
 
       - run: yarn install --frozen-lockfile --immutable
 
       - name: Unit Tests
-        run: yarn test:ci
+        run: yarn test
 
       - name: Cypress
         run: yarn e2e

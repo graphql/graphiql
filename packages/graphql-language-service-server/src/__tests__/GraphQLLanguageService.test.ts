@@ -14,7 +14,12 @@ import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
-import { GraphQLEnumType, version } from 'graphql';
+import {
+  GraphQLEnumType,
+  version,
+  FragmentDefinitionNode,
+  parse,
+} from 'graphql';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -24,7 +29,7 @@ const MOCK_CONFIG = {
   },
 };
 
-const majorVersion = parseInt(version.split('.')[0]);
+const majorVersion = parseFloat(version.split('.')[0]);
 
 describe('GraphQLLanguageService', () => {
   const mockCache = {
@@ -42,22 +47,12 @@ describe('GraphQLLanguageService', () => {
     },
     getFragmentDefinitions() {
       const definitions = new Map();
+      console.log(parse(`fragment TestFragment { id }`));
+      const fragmentDef = parse(`fragment TestFragment { id }`)[0];
       definitions.set('TestFragment', {
         filePath: 'fake file path',
         content: 'fake file content',
-        definition: {
-          kind: 'FragmentDefinition',
-          name:
-            majorVersion < 16
-              ? 'TestFragment'
-              : {
-                  value: 'TestFragment',
-                },
-          loc: {
-            start: 293,
-            end: 335,
-          },
-        },
+        definition: fragmentDef,
       });
       return definitions;
     },
