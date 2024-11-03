@@ -178,6 +178,9 @@ export function getTypeInfo(
               argDefs =
                 directiveDef && (directiveDef.args as GraphQLArgument[]);
               break;
+            case RuleKinds.FRAGMENT_SPREAD:
+              // TODO: lookup fragment and return variable definitions (?)
+              break;
             // TODO: needs more tests
             case RuleKinds.ALIASED_FIELD: {
               const name = state.prevState?.name;
