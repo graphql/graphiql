@@ -50,39 +50,53 @@ const TestEnum = new GraphQLEnumType({
 const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   description: 'Test all sorts of inputs in this input object type.',
-  fields: () => ({
-    string: {
-      type: GraphQLString,
-      description: 'Repeats back this string',
-    },
-    int: { type: GraphQLInt },
-    float: { type: GraphQLFloat },
-    boolean: { type: GraphQLBoolean },
-    id: { type: GraphQLID },
-    enum: { type: TestEnum },
-    object: { type: TestInputObject },
-    defaultValueString: {
-      type: GraphQLString,
-      defaultValue: 'test default value',
-    },
-    defaultValueBoolean: {
-      type: GraphQLBoolean,
-      defaultValue: false,
-    },
-    defaultValueInt: {
-      type: GraphQLInt,
-      defaultValue: 5,
-    },
-    // List
-    listString: { type: new GraphQLList(GraphQLString) },
-    listInt: { type: new GraphQLList(GraphQLInt) },
-    listFloat: { type: new GraphQLList(GraphQLFloat) },
-    listBoolean: { type: new GraphQLList(GraphQLBoolean) },
-    listID: { type: new GraphQLList(GraphQLID) },
-    listEnum: { type: new GraphQLList(TestEnum) },
-    listObject: { type: new GraphQLList(TestInputObject) },
-  }),
+  fields: () => inputFields,
 });
+
+const TestOneOfInputObject = new GraphQLInputObjectType({
+  name: 'TestOneOfInput',
+  description: 'Test @oneOf input types with this input object type.',
+  isOneOf: true,
+  fields: () =>
+    // remove defaultValue which is not compatible with @oneOf
+    Object.entries(inputFields).reduce((a, [k, { defaultValue, ...value }]) => {
+      a[k] = value;
+      return a;
+    }, {}),
+});
+
+const inputFields = {
+  string: {
+    type: GraphQLString,
+    description: 'Repeats back this string',
+  },
+  int: { type: GraphQLInt },
+  float: { type: GraphQLFloat },
+  boolean: { type: GraphQLBoolean },
+  id: { type: GraphQLID },
+  enum: { type: TestEnum },
+  object: { type: TestInputObject },
+  defaultValueString: {
+    type: GraphQLString,
+    defaultValue: 'test default value',
+  },
+  defaultValueBoolean: {
+    type: GraphQLBoolean,
+    defaultValue: false,
+  },
+  defaultValueInt: {
+    type: GraphQLInt,
+    defaultValue: 5,
+  },
+  // List
+  listString: { type: new GraphQLList(GraphQLString) },
+  listInt: { type: new GraphQLList(GraphQLInt) },
+  listFloat: { type: new GraphQLList(GraphQLFloat) },
+  listBoolean: { type: new GraphQLList(GraphQLBoolean) },
+  listID: { type: new GraphQLList(GraphQLID) },
+  listEnum: { type: new GraphQLList(TestEnum) },
+  listObject: { type: new GraphQLList(TestInputObject) },
+};
 
 const TestInterface = new GraphQLInterfaceType({
   name: 'TestInterface',
@@ -250,6 +264,7 @@ const TestType = new GraphQLObjectType({
       description: '`test` field from `Test` type.',
       resolve: () => ({}),
     },
+
     deferrable: {
       type: DeferrableObject,
       resolve: () => ({}),
@@ -333,6 +348,7 @@ const TestType = new GraphQLObjectType({
         id: { type: GraphQLID },
         enum: { type: TestEnum },
         object: { type: TestInputObject },
+        oneOfObject: { type: TestOneOfInputObject },
         defaultValue: {
           type: GraphQLString,
           defaultValue: 'test default value',
