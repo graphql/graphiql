@@ -1,4 +1,4 @@
-- [1. GraphiQL introspection schema template injection attack: Advisory Statement](#1-graphiql-introspection-schema-template-injection-attack-advisory-statement)
+* [1. GraphiQL introspection schema template injection attack: Advisory Statement](#1-graphiql-introspection-schema-template-injection-attack-advisory-statement)
   - [1.1. Impact](#11-impact)
   - [1.2. Scope](#12-scope)
   - [1.3. Patches](#13-patches)
