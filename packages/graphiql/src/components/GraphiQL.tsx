@@ -508,7 +508,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   return (
     <Tooltip.Provider>
-      <div className={`graphiql-container${className}`}>
+      <div
+        data-testid="graphiql-container"
+        className={`graphiql-container${className}`}
+      >
         <div className="graphiql-sidebar">
           {pluginContext?.plugins.map((plugin, index) => {
             const isVisible = plugin === pluginContext.visiblePlugin;
