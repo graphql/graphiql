@@ -1,4 +1,4 @@
-name: License Check
+name License Check
 on: 
   push:
     paths:
