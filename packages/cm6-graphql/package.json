@@ -1,6 +1,6 @@
 {
   "name": "cm6-graphql",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
     "build": "cm-buildhelper src/index.ts",
@@ -44,7 +44,7 @@
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/highlight": "^1.0.0",
-    "graphql": "^16.5.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
   },
   "license": "MIT"
 }

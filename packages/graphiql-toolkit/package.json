@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -37,7 +37,7 @@
     "tsup": "^8.2.4"
   },
   "peerDependencies": {
-    "graphql": "^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "graphql-ws": ">= 4.5.0"
   },
   "peerDependenciesMeta": {

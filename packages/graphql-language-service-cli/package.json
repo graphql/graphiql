@@ -32,7 +32,7 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",

@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -47,10 +47,10 @@
     "webpack": "webpack-cli --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/react": "^0.26.2"
+    "@graphiql/react": "^0.27.0"
   },
   "peerDependencies": {
-    "graphql": "^16.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
