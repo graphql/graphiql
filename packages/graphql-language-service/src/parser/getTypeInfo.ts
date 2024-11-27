@@ -213,8 +213,11 @@ export function getTypeInfo(
             }
           }
         }
-        inputType = argDef?.type;
+        if (argDef?.type) {
+          inputType = argDef.type;
+        }
         break;
+
       case RuleKinds.VARIABLE_DEFINITION:
       case RuleKinds.VARIABLE:
         type = inputType;
@@ -241,12 +244,15 @@ export function getTypeInfo(
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()
             : null;
+        inputType = objectType;
         break;
       // TODO: needs tests
       case RuleKinds.OBJECT_FIELD:
         const objectField =
           state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
-        inputType = objectField?.type;
+        if (objectField?.type) {
+          inputType = objectField?.type;
+        }
         // @ts-expect-error
         fieldDef = objectField as GraphQLField<null, null>;
         type = fieldDef ? fieldDef.type : null;
