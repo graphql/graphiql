@@ -45,10 +45,12 @@ body:
           * **LSP Server Version**: latest
           * **OS**: Ubuntu 20.04
           * **LSP Client**: vscode (`vscode-graphql`, etc), intellij-lsp, nvim coc, etc
+          * **LSP Install Source**: (npx/npm, ovsx, vscode marketplace)
       value: |
         * LSP Server Version:
         * OS:
         * LSP Client:
+        * LSP Install Source: 
     validations:
       required: false
 
