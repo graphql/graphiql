@@ -397,6 +397,7 @@ describe('getAutocompleteSuggestions', () => {
         },
       ]);
     });
+
     const metaArgs = [
       {
         label: '__DirectiveLocation',
@@ -409,6 +410,7 @@ describe('getAutocompleteSuggestions', () => {
           'An enum describing what kind of type a given `__Type` is.',
       },
     ];
+
     it('provides correct input type suggestions', () => {
       const result = testSuggestions(
         'query($exampleVariable: ) { ',
@@ -421,6 +423,45 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'InputType' },
         { label: 'Int', documentation: GraphQLInt.description },
         { label: 'String', documentation: GraphQLString.description },
+      ]);
+    });
+    
+    it('provides correct input type suggestions for fragments', () => {
+      const result = testSuggestions(
+        'fragment someFragment($exampleVariable: ) on Type { ',
+        new Position(0, 41),
+      );
+      expect(result).toEqual([
+        ...metaArgs,
+        { label: 'Boolean', documentation: GraphQLBoolean.description },
+        { label: 'Episode' },
+        { label: 'InputType' },
+        { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'String', documentation: GraphQLString.description },
+      ]);
+    });
+    
+    it.skip('provides correct argument suggestions for fragment-spreads', () => {
+      const externalFragments = parse(`
+        fragment CharacterDetails($someVariable: Int) on Human {
+          name
+        }
+      `, {experimentalFragmentVariables:true}).definitions as FragmentDefinitionNode[];
+
+      const result = testSuggestions(
+        'query { human(id: "1") { ...CharacterDetails() }}',
+        new Position(0, 46),
+        externalFragments,
+      );
+
+      expect(result).toEqual([
+        {
+          label: 'someVariable',
+          insertText: 'someVariable: ',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' Int' },
+        },
       ]);
     });
 

@@ -409,6 +409,63 @@ describe('onlineParser', () => {
 
       t.eol();
     });
+    
+    it('parses query with fragment spread containing arguments', () => {
+      const { t, stream } = getUtils(`
+        query SomeQuery {
+          someField {
+            ...fragmentName(someVariable: 6)
+          }
+        }
+      `);
+
+      t.keyword('query', { kind: 'Query' });
+      t.def('SomeQuery');
+      t.punctuation('{', { kind: 'SelectionSet' });
+
+      t.property('someField', { kind: 'Field' });
+      t.punctuation('{', { kind: 'SelectionSet' });
+
+      t.punctuation('...', { kind: 'FragmentSpread' });
+      t.def('fragmentName');
+      expectArgs(
+        { t, stream },
+        { onKind: 'FragmentSpread', args: [{ name: 'someVariable', value: '6', valueType: 'Number', kind: 'NumberValue' }] },
+      );
+
+      t.punctuation('}', { kind: 'SelectionSet' });
+
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+    
+    it('parses query with fragment variables', () => {
+      const { t, stream } = getUtils(`
+        fragment fragmentName($someVariable: Int) on SomeType {
+          anotherField
+        }
+      `);
+
+      t.keyword('fragment', { kind: 'FragmentDefinition' });
+      t.def('fragmentName');
+      expectVarsDef(
+        { t, stream },
+        {
+          onKind: 'FragmentDefinition',
+          vars: [{ name: 'someVariable', type: 'Int' }],
+        },
+      );
+      t.keyword('on', { kind: 'TypeCondition' });
+      t.name('SomeType', { kind: 'NamedType' });
+      t.punctuation('{', { kind: 'SelectionSet' });
+
+      t.property('anotherField', { kind: 'Field' });
+
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
 
     it('parses mutation', () => {
       const { t } = getUtils(`
