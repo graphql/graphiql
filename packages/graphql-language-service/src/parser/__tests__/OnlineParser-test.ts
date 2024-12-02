@@ -56,12 +56,77 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('schema', { kind: 'SchemaDef' });
-      t.punctuation('{');
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
 
       t.keyword('query', { kind: 'OperationTypeDef' });
       t.punctuation(':');
       t.name('SomeType');
 
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+
+    it('parses schema extension bare', () => {
+      const { t } = getUtils(`
+        extend schema
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with operation defs', () => {
+      const { t } = getUtils(`
+        extend schema {
+          query: SomeType
+        }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
+
+      t.keyword('query', { kind: 'OperationTypeDef' });
+      t.punctuation(':');
+      t.name('SomeType');
+
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications without root operation definitions, followed by a type definition', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+        
+        type A { field: String }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.keyword('type', { kind: 'ObjectTypeDef' });
+      t.name('A');
+      t.punctuation('{');
+      t.property('field', { kind: 'FieldDef' });
+      t.punctuation(':');
+      t.name('String', { kind: 'NamedType' });
       t.punctuation('}', { kind: 'Document' });
 
       t.eol();
