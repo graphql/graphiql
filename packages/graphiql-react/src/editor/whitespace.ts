@@ -1,3 +1,5 @@
+'use no memo';
+
 // Unicode whitespace characters that break the interface.
 export const invalidCharacters = Array.from({ length: 11 }, (_, i) => {
   // \u2000 -> \u200a

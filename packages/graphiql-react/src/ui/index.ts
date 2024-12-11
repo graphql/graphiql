@@ -1,3 +1,5 @@
+'use no memo';
+
 export * from './button';
 export * from './button-group';
 export * from './dialog';
