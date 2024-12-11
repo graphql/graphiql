@@ -15,6 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- unit tests fails without this useCallback
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from './editor';
@@ -153,6 +154,19 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   });
 
   /**
+   * Get introspection query for settings given via props
+   */
+  const {
+    introspectionQuery,
+    introspectionQueryName,
+    introspectionQuerySansSubscriptions,
+  } = useIntrospectionQuery({
+    inputValueDeprecation: props.inputValueDeprecation,
+    introspectionQueryName: props.introspectionQueryName,
+    schemaDescription: props.schemaDescription,
+  });
+
+  /**
    * Fetch the schema
    */
   const introspect = useCallback(async () => {
@@ -164,19 +178,6 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     if (isSchema(props.schema) || props.schema === null) {
       return;
     }
-
-    /**
-     * Get introspection query for settings given via props
-     */
-    const {
-      introspectionQuery,
-      introspectionQueryName,
-      introspectionQuerySansSubscriptions,
-    } = useIntrospectionQuery({
-      inputValueDeprecation: props.inputValueDeprecation,
-      introspectionQueryName: props.introspectionQueryName,
-      schemaDescription: props.schemaDescription,
-    });
 
     const counter = ++counterRef.current;
 
@@ -297,7 +298,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Trigger introspection automatically
    */
   useEffect(() => {
-    introspect();
+    void introspect();
   }, [introspect]);
 
   /**
@@ -306,7 +307,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
-        introspect();
+        void introspect();
       }
     }
 
