@@ -15,7 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
@@ -155,7 +155,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const introspect = useCallback(() => {
+  const introspect = useCallback(async () => {
     /**
      * Only introspect if there is no schema provided via props. If the
      * prop is passed an introspection result, we do continue but skip the
@@ -254,39 +254,37 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       setFetchError(responseString);
     }
 
-    fetchIntrospectionData()
-      .then(introspectionData => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime or if there is no introspection data.
-         */
-        if (counter !== counterRef.current || !introspectionData) {
-          return;
-        }
+    try {
+      const introspectionData = await fetchIntrospectionData();
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime or if there is no introspection data.
+       */
+      if (counter !== counterRef.current || !introspectionData) {
+        return;
+      }
 
-        try {
-          const newSchema = buildClientSchema(introspectionData);
-          setSchema(newSchema);
-          // Optional chaining inside try-catch isn't supported yet by react-compiler
-          if (props.onSchemaChange) {
-            props.onSchemaChange(newSchema);
-          }
-        } catch (error) {
-          setFetchError(formatError(error));
+      try {
+        const newSchema = buildClientSchema(introspectionData);
+        setSchema(newSchema);
+        // Optional chaining inside try-catch isn't supported yet by react-compiler
+        if (props.onSchemaChange) {
+          props.onSchemaChange(newSchema);
         }
-      })
-      .catch(error => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime.
-         */
-        if (counter !== counterRef.current) {
-          return;
-        }
-
+      } catch (error) {
         setFetchError(formatError(error));
-        setIsFetching(false);
-      });
+      }
+    } catch (error) {
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime.
+       */
+      if (counter !== counterRef.current) {
+        return;
+      }
+      setFetchError(formatError(error));
+      setIsFetching(false);
+    }
   }, [
     props.fetcher,
     props.onSchemaChange,
@@ -321,9 +319,10 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Derive validation errors from the schema
    */
-  const validationErrors = !schema || props.dangerouslyAssumeSchemaIsValid
-    ? []
-    : validateSchema(schema)
+  const validationErrors =
+    !schema || props.dangerouslyAssumeSchemaIsValid
+      ? []
+      : validateSchema(schema);
 
   /**
    * Memoize context value
@@ -373,14 +372,20 @@ function useIntrospectionQuery({
 }: IntrospectionArgs) {
   const queryName = introspectionQueryName || 'IntrospectionQuery';
 
-  let query = getIntrospectionQuery({ inputValueDeprecation, schemaDescription, });
+  let query = getIntrospectionQuery({
+    inputValueDeprecation,
+    schemaDescription,
+  });
   if (introspectionQueryName) {
     query = query.replace('query IntrospectionQuery', `query ${queryName}`);
   }
   return {
     introspectionQueryName: queryName,
     introspectionQuery: query,
-    introspectionQuerySansSubscriptions: query.replace('subscriptionType { name }', ''),
+    introspectionQuerySansSubscriptions: query.replace(
+      'subscriptionType { name }',
+      '',
+    ),
   };
 }
 
