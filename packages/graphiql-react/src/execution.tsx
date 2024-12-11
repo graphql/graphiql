@@ -13,7 +13,7 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
@@ -103,13 +103,13 @@ export function ExecutionContextProvider({
   const [subscription, setSubscription] = useState<Unsubscribable | null>(null);
   const queryIdRef = useRef(0);
 
-  const stop = useCallback(() => {
+  const stop = () => {
     subscription?.unsubscribe();
     setIsFetching(false);
     setSubscription(null);
-  }, [subscription]);
+  };
 
-  const run = useCallback<ExecutionContextType['run']>(async () => {
+  const run: ExecutionContextType['run'] = async () => {
     if (!queryEditor || !responseEditor) {
       return;
     }
@@ -186,7 +186,8 @@ export function ExecutionContextProvider({
       headers: headersString,
       operationName: opName,
     });
-
+    const _headers = headers ?? undefined;
+    const documentAST = queryEditor.documentAST ?? undefined;
     try {
       const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
@@ -227,8 +228,8 @@ export function ExecutionContextProvider({
           operationName: opName,
         },
         {
-          headers: headers ?? undefined,
-          documentAST: queryEditor.documentAST ?? undefined,
+          headers: _headers,
+          documentAST,
         },
       );
 
@@ -259,9 +260,7 @@ export function ExecutionContextProvider({
         setSubscription({
           unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
         });
-        for await (const result of value) {
-          handleResponse(result);
-        }
+        await handleAsyncResults(handleResponse, value);
         setIsFetching(false);
         setSubscription(null);
       } else {
@@ -272,38 +271,32 @@ export function ExecutionContextProvider({
       setResponse(formatError(error));
       setSubscription(null);
     }
-  }, [
-    autoCompleteLeafs,
-    externalFragments,
-    fetcher,
-    headerEditor,
-    history,
-    operationName,
-    queryEditor,
-    responseEditor,
-    stop,
-    subscription,
-    updateActiveTabValues,
-    variableEditor,
-  ]);
+  };
 
   const isSubscribed = Boolean(subscription);
-  const value = useMemo<ExecutionContextType>(
-    () => ({
-      isFetching,
-      isSubscribed,
-      operationName: operationName ?? null,
-      run,
-      stop,
-    }),
-    [isFetching, isSubscribed, operationName, run, stop],
-  );
+  const value: ExecutionContextType = {
+    isFetching,
+    isSubscribed,
+    operationName: operationName ?? null,
+    run,
+    stop,
+  };
 
   return (
     <ExecutionContext.Provider value={value}>
       {children}
     </ExecutionContext.Provider>
   );
+}
+
+// Extract function because react-compiler doesn't support `for await` yet
+async function handleAsyncResults(
+  onResponse: (result: ExecutionResult) => void,
+  value: any,
+): Promise<void> {
+  for await (const result of value) {
+    onResponse(result);
+  }
 }
 
 export const useExecutionContext = createContextHook(ExecutionContext);
@@ -403,8 +396,8 @@ function mergeIncrementalResult(
       for (const item of items) {
         setValue(executionResult, path.join('.'), item);
         // Increment the last path segment (the array index) to merge the next item at the next index
-        // eslint-disable-next-line unicorn/prefer-at -- cannot mutate the array using Array.at()
-        (path[path.length - 1] as number)++;
+        // @ts-expect-error -- (path[path.length - 1] as number)++ breaks react compiler
+        path[path.length - 1]++;
       }
     }
   }

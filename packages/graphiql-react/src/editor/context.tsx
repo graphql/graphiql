@@ -7,14 +7,7 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -329,21 +322,18 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
 
-  const setShouldPersistHeaders = useCallback(
-    (persist: boolean) => {
-      if (persist) {
-        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(tabState, true);
-        storage?.set(STORAGE_KEY_TABS, serializedTabs);
-      } else {
-        storage?.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs(storage);
-      }
-      setShouldPersistHeadersInternal(persist);
-      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-    },
-    [storage, tabState, headerEditor],
-  );
+  const setShouldPersistHeaders = (persist: boolean) => {
+    if (persist) {
+      storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+      const serializedTabs = serializeTabState(tabState, true);
+      storage?.set(STORAGE_KEY_TABS, serializedTabs);
+    } else {
+      storage?.set(STORAGE_KEY_HEADERS, '');
+      clearHeadersFromTabs(storage);
+    }
+    setShouldPersistHeadersInternal(persist);
+    storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+  };
 
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
   useEffect(() => {
@@ -369,7 +359,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     defaultHeaders,
   });
 
-  const addTab = useCallback<EditorContextType['addTab']>(() => {
+  const addTab: EditorContextType['addTab'] = () => {
     setTabState(current => {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
@@ -388,67 +378,49 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       onTabChange?.(updated);
       return updated;
     });
-  }, [
-    defaultHeaders,
-    defaultQuery,
-    onTabChange,
-    setEditorValues,
-    storeTabs,
-    synchronizeActiveTabValues,
-  ]);
+  };
 
-  const changeTab = useCallback<EditorContextType['changeTab']>(
-    index => {
-      setTabState(current => {
-        const updated = {
-          ...current,
-          activeTabIndex: index,
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    [onTabChange, setEditorValues, storeTabs],
-  );
+  const changeTab: EditorContextType['changeTab'] = index => {
+    setTabState(current => {
+      const updated = {
+        ...current,
+        activeTabIndex: index,
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  };
 
-  const moveTab = useCallback<EditorContextType['moveTab']>(
-    newOrder => {
-      setTabState(current => {
-        const activeTab = current.tabs[current.activeTabIndex];
-        const updated = {
-          tabs: newOrder,
-          activeTabIndex: newOrder.indexOf(activeTab),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    [onTabChange, setEditorValues, storeTabs],
-  );
+  const moveTab: EditorContextType['moveTab'] = newOrder => {
+    setTabState(current => {
+      const activeTab = current.tabs[current.activeTabIndex];
+      const updated = {
+        tabs: newOrder,
+        activeTabIndex: newOrder.indexOf(activeTab),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  };
 
-  const closeTab = useCallback<EditorContextType['closeTab']>(
-    index => {
-      setTabState(current => {
-        const updated = {
-          tabs: current.tabs.filter((_tab, i) => index !== i),
-          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    [onTabChange, setEditorValues, storeTabs],
-  );
+  const closeTab: EditorContextType['closeTab'] = index => {
+    setTabState(current => {
+      const updated = {
+        tabs: current.tabs.filter((_tab, i) => index !== i),
+        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  };
 
-  const updateActiveTabValues = useCallback<
-    EditorContextType['updateActiveTabValues']
-  >(
+  const updateActiveTabValues: EditorContextType['updateActiveTabValues'] =
     partialTab => {
       setTabState(current => {
         const updated = setPropertiesInActiveTab(current, partialTab);
@@ -456,25 +428,21 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         onTabChange?.(updated);
         return updated;
       });
-    },
-    [onTabChange, storeTabs],
-  );
+    };
 
   const { onEditOperationName } = props;
-  const setOperationName = useCallback<EditorContextType['setOperationName']>(
+  const setOperationName: EditorContextType['setOperationName'] =
     operationName => {
       if (!queryEditor) {
         return;
       }
 
-      queryEditor.operationName = operationName;
+      updateQueryEditor(queryEditor, operationName);
       updateActiveTabValues({ operationName });
       onEditOperationName?.(operationName);
-    },
-    [onEditOperationName, queryEditor, updateActiveTabValues],
-  );
+    };
 
-  const externalFragments = useMemo(() => {
+  const externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
     if (Array.isArray(props.externalFragments)) {
       for (const fragment of props.externalFragments) {
@@ -492,72 +460,52 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       );
     }
     return map;
-  }, [props.externalFragments]);
+  })();
 
-  const validationRules = useMemo(
-    () => props.validationRules || [],
-    [props.validationRules],
-  );
+  const validationRules = props.validationRules || [];
 
-  const value = useMemo<EditorContextType>(
-    () => ({
-      ...tabState,
-      addTab,
-      changeTab,
-      moveTab,
-      closeTab,
-      updateActiveTabValues,
+  const value: EditorContextType = {
+    ...tabState,
+    addTab,
+    changeTab,
+    moveTab,
+    closeTab,
+    updateActiveTabValues,
 
-      headerEditor,
-      queryEditor,
-      responseEditor,
-      variableEditor,
-      setHeaderEditor,
-      setQueryEditor,
-      setResponseEditor,
-      setVariableEditor,
+    headerEditor,
+    queryEditor,
+    responseEditor,
+    variableEditor,
+    setHeaderEditor,
+    setQueryEditor,
+    setResponseEditor,
+    setVariableEditor,
 
-      setOperationName,
+    setOperationName,
 
-      initialQuery: initialState.query,
-      initialVariables: initialState.variables,
-      initialHeaders: initialState.headers,
-      initialResponse: initialState.response,
+    initialQuery: initialState.query,
+    initialVariables: initialState.variables,
+    initialHeaders: initialState.headers,
+    initialResponse: initialState.response,
 
-      externalFragments,
-      validationRules,
+    externalFragments,
+    validationRules,
 
-      shouldPersistHeaders,
-      setShouldPersistHeaders,
-    }),
-    [
-      tabState,
-      addTab,
-      changeTab,
-      moveTab,
-      closeTab,
-      updateActiveTabValues,
-
-      headerEditor,
-      queryEditor,
-      responseEditor,
-      variableEditor,
-
-      setOperationName,
-
-      initialState,
-
-      externalFragments,
-      validationRules,
-
-      shouldPersistHeaders,
-      setShouldPersistHeaders,
-    ],
-  );
+    shouldPersistHeaders,
+    setShouldPersistHeaders,
+  };
 
   return (
     <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
   );
+}
+
+// To make react-compiler happy, otherwise it fails due mutating props
+function updateQueryEditor(
+  queryEditor: CodeMirrorEditorWithOperationFacts,
+  operationName: string,
+) {
+  queryEditor.operationName = operationName;
 }
 
 export const useEditorContext = createContextHook(EditorContext);

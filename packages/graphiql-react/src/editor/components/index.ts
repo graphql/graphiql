@@ -1,3 +1,5 @@
+'use no memo';
+
 export { HeaderEditor } from './header-editor';
 export { ImagePreview } from './image-preview';
 export { QueryEditor } from './query-editor';

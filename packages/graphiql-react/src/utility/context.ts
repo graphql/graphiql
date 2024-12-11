@@ -1,3 +1,5 @@
+'use no memo';
+
 import { Context, createContext, useContext } from 'react';
 
 export function createNullableContext<T>(name: string): Context<T | null> {

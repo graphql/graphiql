@@ -1,5 +1,5 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -99,29 +99,26 @@ export function HistoryContextProvider({
   );
   const [items, setItems] = useState(() => historyStore.queries || []);
 
-  const value = useMemo<HistoryContextType>(
-    () => ({
-      addToHistory(operation) {
-        historyStore.updateHistory(operation);
-        setItems(historyStore.queries);
-      },
-      editLabel(operation, index) {
-        historyStore.editLabel(operation, index);
-        setItems(historyStore.queries);
-      },
-      items,
-      toggleFavorite(operation) {
-        historyStore.toggleFavorite(operation);
-        setItems(historyStore.queries);
-      },
-      setActive: item => item,
-      deleteFromHistory(item, clearFavorites) {
-        historyStore.deleteHistory(item, clearFavorites);
-        setItems(historyStore.queries);
-      },
-    }),
-    [items, historyStore],
-  );
+  const value: HistoryContextType = {
+    addToHistory(operation) {
+      historyStore.updateHistory(operation);
+      setItems(historyStore.queries);
+    },
+    editLabel(operation, index) {
+      historyStore.editLabel(operation, index);
+      setItems(historyStore.queries);
+    },
+    items,
+    toggleFavorite(operation) {
+      historyStore.toggleFavorite(operation);
+      setItems(historyStore.queries);
+    },
+    setActive: item => item,
+    deleteFromHistory(item, clearFavorites) {
+      historyStore.deleteHistory(item, clearFavorites);
+      setItems(historyStore.queries);
+    },
+  };
 
   return (
     <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>

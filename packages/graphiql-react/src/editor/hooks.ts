@@ -3,7 +3,7 @@ import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
@@ -16,7 +16,7 @@ import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
-  value: string | undefined,
+  value?: string,
 ) {
   useEffect(() => {
     if (editor && typeof value === 'string' && value !== editor.getValue()) {
@@ -65,7 +65,7 @@ export function useChangeHandler(
 
     const handleChange = (
       editorInstance: CodeMirrorEditor,
-      changeObj: EditorChange | undefined,
+      changeObj?: EditorChange,
     ) => {
       // When we signal a change manually without actually changing anything
       // we don't want to invoke the callback.
@@ -130,7 +130,7 @@ type EmptyCallback = () => void;
 export function useKeyMap(
   editor: CodeMirrorEditor | null,
   keys: string[],
-  callback: EmptyCallback | undefined,
+  callback?: EmptyCallback,
 ) {
   useEffect(() => {
     if (!editor) {
@@ -163,12 +163,18 @@ export type UseCopyQueryArgs = {
   onCopyQuery?: (query: string) => void;
 };
 
+// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
+const _useCopyQuery = useCopyQuery;
+const _useMergeQuery = useMergeQuery;
+const _usePrettifyEditors = usePrettifyEditors;
+const _useAutoCompleteLeafs = useAutoCompleteLeafs;
+
 export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
   const { queryEditor } = useEditorContext({
     nonNull: true,
-    caller: caller || useCopyQuery,
+    caller: caller || _useCopyQuery,
   });
-  return useCallback(() => {
+  return () => {
     if (!queryEditor) {
       return;
     }
@@ -177,7 +183,7 @@ export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
     copyToClipboard(query);
 
     onCopyQuery?.(query);
-  }, [queryEditor, onCopyQuery]);
+  };
 }
 
 type UseMergeQueryArgs = {
@@ -190,10 +196,13 @@ type UseMergeQueryArgs = {
 export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
   const { queryEditor } = useEditorContext({
     nonNull: true,
-    caller: caller || useMergeQuery,
+    caller: caller || _useMergeQuery,
   });
-  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
-  return useCallback(() => {
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: _useMergeQuery,
+  });
+  return () => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
     if (!documentAST || !query) {
@@ -201,7 +210,7 @@ export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
     }
 
     queryEditor.setValue(print(mergeAst(documentAST, schema)));
-  }, [queryEditor, schema]);
+  };
 }
 
 type UsePrettifyEditorsArgs = {
@@ -214,9 +223,9 @@ type UsePrettifyEditorsArgs = {
 export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
-    caller: caller || usePrettifyEditors,
+    caller: caller || _usePrettifyEditors,
   });
-  return useCallback(() => {
+  return () => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -258,7 +267,7 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
         queryEditor.setValue(prettifiedEditorContent);
       }
     }
-  }, [queryEditor, variableEditor, headerEditor]);
+  };
 }
 
 export type UseAutoCompleteLeafsArgs = {
@@ -280,13 +289,13 @@ export function useAutoCompleteLeafs({
 }: UseAutoCompleteLeafsArgs = {}) {
   const { schema } = useSchemaContext({
     nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
+    caller: caller || _useAutoCompleteLeafs,
   });
   const { queryEditor } = useEditorContext({
     nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
+    caller: caller || _useAutoCompleteLeafs,
   });
-  return useCallback(() => {
+  return () => {
     if (!queryEditor) {
       return;
     }
@@ -330,14 +339,14 @@ export function useAutoCompleteLeafs({
     }
 
     return result;
-  }, [getDefaultFieldNames, queryEditor, schema]);
+  };
 }
-
-export type InitialState = string | (() => string);
 
 // https://react.dev/learn/you-might-not-need-an-effect
 
-export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+export const useEditorState = (
+  editor: 'query' | 'variable' | 'header',
+): [string, (val: string) => void] => {
   const context = useEditorContext({
     nonNull: true,
   });
@@ -349,14 +358,8 @@ export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
     valueString = editorValue;
   }
 
-  const handleEditorValue = useCallback(
-    (value: string) => editorInstance?.setValue(value),
-    [editorInstance],
-  );
-  return useMemo<[string, (val: string) => void]>(
-    () => [valueString, handleEditorValue],
-    [valueString, handleEditorValue],
-  );
+  const handleEditorValue = (value: string) => editorInstance?.setValue(value);
+  return [valueString, handleEditorValue];
 };
 
 /**
@@ -444,20 +447,17 @@ export function useOptimisticState([
     }
   }, [upstreamState, state, upstreamSetState]);
 
-  const setState = useCallback(
-    (newState: string) => {
-      setOperationsText(newState);
-      if (
-        lastStateRef.current.pending === null &&
-        lastStateRef.current.last !== newState
-      ) {
-        // No pending updates and change has occurred... send it upstream
-        lastStateRef.current.pending = newState;
-        upstreamSetState(newState);
-      }
-    },
-    [upstreamSetState],
-  );
+  const setState = (newState: string) => {
+    setOperationsText(newState);
+    if (
+      lastStateRef.current.pending === null &&
+      lastStateRef.current.last !== newState
+    ) {
+      // No pending updates and change has occurred... send it upstream
+      lastStateRef.current.pending = newState;
+      upstreamSetState(newState);
+    }
+  };
 
-  return useMemo(() => [state, setState], [state, setState]);
+  return [state, setState];
 }

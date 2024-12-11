@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { useStorageContext } from '../storage';
 import debounce from './debounce';
@@ -60,15 +53,11 @@ export function useDragResize({
 }: UseDragResizeArgs) {
   const storage = useStorageContext();
 
-  const store = useMemo(
-    () =>
-      debounce(500, (value: string) => {
-        if (storageKey) {
-          storage?.set(storageKey, value);
-        }
-      }),
-    [storage, storageKey],
-  );
+  const store = debounce(500, (value: string) => {
+    if (storageKey) {
+      storage?.set(storageKey, value);
+    }
+  });
 
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     () => {
@@ -83,15 +72,12 @@ export function useDragResize({
     },
   );
 
-  const setHiddenElementWithCallback = useCallback(
-    (element: ResizableElement | null) => {
-      if (element !== hiddenElement) {
-        setHiddenElement(element);
-        onHiddenElementChange?.(element);
-      }
-    },
-    [hiddenElement, onHiddenElementChange],
-  );
+  const setHiddenElementWithCallback = (element: ResizableElement | null) => {
+    if (element !== hiddenElement) {
+      setHiddenElement(element);
+      onHiddenElementChange?.(element);
+    }
+  };
 
   const firstRef = useRef<HTMLDivElement>(null);
   const dragBarRef = useRef<HTMLDivElement>(null);
@@ -124,35 +110,38 @@ export function useDragResize({
     }
   }, [direction, storage, storageKey]);
 
-  const hide = useCallback((resizableElement: ResizableElement) => {
-    const element =
-      resizableElement === 'first' ? firstRef.current : secondRef.current;
-    if (!element) {
-      return;
-    }
-
-    // We hide elements off screen because of codemirror. If the page is loaded
-    // and the codemirror container would have zero width, the layout isn't
-    // instant pretty. By always giving the editor some width we avoid any
-    // layout shifts when the editor reappears.
-    element.style.left = '-1000px';
-    element.style.position = 'absolute';
-    element.style.opacity = '0';
-    element.style.height = '500px';
-    element.style.width = '500px';
-
-    // Make sure that the flex value of the first item is at least equal to one
-    // so that the entire space of the parent element is filled up
-    if (firstRef.current) {
-      const flex = parseFloat(firstRef.current.style.flex);
-      if (!Number.isFinite(flex) || flex < 1) {
-        firstRef.current.style.flex = '1';
+  /**
+   * Hide and show items when state changes
+   */
+  useLayoutEffect(() => {
+    const hide = (resizableElement: ResizableElement) => {
+      const element =
+        resizableElement === 'first' ? firstRef.current : secondRef.current;
+      if (!element) {
+        return;
       }
-    }
-  }, []);
 
-  const show = useCallback(
-    (resizableElement: ResizableElement) => {
+      // We hide elements off screen because of codemirror. If the page is loaded
+      // and the codemirror container would have zero width, the layout isn't
+      // instant pretty. By always giving the editor some width we avoid any
+      // layout shifts when the editor reappears.
+      element.style.left = '-1000px';
+      element.style.position = 'absolute';
+      element.style.opacity = '0';
+      element.style.height = '500px';
+      element.style.width = '500px';
+
+      // Make sure that the flex value of the first item is at least equal to one
+      // so that the entire space of the parent element is filled up
+      if (firstRef.current) {
+        const flex = parseFloat(firstRef.current.style.flex);
+        if (!Number.isFinite(flex) || flex < 1) {
+          firstRef.current.style.flex = '1';
+        }
+      }
+    };
+
+    const show = (resizableElement: ResizableElement) => {
       const element =
         resizableElement === 'first' ? firstRef.current : secondRef.current;
       if (!element) {
@@ -175,14 +164,7 @@ export function useDragResize({
           firstRef.current.style.flex = storedValue || defaultFlexRef.current;
         }
       }
-    },
-    [storage, storageKey],
-  );
-
-  /**
-   * Hide and show items when state changes
-   */
-  useLayoutEffect(() => {
+    };
     if (hiddenElement === 'first') {
       hide('first');
     } else {
@@ -193,7 +175,7 @@ export function useDragResize({
     } else {
       show('second');
     }
-  }, [hiddenElement, hide, show]);
+  }, [hiddenElement, storage, storageKey]);
 
   useEffect(() => {
     if (!dragBarRef.current || !firstRef.current || !secondRef.current) {
@@ -285,16 +267,13 @@ export function useDragResize({
     store,
   ]);
 
-  return useMemo(
-    () => ({
-      dragBarRef,
-      hiddenElement,
-      firstRef,
-      setHiddenElement,
-      secondRef,
-    }),
-    [hiddenElement, setHiddenElement],
-  );
+  return {
+    dragBarRef,
+    hiddenElement,
+    firstRef,
+    setHiddenElement,
+    secondRef,
+  };
 }
 
 const DEFAULT_FLEX = 1;

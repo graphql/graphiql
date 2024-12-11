@@ -1,3 +1,5 @@
+'use no memo';
+
 import { KeyMap } from './types';
 import { isMacOs } from '../utility/is-macos';
 

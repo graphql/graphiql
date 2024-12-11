@@ -1,4 +1,4 @@
-import { forwardRef, MouseEventHandler, useCallback, useState } from 'react';
+import { forwardRef, MouseEventHandler, useState } from 'react';
 import { clsx } from 'clsx';
 import { Tooltip, UnStyledButton } from '../ui';
 
@@ -13,21 +13,21 @@ export const ToolbarButton = forwardRef<
   ToolbarButtonProps & JSX.IntrinsicElements['button']
 >(({ label, onClick, ...props }, ref) => {
   const [error, setError] = useState<Error | null>(null);
-  const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      try {
-        onClick?.(event);
-        setError(null);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err
-            : new Error(`Toolbar button click failed: ${err}`),
-        );
+  const handleClick: MouseEventHandler<HTMLButtonElement> = event => {
+    try {
+      // Optional chaining inside try-catch isn't supported yet by react-compiler
+      if (onClick) {
+        onClick(event);
       }
-    },
-    [onClick],
-  );
+      setError(null);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err
+          : new Error(`Toolbar button click failed: ${err}`),
+      );
+    }
+  };
 
   return (
     <Tooltip label={label}>

@@ -1,3 +1,5 @@
+'use no memo';
+
 import { JSXElementConstructor } from 'react';
 
 export const createComponentGroup = <

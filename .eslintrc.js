@@ -448,6 +448,21 @@ module.exports = {
       },
     },
     {
+      files: ['packages/graphiql-react/**'],
+      plugins: ['react-compiler'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS,
+          {
+            name: 'react',
+            importNames: ['memo', 'useCallback', 'useMemo'],
+          },
+        ],
+        'react-compiler/react-compiler': 'error',
+      },
+    },
+    {
       // Monaco-GraphQL rules
       files: ['packages/monaco-graphql/**'],
       rules: {

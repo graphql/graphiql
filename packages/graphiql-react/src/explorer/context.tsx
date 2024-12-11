@@ -13,7 +13,7 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useSchemaContext } from '../schema';
 import { createContextHook, createNullableContext } from '../utility/context';
 
@@ -81,7 +81,7 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     initialNavStackItem,
   ]);
 
-  const push = useCallback((item: ExplorerNavStackItem) => {
+  const push = (item: ExplorerNavStackItem) => {
     setNavStack(currentState => {
       const lastItem = currentState.at(-1)!;
       return lastItem.def === item.def
@@ -89,21 +89,21 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
           currentState
         : [...currentState, item];
     });
-  }, []);
+  };
 
-  const pop = useCallback(() => {
+  const pop = () => {
     setNavStack(currentState =>
       currentState.length > 1
         ? (currentState.slice(0, -1) as ExplorerNavStack)
         : currentState,
     );
-  }, []);
+  };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     setNavStack(currentState =>
       currentState.length === 1 ? currentState : [initialNavStackItem],
     );
-  }, []);
+  };
 
   useEffect(() => {
     // Whenever the schema changes, we must revalidate/replace the nav stack.
@@ -167,7 +167,7 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
               break;
             } else {
               // lastEntity must be a field (because it's not a named type)
-              const field: GraphQLField<any, any, any> = lastEntity;
+              const field: GraphQLField<any, any> = lastEntity;
               // Thus item.def must be an argument, so find the same named argument in the new schema
               const arg = field.args.find(a => a.name === item.name);
               if (arg) {
@@ -188,12 +188,14 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
         return newNavStack;
       });
     }
-  }, [reset, schema, validationErrors]);
+  }, [schema, validationErrors]);
 
-  const value = useMemo<ExplorerContextType>(
-    () => ({ explorerNavStack: navStack, push, pop, reset }),
-    [navStack, push, pop, reset],
-  );
+  const value: ExplorerContextType = {
+    explorerNavStack: navStack,
+    push,
+    pop,
+    reset,
+  };
 
   return (
     <ExplorerContext.Provider value={value}>
