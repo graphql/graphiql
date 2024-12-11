@@ -15,14 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
@@ -114,7 +107,6 @@ export type SchemaContextProviderProps = {
 } & IntrospectionArgs;
 
 export function SchemaContextProvider(props: SchemaContextProviderProps) {
-  'use no memo'
   if (!props.fetcher) {
     throw new TypeError(
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
@@ -140,11 +132,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   useEffect(() => {
     setSchema(
-      isSchema(props.schema) ||
-        props.schema === null ||
-        props.schema === undefined
-        ? props.schema
-        : undefined,
+      isSchema(props.schema) || props.schema == null ? props.schema : undefined,
     );
 
     /**
@@ -165,23 +153,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   });
 
   /**
-   * Get introspection query for settings given via props
-   */
-  const {
-    introspectionQuery,
-    introspectionQueryName,
-    introspectionQuerySansSubscriptions,
-  } = useIntrospectionQuery({
-    inputValueDeprecation: props.inputValueDeprecation,
-    introspectionQueryName: props.introspectionQueryName,
-    schemaDescription: props.schemaDescription,
-  });
-
-  /**
    * Fetch the schema
    */
-  const { fetcher, onSchemaChange, dangerouslyAssumeSchemaIsValid, children } =
-    props;
   const introspect = useCallback(() => {
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -191,6 +164,19 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     if (isSchema(props.schema) || props.schema === null) {
       return;
     }
+
+    /**
+     * Get introspection query for settings given via props
+     */
+    const {
+      introspectionQuery,
+      introspectionQueryName,
+      introspectionQuerySansSubscriptions,
+    } = useIntrospectionQuery({
+      inputValueDeprecation: props.inputValueDeprecation,
+      introspectionQueryName: props.introspectionQueryName,
+      schemaDescription: props.schemaDescription,
+    });
 
     const counter = ++counterRef.current;
 
@@ -213,7 +199,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         : {};
 
       const fetch = fetcherReturnToPromise(
-        fetcher(
+        props.fetcher(
           {
             query: introspectionQuery,
             operationName: introspectionQueryName,
@@ -240,7 +226,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = fetcherReturnToPromise(
-          fetcher(
+          props.fetcher(
             {
               query: introspectionQuerySansSubscriptions,
               operationName: introspectionQueryName,
@@ -281,7 +267,10 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         try {
           const newSchema = buildClientSchema(introspectionData);
           setSchema(newSchema);
-          onSchemaChange?.(newSchema);
+          // Optional chaining inside try-catch isn't supported yet by react-compiler
+          if (props.onSchemaChange) {
+            props.onSchemaChange(newSchema);
+          }
         } catch (error) {
           setFetchError(formatError(error));
         }
@@ -299,12 +288,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         setIsFetching(false);
       });
   }, [
-    fetcher,
-    introspectionQueryName,
-    introspectionQuery,
-    introspectionQuerySansSubscriptions,
-    onSchemaChange,
-    props.schema,
+    props.fetcher,
+    props.onSchemaChange,
+    props.inputValueDeprecation,
+    props.introspectionQueryName,
+    props.schemaDescription,
   ]);
 
   /**
@@ -325,35 +313,33 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     }
 
     window.addEventListener('keydown', triggerIntrospection);
-    return () => window.removeEventListener('keydown', triggerIntrospection);
+    return () => {
+      window.removeEventListener('keydown', triggerIntrospection);
+    };
   });
 
   /**
    * Derive validation errors from the schema
    */
-  const validationErrors = useMemo(() => {
-    if (!schema || dangerouslyAssumeSchemaIsValid) {
-      return [];
-    }
-    return validateSchema(schema);
-  }, [schema, dangerouslyAssumeSchemaIsValid]);
+  const validationErrors = !schema || props.dangerouslyAssumeSchemaIsValid
+    ? []
+    : validateSchema(schema)
 
   /**
    * Memoize context value
    */
-  const value = useMemo(
-    () => ({
-      fetchError,
-      introspect,
-      isFetching,
-      schema,
-      validationErrors,
-    }),
-    [fetchError, introspect, isFetching, schema, validationErrors],
-  );
+  const value = {
+    fetchError,
+    introspect,
+    isFetching,
+    schema,
+    validationErrors,
+  };
 
   return (
-    <SchemaContext.Provider value={value}>{children}</SchemaContext.Provider>
+    <SchemaContext.Provider value={value}>
+      {props.children}
+    </SchemaContext.Provider>
   );
 }
 
@@ -385,31 +371,20 @@ function useIntrospectionQuery({
   introspectionQueryName,
   schemaDescription,
 }: IntrospectionArgs) {
-  return useMemo(() => {
-    const queryName = introspectionQueryName || 'IntrospectionQuery';
+  const queryName = introspectionQueryName || 'IntrospectionQuery';
 
-    let query = getIntrospectionQuery({
-      inputValueDeprecation,
-      schemaDescription,
-    });
-    if (introspectionQueryName) {
-      query = query.replace('query IntrospectionQuery', `query ${queryName}`);
-    }
-
-    const querySansSubscriptions = query.replace(
-      'subscriptionType { name }',
-      '',
-    );
-
-    return {
-      introspectionQueryName: queryName,
-      introspectionQuery: query,
-      introspectionQuerySansSubscriptions: querySansSubscriptions,
-    };
-  }, [inputValueDeprecation, introspectionQueryName, schemaDescription]);
+  let query = getIntrospectionQuery({ inputValueDeprecation, schemaDescription, });
+  if (introspectionQueryName) {
+    query = query.replace('query IntrospectionQuery', `query ${queryName}`);
+  }
+  return {
+    introspectionQueryName: queryName,
+    introspectionQuery: query,
+    introspectionQuerySansSubscriptions: query.replace('subscriptionType { name }', ''),
+  };
 }
 
-function parseHeaderString(headersString: string | undefined) {
+function parseHeaderString(headersString?: string) {
   let headers: Record<string, unknown> | null = null;
   let isValidJSON = true;
 
