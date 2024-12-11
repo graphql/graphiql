@@ -114,6 +114,7 @@ export type SchemaContextProviderProps = {
 } & IntrospectionArgs;
 
 export function SchemaContextProvider(props: SchemaContextProviderProps) {
+  'use no memo'
   if (!props.fetcher) {
     throw new TypeError(
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
