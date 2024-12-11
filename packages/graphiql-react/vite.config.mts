@@ -4,9 +4,20 @@ import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
 import packageJSON from './package.json';
 
+const ReactCompilerConfig = {
+  target: '17',
+  sources(filename) {
+    return filename.includes('graphiql-react');
+  },
+};
+
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+      },
+    }),
     svgr({
       exportAsDefault: true,
       svgrOptions: {
