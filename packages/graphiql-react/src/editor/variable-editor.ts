@@ -33,6 +33,18 @@ export type UseVariableEditorArgs = WriteableEditorProps & {
   onEdit?(value: string): void;
 };
 
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror([
+    import('codemirror-graphql/esm/variables/hint'),
+    import('codemirror-graphql/esm/variables/lint'),
+    import('codemirror-graphql/esm/variables/mode'),
+  ]);
+}
+
+// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
+const _useVariableEditor = useVariableEditor;
+
 export function useVariableEditor(
   {
     editorTheme = DEFAULT_EDITOR_THEME,
@@ -46,22 +58,18 @@ export function useVariableEditor(
   const { initialVariables, variableEditor, setVariableEditor } =
     useEditorContext({
       nonNull: true,
-      caller: caller || useVariableEditor,
+      caller: caller || _useVariableEditor,
     });
   const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: caller || useVariableEditor });
-  const prettify = usePrettifyEditors({ caller: caller || useVariableEditor });
+  const merge = useMergeQuery({ caller: caller || _useVariableEditor });
+  const prettify = usePrettifyEditors({ caller: caller || _useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
   useEffect(() => {
     let isActive = true;
 
-    void importCodeMirror([
-      import('codemirror-graphql/esm/variables/hint'),
-      import('codemirror-graphql/esm/variables/lint'),
-      import('codemirror-graphql/esm/variables/mode'),
-    ]).then(CodeMirror => {
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
@@ -139,10 +147,10 @@ export function useVariableEditor(
     onEdit,
     STORAGE_KEY,
     'variables',
-    useVariableEditor,
+    _useVariableEditor,
   );
 
-  useCompletion(variableEditor, onClickReference || null, useVariableEditor);
+  useCompletion(variableEditor, onClickReference || null, _useVariableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);

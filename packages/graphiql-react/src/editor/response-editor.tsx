@@ -34,6 +34,27 @@ export type UseResponseEditorArgs = CommonEditorProps & {
   responseTooltip?: ResponseTooltipType;
 };
 
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror(
+    [
+      import('codemirror/addon/fold/foldgutter'),
+      import('codemirror/addon/fold/brace-fold'),
+      import('codemirror/addon/dialog/dialog'),
+      import('codemirror/addon/search/search'),
+      import('codemirror/addon/search/searchcursor'),
+      import('codemirror/addon/search/jump-to-line'),
+      // @ts-expect-error
+      import('codemirror/keymap/sublime'),
+      import('codemirror-graphql/esm/results/mode'),
+      import('codemirror-graphql/esm/utils/info-addon'),
+    ],
+    { useCommonAddons: false },
+  );
+}
+// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
+const _useResponseEditor = useResponseEditor;
+
 export function useResponseEditor(
   {
     responseTooltip,
@@ -44,12 +65,12 @@ export function useResponseEditor(
 ) {
   const { fetchError, validationErrors } = useSchemaContext({
     nonNull: true,
-    caller: caller || useResponseEditor,
+    caller: caller || _useResponseEditor,
   });
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorContext({
       nonNull: true,
-      caller: caller || useResponseEditor,
+      caller: caller || _useResponseEditor,
     });
   const ref = useRef<HTMLDivElement>(null);
 
@@ -62,21 +83,7 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
-    void importCodeMirror(
-      [
-        import('codemirror/addon/fold/foldgutter'),
-        import('codemirror/addon/fold/brace-fold'),
-        import('codemirror/addon/dialog/dialog'),
-        import('codemirror/addon/search/search'),
-        import('codemirror/addon/search/searchcursor'),
-        import('codemirror/addon/search/jump-to-line'),
-        // @ts-expect-error
-        import('codemirror/keymap/sublime'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
-      ],
-      { useCommonAddons: false },
-    ).then(CodeMirror => {
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
