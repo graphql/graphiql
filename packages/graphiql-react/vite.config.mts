@@ -32,9 +32,9 @@ export default defineConfig({
         'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
-        ...Object.keys(packageJSON.dependencies).filter(
-          dependency => dependency !== 'codemirror',
-        ),
+        ...Object.keys(packageJSON.dependencies),
+        // Exclude `codemirror/...` and `codemirror-graphql/...` but not `../style/codemirror.css`
+        /codemirror[/-]/,
       ],
       output: {
         chunkFileNames: '[name].[format].js',
