@@ -454,7 +454,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/graphiql-react/**'],
+      files: ['packages/{graphiql-react,graphiql}/**'],
       plugins: ['react-compiler'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
