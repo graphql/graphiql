@@ -36,9 +36,9 @@ export type UseVariableEditorArgs = WriteableEditorProps & {
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
 function importCodeMirrorImports() {
   return importCodeMirror([
-    import('codemirror-graphql/esm/variables/hint'),
-    import('codemirror-graphql/esm/variables/lint'),
-    import('codemirror-graphql/esm/variables/mode'),
+    import('codemirror-graphql/esm/variables/hint.js'),
+    import('codemirror-graphql/esm/variables/lint.js'),
+    import('codemirror-graphql/esm/variables/mode.js'),
   ]);
 }
 

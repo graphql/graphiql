@@ -36,17 +36,17 @@ export async function importCodeMirror(
     options?.useCommonAddons === false
       ? addons
       : [
-          import('codemirror/addon/hint/show-hint'),
-          import('codemirror/addon/edit/matchbrackets'),
-          import('codemirror/addon/edit/closebrackets'),
-          import('codemirror/addon/fold/brace-fold'),
-          import('codemirror/addon/fold/foldgutter'),
-          import('codemirror/addon/lint/lint'),
-          import('codemirror/addon/search/searchcursor'),
-          import('codemirror/addon/search/jump-to-line'),
-          import('codemirror/addon/dialog/dialog'),
+          import('codemirror/addon/hint/show-hint.js'),
+          import('codemirror/addon/edit/matchbrackets.js'),
+          import('codemirror/addon/edit/closebrackets.js'),
+          import('codemirror/addon/fold/brace-fold.js'),
+          import('codemirror/addon/fold/foldgutter.js'),
+          import('codemirror/addon/lint/lint.js'),
+          import('codemirror/addon/search/searchcursor.js'),
+          import('codemirror/addon/search/jump-to-line.js'),
+          import('codemirror/addon/dialog/dialog.js'),
           // @ts-expect-error
-          import('codemirror/keymap/sublime'),
+          import('codemirror/keymap/sublime.js'),
           ...addons,
         ],
   );

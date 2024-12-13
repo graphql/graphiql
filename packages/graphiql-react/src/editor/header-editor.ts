@@ -29,7 +29,7 @@ export type UseHeaderEditorArgs = WriteableEditorProps & {
 function importCodeMirrorImports() {
   return importCodeMirror([
     // @ts-expect-error
-    import('codemirror/mode/javascript/javascript'),
+    import('codemirror/mode/javascript/javascript.js'),
   ]);
 }
 const _useHeaderEditor = useHeaderEditor;
