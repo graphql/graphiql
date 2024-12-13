@@ -144,13 +144,13 @@ export function useQueryEditor(
     let isActive = true;
 
     void importCodeMirror([
-      import('codemirror/addon/comment/comment'),
-      import('codemirror/addon/search/search'),
-      import('codemirror-graphql/esm/hint'),
-      import('codemirror-graphql/esm/lint'),
-      import('codemirror-graphql/esm/info'),
-      import('codemirror-graphql/esm/jump'),
-      import('codemirror-graphql/esm/mode'),
+      import('codemirror/addon/comment/comment.js'),
+      import('codemirror/addon/search/search.js'),
+      import('codemirror-graphql/esm/hint.js'),
+      import('codemirror-graphql/esm/lint.js'),
+      import('codemirror-graphql/esm/info.js'),
+      import('codemirror-graphql/esm/jump.js'),
+      import('codemirror-graphql/esm/mode.js'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
