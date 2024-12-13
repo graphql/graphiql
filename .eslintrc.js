@@ -424,7 +424,13 @@ module.exports = {
     },
     {
       // Rule for ignoring imported dependencies from tests files
-      files: ['**/__tests__/**', 'webpack.config.js', '**/tests/**'],
+      files: [
+        '**/__tests__/**',
+        'webpack.config.js',
+        '**/tests/**',
+        'test.config.js',
+        'vitest.config.mts',
+      ],
       rules: {
         'import-x/no-extraneous-dependencies': 'off',
       },
