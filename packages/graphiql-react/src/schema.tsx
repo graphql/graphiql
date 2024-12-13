@@ -175,7 +175,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const introspect = () => {
+  const introspect = () => { // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler no need to wrap with useCallback
     /**
      * Only introspect if there is no schema provided via props. If the
      * prop is passed an introspection result, we do continue but skip the

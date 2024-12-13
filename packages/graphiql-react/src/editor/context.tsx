@@ -322,7 +322,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
 
-  const setShouldPersistHeaders = (persist: boolean) => {
+  const setShouldPersistHeaders = (persist: boolean) => { // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     if (persist) {
       storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
       const serializedTabs = serializeTabState(tabState, true);

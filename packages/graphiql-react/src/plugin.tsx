@@ -150,7 +150,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     });
 
   const { onTogglePluginVisibility, children } = props;
-  const setVisiblePlugin: PluginContextType['setVisiblePlugin'] = plugin => {
+  const setVisiblePlugin: PluginContextType['setVisiblePlugin'] = plugin => { // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     const newVisiblePlugin = plugin
       ? plugins.find(
           p => (typeof plugin === 'string' ? p.title : p) === plugin,

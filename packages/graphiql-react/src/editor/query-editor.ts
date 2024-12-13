@@ -514,7 +514,7 @@ function useSynchronizeExternalFragments(
   externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
-  const externalFragmentList = [...externalFragments.values()];
+  const externalFragmentList = [...externalFragments.values()]; // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useMemo
 
   useEffect(() => {
     if (!editor) {
