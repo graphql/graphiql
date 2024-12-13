@@ -7,7 +7,7 @@
 import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
-import { GraphiQL } from './components/GraphiQL';
+import { GraphiQL } from './GraphiQL';
 
 import '@graphiql/react/font/roboto.css';
 import '@graphiql/react/font/fira-code.css';

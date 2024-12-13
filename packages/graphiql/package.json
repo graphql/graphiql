@@ -44,7 +44,8 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "webpack": "webpack-cli --config resources/webpack.config.js"
+    "webpack": "webpack-cli --config resources/webpack.config.js",
+    "test": "vitest"
   },
   "dependencies": {
     "@graphiql/react": "^0.27.0"
@@ -56,9 +57,8 @@
   },
   "devDependencies": {
     "@graphiql/toolkit": "^0.11.0",
-    "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "14.0.0",
-    "@types/testing-library__jest-dom": "5.14.5",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "babel-loader": "^9.1.2",
     "babel-plugin-macros": "^3.1.0",
     "cross-env": "^7.0.2",

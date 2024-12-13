@@ -16,7 +16,8 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc"
+    "outDir": "tsc",
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
