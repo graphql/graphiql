@@ -144,8 +144,8 @@ export function useQueryEditor(
     let isActive = true;
 
     void importCodeMirror([
-      import('codemirror/addon/comment/comment'),
-      import('codemirror/addon/search/search'),
+      import('codemirror/addon/comment/comment.js'),
+      import('codemirror/addon/search/search.js'),
       import('codemirror-graphql/esm/hint'),
       import('codemirror-graphql/esm/lint'),
       import('codemirror-graphql/esm/info'),

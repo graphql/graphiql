@@ -53,7 +53,7 @@ export function useHeaderEditor(
 
     void importCodeMirror([
       // @ts-expect-error
-      import('codemirror/mode/javascript/javascript'),
+      import('codemirror/mode/javascript/javascript.js'),
     ]).then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
