@@ -324,17 +324,17 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const setShouldPersistHeaders = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     (persist: boolean) => {
-    if (persist) {
-      storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-      const serializedTabs = serializeTabState(tabState, true);
-      storage?.set(STORAGE_KEY_TABS, serializedTabs);
-    } else {
-      storage?.set(STORAGE_KEY_HEADERS, '');
-      clearHeadersFromTabs(storage);
-    }
-    setShouldPersistHeadersInternal(persist);
-    storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-  };
+      if (persist) {
+        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(tabState, true);
+        storage?.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage?.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs(storage);
+      }
+      setShouldPersistHeadersInternal(persist);
+      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    };
 
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
   useEffect(() => {
