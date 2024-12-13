@@ -72,7 +72,8 @@ export function useDragResize({
     },
   );
 
-  const setHiddenElementWithCallback = (element: ResizableElement | null) => { // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
+  const setHiddenElementWithCallback = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
+    (element: ResizableElement | null) => {
     if (element !== hiddenElement) {
       setHiddenElement(element);
       onHiddenElementChange?.(element);

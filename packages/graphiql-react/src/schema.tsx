@@ -15,12 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import {
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
@@ -111,8 +106,12 @@ export type SchemaContextProviderProps = {
   schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
-export function SchemaContextProvider(props: SchemaContextProviderProps) {
-  if (!props.fetcher) {
+export function SchemaContextProvider({
+  fetcher,
+  onSchemaChange,
+  ...props
+}: SchemaContextProviderProps) {
+  if (!fetcher) {
     throw new TypeError(
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -137,9 +136,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   useEffect(() => {
     setSchema(
-      isSchema(props.schema) || props.schema == null
-        ? props.schema
-        : undefined,
+      isSchema(props.schema) || props.schema == null ? props.schema : undefined,
     );
 
     /**
@@ -175,7 +172,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const introspect = () => { // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler no need to wrap with useCallback
+  const introspect = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler no need to wrap with useCallback
+    () => {
     /**
      * Only introspect if there is no schema provided via props. If the
      * prop is passed an introspection result, we do continue but skip the
@@ -206,7 +204,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         : {};
 
       const fetch = fetcherReturnToPromise(
-        props.fetcher(
+        fetcher(
           {
             query: introspectionQuery,
             operationName: introspectionQueryName,
@@ -233,7 +231,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = fetcherReturnToPromise(
-          props.fetcher(
+          fetcher(
             {
               query: introspectionQuerySansSubscriptions,
               operationName: introspectionQueryName,
@@ -275,8 +273,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
           const newSchema = buildClientSchema(introspectionData);
           setSchema(newSchema);
           // Optional chaining inside try-catch isn't supported yet by react-compiler
-          if (props.onSchemaChange) {
-            props.onSchemaChange(newSchema);
+          if (onSchemaChange) {
+            onSchemaChange(newSchema);
           }
         } catch (error) {
           setFetchError(formatError(error));
@@ -294,7 +292,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         setFetchError(formatError(error));
         setIsFetching(false);
       });
-  }
+  };
 
   /**
    * Trigger introspection automatically
@@ -383,10 +381,7 @@ function useIntrospectionQuery({
     query = query.replace('query IntrospectionQuery', `query ${queryName}`);
   }
 
-  const querySansSubscriptions = query.replace(
-    'subscriptionType { name }',
-    '',
-  );
+  const querySansSubscriptions = query.replace('subscriptionType { name }', '');
 
   return {
     introspectionQueryName: queryName,
