@@ -117,11 +117,11 @@
         "vscode-graphql.transport": {
           "type": "string",
           "enum": [
-            "icp",
+            "ipc",
             "stdio"
           ],
           "description": "The transport used between the language server and the client.",
-          "default": "icp"
+          "default": "ipc"
         },
         "graphql-config.load.rootDir": {
           "type": [
