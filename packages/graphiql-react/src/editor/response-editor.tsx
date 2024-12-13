@@ -72,8 +72,8 @@ export function useResponseEditor(
         import('codemirror/addon/search/jump-to-line.js'),
         // @ts-expect-error
         import('codemirror/keymap/sublime.js'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
+        import('codemirror-graphql/esm/results/mode.js'),
+        import('codemirror-graphql/esm/utils/info-addon.js'),
       ],
       { useCommonAddons: false },
     ).then(CodeMirror => {
