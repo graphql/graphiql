@@ -20,6 +20,7 @@ module.exports = (dir, env = 'jsdom') => {
       '\\.css$': 'identity-obj-proxy',
       '^graphql-language-service-([^/]+)': `${__dirname}/packages/graphql-language-service/src/$1`,
       '^graphql-language-([^/]+)': `${__dirname}/packages/graphql-language-$1/src`,
+      '^@graphiql\\/([^/]+)': `${__dirname}/packages/graphiql-$1/src`,
       '^codemirror-graphql\\/esm([^]+)\\.js': `${__dirname}/packages/codemirror-graphql/src/$1`,
       '^codemirror-graphql\\/cjs([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
       // relies on compilation
