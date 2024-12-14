@@ -117,7 +117,7 @@ describe('MessageProcessor with no config', () => {
     project.lsp.handleShutdownRequest();
   });
 
-  // TODO: this test fails
+  // eslint-disable-next-line  @vitest/no-disabled-tests -- TODO: this test fails
   it.skip('initializes when presented with a valid config later', async () => {
     const project = new MockProject({
       files: [...defaultFiles],
@@ -150,7 +150,7 @@ describe('MessageProcessor with config', () => {
     fetchMock.mockRestore();
   });
 
-  // TODO: this test fails
+  // eslint-disable-next-line  @vitest/no-disabled-tests -- TODO: this test fails
   it.skip('caches files and schema with .graphql file config, and the schema updates with watched file changes', async () => {
     const project = new MockProject({
       files: [
@@ -354,7 +354,7 @@ describe('MessageProcessor with config', () => {
     project.lsp.handleShutdownRequest();
   });
 
-  // TODO: this test fails
+  // eslint-disable-next-line  @vitest/no-disabled-tests -- TODO: this test fails
   it.skip('caches files and schema with a URL config', async () => {
     const offset = parseInt(version, 10) > 16 ? 25 : 0;
 
@@ -489,7 +489,7 @@ describe('MessageProcessor with config', () => {
     project.lsp.handleShutdownRequest();
   });
 
-  // TODO: this test fails
+  // eslint-disable-next-line  @vitest/no-disabled-tests -- TODO: this test fails
   it.skip('caches multiple projects with files and schema with a URL config and a local schema', async () => {
     mockSchema(require('../../../graphiql/test/schema'));
 

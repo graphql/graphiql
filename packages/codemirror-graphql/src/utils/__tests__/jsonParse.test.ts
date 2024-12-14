@@ -20,7 +20,6 @@ describe('jsonParse', () => {
     expect(ast.members[0].value).toStrictEqual(value);
   }
 
-  // eslint-disable-next-line @vitest/expect-expect
   it('correctly parses escaped strings', () => {
     expectEscapedString(
       '{ "test": "\\"" }',

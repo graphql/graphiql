@@ -407,6 +407,13 @@ module.exports = {
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
       extends: ['plugin:@vitest/legacy-recommended'],
+      rules: {
+        '@vitest/expect-expect': [
+          'error',
+          { assertFunctionNames: ['expect*'] },
+        ],
+        '@vitest/no-disabled-tests': 'error',
+      },
     },
     {
       // Resources are typically our helper scripts; make life easier there

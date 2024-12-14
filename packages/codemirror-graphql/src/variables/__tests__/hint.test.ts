@@ -1,4 +1,3 @@
-/* eslint-disable @vitest/expect-expect */
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
