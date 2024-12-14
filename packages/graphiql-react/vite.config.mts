@@ -7,7 +7,9 @@ import packageJSON from './package.json';
 const ReactCompilerConfig = {
   target: '17',
   sources(filename) {
-    if (filename.includes('__tests__')) return false;
+    if (filename.includes('__tests__')) {
+      return false;
+    }
     return filename.includes('graphiql-react');
   },
 };
