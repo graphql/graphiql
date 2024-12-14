@@ -1,0 +1,12 @@
+diff --git a/node_modules/@graphql-tools/url-loader/esm/defaultAsyncFetch.js b/node_modules/@graphql-tools/url-loader/esm/defaultAsyncFetch.js
+index 9256d59..d34c185 100644
+--- a/node_modules/@graphql-tools/url-loader/esm/defaultAsyncFetch.js
++++ b/node_modules/@graphql-tools/url-loader/esm/defaultAsyncFetch.js
+@@ -1,4 +1,6 @@
+-import { fetch } from '@whatwg-node/fetch';
++// TODO: remove this and use vitest mocks? I couldn't make working vi.mock for this module for now...
++import fetchMock from '@fetch-mock/vitest';
++const fetch = fetchMock.fetchHandler
+ export const defaultAsyncFetch = async (input, init) => {
+     return fetch(input, init);
+ };
