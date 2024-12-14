@@ -6,10 +6,11 @@
     "composite": true,
     "jsx": "react",
     "target": "es5",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "types": ["@testing-library/jest-dom", "vitest/globals"]
   },
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/dist/**.*", "cypress/**"],
+  "exclude": ["**/*.spec.tsx"],
   "references": [
     {
       "path": "../codemirror-graphql"
