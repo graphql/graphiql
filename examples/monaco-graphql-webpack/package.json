@@ -35,6 +35,7 @@
     "style-loader": "^3.3.1",
     "typescript": "^4.6.3",
     "webpack": "5.76.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   }

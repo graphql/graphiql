@@ -8,12 +8,7 @@ import packageJSON from './package.json';
 const ReactCompilerConfig = {
   target: '17',
   sources(filename) {
-    if (!filename.includes(`packages${sep}graphiql${sep}`)) {
-      return false;
-    }
-    // eslint-disable-next-line no-console
-    console.log({ filename });
-    return true;
+    return filename.includes(`packages${sep}graphiql${sep}`);
   },
 };
 

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { GraphiQL } from './GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
