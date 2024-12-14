@@ -135,12 +135,11 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
-    // eslint-disable-next-line import-x/no-unresolved -- should be fixed by pnpm migration (points to @types/prettier rather owns prettier types)
+    // @ts-expect-error
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {
       parser: 'graphql',
-      // @ts-expect-error -- should be fixed by pnpm migration
       plugins: [prettierGraphqlParser],
       ...this._formattingOptions?.prettierConfig,
     });
