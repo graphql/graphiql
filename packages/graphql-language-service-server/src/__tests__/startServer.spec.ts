@@ -9,7 +9,8 @@ describe('startServer', () => {
       } catch {}
     }
   });
-  it('should start the server', async () => {
+  // TODO: Blocked by https://github.com/vitest-dev/vitest/issues/7082
+  it.skip('should start the server', async () => {
     c = await startServer();
     // if the server starts, we're good
     expect(true).toBe(true);
@@ -23,7 +24,8 @@ describe('startServer', () => {
     // if the server starts, we're good
     expect(true).toBe(true);
   });
-  it('should start the server with ipc', async () => {
+  // TODO: Blocked by https://github.com/vitest-dev/vitest/issues/7082
+  it.skip('should start the server with ipc', async () => {
     c = await startServer({
       method: 'node',
     });
