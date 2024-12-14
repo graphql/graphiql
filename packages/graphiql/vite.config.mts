@@ -1,7 +1,29 @@
+import { sep } from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
-import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
 import commonjs from 'vite-plugin-commonjs';
+import react from '@vitejs/plugin-react';
+import packageJSON from './package.json';
+
+const ReactCompilerConfig = {
+  target: '17',
+  sources(filename) {
+    if (!filename.includes(`packages${sep}graphiql${sep}`)) {
+      return false;
+    }
+    // eslint-disable-next-line no-console
+    console.log({ filename });
+    return true;
+  },
+};
+
+const plugins = [
+  react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+    },
+  }),
+];
 
 const umdConfig = defineConfig({
   define: {
@@ -12,7 +34,7 @@ const umdConfig = defineConfig({
     'process.env.NODE_ENV': '"production"',
   },
   // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
-  plugins: [commonjs()],
+  plugins: [...plugins, commonjs()],
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
@@ -64,7 +86,7 @@ const esmConfig = defineConfig({
       },
     },
   },
-  plugins: [htmlPlugin(), dts({ rollupTypes: true })],
+  plugins: [...plugins, htmlPlugin(), dts({ rollupTypes: true })],
 });
 
 function htmlPlugin(): PluginOption {
