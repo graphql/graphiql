@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
-import {createRequire} from 'node:module'
+import { createRequire } from 'node:module';
 
-const require = createRequire(import.meta.url)
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   test: {
@@ -11,6 +11,6 @@ export default defineConfig({
     alias: {
       // fixes Duplicate "graphql" modules cannot be used at the same time since different
       graphql: require.resolve('graphql'),
-    }
+    },
   },
 });
