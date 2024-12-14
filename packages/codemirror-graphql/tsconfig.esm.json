@@ -13,9 +13,7 @@
     "**/__tests__/**",
     "**/dist/**.*",
     "**/*.spec.ts",
-    "**/*.spec.js",
-    "**/*-test.ts",
-    "**/*-test.js"
+    "**/*.spec.js"
   ],
   "references": [
     {

@@ -36,6 +36,9 @@
   "peerDependencies": {
     "graphql": "^16.0.0"
   },
+  "scripts": {
+    "test": "vitest"
+  },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
     "@astrojs/compiler": "^2.10.1",

@@ -31,8 +31,7 @@
     "/*.js.map",
     "/*.d.ts",
     "/*.d.ts.map",
-    "!babel.config.js",
-    "!jest.config.js"
+    "!babel.config.js"
   ],
   "scripts": {
     "build": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
