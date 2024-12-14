@@ -24,6 +24,9 @@
     "dist",
     "src"
   ],
+  "scripts": {
+    "test": "vitest"
+  },
   "keywords": [
     "graphql",
     "graphql-language-service",
