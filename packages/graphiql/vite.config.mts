@@ -69,6 +69,7 @@ const esmConfig = defineConfig({
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),

@@ -5,17 +5,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
+import type {
   ComponentType,
-  Fragment,
   MouseEventHandler,
   PropsWithChildren,
   ReactNode,
   ReactElement,
-  useState,
-  useEffect,
+  JSXElementConstructor,
 } from 'react';
-
+import { Fragment, useState, useEffect, version, Children } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -61,7 +59,7 @@ import {
   isMacOs,
 } from '@graphiql/react';
 
-const majorVersion = parseInt(React.version.slice(0, 2), 10);
+const majorVersion = parseInt(version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
   throw new Error(
@@ -79,12 +77,12 @@ export type GraphiQLToolbarConfig = {
    * Note that this will not apply if you provide a completely custom toolbar
    * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
    */
-  additionalContent?: React.ReactNode;
+  additionalContent?: ReactNode;
 
   /**
    * same as above, except a component with access to context
    */
-  additionalComponent?: React.JSXElementConstructor<any>;
+  additionalComponent?: JSXElementConstructor<any>;
 };
 
 /**
@@ -334,7 +332,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     'success' | 'error' | null
   >(null);
 
-  const children = React.Children.toArray(props.children);
+  const children = Children.toArray(props.children);
 
   const logo = children.find(child =>
     isChildComponentType(child, GraphiQL.Logo),
@@ -367,11 +365,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const onClickReference = useCallback(() => {
+  const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  }, [pluginResize]);
+  };
 
   const handleClearData = () => {
     try {

@@ -4,8 +4,8 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "react",
-    "target": "es5",
+    "jsx": "react-jsx",
+    "target": "es2017",
     "strictPropertyInitialization": false,
     "types": ["@testing-library/jest-dom", "vitest/globals"]
   },
