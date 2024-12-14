@@ -10,7 +10,7 @@ import main from '../client';
 
 describe('process.stderr.write', () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('is passed information on error of string type', () => {
@@ -18,10 +18,10 @@ describe('process.stderr.write', () => {
       schemaPath: '...',
       text: 'foo',
     };
-    const mockStdErrWrite = jest
+    const mockStdErrWrite = vi
       .spyOn(process.stderr, 'write')
       .mockImplementation();
-    jest.spyOn(process, 'exit').mockImplementation();
+    vi.spyOn(process, "exit").mockImplementation(() => {})
     const undefinedWithNewLine = /^undefined\n$/;
 
     main('autocomplete', argv);
