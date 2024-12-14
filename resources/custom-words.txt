@@ -115,6 +115,7 @@ linenumbers
 linkify
 listbox
 listvalues
+lightningcss
 lostplan
 maint
 manypkg

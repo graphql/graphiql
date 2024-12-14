@@ -106,6 +106,7 @@
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
     "babel-jest": "^29.4.3",
+    "babel-plugin-macros": "^3.1.0",
     "babel-plugin-transform-import-meta": "^2.2.1",
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
