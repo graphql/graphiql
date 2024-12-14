@@ -55,7 +55,6 @@ import {
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import { LRUCache } from 'lru-cache';
-// import { is } from '@babel/types';
 
 const codeLoaderConfig: CodeFileLoaderConfig = {
   noSilentErrors: false,
