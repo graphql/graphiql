@@ -6,14 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { AbortController as MockAbortController } from 'node-abort-controller';
-import fetchMock from 'fetch-mock';
-
-jest.mock('@whatwg-node/fetch', () => ({
-  fetch: require('fetch-mock').fetchHandler,
-  AbortController: MockAbortController,
-  TextDecoder: global.TextDecoder,
-}));
+import fetchMock from '@fetch-mock/vitest';
 
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
@@ -56,7 +49,7 @@ describe('GraphQLCache', () => {
   });
 
   afterEach(() => {
-    fetchMock.restore();
+    fetchMock.mockRestore();
   });
 
   describe('getGraphQLCache', () => {
@@ -94,18 +87,13 @@ describe('GraphQLCache', () => {
           { descriptions: true },
         ),
       };
-      fetchMock.mock({
-        matcher: '*',
-        response: {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: introspectionResult,
-        },
-      });
-
+      fetchMock.post('https://example.com/graphql', introspectionResult, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
       const schema = await cache.getSchema('testWithEndpoint');
-      expect(fetchMock.called('*')).toEqual(true);
+      expect(fetchMock.callHistory.called('https://example.com/graphql')).toEqual(true);
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
 
