@@ -333,7 +333,14 @@ module.exports = {
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
-          { ignore: ['^node:', '\\.svg\\?react$', 'vitest/config'] },
+          {
+            ignore: [
+              '^node:',
+              '\\.svg\\?react$',
+              'vitest/config',
+              './vite.config.mjs',
+            ],
+          },
         ],
         'no-extra-boolean-cast': [
           'error',
@@ -430,6 +437,7 @@ module.exports = {
         '**/tests/**',
         'test.config.js',
         'vitest.config.mts',
+        'setup-files.ts',
       ],
       rules: {
         'import-x/no-extraneous-dependencies': 'off',

@@ -12,14 +12,13 @@
     "packages/*/vite.config.mts",
     "packages/*/vitest.config.mts",
     "examples/*/vite.config.ts",
-    "packages/graphiql/setup-files.ts",
+    "packages/*/setup-files.ts",
     "packages/graphiql/src/*.spec.tsx",
     "packages/cm6-graphql/__tests__/**/*.ts",
     "packages/graphql-language-service/benchmark/index.ts",
     "packages/graphiql/cypress.config.ts",
     "packages/graphiql/__mocks__/codemirror.ts",
     "packages/monaco-graphql/test/*.test.ts",
-    "packages/graphiql-react/vite.config.d.ts",
     "packages/vscode-graphql-syntax/tests/**/*.ts",
     "packages/vscode-graphql-syntax/serializer.ts"
   ]
