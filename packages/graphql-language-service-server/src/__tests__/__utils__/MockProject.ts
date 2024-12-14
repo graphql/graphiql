@@ -25,7 +25,7 @@ const modules = [
   'lines-and-columns',
   '@babel/code-frame',
   '@babel/highlight',
-  // these I think are just required by vitest when you console log from a test
+  // these I think are just required by jest when you console log from a test
   'jest-message-util',
   'stack-utils',
   'pretty-format',
@@ -39,7 +39,7 @@ const modules = [
   'tslib',
 ];
 const defaultMocks = modules.reduce((acc, module) => {
-  acc[`node_modules/${module}`] = mockfs.load(`node_modules/${module}`);
+  acc[`node_modules/${module}`] = mockfs.load(`../../node_modules/${module}`);
   return acc;
 }, {});
 

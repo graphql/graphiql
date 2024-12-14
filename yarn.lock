@@ -14180,10 +14180,10 @@ mocha@^10.0.0:
     yargs-parser "20.2.4"
     yargs-unparser "2.0.0"
 
-mock-fs@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-5.2.0.tgz#3502a9499c84c0a1218ee4bf92ae5bf2ea9b2b5e"
-  integrity sha512-2dF2R6YMSZbpip1V1WHKGLNjr/k48uQClqMVb5H3MOvwc9qhYis3/IWbj02qIg/Y8MDXKFF4c5v0rxx2o6xTZw==
+mock-fs@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-5.4.1.tgz#b00abc658cb19dbbf282fde2f05bb751cd1e12a5"
+  integrity sha512-sz/Q8K1gXXXHR+qr0GZg2ysxCRr323kuN10O7CtQjraJsFDJ4SJ+0I5MzALz7aRp9lHk8Cc/YdsT95h9Ka1aFw==
 
 monaco-editor-webpack-plugin@^7.0.1:
   version "7.0.1"
