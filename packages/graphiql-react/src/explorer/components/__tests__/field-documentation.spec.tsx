@@ -1,3 +1,5 @@
+'use no memo';
+
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
 

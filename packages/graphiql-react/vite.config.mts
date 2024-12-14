@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
@@ -7,24 +7,26 @@ import packageJSON from './package.json';
 const ReactCompilerConfig = {
   target: '17',
   sources(filename) {
+    if (filename.includes('__tests__')) return false;
     return filename.includes('graphiql-react');
   },
 };
 
+export const plugins: PluginOption[] = [
+  react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+    },
+  }),
+  svgr({
+    svgrOptions: {
+      titleProp: true,
+    },
+  }),
+];
+
 export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
-      },
-    }),
-    svgr({
-      exportAsDefault: true,
-      svgrOptions: {
-        titleProp: true,
-      },
-    }),
-  ],
+  plugins,
   css: {
     postcss: {
       plugins: [postCssNestingPlugin()],

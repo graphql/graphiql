@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import svgr from 'vite-plugin-svgr';
+import { plugins } from './vite.config.mjs';
 
 export default defineConfig({
   test: {
@@ -7,12 +7,5 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts'],
   },
-  plugins: [
-    svgr({
-      exportAsDefault: true,
-      svgrOptions: {
-        titleProp: true,
-      },
-    }),
-  ],
+  plugins,
 });

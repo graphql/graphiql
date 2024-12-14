@@ -1,3 +1,5 @@
+'use no memo';
+
 import { GraphQLNamedType, GraphQLType } from 'graphql';
 
 import { ExplorerContextType, ExplorerNavStackItem } from '../../context';

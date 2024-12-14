@@ -1,3 +1,5 @@
+'use no memo';
+
 import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
