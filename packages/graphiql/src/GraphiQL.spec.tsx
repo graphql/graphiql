@@ -12,7 +12,7 @@ import { GraphiQL } from './GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 
-vi.mock('codemirror')
+vi.mock('codemirror');
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
