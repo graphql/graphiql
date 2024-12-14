@@ -86,7 +86,7 @@ implementation of a GraphQL IDE - Graph*i*QL - in the
 There are multiple contexts that own different parts of the state that make up a
 complete GraphQL IDE. For each context there is a provider component
 (`<name>ContextProvider`) that makes sure the context is initialized and managed
-properly. These components contains all the logic related to state management.
+properly. These components contain all the logic related to state management.
 In addition, for each context there is also a hook (`use<name>Context`) that
 allows you to consume its current value.
 

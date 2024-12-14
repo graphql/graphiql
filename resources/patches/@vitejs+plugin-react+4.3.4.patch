@@ -1,8 +1,8 @@
 diff --git a/node_modules/@vitejs/plugin-react/dist/index.mjs b/node_modules/@vitejs/plugin-react/dist/index.mjs
-index e61f42b..a6ad925 100644
+index 7ca5f23..ce25bc3 100644
 --- a/node_modules/@vitejs/plugin-react/dist/index.mjs
 +++ b/node_modules/@vitejs/plugin-react/dist/index.mjs
-@@ -202,6 +202,19 @@ function viteReact(opts = {}) {
+@@ -208,6 +208,19 @@ function viteReact(opts = {}) {
        });
        if (result) {
          let code2 = result.code;

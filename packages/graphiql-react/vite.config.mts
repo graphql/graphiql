@@ -37,6 +37,8 @@ export default defineConfig({
       entry: 'src/index.ts',
       fileName: 'index',
       formats: ['cjs', 'es'],
+      // TODO: rename to index.css in next major?
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
