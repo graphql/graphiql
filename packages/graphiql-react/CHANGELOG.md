@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.28.0
+
+### Minor Changes
+
+- [#3821](https://github.com/graphql/graphiql/pull/3821) [`3633d61`](https://github.com/graphql/graphiql/commit/3633d61c3c597adf60c0ec1bbf98cf6a1f49beed) Thanks [@dimaMachina](https://github.com/dimaMachina)! - compile source code with react-compiler, remove `useMemo` and `useCallback` usages
+
 ## 0.27.1
 
 ### Patch Changes
