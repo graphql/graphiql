@@ -373,7 +373,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   const handleClearData = () => {
     try {
-      storageContext?.clear();
+      // Optional chaining inside try-catch isn't supported yet by react-compiler
+      if (storageContext) {
+        storageContext.clear();
+      }
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
