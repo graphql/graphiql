@@ -50,7 +50,7 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "webpack": "webpack-cli --config resources/webpack.config.js",
+    "prepublishOnly": "cp dist/index.umd.js graphiql.js && cp dist/index.umd.js.map graphiql.js.map && cp dist/index.umd.js graphiql.min.js && cp dist/index.umd.js.map graphiql.min.js.map && cp dist/style.css graphiql.css && cp dist/style.css graphiql.min.css",
     "test": "vitest"
   },
   "dependencies": {
