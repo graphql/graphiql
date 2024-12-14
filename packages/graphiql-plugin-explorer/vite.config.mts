@@ -24,6 +24,8 @@ export default defineConfig({
       fileName: 'index',
       name: 'GraphiQLPluginExplorer',
       formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      // TODO: rename to index.css in next major?
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
