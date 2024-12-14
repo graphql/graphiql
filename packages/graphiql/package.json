@@ -78,8 +78,6 @@
     "postcss-preset-env": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-test-renderer": "^18.2.0",
-    "serve": "^11.3.0",
     "start-server-and-test": "^1.10.11",
     "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
