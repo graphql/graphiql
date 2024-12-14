@@ -1,4 +1,4 @@
-'use no memo'
+'use no memo';
 
 import '@testing-library/jest-dom';
 

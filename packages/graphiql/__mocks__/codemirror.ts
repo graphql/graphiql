@@ -1,4 +1,4 @@
-'use no memo'
+'use no memo';
 
 // @ts-nocheck
 function CodeMirror(node: HTMLElement, { value, ...options }) {

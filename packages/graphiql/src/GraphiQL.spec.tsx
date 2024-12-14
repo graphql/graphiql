@@ -1,4 +1,4 @@
-'use no memo'
+'use no memo';
 
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
