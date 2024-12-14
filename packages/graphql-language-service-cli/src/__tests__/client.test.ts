@@ -21,7 +21,7 @@ describe('process.stderr.write', () => {
     const mockStdErrWrite = vi
       .spyOn(process.stderr, 'write')
       .mockImplementation();
-    vi.spyOn(process, "exit").mockImplementation(() => {})
+    vi.spyOn(process, 'exit').mockImplementation(() => {});
     const undefinedWithNewLine = /^undefined\n$/;
 
     main('autocomplete', argv);
