@@ -16,7 +16,6 @@
     "*.{js,ts,jsx,tsx}": [
       "cross-env ESLINT_USE_FLAT_CONFIG=false eslint --cache --fix",
       "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
-      "jest --passWithNoTests",
       "yarn lint-cspell"
     ],
     "*.{md,html,json,css}": [
@@ -50,7 +49,6 @@
     "e2e:build": "WEBPACK_SERVE=1 yarn workspace graphiql build-bundles",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 ESLINT_USE_FLAT_CONFIG=false eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
-    "jest": "jest",
     "license-check": "jsgl --local packages/*",
     "lint": "yarn eslint && yarn pretty-check && yarn lint-cspell",
     "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
