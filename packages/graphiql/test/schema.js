@@ -391,7 +391,7 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-exports.schema = new GraphQLSchema({
+module.exports = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,

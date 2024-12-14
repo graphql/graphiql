@@ -124,6 +124,7 @@
     "eslint-plugin-sonarjs": "^1.0.4",
     "eslint-plugin-unicorn": "^55.0.0",
     "execa": "^7.1.1",
+    "identity-obj-proxy": "^3.0.0",
     "fetch-mock": "6.5.2",
     "husky": "^4.2.3",
     "jest": "^27.5.1",
