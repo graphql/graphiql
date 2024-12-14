@@ -20,7 +20,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const mockSchema = (schema: GraphQLSchema) => {
   const introspectionResult = {
-    data: introspectionFromSchema(schema, { descriptions: true, }),
+    data: introspectionFromSchema(schema, { descriptions: true }),
   };
   return fetchMock.post({
     matcher: 'https://example.com/graphql',

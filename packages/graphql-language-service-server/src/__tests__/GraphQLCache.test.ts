@@ -90,10 +90,12 @@ describe('GraphQLCache', () => {
       fetchMock.post('https://example.com/graphql', introspectionResult, {
         headers: {
           'Content-Type': 'application/json',
-        }
-      })
+        },
+      });
       const schema = await cache.getSchema('testWithEndpoint');
-      expect(fetchMock.callHistory.called('https://example.com/graphql')).toEqual(true);
+      expect(
+        fetchMock.callHistory.called('https://example.com/graphql'),
+      ).toEqual(true);
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
 
