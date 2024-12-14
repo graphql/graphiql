@@ -30,6 +30,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^6.7.3",
     "file-loader": "6.2.0",
+    "fork-ts-checker-webpack-plugin": "7.3.0",
     "html-webpack-plugin": "^5.5.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "style-loader": "^3.3.1",
