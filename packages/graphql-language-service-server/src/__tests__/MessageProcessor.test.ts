@@ -35,11 +35,6 @@ import { pathToFileURL } from 'node:url';
 import mockfs from 'mock-fs';
 import { join } from 'node:path';
 
-jest.mock('node:fs', () => ({
-  ...jest.requireActual<typeof import('fs')>('fs'),
-  readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
-}));
-
 describe('MessageProcessor', () => {
   const logger = new NoopLogger();
   const messageProcessor = new MessageProcessor({
@@ -775,6 +770,9 @@ describe('MessageProcessor', () => {
   });
 
   describe('_handleConfigErrors', () => {
+    beforeEach(() => {
+      messageProcessor._initializeGraphQLCaches = vi.fn();
+    });
     it('handles missing config errors', async () => {
       messageProcessor._handleConfigError({
         err: new ConfigNotFoundError('test missing-config'),
