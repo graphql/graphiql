@@ -8,10 +8,10 @@ import { FileChangeTypeKind } from 'graphql-language-service';
 export type MockFile = [filename: string, text: string];
 
 export class MockLogger implements VSCodeLogger {
-  error = jest.fn();
-  warn = jest.fn();
-  info = jest.fn();
-  log = jest.fn();
+  error = vi.fn();
+  warn = vi.fn();
+  info = vi.fn();
+  log = vi.fn();
 }
 
 // when using mockfs with cosmic-config, a dynamic inline
@@ -25,7 +25,7 @@ const modules = [
   'lines-and-columns',
   '@babel/code-frame',
   '@babel/highlight',
-  // these i think are just required by jest when you console log from a test
+  // these I think are just required by vitest when you console log from a test
   'jest-message-util',
   'stack-utils',
   'pretty-format',
