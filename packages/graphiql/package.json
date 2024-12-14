@@ -29,12 +29,12 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./style.css": "./dist/style.css",
-    "./graphiql.css": "./dist/style.css",
+    "./style.css": "./dist/index.css",
+    "./graphiql.css": "./dist/index.css",
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.mjs"
     }
   },
   "scripts": {
@@ -45,7 +45,7 @@
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "prepublishOnly": "cp dist/index.umd.js graphiql.js && cp dist/index.umd.js.map graphiql.js.map && cp dist/index.umd.js graphiql.min.js && cp dist/index.umd.js.map graphiql.min.js.map && cp dist/style.css graphiql.css && cp dist/style.css graphiql.min.css",
+    "prepublishOnly": "cp dist/index.umd.js graphiql.js && cp dist/index.umd.js.map graphiql.js.map && cp dist/index.umd.js graphiql.min.js && cp dist/index.umd.js.map graphiql.min.js.map && cp dist/index.css graphiql.css && cp dist/index.css graphiql.min.css",
     "test": "vitest"
   },
   "dependencies": {
@@ -61,8 +61,7 @@
     "babel-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-commonjs": "^0.10.4",
-    "vite": "^5.3.6",
-    "postcss-lightningcss": "^1.0.1",
+    "vite": "^6.0.3",
     "@vitejs/plugin-react": "^4.3.1",
     "@graphiql/toolkit": "^0.11.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -73,8 +72,6 @@
     "graphql": "^16.9.0",
     "graphql-http": "^1.22.1",
     "graphql-subscriptions": "^2.0.0",
-    "postcss": "8.4.31",
-    "postcss-import": "15.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "start-server-and-test": "^1.10.11",
