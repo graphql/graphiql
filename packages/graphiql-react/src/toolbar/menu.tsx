@@ -19,22 +19,24 @@ const ToolbarMenuRoot = ({
 }: ToolbarMenuProps & {
   children: ReactNode;
   className?: string;
-} & DropdownMenuProps) => (
-  <DropdownMenu {...props}>
-    <Tooltip label={label}>
-      <DropdownMenu.Button
-        className={clsx(
-          'graphiql-un-styled graphiql-toolbar-menu',
-          props.className,
-        )}
-        aria-label={label}
-      >
-        {button}
-      </DropdownMenu.Button>
-    </Tooltip>
-    <DropdownMenu.Content>{children}</DropdownMenu.Content>
-  </DropdownMenu>
-);
+} & DropdownMenuProps) => {
+  return (
+    <DropdownMenu {...props}>
+      <Tooltip label={label}>
+        <DropdownMenu.Button
+          className={clsx(
+            'graphiql-un-styled graphiql-toolbar-menu',
+            props.className,
+          )}
+          aria-label={label}
+        >
+          {button}
+        </DropdownMenu.Button>
+      </Tooltip>
+      <DropdownMenu.Content>{children}</DropdownMenu.Content>
+    </DropdownMenu>
+  );
+};
 
 export const ToolbarMenu = createComponentGroup(ToolbarMenuRoot, {
   Item: DropdownMenu.Item,

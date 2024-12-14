@@ -25,6 +25,15 @@ export type UseHeaderEditorArgs = WriteableEditorProps & {
   onEdit?(value: string): void;
 };
 
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror([
+    // @ts-expect-error
+    import('codemirror/mode/javascript/javascript.js'),
+  ]);
+}
+const _useHeaderEditor = useHeaderEditor;
+
 export function useHeaderEditor(
   {
     editorTheme = DEFAULT_EDITOR_THEME,
@@ -41,20 +50,17 @@ export function useHeaderEditor(
     shouldPersistHeaders,
   } = useEditorContext({
     nonNull: true,
-    caller: caller || useHeaderEditor,
+    caller: caller || _useHeaderEditor,
   });
   const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: caller || useHeaderEditor });
-  const prettify = usePrettifyEditors({ caller: caller || useHeaderEditor });
+  const merge = useMergeQuery({ caller: caller || _useHeaderEditor });
+  const prettify = usePrettifyEditors({ caller: caller || _useHeaderEditor });
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let isActive = true;
 
-    void importCodeMirror([
-      // @ts-expect-error
-      import('codemirror/mode/javascript/javascript.js'),
-    ]).then(CodeMirror => {
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
@@ -119,7 +125,7 @@ export function useHeaderEditor(
     onEdit,
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
-    useHeaderEditor,
+    _useHeaderEditor,
   );
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);

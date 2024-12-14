@@ -48,6 +48,7 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "dependencies": {
+    "react-compiler-runtime": "19.0.0-beta-37ed2a7-20241206",
     "@graphiql/toolkit": "^0.11.0",
     "@headlessui/react": "^1.7.15",
     "@radix-ui/react-dialog": "^1.0.4",
@@ -66,6 +67,7 @@
     "set-value": "^4.1.0"
   },
   "devDependencies": {
+    "babel-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
     "@types/react-dom": "^18.3.1",
     "@babel/helper-string-parser": "^7.19.4",
     "@testing-library/dom": "^10.4.0",

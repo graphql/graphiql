@@ -9,14 +9,9 @@ import type {
 import {
   getOperationFacts,
   GraphQLDocumentMode,
+  OperationFacts,
 } from 'graphql-language-service';
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
@@ -67,6 +62,57 @@ export type UseQueryEditorArgs = WriteableEditorProps &
     onEdit?(value: string, documentAST?: DocumentNode): void;
   };
 
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror([
+    import('codemirror/addon/comment/comment.js'),
+    import('codemirror/addon/search/search.js'),
+    import('codemirror-graphql/esm/hint.js'),
+    import('codemirror-graphql/esm/lint.js'),
+    import('codemirror-graphql/esm/info.js'),
+    import('codemirror-graphql/esm/jump.js'),
+    import('codemirror-graphql/esm/mode.js'),
+  ]);
+}
+const _useQueryEditor = useQueryEditor;
+
+// To make react-compiler happy since we mutate variableEditor
+function updateVariableEditor(
+  variableEditor: CodeMirrorEditor,
+  operationFacts?: OperationFacts,
+) {
+  variableEditor.state.lint.linterOptions.variableToType =
+    operationFacts?.variableToType;
+  variableEditor.options.lint.variableToType = operationFacts?.variableToType;
+  variableEditor.options.hintOptions.variableToType =
+    operationFacts?.variableToType;
+}
+function updateEditorSchema(
+  editor: CodeMirrorEditor,
+  schema: GraphQLSchema | null,
+) {
+  editor.state.lint.linterOptions.schema = schema;
+  editor.options.lint.schema = schema;
+  editor.options.hintOptions.schema = schema;
+  editor.options.info.schema = schema;
+  editor.options.jump.schema = schema;
+}
+function updateEditorValidationRules(
+  editor: CodeMirrorEditor,
+  validationRules: ValidationRule[] | null,
+) {
+  editor.state.lint.linterOptions.validationRules = validationRules;
+  editor.options.lint.validationRules = validationRules;
+}
+function updateEditorExternalFragments(
+  editor: CodeMirrorEditor,
+  externalFragmentList: FragmentDefinitionNode[],
+) {
+  editor.state.lint.linterOptions.externalFragments = externalFragmentList;
+  editor.options.lint.externalFragments = externalFragmentList;
+  editor.options.hintOptions.externalFragments = externalFragmentList;
+}
+
 export function useQueryEditor(
   {
     editorTheme = DEFAULT_EDITOR_THEME,
@@ -80,7 +126,7 @@ export function useQueryEditor(
 ) {
   const { schema } = useSchemaContext({
     nonNull: true,
-    caller: caller || useQueryEditor,
+    caller: caller || _useQueryEditor,
   });
   const {
     externalFragments,
@@ -93,15 +139,15 @@ export function useQueryEditor(
     updateActiveTabValues,
   } = useEditorContext({
     nonNull: true,
-    caller: caller || useQueryEditor,
+    caller: caller || _useQueryEditor,
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
   const plugin = usePluginContext();
-  const copy = useCopyQuery({ caller: caller || useQueryEditor, onCopyQuery });
-  const merge = useMergeQuery({ caller: caller || useQueryEditor });
-  const prettify = usePrettifyEditors({ caller: caller || useQueryEditor });
+  const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
+  const merge = useMergeQuery({ caller: caller || _useQueryEditor });
+  const prettify = usePrettifyEditors({ caller: caller || _useQueryEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
@@ -143,15 +189,7 @@ export function useQueryEditor(
   useEffect(() => {
     let isActive = true;
 
-    void importCodeMirror([
-      import('codemirror/addon/comment/comment.js'),
-      import('codemirror/addon/search/search.js'),
-      import('codemirror-graphql/esm/hint.js'),
-      import('codemirror-graphql/esm/lint.js'),
-      import('codemirror-graphql/esm/info.js'),
-      import('codemirror-graphql/esm/jump.js'),
-      import('codemirror-graphql/esm/mode.js'),
-    ]).then(CodeMirror => {
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
@@ -317,12 +355,7 @@ export function useQueryEditor(
 
       // Update variable types for the variable editor
       if (variableEditor) {
-        variableEditor.state.lint.linterOptions.variableToType =
-          operationFacts?.variableToType;
-        variableEditor.options.lint.variableToType =
-          operationFacts?.variableToType;
-        variableEditor.options.hintOptions.variableToType =
-          operationFacts?.variableToType;
+        updateVariableEditor(variableEditor, operationFacts);
         codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
       }
 
@@ -387,10 +420,10 @@ export function useQueryEditor(
     codeMirrorRef,
   );
 
-  useCompletion(queryEditor, onClickReference || null, useQueryEditor);
+  useCompletion(queryEditor, onClickReference || null, _useQueryEditor);
 
   const run = executionContext?.run;
-  const runAtCursor = useCallback(() => {
+  const runAtCursor = () => {
     if (
       !run ||
       !queryEditor ||
@@ -420,7 +453,7 @@ export function useQueryEditor(
     }
 
     run();
-  }, [queryEditor, run, setOperationName]);
+  };
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], runAtCursor);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
@@ -449,12 +482,7 @@ function useSynchronizeSchema(
     }
 
     const didChange = editor.options.lint.schema !== schema;
-
-    editor.state.lint.linterOptions.schema = schema;
-    editor.options.lint.schema = schema;
-    editor.options.hintOptions.schema = schema;
-    editor.options.info.schema = schema;
-    editor.options.jump.schema = schema;
+    updateEditorSchema(editor, schema);
 
     if (didChange && codeMirrorRef.current) {
       codeMirrorRef.current.signal(editor, 'change', editor);
@@ -473,9 +501,7 @@ function useSynchronizeValidationRules(
     }
 
     const didChange = editor.options.lint.validationRules !== validationRules;
-
-    editor.state.lint.linterOptions.validationRules = validationRules;
-    editor.options.lint.validationRules = validationRules;
+    updateEditorValidationRules(editor, validationRules);
 
     if (didChange && codeMirrorRef.current) {
       codeMirrorRef.current.signal(editor, 'change', editor);
@@ -488,10 +514,7 @@ function useSynchronizeExternalFragments(
   externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
-  const externalFragmentList = useMemo(
-    () => [...externalFragments.values()],
-    [externalFragments],
-  );
+  const externalFragmentList = [...externalFragments.values()]; // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useMemo
 
   useEffect(() => {
     if (!editor) {
@@ -500,10 +523,7 @@ function useSynchronizeExternalFragments(
 
     const didChange =
       editor.options.lint.externalFragments !== externalFragmentList;
-
-    editor.state.lint.linterOptions.externalFragments = externalFragmentList;
-    editor.options.lint.externalFragments = externalFragmentList;
-    editor.options.hintOptions.externalFragments = externalFragmentList;
+    updateEditorExternalFragments(editor, externalFragmentList);
 
     if (didChange && codeMirrorRef.current) {
       codeMirrorRef.current.signal(editor, 'change', editor);
