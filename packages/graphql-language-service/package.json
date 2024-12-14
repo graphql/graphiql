@@ -53,6 +53,7 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "benchmark": "ts-node benchmark/index.ts"
+    "benchmark": "ts-node benchmark/index.ts",
+    "test": "vitest"
   }
 }

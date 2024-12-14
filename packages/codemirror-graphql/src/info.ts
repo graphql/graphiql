@@ -1,4 +1,3 @@
-/* @flow */
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
