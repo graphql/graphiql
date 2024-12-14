@@ -59,6 +59,13 @@ const umdConfig = defineConfig({
 });
 
 const esmConfig = defineConfig({
+  ...(process.env.NODE_ENV !== 'production' && {
+    resolve: {
+      alias: {
+        'react/compiler-runtime': 'react-compiler-runtime',
+      },
+    },
+  }),
   build: {
     minify: false,
     sourcemap: true,
