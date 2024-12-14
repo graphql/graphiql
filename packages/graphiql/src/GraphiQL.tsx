@@ -5,19 +5,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
+import type {
   ComponentType,
-  Fragment,
   MouseEventHandler,
   PropsWithChildren,
   ReactNode,
   ReactElement,
-  useCallback,
-  useState,
-  useEffect,
-  useMemo,
+  JSXElementConstructor,
 } from 'react';
-
+import { Fragment, useState, useEffect, version, Children } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -63,7 +59,7 @@ import {
   isMacOs,
 } from '@graphiql/react';
 
-const majorVersion = parseInt(React.version.slice(0, 2), 10);
+const majorVersion = parseInt(version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
   throw new Error(
@@ -81,12 +77,12 @@ export type GraphiQLToolbarConfig = {
    * Note that this will not apply if you provide a completely custom toolbar
    * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
    */
-  additionalContent?: React.ReactNode;
+  additionalContent?: ReactNode;
 
   /**
    * same as above, except a component with access to context
    */
-  additionalComponent?: React.JSXElementConstructor<any>;
+  additionalComponent?: JSXElementConstructor<any>;
 };
 
 /**
@@ -254,13 +250,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
   const pluginContext = usePluginContext();
-  const forcedTheme = useMemo(
-    () =>
-      props.forcedTheme && THEMES.includes(props.forcedTheme)
-        ? props.forcedTheme
-        : undefined,
-    [props.forcedTheme],
-  );
+  const forcedTheme =
+    props.forcedTheme && THEMES.includes(props.forcedTheme)
+      ? props.forcedTheme
+      : undefined;
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
@@ -339,7 +332,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     'success' | 'error' | null
   >(null);
 
-  const children = React.Children.toArray(props.children);
+  const children = Children.toArray(props.children);
 
   const logo = children.find(child =>
     isChildComponentType(child, GraphiQL.Logo),
@@ -372,103 +365,89 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const onClickReference = useCallback(() => {
+  const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  }, [pluginResize]);
+  };
 
-  const handleClearData = useCallback(() => {
+  const handleClearData = () => {
     try {
-      storageContext?.clear();
+      // Optional chaining inside try-catch isn't supported yet by react-compiler
+      if (storageContext) {
+        storageContext.clear();
+      }
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
     }
-  }, [storageContext]);
+  };
 
-  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      event => {
-        editorContext.setShouldPersistHeaders(
-          event.currentTarget.dataset.value === 'true',
-        );
-      },
-      [editorContext],
+  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> = event => {
+    editorContext.setShouldPersistHeaders(
+      event.currentTarget.dataset.value === 'true',
     );
+  };
 
-  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      const selectedTheme = event.currentTarget.dataset.theme as
-        | 'light'
-        | 'dark'
-        | undefined;
-      setTheme(selectedTheme || null);
-    },
-    [setTheme],
-  );
+  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = event => {
+    const selectedTheme = event.currentTarget.dataset.theme as
+      | 'light'
+      | 'dark'
+      | undefined;
+    setTheme(selectedTheme || null);
+  };
 
   const handleAddTab = editorContext.addTab;
   const handleRefetchSchema = schemaContext.introspect;
   const handleReorder = editorContext.moveTab;
 
-  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      setShowDialog(
-        event.currentTarget.dataset.value as 'short-keys' | 'settings',
-      );
-    },
-    [],
-  );
+  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = event => {
+    setShowDialog(
+      event.currentTarget.dataset.value as 'short-keys' | 'settings',
+    );
+  };
 
-  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      const context = pluginContext!;
-      const pluginIndex = Number(event.currentTarget.dataset.index!);
-      const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
-      const isVisible = plugin === context.visiblePlugin;
-      if (isVisible) {
-        context.setVisiblePlugin(null);
-        pluginResize.setHiddenElement('first');
-      } else {
-        context.setVisiblePlugin(plugin);
-        pluginResize.setHiddenElement(null);
-      }
-    },
-    [pluginContext, pluginResize],
-  );
+  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = event => {
+    const context = pluginContext!;
+    const pluginIndex = Number(event.currentTarget.dataset.index!);
+    const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
+    const isVisible = plugin === context.visiblePlugin;
+    if (isVisible) {
+      context.setVisiblePlugin(null);
+      pluginResize.setHiddenElement('first');
+    } else {
+      context.setVisiblePlugin(plugin);
+      pluginResize.setHiddenElement(null);
+    }
+  };
 
-  const handleToolsTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      if (editorToolsResize.hiddenElement === 'second') {
-        editorToolsResize.setHiddenElement(null);
-      }
-      setActiveSecondaryEditor(
-        event.currentTarget.dataset.name as 'variables' | 'headers',
-      );
-    },
-    [editorToolsResize],
-  );
+  const handleToolsTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+    if (editorToolsResize.hiddenElement === 'second') {
+      editorToolsResize.setHiddenElement(null);
+    }
+    setActiveSecondaryEditor(
+      event.currentTarget.dataset.name as 'variables' | 'headers',
+    );
+  };
 
-  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> =
-    useCallback(() => {
-      editorToolsResize.setHiddenElement(
-        editorToolsResize.hiddenElement === 'second' ? null : 'second',
-      );
-    }, [editorToolsResize]);
+  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> = () => {
+    editorToolsResize.setHiddenElement(
+      editorToolsResize.hiddenElement === 'second' ? null : 'second',
+    );
+  };
 
-  const handleOpenShortKeysDialog = useCallback((isOpen: boolean) => {
+  const handleOpenShortKeysDialog = (isOpen: boolean) => {
     if (!isOpen) {
       setShowDialog(null);
     }
-  }, []);
+  };
 
-  const handleOpenSettingsDialog = useCallback((isOpen: boolean) => {
+  const handleOpenSettingsDialog = (isOpen: boolean) => {
     if (!isOpen) {
       setShowDialog(null);
       setClearStorageStatus(null);
     }
-  }, []);
+  };
 
   const addTab = (
     <Tooltip label="Add tab">
@@ -486,46 +465,37 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const className = props.className ? ` ${props.className}` : '';
   const confirmClose = props.confirmCloseTab;
 
-  const handleTabClose: MouseEventHandler<HTMLButtonElement> = useCallback(
-    async event => {
-      const tabButton = event.currentTarget
-        .previousSibling as HTMLButtonElement;
-      const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
+  const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
+    const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
+    const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
 
-      /** TODO:
-       * Move everything after into `editorContext.closeTab` once zustand will be used instead of
-       * React context, since now we can't use execution context inside editor context, since editor
-       * context is used in execution context.
-       */
-      const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
+    /** TODO:
+     * Move everything after into `editorContext.closeTab` once zustand will be used instead of
+     * React context, since now we can't use execution context inside editor context, since editor
+     * context is used in execution context.
+     */
+    const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
 
-      if (!shouldCloseTab) {
-        return;
-      }
+    if (!shouldCloseTab) {
+      return;
+    }
 
-      if (editorContext.activeTabIndex === index) {
-        executionContext.stop();
-      }
-      editorContext.closeTab(index);
-    },
-    [confirmClose, editorContext, executionContext],
-  );
-
-  const handleTabClick: MouseEventHandler<HTMLButtonElement> = useCallback(
-    event => {
-      const index = Number(
-        event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''),
-      );
-      /** TODO:
-       * Move everything after into `editorContext.changeTab` once zustand will be used instead of
-       * React context, since now we can't use execution context inside editor context, since editor
-       * context is used in execution context.
-       */
+    if (editorContext.activeTabIndex === index) {
       executionContext.stop();
-      editorContext.changeTab(index);
-    },
-    [editorContext, executionContext],
-  );
+    }
+    editorContext.closeTab(index);
+  };
+
+  const handleTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+    const index = Number(event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''));
+    /** TODO:
+     * Move everything after into `editorContext.changeTab` once zustand will be used instead of
+     * React context, since now we can't use execution context inside editor context, since editor
+     * context is used in execution context.
+     */
+    executionContext.stop();
+    editorContext.changeTab(index);
+  };
 
   return (
     <Tooltip.Provider>

@@ -6,7 +6,7 @@ index e61f42b..a6ad925 100644
        });
        if (result) {
          let code2 = result.code;
-+        if (filepath.includes('graphiql-react')) {
++        if (/packages[/\\](graphiql|graphiql-react)[/\\]/.test(filepath)) {
 +          if (
 +            /^import \{ c as _c } from "/m.test(code2)
 +          ) {

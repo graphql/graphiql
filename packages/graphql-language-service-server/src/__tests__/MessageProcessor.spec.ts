@@ -18,7 +18,7 @@ import fetchMock from '@fetch-mock/vitest';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const mockSchema = (schema: GraphQLSchema) => {
+function mockSchema(schema: GraphQLSchema) {
   const introspectionResult = {
     data: introspectionFromSchema(schema, { descriptions: true }),
   };
@@ -31,7 +31,7 @@ const mockSchema = (schema: GraphQLSchema) => {
       body: introspectionResult,
     },
   });
-};
+}
 
 const defaultFiles = [
   ['query.graphql', 'query { bar ...B }'],

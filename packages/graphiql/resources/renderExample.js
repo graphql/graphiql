@@ -1,4 +1,6 @@
-/* global React, ReactDOM, GraphiQL, GraphQLVersion */
+'use no memo';
+
+/* global React, ReactDOM, GraphiQL */
 
 /**
  * UMD GraphiQL Example
@@ -9,7 +11,7 @@
  * It is used by:
  * - the netlify demo
  * - end-to-end tests
- * - webpack dev server
+ * - vite dev server
  */
 
 // Parse the search string to get url parameters.
@@ -59,7 +61,7 @@ function updateURL() {
 }
 
 function getSchemaUrl() {
-  const isDev = window.location.hostname.match(/localhost$/);
+  const isDev = /localhost$/.test(location.hostname);
 
   if (isDev) {
     return '/graphql';
@@ -72,6 +74,7 @@ function getSchemaUrl() {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
   React.createElement(GraphiQL, {
@@ -89,7 +92,7 @@ root.render(
     defaultEditorToolsVisibility: true,
     isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
-    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    inputValueDeprecation: !graphqlVersion.includes('15.5'),
     confirmCloseTab:
       parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
     onTabChange,
