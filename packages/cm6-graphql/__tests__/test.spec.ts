@@ -20,6 +20,7 @@ describe('codemirror 6 language', () => {
         fs.readFileSync(path.join(caseDir, file), 'utf8'),
         file,
       )) {
+        // eslint-disable-next-line @vitest/expect-expect
         it(`${name}`, () => {
           try {
             run(graphqlLanguage.parser);

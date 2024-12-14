@@ -406,11 +406,7 @@ module.exports = {
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
-      extends: ['plugin:jest/recommended'],
-      rules: {
-        'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
-      },
+      extends: ['plugin:@vitest/legacy-recommended'],
     },
     {
       // Resources are typically our helper scripts; make life easier there

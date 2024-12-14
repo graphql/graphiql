@@ -26,8 +26,6 @@ const modules = [
   '@babel/code-frame',
   '@babel/highlight',
   // these I think are just required by jest when you console log from a test
-  'jest-message-util',
-  'stack-utils',
   'pretty-format',
   'ansi-regex',
   'js-tokens',

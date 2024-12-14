@@ -95,7 +95,7 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-cypress": "^4.1.0",
     "eslint-plugin-import-x": "^3.1.0",
-    "eslint-plugin-jest": "^28.6.0",
+    "@vitest/eslint-plugin": "^1.1.16",
     "eslint-plugin-mdx": "^3.1.5",
     "eslint-plugin-promise": "^7.0.0",
     "eslint-plugin-react": "^7.37.2",
