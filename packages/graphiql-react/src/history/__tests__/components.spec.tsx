@@ -1,3 +1,4 @@
+import { Mock } from 'vitest'
 import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
@@ -66,12 +67,12 @@ function getMockProps(
 }
 
 describe('QueryHistoryItem', () => {
-  const mockedSetQueryEditor = useEditorContext()?.queryEditor
-    ?.setValue as vi.Mock;
-  const mockedSetVariableEditor = useEditorContext()?.variableEditor
-    ?.setValue as vi.Mock;
-  const mockedSetHeaderEditor = useEditorContext()?.headerEditor
-    ?.setValue as vi.Mock;
+  const mockedSetQueryEditor = useEditorContext()!.queryEditor!
+    .setValue as Mock;
+  const mockedSetVariableEditor = useEditorContext()!.variableEditor!
+    .setValue as Mock;
+  const mockedSetHeaderEditor = useEditorContext()!.headerEditor!
+    .setValue as Mock;
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
     mockedSetVariableEditor.mockClear();
