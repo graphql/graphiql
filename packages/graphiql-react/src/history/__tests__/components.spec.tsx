@@ -5,10 +5,10 @@ import { HistoryContextProvider } from '../context';
 import { useEditorContext } from '../../editor';
 import { Tooltip } from '../../ui';
 
-jest.mock('../../editor', () => {
-  const mockedSetQueryEditor = jest.fn();
-  const mockedSetVariableEditor = jest.fn();
-  const mockedSetHeaderEditor = jest.fn();
+vi.mock('../../editor', () => {
+  const mockedSetQueryEditor = vi.fn();
+  const mockedSetVariableEditor = vi.fn();
+  const mockedSetHeaderEditor = vi.fn();
   return {
     useEditorContext() {
       return {
@@ -67,11 +67,11 @@ function getMockProps(
 
 describe('QueryHistoryItem', () => {
   const mockedSetQueryEditor = useEditorContext()?.queryEditor
-    ?.setValue as jest.Mock;
+    ?.setValue as vi.Mock;
   const mockedSetVariableEditor = useEditorContext()?.variableEditor
-    ?.setValue as jest.Mock;
+    ?.setValue as vi.Mock;
   const mockedSetHeaderEditor = useEditorContext()?.headerEditor
-    ?.setValue as jest.Mock;
+    ?.setValue as vi.Mock;
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
     mockedSetVariableEditor.mockClear();
