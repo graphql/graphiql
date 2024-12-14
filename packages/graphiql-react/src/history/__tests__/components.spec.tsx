@@ -1,3 +1,6 @@
+'use no memo';
+
+import { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
@@ -5,10 +8,10 @@ import { HistoryContextProvider } from '../context';
 import { useEditorContext } from '../../editor';
 import { Tooltip } from '../../ui';
 
-jest.mock('../../editor', () => {
-  const mockedSetQueryEditor = jest.fn();
-  const mockedSetVariableEditor = jest.fn();
-  const mockedSetHeaderEditor = jest.fn();
+vi.mock('../../editor', () => {
+  const mockedSetQueryEditor = vi.fn();
+  const mockedSetVariableEditor = vi.fn();
+  const mockedSetHeaderEditor = vi.fn();
   return {
     useEditorContext() {
       return {
@@ -66,12 +69,12 @@ function getMockProps(
 }
 
 describe('QueryHistoryItem', () => {
-  const mockedSetQueryEditor = useEditorContext()?.queryEditor
-    ?.setValue as jest.Mock;
-  const mockedSetVariableEditor = useEditorContext()?.variableEditor
-    ?.setValue as jest.Mock;
-  const mockedSetHeaderEditor = useEditorContext()?.headerEditor
-    ?.setValue as jest.Mock;
+  const mockedSetQueryEditor = useEditorContext()!.queryEditor!
+    .setValue as Mock;
+  const mockedSetVariableEditor = useEditorContext()!.variableEditor!
+    .setValue as Mock;
+  const mockedSetHeaderEditor = useEditorContext()!.headerEditor!
+    .setValue as Mock;
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
     mockedSetVariableEditor.mockClear();

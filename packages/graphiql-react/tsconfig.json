@@ -16,8 +16,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc",
-    "types": ["jest", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

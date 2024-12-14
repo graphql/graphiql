@@ -40,7 +40,8 @@
   "scripts": {
     "prebuild": "rimraf dist types",
     "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
-    "build": "tsc --emitDeclarationOnly && vite build"
+    "build": "tsc --emitDeclarationOnly && vite build",
+    "test": "vitest"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",

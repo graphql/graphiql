@@ -1,3 +1,5 @@
+'use no memo';
+
 import { invalidCharacters, normalizeWhitespace } from '../whitespace';
 
 describe('normalizeWhitespace', () => {

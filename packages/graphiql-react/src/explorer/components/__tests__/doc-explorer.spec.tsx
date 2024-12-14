@@ -1,3 +1,5 @@
+'use no memo';
+
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { useContext, useEffect } from 'react';
