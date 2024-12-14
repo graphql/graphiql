@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.27.1
+
+### Patch Changes
+
+- [#3824](https://github.com/graphql/graphiql/pull/3824) [`72f06bc`](https://github.com/graphql/graphiql/commit/72f06bc52a9bdc0cb146d65861ba7364717bbdf5) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Exclude `codemirror/...` and `codemirror-graphql/...` imports from bundle
+
+- Updated dependencies [[`7cdcabf`](https://github.com/graphql/graphiql/commit/7cdcabf9d401683e90c995476b187c6f8ea70f63)]:
+  - codemirror-graphql@2.2.0
+
 ## 0.27.0
 
 ### Minor Changes

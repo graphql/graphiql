@@ -1,5 +1,16 @@
 # Change Log
 
+## 3.8.0
+
+### Minor Changes
+
+- [#3825](https://github.com/graphql/graphiql/pull/3825) [`7cdcabf`](https://github.com/graphql/graphiql/commit/7cdcabf9d401683e90c995476b187c6f8ea70f63) Thanks [@dimaMachina](https://github.com/dimaMachina)! - migrate `graphiql` from `jest` to `vitest`
+
+### Patch Changes
+
+- Updated dependencies [[`72f06bc`](https://github.com/graphql/graphiql/commit/72f06bc52a9bdc0cb146d65861ba7364717bbdf5)]:
+  - @graphiql/react@0.27.1
+
 ## 3.7.2
 
 ### Patch Changes
