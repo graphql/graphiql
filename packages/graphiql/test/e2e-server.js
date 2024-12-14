@@ -11,7 +11,7 @@ const express = require('express');
 const path = require('node:path');
 const { createHandler } = require('graphql-http/lib/use/express');
 const WebSocketsServer = require('./afterDevServer');
-const schema = require('./schema');
+const { schema } = require('./schema');
 const { customExecute } = require('./execute');
 
 const app = express();
