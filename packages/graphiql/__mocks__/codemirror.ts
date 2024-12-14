@@ -1,3 +1,4 @@
+// @ts-nocheck
 function CodeMirror(node: HTMLElement, { value, ...options }) {
   let _eventListeners = {};
   const mockWrapper = document.createElement('div');
