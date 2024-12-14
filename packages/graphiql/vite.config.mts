@@ -8,11 +8,17 @@ import packageJSON from './package.json';
 const ReactCompilerConfig = {
   target: '17',
   sources(filename) {
+    if (
+      filename.includes('__tests__') ||
+      /\.(spec|test)\.tsx?$/.test(filename)
+    ) {
+      return false;
+    }
     return filename.includes(`packages${sep}graphiql${sep}`);
   },
 };
 
-const plugins = [
+export const plugins: PluginOption[] = [
   react({
     babel: {
       plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],

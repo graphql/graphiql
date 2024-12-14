@@ -1,11 +1,11 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { plugins } from './vite.config.mjs';
 
 const mockedCodemirror = path.resolve('__mocks__', 'codemirror.ts');
 
 export default defineConfig({
-  plugins: [react()],
+  plugins,
   test: {
     globals: true,
     environment: 'jsdom',
