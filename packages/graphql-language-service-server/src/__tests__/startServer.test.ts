@@ -42,7 +42,7 @@ describe('buildOptions', () => {
 
 describe('initializeHandlers', () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
   it('should initialize handlers', async () => {
     const reader = new IPCMessageReader(process);
@@ -61,19 +61,19 @@ describe('initializeHandlers', () => {
 describe('addHandlers', () => {
   it('should add handlers', async () => {
     const connection = {
-      onInitialize: jest.fn(),
-      onInitialized: jest.fn(),
-      onShutdown: jest.fn(),
-      onExit: jest.fn(),
-      onNotification: jest.fn(),
-      onRequest: jest.fn(),
-      sendNotification: jest.fn(),
-      sendRequest: jest.fn(),
+      onInitialize: vi.fn(),
+      onInitialized: vi.fn(),
+      onShutdown: vi.fn(),
+      onExit: vi.fn(),
+      onNotification: vi.fn(),
+      onRequest: vi.fn(),
+      sendNotification: vi.fn(),
+      sendRequest: vi.fn(),
       console: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        log: jest.fn(),
+        error: vi.fn(),
+        warn: vi.fn(),
+        info: vi.fn(),
+        log: vi.fn(),
       },
     };
 

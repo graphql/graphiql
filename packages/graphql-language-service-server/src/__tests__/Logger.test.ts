@@ -3,19 +3,19 @@ import { Logger } from '../Logger';
 describe('Logger', () => {
   const connection = {
     console: {
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      log: jest.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
+      log: vi.fn(),
     },
-    onDidChangeConfiguration: jest.fn(),
+    onDidChangeConfiguration: vi.fn(),
     workspace: {
-      getConfiguration: jest.fn(),
+      getConfiguration: vi.fn(),
     },
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should initialize with default log level, and ignore .log intentionally', () => {
