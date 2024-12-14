@@ -17,14 +17,12 @@ if (process.env.CDN) {
 
 module.exports = {
   presets: [
-    [require.resolve('@babel/preset-env'), envConfig],
     require.resolve('@babel/preset-react'),
     require.resolve('@babel/preset-typescript'),
   ],
   env: {
     test: {
       presets: [
-        [require.resolve('@babel/preset-env'), envConfig],
         [require.resolve('@babel/preset-react'), { runtime: 'automatic' }],
         require.resolve('@babel/preset-typescript'),
       ],
