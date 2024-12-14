@@ -21,7 +21,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "es2017", "es2018", "es2021", "esnext"],
-    "types": ["node", "jest"],
+    "types": ["node"],
     "baseUrl": "."
   },
   "exclude": [
@@ -29,8 +29,6 @@
     "**/dist/**.*",
     "**/*.spec.ts",
     "**/*.spec.js",
-    "**/*-test.ts",
-    "**/*-test.js",
     "**/node_modules/**"
   ]
 }

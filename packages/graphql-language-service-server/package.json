@@ -36,6 +36,9 @@
   "peerDependencies": {
     "graphql": "^16.0.0"
   },
+  "scripts": {
+    "test": "vitest"
+  },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
     "@astrojs/compiler": "^2.10.1",
@@ -50,7 +53,6 @@
     "graphql-language-service": "^5.3.0",
     "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
-    "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
     "svelte": "^4.2.19",
@@ -63,12 +65,13 @@
     "vue": "^3.2.0"
   },
   "devDependencies": {
+    "@fetch-mock/vitest": "^0.2.6",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@types/mock-fs": "^4.13.4",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
     "graphql": "^16.9.0",
-    "mock-fs": "^5.2.0"
+    "mock-fs": "^5.4.1"
   }
 }

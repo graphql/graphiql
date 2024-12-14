@@ -1,4 +1,4 @@
-/* eslint-disable jest/expect-expect */
+/* eslint-disable @vitest/expect-expect */
 import OnlineParser from '../onlineParser';
 import {
   getUtils,

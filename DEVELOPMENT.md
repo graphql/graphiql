@@ -71,7 +71,7 @@ breaking their implementations.
 
 - `yarn test graphiql` will run all tests for graphiql. You can also run tests
   from a workspace, but most tooling is at the root.
-- `yarn test --watch` will run `jest` with `--watch`
+- `yarn test --watch` will run `vitest` with `--watch`
 - `yarn e2e` at the root will run the end-to-end suite
 - `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor
   example with GitHub API from the root. This is the fastest way to test changes

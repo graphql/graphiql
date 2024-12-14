@@ -406,10 +406,13 @@ module.exports = {
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
-      extends: ['plugin:jest/recommended'],
+      extends: ['plugin:@vitest/legacy-recommended'],
       rules: {
-        'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        '@vitest/expect-expect': [
+          'error',
+          { assertFunctionNames: ['expect*'] },
+        ],
+        '@vitest/no-disabled-tests': 'error',
       },
     },
     {
@@ -435,7 +438,6 @@ module.exports = {
         '**/__tests__/**',
         'webpack.config.js',
         '**/tests/**',
-        'test.config.js',
         'vitest.config.mts',
         'setup-files.ts',
       ],

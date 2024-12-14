@@ -7,12 +7,12 @@
     "composite": true,
     "baseUrl": ".",
     "strictPropertyInitialization": false,
-    "types": ["node", "jest"],
+    "types": ["node"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
     "lib": ["dom", "ESNext"],
     "moduleResolution": "node"
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/build/**.*", "../../node_modules"]
+  "exclude": ["**/build/**.*", "../../node_modules"]
 }

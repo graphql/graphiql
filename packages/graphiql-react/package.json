@@ -68,6 +68,7 @@
     "set-value": "^4.1.0"
   },
   "devDependencies": {
+    "jsdom": "^25.0.1",
     "babel-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
     "@types/react-dom": "^18.3.1",
     "@babel/helper-string-parser": "^7.19.4",

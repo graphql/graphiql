@@ -55,7 +55,6 @@ import {
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import { LRUCache } from 'lru-cache';
-// import { is } from '@babel/types';
 
 const codeLoaderConfig: CodeFileLoaderConfig = {
   noSilentErrors: false,
@@ -126,7 +125,6 @@ export class GraphQLCache {
   _parser: typeof parseDocument;
   _logger: Logger | NoopLogger;
   _onSchemaChange?: OnSchemaChange;
-  _schemaCacheTTL?: number;
 
   constructor({
     configDir,
@@ -479,7 +477,7 @@ export class GraphQLCache {
   _setFragmentCache(
     asts: { ast: DocumentNode | null; query: string }[],
     fragmentCache: Map<string, FragmentInfo>,
-    filePath: string | undefined,
+    filePath?: string,
   ) {
     for (const { ast, query } of asts) {
       if (!ast) {
@@ -501,7 +499,7 @@ export class GraphQLCache {
   async updateObjectTypeDefinition(
     projectCacheKey: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ): Promise<void> {
     const cache = this._typeDefinitionsCache.get(projectCacheKey);
     const asts = contents.map(({ query }) => {
@@ -530,7 +528,7 @@ export class GraphQLCache {
   _setDefinitionCache(
     asts: { ast: DocumentNode | null; query: string }[],
     typeCache: Map<string, ObjectTypeInfo>,
-    filePath: string | undefined,
+    filePath?: string,
   ) {
     for (const { ast, query } of asts) {
       if (!ast) {
@@ -691,7 +689,7 @@ export class GraphQLCache {
    * and create fragmentDefinitions and GraphQL files cache.
    */
   readAllGraphQLFiles = async (
-    list: Array<GraphQLFileMetadata>,
+    list: GraphQLFileMetadata[],
   ): Promise<{
     objectTypeDefinitions: Map<string, ObjectTypeInfo>;
     fragmentDefinitions: Map<string, FragmentInfo>;
@@ -738,7 +736,7 @@ export class GraphQLCache {
    * map of fragmentDefinitions and GraphQL file cache.
    */
   processGraphQLFiles = (
-    responses: Array<GraphQLFileInfo>,
+    responses: GraphQLFileInfo[],
   ): {
     objectTypeDefinitions: Map<string, ObjectTypeInfo>;
     fragmentDefinitions: Map<string, FragmentInfo>;
