@@ -35,7 +35,8 @@
     "!jest.config.js"
   ],
   "scripts": {
-    "build": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js"
+    "build": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
+    "test": "vitest"
   },
   "peerDependencies": {
     "@codemirror/language": "6.0.0",
