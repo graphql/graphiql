@@ -6,8 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const graphql = require('graphql');
-
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -25,7 +23,7 @@ const {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} = graphql;
+} = require('graphql');
 
 const directives =
   parseInt(version, 10) > 16

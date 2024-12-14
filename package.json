@@ -113,7 +113,7 @@
     "eslint": "9.14.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-cypress": "^3.4.0",
+    "eslint-plugin-cypress": "^4.1.0",
     "eslint-plugin-import-x": "^3.1.0",
     "eslint-plugin-jest": "^28.6.0",
     "eslint-plugin-mdx": "^3.1.5",
