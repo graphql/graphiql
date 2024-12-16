@@ -3,7 +3,7 @@ import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
@@ -344,9 +344,8 @@ export function useAutoCompleteLeafs({
 
 // https://react.dev/learn/you-might-not-need-an-effect
 
-export const useEditorState = (
-  editor: 'query' | 'variable' | 'header',
-): [string, (val: string) => void] => {
+export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+  'use no memo' // TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   const context = useEditorContext({
     nonNull: true,
   });
@@ -358,8 +357,14 @@ export const useEditorState = (
     valueString = editorValue;
   }
 
-  const handleEditorValue = (value: string) => editorInstance?.setValue(value);
-  return [valueString, handleEditorValue];
+  const handleEditorValue = useCallback(
+    (value: string) => editorInstance?.setValue(value),
+    [editorInstance],
+  );
+  return useMemo<[string, (val: string) => void]>(
+    () => [valueString, handleEditorValue],
+    [valueString, handleEditorValue],
+  );
 };
 
 /**
