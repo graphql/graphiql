@@ -3,6 +3,7 @@ import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useExplorerContext } from '../explorer';
@@ -345,7 +346,7 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  'use no memo' // TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+  'use no memo'; // eslint-disable-line react-compiler/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   const context = useEditorContext({
     nonNull: true,
   });
