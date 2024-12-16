@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 3.2.5
+
+### Patch Changes
+
+- [#3837](https://github.com/graphql/graphiql/pull/3837) [`5e76a4f`](https://github.com/graphql/graphiql/commit/5e76a4f3c8b089a1de0c92c9b9c1edc2ae3f49d4) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix query builder updated only first selected field in query editor due recent enabled react-compiler
+
 ## 3.2.4
 
 ### Patch Changes
