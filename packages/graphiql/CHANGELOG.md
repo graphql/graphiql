@@ -1,5 +1,14 @@
 # Change Log
 
+## 3.8.3
+
+### Patch Changes
+
+- [#3843](https://github.com/graphql/graphiql/pull/3843) [`16b5698`](https://github.com/graphql/graphiql/commit/16b56982ce4de62c850380fe25698c3893551c5a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix regression in documentation explorer search when clicking on results in dropdown
+
+- Updated dependencies [[`16b5698`](https://github.com/graphql/graphiql/commit/16b56982ce4de62c850380fe25698c3893551c5a)]:
+  - @graphiql/react@0.28.2
+
 ## 3.8.2
 
 ### Patch Changes
