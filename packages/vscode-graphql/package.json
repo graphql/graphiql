@@ -114,6 +114,15 @@
           "description": "Schema cache ttl in milliseconds - the interval before requesting a fresh schema when caching the local schema file is enabled. Defaults to 30000 (30 seconds).",
           "default": 30000
         },
+        "vscode-graphql.transport": {
+          "type": "string",
+          "enum": [
+            "ipc",
+            "stdio"
+          ],
+          "description": "The transport used between the language server and the client.",
+          "default": "ipc"
+        },
         "graphql-config.load.rootDir": {
           "type": [
             "string"
