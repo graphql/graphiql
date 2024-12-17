@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.8.2",
+  "version": "3.8.3",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -48,7 +48,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/react": "^0.28.1"
+    "@graphiql/react": "^0.28.2"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
