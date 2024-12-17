@@ -48,7 +48,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/react": "^0.28.0"
+    "@graphiql/react": "^0.28.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
