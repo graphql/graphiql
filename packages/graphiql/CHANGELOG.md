@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.8.2
+
+### Patch Changes
+
+- [#3840](https://github.com/graphql/graphiql/pull/3840) [`b529a6c`](https://github.com/graphql/graphiql/commit/b529a6c59b760f8bc54df0cd691b0704d94c022b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update `@graphiql/react` dependency range to `^0.28.1`
+
 ## 3.8.1
 
 ### Patch Changes
