@@ -7,7 +7,16 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { FocusEventHandler, useEffect, useRef, useState } from 'react';
+import {
+  FocusEventHandler,
+  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
+  useCallback,
+  useEffect,
+  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
@@ -20,6 +29,7 @@ import { renderType } from './utils';
 import { isMacOs } from '../../utility/is-macos';
 
 export function Search() {
+  'use no memo'; // TODO: add test https://github.com/graphql/graphiql/issues/3842
   const { explorerNavStack, push } = useExplorerContext({
     nonNull: true,
     caller: Search,
@@ -29,10 +39,13 @@ export function Search() {
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
   const [results, setResults] = useState(getSearchResults(searchValue));
-  const [isFocused, setIsFocused] = useState(false);
-  const debouncedGetSearchResults = debounce(200, (search: string) => {
-    setResults(getSearchResults(search));
-  });
+  const debouncedGetSearchResults = useMemo(
+    () =>
+      debounce(200, (search: string) => {
+        setResults(getSearchResults(search));
+      }),
+    [getSearchResults],
+  );
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
   }, [debouncedGetSearchResults, searchValue]);
@@ -50,16 +63,20 @@ export function Search() {
 
   const navItem = explorerNavStack.at(-1)!;
 
-  const onSelect = (def: TypeMatch | FieldMatch) => {
-    push(
-      'field' in def
-        ? { name: def.field.name, def: def.field }
-        : { name: def.type.name, def: def.type },
-    );
-  };
-  const handleFocus: FocusEventHandler = e => {
-    setIsFocused(e.type === 'focus');
-  };
+  const onSelect = useCallback(
+    (def: TypeMatch | FieldMatch) => {
+      push(
+        'field' in def
+          ? { name: def.field.name, def: def.field }
+          : { name: def.type.name, def: def.type },
+      );
+    },
+    [push],
+  );
+  const isFocused = useRef(false);
+  const handleFocus: FocusEventHandler = useCallback(e => {
+    isFocused.current = e.type === 'focus';
+  }, []);
 
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
@@ -98,7 +115,8 @@ export function Search() {
       </div>
 
       {/* display on focus */}
-      {isFocused && (
+      {/* eslint-disable-next-line react-compiler/react-compiler */}
+      {isFocused.current && (
         <Combobox.Options data-cy="doc-explorer-list">
           {results.within.length +
             results.types.length +
