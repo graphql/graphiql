@@ -1,5 +1,3 @@
-'use no memo';
-
 import './style/root.css';
 
 export {

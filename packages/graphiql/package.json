@@ -49,8 +49,8 @@
     "test": "vitest"
   },
   "dependencies": {
-    "react-compiler-runtime": "19.0.0-beta-37ed2a7-20241206",
-    "@graphiql/react": "^0.28.0"
+    "react-compiler-runtime": "0.0.0-experimental-22c6e49-20241219",
+    "@graphiql/react": "^0.28.2"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -58,7 +58,7 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
+    "babel-plugin-react-compiler": "0.0.0-experimental-22c6e49-20241219",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-commonjs": "^0.10.4",
     "vite": "^5.3.6",

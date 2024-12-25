@@ -4,9 +4,10 @@ import dts from 'vite-plugin-dts';
 import commonjs from 'vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import packageJSON from './package.json';
+import { ReactCompilerConfig as reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 
 const ReactCompilerConfig = {
-  target: '17',
+  ...reactCompilerConfig,
   sources(filename) {
     if (
       filename.includes('__tests__') ||
@@ -105,7 +106,11 @@ function htmlPlugin(): PluginOption {
       import ReactDOM from 'react-dom/client';
       import GraphiQL from './src/cdn';
 
-      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
+      Object.assign(globalThis, {
+        React,
+        ReactDOM,
+        GraphiQL,
+      });
     </script>
     <link href="/src/style.css" rel="stylesheet" />
   `;

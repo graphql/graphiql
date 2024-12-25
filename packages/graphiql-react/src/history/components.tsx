@@ -11,9 +11,20 @@ import {
   TrashIcon,
 } from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
-import { useHistoryContext } from './context';
+import { HistoryContextType, useHistoryContext } from './context';
 
 import './style.css';
+
+// Fix error from react-compiler
+// Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+function handleDelete(
+  items: QueryStoreItem[],
+  deleteFromHistory: HistoryContextType['deleteFromHistory'],
+) {
+  for (const item of items) {
+    deleteFromHistory(item, true);
+  }
+}
 
 export function History() {
   const { items: all, deleteFromHistory } = useHistoryContext({
@@ -45,9 +56,7 @@ export function History() {
 
   const handleClearStatus = () => {
     try {
-      for (const item of items) {
-        deleteFromHistory(item, true);
-      }
+      handleDelete(items, deleteFromHistory);
       setClearStatus('success');
     } catch {
       setClearStatus('error');

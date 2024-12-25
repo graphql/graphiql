@@ -6488,10 +6488,10 @@ babel-plugin-polyfill-regenerator@^0.5.1:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.4.2"
 
-babel-plugin-react-compiler@19.0.0-beta-37ed2a7-20241206:
-  version "19.0.0-beta-37ed2a7-20241206"
-  resolved "https://registry.yarnpkg.com/babel-plugin-react-compiler/-/babel-plugin-react-compiler-19.0.0-beta-37ed2a7-20241206.tgz#06c72781834e8cb0793de815bdf99afb5c71d6cc"
-  integrity sha512-nnkrHpeDKM8A5laq9tmFvvGbbDQ7laGfQLp50cvCkCXmWrPcZdCtaQpNh8UJS/yLREJnv2R4JDL5ADfxyAn+yQ==
+babel-plugin-react-compiler@0.0.0-experimental-22c6e49-20241219:
+  version "0.0.0-experimental-22c6e49-20241219"
+  resolved "https://registry.yarnpkg.com/babel-plugin-react-compiler/-/babel-plugin-react-compiler-0.0.0-experimental-22c6e49-20241219.tgz#9359623a12a57025fd66d648123aa9319a69411c"
+  integrity sha512-jxp6eD6SQqSA7HrhVewq6NoO6tW8Wlgo+gpMf5ovuC0UR086tC9SOHV2k+1Uae/jKiywDfQX7UEyWaU6SQ69PA==
   dependencies:
     "@babel/types" "^7.19.0"
 
@@ -15359,10 +15359,10 @@ rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-compiler-runtime@19.0.0-beta-37ed2a7-20241206:
-  version "19.0.0-beta-37ed2a7-20241206"
-  resolved "https://registry.yarnpkg.com/react-compiler-runtime/-/react-compiler-runtime-19.0.0-beta-37ed2a7-20241206.tgz#f05231928f2daf9ff5ff9b63e5861161de2c3e6d"
-  integrity sha512-9e6rCpVylr9EnVocgYAjft7+2v01BDpajeHKRoO+oc9pKcAMTpstHtHvE/TSVbyf4FvzCGjfKcfHM9XGTXI6Tw==
+react-compiler-runtime@0.0.0-experimental-22c6e49-20241219:
+  version "0.0.0-experimental-22c6e49-20241219"
+  resolved "https://registry.yarnpkg.com/react-compiler-runtime/-/react-compiler-runtime-0.0.0-experimental-22c6e49-20241219.tgz#6f6cfd448c32edab184f632c178fa334d73453e5"
+  integrity sha512-bOAGaRL1ldfIIpbDsl+uV025Ta6RS6/cOjvvh8r2Vo7KtqB+RSvihVYRsWQz7ECKNPWdq5MClS845acwAwieDw==
 
 react-dom@^18.2.0:
   version "18.2.0"

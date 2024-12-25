@@ -1,5 +1,3 @@
-'use no memo';
-
 export { History } from './components';
 export {
   HistoryContext,

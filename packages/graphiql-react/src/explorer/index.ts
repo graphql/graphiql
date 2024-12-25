@@ -1,5 +1,3 @@
-'use no memo';
-
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
 export { DeprecationReason } from './components/deprecation-reason';

@@ -25,11 +25,10 @@ export function Search() {
     caller: Search,
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null!);
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
-  const [results, setResults] = useState(getSearchResults(searchValue));
-  const [isFocused, setIsFocused] = useState(false);
+  const [results, setResults] = useState(() => getSearchResults(searchValue));
   const debouncedGetSearchResults = debounce(200, (search: string) => {
     setResults(getSearchResults(search));
   });
@@ -40,7 +39,7 @@ export function Search() {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.metaKey && event.key === 'k') {
-        inputRef.current?.focus();
+        inputRef.current.focus();
       }
     }
 
@@ -57,8 +56,12 @@ export function Search() {
         : { name: def.type.name, def: def.type },
     );
   };
+  const [isFocused, setIsFocused] = useState(false);
   const handleFocus: FocusEventHandler = e => {
-    setIsFocused(e.type === 'focus');
+    // Fix https://github.com/graphql/graphiql/issues/3842
+    setTimeout(() => {
+      setIsFocused(e.type === 'focus');
+    }, 0)
   };
 
   const shouldSearchBoxAppear =
@@ -81,7 +84,7 @@ export function Search() {
       <div
         className="graphiql-doc-explorer-search-input"
         onClick={() => {
-          inputRef.current?.focus();
+          inputRef.current.focus();
         }}
       >
         <MagnifyingGlassIcon />
@@ -251,7 +254,7 @@ export function useSearchResults(caller?: Function) {
 function isMatch(sourceText: string, searchValue: string): boolean {
   try {
     const escaped = searchValue.replaceAll(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
-    return sourceText.search(new RegExp(escaped, 'i')) !== -1;
+    return new RegExp(escaped, 'i').test(sourceText);
   } catch {
     return sourceText.toLowerCase().includes(searchValue.toLowerCase());
   }
