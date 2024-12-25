@@ -1,3 +1,6 @@
+// @ts-nocheck
+'use no memo';
+
 function CodeMirror(node: HTMLElement, { value, ...options }) {
   let _eventListeners = {};
   const mockWrapper = document.createElement('div');
