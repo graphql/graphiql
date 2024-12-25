@@ -61,7 +61,7 @@ export function Search() {
     // Fix https://github.com/graphql/graphiql/issues/3842
     setTimeout(() => {
       setIsFocused(e.type === 'focus');
-    }, 0)
+    }, 0);
   };
 
   const shouldSearchBoxAppear =
