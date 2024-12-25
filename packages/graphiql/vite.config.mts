@@ -1,7 +1,6 @@
 import { sep } from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import dts from 'vite-plugin-dts';
-import commonjs from 'vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import packageJSON from './package.json';
 import { ReactCompilerConfig as reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
@@ -35,8 +34,7 @@ const umdConfig = defineConfig({
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
-  // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
-  plugins: [...plugins, commonjs()],
+  plugins,
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
