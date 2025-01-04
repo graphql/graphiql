@@ -41,7 +41,7 @@ import {
 } from 'graphql';
 import type { ASTReducer } from 'graphql/language/visitor';
 
-import { offsetToPosition } from '../utils';
+import { locToRange } from '../utils';
 
 const { INLINE_FRAGMENT } = Kind;
 
@@ -133,10 +133,11 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     DocumentNode | SelectionSetNode | NameNode | InlineFragmentNode
   >;
   const meta = (node: ExclusiveUnion<MetaNode>): OutlineTreeResultMeta => {
+    const range = locToRange(docText, node.loc!);
     return {
       representativeName: node.name,
-      startPosition: offsetToPosition(docText, node.loc!.start),
-      endPosition: offsetToPosition(docText, node.loc!.end),
+      startPosition: range.start,
+      endPosition: range.end,
       kind: node.kind,
       children:
         node.selectionSet || node.fields || node.values || node.arguments || [],
