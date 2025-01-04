@@ -1,5 +1,7 @@
 
 
+
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
@@ -90,6 +92,7 @@ const configDocLink =
 type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
+  size: number;
 };
 
 function toPosition(position: VscodePosition): IPosition {
@@ -503,17 +506,11 @@ export class MessageProcessor {
 
       // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.
-
-      // If it's a .js file, try parsing the contents to see if GraphQL queries
-      // exist. If not found, delete from the cache.
       const { contents } = await this._parseAndCacheFile(
         uri,
         project,
         contentChanges.at(-1)!.text,
       );
-      // // If it's a .graphql file, proceed normally and invalidate the cache.
-      // await this._invalidateCache(textDocument, uri, contents);
-
       const diagnostics: Diagnostic[] = [];
 
       if (project?.extensions?.languageService?.enableValidation !== false) {
@@ -723,7 +720,10 @@ export class MessageProcessor {
       const contents = await this._parser(fileText, uri);
       const cachedDocument = this._textDocumentCache.get(uri);
       const version = cachedDocument ? cachedDocument.version++ : 0;
-      await this._invalidateCache({ uri, version }, uri, contents);
+      await this._invalidateCache(
+        { uri, version },
+        { contents, size: fileText.length },
+      );
       await this._updateFragmentDefinition(uri, contents);
       await this._updateObjectTypeDefinition(uri, contents, project);
       await this._updateSchemaIfChanged(project, uri);
@@ -961,14 +961,13 @@ export class MessageProcessor {
 
     const { textDocument } = params;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    if (!cachedDocument?.contents[0]) {
+    if (!cachedDocument?.contents?.length) {
       return [];
     }
 
     if (
       this._settings.largeFileThreshold !== undefined &&
-      this._settings.largeFileThreshold <
-        cachedDocument.contents[0].query.length
+      this._settings.largeFileThreshold < cachedDocument.size
     ) {
       return [];
     }
@@ -1022,7 +1021,13 @@ export class MessageProcessor {
         documents.map(async ([uri]) => {
           const cachedDocument = this._getCachedDocument(uri);
 
-          if (!cachedDocument) {
+          if (!cachedDocument?.contents?.length) {
+            return [];
+          }
+          if (
+            this._settings.largeFileThreshold !== undefined &&
+            this._settings.largeFileThreshold < cachedDocument.size
+          ) {
             return [];
           }
           const docSymbols = await this._languageService.getDocumentSymbols(
@@ -1051,7 +1056,10 @@ export class MessageProcessor {
     try {
       const contents = await this._parser(text, uri);
       if (contents.length > 0) {
-        await this._invalidateCache({ version, uri }, uri, contents);
+        await this._invalidateCache(
+          { version, uri },
+          { contents, size: text.length },
+        );
         await this._updateObjectTypeDefinition(uri, contents, project);
       }
     } catch (err) {
@@ -1267,7 +1275,10 @@ export class MessageProcessor {
 
           await this._updateObjectTypeDefinition(uri, contents);
           await this._updateFragmentDefinition(uri, contents);
-          await this._invalidateCache({ version: 1, uri }, uri, contents);
+          await this._invalidateCache(
+            { version: 1, uri },
+            { contents, size: document.rawSDL.length },
+          );
         }),
       );
     } catch (err) {
@@ -1376,27 +1387,20 @@ export class MessageProcessor {
   }
   private async _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
-    uri: Uri,
-    contents: CachedContent[],
+    meta: Omit<CachedDocumentType, 'version'>,
   ): Promise<Map<string, CachedDocumentType> | null> {
+    const { uri, version } = textDocument;
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
-      if (
-        cachedDocument &&
-        textDocument?.version &&
-        cachedDocument.version < textDocument.version
-      ) {
+      if (cachedDocument && version && cachedDocument.version < version) {
         // Current server capabilities specify the full sync of the contents.
         // Therefore always overwrite the entire content.
-        return this._textDocumentCache.set(uri, {
-          version: textDocument.version,
-          contents,
-        });
+        return this._textDocumentCache.set(uri, { ...meta, version });
       }
     }
     return this._textDocumentCache.set(uri, {
-      version: textDocument.version ?? 0,
-      contents,
+      ...meta,
+      version: version ?? 0,
     });
   }
 }
