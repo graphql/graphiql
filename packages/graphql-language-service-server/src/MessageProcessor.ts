@@ -1,3 +1,5 @@
+
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
@@ -66,7 +68,12 @@ import {
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
-import type { LoadConfigOptions, LocateCommand } from './types';
+import type {
+  LoadConfigOptions,
+  LocateCommand,
+  VSCodeGraphQLConfigLoadSettings,
+  VSCodeGraphQLSettings,
+} from './types';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   SupportedExtensionsEnum,
@@ -89,6 +96,13 @@ function toPosition(position: VscodePosition): IPosition {
   return new Position(position.line, position.character);
 }
 
+interface MessageProcessorSettings extends VSCodeGraphQLSettings {
+  load: VSCodeGraphQLConfigLoadSettings & {
+    fileName?: string;
+    [key: string]: unknown;
+  };
+}
+
 export class MessageProcessor {
   private _connection: Connection;
   private _graphQLCache!: GraphQLCache;
@@ -103,7 +117,7 @@ export class MessageProcessor {
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
   private _rootPath: string = process.cwd();
-  private _settings: any;
+  private _settings: MessageProcessorSettings = { load: {} };
   private _providedConfig?: GraphQLConfig;
 
   constructor({
@@ -213,7 +227,7 @@ export class MessageProcessor {
     // TODO: eventually we will instantiate an instance of this per workspace,
     // so rootDir should become that workspace's rootDir
     this._settings = { ...settings, ...vscodeSettings };
-    const rootDir = this._settings?.load?.rootDir.length
+    const rootDir = this._settings?.load?.rootDir?.length
       ? this._settings?.load?.rootDir
       : this._rootPath;
     if (settings?.dotEnvPath) {

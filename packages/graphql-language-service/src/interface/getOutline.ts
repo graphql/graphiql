@@ -19,7 +19,9 @@ import {
   Kind,
   parse,
   visit,
+  ASTNode,
   FieldNode,
+  ArgumentNode,
   InlineFragmentNode,
   DocumentNode,
   FragmentSpreadNode,
@@ -35,7 +37,9 @@ import {
   InputValueDefinitionNode,
   FieldDefinitionNode,
   EnumValueDefinitionNode,
+  InputObjectTypeDefinitionNode,
 } from 'graphql';
+import type { ASTReducer } from 'graphql/language/visitor';
 
 import { offsetToPosition } from '../utils';
 
@@ -56,23 +60,46 @@ export type OutlineableKinds =
   | 'InputValueDefinition'
   | 'FieldDefinition';
 
+type LiteralToEnum<Literal, Enum> = Enum extends never
+  ? never
+  : { 0: Enum }[Enum extends Literal ? 0 : never];
+
+type OutlineableKindsEnum = LiteralToEnum<
+  OutlineableKinds,
+  Kind
+>;
+type OutlineableNode = Extract<ASTNode, { kind: OutlineableKindsEnum }>;
+type AllKeys<T> = T extends unknown ? keyof T : never;
+type ExclusiveUnion<T, K extends PropertyKey = AllKeys<T>> = T extends never
+  ? never
+  : T & Partial<Record<Exclude<K, keyof T>, never>>;
+
+type OutlineTreeResultMeta = {
+  representativeName?: string | NameNode;
+  startPosition: IPosition;
+  endPosition: IPosition;
+  kind: OutlineableKinds;
+  children:
+    | SelectionSetNode
+    | readonly ArgumentNode[]
+    | readonly FieldDefinitionNode[]
+    | readonly EnumValueDefinitionNode[]
+    | readonly InputValueDefinitionNode[];
+};
+
 type OutlineTreeResult =
-  | {
-      representativeName: string;
-      startPosition: IPosition;
-      endPosition: IPosition;
-      children: SelectionSetNode[] | [];
-      tokenizedText: TextToken[];
-    }
+  | (OutlineTreeResultMeta & { tokenizedText: TextToken[] })
   | string
   | readonly DefinitionNode[]
   | readonly SelectionNode[]
   | FieldNode[]
   | SelectionSetNode;
 
-type OutlineTreeConverterType = Partial<{
-  [key in OutlineableKinds]: (node: any) => OutlineTreeResult;
-}>;
+type OutlineTreeConverterType = {
+  [key in OutlineableKinds]: (
+    node: Extract<OutlineableNode, { kind: key }>,
+  ) => OutlineTreeResult;
+};
 
 export function getOutline(documentText: string): Outline | null {
   let ast;
@@ -82,28 +109,30 @@ export function getOutline(documentText: string): Outline | null {
     return null;
   }
 
-  const visitorFns = outlineTreeConverter(documentText);
+  type VisitorFns = Record<Kind, (node: ASTNode) => OutlineTreeResult>;
+  const visitorFns = outlineTreeConverter(documentText) as VisitorFns;
   const outlineTrees = visit(ast, {
-    leave(node) {
-      if (visitorFns !== undefined && node.kind in visitorFns) {
-        // @ts-ignore
+    leave(node: ASTNode) {
+      if (node.kind in visitorFns) {
         return visitorFns[node.kind](node);
       }
       return null;
     },
-  }) as unknown as OutlineTree[];
+  } as ASTReducer<OutlineTreeResult>) as OutlineTree[];
 
   return { outlineTrees };
 }
 
 function outlineTreeConverter(docText: string): OutlineTreeConverterType {
-  // TODO: couldn't find a type that would work for all cases here,
-  // however the inference is not broken by this at least
-  const meta = (node: any) => {
+  type MetaNode = Exclude<
+    OutlineableNode,
+    DocumentNode | SelectionSetNode | NameNode | InlineFragmentNode
+  >;
+  const meta = (node: ExclusiveUnion<MetaNode>): OutlineTreeResultMeta => {
     return {
       representativeName: node.name,
-      startPosition: offsetToPosition(docText, node.loc.start),
-      endPosition: offsetToPosition(docText, node.loc.end),
+      startPosition: offsetToPosition(docText, node.loc!.start),
+      endPosition: offsetToPosition(docText, node.loc!.end),
       kind: node.kind,
       children:
         node.selectionSet || node.fields || node.values || node.arguments || [],
@@ -169,7 +198,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       ],
       ...meta(node),
     }),
-    InputObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => ({
+    InputObjectTypeDefinition: (node: InputObjectTypeDefinitionNode) => ({
       tokenizedText: [
         buildToken('keyword', 'input'),
         buildToken('whitespace', ' '),
