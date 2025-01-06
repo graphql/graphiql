@@ -13,6 +13,7 @@ import {
   TokenKind,
   IPosition,
   OutlineTree,
+  IRange,
 } from '../types';
 
 import {
@@ -38,6 +39,7 @@ import {
   FieldDefinitionNode,
   EnumValueDefinitionNode,
   InputObjectTypeDefinitionNode,
+  Source as GraphQLSource,
 } from 'graphql';
 import type { ASTReducer } from 'graphql/language/visitor';
 
@@ -101,16 +103,16 @@ type OutlineTreeConverterType = {
   ) => OutlineTreeResult;
 };
 
-export function getOutline(documentText: string): Outline | null {
+export function getOutline(document: string | GraphQLSource): Outline | null {
   let ast;
   try {
-    ast = parse(documentText);
+    ast = parse(document);
   } catch {
     return null;
   }
 
   type VisitorFns = Record<Kind, (node: ASTNode) => OutlineTreeResult>;
-  const visitorFns = outlineTreeConverter(documentText) as VisitorFns;
+  const visitorFns = outlineTreeConverter(document) as VisitorFns;
   const outlineTrees = visit(ast, {
     leave(node: ASTNode) {
       if (node.kind in visitorFns) {
@@ -123,13 +125,19 @@ export function getOutline(documentText: string): Outline | null {
   return { outlineTrees };
 }
 
-function outlineTreeConverter(docText: string): OutlineTreeConverterType {
+function outlineTreeConverter(
+  document: string | GraphQLSource,
+): OutlineTreeConverterType {
+  const docText = typeof document === 'string' ? document : document.body;
+  const { locationOffset }: Partial<GraphQLSource> =
+    typeof document === 'string' ? {} : document;
   type MetaNode = Exclude<
     OutlineableNode,
     DocumentNode | SelectionSetNode | NameNode | InlineFragmentNode
   >;
   const meta = (node: ExclusiveUnion<MetaNode>): OutlineTreeResultMeta => {
     const range = locToRange(docText, node.loc!);
+    applyOffsetToRange(range, locationOffset);
     return {
       representativeName: node.name,
       startPosition: range.start,
@@ -245,4 +253,25 @@ function concatMap<V>(arr: Readonly<V[]>, fn: Function): Readonly<V[]> {
     }
   }
   return res;
+}
+
+function applyOffsetToRange(
+  range: IRange,
+  locationOffset?: GraphQLSource['locationOffset'],
+) {
+  if (!locationOffset) {
+    return;
+  }
+  applyOffsetToPosition(range.start, locationOffset);
+  applyOffsetToPosition(range.end, locationOffset);
+}
+
+function applyOffsetToPosition(
+  position: IPosition,
+  locationOffset: GraphQLSource['locationOffset'],
+) {
+  if (position.line === 1) {
+    position.character += locationOffset.column - 1;
+  }
+  position.line += locationOffset.line - 1;
 }
