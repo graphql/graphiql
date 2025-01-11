@@ -92,7 +92,7 @@ Then, you can run these commands:
 - `yarn dev-graphiql` — which will launch `webpack` dev server for graphiql
   from the root
 
-> The GraphiQL UI is available at http://localhost:8080/dev.html
+> The GraphiQL UI is available at http://localhost:8080
 
 ### Developing Monaco GraphQL
 
