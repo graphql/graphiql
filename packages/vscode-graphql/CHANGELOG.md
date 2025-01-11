@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.13.0
+
+### Minor Changes
+
+- [#3819](https://github.com/graphql/graphiql/pull/3819) [`5665872`](https://github.com/graphql/graphiql/commit/566587290dd164bd9c51fd382b8d6b90034ca3dc) Thanks [@robertoaloi](https://github.com/robertoaloi)! - Make LSP transport configurable (ipc, stdio)
+
 ## 0.12.1
 
 ### Patch Changes
