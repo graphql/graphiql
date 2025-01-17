@@ -25,6 +25,23 @@ const errorHasCode = (err: unknown): err is { code: string } => {
 };
 
 /**
+ * Merge two Headers instances into one.
+ *
+ * Returns a new Headers instance (does not mutate).
+ *
+ * Headers are merged by having a copy of the first headers argument apply its `set`
+ * method to assign each header from the second headers argument. This means that headers
+ * from the second Headers instance overwrite same-named headers in the first.
+ */
+const mergeHeadersWithSetStrategy = (headersA: Headers, headersB: Headers) => {
+  const newHeaders = new Headers(headersA);
+  for (const [key, value] of headersB.entries()) {
+    newHeaders.set(key, value);
+  }
+  return newHeaders;
+};
+
+/**
  * Returns true if the name matches a subscription in the AST
  *
  * @param document {DocumentNode}
@@ -57,14 +74,18 @@ export const isSubscriptionWithName = (
 export const createSimpleFetcher =
   (options: CreateFetcherOptions, httpFetch: typeof fetch): Fetcher =>
   async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) => {
+    const headers = [
+      new Headers({
+        'content-type': 'application/json',
+      }),
+      new Headers(options.headers ?? {}),
+      new Headers(fetcherOpts?.headers ?? {}),
+    ].reduce(mergeHeadersWithSetStrategy, new Headers());
+
     const data = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
-      headers: {
-        'content-type': 'application/json',
-        ...options.headers,
-        ...fetcherOpts?.headers,
-      },
+      headers,
     });
     return data.json();
   };
@@ -141,17 +162,19 @@ export const createMultipartFetcher = (
   httpFetch: typeof fetch,
 ): Fetcher =>
   async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
+    const headers = [
+      new Headers({
+        'content-type': 'application/json',
+        accept: 'application/json, multipart/mixed',
+      }),
+      new Headers(options.headers ?? {}),
+      new Headers(fetcherOpts?.headers ?? {}),
+    ].reduce(mergeHeadersWithSetStrategy, new Headers());
+
     const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json, multipart/mixed',
-        ...options.headers,
-        // allow user-defined headers to override
-        // the static provided headers
-        ...fetcherOpts?.headers,
-      },
+      headers,
     }).then(r =>
       meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(r, {
         multiple: true,
@@ -187,9 +210,21 @@ export async function getWsFetcher(
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
+    const fetcherOptsHeaders = new Headers(fetcherOpts?.headers ?? {});
+    // @ts-expect-error: Current TS Config target does not support `Headers.entries()` method.
+    // However it is reported as "widely available" and so should be fine to use. This could
+    // would be more complicated without it.
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/Headers/entries
+    const fetcherOptsHeadersEntries: [string, string][] = [
+      ...fetcherOptsHeaders.entries(),
+    ];
+    // todo: If there are headers with multiple values, they will be lost. Is this a problem?
+    const fetcherOptsHeadersRecord = Object.fromEntries(
+      fetcherOptsHeadersEntries,
+    );
     return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
       ...options.wsConnectionParams,
-      ...fetcherOpts?.headers,
+      ...fetcherOptsHeadersRecord,
     });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
