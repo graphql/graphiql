@@ -1,5 +1,3 @@
-'use no memo';
-
 import { importCodeMirror } from '../common';
 
 describe('importCodeMirror', () => {
