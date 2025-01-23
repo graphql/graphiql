@@ -198,14 +198,14 @@ export async function getWsFetcher(
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
-    // todo: If there are headers with multiple values, they will be lost. Is this a problem?
-    const fetcherOptsHeadersRecord = Object.fromEntries(
-      // @ts-expect-error: todo enable ES target that has entries on headers
-      new Headers(fetcherOpts?.headers ?? {}).entries(),
-    );
+    // @ts-expect-error: todo enable ES target that has entries on headers
+    const fetcherOptsHeaders = new Headers(
+      fetcherOpts?.headers ?? {},
+    ).entries();
+
     return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
       ...options.wsConnectionParams,
-      ...fetcherOptsHeadersRecord,
+      ...Object.fromEntries(fetcherOptsHeaders),
     });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
