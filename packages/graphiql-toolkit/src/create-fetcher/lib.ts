@@ -198,11 +198,10 @@ export async function getWsFetcher(
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
-    // @ts-expect-error: todo enable ES target that has entries on headers
     const fetcherOptsHeaders = new Headers(
       fetcherOpts?.headers ?? {},
+      // @ts-expect-error: todo enable ES target that has entries on headers
     ).entries();
-
     return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
       ...options.wsConnectionParams,
       ...Object.fromEntries(fetcherOptsHeaders),
