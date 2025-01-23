@@ -1,6 +1,6 @@
 // todo
 // Current TS Config target does not support `Headers.entries()` method.
-// However it is reported as "widely available" and so should be fine to use.
+// However, it is reported as "widely available", and so should be fine to use.
 // @see https://developer.mozilla.org/en-US/docs/Web/API/Headers/entries
 // Several places we currently use ts-expect-error to allow this.
 
