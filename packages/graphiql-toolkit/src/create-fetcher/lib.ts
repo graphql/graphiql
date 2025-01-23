@@ -63,13 +63,13 @@ export const isSubscriptionWithName = (
 export const createSimpleFetcher =
   (options: CreateFetcherOptions, httpFetch: typeof fetch): Fetcher =>
   async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) => {
-    const headers = new Headers([
-      ['content-type', 'application/json'],
+    const headers = new Headers({
+      'content-type': 'application/json',
       // @ts-expect-error: todo enable ES target that has entries on headers
-      ...new Headers(options.headers ?? {}).entries(),
+      ...Object.fromEntries(new Headers(options.headers ?? {}).entries()),
       // @ts-expect-error: todo enable ES target that has entries on headers
-      ...new Headers(fetcherOpts?.headers ?? {}).entries(),
-    ]);
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    });
     const data = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
@@ -150,15 +150,14 @@ export const createMultipartFetcher = (
   httpFetch: typeof fetch,
 ): Fetcher =>
   async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
-    const headers = new Headers([
-      ['content-type', 'application/json'],
-      ['accept', 'application/json, multipart/mixed'],
+    const headers = new Headers({
+      'content-type': 'application/json',
+      accept: 'application/json, multipart/mixed',
       // @ts-expect-error: todo enable ES target that has entries on headers
-      ...new Headers(options.headers ?? {}).entries(),
+      ...Object.fromEntries(new Headers(options.headers ?? {}).entries()),
       // @ts-expect-error: todo enable ES target that has entries on headers
-      ...new Headers(fetcherOpts?.headers ?? {}).entries(),
-    ]);
-
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    });
     const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
@@ -198,13 +197,15 @@ export async function getWsFetcher(
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
-    const fetcherOptsHeaders = new Headers(
-      fetcherOpts?.headers ?? {},
+    const headers = {
       // @ts-expect-error: todo enable ES target that has entries on headers
-    ).entries();
+      ...Object.fromEntries(new Headers(options?.headers ?? {}).entries()),
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    };
     return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
       ...options.wsConnectionParams,
-      ...Object.fromEntries(fetcherOptsHeaders),
+      ...headers,
     });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
