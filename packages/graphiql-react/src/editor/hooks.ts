@@ -221,6 +221,7 @@ type UsePrettifyEditorsArgs = {
   caller?: Function;
 };
 
+// TEST see if have git setup
 export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
