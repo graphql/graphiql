@@ -190,7 +190,6 @@ describe('MessageProcessor with config', () => {
     );
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('default')).toBeDefined();
-    // TODO: for some reason the cache result formats the graphql query??
     const docCache = project.lsp._textDocumentCache;
     expect(
       docCache.get(project.uri('query.graphql'))!.contents[0].query,
@@ -218,8 +217,8 @@ describe('MessageProcessor with config', () => {
         character: 0,
       },
       end: {
-        line: 2,
-        character: 1,
+        line: 0,
+        character: 25,
       },
     });
 

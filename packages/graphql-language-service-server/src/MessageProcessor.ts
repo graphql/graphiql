@@ -1238,7 +1238,10 @@ export class MessageProcessor {
           const uri = URI.file(filePath).toString();
 
           // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
-          const contents = await this._parser(document.rawSDL, uri);
+          const contents = await this._parser(
+            await readFile(filePath, 'utf-8'),
+            uri,
+          );
           if (!contents[0]?.query) {
             return;
           }
