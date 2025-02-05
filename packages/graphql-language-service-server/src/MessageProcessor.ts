@@ -1241,7 +1241,7 @@ export class MessageProcessor {
 
           const fileContent = await readFile(filePath, 'utf-8');
           // I would use the already existing graphql-config AST, but there are a few reasons we can't yet
-          const contents = await parseDocument(fileContent, uri);
+          const contents = await this._parser(fileContent, uri);
           if (!contents[0]?.query) {
             return;
           }
