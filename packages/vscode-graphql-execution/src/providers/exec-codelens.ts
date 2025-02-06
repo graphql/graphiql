@@ -6,27 +6,41 @@ import {
   CodeLens,
   Range,
   Position,
-  ProviderResult,
 } from 'vscode';
 
 import { SourceHelper, ExtractedTemplateLiteral } from '../helpers/source';
 import capitalize from 'capitalize';
+import { GraphQLContentProvider } from './exec-content';
 
 export class GraphQLCodeLensProvider implements CodeLensProvider {
   outputChannel: OutputChannel;
   sourceHelper: SourceHelper;
+  contentProvider?: GraphQLContentProvider;
 
   constructor(outputChannel: OutputChannel) {
     this.outputChannel = outputChannel;
     this.sourceHelper = new SourceHelper(this.outputChannel);
   }
 
-  public provideCodeLenses(
+  public async provideCodeLenses(
     document: TextDocument,
     _token: CancellationToken,
     // for some reason, ProviderResult<CodeLens[]> doesn't work here
     // anymore after upgrading types
-  ): ProviderResult<[]> {
+  ): Promise<CodeLens[]> {
+    this.contentProvider = new GraphQLContentProvider(
+      document.uri,
+      this.outputChannel,
+      // @ts-expect-error
+      { uri: document.uri.fsPath },
+    );
+    await this.contentProvider.loadConfig();
+    if (
+      !this.contentProvider.hasConfig ||
+      !(await this.contentProvider.loadEndpoint())
+    ) {
+      return [];
+    }
     const literals: ExtractedTemplateLiteral[] =
       this.sourceHelper.extractAllTemplateLiterals(document, [
         'gql',
@@ -47,6 +61,6 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
       );
     });
 
-    return results as ProviderResult<[]>;
+    return results;
   }
 }
