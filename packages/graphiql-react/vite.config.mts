@@ -1,16 +1,45 @@
+/* eslint-disable no-console */
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
 import packageJSON from './package.json';
 
-const ReactCompilerConfig = {
+export const ReactCompilerConfig = {
   target: '17',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
     }
     return filename.includes('graphiql-react');
+  },
+  logger: {
+    logEvent(
+      filename: string,
+      result: { kind: 'CompileError' | 'CompileSuccess' | 'CompileSkip' },
+    ) {
+      if (result.kind === 'CompileSuccess') {
+        console.info('🚀 File', filename, 'was optimized with react-compiler');
+        return;
+      }
+      if (result.kind === 'CompileSkip') {
+        console.info(
+          '🚫 File',
+          filename,
+          'was skipped due to "use no memo" directive',
+        );
+        return;
+      }
+      console.error(
+        '❌ File',
+        filename,
+        'was not optimized with react-compiler',
+      );
+      console.error(result);
+      if (process.env.NODE_ENV === 'production') {
+        process.exit(1);
+      }
+    },
   },
 };
 

@@ -1,5 +1,3 @@
-'use no memo';
-
 import { fireEvent, render } from '@testing-library/react';
 import {
   GraphQLBoolean,

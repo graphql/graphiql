@@ -1,0 +1,31 @@
+diff --git a/node_modules/babel-plugin-react-compiler/dist/index.js b/node_modules/babel-plugin-react-compiler/dist/index.js
+index 7b6fd153b0e00cb3d0662b4e40a0ddae28688c5a..a9f3d5024f6a1d831d5ddb93aaa9eb36e84288c3 100644
+--- a/node_modules/babel-plugin-react-compiler/dist/index.js
++++ b/node_modules/babel-plugin-react-compiler/dist/index.js
+@@ -131137,6 +131137,8 @@ function lowerObjectPropertyKey(builder, property) {
+     return {kind: 'computed', name: place};
+   } else if (key.isIdentifier()) {
+     return {kind: 'identifier', name: key.node.name};
++  } else if (key.isNumericLiteral()) { // https://github.com/facebook/react/pull/31791
++    return {kind: 'identifier', name: String(key.node.value)}
+   }
+   builder.errors.push({
+     reason: `(BuildHIR::lowerExpression) Expected Identifier, got ${key.type} key in ObjectExpression`,
+@@ -132275,6 +132277,8 @@ function lowerExpression(builder, exprPath) {
+             : GeneratedSource,
+       };
+     }
++    // https://github.com/facebook/react/pull/29818
++    case "TSSatisfiesExpression":
+     case 'TSNonNullExpression': {
+       let expr = exprPath;
+       return lowerExpression(builder, expr.get('expression'));
+@@ -156908,6 +156912,8 @@ function callsHooksOrCreatesJsx(node, hookPattern) {
+   return invokesHooks || createsJsx;
+ }
+ function returnsNonNode(node) {
++  // https://github.com/facebook/react/pull/31792
++  if (node.type === 'ArrowFunctionExpression' && node.node.body.type === 'JSXElement') return false
+   let hasReturn = false;
+   let returnsNonNode = false;
+   node.traverse({
