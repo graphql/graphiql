@@ -26,7 +26,7 @@ To read about the purpose of this subcommittee, please see [the README](../../RE
 | Name                       | GitHub               | Organization       | Location                 |
 | :------------------------- | :------------------- | :----------------- | :----------------------- |
 | Benjie Gillam              | @benjie              | Graphile           | Chandler's Ford, UK      |
-
+| Dimitri Postolov           | @dimaMachina         | independant        | Paris, France            |
 
 ## Agenda
 
