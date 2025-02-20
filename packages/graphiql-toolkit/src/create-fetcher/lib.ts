@@ -1,3 +1,9 @@
+// todo
+// Current TS Config target does not support `Headers.entries()` method.
+// However, it is reported as "widely available", and so should be fine to use.
+// @see https://developer.mozilla.org/en-US/docs/Web/API/Headers/entries
+// We currently use ts-expect-error at several places to allow this.
+
 import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros';
 import type {
@@ -57,14 +63,17 @@ export const isSubscriptionWithName = (
 export const createSimpleFetcher =
   (options: CreateFetcherOptions, httpFetch: typeof fetch): Fetcher =>
   async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) => {
+    const headers = new Headers({
+      'content-type': 'application/json',
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(options.headers ?? {}).entries()),
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    });
     const data = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
-      headers: {
-        'content-type': 'application/json',
-        ...options.headers,
-        ...fetcherOpts?.headers,
-      },
+      headers,
     });
     return data.json();
   };
@@ -141,17 +150,18 @@ export const createMultipartFetcher = (
   httpFetch: typeof fetch,
 ): Fetcher =>
   async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
+    const headers = new Headers({
+      'content-type': 'application/json',
+      accept: 'application/json, multipart/mixed',
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(options.headers ?? {}).entries()),
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    });
     const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json, multipart/mixed',
-        ...options.headers,
-        // allow user-defined headers to override
-        // the static provided headers
-        ...fetcherOpts?.headers,
-      },
+      headers,
     }).then(r =>
       meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(r, {
         multiple: true,
@@ -187,9 +197,15 @@ export async function getWsFetcher(
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
+    const headers = {
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(options?.headers ?? {}).entries()),
+      // @ts-expect-error: todo enable ES target that has entries on headers
+      ...Object.fromEntries(new Headers(fetcherOpts?.headers ?? {}).entries()),
+    };
     return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
       ...options.wsConnectionParams,
-      ...fetcherOpts?.headers,
+      ...headers,
     });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
