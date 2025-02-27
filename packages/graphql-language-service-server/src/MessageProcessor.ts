@@ -6,8 +6,8 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
-import { existsSync, mkdirSync } from 'node:fs';
+// do not change to node:fs import, or it will break mock-fs
+import { existsSync, mkdirSync } from 'fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { URI } from 'vscode-uri';
