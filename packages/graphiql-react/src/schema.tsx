@@ -391,7 +391,7 @@ function useIntrospectionQuery({
 }
 
 function parseHeaderString(headersString?: string) {
-  let headers: Record<string, unknown> | null = null;
+  let headers: Record<string, string> | null = null;
   let isValidJSON = true;
 
   try {
