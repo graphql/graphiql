@@ -49,22 +49,27 @@ declare namespace Cypress {
   }
 }
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('dataCy', value => {
   return cy.get(`[data-cy="${value}"]`);
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('clickExecuteQuery', () => {
   return cy.get('.graphiql-execute-button').click();
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('clickPrettify', () => {
   return cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `/?query=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
     url += `&variables=${encodeURIComponent(
+      // @ts-expect-error -- fixme
       JSON.stringify(variables, null, 2) || variablesString,
     )}`;
   }
