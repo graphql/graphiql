@@ -14839,6 +14839,11 @@ parent-module@^2.0.0:
   dependencies:
     callsites "^3.1.0"
 
+parse-diff@0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/parse-diff/-/parse-diff-0.11.1.tgz#d93ca2d225abed280782bccb1476711ca9dd84f0"
+  integrity sha512-Oq4j8LAOPOcssanQkIjxosjATBIEJhCxMCxPhMu+Ci4wdNmAEdx0O+a7gzbR2PyKXgKPvRLIN5g224+dJAsKHA==
+
 parse-entities@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/parse-entities/-/parse-entities-2.0.0.tgz#53c6eb5b9314a1f4ec99fa0fdf7ce01ecda0cbe8"
@@ -19343,13 +19348,14 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-wgutils@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/wgutils/-/wgutils-0.1.7.tgz#17082c4bcacde23216c8ee3f3c6d92df0e6adaf8"
-  integrity sha512-5Z3dPmaZebAPKNSuUazzN3GZiYu8weyYKsXOKfFTz/jrtFbHH8q3hz2fvg2sHthbTC0IsEgiqEyzQpes9qTPxg==
+wgutils@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/wgutils/-/wgutils-1.2.5.tgz#193b96bb45553bcafa9991f5128e7154b78b64be"
+  integrity sha512-Yr6W8MFJcbzOphhOe0Knzj75QMaDbwjKQ/xRIoUgzM8SOCDC3IJJ7gE8gTrT+X2w5wmgK3HKOLT3VY+/fquQUg==
   dependencies:
     date-fns "^2"
     date-fns-tz "^2.0.0"
+    parse-diff "0.11.1"
     yargs "^17.7.2"
     zod "^3.22.4"
 
