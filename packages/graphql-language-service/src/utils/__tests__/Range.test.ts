@@ -7,16 +7,18 @@
  *
  */
 
-import { Location } from 'graphql';
+import { Location, parse, getOperationAST, FieldNode } from 'graphql';
 import { Range, Position, offsetToPosition, locToRange } from '../Range';
 
 const text = `query test {
   name
 }`;
+const parsed = parse(text);
+const nameNode = getOperationAST(parsed)!.selectionSet.selections[0];
 
 const absRange: Location = {
   start: 15,
-  end: 18,
+  end: 19,
   // @ts-ignore
   startToken: null,
   // @ts-ignore
@@ -26,7 +28,7 @@ const absRange: Location = {
 }; // position of 'name' attribute in the test query
 
 const offsetRangeStart = new Position(1, 2);
-const offsetRangeEnd = new Position(1, 5);
+const offsetRangeEnd = new Position(1, 6);
 
 describe('Position', () => {
   it('constructs a IPosition object', () => {
@@ -86,5 +88,32 @@ describe('locToRange()', () => {
     expect(range.start.line).toEqual(offsetRangeStart.line);
     expect(range.end.character).toEqual(offsetRangeEnd.character);
     expect(range.end.line).toEqual(offsetRangeEnd.line);
+  });
+  it('returns the range for a location from a parsed node', () => {
+    const range = locToRange(text, nameNode.loc!);
+    expect(range.start.character).toEqual(offsetRangeStart.character);
+    expect(range.start.line).toEqual(offsetRangeStart.line);
+    expect(range.end.character).toEqual(offsetRangeEnd.character);
+    expect(range.end.line).toEqual(offsetRangeEnd.line);
+  });
+  it('returns the same range as offsetToPosition with multiline token', () => {
+    const blockText = `mutation test {
+      saveMarkdown(markdown: """
+        * block
+        * multiline
+        * string
+      """)
+    }`;
+    const blockParsed = parse(blockText);
+    const fieldNode = getOperationAST(blockParsed)!.selectionSet
+      .selections[0] as FieldNode;
+    const argumentNode = fieldNode.arguments![0];
+    const startPosition = offsetToPosition(blockText, argumentNode.loc!.start);
+    const endPosition = offsetToPosition(blockText, argumentNode.loc!.end);
+    const range = locToRange(blockText, argumentNode.loc!);
+    expect(range.start.character).toEqual(startPosition.character);
+    expect(range.start.line).toEqual(startPosition.line);
+    expect(range.end.character).toEqual(endPosition.character);
+    expect(range.end.line).toEqual(endPosition.line);
   });
 });
