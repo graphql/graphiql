@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.14.1
+
+### Patch Changes
+
+- [#3861](https://github.com/graphql/graphiql/pull/3861) [`c5325dd`](https://github.com/graphql/graphiql/commit/c5325ddc30bfe4528c6a238be72ef6db6ae72795) Thanks [@motemen](https://github.com/motemen)! - fix parsing non-graphql documents
+
 ## 2.14.0
 
 ### Minor Changes
