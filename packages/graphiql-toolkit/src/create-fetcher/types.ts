@@ -31,7 +31,7 @@ export type FetcherParams = {
 };
 
 export type FetcherOpts = {
-  headers?: { [key: string]: any };
+  headers?: HeadersInit;
   documentAST?: DocumentNode;
 };
 
@@ -104,7 +104,7 @@ export interface CreateFetcherOptions {
    * If you enable the headers editor and the user provides
    * A header you set statically here, it will be overridden by their value.
    */
-  headers?: Record<string, string>;
+  headers?: HeadersInit;
   /**
    * Websockets connection params used when you provide subscriptionUrl. graphql-ws `ClientOptions.connectionParams`
    */
