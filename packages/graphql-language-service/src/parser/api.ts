@@ -175,7 +175,8 @@ export function getContextAtPosition(
   cursor: IPosition,
   schema: GraphQLSchema,
   contextToken?: ContextToken,
-  options?: { mode?: GraphQLDocumentMode; uri?: string },
+  options?: { mode?: GraphQLDocumentMode; uri?: string; offset?: number },
+  offset = 0,
 ): {
   token: ContextToken;
   state: State;
@@ -183,7 +184,7 @@ export function getContextAtPosition(
   mode: GraphQLDocumentMode;
 } | null {
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor, 0);
+    contextToken || getTokenAtPosition(queryText, cursor, offset);
   if (!token) {
     return null;
   }
