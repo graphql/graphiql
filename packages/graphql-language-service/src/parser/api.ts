@@ -183,7 +183,7 @@ export function getContextAtPosition(
   mode: GraphQLDocumentMode;
 } | null {
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor, 1);
+    contextToken || getTokenAtPosition(queryText, cursor, 0);
   if (!token) {
     return null;
   }
