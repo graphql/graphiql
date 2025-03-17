@@ -2,7 +2,7 @@ import { readFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import mockfs from 'mock-fs';
+import { vol } from 'memfs';
 import { MockFile, MockProject } from './__utils__/MockProject';
 import { FileChangeType } from 'vscode-languageserver';
 import { serializeRange } from './__utils__/utils';
@@ -90,8 +90,9 @@ describe('MessageProcessor with no config', () => {
   });
 
   afterEach(() => {
-    mockfs.restore();
+    vol.reset();
     fetchMock.restore();
+    jest.resetAllMocks();
   });
 
   it('fails to initialize with empty config file', async () => {
@@ -157,7 +158,7 @@ describe('MessageProcessor with no config', () => {
 
 describe('MessageProcessor with config', () => {
   afterEach(() => {
-    mockfs.restore();
+    vol.reset();
     fetchMock.restore();
   });
 

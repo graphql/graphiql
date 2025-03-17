@@ -49,6 +49,7 @@
     "graphql-config": "5.0.3",
     "graphql-language-service": "^5.3.0",
     "lru-cache": "^10.2.0",
+    "memfs": "^4.17.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",

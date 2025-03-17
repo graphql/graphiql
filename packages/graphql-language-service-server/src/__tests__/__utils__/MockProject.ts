@@ -1,9 +1,27 @@
-import mockfs from 'mock-fs';
 import { MessageProcessor } from '../../MessageProcessor';
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { URI } from 'vscode-uri';
 import { FileChangeType } from 'vscode-languageserver';
-import { FileChangeTypeKind } from 'graphql-language-service';
+import type { FileChangeTypeKind } from 'graphql-language-service';
+import { type fs, vol } from 'memfs';
+
+jest.mock('node:fs/promises', async () => {
+  const memfs: { fs: typeof fs } = await import('memfs');
+
+  return memfs.fs.promises;
+});
+
+jest.mock('node:fs', async () => {
+  const memfs: { fs: typeof fs } = await import('memfs');
+
+  return memfs.fs;
+});
+
+jest.mock('fs', async () => {
+  const memfs: { fs: typeof fs } = await import('memfs');
+
+  return memfs.fs;
+});
 
 export type MockFile = [filename: string, text: string];
 
@@ -38,10 +56,20 @@ const modules = [
   'minimatch',
   'tslib',
 ];
-const defaultMocks = modules.reduce((acc, module) => {
-  acc[`node_modules/${module}`] = mockfs.load(`node_modules/${module}`);
-  return acc;
-}, {});
+
+export const mockFiles = (additional: Record<string, string>) => {
+  vol.fromJSON(
+    {
+      '/tmp/graphql-language-service': null,
+      ...additional,
+      ...modules.reduce((acc, module) => {
+        acc[`/node_modules/${module}`] = jest.mock(module);
+        return acc;
+      }, {}),
+    },
+    '/tmp',
+  );
+};
 
 type File = [filename: string, text: string];
 type Files = File[];
@@ -100,15 +128,11 @@ export class MockProject {
     });
   }
   private mockFiles() {
-    const mockFiles = {
-      ...defaultMocks,
-      // without this, the generated schema file may not be cleaned up by previous tests
-      '/tmp/graphql-language-service': mockfs.directory(),
-    };
+    const files = {};
     for (const [filename, text] of this.fileCache) {
-      mockFiles[this.filePath(filename)] = text;
+      files[this.filePath(filename)] = text;
     }
-    mockfs(mockFiles);
+    mockFiles(files);
   }
   public filePath(filename: string) {
     return `${this.root}/${filename}`;
@@ -183,7 +207,7 @@ export class MockProject {
     });
   }
   async deleteFile(filename: string) {
-    mockfs.restore();
+    //vol.reset();
     this.fileCache.delete(filename);
     this.mockFiles();
     await this.lsp.handleWatchedFilesChangedNotification({

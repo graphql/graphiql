@@ -145,5 +145,8 @@
     "@babel/traverse": "^7.23.2",
     "vscode-languageserver-types": "3.17.3",
     "markdown-it": "14.1.0"
+  },
+  "volta": {
+    "node": "22.14.0"
   }
 }
