@@ -13,11 +13,11 @@ import {
  * - optionally supports graphql-ws or `
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
-  const httpFetch =
-    options.fetch || (typeof window !== 'undefined' && window.fetch);
+  const httpFetch = options.fetch ?? globalThis.fetch;
   if (!httpFetch) {
     throw new Error('No valid fetcher implementation available');
   }
+
   options.enableIncrementalDelivery =
     options.enableIncrementalDelivery !== false;
   // simpler fetcher for schema requests
@@ -29,6 +29,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
 
   return async (graphQLParams, fetcherOpts) => {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
+      // todo test this
       return (options.schemaFetcher || simpleFetcher)(
         graphQLParams,
         fetcherOpts,
