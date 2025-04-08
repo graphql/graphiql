@@ -25,6 +25,7 @@ To read about the purpose of this subcommittee, please see [the README](../../RE
 <!-- prettier-ignore -->
 | Name                       | GitHub               | Organization       | Location                 |
 | :------------------------- | :------------------- | :----------------- | :----------------------- |
+| Lavan J V|@jvlavan|Self|Ch,IN|
 
 
 ## Agenda
