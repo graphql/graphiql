@@ -3,9 +3,10 @@ import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import postCssNestingPlugin from 'postcss-nesting';
+import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json';
 
-export const ReactCompilerConfig = {
+export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   target: '17',
   sources(filename) {
     if (filename.includes('__tests__')) {
@@ -14,10 +15,7 @@ export const ReactCompilerConfig = {
     return filename.includes('graphiql-react');
   },
   logger: {
-    logEvent(
-      filename: string,
-      result: { kind: 'CompileError' | 'CompileSuccess' | 'CompileSkip' },
-    ) {
+    logEvent(filename, result) {
       if (result.kind === 'CompileSuccess') {
         console.info('🚀 File', filename, 'was optimized with react-compiler');
         return;
@@ -46,7 +44,7 @@ export const ReactCompilerConfig = {
 export const plugins: PluginOption[] = [
   react({
     babel: {
-      plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
     },
   }),
   svgr({

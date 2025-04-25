@@ -2,11 +2,12 @@ import { sep } from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
+import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
+import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json';
-import { ReactCompilerConfig as reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 
-const ReactCompilerConfig = {
-  ...reactCompilerConfig,
+const reactCompilerConfig: Partial<ReactCompilerConfig> = {
+  ...$reactCompilerConfig,
   sources(filename) {
     if (
       filename.includes('__tests__') ||
@@ -21,7 +22,7 @@ const ReactCompilerConfig = {
 export const plugins: PluginOption[] = [
   react({
     babel: {
-      plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
     },
   }),
 ];
@@ -84,7 +85,7 @@ const esmConfig = defineConfig({
     },
   },
   server: {
-    // prevent browser window from opening automatically
+    // prevent a browser window from opening automatically
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
