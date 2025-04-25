@@ -18,7 +18,7 @@ import { useSchemaContext } from '../schema';
 import { createContextHook, createNullableContext } from '../utility/context';
 
 export type ExplorerFieldDef =
-  | GraphQLField<{}, {}, {}>
+  | GraphQLField<unknown, unknown>
   | GraphQLInputField
   | GraphQLArgument;
 
@@ -116,8 +116,10 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
           return oldNavStack;
         }
         const newNavStack: ExplorerNavStack = [initialNavStackItem];
-        let lastEntity: GraphQLNamedType | GraphQLField<any, any, any> | null =
-          null;
+        let lastEntity:
+          | GraphQLNamedType
+          | GraphQLField<unknown, unknown>
+          | null = null;
         for (const item of oldNavStack) {
           if (item === initialNavStackItem) {
             // No need to copy the initial item

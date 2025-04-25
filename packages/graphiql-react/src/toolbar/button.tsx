@@ -1,4 +1,4 @@
-import { forwardRef, MouseEventHandler, useState } from 'react';
+import { forwardRef, MouseEventHandler, useState, JSX } from 'react';
 import { clsx } from 'clsx';
 import { Tooltip, UnStyledButton } from '../ui';
 
