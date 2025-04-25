@@ -910,13 +910,11 @@ export class MessageProcessor {
         project,
       });
       if (typeof locateResult === 'string') {
-        const [uri, startLine = '1', endLine = '1'] = locateResult.split(':');
+        const [uri, line = '1', column = '1'] = locateResult.split(':');
+        const location = new Position(parseInt(line, 10), parseInt(column, 10))
         return {
           uri,
-          range: new Range(
-            new Position(parseInt(startLine, 10), 0),
-            new Position(parseInt(endLine, 10), 0),
-          ),
+          range: new Range(location, location),
         };
       }
       return locateResult;
