@@ -107,7 +107,7 @@ import { Component } from 'react';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.endpoint' });
 
-class MyComponent extends React {
+class MyComponent extends Component {
   _graphiql: GraphiQL;
 
   componentDidMount() {
