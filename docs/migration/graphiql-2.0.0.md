@@ -103,11 +103,11 @@ easy access to its props, state and methods by attaching a ref to it like so:
 ```tsx
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import React from 'react';
+import { Component } from 'react';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.endpoint' });
 
-class MyComponent extends React.Component {
+class MyComponent extends React {
   _graphiql: GraphiQL;
 
   componentDidMount() {
