@@ -32,9 +32,10 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
         '❌ File',
         filename,
         'was not optimized with react-compiler',
+        result,
       );
-      console.error(result);
-      if (process.env.NODE_ENV === 'production') {
+      const isDev = process.argv.at(-1)! === '--watch';
+      if (!isDev) {
         process.exit(1);
       }
     },

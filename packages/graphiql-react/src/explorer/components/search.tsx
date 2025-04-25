@@ -7,7 +7,7 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { FocusEventHandler, useEffect, useRef, useState } from 'react';
+import { FC, FocusEventHandler, useEffect, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
@@ -19,7 +19,7 @@ import './search.css';
 import { renderType } from './utils';
 import { isMacOs } from '../../utility/is-macos';
 
-export function Search() {
+export const Search: FC = () => {
   const { explorerNavStack, push } = useExplorerContext({
     nonNull: true,
     caller: Search,
@@ -58,10 +58,7 @@ export function Search() {
   };
   const [isFocused, setIsFocused] = useState(false);
   const handleFocus: FocusEventHandler = e => {
-    // Fix https://github.com/graphql/graphiql/issues/3842
-    requestAnimationFrame(() => {
-      setIsFocused(e.type === 'focus');
-    });
+    setIsFocused(e.type === 'focus');
   };
 
   const shouldSearchBoxAppear =
@@ -99,58 +96,54 @@ export function Search() {
           data-cy="doc-explorer-input"
         />
       </div>
-
-      {/* display on focus */}
-      {isFocused && (
-        <Combobox.Options data-cy="doc-explorer-list">
-          {results.within.length +
-            results.types.length +
-            results.fields.length ===
-          0 ? (
-            <li className="graphiql-doc-explorer-search-empty">
-              No results found
-            </li>
-          ) : (
-            results.within.map((result, i) => (
-              <Combobox.Option
-                key={`within-${i}`}
-                value={result}
-                data-cy="doc-explorer-option"
-              >
-                <Field field={result.field} argument={result.argument} />
-              </Combobox.Option>
-            ))
-          )}
-          {results.within.length > 0 &&
-          results.types.length + results.fields.length > 0 ? (
-            <div className="graphiql-doc-explorer-search-divider">
-              Other results
-            </div>
-          ) : null}
-          {results.types.map((result, i) => (
+      <Combobox.Options data-cy="doc-explorer-list">
+        {results.within.length +
+          results.types.length +
+          results.fields.length ===
+        0 ? (
+          <li className="graphiql-doc-explorer-search-empty">
+            No results found
+          </li>
+        ) : (
+          results.within.map((result, i) => (
             <Combobox.Option
-              key={`type-${i}`}
+              key={`within-${i}`}
               value={result}
               data-cy="doc-explorer-option"
             >
-              <Type type={result.type} />
-            </Combobox.Option>
-          ))}
-          {results.fields.map((result, i) => (
-            <Combobox.Option
-              key={`field-${i}`}
-              value={result}
-              data-cy="doc-explorer-option"
-            >
-              <Type type={result.type} />.
               <Field field={result.field} argument={result.argument} />
             </Combobox.Option>
-          ))}
-        </Combobox.Options>
-      )}
+          ))
+        )}
+        {results.within.length > 0 &&
+        results.types.length + results.fields.length > 0 ? (
+          <div className="graphiql-doc-explorer-search-divider">
+            Other results
+          </div>
+        ) : null}
+        {results.types.map((result, i) => (
+          <Combobox.Option
+            key={`type-${i}`}
+            value={result}
+            data-cy="doc-explorer-option"
+          >
+            <Type type={result.type} />
+          </Combobox.Option>
+        ))}
+        {results.fields.map((result, i) => (
+          <Combobox.Option
+            key={`field-${i}`}
+            value={result}
+            data-cy="doc-explorer-option"
+          >
+            <Type type={result.type} />.
+            <Field field={result.field} argument={result.argument} />
+          </Combobox.Option>
+        ))}
+      </Combobox.Options>
     </Combobox>
   );
-}
+};
 
 type TypeMatch = { type: GraphQLNamedType };
 
