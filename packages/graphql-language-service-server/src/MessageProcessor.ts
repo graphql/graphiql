@@ -72,7 +72,7 @@ import {
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
-import glob from 'fast-glob';
+import { glob } from 'fast-glob';
 import { isProjectSDLOnly, unwrapProjectSchema } from './common';
 import { DefinitionQueryResponse } from 'graphql-language-service/src/interface';
 import { default as debounce } from 'debounce-promise';
