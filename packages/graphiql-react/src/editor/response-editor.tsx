@@ -1,7 +1,8 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
-import { ComponentType, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { ComponentType, useEffect, useRef, JSX } from 'react';
+// eslint-disable-next-line react/no-deprecated -- We can't refactor to root.unmount() from React 18 because we support React 16/17 too
+import { unmountComponentAtNode, render } from 'react-dom';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -28,8 +29,7 @@ export type ResponseTooltipType = ComponentType<{
 
 export type UseResponseEditorArgs = CommonEditorProps & {
   /**
-   * Customize the tooltip when hovering over properties in the response
-   * editor.
+   * Customize the tooltip when hovering over properties in the response editor.
    */
   responseTooltip?: ResponseTooltipType;
 };
@@ -52,6 +52,7 @@ function importCodeMirrorImports() {
     { useCommonAddons: false },
   );
 }
+
 // To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
 const _useResponseEditor = useResponseEditor;
 
@@ -109,15 +110,11 @@ export function useResponseEditor(
               <ImagePreview key="image-preview" token={token} />,
             );
           }
-
-          // We can't refactor to root.unmount() from React 18 because we support React 16/17 too
           if (!infoElements.length) {
-            // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
-            ReactDOM.unmountComponentAtNode(tooltipDiv);
+            unmountComponentAtNode(tooltipDiv);
             return null;
           }
-          // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
-          ReactDOM.render(infoElements, tooltipDiv);
+          render(infoElements, tooltipDiv);
           return tooltipDiv;
         },
       );
