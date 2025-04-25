@@ -463,7 +463,6 @@ module.exports = {
     },
     {
       files: ['packages/{graphiql-react,graphiql}/**'],
-      plugins: ['react-compiler'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
@@ -473,7 +472,7 @@ module.exports = {
             importNames: ['memo', 'useCallback', 'useMemo'],
           },
         ],
-        'react-compiler/react-compiler': 'error',
+        'react-hooks/react-compiler': 'error',
       },
     },
     {

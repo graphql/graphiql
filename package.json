@@ -77,7 +77,6 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
-    "eslint-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
     "graphql-http": "^1.22.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
@@ -119,7 +118,7 @@
     "eslint-plugin-mdx": "^3.1.5",
     "eslint-plugin-promise": "^7.0.0",
     "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "eslint-plugin-sonar": "^0.14.1",
     "eslint-plugin-sonarjs": "^1.0.4",
     "eslint-plugin-unicorn": "^55.0.0",
