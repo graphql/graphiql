@@ -458,7 +458,7 @@ export function useOptimisticState([
       lastStateRef.current.pending === null &&
       lastStateRef.current.last !== newState
     ) {
-      // No pending updates and change have occurred... send it upstream
+      // No pending updates and change has occurred... send it upstream
       lastStateRef.current.pending = newState;
       upstreamSetState(newState);
     }
