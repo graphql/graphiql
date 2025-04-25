@@ -47,7 +47,7 @@ export function History() {
   );
   useEffect(() => {
     if (clearStatus) {
-      // reset button after a couple seconds
+      // reset the button after a couple seconds
       setTimeout(() => {
         setClearStatus(null);
       }, 2000);

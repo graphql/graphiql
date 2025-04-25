@@ -57,7 +57,7 @@ module.exports = {
         'plugin:import-x/recommended',
         'plugin:import-x/typescript',
         'plugin:react/recommended',
-        'plugin:react-hooks/recommended',
+        'plugin:react-hooks/recommended-legacy',
         'plugin:react/jsx-runtime',
         'prettier',
       ],

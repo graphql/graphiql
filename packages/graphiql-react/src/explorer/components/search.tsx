@@ -59,9 +59,9 @@ export function Search() {
   const [isFocused, setIsFocused] = useState(false);
   const handleFocus: FocusEventHandler = e => {
     // Fix https://github.com/graphql/graphiql/issues/3842
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       setIsFocused(e.type === 'focus');
-    }, 0);
+    });
   };
 
   const shouldSearchBoxAppear =
