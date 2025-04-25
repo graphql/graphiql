@@ -7,7 +7,7 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import { FC, FocusEventHandler, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
@@ -32,6 +32,11 @@ export const Search: FC = () => {
   const debouncedGetSearchResults = debounce(200, (search: string) => {
     setResults(getSearchResults(search));
   });
+  // Workaround to fix React compiler error:
+  // Ref values (the `current` property) may not be accessed during render.
+  const [ref] = useState(inputRef);
+  const isFocused = ref.current === document.activeElement;
+
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
   }, [debouncedGetSearchResults, searchValue]);
@@ -56,11 +61,6 @@ export const Search: FC = () => {
         : { name: def.type.name, def: def.type },
     );
   };
-  const [isFocused, setIsFocused] = useState(false);
-  const handleFocus: FocusEventHandler = e => {
-    setIsFocused(e.type === 'focus');
-  };
-
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
     isObjectType(navItem.def) ||
@@ -87,8 +87,6 @@ export const Search: FC = () => {
         <MagnifyingGlassIcon />
         <Combobox.Input
           autoComplete="off"
-          onFocus={handleFocus}
-          onBlur={handleFocus}
           onChange={event => setSearchValue(event.target.value)}
           placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
           ref={inputRef}
@@ -96,51 +94,53 @@ export const Search: FC = () => {
           data-cy="doc-explorer-input"
         />
       </div>
-      <Combobox.Options data-cy="doc-explorer-list">
-        {results.within.length +
-          results.types.length +
-          results.fields.length ===
-        0 ? (
-          <li className="graphiql-doc-explorer-search-empty">
-            No results found
-          </li>
-        ) : (
-          results.within.map((result, i) => (
+      {isFocused && (
+        <Combobox.Options data-cy="doc-explorer-list">
+          {results.within.length +
+            results.types.length +
+            results.fields.length ===
+          0 ? (
+            <li className="graphiql-doc-explorer-search-empty">
+              No results found
+            </li>
+          ) : (
+            results.within.map((result, i) => (
+              <Combobox.Option
+                key={`within-${i}`}
+                value={result}
+                data-cy="doc-explorer-option"
+              >
+                <Field field={result.field} argument={result.argument} />
+              </Combobox.Option>
+            ))
+          )}
+          {results.within.length > 0 &&
+          results.types.length + results.fields.length > 0 ? (
+            <div className="graphiql-doc-explorer-search-divider">
+              Other results
+            </div>
+          ) : null}
+          {results.types.map((result, i) => (
             <Combobox.Option
-              key={`within-${i}`}
+              key={`type-${i}`}
               value={result}
               data-cy="doc-explorer-option"
             >
+              <Type type={result.type} />
+            </Combobox.Option>
+          ))}
+          {results.fields.map((result, i) => (
+            <Combobox.Option
+              key={`field-${i}`}
+              value={result}
+              data-cy="doc-explorer-option"
+            >
+              <Type type={result.type} />.
               <Field field={result.field} argument={result.argument} />
             </Combobox.Option>
-          ))
-        )}
-        {results.within.length > 0 &&
-        results.types.length + results.fields.length > 0 ? (
-          <div className="graphiql-doc-explorer-search-divider">
-            Other results
-          </div>
-        ) : null}
-        {results.types.map((result, i) => (
-          <Combobox.Option
-            key={`type-${i}`}
-            value={result}
-            data-cy="doc-explorer-option"
-          >
-            <Type type={result.type} />
-          </Combobox.Option>
-        ))}
-        {results.fields.map((result, i) => (
-          <Combobox.Option
-            key={`field-${i}`}
-            value={result}
-            data-cy="doc-explorer-option"
-          >
-            <Type type={result.type} />.
-            <Field field={result.field} argument={result.argument} />
-          </Combobox.Option>
-        ))}
-      </Combobox.Options>
+          ))}
+        </Combobox.Options>
+      )}
     </Combobox>
   );
 };
