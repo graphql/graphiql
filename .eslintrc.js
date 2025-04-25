@@ -57,7 +57,7 @@ module.exports = {
         'plugin:import-x/recommended',
         'plugin:import-x/typescript',
         'plugin:react/recommended',
-        'plugin:react-hooks/recommended',
+        'plugin:react-hooks/recommended-legacy',
         'plugin:react/jsx-runtime',
         'prettier',
       ],
@@ -462,8 +462,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/graphiql-react/**'],
-      plugins: ['react-compiler'],
+      files: ['packages/{graphiql-react,graphiql}/**'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
@@ -473,7 +472,7 @@ module.exports = {
             importNames: ['memo', 'useCallback', 'useMemo'],
           },
         ],
-        'react-compiler/react-compiler': 'error',
+        'react-hooks/react-compiler': 'error',
       },
     },
     {

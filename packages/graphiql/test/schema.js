@@ -6,8 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const graphql = require('graphql');
-
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -25,7 +23,7 @@ const {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} = graphql;
+} = require('graphql');
 
 const directives =
   parseInt(version, 10) > 16
@@ -131,9 +129,7 @@ const UnionSecond = new GraphQLObjectType({
 const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [UnionFirst, UnionSecond],
-  resolveType() {
-    return UnionFirst;
-  },
+  resolveType: () => UnionFirst,
 });
 
 const Greeting = new GraphQLObjectType({
@@ -193,7 +189,7 @@ const Person = new GraphQLObjectType({
     friends: {
       type: new GraphQLList(Person),
       async *resolve(_value, _args) {
-        const names = ['James', 'Mary', 'John', 'Patrica']; // Top 4 names https://www.ssa.gov/oact/babynames/decades/century.html
+        const names = ['James', 'Mary', 'John', 'Patrica']; // Top 4 names https://ssa.gov/oact/babynames/decades/century.html
         for (const name of names) {
           await sleep(100);
           yield { name };
@@ -203,14 +199,15 @@ const Person = new GraphQLObjectType({
   }),
 });
 
-const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
+const sleep = async timeout =>
+  new Promise(resolve => setTimeout(resolve, timeout));
 
 const longDescription = `
 The \`longDescriptionType\` field on the \`Test\` type has a long, verbose, description to test inline field docs.
 
 > We want to test several \`markdown\` styles!
 
-Check out [Markdown](https://www.markdownguide.org/) by the way.
+Check out [Markdown](https://markdownguide.org) by the way.
 
 Some notes:
 - Lists
@@ -219,14 +216,14 @@ Some notes:
   - and with very very very very very very very very very very long items that span multiple lines
 - you get the gist
 
-To-Do's:
+TO-DO's:
 1. Open GraphiQL
-2. Write a query
+1. Write a query
    1. Maybe add some variables
-   2. Could also add headers
-3. Send the request
+   1. Could also add headers
+1. Send the request
 
-Example quey:
+Example query:
 \`\`\`graphql
 {
   test {
@@ -238,7 +235,7 @@ Example quey:
 
 And we have a cool logo:
 
-![](/images/logo.svg)
+![](/resources/logo.svg)
 `.trim();
 
 const TestType = new GraphQLObjectType({
@@ -307,7 +304,7 @@ const TestType = new GraphQLObjectType({
     image: {
       type: GraphQLString,
       description: 'field that returns an image URI.',
-      resolve: () => '/images/logo.svg',
+      resolve: () => '/resources/logo.svg',
     },
     deprecatedField: {
       type: TestType,
@@ -372,7 +369,7 @@ const TestMutationType = new GraphQLObjectType({
 const TestSubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   description:
-    'This is a simple subscription type. Learn more at https://www.npmjs.com/package/graphql-ws',
+    'This is a simple subscription type. Learn more at https://npmjs.com/package/graphql-ws',
   fields: {
     message: {
       type: GraphQLString,
@@ -392,12 +389,10 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-const myTestSchema = new GraphQLSchema({
+module.exports = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
   description: 'This is a test schema for GraphiQL',
   directives,
 });
-
-module.exports = myTestSchema;

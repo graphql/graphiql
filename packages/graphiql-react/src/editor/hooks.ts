@@ -346,7 +346,7 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  'use no memo'; // eslint-disable-line react-compiler/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+  'use no memo'; // eslint-disable-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   const context = useEditorContext({
     nonNull: true,
   });
@@ -369,7 +369,7 @@ export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
 };
 
 /**
- * useState-like hook for current tab operations editor state
+ * useState-like hook for the current tab operations editor state
  */
 export const useOperationsEditorState = (): [
   operations: string,
@@ -408,8 +408,7 @@ export const useHeadersEditorState = (): [
  * calling them with great frequency (due to, for instance, mouse, keyboard, or
  * network events).
  *
- * Example:
- *
+ * @example
  * ```ts
  * const [operationsString, handleEditOperations] =
  *   useOptimisticState(useOperationsEditorState());

@@ -15,7 +15,7 @@ const mockSuccess = {
   data: {
     longDescriptionType: {
       id: 'abc123',
-      image: '/images/logo.svg',
+      image: '/resources/logo.svg',
       hasArgs: '{"defaultValue":"test default value"}',
       test: {
         id: 'abc123',

@@ -24,8 +24,14 @@ app.use(express.json());
 app.post('/graphql', handler);
 app.get('/graphql', handler);
 
-app.use(express.static(path.resolve(__dirname, '../')));
-app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
+// On CI we test the UMD build
+if (process.env.CI === 'true') {
+  app.use(express.static(path.join(__dirname, '..')));
+} else {
+  app.get('/', (req, res) => {
+    res.redirect('http://localhost:5173');
+  });
+}
 
 // messy but it allows close
 const server = createServer(app);

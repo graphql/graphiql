@@ -1,5 +1,3 @@
-'use no memo';
-
 import { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';

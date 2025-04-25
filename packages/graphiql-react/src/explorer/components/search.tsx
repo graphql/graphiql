@@ -7,16 +7,7 @@ import {
   isInterfaceType,
   isObjectType,
 } from 'graphql';
-import {
-  FocusEventHandler,
-  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-  useCallback,
-  useEffect,
-  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
@@ -28,24 +19,24 @@ import './search.css';
 import { renderType } from './utils';
 import { isMacOs } from '../../utility/is-macos';
 
-export function Search() {
-  'use no memo'; // TODO: add test https://github.com/graphql/graphiql/issues/3842
+export const Search: FC = () => {
   const { explorerNavStack, push } = useExplorerContext({
     nonNull: true,
     caller: Search,
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null!);
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
-  const [results, setResults] = useState(getSearchResults(searchValue));
-  const debouncedGetSearchResults = useMemo(
-    () =>
-      debounce(200, (search: string) => {
-        setResults(getSearchResults(search));
-      }),
-    [getSearchResults],
-  );
+  const [results, setResults] = useState(() => getSearchResults(searchValue));
+  const debouncedGetSearchResults = debounce(200, (search: string) => {
+    setResults(getSearchResults(search));
+  });
+  // Workaround to fix React compiler error:
+  // Ref values (the `current` property) may not be accessed during render.
+  const [ref] = useState(inputRef);
+  const isFocused = ref.current === document.activeElement;
+
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
   }, [debouncedGetSearchResults, searchValue]);
@@ -53,7 +44,7 @@ export function Search() {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.metaKey && event.key === 'k') {
-        inputRef.current?.focus();
+        inputRef.current.focus();
       }
     }
 
@@ -63,21 +54,13 @@ export function Search() {
 
   const navItem = explorerNavStack.at(-1)!;
 
-  const onSelect = useCallback(
-    (def: TypeMatch | FieldMatch) => {
-      push(
-        'field' in def
-          ? { name: def.field.name, def: def.field }
-          : { name: def.type.name, def: def.type },
-      );
-    },
-    [push],
-  );
-  const isFocused = useRef(false);
-  const handleFocus: FocusEventHandler = useCallback(e => {
-    isFocused.current = e.type === 'focus';
-  }, []);
-
+  const onSelect = (def: TypeMatch | FieldMatch) => {
+    push(
+      'field' in def
+        ? { name: def.field.name, def: def.field }
+        : { name: def.type.name, def: def.type },
+    );
+  };
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
     isObjectType(navItem.def) ||
@@ -98,14 +81,12 @@ export function Search() {
       <div
         className="graphiql-doc-explorer-search-input"
         onClick={() => {
-          inputRef.current?.focus();
+          inputRef.current.focus();
         }}
       >
         <MagnifyingGlassIcon />
         <Combobox.Input
           autoComplete="off"
-          onFocus={handleFocus}
-          onBlur={handleFocus}
           onChange={event => setSearchValue(event.target.value)}
           placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
           ref={inputRef}
@@ -113,10 +94,7 @@ export function Search() {
           data-cy="doc-explorer-input"
         />
       </div>
-
-      {/* display on focus */}
-      {/* eslint-disable-next-line react-compiler/react-compiler */}
-      {isFocused.current && (
+      {isFocused && (
         <Combobox.Options data-cy="doc-explorer-list">
           {results.within.length +
             results.types.length +
@@ -165,7 +143,7 @@ export function Search() {
       )}
     </Combobox>
   );
-}
+};
 
 type TypeMatch = { type: GraphQLNamedType };
 
@@ -269,7 +247,7 @@ export function useSearchResults(caller?: Function) {
 function isMatch(sourceText: string, searchValue: string): boolean {
   try {
     const escaped = searchValue.replaceAll(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
-    return sourceText.search(new RegExp(escaped, 'i')) !== -1;
+    return new RegExp(escaped, 'i').test(sourceText);
   } catch {
     return sourceText.toLowerCase().includes(searchValue.toLowerCase());
   }
