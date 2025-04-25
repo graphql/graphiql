@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { forwardRef, ReactElement } from 'react';
+import { forwardRef, ReactElement, JSX } from 'react';
 import { CloseIcon } from '../icons';
 import { UnStyledButton } from './button';
 import * as D from '@radix-ui/react-dialog';

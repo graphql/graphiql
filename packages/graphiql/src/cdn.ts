@@ -1,3 +1,5 @@
+'use no memo';
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -7,7 +9,7 @@
 import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
-import { GraphiQL } from './components/GraphiQL';
+import { GraphiQL } from './GraphiQL';
 
 /**
  * For the CDN bundle we add some static properties to the component function

@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-execution",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
   "publisher": "GraphQL",
@@ -113,7 +113,7 @@
     "graphql-config": "5.0.3",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
-    "svelte": "^4.1.1",
+    "svelte": "^4.2.19",
     "svelte2tsx": "^0.6.16",
     "ws": "8.17.1",
     "nullthrows": "1.1.1"

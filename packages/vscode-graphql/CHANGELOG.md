@@ -1,5 +1,26 @@
 # Change Log
 
+## 0.13.2
+
+### Patch Changes
+
+- [#3883](https://github.com/graphql/graphiql/pull/3883) [`f8ac8cf`](https://github.com/graphql/graphiql/commit/f8ac8cf5f083d40258ae461144cca2c7b196d397) Thanks [@acao](https://github.com/acao)! - Bump vscode-graphql and LSP server for patch fixes
+
+- Updated dependencies [[`f8ac8cf`](https://github.com/graphql/graphiql/commit/f8ac8cf5f083d40258ae461144cca2c7b196d397)]:
+  - graphql-language-service-server@2.14.2
+
+## 0.13.0
+
+### Minor Changes
+
+- [#3819](https://github.com/graphql/graphiql/pull/3819) [`5665872`](https://github.com/graphql/graphiql/commit/566587290dd164bd9c51fd382b8d6b90034ca3dc) Thanks [@robertoaloi](https://github.com/robertoaloi)! - Make LSP transport configurable (ipc, stdio)
+
+## 0.12.1
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0 for bundled libraries & tests
+
 ## 0.12.0
 
 ### Minor Changes

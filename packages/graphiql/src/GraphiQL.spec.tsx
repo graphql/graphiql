@@ -1,15 +1,18 @@
+'use no memo';
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import '@testing-library/jest-dom';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
-import React from 'react';
-import { GraphiQL } from '../GraphiQL';
+import { Component } from 'react';
+import { GraphiQL } from './GraphiQL';
 import { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
+
+vi.mock('codemirror');
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -33,11 +36,12 @@ beforeEach(() => {
 });
 
 describe('GraphiQL', () => {
+  // @ts-expect-error -- fixme
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
     it('should throw error without fetcher', () => {
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       // @ts-expect-error fetcher is a required prop to GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
@@ -156,7 +160,7 @@ describe('GraphiQL', () => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
           '.graphiql-query-editor .mockCodeMirror',
         );
-        expect(mockEditor.value).toContain('# Welcome to GraphiQL');
+        expect(mockEditor!.value).toContain('# Welcome to GraphiQL');
       });
     });
 
@@ -212,7 +216,7 @@ describe('GraphiQL', () => {
 
       const secondaryEditorTitle = container.querySelector(
         '.graphiql-editor-tools',
-      );
+      )!;
 
       // drag the editor tools handle up
       act(() => {
@@ -273,19 +277,18 @@ describe('GraphiQL', () => {
   describe('panel resizing', () => {
     it('readjusts the query wrapper flex style field when the result panel is resized', async () => {
       // Mock the drag bar width
-      const clientWidthSpy = jest
+      const clientWidthSpy = vi
         .spyOn(Element.prototype, 'clientWidth', 'get')
         .mockReturnValue(0);
       // Mock the container width
-      const boundingClientRectSpy = jest
+      const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        // @ts-expect-error missing properties from type 'DOMRect'
         .mockReturnValue({ left: 0, right: 900 });
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar');
-      const editors = container.querySelector('.graphiql-editors');
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
+      const editors = container.querySelector('.graphiql-editors')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -303,7 +306,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect(editors.parentElement.style.flex).toEqual('3.5');
+        expect(editors.parentElement!.style.flex).toEqual('3.5');
       });
 
       clientWidthSpy.mockRestore();
@@ -312,20 +315,21 @@ describe('GraphiQL', () => {
 
     it('allows for resizing the doc explorer correctly', async () => {
       // Mock the drag bar width
-      const clientWidthSpy = jest
+      const clientWidthSpy = vi
         .spyOn(Element.prototype, 'clientWidth', 'get')
         .mockReturnValue(0);
       // Mock the container width
-      const boundingClientRectSpy = jest
+      const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        // @ts-expect-error missing properties from type 'DOMRect'
         .mockReturnValue({ left: 0, right: 1200 });
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       act(() => {
         fireEvent.click(
-          container.querySelector('[aria-label="Show Documentation Explorer"]'),
+          container.querySelector(
+            '[aria-label="Show Documentation Explorer"]',
+          )!,
         );
       });
 
@@ -348,7 +352,8 @@ describe('GraphiQL', () => {
       await waitFor(() => {
         // 797 / (1200 - 797) = 1.977667493796526
         expect(
-          container.querySelector('.graphiql-plugin')?.parentElement.style.flex,
+          container.querySelector('.graphiql-plugin')!.parentElement!.style
+            .flex,
         ).toBe('1.977667493796526');
       });
 
@@ -420,7 +425,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(container.querySelector('.graphiql-tab-add'));
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -430,7 +435,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(container.querySelector('.graphiql-tab-add'));
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -450,7 +455,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(container.querySelector('.graphiql-tab-add'));
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -460,7 +465,7 @@ describe('GraphiQL', () => {
       });
 
       act(() => {
-        fireEvent.click(container.querySelector('.graphiql-tab-add'));
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -474,7 +479,7 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       act(() => {
-        fireEvent.click(container.querySelector('.graphiql-tab-add'));
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -485,7 +490,7 @@ describe('GraphiQL', () => {
 
       act(() => {
         fireEvent.click(
-          container.querySelector('.graphiql-tab .graphiql-tab-close'),
+          container.querySelector('.graphiql-tab .graphiql-tab-close')!,
         );
       });
 
@@ -529,10 +534,10 @@ describe('GraphiQL', () => {
 
     it('properly ignores fragments', async () => {
       const myFragment = (
-        <React.Fragment>
+        <>
           <MyFunctionalComponent />
           <MyFunctionalComponent />
-        </React.Fragment>
+        </>
       );
 
       const { container, getByRole } = render(
@@ -566,7 +571,7 @@ describe('GraphiQL', () => {
 
     it('properly ignores non-override class components', async () => {
       // eslint-disable-next-line react/prefer-stateless-function
-      class MyClassComponent extends React.Component {
+      class MyClassComponent extends Component {
         render() {
           return null;
         }

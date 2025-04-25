@@ -245,7 +245,7 @@ our discord channels!):
 - [@n1ru4l](https://github.com/n1ru4l)
 - [@acao](https://github.com/acao)
 - [@stonexer](https://github.com/stonexer)
-- [@B2o5T](https://github.com/B2o5T)
+- [@dimaMachina](https://github.com/dimaMachina)
 - [@dotansimha](https://github.com/dotansimha)
 - [@saihaj](https://github.com/saihaj)
 - [@jonathanawesome](https://github.com/jonathanawesome)

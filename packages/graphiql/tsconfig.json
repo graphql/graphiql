@@ -1,15 +1,14 @@
 {
   "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
     "composite": true,
-    "jsx": "react",
-    "target": "es5",
-    "strictPropertyInitialization": false
+    "jsx": "react-jsx",
+    "target": "es2017",
+    "strictPropertyInitialization": false,
+    "types": ["@testing-library/jest-dom", "vitest/globals"]
   },
-  "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/dist/**.*", "cypress/**"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/*.spec.tsx"],
   "references": [
     {
       "path": "../codemirror-graphql"

@@ -12,5 +12,5 @@
     "moduleResolution": "node",
     "types": ["vitest/globals"]
   },
-  "include": ["src", "tsup.config.ts", "vitest.config.mts"]
+  "include": ["src", "tsup.config.ts"]
 }

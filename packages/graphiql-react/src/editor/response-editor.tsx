@@ -1,7 +1,8 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
-import { ComponentType, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { ComponentType, useEffect, useRef, JSX } from 'react';
+// eslint-disable-next-line react/no-deprecated -- We can't refactor to root.unmount() from React 18 because we support React 16/17 too
+import { unmountComponentAtNode, render } from 'react-dom';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -28,11 +29,32 @@ export type ResponseTooltipType = ComponentType<{
 
 export type UseResponseEditorArgs = CommonEditorProps & {
   /**
-   * Customize the tooltip when hovering over properties in the response
-   * editor.
+   * Customize the tooltip when hovering over properties in the response editor.
    */
   responseTooltip?: ResponseTooltipType;
 };
+
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror(
+    [
+      import('codemirror/addon/fold/foldgutter.js'),
+      import('codemirror/addon/fold/brace-fold.js'),
+      import('codemirror/addon/dialog/dialog.js'),
+      import('codemirror/addon/search/search.js'),
+      import('codemirror/addon/search/searchcursor.js'),
+      import('codemirror/addon/search/jump-to-line.js'),
+      // @ts-expect-error
+      import('codemirror/keymap/sublime.js'),
+      import('codemirror-graphql/esm/results/mode.js'),
+      import('codemirror-graphql/esm/utils/info-addon.js'),
+    ],
+    { useCommonAddons: false },
+  );
+}
+
+// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
+const _useResponseEditor = useResponseEditor;
 
 export function useResponseEditor(
   {
@@ -44,12 +66,12 @@ export function useResponseEditor(
 ) {
   const { fetchError, validationErrors } = useSchemaContext({
     nonNull: true,
-    caller: caller || useResponseEditor,
+    caller: caller || _useResponseEditor,
   });
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorContext({
       nonNull: true,
-      caller: caller || useResponseEditor,
+      caller: caller || _useResponseEditor,
     });
   const ref = useRef<HTMLDivElement>(null);
 
@@ -62,21 +84,7 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
-    void importCodeMirror(
-      [
-        import('codemirror/addon/fold/foldgutter'),
-        import('codemirror/addon/fold/brace-fold'),
-        import('codemirror/addon/dialog/dialog'),
-        import('codemirror/addon/search/search'),
-        import('codemirror/addon/search/searchcursor'),
-        import('codemirror/addon/search/jump-to-line'),
-        // @ts-expect-error
-        import('codemirror/keymap/sublime'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
-      ],
-      { useCommonAddons: false },
-    ).then(CodeMirror => {
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
@@ -102,15 +110,11 @@ export function useResponseEditor(
               <ImagePreview key="image-preview" token={token} />,
             );
           }
-
-          // We can't refactor to root.unmount() from React 18 because we support React 16/17 too
           if (!infoElements.length) {
-            // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
-            ReactDOM.unmountComponentAtNode(tooltipDiv);
+            unmountComponentAtNode(tooltipDiv);
             return null;
           }
-          // eslint-disable-next-line react/no-deprecated -- We still support React 16/17
-          ReactDOM.render(infoElements, tooltipDiv);
+          render(infoElements, tooltipDiv);
           return tooltipDiv;
         },
       );

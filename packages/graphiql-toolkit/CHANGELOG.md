@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.11.1
+
+### Patch Changes
+
+- [#3811](https://github.com/graphql/graphiql/pull/3811) [`5f2c3a4`](https://github.com/graphql/graphiql/commit/5f2c3a45906c332e07200b0008d0e5bf329a8ffa) Thanks [@acao](https://github.com/acao)! - Fix type export to prevent build time bugs
+
 ## 0.11.0
 
 ### Minor Changes

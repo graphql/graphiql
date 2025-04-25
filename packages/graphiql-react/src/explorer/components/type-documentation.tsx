@@ -8,7 +8,7 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { useSchemaContext } from '../../schema';
 import { Button, MarkdownContent } from '../../ui';
@@ -63,9 +63,9 @@ function ImplementsInterfaces({ type }: { type: GraphQLNamedType }) {
 
 function Fields({ type }: { type: GraphQLNamedType }) {
   const [showDeprecated, setShowDeprecated] = useState(false);
-  const handleShowDeprecated = useCallback(() => {
+  const handleShowDeprecated = () => {
     setShowDeprecated(true);
-  }, []);
+  };
 
   if (
     !isObjectType(type) &&
@@ -157,9 +157,9 @@ function Field({ field }: { field: ExplorerFieldDef }) {
 
 function EnumValues({ type }: { type: GraphQLNamedType }) {
   const [showDeprecated, setShowDeprecated] = useState(false);
-  const handleShowDeprecated = useCallback(() => {
+  const handleShowDeprecated = () => {
     setShowDeprecated(true);
-  }, []);
+  };
 
   if (!isEnumType(type)) {
     return null;

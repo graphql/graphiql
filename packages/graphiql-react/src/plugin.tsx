@@ -1,11 +1,4 @@
-import {
-  ComponentType,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { ComponentType, ReactNode, useEffect, useState } from 'react';
 import { DocExplorer, useExplorerContext } from './explorer';
 import { History, useHistoryContext } from './history';
 import { DocsFilledIcon, DocsIcon, HistoryIcon } from './icons';
@@ -99,7 +92,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
 
   const hasExplorerContext = Boolean(explorerContext);
   const hasHistoryContext = Boolean(historyContext);
-  const plugins = useMemo(() => {
+  const plugins = (() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
 
@@ -127,7 +120,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     }
 
     return pluginList;
-  }, [hasExplorerContext, hasHistoryContext, props.plugins]);
+  })();
 
   const [visiblePlugin, internalSetVisiblePlugin] =
     useState<GraphiQLPlugin | null>(() => {
@@ -157,7 +150,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     });
 
   const { onTogglePluginVisibility, children } = props;
-  const setVisiblePlugin = useCallback<PluginContextType['setVisiblePlugin']>(
+  const setVisiblePlugin: PluginContextType['setVisiblePlugin'] = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     plugin => {
       const newVisiblePlugin = plugin
         ? plugins.find(
@@ -171,9 +164,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
         onTogglePluginVisibility?.(newVisiblePlugin);
         return newVisiblePlugin;
       });
-    },
-    [onTogglePluginVisibility, plugins],
-  );
+    };
 
   useEffect(() => {
     if (props.visiblePlugin) {
@@ -181,10 +172,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     }
   }, [plugins, props.visiblePlugin, setVisiblePlugin]);
 
-  const value = useMemo<PluginContextType>(
-    () => ({ plugins, setVisiblePlugin, visiblePlugin }),
-    [plugins, setVisiblePlugin, visiblePlugin],
-  );
+  const value = { plugins, setVisiblePlugin, visiblePlugin };
 
   return (
     <PluginContext.Provider value={value}>{children}</PluginContext.Provider>

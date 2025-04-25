@@ -57,7 +57,7 @@ module.exports = {
         'plugin:import-x/recommended',
         'plugin:import-x/typescript',
         'plugin:react/recommended',
-        'plugin:react-hooks/recommended',
+        'plugin:react-hooks/recommended-legacy',
         'plugin:react/jsx-runtime',
         'prettier',
       ],
@@ -177,9 +177,8 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': [
           'error',
           {
-            varsIgnorePattern: '^React$',
+            varsIgnorePattern: '^(React|_)', // allow underscores in destructuring
             argsIgnorePattern: '^_',
-            ignoreRestSiblings: true,
           },
         ],
 
@@ -343,7 +342,14 @@ module.exports = {
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
-          { ignore: ['^node:', '\\.svg\\?react$', 'vitest/config'] },
+          {
+            ignore: [
+              '^node:',
+              '\\.svg\\?react$',
+              'vitest/config',
+              './vite.config.mjs',
+            ],
+          },
         ],
         'no-extra-boolean-cast': [
           'error',
@@ -359,7 +365,8 @@ module.exports = {
         'unicorn/prefer-dom-node-text-content': 'error',
         quotes: ['error', 'single', { avoidEscape: true }], // Matches Prettier, but also replaces backticks with single quotes
         // TODO: Fix all errors for the following rules included in recommended config
-        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
+        'import-x/no-named-as-default-member': 'off',
       },
     },
     {
@@ -375,6 +382,9 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
         // TODO: Fix all errors for the following rules included in recommended config
+        '@typescript-eslint/no-deprecated': 'off',
+        '@typescript-eslint/no-unsafe-function-type': 'off',
+
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
@@ -384,12 +394,37 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
       },
       parserOptions: {
-        project: [
-          'packages/*/tsconfig.json',
-          'examples/*/tsconfig.json',
-          'packages/graphiql/cypress/tsconfig.json',
-          'tsconfig.eslint.json',
-        ],
+        projectService: {
+          allowDefaultProject: [
+            'examples/monaco-graphql-react-vite/vite.config.ts',
+            'packages/*/vitest.config.mts',
+            'packages/*/vite.config.mts',
+
+            'packages/cm6-graphql/__tests__/test.spec.ts',
+            'packages/graphiql-react/setup-files.ts',
+            'packages/graphiql/src/GraphiQL.spec.tsx',
+            'packages/vscode-graphql-syntax/tests/*.spec.ts',
+            'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
+            'packages/monaco-graphql/test/monaco-editor.test.ts',
+
+            'packages/codemirror-graphql/setup-files.ts',
+            'packages/codemirror-graphql/src/__tests__/testSchema.ts',
+            'packages/codemirror-graphql/src/__tests__/*.test.ts',
+            'packages/codemirror-graphql/src/{variables,utils,results}/__tests__/*.test.ts',
+
+            'packages/graphql-language-service/benchmark/index.ts',
+            'packages/graphql-language-service/src/{utils,parser,interface}/__tests__/*.test.ts',
+            'packages/graphql-language-service/src/parser/__tests__/OnlineParserUtils.ts',
+
+            'packages/graphql-language-service-server/src/__tests__/*.{spec,test}.ts',
+            'packages/graphql-language-service-server/src/__tests__/__utils__/utils.ts',
+            'packages/graphql-language-service-server/src/__tests__/__utils__/MockProject.ts',
+
+            'packages/vscode-graphql-syntax/tests/__utilities__/serializer.ts',
+            'packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts',
+          ],
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 100,
+        },
       },
     },
     // Cypress plugin, global, etc., only for cypress directory
@@ -434,7 +469,14 @@ module.exports = {
     },
     {
       // Rule for ignoring imported dependencies from tests files
-      files: ['**/__tests__/**', 'webpack.config.js', '**/tests/**'],
+      files: [
+        '**/__tests__/**',
+        'webpack.config.js',
+        '**/tests/**',
+        'test.config.js',
+        'vitest.config.mts',
+        'setup-files.ts',
+      ],
       rules: {
         'import-x/no-extraneous-dependencies': 'off',
       },
@@ -455,6 +497,20 @@ module.exports = {
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
         'promise/prefer-await-to-then': 'error',
+      },
+    },
+    {
+      files: ['packages/{graphiql-react,graphiql}/**'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS,
+          {
+            name: 'react',
+            importNames: ['memo', 'useCallback', 'useMemo'],
+          },
+        ],
+        'react-hooks/react-compiler': 'error',
       },
     },
     {

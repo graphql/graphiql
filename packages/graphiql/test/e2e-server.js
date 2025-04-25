@@ -44,7 +44,6 @@ async function handler(req, res) {
 
   sendResult(result, res);
 }
-
 // Server
 app.use(express.json());
 

@@ -1,3 +1,5 @@
+'use no memo';
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -14,10 +16,7 @@ export { GraphiQLProvider } from '@graphiql/react';
 /**
  * Definitions
  */
-export type {
-  GraphiQLProps,
-  GraphiQLInterfaceProps,
-} from './components/GraphiQL';
+export type { GraphiQLProps, GraphiQLInterfaceProps } from './GraphiQL';
 export type { GraphiQLProviderProps } from '@graphiql/react';
 
-export { GraphiQLInterface, GraphiQL } from './components/GraphiQL';
+export { GraphiQLInterface, GraphiQL } from './GraphiQL';

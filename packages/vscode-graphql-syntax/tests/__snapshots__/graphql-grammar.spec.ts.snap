@@ -329,6 +329,15 @@ INPUT_OBJECT           | support.type.location.graphql
 ARGUMENT_DEFINITION    | support.type.location.graphql
  |                     | 
 INPUT_FIELD_DEFINITION | support.type.location.graphql
+directive              | keyword.directive.graphql
+                       | 
+@onRepeatable          | entity.name.function.directive.graphql
+                       | 
+repeatable             | keyword.repeatable.graphql
+                       | 
+on                     | keyword.on.graphql
+                       | 
+FIELD_DEFINITION       | support.type.location.graphql
                        | 
 enum                   | meta.enum.graphql keyword.enum.graphql
                        | meta.enum.graphql

@@ -1,9 +1,12 @@
+'use no memo';
+
 import {
   GraphQLNamedType,
   GraphQLType,
   isListType,
   isNonNullType,
 } from 'graphql';
+import { JSX } from 'react';
 
 export function renderType(
   type: GraphQLType,

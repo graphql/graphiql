@@ -1,11 +1,5 @@
 import type { QueryStoreItem } from '@graphiql/toolkit';
-import {
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
@@ -17,9 +11,20 @@ import {
   TrashIcon,
 } from '../icons';
 import { Button, Tooltip, UnStyledButton } from '../ui';
-import { useHistoryContext } from './context';
+import { HistoryContextType, useHistoryContext } from './context';
 
 import './style.css';
+
+// Fix error from react-compiler
+// Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+function handleDelete(
+  items: QueryStoreItem[],
+  deleteFromHistory: HistoryContextType['deleteFromHistory'],
+) {
+  for (const item of items) {
+    deleteFromHistory(item, true);
+  }
+}
 
 export function History() {
   const { items: all, deleteFromHistory } = useHistoryContext({
@@ -42,23 +47,21 @@ export function History() {
   );
   useEffect(() => {
     if (clearStatus) {
-      // reset button after a couple seconds
+      // reset the button after a couple seconds
       setTimeout(() => {
         setClearStatus(null);
       }, 2000);
     }
   }, [clearStatus]);
 
-  const handleClearStatus = useCallback(() => {
+  const handleClearStatus = () => {
     try {
-      for (const item of items) {
-        deleteFromHistory(item, true);
-      }
+      handleDelete(items, deleteFromHistory);
       setClearStatus('success');
     } catch {
       setClearStatus('error');
     }
-  }, [deleteFromHistory, items]);
+  };
 
   return (
     <section aria-label="History" className="graphiql-history">
@@ -131,50 +134,40 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     props.item.operationName ||
     formatQuery(props.item.query);
 
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     setIsEditable(false);
     const { index, ...item } = props.item;
     editLabel({ ...item, label: inputRef.current?.value }, index);
-  }, [editLabel, props.item]);
+  };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setIsEditable(false);
-  }, []);
+  };
 
-  const handleEditLabel: MouseEventHandler<HTMLButtonElement> = useCallback(
-    e => {
-      e.stopPropagation();
-      setIsEditable(true);
-    },
-    [],
-  );
+  const handleEditLabel: MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
+    setIsEditable(true);
+  };
 
-  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> =
-    useCallback(() => {
-      const { query, variables, headers } = props.item;
-      queryEditor?.setValue(query ?? '');
-      variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? '');
-      setActive(props.item);
-    }, [headerEditor, props.item, queryEditor, setActive, variableEditor]);
+  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> = () => {
+    const { query, variables, headers } = props.item;
+    queryEditor?.setValue(query ?? '');
+    variableEditor?.setValue(variables ?? '');
+    headerEditor?.setValue(headers ?? '');
+    setActive(props.item);
+  };
 
-  const handleDeleteItemFromHistory: MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      e => {
-        e.stopPropagation();
-        deleteFromHistory(props.item);
-      },
-      [props.item, deleteFromHistory],
-    );
+  const handleDeleteItemFromHistory: MouseEventHandler<
+    HTMLButtonElement
+  > = e => {
+    e.stopPropagation();
+    deleteFromHistory(props.item);
+  };
 
-  const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      e => {
-        e.stopPropagation();
-        toggleFavorite(props.item);
-      },
-      [props.item, toggleFavorite],
-    );
+  const handleToggleFavorite: MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
+    toggleFavorite(props.item);
+  };
 
   return (
     <li className={clsx('graphiql-history-item', isEditable && 'editable')}>

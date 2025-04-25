@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useStorageContext } from './storage';
 
 /**
@@ -41,15 +41,12 @@ export function useTheme(defaultTheme: Theme = null) {
     }
   }, [theme]);
 
-  const setTheme = useCallback(
-    (newTheme: Theme) => {
-      storageContext?.set(STORAGE_KEY, newTheme || '');
-      setThemeInternal(newTheme);
-    },
-    [storageContext],
-  );
+  const setTheme = (newTheme: Theme) => {
+    storageContext?.set(STORAGE_KEY, newTheme || '');
+    setThemeInternal(newTheme);
+  };
 
-  return useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
+  return { theme, setTheme };
 }
 
 const STORAGE_KEY = 'theme';

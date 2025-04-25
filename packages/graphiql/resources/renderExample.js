@@ -1,3 +1,5 @@
+'use no memo';
+
 /* global React, ReactDOM, GraphiQL */
 
 /**

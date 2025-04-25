@@ -4,9 +4,9 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-require('@testing-library/jest-dom/extend-expect');
+import '@testing-library/jest-dom';
 
-global.document.createRange = function () {
+document.createRange = function () {
   return {
     setEnd() {},
     setStart() {},
@@ -21,5 +21,5 @@ global.document.createRange = function () {
 
 process.on('unhandledRejection', error => {
   console.error('Unhandled Promise Rejection:');
-  console.error(error?.stack);
+  console.error(error.stack);
 });

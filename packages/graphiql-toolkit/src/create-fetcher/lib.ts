@@ -1,11 +1,12 @@
 import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros';
-import {
+import type {
   Client,
   ClientOptions,
   ExecutionResult,
   createClient as createClientType,
 } from 'graphql-ws';
+
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,

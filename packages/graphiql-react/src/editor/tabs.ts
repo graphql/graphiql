@@ -1,4 +1,7 @@
+'use no memo'; // can't figure why it isn't optimized
+
 import { StorageAPI } from '@graphiql/toolkit';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- fixme
 import { useCallback, useMemo } from 'react';
 
 import debounce from '../utility/debounce';

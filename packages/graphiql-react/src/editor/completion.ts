@@ -1,3 +1,5 @@
+'use no memo';
+
 import type { Editor, EditorChange } from 'codemirror';
 import type { IHint } from 'codemirror-graphql/hint';
 import {

@@ -1,7 +1,31 @@
+import { sep } from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
-import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
-import commonjs from 'vite-plugin-commonjs';
+import react from '@vitejs/plugin-react';
+import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
+import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
+import packageJSON from './package.json';
+
+const reactCompilerConfig: Partial<ReactCompilerConfig> = {
+  ...$reactCompilerConfig,
+  sources(filename) {
+    if (
+      filename.includes('__tests__') ||
+      /\.(spec|test)\.tsx?$/.test(filename)
+    ) {
+      return false;
+    }
+    return filename.includes(`packages${sep}graphiql${sep}`);
+  },
+};
+
+export const plugins: PluginOption[] = [
+  react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
+    },
+  }),
+];
 
 const umdConfig = defineConfig({
   define: {
@@ -11,8 +35,7 @@ const umdConfig = defineConfig({
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
-  // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
-  plugins: [commonjs()],
+  plugins,
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
@@ -37,6 +60,13 @@ const umdConfig = defineConfig({
 });
 
 const esmConfig = defineConfig({
+  ...(process.env.NODE_ENV !== 'production' && {
+    resolve: {
+      alias: {
+        'react/compiler-runtime': 'react-compiler-runtime',
+      },
+    },
+  }),
   build: {
     minify: false,
     sourcemap: true,
@@ -47,6 +77,7 @@ const esmConfig = defineConfig({
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
@@ -54,7 +85,7 @@ const esmConfig = defineConfig({
     },
   },
   server: {
-    // prevent browser window from opening automatically
+    // prevent a browser window from opening automatically
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
@@ -64,7 +95,7 @@ const esmConfig = defineConfig({
       },
     },
   },
-  plugins: [htmlPlugin(), dts({ rollupTypes: true })],
+  plugins: [...plugins, htmlPlugin(), dts({ rollupTypes: true })],
 });
 
 function htmlPlugin(): PluginOption {
@@ -74,7 +105,11 @@ function htmlPlugin(): PluginOption {
       import ReactDOM from 'react-dom/client';
       import GraphiQL from './src/cdn';
 
-      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
+      Object.assign(globalThis, {
+        React,
+        ReactDOM,
+        GraphiQL,
+      });
     </script>
     <link href="/src/style.css" rel="stylesheet" />
   `;

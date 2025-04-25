@@ -211,7 +211,7 @@ function getToken(
 }
 
 // Utility function to assign from object to another object.
-function assign(to: Object, from: Object): Object {
+function assign(to: object, from: object): object {
   const keys = Object.keys(from);
   for (let i = 0; i < keys.length; i++) {
     // @ts-ignore

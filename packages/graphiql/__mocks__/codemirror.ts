@@ -1,3 +1,6 @@
+// @ts-nocheck
+'use no memo';
+
 function CodeMirror(node: HTMLElement, { value, ...options }) {
   let _eventListeners = {};
   const mockWrapper = document.createElement('div');
@@ -13,9 +16,7 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
   node.append(mockWrapper);
 
   function _emit(event, data) {
-    if (_eventListeners[event]) {
-      _eventListeners[event](data);
-    }
+    _eventListeners[event]?.(data);
   }
 
   return {
@@ -30,11 +31,9 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
         linterOptions: {},
       },
     },
-
     on(event, handler) {
       _eventListeners[event] = handler;
     },
-
     off(event) {
       if (!Object.prototype.hasOwnProperty.call(_eventListeners, event)) {
         return;
@@ -47,11 +46,9 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
       }
       _eventListeners = updatedEventListeners;
     },
-
     getValue() {
       return mockTextArea.value;
     },
-
     setValue(newValue) {
       mockTextArea.value = newValue;
     },
@@ -59,17 +56,13 @@ function CodeMirror(node: HTMLElement, { value, ...options }) {
     removeKeyMap() {},
     setOption() {},
     refresh() {},
-    setSize() {},
-
     emit: _emit,
   };
 }
 
-CodeMirror.defineExtension = () => {};
 CodeMirror.registerHelper = () => {};
 CodeMirror.defineOption = () => {};
 CodeMirror.defineMode = () => {};
-
 CodeMirror.signal = (mockCodeMirror, event, ...args) => {
   mockCodeMirror.emit(event, ...args);
 };

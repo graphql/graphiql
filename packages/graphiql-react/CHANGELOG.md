@@ -56,6 +56,39 @@
 - [#3692](https://github.com/graphql/graphiql/pull/3692) [`82bc961`](https://github.com/graphql/graphiql/commit/82bc961a33c4e9da29dffb4a603035a4909f49ad) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - prefer `location` over `window.location`
   - prefer `navigator` over `window.navigator`
 
+## 0.28.2
+
+### Patch Changes
+
+- [#3843](https://github.com/graphql/graphiql/pull/3843) [`16b5698`](https://github.com/graphql/graphiql/commit/16b56982ce4de62c850380fe25698c3893551c5a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix regression in documentation explorer search when clicking on results in dropdown
+
+## 0.28.1
+
+### Patch Changes
+
+- [#3837](https://github.com/graphql/graphiql/pull/3837) [`5e76a4f`](https://github.com/graphql/graphiql/commit/5e76a4f3c8b089a1de0c92c9b9c1edc2ae3f49d4) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix query builder updated only first selected field in query editor due recent enabled react-compiler
+
+## 0.28.0
+
+### Minor Changes
+
+- [#3821](https://github.com/graphql/graphiql/pull/3821) [`3633d61`](https://github.com/graphql/graphiql/commit/3633d61c3c597adf60c0ec1bbf98cf6a1f49beed) Thanks [@dimaMachina](https://github.com/dimaMachina)! - compile source code with react-compiler, remove `useMemo` and `useCallback` usages
+
+## 0.27.1
+
+### Patch Changes
+
+- [#3824](https://github.com/graphql/graphiql/pull/3824) [`72f06bc`](https://github.com/graphql/graphiql/commit/72f06bc52a9bdc0cb146d65861ba7364717bbdf5) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Exclude `codemirror/...` and `codemirror-graphql/...` imports from bundle
+
+- Updated dependencies [[`7cdcabf`](https://github.com/graphql/graphiql/commit/7cdcabf9d401683e90c995476b187c6f8ea70f63)]:
+  - codemirror-graphql@2.2.0
+
+## 0.27.0
+
+### Minor Changes
+
+- [#3806](https://github.com/graphql/graphiql/pull/3806) [`f86e2bc`](https://github.com/graphql/graphiql/commit/f86e2bce40826b3d07755f91b37a72051de00f9c) Thanks [@simmerer](https://github.com/simmerer)! - Fix: removed deprecated usage of Fn.prototype.caller
+
 ## 0.26.2
 
 ### Patch Changes
@@ -334,7 +367,7 @@
 
 - [#3194](https://github.com/graphql/graphiql/pull/3194) [`911cf3e0`](https://github.com/graphql/graphiql/commit/911cf3e0b0fa13268245463c8db8299279e5c461) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - fix tab content getting replaced on `changeTab`
 
-- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unecessary renders by using useMemo or useCallback
+- [#3124](https://github.com/graphql/graphiql/pull/3124) [`c645932c`](https://github.com/graphql/graphiql/commit/c645932c7973e11ad917e1d1d897fd409f8c042f) Thanks [@B2o5T](https://github.com/B2o5T)! - avoid unnecessary renders by using useMemo or useCallback
 
 - [#3197](https://github.com/graphql/graphiql/pull/3197) [`2ca4841b`](https://github.com/graphql/graphiql/commit/2ca4841baf74e87a3f067b3415f8da3347ee3898) Thanks [@B2o5T](https://github.com/B2o5T)! - remove confusing ligatures, set `font-variant-ligatures: none`
 

@@ -57,6 +57,7 @@ dedenting
 delivr
 devx
 dhanani
+dima
 dirpath
 divy
 Divyendu
@@ -117,6 +118,7 @@ linkify
 listbox
 lightningcss
 listvalues
+lightningcss
 lostplan
 maint
 manypkg

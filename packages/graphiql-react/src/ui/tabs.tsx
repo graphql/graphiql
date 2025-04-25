@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode, JSX } from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../icons';

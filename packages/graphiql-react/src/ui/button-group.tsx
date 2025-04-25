@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, JSX } from 'react';
 import { clsx } from 'clsx';
 
 import './button-group.css';
