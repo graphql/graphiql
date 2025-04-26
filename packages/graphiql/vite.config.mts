@@ -15,7 +15,7 @@ const reactCompilerConfig: Partial<ReactCompilerConfig> = {
     ) {
       return false;
     }
-    return filename.includes(`packages${sep}graphiql${sep}`);
+    return filename.includes(`packages${sep}graphiql${sep}src`);
   },
 };
 
