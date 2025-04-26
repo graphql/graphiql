@@ -61,7 +61,7 @@ module.exports = {
         'plugin:react/jsx-runtime',
         'prettier',
       ],
-      plugins: ['promise', 'sonarjs', 'unicorn', 'sonar', '@shopify'],
+      plugins: ['promise', 'sonarjs', 'unicorn', '@shopify'],
       globals: {
         atom: false,
         document: false,
@@ -327,8 +327,8 @@ module.exports = {
         '@typescript-eslint/no-unused-expressions': 'error',
         'sonarjs/no-small-switch': 'error',
         'sonarjs/no-duplicated-branches': 'error',
-        'sonar/prefer-promise-shorthand': 'error',
-        'sonar/no-dead-store': 'error',
+        'sonarjs/prefer-promise-shorthand': 'error',
+        'sonarjs/no-dead-store': 'error',
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
@@ -357,6 +357,7 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-require-imports': 'off',
         'import-x/no-named-as-default-member': 'off',
+        'sonarjs/void-use': 'error',
       },
     },
     {
@@ -540,7 +541,7 @@ module.exports = {
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         'react-hooks/rules-of-hooks': 'off',
-        'sonar/no-dead-store': 'off',
+        'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
       },
     },
