@@ -329,6 +329,7 @@ module.exports = {
         'sonarjs/no-duplicated-branches': 'error',
         'sonarjs/prefer-promise-shorthand': 'error',
         'sonarjs/no-dead-store': 'error',
+        'sonarjs/void-use': 'error',
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
@@ -357,7 +358,6 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-require-imports': 'off',
         'import-x/no-named-as-default-member': 'off',
-        'sonarjs/void-use': 'error',
       },
     },
     {
