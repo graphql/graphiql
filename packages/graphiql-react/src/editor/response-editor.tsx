@@ -1,8 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
-// eslint-disable-next-line react/no-deprecated -- We can't refactor to root.unmount() from React 18 because we support React 16/17 too
-import { unmountComponentAtNode, render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useSchemaContext } from '../schema';
 
 import {
@@ -84,6 +83,7 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
+
     void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
@@ -91,31 +91,24 @@ export function useResponseEditor(
       }
 
       // Handle image tooltips and custom tooltips
-      const tooltipDiv = document.createElement('div');
+      const tooltipRoot = createRoot(document.createElement('div'));
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
         (token: Token, _options: any, _cm: CodeMirrorEditor, pos: Position) => {
-          const infoElements: JSX.Element[] = [];
+          const ResponseTooltip = responseTooltipRef.current;
+          const infoElements: JSX.Element[] = [
+            ResponseTooltip && <ResponseTooltip pos={pos} token={token} />,
+            ImagePreview.shouldRender(token) && (
+              <ImagePreview key="image-preview" token={token} />
+            ),
+          ].filter((v): v is JSX.Element => Boolean(v));
 
-          const ResponseTooltipComponent = responseTooltipRef.current;
-          if (ResponseTooltipComponent) {
-            infoElements.push(
-              <ResponseTooltipComponent pos={pos} token={token} />,
-            );
+          if (infoElements.length) {
+            tooltipRoot.render(infoElements);
+          } else {
+            tooltipRoot.unmount();
           }
-
-          if (ImagePreview.shouldRender(token)) {
-            infoElements.push(
-              <ImagePreview key="image-preview" token={token} />,
-            );
-          }
-          if (!infoElements.length) {
-            unmountComponentAtNode(tooltipDiv);
-            return null;
-          }
-          render(infoElements, tooltipDiv);
-          return tooltipDiv;
         },
       );
 
@@ -151,7 +144,7 @@ export function useResponseEditor(
     if (fetchError) {
       responseEditor?.setValue(fetchError);
     }
-    if (validationErrors.length > 0) {
+    if (validationErrors.length) {
       responseEditor?.setValue(formatError(validationErrors));
     }
   }, [responseEditor, fetchError, validationErrors]);
