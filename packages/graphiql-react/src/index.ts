@@ -117,3 +117,5 @@ export type {
   StorageContextType,
 } from './storage';
 export type { Theme } from './theme';
+// @ts-expect-error -- no types
+export { c } from './react-compiler-runtime.cjs';

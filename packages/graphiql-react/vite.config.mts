@@ -1,13 +1,20 @@
 /* eslint-disable no-console */
+import path from 'node:path';
+import fs from 'node:fs/promises';
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+// @ts-expect-error -- no types
 import postCssNestingPlugin from 'postcss-nesting';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
-import packageJSON from './package.json';
+import packageJSON from './package.json' assert { type: 'json' };
+import dts from 'vite-plugin-dts';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  target: '18',
+  target: {
+    kind: 'donotuse_meta_internal',
+    runtimeModule: path.resolve('./src/react-compiler-runtime.cjs'),
+  },
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
@@ -53,6 +60,22 @@ export const plugins: PluginOption[] = [
       titleProp: true,
     },
   }),
+  dts({
+    include: ['src/**'],
+    outDir: ['dist'],
+    exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+  }),
+  {
+    name: 'after-build-plugin',
+    async writeBundle() {
+      // Write original cjs to dist, because vite it recompile to ESM
+      await fs.cp(
+        path.resolve('./src/react-compiler-runtime.cjs'),
+        path.resolve('./dist/react-compiler-runtime.cjs'),
+      );
+      console.log('✅ react-compiler-runtime.cjs copied!');
+    },
+  },
 ];
 
 export default defineConfig({
@@ -67,8 +90,12 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['cjs', 'es'],
+      fileName(_format, entryName) {
+        const filePath = entryName.replace(/\.svg$/, '');
+        const ext = filePath.includes('react-compiler-runtime') ? 'cjs' : 'js';
+        return `${filePath}.${ext}`;
+      },
+      formats: ['es'],
     },
     rollupOptions: {
       external: [
@@ -81,7 +108,7 @@ export default defineConfig({
         /codemirror[/-]/,
       ],
       output: {
-        chunkFileNames: '[name].[format].js',
+        preserveModules: true,
       },
     },
   },

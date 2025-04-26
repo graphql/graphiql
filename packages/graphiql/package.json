@@ -1,10 +1,11 @@
 {
   "name": "graphiql",
   "version": "3.9.0",
+  "sideEffects": false,
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
@@ -17,7 +18,6 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -33,8 +33,7 @@
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
@@ -60,7 +59,7 @@
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "19.1.0-rc.1",
-    "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-dts": "^4.5.3",
     "vite": "^5.3.6",
     "postcss-lightningcss": "^1.0.1",
     "@vitejs/plugin-react": "^4.4.1",

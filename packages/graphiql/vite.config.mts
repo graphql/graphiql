@@ -8,6 +8,10 @@ import packageJSON from './package.json';
 
 const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,
+  target: {
+    kind: 'donotuse_meta_internal',
+    runtimeModule: '@graphiql/react',
+  },
   sources(filename) {
     if (
       filename.includes('__tests__') ||
@@ -68,8 +72,8 @@ const esmConfig = defineConfig({
     sourcemap: true,
     lib: {
       entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['cjs', 'es'],
+      fileName: (_format, filePath) => `${filePath}.js`,
+      formats: ['es'],
     },
     rollupOptions: {
       external: [
@@ -78,6 +82,9 @@ const esmConfig = defineConfig({
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
       ],
+      output: {
+        preserveModules: true,
+      },
     },
   },
   server: {
