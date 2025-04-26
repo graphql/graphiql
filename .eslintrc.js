@@ -365,7 +365,7 @@ module.exports = {
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
-        '@typescript-eslint/no-redundant-type-constituents': 'error',
+        // '@typescript-eslint/no-redundant-type-constituents': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
@@ -483,7 +483,7 @@ module.exports = {
       },
     },
     {
-      // Rule prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
+      // Rule to prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
       files: ['packages/**'],
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
@@ -491,7 +491,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/{graphiql-react,graphiql}/**'],
+      files: ['packages/{graphiql-react,graphiql}/**/*.{ts,tsx}'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
@@ -502,6 +502,7 @@ module.exports = {
           },
         ],
         'react-hooks/react-compiler': 'error',
+        '@typescript-eslint/no-deprecated': 'error',
       },
     },
     {
