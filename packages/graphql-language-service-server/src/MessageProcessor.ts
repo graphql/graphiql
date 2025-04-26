@@ -138,10 +138,13 @@ export class MessageProcessor {
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
-
-    if (!existsSync(this._tmpDirBase)) {
-      void mkdirSync(this._tmpDirBase);
-    }
+    /**
+     * existsSync(this._tmpDirBase) with mkdirSync(this._tmpDirBase) provoke race condition, we use
+     * `{ recursive: true }` that way, if the directory already exists, it does not throw.
+     */
+    // if (!existsSync(this._tmpDirBase)) {
+    mkdirSync(this._tmpDirBase, { recursive: true });
+    // }
   }
   get connection(): Connection {
     return this._connection;
