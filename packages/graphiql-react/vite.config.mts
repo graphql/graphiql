@@ -7,7 +7,7 @@ import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-co
 import packageJSON from './package.json';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  target: '17',
+  target: '18',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;

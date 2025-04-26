@@ -45,13 +45,13 @@
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/toolkit": "^0.11.0",
-    "@headlessui/react": "^1.7.15",
+    "@headlessui/react": "^2",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-tooltip": "^1.0.6",

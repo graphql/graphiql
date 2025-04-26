@@ -365,6 +365,7 @@ module.exports = {
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
+        '@typescript-eslint/no-redundant-type-constituents': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
