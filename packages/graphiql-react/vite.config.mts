@@ -66,14 +66,14 @@ export const plugins: PluginOption[] = [
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
   {
-    name: 'after-build-plugin',
+    name: 'copy original react-compiler-runtime file',
     async writeBundle() {
       // Write original cjs to dist, because vite it recompile to ESM
       await fs.cp(
         path.resolve('./src/react-compiler-runtime.cjs'),
         path.resolve('./dist/react-compiler-runtime.cjs'),
       );
-      console.log('✅ react-compiler-runtime.cjs copied!');
+      console.log('✅  react-compiler-runtime.cjs copied!');
     },
   },
 ];
@@ -102,9 +102,8 @@ export default defineConfig({
         'react/jsx-runtime',
         'react-dom/client',
         'react/compiler-runtime',
-        // Fixes error while using React 18, don't transform this file — treat it as external
-        // [commonjs--resolver] Missing "./compiler-runtime" specifier in "react" package
-        // /react-compiler-runtime\.cjs$/, // regex or path to your file
+        // Don't transform this file — treat it as external
+        /\/src\/react-compiler-runtime\.cjs$/,
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
