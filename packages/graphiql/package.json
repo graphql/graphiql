@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.8.3",
+  "version": "3.9.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.28.2"
+    "@graphiql/react": "^0.29.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -64,7 +64,7 @@
     "vite": "^5.3.6",
     "postcss-lightningcss": "^1.0.1",
     "@vitejs/plugin-react": "^4.4.1",
-    "@graphiql/toolkit": "^0.11.0",
+    "@graphiql/toolkit": "^0.11.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "cross-env": "^7.0.2",
