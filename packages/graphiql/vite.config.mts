@@ -38,6 +38,7 @@ const umdConfig = defineConfig({
     // https://github.com/graphql/graphql-js/blob/16.x.x/website/pages/docs/going-to-production.mdx
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
+    'process.env.UMD': 'true',
   },
   plugins,
   build: {
