@@ -73,6 +73,7 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'react/jsx-runtime',
+        'react-dom/client',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
