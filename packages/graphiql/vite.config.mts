@@ -42,7 +42,10 @@ const umdConfig = defineConfig({
     emptyOutDir: false,
     lib: {
       entry: 'src/cdn.ts',
-      // 👇 The name of the exposed global variable. Required when the formats option includes umd or iife
+      /**
+       * The name of the exposed global variable. Required when the `formats` option includes `umd`
+       * or `iife`.
+       */
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
@@ -60,13 +63,6 @@ const umdConfig = defineConfig({
 });
 
 const esmConfig = defineConfig({
-  ...(process.env.NODE_ENV !== 'production' && {
-    resolve: {
-      alias: {
-        'react/compiler-runtime': 'react-compiler-runtime',
-      },
-    },
-  }),
   build: {
     minify: false,
     sourcemap: true,
@@ -85,7 +81,7 @@ const esmConfig = defineConfig({
     },
   },
   server: {
-    // prevent a browser window from opening automatically
+    // Prevent a browser window from opening automatically
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
