@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.28.2",
+  "version": "0.29.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/toolkit": "^0.11.0",
+    "@graphiql/toolkit": "^0.11.2",
     "@headlessui/react": "^1.7.15",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
@@ -59,11 +59,11 @@
     "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.2.0",
+    "codemirror-graphql": "^2.2.1",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^6.5.1",
     "get-value": "^3.0.1",
-    "graphql-language-service": "^5.3.0",
+    "graphql-language-service": "^5.3.1",
     "markdown-it": "^14.1.0",
     "set-value": "^4.1.0"
   },
