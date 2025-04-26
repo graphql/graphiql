@@ -11,7 +11,7 @@ import {
   GraphQLDocumentMode,
   OperationFacts,
 } from 'graphql-language-service';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
@@ -149,7 +149,7 @@ export function useQueryEditor(
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
   const prettify = usePrettifyEditors({ caller: caller || _useQueryEditor });
   const ref = useRef<HTMLDivElement>(null);
-  const codeMirrorRef = useRef<CodeMirrorType>();
+  const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
   const onClickReferenceRef = useRef<
     NonNullable<UseQueryEditorArgs['onClickReference']>
@@ -474,7 +474,7 @@ export function useQueryEditor(
 function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
   schema: GraphQLSchema | null,
-  codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
+  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   useEffect(() => {
     if (!editor) {
@@ -493,7 +493,7 @@ function useSynchronizeSchema(
 function useSynchronizeValidationRules(
   editor: CodeMirrorEditor | null,
   validationRules: ValidationRule[] | null,
-  codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
+  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   useEffect(() => {
     if (!editor) {
@@ -512,7 +512,7 @@ function useSynchronizeValidationRules(
 function useSynchronizeExternalFragments(
   editor: CodeMirrorEditor | null,
   externalFragments: Map<string, FragmentDefinitionNode>,
-  codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
+  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const externalFragmentList = [...externalFragments.values()]; // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useMemo
 

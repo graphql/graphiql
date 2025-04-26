@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@graphiql/react": "^0.28.1",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
