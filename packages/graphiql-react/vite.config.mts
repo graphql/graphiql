@@ -101,9 +101,10 @@ export default defineConfig({
       external: [
         'react/jsx-runtime',
         'react-dom/client',
+        'react/compiler-runtime',
         // Fixes error while using React 18, don't transform this file — treat it as external
         // [commonjs--resolver] Missing "./compiler-runtime" specifier in "react" package
-        /react-compiler-runtime\.cjs$/, // regex or path to your file
+        // /react-compiler-runtime\.cjs$/, // regex or path to your file
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
