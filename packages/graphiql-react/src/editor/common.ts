@@ -29,7 +29,7 @@ export async function importCodeMirror(
 ) {
   const CodeMirror = await import('codemirror').then(c =>
     // Depending on bundler and settings the dynamic import either returns a
-    // function (e.g. parcel) or an object containing a `default` property
+    // function (e.g., parcel) or an object containing a `default` property
     typeof c === 'function' ? c : c.default,
   );
   await Promise.all(

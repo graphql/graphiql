@@ -91,7 +91,8 @@ export function useResponseEditor(
       }
 
       // Handle image tooltips and custom tooltips
-      const tooltipRoot = createRoot(document.createElement('div'));
+      const tooltipContainer = document.createElement('div');
+      const tooltipRoot = createRoot(tooltipContainer);
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
@@ -106,9 +107,9 @@ export function useResponseEditor(
 
           if (infoElements.length) {
             tooltipRoot.render(infoElements);
-          } else {
-            tooltipRoot.unmount();
+            return tooltipContainer;
           }
+          tooltipRoot.unmount();
         },
       );
 
