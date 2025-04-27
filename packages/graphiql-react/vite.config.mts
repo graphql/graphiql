@@ -11,10 +11,11 @@ import packageJSON from './package.json' assert { type: 'json' };
 import dts from 'vite-plugin-dts';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  target: {
-    kind: 'donotuse_meta_internal',
-    runtimeModule: path.resolve('./src/react-compiler-runtime.cjs'),
-  },
+  // target: {
+  //   kind: 'donotuse_meta_internal',
+  //   runtimeModule: path.resolve('./src/c'),
+  // },
+  target: '18',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
@@ -65,17 +66,6 @@ export const plugins: PluginOption[] = [
     outDir: ['dist'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
-  {
-    name: 'copy original react-compiler-runtime file',
-    async writeBundle() {
-      // Write original cjs to dist, because vite it recompile to ESM
-      await fs.cp(
-        path.resolve('./src/react-compiler-runtime.cjs'),
-        path.resolve('./dist/react-compiler-runtime.cjs'),
-      );
-      console.log('✅  react-compiler-runtime.cjs copied!');
-    },
-  },
 ];
 
 export default defineConfig({
@@ -92,8 +82,7 @@ export default defineConfig({
       entry: 'src/index.ts',
       fileName(_format, entryName) {
         const filePath = entryName.replace(/\.svg$/, '');
-        const ext = filePath.includes('react-compiler-runtime') ? 'cjs' : 'js';
-        return `${filePath}.${ext}`;
+        return `${filePath}.js`;
       },
       formats: ['es'],
     },
@@ -101,9 +90,6 @@ export default defineConfig({
       external: [
         'react/jsx-runtime',
         'react-dom/client',
-        'react/compiler-runtime',
-        // Don't transform this file — treat it as external
-        /\/src\/react-compiler-runtime\.cjs$/,
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
