@@ -1,1 +1,1 @@
-export * from 'react-compiler-runtime'
+export * from 'react-compiler-runtime';
