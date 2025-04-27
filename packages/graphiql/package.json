@@ -58,6 +58,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v20.51.0",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "vite-plugin-dts": "^4.5.3",
     "vite": "^5.3.6",
