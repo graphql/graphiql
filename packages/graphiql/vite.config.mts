@@ -8,10 +8,10 @@ import packageJSON from './package.json';
 
 const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,
-  target: {
-    kind: 'donotuse_meta_internal',
-    runtimeModule: '@graphiql/react',
-  },
+  // target: {
+  //   kind: 'donotuse_meta_internal',
+  //   runtimeModule: '@graphiql/react',
+  // },
   sources(filename) {
     if (
       filename.includes('__tests__') ||

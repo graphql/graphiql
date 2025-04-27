@@ -9,11 +9,10 @@ import packageJSON from './package.json' assert { type: 'json' };
 import dts from 'vite-plugin-dts';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  // target: {
-  //   kind: 'donotuse_meta_internal',
-  //   runtimeModule: path.resolve('./src/c'),
-  // },
-  target: '18',
+  // https://github.com/esm-dev/esm.sh/blob/5f552cc9088ee4479e4f04a947680a62c8c53ccf/HOSTING.md?plain=1#L77
+  // MINIFY is an env variable used by esm.sh, and since react 19 is bundled with it, we always
+  // want to use `react/compiler-runtime` and not `react-compiler-runtime` package
+  target: process.env.MINIFY ? '19' : '18',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;

@@ -49,6 +49,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/react": "^0.29.0"
   },
   "peerDependencies": {
