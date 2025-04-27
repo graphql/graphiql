@@ -10,9 +10,9 @@ import dts from 'vite-plugin-dts';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   // https://github.com/esm-dev/esm.sh/blob/5f552cc9088ee4479e4f04a947680a62c8c53ccf/HOSTING.md?plain=1#L77
-  // ESM_SH_BUILD is an env variable used by esm.sh, and since react 19 is bundled with it, we always
+  // `process.env.NODE_ENV` is an env variable used by esm.sh, and since react 19 is bundled with it, we always
   // want to use `react/compiler-runtime` and not `react-compiler-runtime` package
-  target: process.env.ESM_SH_BUILD ? '19' : '18',
+  target: process.env.NODE_ENV === 'development' ? '19' : '18',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
