@@ -57,11 +57,11 @@
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
+  "//uWebSockets.js": "uNetworking/uWebSockets.js#v20.51.0",
   "devDependencies": {
-    "uWebSockets.js": "uNetworking/uWebSockets.js#v20.51.0",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "vite-plugin-dts": "^4.5.3",
-    "vite": "^5.3.6",
+    "vite": "^6.3.3",
     "postcss-lightningcss": "^1.0.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@graphiql/toolkit": "^0.11.2",

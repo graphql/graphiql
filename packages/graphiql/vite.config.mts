@@ -54,6 +54,7 @@ const umdConfig = defineConfig({
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -75,6 +76,7 @@ const esmConfig = defineConfig({
       entry: 'src/index.ts',
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
