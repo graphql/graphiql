@@ -58,9 +58,7 @@ export const plugins: PluginOption[] = [
 export default defineConfig({
   plugins,
   css: {
-    postcss: {
-      plugins: [postCssNestingPlugin()],
-    },
+    transformer: 'lightningcss',
   },
   build: {
     minify: false,

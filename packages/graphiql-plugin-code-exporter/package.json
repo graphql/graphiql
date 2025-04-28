@@ -42,7 +42,6 @@
     "@graphiql/react": "^0.29.0",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
-    "postcss-nesting": "^13.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",

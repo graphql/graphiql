@@ -59,10 +59,10 @@
     "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
+    "lightningcss": "^1.29.3",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "vite-plugin-dts": "^4.5.3",
     "vite": "^6.3.3",
-    "postcss-lightningcss": "^1.0.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@graphiql/toolkit": "^0.11.2",
     "@testing-library/jest-dom": "^6.6.3",
@@ -73,7 +73,6 @@
     "graphql": "^16.9.0",
     "graphql-http": "^1.22.1",
     "graphql-subscriptions": "^2.0.0",
-    "postcss-import": "16.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "start-server-and-test": "^1.10.11",
