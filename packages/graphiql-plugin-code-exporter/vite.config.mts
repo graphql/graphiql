@@ -15,6 +15,7 @@ export default defineConfig({
       fileName: 'index',
       name: 'GraphiQLPluginCodeExporter',
       formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      cssFileName: 'style'
     },
     rollupOptions: {
       external: [
