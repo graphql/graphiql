@@ -69,7 +69,7 @@ export default defineConfig({
       entry: 'src/index.ts',
       fileName: 'index',
       formats: ['cjs', 'es'],
-      cssFileName: 'style'
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
