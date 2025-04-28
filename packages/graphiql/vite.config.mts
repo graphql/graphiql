@@ -8,10 +8,6 @@ import packageJSON from './package.json';
 
 const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,
-  // target: {
-  //   kind: 'donotuse_meta_internal',
-  //   runtimeModule: '@graphiql/react',
-  // },
   sources(filename) {
     if (
       filename.includes('__tests__') ||
@@ -38,7 +34,6 @@ const umdConfig = defineConfig({
     // https://github.com/graphql/graphql-js/blob/16.x.x/website/pages/docs/going-to-production.mdx
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
-    'process.env.UMD': 'true',
   },
   plugins,
   build: {

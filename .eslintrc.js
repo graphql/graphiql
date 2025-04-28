@@ -531,6 +531,12 @@ module.exports = {
       },
     },
     {
+      files: ['**/*.d.ts'],
+      rules: {
+        'no-var': 'off',
+      },
+    },
+    {
       // ❗ALWAYS LAST
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
