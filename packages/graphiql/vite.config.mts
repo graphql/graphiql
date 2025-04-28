@@ -37,7 +37,7 @@ const umdConfig = defineConfig({
   },
   plugins,
   css: {
-    transformer: 'lightningcss'
+    transformer: 'lightningcss',
   },
   build: {
     minify: 'terser', // produce less bundle size
