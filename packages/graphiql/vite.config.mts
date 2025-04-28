@@ -36,6 +36,9 @@ const umdConfig = defineConfig({
     'process.env.NODE_ENV': '"production"',
   },
   plugins,
+  css: {
+    transformer: 'lightningcss'
+  },
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
