@@ -73,7 +73,6 @@
     "graphql": "^16.9.0",
     "graphql-http": "^1.22.1",
     "graphql-subscriptions": "^2.0.0",
-    "postcss": "8.5.3",
     "postcss-import": "16.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
