@@ -61,7 +61,7 @@
   "devDependencies": {
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "vite-plugin-dts": "^4.3.0",
-    "vite": "^5.3.6",
+    "vite": "^5.4.19",
     "postcss-lightningcss": "^1.0.1",
     "@vitejs/plugin-react": "^4.3.1",
     "@graphiql/toolkit": "^0.11.2",
