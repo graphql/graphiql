@@ -2,7 +2,6 @@
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
-import postCssNestingPlugin from 'postcss-nesting';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json';
 
