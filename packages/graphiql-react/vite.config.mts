@@ -79,7 +79,6 @@ export default defineConfig({
         return `${filePath}.js`;
       },
       formats: ['es'],
-      cssFileName: 'style',
     },
     rollupOptions: {
       external: [

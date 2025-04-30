@@ -21,9 +21,10 @@ export default defineConfig({
     emptyOutDir: !IS_UMD,
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'index',
+      fileName: (format, filePath) =>
+        `${filePath}.${format === 'umd' ? 'umd.' : ''}js`,
       name: 'GraphiQLPluginExplorer',
-      formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      formats: IS_UMD ? ['umd'] : ['es'],
     },
     rollupOptions: {
       external: [

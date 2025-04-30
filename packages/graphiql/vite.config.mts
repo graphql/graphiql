@@ -49,7 +49,6 @@ const umdConfig = defineConfig({
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
-      cssFileName: 'style',
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -68,10 +67,9 @@ const esmConfig = defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: ['src/index.ts', 'src/example.ts'],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
-      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
@@ -101,6 +99,7 @@ const esmConfig = defineConfig({
 
 function htmlPlugin(): PluginOption {
   const htmlForVite = /* HTML */ `
+    <link href="/src/style.css" rel="stylesheet" />
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
@@ -112,7 +111,7 @@ function htmlPlugin(): PluginOption {
         GraphiQL,
       });
     </script>
-    <link href="/src/style.css" rel="stylesheet" />
+    <script type="module" src="/src/example.ts"></script>
   `;
 
   return {
