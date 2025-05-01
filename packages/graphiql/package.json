@@ -17,11 +17,10 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "!dist/example.*",
+    "!dist/e2e.*",
     "graphiql.js",
     "graphiql.js.map",
     "graphiql.min.js",
@@ -34,8 +33,8 @@
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "scripts": {

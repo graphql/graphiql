@@ -14,12 +14,11 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/react"
   },
   "license": "MIT",
-  "main": "dist/index.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./font/roboto.css": "./font/roboto.css",
     "./font/fira-code.css": "./font/fira-code.css",
