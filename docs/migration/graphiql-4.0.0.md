@@ -19,7 +19,7 @@
 - Drop support React 16/17
 - Support React 19
 
-## `@graphiql/plugin-explore` changes
+## `@graphiql/plugin-explorer` changes
 
 - Drop CommonJS build output
 - Drop support React 16/17

@@ -67,7 +67,7 @@ const esmConfig = defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: ['src/index.ts', 'src/example.ts'],
+      entry: ['src/index.ts', 'src/e2e.ts'],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
     },
