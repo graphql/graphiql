@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "4.0.0-alpha.1",
+  "version": "3.1.5",
   "sideEffects": false,
   "repository": {
     "type": "git",
