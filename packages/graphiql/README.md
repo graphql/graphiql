@@ -58,17 +58,19 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 > If you're looking to upgrade from `graphiql@1.x` to `graphiql@2`, check out
 > the [migration guide](../../docs/migration/graphiql-2.0.0.md)!
 
-### CDN
+### CDN usage
 
-#### ESM-based
+#### ESM-based (recommended)
 
-Check out [ESM-based example](../../examples/graphiql-cdn)
+Use the modern, ESM-based CDN approach.
+See the [ESM-based example](../../examples/graphiql-cdn) for setup details.
 
-#### UMD
+#### UMD (deprecated)
 
 > [!WARNING]
 >
-> UMD CDN is deprecated and will be removed in future GraphiQL majors. Migrate to [ESM-based example](../../examples/graphiql-cdn).
+> The UMD CDN build is **deprecated** and will be removed in a future major release of GraphiQL.
+> Please migrate to the [ESM-based example](../../examples/graphiql-cdn).
 
 ## Usage
 
