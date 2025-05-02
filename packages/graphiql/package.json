@@ -69,7 +69,7 @@
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
     "express": "^4.20.0",
-    "graphql": "^17.0.0-alpha.8",
+    "graphql": "^16.11.0",
     "graphql-helix": "^1.13.0",
     "graphql-subscriptions": "^2.0.0",
     "react": "^19.1.0",

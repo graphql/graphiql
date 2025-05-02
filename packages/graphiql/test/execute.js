@@ -1,5 +1,6 @@
-/* eslint-disable import-x/no-extraneous-dependencies */
-import { execute, experimentalExecuteIncrementally, version } from 'graphql';
+/* eslint-disable import-x/no-extraneous-dependencies, import-x/default */
+import pkg from 'graphql';
+const { execute, experimentalExecuteIncrementally, version } = pkg;
 
 export const customExecute =
   parseInt(version, 10) > 16

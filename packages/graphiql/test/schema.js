@@ -6,8 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import-x/no-extraneous-dependencies
-import {
+// eslint-disable-next-line import-x/no-extraneous-dependencies, import-x/default
+import pkg from 'graphql';
+const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLUnionType,
@@ -24,7 +25,7 @@ import {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} from 'graphql';
+} = pkg;
 
 const directives =
   parseInt(version, 10) > 16
