@@ -42,6 +42,6 @@ function GraphiQLWithExplorer() {
 
 ## CDN bundles
 
-You can also use this plugin with `unpkg`, `jsdelivr`, and other CDNs.
+You can also use this plugin with an ESM-based CDN like [esm.sh](https://esm.sh).
 
-See the [example HTML file](examples/index.html) for this plugin
+See the [example HTML file](./example/index.html) for this plugin.
