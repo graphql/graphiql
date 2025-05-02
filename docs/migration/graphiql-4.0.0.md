@@ -6,7 +6,7 @@
 - Drop CommonJS build output
 - Drop support React 16/17
 - Support React 19
-- Changed umd CDN paths, `dist/index.umd.js` and `dist/style.css` are minified
+- Changed UMD CDN paths, `dist/index.umd.js` and `dist/style.css` are minified
   ```diff
   -https://unpkg.com/graphiql/graphiql.js
   -https://unpkg.com/graphiql/graphiql.min.js
@@ -15,7 +15,7 @@
   -https://unpkg.com/graphiql/graphiql.min.css
   +https://unpkg.com/graphiql/dist/style.css
   ```
-- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to ESM-based CDN
+- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to [ESM-based CDN](../../examples/graphiql-cdn/index.html)
 - Add support for `onPrettifyQuery` callback to enable customized query formatting
 - Show tabs even there is only one tab
 - Remove default export
@@ -127,7 +127,7 @@
 - Drop CommonJS build output
 - Drop support React 16/17
 - Support React 19
-- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to ESM-based CDN
+- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to [ESM-based CDN](../../packages/graphiql-plugin-code-exporter/example/index.html)
 - [Updated CDN ESM-based example](../../packages/graphiql-plugin-code-exporter/example/index.html)
 - `style.css` import was changed
   ```diff
@@ -140,7 +140,7 @@
 - Drop CommonJS build output
 - Drop support React 16/17
 - Support React 19
-- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to ESM-based CDN
+- ⚠️ UMD CDN build `index.umd.js` is deprecated. Migrate to [ESM-based CDN](../../packages/graphiql-plugin-explorer/example/index.html)
 - [Updated CDN ESM-based example](../../packages/graphiql-plugin-explorer/example/index.html)
 - Improve explorer styles
 - `style.css` import was changed
