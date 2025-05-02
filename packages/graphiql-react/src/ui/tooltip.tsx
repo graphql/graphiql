@@ -1,14 +1,14 @@
-import { ReactElement, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import * as T from '@radix-ui/react-tooltip';
 import './tooltip.css';
 
-export function TooltipRoot({
+export const TooltipRoot: FC<T.TooltipContentProps & { label: ReactNode }> = ({
   children,
   align = 'start',
   side = 'bottom',
   sideOffset = 5,
   label,
-}: T.TooltipContentProps & { label: ReactNode }): ReactElement {
+}) => {
   return (
     <T.Root>
       <T.Trigger asChild>{children}</T.Trigger>
@@ -24,7 +24,7 @@ export function TooltipRoot({
       </T.Portal>
     </T.Root>
   );
-}
+};
 
 export const Tooltip = Object.assign(TooltipRoot, {
   Provider: T.Provider,

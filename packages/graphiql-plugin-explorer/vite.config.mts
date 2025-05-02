@@ -18,6 +18,9 @@ export default defineConfig({
     }),
     !IS_UMD && [dts({ rollupTypes: true }), htmlPlugin()],
   ],
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: IS_UMD
       ? 'terser' // produce better bundle size than esbuild
@@ -26,9 +29,11 @@ export default defineConfig({
     emptyOutDir: !IS_UMD,
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'index',
+      fileName: (format, filePath) =>
+        `${filePath}.${format === 'umd' ? 'umd.' : ''}js`,
       name: 'GraphiQLPluginExplorer',
-      formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      formats: IS_UMD ? ['umd'] : ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [

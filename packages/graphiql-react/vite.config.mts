@@ -2,13 +2,12 @@
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
-import postCssNestingPlugin from 'postcss-nesting';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
-import packageJSON from './package.json';
+import packageJSON from './package.json' assert { type: 'json' };
 import dts from 'vite-plugin-dts';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  target: '17',
+  target: '18',
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
@@ -50,13 +49,13 @@ export const plugins: PluginOption[] = [
     },
   }),
   svgr({
-    // exportAsDefault: true,
     svgrOptions: {
       titleProp: true,
     },
   }),
   dts({
-    outDir: ['dist/types'],
+    include: ['src/**'],
+    outDir: ['dist'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
 ];
@@ -64,21 +63,24 @@ export const plugins: PluginOption[] = [
 export default defineConfig({
   plugins,
   css: {
-    postcss: {
-      plugins: [postCssNestingPlugin()],
-    },
+    transformer: 'lightningcss',
   },
   build: {
     minify: false,
     sourcemap: true,
     lib: {
       entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['cjs', 'es'],
+      fileName(_format, entryName) {
+        const filePath = entryName.replace(/\.svg$/, '');
+        return `${filePath}.js`;
+      },
+      formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
         'react/jsx-runtime',
+        'react-dom/client',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
@@ -86,7 +88,7 @@ export default defineConfig({
         /codemirror[/-]/,
       ],
       output: {
-        chunkFileNames: '[format]/[name].js',
+        preserveModules: true,
       },
     },
   },

@@ -211,7 +211,7 @@ export type EditorContextProviderProps = {
    * - Adding a tab
    * - Switching to a different tab
    * - Closing a tab
-   * @param tabState The tabs state after it has been updated.
+   * @param tabState The tab state after it has been updated.
    */
   onTabChange?(tabState: TabsState): void;
   /**
@@ -336,7 +336,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
     };
 
-  const lastShouldPersistHeadersProp = useRef<boolean | undefined>();
+  const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
   useEffect(() => {
     const propValue = Boolean(props.shouldPersistHeaders);
     if (lastShouldPersistHeadersProp?.current !== propValue) {

@@ -1,6 +1,7 @@
 {
   "name": "@graphiql/plugin-code-exporter",
   "version": "4.0.0-alpha.1",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -8,7 +9,6 @@
   },
   "author": "LekoArts",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -43,18 +43,17 @@
   "peerDependencies": {
     "@graphiql/react": "^1.0.0-alpha.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
     "@graphiql/react": "^1.0.0-alpha.3",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
-    "postcss-nesting": "^10.1.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^4.6.3",
-    "vite": "^5.4.18",
+    "vite": "^6.3.3",
     "vite-plugin-dts": "^4.0.1"
   }
 }

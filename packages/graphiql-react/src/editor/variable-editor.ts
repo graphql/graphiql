@@ -17,7 +17,7 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { CodeMirrorType, WriteableEditorProps } from './types';
+import { WriteableEditorProps } from './types';
 
 export type UseVariableEditorArgs = WriteableEditorProps & {
   /**
@@ -64,8 +64,6 @@ export function useVariableEditor(
   const merge = useMergeQuery({ caller: caller || _useVariableEditor });
   const prettify = usePrettifyEditors({ caller: caller || _useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
-  const codeMirrorRef = useRef<CodeMirrorType>();
-
   useEffect(() => {
     let isActive = true;
 
@@ -74,9 +72,6 @@ export function useVariableEditor(
       if (!isActive) {
         return;
       }
-
-      codeMirrorRef.current = CodeMirror;
-
       const container = ref.current;
       if (!container) {
         return;

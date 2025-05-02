@@ -15,7 +15,7 @@ const reactCompilerConfig: Partial<ReactCompilerConfig> = {
     ) {
       return false;
     }
-    return filename.includes(`packages${sep}graphiql${sep}`);
+    return filename.includes(`packages${sep}graphiql${sep}src`);
   },
 };
 
@@ -31,21 +31,28 @@ const umdConfig = defineConfig({
   define: {
     // graphql v17
     'globalThis.process.env.NODE_ENV': 'true',
-    // https://github.com/graphql/graphql-js/blob/16.x.x/website/docs/tutorials/going-to-production.md#vite
+    // https://github.com/graphql/graphql-js/blob/16.x.x/website/pages/docs/going-to-production.mdx
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
   plugins,
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
     emptyOutDir: false,
     lib: {
       entry: 'src/cdn.ts',
-      // 👇 The name of the exposed global variable. Required when the formats option includes umd or iife
+      /**
+       * The name of the exposed global variable. Required when the `formats` option includes `umd`
+       * or `iife`.
+       */
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -60,20 +67,13 @@ const umdConfig = defineConfig({
 });
 
 const esmConfig = defineConfig({
-  ...(process.env.NODE_ENV !== 'production' && {
-    resolve: {
-      alias: {
-        'react/compiler-runtime': 'react-compiler-runtime',
-      },
-    },
-  }),
   build: {
     minify: false,
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['cjs', 'es'],
+      entry: ['src/index.ts', 'src/e2e.ts'],
+      fileName: (_format, filePath) => `${filePath}.js`,
+      formats: ['es'],
     },
     rollupOptions: {
       external: [
@@ -82,10 +82,13 @@ const esmConfig = defineConfig({
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
       ],
+      output: {
+        preserveModules: true,
+      },
     },
   },
   server: {
-    // prevent a browser window from opening automatically
+    // Prevent a browser window from opening automatically
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
@@ -100,6 +103,7 @@ const esmConfig = defineConfig({
 
 function htmlPlugin(): PluginOption {
   const htmlForVite = /* HTML */ `
+    <link href="/src/style.css" rel="stylesheet" />
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
@@ -111,7 +115,7 @@ function htmlPlugin(): PluginOption {
         GraphiQL,
       });
     </script>
-    <link href="/src/style.css" rel="stylesheet" />
+    <script type="module" src="/src/example.ts"></script>
   `;
 
   return {

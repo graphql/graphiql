@@ -24,6 +24,7 @@
       }
     </style>
     <!--vite-replace-start-->
+    <link href="/dist/style.css" rel="stylesheet" />
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.production.min.js"
@@ -33,13 +34,12 @@
       src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
     ></script>
     <script src="/dist/index.umd.js"></script>
-    <link href="/dist/style.css" rel="stylesheet" />
+    <script type="module" src="/dist/e2e.js"></script>
     <!--vite-replace-end-->
   </head>
   <body>
     <div id="graphiql">
       <div class="loading">Loading…</div>
     </div>
-    <script type="module" src="resources/renderExample.js"></script>
   </body>
 </html>
