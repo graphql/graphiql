@@ -15,6 +15,9 @@ export default defineConfig({
       },
     }),
   ],
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
@@ -25,6 +28,7 @@ export default defineConfig({
         `${filePath}.${format === 'umd' ? 'umd.' : ''}js`,
       name: 'GraphiQLPluginExplorer',
       formats: IS_UMD ? ['umd'] : ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
