@@ -18,9 +18,11 @@
 - Drop CommonJS build output
 - Drop support React 16/17
 - Support React 19
+- [Updated CDN ESM-based example](../../packages/graphiql-plugin-code-exporter/example/index.html)
 
 ## `@graphiql/plugin-explorer` changes
 
 - Drop CommonJS build output
 - Drop support React 16/17
 - Support React 19
+- [Updated CDN ESM-based example](../../packages/graphiql-plugin-explorer/example/index.html)
