@@ -1,4 +1,9 @@
-import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
+import {
+  fillLeafs,
+  GetDefaultFieldNamesFn,
+  mergeAst,
+  MaybePromise,
+} from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -220,14 +225,12 @@ export type UsePrettifyEditorsArgs = {
    */
   caller?: Function;
   /**
-   * Invoked when the prettify callback is invoked
+   * Invoked when the prettify callback is invoked.
    * @param query The current value of the query editor.
-   * @returns The formatted query
+   * @returns The formatted query.
    */
   onPrettifyQuery?: (query: string) => MaybePromise<string>;
 };
-
-type MaybePromise<T> = T | Promise<T>;
 
 export function usePrettifyEditors({
   caller,
