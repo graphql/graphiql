@@ -224,8 +224,10 @@ export type UsePrettifyEditorsArgs = {
    * @param query The current value of the query editor.
    * @returns The formatted query
    */
-  onPrettifyQuery?: (query: string) => string;
+  onPrettifyQuery?: (query: string) => MaybePromise<string>;
 };
+
+type MaybePromise<T> = T | Promise<T>;
 
 export function usePrettifyEditors({
   caller,
@@ -235,7 +237,7 @@ export function usePrettifyEditors({
     nonNull: true,
     caller: caller || _usePrettifyEditors,
   });
-  return () => {
+  return async () => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -272,7 +274,7 @@ export function usePrettifyEditors({
     if (queryEditor) {
       const editorContent = queryEditor.getValue();
       const prettifiedEditorContent = onPrettifyQuery
-        ? onPrettifyQuery(editorContent)
+        ? await onPrettifyQuery(editorContent)
         : print(parse(editorContent));
 
       if (prettifiedEditorContent !== editorContent) {
