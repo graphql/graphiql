@@ -5,9 +5,11 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+// Test in `graphql-language-service-server` fails without `require`, migrate to `import` when graphql will be updated to v17
+import { createRequire } from 'node:module';
 
-// eslint-disable-next-line import-x/no-extraneous-dependencies, import-x/default
-import pkg from 'graphql';
+const require = createRequire(import.meta.url);
+
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -25,7 +27,8 @@ const {
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-} = pkg;
+  // eslint-disable-next-line import-x/no-extraneous-dependencies
+} = require('graphql');
 
 const directives =
   parseInt(version, 10) > 16
