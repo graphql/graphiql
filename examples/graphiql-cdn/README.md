@@ -8,12 +8,13 @@ It loads the latest GraphiQL version from [esm.sh](https://esm.sh), an ESM-based
 
 No installation or build step is required — just open the `index.html` file in your browser:
 
-* macOS:
+- macOS:
 
   ```sh
   open index.html
   ```
-* Linux:
+
+- Linux:
 
   ```sh
   firefox index.html
