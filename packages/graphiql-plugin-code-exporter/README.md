@@ -28,8 +28,8 @@ Example integration:
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import 'graphiql/graphiql.css';
-import '@graphiql/plugin-code-exporter/dist/style.css';
+import 'graphiql/style.css';
+import '@graphiql/plugin-code-exporter/style.css';
 
 const fetcher = createGraphiQLFetcher({
   url: 'https://countries.trevorblades.com',

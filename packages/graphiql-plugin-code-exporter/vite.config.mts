@@ -1,16 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import packageJSON from './package.json';
+import dts from 'vite-plugin-dts';
 
 const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins: [
+    react({ jsxRuntime: 'classic' }),
+    !IS_UMD && dts({ include: ['src/**'] }),
+  ],
   css: {
     transformer: 'lightningcss',
   },
   build: {
-    minify: IS_UMD ? 'esbuild' : false,
+    minify: IS_UMD
+      ? 'terser' // produce better bundle size than esbuild
+      : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {
@@ -28,7 +34,6 @@ export default defineConfig({
         ...(IS_UMD ? [] : Object.keys(packageJSON.dependencies)),
       ],
       output: {
-        chunkFileNames: '[name].[format].js',
         globals: {
           '@graphiql/react': 'GraphiQL.React',
           graphql: 'GraphiQL.GraphQL',
@@ -36,10 +41,6 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
         },
       },
-    },
-    commonjsOptions: {
-      esmExternals: true,
-      requireReturnsDefault: 'auto',
     },
   },
 });

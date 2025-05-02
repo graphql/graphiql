@@ -129,6 +129,16 @@ module.exports = {
             property: 'localStorage',
             message: 'Use `localStorage` instead',
           },
+          {
+            object: 'window',
+            property: 'location',
+            message: 'Use `location` instead',
+          },
+          {
+            object: 'window',
+            property: 'navigator',
+            message: 'Use `navigator` instead',
+          },
         ],
         'no-return-assign': 'error',
         'no-return-await': 'error',
@@ -389,7 +399,7 @@ module.exports = {
         projectService: {
           allowDefaultProject: [
             'examples/monaco-graphql-react-vite/vite.config.ts',
-            'packages/{graphiql,graphiql-plugin-explorer,graphiql-plugin-code-exporter}/vite.config.mts',
+            'packages/graphiql/vite.config.mts',
             'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax,graphiql}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',

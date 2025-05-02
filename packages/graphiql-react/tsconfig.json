@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "declarationDir": "types",
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   }
 }

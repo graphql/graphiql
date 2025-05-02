@@ -1,9 +1,7 @@
 {
   "name": "@graphiql/react",
-  "version": "0.29.0",
-  "sideEffects": [
-    "*.css"
-  ],
+  "version": "1.0.0-alpha.4",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -16,13 +14,12 @@
   "license": "MIT",
   "exports": {
     "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    "./font/*": "./font/*",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./font/roboto.css": "./font/roboto.css",
-    "./font/fira-code.css": "./font/fira-code.css",
-    "./dist/style.css": "./dist/style.css"
+    }
   },
   "types": "dist/index.d.ts",
   "keywords": [

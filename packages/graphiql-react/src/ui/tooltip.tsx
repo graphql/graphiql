@@ -1,6 +1,5 @@
 import { FC, ReactNode } from 'react';
 import * as T from '@radix-ui/react-tooltip';
-import { createComponentGroup } from '../utility/component-group';
 import './tooltip.css';
 
 export const TooltipRoot: FC<T.TooltipContentProps & { label: ReactNode }> = ({
@@ -27,6 +26,6 @@ export const TooltipRoot: FC<T.TooltipContentProps & { label: ReactNode }> = ({
   );
 };
 
-export const Tooltip = createComponentGroup(TooltipRoot, {
+export const Tooltip = Object.assign(TooltipRoot, {
   Provider: T.Provider,
 });

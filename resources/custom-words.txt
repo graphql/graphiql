@@ -116,6 +116,7 @@ linenumber
 linenumbers
 linkify
 listbox
+lightningcss
 listvalues
 lightningcss
 lostplan

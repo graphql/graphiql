@@ -34,6 +34,7 @@ import {
   useCompletion,
   useCopyQuery,
   UseCopyQueryArgs,
+  UsePrettifyEditorsArgs,
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
@@ -47,7 +48,8 @@ import {
 import { normalizeWhitespace } from './whitespace';
 
 export type UseQueryEditorArgs = WriteableEditorProps &
-  Pick<UseCopyQueryArgs, 'onCopyQuery'> & {
+  Pick<UseCopyQueryArgs, 'onCopyQuery'> &
+  Pick<UsePrettifyEditorsArgs, 'onPrettifyQuery'> & {
     /**
      * Invoked when a reference to the GraphQL schema (type or field) is clicked
      * as part of the editor or one of its tooltips.
@@ -120,6 +122,7 @@ export function useQueryEditor(
     onClickReference,
     onCopyQuery,
     onEdit,
+    onPrettifyQuery,
     readOnly = false,
   }: UseQueryEditorArgs = {},
   caller?: Function,
@@ -147,7 +150,10 @@ export function useQueryEditor(
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
-  const prettify = usePrettifyEditors({ caller: caller || _useQueryEditor });
+  const prettify = usePrettifyEditors({
+    caller: caller || _useQueryEditor,
+    onPrettifyQuery,
+  });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 

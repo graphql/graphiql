@@ -77,6 +77,8 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
+    "identity-obj-proxy": "^3.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "graphql-http": "^1.22.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
@@ -104,7 +106,6 @@
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "babel-jest": "^29.4.3",
-    "babel-plugin-macros": "^3.1.0",
     "babel-plugin-transform-import-meta": "^2.2.1",
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
@@ -122,7 +123,6 @@
     "eslint-plugin-sonarjs": "^3.0.2",
     "eslint-plugin-unicorn": "^56.0.0",
     "execa": "^7.1.1",
-    "identity-obj-proxy": "^3.0.0",
     "fetch-mock": "6.5.2",
     "husky": "^4.2.3",
     "jest": "^27.5.1",

@@ -4,8 +4,7 @@ on:
     # only on merge to main.
     # it's rare that this workflow would
     # show us an error, but when it does it's important!
-    branches:
-      - main
+    branches: [main, graphiql-v4]
     # don't run this regression suite if we don't need to
     paths-ignore:
       - '**.md'

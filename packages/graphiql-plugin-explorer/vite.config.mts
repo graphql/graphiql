@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import dts from 'vite-plugin-dts';
 import packageJSON from './package.json';
 
 const IS_UMD = process.env.UMD === 'true';
@@ -9,17 +10,19 @@ export default defineConfig({
   plugins: [
     react({ jsxRuntime: 'classic' }),
     svgr({
-      exportAsDefault: true,
       svgrOptions: {
         titleProp: true,
       },
     }),
+    !IS_UMD && [dts({ include: ['src/**'] })],
   ],
   css: {
     transformer: 'lightningcss',
   },
   build: {
-    minify: IS_UMD ? 'esbuild' : false,
+    minify: IS_UMD
+      ? 'terser' // produce better bundle size than esbuild
+      : false,
     // avoid clean cjs/es builds
     emptyOutDir: !IS_UMD,
     lib: {

@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "3.9.0",
+  "version": "4.0.0-alpha.5",
   "sideEffects": false,
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
@@ -41,7 +41,7 @@
     "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit",
     "build": "vite build && UMD=true vite build",
-    "cypress-open": "yarn dev 'cypress open'",
+    "cypress-open": "yarn dev 'cypress open --browser electron'",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.29.0"
+    "@graphiql/react": "^1.0.0-alpha.4"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -69,8 +69,8 @@
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
     "express": "^4.20.0",
-    "graphql": "^16.9.0",
-    "graphql-http": "^1.22.1",
+    "graphql": "^16.11.0",
+    "graphql-helix": "^1.13.0",
     "graphql-subscriptions": "^2.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -133,7 +133,7 @@
   }
   & .CodeMirror {
     box-shadow: var(--popover-box-shadow);
-    border-radius: calc(var(--border-radius-12));
+    border-radius: var(--border-radius-12);
     padding: var(--px-16);
   }
 }

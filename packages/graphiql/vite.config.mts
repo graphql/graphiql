@@ -52,7 +52,6 @@ const umdConfig = defineConfig({
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
-      cssFileName: 'style',
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -74,6 +73,7 @@ const esmConfig = defineConfig({
       entry: ['src/index.ts', 'src/e2e.ts'],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
@@ -115,7 +115,7 @@ function htmlPlugin(): PluginOption {
         GraphiQL,
       });
     </script>
-    <script type="module" src="/src/example.ts"></script>
+    <script type="module" src="/src/e2e.ts"></script>
   `;
 
   return {

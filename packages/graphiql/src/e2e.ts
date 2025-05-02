@@ -21,6 +21,7 @@ interface Params {
   variables?: string;
   headers?: string;
   confirmCloseTab?: 'true';
+  onPrettifyQuery?: 'true';
   forcedTheme?: 'light' | 'dark' | 'system';
   defaultQuery?: string;
   defaultTheme?: Theme;
@@ -60,6 +61,10 @@ function onTabChange(tabsState: TabsState): void {
 function confirmCloseTab(index: number): boolean {
   // eslint-disable-next-line no-alert
   return confirm(`Are you sure you want to close tab with index ${index}?`);
+}
+
+function onPrettifyQuery(query: string): string {
+  return query.replaceAll(/([ \n])+/g, ' ');
 }
 
 function updateURL(): void {
@@ -108,6 +113,8 @@ root.render(
     inputValueDeprecation: !graphqlVersion.includes('15.5'),
     confirmCloseTab:
       parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
+    onPrettifyQuery:
+      parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
     onTabChange,
     forcedTheme: parameters.forcedTheme,
     defaultQuery: parameters.defaultQuery,
