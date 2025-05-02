@@ -37,9 +37,7 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   value: EditorConfiguration[K],
 ) {
   useEffect(() => {
-    if (editor) {
-      editor.setOption(option, value);
-    }
+    editor?.setOption(option, value);
   }, [editor, option, value]);
 }
 
@@ -276,12 +274,16 @@ export function usePrettifyEditors({
 
     if (queryEditor) {
       const editorContent = queryEditor.getValue();
-      const prettifiedEditorContent = onPrettifyQuery
-        ? await onPrettifyQuery(editorContent)
-        : print(parse(editorContent));
+      try {
+        const prettifiedEditorContent = onPrettifyQuery
+          ? await onPrettifyQuery(editorContent)
+          : print(parse(editorContent));
 
-      if (prettifiedEditorContent !== editorContent) {
-        queryEditor.setValue(prettifiedEditorContent);
+        if (prettifiedEditorContent !== editorContent) {
+          queryEditor.setValue(prettifiedEditorContent);
+        }
+      } catch {
+        /* Parsing query failed, skip prettification */
       }
     }
   };
@@ -362,7 +364,7 @@ export function useAutoCompleteLeafs({
 // https://react.dev/learn/you-might-not-need-an-effect
 
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  'use no memo'; // eslint-disable-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+  'use no memo';
   const context = useEditorContext({
     nonNull: true,
   });
