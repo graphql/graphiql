@@ -1,5 +1,7 @@
 'use no memo';
 
+import { TabsState, Theme } from '@graphiql/react';
+
 /* global React, ReactDOM, GraphiQL */
 
 /**
@@ -14,42 +16,53 @@
  * - vite dev server
  */
 
+interface Params {
+  query?: string;
+  variables?: string;
+  headers?: string;
+  confirmCloseTab?: 'true';
+  forcedTheme?: 'light' | 'dark' | 'system';
+  defaultQuery?: string;
+  defaultTheme?: Theme;
+  defaultHeaders?: string;
+}
+
 // Parse the search string to get url parameters.
-const parameters = Object.fromEntries(
+const parameters: Params = Object.fromEntries(
   new URLSearchParams(location.search).entries(),
 );
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
-function onEditQuery(newQuery) {
+function onEditQuery(newQuery: string): void {
   parameters.query = newQuery;
   updateURL();
 }
 
-function onEditVariables(newVariables) {
+function onEditVariables(newVariables: string): void {
   parameters.variables = newVariables;
   updateURL();
 }
 
-function onEditHeaders(newHeaders) {
+function onEditHeaders(newHeaders: string): void {
   parameters.headers = newHeaders;
   updateURL();
 }
 
-function onTabChange(tabsState) {
+function onTabChange(tabsState: TabsState): void {
   const activeTab = tabsState.tabs[tabsState.activeTabIndex];
-  parameters.query = activeTab.query;
-  parameters.variables = activeTab.variables;
-  parameters.headers = activeTab.headers;
+  parameters.query = activeTab.query ?? undefined;
+  parameters.variables = activeTab.variables ?? undefined;
+  parameters.headers = activeTab.headers ?? undefined;
   updateURL();
 }
 
-function confirmCloseTab(index) {
+function confirmCloseTab(index: number): boolean {
   // eslint-disable-next-line no-alert
   return confirm(`Are you sure you want to close tab with index ${index}?`);
 }
 
-function updateURL() {
+function updateURL(): void {
   const newSearch = Object.entries(parameters)
     .filter(([_key, value]) => value)
     .map(
@@ -57,10 +70,10 @@ function updateURL() {
         encodeURIComponent(key) + '=' + encodeURIComponent(value),
     )
     .join('&');
-  history.replaceState(null, null, `?${newSearch}`);
+  history.replaceState(null, '', `?${newSearch}`);
 }
 
-function getSchemaUrl() {
+function getSchemaUrl(): string {
   const isDev = /localhost$/.test(location.hostname);
 
   if (isDev) {

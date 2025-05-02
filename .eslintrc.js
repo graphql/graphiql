@@ -366,6 +366,7 @@ module.exports = {
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
+        // '@typescript-eslint/no-redundant-type-constituents': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
@@ -388,11 +389,10 @@ module.exports = {
         projectService: {
           allowDefaultProject: [
             'examples/monaco-graphql-react-vite/vite.config.ts',
-            'packages/*/vitest.config.mts',
-            'packages/*/vite.config.mts',
+            'packages/{graphiql,graphiql-plugin-explorer,graphiql-plugin-code-exporter}/vite.config.mts',
+            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax,graphiql}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',
-            'packages/graphiql-react/setup-files.ts',
             'packages/graphiql/src/GraphiQL.spec.tsx',
             'packages/vscode-graphql-syntax/tests/*.spec.ts',
             'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
@@ -483,7 +483,7 @@ module.exports = {
       },
     },
     {
-      // Rule prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
+      // Rule to prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
       files: ['packages/**'],
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
@@ -491,7 +491,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/{graphiql-react,graphiql}/**'],
+      files: ['packages/{graphiql-react,graphiql}/**/*.{ts,tsx}'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
@@ -502,6 +502,7 @@ module.exports = {
           },
         ],
         'react-hooks/react-compiler': 'error',
+        '@typescript-eslint/no-deprecated': 'error',
       },
     },
     {
@@ -527,6 +528,12 @@ module.exports = {
       processor: 'mdx/remark',
       settings: {
         'mdx/code-blocks': true,
+      },
+    },
+    {
+      files: ['**/*.d.ts'],
+      rules: {
+        'no-var': 'off',
       },
     },
     {

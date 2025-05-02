@@ -10,11 +10,11 @@
     "monaco-editor": "^0.39.0",
     "monaco-graphql": "^1.6.1",
     "prettier": "3.3.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "vite": "^5.4.18",
     "vite-plugin-monaco-editor": "^1.1.0"
   },
