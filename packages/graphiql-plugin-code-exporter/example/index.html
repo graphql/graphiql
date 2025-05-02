@@ -78,6 +78,9 @@
       }
 
       const codeExporter = codeExporterPlugin({
+        /**
+         * Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for details.
+         */
         snippets: [
           {
             name: 'Example One',
@@ -106,7 +109,6 @@
       function App() {
         return React.createElement(GraphiQL, {
           fetcher,
-          defaultEditorToolsVisibility: true,
           plugins: [codeExporter],
         });
       }
