@@ -150,7 +150,10 @@ export function useQueryEditor(
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
-  const prettify = usePrettifyEditors({ caller: caller || _useQueryEditor, onPrettifyQuery });
+  const prettify = usePrettifyEditors({
+    caller: caller || _useQueryEditor,
+    onPrettifyQuery,
+  });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 

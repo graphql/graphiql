@@ -14,7 +14,7 @@ export default defineConfig({
         titleProp: true,
       },
     }),
-    !IS_UMD && [dts({ include: ['src/**'], })],
+    !IS_UMD && [dts({ include: ['src/**'] })],
   ],
   css: {
     transformer: 'lightningcss',
@@ -55,4 +55,3 @@ export default defineConfig({
     },
   },
 });
-
