@@ -225,14 +225,22 @@ export type UsePrettifyEditorsArgs = {
   /**
    * Invoked when the prettify callback is invoked.
    * @param query The current value of the query editor.
+   * @default
+   * import { parse, print } from 'graphql'
+   *
+   * (query) => print(parse(query))
    * @returns The formatted query.
    */
   onPrettifyQuery?: (query: string) => MaybePromise<string>;
 };
 
+function DEFAULT_PRETTIFY_QUERY(query: string): string {
+  return print(parse(query));
+}
+
 export function usePrettifyEditors({
   caller,
-  onPrettifyQuery,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 }: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
@@ -275,10 +283,7 @@ export function usePrettifyEditors({
     if (queryEditor) {
       const editorContent = queryEditor.getValue();
       try {
-        const prettifiedEditorContent = onPrettifyQuery
-          ? await onPrettifyQuery(editorContent)
-          : print(parse(editorContent));
-
+        const prettifiedEditorContent = await onPrettifyQuery(editorContent);
         if (prettifiedEditorContent !== editorContent) {
           queryEditor.setValue(prettifiedEditorContent);
         }
@@ -362,12 +367,10 @@ export function useAutoCompleteLeafs({
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
-
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+  // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const context = useEditorContext({
-    nonNull: true,
-  });
+  const context = useEditorContext({ nonNull: true });
 
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
