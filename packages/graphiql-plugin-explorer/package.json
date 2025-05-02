@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "4.0.0-alpha.2",
+  "version": "4.0.0-alpha.3",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-alpha.3",
+    "@graphiql/react": "^1.0.0-alpha.5",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",

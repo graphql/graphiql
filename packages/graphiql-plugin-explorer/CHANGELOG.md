@@ -1,5 +1,21 @@
 # @graphiql/plugin-explorer
 
+## 4.0.0-alpha.3
+
+### Major Changes
+
+- [#3897](https://github.com/graphql/graphiql/pull/3897) [`d1db4c7`](https://github.com/graphql/graphiql/commit/d1db4c7db037b2c70e31a673cf6e9af996c4537a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - drop commonjs build files
+
+- [#3897](https://github.com/graphql/graphiql/pull/3897) [`d1db4c7`](https://github.com/graphql/graphiql/commit/d1db4c7db037b2c70e31a673cf6e9af996c4537a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support react 19, drop support react 16 and react 17
+  - replace deprecated `ReactDOM.unmountComponentAtNode()` and `ReactDOM.render()` with `root.unmount()` and `createRoot(container).render()`
+  - update `@radix-ui` and `@headlessui/react` dependencies
+
+### Minor Changes
+
+- [#3902](https://github.com/graphql/graphiql/pull/3902) [`6ff205c`](https://github.com/graphql/graphiql/commit/6ff205c9599ba5e52441e7b7a90c66a542934171) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Update GraphiQL CDN example using ESM-based CDN esm.sh
+
+- [#3828](https://github.com/graphql/graphiql/pull/3828) [`0b434a9`](https://github.com/graphql/graphiql/commit/0b434a96dd85aec87945be21a836a1e1b4d1c71e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update `vite` and related dependencies
+
 ## 4.0.0-alpha.2
 
 ### Patch Changes

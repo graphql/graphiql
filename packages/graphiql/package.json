@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "4.0.0-alpha.5",
+  "version": "4.0.0-alpha.6",
   "sideEffects": false,
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^1.0.0-alpha.4"
+    "@graphiql/react": "^1.0.0-alpha.5"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
