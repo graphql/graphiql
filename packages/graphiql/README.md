@@ -45,8 +45,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Examples
 
-- [`CDN (ESM-based)`](../../examples/graphiql-cdn) - A single HTML file using CDN
-  assets and a `<script>` tag
+- [`CDN (ESM-based)`](../../examples/graphiql-cdn) - A single HTML file using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) from http URLs and a `<script>` tag
 - [`Webpack`](../../examples/graphiql-webpack) - A starter for Webpack
 - [`Create React App`](../../examples/graphiql-create-react-app) - An example
   using [Create React App](https://create-react-app.dev)
