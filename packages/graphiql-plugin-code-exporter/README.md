@@ -1,19 +1,17 @@
 # GraphiQL Code Exporter Plugin
 
 This package provides a plugin that integrates the
-[GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter)
-into the GraphiQL UI.
+[GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
 
-## Install
+## Installation
 
-Use your favorite package manager to install the package:
+Install the plugin using your preferred package manager:
 
 ```sh
 npm install @graphiql/plugin-code-exporter
 ```
 
-The following packages are peer dependencies, so make sure you have them
-installed as well:
+Make sure to also install the required peer dependencies:
 
 ```sh
 npm install react react-dom graphql
@@ -21,10 +19,10 @@ npm install react react-dom graphql
 
 ## Usage
 
-See
-[GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter)
-for all details on available `props` and how to
-[create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+Refer to the
+[GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter) for full details on available `props` and how to [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+
+Example integration:
 
 ```jsx
 import { GraphiQL } from 'graphiql';
@@ -80,4 +78,4 @@ function App() {
 
 You can also use this plugin via an ESM-based CDN like [esm.sh](https://esm.sh).
 
-See the [CDN example](./example/index.html) for this plugin.
+See the [CDN example](./example/index.html) for a working demo.
