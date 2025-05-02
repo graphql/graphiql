@@ -10,6 +10,7 @@ import type {
   PropsWithChildren,
   ReactNode,
   ReactElement,
+  JSX,
 } from 'react';
 import { Fragment, useState, useEffect, version, Children } from 'react';
 import {
@@ -315,38 +316,41 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     'success' | 'error' | null
   >(null);
 
+  const defaultLogo = <GraphiQL.Logo />;
+  const defaultToolbar = (
+    <GraphiQL.Toolbar
+      // @ts-expect-error -- Prop exists but hidden for users
+      onCopyQuery={props.onCopyQuery}
+      onPrettifyQuery={props.onPrettifyQuery}
+    />
+  );
+
   const {
-    logo = <GraphiQL.Logo />,
-    toolbar = (
-      <GraphiQL.Toolbar
-        // @ts-expect-error -- Prop exists but hidden for users
-        onCopyQuery={props.onCopyQuery}
-        onPrettifyQuery={props.onPrettifyQuery}
-      />
-    ),
+    logo = defaultLogo,
+    toolbar = defaultToolbar,
     footer,
   } = Children.toArray(props.children).reduce<{
-      logo?: ReactNode;
-      toolbar?: ReactNode;
-      footer?: ReactNode;
-    }>((acc, curr) => {
-      switch (getChildComponentType(curr)) {
-        case GraphiQL.Logo:
-          acc.logo = curr;
-          break;
-        case GraphiQL.Toolbar:
-          // @ts-expect-error -- fix type error
-          acc.toolbar = cloneElement(curr, {
-            onCopyQuery: props.onCopyQuery,
-            onPrettifyQuery: props.onPrettifyQuery,
-          });
-          break;
-        case GraphiQL.Footer:
-          acc.footer = curr;
-          break;
-      }
-      return acc;
-    }, {})
+    logo?: ReactNode;
+    toolbar?: ReactNode;
+    footer?: ReactNode;
+  }>((acc, curr) => {
+    switch (getChildComponentType(curr)) {
+      case GraphiQL.Logo:
+        acc.logo = curr;
+        break;
+      case GraphiQL.Toolbar:
+        // @ts-expect-error -- fix type error
+        acc.toolbar = cloneElement(curr, {
+          onCopyQuery: props.onCopyQuery,
+          onPrettifyQuery: props.onPrettifyQuery,
+        });
+        break;
+      case GraphiQL.Footer:
+        acc.footer = curr;
+        break;
+    }
+    return acc;
+  }, {});
 
   const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
@@ -905,20 +909,22 @@ function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
   );
 }
 
+const defaultGraphiqlLogo = (
+  <a
+    className="graphiql-logo-link"
+    href="https://github.com/graphql/graphiql"
+    target="_blank"
+    rel="noreferrer"
+  >
+    Graph
+    <em>i</em>
+    QL
+  </a>
+);
+
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLLogo<TProps>({
-  children = (
-    <a
-      className="graphiql-logo-link"
-      href="https://github.com/graphql/graphiql"
-      target="_blank"
-      rel="noreferrer"
-    >
-      Graph
-      <em>i</em>
-      QL
-    </a>
-  ),
+  children = defaultGraphiqlLogo,
 }: PropsWithChildren<TProps>) {
   return <div className="graphiql-logo">{children}</div>;
 }

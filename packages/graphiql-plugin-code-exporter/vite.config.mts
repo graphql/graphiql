@@ -8,7 +8,7 @@ const IS_UMD = process.env.UMD === 'true';
 export default defineConfig({
   plugins: [
     react({ jsxRuntime: 'classic' }),
-    !IS_UMD && dts({ rollupTypes: true }),
+    !IS_UMD && dts({ include: ['src/**'] }),
   ],
   css: {
     transformer: 'lightningcss',
@@ -34,7 +34,6 @@ export default defineConfig({
         ...(IS_UMD ? [] : Object.keys(packageJSON.dependencies)),
       ],
       output: {
-        chunkFileNames: '[name].[format].js',
         globals: {
           '@graphiql/react': 'GraphiQL.React',
           graphql: 'GraphiQL.GraphQL',
@@ -42,10 +41,6 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
         },
       },
-    },
-    commonjsOptions: {
-      esmExternals: true,
-      requireReturnsDefault: 'auto',
     },
   },
 });

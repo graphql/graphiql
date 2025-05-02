@@ -15,6 +15,5 @@
     "isolatedModules": true,
     "declaration": true,
     "jsx": "react"
-  },
-  "include": ["src"]
+  }
 }

@@ -21,6 +21,7 @@ interface Params {
   variables?: string;
   headers?: string;
   confirmCloseTab?: 'true';
+  onPrettifyQuery?: 'true';
   forcedTheme?: 'light' | 'dark' | 'system';
   defaultQuery?: string;
   defaultTheme?: Theme;
