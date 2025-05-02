@@ -2,8 +2,6 @@
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
-// @ts-expect-error -- no types
-import postCssNestingPlugin from 'postcss-nesting';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json' assert { type: 'json' };
 import dts from 'vite-plugin-dts';
@@ -65,9 +63,7 @@ export const plugins: PluginOption[] = [
 export default defineConfig({
   plugins,
   css: {
-    postcss: {
-      plugins: [postCssNestingPlugin()],
-    },
+    transformer: 'lightningcss',
   },
   build: {
     minify: false,
@@ -79,6 +75,7 @@ export default defineConfig({
         return `${filePath}.js`;
       },
       formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
