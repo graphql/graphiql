@@ -16,9 +16,9 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./types/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./types/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./font/roboto.css": "./font/roboto.css",
     "./font/fira-code.css": "./font/fira-code.css",
@@ -76,13 +76,12 @@
     "@types/markdown-it": "^14.1.2",
     "@types/get-value": "^3.0.5",
     "@types/set-value": "^4.0.1",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
-    "postcss-nesting": "^10.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.6.3",
-    "vite": "^5.4.18",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite": "^6.3.3",
+    "vite-plugin-svgr": "^4.3.0"
   }
 }

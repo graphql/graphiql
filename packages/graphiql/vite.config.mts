@@ -36,6 +36,9 @@ const umdConfig = defineConfig({
     'process.env.NODE_ENV': '"production"',
   },
   plugins,
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
@@ -46,6 +49,7 @@ const umdConfig = defineConfig({
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

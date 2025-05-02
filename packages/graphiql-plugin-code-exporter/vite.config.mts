@@ -6,6 +6,9 @@ const IS_UMD = process.env.UMD === 'true';
 
 export default defineConfig({
   plugins: [react({ jsxRuntime: 'classic' })],
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: IS_UMD ? 'esbuild' : false,
     // avoid clean cjs/es builds
@@ -15,6 +18,7 @@ export default defineConfig({
       fileName: 'index',
       name: 'GraphiQLPluginCodeExporter',
       formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
