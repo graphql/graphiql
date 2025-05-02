@@ -323,41 +323,40 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     'success' | 'error' | null
   >(null);
 
-  const defaultLogo = <GraphiQL.Logo />;
-  const defaultToolbar = (
-    <GraphiQL.Toolbar
-      // @ts-expect-error -- Prop exists but hidden for users
-      onCopyQuery={props.onCopyQuery}
-      onPrettifyQuery={props.onPrettifyQuery}
-    />
-  );
-
-  const {
-    logo = defaultLogo,
-    toolbar = defaultToolbar,
-    footer,
-  } = Children.toArray(props.children).reduce<{
+  const { logo, toolbar, footer } = Children.toArray(props.children).reduce<{
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
-  }>((acc, curr) => {
-    switch (getChildComponentType(curr)) {
-      case GraphiQL.Logo:
-        acc.logo = curr;
-        break;
-      case GraphiQL.Toolbar:
-        // @ts-expect-error -- fix type error
-        acc.toolbar = cloneElement(curr, {
-          onCopyQuery: props.onCopyQuery,
-          onPrettifyQuery: props.onPrettifyQuery,
-        });
-        break;
-      case GraphiQL.Footer:
-        acc.footer = curr;
-        break;
-    }
-    return acc;
-  }, {});
+  }>(
+    (acc, curr) => {
+      switch (getChildComponentType(curr)) {
+        case GraphiQL.Logo:
+          acc.logo = curr;
+          break;
+        case GraphiQL.Toolbar:
+          // @ts-expect-error -- fix type error
+          acc.toolbar = cloneElement(curr, {
+            onCopyQuery: props.onCopyQuery,
+            onPrettifyQuery: props.onPrettifyQuery,
+          });
+          break;
+        case GraphiQL.Footer:
+          acc.footer = curr;
+          break;
+      }
+      return acc;
+    },
+    {
+      logo: <GraphiQL.Logo />,
+      toolbar: (
+        <GraphiQL.Toolbar
+          // @ts-expect-error -- Prop exists but hidden for users
+          onCopyQuery={props.onCopyQuery}
+          onPrettifyQuery={props.onPrettifyQuery}
+        />
+      ),
+    },
+  );
 
   const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
