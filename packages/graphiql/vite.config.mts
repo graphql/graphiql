@@ -115,7 +115,7 @@ function htmlPlugin(): PluginOption {
         GraphiQL,
       });
     </script>
-    <script type="module" src="/src/example.ts"></script>
+    <script type="module" src="/src/e2e.ts"></script>
   `;
 
   return {

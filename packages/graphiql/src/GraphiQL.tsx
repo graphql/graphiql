@@ -12,7 +12,14 @@ import type {
   ReactElement,
   JSX,
 } from 'react';
-import { Fragment, useState, useEffect, version, Children } from 'react';
+import {
+  Fragment,
+  useState,
+  useEffect,
+  version,
+  Children,
+  cloneElement,
+} from 'react';
 import {
   Button,
   ButtonGroup,
@@ -957,6 +964,8 @@ function GraphiQLToolbar({
 }: {
   children?: ToolbarRenderProps;
 }) {
+  // eslint-disable-next-line react-hooks/react-compiler
+  'use no memo';
   if (typeof children !== 'function') {
     throw new TypeError(
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',

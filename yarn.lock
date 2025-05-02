@@ -11180,6 +11180,11 @@ graphql@^16.9.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.11.0.tgz#96d17f66370678027fdf59b2d4c20b4efaa8a633"
   integrity sha512-mS1lbMsxgQj6hge1XZ6p7GPhbrtFwUFYi3wRzXAC/FmYnyXMTvvI3td3rjmQ2u8ewXueaSvRPWaEcgVVOT9Jnw==
 
+graphql@^17.0.0-alpha.8:
+  version "17.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-17.0.0-alpha.8.tgz#dba4a0cbe3efe8243666726f1b4ffd65f87d9b06"
+  integrity sha512-j9Jn56NCWVaLMt1hSNkMDoCuAisBwY3bxp/5tbrJuPtNtHg9dAf4NjKnlVDCksVP3jBVcipFaEXKWsdNxTlcyg==
+
 gzip-size@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-5.1.1.tgz#cb9bee692f87c0612b232840a873904e4c135274"
