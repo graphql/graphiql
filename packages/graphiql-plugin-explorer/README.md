@@ -42,4 +42,4 @@ function GraphiQLWithExplorer() {
 
 You can also use this plugin via an ESM-based CDN like [esm.sh](https://esm.sh).
 
-See the [CDN example](./example/index.html) for this plugin.
+See the [CDN example](./example/index.html) for a working demo.
