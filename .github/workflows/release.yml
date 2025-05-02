@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [main, graphiql-v4]
+    branches: [main]
 permissions: {}
 jobs:
   release:
