@@ -41,7 +41,7 @@
     "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit",
     "build": "vite build && UMD=true vite build",
-    "cypress-open": "yarn dev 'cypress open'",
+    "cypress-open": "yarn dev 'cypress open --browser electron'",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",

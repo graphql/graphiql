@@ -54,11 +54,15 @@ Cypress.Commands.add('dataCy', value => {
 
 // @ts-expect-error -- fixme
 Cypress.Commands.add('clickExecuteQuery', () => {
+  // Check CodeMirror was initialized
+  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('.graphiql-execute-button').click();
 });
 
 // @ts-expect-error -- fixme
 Cypress.Commands.add('clickPrettify', () => {
+  // Check CodeMirror was initialized
+  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
