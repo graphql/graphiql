@@ -46,12 +46,6 @@ export {
   useExplorerContext,
 } from './explorer';
 export {
-  History,
-  HistoryContext,
-  HistoryContextProvider,
-  useHistoryContext,
-} from './history';
-export {
   DOC_EXPLORER_PLUGIN,
   HISTORY_PLUGIN,
   PluginContext,
@@ -90,10 +84,7 @@ export type {
   UseVariableEditorArgs,
   WriteableEditorProps,
 } from './editor';
-export type {
-  ExecutionContextProviderProps,
-  ExecutionContextType,
-} from './execution';
+export type { ExecutionContextType } from './execution';
 export type {
   ExplorerContextProviderProps,
   ExplorerContextType,
@@ -101,19 +92,10 @@ export type {
   ExplorerNavStack,
   ExplorerNavStackItem,
 } from './explorer';
-export type {
-  HistoryContextProviderProps,
-  HistoryContextType,
-} from './history';
-export type {
-  GraphiQLPlugin,
-  PluginContextType,
-  PluginContextProviderProps,
-} from './plugin';
+export type { GraphiQLPlugin, PluginContextType } from './plugin';
 export type { GraphiQLProviderProps } from './provider';
-export type { SchemaContextProviderProps, SchemaContextType } from './schema';
-export type {
-  StorageContextProviderProps,
-  StorageContextType,
-} from './storage';
+export type { SchemaContextType } from './schema';
+export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
+export { clsx as cn } from 'clsx';
+export { createNullableContext, createContextHook } from './utility/context';
