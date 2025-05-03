@@ -1,10 +1,12 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import { ReactNode, useState } from 'react';
-
+import { History } from './components';
 import {
   useStorageContext,
   createNullableContext,
   createContextHook,
+  GraphiQLPlugin,
+  HistoryIcon,
 } from '@graphiql/react';
 
 export type HistoryContextType = {
@@ -132,3 +134,9 @@ export const useHistoryContext =
   createContextHook<HistoryContextType>(HistoryContext);
 
 const DEFAULT_HISTORY_LENGTH = 20;
+
+export const HISTORY_PLUGIN: GraphiQLPlugin = {
+  title: 'History',
+  icon: HistoryIcon,
+  content: History,
+};
