@@ -2,9 +2,10 @@
   "extends": "@tsconfig/vite-react/tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "Node",
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     //    "allowJs": false,
     //    "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true,
     //    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     //    "declaration": true,
