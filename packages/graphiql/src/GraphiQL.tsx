@@ -67,9 +67,10 @@ import {
  */
 export type GraphiQLProps =
   //
-  ComponentPropsWithoutRef<typeof GraphiQLProvider> &
-    GraphiQLInterfaceProps &
-    Omit<ComponentPropsWithoutRef<typeof HistoryContextProvider>, 'children'>;
+  Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'> &
+    Omit<ComponentPropsWithoutRef<typeof HistoryContextProvider>, 'children'> &
+    // `children` prop should be optional
+    GraphiQLInterfaceProps;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -177,12 +178,12 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * - `true` shows the editor tools
      * - `'variables'` specifically shows the variables editor
      * - `'headers'` specifically shows the headers editor
-     * By default the editor tools are initially shown when at least one of the
+     * By default, the editor tools are initially shown when at least one of the
      * editors has contents.
      */
     defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
     /**
-     * Toggle if the headers editor should be shown inside the editor tools.
+     * Toggle if the headers' editor should be shown inside the editor tools.
      * @default true
      */
     isHeadersEditorEnabled?: boolean;
@@ -216,7 +217,7 @@ const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
-export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
+export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
@@ -830,7 +831,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </div>
     </Tooltip.Provider>
   );
-}
+};
 
 const modifier = isMacOs ? '⌘' : 'Ctrl';
 

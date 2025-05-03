@@ -61,12 +61,14 @@ export function History() {
       setClearStatus('error');
     }
   };
+  const hasFavorites = Boolean(favorites.length);
+  const hasItems = Boolean(items.length);
 
   return (
     <section aria-label="History" className="graphiql-history">
       <div className="graphiql-history-header">
         History
-        {(clearStatus || items.length > 0) && (
+        {(clearStatus || hasItems) && (
           <Button
             type="button"
             state={clearStatus || undefined}
@@ -81,7 +83,7 @@ export function History() {
         )}
       </div>
 
-      {Boolean(favorites.length) && (
+      {hasFavorites && (
         <ul className="graphiql-history-items">
           {favorites.map(item => (
             <HistoryItem item={item} key={item.index} />
@@ -89,11 +91,11 @@ export function History() {
         </ul>
       )}
 
-      {Boolean(favorites.length) && Boolean(items.length) && (
+      {hasFavorites && hasItems && (
         <div className="graphiql-history-item-spacer" />
       )}
 
-      {Boolean(items.length) && (
+      {hasItems && (
         <ul className="graphiql-history-items">
           {items.map(item => (
             <HistoryItem item={item} key={item.index} />

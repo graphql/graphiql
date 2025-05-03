@@ -1,10 +1,19 @@
+import { GraphiQLPlugin, HistoryIcon } from '@graphiql/react';
 import './style.css';
 
-export { History } from './components';
+import { History } from './components';
+
+export const HISTORY_PLUGIN: GraphiQLPlugin = {
+  title: 'History',
+  icon: HistoryIcon,
+  content: History,
+};
+
+export { History };
+
 export {
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
-  HISTORY_PLUGIN,
   type HistoryContextType,
 } from './context';

@@ -1,12 +1,11 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useState } from 'react';
-import { History } from './components';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   useStorageContext,
   createNullableContext,
   createContextHook,
-  GraphiQLPlugin,
-  HistoryIcon,
+  useExecutionContext,
+  useEditorContext,
 } from '@graphiql/react';
 
 export type HistoryContextType = {
@@ -97,6 +96,7 @@ export function HistoryContextProvider({
   children,
 }: HistoryContextProviderProps) {
   const storage = useStorageContext();
+  const { isFetching } = useExecutionContext({ nonNull: true });
   const [historyStore] = useState(
     () =>
       // Fall back to a noop storage when the StorageContext is empty
@@ -104,11 +104,14 @@ export function HistoryContextProvider({
   );
   const [items, setItems] = useState(() => historyStore.queries || []);
 
-  const value: HistoryContextType = {
-    addToHistory(operation) {
+  const addToHistory: HistoryContextType['addToHistory'] = // eslint-disable-line react-hooks/exhaustive-deps -- ignore since we use react-compiler
+    operation => {
       historyStore.updateHistory(operation);
       setItems(historyStore.queries);
-    },
+    };
+
+  const value: HistoryContextType = {
+    addToHistory,
     editLabel(operation, index) {
       historyStore.editLabel(operation, index);
       setItems(historyStore.queries);
@@ -124,6 +127,20 @@ export function HistoryContextProvider({
       setItems(historyStore.queries);
     },
   };
+  const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
+  const activeTab = tabs[activeTabIndex];
+
+  useEffect(() => {
+    if (!isFetching) {
+      return;
+    }
+    addToHistory({
+      query: activeTab.query ?? undefined,
+      variables: activeTab.variables ?? undefined,
+      headers: activeTab.headers ?? undefined,
+      operationName: activeTab.operationName ?? undefined,
+    });
+  }, [isFetching, activeTab, addToHistory]);
 
   return (
     <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>
@@ -134,9 +151,3 @@ export const useHistoryContext =
   createContextHook<HistoryContextType>(HistoryContext);
 
 const DEFAULT_HISTORY_LENGTH = 20;
-
-export const HISTORY_PLUGIN: GraphiQLPlugin = {
-  title: 'History',
-  icon: HistoryIcon,
-  content: History,
-};
