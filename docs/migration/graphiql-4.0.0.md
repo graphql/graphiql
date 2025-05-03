@@ -164,7 +164,7 @@ You can reorder or remove default toolbar buttons:
 - Dropped **CommonJS** build output
 - Improved styles for the explorer UI
 - Updated ESM-based CDN example:
-  [explorer ESM CDN example](../../packages/graphiql-plugin-explorer/example/index.html)
+  [explorer ESM CDN example](../../examples/graphiql-cdn/index.html)
 - ⚠️ UMD build deprecated – migrate to ESM-based CDN
 - Style import changed:
   ```diff
