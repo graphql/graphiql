@@ -14,6 +14,7 @@
 - `HistoryContextType`
 - `HistoryContextProvider`
 - `useHistoryContext`
+- `HISTORY_PLUGIN`
 
 - remove types from `@graphiql/react` (use `ComponentProps<typeof MyContextProviderProps>` instead):
 - `HistoryContextProviderProps`

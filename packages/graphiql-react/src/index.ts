@@ -47,7 +47,6 @@ export {
 } from './explorer';
 export {
   DOC_EXPLORER_PLUGIN,
-  HISTORY_PLUGIN,
   PluginContext,
   PluginContextProvider,
   usePluginContext,
