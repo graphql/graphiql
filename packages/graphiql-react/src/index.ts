@@ -84,7 +84,6 @@ export type {
 } from './editor';
 export type { ExecutionContextType } from './execution';
 export type {
-  ExplorerContextProviderProps,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,

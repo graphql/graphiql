@@ -4,7 +4,6 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import type {
   MouseEventHandler,
   ReactNode,
@@ -21,7 +20,6 @@ import {
   Dialog,
   ExecuteButton,
   GraphiQLProvider,
-  GraphiQLProviderProps,
   HeaderEditor,
   KeyboardShortcutIcon,
   MergeIcon,
@@ -57,16 +55,21 @@ import {
   isMacOs,
   cn,
 } from '@graphiql/react';
-import { HistoryContextProvider } from '@graphiql/plugin-history';
+import {
+  HistoryContextProvider,
+  HISTORY_PLUGIN,
+} from '@graphiql/plugin-history';
 
 /**
  * API docs for this live here:
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
-  GraphiQLInterfaceProps &
-  ComponentPropsWithoutRef<typeof HistoryContextProvider>;
+export type GraphiQLProps =
+  //
+  ComponentPropsWithoutRef<typeof GraphiQLProvider> &
+    GraphiQLInterfaceProps &
+    Omit<ComponentPropsWithoutRef<typeof HistoryContextProvider>, 'children'>;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -91,7 +94,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   onTabChange,
   onTogglePluginVisibility,
   operationName,
-  plugins,
+  plugins = [],
   query,
   response,
   schema,
@@ -131,7 +134,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onSchemaChange,
     onTabChange,
     onTogglePluginVisibility,
-    plugins,
+    plugins: [HISTORY_PLUGIN, ...plugins],
     visiblePlugin,
     operationName,
     query,
