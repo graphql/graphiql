@@ -215,7 +215,8 @@ export function ExecutionContextProvider({
         {
           query,
           variables,
-          operationName: operationName ?? queryEditor.operationName ?? undefined,
+          operationName:
+            operationName ?? queryEditor.operationName ?? undefined,
         },
         {
           headers: headers ?? undefined,
