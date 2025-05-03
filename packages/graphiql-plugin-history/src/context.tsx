@@ -104,14 +104,11 @@ export function HistoryContextProvider({
   );
   const [items, setItems] = useState(() => historyStore.queries || []);
 
-  const addToHistory: HistoryContextType['addToHistory'] = // eslint-disable-line react-hooks/exhaustive-deps -- ignore since we use react-compiler
-    operation => {
+  const value: HistoryContextType = {
+    addToHistory(operation) {
       historyStore.updateHistory(operation);
       setItems(historyStore.queries);
-    };
-
-  const value: HistoryContextType = {
-    addToHistory,
+    },
     editLabel(operation, index) {
       historyStore.editLabel(operation, index);
       setItems(historyStore.queries);
@@ -129,6 +126,7 @@ export function HistoryContextProvider({
   };
   const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
   const activeTab = tabs[activeTabIndex];
+  const { addToHistory } = value;
 
   useEffect(() => {
     if (!isFetching) {
