@@ -7,7 +7,7 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -156,7 +156,7 @@ export type EditorContextType = TabsState & {
 export const EditorContext =
   createNullableContext<EditorContextType>('EditorContext');
 
-export type EditorContextProviderProps = {
+type EditorContextProviderProps = {
   children: ReactNode;
   /**
    * The initial contents of the query editor when loading GraphiQL and there
@@ -254,7 +254,7 @@ export type EditorContextProviderProps = {
   defaultHeaders?: string;
 };
 
-export function EditorContextProvider(props: EditorContextProviderProps) {
+export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
   const storage = useStorageContext();
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
@@ -499,7 +499,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   return (
     <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
   );
-}
+};
 
 // To make react-compiler happy, otherwise it fails due mutating props
 function updateQueryEditor(

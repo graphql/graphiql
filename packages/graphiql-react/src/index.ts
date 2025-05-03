@@ -73,7 +73,6 @@ export * from './toolbar';
 
 export type {
   CommonEditorProps,
-  EditorContextProviderProps,
   EditorContextType,
   KeyMap,
   ResponseTooltipType,
@@ -93,7 +92,6 @@ export type {
   ExplorerNavStackItem,
 } from './explorer';
 export type { GraphiQLPlugin, PluginContextType } from './plugin';
-export type { GraphiQLProviderProps } from './provider';
 export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
