@@ -7,21 +7,11 @@
 
 import type {
   MouseEventHandler,
-  PropsWithChildren,
   ReactNode,
-  ReactElement,
-  JSX,
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import {
-  Fragment,
-  useState,
-  useEffect,
-  version,
-  Children,
-  cloneElement,
-} from 'react';
+import { Fragment, useState, useEffect, Children, cloneElement } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -68,18 +58,6 @@ import {
   cn,
 } from '@graphiql/react';
 import { HistoryContextProvider } from '@graphiql/plugin-history';
-
-const majorVersion = parseInt(version.slice(0, 2), 10);
-
-if (majorVersion < 16) {
-  throw new Error(
-    [
-      'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
-      'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
-      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
-    ].join('\n'),
-  );
-}
 
 /**
  * API docs for this live here:
@@ -183,13 +161,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     </GraphiQLProvider>
   );
 };
-
-// Export main windows/panes to be used separately if desired.
-export const GraphiQL = Object.assign(GraphiQL_, {
-  Logo: GraphiQLLogo,
-  Toolbar: GraphiQLToolbar,
-  Footer: GraphiQLFooter,
-});
 
 type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
   [Key in keyof Obj as `${string & Key}${Suffix}`]: Obj[Key];
@@ -879,7 +850,7 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
 });
 
-function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
+const ShortKeys: FC<{ keyMap: string }> = ({ keyMap }) => {
   return (
     <div>
       <table className="graphiql-table">
@@ -919,7 +890,7 @@ function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
       </p>
     </div>
   );
-}
+};
 
 const defaultGraphiqlLogo = (
   <a
@@ -935,23 +906,17 @@ const defaultGraphiqlLogo = (
 );
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLLogo<TProps>({
+const GraphiQLLogo: FC<{ children?: ReactNode }> = ({
   children = defaultGraphiqlLogo,
-}: PropsWithChildren<TProps>) {
+}) => {
   return <div className="graphiql-logo">{children}</div>;
-}
+};
 
-type ToolbarRenderProps = (props: {
+const DefaultToolbarRenderProps: FC<{
   prettify: ReactNode;
   copy: ReactNode;
   merge: ReactNode;
-}) => JSX.Element;
-
-const DefaultToolbarRenderProps: ToolbarRenderProps = ({
-  prettify,
-  copy,
-  merge,
-}) => (
+}> = ({ prettify, copy, merge }) => (
   <>
     {prettify}
     {merge}
@@ -960,15 +925,15 @@ const DefaultToolbarRenderProps: ToolbarRenderProps = ({
 );
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLToolbar({
+const GraphiQLToolbar: FC<{
+  children?: typeof DefaultToolbarRenderProps;
+}> = ({
   children = DefaultToolbarRenderProps,
   // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
   onCopyQuery,
   // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onPrettifyQuery
   onPrettifyQuery,
-}: {
-  children?: ToolbarRenderProps;
-}) {
+}) => {
   // eslint-disable-next-line react-hooks/react-compiler
   'use no memo';
   if (typeof children !== 'function') {
@@ -1002,12 +967,12 @@ function GraphiQLToolbar({
   );
 
   return children({ prettify, copy, merge });
-}
+};
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
+const GraphiQLFooter: FC<{ children: ReactNode }> = props => {
   return <div className="graphiql-footer">{props.children}</div>;
-}
+};
 
 function getChildComponentType(child: ReactNode) {
   if (
@@ -1019,3 +984,10 @@ function getChildComponentType(child: ReactNode) {
     return child.type;
   }
 }
+
+// Export main windows/panes to be used separately if desired.
+export const GraphiQL = Object.assign(GraphiQL_, {
+  Logo: GraphiQLLogo,
+  Toolbar: GraphiQLToolbar,
+  Footer: GraphiQLFooter,
+});
