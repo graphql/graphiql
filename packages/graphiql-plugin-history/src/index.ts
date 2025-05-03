@@ -1,3 +1,5 @@
+import './style.css';
+
 export { History } from './components';
 export {
   HistoryContext,

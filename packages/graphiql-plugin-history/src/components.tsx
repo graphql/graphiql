@@ -14,8 +14,6 @@ import {
 } from '@graphiql/react';
 import { HistoryContextType, useHistoryContext } from './context';
 
-import './style.css';
-
 // Fix error from react-compiler
 // Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
 function handleDelete(
