@@ -6,7 +6,6 @@
 
 - export `cn` from `@graphiql/react`
 
-
 - remove following exports from `@graphiql/react` and move them in `@graphiql/plugin-history` package:
   - `History`
   - `HistoryContext`
