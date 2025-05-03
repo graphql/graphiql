@@ -3,5 +3,6 @@ export {
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
+  HISTORY_PLUGIN,
   type HistoryContextType,
 } from './context';
