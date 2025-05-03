@@ -1,5 +1,46 @@
 # @graphiql/plugin-explorer
 
+## 4.0.0
+
+### Major Changes
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - drop commonjs build files
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support react 19, drop support react 16 and react 17
+
+  - replace deprecated `ReactDOM.unmountComponentAtNode()` and `ReactDOM.render()` with `root.unmount()` and `createRoot(container).render()`
+  - update `@radix-ui` and `@headlessui/react` dependencies
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - `style.css` import was changed
+
+  ## Migration
+
+  ```diff
+  -import '@graphiql/plugin-explorer/dist/style.css';
+  +import '@graphiql/plugin-explorer/style.css';
+  ```
+
+### Minor Changes
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Update GraphiQL CDN example using ESM-based CDN esm.sh
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - generate types with `vite-plugin-dts`
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update `vite` and related dependencies
+
+### Patch Changes
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - improve explorer styles
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix types incorrect types entry
+
+- [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - use `vite build --watch` instead of `vite` for `dev` script because we don't need development server for them
+
+  do not use `vite-plugin-dts` when generating umd build
+
+- Updated dependencies [[`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602), [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602)]:
+  - @graphiql/react@0.30.0
+
 ## 4.0.0-alpha.2
 
 ### Patch Changes
