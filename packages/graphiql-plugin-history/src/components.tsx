@@ -1,16 +1,17 @@
 import type { QueryStoreItem } from '@graphiql/toolkit';
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
-import { clsx } from 'clsx';
-
-import { useEditorContext } from '../editor';
 import {
+  cn,
   CloseIcon,
   PenIcon,
   StarFilledIcon,
   StarIcon,
   TrashIcon,
-} from '../icons';
-import { Button, Tooltip, UnStyledButton } from '../ui';
+  useEditorContext,
+  Button,
+  Tooltip,
+  UnStyledButton,
+} from '@graphiql/react';
 import { HistoryContextType, useHistoryContext } from './context';
 
 import './style.css';
@@ -170,7 +171,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
   };
 
   return (
-    <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
+    <li className={cn('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
         <>
           <input

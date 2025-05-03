@@ -55,7 +55,7 @@ export type SchemaContextType = {
 export const SchemaContext =
   createNullableContext<SchemaContextType>('SchemaContext');
 
-export type SchemaContextProviderProps = {
+type SchemaContextProviderProps = {
   children: ReactNode;
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies

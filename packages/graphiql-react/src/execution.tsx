@@ -52,7 +52,7 @@ export type ExecutionContextType = {
 export const ExecutionContext =
   createNullableContext<ExecutionContextType>('ExecutionContext');
 
-export type ExecutionContextProviderProps = Pick<
+type ExecutionContextProviderProps = Pick<
   UseAutoCompleteLeafsArgs,
   'getDefaultFieldNames'
 > & {

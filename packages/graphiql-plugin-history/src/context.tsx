@@ -1,8 +1,7 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import { ReactNode, useState } from 'react';
 
-import { useStorageContext } from '../storage';
-import { createContextHook, createNullableContext } from '../utility/context';
+import { useStorageContext, createNullableContext, createContextHook } from '@graphiql/react';
 
 export type HistoryContextType = {
   /**
@@ -72,7 +71,7 @@ export type HistoryContextType = {
 export const HistoryContext =
   createNullableContext<HistoryContextType>('HistoryContext');
 
-export type HistoryContextProviderProps = {
+type HistoryContextProviderProps = {
   children: ReactNode;
   /**
    * The maximum number of executed operations to store.

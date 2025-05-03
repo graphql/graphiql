@@ -63,7 +63,7 @@ export type PluginContextType = {
 export const PluginContext =
   createNullableContext<PluginContextType>('PluginContext');
 
-export type PluginContextProviderProps = {
+type PluginContextProviderProps = {
   children: ReactNode;
   /**
    * Invoked when the visibility state of any plugin changes.

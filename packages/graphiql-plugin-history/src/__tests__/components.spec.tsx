@@ -3,8 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
-import { useEditorContext } from '../../editor';
-import { Tooltip } from '../../ui';
+import { useEditorContext, Tooltip } from '@graphiql/react';
 
 vi.mock('../../editor', () => {
   const mockedSetQueryEditor = vi.fn();
