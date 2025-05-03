@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "dependencies": {
     "@graphiql/toolkit": "^0.11.2",
-    "graphql": "^16.9.0",
+    "graphql": "^16.11.0",
     "graphql-language-service": "^5.3.1",
     "jsonc-parser": "^3.2.0",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.52.2",
     "monaco-graphql": "^1.6.1",
     "prettier": "3.3.2",
     "react": "^19.1.0",
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^5.4.18",
+    "vite": "^6.3.4",
     "vite-plugin-monaco-editor": "^1.1.0"
   },
   "scripts": {
