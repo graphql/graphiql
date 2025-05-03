@@ -19,7 +19,7 @@ import getValue from 'get-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { UseAutoCompleteLeafsArgs } from './editor/hooks';
-import { useHistoryContext } from './history';
+// import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
@@ -94,7 +94,7 @@ export function ExecutionContextProvider({
     variableEditor,
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
-  const history = useHistoryContext();
+  // const history = useHistoryContext();
   const autoCompleteLeafs = useAutoCompleteLeafs({
     getDefaultFieldNames,
     caller: ExecutionContextProvider,
@@ -180,12 +180,13 @@ export function ExecutionContextProvider({
 
     const opName = operationName ?? queryEditor.operationName ?? undefined;
 
-    history?.addToHistory({
-      query,
-      variables: variablesString,
-      headers: headersString,
-      operationName: opName,
-    });
+    // TODO
+    // history?.addToHistory({
+    //   query,
+    //   variables: variablesString,
+    //   headers: headersString,
+    //   operationName: opName,
+    // });
     const _headers = headers ?? undefined;
     const documentAST = queryEditor.documentAST ?? undefined;
     try {
