@@ -104,12 +104,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   defaultHeaders,
   ...props
 }) => {
-  // Ensure props are correct
-  if (typeof fetcher !== 'function') {
-    throw new TypeError(
-      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalContent) {
     throw new TypeError(
@@ -122,34 +116,35 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
+  const graphiqlProps = {
+    getDefaultFieldNames,
+    dangerouslyAssumeSchemaIsValid,
+    defaultQuery,
+    defaultHeaders,
+    defaultTabs,
+    externalFragments,
+    fetcher,
+    headers,
+    inputValueDeprecation,
+    introspectionQueryName,
+    onEditOperationName,
+    onSchemaChange,
+    onTabChange,
+    onTogglePluginVisibility,
+    plugins,
+    visiblePlugin,
+    operationName,
+    query,
+    response,
+    schema,
+    schemaDescription,
+    shouldPersistHeaders,
+    storage,
+    validationRules,
+    variables,
+  };
   return (
-    <GraphiQLProvider
-      getDefaultFieldNames={getDefaultFieldNames}
-      dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-      defaultQuery={defaultQuery}
-      defaultHeaders={defaultHeaders}
-      defaultTabs={defaultTabs}
-      externalFragments={externalFragments}
-      fetcher={fetcher}
-      headers={headers}
-      inputValueDeprecation={inputValueDeprecation}
-      introspectionQueryName={introspectionQueryName}
-      onEditOperationName={onEditOperationName}
-      onSchemaChange={onSchemaChange}
-      onTabChange={onTabChange}
-      onTogglePluginVisibility={onTogglePluginVisibility}
-      plugins={plugins}
-      visiblePlugin={visiblePlugin}
-      operationName={operationName}
-      query={query}
-      response={response}
-      schema={schema}
-      schemaDescription={schemaDescription}
-      shouldPersistHeaders={shouldPersistHeaders}
-      storage={storage}
-      validationRules={validationRules}
-      variables={variables}
-    >
+    <GraphiQLProvider {...graphiqlProps}>
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <GraphiQLInterface
           confirmCloseTab={confirmCloseTab}

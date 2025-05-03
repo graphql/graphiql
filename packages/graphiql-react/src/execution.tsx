@@ -80,7 +80,7 @@ export function ExecutionContextProvider({
   children,
   operationName,
 }: ExecutionContextProviderProps) {
-  if (!fetcher) {
+  if (typeof fetcher !== 'function') {
     throw new TypeError(
       'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -272,11 +272,9 @@ export function ExecutionContextProvider({
       setSubscription(null);
     }
   };
-
-  const isSubscribed = Boolean(subscription);
   const value: ExecutionContextType = {
     isFetching,
-    isSubscribed,
+    isSubscribed: Boolean(subscription),
     operationName: operationName ?? null,
     run,
     stop,
