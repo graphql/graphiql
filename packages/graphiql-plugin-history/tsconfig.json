@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/vite-react/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    //    "allowJs": false,
+    //    "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+    //    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    //    "declaration": true,
+    "types": [
+      "vitest/globals"
+      //    , "@testing-library/jest-dom"
+    ]
+  }
+}
