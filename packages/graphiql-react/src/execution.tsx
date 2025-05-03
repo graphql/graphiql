@@ -178,17 +178,6 @@ export function ExecutionContextProvider({
     setResponse('');
     setIsFetching(true);
 
-    const opName = operationName ?? queryEditor.operationName ?? undefined;
-
-    // TODO
-    // history?.addToHistory({
-    //   query,
-    //   variables: variablesString,
-    //   headers: headersString,
-    //   operationName: opName,
-    // });
-    const _headers = headers ?? undefined;
-    const documentAST = queryEditor.documentAST ?? undefined;
     try {
       const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
@@ -226,11 +215,11 @@ export function ExecutionContextProvider({
         {
           query,
           variables,
-          operationName: opName,
+          operationName: operationName ?? queryEditor.operationName ?? undefined,
         },
         {
-          headers: _headers,
-          documentAST,
+          headers: headers ?? undefined,
+          documentAST: queryEditor.documentAST ?? undefined,
         },
       );
 
