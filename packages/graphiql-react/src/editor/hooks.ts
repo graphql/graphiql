@@ -1,4 +1,9 @@
-import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
+import {
+  fillLeafs,
+  GetDefaultFieldNamesFn,
+  mergeAst,
+  MaybePromise,
+} from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -32,9 +37,7 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   value: EditorConfiguration[K],
 ) {
   useEffect(() => {
-    if (editor) {
-      editor.setOption(option, value);
-    }
+    editor?.setOption(option, value);
   }, [editor, option, value]);
 }
 
@@ -214,19 +217,36 @@ export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
   };
 }
 
-type UsePrettifyEditorsArgs = {
+export type UsePrettifyEditorsArgs = {
   /**
    * This is only meant to be used internally in `@graphiql/react`.
    */
   caller?: Function;
+  /**
+   * Invoked when the prettify callback is invoked.
+   * @param query The current value of the query editor.
+   * @default
+   * import { parse, print } from 'graphql'
+   *
+   * (query) => print(parse(query))
+   * @returns The formatted query.
+   */
+  onPrettifyQuery?: (query: string) => MaybePromise<string>;
 };
 
-export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
+function DEFAULT_PRETTIFY_QUERY(query: string): string {
+  return print(parse(query));
+}
+
+export function usePrettifyEditors({
+  caller,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
+}: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: caller || _usePrettifyEditors,
   });
-  return () => {
+  return async () => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -262,10 +282,13 @@ export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
 
     if (queryEditor) {
       const editorContent = queryEditor.getValue();
-      const prettifiedEditorContent = print(parse(editorContent));
-
-      if (prettifiedEditorContent !== editorContent) {
-        queryEditor.setValue(prettifiedEditorContent);
+      try {
+        const prettifiedEditorContent = await onPrettifyQuery(editorContent);
+        if (prettifiedEditorContent !== editorContent) {
+          queryEditor.setValue(prettifiedEditorContent);
+        }
+      } catch {
+        /* Parsing query failed, skip prettification */
       }
     }
   };
@@ -344,12 +367,10 @@ export function useAutoCompleteLeafs({
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
-
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
-  'use no memo'; // eslint-disable-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
-  const context = useEditorContext({
-    nonNull: true,
-  });
+  // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+  'use no memo';
+  const context = useEditorContext({ nonNull: true });
 
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';

@@ -8,7 +8,12 @@ import {
   isObjectType,
 } from 'graphql';
 import { FC, useEffect, useRef, useState } from 'react';
-import { Combobox } from '@headlessui/react';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOptions,
+  ComboboxOption,
+} from '@headlessui/react';
 import { MagnifyingGlassIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import debounce from '../../utility/debounce';
@@ -85,7 +90,7 @@ export const Search: FC = () => {
         }}
       >
         <MagnifyingGlassIcon />
-        <Combobox.Input
+        <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
           placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
@@ -95,7 +100,7 @@ export const Search: FC = () => {
         />
       </div>
       {isFocused && (
-        <Combobox.Options data-cy="doc-explorer-list">
+        <ComboboxOptions data-cy="doc-explorer-list">
           {results.within.length +
             results.types.length +
             results.fields.length ===
@@ -105,13 +110,13 @@ export const Search: FC = () => {
             </li>
           ) : (
             results.within.map((result, i) => (
-              <Combobox.Option
+              <ComboboxOption
                 key={`within-${i}`}
                 value={result}
                 data-cy="doc-explorer-option"
               >
                 <Field field={result.field} argument={result.argument} />
-              </Combobox.Option>
+              </ComboboxOption>
             ))
           )}
           {results.within.length > 0 &&
@@ -121,25 +126,25 @@ export const Search: FC = () => {
             </div>
           ) : null}
           {results.types.map((result, i) => (
-            <Combobox.Option
+            <ComboboxOption
               key={`type-${i}`}
               value={result}
               data-cy="doc-explorer-option"
             >
               <Type type={result.type} />
-            </Combobox.Option>
+            </ComboboxOption>
           ))}
           {results.fields.map((result, i) => (
-            <Combobox.Option
+            <ComboboxOption
               key={`field-${i}`}
               value={result}
               data-cy="doc-explorer-option"
             >
               <Type type={result.type} />.
               <Field field={result.field} argument={result.argument} />
-            </Combobox.Option>
+            </ComboboxOption>
           ))}
-        </Combobox.Options>
+        </ComboboxOptions>
       )}
     </Combobox>
   );

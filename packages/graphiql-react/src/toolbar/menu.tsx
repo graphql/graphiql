@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { DropdownMenu, Tooltip } from '../ui';
-import { createComponentGroup } from '../utility/component-group';
 
 import './menu.css';
 import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
@@ -38,6 +37,6 @@ const ToolbarMenuRoot = ({
   );
 };
 
-export const ToolbarMenu = createComponentGroup(ToolbarMenuRoot, {
+export const ToolbarMenu = Object.assign(ToolbarMenuRoot, {
   Item: DropdownMenu.Item,
 });

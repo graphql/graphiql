@@ -1,14 +1,13 @@
 {
   "name": "@graphiql/plugin-explorer",
   "version": "3.2.6",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-plugin-explorer"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
     "react",
@@ -18,33 +17,41 @@
     "explorer"
   ],
   "files": [
-    "dist",
-    "src",
-    "types"
+    "dist"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && node resources/copy-types.mjs && vite build && UMD=true vite build",
-    "preview": "vite preview"
+    "dev": "vite build --watch",
+    "build": "vite build && UMD=true vite build",
+    "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts",
+    "prebuild": "yarn types:check",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
     "@graphiql/react": "^0.29.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
     "@graphiql/react": "^0.29.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^4.6.3",
-    "vite": "^5.4.18",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite": "^6.3.3",
+    "vite-plugin-svgr": "^4.3.0",
+    "vite-plugin-dts": "^4.0.1"
   }
 }

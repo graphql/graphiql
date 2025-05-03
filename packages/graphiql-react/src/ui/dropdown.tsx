@@ -1,6 +1,5 @@
 import { ComponentProps, forwardRef, ReactElement } from 'react';
 import { clsx } from 'clsx';
-import { createComponentGroup } from '../utility/component-group';
 import {
   Trigger,
   Portal,
@@ -53,7 +52,7 @@ const Item = ({ className, children, ...props }: DropdownMenuItemProps) => (
   </RadixItem>
 );
 
-export const DropdownMenu = createComponentGroup(Root, {
+export const DropdownMenu = Object.assign(Root, {
   Button,
   Item,
   Content,

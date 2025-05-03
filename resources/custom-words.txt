@@ -95,6 +95,7 @@ hola
 htmling
 hurrell
 hyohyeon
+importmap
 ical
 imolorhe
 inno
@@ -115,6 +116,7 @@ linenumber
 linenumbers
 linkify
 listbox
+lightningcss
 listvalues
 lightningcss
 lostplan

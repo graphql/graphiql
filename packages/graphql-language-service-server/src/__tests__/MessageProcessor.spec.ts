@@ -15,6 +15,7 @@ import {
   version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
+import { schema as graphiqlSchema } from '../../../graphiql/test/schema';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -30,9 +31,7 @@ jest.mock('@whatwg-node/fetch', () => {
 
 function mockSchema(schema: GraphQLSchema) {
   const introspectionResult = {
-    data: introspectionFromSchema(schema, {
-      descriptions: true,
-    }),
+    data: introspectionFromSchema(schema, { descriptions: true }),
   };
   return fetchMock.mock({
     matcher: '*',
@@ -45,10 +44,10 @@ function mockSchema(schema: GraphQLSchema) {
   });
 }
 
-const defaultFiles = [
+const defaultFiles: MockFile[] = [
   ['query.graphql', 'query { bar ...B }'],
   ['fragments.graphql', 'fragment B on Foo { bar }'],
-] as MockFile[];
+];
 const schemaFile: MockFile = [
   'schema.graphql',
   'type Query { foo: Foo, test: Test }\n\ntype Foo { bar: String }\n\ntype Test { test: Foo }',
@@ -366,8 +365,7 @@ describe('MessageProcessor with config', () => {
 
   it('caches files and schema with a URL config', async () => {
     const offset = parseInt(version, 10) > 16 ? 25 : 0;
-
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [
@@ -409,9 +407,10 @@ describe('MessageProcessor with config', () => {
 
     // ensure that fragment definitions work
     const definitions = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: project.uri('query.graphql') }, // console.log(project.uri('query.graphql'))
+      textDocument: { uri: project.uri('query.graphql') },
       position: { character: 26, line: 0 },
     });
+
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
     expect(serializeRange(definitions[0].range)).toEqual({
       start: {
@@ -499,7 +498,7 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [
