@@ -6,9 +6,8 @@
 
 - export `cn` from `@graphiql/react`
 
-- extract `HistoryContextProvider` from `@graphiql/react` and publish as `@graphiql/plugin-history` package
 
-- remove exports from `@graphiql/react`:
+- remove following exports from `@graphiql/react` and move them in `@graphiql/plugin-history` package:
   - `History`
   - `HistoryContext`
   - `HistoryContextType`
