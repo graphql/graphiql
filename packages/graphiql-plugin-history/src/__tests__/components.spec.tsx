@@ -5,18 +5,18 @@ import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import { useEditorContext, Tooltip } from '@graphiql/react';
 
-vi.mock('../../editor', () => {
+vi.mock('@graphiql/react', async () => {
+  const originalModule = await vi.importActual('@graphiql/react');
   const mockedSetQueryEditor = vi.fn();
   const mockedSetVariableEditor = vi.fn();
   const mockedSetHeaderEditor = vi.fn();
   return {
-    useEditorContext() {
-      return {
-        queryEditor: { setValue: mockedSetQueryEditor },
-        variableEditor: { setValue: mockedSetVariableEditor },
-        headerEditor: { setValue: mockedSetHeaderEditor },
-      };
-    },
+    ...originalModule,
+    useEditorContext: () => ({
+      queryEditor: { setValue: mockedSetQueryEditor },
+      variableEditor: { setValue: mockedSetVariableEditor },
+      headerEditor: { setValue: mockedSetHeaderEditor },
+    }),
   };
 });
 
@@ -36,7 +36,7 @@ const mockOperationName = 'Test';
 
 type QueryHistoryItemProps = ComponentProps<typeof HistoryItem>;
 
-function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
+const QueryHistoryItemWithContext: typeof HistoryItem = props => {
   return (
     <Tooltip.Provider>
       <HistoryContextProvider>
@@ -44,7 +44,7 @@ function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
       </HistoryContextProvider>
     </Tooltip.Provider>
   );
-}
+};
 
 const baseMockProps: QueryHistoryItemProps = {
   item: {

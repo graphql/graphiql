@@ -501,7 +501,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
   );
 };
 
-// To make react-compiler happy, otherwise it fails due mutating props
+// To make react-compiler happy, otherwise it fails due to mutating props
 function updateQueryEditor(
   queryEditor: CodeMirrorEditorWithOperationFacts,
   operationName: string,
