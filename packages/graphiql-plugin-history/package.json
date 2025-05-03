@@ -46,7 +46,6 @@
   "devDependencies": {
     "@testing-library/react": "^16.1.0",
     "@vitejs/plugin-react": "^4.4.1",
-    "@tsconfig/vite-react": "^3.4.0",
     "vite-plugin-dts": "^4.5.3",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "react": "^19.1.0",

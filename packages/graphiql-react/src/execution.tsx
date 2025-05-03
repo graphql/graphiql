@@ -237,7 +237,7 @@ export function ExecutionContextProvider({
       const value = await Promise.resolve(fetch);
       if (isObservable(value)) {
         // If the fetcher returned an Observable, then subscribe to it, calling
-        // the callback on each next value, and handling both errors and the
+        // the callback on each next value and handling both errors and the
         // completion of the Observable.
         setSubscription(
           value.subscribe({

@@ -4378,11 +4378,6 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@tsconfig/vite-react@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@tsconfig/vite-react/-/vite-react-3.4.0.tgz#f2ba30fb44372f267da1724036fd5e8945c5858c"
-  integrity sha512-NxS7WJayciLI+UnCgEqdBfQrZebvVNTSEj5EnaitwThL7iAso5G8wx18B/6yypCFGnyu8p6IMpKWu6JklOX3KA==
-
 "@tybys/wasm-util@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@tybys/wasm-util/-/wasm-util-0.9.0.tgz#3e75eb00604c8d6db470bf18c37b7d984a0e3355"
