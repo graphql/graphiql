@@ -10,7 +10,7 @@ import type {
   HandlerContext as NetlifyHandlerContext,
 } from '@netlify/functions';
 
-import schema from '../packages/graphiql/test/schema.cjs';
+import { testSchema } from '../packages/graphiql/test/schema.js';
 import { customExecute } from '../packages/graphiql/test/execute.js';
 
 /**
@@ -57,4 +57,7 @@ export function createHandler<Context extends OperationContext = undefined>(
   };
 }
 
-export const handler = createHandler({ schema, execute: customExecute });
+export const handler = createHandler({
+  schema: testSchema,
+  execute: customExecute,
+});

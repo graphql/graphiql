@@ -18,7 +18,7 @@ import {
   sendResult,
 } from 'graphql-helix'; // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
 
-import schema from './schema.cjs';
+import { testSchema as schema } from './schema.js';
 import { customExecute } from './execute.js';
 
 const app = express();
