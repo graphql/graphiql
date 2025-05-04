@@ -15,10 +15,11 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Dispatch, FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
+import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -50,6 +51,14 @@ export type SchemaContextType = {
    * valid if and only if this list is empty.
    */
   validationErrors: readonly GraphQLError[];
+  /**
+   * The last type selected by the user.
+   */
+  schemaReference: SchemaReference | null;
+  /**
+   * Set the current selected type.
+   */
+  setSchemaReference: Dispatch<SchemaReference>;
 };
 
 export const SchemaContext =
@@ -106,11 +115,13 @@ type SchemaContextProviderProps = {
   schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
-export function SchemaContextProvider({
+export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   fetcher,
   onSchemaChange,
+  dangerouslyAssumeSchemaIsValid,
+  children,
   ...props
-}: SchemaContextProviderProps) {
+}) => {
   if (!fetcher) {
     throw new TypeError(
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
@@ -124,7 +135,8 @@ export function SchemaContextProvider({
   const [schema, setSchema] = useState<MaybeGraphQLSchema>();
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-
+  const [schemaReference, setSchemaReference] =
+    useState<SchemaReference | null>(null);
   /**
    * A counter that is incremented each time introspection is triggered or the
    * schema state is updated.
@@ -157,7 +169,7 @@ export function SchemaContextProvider({
   });
 
   /**
-   * Get introspection query for settings given via props
+   * Get an introspection query for settings given via props
    */
   const {
     introspectionQuery,
@@ -302,7 +314,7 @@ export function SchemaContextProvider({
   }, [introspect]);
 
   /**
-   * Trigger introspection manually via short key
+   * Trigger introspection manually via a short key
    */
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
@@ -321,9 +333,7 @@ export function SchemaContextProvider({
    * Derive validation errors from the schema
    */
   const validationErrors =
-    !schema || props.dangerouslyAssumeSchemaIsValid
-      ? []
-      : validateSchema(schema);
+    !schema || dangerouslyAssumeSchemaIsValid ? [] : validateSchema(schema);
 
   /**
    * Memoize context value
@@ -334,14 +344,14 @@ export function SchemaContextProvider({
     isFetching,
     schema,
     validationErrors,
+    schemaReference,
+    setSchemaReference,
   };
 
   return (
-    <SchemaContext.Provider value={value}>
-      {props.children}
-    </SchemaContext.Provider>
+    <SchemaContext.Provider value={value}>{children}</SchemaContext.Provider>
   );
-}
+};
 
 export const useSchemaContext = createContextHook(SchemaContext);
 
