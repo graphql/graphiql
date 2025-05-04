@@ -1,5 +1,14 @@
 # @graphiql/plugin-code-exporter
 
+## 4.0.1
+
+### Patch Changes
+
+- [#3915](https://github.com/graphql/graphiql/pull/3915) [`bc31cd9`](https://github.com/graphql/graphiql/commit/bc31cd99a92693238e7359456e3cc22ed0387df0) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix unpkg.com results to `Not found` when `main` field isn't specified in `package.json`
+
+- Updated dependencies [[`e7c436b`](https://github.com/graphql/graphiql/commit/e7c436b329a68981bdbd2b662be94875a546a1d6)]:
+  - @graphiql/react@0.31.0
+
 ## 4.0.0
 
 ### Major Changes
