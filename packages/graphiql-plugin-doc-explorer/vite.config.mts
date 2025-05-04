@@ -35,7 +35,7 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: 'src/index.tsx',
       fileName(_format, entryName) {
         const filePath = entryName.replace(/\.svg$/, '');
         return `${filePath}.js`;
@@ -45,10 +45,10 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        // 'react/jsx-runtime',
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
-        // ...Object.keys(packageJSON.peerDependencies),
-        // ...Object.keys(packageJSON.dependencies),
+        ...Object.keys(packageJSON.peerDependencies),
+        ...Object.keys(packageJSON.dependencies),
       ],
       output: {
         preserveModules: true,
