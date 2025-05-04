@@ -168,12 +168,7 @@ export function onHasCompletion(
               }
               hintsUl.removeEventListener('scroll', handleScroll);
               hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
-              if (information) {
-                information.removeEventListener(
-                  'click',
-                  onClickHintInformation,
-                );
-              }
+              information?.removeEventListener('click', onClickHintInformation);
               information = null;
               fieldName = null;
               typeNamePill = null;
