@@ -84,15 +84,16 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     initialNavStackItem,
   ]);
 
-  const push = (item: ExplorerNavStackItem) => {
-    setNavStack(currentState => {
-      const lastItem = currentState.at(-1)!;
-      return lastItem.def === item.def
-        ? // Avoid pushing duplicate items
-          currentState
-        : [...currentState, item];
-    });
-  };
+  const push = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useCallback
+    (item: ExplorerNavStackItem) => {
+      setNavStack(currentState => {
+        const lastItem = currentState.at(-1)!;
+        return lastItem.def === item.def
+          ? // Avoid pushing duplicate items
+            currentState
+          : [...currentState, item];
+      });
+    };
 
   const pop = () => {
     setNavStack(currentState =>
@@ -109,27 +110,30 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
   };
 
   useEffect(() => {
-    if (!reference) {
+    if (!schemaReference) {
       return;
     }
-    switch (reference.kind) {
+    switch (schemaReference.kind) {
       case 'Type': {
-        push({ name: reference.type.name, def: reference.type });
+        push({ name: schemaReference.type.name, def: schemaReference.type });
         break;
       }
       case 'Field': {
-        push({ name: reference.field.name, def: reference.field });
+        push({ name: schemaReference.field.name, def: schemaReference.field });
         break;
       }
       case 'Argument': {
-        if (reference.field) {
-          push({ name: reference.field.name, def: reference.field });
+        if (schemaReference.field) {
+          push({
+            name: schemaReference.field.name,
+            def: schemaReference.field,
+          });
         }
         break;
       }
       case 'EnumValue': {
-        if (reference.type) {
-          push({ name: reference.type.name, def: reference.type });
+        if (schemaReference.type) {
+          push({ name: schemaReference.type.name, def: schemaReference.type });
         }
         break;
       }

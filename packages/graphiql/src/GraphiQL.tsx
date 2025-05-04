@@ -140,6 +140,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onTabChange,
     onTogglePluginVisibility,
     plugins: [DOC_EXPLORER_PLUGIN, HISTORY_PLUGIN, ...plugins],
+    referencePlugin: DOC_EXPLORER_PLUGIN,
     visiblePlugin,
     operationName,
     query,

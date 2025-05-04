@@ -12,15 +12,9 @@ import {
   OperationFacts,
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
-
-// TODO: @DIMA
 import { useExecutionContext } from '../execution';
-// import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
-import {
-  // DOC_EXPLORER_PLUGIN,
-  usePluginContext,
-} from '../plugin';
+import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import { debounce } from '../utility/debounce';
@@ -135,7 +129,7 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchemaContext({
+  const { schema, setSchemaReference } = useSchemaContext({
     nonNull: true,
     caller: caller || _useQueryEditor,
   });
@@ -154,8 +148,6 @@ export function useQueryEditor(
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
-  // const explorer = useExplorerContext();
-  const explorer = null as any;
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
@@ -169,37 +161,17 @@ export function useQueryEditor(
   const onClickReferenceRef = useRef<
     NonNullable<UseQueryEditorArgs['onClickReference']>
   >(() => {});
+
   useEffect(() => {
     onClickReferenceRef.current = reference => {
-      if (!explorer || !plugin) {
+      if (!plugin?.referencePlugin) {
         return;
       }
-      // plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      switch (reference.kind) {
-        case 'Type': {
-          explorer.push({ name: reference.type.name, def: reference.type });
-          break;
-        }
-        case 'Field': {
-          explorer.push({ name: reference.field.name, def: reference.field });
-          break;
-        }
-        case 'Argument': {
-          if (reference.field) {
-            explorer.push({ name: reference.field.name, def: reference.field });
-          }
-          break;
-        }
-        case 'EnumValue': {
-          if (reference.type) {
-            explorer.push({ name: reference.type.name, def: reference.type });
-          }
-          break;
-        }
-      }
+      plugin.setVisiblePlugin(plugin.referencePlugin);
+      setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [explorer, onClickReference, plugin]);
+  }, [onClickReference, plugin, setSchemaReference]);
 
   useEffect(() => {
     let isActive = true;
@@ -272,22 +244,16 @@ export function useQueryEditor(
         },
       }) as CodeMirrorEditorWithOperationFacts;
 
+      function showHint() {
+        newEditor.showHint({ completeSingle: true, container })
+      }
+
       newEditor.addKeyMap({
-        'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Ctrl-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Alt-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Shift-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Shift-Alt-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
+        'Shift-Alt-Space': showHint,
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
@@ -304,7 +270,7 @@ export function useQueryEditor(
       });
 
       // the codemirror hint extension fires this anytime the dialog is closed
-      // via any method (e.g. focus blur, escape key, ...)
+      // via any method (e.g., focus blur, escape key, ...)
       newEditor.on('endCompletion', () => {
         showingHints = false;
       });

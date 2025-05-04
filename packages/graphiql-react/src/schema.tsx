@@ -334,11 +334,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
    */
   const validationErrors =
     !schema || dangerouslyAssumeSchemaIsValid ? [] : validateSchema(schema);
-
-  /**
-   * Memoize context value
-   */
-  const value = {
+  const value: SchemaContextType = {
     fetchError,
     introspect,
     isFetching,

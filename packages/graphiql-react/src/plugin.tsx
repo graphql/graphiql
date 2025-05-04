@@ -144,7 +144,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     }
   }, [plugins, visiblePlugin, setVisiblePlugin]);
 
-  const value = {
+  const value: PluginContextType = {
     plugins,
     setVisiblePlugin,
     visiblePlugin: $visiblePlugin,
