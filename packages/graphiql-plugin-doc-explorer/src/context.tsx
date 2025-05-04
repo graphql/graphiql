@@ -75,7 +75,7 @@ type ExplorerContextProviderProps = {
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
-  const { schema, validationErrors } = useSchemaContext({
+  const { schema, validationErrors, schemaReference } = useSchemaContext({
     nonNull: true,
     caller: ExplorerContextProvider,
   });
@@ -107,6 +107,34 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
       currentState.length === 1 ? currentState : [initialNavStackItem],
     );
   };
+
+  useEffect(() => {
+    if (!reference) {
+      return;
+    }
+    switch (reference.kind) {
+      case 'Type': {
+        push({ name: reference.type.name, def: reference.type });
+        break;
+      }
+      case 'Field': {
+        push({ name: reference.field.name, def: reference.field });
+        break;
+      }
+      case 'Argument': {
+        if (reference.field) {
+          push({ name: reference.field.name, def: reference.field });
+        }
+        break;
+      }
+      case 'EnumValue': {
+        if (reference.type) {
+          push({ name: reference.type.name, def: reference.type });
+        }
+        break;
+      }
+    }
+  }, [schemaReference, push]);
 
   useEffect(() => {
     // Whenever the schema changes, we must revalidate/replace the nav stack.
