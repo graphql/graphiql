@@ -656,9 +656,9 @@ export class MessageProcessor {
 
   public async handleHoverRequest(
     params: TextDocumentPositionParams,
-  ): Promise<Hover> {
+  ): Promise<Hover | null> {
     if (!this._isInitialized) {
-      return { contents: [] };
+      return null;
     }
 
     this.validateDocumentAndPosition(params);
@@ -667,7 +667,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      return { contents: [] };
+      return null;
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -679,7 +679,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return { contents: [] };
+      return null;
     }
 
     const { query, range } = found;
