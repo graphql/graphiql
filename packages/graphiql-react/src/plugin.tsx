@@ -1,6 +1,4 @@
 import { ComponentType, ReactNode, useEffect, useState } from 'react';
-import { DocExplorer, useExplorerContext } from './explorer';
-import { DocsFilledIcon, DocsIcon } from './icons';
 import { useStorageContext } from './storage';
 import { createContextHook, createNullableContext } from './utility/context';
 
@@ -19,19 +17,6 @@ export type GraphiQLPlugin = {
    * title the provider component will throw an error.
    */
   title: string;
-};
-
-export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
-  title: 'Documentation Explorer',
-  icon: function Icon() {
-    const pluginContext = usePluginContext();
-    return pluginContext?.visiblePlugin === DOC_EXPLORER_PLUGIN ? (
-      <DocsFilledIcon />
-    ) : (
-      <DocsIcon />
-    );
-  },
-  content: DocExplorer,
 };
 
 export type PluginContextType = {
@@ -81,17 +66,9 @@ type PluginContextProviderProps = {
 
 export function PluginContextProvider(props: PluginContextProviderProps) {
   const storage = useStorageContext();
-  const explorerContext = useExplorerContext();
-
-  const hasExplorerContext = Boolean(explorerContext);
   const plugins = (() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
-
-    if (hasExplorerContext) {
-      pluginList.push(DOC_EXPLORER_PLUGIN);
-      pluginTitles[DOC_EXPLORER_PLUGIN.title] = true;
-    }
     for (const plugin of props.plugins || []) {
       if (typeof plugin.title !== 'string' || !plugin.title) {
         throw new Error('All GraphiQL plugins must have a unique title');
