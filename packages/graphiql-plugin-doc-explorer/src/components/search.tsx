@@ -14,15 +14,17 @@ import {
   ComboboxOptions,
   ComboboxOption,
 } from '@headlessui/react';
-import { MagnifyingGlassIcon } from '../../icons';
-import { useSchemaContext } from '../../schema';
-import debounce from '../../utility/debounce';
+import {
+  isMacOs,
+  useSchemaContext,
+  MagnifyingGlassIcon,
+  debounce,
+} from '@graphiql/react';
 
 import { useExplorerContext } from '../context';
 
 import './search.css';
 import { renderType } from './utils';
-import { isMacOs } from '../../utility/is-macos';
 
 export const Search: FC = () => {
   const { explorerNavStack, push } = useExplorerContext({

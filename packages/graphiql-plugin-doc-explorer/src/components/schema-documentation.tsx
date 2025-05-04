@@ -1,6 +1,6 @@
 import type { GraphQLSchema } from 'graphql';
 
-import { MarkdownContent } from '../../ui';
+import { MarkdownContent } from '@graphiql/react';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
 

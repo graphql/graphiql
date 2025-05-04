@@ -14,8 +14,11 @@ import {
   isUnionType,
 } from 'graphql';
 import { ReactNode, useEffect, useState } from 'react';
-import { useSchemaContext } from '../schema';
-import { createContextHook, createNullableContext } from '../utility/context';
+import {
+  useSchemaContext,
+  createContextHook,
+  createNullableContext,
+} from '@graphiql/react';
 
 export type ExplorerFieldDef =
   | GraphQLField<unknown, unknown>

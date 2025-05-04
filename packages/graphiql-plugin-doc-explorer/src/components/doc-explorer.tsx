@@ -1,9 +1,7 @@
 import { isType } from 'graphql';
 import { ReactNode } from 'react';
 
-import { ChevronLeftIcon } from '../../icons';
-import { useSchemaContext } from '../../schema';
-import { Spinner } from '../../ui';
+import { ChevronLeftIcon, Spinner, useSchemaContext } from '@graphiql/react';
 import { useExplorerContext } from '../context';
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';

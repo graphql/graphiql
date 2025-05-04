@@ -11,7 +11,7 @@ import {
   ImplementsIcon,
   RootTypeIcon,
   TypeIcon,
-} from '../../icons';
+} from '@graphiql/react';
 
 import './section.css';
 

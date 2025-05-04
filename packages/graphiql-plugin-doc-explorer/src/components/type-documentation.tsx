@@ -10,8 +10,7 @@ import {
 } from 'graphql';
 import { useState } from 'react';
 
-import { useSchemaContext } from '../../schema';
-import { Button, MarkdownContent } from '../../ui';
+import { useSchemaContext, Button, MarkdownContent } from '@graphiql/react';
 import { ExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
