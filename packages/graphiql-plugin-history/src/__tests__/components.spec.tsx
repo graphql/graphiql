@@ -1,6 +1,6 @@
-import { Mock } from 'vitest';
+import type { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import { useEditorContext, Tooltip } from '@graphiql/react';
@@ -12,11 +12,17 @@ vi.mock('@graphiql/react', async () => {
   const mockedSetHeaderEditor = vi.fn();
   return {
     ...originalModule,
-    useEditorContext: () => ({
-      queryEditor: { setValue: mockedSetQueryEditor },
-      variableEditor: { setValue: mockedSetVariableEditor },
-      headerEditor: { setValue: mockedSetHeaderEditor },
-    }),
+    useEditorContext() {
+      return {
+        queryEditor: { setValue: mockedSetQueryEditor },
+        variableEditor: { setValue: mockedSetVariableEditor },
+        headerEditor: { setValue: mockedSetHeaderEditor },
+        tabs: [],
+      };
+    },
+    useExecutionContext() {
+      return {};
+    },
   };
 });
 
