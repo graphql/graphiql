@@ -1,23 +1,16 @@
 'use no memo';
-
 import type { Editor, EditorChange } from 'codemirror';
 import type { IHint } from 'codemirror-graphql/hint';
 import {
   GraphQLNamedType,
-  GraphQLSchema,
   GraphQLType,
   isListType,
   isNonNullType,
 } from 'graphql';
-
-// TODO: @DIMA
-// import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
-import {
-  // DOC_EXPLORER_PLUGIN,
-  PluginContextType,
-} from '../plugin';
+import { PluginContextType } from '../plugin';
 import { importCodeMirror } from './common';
+import { SchemaContextType } from '../schema';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
@@ -26,8 +19,7 @@ import { importCodeMirror } from './common';
 export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
-  schema: GraphQLSchema | null | undefined,
-  explorer: /* ExplorerContextType */ any | null,
+  { schema, setSchemaReference }: SchemaContextType,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ): void {
@@ -245,20 +237,19 @@ export function onHasCompletion(
   });
 
   function onClickHintInformation(event: Event) {
+    const referencePlugin = plugin?.referencePlugin;
     if (
       !schema ||
-      !explorer ||
-      !plugin ||
+      !referencePlugin ||
       !(event.currentTarget instanceof HTMLElement)
     ) {
       return;
     }
-
     const typeName = event.currentTarget.textContent || '';
     const type = schema.getType(typeName);
     if (type) {
-      // plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      explorer.push({ name: type.name, def: type });
+      plugin.setVisiblePlugin(referencePlugin);
+      setSchemaReference({ kind: 'Type', type });
       callback?.(type);
     }
   }
