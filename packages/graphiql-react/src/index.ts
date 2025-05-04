@@ -29,24 +29,6 @@ export {
   useExecutionContext,
 } from './execution';
 export {
-  Argument,
-  DefaultValue,
-  DeprecationReason,
-  Directive,
-  DocExplorer,
-  ExplorerContext,
-  ExplorerContextProvider,
-  ExplorerSection,
-  FieldDocumentation,
-  FieldLink,
-  SchemaDocumentation,
-  Search,
-  TypeDocumentation,
-  TypeLink,
-  useExplorerContext,
-} from './explorer';
-export {
-  DOC_EXPLORER_PLUGIN,
   PluginContext,
   PluginContextProvider,
   usePluginContext,
@@ -83,12 +65,6 @@ export type {
   WriteableEditorProps,
 } from './editor';
 export type { ExecutionContextType } from './execution';
-export type {
-  ExplorerContextType,
-  ExplorerFieldDef,
-  ExplorerNavStack,
-  ExplorerNavStackItem,
-} from './explorer';
 export type { GraphiQLPlugin, PluginContextType } from './plugin';
 export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
