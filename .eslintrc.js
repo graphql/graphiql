@@ -358,6 +358,7 @@ module.exports = {
         ],
         'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
+        'unicorn/prefer-array-some': 'error',
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
