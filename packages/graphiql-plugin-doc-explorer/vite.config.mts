@@ -10,9 +10,7 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
     if (filename.includes('__tests__')) {
       return false;
     }
-    console.log({filename})
-    return true
-    // return filename.includes('/graphiql-plugin-history/src/');
+    return filename.includes('/graphiql-plugin-doc-explorer/src/');
   },
 };
 
