@@ -46,7 +46,7 @@ export {
 } from './storage';
 export { useTheme } from './theme';
 
-export * from './utility'
+export * from './utility';
 export * from './icons';
 export * from './ui';
 export * from './toolbar';
