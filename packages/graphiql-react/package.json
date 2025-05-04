@@ -16,10 +16,7 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./font/*": "./font/*",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./dist/index.js"
   },
   "types": "dist/index.d.ts",
   "keywords": [
