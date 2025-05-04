@@ -295,14 +295,15 @@ export function createTab({
   variables = null,
   headers = null,
 }: Partial<TabDefinition> = {}): TabState {
+  const operationName = query ? fuzzyExtractOperationName(query) : null;
   return {
     id: guid(),
     hash: hashFromTabContents({ query, variables, headers }),
-    title: (query && fuzzyExtractOperationName(query)) || DEFAULT_TITLE,
+    title: operationName || DEFAULT_TITLE,
     query,
     variables,
     headers,
-    operationName: null,
+    operationName,
     response: null,
   };
 }

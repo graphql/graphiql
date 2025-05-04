@@ -1,7 +1,6 @@
 import { ComponentType, ReactNode, useEffect, useState } from 'react';
 import { DocExplorer, useExplorerContext } from './explorer';
-import { History, useHistoryContext } from './history';
-import { DocsFilledIcon, DocsIcon, HistoryIcon } from './icons';
+import { DocsFilledIcon, DocsIcon } from './icons';
 import { useStorageContext } from './storage';
 import { createContextHook, createNullableContext } from './utility/context';
 
@@ -34,11 +33,6 @@ export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
   },
   content: DocExplorer,
 };
-export const HISTORY_PLUGIN: GraphiQLPlugin = {
-  title: 'History',
-  icon: HistoryIcon,
-  content: History,
-};
 
 export type PluginContextType = {
   /**
@@ -63,7 +57,7 @@ export type PluginContextType = {
 export const PluginContext =
   createNullableContext<PluginContextType>('PluginContext');
 
-export type PluginContextProviderProps = {
+type PluginContextProviderProps = {
   children: ReactNode;
   /**
    * Invoked when the visibility state of any plugin changes.
@@ -79,7 +73,7 @@ export type PluginContextProviderProps = {
   /**
    * This prop can be used to set the visibility state of plugins. Every time
    * this prop changes, the visibility state will be overridden. Note that the
-   * visibility state can change in between these updates, for example by
+   * visibility state can change in between these updates, for example, by
    * calling the `setVisiblePlugin` function provided by the context.
    */
   visiblePlugin?: GraphiQLPlugin | string;
@@ -88,10 +82,8 @@ export type PluginContextProviderProps = {
 export function PluginContextProvider(props: PluginContextProviderProps) {
   const storage = useStorageContext();
   const explorerContext = useExplorerContext();
-  const historyContext = useHistoryContext();
 
   const hasExplorerContext = Boolean(explorerContext);
-  const hasHistoryContext = Boolean(historyContext);
   const plugins = (() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
@@ -100,11 +92,6 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
       pluginList.push(DOC_EXPLORER_PLUGIN);
       pluginTitles[DOC_EXPLORER_PLUGIN.title] = true;
     }
-    if (hasHistoryContext) {
-      pluginList.push(HISTORY_PLUGIN);
-      pluginTitles[HISTORY_PLUGIN.title] = true;
-    }
-
     for (const plugin of props.plugins || []) {
       if (typeof plugin.title !== 'string' || !plugin.title) {
         throw new Error('All GraphiQL plugins must have a unique title');

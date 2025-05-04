@@ -1,0 +1,55 @@
+{
+  "name": "@graphiql/plugin-history",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-plugin-history"
+  },
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql-plugin-history#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/plugin-history"
+  },
+  "license": "MIT",
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": "./dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "react",
+    "graphql",
+    "graphiql",
+    "plugin",
+    "history"
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "test": "vitest",
+    "types:check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "dependencies": {
+    "react-compiler-runtime": "19.1.0-rc.1",
+    "@graphiql/toolkit": "^0.11.2",
+    "@graphiql/react": "^0.30.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite-plugin-dts": "^4.5.3",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "vite": "^6.3.4"
+  }
+}

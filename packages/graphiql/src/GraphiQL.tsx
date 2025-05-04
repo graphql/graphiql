@@ -4,22 +4,13 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import type {
   MouseEventHandler,
-  PropsWithChildren,
   ReactNode,
-  ReactElement,
-  JSX,
+  FC,
+  ComponentPropsWithoutRef,
 } from 'react';
-import {
-  Fragment,
-  useState,
-  useEffect,
-  version,
-  Children,
-  cloneElement,
-} from 'react';
+import { Fragment, useState, useEffect, Children, cloneElement } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -29,7 +20,6 @@ import {
   Dialog,
   ExecuteButton,
   GraphiQLProvider,
-  GraphiQLProviderProps,
   HeaderEditor,
   KeyboardShortcutIcon,
   MergeIcon,
@@ -63,27 +53,24 @@ import {
   VariableEditor,
   WriteableEditorProps,
   isMacOs,
+  cn,
 } from '@graphiql/react';
-
-const majorVersion = parseInt(version.slice(0, 2), 10);
-
-if (majorVersion < 16) {
-  throw new Error(
-    [
-      'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
-      'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
-      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
-    ].join('\n'),
-  );
-}
+import {
+  HistoryContextProvider,
+  HISTORY_PLUGIN,
+} from '@graphiql/plugin-history';
 
 /**
  * API docs for this live here:
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
-  GraphiQLInterfaceProps;
+export type GraphiQLProps =
+  //
+  Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'> &
+    Omit<ComponentPropsWithoutRef<typeof HistoryContextProvider>, 'children'> &
+    // `children` prop should be optional
+    GraphiQLInterfaceProps;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -91,7 +78,7 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export function GraphiQL({
+const GraphiQL_: FC<GraphiQLProps> = ({
   dangerouslyAssumeSchemaIsValid,
   confirmCloseTab,
   defaultQuery,
@@ -108,7 +95,7 @@ export function GraphiQL({
   onTabChange,
   onTogglePluginVisibility,
   operationName,
-  plugins,
+  plugins = [],
   query,
   response,
   schema,
@@ -120,13 +107,7 @@ export function GraphiQL({
   visiblePlugin,
   defaultHeaders,
   ...props
-}: GraphiQLProps) {
-  // Ensure props are correct
-  if (typeof fetcher !== 'function') {
-    throw new TypeError(
-      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
+}) => {
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalContent) {
     throw new TypeError(
@@ -139,49 +120,46 @@ export function GraphiQL({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
+  const graphiqlProps = {
+    getDefaultFieldNames,
+    dangerouslyAssumeSchemaIsValid,
+    defaultQuery,
+    defaultHeaders,
+    defaultTabs,
+    externalFragments,
+    fetcher,
+    headers,
+    inputValueDeprecation,
+    introspectionQueryName,
+    onEditOperationName,
+    onSchemaChange,
+    onTabChange,
+    onTogglePluginVisibility,
+    plugins: [HISTORY_PLUGIN, ...plugins],
+    visiblePlugin,
+    operationName,
+    query,
+    response,
+    schema,
+    schemaDescription,
+    shouldPersistHeaders,
+    storage,
+    validationRules,
+    variables,
+  };
   return (
-    <GraphiQLProvider
-      getDefaultFieldNames={getDefaultFieldNames}
-      dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-      defaultQuery={defaultQuery}
-      defaultHeaders={defaultHeaders}
-      defaultTabs={defaultTabs}
-      externalFragments={externalFragments}
-      fetcher={fetcher}
-      headers={headers}
-      inputValueDeprecation={inputValueDeprecation}
-      introspectionQueryName={introspectionQueryName}
-      maxHistoryLength={maxHistoryLength}
-      onEditOperationName={onEditOperationName}
-      onSchemaChange={onSchemaChange}
-      onTabChange={onTabChange}
-      onTogglePluginVisibility={onTogglePluginVisibility}
-      plugins={plugins}
-      visiblePlugin={visiblePlugin}
-      operationName={operationName}
-      query={query}
-      response={response}
-      schema={schema}
-      schemaDescription={schemaDescription}
-      shouldPersistHeaders={shouldPersistHeaders}
-      storage={storage}
-      validationRules={validationRules}
-      variables={variables}
-    >
-      <GraphiQLInterface
-        confirmCloseTab={confirmCloseTab}
-        showPersistHeadersSettings={shouldPersistHeaders !== false}
-        forcedTheme={props.forcedTheme}
-        {...props}
-      />
+    <GraphiQLProvider {...graphiqlProps}>
+      <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
+        <GraphiQLInterface
+          confirmCloseTab={confirmCloseTab}
+          showPersistHeadersSettings={shouldPersistHeaders !== false}
+          forcedTheme={props.forcedTheme}
+          {...props}
+        />
+      </HistoryContextProvider>
     </GraphiQLProvider>
   );
-}
-
-// Export main windows/panes to be used separately if desired.
-GraphiQL.Logo = GraphiQLLogo;
-GraphiQL.Toolbar = GraphiQLToolbar;
-GraphiQL.Footer = GraphiQLFooter;
+};
 
 type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
   [Key in keyof Obj as `${string & Key}${Suffix}`]: Obj[Key];
@@ -200,12 +178,12 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * - `true` shows the editor tools
      * - `'variables'` specifically shows the variables editor
      * - `'headers'` specifically shows the headers editor
-     * By default the editor tools are initially shown when at least one of the
+     * By default, the editor tools are initially shown when at least one of the
      * editors has contents.
      */
     defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
     /**
-     * Toggle if the headers editor should be shown inside the editor tools.
+     * Toggle if the headers' editor should be shown inside the editor tools.
      * @default true
      */
     isHeadersEditorEnabled?: boolean;
@@ -239,7 +217,7 @@ const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
-export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
+export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
@@ -441,8 +419,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       setClearStorageStatus(null);
     }
   };
-
-  const className = props.className ? ` ${props.className}` : '';
   const confirmClose = props.confirmCloseTab;
 
   const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
@@ -479,7 +455,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   return (
     <Tooltip.Provider>
-      <div className={`graphiql-container${className}`}>
+      <div className={cn('graphiql-container', props.className)}>
         <div className="graphiql-sidebar">
           {pluginContext?.plugins.map((plugin, index) => {
             const isVisible = plugin === pluginContext.visiblePlugin;
@@ -488,7 +464,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <Tooltip key={plugin.title} label={label}>
                 <UnStyledButton
                   type="button"
-                  className={isVisible ? 'active' : ''}
+                  className={cn(isVisible && 'active')}
                   onClick={handlePluginClick}
                   data-index={index}
                   aria-label={label}
@@ -507,7 +483,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               style={{ marginTop: 'auto' }}
             >
               <ReloadIcon
-                className={schemaContext.isFetching ? 'graphiql-spin' : ''}
+                className={cn(schemaContext.isFetching && 'graphiql-spin')}
                 aria-hidden="true"
               />
             </UnStyledButton>
@@ -625,12 +601,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                     <div className="graphiql-editor-tools">
                       <UnStyledButton
                         type="button"
-                        className={
+                        className={cn(
                           activeSecondaryEditor === 'variables' &&
-                          editorToolsResize.hiddenElement !== 'second'
-                            ? 'active'
-                            : ''
-                        }
+                            editorToolsResize.hiddenElement !== 'second' &&
+                            'active',
+                        )}
                         onClick={handleToolsTabClick}
                         data-name="variables"
                       >
@@ -639,12 +614,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       {isHeadersEditorEnabled && (
                         <UnStyledButton
                           type="button"
-                          className={
+                          className={cn(
                             activeSecondaryEditor === 'headers' &&
-                            editorToolsResize.hiddenElement !== 'second'
-                              ? 'active'
-                              : ''
-                          }
+                              editorToolsResize.hiddenElement !== 'second' &&
+                              'active',
+                          )}
                           onClick={handleToolsTabClick}
                           data-name="headers"
                         >
@@ -776,7 +750,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <Button
                   type="button"
                   id="enable-persist-headers"
-                  className={editorContext.shouldPersistHeaders ? 'active' : ''}
+                  className={cn(editorContext.shouldPersistHeaders && 'active')}
                   data-value="true"
                   onClick={handlePersistHeaders}
                 >
@@ -785,7 +759,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 <Button
                   type="button"
                   id="disable-persist-headers"
-                  className={editorContext.shouldPersistHeaders ? '' : 'active'}
+                  className={cn(
+                    !editorContext.shouldPersistHeaders && 'active',
+                  )}
                   onClick={handlePersistHeaders}
                 >
                   Off
@@ -804,14 +780,14 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               <ButtonGroup>
                 <Button
                   type="button"
-                  className={theme === null ? 'active' : ''}
+                  className={cn(theme === null && 'active')}
                   onClick={handleChangeTheme}
                 >
                   System
                 </Button>
                 <Button
                   type="button"
-                  className={theme === 'light' ? 'active' : ''}
+                  className={cn(theme === 'light' && 'active')}
                   data-theme="light"
                   onClick={handleChangeTheme}
                 >
@@ -819,7 +795,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 </Button>
                 <Button
                   type="button"
-                  className={theme === 'dark' ? 'active' : ''}
+                  className={cn(theme === 'dark' && 'active')}
                   data-theme="dark"
                   onClick={handleChangeTheme}
                 >
@@ -855,7 +831,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       </div>
     </Tooltip.Provider>
   );
-}
+};
 
 const modifier = isMacOs ? '⌘' : 'Ctrl';
 
@@ -873,7 +849,7 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
 });
 
-function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
+const ShortKeys: FC<{ keyMap: string }> = ({ keyMap }) => {
   return (
     <div>
       <table className="graphiql-table">
@@ -913,7 +889,7 @@ function ShortKeys({ keyMap }: { keyMap: string }): ReactElement {
       </p>
     </div>
   );
-}
+};
 
 const defaultGraphiqlLogo = (
   <a
@@ -929,23 +905,17 @@ const defaultGraphiqlLogo = (
 );
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLLogo<TProps>({
+const GraphiQLLogo: FC<{ children?: ReactNode }> = ({
   children = defaultGraphiqlLogo,
-}: PropsWithChildren<TProps>) {
+}) => {
   return <div className="graphiql-logo">{children}</div>;
-}
+};
 
-type ToolbarRenderProps = (props: {
+const DefaultToolbarRenderProps: FC<{
   prettify: ReactNode;
   copy: ReactNode;
   merge: ReactNode;
-}) => JSX.Element;
-
-const DefaultToolbarRenderProps: ToolbarRenderProps = ({
-  prettify,
-  copy,
-  merge,
-}) => (
+}> = ({ prettify, copy, merge }) => (
   <>
     {prettify}
     {merge}
@@ -954,15 +924,15 @@ const DefaultToolbarRenderProps: ToolbarRenderProps = ({
 );
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLToolbar({
+const GraphiQLToolbar: FC<{
+  children?: typeof DefaultToolbarRenderProps;
+}> = ({
   children = DefaultToolbarRenderProps,
   // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
   onCopyQuery,
   // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onPrettifyQuery
   onPrettifyQuery,
-}: {
-  children?: ToolbarRenderProps;
-}) {
+}) => {
   // eslint-disable-next-line react-hooks/react-compiler
   'use no memo';
   if (typeof children !== 'function') {
@@ -996,12 +966,12 @@ function GraphiQLToolbar({
   );
 
   return children({ prettify, copy, merge });
-}
+};
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
+const GraphiQLFooter: FC<{ children: ReactNode }> = props => {
   return <div className="graphiql-footer">{props.children}</div>;
-}
+};
 
 function getChildComponentType(child: ReactNode) {
   if (
@@ -1013,3 +983,10 @@ function getChildComponentType(child: ReactNode) {
     return child.type;
   }
 }
+
+// Export main windows/panes to be used separately if desired.
+export const GraphiQL = Object.assign(GraphiQL_, {
+  Logo: GraphiQLLogo,
+  Toolbar: GraphiQLToolbar,
+  Footer: GraphiQLFooter,
+});

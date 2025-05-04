@@ -19,18 +19,17 @@ import getValue from 'get-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { UseAutoCompleteLeafsArgs } from './editor/hooks';
-import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
   /**
-   * If there is currently a GraphQL request in-flight. For multi-part
+   * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the
    * first partial response and `false` while fetching subsequent batches.
    */
   isFetching: boolean;
   /**
-   * If there is currently a GraphQL request in-flight. For multi-part
+   * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` until the last batch
    * has been fetched or the connection is closed from the client.
    */
@@ -40,7 +39,7 @@ export type ExecutionContextType = {
    */
   operationName: string | null;
   /**
-   * Start a GraphQL requests based of the current editor contents.
+   * Start a GraphQL request based on the current editor contents.
    */
   run(): void;
   /**
@@ -52,7 +51,7 @@ export type ExecutionContextType = {
 export const ExecutionContext =
   createNullableContext<ExecutionContextType>('ExecutionContext');
 
-export type ExecutionContextProviderProps = Pick<
+type ExecutionContextProviderProps = Pick<
   UseAutoCompleteLeafsArgs,
   'getDefaultFieldNames'
 > & {
@@ -80,7 +79,7 @@ export function ExecutionContextProvider({
   children,
   operationName,
 }: ExecutionContextProviderProps) {
-  if (!fetcher) {
+  if (typeof fetcher !== 'function') {
     throw new TypeError(
       'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -94,7 +93,6 @@ export function ExecutionContextProvider({
     variableEditor,
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
-  const history = useHistoryContext();
   const autoCompleteLeafs = useAutoCompleteLeafs({
     getDefaultFieldNames,
     caller: ExecutionContextProvider,
@@ -177,15 +175,8 @@ export function ExecutionContextProvider({
 
     setResponse('');
     setIsFetching(true);
-
+    // Can't be moved in try-catch since react-compiler throw `Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement`
     const opName = operationName ?? queryEditor.operationName ?? undefined;
-
-    history?.addToHistory({
-      query,
-      variables: variablesString,
-      headers: headersString,
-      operationName: opName,
-    });
     const _headers = headers ?? undefined;
     const documentAST = queryEditor.documentAST ?? undefined;
     try {
@@ -233,10 +224,10 @@ export function ExecutionContextProvider({
         },
       );
 
-      const value = await Promise.resolve(fetch);
+      const value = await fetch;
       if (isObservable(value)) {
         // If the fetcher returned an Observable, then subscribe to it, calling
-        // the callback on each next value, and handling both errors and the
+        // the callback on each next value and handling both errors and the
         // completion of the Observable.
         setSubscription(
           value.subscribe({
@@ -272,11 +263,9 @@ export function ExecutionContextProvider({
       setSubscription(null);
     }
   };
-
-  const isSubscribed = Boolean(subscription);
   const value: ExecutionContextType = {
     isFetching,
-    isSubscribed,
+    isSubscribed: Boolean(subscription),
     operationName: operationName ?? null,
     run,
     stop,

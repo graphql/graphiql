@@ -1,22 +1,27 @@
-import { Mock } from 'vitest';
+import type { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
-import { useEditorContext } from '../../editor';
-import { Tooltip } from '../../ui';
+import { useEditorContext, Tooltip } from '@graphiql/react';
 
-vi.mock('../../editor', () => {
+vi.mock('@graphiql/react', async () => {
+  const originalModule = await vi.importActual('@graphiql/react');
   const mockedSetQueryEditor = vi.fn();
   const mockedSetVariableEditor = vi.fn();
   const mockedSetHeaderEditor = vi.fn();
   return {
+    ...originalModule,
     useEditorContext() {
       return {
         queryEditor: { setValue: mockedSetQueryEditor },
         variableEditor: { setValue: mockedSetVariableEditor },
         headerEditor: { setValue: mockedSetHeaderEditor },
+        tabs: [],
       };
+    },
+    useExecutionContext() {
+      return {};
     },
   };
 });
@@ -37,7 +42,7 @@ const mockOperationName = 'Test';
 
 type QueryHistoryItemProps = ComponentProps<typeof HistoryItem>;
 
-function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
+const QueryHistoryItemWithContext: typeof HistoryItem = props => {
   return (
     <Tooltip.Provider>
       <HistoryContextProvider>
@@ -45,7 +50,7 @@ function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
       </HistoryContextProvider>
     </Tooltip.Provider>
   );
-}
+};
 
 const baseMockProps: QueryHistoryItemProps = {
   item: {

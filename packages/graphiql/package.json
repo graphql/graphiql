@@ -9,10 +9,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql"
   },
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
@@ -32,10 +32,7 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./dist/index.js"
   },
   "scripts": {
     "prebuild": "yarn types:check",
@@ -50,7 +47,8 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.30.0"
+    "@graphiql/react": "^0.30.0",
+    "@graphiql/plugin-history": "^0.0.0"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",

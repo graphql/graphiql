@@ -6,10 +6,23 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import { version } from 'react';
 import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
+
+const majorVersion = parseInt(version.slice(0, 2), 10);
+
+if (majorVersion < 16) {
+  throw new Error(
+    [
+      'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
+      'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
+      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
+    ].join('\n'),
+  );
+}
 
 /**
  * For the CDN bundle we add some static properties to the component function

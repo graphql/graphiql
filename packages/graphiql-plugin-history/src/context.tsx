@@ -1,8 +1,12 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useState } from 'react';
-
-import { useStorageContext } from '../storage';
-import { createContextHook, createNullableContext } from '../utility/context';
+import { ReactNode, useEffect, useState } from 'react';
+import {
+  useStorageContext,
+  createNullableContext,
+  createContextHook,
+  useExecutionContext,
+  useEditorContext,
+} from '@graphiql/react';
 
 export type HistoryContextType = {
   /**
@@ -72,7 +76,7 @@ export type HistoryContextType = {
 export const HistoryContext =
   createNullableContext<HistoryContextType>('HistoryContext');
 
-export type HistoryContextProviderProps = {
+type HistoryContextProviderProps = {
   children: ReactNode;
   /**
    * The maximum number of executed operations to store.
@@ -92,6 +96,7 @@ export function HistoryContextProvider({
   children,
 }: HistoryContextProviderProps) {
   const storage = useStorageContext();
+  const { isFetching } = useExecutionContext({ nonNull: true });
   const [historyStore] = useState(
     () =>
       // Fall back to a noop storage when the StorageContext is empty
@@ -119,6 +124,21 @@ export function HistoryContextProvider({
       setItems(historyStore.queries);
     },
   };
+  const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
+  const activeTab = tabs[activeTabIndex];
+  const { addToHistory } = value;
+
+  useEffect(() => {
+    if (!isFetching) {
+      return;
+    }
+    addToHistory({
+      query: activeTab.query ?? undefined,
+      variables: activeTab.variables ?? undefined,
+      headers: activeTab.headers ?? undefined,
+      operationName: activeTab.operationName ?? undefined,
+    });
+  }, [isFetching, activeTab, addToHistory]);
 
   return (
     <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>

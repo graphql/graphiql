@@ -54,7 +54,7 @@
     }
   },
   "repository": {
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/monaco-graphql"
   },
   "files": [

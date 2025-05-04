@@ -16,7 +16,9 @@ export { GraphiQLProvider } from '@graphiql/react';
 /**
  * Definitions
  */
-export type { GraphiQLProps, GraphiQLInterfaceProps } from './GraphiQL';
-export type { GraphiQLProviderProps } from '@graphiql/react';
-
-export { GraphiQLInterface, GraphiQL } from './GraphiQL';
+export {
+  GraphiQL,
+  type GraphiQLProps,
+  GraphiQLInterface,
+  type GraphiQLInterfaceProps,
+} from './GraphiQL';

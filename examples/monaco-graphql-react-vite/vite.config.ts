@@ -28,7 +28,6 @@ function watchPackages(packageNames: string[]) {
 
   return {
     name: 'vite-plugin-watch-packages',
-
     buildStart() {
       if (!isWatching) {
         for (const packageName of packageNames) {

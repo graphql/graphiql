@@ -121,5 +121,5 @@ CodeMirror.fromTextArea(myTextarea, {
 });
 ```
 
-Build for the web with [webpack](http://webpack.github.io/) or
-[browserify](http://browserify.org/).
+Build for the web with [webpack](http://webpack.github.io) or
+[browserify](http://browserify.org).

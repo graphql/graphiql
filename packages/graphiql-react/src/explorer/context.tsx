@@ -67,7 +67,7 @@ export type ExplorerContextType = {
 export const ExplorerContext =
   createNullableContext<ExplorerContextType>('ExplorerContext');
 
-export type ExplorerContextProviderProps = {
+type ExplorerContextProviderProps = {
   children: ReactNode;
 };
 

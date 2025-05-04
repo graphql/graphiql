@@ -8,7 +8,7 @@ export type StorageContextType = StorageAPI;
 export const StorageContext =
   createNullableContext<StorageContextType>('StorageContext');
 
-export type StorageContextProviderProps = {
+type StorageContextProviderProps = {
   children: ReactNode;
   /**
    * Provide a custom storage API.
