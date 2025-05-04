@@ -31,6 +31,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTogglePluginVisibility,
   operationName,
   plugins,
+  referencePlugin,
   query,
   response,
   schema,
@@ -73,6 +74,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     onTogglePluginVisibility,
     plugins,
     visiblePlugin,
+    referencePlugin
   };
   return (
     <StorageContextProvider storage={storage}>

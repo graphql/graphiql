@@ -38,7 +38,7 @@ export type PluginContextType = {
    */
   visiblePlugin: GraphiQLPlugin | null;
   /**
-   *  The plugin which is used to display the reference documentation when selecting a type
+   * The plugin which is used to display the reference documentation when selecting a type.
    */
   referencePlugin?: GraphiQLPlugin;
 };

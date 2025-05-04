@@ -164,10 +164,11 @@ export function useQueryEditor(
 
   useEffect(() => {
     onClickReferenceRef.current = reference => {
-      if (!plugin?.referencePlugin) {
+      const referencePlugin = plugin?.referencePlugin;
+      if (!referencePlugin) {
         return;
       }
-      plugin.setVisiblePlugin(plugin.referencePlugin);
+      plugin.setVisiblePlugin(referencePlugin);
       setSchemaReference(reference);
       onClickReference?.(reference);
     };
@@ -245,7 +246,7 @@ export function useQueryEditor(
       }) as CodeMirrorEditorWithOperationFacts;
 
       function showHint() {
-        newEditor.showHint({ completeSingle: true, container })
+        newEditor.showHint({ completeSingle: true, container });
       }
 
       newEditor.addKeyMap({
