@@ -7,7 +7,7 @@
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-react"
   },
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/react"
   },

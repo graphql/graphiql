@@ -45,13 +45,13 @@ describe('GraphiQL', () => {
 
       // @ts-expect-error fetcher is a required prop to GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
+        'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
       );
       spy.mockRestore();
     });
 
     it('should construct correctly with fetcher', async () => {
-      await act(async () => {
+      await act(() => {
         expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
       });
     });

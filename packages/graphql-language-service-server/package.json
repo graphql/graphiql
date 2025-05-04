@@ -3,13 +3,13 @@
   "version": "2.14.3",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
-    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
+    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphql-language-service-server"
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
