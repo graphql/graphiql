@@ -7,8 +7,10 @@
  */
 // Test in `graphql-language-service-server` fails without `require`, migrate to `import` when graphql will be updated to v17
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
-const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const require = createRequire(__filename);
 
 const {
   GraphQLSchema,
