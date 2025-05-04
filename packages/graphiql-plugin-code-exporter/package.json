@@ -8,6 +8,7 @@
     "directory": "packages/graphiql-plugin-code-exporter"
   },
   "author": "LekoArts",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -23,10 +24,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./dist/index.js"
   },
   "scripts": {
     "dev": "vite build --watch",

@@ -17,6 +17,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
