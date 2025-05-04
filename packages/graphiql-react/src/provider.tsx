@@ -74,7 +74,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     onTogglePluginVisibility,
     plugins,
     visiblePlugin,
-    referencePlugin
+    referencePlugin,
   };
   return (
     <StorageContextProvider storage={storage}>
