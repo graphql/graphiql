@@ -4,7 +4,7 @@ import { StorageAPI } from '@graphiql/toolkit';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- fixme
 import { useCallback, useMemo } from 'react';
 
-import debounce from '../utility/debounce';
+import { debounce } from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 

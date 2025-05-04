@@ -45,9 +45,8 @@ export {
   useStorageContext,
 } from './storage';
 export { useTheme } from './theme';
-export { useDragResize } from './utility/resize';
-export { isMacOs } from './utility/is-macos';
 
+export * from './utility'
 export * from './icons';
 export * from './ui';
 export * from './toolbar';
@@ -70,4 +69,3 @@ export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
-export { createNullableContext, createContextHook } from './utility/context';

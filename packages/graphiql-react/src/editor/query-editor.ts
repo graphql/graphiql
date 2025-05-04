@@ -19,7 +19,7 @@ import { markdown } from '../markdown';
 import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import { debounce } from '../utility/debounce';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
@@ -76,6 +76,7 @@ function importCodeMirrorImports() {
     import('codemirror-graphql/esm/mode.js'),
   ]);
 }
+
 const _useQueryEditor = useQueryEditor;
 
 // To make react-compiler happy since we mutate variableEditor
@@ -89,6 +90,7 @@ function updateVariableEditor(
   variableEditor.options.hintOptions.variableToType =
     operationFacts?.variableToType;
 }
+
 function updateEditorSchema(
   editor: CodeMirrorEditor,
   schema: GraphQLSchema | null,
@@ -99,6 +101,7 @@ function updateEditorSchema(
   editor.options.info.schema = schema;
   editor.options.jump.schema = schema;
 }
+
 function updateEditorValidationRules(
   editor: CodeMirrorEditor,
   validationRules: ValidationRule[] | null,
@@ -106,6 +109,7 @@ function updateEditorValidationRules(
   editor.state.lint.linterOptions.validationRules = validationRules;
   editor.options.lint.validationRules = validationRules;
 }
+
 function updateEditorExternalFragments(
   editor: CodeMirrorEditor,
   externalFragmentList: FragmentDefinitionNode[],

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { useStorageContext } from '../storage';
-import debounce from './debounce';
+import { debounce } from './debounce';
 
 type ResizableElement = 'first' | 'second';
 

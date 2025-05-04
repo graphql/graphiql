@@ -15,7 +15,7 @@ import { useExplorerContext } from '../explorer';
 import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import { debounce } from '../utility/debounce';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
