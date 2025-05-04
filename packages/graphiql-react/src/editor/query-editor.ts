@@ -13,10 +13,14 @@ import {
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
 
+// TODO: @DIMA
 import { useExecutionContext } from '../execution';
-import { useExplorerContext } from '../explorer';
+// import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
-import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
+import {
+  // DOC_EXPLORER_PLUGIN,
+  usePluginContext,
+} from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import { debounce } from '../utility/debounce';
@@ -150,7 +154,8 @@ export function useQueryEditor(
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
-  const explorer = useExplorerContext();
+  // const explorer = useExplorerContext();
+  const explorer = null as any;
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
@@ -169,7 +174,7 @@ export function useQueryEditor(
       if (!explorer || !plugin) {
         return;
       }
-      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
+      // plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
       switch (reference.kind) {
         case 'Type': {
           explorer.push({ name: reference.type.name, def: reference.type });

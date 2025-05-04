@@ -10,9 +10,13 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import { ExplorerContextType } from '../explorer';
+// TODO: @DIMA
+// import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
-import { DOC_EXPLORER_PLUGIN, PluginContextType } from '../plugin';
+import {
+  // DOC_EXPLORER_PLUGIN,
+  PluginContextType,
+} from '../plugin';
 import { importCodeMirror } from './common';
 
 /**
@@ -23,7 +27,7 @@ export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
   schema: GraphQLSchema | null | undefined,
-  explorer: ExplorerContextType | null,
+  explorer: /* ExplorerContextType */ any | null,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ): void {
@@ -253,7 +257,7 @@ export function onHasCompletion(
     const typeName = event.currentTarget.textContent || '';
     const type = schema.getType(typeName);
     if (type) {
-      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
+      // plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
       explorer.push({ name: type.name, def: type });
       callback?.(type);
     }
