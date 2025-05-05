@@ -1,5 +1,4 @@
-import { ComponentType, ReactNode } from 'react';
-
+import { FC, ReactNode } from 'react';
 import {
   ArgumentIcon,
   DeprecatedArgumentIcon,
@@ -12,7 +11,6 @@ import {
   RootTypeIcon,
   TypeIcon,
 } from '@graphiql/react';
-
 import './section.css';
 
 type ExplorerSectionProps = {
@@ -37,22 +35,23 @@ type ExplorerSectionProps = {
     | 'All Schema Types';
 };
 
-export function ExplorerSection(props: ExplorerSectionProps) {
-  const Icon = TYPE_TO_ICON[props.title];
+export const ExplorerSection: FC<ExplorerSectionProps> = ({
+  title,
+  children,
+}) => {
+  const Icon = TYPE_TO_ICON[title];
   return (
     <div>
       <div className="graphiql-doc-explorer-section-title">
         <Icon />
-        {props.title}
+        {title}
       </div>
-      <div className="graphiql-doc-explorer-section-content">
-        {props.children}
-      </div>
+      <div className="graphiql-doc-explorer-section-content">{children}</div>
     </div>
   );
-}
+};
 
-const TYPE_TO_ICON: Record<ExplorerSectionProps['title'], ComponentType> = {
+const TYPE_TO_ICON: Record<ExplorerSectionProps['title'], FC> = {
   Arguments: ArgumentIcon,
   'Deprecated Arguments': DeprecatedArgumentIcon,
   'Deprecated Enum Values': DeprecatedEnumValueIcon,
