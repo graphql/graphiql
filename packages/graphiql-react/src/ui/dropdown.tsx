@@ -1,4 +1,4 @@
-import { ComponentProps, forwardRef, ReactElement } from 'react';
+import { ComponentProps, FC, forwardRef } from 'react';
 import { clsx } from 'clsx';
 import {
   Trigger,
@@ -9,7 +9,6 @@ import {
   DropdownMenuItemProps,
   Root,
 } from '@radix-ui/react-dropdown-menu';
-
 import './dropdown.css';
 
 const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
@@ -25,13 +24,13 @@ const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
 );
 Button.displayName = 'DropdownMenuButton';
 
-function Content({
+const Content: FC<DropdownMenuContentProps> = ({
   children,
   align = 'start',
   sideOffset = 5,
   className,
   ...props
-}: DropdownMenuContentProps): ReactElement {
+}) => {
   return (
     <Portal>
       <RadixContent
@@ -44,9 +43,9 @@ function Content({
       </RadixContent>
     </Portal>
   );
-}
+};
 
-const Item = ({ className, children, ...props }: DropdownMenuItemProps) => (
+const Item: FC<DropdownMenuItemProps> = ({ className, children, ...props }) => (
   <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
     {children}
   </RadixItem>

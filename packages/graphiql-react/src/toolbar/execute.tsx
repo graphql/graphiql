@@ -1,11 +1,11 @@
+import { FC } from 'react';
 import { useEditorContext } from '../editor';
 import { useExecutionContext } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';
 import { DropdownMenu, Tooltip } from '../ui';
-
 import './execute.css';
 
-export function ExecuteButton() {
+export const ExecuteButton: FC = () => {
   const { queryEditor, setOperationName } = useEditorContext({
     nonNull: true,
     caller: ExecuteButton,
@@ -74,4 +74,4 @@ export function ExecuteButton() {
       />
     </Tooltip>
   );
-}
+};

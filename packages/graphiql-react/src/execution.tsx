@@ -13,7 +13,7 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { ReactNode, useRef, useState } from 'react';
+import { FC, ReactNode, useRef, useState } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
@@ -73,12 +73,12 @@ type ExecutionContextProviderProps = Pick<
   operationName?: string;
 };
 
-export function ExecutionContextProvider({
+export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
   fetcher,
   getDefaultFieldNames,
   children,
   operationName,
-}: ExecutionContextProviderProps) {
+}) => {
   if (typeof fetcher !== 'function') {
     throw new TypeError(
       'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
@@ -276,7 +276,7 @@ export function ExecutionContextProvider({
       {children}
     </ExecutionContext.Provider>
   );
-}
+};
 
 // Extract function because react-compiler doesn't support `for await` yet
 async function handleAsyncResults(
