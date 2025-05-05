@@ -2,6 +2,7 @@
 @import '@graphiql/react/font/fira-code.css';
 @import '@graphiql/react/style.css';
 @import '@graphiql/plugin-history/style.css';
+@import '@graphiql/plugin-doc-explorer/style.css';
 
 /* Everything */
 .graphiql-container {

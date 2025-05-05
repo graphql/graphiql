@@ -1,7 +1,6 @@
 import type { ComponentPropsWithoutRef, FC } from 'react';
 import { EditorContextProvider } from './editor';
 import { ExecutionContextProvider } from './execution';
-import { ExplorerContextProvider } from './explorer/context';
 import { PluginContextProvider } from './plugin';
 import { SchemaContextProvider } from './schema';
 import { StorageContextProvider } from './storage';
@@ -10,7 +9,6 @@ type GraphiQLProviderProps =
   //
   ComponentPropsWithoutRef<typeof EditorContextProvider> &
     ComponentPropsWithoutRef<typeof ExecutionContextProvider> &
-    ComponentPropsWithoutRef<typeof ExplorerContextProvider> &
     ComponentPropsWithoutRef<typeof PluginContextProvider> &
     ComponentPropsWithoutRef<typeof SchemaContextProvider> &
     ComponentPropsWithoutRef<typeof StorageContextProvider>;
@@ -33,6 +31,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTogglePluginVisibility,
   operationName,
   plugins,
+  referencePlugin,
   query,
   response,
   schema,
@@ -75,17 +74,16 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     onTogglePluginVisibility,
     plugins,
     visiblePlugin,
+    referencePlugin,
   };
   return (
     <StorageContextProvider storage={storage}>
       <EditorContextProvider {...editorContextProps}>
         <SchemaContextProvider {...schemaContextProps}>
           <ExecutionContextProvider {...executionContextProps}>
-            <ExplorerContextProvider>
-              <PluginContextProvider {...pluginContextProps}>
-                {children}
-              </PluginContextProvider>
-            </ExplorerContextProvider>
+            <PluginContextProvider {...pluginContextProps}>
+              {children}
+            </PluginContextProvider>
           </ExecutionContextProvider>
         </SchemaContextProvider>
       </EditorContextProvider>

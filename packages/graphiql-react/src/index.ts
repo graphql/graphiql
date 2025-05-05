@@ -29,24 +29,6 @@ export {
   useExecutionContext,
 } from './execution';
 export {
-  Argument,
-  DefaultValue,
-  DeprecationReason,
-  Directive,
-  DocExplorer,
-  ExplorerContext,
-  ExplorerContextProvider,
-  ExplorerSection,
-  FieldDocumentation,
-  FieldLink,
-  SchemaDocumentation,
-  Search,
-  TypeDocumentation,
-  TypeLink,
-  useExplorerContext,
-} from './explorer';
-export {
-  DOC_EXPLORER_PLUGIN,
   PluginContext,
   PluginContextProvider,
   usePluginContext,
@@ -63,9 +45,8 @@ export {
   useStorageContext,
 } from './storage';
 export { useTheme } from './theme';
-export { useDragResize } from './utility/resize';
-export { isMacOs } from './utility/is-macos';
 
+export * from './utility';
 export * from './icons';
 export * from './ui';
 export * from './toolbar';
@@ -83,15 +64,8 @@ export type {
   WriteableEditorProps,
 } from './editor';
 export type { ExecutionContextType } from './execution';
-export type {
-  ExplorerContextType,
-  ExplorerFieldDef,
-  ExplorerNavStack,
-  ExplorerNavStackItem,
-} from './explorer';
 export type { GraphiQLPlugin, PluginContextType } from './plugin';
 export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
-export { createNullableContext, createContextHook } from './utility/context';

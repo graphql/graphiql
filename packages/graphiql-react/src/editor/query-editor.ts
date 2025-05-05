@@ -12,14 +12,12 @@ import {
   OperationFacts,
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
-
 import { useExecutionContext } from '../execution';
-import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
-import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
+import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import { debounce } from '../utility/debounce';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
@@ -76,6 +74,7 @@ function importCodeMirrorImports() {
     import('codemirror-graphql/esm/mode.js'),
   ]);
 }
+
 const _useQueryEditor = useQueryEditor;
 
 // To make react-compiler happy since we mutate variableEditor
@@ -89,6 +88,7 @@ function updateVariableEditor(
   variableEditor.options.hintOptions.variableToType =
     operationFacts?.variableToType;
 }
+
 function updateEditorSchema(
   editor: CodeMirrorEditor,
   schema: GraphQLSchema | null,
@@ -99,6 +99,7 @@ function updateEditorSchema(
   editor.options.info.schema = schema;
   editor.options.jump.schema = schema;
 }
+
 function updateEditorValidationRules(
   editor: CodeMirrorEditor,
   validationRules: ValidationRule[] | null,
@@ -106,6 +107,7 @@ function updateEditorValidationRules(
   editor.state.lint.linterOptions.validationRules = validationRules;
   editor.options.lint.validationRules = validationRules;
 }
+
 function updateEditorExternalFragments(
   editor: CodeMirrorEditor,
   externalFragmentList: FragmentDefinitionNode[],
@@ -127,7 +129,7 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema } = useSchemaContext({
+  const { schema, setSchemaReference } = useSchemaContext({
     nonNull: true,
     caller: caller || _useQueryEditor,
   });
@@ -146,7 +148,6 @@ export function useQueryEditor(
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
-  const explorer = useExplorerContext();
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
@@ -160,37 +161,18 @@ export function useQueryEditor(
   const onClickReferenceRef = useRef<
     NonNullable<UseQueryEditorArgs['onClickReference']>
   >(() => {});
+
   useEffect(() => {
     onClickReferenceRef.current = reference => {
-      if (!explorer || !plugin) {
+      const referencePlugin = plugin?.referencePlugin;
+      if (!referencePlugin) {
         return;
       }
-      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
-      switch (reference.kind) {
-        case 'Type': {
-          explorer.push({ name: reference.type.name, def: reference.type });
-          break;
-        }
-        case 'Field': {
-          explorer.push({ name: reference.field.name, def: reference.field });
-          break;
-        }
-        case 'Argument': {
-          if (reference.field) {
-            explorer.push({ name: reference.field.name, def: reference.field });
-          }
-          break;
-        }
-        case 'EnumValue': {
-          if (reference.type) {
-            explorer.push({ name: reference.type.name, def: reference.type });
-          }
-          break;
-        }
-      }
+      plugin.setVisiblePlugin(referencePlugin);
+      setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [explorer, onClickReference, plugin]);
+  }, [onClickReference, plugin, setSchemaReference]);
 
   useEffect(() => {
     let isActive = true;
@@ -263,22 +245,16 @@ export function useQueryEditor(
         },
       }) as CodeMirrorEditorWithOperationFacts;
 
+      function showHint() {
+        newEditor.showHint({ completeSingle: true, container });
+      }
+
       newEditor.addKeyMap({
-        'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Ctrl-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Alt-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Shift-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
-        'Shift-Alt-Space'() {
-          newEditor.showHint({ completeSingle: true, container });
-        },
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
+        'Shift-Alt-Space': showHint,
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
@@ -295,7 +271,7 @@ export function useQueryEditor(
       });
 
       // the codemirror hint extension fires this anytime the dialog is closed
-      // via any method (e.g. focus blur, escape key, ...)
+      // via any method (e.g., focus blur, escape key, ...)
       newEditor.on('endCompletion', () => {
         showingHints = false;
       });

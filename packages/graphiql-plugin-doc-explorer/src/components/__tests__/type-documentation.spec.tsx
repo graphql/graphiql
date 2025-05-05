@@ -10,7 +10,7 @@ import {
   GraphQLUnionType,
 } from 'graphql';
 
-import { SchemaContext } from '../../../schema';
+import { SchemaContext } from '@graphiql/react';
 import { ExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { mockExplorerContextValue, unwrapType } from './test-utils';

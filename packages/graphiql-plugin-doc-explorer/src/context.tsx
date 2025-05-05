@@ -14,8 +14,11 @@ import {
   isUnionType,
 } from 'graphql';
 import { ReactNode, useEffect, useState } from 'react';
-import { useSchemaContext } from '../schema';
-import { createContextHook, createNullableContext } from '../utility/context';
+import {
+  useSchemaContext,
+  createContextHook,
+  createNullableContext,
+} from '@graphiql/react';
 
 export type ExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -72,7 +75,7 @@ type ExplorerContextProviderProps = {
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
-  const { schema, validationErrors } = useSchemaContext({
+  const { schema, validationErrors, schemaReference } = useSchemaContext({
     nonNull: true,
     caller: ExplorerContextProvider,
   });
@@ -81,15 +84,16 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     initialNavStackItem,
   ]);
 
-  const push = (item: ExplorerNavStackItem) => {
-    setNavStack(currentState => {
-      const lastItem = currentState.at(-1)!;
-      return lastItem.def === item.def
-        ? // Avoid pushing duplicate items
-          currentState
-        : [...currentState, item];
-    });
-  };
+  const push = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useCallback
+    (item: ExplorerNavStackItem) => {
+      setNavStack(currentState => {
+        const lastItem = currentState.at(-1)!;
+        return lastItem.def === item.def
+          ? // Avoid pushing duplicate items
+            currentState
+          : [...currentState, item];
+      });
+    };
 
   const pop = () => {
     setNavStack(currentState =>
@@ -104,6 +108,37 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
       currentState.length === 1 ? currentState : [initialNavStackItem],
     );
   };
+
+  useEffect(() => {
+    if (!schemaReference) {
+      return;
+    }
+    switch (schemaReference.kind) {
+      case 'Type': {
+        push({ name: schemaReference.type.name, def: schemaReference.type });
+        break;
+      }
+      case 'Field': {
+        push({ name: schemaReference.field.name, def: schemaReference.field });
+        break;
+      }
+      case 'Argument': {
+        if (schemaReference.field) {
+          push({
+            name: schemaReference.field.name,
+            def: schemaReference.field,
+          });
+        }
+        break;
+      }
+      case 'EnumValue': {
+        if (schemaReference.type) {
+          push({ name: schemaReference.type.name, def: schemaReference.type });
+        }
+        break;
+      }
+    }
+  }, [schemaReference, push]);
 
   useEffect(() => {
     // Whenever the schema changes, we must revalidate/replace the nav stack.
@@ -169,10 +204,9 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
               break;
             } else {
               // lastEntity must be a field (because it's not a named type)
-              const field: GraphQLField<any, any> = lastEntity;
+              const field: GraphQLField<unknown, unknown> = lastEntity;
               // Thus item.def must be an argument, so find the same named argument in the new schema
-              const arg = field.args.find(a => a.name === item.name);
-              if (arg) {
+              if (field.args.some(a => a.name === item.name)) {
                 newNavStack.push({
                   name: item.name,
                   def: field,

@@ -59,6 +59,10 @@ import {
   HistoryContextProvider,
   HISTORY_PLUGIN,
 } from '@graphiql/plugin-history';
+import {
+  ExplorerContextProvider,
+  DOC_EXPLORER_PLUGIN,
+} from '@graphiql/plugin-doc-explorer';
 
 /**
  * API docs for this live here:
@@ -135,7 +139,8 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onSchemaChange,
     onTabChange,
     onTogglePluginVisibility,
-    plugins: [HISTORY_PLUGIN, ...plugins],
+    plugins: [DOC_EXPLORER_PLUGIN, HISTORY_PLUGIN, ...plugins],
+    referencePlugin: DOC_EXPLORER_PLUGIN,
     visiblePlugin,
     operationName,
     query,
@@ -150,12 +155,14 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   return (
     <GraphiQLProvider {...graphiqlProps}>
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
-        <GraphiQLInterface
-          confirmCloseTab={confirmCloseTab}
-          showPersistHeadersSettings={shouldPersistHeaders !== false}
-          forcedTheme={props.forcedTheme}
-          {...props}
-        />
+        <ExplorerContextProvider>
+          <GraphiQLInterface
+            confirmCloseTab={confirmCloseTab}
+            showPersistHeadersSettings={shouldPersistHeaders !== false}
+            forcedTheme={props.forcedTheme}
+            {...props}
+          />
+        </ExplorerContextProvider>
       </HistoryContextProvider>
     </GraphiQLProvider>
   );

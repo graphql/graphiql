@@ -1,8 +1,6 @@
-import { ComponentType, ReactNode, useEffect, useState } from 'react';
-import { DocExplorer, useExplorerContext } from './explorer';
-import { DocsFilledIcon, DocsIcon } from './icons';
+import { ComponentType, FC, ReactNode, useEffect, useState } from 'react';
 import { useStorageContext } from './storage';
-import { createContextHook, createNullableContext } from './utility/context';
+import { createContextHook, createNullableContext } from './utility';
 
 export type GraphiQLPlugin = {
   /**
@@ -19,19 +17,6 @@ export type GraphiQLPlugin = {
    * title the provider component will throw an error.
    */
   title: string;
-};
-
-export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
-  title: 'Documentation Explorer',
-  icon: function Icon() {
-    const pluginContext = usePluginContext();
-    return pluginContext?.visiblePlugin === DOC_EXPLORER_PLUGIN ? (
-      <DocsFilledIcon />
-    ) : (
-      <DocsIcon />
-    );
-  },
-  content: DocExplorer,
 };
 
 export type PluginContextType = {
@@ -52,12 +37,16 @@ export type PluginContextType = {
    * The plugin which is currently visible.
    */
   visiblePlugin: GraphiQLPlugin | null;
+  /**
+   * The plugin which is used to display the reference documentation when selecting a type.
+   */
+  referencePlugin?: GraphiQLPlugin;
 };
 
 export const PluginContext =
   createNullableContext<PluginContextType>('PluginContext');
 
-type PluginContextProviderProps = {
+type PluginContextProviderProps = Pick<PluginContextType, 'referencePlugin'> & {
   children: ReactNode;
   /**
    * Invoked when the visibility state of any plugin changes.
@@ -79,20 +68,18 @@ type PluginContextProviderProps = {
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
-export function PluginContextProvider(props: PluginContextProviderProps) {
+export const PluginContextProvider: FC<PluginContextProviderProps> = ({
+  onTogglePluginVisibility,
+  children,
+  visiblePlugin,
+  plugins: $plugins,
+  referencePlugin,
+}) => {
   const storage = useStorageContext();
-  const explorerContext = useExplorerContext();
-
-  const hasExplorerContext = Boolean(explorerContext);
   const plugins = (() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
-
-    if (hasExplorerContext) {
-      pluginList.push(DOC_EXPLORER_PLUGIN);
-      pluginTitles[DOC_EXPLORER_PLUGIN.title] = true;
-    }
-    for (const plugin of props.plugins || []) {
+    for (const plugin of $plugins || []) {
       if (typeof plugin.title !== 'string' || !plugin.title) {
         throw new Error('All GraphiQL plugins must have a unique title');
       }
@@ -109,7 +96,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     return pluginList;
   })();
 
-  const [visiblePlugin, internalSetVisiblePlugin] =
+  const [$visiblePlugin, internalSetVisiblePlugin] =
     useState<GraphiQLPlugin | null>(() => {
       const storedValue = storage?.get(STORAGE_KEY);
       const pluginForStoredValue = plugins.find(
@@ -122,21 +109,19 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
         storage?.set(STORAGE_KEY, '');
       }
 
-      if (!props.visiblePlugin) {
+      if (!visiblePlugin) {
         return null;
       }
 
       return (
         plugins.find(
           plugin =>
-            (typeof props.visiblePlugin === 'string'
-              ? plugin.title
-              : plugin) === props.visiblePlugin,
+            (typeof visiblePlugin === 'string' ? plugin.title : plugin) ===
+            visiblePlugin,
         ) || null
       );
     });
 
-  const { onTogglePluginVisibility, children } = props;
   const setVisiblePlugin: PluginContextType['setVisiblePlugin'] = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     plugin => {
       const newVisiblePlugin = plugin
@@ -154,17 +139,21 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     };
 
   useEffect(() => {
-    if (props.visiblePlugin) {
-      setVisiblePlugin(props.visiblePlugin);
+    if (visiblePlugin) {
+      setVisiblePlugin(visiblePlugin);
     }
-  }, [plugins, props.visiblePlugin, setVisiblePlugin]);
+  }, [plugins, visiblePlugin, setVisiblePlugin]);
 
-  const value = { plugins, setVisiblePlugin, visiblePlugin };
-
+  const value: PluginContextType = {
+    plugins,
+    setVisiblePlugin,
+    visiblePlugin: $visiblePlugin,
+    referencePlugin,
+  };
   return (
     <PluginContext.Provider value={value}>{children}</PluginContext.Provider>
   );
-}
+};
 
 export const usePluginContext = createContextHook(PluginContext);
 

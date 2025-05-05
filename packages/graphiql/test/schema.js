@@ -5,10 +5,8 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-// Test in `graphql-language-service-server` fails without `require`, migrate to `import` when graphql will be updated to v17
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
+// eslint-disable-next-line import-x/no-extraneous-dependencies
+import * as graphql from 'graphql';
 
 const {
   GraphQLSchema,
@@ -23,12 +21,13 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
+  // eslint-disable-next-line import-x/namespace
   GraphQLDeferDirective,
+  // eslint-disable-next-line import-x/namespace
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
-  // eslint-disable-next-line import-x/no-extraneous-dependencies
-} = require('graphql');
+} = graphql;
 
 const directives =
   parseInt(version, 10) > 16
@@ -394,7 +393,7 @@ const TestSubscriptionType = new GraphQLObjectType({
   },
 });
 
-export const schema = new GraphQLSchema({
+export const testSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
