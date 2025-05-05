@@ -1,10 +1,9 @@
+import { FC } from 'react';
 import { GraphQLArgument } from 'graphql';
-
+import { MarkdownContent } from '@graphiql/react';
 import { DefaultValue } from './default-value';
 import { TypeLink } from './type-link';
-
 import './argument.css';
-import { MarkdownContent } from '@graphiql/react';
 
 type ArgumentProps = {
   /**
@@ -25,7 +24,11 @@ type ArgumentProps = {
   inline?: boolean;
 };
 
-export function Argument({ arg, showDefaultValue, inline }: ArgumentProps) {
+export const Argument: FC<ArgumentProps> = ({
+  arg,
+  showDefaultValue,
+  inline,
+}) => {
   const definition = (
     <span>
       <span className="graphiql-doc-explorer-argument-name">{arg.name}</span>
@@ -55,4 +58,4 @@ export function Argument({ arg, showDefaultValue, inline }: ArgumentProps) {
       ) : null}
     </div>
   );
-}
+};

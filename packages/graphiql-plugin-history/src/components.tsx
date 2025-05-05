@@ -1,5 +1,5 @@
 import type { QueryStoreItem } from '@graphiql/toolkit';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useRef, useState } from 'react';
 import {
   cn,
   CloseIcon,
@@ -25,13 +25,13 @@ function handleDelete(
   }
 }
 
-export function History() {
+export const History: FC = () => {
   const { items: all, deleteFromHistory } = useHistoryContext({
     nonNull: true,
   });
 
   // Reverse items since we push them in so want the latest one at the top, and pass the
-  // original index in case multiple items share the same label so we can edit correct item
+  // original index in case multiple items share the same label so we can edit the correct item
   let items = all
     .slice()
     .map((item, i) => ({ ...item, index: i }))
@@ -104,13 +104,13 @@ export function History() {
       )}
     </section>
   );
-}
+};
 
 type QueryHistoryItemProps = {
   item: QueryStoreItem & { index?: number };
 };
 
-export function HistoryItem(props: QueryHistoryItemProps) {
+export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
     useHistoryContext({
       nonNull: true,
@@ -249,7 +249,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       )}
     </li>
   );
-}
+};
 
 export function formatQuery(query?: string) {
   return query

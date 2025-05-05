@@ -1,16 +1,16 @@
+import { FC } from 'react';
 import { MarkdownContent } from '@graphiql/react';
-
 import './deprecation-reason.css';
 
 type DeprecationReasonProps = {
   /**
-   * The deprecation reason as markdown string.
+   * The deprecation reason as Markdown string.
    */
   children?: string | null;
   preview?: boolean;
 };
 
-export function DeprecationReason(props: DeprecationReasonProps) {
+export const DeprecationReason: FC<DeprecationReasonProps> = props => {
   return props.children ? (
     <div className="graphiql-doc-explorer-deprecation">
       <div className="graphiql-doc-explorer-deprecation-label">Deprecated</div>
@@ -22,4 +22,4 @@ export function DeprecationReason(props: DeprecationReasonProps) {
       </MarkdownContent>
     </div>
   ) : null;
-}
+};

@@ -1,7 +1,6 @@
+import { FC } from 'react';
 import { astFromValue, print, ValueNode } from 'graphql';
-
 import { ExplorerFieldDef } from '../context';
-
 import './default-value.css';
 
 const printDefault = (ast?: ValueNode | null): string => {
@@ -18,7 +17,7 @@ type DefaultValueProps = {
   field: ExplorerFieldDef;
 };
 
-export function DefaultValue({ field }: DefaultValueProps) {
+export const DefaultValue: FC<DefaultValueProps> = ({ field }) => {
   if (!('defaultValue' in field) || field.defaultValue === undefined) {
     return null;
   }
@@ -34,4 +33,4 @@ export function DefaultValue({ field }: DefaultValueProps) {
       </span>
     </>
   );
-}
+};

@@ -1,5 +1,5 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import {
   useStorageContext,
   createNullableContext,
@@ -91,10 +91,10 @@ type HistoryContextProviderProps = {
  * any additional props they added for their needs (i.e., build their own functions that may save
  * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
  */
-export function HistoryContextProvider({
+export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = DEFAULT_HISTORY_LENGTH,
   children,
-}: HistoryContextProviderProps) {
+}) => {
   const storage = useStorageContext();
   const { isFetching } = useExecutionContext({ nonNull: true });
   const [historyStore] = useState(
@@ -143,7 +143,7 @@ export function HistoryContextProvider({
   return (
     <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>
   );
-}
+};
 
 export const useHistoryContext =
   createContextHook<HistoryContextType>(HistoryContext);
