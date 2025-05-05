@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { clsx } from 'clsx';
-
 import { useEditorContext } from '../context';
 import { useHeaderEditor, UseHeaderEditorArgs } from '../header-editor';
-
 import '../style/codemirror.css';
 import '../style/fold.css';
 import '../style/editor.css';
@@ -16,7 +14,10 @@ type HeaderEditorProps = UseHeaderEditorArgs & {
   isHidden?: boolean;
 };
 
-export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
+export const HeaderEditor: FC<HeaderEditorProps> = ({
+  isHidden,
+  ...hookArgs
+}) => {
   const { headerEditor } = useEditorContext({
     nonNull: true,
     caller: HeaderEditor,
@@ -32,4 +33,4 @@ export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
   );
-}
+};

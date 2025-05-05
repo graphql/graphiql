@@ -1,6 +1,5 @@
 import { GraphQLArgument } from 'graphql';
-import { useState } from 'react';
-
+import { FC, useState } from 'react';
 import { Button, MarkdownContent } from '@graphiql/react';
 import { ExplorerFieldDef } from '../context';
 import { Argument } from './argument';
@@ -16,27 +15,27 @@ type FieldDocumentationProps = {
   field: ExplorerFieldDef;
 };
 
-export function FieldDocumentation(props: FieldDocumentationProps) {
+export const FieldDocumentation: FC<FieldDocumentationProps> = ({ field }) => {
   return (
     <>
-      {props.field.description ? (
+      {field.description ? (
         <MarkdownContent type="description">
-          {props.field.description}
+          {field.description}
         </MarkdownContent>
       ) : null}
       <DeprecationReason preview={false}>
-        {props.field.deprecationReason}
+        {field.deprecationReason}
       </DeprecationReason>
       <ExplorerSection title="Type">
-        <TypeLink type={props.field.type} />
+        <TypeLink type={field.type} />
       </ExplorerSection>
-      <Arguments field={props.field} />
-      <Directives field={props.field} />
+      <Arguments field={field} />
+      <Directives field={field} />
     </>
   );
-}
+};
 
-function Arguments({ field }: { field: ExplorerFieldDef }) {
+const Arguments: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const handleShowDeprecated = () => {
     setShowDeprecated(true);
@@ -80,11 +79,11 @@ function Arguments({ field }: { field: ExplorerFieldDef }) {
       ) : null}
     </>
   );
-}
+};
 
-function Directives({ field }: { field: ExplorerFieldDef }) {
-  const directives = field.astNode?.directives || [];
-  if (!directives || directives.length === 0) {
+const Directives: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
+  const directives = field.astNode?.directives;
+  if (!directives?.length) {
     return null;
   }
   return (
@@ -96,4 +95,4 @@ function Directives({ field }: { field: ExplorerFieldDef }) {
       ))}
     </ExplorerSection>
   );
-}
+};
