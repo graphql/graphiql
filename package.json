@@ -12,23 +12,6 @@
       "examples/graphiql-webpack"
     ]
   },
-  "lint-staged": {
-    "*.{js,ts,jsx,tsx}": [
-      "cross-env ESLINT_USE_FLAT_CONFIG=false eslint --cache --fix",
-      "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
-      "jest --passWithNoTests",
-      "yarn lint-cspell"
-    ],
-    "*.{md,html,json,css}": [
-      "prettier --write --ignore-path .eslintignore --ignore-path resources/prettierignore",
-      "yarn lint-cspell"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
@@ -124,10 +107,8 @@
     "eslint-plugin-unicorn": "^56.0.0",
     "execa": "^7.1.1",
     "fetch-mock": "6.5.2",
-    "husky": "^4.2.3",
     "jest": "^27.5.1",
     "js-green-licenses": "4.0.0",
-    "lint-staged": "^10.1.2",
     "mkdirp": "^1.0.4",
     "patch-package": "^7.0.2",
     "postinstall-postinstall": "^2.1.0",
