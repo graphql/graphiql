@@ -1,7 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
-import { ComponentProps } from 'react';
-
 import { ExplorerContext } from '../../context';
 import { TypeLink } from '../type-link';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
@@ -9,7 +7,7 @@ import { mockExplorerContextValue, unwrapType } from './test-utils';
 const nonNullType = new GraphQLNonNull(GraphQLString);
 const listType = new GraphQLList(GraphQLString);
 
-function TypeLinkWithContext(props: ComponentProps<typeof TypeLink>) {
+const TypeLinkWithContext: typeof TypeLink = props => {
   return (
     <ExplorerContext.Provider
       value={mockExplorerContextValue({
@@ -30,7 +28,7 @@ function TypeLinkWithContext(props: ComponentProps<typeof TypeLink>) {
       </ExplorerContext.Consumer>
     </ExplorerContext.Provider>
   );
-}
+};
 
 describe('TypeLink', () => {
   it('should render a string', () => {

@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from 'react';
+import React, { CSSProperties, FC, useCallback } from 'react';
 import {
   GraphiQLPlugin,
   useEditorContext,
@@ -64,7 +64,7 @@ export type GraphiQLExplorerPluginProps = Omit<
   'onEdit' | 'query'
 >;
 
-function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
+const ExplorerPlugin: FC<GraphiQLExplorerPluginProps> = props => {
   const { setOperationName } = useEditorContext({ nonNull: true });
   const { schema } = useSchemaContext({ nonNull: true });
   const { run } = useExecutionContext({ nonNull: true });
@@ -102,7 +102,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       {...props}
     />
   );
-}
+};
 
 export function explorerPlugin(
   props?: GraphiQLExplorerPluginProps,

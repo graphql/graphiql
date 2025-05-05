@@ -1,8 +1,7 @@
+import { FC } from 'react';
 import { GraphQLType } from 'graphql';
-
 import { useExplorerContext } from '../context';
 import { renderType } from './utils';
-
 import './type-link.css';
 
 type TypeLinkProps = {
@@ -12,14 +11,14 @@ type TypeLinkProps = {
   type: GraphQLType;
 };
 
-export function TypeLink(props: TypeLinkProps) {
+export const TypeLink: FC<TypeLinkProps> = ({ type }) => {
   const { push } = useExplorerContext({ nonNull: true, caller: TypeLink });
 
-  if (!props.type) {
+  if (!type) {
     return null;
   }
 
-  return renderType(props.type, namedType => (
+  return renderType(type, namedType => (
     <a
       className="graphiql-doc-explorer-type-name"
       onClick={event => {
@@ -31,4 +30,4 @@ export function TypeLink(props: TypeLinkProps) {
       {namedType.name}
     </a>
   ));
-}
+};
