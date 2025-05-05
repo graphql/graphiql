@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import {
   GraphQLBoolean,
@@ -9,13 +10,12 @@ import {
   GraphQLString,
   GraphQLUnionType,
 } from 'graphql';
-
 import { SchemaContext } from '@graphiql/react';
 import { ExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
-function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
+const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
   return (
     <SchemaContext.Provider
       value={{
@@ -36,7 +36,7 @@ function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
       </ExplorerContext.Provider>
     </SchemaContext.Provider>
   );
-}
+};
 
 describe('TypeDocumentation', () => {
   it('renders a top-level query object type', () => {

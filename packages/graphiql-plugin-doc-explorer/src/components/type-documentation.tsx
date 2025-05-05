@@ -1,3 +1,4 @@
+import { FC, useState } from 'react';
 import {
   GraphQLEnumValue,
   GraphQLNamedType,
@@ -8,8 +9,6 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useState } from 'react';
-
 import { useSchemaContext, Button, MarkdownContent } from '@graphiql/react';
 import { ExplorerFieldDef } from '../context';
 import { Argument } from './argument';
@@ -18,7 +17,6 @@ import { DeprecationReason } from './deprecation-reason';
 import { FieldLink } from './field-link';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
-
 import './type-documentation.css';
 
 type TypeDocumentationProps = {
@@ -28,23 +26,21 @@ type TypeDocumentationProps = {
   type: GraphQLNamedType;
 };
 
-export function TypeDocumentation(props: TypeDocumentationProps) {
-  return isNamedType(props.type) ? (
+export const TypeDocumentation: FC<TypeDocumentationProps> = ({ type }) => {
+  return isNamedType(type) ? (
     <>
-      {props.type.description ? (
-        <MarkdownContent type="description">
-          {props.type.description}
-        </MarkdownContent>
+      {type.description ? (
+        <MarkdownContent type="description">{type.description}</MarkdownContent>
       ) : null}
-      <ImplementsInterfaces type={props.type} />
-      <Fields type={props.type} />
-      <EnumValues type={props.type} />
-      <PossibleTypes type={props.type} />
+      <ImplementsInterfaces type={type} />
+      <Fields type={type} />
+      <EnumValues type={type} />
+      <PossibleTypes type={type} />
     </>
   ) : null;
-}
+};
 
-function ImplementsInterfaces({ type }: { type: GraphQLNamedType }) {
+const ImplementsInterfaces: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   if (!isObjectType(type)) {
     return null;
   }
@@ -58,9 +54,9 @@ function ImplementsInterfaces({ type }: { type: GraphQLNamedType }) {
       ))}
     </ExplorerSection>
   ) : null;
-}
+};
 
-function Fields({ type }: { type: GraphQLNamedType }) {
+const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const handleShowDeprecated = () => {
     setShowDeprecated(true);
@@ -111,9 +107,9 @@ function Fields({ type }: { type: GraphQLNamedType }) {
       ) : null}
     </>
   );
-}
+};
 
-function Field({ field }: { field: ExplorerFieldDef }) {
+const Field: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
   const args =
     'args' in field ? field.args.filter(arg => !arg.deprecationReason) : [];
   return (
@@ -152,9 +148,9 @@ function Field({ field }: { field: ExplorerFieldDef }) {
       <DeprecationReason>{field.deprecationReason}</DeprecationReason>
     </div>
   );
-}
+};
 
-function EnumValues({ type }: { type: GraphQLNamedType }) {
+const EnumValues: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const handleShowDeprecated = () => {
     setShowDeprecated(true);
@@ -198,9 +194,9 @@ function EnumValues({ type }: { type: GraphQLNamedType }) {
       ) : null}
     </>
   );
-}
+};
 
-function EnumValue({ value }: { value: GraphQLEnumValue }) {
+const EnumValue: FC<{ value: GraphQLEnumValue }> = ({ value }) => {
   return (
     <div className="graphiql-doc-explorer-item">
       <div className="graphiql-doc-explorer-enum-value">{value.name}</div>
@@ -216,9 +212,9 @@ function EnumValue({ value }: { value: GraphQLEnumValue }) {
       ) : null}
     </div>
   );
-}
+};
 
-function PossibleTypes({ type }: { type: GraphQLNamedType }) {
+const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   const { schema } = useSchemaContext({ nonNull: true });
   if (!schema || !isAbstractType(type)) {
     return null;
@@ -234,4 +230,4 @@ function PossibleTypes({ type }: { type: GraphQLNamedType }) {
       ))}
     </ExplorerSection>
   );
-}
+};
