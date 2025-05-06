@@ -14,6 +14,7 @@
   },
   "packageManager": "yarn@1.22.22",
   "scripts": {
+    "dev:graphiql": "turbo run dev --filter=graphiql...",
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}'",
@@ -28,7 +29,6 @@
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
     "check": "yarn tsc --noEmit",
     "cypress-open": "yarn workspace graphiql cypress-open",
-    "dev-graphiql": "yarn workspace graphiql dev",
     "e2e": "yarn workspace graphiql e2e",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 ESLINT_USE_FLAT_CONFIG=false eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
@@ -86,8 +86,8 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^16.18.4",
     "@types/ws": "8.2.2",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "babel-jest": "^29.4.3",
     "babel-plugin-transform-import-meta": "^2.2.1",
     "concurrently": "^7.0.0",
@@ -119,7 +119,8 @@
     "typescript": "^4.6.3",
     "vitest": "^2.1.9",
     "wgutils": "^1.2.5",
-    "wsrun": "^5.2.4"
+    "wsrun": "^5.2.4",
+    "turbo": "^2.5.2"
   },
   "resolutions": {
     "@babel/traverse": "^7.23.2",
