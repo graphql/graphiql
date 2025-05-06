@@ -70,11 +70,11 @@ function inlineRelevantFragmentSpreads(
       }
       const fragmentDefinition = fragmentDefinitions[selection.name.value];
       if (fragmentDefinition) {
-        const { typeCondition, directives, selectionSet } = fragmentDefinition;
+        const { typeCondition, selectionSet } = fragmentDefinition;
         selection = {
           kind: Kind.INLINE_FRAGMENT,
           typeCondition,
-          directives,
+          directives: selection.directives,
           selectionSet,
         };
       }
