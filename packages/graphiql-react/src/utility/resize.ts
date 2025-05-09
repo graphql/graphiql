@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStorageContext } from '../storage';
 import { debounce } from './debounce';
 
@@ -45,7 +45,7 @@ type UseDragResizeArgs = {
 };
 
 export function useDragResize({
-  defaultSizeRelation = DEFAULT_FLEX,
+  defaultSizeRelation = 1,
   direction,
   initiallyHidden,
   onHiddenElementChange,
@@ -91,7 +91,7 @@ export function useDragResize({
   /**
    * Set initial flex values
    */
-  useLayoutEffect(() => {
+  useEffect(() => {
     const storedValue =
       (storageKey && storage?.get(storageKey)) || defaultFlexRef.current;
 
@@ -114,9 +114,9 @@ export function useDragResize({
   }, [direction, storage, storageKey]);
 
   /**
-   * Hide and show items when state changes
+   * Hide and show items when the state changes
    */
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hide = (resizableElement: ResizableElement) => {
       const element =
         resizableElement === 'first' ? firstRef.current : secondRef.current;
@@ -285,6 +285,5 @@ export function useDragResize({
   };
 }
 
-const DEFAULT_FLEX = 1;
 const HIDE_FIRST = 'hide-first';
 const HIDE_SECOND = 'hide-second';

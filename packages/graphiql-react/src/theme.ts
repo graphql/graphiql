@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStorageContext } from './storage';
 
 /**
@@ -30,11 +30,7 @@ export function useTheme(defaultTheme: Theme = null) {
     }
   });
 
-  useLayoutEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
+  useEffect(() => {
     document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
