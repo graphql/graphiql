@@ -11,13 +11,10 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-
 import ArrowIcon from './icons/arrow.svg?react';
 import FolderPlusIcon from './icons/folder-plus.svg?react';
 import CheckboxUncheckedIcon from './icons/checkbox-unchecked.svg?react';
 import CheckboxCheckedIcon from './icons/checkbox-checked.svg?react';
-
-import './graphiql-explorer.d.ts';
 import './index.css';
 
 const colors = {
