@@ -11,4 +11,8 @@ export const HISTORY_PLUGIN: GraphiQLPlugin = {
 
 export { History };
 
-export { HistoryContextProvider, useHistory, useHistoryActions } from './context';
+export {
+  HistoryContextProvider,
+  useHistory,
+  useHistoryActions,
+} from './context';
