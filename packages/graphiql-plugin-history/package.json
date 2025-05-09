@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/toolkit": "^0.11.2",
-    "@graphiql/react": "^0.32.0",
+    "@graphiql/react": "^0.32.2",
     "zustand": "^5"
   },
   "devDependencies": {

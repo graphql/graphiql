@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.14.5
+
+### Patch Changes
+
+- [#3933](https://github.com/graphql/graphiql/pull/3933) [`38fdcdb`](https://github.com/graphql/graphiql/commit/38fdcdbc4bab5451638f56eae5a19062632afe93) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unnecessary string conversion in `logger.info(String(error))`
+
 ## 2.14.4
 
 ### Patch Changes
