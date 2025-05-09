@@ -8,6 +8,18 @@
   padding: 0;
   margin: 0;
   list-style: none;
+  overflow: auto;
+  border-top-left-radius: var(--border-radius-8);
+}
+
+/* Hide scrollbar */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    @apply x:hidden; /* Chrome, Safari and Opera */
+  }
 }
 
 /* trick to shrink multiple tabs, instead of overflow container */
@@ -21,7 +33,7 @@
   background: hsla(var(--color-neutral), var(--alpha-background-light));
   position: relative;
   display: flex;
-  max-width: 140px;
+  flex-shrink: 0;
 
   /* disable shrinking while changing the operation name */
   &:not(:focus-within) {
@@ -41,8 +53,6 @@
 
   .graphiql-tab-button {
     border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding: var(--px-4) 28px var(--px-4) var(--px-8);
 
     &:hover {
@@ -57,7 +67,6 @@
     transform: translateY(-50%);
     display: none;
     background: var(--bg);
-    box-shadow: -10px 0 10px 0 var(--bg);
     padding: var(--px-6);
     line-height: 0;
 
