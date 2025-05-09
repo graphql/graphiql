@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 4.0.3
+
+### Patch Changes
+
+- [#3939](https://github.com/graphql/graphiql/pull/3939) [`69ad489`](https://github.com/graphql/graphiql/commit/69ad489678d0096432d5c4b1749d87343f4ed1f7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `React.FC` type when declaring React components
+
 ## 4.0.2
 
 ### Patch Changes
