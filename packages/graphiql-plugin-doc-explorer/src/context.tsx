@@ -80,9 +80,9 @@ export type DocExplorerContextType = {
   };
 };
 
-function createDocExplorerStore() {
-  const initialNavStackItem: DocExplorerNavStackItem = { name: 'Docs' };
-
+export function createDocExplorerStore(
+  initialNavStackItem: DocExplorerNavStackItem = { name: 'Docs' },
+) {
   return createStore<DocExplorerContextType>((set, get) => ({
     explorerNavStack: [initialNavStackItem],
     actions: {
