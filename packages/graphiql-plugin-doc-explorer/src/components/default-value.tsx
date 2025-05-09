@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { astFromValue, print, ValueNode } from 'graphql';
-import { ExplorerFieldDef } from '../context';
+import { DocExplorerFieldDef } from '../context';
 import './default-value.css';
 
 const printDefault = (ast?: ValueNode | null): string => {
@@ -14,7 +14,7 @@ type DefaultValueProps = {
   /**
    * The field or argument for which to render the default value.
    */
-  field: ExplorerFieldDef;
+  field: DocExplorerFieldDef;
 };
 
 export const DefaultValue: FC<DefaultValueProps> = ({ field }) => {

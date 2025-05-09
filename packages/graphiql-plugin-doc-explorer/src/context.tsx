@@ -26,7 +26,7 @@ import {
 import { SchemaContextType, useSchemaContext } from '@graphiql/react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
-export type ExplorerFieldDef =
+export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
   | GraphQLInputField
   | GraphQLArgument;
@@ -40,7 +40,7 @@ export type DocExplorerNavStackItem = {
    * The definition object of the item, this can be a named type, a field, an
    * input field or an argument.
    */
-  def?: GraphQLNamedType | ExplorerFieldDef;
+  def?: GraphQLNamedType | DocExplorerFieldDef;
 };
 
 // There's always at least one item in the nav stack

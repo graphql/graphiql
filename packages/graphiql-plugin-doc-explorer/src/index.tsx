@@ -9,16 +9,17 @@ import { DocExplorer } from './components';
 export * from './components';
 
 export {
-  ExplorerContext,
-  ExplorerContextProvider,
-  useExplorerContext,
+  DocExplorerContext,
+  DocExplorerContextProvider,
+  useDocExplorer,
+  useDocExplorerActions,
 } from './context';
 
 export type {
-  ExplorerContextType,
-  ExplorerFieldDef,
-  ExplorerNavStack,
-  ExplorerNavStackItem,
+  DocExplorerContextType,
+  DocExplorerFieldDef,
+  DocExplorerNavStack,
+  DocExplorerNavStackItem,
 } from './context';
 
 export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
