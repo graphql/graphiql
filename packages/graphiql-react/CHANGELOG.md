@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.32.1
+
+### Patch Changes
+
+- [#3929](https://github.com/graphql/graphiql/pull/3929) [`96dcbdf`](https://github.com/graphql/graphiql/commit/96dcbdfae25a10de668cdcb6826fd0cb857a361b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: `ReferenceError: window is not defined` when using with SSR
+
 ## 0.32.0
 
 ### Minor Changes
