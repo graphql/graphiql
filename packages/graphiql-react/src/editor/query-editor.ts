@@ -16,7 +16,7 @@ import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
 import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
-import { useStorageContext } from '../storage';
+import { useStorage } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
   commonKeys,
@@ -147,7 +147,7 @@ export function useQueryEditor(
     caller: caller || _useQueryEditor,
   });
   const executionContext = useExecutionContext();
-  const storage = useStorageContext();
+  const storage = useStorage();
   const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });

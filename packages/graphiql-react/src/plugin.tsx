@@ -1,5 +1,5 @@
 import { ComponentType, FC, ReactNode, useEffect, useState } from 'react';
-import { useStorageContext } from './storage';
+import { useStorage } from './storage';
 import { createContextHook, createNullableContext } from './utility';
 
 export type GraphiQLPlugin = {
@@ -75,7 +75,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   plugins: $plugins,
   referencePlugin,
 }) => {
-  const storage = useStorageContext();
+  const storage = useStorage();
   const plugins = (() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};

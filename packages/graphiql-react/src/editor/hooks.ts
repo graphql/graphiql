@@ -12,7 +12,7 @@ import { parse, print } from 'graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
-import { useStorageContext } from '../storage';
+import { useStorage } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
@@ -47,7 +47,7 @@ export function useChangeHandler(
   caller: Function,
 ) {
   const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
-  const storage = useStorageContext();
+  const storage = useStorage();
 
   useEffect(() => {
     if (!editor) {

@@ -39,11 +39,7 @@ export {
   SchemaContextProvider,
   useSchemaContext,
 } from './schema';
-export {
-  StorageContext,
-  StorageContextProvider,
-  useStorageContext,
-} from './storage';
+export { StorageContextProvider, useStorage } from './storage';
 export { useTheme } from './theme';
 
 export * from './utility';

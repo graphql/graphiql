@@ -1,11 +1,22 @@
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
-import { createContextHook, createNullableContext } from './utility/context';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
+import { create, StoreApi, useStore } from 'zustand/index';
 
-export type StorageContextType = StorageAPI;
+export type StorageContextType = {
+  storage: StorageAPI | null;
+};
 
-export const StorageContext =
-  createNullableContext<StorageContextType>('StorageContext');
+const StorageContext = createContext<RefObject<
+  StoreApi<StorageContextType>
+> | null>(null);
 
 type StorageContextProviderProps = {
   children: ReactNode;
@@ -23,21 +34,44 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   children,
 }) => {
   const isInitialRender = useRef(true);
-  const [$storage, setStorage] = useState(() => new StorageAPI(storage));
+  const storeRef = useRef<StoreApi<StorageContextType>>(null!);
+
+  if (storeRef.current === null) {
+    storeRef.current = create<StorageContextType>()(() => ({
+      storage: new StorageAPI(storage),
+    }));
+  }
 
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-    } else {
-      setStorage(new StorageAPI(storage));
+      return;
     }
+    storeRef.current.setState({ storage: new StorageAPI(storage) });
   }, [storage]);
 
   return (
-    <StorageContext.Provider value={$storage}>
+    <StorageContext.Provider value={storeRef}>
       {children}
     </StorageContext.Provider>
   );
 };
 
-export const useStorageContext = createContextHook(StorageContext);
+const defaultStore = create<StorageContextType>()(() => ({
+  storage: null,
+}));
+
+function useStorage(): StorageAPI | null;
+function useStorage(options: { nonNull: true }): StorageAPI;
+function useStorage(options: { nonNull: boolean }): StorageAPI | null;
+function useStorage(options?: { nonNull?: boolean }): StorageAPI | null {
+  const store = useContext(StorageContext);
+  if (options?.nonNull && !store) {
+    throw new Error(
+      'Tried to use `useStorage` without the necessary context. Make sure to render the `StorageContextProvider` component higher up the tree.',
+    );
+  }
+  return useStore(store ? store.current : defaultStore, state => state.storage);
+}
+
+export { useStorage };
