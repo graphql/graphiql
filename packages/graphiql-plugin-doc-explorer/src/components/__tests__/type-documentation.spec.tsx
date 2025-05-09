@@ -11,9 +11,9 @@ import {
   GraphQLUnionType,
 } from 'graphql';
 import { SchemaContext } from '@graphiql/react';
-import { ExplorerContext } from '../../context';
+import { DocExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
-import { mockExplorerContextValue, unwrapType } from './test-utils';
+import { useMockDocExplorerContextValue, unwrapType } from './test-utils';
 
 const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
   return (
@@ -28,14 +28,14 @@ const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
         setSchemaReference: null!,
       }}
     >
-      <ExplorerContext.Provider
-        value={mockExplorerContextValue({
+      <DocExplorerContext.Provider
+        value={useMockDocExplorerContextValue({
           name: unwrapType(props.type).name,
           def: props.type,
         })}
       >
         <TypeDocumentation type={props.type} />
-      </ExplorerContext.Provider>
+      </DocExplorerContext.Provider>
     </SchemaContext.Provider>
   );
 };

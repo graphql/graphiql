@@ -1,7 +1,7 @@
 import { GraphQLArgument } from 'graphql';
 import { FC, useState } from 'react';
 import { Button, MarkdownContent } from '@graphiql/react';
-import { ExplorerFieldDef } from '../context';
+import { DocExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DeprecationReason } from './deprecation-reason';
 import { Directive } from './directive';
@@ -12,7 +12,7 @@ type FieldDocumentationProps = {
   /**
    * The field or argument that should be rendered.
    */
-  field: ExplorerFieldDef;
+  field: DocExplorerFieldDef;
 };
 
 export const FieldDocumentation: FC<FieldDocumentationProps> = ({ field }) => {
@@ -35,7 +35,7 @@ export const FieldDocumentation: FC<FieldDocumentationProps> = ({ field }) => {
   );
 };
 
-const Arguments: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
+const Arguments: FC<{ field: DocExplorerFieldDef }> = ({ field }) => {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const handleShowDeprecated = () => {
     setShowDeprecated(true);
@@ -81,7 +81,7 @@ const Arguments: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
   );
 };
 
-const Directives: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
+const Directives: FC<{ field: DocExplorerFieldDef }> = ({ field }) => {
   const directives = field.astNode?.directives;
   if (!directives?.length) {
     return null;

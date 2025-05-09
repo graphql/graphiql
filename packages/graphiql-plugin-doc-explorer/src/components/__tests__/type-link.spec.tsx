@@ -1,32 +1,34 @@
+import { FC } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
-import { ExplorerContext } from '../../context';
+import { DocExplorerContext, useDocExplorer } from '../../context';
 import { TypeLink } from '../type-link';
-import { mockExplorerContextValue, unwrapType } from './test-utils';
+import { useMockDocExplorerContextValue, unwrapType } from './test-utils';
 
 const nonNullType = new GraphQLNonNull(GraphQLString);
 const listType = new GraphQLList(GraphQLString);
 
+const TypeLinkConsumer: FC = () => {
+  const explorerNavStack = useDocExplorer();
+  return (
+    <span data-testid="nav-stack">
+      {JSON.stringify(explorerNavStack[explorerNavStack.length + 1])}
+    </span>
+  );
+};
+
 const TypeLinkWithContext: typeof TypeLink = props => {
   return (
-    <ExplorerContext.Provider
-      value={mockExplorerContextValue({
+    <DocExplorerContext.Provider
+      value={useMockDocExplorerContextValue({
         name: unwrapType(props.type).name,
         def: unwrapType(props.type),
       })}
     >
       <TypeLink {...props} />
       {/* Print the top of the current nav stack for test assertions */}
-      <ExplorerContext.Consumer>
-        {context => (
-          <span data-testid="nav-stack">
-            {JSON.stringify(
-              context!.explorerNavStack[context!.explorerNavStack.length + 1],
-            )}
-          </span>
-        )}
-      </ExplorerContext.Consumer>
-    </ExplorerContext.Provider>
+      <TypeLinkConsumer />
+    </DocExplorerContext.Provider>
   );
 };
 

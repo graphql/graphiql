@@ -10,7 +10,7 @@ import {
   isObjectType,
 } from 'graphql';
 import { useSchemaContext, Button, MarkdownContent } from '@graphiql/react';
-import { ExplorerFieldDef } from '../context';
+import { DocExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
 import { DeprecationReason } from './deprecation-reason';
@@ -72,8 +72,8 @@ const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
 
   const fieldMap = type.getFields();
 
-  const fields: ExplorerFieldDef[] = [];
-  const deprecatedFields: ExplorerFieldDef[] = [];
+  const fields: DocExplorerFieldDef[] = [];
+  const deprecatedFields: DocExplorerFieldDef[] = [];
 
   for (const field of Object.keys(fieldMap).map(name => fieldMap[name])) {
     if (field.deprecationReason) {
@@ -109,7 +109,7 @@ const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   );
 };
 
-const Field: FC<{ field: ExplorerFieldDef }> = ({ field }) => {
+const Field: FC<{ field: DocExplorerFieldDef }> = ({ field }) => {
   const args =
     'args' in field ? field.args.filter(arg => !arg.deprecationReason) : [];
   return (

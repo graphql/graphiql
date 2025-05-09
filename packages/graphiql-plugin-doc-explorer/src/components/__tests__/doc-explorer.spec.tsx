@@ -1,8 +1,12 @@
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { FC, useContext, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { SchemaContext, SchemaContextType } from '@graphiql/react';
-import { ExplorerContext, ExplorerContextProvider } from '../../context';
+import {
+  DocExplorerContextProvider,
+  useDocExplorer,
+  useDocExplorerActions,
+} from '../../context';
 import { DocExplorer } from '../doc-explorer';
 
 function makeSchema(fieldName = 'field') {
@@ -46,9 +50,9 @@ const withErrorSchemaContext: SchemaContextType = {
 
 const DocExplorerWithContext: FC = () => {
   return (
-    <ExplorerContextProvider>
+    <DocExplorerContextProvider>
       <DocExplorer />
-    </ExplorerContextProvider>
+    </DocExplorerContextProvider>
   );
 };
 
@@ -117,14 +121,14 @@ describe('DocExplorer', () => {
 
     // A hacky component to set the initial explorer nav stack
     const SetInitialStack: React.FC = () => {
-      const context = useContext(ExplorerContext)!;
+      const explorerNavStack = useDocExplorer();
+      const { push } = useDocExplorerActions();
       useEffect(() => {
-        if (context.explorerNavStack.length === 1) {
-          context.push({ name: 'Query', def: Query });
-          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
-          context.push({ name: 'field', def: field });
+        if (explorerNavStack.length === 1) {
+          push({ name: 'Query', def: Query });
+          push({ name: 'field', def: field });
         }
-      }, [context]);
+      }, [explorerNavStack.length, push]);
       return null;
     };
 
@@ -136,9 +140,9 @@ describe('DocExplorer', () => {
           schema: initialSchema,
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <SetInitialStack />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
 
@@ -150,9 +154,9 @@ describe('DocExplorer', () => {
           schema: initialSchema,
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <DocExplorer />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
 
@@ -167,9 +171,9 @@ describe('DocExplorer', () => {
           schema: makeSchema(), // <<< New, but equivalent, schema
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <DocExplorer />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
     const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
@@ -184,14 +188,14 @@ describe('DocExplorer', () => {
     // A hacky component to set the initial explorer nav stack
     // eslint-disable-next-line sonarjs/no-identical-functions -- todo: could be refactored
     const SetInitialStack: React.FC = () => {
-      const context = useContext(ExplorerContext)!;
+      const explorerNavStack = useDocExplorer();
+      const { push } = useDocExplorerActions();
       useEffect(() => {
-        if (context.explorerNavStack.length === 1) {
-          context.push({ name: 'Query', def: Query });
-          // eslint-disable-next-line unicorn/no-array-push-push -- false positive, push here accept only 1 argument
-          context.push({ name: 'field', def: field });
+        if (explorerNavStack.length === 1) {
+          push({ name: 'Query', def: Query });
+          push({ name: 'field', def: field });
         }
-      }, [context]);
+      }, [explorerNavStack.length, push]);
       return null;
     };
 
@@ -203,9 +207,9 @@ describe('DocExplorer', () => {
           schema: initialSchema,
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <SetInitialStack />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
 
@@ -217,9 +221,9 @@ describe('DocExplorer', () => {
           schema: initialSchema,
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <DocExplorer />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
 
@@ -231,16 +235,16 @@ describe('DocExplorer', () => {
       <SchemaContext.Provider
         value={{
           ...defaultSchemaContext,
-          schema: makeSchema('field2'), // <<< New schema with new field name
+          schema: makeSchema('field2'), // <<< New schema with a new field name
         }}
       >
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <DocExplorer />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </SchemaContext.Provider>,
     );
     const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
-    // Because `Query.field` doesn't exist any more, the top-most item we can render is `Query`
+    // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`
     expect(title2.textContent).toEqual('Query');
   });
 });

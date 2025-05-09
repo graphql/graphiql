@@ -60,7 +60,7 @@ import {
   HISTORY_PLUGIN,
 } from '@graphiql/plugin-history';
 import {
-  ExplorerContextProvider,
+  DocExplorerContextProvider,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 
@@ -156,14 +156,14 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   return (
     <GraphiQLProvider {...graphiqlProps}>
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
-        <ExplorerContextProvider>
+        <DocExplorerContextProvider>
           <GraphiQLInterface
             confirmCloseTab={confirmCloseTab}
             showPersistHeadersSettings={shouldPersistHeaders !== false}
             forcedTheme={props.forcedTheme}
             {...props}
           />
-        </ExplorerContextProvider>
+        </DocExplorerContextProvider>
       </HistoryContextProvider>
     </GraphiQLProvider>
   );

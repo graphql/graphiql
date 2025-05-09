@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { ExplorerFieldDef, useExplorerContext } from '../context';
+import { DocExplorerFieldDef, useDocExplorerActions } from '../context';
 import './field-link.css';
 
 type FieldLinkProps = {
   /**
    * The field or argument that should be linked to.
    */
-  field: ExplorerFieldDef;
+  field: DocExplorerFieldDef;
 };
 
 export const FieldLink: FC<FieldLinkProps> = ({ field }) => {
-  const { push } = useExplorerContext({ nonNull: true });
+  const { push } = useDocExplorerActions();
 
   return (
     <a

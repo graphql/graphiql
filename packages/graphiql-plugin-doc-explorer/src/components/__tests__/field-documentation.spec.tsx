@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-import { ExplorerContext, ExplorerFieldDef } from '../../context';
+import { DocExplorerContext, DocExplorerFieldDef } from '../../context';
 import { FieldDocumentation } from '../field-documentation';
-import { mockExplorerContextValue } from './test-utils';
+import { useMockDocExplorerContextValue } from './test-utils';
 
 const exampleObject = new GraphQLObjectType({
   name: 'Query',
@@ -54,17 +54,17 @@ const exampleObject = new GraphQLObjectType({
 });
 
 const FieldDocumentationWithContext: FC<{
-  field: ExplorerFieldDef;
+  field: DocExplorerFieldDef;
 }> = props => {
   return (
-    <ExplorerContext.Provider
-      value={mockExplorerContextValue({
+    <DocExplorerContext.Provider
+      value={useMockDocExplorerContextValue({
         name: props.field.name,
         def: props.field,
       })}
     >
       <FieldDocumentation field={props.field} />
-    </ExplorerContext.Provider>
+    </DocExplorerContext.Provider>
   );
 };
 

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { GraphQLType } from 'graphql';
-import { useExplorerContext } from '../context';
+import { useDocExplorerActions } from '../context';
 import { renderType } from './utils';
 import './type-link.css';
 
@@ -12,7 +12,7 @@ type TypeLinkProps = {
 };
 
 export const TypeLink: FC<TypeLinkProps> = ({ type }) => {
-  const { push } = useExplorerContext({ nonNull: true, caller: TypeLink });
+  const { push } = useDocExplorerActions();
 
   if (!type) {
     return null;

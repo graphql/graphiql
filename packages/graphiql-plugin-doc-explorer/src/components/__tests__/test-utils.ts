@@ -1,18 +1,12 @@
 'use no memo';
-
+import { useRef } from 'react';
 import { GraphQLNamedType, GraphQLType } from 'graphql';
+import { createDocExplorerStore, DocExplorerNavStackItem } from '../../context';
 
-import { ExplorerContextType, ExplorerNavStackItem } from '../../context';
-
-export function mockExplorerContextValue(
-  navStackItem: ExplorerNavStackItem,
-): ExplorerContextType {
-  return {
-    explorerNavStack: [navStackItem],
-    pop() {},
-    push() {},
-    reset() {},
-  };
+export function useMockDocExplorerContextValue(
+  navStackItem: DocExplorerNavStackItem,
+) {
+  return useRef(createDocExplorerStore(navStackItem));
 }
 
 export function unwrapType(type: GraphQLType): GraphQLNamedType {
