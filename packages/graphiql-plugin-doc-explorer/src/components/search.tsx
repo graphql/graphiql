@@ -20,17 +20,13 @@ import {
   MagnifyingGlassIcon,
   debounce,
 } from '@graphiql/react';
-
-import { useExplorerContext } from '../context';
-
-import './search.css';
+import { useDocExplorer, useDocExplorerActions } from '../context';
 import { renderType } from './utils';
+import './search.css';
 
 export const Search: FC = () => {
-  const { explorerNavStack, push } = useExplorerContext({
-    nonNull: true,
-    caller: Search,
-  });
+  const explorerNavStack = useDocExplorer();
+  const { push } = useDocExplorerActions();
 
   const inputRef = useRef<HTMLInputElement>(null!);
   const getSearchResults = useSearchResults();
@@ -164,10 +160,7 @@ type FieldMatch = {
 const _useSearchResults = useSearchResults;
 
 export function useSearchResults(caller?: Function) {
-  const { explorerNavStack } = useExplorerContext({
-    nonNull: true,
-    caller: caller || _useSearchResults,
-  });
+  const explorerNavStack = useDocExplorer();
   const { schema } = useSchemaContext({
     nonNull: true,
     caller: caller || _useSearchResults,
