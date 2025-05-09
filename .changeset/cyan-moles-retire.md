@@ -2,4 +2,4 @@
 'graphiql': patch
 ---
 
-fix overriding `referencePlugin` prop
+fix unable override `referencePlugin` prop
