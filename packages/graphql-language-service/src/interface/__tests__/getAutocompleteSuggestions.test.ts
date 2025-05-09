@@ -105,29 +105,32 @@ describe('getAutocompleteSuggestions', () => {
       .map(suggestion => {
         // TODO: A PR where we do `const { type, ..rest} = suggestion; return rest;`
         // and validate the entire completion object - kinds, documentation, etc
-        const response = { label: suggestion.label } as CompletionItem;
+        const response: CompletionItem = { label: suggestion.label };
         if (suggestion.detail) {
-          response.detail = String(suggestion.detail);
+          response.detail = suggestion.detail;
         }
-        if (suggestion.insertText && !options?.ignoreInsert) {
-          response.insertText = suggestion.insertText;
-        }
-        if (suggestion.insertTextFormat && !options?.ignoreInsert) {
-          response.insertTextFormat = suggestion.insertTextFormat;
-        }
-        if (suggestion.command && !options?.ignoreInsert) {
-          response.command = suggestion.command;
+        if (!options?.ignoreInsert) {
+          if (suggestion.insertText) {
+            response.insertText = suggestion.insertText;
+          }
+          if (suggestion.insertTextFormat) {
+            response.insertTextFormat = suggestion.insertTextFormat;
+          }
+          if (suggestion.command) {
+            response.command = suggestion.command;
+          }
+          if (suggestion.labelDetails) {
+            response.labelDetails = suggestion.labelDetails;
+          }
         }
         if (suggestion.documentation?.length) {
           response.documentation = suggestion.documentation;
-        }
-        if (suggestion.labelDetails && !options?.ignoreInsert) {
-          response.labelDetails = suggestion.labelDetails;
         }
 
         return response;
       });
   }
+
   describe('with Operation types', () => {
     const expectedDirectiveSuggestions = [
       { label: 'include', documentation: GraphQLIncludeDirective.description },

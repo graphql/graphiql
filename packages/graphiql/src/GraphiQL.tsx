@@ -100,6 +100,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   onTogglePluginVisibility,
   operationName,
   plugins = [],
+  referencePlugin = DOC_EXPLORER_PLUGIN,
   query,
   response,
   schema,
@@ -139,8 +140,8 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onSchemaChange,
     onTabChange,
     onTogglePluginVisibility,
-    plugins: [DOC_EXPLORER_PLUGIN, HISTORY_PLUGIN, ...plugins],
-    referencePlugin: DOC_EXPLORER_PLUGIN,
+    plugins: [referencePlugin, HISTORY_PLUGIN, ...plugins],
+    referencePlugin,
     visiblePlugin,
     operationName,
     query,
@@ -519,15 +520,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
         <div className="graphiql-main">
           <div
             ref={pluginResize.firstRef}
+            className="graphiql-plugin"
             style={{
               // Make sure the container shrinks when containing long
               // non-breaking texts
               minWidth: '200px',
             }}
           >
-            <div className="graphiql-plugin">
-              {PluginContent ? <PluginContent /> : null}
-            </div>
+            {PluginContent ? <PluginContent /> : null}
           </div>
           {pluginContext?.visiblePlugin && (
             <div
@@ -541,6 +541,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                 values={editorContext.tabs}
                 onReorder={handleReorder}
                 aria-label="Select active operation"
+                className="no-scrollbar"
               >
                 {editorContext.tabs.map((tab, index, tabs) => (
                   <Tab
@@ -577,124 +578,121 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
               id="graphiql-session" // used by aria-controls="graphiql-session"
               aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.activeTabIndex}`}
             >
-              <div ref={editorResize.firstRef}>
-                <div className="graphiql-editors">
-                  <div ref={editorToolsResize.firstRef}>
-                    <section
-                      className="graphiql-query-editor"
-                      aria-label="Query Editor"
-                    >
-                      <QueryEditor
-                        editorTheme={props.editorTheme}
-                        keyMap={props.keyMap}
-                        onClickReference={onClickReference}
-                        onCopyQuery={props.onCopyQuery}
-                        onPrettifyQuery={props.onPrettifyQuery}
-                        onEdit={props.onEditQuery}
-                        readOnly={props.readOnly}
-                      />
-                      <div
-                        className="graphiql-toolbar"
-                        role="toolbar"
-                        aria-label="Editor Commands"
-                      >
-                        <ExecuteButton />
-                        {toolbar}
-                      </div>
-                    </section>
+              <div className="graphiql-editors" ref={editorResize.firstRef}>
+                <section
+                  className="graphiql-query-editor"
+                  aria-label="Query Editor"
+                  ref={editorToolsResize.firstRef}
+                >
+                  <QueryEditor
+                    editorTheme={props.editorTheme}
+                    keyMap={props.keyMap}
+                    onClickReference={onClickReference}
+                    onCopyQuery={props.onCopyQuery}
+                    onPrettifyQuery={props.onPrettifyQuery}
+                    onEdit={props.onEditQuery}
+                    readOnly={props.readOnly}
+                  />
+                  <div
+                    className="graphiql-toolbar"
+                    role="toolbar"
+                    aria-label="Editor Commands"
+                  >
+                    <ExecuteButton />
+                    {toolbar}
                   </div>
+                </section>
 
-                  <div ref={editorToolsResize.dragBarRef}>
-                    <div className="graphiql-editor-tools">
-                      <UnStyledButton
-                        type="button"
-                        className={cn(
-                          activeSecondaryEditor === 'variables' &&
-                            editorToolsResize.hiddenElement !== 'second' &&
-                            'active',
-                        )}
-                        onClick={handleToolsTabClick}
-                        data-name="variables"
-                      >
-                        Variables
-                      </UnStyledButton>
-                      {isHeadersEditorEnabled && (
-                        <UnStyledButton
-                          type="button"
-                          className={cn(
-                            activeSecondaryEditor === 'headers' &&
-                              editorToolsResize.hiddenElement !== 'second' &&
-                              'active',
-                          )}
-                          onClick={handleToolsTabClick}
-                          data-name="headers"
-                        >
-                          Headers
-                        </UnStyledButton>
+                <div
+                  ref={editorToolsResize.dragBarRef}
+                  className="graphiql-editor-tools"
+                >
+                  <UnStyledButton
+                    type="button"
+                    className={cn(
+                      activeSecondaryEditor === 'variables' &&
+                        editorToolsResize.hiddenElement !== 'second' &&
+                        'active',
+                    )}
+                    onClick={handleToolsTabClick}
+                    data-name="variables"
+                  >
+                    Variables
+                  </UnStyledButton>
+                  {isHeadersEditorEnabled && (
+                    <UnStyledButton
+                      type="button"
+                      className={cn(
+                        activeSecondaryEditor === 'headers' &&
+                          editorToolsResize.hiddenElement !== 'second' &&
+                          'active',
                       )}
-
-                      <Tooltip
-                        label={
-                          editorToolsResize.hiddenElement === 'second'
-                            ? 'Show editor tools'
-                            : 'Hide editor tools'
-                        }
-                      >
-                        <UnStyledButton
-                          type="button"
-                          onClick={toggleEditorTools}
-                          aria-label={
-                            editorToolsResize.hiddenElement === 'second'
-                              ? 'Show editor tools'
-                              : 'Hide editor tools'
-                          }
-                          className="graphiql-toggle-editor-tools"
-                        >
-                          {editorToolsResize.hiddenElement === 'second' ? (
-                            <ChevronUpIcon
-                              className="graphiql-chevron-icon"
-                              aria-hidden="true"
-                            />
-                          ) : (
-                            <ChevronDownIcon
-                              className="graphiql-chevron-icon"
-                              aria-hidden="true"
-                            />
-                          )}
-                        </UnStyledButton>
-                      </Tooltip>
-                    </div>
-                  </div>
-
-                  <div ref={editorToolsResize.secondRef}>
-                    <section
-                      className="graphiql-editor-tool"
-                      aria-label={
-                        activeSecondaryEditor === 'variables'
-                          ? 'Variables'
-                          : 'Headers'
-                      }
+                      onClick={handleToolsTabClick}
+                      data-name="headers"
                     >
-                      <VariableEditor
-                        editorTheme={props.editorTheme}
-                        isHidden={activeSecondaryEditor !== 'variables'}
-                        keyMap={props.keyMap}
-                        onEdit={props.onEditVariables}
-                        onClickReference={onClickReference}
-                        readOnly={props.readOnly}
-                      />
-                      {isHeadersEditorEnabled && (
-                        <HeaderEditor
-                          editorTheme={props.editorTheme}
-                          isHidden={activeSecondaryEditor !== 'headers'}
-                          keyMap={props.keyMap}
-                          onEdit={props.onEditHeaders}
-                          readOnly={props.readOnly}
+                      Headers
+                    </UnStyledButton>
+                  )}
+
+                  <Tooltip
+                    label={
+                      editorToolsResize.hiddenElement === 'second'
+                        ? 'Show editor tools'
+                        : 'Hide editor tools'
+                    }
+                  >
+                    <UnStyledButton
+                      type="button"
+                      onClick={toggleEditorTools}
+                      aria-label={
+                        editorToolsResize.hiddenElement === 'second'
+                          ? 'Show editor tools'
+                          : 'Hide editor tools'
+                      }
+                      className="graphiql-toggle-editor-tools"
+                    >
+                      {editorToolsResize.hiddenElement === 'second' ? (
+                        <ChevronUpIcon
+                          className="graphiql-chevron-icon"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ChevronDownIcon
+                          className="graphiql-chevron-icon"
+                          aria-hidden="true"
                         />
                       )}
-                    </section>
-                  </div>
+                    </UnStyledButton>
+                  </Tooltip>
                 </div>
+
+                <section
+                  className="graphiql-editor-tool"
+                  aria-label={
+                    activeSecondaryEditor === 'variables'
+                      ? 'Variables'
+                      : 'Headers'
+                  }
+                  ref={editorToolsResize.secondRef}
+                >
+                  <VariableEditor
+                    editorTheme={props.editorTheme}
+                    isHidden={activeSecondaryEditor !== 'variables'}
+                    keyMap={props.keyMap}
+                    onEdit={props.onEditVariables}
+                    onClickReference={onClickReference}
+                    readOnly={props.readOnly}
+                  />
+                  {isHeadersEditorEnabled && (
+                    <HeaderEditor
+                      editorTheme={props.editorTheme}
+                      isHidden={activeSecondaryEditor !== 'headers'}
+                      keyMap={props.keyMap}
+                      onEdit={props.onEditHeaders}
+                      readOnly={props.readOnly}
+                    />
+                  )}
+                </section>
               </div>
 
               <div
@@ -702,16 +700,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                 ref={editorResize.dragBarRef}
               />
 
-              <div ref={editorResize.secondRef}>
-                <div className="graphiql-response">
-                  {executionContext.isFetching ? <Spinner /> : null}
-                  <ResponseEditor
-                    editorTheme={props.editorTheme}
-                    responseTooltip={props.responseTooltip}
-                    keyMap={props.keyMap}
-                  />
-                  {footer}
-                </div>
+              <div className="graphiql-response" ref={editorResize.secondRef}>
+                {executionContext.isFetching ? <Spinner /> : null}
+                <ResponseEditor
+                  editorTheme={props.editorTheme}
+                  responseTooltip={props.responseTooltip}
+                  keyMap={props.keyMap}
+                />
+                {footer}
               </div>
             </div>
           </div>
@@ -727,7 +723,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             <Dialog.Close />
           </div>
           <div className="graphiql-dialog-section">
-            <ShortKeys keyMap={props.keyMap || 'sublime'} />
+            <ShortKeys keyMap={props.keyMap} />
           </div>
         </Dialog>
         <Dialog
@@ -856,7 +852,12 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
 });
 
-const ShortKeys: FC<{ keyMap: string }> = ({ keyMap }) => {
+interface ShortKeysProps {
+  /** @default 'sublime' */
+  keyMap?: string;
+}
+
+const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
   return (
     <div>
       <table className="graphiql-table">

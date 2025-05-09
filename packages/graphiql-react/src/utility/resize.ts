@@ -1,5 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-
+import { useEffect, useRef, useState } from 'react';
 import { useStorageContext } from '../storage';
 import { debounce } from './debounce';
 
@@ -9,6 +8,7 @@ type UseDragResizeArgs = {
   /**
    * Set the default sizes for the two resizable halves by passing their ratio
    * (first divided by second).
+   * @default 1
    */
   defaultSizeRelation?: number;
   /**
@@ -28,11 +28,13 @@ type UseDragResizeArgs = {
   /**
    * The minimum width in pixels for the first half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
+   * @default 100
    */
   sizeThresholdFirst?: number;
   /**
    * The minimum width in pixels for the second half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
+   * @default 100
    */
   sizeThresholdSecond?: number;
   /**
@@ -43,7 +45,7 @@ type UseDragResizeArgs = {
 };
 
 export function useDragResize({
-  defaultSizeRelation = DEFAULT_FLEX,
+  defaultSizeRelation = 1,
   direction,
   initiallyHidden,
   onHiddenElementChange,
@@ -89,7 +91,7 @@ export function useDragResize({
   /**
    * Set initial flex values
    */
-  useLayoutEffect(() => {
+  useEffect(() => {
     const storedValue =
       (storageKey && storage?.get(storageKey)) || defaultFlexRef.current;
 
@@ -112,9 +114,9 @@ export function useDragResize({
   }, [direction, storage, storageKey]);
 
   /**
-   * Hide and show items when state changes
+   * Hide and show items when the state changes
    */
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hide = (resizableElement: ResizableElement) => {
       const element =
         resizableElement === 'first' ? firstRef.current : secondRef.current;
@@ -194,6 +196,12 @@ export function useDragResize({
       direction === 'horizontal' ? 'clientWidth' : 'clientHeight';
 
     function handleMouseDown(downEvent: MouseEvent) {
+      const isClickOnCurrentElement =
+        downEvent.target === downEvent.currentTarget;
+      if (!isClickOnCurrentElement) {
+        return;
+      }
+
       downEvent.preventDefault();
 
       // Distance between the start of the drag bar and the exact point where
@@ -277,6 +285,5 @@ export function useDragResize({
   };
 }
 
-const DEFAULT_FLEX = 1;
 const HIDE_FIRST = 'hide-first';
 const HIDE_SECOND = 'hide-second';

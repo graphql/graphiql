@@ -1,5 +1,12 @@
 # @graphiql/plugin-explorer
 
+## 4.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`98d13a3`](https://github.com/graphql/graphiql/commit/98d13a3e515eb70aaf5a5ba669c680d5959fef67)]:
+  - @graphiql/react@0.32.0
+
 ## 4.0.1
 
 ### Patch Changes

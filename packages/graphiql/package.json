@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "sideEffects": false,
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
@@ -48,9 +48,9 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.31.0",
-    "@graphiql/plugin-history": "^0.0.1",
-    "@graphiql/plugin-doc-explorer": "^0.0.0"
+    "@graphiql/react": "^0.32.0",
+    "@graphiql/plugin-history": "^0.0.2",
+    "@graphiql/plugin-doc-explorer": "^0.0.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",

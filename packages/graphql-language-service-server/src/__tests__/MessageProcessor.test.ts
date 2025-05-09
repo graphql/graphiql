@@ -553,7 +553,7 @@ describe('MessageProcessor', () => {
     messageProcessor._getCachedDocument = (_uri: string) => null;
 
     const result = await messageProcessor.handleHoverRequest(test);
-    expect(result).toEqual({ contents: [] });
+    expect(result).toBeNull();
   });
   it('handles provided config', async () => {
     const msgProcessor = new MessageProcessor({

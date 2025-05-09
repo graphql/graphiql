@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.14.4
+
+### Patch Changes
+
+- [#3913](https://github.com/graphql/graphiql/pull/3913) [`3b5c309`](https://github.com/graphql/graphiql/commit/3b5c309e71b381311a6e928db089f4fa48530b35) Thanks [@joshbode](https://github.com/joshbode)! - return `null` instead of an empty `contents` array when hover results are empty
+
 ## 2.14.3
 
 ### Patch Changes
