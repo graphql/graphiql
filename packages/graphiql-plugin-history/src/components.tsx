@@ -12,13 +12,13 @@ import {
   Tooltip,
   UnStyledButton,
 } from '@graphiql/react';
-import { HistoryContextType, useHistoryContext } from './context';
+import { useHistory, useHistoryActions } from './context';
 
 // Fix error from react-compiler
-// Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+// Support value blocks (conditional, logical, optional chaining, etc.) within a try/catch statement
 function handleDelete(
   items: QueryStoreItem[],
-  deleteFromHistory: HistoryContextType['deleteFromHistory'],
+  deleteFromHistory: ReturnType<typeof useHistoryActions>['deleteFromHistory'],
 ) {
   for (const item of items) {
     deleteFromHistory(item, true);
@@ -26,12 +26,11 @@ function handleDelete(
 }
 
 export function History() {
-  const { items: all, deleteFromHistory } = useHistoryContext({
-    nonNull: true,
-  });
+  const all = useHistory();
+  const { deleteFromHistory } = useHistoryActions();
 
   // Reverse items since we push them in so want the latest one at the top, and pass the
-  // original index in case multiple items share the same label so we can edit correct item
+  // original index in case multiple items share the same label so we can edit the correct item
   let items = all
     .slice()
     .map((item, i) => ({ ...item, index: i }))
@@ -112,10 +111,7 @@ type QueryHistoryItemProps = {
 
 export function HistoryItem(props: QueryHistoryItemProps) {
   const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
-    useHistoryContext({
-      nonNull: true,
-      caller: HistoryItem,
-    });
+    useHistoryActions();
   const { headerEditor, queryEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: HistoryItem,
