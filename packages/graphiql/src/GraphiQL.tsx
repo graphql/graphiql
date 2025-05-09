@@ -519,15 +519,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
         <div className="graphiql-main">
           <div
             ref={pluginResize.firstRef}
+            className="graphiql-plugin"
             style={{
               // Make sure the container shrinks when containing long
               // non-breaking texts
               minWidth: '200px',
             }}
           >
-            <div className="graphiql-plugin">
-              {PluginContent ? <PluginContent /> : null}
-            </div>
+            {PluginContent ? <PluginContent /> : null}
           </div>
           {pluginContext?.visiblePlugin && (
             <div
@@ -603,66 +602,67 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                   </div>
                 </section>
 
-                <div ref={editorToolsResize.dragBarRef}>
-                  <div className="graphiql-editor-tools">
+                <div
+                  ref={editorToolsResize.dragBarRef}
+                  className="graphiql-editor-tools"
+                >
+                  <UnStyledButton
+                    type="button"
+                    className={cn(
+                      activeSecondaryEditor === 'variables' &&
+                        editorToolsResize.hiddenElement !== 'second' &&
+                        'active',
+                    )}
+                    onClick={handleToolsTabClick}
+                    data-name="variables"
+                  >
+                    Variables
+                  </UnStyledButton>
+                  {isHeadersEditorEnabled && (
                     <UnStyledButton
                       type="button"
                       className={cn(
-                        activeSecondaryEditor === 'variables' &&
+                        activeSecondaryEditor === 'headers' &&
                           editorToolsResize.hiddenElement !== 'second' &&
                           'active',
                       )}
                       onClick={handleToolsTabClick}
-                      data-name="variables"
+                      data-name="headers"
                     >
-                      Variables
+                      Headers
                     </UnStyledButton>
-                    {isHeadersEditorEnabled && (
-                      <UnStyledButton
-                        type="button"
-                        className={cn(
-                          activeSecondaryEditor === 'headers' &&
-                            editorToolsResize.hiddenElement !== 'second' &&
-                            'active',
-                        )}
-                        onClick={handleToolsTabClick}
-                        data-name="headers"
-                      >
-                        Headers
-                      </UnStyledButton>
-                    )}
+                  )}
 
-                    <Tooltip
-                      label={
+                  <Tooltip
+                    label={
+                      editorToolsResize.hiddenElement === 'second'
+                        ? 'Show editor tools'
+                        : 'Hide editor tools'
+                    }
+                  >
+                    <UnStyledButton
+                      type="button"
+                      onClick={toggleEditorTools}
+                      aria-label={
                         editorToolsResize.hiddenElement === 'second'
                           ? 'Show editor tools'
                           : 'Hide editor tools'
                       }
+                      className="graphiql-toggle-editor-tools"
                     >
-                      <UnStyledButton
-                        type="button"
-                        onClick={toggleEditorTools}
-                        aria-label={
-                          editorToolsResize.hiddenElement === 'second'
-                            ? 'Show editor tools'
-                            : 'Hide editor tools'
-                        }
-                        className="graphiql-toggle-editor-tools"
-                      >
-                        {editorToolsResize.hiddenElement === 'second' ? (
-                          <ChevronUpIcon
-                            className="graphiql-chevron-icon"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <ChevronDownIcon
-                            className="graphiql-chevron-icon"
-                            aria-hidden="true"
-                          />
-                        )}
-                      </UnStyledButton>
-                    </Tooltip>
-                  </div>
+                      {editorToolsResize.hiddenElement === 'second' ? (
+                        <ChevronUpIcon
+                          className="graphiql-chevron-icon"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ChevronDownIcon
+                          className="graphiql-chevron-icon"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </UnStyledButton>
+                  </Tooltip>
                 </div>
 
                 <section
@@ -722,7 +722,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             <Dialog.Close />
           </div>
           <div className="graphiql-dialog-section">
-            <ShortKeys keyMap={props.keyMap || 'sublime'} />
+            <ShortKeys keyMap={props.keyMap} />
           </div>
         </Dialog>
         <Dialog
@@ -851,7 +851,12 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
 });
 
-const ShortKeys: FC<{ keyMap: string }> = ({ keyMap }) => {
+interface ShortKeysProps {
+  /** @default 'sublime' */
+  keyMap?: string;
+}
+
+const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
   return (
     <div>
       <table className="graphiql-table">

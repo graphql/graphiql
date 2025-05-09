@@ -196,6 +196,12 @@ export function useDragResize({
       direction === 'horizontal' ? 'clientWidth' : 'clientHeight';
 
     function handleMouseDown(downEvent: MouseEvent) {
+      const isClickOnCurrentElement =
+        downEvent.target === downEvent.currentTarget;
+      if (!isClickOnCurrentElement) {
+        return;
+      }
+
       downEvent.preventDefault();
 
       // Distance between the start of the drag bar and the exact point where
