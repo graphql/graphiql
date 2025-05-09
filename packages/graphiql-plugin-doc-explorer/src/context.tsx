@@ -13,7 +13,7 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql';
-import { ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import {
   useSchemaContext,
   createContextHook,
@@ -70,11 +70,9 @@ export type ExplorerContextType = {
 export const ExplorerContext =
   createNullableContext<ExplorerContextType>('ExplorerContext');
 
-type ExplorerContextProviderProps = {
+export const ExplorerContextProvider: FC<{
   children: ReactNode;
-};
-
-export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
+}> = props => {
   const { schema, validationErrors, schemaReference } = useSchemaContext({
     nonNull: true,
     caller: ExplorerContextProvider,
@@ -238,6 +236,6 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
       {props.children}
     </ExplorerContext.Provider>
   );
-}
+};
 
 export const useExplorerContext = createContextHook(ExplorerContext);

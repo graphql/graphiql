@@ -5,7 +5,7 @@
   align-items: center;
   gap: var(--px-8);
   /* reset browser defaults */
-  padding: 0;
+  padding: 2px 0; /* Set to 2px to avoid being overflowed by focus ring */
   margin: 0;
   list-style: none;
   overflow: auto;

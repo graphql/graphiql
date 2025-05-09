@@ -1,7 +1,6 @@
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { useContext, useEffect } from 'react';
-
+import { FC, useContext, useEffect } from 'react';
 import { SchemaContext, SchemaContextType } from '@graphiql/react';
 import { ExplorerContext, ExplorerContextProvider } from '../../context';
 import { DocExplorer } from '../doc-explorer';
@@ -31,6 +30,8 @@ const defaultSchemaContext: SchemaContextType = {
   isFetching: false,
   schema: makeSchema(),
   validationErrors: [],
+  schemaReference: null!,
+  setSchemaReference: null!,
 };
 
 const withErrorSchemaContext: SchemaContextType = {
@@ -39,15 +40,17 @@ const withErrorSchemaContext: SchemaContextType = {
   isFetching: false,
   schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
   validationErrors: [],
+  schemaReference: null!,
+  setSchemaReference: null!,
 };
 
-function DocExplorerWithContext() {
+const DocExplorerWithContext: FC = () => {
   return (
     <ExplorerContextProvider>
       <DocExplorer />
     </ExplorerContextProvider>
   );
-}
+};
 
 describe('DocExplorer', () => {
   it('renders spinner when the schema is loading', () => {

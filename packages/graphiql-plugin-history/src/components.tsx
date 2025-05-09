@@ -1,5 +1,5 @@
 import type { QueryStoreItem } from '@graphiql/toolkit';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useRef, useState } from 'react';
 import {
   cn,
   CloseIcon,
@@ -25,7 +25,7 @@ function handleDelete(
   }
 }
 
-export function History() {
+export const History: FC = () => {
   const all = useHistory();
   const { deleteFromHistory } = useHistoryActions();
 
@@ -103,13 +103,13 @@ export function History() {
       )}
     </section>
   );
-}
+};
 
 type QueryHistoryItemProps = {
   item: QueryStoreItem & { index?: number };
 };
 
-export function HistoryItem(props: QueryHistoryItemProps) {
+export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
     useHistoryActions();
   const { headerEditor, queryEditor, variableEditor } = useEditorContext({
@@ -245,7 +245,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
       )}
     </li>
   );
-}
+};
 
 export function formatQuery(query?: string) {
   return query

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { clsx } from 'clsx';
 
 import { useEditorContext } from '../context';
@@ -18,7 +18,10 @@ type VariableEditorProps = UseVariableEditorArgs & {
   isHidden?: boolean;
 };
 
-export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
+export const VariableEditor: FC<VariableEditorProps> = ({
+  isHidden,
+  ...hookArgs
+}) => {
   const { variableEditor } = useEditorContext({
     nonNull: true,
     caller: VariableEditor,
@@ -26,12 +29,12 @@ export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
   const ref = useVariableEditor(hookArgs, VariableEditor);
 
   useEffect(() => {
-    if (variableEditor && !isHidden) {
-      variableEditor.refresh();
+    if (!isHidden) {
+      variableEditor?.refresh();
     }
   }, [variableEditor, isHidden]);
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
   );
-}
+};

@@ -1,5 +1,5 @@
+import { FC } from 'react';
 import { ExplorerFieldDef, useExplorerContext } from '../context';
-
 import './field-link.css';
 
 type FieldLinkProps = {
@@ -9,7 +9,7 @@ type FieldLinkProps = {
   field: ExplorerFieldDef;
 };
 
-export function FieldLink(props: FieldLinkProps) {
+export const FieldLink: FC<FieldLinkProps> = ({ field }) => {
   const { push } = useExplorerContext({ nonNull: true });
 
   return (
@@ -17,11 +17,11 @@ export function FieldLink(props: FieldLinkProps) {
       className="graphiql-doc-explorer-field-name"
       onClick={event => {
         event.preventDefault();
-        push({ name: props.field.name, def: props.field });
+        push({ name: field.name, def: field });
       }}
       href="#"
     >
-      {props.field.name}
+      {field.name}
     </a>
   );
-}
+};

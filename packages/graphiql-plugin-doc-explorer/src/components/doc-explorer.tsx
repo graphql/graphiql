@@ -1,16 +1,14 @@
 import { isType } from 'graphql';
-import { ReactNode } from 'react';
-
+import { FC, ReactNode } from 'react';
 import { ChevronLeftIcon, Spinner, useSchemaContext } from '@graphiql/react';
 import { useExplorerContext } from '../context';
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';
 import { Search } from './search';
 import { TypeDocumentation } from './type-documentation';
-
 import './doc-explorer.css';
 
-export function DocExplorer() {
+export const DocExplorer: FC = () => {
   const { fetchError, isFetching, schema, validationErrors } = useSchemaContext(
     { nonNull: true, caller: DocExplorer },
   );
@@ -84,4 +82,4 @@ export function DocExplorer() {
       <div className="graphiql-doc-explorer-content">{content}</div>
     </section>
   );
-}
+};

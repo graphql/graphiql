@@ -14,6 +14,7 @@
   },
   "packageManager": "yarn@1.22.22",
   "scripts": {
+    "types:check": "turbo run types:check",
     "dev:graphiql": "turbo run dev --filter=graphiql...",
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",

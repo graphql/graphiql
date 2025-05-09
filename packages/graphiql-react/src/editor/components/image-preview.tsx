@@ -1,5 +1,5 @@
 import type { Token } from 'codemirror';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 type ImagePreviewProps = { token: Token };
 
@@ -8,7 +8,7 @@ type Dimensions = {
   height: number | null;
 };
 
-export function ImagePreview(props: ImagePreviewProps) {
+const ImagePreview_: FC<ImagePreviewProps> = props => {
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: null,
     height: null,
@@ -61,12 +61,14 @@ export function ImagePreview(props: ImagePreviewProps) {
       {dims}
     </div>
   );
-}
-
-ImagePreview.shouldRender = function shouldRender(token: Token) {
-  const url = tokenToURL(token);
-  return url ? isImageURL(url) : false;
 };
+
+export const ImagePreview = Object.assign(ImagePreview_, {
+  shouldRender(token: Token) {
+    const url = tokenToURL(token);
+    return url ? isImageURL(url) : false;
+  },
+});
 
 function tokenToURL(token: Token) {
   if (token.type !== 'string') {

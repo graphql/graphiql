@@ -1,9 +1,8 @@
+import { FC } from 'react';
 import type { GraphQLSchema } from 'graphql';
-
 import { MarkdownContent } from '@graphiql/react';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
-
 import './schema-documentation.css';
 
 type SchemaDocumentationProps = {
@@ -13,11 +12,13 @@ type SchemaDocumentationProps = {
   schema: GraphQLSchema;
 };
 
-export function SchemaDocumentation(props: SchemaDocumentationProps) {
-  const queryType = props.schema.getQueryType();
-  const mutationType = props.schema.getMutationType?.();
-  const subscriptionType = props.schema.getSubscriptionType?.();
-  const typeMap = props.schema.getTypeMap();
+export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
+  schema,
+}) => {
+  const queryType = schema.getQueryType();
+  const mutationType = schema.getMutationType?.();
+  const subscriptionType = schema.getSubscriptionType?.();
+  const typeMap = schema.getTypeMap();
   const ignoreTypesInAllSchema = [
     queryType?.name,
     mutationType?.name,
@@ -27,7 +28,7 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
   return (
     <>
       <MarkdownContent type="description">
-        {props.schema.description ||
+        {schema.description ||
           'A GraphQL schema provides a root type for each kind of operation.'}
       </MarkdownContent>
       <ExplorerSection title="Root Types">
@@ -77,4 +78,4 @@ export function SchemaDocumentation(props: SchemaDocumentationProps) {
       </ExplorerSection>
     </>
   );
-}
+};

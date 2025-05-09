@@ -1,6 +1,5 @@
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { createContextHook, createNullableContext } from './utility/context';
 
 export type StorageContextType = StorageAPI;
@@ -12,30 +11,33 @@ type StorageContextProviderProps = {
   children: ReactNode;
   /**
    * Provide a custom storage API.
-   * @default `localStorage`
+   * @default localStorage
    * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#storage-2|API docs}
    * for details on the required interface.
    */
   storage?: Storage;
 };
 
-export function StorageContextProvider(props: StorageContextProviderProps) {
+export const StorageContextProvider: FC<StorageContextProviderProps> = ({
+  storage,
+  children,
+}) => {
   const isInitialRender = useRef(true);
-  const [storage, setStorage] = useState(() => new StorageAPI(props.storage));
+  const [$storage, setStorage] = useState(() => new StorageAPI(storage));
 
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
     } else {
-      setStorage(new StorageAPI(props.storage));
+      setStorage(new StorageAPI(storage));
     }
-  }, [props.storage]);
+  }, [storage]);
 
   return (
-    <StorageContext.Provider value={storage}>
-      {props.children}
+    <StorageContext.Provider value={$storage}>
+      {children}
     </StorageContext.Provider>
   );
-}
+};
 
 export const useStorageContext = createContextHook(StorageContext);

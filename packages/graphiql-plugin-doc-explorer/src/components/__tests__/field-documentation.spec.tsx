@@ -1,6 +1,6 @@
+import { FC } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-
 import { ExplorerContext, ExplorerFieldDef } from '../../context';
 import { FieldDocumentation } from '../field-documentation';
 import { mockExplorerContextValue } from './test-utils';
@@ -53,7 +53,9 @@ const exampleObject = new GraphQLObjectType({
   },
 });
 
-function FieldDocumentationWithContext(props: { field: ExplorerFieldDef }) {
+const FieldDocumentationWithContext: FC<{
+  field: ExplorerFieldDef;
+}> = props => {
   return (
     <ExplorerContext.Provider
       value={mockExplorerContextValue({
@@ -64,7 +66,7 @@ function FieldDocumentationWithContext(props: { field: ExplorerFieldDef }) {
       <FieldDocumentation field={props.field} />
     </ExplorerContext.Provider>
   );
-}
+};
 
 describe('FieldDocumentation', () => {
   it('should render a simple string field', () => {

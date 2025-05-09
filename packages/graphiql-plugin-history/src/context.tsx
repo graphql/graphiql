@@ -1,5 +1,6 @@
 import {
   createContext,
+  FC,
   ReactNode,
   RefObject,
   useContext,
@@ -136,10 +137,10 @@ type HistoryContextProviderProps = {
  * any additional props they added for their needs (i.e., build their own functions that may save
  * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
  */
-export function HistoryContextProvider({
+export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
-}: HistoryContextProviderProps) {
+}) => {
   const storage = useStorageContext();
   const { isFetching } = useExecutionContext({ nonNull: true });
   const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
@@ -168,7 +169,7 @@ export function HistoryContextProvider({
       {children}
     </HistoryContext.Provider>
   );
-}
+};
 
 function useHistoryStore<T>(selector: (state: HistoryContextType) => T): T {
   const store = useContext(HistoryContext);

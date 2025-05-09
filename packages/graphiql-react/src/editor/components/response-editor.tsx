@@ -1,11 +1,11 @@
 import { useResponseEditor, UseResponseEditorArgs } from '../response-editor';
-
+import { FC } from 'react';
 import '../style/codemirror.css';
 import '../style/fold.css';
 import '../style/info.css';
 import '../style/editor.css';
 
-export function ResponseEditor(props: UseResponseEditorArgs) {
+export const ResponseEditor: FC<UseResponseEditorArgs> = props => {
   const ref = useResponseEditor(props, ResponseEditor);
   return (
     <section
@@ -16,4 +16,4 @@ export function ResponseEditor(props: UseResponseEditorArgs) {
       ref={ref}
     />
   );
-}
+};

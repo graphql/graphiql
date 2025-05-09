@@ -260,20 +260,16 @@ function isMatch(sourceText: string, searchValue: string): boolean {
   }
 }
 
-type TypeProps = { type: GraphQLNamedType };
-
-function Type(props: TypeProps) {
-  return (
-    <span className="graphiql-doc-explorer-search-type">{props.type.name}</span>
-  );
-}
+const Type: FC<{ type: GraphQLNamedType }> = ({ type }) => {
+  return <span className="graphiql-doc-explorer-search-type">{type.name}</span>;
+};
 
 type FieldProps = {
   field: GraphQLField<unknown, unknown> | GraphQLInputField;
   argument?: GraphQLArgument;
 };
 
-function Field({ field, argument }: FieldProps) {
+const Field: FC<FieldProps> = ({ field, argument }) => {
   return (
     <>
       <span className="graphiql-doc-explorer-search-field">{field.name}</span>
@@ -292,4 +288,4 @@ function Field({ field, argument }: FieldProps) {
       ) : null}
     </>
   );
-}
+};
