@@ -1,5 +1,4 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-
 import { useStorageContext } from '../storage';
 import { debounce } from './debounce';
 
@@ -9,6 +8,7 @@ type UseDragResizeArgs = {
   /**
    * Set the default sizes for the two resizable halves by passing their ratio
    * (first divided by second).
+   * @default 1
    */
   defaultSizeRelation?: number;
   /**
@@ -28,11 +28,13 @@ type UseDragResizeArgs = {
   /**
    * The minimum width in pixels for the first half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
+   * @default 100
    */
   sizeThresholdFirst?: number;
   /**
    * The minimum width in pixels for the second half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
+   * @default 100
    */
   sizeThresholdSecond?: number;
   /**
