@@ -16,6 +16,13 @@
         "^build"
       ],
       "cache": false
+    },
+    "types:check": {
+      "dependsOn": [
+        // Run `build` in workspaces I depend on first
+        "^build"
+      ],
+      "outputs": ["dist/**"]
     }
   }
 }

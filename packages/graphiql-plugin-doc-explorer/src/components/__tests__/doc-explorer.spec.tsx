@@ -30,6 +30,8 @@ const defaultSchemaContext: SchemaContextType = {
   isFetching: false,
   schema: makeSchema(),
   validationErrors: [],
+  schemaReference: null!,
+  setSchemaReference: null!,
 };
 
 const withErrorSchemaContext: SchemaContextType = {
@@ -38,6 +40,8 @@ const withErrorSchemaContext: SchemaContextType = {
   isFetching: false,
   schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
   validationErrors: [],
+  schemaReference: null!,
+  setSchemaReference: null!,
 };
 
 const DocExplorerWithContext: FC = () => {

@@ -24,6 +24,8 @@ const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
         isFetching: false,
         schema: ExampleSchema,
         validationErrors: [],
+        schemaReference: null!,
+        setSchemaReference: null!,
       }}
     >
       <ExplorerContext.Provider
