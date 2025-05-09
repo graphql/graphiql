@@ -3,9 +3,10 @@ import react from '@vitejs/plugin-react';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json' assert { type: 'json' };
 import dts from 'vite-plugin-dts';
+import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 
 export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
-  target: '18',
+  ...$reactCompilerConfig,
   sources(filename) {
     if (filename.includes('__tests__')) {
       return false;
