@@ -128,7 +128,7 @@ describe('DocExplorer', () => {
           push({ name: 'Query', def: Query });
           push({ name: 'field', def: field });
         }
-      }, []);
+      }, [explorerNavStack.length, push]);
       return null;
     };
 
@@ -195,7 +195,7 @@ describe('DocExplorer', () => {
           push({ name: 'Query', def: Query });
           push({ name: 'field', def: field });
         }
-      }, []);
+      }, [explorerNavStack.length, push]);
       return null;
     };
 
