@@ -10,7 +10,7 @@ import {
 import { createStore, StoreApi, useStore } from 'zustand';
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import {
-  useStorageContext,
+  useStorage,
   useExecutionContext,
   useEditorContext,
 } from '@graphiql/react';
@@ -141,7 +141,7 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const storage = useStorageContext();
+  const storage = useStorage();
   const { isFetching } = useExecutionContext({ nonNull: true });
   const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
   const activeTab = tabs[activeTabIndex];

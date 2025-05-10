@@ -8,7 +8,7 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import { create, StoreApi, useStore } from 'zustand/index';
+import { create, StoreApi, useStore } from 'zustand';
 
 export type StorageContextType = {
   storage: StorageAPI | null;
