@@ -338,6 +338,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
        * override this change.
        */
       requestCounter: requestCounter + 1,
+      currentHeaders: headerEditor?.getValue(),
     }));
 
     // Trigger introspection
@@ -352,12 +353,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     introspectionQueryName,
     schemaDescription,
   ]);
-
-  useEffect(() => {
-    if (headerEditor) {
-      schemaStore.setState({ currentHeaders: headerEditor.getValue() });
-    }
-  });
 
   /**
    * Trigger introspection manually via a short key
@@ -378,7 +373,11 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   return children;
 };
 
-export const useSchemaStore = () => useStore(schemaStore);
+export function useSchemaStore<T>(
+  selector?: (state: SchemaContextType) => T,
+): T {
+  return useStore(schemaStore, selector!);
+}
 
 type IntrospectionArgs = {
   /**
