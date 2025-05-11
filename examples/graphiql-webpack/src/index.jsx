@@ -9,7 +9,7 @@ import 'graphiql/style.css';
 import '@graphiql/plugin-explorer/style.css';
 import '@graphiql/plugin-code-exporter/style.css';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
-import { useStorageContext } from '@graphiql/react';
+import { useStorage } from '@graphiql/react';
 
 export const STARTING_URL =
   'https://swapi-graphql.netlify.app/.netlify/functions/index';
@@ -60,9 +60,9 @@ const style = { height: '100vh' };
 const explorer = explorerPlugin();
 
 const App = () => {
-  const storage = useStorageContext();
+  const storage = useStorage({ nonNull: true });
 
-  const lastUrl = storage?.get(LAST_URL_KEY);
+  const lastUrl = storage.get(LAST_URL_KEY);
   const [currentUrl, setUrl] = React.useState(lastUrl ?? STARTING_URL);
   // TODO: a breaking change where we make URL an internal state concern, and then expose hooks
   // so that you can handle/set URL state internally from a plugin
