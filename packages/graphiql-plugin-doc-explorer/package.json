@@ -43,7 +43,8 @@
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/react": "^0.32.2",
-    "@headlessui/react": "^2.2"
+    "@headlessui/react": "^2.2",
+    "zustand": "^5"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.4.1",

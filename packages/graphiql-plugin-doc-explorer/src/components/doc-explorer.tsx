@@ -1,7 +1,7 @@
 import { isType } from 'graphql';
 import { FC, ReactNode } from 'react';
 import { ChevronLeftIcon, Spinner, useSchemaContext } from '@graphiql/react';
-import { useExplorerContext } from '../context';
+import { useDocExplorer, useDocExplorerActions } from '../context';
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';
 import { Search } from './search';
@@ -12,11 +12,8 @@ export const DocExplorer: FC = () => {
   const { fetchError, isFetching, schema, validationErrors } = useSchemaContext(
     { nonNull: true, caller: DocExplorer },
   );
-  const { explorerNavStack, pop } = useExplorerContext({
-    nonNull: true,
-    caller: DocExplorer,
-  });
-
+  const explorerNavStack = useDocExplorer();
+  const { pop } = useDocExplorerActions();
   const navItem = explorerNavStack.at(-1)!;
 
   let content: ReactNode = null;
