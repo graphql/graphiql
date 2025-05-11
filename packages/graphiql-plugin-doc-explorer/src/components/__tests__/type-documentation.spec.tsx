@@ -1,42 +1,36 @@
 import { FC } from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { GraphQLNamedType } from 'graphql';
 import {
-  GraphQLBoolean,
-  GraphQLEnumType,
-  GraphQLInterfaceType,
-  GraphQLNamedType,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-  GraphQLUnionType,
-} from 'graphql';
-import { SchemaContext } from '@graphiql/react';
+  ExampleSchema,
+  ExampleEnum,
+  ExampleUnion,
+  ExampleQuery,
+} from './fixtures';
 import { DocExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { useMockDocExplorerContextValue, unwrapType } from './test-utils';
 
+vi.mock('@graphiql/react', async () => {
+  const actual = await vi.importActual('@graphiql/react');
+  return {
+    ...actual,
+    useSchemaStore: () => ({
+      schema: ExampleSchema,
+    }),
+  };
+});
+
 const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
   return (
-    <SchemaContext.Provider
-      value={{
-        fetchError: null,
-        introspect() {},
-        isFetching: false,
-        schema: ExampleSchema,
-        validationErrors: [],
-        schemaReference: null!,
-        setSchemaReference: null!,
-      }}
+    <DocExplorerContext.Provider
+      value={useMockDocExplorerContextValue({
+        name: unwrapType(props.type).name,
+        def: props.type,
+      })}
     >
-      <DocExplorerContext.Provider
-        value={useMockDocExplorerContextValue({
-          name: unwrapType(props.type).name,
-          def: props.type,
-        })}
-      >
-        <TypeDocumentation type={props.type} />
-      </DocExplorerContext.Provider>
-    </SchemaContext.Provider>
+      <TypeDocumentation type={props.type} />
+    </DocExplorerContext.Provider>
   );
 };
 
@@ -140,67 +134,4 @@ describe('TypeDocumentation', () => {
       container.querySelector('.graphiql-markdown-deprecation'),
     ).toHaveTextContent('Only two are needed');
   });
-});
-
-const ExampleInterface = new GraphQLInterfaceType({
-  name: 'exampleInterface',
-  fields: {
-    name: { type: GraphQLString },
-  },
-});
-
-const ExampleEnum = new GraphQLEnumType({
-  name: 'exampleEnum',
-  values: {
-    value1: { value: 'Value 1' },
-    value2: { value: 'Value 2' },
-    value3: { value: 'Value 3', deprecationReason: 'Only two are needed' },
-  },
-});
-
-const ExampleUnionType1 = new GraphQLObjectType({
-  name: 'Union_Type_1',
-  interfaces: [ExampleInterface],
-  fields: {
-    name: { type: GraphQLString },
-    enum: { type: ExampleEnum },
-  },
-});
-
-const ExampleUnionType2 = new GraphQLObjectType({
-  name: 'Union_Type_2',
-  interfaces: [ExampleInterface],
-  fields: {
-    name: { type: GraphQLString },
-    string: { type: GraphQLString },
-  },
-});
-
-const ExampleUnion = new GraphQLUnionType({
-  name: 'exampleUnion',
-  types: [ExampleUnionType1, ExampleUnionType2],
-});
-
-const ExampleQuery = new GraphQLObjectType({
-  name: 'Query',
-  description: 'Query description\n Second line',
-  fields: {
-    string: { type: GraphQLString },
-    union: { type: ExampleUnion },
-    fieldWithArgs: {
-      type: GraphQLString,
-      args: {
-        stringArg: { type: GraphQLString },
-      },
-    },
-    deprecatedField: {
-      type: GraphQLBoolean,
-      deprecationReason: 'example deprecation reason',
-    },
-  },
-});
-
-const ExampleSchema = new GraphQLSchema({
-  query: ExampleQuery,
-  description: 'GraphQL Schema for testing',
 });

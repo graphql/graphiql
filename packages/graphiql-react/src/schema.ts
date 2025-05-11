@@ -352,6 +352,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     inputValueDeprecation,
     introspectionQueryName,
     schemaDescription,
+    headerEditor,
   ]);
 
   /**

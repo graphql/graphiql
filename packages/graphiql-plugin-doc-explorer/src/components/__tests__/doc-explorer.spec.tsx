@@ -1,13 +1,14 @@
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { FC, useEffect } from 'react';
-import { SchemaContext, SchemaContextType } from '@graphiql/react';
+import type { SchemaContextType } from '@graphiql/react';
 import {
   DocExplorerContextProvider,
   useDocExplorer,
   useDocExplorerActions,
 } from '../../context';
 import { DocExplorer } from '../doc-explorer';
+import { schemaStore } from '../../../../graphiql-react/dist/schema';
 
 function makeSchema(fieldName = 'field') {
   return new GraphQLSchema({
@@ -34,8 +35,6 @@ const defaultSchemaContext: SchemaContextType = {
   isFetching: false,
   schema: makeSchema(),
   validationErrors: [],
-  schemaReference: null!,
-  setSchemaReference: null!,
 };
 
 const withErrorSchemaContext: SchemaContextType = {
@@ -58,36 +57,21 @@ const DocExplorerWithContext: FC = () => {
 
 describe('DocExplorer', () => {
   it('renders spinner when the schema is loading', () => {
-    const { container } = render(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          isFetching: true,
-          schema: undefined,
-        }}
-      >
-        <DocExplorerWithContext />
-      </SchemaContext.Provider>,
-    );
+    schemaStore.setState({ isFetching: true });
+    const { container } = render(<DocExplorerWithContext />);
     const spinner = container.querySelectorAll('.graphiql-spinner');
     expect(spinner).toHaveLength(1);
   });
   it('renders with null schema', () => {
-    const { container } = render(
-      <SchemaContext.Provider value={{ ...defaultSchemaContext, schema: null }}>
-        <DocExplorerWithContext />
-      </SchemaContext.Provider>,
-    );
+    schemaStore.setState({ ...defaultSchemaContext, schema: null });
+    const { container } = render(<DocExplorerWithContext />);
     const error = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(error).toHaveLength(1);
     expect(error[0]).toHaveTextContent('No GraphQL schema available');
   });
   it('renders with schema', () => {
-    const { container } = render(
-      <SchemaContext.Provider value={defaultSchemaContext}>
-        <DocExplorerWithContext />,
-      </SchemaContext.Provider>,
-    );
+    schemaStore.setState(defaultSchemaContext);
+    const { container } = render(<DocExplorerWithContext />);
     const error = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(error).toHaveLength(0);
     expect(
@@ -95,22 +79,15 @@ describe('DocExplorer', () => {
     ).toHaveTextContent('GraphQL Schema for testing');
   });
   it('renders correctly with schema error', () => {
-    const { rerender, container } = render(
-      <SchemaContext.Provider value={withErrorSchemaContext}>
-        <DocExplorerWithContext />,
-      </SchemaContext.Provider>,
-    );
-
+    schemaStore.setState(withErrorSchemaContext);
+    const { rerender, container } = render(<DocExplorerWithContext />);
     const error = container.querySelector('.graphiql-doc-explorer-error');
-
     expect(error).toHaveTextContent('Error fetching schema');
 
-    rerender(
-      <SchemaContext.Provider value={defaultSchemaContext}>
-        <DocExplorerWithContext />,
-      </SchemaContext.Provider>,
-    );
-
+    act(() => {
+      schemaStore.setState(defaultSchemaContext);
+    });
+    rerender(<DocExplorerWithContext />);
     const errors = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(errors).toHaveLength(0);
   });
@@ -133,48 +110,43 @@ describe('DocExplorer', () => {
     };
 
     // Initial render, set initial state
+    schemaStore.setState({
+      ...defaultSchemaContext,
+      schema: initialSchema,
+    });
     const { container, rerender } = render(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: initialSchema,
-        }}
-      >
-        <DocExplorerContextProvider>
-          <SetInitialStack />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <SetInitialStack />
+      </DocExplorerContextProvider>,
     );
 
     // First proper render of doc explorer
+    act(() => {
+      schemaStore.setState({
+        ...defaultSchemaContext,
+        schema: initialSchema,
+      });
+    });
     rerender(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: initialSchema,
-        }}
-      >
-        <DocExplorerContextProvider>
-          <DocExplorer />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <DocExplorer />
+      </DocExplorerContextProvider>,
     );
 
     const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
     expect(title.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with _same_ field name
+    act(() => {
+      schemaStore.setState({
+        ...defaultSchemaContext,
+        schema: makeSchema(), // <<< New, but equivalent, schema
+      });
+    });
     rerender(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: makeSchema(), // <<< New, but equivalent, schema
-        }}
-      >
-        <DocExplorerContextProvider>
-          <DocExplorer />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <DocExplorer />
+      </DocExplorerContextProvider>,
     );
     const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
     // Because `Query.field` still exists in the new schema, we can still render it
@@ -200,48 +172,43 @@ describe('DocExplorer', () => {
     };
 
     // Initial render, set initial state
+    schemaStore.setState({
+      ...defaultSchemaContext,
+      schema: initialSchema,
+    });
     const { container, rerender } = render(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: initialSchema,
-        }}
-      >
-        <DocExplorerContextProvider>
-          <SetInitialStack />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <SetInitialStack />
+      </DocExplorerContextProvider>,
     );
 
     // First proper render of doc explorer
+    act(() => {
+      schemaStore.setState({
+        ...defaultSchemaContext,
+        schema: initialSchema,
+      });
+    });
     rerender(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: initialSchema,
-        }}
-      >
-        <DocExplorerContextProvider>
-          <DocExplorer />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <DocExplorer />
+      </DocExplorerContextProvider>,
     );
 
     const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
     expect(title.textContent).toEqual('field');
 
-    // Second render of doc explorer, this time with a new schema, with different field name
+    // Second render of doc explorer, this time with a new schema, with a different field name
+    act(() => {
+      schemaStore.setState({
+        ...defaultSchemaContext,
+        schema: makeSchema('field2'), // <<< New schema with a new field name
+      });
+    });
     rerender(
-      <SchemaContext.Provider
-        value={{
-          ...defaultSchemaContext,
-          schema: makeSchema('field2'), // <<< New schema with a new field name
-        }}
-      >
-        <DocExplorerContextProvider>
-          <DocExplorer />
-        </DocExplorerContextProvider>
-      </SchemaContext.Provider>,
+      <DocExplorerContextProvider>
+        <DocExplorer />
+      </DocExplorerContextProvider>,
     );
     const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
     // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`
