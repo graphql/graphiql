@@ -23,7 +23,7 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import { SchemaContextType, useSchemaContext } from '@graphiql/react';
+import { SchemaContextType, useSchemaStore } from '@graphiql/react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
 export type DocExplorerFieldDef =
@@ -246,11 +246,7 @@ export const DocExplorerContext = createContext<RefObject<
 export const DocExplorerContextProvider: FC<{
   children: ReactNode;
 }> = props => {
-  const { schema, validationErrors, schemaReference } = useSchemaContext({
-    nonNull: true,
-    caller: DocExplorerContextProvider,
-  });
-
+  const { schema, validationErrors, schemaReference } = useSchemaStore();
   const storeRef = useRef<StoreApi<DocExplorerContextType>>(null!);
 
   if (storeRef.current === null) {

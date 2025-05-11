@@ -19,7 +19,10 @@ import { SchemaContextType } from '../schema';
 export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
-  { schema, setSchemaReference }: SchemaContextType,
+  {
+    schema,
+    setSchemaReference,
+  }: Pick<SchemaContextType, 'schema' | 'setSchemaReference'>,
   plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ): void {

@@ -27,7 +27,7 @@ export type UseVariableEditorArgs = WriteableEditorProps & {
    */
   onClickReference?(reference: SchemaReference): void;
   /**
-   * Invoked when the contents of the variables editor change.
+   * Invoked when the contents of the variables' editor change.
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
@@ -145,7 +145,7 @@ export function useVariableEditor(
     _useVariableEditor,
   );
 
-  useCompletion(variableEditor, onClickReference || null, _useVariableEditor);
+  useCompletion(variableEditor, onClickReference);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);

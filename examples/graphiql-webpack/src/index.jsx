@@ -54,7 +54,7 @@ if ('serviceWorker' in navigator) {
 const style = { height: '100vh' };
 /**
  * instantiate outside of the component lifecycle
- * unless you need to pass it dynamic values from your react app,
+ * unless you need to pass it dynamic values from your React app,
  * then use the `useMemo` hook
  */
 const explorer = explorerPlugin();

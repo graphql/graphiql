@@ -11,7 +11,7 @@ import { parse, print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
+import { useSchemaStore } from '../schema';
 import { useStorage } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
@@ -94,10 +94,9 @@ export function useChangeHandler(
 
 export function useCompletion(
   editor: CodeMirrorEditor | null,
-  callback: ((reference: SchemaReference) => void) | null,
-  caller: Function,
+  callback?: (reference: SchemaReference) => void,
 ) {
-  const schemaContext = useSchemaContext({ nonNull: true, caller });
+  const { schema, setSchemaReference } = useSchemaStore();
   const plugin = usePluginContext();
   useEffect(() => {
     if (!editor) {
@@ -108,11 +107,12 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
+      const schemaContext = { schema, setSchemaReference };
       onHasCompletion(instance, changeObj, schemaContext, plugin, type => {
         callback?.({
           kind: 'Type',
           type,
-          schema: schemaContext.schema || undefined,
+          schema: schema || undefined,
         });
       });
     };
@@ -127,7 +127,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, plugin, schemaContext]);
+  }, [callback, editor, plugin, schema, setSchemaReference]);
 }
 
 type EmptyCallback = () => void;
@@ -203,10 +203,7 @@ export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
     nonNull: true,
     caller: caller || _useMergeQuery,
   });
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: _useMergeQuery,
-  });
+  const { schema } = useSchemaStore();
   return () => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
@@ -312,10 +309,7 @@ export function useAutoCompleteLeafs({
   getDefaultFieldNames,
   caller,
 }: UseAutoCompleteLeafsArgs = {}) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || _useAutoCompleteLeafs,
-  });
+  const { schema } = useSchemaStore();
   const { queryEditor } = useEditorContext({
     nonNull: true,
     caller: caller || _useAutoCompleteLeafs,

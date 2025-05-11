@@ -2,7 +2,7 @@ import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useSchemaContext } from '../schema';
+import { useSchemaStore } from '../schema';
 
 import {
   commonKeys,
@@ -63,10 +63,7 @@ export function useResponseEditor(
   }: UseResponseEditorArgs = {},
   caller?: Function,
 ) {
-  const { fetchError, validationErrors } = useSchemaContext({
-    nonNull: true,
-    caller: caller || _useResponseEditor,
-  });
+  const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorContext({
       nonNull: true,
