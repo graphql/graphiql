@@ -138,10 +138,8 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   return children;
 };
 
-export function usePluginStore<T>(
-  selector?: (state: PluginContextType) => T,
-): T {
-  return useStore(pluginStore, selector!);
+export function usePluginStore() {
+  return useStore(pluginStore);
 }
 
 // const STORAGE_KEY = 'visiblePlugin';
