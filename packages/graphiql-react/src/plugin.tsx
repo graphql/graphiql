@@ -1,6 +1,5 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { ComponentType, FC, ReactNode, useEffect } from 'react';
-import { useStorage } from './storage';
 import { createStore, useStore } from 'zustand';
 
 export type GraphiQLPlugin = {
@@ -96,8 +95,6 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   plugins = [],
   referencePlugin,
 }) => {
-  const storage = useStorage();
-
   useEffect(() => {
     const seenTitles = new Set<string>();
     const msg = 'All GraphiQL plugins must have a unique title';
@@ -111,7 +108,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       seenTitles.add(title);
     }
     // TODO: visiblePlugin initial data
-    // const storedValue = storage?.get(STORAGE_KEY);
+    // const storedValue = storage.get(STORAGE_KEY);
     // const pluginForStoredValue = plugins.find(
     //   plugin => plugin.title === storedValue,
     // );
@@ -119,7 +116,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     //   return pluginForStoredValue;
     // }
     // if (storedValue) {
-    //   storage?.set(STORAGE_KEY, '');
+    //   storage.set(STORAGE_KEY, '');
     // }
 
     pluginStore.setState({
@@ -128,13 +125,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       referencePlugin,
     });
     pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
-  }, [
-    plugins,
-    onTogglePluginVisibility,
-    referencePlugin,
-    storage,
-    visiblePlugin,
-  ]);
+  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
   return children;
 };
