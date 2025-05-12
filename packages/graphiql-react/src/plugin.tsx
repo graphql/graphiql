@@ -1,3 +1,4 @@
+// eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { ComponentType, FC, ReactNode, useEffect } from 'react';
 import { useStorage } from './storage';
 import { createStore, useStore } from 'zustand';
