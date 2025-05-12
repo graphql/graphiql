@@ -41,16 +41,19 @@ export type PluginContextType = {
    * The plugin which is used to display the reference documentation when selecting a type.
    */
   referencePlugin?: GraphiQLPlugin;
-};
-
-type PluginContextProviderProps = Pick<PluginContextType, 'referencePlugin'> & {
-  children: ReactNode;
   /**
    * Invoked when the visibility state of any plugin changes.
    * @param visiblePlugin The plugin object that is now visible. If no plugin
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
+};
+
+type PluginContextProviderProps = Pick<
+  PluginContextType,
+  'referencePlugin' | 'onTogglePluginVisibility'
+> & {
+  children: ReactNode;
   /**
    * This props accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).
@@ -70,21 +73,21 @@ export const pluginStore = createStore<PluginContextType>((set, get) => ({
   visiblePlugin: null,
   referencePlugin: undefined,
   setVisiblePlugin(plugin) {
-    const newVisiblePlugin = plugin
-      ? plugins.find(
-          p => (typeof plugin === 'string' ? p.title : p) === plugin,
-        ) || null
-      : null;
+    const { plugins, onTogglePluginVisibility } = get();
+    const byTitle = typeof plugin === 'string';
+    const newVisiblePlugin: PluginContextType['visiblePlugin'] =
+      (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) || null;
     set(({ visiblePlugin }) => {
       if (newVisiblePlugin === visiblePlugin) {
         return { visiblePlugin };
       }
-      get().onTogglePluginVisibility?.(newVisiblePlugin);
+      onTogglePluginVisibility?.(newVisiblePlugin);
       return { visiblePlugin: newVisiblePlugin };
     });
   },
 }));
 
+// @ts-expect-error -- ignore `children` type warning
 export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   onTogglePluginVisibility,
   children,
@@ -110,17 +113,17 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
         pluginTitles[plugin.title] = true;
       }
     }
-
-    const storedValue = storage?.get(STORAGE_KEY);
-    const pluginForStoredValue = plugins.find(
-      plugin => plugin.title === storedValue,
-    );
-    if (pluginForStoredValue) {
-      return pluginForStoredValue;
-    }
-    if (storedValue) {
-      storage?.set(STORAGE_KEY, '');
-    }
+    // TODO: visiblePlugin initial data
+    // const storedValue = storage?.get(STORAGE_KEY);
+    // const pluginForStoredValue = plugins.find(
+    //   plugin => plugin.title === storedValue,
+    // );
+    // if (pluginForStoredValue) {
+    //   return pluginForStoredValue;
+    // }
+    // if (storedValue) {
+    //   storage?.set(STORAGE_KEY, '');
+    // }
 
     pluginStore.setState({
       plugins,
@@ -145,4 +148,4 @@ export function usePluginStore<T>(
   return useStore(pluginStore, selector!);
 }
 
-const STORAGE_KEY = 'visiblePlugin';
+// const STORAGE_KEY = 'visiblePlugin';
