@@ -2,6 +2,9 @@
 
 import '@testing-library/jest-dom';
 
+vi.mock('codemirror');
+vi.mock('zustand'); // to make it works like Jest (auto-mocking)
+
 // @ts-expect-error
 document.createRange = function () {
   return {
