@@ -130,7 +130,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       onTogglePluginVisibility,
       referencePlugin,
     });
-    pluginStore.getState().setVisiblePlugin(visiblePlugin);
+    pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
   }, [
     $plugins,
     onTogglePluginVisibility,
