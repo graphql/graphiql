@@ -28,11 +28,7 @@ export {
   ExecutionContextProvider,
   useExecutionContext,
 } from './execution';
-export {
-  PluginContext,
-  PluginContextProvider,
-  usePluginContext,
-} from './plugin';
+export { PluginContextProvider, usePluginStore } from './plugin';
 export { GraphiQLProvider } from './provider';
 export { SchemaContextProvider, useSchemaStore } from './schema';
 export { StorageContextProvider, useStorage } from './storage';

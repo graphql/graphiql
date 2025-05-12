@@ -14,7 +14,7 @@ import {
 import { RefObject, useEffect, useRef } from 'react';
 import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
-import { usePluginContext } from '../plugin';
+import { usePluginStore } from '../plugin';
 import { useSchemaStore } from '../schema';
 import { useStorage } from '../storage';
 import { debounce } from '../utility/debounce';
@@ -145,7 +145,7 @@ export function useQueryEditor(
   });
   const executionContext = useExecutionContext();
   const storage = useStorage();
-  const plugin = usePluginContext();
+  const plugin = usePluginStore();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
   const prettify = usePrettifyEditors({

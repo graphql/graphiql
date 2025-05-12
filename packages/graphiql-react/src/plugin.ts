@@ -1,6 +1,6 @@
-import { ComponentType, FC, ReactNode, useEffect, useState } from 'react';
+import { ComponentType, FC, ReactNode, useEffect } from 'react';
 import { useStorage } from './storage';
-import { createContextHook, createNullableContext } from './utility';
+import { createStore, useStore } from 'zustand';
 
 export type GraphiQLPlugin = {
   /**
@@ -43,9 +43,6 @@ export type PluginContextType = {
   referencePlugin?: GraphiQLPlugin;
 };
 
-export const PluginContext =
-  createNullableContext<PluginContextType>('PluginContext');
-
 type PluginContextProviderProps = Pick<PluginContextType, 'referencePlugin'> & {
   children: ReactNode;
   /**
@@ -68,6 +65,26 @@ type PluginContextProviderProps = Pick<PluginContextType, 'referencePlugin'> & {
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
+export const pluginStore = createStore<PluginContextType>((set, get) => ({
+  plugins: [],
+  visiblePlugin: null,
+  referencePlugin: undefined,
+  setVisiblePlugin(plugin) {
+    const newVisiblePlugin = plugin
+      ? plugins.find(
+          p => (typeof plugin === 'string' ? p.title : p) === plugin,
+        ) || null
+      : null;
+    set(({ visiblePlugin }) => {
+      if (newVisiblePlugin === visiblePlugin) {
+        return { visiblePlugin };
+      }
+      get().onTogglePluginVisibility?.(newVisiblePlugin);
+      return { visiblePlugin: newVisiblePlugin };
+    });
+  },
+}));
+
 export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   onTogglePluginVisibility,
   children,
@@ -76,8 +93,9 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   referencePlugin,
 }) => {
   const storage = useStorage();
-  const plugins = (() => {
-    const pluginList: GraphiQLPlugin[] = [];
+
+  useEffect(() => {
+    const plugins: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
     for (const plugin of $plugins || []) {
       if (typeof plugin.title !== 'string' || !plugin.title) {
@@ -88,73 +106,43 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
           `All GraphiQL plugins must have a unique title, found two plugins with the title '${plugin.title}'`,
         );
       } else {
-        pluginList.push(plugin);
+        plugins.push(plugin);
         pluginTitles[plugin.title] = true;
       }
     }
 
-    return pluginList;
-  })();
-
-  const [$visiblePlugin, internalSetVisiblePlugin] =
-    useState<GraphiQLPlugin | null>(() => {
-      const storedValue = storage?.get(STORAGE_KEY);
-      const pluginForStoredValue = plugins.find(
-        plugin => plugin.title === storedValue,
-      );
-      if (pluginForStoredValue) {
-        return pluginForStoredValue;
-      }
-      if (storedValue) {
-        storage?.set(STORAGE_KEY, '');
-      }
-
-      if (!visiblePlugin) {
-        return null;
-      }
-
-      return (
-        plugins.find(
-          plugin =>
-            (typeof visiblePlugin === 'string' ? plugin.title : plugin) ===
-            visiblePlugin,
-        ) || null
-      );
-    });
-
-  const setVisiblePlugin: PluginContextType['setVisiblePlugin'] = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
-    plugin => {
-      const newVisiblePlugin = plugin
-        ? plugins.find(
-            p => (typeof plugin === 'string' ? p.title : p) === plugin,
-          ) || null
-        : null;
-      internalSetVisiblePlugin(current => {
-        if (newVisiblePlugin === current) {
-          return current;
-        }
-        onTogglePluginVisibility?.(newVisiblePlugin);
-        return newVisiblePlugin;
-      });
-    };
-
-  useEffect(() => {
-    if (visiblePlugin) {
-      setVisiblePlugin(visiblePlugin);
+    const storedValue = storage?.get(STORAGE_KEY);
+    const pluginForStoredValue = plugins.find(
+      plugin => plugin.title === storedValue,
+    );
+    if (pluginForStoredValue) {
+      return pluginForStoredValue;
     }
-  }, [plugins, visiblePlugin, setVisiblePlugin]);
+    if (storedValue) {
+      storage?.set(STORAGE_KEY, '');
+    }
 
-  const value: PluginContextType = {
-    plugins,
-    setVisiblePlugin,
-    visiblePlugin: $visiblePlugin,
+    pluginStore.setState({
+      plugins,
+      onTogglePluginVisibility,
+      referencePlugin,
+    });
+    pluginStore.getState().setVisiblePlugin(visiblePlugin);
+  }, [
+    $plugins,
+    onTogglePluginVisibility,
     referencePlugin,
-  };
-  return (
-    <PluginContext.Provider value={value}>{children}</PluginContext.Provider>
-  );
+    storage,
+    visiblePlugin,
+  ]);
+
+  return children;
 };
 
-export const usePluginContext = createContextHook(PluginContext);
+export function usePluginStore<T>(
+  selector?: (state: PluginContextType) => T,
+): T {
+  return useStore(pluginStore, selector!);
+}
 
 const STORAGE_KEY = 'visiblePlugin';
