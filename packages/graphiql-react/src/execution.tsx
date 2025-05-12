@@ -145,7 +145,7 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
     }
 
     const headersString = headerEditor?.getValue();
-    let headers: Record<string, unknown> | undefined;
+    let headers: Record<string, string> | undefined;
     try {
       headers = tryParseJsonObject({
         json: headersString,
