@@ -55,7 +55,7 @@ type PluginContextProviderProps = Pick<
 > & {
   children: ReactNode;
   /**
-   * This props accepts a list of plugins that will be shown in addition to the
+   * This prop accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).
    */
   plugins?: GraphiQLPlugin[];
@@ -92,26 +92,22 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   onTogglePluginVisibility,
   children,
   visiblePlugin,
-  plugins: $plugins,
+  plugins = [],
   referencePlugin,
 }) => {
   const storage = useStorage();
 
   useEffect(() => {
-    const plugins: GraphiQLPlugin[] = [];
-    const pluginTitles: Record<string, true> = {};
-    for (const plugin of $plugins || []) {
-      if (typeof plugin.title !== 'string' || !plugin.title) {
-        throw new Error('All GraphiQL plugins must have a unique title');
+    const seenTitles = new Set<string>();
+    const msg = 'All GraphiQL plugins must have a unique title';
+    for (const { title } of plugins) {
+      if (typeof title !== 'string' || !title) {
+        throw new Error(msg);
       }
-      if (pluginTitles[plugin.title]) {
-        throw new Error(
-          `All GraphiQL plugins must have a unique title, found two plugins with the title '${plugin.title}'`,
-        );
-      } else {
-        plugins.push(plugin);
-        pluginTitles[plugin.title] = true;
+      if (seenTitles.has(title)) {
+        throw new Error(`${msg}, found two plugins with the title '${title}'`);
       }
+      seenTitles.add(title);
     }
     // TODO: visiblePlugin initial data
     // const storedValue = storage?.get(STORAGE_KEY);
@@ -132,7 +128,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     });
     pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
   }, [
-    $plugins,
+    plugins,
     onTogglePluginVisibility,
     referencePlugin,
     storage,
