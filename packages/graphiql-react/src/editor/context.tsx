@@ -343,6 +343,11 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   },
   updateActiveTabValues(partialTab) {
     set(current => {
+      if (!current.tabs) {
+        // Vitest fails with TypeError: Cannot read properties of null (reading 'map')
+        // in `setPropertiesInActiveTab` when `tabs` is `null`
+        return current;
+      }
       const { onTabChange } = get();
       // eslint-disable-next-line no-console
       console.log(1, 'updateActiveTabValues', current.tabs);
