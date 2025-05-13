@@ -407,72 +407,32 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   onTabChange,
   defaultQuery,
   children,
+  shouldPersistHeaders = false,
   validationRules = [],
   ...props
 }) => {
   const storage = useStorage();
   const isMounted = useEditorStore(store => Boolean(store.tabs));
 
-  const [shouldPersistHeaders] = useState(() => {
-    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
-    return props.shouldPersistHeaders !== false && isStored
-      ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-      : Boolean(props.shouldPersistHeaders);
-  });
-  // const { headerEditor, queryEditor, responseEditor, variableEditor } =
-  //   useEditorStore(o => ({
-  //     headerEditor: o.headerEditor,
-  //     queryEditor: o.queryEditor,
-  //     responseEditor: o.responseEditor,
-  //     variableEditor: o.variableEditor,
-  //   }));
-  // useSynchronizeValue(headerEditor, props.headers);
-  // useSynchronizeValue(queryEditor, props.query);
-  // useSynchronizeValue(responseEditor, props.response);
-  // useSynchronizeValue(variableEditor, props.variables);
+  const headerEditor = useEditorStore(store => store.headerEditor);
+  const queryEditor = useEditorStore(store => store.queryEditor);
+  const responseEditor = useEditorStore(store => store.responseEditor);
+  const variableEditor = useEditorStore(store => store.variableEditor);
 
-  // We store this in state but never update it. By passing a function we only
-  // need to compute it lazily during the initial render.
-  const [initialState] = useState(() => {
-    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
-    const variables =
-      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
-    const response = props.response ?? '';
+  useSynchronizeValue(headerEditor, props.headers);
+  useSynchronizeValue(queryEditor, props.query);
+  useSynchronizeValue(responseEditor, props.response);
+  useSynchronizeValue(variableEditor, props.variables);
 
-    const tabState = getDefaultTabState({
-      query,
-      variables,
-      headers,
-      defaultTabs: props.defaultTabs,
-      defaultQuery: defaultQuery || DEFAULT_QUERY,
-      defaultHeaders,
-      shouldPersistHeaders,
-    });
-    storeTabs(tabState);
-
-    return {
-      query:
-        query ??
-        (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
-        '',
-      variables: variables ?? '',
-      headers: headers ?? defaultHeaders ?? '',
-      response,
-      tabState,
-    };
-  });
-
-  const [tabState] = useState<TabsState>(initialState.tabState);
-
-  const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
-  useEffect(() => {
-    const propValue = Boolean(props.shouldPersistHeaders);
-    if (lastShouldPersistHeadersProp?.current !== propValue) {
-      setShouldPersistHeaders(propValue);
-      lastShouldPersistHeadersProp.current = propValue;
-    }
-  }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
+  // TODO:
+  // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
+  // useEffect(() => {
+  //   const propValue = shouldPersistHeaders;
+  //   if (lastShouldPersistHeadersProp.current !== propValue) {
+  //     editorStore.getState().setShouldPersistHeaders(propValue);
+  //     lastShouldPersistHeadersProp.current = propValue;
+  //   }
+  // }, [shouldPersistHeaders]);
 
   const $externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
@@ -520,7 +480,15 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     });
     storeTabs(tabState);
 
+    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+
+    const $shouldPersistHeaders =
+      shouldPersistHeaders !== false && isStored
+        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+        : shouldPersistHeaders;
+
     editorStore.setState({
+      shouldPersistHeaders: $shouldPersistHeaders,
       ...tabState,
       initialQuery:
         query ??
