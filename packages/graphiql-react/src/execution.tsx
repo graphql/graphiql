@@ -20,9 +20,10 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import { getAutoCompleteLeafs } from './editor';
-import { createStore, useStore } from 'zustand';
+import { createStore } from 'zustand';
 import { editorStore } from './editor/context';
 import { schemaStore } from './schema';
+import { createBoundedUseStore } from './utility';
 
 export type ExecutionContextType = {
   /**
@@ -287,9 +288,7 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
   return children as ReactElement;
 };
 
-export function useExecutionStore() {
-  return useStore(executionStore);
-}
+export const useExecutionStore = createBoundedUseStore(executionStore);
 
 function tryParseJsonObject({
   json,
