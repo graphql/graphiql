@@ -215,14 +215,13 @@ export function serializeTabState(
   );
 }
 
-export function storeTabs(currentState: TabsState) {
+export function storeTabs({ tabs, activeTabIndex }: TabsState) {
   const { storage } = storageStore.getState();
   const { shouldPersistHeaders } = editorStore.getState();
   const store = debounce(500, (value: string) => {
     storage.set(STORAGE_KEY, value);
   });
-
-  store(serializeTabState(currentState, shouldPersistHeaders));
+  store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
 }
 
 export function setEditorValues({
