@@ -1,9 +1,4 @@
-import {
-  fillLeafs,
-  GetDefaultFieldNamesFn,
-  mergeAst,
-  MaybePromise,
-} from '@graphiql/toolkit';
+import { fillLeafs, mergeAst, MaybePromise } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
