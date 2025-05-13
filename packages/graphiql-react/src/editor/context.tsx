@@ -51,6 +51,7 @@ interface EditorStore extends TabsState {
   updateActiveTabValues(
     partialTab: Partial<Omit<TabState, 'id' | 'hash' | 'title'>>,
   ): void;
+
   /**
    * The CodeMirror editor instance for the headers editor.
    */
@@ -69,27 +70,47 @@ interface EditorStore extends TabsState {
    * The CodeMirror editor instance for the variables editor.
    */
   variableEditor: CodeMirrorEditor | null;
+
   /**
    * Set the CodeMirror editor instance for the headers editor.
    */
   setHeaderEditor(newEditor: CodeMirrorEditor): void;
+
   /**
    * Set the CodeMirror editor instance for the query editor.
    */
   setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
+
   /**
    * Set the CodeMirror editor instance for the response editor.
    */
   setResponseEditor(newEditor: CodeMirrorEditor): void;
+
   /**
    * Set the CodeMirror editor instance for the variables editor.
    */
   setVariableEditor(newEditor: CodeMirrorEditor): void;
+
+  /**
+   * Changes the operation name and invokes the `onEditOperationName` callback.
+   */
+  setOperationName(operationName: string): void;
+
+  /**
+   * Invoked when the operation name changes. Possible triggers are:
+   * - Editing the contents of the query editor
+   * - Selecting an operation for execution in a document that contains multiple
+   *   operation definitions
+   * @param operationName The operation name after it has been changed.
+   */
+  onEditOperationName?(operationName: string): void;
+
   /**
    * A map of fragment definitions using the fragment name as key which are
    * made available to include in the query.
    */
   externalFragments: Map<string, FragmentDefinitionNode>;
+
   /**
    * Invoked when the state of the tabs changes. Possible triggers are:
    * - Updating any editor contents inside the currently active tab
@@ -123,11 +144,6 @@ export type EditorContextType = {
    * @param index The index of the tab that should be closed.
    */
   closeTab(index: number): void;
-
-  /**
-   * Changes the operation name and invokes the `onEditOperationName` callback.
-   */
-  setOperationName(operationName: string): void;
 
   /**
    * The contents of the headers editor when initially rendering the provider
@@ -168,7 +184,10 @@ export type EditorContextType = {
 
 const EditorContext = createNullableContext<EditorContextType>('EditorContext');
 
-type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
+type EditorContextProviderProps = Pick<
+  EditorStore,
+  'onTabChange' | 'onEditOperationName'
+> & {
   children: ReactNode;
   /**
    * The initial contents of the query editor when loading GraphiQL and there
@@ -210,14 +229,6 @@ type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
    */
   defaultTabs?: TabDefinition[];
   /**
-   * Invoked when the operation name changes. Possible triggers are:
-   * - Editing the contents of the query editor
-   * - Selecting an operation for execution in a document that contains multiple
-   *   operation definitions
-   * @param operationName The operation name after it has been changed.
-   */
-  onEditOperationName?(operationName: string): void;
-  /**
    * This prop can be used to set the contents of the query editor. Every time
    * this prop changes, the contents of the query editor are replaced. Note
    * that the editor contents can be changed in between these updates by typing
@@ -258,8 +269,8 @@ type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
 };
 
 export const editorStore = createStore<EditorStore>((set, get) => ({
-  tabs: [],
-  activeTabIndex: 0,
+  tabs: null!,
+  activeTabIndex: null!,
   updateActiveTabValues(partialTab) {
     set(current => {
       const { onTabChange } = get();
@@ -285,12 +296,23 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   setVariableEditor(variableEditor) {
     set({ variableEditor });
   },
+  setOperationName(operationName) {
+    const { queryEditor, onEditOperationName, updateActiveTabValues } = get();
+    if (!queryEditor) {
+      return;
+    }
+
+    updateQueryEditor(queryEditor, operationName);
+    updateActiveTabValues({ operationName });
+    onEditOperationName?.(operationName);
+  },
   externalFragments: null!,
   onTabChange: undefined,
 }));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   externalFragments,
+  onEditOperationName,
   ...props
 }) => {
   const storage = useStorage();
@@ -432,18 +454,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     });
   };
 
-  const { onEditOperationName } = props;
-  const setOperationName: EditorContextType['setOperationName'] =
-    operationName => {
-      if (!queryEditor) {
-        return;
-      }
-
-      updateQueryEditor(queryEditor, operationName);
-      editorStore.getState().updateActiveTabValues({ operationName });
-      onEditOperationName?.(operationName);
-    };
-
   const $externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
     if (Array.isArray(externalFragments)) {
@@ -469,8 +479,9 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       ...tabState,
       externalFragments: $externalFragments,
       onTabChange,
+      onEditOperationName,
     });
-  }, [$externalFragments, onTabChange, tabState]);
+  }, [$externalFragments, onTabChange, tabState, onEditOperationName]);
 
   const validationRules = props.validationRules || [];
 
@@ -479,7 +490,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     changeTab,
     moveTab,
     closeTab,
-    setOperationName,
 
     initialQuery: initialState.query,
     initialVariables: initialState.variables,
