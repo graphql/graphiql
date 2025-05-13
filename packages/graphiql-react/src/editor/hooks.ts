@@ -11,12 +11,13 @@ import { parse, print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePluginStore } from '../plugin';
-import { useSchemaStore } from '../schema';
+import { schemaStore, useSchemaStore } from '../schema';
 import { storageStore } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
-import { useEditorContext } from './context';
+import { editorStore, useEditorStore } from './context';
 import { CodeMirrorEditor } from './types';
+import { executionStore } from '../execution';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -44,9 +45,7 @@ export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
-  caller: Function,
 ) {
-  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
   useEffect(() => {
     if (!editor) {
       return;
@@ -60,6 +59,7 @@ export function useChangeHandler(
       storage.set(storageKey, value);
     });
 
+    const { updateActiveTabValues } = editorStore.getState();
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
@@ -81,7 +81,7 @@ export function useChangeHandler(
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
+  }, [callback, editor, storageKey, tabProperty]);
 }
 
 export function useCompletion(
@@ -160,17 +160,9 @@ export type UseCopyQueryArgs = {
   onCopyQuery?: (query: string) => void;
 };
 
-// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
-const _useCopyQuery = useCopyQuery;
-const _useMergeQuery = useMergeQuery;
-const _usePrettifyEditors = usePrettifyEditors;
-
-export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || _useCopyQuery,
-  });
+export function useCopyQuery({ onCopyQuery }: UseCopyQueryArgs = {}) {
   return () => {
+    const { queryEditor } = editorStore.getState();
     if (!queryEditor) {
       return;
     }
@@ -182,35 +174,21 @@ export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
   };
 }
 
-type UseMergeQueryArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-};
-
-export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || _useMergeQuery,
-  });
-  const { schema } = useSchemaStore();
+export function useMergeQuery() {
   return () => {
+    const { queryEditor } = editorStore.getState();
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
     if (!documentAST || !query) {
       return;
     }
 
+    const { schema } = schemaStore.getState();
     queryEditor.setValue(print(mergeAst(documentAST, schema)));
   };
 }
 
 export type UsePrettifyEditorsArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
   /**
    * Invoked when the prettify callback is invoked.
    * @param query The current value of the query editor.
@@ -228,14 +206,11 @@ function DEFAULT_PRETTIFY_QUERY(query: string): string {
 }
 
 export function usePrettifyEditors({
-  caller,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || _usePrettifyEditors,
-  });
   return async () => {
+    const { queryEditor, headerEditor, variableEditor } =
+      editorStore.getState();
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -332,7 +307,7 @@ export function getAutoCompleteLeafs() {
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const context = useEditorContext({ nonNull: true });
+  const context = useEditorStore();
 
   const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
