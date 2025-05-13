@@ -15,7 +15,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import { Dispatch, FC, ReactNode, useEffect } from 'react';
+import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore, useStore } from 'zustand';
 import { useEditorContext } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
@@ -291,7 +291,6 @@ type SchemaContextProviderProps = {
   schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
-// @ts-expect-error -- ignore `children` type warning
 export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   fetcher,
   onSchemaChange,
@@ -371,7 +370,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     };
   }, [introspect]);
 
-  return children;
+  return children as ReactElement;
 };
 
 export function useSchemaStore<T>(

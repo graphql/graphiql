@@ -1,6 +1,6 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { useStore, createStore } from 'zustand';
 
 type StorageContextType = {
@@ -22,7 +22,6 @@ export const storageStore = createStore<StorageContextType>(() => ({
   storage: null!,
 }));
 
-// @ts-expect-error -- ignore `children` type warning
 export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   storage,
   children,
@@ -33,7 +32,7 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
     storageStore.setState({ storage: new StorageAPI(storage) });
   }, [storage]);
 
-  return $storage && children;
+  return $storage && (children as ReactElement);
 };
 
 function useStorage() {

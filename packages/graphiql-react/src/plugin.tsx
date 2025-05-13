@@ -1,5 +1,5 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
-import { ComponentType, FC, ReactNode, useEffect } from 'react';
+import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore, useStore } from 'zustand';
 
 export type GraphiQLPlugin = {
@@ -87,7 +87,6 @@ export const pluginStore = createStore<PluginContextType>((set, get) => ({
   },
 }));
 
-// @ts-expect-error -- ignore `children` type warning
 export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   onTogglePluginVisibility,
   children,
@@ -127,7 +126,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
   }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
-  return children;
+  return children as ReactElement;
 };
 
 export function usePluginStore() {

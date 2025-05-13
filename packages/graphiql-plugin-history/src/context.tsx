@@ -1,5 +1,5 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore, useStore } from 'zustand';
 import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
 import {
@@ -119,7 +119,6 @@ type HistoryContextProviderProps = {
  * any additional props they added for their needs (i.e., build their own functions that may save
  * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
  */
-// @ts-expect-error -- ignore `children` type warning
 export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
@@ -149,7 +148,7 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
     });
   }, [isFetching, activeTab]);
 
-  return children;
+  return children as ReactElement;
 };
 
 function useHistoryStore<T>(selector: (state: HistoryContextType) => T): T {
