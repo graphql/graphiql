@@ -31,6 +31,9 @@ module.exports = {
     '**/CHANGELOG.md',
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
+    // symlinks
+    'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-history/__mocks__/zustand.ts',
   ],
   overrides: [
     {

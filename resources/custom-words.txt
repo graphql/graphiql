@@ -214,6 +214,7 @@ unfocus
 unnormalized
 unparsable
 unsubscribable
+uncurried
 urigo
 urql
 usememo

@@ -2,7 +2,7 @@ import {
   DocsFilledIcon,
   DocsIcon,
   GraphiQLPlugin,
-  usePluginContext,
+  usePluginStore,
 } from '@graphiql/react';
 import { DocExplorer } from './components';
 
@@ -25,8 +25,8 @@ export type {
 export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
   title: 'Documentation Explorer',
   icon: function Icon() {
-    const pluginContext = usePluginContext();
-    return pluginContext?.visiblePlugin === DOC_EXPLORER_PLUGIN ? (
+    const { visiblePlugin } = usePluginStore();
+    return visiblePlugin === DOC_EXPLORER_PLUGIN ? (
       <DocsFilledIcon />
     ) : (
       <DocsIcon />

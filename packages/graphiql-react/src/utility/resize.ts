@@ -96,7 +96,6 @@ export function useDragResize({
       (storageKey && storage?.get(storageKey)) || defaultFlexRef.current;
 
     if (firstRef.current) {
-      firstRef.current.style.display = 'flex';
       firstRef.current.style.flex =
         storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
           ? defaultFlexRef.current
@@ -104,12 +103,7 @@ export function useDragResize({
     }
 
     if (secondRef.current) {
-      secondRef.current.style.display = 'flex';
       secondRef.current.style.flex = '1';
-    }
-
-    if (dragBarRef.current) {
-      dragBarRef.current.style.display = 'flex';
     }
   }, [direction, storage, storageKey]);
 

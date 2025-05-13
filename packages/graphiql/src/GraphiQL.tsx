@@ -42,7 +42,7 @@ import {
   useExecutionContext,
   UseHeaderEditorArgs,
   useMergeQuery,
-  usePluginContext,
+  usePluginStore,
   usePrettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
@@ -242,7 +242,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const executionContext = useExecutionContext({ nonNull: true });
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage({ nonNull: true });
-  const pluginContext = usePluginContext({ nonNull: true });
+  const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
   const forcedTheme =
     props.forcedTheme && THEMES.includes(props.forcedTheme)
       ? props.forcedTheme
@@ -257,15 +257,15 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     }
   }, [forcedTheme, setTheme]);
 
-  const PluginContent = pluginContext.visiblePlugin?.content;
+  const PluginContent = visiblePlugin?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
-    initiallyHidden: pluginContext.visiblePlugin ? undefined : 'first',
+    initiallyHidden: visiblePlugin ? undefined : 'first',
     onHiddenElementChange(resizableElement) {
       if (resizableElement === 'first') {
-        pluginContext.setVisiblePlugin(null);
+        setVisiblePlugin(null);
       }
     },
     sizeThresholdSecond: 200,
@@ -386,15 +386,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
 
   const handlePluginClick: MouseEventHandler<HTMLButtonElement> = event => {
     const pluginIndex = Number(event.currentTarget.dataset.index!);
-    const plugin = pluginContext.plugins.find(
-      (_, index) => pluginIndex === index,
-    )!;
-    const isVisible = plugin === pluginContext.visiblePlugin;
+    const plugin = plugins.find((_, index) => pluginIndex === index)!;
+    const isVisible = plugin === visiblePlugin;
     if (isVisible) {
-      pluginContext.setVisiblePlugin(null);
+      setVisiblePlugin(null);
       pluginResize.setHiddenElement('first');
     } else {
-      pluginContext.setVisiblePlugin(plugin);
+      setVisiblePlugin(plugin);
       pluginResize.setHiddenElement(null);
     }
   };
@@ -464,8 +462,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     <Tooltip.Provider>
       <div className={cn('graphiql-container', props.className)}>
         <div className="graphiql-sidebar">
-          {pluginContext.plugins.map((plugin, index) => {
-            const isVisible = plugin === pluginContext.visiblePlugin;
+          {plugins.map((plugin, index) => {
+            const isVisible = plugin === visiblePlugin;
             const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
             return (
               <Tooltip key={plugin.title} label={label}>
@@ -528,7 +526,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           >
             {PluginContent ? <PluginContent /> : null}
           </div>
-          {pluginContext.visiblePlugin && (
+          {visiblePlugin && (
             <div
               className="graphiql-horizontal-drag-bar"
               ref={pluginResize.dragBarRef}
