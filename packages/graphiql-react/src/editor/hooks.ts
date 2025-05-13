@@ -164,7 +164,6 @@ export type UseCopyQueryArgs = {
 const _useCopyQuery = useCopyQuery;
 const _useMergeQuery = useMergeQuery;
 const _usePrettifyEditors = usePrettifyEditors;
-const _useAutoCompleteLeafs = useAutoCompleteLeafs;
 
 export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
   const { queryEditor } = useEditorContext({
@@ -284,73 +283,49 @@ export function usePrettifyEditors({
   };
 }
 
-export type UseAutoCompleteLeafsArgs = {
-  /**
-   * A function to determine which field leafs are automatically added when
-   * trying to execute a query with missing selection sets. It will be called
-   * with the `GraphQLType` for which fields need to be added.
-   */
-  getDefaultFieldNames?: GetDefaultFieldNamesFn;
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-};
+export function getAutoCompleteLeafs() {
+  const { queryEditor } = editorStore.getState();
+  if (!queryEditor) {
+    return;
+  }
+  const { schema } = schemaStore.getState();
+  const query = queryEditor.getValue();
+  const { getDefaultFieldNames } = executionStore.getState();
+  const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
 
-export function useAutoCompleteLeafs({
-  getDefaultFieldNames,
-  caller,
-}: UseAutoCompleteLeafsArgs = {}) {
-  const { schema } = useSchemaStore();
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || _useAutoCompleteLeafs,
-  });
-  return () => {
-    if (!queryEditor) {
-      return;
-    }
-
-    const query = queryEditor.getValue();
-    const { insertions, result } = fillLeafs(
-      schema,
-      query,
-      getDefaultFieldNames,
-    );
-    if (insertions && insertions.length > 0) {
-      queryEditor.operation(() => {
-        const cursor = queryEditor.getCursor();
-        const cursorIndex = queryEditor.indexFromPos(cursor);
-        queryEditor.setValue(result || '');
-        let added = 0;
-        const markers = insertions.map(({ index, string }) =>
-          queryEditor.markText(
-            queryEditor.posFromIndex(index + added),
-            queryEditor.posFromIndex(index + (added += string.length)),
-            {
-              className: 'auto-inserted-leaf',
-              clearOnEnter: true,
-              title: 'Automatically added leaf fields',
-            },
-          ),
-        );
-        setTimeout(() => {
-          for (const marker of markers) {
-            marker.clear();
-          }
-        }, 7000);
-        let newCursorIndex = cursorIndex;
-        for (const { index, string } of insertions) {
-          if (index < cursorIndex) {
-            newCursorIndex += string.length;
-          }
+  if (insertions && insertions.length > 0) {
+    queryEditor.operation(() => {
+      const cursor = queryEditor.getCursor();
+      const cursorIndex = queryEditor.indexFromPos(cursor);
+      queryEditor.setValue(result || '');
+      let added = 0;
+      const markers = insertions.map(({ index, string }) =>
+        queryEditor.markText(
+          queryEditor.posFromIndex(index + added),
+          queryEditor.posFromIndex(index + (added += string.length)),
+          {
+            className: 'auto-inserted-leaf',
+            clearOnEnter: true,
+            title: 'Automatically added leaf fields',
+          },
+        ),
+      );
+      setTimeout(() => {
+        for (const marker of markers) {
+          marker.clear();
         }
-        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-      });
-    }
+      }, 7000);
+      let newCursorIndex = cursorIndex;
+      for (const { index, string } of insertions) {
+        if (index < cursorIndex) {
+          newCursorIndex += string.length;
+        }
+      }
+      queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+    });
+  }
 
-    return result;
-  };
+  return result;
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect

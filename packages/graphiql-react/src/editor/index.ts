@@ -5,10 +5,10 @@ export {
   ResponseEditor,
   VariableEditor,
 } from './components';
-export { EditorContextProvider, useEditorStore } from './context';
+export { EditorContext, EditorContextProvider, useEditorContext } from './context';
 export { useHeaderEditor } from './header-editor';
 export {
-  useAutoCompleteLeafs,
+  getAutoCompleteLeafs,
   useCopyQuery,
   useMergeQuery,
   usePrettifyEditors,

@@ -7,7 +7,7 @@ export {
   ImagePreview,
   QueryEditor,
   ResponseEditor,
-  useAutoCompleteLeafs,
+  getAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
   useHeaderEditor,

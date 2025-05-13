@@ -31,6 +31,7 @@ import {
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
+import { createStore } from 'zustand';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -39,28 +40,7 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   variableToType: VariableToType | null;
 };
 
-export type EditorContextType = TabsState & {
-  /**
-   * Add a new tab.
-   */
-  addTab(): void;
-  /**
-   * Switch to a different tab.
-   * @param index The index of the tab that should be switched to.
-   */
-  changeTab(index: number): void;
-  /**
-   * Move a tab to a new spot.
-   * @param newOrder The new order for the tabs.
-   */
-  moveTab(newOrder: TabState[]): void;
-  /**
-   * Close a tab. If the currently active tab is closed, the tab before it will
-   * become active. If there is no tab before the closed one, the tab after it
-   * will become active.
-   * @param index The index of the tab that should be closed.
-   */
-  closeTab(index: number): void;
+interface EditorStore extends TabsState {
   /**
    * Update the state for the tab that is currently active. This will be
    * reflected in the `tabs` object and the state will be persisted in storage
@@ -71,7 +51,6 @@ export type EditorContextType = TabsState & {
   updateActiveTabValues(
     partialTab: Partial<Omit<TabState, 'id' | 'hash' | 'title'>>,
   ): void;
-
   /**
    * The CodeMirror editor instance for the headers editor.
    */
@@ -106,6 +85,44 @@ export type EditorContextType = TabsState & {
    * Set the CodeMirror editor instance for the variables editor.
    */
   setVariableEditor(newEditor: CodeMirrorEditor): void;
+  /**
+   * A map of fragment definitions using the fragment name as key which are
+   * made available to include in the query.
+   */
+  externalFragments: Map<string, FragmentDefinitionNode>;
+  /**
+   * Invoked when the state of the tabs changes. Possible triggers are:
+   * - Updating any editor contents inside the currently active tab
+   * - Adding a tab
+   * - Switching to a different tab
+   * - Closing a tab
+   * @param tabState The tab state after it has been updated.
+   */
+  onTabChange?(tabState: TabsState): void;
+}
+
+export type EditorContextType = {
+  /**
+   * Add a new tab.
+   */
+  addTab(): void;
+  /**
+   * Switch to a different tab.
+   * @param index The index of the tab that should be switched to.
+   */
+  changeTab(index: number): void;
+  /**
+   * Move a tab to a new spot.
+   * @param newOrder The new order for the tabs.
+   */
+  moveTab(newOrder: TabState[]): void;
+  /**
+   * Close a tab. If the currently active tab is closed, the tab before it will
+   * become active. If there is no tab before the closed one, the tab after it
+   * will become active.
+   * @param index The index of the tab that should be closed.
+   */
+  closeTab(index: number): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.
@@ -134,11 +151,6 @@ export type EditorContextType = TabsState & {
   initialVariables: string;
 
   /**
-   * A map of fragment definitions using the fragment name as key which are
-   * made available to include in the query.
-   */
-  externalFragments: Map<string, FragmentDefinitionNode>;
-  /**
    * A list of custom validation rules that are run in addition to the rules
    * provided by the GraphQL spec.
    */
@@ -157,7 +169,7 @@ export type EditorContextType = TabsState & {
 export const EditorContext =
   createNullableContext<EditorContextType>('EditorContext');
 
-type EditorContextProviderProps = {
+type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
   children: ReactNode;
   /**
    * The initial contents of the query editor when loading GraphiQL and there
@@ -207,15 +219,6 @@ type EditorContextProviderProps = {
    */
   onEditOperationName?(operationName: string): void;
   /**
-   * Invoked when the state of the tabs changes. Possible triggers are:
-   * - Updating any editor contents inside the currently active tab
-   * - Adding a tab
-   * - Switching to a different tab
-   * - Closing a tab
-   * @param tabState The tab state after it has been updated.
-   */
-  onTabChange?(tabState: TabsState): void;
-  /**
    * This prop can be used to set the contents of the query editor. Every time
    * this prop changes, the contents of the query editor are replaced. Note
    * that the editor contents can be changed in between these updates by typing
@@ -254,6 +257,38 @@ type EditorContextProviderProps = {
    */
   defaultHeaders?: string;
 };
+
+export const editorStore = createStore<EditorStore>((set, get) => ({
+  tabs: [],
+  activeTabIndex: 0,
+  updateActiveTabValues(partialTab) {
+    set(current => {
+      const { onTabChange } = get();
+      const updated = setPropertiesInActiveTab(current, partialTab);
+      storeTabs(updated);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  headerEditor: null!,
+  queryEditor: null!,
+  responseEditor: null!,
+  variableEditor: null!,
+  setHeaderEditor(headerEditor) {
+    set({ headerEditor });
+  },
+  setQueryEditor(queryEditor) {
+    set({ queryEditor });
+  },
+  setResponseEditor(responseEditor) {
+    set({ responseEditor });
+  },
+  setVariableEditor(variableEditor) {
+    set({ variableEditor });
+  },
+  externalFragments: null!,
+  onTabChange: undefined,
+}));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
   const storage = useStorage();
@@ -419,16 +454,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
       return updated;
     });
   };
-
-  const updateActiveTabValues: EditorContextType['updateActiveTabValues'] =
-    partialTab => {
-      setTabState(current => {
-        const updated = setPropertiesInActiveTab(current, partialTab);
-        storeTabs(updated);
-        onTabChange?.(updated);
-        return updated;
-      });
-    };
 
   const { onEditOperationName } = props;
   const setOperationName: EditorContextType['setOperationName'] =

@@ -15,7 +15,7 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
@@ -265,7 +265,6 @@ export const executionStore = createStore<
   },
 }));
 
-// @ts-expect-error -- ignore `children` type warning
 export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
   fetcher,
   getDefaultFieldNames,
@@ -285,7 +284,7 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
     });
   }, [getDefaultFieldNames, operationName]);
 
-  return children;
+  return children as ReactElement;
 };
 
 export function useExecutionStore() {
