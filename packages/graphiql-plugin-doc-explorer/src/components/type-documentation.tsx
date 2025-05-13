@@ -200,16 +200,16 @@ const EnumValue: FC<{ value: GraphQLEnumValue }> = ({ value }) => {
   return (
     <div className="graphiql-doc-explorer-item">
       <div className="graphiql-doc-explorer-enum-value">{value.name}</div>
-      {value.description ? (
+      {value.description && (
         <MarkdownContent type="description">
           {value.description}
         </MarkdownContent>
-      ) : null}
-      {value.deprecationReason ? (
+      )}
+      {value.deprecationReason && (
         <MarkdownContent type="deprecation">
           {value.deprecationReason}
         </MarkdownContent>
-      ) : null}
+      )}
     </div>
   );
 };

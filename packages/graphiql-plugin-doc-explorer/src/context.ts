@@ -1,4 +1,3 @@
-// eslint-disable-next-line react/jsx-filename-extension -- TODO
 import type {
   GraphQLArgument,
   GraphQLField,
@@ -73,11 +72,11 @@ export type DocExplorerContextType = {
   };
 };
 
-const INITIAL_NAV_STACK_ITEM: DocExplorerNavStackItem = { name: 'Docs' };
+const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
 
 export const docExplorerStore = createStore<DocExplorerContextType>(
   (set, get) => ({
-    explorerNavStack: [{ name: 'Docs' }],
+    explorerNavStack: INITIAL_NAV_STACK,
     actions: {
       push(item) {
         set(state => {
@@ -103,8 +102,7 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
       reset() {
         set(state => {
           const curr = state.explorerNavStack;
-          const explorerNavStack: DocExplorerNavStack =
-            curr.length === 1 ? curr : [INITIAL_NAV_STACK_ITEM];
+          const explorerNavStack = curr.length === 1 ? curr : INITIAL_NAV_STACK;
           return { explorerNavStack };
         });
       },
@@ -154,13 +152,14 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
           if (oldNavStack.length === 1) {
             return oldNavStack;
           }
-          const newNavStack: DocExplorerNavStack = [INITIAL_NAV_STACK_ITEM];
+          // Spread is needed
+          const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
           let lastEntity:
             | GraphQLNamedType
             | GraphQLField<unknown, unknown>
             | null = null;
           for (const item of oldNavStack) {
-            if (item === INITIAL_NAV_STACK_ITEM) {
+            if (item === INITIAL_NAV_STACK[0]) {
               // No need to copy the initial item
               continue;
             }

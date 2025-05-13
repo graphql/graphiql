@@ -9,7 +9,6 @@ import { DocExplorer } from './components';
 export * from './components';
 
 export {
-  DocExplorerContext,
   DocExplorerContextProvider,
   useDocExplorer,
   useDocExplorerActions,
