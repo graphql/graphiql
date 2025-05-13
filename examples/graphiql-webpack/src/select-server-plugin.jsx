@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import './select-server-plugin.css';
-import { useStorageContext, useSchemaContext } from '@graphiql/react';
+import { useStorage, useSchemaContext } from '@graphiql/react';
 
 export const LAST_URL_KEY = 'lastURL';
 
@@ -9,12 +9,12 @@ export const PREV_URLS_KEY = 'previousURLs';
 
 const SelectServer = ({ url, setUrl }) => {
   const inputRef = React.useRef(null);
-  const storage = useStorageContext();
-  const lastUrl = storage?.get(LAST_URL_KEY);
+  const storage = useStorage({ nonNull: true });
+  const lastUrl = storage.get(LAST_URL_KEY);
   const currentUrl = lastUrl ?? url;
   const [inputValue, setInputValue] = React.useState(currentUrl);
   const [previousUrls, setPreviousUrls] = React.useState(
-    JSON.parse(storage?.get(PREV_URLS_KEY)) ?? [currentUrl],
+    JSON.parse(storage.get(PREV_URLS_KEY)) ?? [currentUrl],
   );
   const [error, setError] = React.useState(null);
 

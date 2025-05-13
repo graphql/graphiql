@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useStorageContext } from '../storage';
+import { useStorage } from '../storage';
 import { debounce } from './debounce';
 
 type ResizableElement = 'first' | 'second';
@@ -53,7 +53,7 @@ export function useDragResize({
   sizeThresholdSecond = 100,
   storageKey,
 }: UseDragResizeArgs) {
-  const storage = useStorageContext();
+  const storage = useStorage();
 
   const store = debounce(500, (value: string) => {
     if (storageKey) {

@@ -18,7 +18,7 @@
   -ms-overflow-style: none; /* IE and Edge */
 
   &::-webkit-scrollbar {
-    @apply x:hidden; /* Chrome, Safari and Opera */
+    display: none; /* Chrome, Safari and Opera */
   }
 }
 

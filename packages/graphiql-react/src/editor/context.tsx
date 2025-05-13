@@ -9,7 +9,7 @@ import {
 import { VariableToType } from 'graphql-language-service';
 import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { useStorageContext } from '../storage';
+import { useStorage } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
@@ -255,7 +255,7 @@ type EditorContextProviderProps = {
 };
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
-  const storage = useStorageContext();
+  const storage = useStorage();
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );

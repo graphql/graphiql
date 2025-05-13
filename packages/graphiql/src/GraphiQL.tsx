@@ -47,7 +47,7 @@ import {
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   useSchemaContext,
-  useStorageContext,
+  useStorage,
   useTheme,
   UseVariableEditorArgs,
   VariableEditor,
@@ -230,8 +230,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const schemaContext = useSchemaContext({ nonNull: true });
-  const storageContext = useStorageContext();
-  const pluginContext = usePluginContext();
+  const storageContext = useStorage({ nonNull: true });
+  const pluginContext = usePluginContext({ nonNull: true });
   const forcedTheme =
     props.forcedTheme && THEMES.includes(props.forcedTheme)
       ? props.forcedTheme
@@ -246,15 +246,15 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     }
   }, [forcedTheme, setTheme]);
 
-  const PluginContent = pluginContext?.visiblePlugin?.content;
+  const PluginContent = pluginContext.visiblePlugin?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
-    initiallyHidden: pluginContext?.visiblePlugin ? undefined : 'first',
+    initiallyHidden: pluginContext.visiblePlugin ? undefined : 'first',
     onHiddenElementChange(resizableElement) {
       if (resizableElement === 'first') {
-        pluginContext?.setVisiblePlugin(null);
+        pluginContext.setVisiblePlugin(null);
       }
     },
     sizeThresholdSecond: 200,
@@ -352,10 +352,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
 
   const handleClearData = () => {
     try {
-      // Optional chaining inside try-catch isn't supported yet by react-compiler
-      if (storageContext) {
-        storageContext.clear();
-      }
+      storageContext.clear();
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
@@ -387,15 +384,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   };
 
   const handlePluginClick: MouseEventHandler<HTMLButtonElement> = event => {
-    const context = pluginContext!;
     const pluginIndex = Number(event.currentTarget.dataset.index!);
-    const plugin = context.plugins.find((_, index) => pluginIndex === index)!;
-    const isVisible = plugin === context.visiblePlugin;
+    const plugin = pluginContext.plugins.find(
+      (_, index) => pluginIndex === index,
+    )!;
+    const isVisible = plugin === pluginContext.visiblePlugin;
     if (isVisible) {
-      context.setVisiblePlugin(null);
+      pluginContext.setVisiblePlugin(null);
       pluginResize.setHiddenElement('first');
     } else {
-      context.setVisiblePlugin(plugin);
+      pluginContext.setVisiblePlugin(plugin);
       pluginResize.setHiddenElement(null);
     }
   };
@@ -465,7 +463,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     <Tooltip.Provider>
       <div className={cn('graphiql-container', props.className)}>
         <div className="graphiql-sidebar">
-          {pluginContext?.plugins.map((plugin, index) => {
+          {pluginContext.plugins.map((plugin, index) => {
             const isVisible = plugin === pluginContext.visiblePlugin;
             const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
             return (
@@ -529,7 +527,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           >
             {PluginContent ? <PluginContent /> : null}
           </div>
-          {pluginContext?.visiblePlugin && (
+          {pluginContext.visiblePlugin && (
             <div
               className="graphiql-horizontal-drag-bar"
               ref={pluginResize.dragBarRef}
@@ -807,29 +805,25 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
               </ButtonGroup>
             </div>
           )}
-          {storageContext ? (
-            <div className="graphiql-dialog-section">
-              <div>
-                <div className="graphiql-dialog-section-title">
-                  Clear storage
-                </div>
-                <div className="graphiql-dialog-section-caption">
-                  Remove all locally stored data and start fresh.
-                </div>
+          <div className="graphiql-dialog-section">
+            <div>
+              <div className="graphiql-dialog-section-title">Clear storage</div>
+              <div className="graphiql-dialog-section-caption">
+                Remove all locally stored data and start fresh.
               </div>
-              <Button
-                type="button"
-                state={clearStorageStatus || undefined}
-                disabled={clearStorageStatus === 'success'}
-                onClick={handleClearData}
-              >
-                {{
-                  success: 'Cleared data',
-                  error: 'Failed',
-                }[clearStorageStatus!] || 'Clear data'}
-              </Button>
             </div>
-          ) : null}
+            <Button
+              type="button"
+              state={clearStorageStatus || undefined}
+              disabled={clearStorageStatus === 'success'}
+              onClick={handleClearData}
+            >
+              {{
+                success: 'Cleared data',
+                error: 'Failed',
+              }[clearStorageStatus!] || 'Clear data'}
+            </Button>
+          </div>
         </Dialog>
       </div>
     </Tooltip.Provider>
