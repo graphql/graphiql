@@ -1,7 +1,9 @@
+// eslint-disable-next-line react/jsx-filename-extension -- TODO
 import {
   Fetcher,
   formatError,
   formatResult,
+  GetDefaultFieldNamesFn,
   isAsyncIterable,
   isObservable,
   Unsubscribable,
@@ -13,29 +15,33 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { FC, ReactNode, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
-import { useAutoCompleteLeafs, useEditorContext } from './editor';
-import { UseAutoCompleteLeafsArgs } from './editor/hooks';
-import { createContextHook, createNullableContext } from './utility/context';
+import { getAutoCompleteLeafs } from './editor';
+import { createStore, useStore } from 'zustand';
+import { editorStore } from './editor/context';
+import { schemaStore } from './schema';
 
 export type ExecutionContextType = {
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the
    * first partial response and `false` while fetching subsequent batches.
+   * @default false
    */
   isFetching: boolean;
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` until the last batch
    * has been fetched or the connection is closed from the client.
+   * @default false
    */
   isSubscribed: boolean;
   /**
    * The operation name that will be sent with all GraphQL requests.
+   * @default null
    */
   operationName: string | null;
   /**
@@ -46,13 +52,21 @@ export type ExecutionContextType = {
    * Stop the GraphQL request that is currently in-flight.
    */
   stop(): void;
+  subscription: Unsubscribable | null;
+  /**
+   * A function to determine which field leafs are automatically added when
+   * trying to execute a query with missing selection sets. It will be called
+   * with the `GraphQLType` for which fields need to be added.
+   */
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  /**
+   * @default 0
+   */
+  queryId: number;
 };
 
-export const ExecutionContext =
-  createNullableContext<ExecutionContextType>('ExecutionContext');
-
 type ExecutionContextProviderProps = Pick<
-  UseAutoCompleteLeafsArgs,
+  ExecutionContextType,
   'getDefaultFieldNames'
 > & {
   children: ReactNode;
@@ -73,44 +87,34 @@ type ExecutionContextProviderProps = Pick<
   operationName?: string;
 };
 
-export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
-  fetcher,
-  getDefaultFieldNames,
-  children,
-  operationName,
-}) => {
-  if (typeof fetcher !== 'function') {
-    throw new TypeError(
-      'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
-
-  const {
-    externalFragments,
-    headerEditor,
-    queryEditor,
-    responseEditor,
-    variableEditor,
-    updateActiveTabValues,
-  } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
-  const autoCompleteLeafs = useAutoCompleteLeafs({
-    getDefaultFieldNames,
-    caller: ExecutionContextProvider,
-  });
-  const [isFetching, setIsFetching] = useState(false);
-  const [subscription, setSubscription] = useState<Unsubscribable | null>(null);
-  const queryIdRef = useRef(0);
-
-  const stop = () => {
+export const executionStore = createStore<
+  ExecutionContextType &
+    Pick<ExecutionContextProviderProps, 'getDefaultFieldNames'>
+>((set, get) => ({
+  isFetching: false,
+  isSubscribed: false,
+  subscription: null,
+  operationName: null,
+  getDefaultFieldNames: undefined,
+  queryId: 0,
+  stop() {
+    const { subscription } = get();
     subscription?.unsubscribe();
-    setIsFetching(false);
-    setSubscription(null);
-  };
-
-  const run: ExecutionContextType['run'] = async () => {
+    set({ isFetching: false, subscription: null });
+  },
+  async run() {
+    const {
+      externalFragments,
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+      updateActiveTabValues,
+    } = editorStore.getState();
     if (!queryEditor || !responseEditor) {
       return;
     }
+    const { subscription, operationName, queryId } = get();
 
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {
@@ -123,13 +127,13 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
       updateActiveTabValues({ response: value });
     };
 
-    queryIdRef.current += 1;
-    const queryId = queryIdRef.current;
+    const newQueryId = queryId + 1;
+    set({ queryId: newQueryId });
 
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    let query = autoCompleteLeafs() || queryEditor.getValue();
+    let query = getAutoCompleteLeafs() || queryEditor.getValue();
 
     const variablesString = variableEditor?.getValue();
     let variables: Record<string, unknown> | undefined;
@@ -174,17 +178,13 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
     }
 
     setResponse('');
-    setIsFetching(true);
-    // Can't be moved in try-catch since react-compiler throw `Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement`
-    const opName = operationName ?? queryEditor.operationName ?? undefined;
-    const _headers = headers ?? undefined;
-    const documentAST = queryEditor.documentAST ?? undefined;
+    set({ isFetching: true });
     try {
       const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
         // A different query was dispatched in the meantime, so don't
         // show the results of this one.
-        if (queryId !== queryIdRef.current) {
+        if (newQueryId !== get().queryId) {
           return;
         }
 
@@ -203,24 +203,24 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
             mergeIncrementalResult(fullResponse, part);
           }
 
-          setIsFetching(false);
+          set({ isFetching: false });
           setResponse(formatResult(fullResponse));
         } else {
-          const response = formatResult(result);
-          setIsFetching(false);
-          setResponse(response);
+          set({ isFetching: false });
+          setResponse(formatResult(result));
         }
       };
-
+      const { fetcher } = schemaStore.getState();
       const fetch = fetcher(
         {
           query,
           variables,
-          operationName: opName,
+          operationName:
+            operationName ?? queryEditor.operationName ?? undefined,
         },
         {
-          headers: _headers,
-          documentAST,
+          headers: headers ?? undefined,
+          documentAST: queryEditor.documentAST ?? undefined,
         },
       );
 
@@ -229,73 +229,75 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
         // If the fetcher returned an Observable, then subscribe to it, calling
         // the callback on each next value and handling both errors and the
         // completion of the Observable.
-        setSubscription(
-          value.subscribe({
-            next(result) {
-              handleResponse(result);
-            },
-            error(error: Error) {
-              setIsFetching(false);
-              if (error) {
-                setResponse(formatError(error));
-              }
-              setSubscription(null);
-            },
-            complete() {
-              setIsFetching(false);
-              setSubscription(null);
-            },
-          }),
-        );
-      } else if (isAsyncIterable(value)) {
-        setSubscription({
-          unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+        const newSubscription = value.subscribe({
+          next(result) {
+            handleResponse(result);
+          },
+          error(error: Error) {
+            set({ isFetching: false });
+            if (error) {
+              setResponse(formatError(error));
+            }
+            set({ subscription: null });
+          },
+          complete() {
+            set({ isFetching: false, subscription: null });
+          },
         });
-        await handleAsyncResults(handleResponse, value);
-        setIsFetching(false);
-        setSubscription(null);
+        set({ subscription: newSubscription });
+      } else if (isAsyncIterable(value)) {
+        const newSubscription = {
+          unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+        };
+        set({ subscription: newSubscription });
+        for await (const result of value) {
+          handleResponse(result);
+        }
+        set({ isFetching: false, subscription: null });
       } else {
         handleResponse(value);
       }
     } catch (error) {
-      setIsFetching(false);
+      set({ isFetching: false });
       setResponse(formatError(error));
-      setSubscription(null);
+      set({ subscription: null });
     }
-  };
-  const value: ExecutionContextType = {
-    isFetching,
-    isSubscribed: Boolean(subscription),
-    operationName: operationName ?? null,
-    run,
-    stop,
-  };
+  },
+}));
 
-  return (
-    <ExecutionContext.Provider value={value}>
-      {children}
-    </ExecutionContext.Provider>
-  );
+// @ts-expect-error -- ignore `children` type warning
+export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
+  fetcher,
+  getDefaultFieldNames,
+  children,
+  operationName = null,
+}) => {
+  if (!fetcher) {
+    throw new TypeError(
+      'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
+  useEffect(() => {
+    executionStore.setState({
+      // isSubscribed: Boolean(subscription),
+      operationName,
+      getDefaultFieldNames,
+    });
+  }, [getDefaultFieldNames, operationName]);
+
+  return children;
 };
 
-// Extract function because react-compiler doesn't support `for await` yet
-async function handleAsyncResults(
-  onResponse: (result: ExecutionResult) => void,
-  value: any,
-): Promise<void> {
-  for await (const result of value) {
-    onResponse(result);
-  }
+export function useExecutionStore() {
+  return useStore(executionStore);
 }
-
-export const useExecutionContext = createContextHook(ExecutionContext);
 
 function tryParseJsonObject({
   json,
   errorMessageParse,
   errorMessageType,
 }: {
-  json: string | undefined;
+  json?: string;
   errorMessageParse: string;
   errorMessageType: string;
 }) {

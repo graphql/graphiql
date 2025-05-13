@@ -24,7 +24,7 @@ vi.mock('@graphiql/react', async () => {
         tabs: [],
       };
     },
-    useExecutionContext() {
+    useExecutionStore() {
       return {};
     },
   };

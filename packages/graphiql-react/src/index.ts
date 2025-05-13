@@ -23,11 +23,7 @@ export {
   useHeadersEditorState,
   VariableEditor,
 } from './editor';
-export {
-  ExecutionContext,
-  ExecutionContextProvider,
-  useExecutionContext,
-} from './execution';
+export { ExecutionContextProvider, useExecutionStore } from './execution';
 export { PluginContextProvider, usePluginStore } from './plugin';
 export { GraphiQLProvider } from './provider';
 export { SchemaContextProvider, useSchemaStore } from './schema';

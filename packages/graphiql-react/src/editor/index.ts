@@ -5,11 +5,7 @@ export {
   ResponseEditor,
   VariableEditor,
 } from './components';
-export {
-  EditorContext,
-  EditorContextProvider,
-  useEditorContext,
-} from './context';
+export { EditorContextProvider, useEditorStore } from './context';
 export { useHeaderEditor } from './header-editor';
 export {
   useAutoCompleteLeafs,
