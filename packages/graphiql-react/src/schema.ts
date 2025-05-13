@@ -36,7 +36,7 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
   inputValueDeprecation: null!,
   introspectionQueryName: null!,
   schemaDescription: null!,
-  fetcher: null!, // Explicitly set to null, as it's safe since we have TypeError thrown 
+  fetcher: null!, // Explicitly set to null, as it's safe since we have TypeError thrown
   onSchemaChange: undefined,
 
   fetchError: null,
