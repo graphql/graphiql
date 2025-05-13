@@ -1,8 +1,8 @@
 'use no memo'; // can't figure why it isn't optimized
 
-import { StorageAPI } from '@graphiql/toolkit';
+import { storageStore } from '../storage';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- fixme
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { debounce } from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
@@ -74,7 +74,6 @@ export function getDefaultTabState({
   defaultTabs,
   query,
   variables,
-  storage,
   shouldPersistHeaders,
 }: {
   defaultQuery: string;
@@ -83,10 +82,10 @@ export function getDefaultTabState({
   defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
-  storage: StorageAPI | null;
   shouldPersistHeaders?: boolean;
 }) {
-  const storedState = storage?.get(STORAGE_KEY);
+  const { storage } = storageStore.getState();
+  const storedState = storage.get(STORAGE_KEY);
   try {
     if (!storedState) {
       throw new Error('Storage for tabs is empty');
@@ -235,24 +234,19 @@ export function serializeTabState(
 }
 
 export function useStoreTabs({
-  storage,
   shouldPersistHeaders,
 }: {
-  storage: StorageAPI | null;
   shouldPersistHeaders?: boolean;
 }) {
-  const store = useMemo(
-    () =>
-      debounce(500, (value: string) => {
-        storage?.set(STORAGE_KEY, value);
-      }),
-    [storage],
-  );
   return useCallback(
     (currentState: TabsState) => {
+      const { storage } = storageStore.getState();
+      const store = debounce(500, (value: string) => {
+        storage.set(STORAGE_KEY, value);
+      });
       store(serializeTabState(currentState, shouldPersistHeaders));
     },
-    [shouldPersistHeaders, store],
+    [shouldPersistHeaders],
   );
 }
 
@@ -359,11 +353,12 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
-export function clearHeadersFromTabs(storage: StorageAPI | null) {
-  const persistedTabs = storage?.get(STORAGE_KEY);
+export function clearHeadersFromTabs() {
+  const { storage } = storageStore.getState();
+  const persistedTabs = storage.get(STORAGE_KEY);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);
-    storage?.set(
+    storage.set(
       STORAGE_KEY,
       JSON.stringify(parsedTabs, (key, value) =>
         key === 'headers' ? null : value,

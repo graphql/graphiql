@@ -30,6 +30,7 @@ import {
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+import { DEFAULT_QUERY } from '../constants';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -270,9 +271,9 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
 
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
-      const isStored = storage?.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
       return props.shouldPersistHeaders !== false && isStored
-        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
         : Boolean(props.shouldPersistHeaders);
     },
   );
@@ -283,17 +284,16 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
   useSynchronizeValue(variableEditor, props.variables);
 
   const storeTabs = useStoreTabs({
-    storage,
     shouldPersistHeaders,
   });
 
   // We store this in state but never update it. By passing a function we only
   // need to compute it lazily during the initial render.
   const [initialState] = useState(() => {
-    const query = props.query ?? storage?.get(STORAGE_KEY_QUERY) ?? null;
+    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
     const variables =
-      props.variables ?? storage?.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage?.get(STORAGE_KEY_HEADERS) ?? null;
+      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
+    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
     const response = props.response ?? '';
 
     const tabState = getDefaultTabState({
@@ -303,7 +303,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
       defaultTabs: props.defaultTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       defaultHeaders: props.defaultHeaders,
-      storage,
       shouldPersistHeaders,
     });
     storeTabs(tabState);
@@ -325,15 +324,15 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
   const setShouldPersistHeaders = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     (persist: boolean) => {
       if (persist) {
-        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
         const serializedTabs = serializeTabState(tabState, true);
-        storage?.set(STORAGE_KEY_TABS, serializedTabs);
+        storage.set(STORAGE_KEY_TABS, serializedTabs);
       } else {
-        storage?.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs(storage);
+        storage.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs();
       }
       setShouldPersistHeadersInternal(persist);
-      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
     };
 
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
@@ -512,36 +511,3 @@ function updateQueryEditor(
 export const useEditorContext = createContextHook(EditorContext);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
-
-export const DEFAULT_QUERY = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that start
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
-#
-#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
-#
-#        Run Query:  Ctrl-Enter (or press the play button)
-#
-#    Auto Complete:  Ctrl-Space (or just start typing)
-#
-
-`;

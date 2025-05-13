@@ -14,17 +14,9 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql';
-import {
-  createContext,
-  FC,
-  ReactNode,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { SchemaContextType, useSchemaStore } from '@graphiql/react';
-import { createStore, StoreApi, useStore } from 'zustand';
+import { createStore, useStore } from 'zustand';
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -80,11 +72,11 @@ export type DocExplorerContextType = {
   };
 };
 
-export function createDocExplorerStore(
-  initialNavStackItem: DocExplorerNavStackItem = { name: 'Docs' },
-) {
-  return createStore<DocExplorerContextType>((set, get) => ({
-    explorerNavStack: [initialNavStackItem],
+const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
+
+export const docExplorerStore = createStore<DocExplorerContextType>(
+  (set, get) => ({
+    explorerNavStack: INITIAL_NAV_STACK,
     actions: {
       push(item) {
         set(state => {
@@ -110,8 +102,7 @@ export function createDocExplorerStore(
       reset() {
         set(state => {
           const curr = state.explorerNavStack;
-          const explorerNavStack: DocExplorerNavStack =
-            curr.length === 1 ? curr : [initialNavStackItem];
+          const explorerNavStack = curr.length === 1 ? curr : INITIAL_NAV_STACK;
           return { explorerNavStack };
         });
       },
@@ -161,13 +152,14 @@ export function createDocExplorerStore(
           if (oldNavStack.length === 1) {
             return oldNavStack;
           }
-          const newNavStack: DocExplorerNavStack = [initialNavStackItem];
+          // Spread is needed
+          const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
           let lastEntity:
             | GraphQLNamedType
             | GraphQLField<unknown, unknown>
             | null = null;
           for (const item of oldNavStack) {
-            if (item === initialNavStackItem) {
+            if (item === INITIAL_NAV_STACK[0]) {
               // No need to copy the initial item
               continue;
             }
@@ -236,32 +228,23 @@ export function createDocExplorerStore(
         });
       },
     },
-  }));
-}
-
-export const DocExplorerContext = createContext<RefObject<
-  StoreApi<DocExplorerContextType>
-> | null>(null);
+  }),
+);
 
 export const DocExplorerContextProvider: FC<{
   children: ReactNode;
-}> = props => {
+}> = ({ children }) => {
   const { schema, validationErrors, schemaReference } = useSchemaStore();
-  const storeRef = useRef<StoreApi<DocExplorerContextType>>(null!);
-
-  if (storeRef.current === null) {
-    storeRef.current = createDocExplorerStore();
-  }
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
-      storeRef.current.getState().actions;
+      docExplorerStore.getState().actions;
     resolveSchemaReferenceToNavItem(schemaReference);
   }, [schemaReference]);
 
   useEffect(() => {
     const { reset, rebuildNavStackWithSchema } =
-      storeRef.current.getState().actions;
+      docExplorerStore.getState().actions;
 
     // Whenever the schema changes, we must revalidate/replace the nav stack.
     if (schema == null || validationErrors.length > 0) {
@@ -271,21 +254,13 @@ export const DocExplorerContextProvider: FC<{
     }
   }, [schema, validationErrors]);
 
-  return (
-    <DocExplorerContext.Provider value={storeRef}>
-      {props.children}
-    </DocExplorerContext.Provider>
-  );
+  return children as ReactElement;
 };
 
 function useDocExplorerStore<T>(
   selector: (state: DocExplorerContextType) => T,
 ): T {
-  const store = useContext(DocExplorerContext);
-  if (!store) {
-    throw new Error('Missing `DocExplorerContextProvider` in the tree');
-  }
-  return useStore(store.current, selector);
+  return useStore(docExplorerStore, selector);
 }
 
 export const useDocExplorer = () =>

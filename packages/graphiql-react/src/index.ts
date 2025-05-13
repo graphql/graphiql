@@ -54,6 +54,5 @@ export type {
 export type { ExecutionContextType } from './execution';
 export type { GraphiQLPlugin, PluginContextType } from './plugin';
 export type { SchemaContextType } from './schema';
-export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';

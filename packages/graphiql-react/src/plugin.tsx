@@ -1,6 +1,5 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
-import { ComponentType, FC, ReactNode, useEffect } from 'react';
-import { useStorage } from './storage';
+import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore, useStore } from 'zustand';
 
 export type GraphiQLPlugin = {
@@ -88,7 +87,6 @@ export const pluginStore = createStore<PluginContextType>((set, get) => ({
   },
 }));
 
-// @ts-expect-error -- ignore `children` type warning
 export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   onTogglePluginVisibility,
   children,
@@ -96,8 +94,6 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   plugins = [],
   referencePlugin,
 }) => {
-  const storage = useStorage();
-
   useEffect(() => {
     const seenTitles = new Set<string>();
     const msg = 'All GraphiQL plugins must have a unique title';
@@ -111,7 +107,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       seenTitles.add(title);
     }
     // TODO: visiblePlugin initial data
-    // const storedValue = storage?.get(STORAGE_KEY);
+    // const storedValue = storage.get(STORAGE_KEY);
     // const pluginForStoredValue = plugins.find(
     //   plugin => plugin.title === storedValue,
     // );
@@ -119,7 +115,7 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     //   return pluginForStoredValue;
     // }
     // if (storedValue) {
-    //   storage?.set(STORAGE_KEY, '');
+    //   storage.set(STORAGE_KEY, '');
     // }
 
     pluginStore.setState({
@@ -128,15 +124,9 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       referencePlugin,
     });
     pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
-  }, [
-    plugins,
-    onTogglePluginVisibility,
-    referencePlugin,
-    storage,
-    visiblePlugin,
-  ]);
+  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
-  return children;
+  return children as ReactElement;
 };
 
 export function usePluginStore() {

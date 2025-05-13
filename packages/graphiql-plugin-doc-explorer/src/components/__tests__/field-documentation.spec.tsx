@@ -1,9 +1,8 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-import { DocExplorerContext, DocExplorerFieldDef } from '../../context';
+import { DocExplorerFieldDef, docExplorerStore } from '../../context';
 import { FieldDocumentation } from '../field-documentation';
-import { useMockDocExplorerContextValue } from './test-utils';
 
 const exampleObject = new GraphQLObjectType({
   name: 'Query',
@@ -55,17 +54,19 @@ const exampleObject = new GraphQLObjectType({
 
 const FieldDocumentationWithContext: FC<{
   field: DocExplorerFieldDef;
-}> = props => {
-  return (
-    <DocExplorerContext.Provider
-      value={useMockDocExplorerContextValue({
-        name: props.field.name,
-        def: props.field,
-      })}
-    >
-      <FieldDocumentation field={props.field} />
-    </DocExplorerContext.Provider>
-  );
+}> = ({ field }) => {
+  useEffect(() => {
+    docExplorerStore.setState({
+      explorerNavStack: [
+        {
+          name: field.name,
+          def: field,
+        },
+      ],
+    });
+  }, [field]);
+
+  return <FieldDocumentation field={field} />;
 };
 
 describe('FieldDocumentation', () => {

@@ -11,10 +11,6 @@ export function useTheme(defaultTheme: Theme = null) {
   const storage = useStorage();
 
   const [theme, setThemeInternal] = useState<Theme>(() => {
-    if (!storage) {
-      return null;
-    }
-
     const stored = storage.get(STORAGE_KEY);
     switch (stored) {
       case 'light':
@@ -38,7 +34,7 @@ export function useTheme(defaultTheme: Theme = null) {
   }, [theme]);
 
   const setTheme = (newTheme: Theme) => {
-    storage?.set(STORAGE_KEY, newTheme || '');
+    storage.set(STORAGE_KEY, newTheme || '');
     setThemeInternal(newTheme);
   };
 

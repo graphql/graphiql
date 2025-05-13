@@ -345,15 +345,12 @@ export function useQueryEditor(
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
-        storage?.set(STORAGE_KEY_QUERY, query);
+        storage.set(STORAGE_KEY_QUERY, query);
 
         const currentOperationName = editorInstance.operationName;
         const operationFacts = getAndUpdateOperationFacts(editorInstance);
         if (operationFacts?.operationName !== undefined) {
-          storage?.set(
-            STORAGE_KEY_OPERATION_NAME,
-            operationFacts.operationName,
-          );
+          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
         }
 
         // Invoke callback props only after the operation facts have been updated

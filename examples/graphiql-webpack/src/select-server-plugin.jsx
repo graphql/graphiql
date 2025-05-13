@@ -9,7 +9,7 @@ export const PREV_URLS_KEY = 'previousURLs';
 
 const SelectServer = ({ url, setUrl }) => {
   const inputRef = React.useRef(null);
-  const storage = useStorage({ nonNull: true });
+  const storage = useStorage();
   const lastUrl = storage.get(LAST_URL_KEY);
   const currentUrl = lastUrl ?? url;
   const [inputValue, setInputValue] = React.useState(currentUrl);

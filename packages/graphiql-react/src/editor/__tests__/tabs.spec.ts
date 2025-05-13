@@ -1,3 +1,4 @@
+import { act } from 'react';
 import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
@@ -6,6 +7,7 @@ import {
   clearHeadersFromTabs,
   STORAGE_KEY,
 } from '../tabs';
+import { storageStore } from '../../storage';
 
 describe('createTab', () => {
   it('creates with default title', () => {
@@ -103,6 +105,12 @@ describe('fuzzyExtractionOperationTitle', () => {
 });
 
 describe('getDefaultTabState', () => {
+  beforeEach(() => {
+    act(() => {
+      storageStore.setState({ storage: new StorageAPI() });
+    });
+  });
+
   it('returns default tab', () => {
     expect(
       getDefaultTabState({
@@ -110,7 +118,6 @@ describe('getDefaultTabState', () => {
         headers: null,
         query: null,
         variables: null,
-        storage: null,
       }),
     ).toEqual({
       activeTabIndex: 0,
@@ -142,7 +149,6 @@ describe('getDefaultTabState', () => {
         ],
         query: null,
         variables: null,
-        storage: null,
       }),
     ).toEqual({
       activeTabIndex: 0,
@@ -163,30 +169,21 @@ describe('getDefaultTabState', () => {
 });
 
 describe('clearHeadersFromTabs', () => {
-  const createMockStorage = () => {
-    const mockStorage = new Map();
-    return mockStorage as unknown as StorageAPI;
-  };
-
   it('preserves tab state except for headers', () => {
-    const storage = createMockStorage();
-    const stateWithoutHeaders = {
+    const { storage } = storageStore.getState();
+    const stateWithHeaders = {
       operationName: 'test',
       query: 'query test {\n  test {\n    id\n  }\n}',
       test: {
         a: 'test',
       },
-    };
-    const stateWithHeaders = {
-      ...stateWithoutHeaders,
       headers: '{ "authorization": "secret" }',
     };
     storage.set(STORAGE_KEY, JSON.stringify(stateWithHeaders));
-
-    clearHeadersFromTabs(storage);
+    clearHeadersFromTabs();
 
     expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual({
-      ...stateWithoutHeaders,
+      ...stateWithHeaders,
       headers: null,
     });
   });

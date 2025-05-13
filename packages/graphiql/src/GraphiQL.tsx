@@ -241,7 +241,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   } = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
-  const storageContext = useStorage({ nonNull: true });
+  const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
   const forcedTheme =
     props.forcedTheme && THEMES.includes(props.forcedTheme)

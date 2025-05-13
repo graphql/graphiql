@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNamedType } from 'graphql';
 import {
@@ -7,31 +7,26 @@ import {
   ExampleUnion,
   ExampleQuery,
 } from './fixtures';
-import { DocExplorerContext } from '../../context';
+import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
-import { useMockDocExplorerContextValue, unwrapType } from './test-utils';
+import { unwrapType } from './test-utils';
+import { schemaStore } from '../../../../graphiql-react/dist/schema';
 
-vi.mock('@graphiql/react', async () => {
-  const actual = await vi.importActual('@graphiql/react');
-  return {
-    ...actual,
-    useSchemaStore: () => ({
-      schema: ExampleSchema,
-    }),
-  };
-});
-
-const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = props => {
-  return (
-    <DocExplorerContext.Provider
-      value={useMockDocExplorerContextValue({
-        name: unwrapType(props.type).name,
-        def: props.type,
-      })}
-    >
-      <TypeDocumentation type={props.type} />
-    </DocExplorerContext.Provider>
-  );
+const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = ({
+  type,
+}) => {
+  useEffect(() => {
+    schemaStore.setState({ schema: ExampleSchema });
+    docExplorerStore.setState({
+      explorerNavStack: [
+        {
+          name: unwrapType(type).name,
+          def: type,
+        },
+      ],
+    });
+  }, [type]);
+  return <TypeDocumentation type={type} />;
 };
 
 describe('TypeDocumentation', () => {

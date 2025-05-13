@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
-import { DocExplorerContext, useDocExplorer } from '../../context';
+import { docExplorerStore, useDocExplorer } from '../../context';
 import { TypeLink } from '../type-link';
-import { useMockDocExplorerContextValue, unwrapType } from './test-utils';
+import { unwrapType } from './test-utils';
 
 const nonNullType = new GraphQLNonNull(GraphQLString);
 const listType = new GraphQLList(GraphQLString);
@@ -17,18 +17,24 @@ const TypeLinkConsumer: FC = () => {
   );
 };
 
-const TypeLinkWithContext: typeof TypeLink = props => {
+const TypeLinkWithContext: typeof TypeLink = ({ type }) => {
+  useEffect(() => {
+    docExplorerStore.setState({
+      explorerNavStack: [
+        {
+          name: unwrapType(type).name,
+          def: unwrapType(type),
+        },
+      ],
+    });
+  }, [type]);
+
   return (
-    <DocExplorerContext.Provider
-      value={useMockDocExplorerContextValue({
-        name: unwrapType(props.type).name,
-        def: unwrapType(props.type),
-      })}
-    >
-      <TypeLink {...props} />
+    <>
+      <TypeLink type={type} />
       {/* Print the top of the current nav stack for test assertions */}
       <TypeLinkConsumer />
-    </DocExplorerContext.Provider>
+    </>
   );
 };
 

@@ -57,13 +57,13 @@ export function useDragResize({
 
   const store = debounce(500, (value: string) => {
     if (storageKey) {
-      storage?.set(storageKey, value);
+      storage.set(storageKey, value);
     }
   });
 
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     () => {
-      const storedValue = storageKey && storage?.get(storageKey);
+      const storedValue = storageKey && storage.get(storageKey);
       if (storedValue === HIDE_FIRST || initiallyHidden === 'first') {
         return 'first';
       }
@@ -93,7 +93,7 @@ export function useDragResize({
    */
   useEffect(() => {
     const storedValue =
-      (storageKey && storage?.get(storageKey)) || defaultFlexRef.current;
+      (storageKey && storage.get(storageKey)) || defaultFlexRef.current;
 
     if (firstRef.current) {
       firstRef.current.style.flex =
@@ -151,7 +151,7 @@ export function useDragResize({
       element.style.position = '';
       element.style.left = '';
 
-      if (storage && storageKey) {
+      if (storageKey) {
         const storedValue = storage.get(storageKey);
         if (
           firstRef.current &&

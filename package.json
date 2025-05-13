@@ -16,6 +16,7 @@
   "scripts": {
     "types:check": "turbo run types:check",
     "dev:graphiql": "turbo run dev --filter=graphiql...",
+    "build:graphiql": "turbo run build --filter=graphiql...",
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}'",
