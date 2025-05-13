@@ -22,8 +22,8 @@ import {
   TabsState,
   TabState,
   useSetEditorValues,
-  useStoreTabs,
-  useSynchronizeActiveTabValues,
+  storeTabs,
+  synchronizeActiveTabValues,
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
@@ -373,12 +373,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     }
   }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
 
-  const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-  });
   const { onTabChange, defaultHeaders, defaultQuery, children } = props;
   const setEditorValues = useSetEditorValues({
     queryEditor,
