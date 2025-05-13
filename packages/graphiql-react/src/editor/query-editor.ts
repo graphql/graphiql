@@ -15,7 +15,7 @@ import { RefObject, useEffect, useRef } from 'react';
 import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
 import { usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
+import { useSchemaStore } from '../schema';
 import { useStorage } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
@@ -129,10 +129,7 @@ export function useQueryEditor(
   }: UseQueryEditorArgs = {},
   caller?: Function,
 ) {
-  const { schema, setSchemaReference } = useSchemaContext({
-    nonNull: true,
-    caller: caller || _useQueryEditor,
-  });
+  const { schema, setSchemaReference } = useSchemaStore();
   const {
     externalFragments,
     initialQuery,
@@ -402,7 +399,7 @@ export function useQueryEditor(
     codeMirrorRef,
   );
 
-  useCompletion(queryEditor, onClickReference || null, _useQueryEditor);
+  useCompletion(queryEditor, onClickReference);
 
   const run = executionContext?.run;
   const runAtCursor = () => {

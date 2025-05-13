@@ -3,7 +3,7 @@ import {
   GraphiQLPlugin,
   useEditorContext,
   useExecutionContext,
-  useSchemaContext,
+  useSchemaStore,
   useOperationsEditorState,
   useOptimisticState,
 } from '@graphiql/react';
@@ -63,7 +63,7 @@ export type GraphiQLExplorerPluginProps = Omit<
 
 const ExplorerPlugin: FC<GraphiQLExplorerPluginProps> = props => {
   const { setOperationName } = useEditorContext({ nonNull: true });
-  const { schema } = useSchemaContext({ nonNull: true });
+  const { schema } = useSchemaStore();
   const { run } = useExecutionContext({ nonNull: true });
 
   // handle running the current operation from the plugin

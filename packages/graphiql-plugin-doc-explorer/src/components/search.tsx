@@ -16,7 +16,7 @@ import {
 } from '@headlessui/react';
 import {
   isMacOs,
-  useSchemaContext,
+  useSchemaStore,
   MagnifyingGlassIcon,
   debounce,
 } from '@graphiql/react';
@@ -156,15 +156,9 @@ type FieldMatch = {
   argument?: GraphQLArgument;
 };
 
-// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
-const _useSearchResults = useSearchResults;
-
-export function useSearchResults(caller?: Function) {
+export function useSearchResults() {
   const explorerNavStack = useDocExplorer();
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || _useSearchResults,
-  });
+  const { schema } = useSchemaStore();
 
   const navItem = explorerNavStack.at(-1)!;
 

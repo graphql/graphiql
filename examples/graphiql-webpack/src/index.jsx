@@ -54,15 +54,15 @@ if ('serviceWorker' in navigator) {
 const style = { height: '100vh' };
 /**
  * instantiate outside of the component lifecycle
- * unless you need to pass it dynamic values from your react app,
+ * unless you need to pass it dynamic values from your React app,
  * then use the `useMemo` hook
  */
 const explorer = explorerPlugin();
 
 const App = () => {
-  const storage = useStorage({ nonNull: true });
-
-  const lastUrl = storage.get(LAST_URL_KEY);
+  // TODO: `storage` will be always `null`, fix it to have access outside `StorageContextProvider` after zustand migration
+  const storage = useStorage();
+  const lastUrl = storage?.get(LAST_URL_KEY);
   const [currentUrl, setUrl] = React.useState(lastUrl ?? STARTING_URL);
   // TODO: a breaking change where we make URL an internal state concern, and then expose hooks
   // so that you can handle/set URL state internally from a plugin

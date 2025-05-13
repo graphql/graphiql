@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import './select-server-plugin.css';
-import { useStorage, useSchemaContext } from '@graphiql/react';
+import { useStorage, useSchemaStore } from '@graphiql/react';
 
 export const LAST_URL_KEY = 'lastURL';
 
@@ -18,10 +18,9 @@ const SelectServer = ({ url, setUrl }) => {
   );
   const [error, setError] = React.useState(null);
 
-  const schema = useSchemaContext();
+  const { schema, isFetching, fetchError } = useSchemaStore();
 
   const sameValue = inputValue.trim() === url;
-  console.log(schema);
 
   return (
     <div>
@@ -62,27 +61,27 @@ const SelectServer = ({ url, setUrl }) => {
         >
           Change Schema URL
         </button>
-        {schema?.fetchError && (
+        {fetchError && (
           <div>
             <div className="select-server--schema-error">
               There was an error fetching your schema:
             </div>
             <div className="select-server--schema-error">
               <code>
-                {JSON.parse(schema.fetchError).errors.map(
-                  ({ message }) => message,
-                )}
+                {JSON.parse(fetchError).errors.map(({ message }) => message)}
               </code>
             </div>
           </div>
         )}
-        {schema?.schema && !schema?.isFetching && !schema?.fetchError && (
-          <div className="select-server--schema-success">
-            Schema retrieved successfully
-          </div>
-        )}
-        {schema?.isFetching && (
+        {isFetching ? (
           <div className="select-server--schema-loading">Schema loading...</div>
+        ) : (
+          schema &&
+          !fetchError && (
+            <div className="select-server--schema-success">
+              Schema retrieved successfully
+            </div>
+          )
         )}
       </div>
       <div>

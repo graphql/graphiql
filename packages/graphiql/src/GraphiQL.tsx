@@ -46,7 +46,7 @@ import {
   usePrettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
-  useSchemaContext,
+  useSchemaStore,
   useStorage,
   useTheme,
   UseVariableEditorArgs,
@@ -227,9 +227,20 @@ const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
-  const editorContext = useEditorContext({ nonNull: true });
+  const {
+    initialVariables,
+    initialHeaders,
+    setShouldPersistHeaders,
+    addTab,
+    moveTab,
+    closeTab,
+    changeTab,
+    shouldPersistHeaders,
+    tabs,
+    activeTabIndex,
+  } = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
-  const schemaContext = useSchemaContext({ nonNull: true });
+  const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage({ nonNull: true });
   const pluginContext = usePluginContext({ nonNull: true });
   const forcedTheme =
@@ -279,9 +290,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
         return props.defaultEditorToolsVisibility ? undefined : 'second';
       }
 
-      return editorContext.initialVariables || editorContext.initialHeaders
-        ? undefined
-        : 'second';
+      return initialVariables || initialHeaders ? undefined : 'second';
     })(),
     sizeThresholdSecond: 60,
     storageKey: 'secondaryEditorFlex',
@@ -296,9 +305,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     ) {
       return props.defaultEditorToolsVisibility;
     }
-    return !editorContext.initialVariables &&
-      editorContext.initialHeaders &&
-      isHeadersEditorEnabled
+    return !initialVariables && initialHeaders && isHeadersEditorEnabled
       ? 'headers'
       : 'variables';
   });
@@ -360,9 +367,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   };
 
   const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> = event => {
-    editorContext.setShouldPersistHeaders(
-      event.currentTarget.dataset.value === 'true',
-    );
+    setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
   };
 
   const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = event => {
@@ -372,10 +377,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
       | undefined;
     setTheme(selectedTheme || null);
   };
-
-  const handleAddTab = editorContext.addTab;
-  const handleRefetchSchema = schemaContext.introspect;
-  const handleReorder = editorContext.moveTab;
 
   const handleShowDialog: MouseEventHandler<HTMLButtonElement> = event => {
     setShowDialog(
@@ -442,10 +443,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
       return;
     }
 
-    if (editorContext.activeTabIndex === index) {
+    if (activeTabIndex === index) {
       executionContext.stop();
     }
-    editorContext.closeTab(index);
+    closeTab(index);
   };
 
   const handleTabClick: MouseEventHandler<HTMLButtonElement> = event => {
@@ -456,7 +457,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
      * context is used in execution context.
      */
     executionContext.stop();
-    editorContext.changeTab(index);
+    changeTab(index);
   };
 
   return (
@@ -483,13 +484,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           <Tooltip label="Re-fetch GraphQL schema">
             <UnStyledButton
               type="button"
-              disabled={schemaContext.isFetching}
-              onClick={handleRefetchSchema}
+              disabled={isSchemaFetching}
+              onClick={introspect}
               aria-label="Re-fetch GraphQL schema"
               style={{ marginTop: 'auto' }}
             >
               <ReloadIcon
-                className={cn(schemaContext.isFetching && 'graphiql-spin')}
+                className={cn(isSchemaFetching && 'graphiql-spin')}
                 aria-hidden="true"
               />
             </UnStyledButton>
@@ -536,16 +537,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs
-                values={editorContext.tabs}
-                onReorder={handleReorder}
+                values={tabs}
+                onReorder={moveTab}
                 aria-label="Select active operation"
                 className="no-scrollbar"
               >
-                {editorContext.tabs.map((tab, index, tabs) => (
+                {tabs.map((tab, index, arr) => (
                   <Tab
                     key={tab.id}
                     value={tab}
-                    isActive={index === editorContext.activeTabIndex}
+                    isActive={index === activeTabIndex}
                   >
                     <Tab.Button
                       aria-controls="graphiql-session"
@@ -555,7 +556,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                     >
                       {tab.title}
                     </Tab.Button>
-                    {tabs.length > 1 && <Tab.Close onClick={handleTabClose} />}
+                    {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
                   </Tab>
                 ))}
               </Tabs>
@@ -563,7 +564,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                 <UnStyledButton
                   type="button"
                   className="graphiql-tab-add"
-                  onClick={handleAddTab}
+                  onClick={addTab}
                   aria-label="New tab"
                 >
                   <PlusIcon aria-hidden="true" />
@@ -574,7 +575,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             <div
               role="tabpanel"
               id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`${TAB_CLASS_PREFIX}${editorContext.activeTabIndex}`}
+              aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
             >
               <div className="graphiql-editors" ref={editorResize.firstRef}>
                 <section
@@ -751,7 +752,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                 <Button
                   type="button"
                   id="enable-persist-headers"
-                  className={cn(editorContext.shouldPersistHeaders && 'active')}
+                  className={cn(shouldPersistHeaders && 'active')}
                   data-value="true"
                   onClick={handlePersistHeaders}
                 >
@@ -760,9 +761,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                 <Button
                   type="button"
                   id="disable-persist-headers"
-                  className={cn(
-                    !editorContext.shouldPersistHeaders && 'active',
-                  )}
+                  className={cn(!shouldPersistHeaders && 'active')}
                   onClick={handlePersistHeaders}
                 >
                   Off

@@ -34,11 +34,7 @@ export {
   usePluginContext,
 } from './plugin';
 export { GraphiQLProvider } from './provider';
-export {
-  SchemaContext,
-  SchemaContextProvider,
-  useSchemaContext,
-} from './schema';
+export { SchemaContextProvider, useSchemaStore } from './schema';
 export { StorageContextProvider, useStorage } from './storage';
 export { useTheme } from './theme';
 

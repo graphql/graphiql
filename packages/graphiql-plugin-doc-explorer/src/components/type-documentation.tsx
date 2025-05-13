@@ -9,7 +9,7 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useSchemaContext, Button, MarkdownContent } from '@graphiql/react';
+import { useSchemaStore, Button, MarkdownContent } from '@graphiql/react';
 import { DocExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
@@ -215,7 +215,7 @@ const EnumValue: FC<{ value: GraphQLEnumValue }> = ({ value }) => {
 };
 
 const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
-  const { schema } = useSchemaContext({ nonNull: true });
+  const { schema } = useSchemaStore();
   if (!schema || !isAbstractType(type)) {
     return null;
   }
