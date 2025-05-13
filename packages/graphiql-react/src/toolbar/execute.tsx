@@ -1,20 +1,14 @@
 import { FC } from 'react';
-import { useEditorContext } from '../editor';
-import { useExecutionContext } from '../execution';
+import { useEditorStore } from '../editor';
+import { useExecutionStore } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';
 import { DropdownMenu, Tooltip } from '../ui';
 import './execute.css';
 
 export const ExecuteButton: FC = () => {
-  const { queryEditor, setOperationName } = useEditorContext({
-    nonNull: true,
-    caller: ExecuteButton,
-  });
+  const { queryEditor, setOperationName } = useEditorStore();
   const { isFetching, isSubscribed, operationName, run, stop } =
-    useExecutionContext({
-      nonNull: true,
-      caller: ExecuteButton,
-    });
+    useExecutionStore();
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
