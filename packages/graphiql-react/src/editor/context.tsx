@@ -1,3 +1,4 @@
+// eslint-disable-next-line react/jsx-filename-extension -- TODO
 import {
   DocumentNode,
   FragmentDefinitionNode,
@@ -7,14 +8,7 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import {
-  FC,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FC, ReactElement, ReactNode, useEffect, useRef } from 'react';
 
 import { storageStore, useStorage } from '../storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
@@ -37,7 +31,8 @@ import {
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
-import { createStore, useStore } from 'zustand';
+import { createStore } from 'zustand';
+import { createBoundedUseStore } from '../utility';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -535,7 +530,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       initialHeaders: headers ?? defaultHeaders ?? '',
       initialResponse: response,
     });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
     editorStore.setState({
@@ -555,16 +550,13 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     validationRules,
   ]);
 
-  // Ensure store was initialized
-  return isMounted && (children as ReactElement);
+  if (!isMounted) {
+    // Ensure store was initialized
+    return null;
+  }
+  return children as ReactElement;
 };
 
-function useEditorStore(): EditorStore;
-function useEditorStore<T>(selector: (state: EditorStore) => T): T;
-function useEditorStore<T>(selector?: (state: EditorStore) => T) {
-  return useStore(editorStore, selector!);
-}
-
-export { useEditorStore };
+export const useEditorStore = createBoundedUseStore(editorStore);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
