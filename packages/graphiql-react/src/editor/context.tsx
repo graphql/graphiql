@@ -120,6 +120,11 @@ interface EditorStore extends TabsState {
    * @param tabState The tab state after it has been updated.
    */
   onTabChange?(tabState: TabsState): void;
+
+  /**
+   * Headers to be set when opening a new tab
+   */
+  defaultHeaders?: string;
 }
 
 export type EditorContextType = {
@@ -186,7 +191,7 @@ const EditorContext = createNullableContext<EditorContextType>('EditorContext');
 
 type EditorContextProviderProps = Pick<
   EditorStore,
-  'onTabChange' | 'onEditOperationName'
+  'onTabChange' | 'onEditOperationName' | 'defaultHeaders'
 > & {
   children: ReactNode;
   /**
@@ -261,11 +266,6 @@ type EditorContextProviderProps = Pick<
    * typing in the editor.
    */
   variables?: string;
-
-  /**
-   * Headers to be set when opening a new tab
-   */
-  defaultHeaders?: string;
 };
 
 export const editorStore = createStore<EditorStore>((set, get) => ({
@@ -301,18 +301,20 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     if (!queryEditor) {
       return;
     }
-
-    updateQueryEditor(queryEditor, operationName);
+    queryEditor.operationName = operationName;
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },
+  onEditOperationName: undefined,
   externalFragments: null!,
   onTabChange: undefined,
+  defaultHeaders: undefined,
 }));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   externalFragments,
   onEditOperationName,
+  defaultHeaders,
   ...props
 }) => {
   const storage = useStorage();
@@ -349,7 +351,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       headers,
       defaultTabs: props.defaultTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
-      defaultHeaders: props.defaultHeaders,
+      defaultHeaders,
       shouldPersistHeaders,
     });
     storeTabs(tabState);
@@ -360,7 +362,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
         (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
         '',
       variables: variables ?? '',
-      headers: headers ?? props.defaultHeaders ?? '',
+      headers: headers ?? defaultHeaders ?? '',
       response,
       tabState,
     };
@@ -391,7 +393,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     }
   }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
 
-  const { onTabChange, defaultHeaders, defaultQuery, children } = props;
+  const { onTabChange, defaultQuery, children } = props;
 
   const addTab: EditorContextType['addTab'] = () => {
     setTabState(current => {
@@ -480,8 +482,15 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       externalFragments: $externalFragments,
       onTabChange,
       onEditOperationName,
+      defaultHeaders,
     });
-  }, [$externalFragments, onTabChange, tabState, onEditOperationName]);
+  }, [
+    $externalFragments,
+    onTabChange,
+    tabState,
+    onEditOperationName,
+    defaultHeaders,
+  ]);
 
   const validationRules = props.validationRules || [];
 
@@ -506,14 +515,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
   );
 };
-
-// To make react-compiler happy, otherwise it fails due to mutating props
-function updateQueryEditor(
-  queryEditor: CodeMirrorEditorWithOperationFacts,
-  operationName: string,
-) {
-  queryEditor.operationName = operationName;
-}
 
 export function useEditorStore() {
   return {
