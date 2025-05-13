@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.0.4
+
+### Patch Changes
+
+- [#3940](https://github.com/graphql/graphiql/pull/3940) [`5a66864`](https://github.com/graphql/graphiql/commit/5a668647e1cbca9e846bfa617f97fbae21c821bd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(@graphiql/plugin-doc-explorer): migrate React context to zustand, replace `useExplorerContext` with `useDocExplorer` and `useDocExplorerActions` hooks
+
+- Updated dependencies [[`5a66864`](https://github.com/graphql/graphiql/commit/5a668647e1cbca9e846bfa617f97fbae21c821bd)]:
+  - @graphiql/plugin-doc-explorer@0.1.0
+
 ## 4.0.3
 
 ### Patch Changes
