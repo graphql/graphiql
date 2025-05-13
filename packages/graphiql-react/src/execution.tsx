@@ -40,7 +40,7 @@ export type ExecutionContextType = {
    * will hold an `Unsubscribable` object while the request is in-flight. It
    * remains non-null until the operation completes or is manually unsubscribed.
    *
-   * @rmarks Use `subscription?.unsubscribe()` to cancel the request.
+   * @remarks Use `subscription?.unsubscribe()` to cancel the request.
    * @default null
    */
   subscription: Unsubscribable | null;
