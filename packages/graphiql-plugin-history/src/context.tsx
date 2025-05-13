@@ -10,7 +10,6 @@ import {
 
 const historyStore = createStore<HistoryContextType>((set, get) => ({
   historyStorage: null!,
-  items: [],
   actions: {
     addToHistory(operation) {
       const { historyStorage } = get();
@@ -38,10 +37,6 @@ const historyStore = createStore<HistoryContextType>((set, get) => ({
 
 type HistoryContextType = {
   historyStorage: HistoryStore;
-  /**
-   * The list of history items.
-   */
-  items: QueryStoreItem[];
   actions: {
     /**
      * Add an operation to the history.
