@@ -198,7 +198,7 @@ export function synchronizeActiveTabValues(state: TabsState): TabsState {
     variables: variableEditor?.getValue() ?? null,
     headers: headerEditor?.getValue() ?? null,
     response: responseEditor?.getValue() ?? null,
-    operationName:  queryEditor?.operationName ?? null,
+    operationName: queryEditor?.operationName ?? null,
   });
 }
 
@@ -225,38 +225,29 @@ export function storeTabs(currentState: TabsState) {
   store(serializeTabState(currentState, shouldPersistHeaders));
 }
 
-export function useSetEditorValues({
-  queryEditor,
-  variableEditor,
-  headerEditor,
-  responseEditor,
-  defaultHeaders,
+export function setEditorValues({
+  query,
+  variables,
+  headers,
+  response,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-  responseEditor: CodeMirrorEditor | null;
-  defaultHeaders?: string;
+  query: string | null;
+  variables?: string | null;
+  headers?: string | null;
+  response: string | null;
 }) {
-  return useCallback(
-    ({
-      query,
-      variables,
-      headers,
-      response,
-    }: {
-      query: string | null;
-      variables?: string | null;
-      headers?: string | null;
-      response: string | null;
-    }) => {
-      queryEditor?.setValue(query ?? '');
-      variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-      responseEditor?.setValue(response ?? '');
-    },
-    [headerEditor, queryEditor, responseEditor, variableEditor, defaultHeaders],
-  );
+  const {
+    queryEditor,
+    variableEditor,
+    headerEditor,
+    responseEditor,
+    defaultHeaders,
+  } = editorStore.getState();
+
+  queryEditor?.setValue(query ?? '');
+  variableEditor?.setValue(variables ?? '');
+  headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+  responseEditor?.setValue(response ?? '');
 }
 
 export function createTab({
