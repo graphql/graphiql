@@ -282,8 +282,6 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
       const { defaultQuery, defaultHeaders, onTabChange } = get();
 
       // Make sure the current tab stores the latest values
-      // eslint-disable-next-line no-console
-      console.log(2, 'addTab', current.tabs);
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
         tabs: [
@@ -349,8 +347,6 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
         return current;
       }
       const { onTabChange } = get();
-      // eslint-disable-next-line no-console
-      console.log(1, 'updateActiveTabValues', current.tabs);
       const updated = setPropertiesInActiveTab(current, partialTab);
       storeTabs(updated);
       onTabChange?.(updated);

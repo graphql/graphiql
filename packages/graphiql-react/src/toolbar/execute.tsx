@@ -7,12 +7,12 @@ import './execute.css';
 
 export const ExecuteButton: FC = () => {
   const { queryEditor, setOperationName } = useEditorStore();
-  const { isFetching, isSubscribed, operationName, run, stop } =
+  const { isFetching, subscription, operationName, run, stop } =
     useExecutionStore();
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
-  const isRunning = isFetching || isSubscribed;
+  const isRunning = isFetching || Boolean(subscription);
 
   const label = `${isRunning ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
   const buttonProps = {

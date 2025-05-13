@@ -34,12 +34,16 @@ export type ExecutionContextType = {
    */
   isFetching: boolean;
   /**
-   * If there is currently a GraphQL request in-flight. For multipart
-   * requests like subscriptions, this will be `true` until the last batch
-   * has been fetched or the connection is closed from the client.
-   * @default false
+   * Represents an active GraphQL subscription.
+   *
+   * For multipart operations such as subscriptions, this
+   * will hold an `Unsubscribable` object while the request is in-flight. It
+   * remains non-null until the operation completes or is manually unsubscribed.
+   *
+   * @rmarks Use `subscription?.unsubscribe()` to cancel the request.
+   * @default null
    */
-  isSubscribed: boolean;
+  subscription: Unsubscribable | null;
   /**
    * The operation name that will be sent with all GraphQL requests.
    * @default null
@@ -53,7 +57,6 @@ export type ExecutionContextType = {
    * Stop the GraphQL request that is currently in-flight.
    */
   stop(): void;
-  subscription: Unsubscribable | null;
   /**
    * A function to determine which field leafs are automatically added when
    * trying to execute a query with missing selection sets. It will be called
@@ -93,7 +96,6 @@ export const executionStore = createStore<
     Pick<ExecutionContextProviderProps, 'getDefaultFieldNames'>
 >((set, get) => ({
   isFetching: false,
-  isSubscribed: false,
   subscription: null,
   operationName: null,
   getDefaultFieldNames: undefined,
@@ -279,7 +281,6 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
   }
   useEffect(() => {
     executionStore.setState({
-      // isSubscribed: Boolean(subscription),
       operationName,
       getDefaultFieldNames,
     });
