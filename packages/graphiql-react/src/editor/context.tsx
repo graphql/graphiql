@@ -9,7 +9,7 @@ import {
 import { VariableToType } from 'graphql-language-service';
 import { FC, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
-import { useStorage } from '../storage';
+import { storageStore, useStorage } from '../storage';
 import { createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
@@ -122,6 +122,16 @@ interface EditorStore extends TabsState {
   setOperationName(operationName: string): void;
 
   /**
+   * If the contents of the headers editor are persisted in storage.
+   */
+  shouldPersistHeaders: boolean;
+
+  /**
+   * Changes if headers should be persisted.
+   */
+  setShouldPersistHeaders(persist: boolean): void;
+
+  /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
    * - Selecting an operation for execution in a document that contains multiple
@@ -188,15 +198,6 @@ export type EditorContextType = {
    * provided by the GraphQL spec.
    */
   validationRules: ValidationRule[];
-
-  /**
-   * If the contents of the headers editor are persisted in storage.
-   */
-  shouldPersistHeaders: boolean;
-  /**
-   * Changes if headers should be persisted.
-   */
-  setShouldPersistHeaders(persist: boolean): void;
 };
 
 const EditorContext = createNullableContext<EditorContextType>('EditorContext');
@@ -370,6 +371,21 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },
+  shouldPersistHeaders: false,
+  setShouldPersistHeaders(persist) {
+    const { headerEditor, tabs, activeTabIndex } = get();
+    const { storage } = storageStore.getState();
+    if (persist) {
+      storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+      const serializedTabs = serializeTabState({ tabs, activeTabIndex }, true);
+      storage.set(STORAGE_KEY_TABS, serializedTabs);
+    } else {
+      storage.set(STORAGE_KEY_HEADERS, '');
+      clearHeadersFromTabs();
+    }
+    set({ shouldPersistHeaders: persist });
+    storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+  },
   onEditOperationName: undefined,
   externalFragments: null!,
   onTabChange: undefined,
@@ -387,11 +403,17 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   ...props
 }) => {
   const storage = useStorage();
-  const { headerEditor, queryEditor, responseEditor, variableEditor } =
+  const {
+    headerEditor,
+    queryEditor,
+    responseEditor,
+    variableEditor,
+    setShouldPersistHeaders,
+  } =
     // TODO: refactor to use useEditorStore
     useStore(editorStore);
 
-  const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
+  const [shouldPersistHeaders] = useState(
     () => {
       const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
       return props.shouldPersistHeaders !== false && isStored
@@ -438,20 +460,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   });
 
   const [tabState] = useState<TabsState>(initialState.tabState);
-
-  const setShouldPersistHeaders = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
-    (persist: boolean) => {
-      if (persist) {
-        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(tabState, true);
-        storage.set(STORAGE_KEY_TABS, serializedTabs);
-      } else {
-        storage.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs();
-      }
-      setShouldPersistHeadersInternal(persist);
-      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-    };
 
   const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
   useEffect(() => {
@@ -509,9 +517,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     initialResponse: initialState.response,
 
     validationRules,
-
-    shouldPersistHeaders,
-    setShouldPersistHeaders,
   };
 
   return (
