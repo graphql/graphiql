@@ -1,7 +1,6 @@
 import './style/root.css';
 
 export {
-  EditorContext,
   EditorContextProvider,
   HeaderEditor,
   ImagePreview,
@@ -9,7 +8,7 @@ export {
   ResponseEditor,
   getAutoCompleteLeafs,
   useCopyQuery,
-  useEditorContext,
+  useEditorStore,
   useHeaderEditor,
   useMergeQuery,
   usePrettifyEditors,

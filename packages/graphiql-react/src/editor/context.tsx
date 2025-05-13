@@ -21,7 +21,7 @@ import {
   TabDefinition,
   TabsState,
   TabState,
-  useSetEditorValues,
+  setEditorValues,
   storeTabs,
   synchronizeActiveTabValues,
   clearHeadersFromTabs,
@@ -312,10 +312,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   useSynchronizeValue(responseEditor, props.response);
   useSynchronizeValue(variableEditor, props.variables);
 
-  const storeTabs = useStoreTabs({
-    shouldPersistHeaders,
-  });
-
   // We store this in state but never update it. By passing a function we only
   // need to compute it lazily during the initial render.
   const [initialState] = useState(() => {
@@ -374,13 +370,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
 
   const { onTabChange, defaultHeaders, defaultQuery, children } = props;
-  const setEditorValues = useSetEditorValues({
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    defaultHeaders,
-  });
 
   const addTab: EditorContextType['addTab'] = () => {
     setTabState(current => {

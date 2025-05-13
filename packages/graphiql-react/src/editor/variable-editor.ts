@@ -42,9 +42,6 @@ function importCodeMirrorImports() {
   ]);
 }
 
-// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
-const _useVariableEditor = useVariableEditor;
-
 export function useVariableEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
@@ -131,13 +128,7 @@ export function useVariableEditor({
 
   useSynchronizeOption(variableEditor, 'keyMap', keyMap);
 
-  useChangeHandler(
-    variableEditor,
-    onEdit,
-    STORAGE_KEY,
-    'variables',
-    _useVariableEditor,
-  );
+  useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
   useCompletion(variableEditor, onClickReference);
 
