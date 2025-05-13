@@ -511,4 +511,3 @@ function updateQueryEditor(
 export const useEditorContext = createContextHook(EditorContext);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
-
