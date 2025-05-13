@@ -7,10 +7,10 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
 import { useStorage } from '../storage';
-import { createContextHook, createNullableContext } from '../utility/context';
+import { createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
@@ -31,7 +31,7 @@ import {
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
-import { createStore } from 'zustand';
+import { createStore, useStore } from 'zustand';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -166,8 +166,7 @@ export type EditorContextType = {
   setShouldPersistHeaders(persist: boolean): void;
 };
 
-export const EditorContext =
-  createNullableContext<EditorContextType>('EditorContext');
+const EditorContext = createNullableContext<EditorContextType>('EditorContext');
 
 type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
   children: ReactNode;
@@ -290,19 +289,14 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   onTabChange: undefined,
 }));
 
-export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
+export const EditorContextProvider: FC<EditorContextProviderProps> = ({
+  externalFragments,
+  ...props
+}) => {
   const storage = useStorage();
-  const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
-    null,
-  );
-  const [queryEditor, setQueryEditor] =
-    useState<CodeMirrorEditorWithOperationFacts | null>(null);
-  const [responseEditor, setResponseEditor] = useState<CodeMirrorEditor | null>(
-    null,
-  );
-  const [variableEditor, setVariableEditor] = useState<CodeMirrorEditor | null>(
-    null,
-  );
+  const { headerEditor, queryEditor, responseEditor, variableEditor } =
+    // TODO: refactor to use useEditorStore
+    useStore(editorStore);
 
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
@@ -463,23 +457,23 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
       }
 
       updateQueryEditor(queryEditor, operationName);
-      updateActiveTabValues({ operationName });
+      editorStore.getState().updateActiveTabValues({ operationName });
       onEditOperationName?.(operationName);
     };
 
-  const externalFragments = (() => {
+  const $externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
-    if (Array.isArray(props.externalFragments)) {
-      for (const fragment of props.externalFragments) {
+    if (Array.isArray(externalFragments)) {
+      for (const fragment of externalFragments) {
         map.set(fragment.name.value, fragment);
       }
-    } else if (typeof props.externalFragments === 'string') {
-      visit(parse(props.externalFragments, {}), {
+    } else if (typeof externalFragments === 'string') {
+      visit(parse(externalFragments, {}), {
         FragmentDefinition(fragment) {
           map.set(fragment.name.value, fragment);
         },
       });
-    } else if (props.externalFragments) {
+    } else if (externalFragments) {
       throw new Error(
         'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
       );
@@ -487,25 +481,21 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
     return map;
   })();
 
+  useEffect(() => {
+    editorStore.setState({
+      ...tabState,
+      externalFragments: $externalFragments,
+      onTabChange,
+    });
+  }, [$externalFragments, onTabChange, tabState]);
+
   const validationRules = props.validationRules || [];
 
   const value: EditorContextType = {
-    ...tabState,
     addTab,
     changeTab,
     moveTab,
     closeTab,
-    updateActiveTabValues,
-
-    headerEditor,
-    queryEditor,
-    responseEditor,
-    variableEditor,
-    setHeaderEditor,
-    setQueryEditor,
-    setResponseEditor,
-    setVariableEditor,
-
     setOperationName,
 
     initialQuery: initialState.query,
@@ -513,7 +503,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = props => {
     initialHeaders: initialState.headers,
     initialResponse: initialState.response,
 
-    externalFragments,
     validationRules,
 
     shouldPersistHeaders,
@@ -533,6 +522,12 @@ function updateQueryEditor(
   queryEditor.operationName = operationName;
 }
 
-export const useEditorContext = createContextHook(EditorContext);
+export function useEditorStore() {
+  return {
+    ...useStore(editorStore),
+    // TODO: this is temporary and will be removed over to zustand only usage
+    ...useContext(EditorContext),
+  };
+}
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
