@@ -1,12 +1,8 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { storageStore } from '../storage';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- fixme
-import { useCallback } from 'react';
-
 import { debounce } from '../utility/debounce';
-import { CodeMirrorEditorWithOperationFacts, editorStore } from './context';
-import { CodeMirrorEditor } from './types';
+import { editorStore } from './context';
 
 export type TabDefinition = {
   /**
