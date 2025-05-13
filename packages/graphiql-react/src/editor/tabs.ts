@@ -5,7 +5,7 @@ import { storageStore } from '../storage';
 import { useCallback } from 'react';
 
 import { debounce } from '../utility/debounce';
-import { CodeMirrorEditorWithOperationFacts } from './context';
+import { CodeMirrorEditorWithOperationFacts, editorStore } from './context';
 import { CodeMirrorEditor } from './types';
 
 export type TabDefinition = {
@@ -193,18 +193,12 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
 export function synchronizeActiveTabValues(state: TabsState): TabsState {
   const { queryEditor, variableEditor, headerEditor, responseEditor } =
     editorStore.getState();
-
-  const query = queryEditor?.getValue() ?? null;
-  const variables = variableEditor?.getValue() ?? null;
-  const headers = headerEditor?.getValue() ?? null;
-  const operationName = queryEditor?.operationName ?? null;
-  const response = responseEditor?.getValue() ?? null;
   return setPropertiesInActiveTab(state, {
-    query,
-    variables,
-    headers,
-    response,
-    operationName,
+    query: queryEditor?.getValue() ?? null,
+    variables: variableEditor?.getValue() ?? null,
+    headers: headerEditor?.getValue() ?? null,
+    response: responseEditor?.getValue() ?? null,
+    operationName:  queryEditor?.operationName ?? null,
   });
 }
 
