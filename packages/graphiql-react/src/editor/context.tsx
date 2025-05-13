@@ -499,34 +499,72 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     return map;
   })();
 
+  const initialRendered = useRef(false);
+
   useEffect(() => {
+    if (initialRendered.current) {
+      return;
+    }
+    initialRendered.current = true;
+
+    // We only need to compute it lazily during the initial render.
+    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
+    const variables =
+      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
+    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
+    const response = props.response ?? '';
+
+    const tabState = getDefaultTabState({
+      query,
+      variables,
+      headers,
+      defaultTabs: props.defaultTabs,
+      defaultQuery: defaultQuery || DEFAULT_QUERY,
+      defaultHeaders,
+      shouldPersistHeaders,
+    });
+    storeTabs(tabState);
+
     editorStore.setState({
       ...tabState,
+      initialQuery:
+        query ??
+        (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
+        '',
+      initialVariables: variables ?? '',
+      initialHeaders: headers ?? defaultHeaders ?? '',
+      initialResponse: response,
+    });
+  }, []);
+
+  useEffect(() => {
+    editorStore.setState({
       externalFragments: $externalFragments,
       onTabChange,
       onEditOperationName,
       defaultQuery,
       defaultHeaders,
-      initialQuery: initialState.query,
-      initialVariables: initialState.variables,
-      initialHeaders: initialState.headers,
-      initialResponse: initialState.response,
       validationRules,
     });
   }, [
     $externalFragments,
     onTabChange,
-    tabState,
     onEditOperationName,
     defaultQuery,
     defaultHeaders,
-    initialState,
     validationRules,
   ]);
 
-  return children as ReactElement;
+  // Ensure store was initialized
+  return isMounted && (children as ReactElement);
 };
 
-export const useEditorStore = () => useStore(editorStore);
+function useEditorStore(): EditorStore;
+function useEditorStore<T>(selector: (state: EditorStore) => T): T;
+function useEditorStore<T>(selector?: (state: EditorStore) => T) {
+  return useStore(editorStore, selector!);
+}
+
+export { useEditorStore };
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
