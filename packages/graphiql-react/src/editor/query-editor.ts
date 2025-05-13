@@ -16,7 +16,7 @@ import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
 import { usePluginStore } from '../plugin';
 import { useSchemaStore } from '../schema';
-import { useStorage } from '../storage';
+import { storageStore } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
   commonKeys,
@@ -144,7 +144,6 @@ export function useQueryEditor(
     caller: caller || _useQueryEditor,
   });
   const executionContext = useExecutionContext();
-  const storage = useStorage();
   const plugin = usePluginStore();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
@@ -345,15 +344,13 @@ export function useQueryEditor(
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
-        storage?.set(STORAGE_KEY_QUERY, query);
+        const { storage } = storageStore.getState();
+        storage.set(STORAGE_KEY_QUERY, query);
 
         const currentOperationName = editorInstance.operationName;
         const operationFacts = getAndUpdateOperationFacts(editorInstance);
         if (operationFacts?.operationName !== undefined) {
-          storage?.set(
-            STORAGE_KEY_OPERATION_NAME,
-            operationFacts.operationName,
-          );
+          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
         }
 
         // Invoke callback props only after the operation facts have been updated
@@ -382,7 +379,6 @@ export function useQueryEditor(
     queryEditor,
     schema,
     setOperationName,
-    storage,
     variableEditor,
     updateActiveTabValues,
   ]);

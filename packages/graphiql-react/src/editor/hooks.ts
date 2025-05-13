@@ -12,7 +12,7 @@ import { parse, print } from 'graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePluginStore } from '../plugin';
 import { useSchemaStore } from '../schema';
-import { useStorage } from '../storage';
+import { storageStore } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
 import { useEditorContext } from './context';
@@ -47,15 +47,14 @@ export function useChangeHandler(
   caller: Function,
 ) {
   const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
-  const storage = useStorage();
-
   useEffect(() => {
     if (!editor) {
       return;
     }
+    const { storage } = storageStore.getState();
 
     const store = debounce(500, (value: string) => {
-      if (!storage || storageKey === null) {
+      if (storageKey === null) {
         return;
       }
       storage.set(storageKey, value);
@@ -82,14 +81,7 @@ export function useChangeHandler(
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [
-    callback,
-    editor,
-    storage,
-    storageKey,
-    tabProperty,
-    updateActiveTabValues,
-  ]);
+  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
 }
 
 export function useCompletion(
