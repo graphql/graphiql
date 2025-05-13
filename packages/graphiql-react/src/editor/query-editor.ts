@@ -16,7 +16,7 @@ import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
 import { usePluginStore } from '../plugin';
 import { useSchemaStore } from '../schema';
-import { storageStore } from '../storage';
+import { useStorage } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
   commonKeys,
@@ -144,6 +144,7 @@ export function useQueryEditor(
     caller: caller || _useQueryEditor,
   });
   const executionContext = useExecutionContext();
+  const storage = useStorage();
   const plugin = usePluginStore();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || _useQueryEditor });
@@ -344,7 +345,6 @@ export function useQueryEditor(
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
-        const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY_QUERY, query);
 
         const currentOperationName = editorInstance.operationName;
@@ -379,6 +379,7 @@ export function useQueryEditor(
     queryEditor,
     schema,
     setOperationName,
+    storage,
     variableEditor,
     updateActiveTabValues,
   ]);
