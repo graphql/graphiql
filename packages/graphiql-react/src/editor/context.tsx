@@ -45,16 +45,19 @@ interface EditorStore extends TabsState {
    * Add a new tab.
    */
   addTab(): void;
+
   /**
    * Switch to a different tab.
    * @param index The index of the tab that should be switched to.
    */
   changeTab(index: number): void;
+
   /**
    * Move a tab to a new spot.
    * @param newOrder The new order for the tabs.
    */
   moveTab(newOrder: TabState[]): void;
+
   /**
    * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
@@ -62,6 +65,7 @@ interface EditorStore extends TabsState {
    * @param index The index of the tab that should be closed.
    */
   closeTab(index: number): void;
+
   /**
    * Update the state for the tab that is currently active. This will be
    * reflected in the `tabs` object and the state will be persisted in storage
@@ -143,6 +147,15 @@ interface EditorStore extends TabsState {
   onTabChange?(tabState: TabsState): void;
 
   /**
+   * The initial contents of the query editor when loading GraphiQL and there
+   * is no other source for the editor state. Other sources can be:
+   * - The `query` prop
+   * - The value persisted in storage
+   * These default contents will only be used for the first tab. When opening
+   * more tabs the query editor will start out empty.
+   */
+  defaultQuery?: string;
+  /**
    * Headers to be set when opening a new tab
    */
   defaultHeaders?: string;
@@ -190,18 +203,9 @@ const EditorContext = createNullableContext<EditorContextType>('EditorContext');
 
 type EditorContextProviderProps = Pick<
   EditorStore,
-  'onTabChange' | 'onEditOperationName' | 'defaultHeaders'
+  'onTabChange' | 'onEditOperationName' | 'defaultHeaders' | 'defaultQuery'
 > & {
   children: ReactNode;
-  /**
-   * The initial contents of the query editor when loading GraphiQL and there
-   * is no other source for the editor state. Other sources can be:
-   * - The `query` prop
-   * - The value persisted in storage
-   * These default contents will only be used for the first tab. When opening
-   * more tabs the query editor will start out empty.
-   */
-  defaultQuery?: string;
   /**
    * With this prop you can pass so-called "external" fragments that will be
    * included in the query document (depending on usage). You can either pass
@@ -369,6 +373,7 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   onEditOperationName: undefined,
   externalFragments: null!,
   onTabChange: undefined,
+  defaultQuery: undefined,
   defaultHeaders: undefined,
 }));
 
@@ -376,6 +381,9 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   externalFragments,
   onEditOperationName,
   defaultHeaders,
+  onTabChange,
+  defaultQuery,
+  children,
   ...props
 }) => {
   const storage = useStorage();
@@ -411,7 +419,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       variables,
       headers,
       defaultTabs: props.defaultTabs,
-      defaultQuery: props.defaultQuery || DEFAULT_QUERY,
+      defaultQuery: defaultQuery || DEFAULT_QUERY,
       defaultHeaders,
       shouldPersistHeaders,
     });
@@ -429,7 +437,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     };
   });
 
-  const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
+  const [tabState] = useState<TabsState>(initialState.tabState);
 
   const setShouldPersistHeaders = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, function is optimized by react-compiler, no need to wrap with useCallback
     (persist: boolean) => {
@@ -453,8 +461,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       lastShouldPersistHeadersProp.current = propValue;
     }
   }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
-
-  const { onTabChange, defaultQuery, children } = props;
 
   const $externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
@@ -482,6 +488,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       externalFragments: $externalFragments,
       onTabChange,
       onEditOperationName,
+      defaultQuery,
       defaultHeaders,
     });
   }, [
@@ -489,6 +496,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     onTabChange,
     tabState,
     onEditOperationName,
+    defaultQuery,
     defaultHeaders,
   ]);
 
