@@ -212,7 +212,7 @@ type EditorContextProviderProps = Pick<EditorStore, 'onTabChange'> & {
   /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
-   * - Selecting a operation for execution in a document that contains multiple
+   * - Selecting an operation for execution in a document that contains multiple
    *   operation definitions
    * @param operationName The operation name after it has been changed.
    */

@@ -190,34 +190,22 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function useSynchronizeActiveTabValues({
-  queryEditor,
-  variableEditor,
-  headerEditor,
-  responseEditor,
-}: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-  responseEditor: CodeMirrorEditor | null;
-}) {
-  return useCallback<(state: TabsState) => TabsState>(
-    state => {
-      const query = queryEditor?.getValue() ?? null;
-      const variables = variableEditor?.getValue() ?? null;
-      const headers = headerEditor?.getValue() ?? null;
-      const operationName = queryEditor?.operationName ?? null;
-      const response = responseEditor?.getValue() ?? null;
-      return setPropertiesInActiveTab(state, {
-        query,
-        variables,
-        headers,
-        response,
-        operationName,
-      });
-    },
-    [queryEditor, variableEditor, headerEditor, responseEditor],
-  );
+export function synchronizeActiveTabValues(state: TabsState): TabsState {
+  const { queryEditor, variableEditor, headerEditor, responseEditor } =
+    editorStore.getState();
+
+  const query = queryEditor?.getValue() ?? null;
+  const variables = variableEditor?.getValue() ?? null;
+  const headers = headerEditor?.getValue() ?? null;
+  const operationName = queryEditor?.operationName ?? null;
+  const response = responseEditor?.getValue() ?? null;
+  return setPropertiesInActiveTab(state, {
+    query,
+    variables,
+    headers,
+    response,
+    operationName,
+  });
 }
 
 export function serializeTabState(
@@ -233,21 +221,14 @@ export function serializeTabState(
   );
 }
 
-export function useStoreTabs({
-  shouldPersistHeaders,
-}: {
-  shouldPersistHeaders?: boolean;
-}) {
-  return useCallback(
-    (currentState: TabsState) => {
-      const { storage } = storageStore.getState();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY, value);
-      });
-      store(serializeTabState(currentState, shouldPersistHeaders));
-    },
-    [shouldPersistHeaders],
-  );
+export function storeTabs(currentState: TabsState) {
+  const { storage } = storageStore.getState();
+  const { shouldPersistHeaders } = editorStore.getState();
+  const store = debounce(500, (value: string) => {
+    storage.set(STORAGE_KEY, value);
+  });
+
+  store(serializeTabState(currentState, shouldPersistHeaders));
 }
 
 export function useSetEditorValues({
