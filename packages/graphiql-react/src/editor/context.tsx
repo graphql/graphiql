@@ -42,6 +42,27 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 
 interface EditorStore extends TabsState {
   /**
+   * Add a new tab.
+   */
+  addTab(): void;
+  /**
+   * Switch to a different tab.
+   * @param index The index of the tab that should be switched to.
+   */
+  changeTab(index: number): void;
+  /**
+   * Move a tab to a new spot.
+   * @param newOrder The new order for the tabs.
+   */
+  moveTab(newOrder: TabState[]): void;
+  /**
+   * Close a tab. If the currently active tab is closed, the tab before it will
+   * become active. If there is no tab before the closed one, the tab after it
+   * will become active.
+   * @param index The index of the tab that should be closed.
+   */
+  closeTab(index: number): void;
+  /**
    * Update the state for the tab that is currently active. This will be
    * reflected in the `tabs` object and the state will be persisted in storage
    * (if available).
@@ -128,28 +149,6 @@ interface EditorStore extends TabsState {
 }
 
 export type EditorContextType = {
-  /**
-   * Add a new tab.
-   */
-  addTab(): void;
-  /**
-   * Switch to a different tab.
-   * @param index The index of the tab that should be switched to.
-   */
-  changeTab(index: number): void;
-  /**
-   * Move a tab to a new spot.
-   * @param newOrder The new order for the tabs.
-   */
-  moveTab(newOrder: TabState[]): void;
-  /**
-   * Close a tab. If the currently active tab is closed, the tab before it will
-   * become active. If there is no tab before the closed one, the tab after it
-   * will become active.
-   * @param index The index of the tab that should be closed.
-   */
-  closeTab(index: number): void;
-
   /**
    * The contents of the headers editor when initially rendering the provider
    * component.
@@ -271,6 +270,68 @@ type EditorContextProviderProps = Pick<
 export const editorStore = createStore<EditorStore>((set, get) => ({
   tabs: null!,
   activeTabIndex: null!,
+  addTab() {
+    set(current => {
+      const { defaultQuery, defaultHeaders, onTabChange } = get();
+
+      // Make sure the current tab stores the latest values
+      const updatedValues = synchronizeActiveTabValues(current);
+      const updated = {
+        tabs: [
+          ...updatedValues.tabs,
+          createTab({
+            headers: defaultHeaders,
+            query: defaultQuery,
+          }),
+        ],
+        activeTabIndex: updatedValues.tabs.length,
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  changeTab(index) {
+    set(current => {
+      const { onTabChange } = get();
+      const updated = {
+        ...current,
+        activeTabIndex: index,
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  moveTab(newOrder) {
+    set(current => {
+      const { onTabChange } = get();
+      const activeTab = current.tabs[current.activeTabIndex];
+      const updated = {
+        tabs: newOrder,
+        activeTabIndex: newOrder.indexOf(activeTab),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  closeTab(index) {
+    set(current => {
+      const { onTabChange } = get();
+      const updated = {
+        tabs: current.tabs.filter((_tab, i) => index !== i),
+        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
   updateActiveTabValues(partialTab) {
     set(current => {
       const { onTabChange } = get();
@@ -395,67 +456,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
 
   const { onTabChange, defaultQuery, children } = props;
 
-  const addTab: EditorContextType['addTab'] = () => {
-    setTabState(current => {
-      // Make sure the current tab stores the latest values
-      const updatedValues = synchronizeActiveTabValues(current);
-      const updated = {
-        tabs: [
-          ...updatedValues.tabs,
-          createTab({
-            headers: defaultHeaders,
-            query: defaultQuery ?? DEFAULT_QUERY,
-          }),
-        ],
-        activeTabIndex: updatedValues.tabs.length,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  };
-
-  const changeTab: EditorContextType['changeTab'] = index => {
-    setTabState(current => {
-      const updated = {
-        ...current,
-        activeTabIndex: index,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  };
-
-  const moveTab: EditorContextType['moveTab'] = newOrder => {
-    setTabState(current => {
-      const activeTab = current.tabs[current.activeTabIndex];
-      const updated = {
-        tabs: newOrder,
-        activeTabIndex: newOrder.indexOf(activeTab),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  };
-
-  const closeTab: EditorContextType['closeTab'] = index => {
-    setTabState(current => {
-      const updated = {
-        tabs: current.tabs.filter((_tab, i) => index !== i),
-        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  };
-
   const $externalFragments = (() => {
     const map = new Map<string, FragmentDefinitionNode>();
     if (Array.isArray(externalFragments)) {
@@ -495,11 +495,6 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   const validationRules = props.validationRules || [];
 
   const value: EditorContextType = {
-    addTab,
-    changeTab,
-    moveTab,
-    closeTab,
-
     initialQuery: initialState.query,
     initialVariables: initialState.variables,
     initialHeaders: initialState.headers,
