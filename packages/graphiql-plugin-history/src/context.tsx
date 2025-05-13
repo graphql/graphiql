@@ -1,61 +1,47 @@
+// eslint-disable-next-line react/jsx-filename-extension -- TODO
+import { FC, ReactNode, useEffect } from 'react';
+import { createStore, useStore } from 'zustand';
+import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
 import {
-  createContext,
-  FC,
-  ReactNode,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
-import { createStore, StoreApi, useStore } from 'zustand';
-import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import {
-  useStorage,
   useExecutionContext,
   useEditorContext,
+  useStorage,
 } from '@graphiql/react';
 
-function createHistoryStore(
-  storage: StorageAPI | null,
-  maxHistoryLength: number,
-) {
-  const historyStore =
-    // Fall back to a noop storage when the StorageContext is empty
-    new HistoryStore(storage || new StorageAPI(null), maxHistoryLength);
-
-  return createStore<HistoryContextType>(set => ({
-    items: historyStore.queries,
-    actions: {
-      addToHistory(operation) {
-        historyStore.updateHistory(operation);
-        const items = historyStore.queries;
-        set({ items });
-      },
-      editLabel(operation, index) {
-        historyStore.editLabel(operation, index);
-        const items = historyStore.queries;
-        set({ items });
-      },
-      toggleFavorite(operation) {
-        historyStore.toggleFavorite(operation);
-        const items = historyStore.queries;
-        set({ items });
-      },
-      setActive: item => item,
-      deleteFromHistory(item, clearFavorites) {
-        historyStore.deleteHistory(item, clearFavorites);
-        const items = historyStore.queries;
-        set({ items });
-      },
+const historyStore = createStore<HistoryContextType>((set, get) => ({
+  historyStorage: null!,
+  // items: historyStore.queries,
+  actions: {
+    addToHistory(operation) {
+      get().historyStorage.updateHistory(operation);
+      // const items = historyStore.queries;
+      // set({ items });
     },
-  }));
-}
+    editLabel(operation, index) {
+      get().historyStorage.editLabel(operation, index);
+      // const items = historyStore.queries;
+      // set({ items });
+    },
+    toggleFavorite(operation) {
+      get().historyStorage.toggleFavorite(operation);
+      // const items = historyStore.queries;
+      // set({ items });
+    },
+    setActive: item => item,
+    deleteFromHistory(item, clearFavorites) {
+      get().historyStorage.deleteHistory(item, clearFavorites);
+      // const items = historyStore.queries;
+      // set({ items });
+    },
+  },
+}));
 
 type HistoryContextType = {
   /**
    * The list of history items.
    */
-  items: readonly QueryStoreItem[];
+  // items: readonly QueryStoreItem[];
+  historyStorage: HistoryStore;
   actions: {
     /**
      * Add an operation to the history.
@@ -118,10 +104,6 @@ type HistoryContextType = {
   };
 };
 
-const HistoryContext = createContext<RefObject<
-  StoreApi<HistoryContextType>
-> | null>(null);
-
 type HistoryContextProviderProps = {
   children: ReactNode;
   /**
@@ -137,25 +119,28 @@ type HistoryContextProviderProps = {
  * any additional props they added for their needs (i.e., build their own functions that may save
  * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
  */
+// @ts-expect-error -- ignore `children` type warning
 export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const storage = useStorage();
   const { isFetching } = useExecutionContext({ nonNull: true });
   const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
   const activeTab = tabs[activeTabIndex];
-  const storeRef = useRef<StoreApi<HistoryContextType>>(null!);
+  const storage = useStorage();
 
-  if (storeRef.current === null) {
-    storeRef.current = createHistoryStore(storage, maxHistoryLength);
-  }
+  const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
+    new HistoryStore(storage, maxHistoryLength);
+
+  useEffect(() => {
+    historyStore.setState({ historyStorage });
+  }, [historyStorage]);
 
   useEffect(() => {
     if (!isFetching) {
       return;
     }
-    const { addToHistory } = storeRef.current.getState().actions;
+    const { addToHistory } = historyStore.getState().actions;
     addToHistory({
       query: activeTab.query ?? undefined,
       variables: activeTab.variables ?? undefined,
@@ -164,20 +149,13 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
     });
   }, [isFetching, activeTab]);
 
-  return (
-    <HistoryContext.Provider value={storeRef}>
-      {children}
-    </HistoryContext.Provider>
-  );
+  return children;
 };
 
 function useHistoryStore<T>(selector: (state: HistoryContextType) => T): T {
-  const store = useContext(HistoryContext);
-  if (!store) {
-    throw new Error('Missing `HistoryContextProvider` in the tree');
-  }
-  return useStore(store.current, selector);
+  return useStore(historyStore, selector);
 }
 
-export const useHistory = () => useHistoryStore(state => state.items);
+export const useHistory = () =>
+  useHistoryStore(state => state.historyStorage.queries);
 export const useHistoryActions = () => useHistoryStore(state => state.actions);

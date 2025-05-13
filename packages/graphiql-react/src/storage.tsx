@@ -1,6 +1,6 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import { useStore, createStore } from 'zustand';
 
 type StorageContextType = {
@@ -19,7 +19,7 @@ type StorageContextProviderProps = {
 };
 
 export const storageStore = createStore<StorageContextType>(() => ({
-  storage: new StorageAPI(),
+  storage: null!,
 }));
 
 // @ts-expect-error -- ignore `children` type warning
@@ -27,16 +27,13 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   storage,
   children,
 }) => {
-  const [mounted, setMounted] = useState(false);
+  const { storage: $storage } = useStorage();
 
   useEffect(() => {
     storageStore.setState({ storage: new StorageAPI(storage) });
-    if (!mounted) {
-      setMounted(true);
-    }
-  }, [storage]); // eslint-disable-line react-hooks/exhaustive-deps -- ignore `mounted` to avoid triggering a re-render
+  }, [storage]);
 
-  return mounted && children;
+  return $storage && children;
 };
 
 function useStorage() {
