@@ -3,7 +3,11 @@ import { fireEvent, render } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
-import { useEditorContext, Tooltip } from '@graphiql/react';
+import {
+  useEditorContext,
+  Tooltip,
+  StorageContextProvider,
+} from '@graphiql/react';
 
 vi.mock('@graphiql/react', async () => {
   const originalModule = await vi.importActual('@graphiql/react');
@@ -45,9 +49,11 @@ type QueryHistoryItemProps = ComponentProps<typeof HistoryItem>;
 const QueryHistoryItemWithContext: typeof HistoryItem = props => {
   return (
     <Tooltip.Provider>
-      <HistoryContextProvider>
-        <HistoryItem {...props} />
-      </HistoryContextProvider>
+      <StorageContextProvider>
+        <HistoryContextProvider>
+          <HistoryItem {...props} />
+        </HistoryContextProvider>
+      </StorageContextProvider>
     </Tooltip.Provider>
   );
 };
