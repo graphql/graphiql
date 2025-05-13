@@ -307,7 +307,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const { headerEditor } = useEditorStore();
+  const headerEditor = useEditorStore(store => store.headerEditor);
 
   /**
    * Synchronize prop changes with state

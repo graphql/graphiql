@@ -18,7 +18,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   isHidden,
   ...hookArgs
 }) => {
-  const { headerEditor } = useEditorStore();
+  const headerEditor = useEditorStore(store => store.headerEditor);
   const ref = useHeaderEditor(hookArgs);
 
   useEffect(() => {

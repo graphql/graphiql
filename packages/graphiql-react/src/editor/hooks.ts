@@ -302,9 +302,7 @@ export function getAutoCompleteLeafs() {
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const context = useEditorStore();
-
-  const editorInstance = context[`${editor}Editor` as const];
+  const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

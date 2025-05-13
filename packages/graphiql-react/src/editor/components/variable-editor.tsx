@@ -22,7 +22,7 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   isHidden,
   ...hookArgs
 }) => {
-  const { variableEditor } = useEditorStore();
+  const variableEditor = useEditorStore(store => store.variableEditor);
   const ref = useVariableEditor(hookArgs);
 
   useEffect(() => {
