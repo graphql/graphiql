@@ -65,37 +65,6 @@ interface EditorStore extends TabsState {
   moveTab(newOrder: TabState[]): void;
 
   /**
-   * The contents of the headers editor when initially rendering the provider
-   * component.
-   */
-
-  initialHeaders: string;
-  /**
-   * The contents of the query editor when initially rendering the provider
-   * component.
-   */
-
-  initialQuery: string;
-  /**
-   * The contents of the response editor when initially rendering the provider
-   * component.
-   */
-
-  initialResponse: string;
-  /**
-   * The contents of the variables editor when initially rendering the provider
-   * component.
-   */
-
-  initialVariables: string;
-
-  /**
-   * A list of custom validation rules that are run in addition to the rules
-   * provided by the GraphQL spec.
-   */
-  validationRules: ValidationRule[];
-
-  /**
    * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
    * will become active.
@@ -159,6 +128,37 @@ interface EditorStore extends TabsState {
   setOperationName(operationName: string): void;
 
   /**
+   * The contents of the headers editor when initially rendering the provider
+   * component.
+   */
+
+  initialHeaders: string;
+  /**
+   * The contents of the query editor when initially rendering the provider
+   * component.
+   */
+
+  initialQuery: string;
+  /**
+   * The contents of the response editor when initially rendering the provider
+   * component.
+   */
+
+  initialResponse: string;
+  /**
+   * The contents of the variables editor when initially rendering the provider
+   * component.
+   */
+
+  initialVariables: string;
+
+  /**
+   * A map of fragment definitions using the fragment name as key which are
+   * made available to include in the query.
+   */
+  externalFragments: Map<string, FragmentDefinitionNode>;
+
+  /**
    * If the contents of the headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
@@ -169,6 +169,16 @@ interface EditorStore extends TabsState {
   setShouldPersistHeaders(persist: boolean): void;
 
   /**
+   * The initial contents of the query editor when loading GraphiQL and there
+   * is no other source for the editor state. Other sources can be:
+   * - The `query` prop
+   * - The value persisted in storage
+   * These default contents will only be used for the first tab. When opening
+   * more tabs the query editor will start out empty.
+   */
+  defaultQuery?: string;
+
+  /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
    * - Selecting an operation for execution in a document that contains multiple
@@ -176,12 +186,6 @@ interface EditorStore extends TabsState {
    * @param operationName The operation name after it has been changed.
    */
   onEditOperationName?(operationName: string): void;
-
-  /**
-   * A map of fragment definitions using the fragment name as key which are
-   * made available to include in the query.
-   */
-  externalFragments: Map<string, FragmentDefinitionNode>;
 
   /**
    * Invoked when the state of the tabs changes. Possible triggers are:
@@ -194,14 +198,11 @@ interface EditorStore extends TabsState {
   onTabChange?(tabState: TabsState): void;
 
   /**
-   * The initial contents of the query editor when loading GraphiQL and there
-   * is no other source for the editor state. Other sources can be:
-   * - The `query` prop
-   * - The value persisted in storage
-   * These default contents will only be used for the first tab. When opening
-   * more tabs the query editor will start out empty.
+   * A list of custom validation rules that are run in addition to the rules
+   * provided by the GraphQL spec.
    */
-  defaultQuery?: string;
+  validationRules: ValidationRule[];
+
   /**
    * Headers to be set when opening a new tab
    */
@@ -415,15 +416,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   ...props
 }) => {
   const storage = useStorage();
-  const {
-    headerEditor,
-    queryEditor,
-    responseEditor,
-    variableEditor,
-    setShouldPersistHeaders,
-  } =
-    // TODO: refactor to use useEditorStore
-    useStore(editorStore);
+  const isMounted = useEditorStore(store => Boolean(store.tabs));
 
   const [shouldPersistHeaders] = useState(() => {
     const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
@@ -431,11 +424,17 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
       : Boolean(props.shouldPersistHeaders);
   });
-
-  useSynchronizeValue(headerEditor, props.headers);
-  useSynchronizeValue(queryEditor, props.query);
-  useSynchronizeValue(responseEditor, props.response);
-  useSynchronizeValue(variableEditor, props.variables);
+  // const { headerEditor, queryEditor, responseEditor, variableEditor } =
+  //   useEditorStore(o => ({
+  //     headerEditor: o.headerEditor,
+  //     queryEditor: o.queryEditor,
+  //     responseEditor: o.responseEditor,
+  //     variableEditor: o.variableEditor,
+  //   }));
+  // useSynchronizeValue(headerEditor, props.headers);
+  // useSynchronizeValue(queryEditor, props.query);
+  // useSynchronizeValue(responseEditor, props.response);
+  // useSynchronizeValue(variableEditor, props.variables);
 
   // We store this in state but never update it. By passing a function we only
   // need to compute it lazily during the initial render.
