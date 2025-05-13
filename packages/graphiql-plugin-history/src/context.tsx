@@ -10,38 +10,38 @@ import {
 
 const historyStore = createStore<HistoryContextType>((set, get) => ({
   historyStorage: null!,
-  // items: historyStore.queries,
+  items: [],
   actions: {
     addToHistory(operation) {
-      get().historyStorage.updateHistory(operation);
-      // const items = historyStore.queries;
-      // set({ items });
+      const { historyStorage } = get();
+      historyStorage.updateHistory(operation);
+      set({}); // trigger rerender
     },
     editLabel(operation, index) {
-      get().historyStorage.editLabel(operation, index);
-      // const items = historyStore.queries;
-      // set({ items });
+      const { historyStorage } = get();
+      historyStorage.editLabel(operation, index);
+      set({}); // trigger rerender
     },
     toggleFavorite(operation) {
-      get().historyStorage.toggleFavorite(operation);
-      // const items = historyStore.queries;
-      // set({ items });
+      const { historyStorage } = get();
+      historyStorage.toggleFavorite(operation);
+      set({}); // trigger rerender
     },
     setActive: item => item,
     deleteFromHistory(item, clearFavorites) {
-      get().historyStorage.deleteHistory(item, clearFavorites);
-      // const items = historyStore.queries;
-      // set({ items });
+      const { historyStorage } = get();
+      historyStorage.deleteHistory(item, clearFavorites);
+      set({}); // trigger rerender
     },
   },
 }));
 
 type HistoryContextType = {
+  historyStorage: HistoryStore;
   /**
    * The list of history items.
    */
-  // items: readonly QueryStoreItem[];
-  historyStorage: HistoryStore;
+  items: QueryStoreItem[];
   actions: {
     /**
      * Add an operation to the history.

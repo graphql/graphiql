@@ -27,7 +27,7 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   storage,
   children,
 }) => {
-  const { storage: $storage } = useStorage();
+  const $storage = useStorage();
 
   useEffect(() => {
     storageStore.setState({ storage: new StorageAPI(storage) });
