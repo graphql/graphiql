@@ -7,10 +7,16 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { FC, ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { storageStore, useStorage } from '../storage';
-import { createNullableContext } from '../utility/context';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
@@ -57,6 +63,37 @@ interface EditorStore extends TabsState {
    * @param newOrder The new order for the tabs.
    */
   moveTab(newOrder: TabState[]): void;
+
+  /**
+   * The contents of the headers editor when initially rendering the provider
+   * component.
+   */
+
+  initialHeaders: string;
+  /**
+   * The contents of the query editor when initially rendering the provider
+   * component.
+   */
+
+  initialQuery: string;
+  /**
+   * The contents of the response editor when initially rendering the provider
+   * component.
+   */
+
+  initialResponse: string;
+  /**
+   * The contents of the variables editor when initially rendering the provider
+   * component.
+   */
+
+  initialVariables: string;
+
+  /**
+   * A list of custom validation rules that are run in addition to the rules
+   * provided by the GraphQL spec.
+   */
+  validationRules: ValidationRule[];
 
   /**
    * Close a tab. If the currently active tab is closed, the tab before it will
@@ -170,37 +207,6 @@ interface EditorStore extends TabsState {
    */
   defaultHeaders?: string;
 }
-
-export type EditorContextType = {
-  /**
-   * The contents of the headers editor when initially rendering the provider
-   * component.
-   */
-  initialHeaders: string;
-  /**
-   * The contents of the query editor when initially rendering the provider
-   * component.
-   */
-  initialQuery: string;
-  /**
-   * The contents of the response editor when initially rendering the provider
-   * component.
-   */
-  initialResponse: string;
-  /**
-   * The contents of the variables editor when initially rendering the provider
-   * component.
-   */
-  initialVariables: string;
-
-  /**
-   * A list of custom validation rules that are run in addition to the rules
-   * provided by the GraphQL spec.
-   */
-  validationRules: ValidationRule[];
-};
-
-const EditorContext = createNullableContext<EditorContextType>('EditorContext');
 
 type EditorContextProviderProps = Pick<
   EditorStore,
@@ -391,6 +397,11 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   onTabChange: undefined,
   defaultQuery: undefined,
   defaultHeaders: undefined,
+  validationRules: null!,
+  initialHeaders: null!,
+  initialQuery: null!,
+  initialResponse: null!,
+  initialVariables: null!,
 }));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
@@ -400,6 +411,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   onTabChange,
   defaultQuery,
   children,
+  validationRules = [],
   ...props
 }) => {
   const storage = useStorage();
@@ -413,14 +425,12 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     // TODO: refactor to use useEditorStore
     useStore(editorStore);
 
-  const [shouldPersistHeaders] = useState(
-    () => {
-      const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
-      return props.shouldPersistHeaders !== false && isStored
-        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-        : Boolean(props.shouldPersistHeaders);
-    },
-  );
+  const [shouldPersistHeaders] = useState(() => {
+    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+    return props.shouldPersistHeaders !== false && isStored
+      ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+      : Boolean(props.shouldPersistHeaders);
+  });
 
   useSynchronizeValue(headerEditor, props.headers);
   useSynchronizeValue(queryEditor, props.query);
@@ -498,6 +508,11 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       onEditOperationName,
       defaultQuery,
       defaultHeaders,
+      initialQuery: initialState.query,
+      initialVariables: initialState.variables,
+      initialHeaders: initialState.headers,
+      initialResponse: initialState.response,
+      validationRules,
     });
   }, [
     $externalFragments,
@@ -506,30 +521,13 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     onEditOperationName,
     defaultQuery,
     defaultHeaders,
+    initialState,
+    validationRules,
   ]);
 
-  const validationRules = props.validationRules || [];
-
-  const value: EditorContextType = {
-    initialQuery: initialState.query,
-    initialVariables: initialState.variables,
-    initialHeaders: initialState.headers,
-    initialResponse: initialState.response,
-
-    validationRules,
-  };
-
-  return (
-    <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
-  );
+  return children as ReactElement;
 };
 
-export function useEditorStore() {
-  return {
-    ...useStore(editorStore),
-    // TODO: this is temporary and will be removed over to zustand only usage
-    ...useContext(EditorContext),
-  };
-}
+export const useEditorStore = () => useStore(editorStore);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
