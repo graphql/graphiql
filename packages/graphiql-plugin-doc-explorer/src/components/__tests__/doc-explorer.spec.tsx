@@ -195,7 +195,7 @@ describe('DocExplorer', () => {
       </DocExplorerContextProvider>,
     );
 
-    const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title = container.querySelector('.graphiql-doc-explorer-title')!;
     expect(title.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with a different field name
@@ -210,7 +210,7 @@ describe('DocExplorer', () => {
         <DocExplorer />
       </DocExplorerContextProvider>,
     );
-    const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
     // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`
     expect(title2.textContent).toEqual('Query');
   });
