@@ -15,3 +15,10 @@
 - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore`
 - add `fetcher` to `executionStore`
 - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
+- remove exports (use `GraphiQLProvider`)
+  - EditorContextProvider
+  - ExecutionContextProvider
+  - PluginContextProvider
+  - SchemaContextProvider
+  - StorageContextProvider
+

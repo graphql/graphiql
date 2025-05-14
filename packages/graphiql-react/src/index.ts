@@ -1,32 +1,37 @@
 import './style/root.css';
 
 export {
-  EditorContextProvider,
-  HeaderEditor,
-  ImagePreview,
-  QueryEditor,
-  ResponseEditor,
-  getAutoCompleteLeafs,
-  copyQuery,
   useEditorStore,
-  useHeaderEditor,
-  mergeQuery,
-  prettifyEditors,
+
+  QueryEditor,
   useQueryEditor,
-  useResponseEditor,
+
+  VariableEditor,
   useVariableEditor,
+
+  HeaderEditor,
+  useHeaderEditor,
+
+  ResponseEditor,
+  useResponseEditor,
+
+  copyQuery,
+  prettifyEditors,
+  mergeQuery,
+
+  ImagePreview,
+  getAutoCompleteLeafs,
   useEditorState,
   useOperationsEditorState,
   useOptimisticState,
   useVariablesEditorState,
   useHeadersEditorState,
-  VariableEditor,
 } from './editor';
-export { ExecutionContextProvider, useExecutionStore } from './execution';
-export { PluginContextProvider, usePluginStore } from './plugin';
+export { useExecutionStore } from './execution';
+export { usePluginStore } from './plugin';
 export { GraphiQLProvider } from './provider';
-export { SchemaContextProvider, useSchemaStore } from './schema';
-export { StorageContextProvider, useStorage } from './storage';
+export { useSchemaStore } from './schema';
+export { useStorage } from './storage';
 export { useTheme } from './theme';
 
 export * from './utility';
