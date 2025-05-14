@@ -78,11 +78,8 @@ describe('QueryHistoryItem', () => {
     const mockedSetVariableEditor = vi.fn();
     const mockedSetHeaderEditor = vi.fn();
     editorStore.setState({
-      // @ts-expect-error -- ignore
-      queryEditor: { setValue: mockedSetQueryEditor, getValue: () => '' },
-      // @ts-expect-error -- ignore
-      variableEditor: { setValue: mockedSetVariableEditor, getValue: () => '' },
-      // @ts-expect-error -- ignore
+      queryEditor: { setValue: mockedSetQueryEditor },
+      variableEditor: { setValue: mockedSetVariableEditor },
       headerEditor: { setValue: mockedSetHeaderEditor, getValue: () => '' },
     });
 
