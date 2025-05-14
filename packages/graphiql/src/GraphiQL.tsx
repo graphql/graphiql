@@ -898,8 +898,6 @@ const DefaultToolbarRenderProps: FC<{
 const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps;
 }> = ({ children = DefaultToolbarRenderProps }) => {
-  // eslint-disable-next-line react-hooks/react-compiler
-  'use no memo';
   if (typeof children !== 'function') {
     throw new TypeError(
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
