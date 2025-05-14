@@ -207,6 +207,8 @@ const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
+type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
+
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled,
@@ -348,8 +350,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       setClearStorageStatus('error');
     }
   }
-
-  type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
   const handlePersistHeaders: ButtonHandler = event => {
     setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
