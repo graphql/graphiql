@@ -795,16 +795,17 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 };
 
-const KeyMap: typeof KEY_MAP = structuredClone(KEY_MAP);
+const KeyMap = Object.fromEntries(
+  Object.entries(KEY_MAP).map(([key, [cmd]]) => {
+    const value =
+      isMacOs && ['searchInEditor', 'searchInDocs', 'runQuery'].includes(key)
+        ? cmd.replace('Ctrl', '⌘')
+        : cmd;
+    return [key, value];
+  }),
+) as Record<keyof typeof KEY_MAP, string>;
 
-if (isMacOs) {
-  for (const key of ['searchInEditor', 'searchInDocs', 'runQuery']) {
-    // @ts-expect-error -- fixme
-    KeyMap[key][0] = KeyMap[key][0].replace('Ctrl', '⌘');
-  }
-}
-
-const SHORT_KEYS: [string, readonly string[]][] = Object.entries({
+const SHORT_KEYS = Object.entries({
   'Search in editor': KeyMap.searchInEditor,
   'Search in documentation': KeyMap.searchInDocs,
   'Execute query': KeyMap.runQuery,
@@ -834,7 +835,7 @@ const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
           {SHORT_KEYS.map(([title, keys]) => (
             <tr key={title}>
               <td>
-                {keys[0].split('-').map((key, index, array) => (
+                {keys.split('-').map((key, index, array) => (
                   <Fragment key={key}>
                     <code className="graphiql-key">{key}</code>
                     {index !== array.length - 1 && ' + '}
@@ -907,7 +908,7 @@ const GraphiQLToolbar: FC<{
   const prettify = (
     <ToolbarButton
       onClick={prettifyEditors}
-      label={`Prettify query (${KeyMap.prettify[0]})`}
+      label={`Prettify query (${KeyMap.prettify})`}
     >
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
@@ -916,7 +917,7 @@ const GraphiQLToolbar: FC<{
   const merge = (
     <ToolbarButton
       onClick={mergeQuery}
-      label={`Merge fragments into query (${KeyMap.mergeFragments[0]})`}
+      label={`Merge fragments into query (${KeyMap.mergeFragments})`}
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
@@ -925,7 +926,7 @@ const GraphiQLToolbar: FC<{
   const copy = (
     <ToolbarButton
       onClick={copyQuery}
-      label={`Copy query (${KeyMap.copyQuery[0]})`}
+      label={`Copy query (${KeyMap.copyQuery})`}
     >
       <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
