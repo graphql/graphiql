@@ -6,9 +6,11 @@ import {
   parse,
   ValidationRule,
   visit,
+  print,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect, useRef } from 'react';
+import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from '../storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
@@ -202,11 +204,34 @@ interface EditorStore extends TabsState {
    * Headers to be set when opening a new tab
    */
   defaultHeaders?: string;
+
+  /**
+   * Invoked when the current contents of the query editor are copied to the
+   * clipboard.
+   * @param query The content that has been copied.
+   */
+  onCopyQuery?: (query: string) => void;
+
+  /**
+   * Invoked when the prettify callback is invoked.
+   * @param query The current value of the query editor.
+   * @default
+   * import { parse, print } from 'graphql'
+   *
+   * (query) => print(parse(query))
+   * @returns The formatted query.
+   */
+  onPrettifyQuery?: (query: string) => MaybePromise<string>;
 }
 
 type EditorContextProviderProps = Pick<
   EditorStore,
-  'onTabChange' | 'onEditOperationName' | 'defaultHeaders' | 'defaultQuery'
+  | 'onTabChange'
+  | 'onEditOperationName'
+  | 'defaultHeaders'
+  | 'defaultQuery'
+  | 'onCopyQuery'
+  | 'onPrettifyQuery'
 > & {
   children: ReactNode;
   /**
@@ -403,7 +428,11 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   initialQuery: null!,
   initialResponse: null!,
   initialVariables: null!,
+  onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 }));
+
+const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+  print(parse(query));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   externalFragments,
@@ -414,6 +443,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   children,
   shouldPersistHeaders = false,
   validationRules = [],
+  onCopyQuery,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
   ...props
 }) => {
   const storage = useStorage();
@@ -513,6 +544,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       defaultQuery,
       defaultHeaders,
       validationRules,
+      onCopyQuery,
+      onPrettifyQuery,
     });
   }, [
     $externalFragments,
@@ -521,6 +554,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     defaultQuery,
     defaultHeaders,
     validationRules,
+    onCopyQuery,
+    onPrettifyQuery,
   ]);
 
   if (!isMounted) {

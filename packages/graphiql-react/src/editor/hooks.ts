@@ -1,8 +1,8 @@
-import { fillLeafs, mergeAst, MaybePromise } from '@graphiql/toolkit';
+import { fillLeafs, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
-import { parse, print } from 'graphql';
+import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { schemaStore } from '../schema';
@@ -139,17 +139,8 @@ export function useKeyMap(
   }, [editor, keys, callback]);
 }
 
-export type UseCopyQueryArgs = {
-  /**
-   * Invoked when the current contents of the query editor are copied to the
-   * clipboard.
-   * @param query The content that has been copied.
-   */
-  onCopyQuery?: (query: string) => void;
-};
-
 export function copyQuery() {
-  const { queryEditor } = editorStore.getState();
+  const { queryEditor, onCopyQuery } = editorStore.getState();
   if (!queryEditor) {
     return;
   }
@@ -170,23 +161,6 @@ export function mergeQuery() {
 
   const { schema } = schemaStore.getState();
   queryEditor.setValue(print(mergeAst(documentAST, schema)));
-}
-
-export type UsePrettifyEditorsArgs = {
-  /**
-   * Invoked when the prettify callback is invoked.
-   * @param query The current value of the query editor.
-   * @default
-   * import { parse, print } from 'graphql'
-   *
-   * (query) => print(parse(query))
-   * @returns The formatted query.
-   */
-  onPrettifyQuery?: (query: string) => MaybePromise<string>;
-};
-
-function DEFAULT_PRETTIFY_QUERY(query: string): string {
-  return print(parse(query));
 }
 
 export async function prettifyEditors() {
