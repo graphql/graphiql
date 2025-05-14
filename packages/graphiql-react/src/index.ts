@@ -36,7 +36,6 @@ export * from './toolbar';
 
 export type {
   CommonEditorProps,
-  EditorContextType,
   KeyMap,
   ResponseTooltipType,
   TabsState,

@@ -8,9 +8,9 @@ import {
   isNonNullType,
 } from 'graphql';
 import { markdown } from '../markdown';
-import { PluginContextType } from '../plugin';
+import { pluginStore } from '../plugin';
 import { importCodeMirror } from './common';
-import { SchemaContextType } from '../schema';
+import { schemaStore } from '../schema';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
@@ -19,11 +19,6 @@ import { SchemaContextType } from '../schema';
 export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
-  {
-    schema,
-    setSchemaReference,
-  }: Pick<SchemaContextType, 'schema' | 'setSchemaReference'>,
-  plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ): void {
   void importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
@@ -134,18 +129,11 @@ export function onHasCompletion(
            *   default to using `border-box` for box sizing. When using
            *   `content-box` this would not be necessary.
            */
+          const { paddingBottom, maxHeight } = getComputedStyle(information);
           const defaultInformationPadding =
-            parseInt(
-              window
-                .getComputedStyle(information)
-                .paddingBottom.replace(/px$/, ''),
-              10,
-            ) || 0;
+            parseInt(paddingBottom.replace(/px$/, ''), 10) || 0;
           const defaultInformationMaxHeight =
-            parseInt(
-              window.getComputedStyle(information).maxHeight.replace(/px$/, ''),
-              10,
-            ) || 0;
+            parseInt(maxHeight.replace(/px$/, ''), 10) || 0;
           const handleScroll = () => {
             if (information) {
               information.style.paddingTop =
@@ -240,18 +228,16 @@ export function onHasCompletion(
   });
 
   function onClickHintInformation(event: Event) {
-    const referencePlugin = plugin?.referencePlugin;
-    if (
-      !schema ||
-      !referencePlugin ||
-      !(event.currentTarget instanceof HTMLElement)
-    ) {
+    const { schema, setSchemaReference } = schemaStore.getState();
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const element = event.currentTarget;
+    if (!schema || !referencePlugin || !(element instanceof HTMLElement)) {
       return;
     }
-    const typeName = event.currentTarget.textContent || '';
+    const typeName = element.textContent ?? '';
     const type = schema.getType(typeName);
     if (type) {
-      plugin.setVisiblePlugin(referencePlugin);
+      setVisiblePlugin(referencePlugin);
       setSchemaReference({ kind: 'Type', type });
       callback?.(type);
     }
