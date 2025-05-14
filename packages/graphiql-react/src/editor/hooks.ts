@@ -91,7 +91,7 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      onHasCompletion(instance, changeObj, type => {
+      void onHasCompletion(instance, changeObj, type => {
         callback?.({
           kind: 'Type',
           type,

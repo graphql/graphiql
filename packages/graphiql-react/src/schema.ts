@@ -20,7 +20,7 @@ import { createStore } from 'zustand';
 import { useEditorStore } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
-import { executionStore } from './execution';
+import { executionStore, useExecutionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -30,7 +30,6 @@ type SchemaStore = SchemaContextType &
     | 'inputValueDeprecation'
     | 'introspectionQueryName'
     | 'schemaDescription'
-    | 'fetcher'
     | 'onSchemaChange'
   >;
 
@@ -60,7 +59,6 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
   introspect() {
     const { schema, requestCounter, currentHeaders, onSchemaChange, ...rest } =
       get();
-    const { fetcher } = executionStore.getState()
 
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -99,7 +97,7 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
         introspectionQueryName,
         introspectionQuerySansSubscriptions,
       } = generateIntrospectionQuery(rest);
-
+      const { fetcher } = executionStore.getState();
       const fetch = fetcherReturnToPromise(
         fetcher(
           {
@@ -288,6 +286,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   schemaDescription = false,
 }) => {
   const headerEditor = useEditorStore(store => store.headerEditor);
+  const fetcher = useExecutionStore(store => store.fetcher);
 
   /**
    * Synchronize prop changes with state
@@ -325,6 +324,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     introspectionQueryName,
     schemaDescription,
     headerEditor,
+    fetcher, // should refresh schema with new fetcher after a fetchError
   ]);
 
   /**

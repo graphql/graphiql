@@ -16,7 +16,7 @@ import { executionStore } from '../execution';
 import { markdown, debounce } from '../utility';
 import { pluginStore } from '../plugin';
 import { schemaStore, useSchemaStore } from '../schema';
-import { storageStore } from '../storage';
+import { useStorage } from '../storage';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
@@ -122,6 +122,7 @@ export function useQueryEditor({
     variableEditor,
     updateActiveTabValues,
   } = useEditorStore();
+  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
@@ -316,7 +317,6 @@ export function useQueryEditor({
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
-        const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY_QUERY, query);
 
         const currentOperationName = editorInstance.operationName;
@@ -350,6 +350,7 @@ export function useQueryEditor({
     onEdit,
     queryEditor,
     setOperationName,
+    storage,
     variableEditor,
     updateActiveTabValues,
   ]);
