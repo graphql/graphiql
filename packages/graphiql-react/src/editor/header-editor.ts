@@ -16,6 +16,7 @@ import {
 } from './hooks';
 import { WriteableEditorProps } from './types';
 import { useExecutionStore } from '../execution';
+import { KEY_MAP } from '../constants';
 
 export type UseHeaderEditorArgs = WriteableEditorProps & {
   /**
@@ -115,8 +116,8 @@ export function useHeaderEditor({
   );
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
-  useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettifyEditors);
-  useKeyMap(headerEditor, ['Shift-Ctrl-M'], mergeQuery);
+  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
+  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   return ref;
 }

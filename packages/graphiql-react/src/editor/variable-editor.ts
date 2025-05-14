@@ -18,6 +18,7 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
+import { KEY_MAP } from '../constants';
 
 export type UseVariableEditorArgs = WriteableEditorProps & {
   /**
@@ -126,8 +127,8 @@ export function useVariableEditor({
   useCompletion(variableEditor, onClickReference);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
-  useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettifyEditors);
-  useKeyMap(variableEditor, ['Shift-Ctrl-M'], mergeQuery);
+  useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
+  useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   return ref;
 }

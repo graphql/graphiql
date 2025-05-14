@@ -38,6 +38,7 @@ import {
   WriteableEditorProps,
 } from './types';
 import { normalizeWhitespace } from './whitespace';
+import { KEY_MAP } from '../constants';
 
 export type UseQueryEditorArgs = WriteableEditorProps & {
   /**
@@ -391,7 +392,7 @@ export function useQueryEditor({
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copyQuery);
   // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
   useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], mergeQuery);
+  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   return ref;
 }

@@ -1,3 +1,11 @@
+export const KEY_MAP = {
+  prettify: ['Shift-Ctrl-P'],
+  mergeFragments: ['Shift-Ctrl-M'],
+  runQuery: ['Ctrl-Enter'],
+  autoComplete: ['Ctrl-Space'],
+  copyQuery: ['Shift-Ctrl-C']
+}
+
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # GraphiQL is an in-browser tool for writing, validating, and
@@ -20,13 +28,13 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
+#   Prettify query:  ${KEY_MAP.prettify[0]} (or press the prettify button)
 #
-#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
+#  Merge fragments:  ${KEY_MAP.mergeFragments[0]} (or press the merge button)
 #
-#        Run Query:  Ctrl-Enter (or press the play button)
+#        Run Query:  ${KEY_MAP.runQuery[0]} (or press the play button)
 #
-#    Auto Complete:  Ctrl-Space (or just start typing)
+#    Auto Complete:  ${KEY_MAP.autoComplete[0]} (or just start typing)
 #
 
 `;
