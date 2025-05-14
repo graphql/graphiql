@@ -949,8 +949,8 @@ const GraphiQLToolbar: FC<{
 };
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-const GraphiQLFooter: FC<{ children: ReactNode }> = props => {
-  return <div className="graphiql-footer">{props.children}</div>;
+const GraphiQLFooter: FC<{ children: ReactNode }> = ({ children }) => {
+  return <div className="graphiql-footer">{children}</div>;
 };
 
 function getChildComponentType(child: ReactNode) {
