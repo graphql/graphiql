@@ -67,13 +67,7 @@ export type ExecutionContextType = {
    * @default 0
    */
   queryId: number;
-};
 
-type ExecutionContextProviderProps = Pick<
-  ExecutionContextType,
-  'getDefaultFieldNames'
-> & {
-  children: ReactNode;
   /**
    * A function which accepts GraphQL HTTP parameters and returns a `Promise`,
    * `Observable` or `AsyncIterable` that returns the GraphQL response in
@@ -85,6 +79,13 @@ type ExecutionContextProviderProps = Pick<
    * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
    */
   fetcher: Fetcher;
+};
+
+type ExecutionContextProviderProps = Pick<
+  ExecutionContextType,
+  'getDefaultFieldNames' | 'fetcher'
+> & {
+  children: ReactNode;
   /**
    * This prop sets the operation name that is passed with a GraphQL request.
    */
@@ -100,6 +101,7 @@ export const executionStore = createStore<
   operationName: null,
   getDefaultFieldNames: undefined,
   queryId: 0,
+  fetcher: null!,
   stop() {
     const { subscription } = get();
     subscription?.unsubscribe();
@@ -117,7 +119,7 @@ export const executionStore = createStore<
     if (!queryEditor || !responseEditor) {
       return;
     }
-    const { subscription, operationName, queryId } = get();
+    const { subscription, operationName, queryId, fetcher } = get();
 
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {
@@ -213,7 +215,6 @@ export const executionStore = createStore<
           setResponse(formatResult(result));
         }
       };
-      const { fetcher } = schemaStore.getState();
       const fetch = fetcher(
         {
           query,
@@ -274,17 +275,13 @@ export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
   children,
   operationName = null,
 }) => {
-  if (!fetcher) {
-    throw new TypeError(
-      'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
   useEffect(() => {
     executionStore.setState({
       operationName,
       getDefaultFieldNames,
+      fetcher,
     });
-  }, [getDefaultFieldNames, operationName]);
+  }, [getDefaultFieldNames, operationName, fetcher]);
 
   return children as ReactElement;
 };
