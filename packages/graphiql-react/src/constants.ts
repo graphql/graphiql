@@ -11,8 +11,8 @@ export const KEY_MAP = Object.freeze({
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
+# GraphiQL is an in-browser tool for writing, validating, and testing
+# GraphQL queries.
 #
 # Type queries into this side of the screen, and you will see intelligent
 # typeaheads aware of the current GraphQL type schema and live syntax and
