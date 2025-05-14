@@ -5,8 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { usePluginStore } from '../plugin';
-import { schemaStore, useSchemaStore } from '../schema';
+import { schemaStore } from '../schema';
 import { storageStore } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
@@ -83,8 +82,6 @@ export function useCompletion(
   editor: CodeMirrorEditor | null,
   callback?: (reference: SchemaReference) => void,
 ) {
-  const { schema, setSchemaReference } = useSchemaStore();
-  const plugin = usePluginStore();
   useEffect(() => {
     if (!editor) {
       return;
@@ -94,12 +91,11 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      const schemaContext = { schema, setSchemaReference };
-      onHasCompletion(instance, changeObj, schemaContext, plugin, type => {
+      onHasCompletion(instance, changeObj, type => {
         callback?.({
           kind: 'Type',
           type,
-          schema: schema || undefined,
+          schema: schemaStore.getState().schema || undefined,
         });
       });
     };
@@ -114,7 +110,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, plugin, schema, setSchemaReference]);
+  }, [callback, editor]);
 }
 
 type EmptyCallback = () => void;
@@ -152,7 +148,7 @@ export type UseCopyQueryArgs = {
   onCopyQuery?: (query: string) => void;
 };
 
-export function useCopyQuery({ onCopyQuery }: UseCopyQueryArgs = {}) {
+export function useCopyQuery() {
   return () => {
     const { queryEditor } = editorStore.getState();
     if (!queryEditor) {
@@ -197,9 +193,7 @@ function DEFAULT_PRETTIFY_QUERY(query: string): string {
   return print(parse(query));
 }
 
-export function usePrettifyEditors({
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-}: UsePrettifyEditorsArgs = {}) {
+export function usePrettifyEditors() {
   return async () => {
     const { queryEditor, headerEditor, variableEditor } =
       editorStore.getState();
