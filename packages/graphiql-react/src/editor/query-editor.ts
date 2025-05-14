@@ -14,8 +14,8 @@ import {
 import { RefObject, useEffect, useRef } from 'react';
 import { executionStore } from '../execution';
 import { markdown } from '../markdown';
-import { usePluginStore } from '../plugin';
-import { useSchemaStore } from '../schema';
+import { pluginStore } from '../plugin';
+import { schemaStore, useSchemaStore } from '../schema';
 import { useStorage } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
@@ -28,8 +28,6 @@ import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
 import {
   useCompletion,
   useCopyQuery,
-  UseCopyQueryArgs,
-  UsePrettifyEditorsArgs,
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
@@ -42,22 +40,20 @@ import {
 } from './types';
 import { normalizeWhitespace } from './whitespace';
 
-export type UseQueryEditorArgs = WriteableEditorProps &
-  Pick<UseCopyQueryArgs, 'onCopyQuery'> &
-  Pick<UsePrettifyEditorsArgs, 'onPrettifyQuery'> & {
-    /**
-     * Invoked when a reference to the GraphQL schema (type or field) is clicked
-     * as part of the editor or one of its tooltips.
-     * @param reference The reference that has been clicked.
-     */
-    onClickReference?(reference: SchemaReference): void;
-    /**
-     * Invoked when the contents of the query editor change.
-     * @param value The new contents of the editor.
-     * @param documentAST The editor contents parsed into a GraphQL document.
-     */
-    onEdit?(value: string, documentAST?: DocumentNode): void;
-  };
+export type UseQueryEditorArgs = WriteableEditorProps & {
+  /**
+   * Invoked when a reference to the GraphQL schema (type or field) is clicked
+   * as part of the editor or one of its tooltips.
+   * @param reference The reference that has been clicked.
+   */
+  onClickReference?(reference: SchemaReference): void;
+  /**
+   * Invoked when the contents of the query editor change.
+   * @param value The new contents of the editor.
+   * @param documentAST The editor contents parsed into a GraphQL document.
+   */
+  onEdit?(value: string, documentAST?: DocumentNode): void;
+};
 
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
 function importCodeMirrorImports() {
@@ -114,19 +110,13 @@ function updateEditorExternalFragments(
   editor.options.hintOptions.externalFragments = externalFragmentList;
 }
 
-export function useQueryEditor(
-  {
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-    onClickReference,
-    onCopyQuery,
-    onEdit,
-    onPrettifyQuery,
-    readOnly = false,
-  }: UseQueryEditorArgs = {},
-  caller?: Function,
-) {
-  const { schema, setSchemaReference } = useSchemaStore();
+export function useQueryEditor({
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+  onClickReference,
+  onEdit,
+  readOnly = false,
+}: UseQueryEditorArgs = {}) {
   const {
     externalFragments,
     initialQuery,
@@ -138,10 +128,9 @@ export function useQueryEditor(
     updateActiveTabValues,
   } = useEditorStore();
   const storage = useStorage();
-  const plugin = usePluginStore();
-  const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
+  const copy = useCopyQuery();
   const merge = useMergeQuery();
-  const prettify = usePrettifyEditors({ onPrettifyQuery });
+  const prettify = usePrettifyEditors();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
@@ -150,16 +139,17 @@ export function useQueryEditor(
   >(() => {});
 
   useEffect(() => {
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const { setSchemaReference } = schemaStore.getState();
     onClickReferenceRef.current = reference => {
-      const referencePlugin = plugin?.referencePlugin;
       if (!referencePlugin) {
         return;
       }
-      plugin.setVisiblePlugin(referencePlugin);
+      setVisiblePlugin(referencePlugin);
       setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [onClickReference, plugin, setSchemaReference]);
+  }, [onClickReference]);
 
   useEffect(() => {
     let isActive = true;
@@ -306,7 +296,7 @@ export function useQueryEditor(
       editorInstance: CodeMirrorEditorWithOperationFacts,
     ) {
       const operationFacts = getOperationFacts(
-        schema,
+        schemaStore.getState().schema,
         editorInstance.getValue(),
       );
 
@@ -367,7 +357,6 @@ export function useQueryEditor(
   }, [
     onEdit,
     queryEditor,
-    schema,
     setOperationName,
     storage,
     variableEditor,
@@ -436,7 +425,7 @@ function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
-  const schema = useSchemaStore(store => store.schema);
+  const schema = useSchemaStore(store => store.schema ?? null);
 
   useEffect(() => {
     if (!editor) {
