@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { Fragment, useState, useEffect, Children, cloneElement } from 'react';
+import { Fragment, useState, useEffect, Children } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -36,14 +36,14 @@ import {
   ToolbarButton,
   Tooltip,
   UnStyledButton,
-  useCopyQuery,
+  copyQuery,
   useDragResize,
   useEditorStore,
   useExecutionStore,
   UseHeaderEditorArgs,
-  useMergeQuery,
+  mergeQuery,
   usePluginStore,
-  usePrettifyEditors,
+  prettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   useSchemaStore,
@@ -920,19 +920,16 @@ const GraphiQLToolbar: FC<{
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-  const onCopy = useCopyQuery();
-  const onMerge = useMergeQuery();
-  const onPrettify = usePrettifyEditors();
 
   const prettify = (
-    <ToolbarButton onClick={onPrettify} label="Prettify query (Shift-Ctrl-P)">
+    <ToolbarButton onClick={prettifyEditors} label="Prettify query (Shift-Ctrl-P)">
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
 
   const merge = (
     <ToolbarButton
-      onClick={onMerge}
+      onClick={mergeQuery}
       label="Merge fragments into query (Shift-Ctrl-M)"
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
@@ -940,7 +937,7 @@ const GraphiQLToolbar: FC<{
   );
 
   const copy = (
-    <ToolbarButton onClick={onCopy} label="Copy query (Shift-Ctrl-C)">
+    <ToolbarButton onClick={copyQuery} label="Copy query (Shift-Ctrl-C)">
       <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );

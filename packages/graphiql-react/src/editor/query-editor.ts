@@ -16,7 +16,7 @@ import { executionStore } from '../execution';
 import { markdown } from '../markdown';
 import { pluginStore } from '../plugin';
 import { schemaStore, useSchemaStore } from '../schema';
-import { useStorage } from '../storage';
+import { storageStore } from '../storage';
 import { debounce } from '../utility/debounce';
 import {
   commonKeys,
@@ -24,13 +24,17 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
+import {
+  CodeMirrorEditorWithOperationFacts,
+  editorStore,
+  useEditorStore,
+} from './context';
 import {
   useCompletion,
-  useCopyQuery,
+  copyQuery,
   useKeyMap,
-  useMergeQuery,
-  usePrettifyEditors,
+  mergeQuery,
+  prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
 import {
@@ -67,8 +71,6 @@ function importCodeMirrorImports() {
     import('codemirror-graphql/esm/mode.js'),
   ]);
 }
-
-const _useQueryEditor = useQueryEditor;
 
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
@@ -118,19 +120,13 @@ export function useQueryEditor({
   readOnly = false,
 }: UseQueryEditorArgs = {}) {
   const {
-    externalFragments,
     initialQuery,
     queryEditor,
     setOperationName,
     setQueryEditor,
-    validationRules,
     variableEditor,
     updateActiveTabValues,
   } = useEditorStore();
-  const storage = useStorage();
-  const copy = useCopyQuery();
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
@@ -325,6 +321,7 @@ export function useQueryEditor({
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
+        const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY_QUERY, query);
 
         const currentOperationName = editorInstance.operationName;
@@ -358,22 +355,13 @@ export function useQueryEditor({
     onEdit,
     queryEditor,
     setOperationName,
-    storage,
     variableEditor,
     updateActiveTabValues,
   ]);
 
   useSynchronizeSchema(queryEditor, codeMirrorRef);
-  useSynchronizeValidationRules(
-    queryEditor,
-    validationRules ?? null,
-    codeMirrorRef,
-  );
-  useSynchronizeExternalFragments(
-    queryEditor,
-    externalFragments,
-    codeMirrorRef,
-  );
+  useSynchronizeValidationRules(queryEditor, codeMirrorRef);
+  useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
 
   useCompletion(queryEditor, onClickReference);
 
@@ -406,17 +394,10 @@ export function useQueryEditor({
   };
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], runAtCursor);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
-  useKeyMap(
-    queryEditor,
-    [
-      'Shift-Ctrl-P',
-      // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-      'Shift-Ctrl-F',
-    ],
-    prettify,
-  );
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], merge);
+  useKeyMap(queryEditor, ['Shift-Ctrl-C'], copyQuery);
+  // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
+  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
+  useKeyMap(queryEditor, ['Shift-Ctrl-M'], mergeQuery);
 
   return ref;
 }
@@ -443,43 +424,41 @@ function useSynchronizeSchema(
 
 function useSynchronizeValidationRules(
   editor: CodeMirrorEditor | null,
-  validationRules: ValidationRule[] | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   useEffect(() => {
     if (!editor) {
       return;
     }
+    const { validationRules } = editorStore.getState();
 
     const didChange = editor.options.lint.validationRules !== validationRules;
     updateEditorValidationRules(editor, validationRules);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
-  }, [editor, validationRules, codeMirrorRef]);
+  }, [editor, codeMirrorRef]);
 }
 
 function useSynchronizeExternalFragments(
   editor: CodeMirrorEditor | null,
-  externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
-  const externalFragmentList = [...externalFragments.values()]; // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useMemo
-
   useEffect(() => {
     if (!editor) {
       return;
     }
-
+    const { externalFragments } = editorStore.getState();
+    const externalFragmentList = [...externalFragments.values()];
     const didChange =
       editor.options.lint.externalFragments !== externalFragmentList;
     updateEditorExternalFragments(editor, externalFragmentList);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
-  }, [editor, externalFragmentList, codeMirrorRef]);
+  }, [editor, codeMirrorRef]);
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
