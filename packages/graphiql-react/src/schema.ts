@@ -20,6 +20,7 @@ import { createStore } from 'zustand';
 import { useEditorStore } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
+import { executionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -57,14 +58,9 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
    * Fetch the schema
    */
   introspect() {
-    const {
-      schema,
-      requestCounter,
-      fetcher,
-      currentHeaders,
-      onSchemaChange,
-      ...rest
-    } = get();
+    const { schema, requestCounter, currentHeaders, onSchemaChange, ...rest } =
+      get();
+    const { fetcher } = executionStore.getState()
 
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -255,17 +251,7 @@ type SchemaContextProviderProps = {
    * @default false
    */
   dangerouslyAssumeSchemaIsValid?: boolean;
-  /**
-   * A function which accepts GraphQL HTTP parameters and returns a `Promise`,
-   * `Observable` or `AsyncIterable` that returns the GraphQL response in
-   * parsed JSON format.
-   *
-   * We suggest using the `createGraphiQLFetcher` utility from `@graphiql/toolkit`
-   * to create these fetcher functions.
-   *
-   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
-   */
-  fetcher: Fetcher;
+
   /**
    * Invoked after a new GraphQL schema was built. This includes both fetching
    * the schema via introspection and passing the schema using the `schema`
@@ -293,7 +279,6 @@ type SchemaContextProviderProps = {
 } & IntrospectionArgs;
 
 export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
-  fetcher,
   onSchemaChange,
   dangerouslyAssumeSchemaIsValid = false,
   children,
@@ -302,11 +287,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   introspectionQueryName = 'IntrospectionQuery',
   schemaDescription = false,
 }) => {
-  if (!fetcher) {
-    throw new TypeError(
-      'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
   const headerEditor = useEditorStore(store => store.headerEditor);
 
   /**
@@ -321,7 +301,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
         : validateSchema(newSchema);
 
     schemaStore.setState(({ requestCounter }) => ({
-      fetcher,
       onSchemaChange,
       schema: newSchema,
       inputValueDeprecation,
@@ -342,7 +321,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     schema,
     dangerouslyAssumeSchemaIsValid,
     onSchemaChange,
-    fetcher,
     inputValueDeprecation,
     introspectionQueryName,
     schemaDescription,
