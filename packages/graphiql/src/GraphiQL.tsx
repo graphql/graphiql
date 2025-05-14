@@ -83,34 +83,26 @@ export type GraphiQLProps =
  * @see https://github.com/graphql/graphiql#usage
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
-  dangerouslyAssumeSchemaIsValid,
-  confirmCloseTab,
-  defaultQuery,
-  defaultTabs,
-  externalFragments,
-  fetcher,
-  getDefaultFieldNames,
-  headers,
-  inputValueDeprecation,
-  introspectionQueryName,
   maxHistoryLength,
-  onEditOperationName,
-  onSchemaChange,
-  onTabChange,
-  onTogglePluginVisibility,
-  operationName,
   plugins = [],
   referencePlugin = DOC_EXPLORER_PLUGIN,
-  query,
-  response,
-  schema,
-  schemaDescription,
-  shouldPersistHeaders,
-  storage,
-  validationRules,
-  variables,
-  visiblePlugin,
-  defaultHeaders,
+
+  editorTheme,
+  keyMap,
+  readOnly,
+  onEditQuery,
+  onEditVariables,
+  onEditHeaders,
+  responseTooltip,
+  defaultEditorToolsVisibility,
+  isHeadersEditorEnabled,
+  showPersistHeadersSettings,
+  defaultTheme,
+  forcedTheme,
+  confirmCloseTab,
+  className,
+
+  children,
   ...props
 }) => {
   // @ts-expect-error -- Prop is removed
@@ -126,43 +118,33 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     );
   }
   const graphiqlProps = {
-    getDefaultFieldNames,
-    dangerouslyAssumeSchemaIsValid,
-    defaultQuery,
-    defaultHeaders,
-    defaultTabs,
-    externalFragments,
-    fetcher,
-    headers,
-    inputValueDeprecation,
-    introspectionQueryName,
-    onEditOperationName,
-    onSchemaChange,
-    onTabChange,
-    onTogglePluginVisibility,
     plugins: [referencePlugin, HISTORY_PLUGIN, ...plugins],
     referencePlugin,
-    visiblePlugin,
-    operationName,
-    query,
-    response,
-    schema,
-    schemaDescription,
-    shouldPersistHeaders,
-    storage,
-    validationRules,
-    variables,
+    ...props,
+  };
+  const interfaceProps: GraphiQLInterfaceProps = {
+    // TODO check if `showPersistHeadersSettings` is needed
+    showPersistHeadersSettings:
+      showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
+    editorTheme,
+    keyMap,
+    readOnly,
+    onEditQuery,
+    onEditVariables,
+    onEditHeaders,
+    responseTooltip,
+    defaultEditorToolsVisibility,
+    isHeadersEditorEnabled,
+    defaultTheme,
+    forcedTheme,
+    confirmCloseTab,
+    className,
   };
   return (
     <GraphiQLProvider {...graphiqlProps}>
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <DocExplorerContextProvider>
-          <GraphiQLInterface
-            confirmCloseTab={confirmCloseTab}
-            showPersistHeadersSettings={shouldPersistHeaders !== false}
-            forcedTheme={props.forcedTheme}
-            {...props}
-          />
+          <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
         </DocExplorerContextProvider>
       </HistoryContextProvider>
     </GraphiQLProvider>
