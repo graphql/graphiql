@@ -145,10 +145,6 @@ export function useKeyMap(
 
 export type UseCopyQueryArgs = {
   /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-  /**
    * Invoked when the current contents of the query editor are copied to the
    * clipboard.
    * @param query The content that has been copied.
