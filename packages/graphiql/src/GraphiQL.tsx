@@ -220,7 +220,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     tabs,
     activeTabIndex,
   } = useEditorStore();
-  const executionContext = useExecutionStore();
+  const isExecutionFetching = useExecutionStore(store => store.isFetching);
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
@@ -657,7 +657,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
               />
 
               <div className="graphiql-response" ref={editorResize.secondRef}>
-                {executionContext.isFetching ? <Spinner /> : null}
+                {isExecutionFetching && <Spinner />}
                 <ResponseEditor
                   editorTheme={props.editorTheme}
                   responseTooltip={props.responseTooltip}
