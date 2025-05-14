@@ -117,11 +117,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
-  const graphiqlProps = {
-    plugins: [referencePlugin, HISTORY_PLUGIN, ...plugins],
-    referencePlugin,
-    ...props,
-  };
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` is needed
     showPersistHeadersSettings:
@@ -142,7 +137,11 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     className,
   };
   return (
-    <GraphiQLProvider {...graphiqlProps}>
+    <GraphiQLProvider
+      plugins={[referencePlugin, HISTORY_PLUGIN, ...plugins]}
+      referencePlugin={referencePlugin}
+      {...props}
+    >
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <DocExplorerContextProvider>
           <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
