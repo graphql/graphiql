@@ -793,17 +793,23 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 };
 
-const modifier = isMacOs ? '⌘' : 'Ctrl';
+const KeyMap = structuredClone(KEY_MAP);
 
-const SHORT_KEYS = Object.entries({
-  'Search in editor': [modifier, 'F'],
-  'Search in documentation': [modifier, 'K'],
-  'Execute query': [modifier, 'Enter'],
-  'Prettify editors': KEY_MAP.prettify[0].split('-'),
+if (isMacOs) {
+  for (const key of ['searchInEditor', 'searchInDocs', 'runQuery']) {
+    KeyMap[key][0] = KeyMap[key][0].replace('Ctrl', '⌘');
+  }
+}
+
+const SHORT_KEYS: [string, string[]][] = Object.entries({
+  'Search in editor': KeyMap.searchInEditor,
+  'Search in documentation': KeyMap.searchInDocs,
+  'Execute query': KeyMap.runQuery,
+  'Prettify editors': KeyMap.prettify,
   'Merge fragments definitions into operation definition':
-    KEY_MAP.mergeFragments[0].split('-'),
-  'Copy query': KEY_MAP.copyQuery[0].split('-'),
-  'Re-fetch schema using introspection': KEY_MAP.refetchSchema[0].split('-'),
+    KeyMap.mergeFragments,
+  'Copy query': KeyMap.copyQuery,
+  'Re-fetch schema using introspection': KeyMap.refetchSchema,
 });
 
 interface ShortKeysProps {
@@ -825,7 +831,7 @@ const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
           {SHORT_KEYS.map(([title, keys]) => (
             <tr key={title}>
               <td>
-                {keys.map((key, index, array) => (
+                {keys[0].split('-').map((key, index, array) => (
                   <Fragment key={key}>
                     <code className="graphiql-key">{key}</code>
                     {index !== array.length - 1 && ' + '}

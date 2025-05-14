@@ -1,11 +1,13 @@
-export const KEY_MAP = {
+export const KEY_MAP = Object.freeze({
   prettify: ['Shift-Ctrl-P'],
   mergeFragments: ['Shift-Ctrl-M'],
   runQuery: ['Ctrl-Enter', 'Cmd-Enter'],
   autoComplete: ['Ctrl-Space'],
   copyQuery: ['Shift-Ctrl-C'],
   refetchSchema: ['Shift-Ctrl-R'],
-} as const
+  searchInEditor: ['Ctrl-F'],
+  searchInDocs: ['Ctrl-K'],
+});
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #

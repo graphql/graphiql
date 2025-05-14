@@ -117,7 +117,7 @@ type EmptyCallback = () => void;
 
 export function useKeyMap(
   editor: CodeMirrorEditor | null,
-  keys: string[],
+  keys: string[] | readonly string[],
   callback?: EmptyCallback,
 ) {
   useEffect(() => {
