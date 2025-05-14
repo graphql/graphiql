@@ -374,7 +374,7 @@ export function useQueryEditor(
     updateActiveTabValues,
   ]);
 
-  useSynchronizeSchema(queryEditor, schema ?? null, codeMirrorRef);
+  useSynchronizeSchema(queryEditor, codeMirrorRef);
   useSynchronizeValidationRules(
     queryEditor,
     validationRules ?? null,
@@ -434,9 +434,10 @@ export function useQueryEditor(
 
 function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
-  schema: GraphQLSchema | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
+  const schema = useSchemaStore(store => store.schema);
+
   useEffect(() => {
     if (!editor) {
       return;
@@ -445,8 +446,8 @@ function useSynchronizeSchema(
     const didChange = editor.options.lint.schema !== schema;
     updateEditorSchema(editor, schema);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
   }, [editor, schema, codeMirrorRef]);
 }
