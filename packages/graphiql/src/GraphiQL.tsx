@@ -906,7 +906,7 @@ const GraphiQLToolbar: FC<{
   const prettify = (
     <ToolbarButton
       onClick={prettifyEditors}
-      label="Prettify query (Shift-Ctrl-P)"
+      label={`Prettify query (${KeyMap.prettify[0]})`}
     >
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
@@ -915,14 +915,17 @@ const GraphiQLToolbar: FC<{
   const merge = (
     <ToolbarButton
       onClick={mergeQuery}
-      label="Merge fragments into query (Shift-Ctrl-M)"
+      label={`Merge fragments into query (${KeyMap.merge[0]})`}
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
 
   const copy = (
-    <ToolbarButton onClick={copyQuery} label="Copy query (Shift-Ctrl-C)">
+    <ToolbarButton
+      onClick={copyQuery}
+      label={`Copy query (${KeyMap.copyQuery[0]})`}
+    >
       <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
