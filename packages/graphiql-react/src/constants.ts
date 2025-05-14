@@ -1,7 +1,7 @@
 export const KEY_MAP = {
   prettify: ['Shift-Ctrl-P'],
   mergeFragments: ['Shift-Ctrl-M'],
-  runQuery: ['Ctrl-Enter'],
+  runQuery: ['Ctrl-Enter', 'Cmd-Enter'],
   autoComplete: ['Ctrl-Space'],
   copyQuery: ['Shift-Ctrl-C']
 }

@@ -115,7 +115,7 @@ export function useHeaderEditor({
     'headers',
   );
 
-  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
+  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
   useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
   useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
 

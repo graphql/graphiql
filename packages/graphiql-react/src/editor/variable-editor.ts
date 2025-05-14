@@ -126,7 +126,7 @@ export function useVariableEditor({
 
   useCompletion(variableEditor, onClickReference);
 
-  useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
+  useKeyMap(variableEditor, KEY_MAP.runQuery, run);
   useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
   useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
 
