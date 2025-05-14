@@ -54,6 +54,7 @@ import {
   WriteableEditorProps,
   isMacOs,
   cn,
+  KEY_MAP,
 } from '@graphiql/react';
 import {
   HistoryContextProvider,
@@ -798,14 +799,11 @@ const SHORT_KEYS = Object.entries({
   'Search in editor': [modifier, 'F'],
   'Search in documentation': [modifier, 'K'],
   'Execute query': [modifier, 'Enter'],
-  'Prettify editors': ['Ctrl', 'Shift', 'P'],
-  'Merge fragments definitions into operation definition': [
-    'Ctrl',
-    'Shift',
-    'M',
-  ],
-  'Copy query': ['Ctrl', 'Shift', 'C'],
-  'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
+  'Prettify editors': KEY_MAP.prettify[0].split('-'),
+  'Merge fragments definitions into operation definition':
+    KEY_MAP.mergeFragments[0].split('-'),
+  'Copy query': KEY_MAP.copyQuery[0].split('-'),
+  'Re-fetch schema using introspection': KEY_MAP.refetchSchema[0].split('-'),
 });
 
 interface ShortKeysProps {
