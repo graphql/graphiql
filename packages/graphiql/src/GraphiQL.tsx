@@ -411,21 +411,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     if (!shouldCloseTab) {
       return;
     }
-
-    if (activeTabIndex === index) {
-      executionContext.stop();
-    }
     closeTab(index);
   };
 
   const handleTabClick: MouseEventHandler<HTMLButtonElement> = event => {
     const index = Number(event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''));
-    /** TODO:
-     * Move everything after into `editorContext.changeTab` once zustand will be used instead of
-     * React context, since now we can't use execution context inside editor context, since editor
-     * context is used in execution context.
-     */
-    executionContext.stop();
     changeTab(index);
   };
 

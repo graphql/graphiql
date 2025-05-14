@@ -35,6 +35,7 @@ import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
+import { executionStore } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -328,6 +329,9 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     });
   },
   changeTab(index) {
+    const { stop } = executionStore.getState();
+    stop();
+
     set(current => {
       const { onTabChange } = get();
       const updated = {
@@ -355,8 +359,14 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     });
   },
   closeTab(index) {
+    const { activeTabIndex, onTabChange } = get();
+
+    if (activeTabIndex === index) {
+      const { stop } = executionStore.getState();
+      stop();
+    }
+
     set(current => {
-      const { onTabChange } = get();
       const updated = {
         tabs: current.tabs.filter((_tab, i) => index !== i),
         activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
