@@ -796,13 +796,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 };
 
 const KeyMap = Object.fromEntries(
-  Object.entries(KEY_MAP).map(([key, commands]) => {
-    const value =
-      isMacOs && ['searchInEditor', 'searchInDocs', 'runQuery'].includes(key)
-        ? commands[0].replace('Ctrl', '⌘')
-        : commands[0];
-    return [key, value];
-  }),
+  Object.entries(KEY_MAP).map(
+    // @ts-expect-error -- fixme
+    ([key, [cmd]]) => {
+      const value =
+        isMacOs && ['searchInEditor', 'searchInDocs', 'runQuery'].includes(key)
+          ? cmd.replace('Ctrl', '⌘')
+          : cmd;
+      return [key, value];
+    },
+  ),
 ) as Record<keyof typeof KEY_MAP, string>;
 
 const SHORT_KEYS = Object.entries({
