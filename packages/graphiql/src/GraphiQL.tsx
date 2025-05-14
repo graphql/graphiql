@@ -134,9 +134,10 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onEditHeaders,
     responseTooltip,
     defaultEditorToolsVisibility,
-    isHeadersEditorEnabled,
+    isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
     defaultTheme,
-    forcedTheme,
+    forcedTheme:
+      forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
     confirmCloseTab,
     className,
   };
@@ -206,8 +207,23 @@ const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
-export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
-  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
+export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+  forcedTheme,
+  isHeadersEditorEnabled,
+  defaultTheme,
+  defaultEditorToolsVisibility,
+  children,
+  confirmCloseTab,
+  className,
+  editorTheme,
+  keyMap,
+  onEditQuery,
+  readOnly,
+  onEditVariables,
+  onEditHeaders,
+  responseTooltip,
+  showPersistHeadersSettings,
+}) => {
   const {
     initialVariables,
     initialHeaders,
@@ -224,11 +240,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
-  const forcedTheme =
-    props.forcedTheme && THEMES.includes(props.forcedTheme)
-      ? props.forcedTheme
-      : undefined;
-  const { theme, setTheme } = useTheme(props.defaultTheme);
+  const { theme, setTheme } = useTheme(defaultTheme);
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -261,14 +273,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     direction: 'vertical',
     initiallyHidden: (() => {
       if (
-        props.defaultEditorToolsVisibility === 'variables' ||
-        props.defaultEditorToolsVisibility === 'headers'
+        defaultEditorToolsVisibility === 'variables' ||
+        defaultEditorToolsVisibility === 'headers'
       ) {
         return;
       }
 
-      if (typeof props.defaultEditorToolsVisibility === 'boolean') {
-        return props.defaultEditorToolsVisibility ? undefined : 'second';
+      if (typeof defaultEditorToolsVisibility === 'boolean') {
+        return defaultEditorToolsVisibility ? undefined : 'second';
       }
 
       return initialVariables || initialHeaders ? undefined : 'second';
@@ -281,10 +293,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     'variables' | 'headers'
   >(() => {
     if (
-      props.defaultEditorToolsVisibility === 'variables' ||
-      props.defaultEditorToolsVisibility === 'headers'
+      defaultEditorToolsVisibility === 'variables' ||
+      defaultEditorToolsVisibility === 'headers'
     ) {
-      return props.defaultEditorToolsVisibility;
+      return defaultEditorToolsVisibility;
     }
     return !initialVariables && initialHeaders && isHeadersEditorEnabled
       ? 'headers'
@@ -297,7 +309,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     'success' | 'error' | null
   >(null);
 
-  const { logo, toolbar, footer } = Children.toArray(props.children).reduce<{
+  const { logo, toolbar, footer } = Children.toArray(children).reduce<{
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
@@ -395,7 +407,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
       setClearStorageStatus(null);
     }
   };
-  const confirmClose = props.confirmCloseTab;
 
   const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
     const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
@@ -406,7 +417,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
      * React context, since now we can't use execution context inside editor context, since editor
      * context is used in execution context.
      */
-    const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
+    const shouldCloseTab = confirmCloseTab
+      ? await confirmCloseTab(index)
+      : true;
 
     if (!shouldCloseTab) {
       return;
@@ -421,7 +434,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
 
   return (
     <Tooltip.Provider>
-      <div className={cn('graphiql-container', props.className)}>
+      <div className={cn('graphiql-container', className)}>
         <div className="graphiql-sidebar">
           {plugins.map((plugin, index) => {
             const isVisible = plugin === visiblePlugin;
@@ -543,11 +556,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                   ref={editorToolsResize.firstRef}
                 >
                   <QueryEditor
-                    editorTheme={props.editorTheme}
-                    keyMap={props.keyMap}
+                    editorTheme={editorTheme}
+                    keyMap={keyMap}
                     onClickReference={onClickReference}
-                    onEdit={props.onEditQuery}
-                    readOnly={props.readOnly}
+                    onEdit={onEditQuery}
+                    readOnly={readOnly}
                   />
                   <div
                     className="graphiql-toolbar"
@@ -632,20 +645,20 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                   ref={editorToolsResize.secondRef}
                 >
                   <VariableEditor
-                    editorTheme={props.editorTheme}
+                    editorTheme={editorTheme}
                     isHidden={activeSecondaryEditor !== 'variables'}
-                    keyMap={props.keyMap}
-                    onEdit={props.onEditVariables}
+                    keyMap={keyMap}
+                    onEdit={onEditVariables}
                     onClickReference={onClickReference}
-                    readOnly={props.readOnly}
+                    readOnly={readOnly}
                   />
                   {isHeadersEditorEnabled && (
                     <HeaderEditor
-                      editorTheme={props.editorTheme}
+                      editorTheme={editorTheme}
                       isHidden={activeSecondaryEditor !== 'headers'}
-                      keyMap={props.keyMap}
-                      onEdit={props.onEditHeaders}
-                      readOnly={props.readOnly}
+                      keyMap={keyMap}
+                      onEdit={onEditHeaders}
+                      readOnly={readOnly}
                     />
                   )}
                 </section>
@@ -659,9 +672,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
               <div className="graphiql-response" ref={editorResize.secondRef}>
                 {isExecutionFetching && <Spinner />}
                 <ResponseEditor
-                  editorTheme={props.editorTheme}
-                  responseTooltip={props.responseTooltip}
-                  keyMap={props.keyMap}
+                  editorTheme={editorTheme}
+                  responseTooltip={responseTooltip}
+                  keyMap={keyMap}
                 />
                 {footer}
               </div>
@@ -679,7 +692,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             <Dialog.Close />
           </div>
           <div className="graphiql-dialog-section">
-            <ShortKeys keyMap={props.keyMap} />
+            <ShortKeys keyMap={keyMap} />
           </div>
         </Dialog>
         <Dialog
@@ -692,7 +705,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             </Dialog.Title>
             <Dialog.Close />
           </div>
-          {props.showPersistHeadersSettings ? (
+          {showPersistHeadersSettings ? (
             <div className="graphiql-dialog-section">
               <div>
                 <div className="graphiql-dialog-section-title">
