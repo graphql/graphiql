@@ -411,12 +411,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
     const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
     const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
-
-    /** TODO:
-     * Move everything after into `editorContext.closeTab` once zustand will be used instead of
-     * React context, since now we can't use execution context inside editor context, since editor
-     * context is used in execution context.
-     */
     const shouldCloseTab = confirmCloseTab
       ? await confirmCloseTab(index)
       : true;
