@@ -50,6 +50,11 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   children,
 }) => {
+  if (!fetcher) {
+    throw new TypeError(
+      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
   const editorContextProps = {
     defaultHeaders,
     defaultQuery,
