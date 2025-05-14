@@ -164,7 +164,8 @@ export function mergeQuery() {
 }
 
 export async function prettifyEditors() {
-  const { queryEditor, headerEditor, variableEditor } = editorStore.getState();
+  const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+    editorStore.getState();
   if (variableEditor) {
     const variableEditorContent = variableEditor.getValue();
     try {

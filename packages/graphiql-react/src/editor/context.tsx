@@ -221,7 +221,7 @@ interface EditorStore extends TabsState {
    * (query) => print(parse(query))
    * @returns The formatted query.
    */
-  onPrettifyQuery?: (query: string) => MaybePromise<string>;
+  onPrettifyQuery: (query: string) => MaybePromise<string>;
 }
 
 type EditorContextProviderProps = Pick<
@@ -231,7 +231,6 @@ type EditorContextProviderProps = Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
-  | 'onPrettifyQuery'
 > & {
   children: ReactNode;
   /**
@@ -297,6 +296,7 @@ type EditorContextProviderProps = Pick<
    * typing in the editor.
    */
   variables?: string;
+  onPrettifyQuery?: EditorStore['onPrettifyQuery'];
 };
 
 export const editorStore = createStore<EditorStore>((set, get) => ({
