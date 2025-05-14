@@ -24,7 +24,7 @@ import { createStore } from 'zustand';
 import { editorStore } from './editor/context';
 import { createBoundedUseStore } from './utility';
 
-export type ExecutionContextType = {
+type ExecutionContextType = {
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the

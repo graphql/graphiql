@@ -21,4 +21,6 @@
   - PluginContextProvider
   - SchemaContextProvider
   - StorageContextProvider
+  - ExecutionContextType
+  - PluginContextType
 

@@ -2,30 +2,24 @@ import './style/root.css';
 
 export {
   useEditorStore,
-
   QueryEditor,
   useQueryEditor,
-
+  useOperationsEditorState,
   VariableEditor,
   useVariableEditor,
-
+  useVariablesEditorState,
   HeaderEditor,
   useHeaderEditor,
-
+  useHeadersEditorState,
   ResponseEditor,
   useResponseEditor,
-
   copyQuery,
   prettifyEditors,
   mergeQuery,
-
   ImagePreview,
   getAutoCompleteLeafs,
   useEditorState,
-  useOperationsEditorState,
   useOptimisticState,
-  useVariablesEditorState,
-  useHeadersEditorState,
 } from './editor';
 export { useExecutionStore } from './execution';
 export { usePluginStore } from './plugin';
@@ -50,8 +44,7 @@ export type {
   UseVariableEditorArgs,
   WriteableEditorProps,
 } from './editor';
-export type { ExecutionContextType } from './execution';
-export type { GraphiQLPlugin, PluginContextType } from './plugin';
+export type { GraphiQLPlugin } from './plugin';
 export type { SchemaContextType } from './schema';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
