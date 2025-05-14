@@ -793,15 +793,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 };
 
-const KeyMap = structuredClone(KEY_MAP);
+const KeyMap: typeof KEY_MAP = structuredClone(KEY_MAP);
 
 if (isMacOs) {
   for (const key of ['searchInEditor', 'searchInDocs', 'runQuery']) {
+    // @ts-expect-error -- fixme
     KeyMap[key][0] = KeyMap[key][0].replace('Ctrl', '⌘');
   }
 }
 
-const SHORT_KEYS: [string, string[]][] = Object.entries({
+const SHORT_KEYS: [string, readonly string[]][] = Object.entries({
   'Search in editor': KeyMap.searchInEditor,
   'Search in documentation': KeyMap.searchInDocs,
   'Execute query': KeyMap.runQuery,
@@ -915,7 +916,7 @@ const GraphiQLToolbar: FC<{
   const merge = (
     <ToolbarButton
       onClick={mergeQuery}
-      label={`Merge fragments into query (${KeyMap.merge[0]})`}
+      label={`Merge fragments into query (${KeyMap.mergeFragments[0]})`}
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
