@@ -362,9 +362,7 @@ export function useQueryEditor({
   useCompletion(queryEditor, onClickReference);
 
   const runAtCursor = () => {
-    const { run } = executionStore.getState();
-
-    if (!queryEditor || !queryEditor.operations || !queryEditor.hasFocus()) {
+    if (!queryEditor?.operations || !queryEditor.hasFocus()) {
       return;
     }
 
@@ -385,7 +383,7 @@ export function useQueryEditor({
     if (operationName && operationName !== queryEditor.operationName) {
       setOperationName(operationName);
     }
-
+    const { run } = executionStore.getState();
     run();
   };
 
