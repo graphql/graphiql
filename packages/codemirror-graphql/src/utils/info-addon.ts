@@ -119,7 +119,8 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
   document.body.append(popup);
 
   const popupBox = popup.getBoundingClientRect();
-  const { marginLeft, marginRight, marginBottom, marginTop } = getComputedStyle(popup);
+  const { marginLeft, marginRight, marginBottom, marginTop } =
+    getComputedStyle(popup);
 
   const popupWidth =
     popupBox.right -

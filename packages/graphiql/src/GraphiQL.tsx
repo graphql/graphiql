@@ -922,7 +922,10 @@ const GraphiQLToolbar: FC<{
   }
 
   const prettify = (
-    <ToolbarButton onClick={prettifyEditors} label="Prettify query (Shift-Ctrl-P)">
+    <ToolbarButton
+      onClick={prettifyEditors}
+      label="Prettify query (Shift-Ctrl-P)"
+    >
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
