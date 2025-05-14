@@ -2,20 +2,26 @@ import './style/root.css';
 
 export {
   useEditorStore,
+  //
   QueryEditor,
   useQueryEditor,
   useOperationsEditorState,
+  //
   VariableEditor,
   useVariableEditor,
   useVariablesEditorState,
+  //
   HeaderEditor,
   useHeaderEditor,
   useHeadersEditorState,
+  //
   ResponseEditor,
   useResponseEditor,
+  //
   copyQuery,
   prettifyEditors,
   mergeQuery,
+  //
   ImagePreview,
   getAutoCompleteLeafs,
   useEditorState,
