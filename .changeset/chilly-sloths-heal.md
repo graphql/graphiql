@@ -14,3 +14,4 @@
 - replace `onPrettifyEditors` hook with `prettifyEditors` function
 - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore`
 - add `fetcher` to `executionStore`
+- add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
