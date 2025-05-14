@@ -13,22 +13,17 @@ import {
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
 import { executionStore } from '../execution';
-import { markdown } from '../markdown';
+import { markdown, debounce } from '../utility';
 import { pluginStore } from '../plugin';
 import { schemaStore, useSchemaStore } from '../schema';
 import { storageStore } from '../storage';
-import { debounce } from '../utility/debounce';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import {
-  CodeMirrorEditorWithOperationFacts,
-  editorStore,
-  useEditorStore,
-} from './context';
+import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
 import {
   useCompletion,
   copyQuery,
@@ -426,11 +421,11 @@ function useSynchronizeValidationRules(
   editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
+  const validationRules = useEditorStore(store => store.validationRules);
   useEffect(() => {
     if (!editor) {
       return;
     }
-    const { validationRules } = editorStore.getState();
 
     const didChange = editor.options.lint.validationRules !== validationRules;
     updateEditorValidationRules(editor, validationRules);
@@ -438,18 +433,18 @@ function useSynchronizeValidationRules(
     if (didChange) {
       codeMirrorRef.current?.signal(editor, 'change', editor);
     }
-  }, [editor, codeMirrorRef]);
+  }, [editor, validationRules, codeMirrorRef]);
 }
 
 function useSynchronizeExternalFragments(
   editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
+  const externalFragments = useEditorStore(store => store.externalFragments);
   useEffect(() => {
     if (!editor) {
       return;
     }
-    const { externalFragments } = editorStore.getState();
     const externalFragmentList = [...externalFragments.values()];
     const didChange =
       editor.options.lint.externalFragments !== externalFragmentList;
@@ -458,7 +453,7 @@ function useSynchronizeExternalFragments(
     if (didChange) {
       codeMirrorRef.current?.signal(editor, 'change', editor);
     }
-  }, [editor, codeMirrorRef]);
+  }, [editor, externalFragments, codeMirrorRef]);
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
