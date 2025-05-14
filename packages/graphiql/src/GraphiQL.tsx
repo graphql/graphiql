@@ -349,11 +349,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
   }
 
-  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> = event => {
+  type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
+
+  const handlePersistHeaders: ButtonHandler = event => {
     setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
   };
 
-  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleChangeTheme: ButtonHandler = event => {
     const selectedTheme = event.currentTarget.dataset.theme as
       | 'light'
       | 'dark'
@@ -361,13 +363,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     setTheme(selectedTheme || null);
   };
 
-  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleShowDialog: ButtonHandler = event => {
     setShowDialog(
       event.currentTarget.dataset.value as 'short-keys' | 'settings',
     );
   };
 
-  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handlePluginClick: ButtonHandler = event => {
     const pluginIndex = Number(event.currentTarget.dataset.index!);
     const plugin = plugins.find((_, index) => pluginIndex === index)!;
     const isVisible = plugin === visiblePlugin;
@@ -380,7 +382,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
   };
 
-  const handleToolsTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleToolsTabClick: ButtonHandler = event => {
     if (editorToolsResize.hiddenElement === 'second') {
       editorToolsResize.setHiddenElement(null);
     }
@@ -389,26 +391,26 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     );
   };
 
-  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> = () => {
+  const toggleEditorTools: ButtonHandler = () => {
     editorToolsResize.setHiddenElement(
       editorToolsResize.hiddenElement === 'second' ? null : 'second',
     );
   };
 
-  const handleOpenShortKeysDialog = (isOpen: boolean) => {
+  function handleOpenShortKeysDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
     }
-  };
+  }
 
-  const handleOpenSettingsDialog = (isOpen: boolean) => {
+  function handleOpenSettingsDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
       setClearStorageStatus(null);
     }
-  };
+  }
 
-  const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
+  const handleTabClose: ButtonHandler = async event => {
     const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
     const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
     const shouldCloseTab = confirmCloseTab
@@ -421,7 +423,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     closeTab(index);
   };
 
-  const handleTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleTabClick: ButtonHandler = event => {
     const index = Number(event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''));
     changeTab(index);
   };
