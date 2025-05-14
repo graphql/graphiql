@@ -381,26 +381,28 @@ export function useOptimisticState([
   useEffect(() => {
     if (lastStateRef.current.last === upstreamState) {
       // No change; ignore
-    } else {
-      lastStateRef.current.last = upstreamState;
-      if (lastStateRef.current.pending === null) {
-        // Gracefully accept update from upstream
-        setOperationsText(upstreamState);
-      } else if (lastStateRef.current.pending === upstreamState) {
-        // They received our update and sent it back to us - clear pending, and
-        // send next if appropriate
-        lastStateRef.current.pending = null;
-        if (upstreamState !== state) {
-          // Change has occurred; upstream it
-          lastStateRef.current.pending = state;
-          upstreamSetState(state);
-        }
-      } else {
-        // They got a different update; overwrite our local state (!!)
-        lastStateRef.current.pending = null;
-        setOperationsText(upstreamState);
-      }
+      return;
     }
+    lastStateRef.current.last = upstreamState;
+    if (lastStateRef.current.pending === null) {
+      // Gracefully accept update from upstream
+      setOperationsText(upstreamState);
+      return;
+    }
+    if (lastStateRef.current.pending === upstreamState) {
+      // They received our update and sent it back to us - clear pending, and
+      // send next if appropriate
+      lastStateRef.current.pending = null;
+      if (upstreamState !== state) {
+        // Change has occurred; upstream it
+        lastStateRef.current.pending = state;
+        upstreamSetState(state);
+      }
+      return;
+    }
+    // They got a different update; overwrite our local state (!!)
+    lastStateRef.current.pending = null;
+    setOperationsText(upstreamState);
   }, [upstreamState, state, upstreamSetState]);
 
   const setState = (newState: string) => {
