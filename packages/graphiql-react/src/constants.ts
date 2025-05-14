@@ -3,8 +3,9 @@ export const KEY_MAP = {
   mergeFragments: ['Shift-Ctrl-M'],
   runQuery: ['Ctrl-Enter', 'Cmd-Enter'],
   autoComplete: ['Ctrl-Space'],
-  copyQuery: ['Shift-Ctrl-C']
-}
+  copyQuery: ['Shift-Ctrl-C'],
+  refetchSchema: ['Shift-Ctrl-R'],
+} as const
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
