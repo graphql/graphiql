@@ -1,34 +1,9 @@
-import type { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
-import {
-  useEditorStore,
-  Tooltip,
-  StorageContextProvider,
-} from '@graphiql/react';
-
-vi.mock('@graphiql/react', async () => {
-  const originalModule = await vi.importActual('@graphiql/react');
-  const mockedSetQueryEditor = vi.fn();
-  const mockedSetVariableEditor = vi.fn();
-  const mockedSetHeaderEditor = vi.fn();
-  return {
-    ...originalModule,
-    useEditorStore() {
-      return {
-        queryEditor: { setValue: mockedSetQueryEditor },
-        variableEditor: { setValue: mockedSetVariableEditor },
-        headerEditor: { setValue: mockedSetHeaderEditor },
-        tabs: [],
-      };
-    },
-    useExecutionStore() {
-      return {};
-    },
-  };
-});
+import { Tooltip, GraphiQLProvider } from '@graphiql/react';
+import { editorStore } from '../../../graphiql-react/dist/editor/context';
 
 const mockQuery = /* GraphQL */ `
   query Test($string: String) {
@@ -49,11 +24,11 @@ type QueryHistoryItemProps = ComponentProps<typeof HistoryItem>;
 const QueryHistoryItemWithContext: typeof HistoryItem = props => {
   return (
     <Tooltip.Provider>
-      <StorageContextProvider>
+      <GraphiQLProvider fetcher={vi.fn()}>
         <HistoryContextProvider>
           <HistoryItem {...props} />
         </HistoryContextProvider>
-      </StorageContextProvider>
+      </GraphiQLProvider>
     </Tooltip.Provider>
   );
 };
@@ -78,15 +53,6 @@ function getMockProps(
 }
 
 describe('QueryHistoryItem', () => {
-  const store = useEditorStore();
-  const mockedSetQueryEditor = store.queryEditor!.setValue as Mock;
-  const mockedSetVariableEditor = store.variableEditor!.setValue as Mock;
-  const mockedSetHeaderEditor = store.headerEditor!.setValue as Mock;
-  beforeEach(() => {
-    mockedSetQueryEditor.mockClear();
-    mockedSetVariableEditor.mockClear();
-    mockedSetHeaderEditor.mockClear();
-  });
   it('renders operationName if label is not provided', () => {
     const otherMockProps = { item: { operationName: mockOperationName } };
     const props = getMockProps(otherMockProps);
@@ -108,6 +74,18 @@ describe('QueryHistoryItem', () => {
   });
 
   it('selects the item when history label button is clicked', () => {
+    const mockedSetQueryEditor = vi.fn();
+    const mockedSetVariableEditor = vi.fn();
+    const mockedSetHeaderEditor = vi.fn();
+    editorStore.setState({
+      // @ts-expect-error -- ignore
+      queryEditor: { setValue: mockedSetQueryEditor, getValue: () => '' },
+      // @ts-expect-error -- ignore
+      variableEditor: { setValue: mockedSetVariableEditor, getValue: () => '' },
+      // @ts-expect-error -- ignore
+      headerEditor: { setValue: mockedSetHeaderEditor, getValue: () => '' },
+    });
+
     const otherMockProps = { item: { operationName: mockOperationName } };
     const mockProps = getMockProps(otherMockProps);
     const { container } = render(

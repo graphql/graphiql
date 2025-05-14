@@ -1,5 +1,4 @@
 import {
-  Fetcher,
   FetcherOpts,
   fetcherReturnToPromise,
   formatError,

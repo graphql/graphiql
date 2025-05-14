@@ -22,7 +22,6 @@ import getValue from 'get-value';
 import { getAutoCompleteLeafs } from './editor';
 import { createStore } from 'zustand';
 import { editorStore } from './editor/context';
-import { schemaStore } from './schema';
 import { createBoundedUseStore } from './utility';
 
 export type ExecutionContextType = {
