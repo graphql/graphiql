@@ -9,7 +9,7 @@ import {
   print,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect, useRef } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from '../storage';
@@ -500,14 +500,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     return map;
   })();
 
-  const initialRendered = useRef(false);
-
   useEffect(() => {
-    if (initialRendered.current) {
-      return;
-    }
-    initialRendered.current = true;
-
     // We only need to compute it lazily during the initial render.
     const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
     const variables =
@@ -515,7 +508,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
     const response = props.response ?? '';
 
-    const tabState = getDefaultTabState({
+    const { tabs, activeTabIndex } = getDefaultTabState({
       query,
       variables,
       headers,
@@ -524,7 +517,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       defaultHeaders,
       shouldPersistHeaders,
     });
-    storeTabs(tabState);
+    storeTabs({ tabs, activeTabIndex });
 
     const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
 
@@ -535,11 +528,10 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
 
     editorStore.setState({
       shouldPersistHeaders: $shouldPersistHeaders,
-      ...tabState,
+      tabs,
+      activeTabIndex,
       initialQuery:
-        query ??
-        (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
-        '',
+        query ?? (activeTabIndex === 0 ? tabs[0].query : null) ?? '',
       initialVariables: variables ?? '',
       initialHeaders: headers ?? defaultHeaders ?? '',
       initialResponse: response,
