@@ -175,7 +175,6 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
 
 export type GraphiQLInterfaceProps = WriteableEditorProps &
   AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
-  Pick<UseQueryEditorArgs, 'onCopyQuery' | 'onPrettifyQuery'> &
   AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
   AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
   Pick<UseResponseEditorArgs, 'responseTooltip'> & {
@@ -327,11 +326,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           acc.logo = curr;
           break;
         case GraphiQL.Toolbar:
-          // @ts-expect-error -- fix type error
-          acc.toolbar = cloneElement(curr, {
-            onCopyQuery: props.onCopyQuery,
-            onPrettifyQuery: props.onPrettifyQuery,
-          });
+          acc.toolbar = curr;
           break;
         case GraphiQL.Footer:
           acc.footer = curr;
@@ -341,13 +336,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     },
     {
       logo: <GraphiQL.Logo />,
-      toolbar: (
-        <GraphiQL.Toolbar
-          // @ts-expect-error -- Prop exists but hidden for users
-          onCopyQuery={props.onCopyQuery}
-          onPrettifyQuery={props.onPrettifyQuery}
-        />
-      ),
+      toolbar: <GraphiQL.Toolbar />,
     },
   );
 
@@ -585,8 +574,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                     editorTheme={props.editorTheme}
                     keyMap={props.keyMap}
                     onClickReference={onClickReference}
-                    onCopyQuery={props.onCopyQuery}
-                    onPrettifyQuery={props.onPrettifyQuery}
                     onEdit={props.onEditQuery}
                     readOnly={props.readOnly}
                   />
@@ -925,13 +912,7 @@ const DefaultToolbarRenderProps: FC<{
 // Configure the UI by providing this Component as a child of GraphiQL.
 const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps;
-}> = ({
-  children = DefaultToolbarRenderProps,
-  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
-  onCopyQuery,
-  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onPrettifyQuery
-  onPrettifyQuery,
-}) => {
+}> = ({ children = DefaultToolbarRenderProps }) => {
   // eslint-disable-next-line react-hooks/react-compiler
   'use no memo';
   if (typeof children !== 'function') {
@@ -939,9 +920,9 @@ const GraphiQLToolbar: FC<{
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-  const onCopy = useCopyQuery({ onCopyQuery });
+  const onCopy = useCopyQuery();
   const onMerge = useMergeQuery();
-  const onPrettify = usePrettifyEditors({ onPrettifyQuery });
+  const onPrettify = usePrettifyEditors();
 
   const prettify = (
     <ToolbarButton onClick={onPrettify} label="Prettify query (Shift-Ctrl-P)">
