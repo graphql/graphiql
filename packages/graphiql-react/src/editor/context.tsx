@@ -299,6 +299,9 @@ type EditorContextProviderProps = Pick<
   onPrettifyQuery?: EditorStore['onPrettifyQuery'];
 };
 
+const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+  print(parse(query));
+
 export const editorStore = createStore<EditorStore>((set, get) => ({
   tabs: null!,
   activeTabIndex: null!,
@@ -430,9 +433,6 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   initialVariables: null!,
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 }));
-
-const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
-  print(parse(query));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   externalFragments,
