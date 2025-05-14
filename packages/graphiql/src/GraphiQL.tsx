@@ -334,20 +334,20 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     },
   );
 
-  const onClickReference = () => {
+  function onClickReference() {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  };
+  }
 
-  const handleClearData = () => {
+  function handleClearData() {
     try {
       storageContext.clear();
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
     }
-  };
+  }
 
   const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> = event => {
     setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
