@@ -9,9 +9,9 @@ export { EditorContextProvider, useEditorStore } from './context';
 export { useHeaderEditor } from './header-editor';
 export {
   getAutoCompleteLeafs,
-  useCopyQuery,
-  useMergeQuery,
-  usePrettifyEditors,
+  copyQuery,
+  mergeQuery,
+  prettifyEditors,
   useEditorState,
   useOperationsEditorState,
   useOptimisticState,
