@@ -7,7 +7,7 @@ export const KEY_MAP = Object.freeze({
   refetchSchema: ['Shift-Ctrl-R'],
   searchInEditor: ['Ctrl-F'],
   searchInDocs: ['Ctrl-K'],
-});
+} as const);
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
