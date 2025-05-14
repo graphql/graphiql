@@ -148,32 +148,28 @@ export type UseCopyQueryArgs = {
   onCopyQuery?: (query: string) => void;
 };
 
-export function useCopyQuery() {
-  return () => {
-    const { queryEditor } = editorStore.getState();
-    if (!queryEditor) {
-      return;
-    }
+export function copyQuery() {
+  const { queryEditor } = editorStore.getState();
+  if (!queryEditor) {
+    return;
+  }
 
-    const query = queryEditor.getValue();
-    copyToClipboard(query);
+  const query = queryEditor.getValue();
+  copyToClipboard(query);
 
-    onCopyQuery?.(query);
-  };
+  onCopyQuery?.(query);
 }
 
-export function useMergeQuery() {
-  return () => {
-    const { queryEditor } = editorStore.getState();
-    const documentAST = queryEditor?.documentAST;
-    const query = queryEditor?.getValue();
-    if (!documentAST || !query) {
-      return;
-    }
+export function mergeQuery() {
+  const { queryEditor } = editorStore.getState();
+  const documentAST = queryEditor?.documentAST;
+  const query = queryEditor?.getValue();
+  if (!documentAST || !query) {
+    return;
+  }
 
-    const { schema } = schemaStore.getState();
-    queryEditor.setValue(print(mergeAst(documentAST, schema)));
-  };
+  const { schema } = schemaStore.getState();
+  queryEditor.setValue(print(mergeAst(documentAST, schema)));
 }
 
 export type UsePrettifyEditorsArgs = {
@@ -193,55 +189,52 @@ function DEFAULT_PRETTIFY_QUERY(query: string): string {
   return print(parse(query));
 }
 
-export function usePrettifyEditors() {
-  return async () => {
-    const { queryEditor, headerEditor, variableEditor } =
-      editorStore.getState();
-    if (variableEditor) {
-      const variableEditorContent = variableEditor.getValue();
-      try {
-        const prettifiedVariableEditorContent = JSON.stringify(
-          JSON.parse(variableEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedVariableEditorContent !== variableEditorContent) {
-          variableEditor.setValue(prettifiedVariableEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+export async function prettifyEditors() {
+  const { queryEditor, headerEditor, variableEditor } = editorStore.getState();
+  if (variableEditor) {
+    const variableEditorContent = variableEditor.getValue();
+    try {
+      const prettifiedVariableEditorContent = JSON.stringify(
+        JSON.parse(variableEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedVariableEditorContent !== variableEditorContent) {
+        variableEditor.setValue(prettifiedVariableEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (headerEditor) {
-      const headerEditorContent = headerEditor.getValue();
+  if (headerEditor) {
+    const headerEditorContent = headerEditor.getValue();
 
-      try {
-        const prettifiedHeaderEditorContent = JSON.stringify(
-          JSON.parse(headerEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedHeaderEditorContent !== headerEditorContent) {
-          headerEditor.setValue(prettifiedHeaderEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+    try {
+      const prettifiedHeaderEditorContent = JSON.stringify(
+        JSON.parse(headerEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedHeaderEditorContent !== headerEditorContent) {
+        headerEditor.setValue(prettifiedHeaderEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (queryEditor) {
-      const editorContent = queryEditor.getValue();
-      try {
-        const prettifiedEditorContent = await onPrettifyQuery(editorContent);
-        if (prettifiedEditorContent !== editorContent) {
-          queryEditor.setValue(prettifiedEditorContent);
-        }
-      } catch {
-        /* Parsing query failed, skip prettification */
+  if (queryEditor) {
+    const editorContent = queryEditor.getValue();
+    try {
+      const prettifiedEditorContent = await onPrettifyQuery(editorContent);
+      if (prettifiedEditorContent !== editorContent) {
+        queryEditor.setValue(prettifiedEditorContent);
       }
+    } catch {
+      /* Parsing query failed, skip prettification */
     }
-  };
+  }
 }
 
 export function getAutoCompleteLeafs() {
