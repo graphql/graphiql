@@ -389,7 +389,7 @@ export function useQueryEditor({
   };
 
   useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], copyQuery);
+  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
   // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
   useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
   useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
