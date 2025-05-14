@@ -1,6 +1,6 @@
 import { forwardRef, JSX } from 'react';
 import { clsx } from 'clsx';
-import { markdown } from '../markdown';
+import { markdown } from '../utility';
 
 import './markdown.css';
 

@@ -10,8 +10,8 @@ import { useEditorStore } from './context';
 import {
   useChangeHandler,
   useKeyMap,
-  useMergeQuery,
-  usePrettifyEditors,
+  mergeQuery,
+  prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
@@ -45,9 +45,7 @@ export function useHeaderEditor({
     setHeaderEditor,
     shouldPersistHeaders,
   } = useEditorStore();
-  const { run } = useExecutionStore();
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors();
+  const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,19 +77,15 @@ export function useHeaderEditor({
         extraKeys: commonKeys,
       });
 
+      function showHint() {
+        newEditor.showHint({ completeSingle: false, container });
+      }
+
       newEditor.addKeyMap({
-        'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Ctrl-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Alt-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Shift-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
@@ -121,8 +115,8 @@ export function useHeaderEditor({
   );
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
-  useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
-  useKeyMap(headerEditor, ['Shift-Ctrl-M'], merge);
+  useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettifyEditors);
+  useKeyMap(headerEditor, ['Shift-Ctrl-M'], mergeQuery);
 
   return ref;
 }

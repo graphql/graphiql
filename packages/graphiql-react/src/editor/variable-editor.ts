@@ -13,8 +13,8 @@ import {
   useChangeHandler,
   useCompletion,
   useKeyMap,
-  useMergeQuery,
-  usePrettifyEditors,
+  mergeQuery,
+  prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
@@ -51,9 +51,7 @@ export function useVariableEditor({
 }: UseVariableEditorArgs = {}) {
   const { initialVariables, variableEditor, setVariableEditor } =
     useEditorStore();
-  const { run } = useExecutionStore();
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors();
+  const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let isActive = true;
@@ -93,20 +91,15 @@ export function useVariableEditor({
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         extraKeys: commonKeys,
       });
+      function showHint() {
+        newEditor.showHint({ completeSingle: false, container });
+      }
 
       newEditor.addKeyMap({
-        'Cmd-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Ctrl-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Alt-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
-        'Shift-Space'() {
-          newEditor.showHint({ completeSingle: false, container });
-        },
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
       });
 
       newEditor.on('keyup', (editorInstance, event) => {
@@ -133,8 +126,8 @@ export function useVariableEditor({
   useCompletion(variableEditor, onClickReference);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
-  useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
-  useKeyMap(variableEditor, ['Shift-Ctrl-M'], merge);
+  useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettifyEditors);
+  useKeyMap(variableEditor, ['Shift-Ctrl-M'], mergeQuery);
 
   return ref;
 }

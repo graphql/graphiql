@@ -7,7 +7,7 @@ import {
   isListType,
   isNonNullType,
 } from 'graphql';
-import { markdown } from '../markdown';
+import { markdown } from '../utility';
 import { pluginStore } from '../plugin';
 import { importCodeMirror } from './common';
 import { schemaStore } from '../schema';
