@@ -11,9 +11,9 @@ remove `UseHeaderEditorArgs`, `UseQueryEditorArgs`, `UseResponseEditorArgs`, `Us
 
 rename components
 
-- `StorageContext` => `StorageStore`
-- `EditorContext` => `EditorStore`
-- `SchemaContext` => `SchemaStore`
-- `ExecutionContext` => `ExecutionStore`
-- `HistoryContext` => `HistoryStore`
-- `ExplorerContext` => `ExplorerStore`
+- `StorageContextProvider` => `StorageStore`
+- `EditorContextProvider` => `EditorStore`
+- `SchemaContextProvider` => `SchemaStore`
+- `ExecutionContextProvider` => `ExecutionStore`
+- `HistoryContextProvider` => `HistoryStore`
+- `ExplorerContextProvider` => `ExplorerStore`
