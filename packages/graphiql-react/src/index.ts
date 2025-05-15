@@ -44,7 +44,6 @@ export type {
   WriteableEditorProps,
 } from './editor';
 export type { GraphiQLPlugin } from './stores/plugin';
-export type { SchemaContextType } from './stores/schema';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
 export { KEY_MAP } from './constants';

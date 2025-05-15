@@ -20,7 +20,7 @@ export type GraphiQLPlugin = {
   title: string;
 };
 
-type PluginContextType = {
+type PluginStoreType = {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
@@ -50,8 +50,8 @@ type PluginContextType = {
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
 };
 
-type PluginContextProviderProps = Pick<
-  PluginContextType,
+type PluginStoreProps = Pick<
+  PluginStoreType,
   'referencePlugin' | 'onTogglePluginVisibility'
 > & {
   children: ReactNode;
@@ -69,14 +69,14 @@ type PluginContextProviderProps = Pick<
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
-export const pluginStore = createStore<PluginContextType>((set, get) => ({
+export const pluginStore = createStore<PluginStoreType>((set, get) => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,
   setVisiblePlugin(plugin) {
     const { plugins, onTogglePluginVisibility } = get();
     const byTitle = typeof plugin === 'string';
-    const newVisiblePlugin: PluginContextType['visiblePlugin'] =
+    const newVisiblePlugin: PluginStoreType['visiblePlugin'] =
       (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) || null;
     set(({ visiblePlugin }) => {
       if (newVisiblePlugin === visiblePlugin) {
@@ -88,7 +88,7 @@ export const pluginStore = createStore<PluginContextType>((set, get) => ({
   },
 }));
 
-export const PluginContextProvider: FC<PluginContextProviderProps> = ({
+export const PluginStore: FC<PluginStoreProps> = ({
   onTogglePluginVisibility,
   children,
   visiblePlugin,

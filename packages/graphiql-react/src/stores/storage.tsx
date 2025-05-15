@@ -4,11 +4,11 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 
-type StorageContextType = {
+type StorageStoreType = {
   storage: StorageAPI;
 };
 
-type StorageContextProviderProps = {
+type StorageStoreProps = {
   children: ReactNode;
   /**
    * Provide a custom storage API.
@@ -19,14 +19,11 @@ type StorageContextProviderProps = {
   storage?: Storage;
 };
 
-export const storageStore = createStore<StorageContextType>(() => ({
+export const storageStore = createStore<StorageStoreType>(() => ({
   storage: null!,
 }));
 
-export const StorageContextProvider: FC<StorageContextProviderProps> = ({
-  storage,
-  children,
-}) => {
+export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
   const isMounted = useStorageStore(store => Boolean(store.storage));
 
   useEffect(() => {

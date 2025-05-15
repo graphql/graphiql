@@ -23,16 +23,7 @@ import { executionStore, useExecutionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-type SchemaStore = SchemaContextType &
-  Pick<
-    SchemaContextProviderProps,
-    | 'inputValueDeprecation'
-    | 'introspectionQueryName'
-    | 'schemaDescription'
-    | 'onSchemaChange'
-  >;
-
-export const schemaStore = createStore<SchemaStore>((set, get) => ({
+export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
   inputValueDeprecation: null!,
   introspectionQueryName: null!,
   schemaDescription: null!,
@@ -186,12 +177,20 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
   },
 }));
 
-export type SchemaContextType = {
+export interface SchemaStoreType
+  extends Pick<
+    SchemaStoreProps,
+    | 'inputValueDeprecation'
+    | 'introspectionQueryName'
+    | 'schemaDescription'
+    | 'onSchemaChange'
+  > {
   /**
    * Stores an error raised during introspecting or building the GraphQL schema
    * from the introspection result.
    */
   fetchError: string | null;
+
   /**
    * Trigger building the GraphQL schema. This might trigger an introspection
    * request if no schema is passed via props and if using a schema is not
@@ -201,6 +200,7 @@ export type SchemaContextType = {
    * `dangerouslyAssumeSchemaIsValid` prop.
    */
   introspect(): void;
+
   /**
    * If there currently is an introspection request in-flight.
    */
@@ -232,9 +232,9 @@ export type SchemaContextType = {
    * @default ''
    */
   currentHeaders: string;
-};
+}
 
-type SchemaContextProviderProps = {
+type SchemaStoreProps = {
   children: ReactNode;
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies
@@ -275,7 +275,7 @@ type SchemaContextProviderProps = {
   schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
-export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
+export const SchemaStore: FC<SchemaStoreProps> = ({
   onSchemaChange,
   dangerouslyAssumeSchemaIsValid = false,
   children,
