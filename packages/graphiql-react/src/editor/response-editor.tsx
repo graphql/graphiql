@@ -33,25 +33,6 @@ type ResponseEditorProps = CommonEditorProps & {
   responseTooltip?: ResponseTooltipType;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror(
-    [
-      import('codemirror/addon/fold/foldgutter.js'),
-      import('codemirror/addon/fold/brace-fold.js'),
-      import('codemirror/addon/dialog/dialog.js'),
-      import('codemirror/addon/search/search.js'),
-      import('codemirror/addon/search/searchcursor.js'),
-      import('codemirror/addon/search/jump-to-line.js'),
-      // @ts-expect-error
-      import('codemirror/keymap/sublime.js'),
-      import('codemirror-graphql/esm/results/mode.js'),
-      import('codemirror-graphql/esm/utils/info-addon.js'),
-    ],
-    { useCommonAddons: false },
-  );
-}
-
 export function ResponseEditor({
   responseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,

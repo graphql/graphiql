@@ -490,4 +490,3 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
 // 'peekViewEditorGutter.background': "#FFFFFF00", // Background color of the gutter in the peek view editor.
 // 'peekViewResult.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view result list.
 // 'peekViewEditor.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view editor.
-

@@ -1,11 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import { storageStore, useEditorStore, useExecutionStore } from '../stores';
 import {
   useChangeHandler,

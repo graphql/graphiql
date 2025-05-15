@@ -85,8 +85,6 @@ export default defineConfig({
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
-        // Exclude `codemirror/...` and `codemirror-graphql/...` but not `../style/codemirror.css`
-        /codemirror[/-]/,
       ],
       output: {
         preserveModules: true,
