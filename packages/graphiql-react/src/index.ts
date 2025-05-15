@@ -40,7 +40,6 @@ export type {
   KeyMap,
   ResponseTooltipType,
   TabsState,
-  UseResponseEditorArgs,
   WriteableEditorProps,
 } from './editor';
 export type { GraphiQLPlugin } from './plugin';
