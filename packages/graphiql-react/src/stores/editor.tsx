@@ -12,10 +12,11 @@ import { VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
-import { storageStore, useStorage, executionStore } from '../stores';
-import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
-import { useSynchronizeValue } from './hooks';
-import { STORAGE_KEY_QUERY } from './query-editor';
+import { storageStore, useStorage } from './storage';
+import { executionStore } from './execution';
+import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../editor/header-editor';
+import { useSynchronizeValue } from '../editor/hooks';
+import { STORAGE_KEY_QUERY } from '../editor/query-editor';
 import {
   createTab,
   getDefaultTabState,
@@ -29,9 +30,9 @@ import {
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
-} from './tabs';
-import { CodeMirrorEditor } from './types';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+} from '../editor/tabs';
+import { CodeMirrorEditor } from '../editor/types';
+import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
