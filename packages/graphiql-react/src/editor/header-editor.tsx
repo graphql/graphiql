@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
-import { storageStore, useEditorStore, useExecutionStore } from '../stores';
+import { storageStore, useEditorStore } from '../stores';
 import {
   useChangeHandler,
   useKeyMap,
@@ -42,18 +42,10 @@ export function HeaderEditor({
     shouldPersistHeaders,
     updateActiveTabValues,
   } = useEditorStore();
-  const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
   /*
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialHeaders,
@@ -92,10 +84,6 @@ export function HeaderEditor({
 
       setHeaderEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
   }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
 
   useSynchronizeOption(headerEditor, 'keyMap', keyMap);
@@ -106,10 +94,6 @@ export function HeaderEditor({
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
   );
-
-  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
-  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   useEffect(() => {
     if (!isHidden) {
@@ -124,6 +108,8 @@ export function HeaderEditor({
 
     const disposables: IDisposable[] = [
       editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
       editor,
       model,
     ];
