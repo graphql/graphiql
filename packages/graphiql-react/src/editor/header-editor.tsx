@@ -17,13 +17,20 @@ import {
 import { WriteableEditorProps } from './types';
 import { useExecutionStore } from '../execution';
 import { KEY_MAP } from '../constants';
+import { clsx } from 'clsx';
 
-export type UseHeaderEditorArgs = WriteableEditorProps & {
+type UseHeaderEditorArgs = WriteableEditorProps & {
   /**
    * Invoked when the contents of the headers editor change.
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
+
+  /**
+   * Visually hide the header editor.
+   * @default false
+   */
+  isHidden?: boolean;
 };
 
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
@@ -39,6 +46,7 @@ export function useHeaderEditor({
   keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
+  isHidden = false,
 }: UseHeaderEditorArgs = {}) {
   const {
     initialHeaders,
@@ -119,7 +127,15 @@ export function useHeaderEditor({
   useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
   useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
 
-  return ref;
+  useEffect(() => {
+    if (!isHidden) {
+      headerEditor?.refresh();
+    }
+  }, [headerEditor, isHidden]);
+
+  return (
+    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
+);
 }
 
 export const STORAGE_KEY = 'headers';

@@ -1,3 +1,7 @@
+@import '../editor/style/codemirror.css';
+@import '../editor/style/fold.css';
+@import '../editor/style/editor.css';
+
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {
   box-sizing: border-box;
