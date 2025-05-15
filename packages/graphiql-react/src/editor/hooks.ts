@@ -14,10 +14,9 @@ import {
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditor, SchemaReference } from './types';
-import { editor as MONACO_EDITOR } from 'monaco-editor';
 
 export function useSynchronizeValue(
-  editor: MONACO_EDITOR.IStandaloneCodeEditor | null,
+  editor: CodeMirrorEditor | null,
   value?: string,
 ) {
   useEffect(() => {
@@ -234,37 +233,37 @@ export function getAutoCompleteLeafs() {
   const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
 
   if (insertions && insertions.length > 0) {
-  /*
-    queryEditor.operation(() => {
-      const cursor = queryEditor.getCursor();
-      const cursorIndex = queryEditor.indexFromPos(cursor);
-      queryEditor.setValue(result || '');
-      let added = 0;
-      const markers = insertions.map(({ index, string }) =>
-        queryEditor.markText(
-          queryEditor.posFromIndex(index + added),
-          queryEditor.posFromIndex(index + (added += string.length)),
-          {
-            className: 'auto-inserted-leaf',
-            clearOnEnter: true,
-            title: 'Automatically added leaf fields',
-          },
-        ),
-      );
-      setTimeout(() => {
-        for (const marker of markers) {
-          marker.clear();
+    /*
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'auto-inserted-leaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => {
+          for (const marker of markers) {
+            marker.clear();
+          }
+        }, 7000);
+        let newCursorIndex = cursorIndex;
+        for (const { index, string } of insertions) {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
         }
-      }, 7000);
-      let newCursorIndex = cursorIndex;
-      for (const { index, string } of insertions) {
-        if (index < cursorIndex) {
-          newCursorIndex += string.length;
-        }
-      }
-      queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-    });
-  */
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    */
   }
 
   return result;
