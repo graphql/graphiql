@@ -6,7 +6,7 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorStore, useExecutionStore } from '../stores';
+import { storageStore, useEditorStore, useExecutionStore } from '../stores';
 import {
   useChangeHandler,
   useKeyMap,
@@ -15,8 +15,10 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
-import { KEY_MAP } from '../constants';
+import { HEADERS_MODEL, KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
+import { createEditor } from '../create-editor';
+import { debounce } from '../utility';
 
 type HeaderEditorProps = WriteableEditorProps & {
   /**
@@ -48,85 +50,101 @@ export function HeaderEditor({
   isHidden = false,
 }: HeaderEditorProps) {
   const {
-    initialHeaders,
-    headerEditor,
+    // initialHeaders,
+    // headerEditor,
     setHeaderEditor,
     shouldPersistHeaders,
+    updateActiveTabValues,
   } = useEditorStore();
-  const run = useExecutionStore(store => store.run);
+  // const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
 
+  // useEffect(() => {
+  //   let isActive = true;
+  //
+  //   void importCodeMirrorImports().then(CodeMirror => {
+  //     // Don't continue if the effect has already been cleaned up
+  //     if (!isActive) {
+  //       return;
+  //     }
+  //
+  //     const container = ref.current;
+  //     const newEditor = CodeMirror(container, {
+  //       value: initialHeaders,
+  //       lineNumbers: true,
+  //       tabSize: 2,
+  //       mode: { name: 'javascript', json: true },
+  //       theme: editorTheme,
+  //       autoCloseBrackets: true,
+  //       matchBrackets: true,
+  //       showCursorWhenSelecting: true,
+  //       readOnly: readOnly ? 'nocursor' : false,
+  //       foldGutter: true,
+  //       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+  //       extraKeys: commonKeys,
+  //     });
+  //
+  //     function showHint() {
+  //       newEditor.showHint({ completeSingle: false, container });
+  //     }
+  //
+  //     newEditor.addKeyMap({
+  //       'Cmd-Space': showHint,
+  //       'Ctrl-Space': showHint,
+  //       'Alt-Space': showHint,
+  //       'Shift-Space': showHint,
+  //     });
+  //
+  //     newEditor.on('keyup', (editorInstance, event) => {
+  //       const { code, key, shiftKey } = event;
+  //       const isLetter = code.startsWith('Key');
+  //       const isNumber = !shiftKey && code.startsWith('Digit');
+  //       if (isLetter || isNumber || key === '_' || key === '"') {
+  //         editorInstance.execCommand('autocomplete');
+  //       }
+  //     });
+  //
+  //     setHeaderEditor(newEditor);
+  //   });
+  //
+  //   return () => {
+  //     isActive = false;
+  //   };
+  // }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+
+  // useSynchronizeOption(headerEditor, 'keyMap', keyMap);
+
+  // useChangeHandler(
+  //   headerEditor,
+  //   onEdit,
+  //   shouldPersistHeaders ? STORAGE_KEY : null,
+  //   'headers',
+  // );
+
+  // useKeyMap(headerEditor, KEY_MAP.runQuery, run);
+  // useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
+  // useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
+
+  // useEffect(() => {
+  //   if (!isHidden) {
+  //     headerEditor?.refresh();
+  //   }
+  // }, [headerEditor, isHidden]);
+
   useEffect(() => {
-    let isActive = true;
-
-    void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
-      const container = ref.current;
-      const newEditor = CodeMirror(container, {
-        value: initialHeaders,
-        lineNumbers: true,
-        tabSize: 2,
-        mode: { name: 'javascript', json: true },
-        theme: editorTheme,
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
-        foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        extraKeys: commonKeys,
-      });
-
-      function showHint() {
-        newEditor.showHint({ completeSingle: false, container });
-      }
-
-      newEditor.addKeyMap({
-        'Cmd-Space': showHint,
-        'Ctrl-Space': showHint,
-        'Alt-Space': showHint,
-        'Shift-Space': showHint,
-      });
-
-      newEditor.on('keyup', (editorInstance, event) => {
-        const { code, key, shiftKey } = event;
-        const isLetter = code.startsWith('Key');
-        const isNumber = !shiftKey && code.startsWith('Digit');
-        if (isLetter || isNumber || key === '_' || key === '"') {
-          editorInstance.execCommand('autocomplete');
-        }
-      });
-
-      setHeaderEditor(newEditor);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
-
-  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
-
-  useChangeHandler(
-    headerEditor,
-    onEdit,
-    shouldPersistHeaders ? STORAGE_KEY : null,
-    'headers',
-  );
-
-  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
-  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
-
-  useEffect(() => {
-    if (!isHidden) {
-      headerEditor?.refresh();
+    setHeaderEditor(createEditor('headers', ref.current));
+    if (!shouldPersistHeaders) {
+      return;
     }
-  }, [headerEditor, isHidden]);
+    HEADERS_MODEL.onDidChangeContent(
+      debounce(500, () => {
+        const value = HEADERS_MODEL.getValue();
+        const { storage } = storageStore.getState()
+        storage.set(STORAGE_KEY, value);
+        updateActiveTabValues({ headers: value });
+      }),
+    );
+  }, []);
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />

@@ -42,7 +42,9 @@ import {
   SchemaReference,
 } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_MAP } from '../constants';
+import { KEY_MAP, MONACO_GRAPHQL_API, OPERATIONS_MODEL } from '../constants';
+import { KeyCode, KeyMod } from 'monaco-editor';
+import { createEditor } from '../create-editor';
 
 type QueryEditorProps = WriteableEditorProps & {
   /**
@@ -129,270 +131,304 @@ export function QueryEditor({
   } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  const codeMirrorRef = useRef<CodeMirrorType>(undefined);
+  // const codeMirrorRef = useRef<CodeMirrorType>(undefined);
+  const schema = useSchemaStore(store => store.schema)
 
-  const onClickReferenceRef = useRef<
-    NonNullable<QueryEditorProps['onClickReference']>
-  >(() => {});
+  // const onClickReferenceRef = useRef<
+  //   NonNullable<QueryEditorProps['onClickReference']>
+  // >(() => {});
 
-  useEffect(() => {
-    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-    const { setSchemaReference } = schemaStore.getState();
-    onClickReferenceRef.current = reference => {
-      if (!referencePlugin) {
-        return;
-      }
-      setVisiblePlugin(referencePlugin);
-      setSchemaReference(reference);
-      onClickReference?.(reference);
-    };
-  }, [onClickReference]);
+  // useEffect(() => {
+  //   const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+  //   const { setSchemaReference } = schemaStore.getState();
+  //   onClickReferenceRef.current = reference => {
+  //     if (!referencePlugin) {
+  //       return;
+  //     }
+  //     setVisiblePlugin(referencePlugin);
+  //     setSchemaReference(reference);
+  //     onClickReference?.(reference);
+  //   };
+  // }, [onClickReference]);
 
-  useEffect(() => {
-    let isActive = true;
+  // useEffect(() => {
+  //   let isActive = true;
+  //
+  //   void importCodeMirrorImports().then(CodeMirror => {
+  //     // Don't continue if the effect has already been cleaned up
+  //     if (!isActive) {
+  //       return;
+  //     }
+  //
+  //     codeMirrorRef.current = CodeMirror;
+  //
+  //     const container = ref.current;
+  //     const newEditor = CodeMirror(container, {
+  //       value: initialQuery,
+  //       lineNumbers: true,
+  //       tabSize: 2,
+  //       foldGutter: true,
+  //       mode: 'graphql',
+  //       theme: editorTheme,
+  //       autoCloseBrackets: true,
+  //       matchBrackets: true,
+  //       showCursorWhenSelecting: true,
+  //       readOnly: readOnly ? 'nocursor' : false,
+  //       lint: {
+  //         // @ts-expect-error
+  //         schema: undefined,
+  //         validationRules: null,
+  //         // linting accepts string or FragmentDefinitionNode[]
+  //         externalFragments: undefined,
+  //       },
+  //       hintOptions: {
+  //         // @ts-expect-error
+  //         schema: undefined,
+  //         closeOnUnfocus: false,
+  //         completeSingle: false,
+  //         container,
+  //         externalFragments: undefined,
+  //         autocompleteOptions: {
+  //           // for the query editor, restrict to executable type definitions
+  //           mode: GraphQLDocumentMode.EXECUTABLE,
+  //         },
+  //       },
+  //       info: {
+  //         schema: undefined,
+  //         renderDescription: (text: string) => markdown.render(text),
+  //         onClick(reference: SchemaReference) {
+  //           onClickReferenceRef.current(reference);
+  //         },
+  //       },
+  //       jump: {
+  //         schema: undefined,
+  //         onClick(reference: SchemaReference) {
+  //           onClickReferenceRef.current(reference);
+  //         },
+  //       },
+  //       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+  //       extraKeys: {
+  //         ...commonKeys,
+  //         'Cmd-S'() {
+  //           // empty
+  //         },
+  //         'Ctrl-S'() {
+  //           // empty
+  //         },
+  //       },
+  //     }) as CodeMirrorEditorWithOperationFacts;
+  //
+  //     function showHint() {
+  //       newEditor.showHint({ completeSingle: true, container });
+  //     }
+  //
+  //     newEditor.addKeyMap({
+  //       'Cmd-Space': showHint,
+  //       'Ctrl-Space': showHint,
+  //       'Alt-Space': showHint,
+  //       'Shift-Space': showHint,
+  //       'Shift-Alt-Space': showHint,
+  //     });
+  //
+  //     newEditor.on('keyup', (editorInstance, event) => {
+  //       if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
+  //         editorInstance.execCommand('autocomplete');
+  //       }
+  //     });
+  //
+  //     let showingHints = false;
+  //
+  //     // fired whenever a hint dialog opens
+  //     newEditor.on('startCompletion', () => {
+  //       showingHints = true;
+  //     });
+  //
+  //     // the codemirror hint extension fires this anytime the dialog is closed
+  //     // via any method (e.g., focus blur, escape key, ...)
+  //     newEditor.on('endCompletion', () => {
+  //       showingHints = false;
+  //     });
+  //
+  //     newEditor.on('keydown', (editorInstance, event) => {
+  //       if (event.key === 'Escape' && showingHints) {
+  //         event.stopPropagation();
+  //       }
+  //     });
+  //
+  //     newEditor.on('beforeChange', (editorInstance, change) => {
+  //       // The update function is only present on non-redo, non-undo events.
+  //       if (change.origin === 'paste') {
+  //         const text = change.text.map(normalizeWhitespace);
+  //         change.update?.(change.from, change.to, text);
+  //       }
+  //     });
+  //
+  //     newEditor.documentAST = null;
+  //     newEditor.operationName = null;
+  //     newEditor.operations = null;
+  //     newEditor.variableToType = null;
+  //
+  //     setQueryEditor(newEditor);
+  //   });
+  //
+  //   return () => {
+  //     isActive = false;
+  //   };
+  // }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
 
-    void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
-      codeMirrorRef.current = CodeMirror;
-
-      const container = ref.current;
-      const newEditor = CodeMirror(container, {
-        value: initialQuery,
-        lineNumbers: true,
-        tabSize: 2,
-        foldGutter: true,
-        mode: 'graphql',
-        theme: editorTheme,
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
-        lint: {
-          // @ts-expect-error
-          schema: undefined,
-          validationRules: null,
-          // linting accepts string or FragmentDefinitionNode[]
-          externalFragments: undefined,
-        },
-        hintOptions: {
-          // @ts-expect-error
-          schema: undefined,
-          closeOnUnfocus: false,
-          completeSingle: false,
-          container,
-          externalFragments: undefined,
-          autocompleteOptions: {
-            // for the query editor, restrict to executable type definitions
-            mode: GraphQLDocumentMode.EXECUTABLE,
-          },
-        },
-        info: {
-          schema: undefined,
-          renderDescription: (text: string) => markdown.render(text),
-          onClick(reference: SchemaReference) {
-            onClickReferenceRef.current(reference);
-          },
-        },
-        jump: {
-          schema: undefined,
-          onClick(reference: SchemaReference) {
-            onClickReferenceRef.current(reference);
-          },
-        },
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        extraKeys: {
-          ...commonKeys,
-          'Cmd-S'() {
-            // empty
-          },
-          'Ctrl-S'() {
-            // empty
-          },
-        },
-      }) as CodeMirrorEditorWithOperationFacts;
-
-      function showHint() {
-        newEditor.showHint({ completeSingle: true, container });
-      }
-
-      newEditor.addKeyMap({
-        'Cmd-Space': showHint,
-        'Ctrl-Space': showHint,
-        'Alt-Space': showHint,
-        'Shift-Space': showHint,
-        'Shift-Alt-Space': showHint,
-      });
-
-      newEditor.on('keyup', (editorInstance, event) => {
-        if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
-          editorInstance.execCommand('autocomplete');
-        }
-      });
-
-      let showingHints = false;
-
-      // fired whenever a hint dialog opens
-      newEditor.on('startCompletion', () => {
-        showingHints = true;
-      });
-
-      // the codemirror hint extension fires this anytime the dialog is closed
-      // via any method (e.g., focus blur, escape key, ...)
-      newEditor.on('endCompletion', () => {
-        showingHints = false;
-      });
-
-      newEditor.on('keydown', (editorInstance, event) => {
-        if (event.key === 'Escape' && showingHints) {
-          event.stopPropagation();
-        }
-      });
-
-      newEditor.on('beforeChange', (editorInstance, change) => {
-        // The update function is only present on non-redo, non-undo events.
-        if (change.origin === 'paste') {
-          const text = change.text.map(normalizeWhitespace);
-          change.update?.(change.from, change.to, text);
-        }
-      });
-
-      newEditor.documentAST = null;
-      newEditor.operationName = null;
-      newEditor.operations = null;
-      newEditor.variableToType = null;
-
-      setQueryEditor(newEditor);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
-
-  useSynchronizeOption(queryEditor, 'keyMap', keyMap);
+  // useSynchronizeOption(queryEditor, 'keyMap', keyMap);
 
   /**
    * We don't use the generic `useChangeHandler` hook here because we want to
    * have additional logic that updates the operation facts that we store as
    * properties on the editor.
    */
-  useEffect(() => {
-    if (!queryEditor) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!queryEditor) {
+  //     return;
+  //   }
+  //
+  //   function getAndUpdateOperationFacts(
+  //     editorInstance: CodeMirrorEditorWithOperationFacts,
+  //   ) {
+  //     const operationFacts = getOperationFacts(
+  //       schemaStore.getState().schema,
+  //       editorInstance.getValue(),
+  //     );
+  //
+  //     // Update operation name should any query names change.
+  //     const operationName = getSelectedOperationName(
+  //       editorInstance.operations ?? undefined,
+  //       editorInstance.operationName ?? undefined,
+  //       operationFacts?.operations,
+  //     );
+  //
+  //     // Store the operation facts on editor properties
+  //     editorInstance.documentAST = operationFacts?.documentAST ?? null;
+  //     editorInstance.operationName = operationName ?? null;
+  //     editorInstance.operations = operationFacts?.operations ?? null;
+  //
+  //     // Update variable types for the variable editor
+  //     if (variableEditor) {
+  //       updateVariableEditor(variableEditor, operationFacts);
+  //       codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
+  //     }
+  //
+  //     return operationFacts ? { ...operationFacts, operationName } : null;
+  //   }
+  //
+  //   const handleChange = debounce(
+  //     100,
+  //     (editorInstance: CodeMirrorEditorWithOperationFacts) => {
+  //       const query = editorInstance.getValue();
+  //       storage.set(STORAGE_KEY_QUERY, query);
+  //
+  //       const currentOperationName = editorInstance.operationName;
+  //       const operationFacts = getAndUpdateOperationFacts(editorInstance);
+  //       if (operationFacts?.operationName !== undefined) {
+  //         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
+  //       }
+  //
+  //       // Invoke callback props only after the operation facts have been updated
+  //       onEdit?.(query, operationFacts?.documentAST);
+  //       if (
+  //         operationFacts?.operationName &&
+  //         currentOperationName !== operationFacts.operationName
+  //       ) {
+  //         setOperationName(operationFacts.operationName);
+  //       }
+  //
+  //       updateActiveTabValues({
+  //         query,
+  //         operationName: operationFacts?.operationName ?? null,
+  //       });
+  //     },
+  //   ) as (editorInstance: CodeMirrorEditor) => void;
+  //
+  //   // Call once to initially update the values
+  //   getAndUpdateOperationFacts(queryEditor);
+  //
+  //   queryEditor.on('change', handleChange);
+  //   return () => queryEditor.off('change', handleChange);
+  // }, [
+  //   onEdit,
+  //   queryEditor,
+  //   setOperationName,
+  //   storage,
+  //   variableEditor,
+  //   updateActiveTabValues,
+  // ]);
 
-    function getAndUpdateOperationFacts(
-      editorInstance: CodeMirrorEditorWithOperationFacts,
-    ) {
-      const operationFacts = getOperationFacts(
-        schemaStore.getState().schema,
-        editorInstance.getValue(),
-      );
+  // useSynchronizeSchema(queryEditor, codeMirrorRef);
+  // useSynchronizeValidationRules(queryEditor, codeMirrorRef);
+  // useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
 
-      // Update operation name should any query names change.
-      const operationName = getSelectedOperationName(
-        editorInstance.operations ?? undefined,
-        editorInstance.operationName ?? undefined,
-        operationFacts?.operations,
-      );
+  // useCompletion(queryEditor, onClickReference);
 
-      // Store the operation facts on editor properties
-      editorInstance.documentAST = operationFacts?.documentAST ?? null;
-      editorInstance.operationName = operationName ?? null;
-      editorInstance.operations = operationFacts?.operations ?? null;
+  // const runAtCursor = () => {
+  //   if (!queryEditor?.operations || !queryEditor.hasFocus()) {
+  //     return;
+  //   }
+  //
+  //   const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
+  //
+  //   // Loop through all operations to see if one contains the cursor.
+  //   let operationName: string | undefined;
+  //   for (const operation of queryEditor.operations) {
+  //     if (
+  //       operation.loc &&
+  //       operation.loc.start <= cursorIndex &&
+  //       operation.loc.end >= cursorIndex
+  //     ) {
+  //       operationName = operation.name?.value;
+  //     }
+  //   }
+  //
+  //   if (operationName && operationName !== queryEditor.operationName) {
+  //     setOperationName(operationName);
+  //   }
+  //   const { run } = executionStore.getState();
+  //   run();
+  // };
 
-      // Update variable types for the variable editor
-      if (variableEditor) {
-        updateVariableEditor(variableEditor, operationFacts);
-        codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-      }
-
-      return operationFacts ? { ...operationFacts, operationName } : null;
-    }
-
-    const handleChange = debounce(
-      100,
-      (editorInstance: CodeMirrorEditorWithOperationFacts) => {
-        const query = editorInstance.getValue();
-        storage.set(STORAGE_KEY_QUERY, query);
-
-        const currentOperationName = editorInstance.operationName;
-        const operationFacts = getAndUpdateOperationFacts(editorInstance);
-        if (operationFacts?.operationName !== undefined) {
-          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
-        }
-
-        // Invoke callback props only after the operation facts have been updated
-        onEdit?.(query, operationFacts?.documentAST);
-        if (
-          operationFacts?.operationName &&
-          currentOperationName !== operationFacts.operationName
-        ) {
-          setOperationName(operationFacts.operationName);
-        }
-
-        updateActiveTabValues({
-          query,
-          operationName: operationFacts?.operationName ?? null,
-        });
-      },
-    ) as (editorInstance: CodeMirrorEditor) => void;
-
-    // Call once to initially update the values
-    getAndUpdateOperationFacts(queryEditor);
-
-    queryEditor.on('change', handleChange);
-    return () => queryEditor.off('change', handleChange);
-  }, [
-    onEdit,
-    queryEditor,
-    setOperationName,
-    storage,
-    variableEditor,
-    updateActiveTabValues,
-  ]);
-
-  useSynchronizeSchema(queryEditor, codeMirrorRef);
-  useSynchronizeValidationRules(queryEditor, codeMirrorRef);
-  useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
-
-  useCompletion(queryEditor, onClickReference);
-
-  const runAtCursor = () => {
-    if (!queryEditor?.operations || !queryEditor.hasFocus()) {
-      return;
-    }
-
-    const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
-
-    // Loop through all operations to see if one contains the cursor.
-    let operationName: string | undefined;
-    for (const operation of queryEditor.operations) {
-      if (
-        operation.loc &&
-        operation.loc.start <= cursorIndex &&
-        operation.loc.end >= cursorIndex
-      ) {
-        operationName = operation.name?.value;
-      }
-    }
-
-    if (operationName && operationName !== queryEditor.operationName) {
-      setOperationName(operationName);
-    }
-    const { run } = executionStore.getState();
-    run();
-  };
-
-  useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
+  // useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
+  // useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
   // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
-  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
+  // useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
+  // useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
+
+  useEffect(() => {
+    setQueryEditor(createEditor('operations', ref.current));
+    OPERATIONS_MODEL.onDidChangeContent(
+      debounce(100, () => {
+        const value = OPERATIONS_MODEL.getValue();
+        storage?.set(STORAGE_KEY_QUERY, value);
+        updateActiveTabValues({
+          query: value,
+          operationName: /* operationFacts?.operationName ?? */ null,
+        });
+      }),
+    );
+  }, []);
+
+  useEffect(() => {
+    // add the runOperationAction to the operation and variables editors
+    queryEditor?.addAction({
+      id: 'graphql-run-operation',
+      label: 'Run Operation',
+      contextMenuOrder: 0,
+      contextMenuGroupId: 'graphql',
+      // eslint-disable-next-line no-bitwise
+      keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+      run: executionStore.getState().run,
+    });
+  }, [queryEditor]);
+
+  useEffect(() => {
+    if (schema) {
+      MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    }
+  }, [schema]);
 
   return <div className="graphiql-editor" ref={ref} />;
 }
