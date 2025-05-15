@@ -27,3 +27,5 @@ export type WriteableEditorProps = CommonEditorProps & {
    */
   readOnly?: boolean;
 };
+
+export type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
