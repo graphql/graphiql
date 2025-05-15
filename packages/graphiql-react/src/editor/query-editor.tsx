@@ -40,7 +40,7 @@ import {
 import { normalizeWhitespace } from './whitespace';
 import { KEY_MAP } from '../constants';
 
-export type UseQueryEditorArgs = WriteableEditorProps & {
+type QueryEditorProps = WriteableEditorProps & {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
@@ -108,13 +108,13 @@ function updateEditorExternalFragments(
   editor.options.hintOptions.externalFragments = externalFragmentList;
 }
 
-export function useQueryEditor({
+export function QueryEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
-}: UseQueryEditorArgs = {}) {
+}: QueryEditorProps) {
   const {
     initialQuery,
     queryEditor,
@@ -124,11 +124,11 @@ export function useQueryEditor({
     updateActiveTabValues,
   } = useEditorStore();
   const storage = useStorage();
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
   const onClickReferenceRef = useRef<
-    NonNullable<UseQueryEditorArgs['onClickReference']>
+    NonNullable<QueryEditorProps['onClickReference']>
   >(() => {});
 
   useEffect(() => {
@@ -156,10 +156,6 @@ export function useQueryEditor({
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialQuery,
         lineNumbers: true,

@@ -1,9 +1,4 @@
-export {
-  ImagePreview,
-  QueryEditor,
-  ResponseEditor,
-  VariableEditor,
-} from './components';
+export { ImagePreview, ResponseEditor, VariableEditor } from './components';
 export { EditorContextProvider, useEditorStore } from './context';
 export { HeaderEditor } from './header-editor';
 export {
@@ -17,11 +12,10 @@ export {
   useVariablesEditorState,
   useHeadersEditorState,
 } from './hooks';
-export { useQueryEditor } from './query-editor';
+export { QueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
 export { useVariableEditor } from './variable-editor';
 
-export type { UseQueryEditorArgs } from './query-editor';
 export type {
   ResponseTooltipType,
   UseResponseEditorArgs,

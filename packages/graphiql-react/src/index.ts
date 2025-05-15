@@ -40,8 +40,6 @@ export type {
   KeyMap,
   ResponseTooltipType,
   TabsState,
-  UseHeaderEditorArgs,
-  UseQueryEditorArgs,
   UseResponseEditorArgs,
   UseVariableEditorArgs,
   WriteableEditorProps,
