@@ -11,5 +11,6 @@
     "coverage.xml",
     "jacoco.xml",
     "coverage.cobertura.xml"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
