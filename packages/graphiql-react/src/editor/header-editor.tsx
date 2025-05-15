@@ -34,14 +34,6 @@ type HeaderEditorProps = WriteableEditorProps & {
   isHidden?: boolean;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror([
-    // @ts-expect-error
-    import('codemirror/mode/javascript/javascript.js'),
-  ]);
-}
-
 export function HeaderEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
@@ -50,87 +42,87 @@ export function HeaderEditor({
   isHidden = false,
 }: HeaderEditorProps) {
   const {
-    // initialHeaders,
-    // headerEditor,
+    initialHeaders,
+    headerEditor,
     setHeaderEditor,
     shouldPersistHeaders,
     updateActiveTabValues,
   } = useEditorStore();
-  // const run = useExecutionStore(store => store.run);
+  const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
+  /*
+  useEffect(() => {
+    let isActive = true;
 
-  // useEffect(() => {
-  //   let isActive = true;
-  //
-  //   void importCodeMirrorImports().then(CodeMirror => {
-  //     // Don't continue if the effect has already been cleaned up
-  //     if (!isActive) {
-  //       return;
-  //     }
-  //
-  //     const container = ref.current;
-  //     const newEditor = CodeMirror(container, {
-  //       value: initialHeaders,
-  //       lineNumbers: true,
-  //       tabSize: 2,
-  //       mode: { name: 'javascript', json: true },
-  //       theme: editorTheme,
-  //       autoCloseBrackets: true,
-  //       matchBrackets: true,
-  //       showCursorWhenSelecting: true,
-  //       readOnly: readOnly ? 'nocursor' : false,
-  //       foldGutter: true,
-  //       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-  //       extraKeys: commonKeys,
-  //     });
-  //
-  //     function showHint() {
-  //       newEditor.showHint({ completeSingle: false, container });
-  //     }
-  //
-  //     newEditor.addKeyMap({
-  //       'Cmd-Space': showHint,
-  //       'Ctrl-Space': showHint,
-  //       'Alt-Space': showHint,
-  //       'Shift-Space': showHint,
-  //     });
-  //
-  //     newEditor.on('keyup', (editorInstance, event) => {
-  //       const { code, key, shiftKey } = event;
-  //       const isLetter = code.startsWith('Key');
-  //       const isNumber = !shiftKey && code.startsWith('Digit');
-  //       if (isLetter || isNumber || key === '_' || key === '"') {
-  //         editorInstance.execCommand('autocomplete');
-  //       }
-  //     });
-  //
-  //     setHeaderEditor(newEditor);
-  //   });
-  //
-  //   return () => {
-  //     isActive = false;
-  //   };
-  // }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+    void importCodeMirrorImports().then(CodeMirror => {
+      // Don't continue if the effect has already been cleaned up
+      if (!isActive) {
+        return;
+      }
 
-  // useSynchronizeOption(headerEditor, 'keyMap', keyMap);
+      const container = ref.current;
+      const newEditor = CodeMirror(container, {
+        value: initialHeaders,
+        lineNumbers: true,
+        tabSize: 2,
+        mode: { name: 'javascript', json: true },
+        theme: editorTheme,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        readOnly: readOnly ? 'nocursor' : false,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: commonKeys,
+      });
 
-  // useChangeHandler(
-  //   headerEditor,
-  //   onEdit,
-  //   shouldPersistHeaders ? STORAGE_KEY : null,
-  //   'headers',
-  // );
+      function showHint() {
+        newEditor.showHint({ completeSingle: false, container });
+      }
 
-  // useKeyMap(headerEditor, KEY_MAP.runQuery, run);
-  // useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
-  // useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
+      newEditor.addKeyMap({
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
+      });
 
-  // useEffect(() => {
-  //   if (!isHidden) {
-  //     headerEditor?.refresh();
-  //   }
-  // }, [headerEditor, isHidden]);
+      newEditor.on('keyup', (editorInstance, event) => {
+        const { code, key, shiftKey } = event;
+        const isLetter = code.startsWith('Key');
+        const isNumber = !shiftKey && code.startsWith('Digit');
+        if (isLetter || isNumber || key === '_' || key === '"') {
+          editorInstance.execCommand('autocomplete');
+        }
+      });
 
+      setHeaderEditor(newEditor);
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+
+  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
+
+  useChangeHandler(
+    headerEditor,
+    onEdit,
+    shouldPersistHeaders ? STORAGE_KEY : null,
+    'headers',
+  );
+
+  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
+  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
+  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
+
+  useEffect(() => {
+    if (!isHidden) {
+      headerEditor?.refresh();
+    }
+  }, [headerEditor, isHidden]);
+  */
   useEffect(() => {
     setHeaderEditor(createEditor('headers', ref.current));
     if (!shouldPersistHeaders) {
