@@ -110,7 +110,7 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     'editorWarning.foreground': editorColors.dark.orange_default, // Foreground color of warning squigglies in the editor.
     'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
     'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
-    'editorBracketMatch.border': editorColors.dark.selections, // Color for matching brackets boxes
+    'editorBracketMatch.border': editorColors.dark.selections, // Color of matching bracket boxes
     'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of the editor indentation guides.
     'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
     'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
