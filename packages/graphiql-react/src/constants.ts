@@ -111,11 +111,11 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
     'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
     'editorBracketMatch.border': editorColors.dark.selections, // Color of matching bracket boxes
-    'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of the editor indentation guides.
+    'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of indentation guides in the editor.
     'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
-    'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
-    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Editor marker navigation widget error color.
-    'editorMarkerNavigationWarning.background': '#ffffff00', // Editor marker navigation widget warning color.
+    'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border in the editor.
+    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
+    'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
   },
   rules: [
     // operations editor (graphql)
