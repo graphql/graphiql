@@ -13,13 +13,10 @@ export {
   useHeadersEditorState,
 } from './hooks';
 export { QueryEditor } from './query-editor';
-export { useResponseEditor } from './response-editor';
+export { ResponseEditor } from './response-editor';
 export { VariableEditor } from './variable-editor';
 
-export type {
-  ResponseTooltipType,
-  UseResponseEditorArgs,
-} from './response-editor';
+export type { ResponseTooltipType } from './response-editor';
 export type { TabsState } from './tabs';
 
 export type { CommonEditorProps, KeyMap, WriteableEditorProps } from './types';

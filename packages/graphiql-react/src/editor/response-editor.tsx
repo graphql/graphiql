@@ -26,7 +26,7 @@ export type ResponseTooltipType = ComponentType<{
   token: Token;
 }>;
 
-export type UseResponseEditorArgs = CommonEditorProps & {
+type ResponseEditorProps = CommonEditorProps & {
   /**
    * Customize the tooltip when hovering over properties in the response editor.
    */
@@ -52,11 +52,11 @@ function importCodeMirrorImports() {
   );
 }
 
-export function useResponseEditor({
+export function ResponseEditor({
   responseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
-}: UseResponseEditorArgs = {}) {
+}: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorStore();
@@ -138,5 +138,13 @@ export function useResponseEditor({
     }
   }, [responseEditor, fetchError, validationErrors]);
 
-  return ref;
+  return (
+    <section
+      className="result-window"
+      aria-label="Result Window"
+      aria-live="polite"
+      aria-atomic="true"
+      ref={ref}
+    />
+  );
 }
