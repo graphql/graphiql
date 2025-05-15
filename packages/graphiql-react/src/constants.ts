@@ -104,8 +104,8 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
     'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
     'editor.background': '#ffffff00', // white with a 00 alpha value
-    'editorLineNumber.foreground': editorColors.dark.delimiters, // Color of editor line numbers.
-    'editorLineNumber.activeForeground': editorColors.dark.delimitersActive, // Color of editor active line number.
+    'editorLineNumber.foreground': editorColors.dark.delimiters, // Color of line numbers in the editor.
+    'editorLineNumber.activeForeground': editorColors.dark.delimitersActive, // Color of active line number in the editor.
     'editorError.foreground': editorColors.dark.orange_default, // Foreground color of error squigglies in the editor.
     'editorWarning.foreground': editorColors.dark.orange_default, // Foreground color of warning squigglies in the editor.
     'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
