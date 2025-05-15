@@ -31,12 +31,11 @@ import {
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../editor/tabs';
-import { CodeMirrorEditor } from '../editor/types';
+import { CodeMirrorEditor, Editor } from '../editor/types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
-import { editor } from 'monaco-editor';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -44,8 +43,6 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   operations: OperationDefinitionNode[] | null;
   variableToType: VariableToType | null;
 };
-
-interface Editor extends editor.IStandaloneCodeEditor {}
 
 interface EditorStoreType extends TabsState {
   /**
