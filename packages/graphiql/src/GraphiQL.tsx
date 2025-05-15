@@ -591,6 +591,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     </div>
   );
 
+  const editorToolsText =
+    editorToolsResize.hiddenElement === 'second'
+      ? 'Show editor tools'
+      : 'Hide editor tools';
+
   const editors = (
     <div className="graphiql-editors" ref={editorResize.firstRef}>
       <section
@@ -643,21 +648,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           </UnStyledButton>
         )}
 
-        <Tooltip
-          label={
-            editorToolsResize.hiddenElement === 'second'
-              ? 'Show editor tools'
-              : 'Hide editor tools'
-          }
-        >
+        <Tooltip label={editorToolsText}>
           <UnStyledButton
             type="button"
             onClick={toggleEditorTools}
-            aria-label={
-              editorToolsResize.hiddenElement === 'second'
-                ? 'Show editor tools'
-                : 'Hide editor tools'
-            }
+            aria-label={editorToolsText}
             className="graphiql-toggle-editor-tools"
           >
             {editorToolsResize.hiddenElement === 'second' ? (
