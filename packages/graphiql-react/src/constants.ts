@@ -1,5 +1,7 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
-import { editor, Uri } from 'monaco-editor';
+import { editor, KeyCode, KeyMod, Uri } from 'monaco-editor';
+import { copyQuery, mergeQuery, prettifyEditors } from './editor';
+import { executionStore } from './stores';
 
 export const KEY_MAP = Object.freeze({
   prettify: ['Shift-Ctrl-P'],
@@ -45,6 +47,44 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 
 `;
 
+export const KEY_BINDINGS = Object.freeze({
+  prettify: {
+    id: 'graphql-prettify',
+    label: 'Prettify Editors',
+    contextMenuGroupId: 'graphql',
+    // eslint-disable-next-line no-bitwise
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
+    run: prettifyEditors,
+  },
+  mergeFragments: {
+    id: 'graphql-merge',
+    label: 'Merge Fragments into Query',
+    contextMenuGroupId: 'graphql',
+    // eslint-disable-next-line no-bitwise
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
+    run: mergeQuery,
+  },
+  runQuery: {
+    id: 'graphql-run',
+    label: 'Run Operation',
+    contextMenuGroupId: 'graphql',
+    // eslint-disable-next-line no-bitwise
+    keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+    run() {
+      // Fixes error - Cannot access 'executionStore' before initialization
+      return executionStore.getState().run();
+    },
+  },
+  copyQuery: {
+    id: 'graphql-copy',
+    label: 'Copy Query',
+    contextMenuGroupId: 'graphql',
+    // eslint-disable-next-line no-bitwise
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
+    run: copyQuery,
+  },
+});
+
 const OPERATIONS_URI = 'operations.graphql';
 const VARIABLES_URI = 'variables.json';
 const HEADERS_URI = 'headers.json';
@@ -75,13 +115,13 @@ export function getOrCreateModel({
   value: string;
 }) {
   const language = uri.split('.').pop();
- const model = editor.getModel(Uri.file(uri))
+  const model = editor.getModel(Uri.file(uri));
   if (model) {
     console.log('✅ Model', uri, 'is already created');
-    return model
+    return model;
   }
   console.log('🚀 Model', uri, "isn't yet created, creating...");
-  return editor.createModel(value, language, Uri.file(uri))
+  return editor.createModel(value, language, Uri.file(uri));
 }
 
 export const OPERATIONS_MODEL = getOrCreateModel({
