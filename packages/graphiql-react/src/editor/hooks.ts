@@ -161,16 +161,13 @@ export function copyQuery() {
 }
 
 export function mergeQuery() {
-  const { queryEditor } = editorStore.getState();
-  // @ts-expect-error -- FIXME MONACO
-  const documentAST = queryEditor?.documentAST;
+  const { queryEditor, documentAST } = editorStore.getState();
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {
     return;
   }
-
   const { schema } = schemaStore.getState();
-  queryEditor.setValue(print(mergeAst(documentAST, schema)));
+  queryEditor!.setValue(print(mergeAst(documentAST, schema)));
 }
 
 export async function prettifyEditors() {
