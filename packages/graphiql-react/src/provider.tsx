@@ -2,17 +2,17 @@
 import type { ComponentPropsWithoutRef, FC } from 'react';
 import { EditorStore } from './stores/editor';
 import { ExecutionStore } from './stores/execution';
-import { PluginContextProvider } from './stores/plugin';
-import { SchemaContextProvider } from './stores/schema';
-import { StorageContextProvider } from './stores/storage';
+import { PluginStore } from './stores/plugin';
+import { SchemaStore } from './stores/schema';
+import { StorageStore } from './stores/storage';
 
 type GraphiQLProviderProps =
   //
   ComponentPropsWithoutRef<typeof EditorStore> &
     ComponentPropsWithoutRef<typeof ExecutionStore> &
-    ComponentPropsWithoutRef<typeof PluginContextProvider> &
-    ComponentPropsWithoutRef<typeof SchemaContextProvider> &
-    ComponentPropsWithoutRef<typeof StorageContextProvider>;
+    ComponentPropsWithoutRef<typeof PluginStore> &
+    ComponentPropsWithoutRef<typeof SchemaStore> &
+    ComponentPropsWithoutRef<typeof StorageStore>;
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
@@ -92,16 +92,14 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     visiblePlugin,
   };
   return (
-    <StorageContextProvider storage={storage}>
+    <StorageStore storage={storage}>
       <EditorStore {...editorContextProps}>
-        <SchemaContextProvider {...schemaContextProps}>
+        <SchemaStore {...schemaContextProps}>
           <ExecutionStore {...executionContextProps}>
-            <PluginContextProvider {...pluginContextProps}>
-              {children}
-            </PluginContextProvider>
+            <PluginStore {...pluginContextProps}>{children}</PluginStore>
           </ExecutionStore>
-        </SchemaContextProvider>
+        </SchemaStore>
       </EditorStore>
-    </StorageContextProvider>
+    </StorageStore>
   );
 };
