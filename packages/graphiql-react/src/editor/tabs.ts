@@ -66,9 +66,15 @@ export function getDefaultTabState({
   defaultQuery,
   defaultHeaders,
   headers,
-  defaultTabs,
   query,
   variables,
+  defaultTabs = [
+    {
+      query: query ?? defaultQuery,
+      variables,
+      headers: headers ?? defaultHeaders,
+    },
+  ],
   shouldPersistHeaders,
 }: {
   defaultQuery: string;
@@ -132,15 +138,7 @@ export function getDefaultTabState({
   } catch {
     return {
       activeTabIndex: 0,
-      tabs: (
-        defaultTabs || [
-          {
-            query: query ?? defaultQuery,
-            variables,
-            headers: headers ?? defaultHeaders,
-          },
-        ]
-      ).map(createTab),
+      tabs: defaultTabs.map(createTab),
     };
   }
 }
