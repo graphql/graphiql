@@ -10,7 +10,7 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { KEY_MAP } from '../constants';
+import { KEY_BINDINGS, KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
@@ -43,11 +43,8 @@ export function VariableEditor({
   readOnly = false,
   isHidden = false,
 }: VariableEditorProps) {
-  const {
-    initialVariables,
-    setVariableEditor,
-    updateActiveTabValues,
-  } = useEditorStore();
+  const { initialVariables, setVariableEditor, updateActiveTabValues } =
+    useEditorStore();
   const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
   /*
@@ -129,30 +126,9 @@ export function VariableEditor({
           updateActiveTabValues({ variables: value });
         }),
       ),
-      editor.addAction({
-        id: 'graphql-run',
-        label: 'Run Operation',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
-        run,
-      }),
-      editor.addAction({
-        id: 'graphql-prettify',
-        label: 'Prettify Editors',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
-        run: prettifyEditors,
-      }),
-      editor.addAction({
-        id: 'graphql-merge',
-        label: 'Merge Fragments into Query',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
-        run: mergeQuery,
-      }),
+      editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
       editor,
       model,
     ];

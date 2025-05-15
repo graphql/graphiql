@@ -31,7 +31,7 @@ import {
 } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_MAP, MONACO_GRAPHQL_API } from '../constants';
+import { KEY_BINDINGS, KEY_MAP, MONACO_GRAPHQL_API } from '../constants';
 import { KeyCode, KeyMod } from 'monaco-editor';
 import { createEditor } from '../create-editor';
 
@@ -354,7 +354,7 @@ export function QueryEditor({
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
       // eslint-disable-next-line no-console
-      console.log('handleChange', query)
+      console.log('handleChange', query);
 
       const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
@@ -380,39 +380,10 @@ export function QueryEditor({
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
-      // add the runOperationAction to the operation and variables editors
-      editor.addAction({
-        id: 'graphql-run',
-        label: 'Run Operation',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
-        run,
-      }),
-      editor.addAction({
-        id: 'graphql-copy',
-        label: 'Copy Query',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
-        run: copyQuery,
-      }),
-      editor.addAction({
-        id: 'graphql-prettify',
-        label: 'Prettify Editors',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
-        run: prettifyEditors,
-      }),
-      editor.addAction({
-        id: 'graphql-merge',
-        label: 'Merge Fragments into Query',
-        contextMenuGroupId: 'graphql',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
-        run: mergeQuery,
-      }),
+      editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.copyQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
       editor,
       model,
     ];
