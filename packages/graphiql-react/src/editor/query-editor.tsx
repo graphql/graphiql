@@ -18,7 +18,6 @@ import {
   useSchemaStore,
   useEditorStore,
   useStorage,
-  CodeMirrorEditorWithOperationFacts,
 } from '../stores';
 import { markdown, debounce } from '../utility';
 import {
@@ -36,7 +35,7 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import {
-  CodeMirrorEditor,
+  Editor,
   CodeMirrorType,
   WriteableEditorProps,
   SchemaReference,
@@ -61,22 +60,9 @@ type QueryEditorProps = WriteableEditorProps & {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror([
-    import('codemirror/addon/comment/comment.js'),
-    import('codemirror/addon/search/search.js'),
-    import('codemirror-graphql/esm/hint.js'),
-    import('codemirror-graphql/esm/lint.js'),
-    import('codemirror-graphql/esm/info.js'),
-    import('codemirror-graphql/esm/jump.js'),
-    import('codemirror-graphql/esm/mode.js'),
-  ]);
-}
-
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
-  variableEditor: CodeMirrorEditor,
+  variableEditor: Editor,
   operationFacts?: OperationFacts,
 ) {
   variableEditor.state.lint.linterOptions.variableToType =
@@ -86,10 +72,7 @@ function updateVariableEditor(
     operationFacts?.variableToType;
 }
 
-function updateEditorSchema(
-  editor: CodeMirrorEditor,
-  schema: GraphQLSchema | null,
-) {
+function updateEditorSchema(editor: Editor, schema: GraphQLSchema | null) {
   editor.state.lint.linterOptions.schema = schema;
   editor.options.lint.schema = schema;
   editor.options.hintOptions.schema = schema;
@@ -98,7 +81,7 @@ function updateEditorSchema(
 }
 
 function updateEditorValidationRules(
-  editor: CodeMirrorEditor,
+  editor: Editor,
   validationRules: ValidationRule[] | null,
 ) {
   editor.state.lint.linterOptions.validationRules = validationRules;
@@ -106,7 +89,7 @@ function updateEditorValidationRules(
 }
 
 function updateEditorExternalFragments(
-  editor: CodeMirrorEditor,
+  editor: Editor,
   externalFragmentList: FragmentDefinitionNode[],
 ) {
   editor.state.lint.linterOptions.externalFragments = externalFragmentList;
@@ -131,271 +114,271 @@ export function QueryEditor({
   } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  // const codeMirrorRef = useRef<CodeMirrorType>(undefined);
+  const codeMirrorRef = useRef<CodeMirrorType>(undefined);
   const schema = useSchemaStore(store => store.schema);
 
-  // const onClickReferenceRef = useRef<
-  //   NonNullable<QueryEditorProps['onClickReference']>
-  // >(() => {});
+  const onClickReferenceRef = useRef<
+    NonNullable<QueryEditorProps['onClickReference']>
+  >(() => {});
 
-  // useEffect(() => {
-  //   const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-  //   const { setSchemaReference } = schemaStore.getState();
-  //   onClickReferenceRef.current = reference => {
-  //     if (!referencePlugin) {
-  //       return;
-  //     }
-  //     setVisiblePlugin(referencePlugin);
-  //     setSchemaReference(reference);
-  //     onClickReference?.(reference);
-  //   };
-  // }, [onClickReference]);
+  useEffect(() => {
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const { setSchemaReference } = schemaStore.getState();
+    onClickReferenceRef.current = reference => {
+      if (!referencePlugin) {
+        return;
+      }
+      setVisiblePlugin(referencePlugin);
+      setSchemaReference(reference);
+      onClickReference?.(reference);
+    };
+  }, [onClickReference]);
 
-  // useEffect(() => {
-  //   let isActive = true;
-  //
-  //   void importCodeMirrorImports().then(CodeMirror => {
-  //     // Don't continue if the effect has already been cleaned up
-  //     if (!isActive) {
-  //       return;
-  //     }
-  //
-  //     codeMirrorRef.current = CodeMirror;
-  //
-  //     const container = ref.current;
-  //     const newEditor = CodeMirror(container, {
-  //       value: initialQuery,
-  //       lineNumbers: true,
-  //       tabSize: 2,
-  //       foldGutter: true,
-  //       mode: 'graphql',
-  //       theme: editorTheme,
-  //       autoCloseBrackets: true,
-  //       matchBrackets: true,
-  //       showCursorWhenSelecting: true,
-  //       readOnly: readOnly ? 'nocursor' : false,
-  //       lint: {
-  //         // @ts-expect-error
-  //         schema: undefined,
-  //         validationRules: null,
-  //         // linting accepts string or FragmentDefinitionNode[]
-  //         externalFragments: undefined,
-  //       },
-  //       hintOptions: {
-  //         // @ts-expect-error
-  //         schema: undefined,
-  //         closeOnUnfocus: false,
-  //         completeSingle: false,
-  //         container,
-  //         externalFragments: undefined,
-  //         autocompleteOptions: {
-  //           // for the query editor, restrict to executable type definitions
-  //           mode: GraphQLDocumentMode.EXECUTABLE,
-  //         },
-  //       },
-  //       info: {
-  //         schema: undefined,
-  //         renderDescription: (text: string) => markdown.render(text),
-  //         onClick(reference: SchemaReference) {
-  //           onClickReferenceRef.current(reference);
-  //         },
-  //       },
-  //       jump: {
-  //         schema: undefined,
-  //         onClick(reference: SchemaReference) {
-  //           onClickReferenceRef.current(reference);
-  //         },
-  //       },
-  //       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-  //       extraKeys: {
-  //         ...commonKeys,
-  //         'Cmd-S'() {
-  //           // empty
-  //         },
-  //         'Ctrl-S'() {
-  //           // empty
-  //         },
-  //       },
-  //     }) as CodeMirrorEditorWithOperationFacts;
-  //
-  //     function showHint() {
-  //       newEditor.showHint({ completeSingle: true, container });
-  //     }
-  //
-  //     newEditor.addKeyMap({
-  //       'Cmd-Space': showHint,
-  //       'Ctrl-Space': showHint,
-  //       'Alt-Space': showHint,
-  //       'Shift-Space': showHint,
-  //       'Shift-Alt-Space': showHint,
-  //     });
-  //
-  //     newEditor.on('keyup', (editorInstance, event) => {
-  //       if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
-  //         editorInstance.execCommand('autocomplete');
-  //       }
-  //     });
-  //
-  //     let showingHints = false;
-  //
-  //     // fired whenever a hint dialog opens
-  //     newEditor.on('startCompletion', () => {
-  //       showingHints = true;
-  //     });
-  //
-  //     // the codemirror hint extension fires this anytime the dialog is closed
-  //     // via any method (e.g., focus blur, escape key, ...)
-  //     newEditor.on('endCompletion', () => {
-  //       showingHints = false;
-  //     });
-  //
-  //     newEditor.on('keydown', (editorInstance, event) => {
-  //       if (event.key === 'Escape' && showingHints) {
-  //         event.stopPropagation();
-  //       }
-  //     });
-  //
-  //     newEditor.on('beforeChange', (editorInstance, change) => {
-  //       // The update function is only present on non-redo, non-undo events.
-  //       if (change.origin === 'paste') {
-  //         const text = change.text.map(normalizeWhitespace);
-  //         change.update?.(change.from, change.to, text);
-  //       }
-  //     });
-  //
-  //     newEditor.documentAST = null;
-  //     newEditor.operationName = null;
-  //     newEditor.operations = null;
-  //     newEditor.variableToType = null;
-  //
-  //     setQueryEditor(newEditor);
-  //   });
-  //
-  //   return () => {
-  //     isActive = false;
-  //   };
-  // }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
+  useEffect(() => {
+    let isActive = true;
 
-  // useSynchronizeOption(queryEditor, 'keyMap', keyMap);
+    void importCodeMirrorImports().then(CodeMirror => {
+      // Don't continue if the effect has already been cleaned up
+      if (!isActive) {
+        return;
+      }
+
+      codeMirrorRef.current = CodeMirror;
+
+      const container = ref.current;
+      const newEditor = CodeMirror(container, {
+        value: initialQuery,
+        lineNumbers: true,
+        tabSize: 2,
+        foldGutter: true,
+        mode: 'graphql',
+        theme: editorTheme,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        readOnly: readOnly ? 'nocursor' : false,
+        lint: {
+          // @ts-expect-error
+          schema: undefined,
+          validationRules: null,
+          // linting accepts string or FragmentDefinitionNode[]
+          externalFragments: undefined,
+        },
+        hintOptions: {
+          // @ts-expect-error
+          schema: undefined,
+          closeOnUnfocus: false,
+          completeSingle: false,
+          container,
+          externalFragments: undefined,
+          autocompleteOptions: {
+            // for the query editor, restrict to executable type definitions
+            mode: GraphQLDocumentMode.EXECUTABLE,
+          },
+        },
+        info: {
+          schema: undefined,
+          renderDescription: (text: string) => markdown.render(text),
+          onClick(reference: SchemaReference) {
+            onClickReferenceRef.current(reference);
+          },
+        },
+        jump: {
+          schema: undefined,
+          onClick(reference: SchemaReference) {
+            onClickReferenceRef.current(reference);
+          },
+        },
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+          ...commonKeys,
+          'Cmd-S'() {
+            // empty
+          },
+          'Ctrl-S'() {
+            // empty
+          },
+        },
+      }) as CodeMirrorEditorWithOperationFacts;
+
+      function showHint() {
+        newEditor.showHint({ completeSingle: true, container });
+      }
+
+      newEditor.addKeyMap({
+        'Cmd-Space': showHint,
+        'Ctrl-Space': showHint,
+        'Alt-Space': showHint,
+        'Shift-Space': showHint,
+        'Shift-Alt-Space': showHint,
+      });
+
+      newEditor.on('keyup', (editorInstance, event) => {
+        if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
+          editorInstance.execCommand('autocomplete');
+        }
+      });
+
+      let showingHints = false;
+
+      // fired whenever a hint dialog opens
+      newEditor.on('startCompletion', () => {
+        showingHints = true;
+      });
+
+      // the codemirror hint extension fires this anytime the dialog is closed
+      // via any method (e.g., focus blur, escape key, ...)
+      newEditor.on('endCompletion', () => {
+        showingHints = false;
+      });
+
+      newEditor.on('keydown', (editorInstance, event) => {
+        if (event.key === 'Escape' && showingHints) {
+          event.stopPropagation();
+        }
+      });
+
+      newEditor.on('beforeChange', (editorInstance, change) => {
+        // The update function is only present on non-redo, non-undo events.
+        if (change.origin === 'paste') {
+          const text = change.text.map(normalizeWhitespace);
+          change.update?.(change.from, change.to, text);
+        }
+      });
+
+      newEditor.documentAST = null;
+      newEditor.operationName = null;
+      newEditor.operations = null;
+      newEditor.variableToType = null;
+
+      setQueryEditor(newEditor);
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
+
+  useSynchronizeOption(queryEditor, 'keyMap', keyMap);
 
   /**
    * We don't use the generic `useChangeHandler` hook here because we want to
    * have additional logic that updates the operation facts that we store as
    * properties on the editor.
    */
-  // useEffect(() => {
-  //   if (!queryEditor) {
-  //     return;
-  //   }
-  //
-  //   function getAndUpdateOperationFacts(
-  //     editorInstance: CodeMirrorEditorWithOperationFacts,
-  //   ) {
-  //     const operationFacts = getOperationFacts(
-  //       schemaStore.getState().schema,
-  //       editorInstance.getValue(),
-  //     );
-  //
-  //     // Update operation name should any query names change.
-  //     const operationName = getSelectedOperationName(
-  //       editorInstance.operations ?? undefined,
-  //       editorInstance.operationName ?? undefined,
-  //       operationFacts?.operations,
-  //     );
-  //
-  //     // Store the operation facts on editor properties
-  //     editorInstance.documentAST = operationFacts?.documentAST ?? null;
-  //     editorInstance.operationName = operationName ?? null;
-  //     editorInstance.operations = operationFacts?.operations ?? null;
-  //
-  //     // Update variable types for the variable editor
-  //     if (variableEditor) {
-  //       updateVariableEditor(variableEditor, operationFacts);
-  //       codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-  //     }
-  //
-  //     return operationFacts ? { ...operationFacts, operationName } : null;
-  //   }
-  //
-  //   const handleChange = debounce(
-  //     100,
-  //     (editorInstance: CodeMirrorEditorWithOperationFacts) => {
-  //       const query = editorInstance.getValue();
-  //       storage.set(STORAGE_KEY_QUERY, query);
-  //
-  //       const currentOperationName = editorInstance.operationName;
-  //       const operationFacts = getAndUpdateOperationFacts(editorInstance);
-  //       if (operationFacts?.operationName !== undefined) {
-  //         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
-  //       }
-  //
-  //       // Invoke callback props only after the operation facts have been updated
-  //       onEdit?.(query, operationFacts?.documentAST);
-  //       if (
-  //         operationFacts?.operationName &&
-  //         currentOperationName !== operationFacts.operationName
-  //       ) {
-  //         setOperationName(operationFacts.operationName);
-  //       }
-  //
-  //       updateActiveTabValues({
-  //         query,
-  //         operationName: operationFacts?.operationName ?? null,
-  //       });
-  //     },
-  //   ) as (editorInstance: CodeMirrorEditor) => void;
-  //
-  //   // Call once to initially update the values
-  //   getAndUpdateOperationFacts(queryEditor);
-  //
-  //   queryEditor.on('change', handleChange);
-  //   return () => queryEditor.off('change', handleChange);
-  // }, [
-  //   onEdit,
-  //   queryEditor,
-  //   setOperationName,
-  //   storage,
-  //   variableEditor,
-  //   updateActiveTabValues,
-  // ]);
+  useEffect(() => {
+    if (!queryEditor) {
+      return;
+    }
 
-  // useSynchronizeSchema(queryEditor, codeMirrorRef);
-  // useSynchronizeValidationRules(queryEditor, codeMirrorRef);
-  // useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
+    function getAndUpdateOperationFacts(
+      editorInstance: CodeMirrorEditorWithOperationFacts,
+    ) {
+      const operationFacts = getOperationFacts(
+        schemaStore.getState().schema,
+        editorInstance.getValue(),
+      );
 
-  // useCompletion(queryEditor, onClickReference);
+      // Update operation name should any query names change.
+      const operationName = getSelectedOperationName(
+        editorInstance.operations ?? undefined,
+        editorInstance.operationName ?? undefined,
+        operationFacts?.operations,
+      );
 
-  // const runAtCursor = () => {
-  //   if (!queryEditor?.operations || !queryEditor.hasFocus()) {
-  //     return;
-  //   }
-  //
-  //   const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
-  //
-  //   // Loop through all operations to see if one contains the cursor.
-  //   let operationName: string | undefined;
-  //   for (const operation of queryEditor.operations) {
-  //     if (
-  //       operation.loc &&
-  //       operation.loc.start <= cursorIndex &&
-  //       operation.loc.end >= cursorIndex
-  //     ) {
-  //       operationName = operation.name?.value;
-  //     }
-  //   }
-  //
-  //   if (operationName && operationName !== queryEditor.operationName) {
-  //     setOperationName(operationName);
-  //   }
-  //   const { run } = executionStore.getState();
-  //   run();
-  // };
+      // Store the operation facts on editor properties
+      editorInstance.documentAST = operationFacts?.documentAST ?? null;
+      editorInstance.operationName = operationName ?? null;
+      editorInstance.operations = operationFacts?.operations ?? null;
 
-  // useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  // useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
+      // Update variable types for the variable editor
+      if (variableEditor) {
+        updateVariableEditor(variableEditor, operationFacts);
+        codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
+      }
+
+      return operationFacts ? { ...operationFacts, operationName } : null;
+    }
+
+    const handleChange = debounce(
+      100,
+      (editorInstance: CodeMirrorEditorWithOperationFacts) => {
+        const query = editorInstance.getValue();
+        storage.set(STORAGE_KEY_QUERY, query);
+
+        const currentOperationName = editorInstance.operationName;
+        const operationFacts = getAndUpdateOperationFacts(editorInstance);
+        if (operationFacts?.operationName !== undefined) {
+          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
+        }
+
+        // Invoke callback props only after the operation facts have been updated
+        onEdit?.(query, operationFacts?.documentAST);
+        if (
+          operationFacts?.operationName &&
+          currentOperationName !== operationFacts.operationName
+        ) {
+          setOperationName(operationFacts.operationName);
+        }
+
+        updateActiveTabValues({
+          query,
+          operationName: operationFacts?.operationName ?? null,
+        });
+      },
+    ) as (editorInstance: CodeMirrorEditor) => void;
+
+    // Call once to initially update the values
+    getAndUpdateOperationFacts(queryEditor);
+
+    queryEditor.on('change', handleChange);
+    return () => queryEditor.off('change', handleChange);
+  }, [
+    onEdit,
+    queryEditor,
+    setOperationName,
+    storage,
+    variableEditor,
+    updateActiveTabValues,
+  ]);
+
+  useSynchronizeSchema(queryEditor, codeMirrorRef);
+  useSynchronizeValidationRules(queryEditor, codeMirrorRef);
+  useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
+
+  useCompletion(queryEditor, onClickReference);
+
+  const runAtCursor = () => {
+    if (!queryEditor?.operations || !queryEditor.hasFocus()) {
+      return;
+    }
+
+    const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
+
+    // Loop through all operations to see if one contains the cursor.
+    let operationName: string | undefined;
+    for (const operation of queryEditor.operations) {
+      if (
+        operation.loc &&
+        operation.loc.start <= cursorIndex &&
+        operation.loc.end >= cursorIndex
+      ) {
+        operationName = operation.name?.value;
+      }
+    }
+
+    if (operationName && operationName !== queryEditor.operationName) {
+      setOperationName(operationName);
+    }
+    const { run } = executionStore.getState();
+    run();
+  };
+
+  useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
+  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
   // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-  // useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
-  // useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
+  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
+  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   useEffect(() => {
     setQueryEditor(createEditor('operations', ref.current));
@@ -434,7 +417,7 @@ export function QueryEditor({
 }
 
 function useSynchronizeSchema(
-  editor: CodeMirrorEditor | null,
+  editor: Editor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const schema = useSchemaStore(store => store.schema ?? null);
@@ -454,7 +437,7 @@ function useSynchronizeSchema(
 }
 
 function useSynchronizeValidationRules(
-  editor: CodeMirrorEditor | null,
+  editor: Editor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const validationRules = useEditorStore(store => store.validationRules);
@@ -462,7 +445,6 @@ function useSynchronizeValidationRules(
     if (!editor) {
       return;
     }
-
     const didChange = editor.options.lint.validationRules !== validationRules;
     updateEditorValidationRules(editor, validationRules);
 
@@ -473,7 +455,7 @@ function useSynchronizeValidationRules(
 }
 
 function useSynchronizeExternalFragments(
-  editor: CodeMirrorEditor | null,
+  editor: Editor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const externalFragments = useEditorStore(store => store.externalFragments);
