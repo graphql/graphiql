@@ -100,7 +100,7 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   colors: {
-    'editor.foreground': editorColors.dark.delimiters, // Editor default foreground color.
+    'editor.foreground': editorColors.dark.delimiters, // Default foreground color of the editor.
     'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
     'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
     'editor.background': '#ffffff00', // white with a 00 alpha value
