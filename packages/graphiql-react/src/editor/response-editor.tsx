@@ -2,7 +2,7 @@ import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useSchemaStore } from '../schema';
+import { useSchemaStore, useEditorStore } from '../stores';
 
 import {
   commonKeys,
@@ -11,7 +11,6 @@ import {
   importCodeMirror,
 } from './common';
 import { ImagePreview } from './image-preview';
-import { useEditorStore } from './context';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
 
