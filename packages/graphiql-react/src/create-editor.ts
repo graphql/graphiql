@@ -18,9 +18,9 @@ export function createEditor(
 ) {
   return MONACO_EDITOR.create(domElement, {
     language: type === 'operations' ? 'graphql' : 'json',
+    automaticLayout: true,
     // the default theme
     theme: 'graphiql-DARK',
-    automaticLayout: true,
     // folding: false, // disable folding
     fontFamily: "'Fira Code', monospace", // TODO: set the font (this is problematic because the font has to be installed locally)
     fontSize: 13, // default is 12

@@ -13,6 +13,6 @@
 }
 
 .monaco-editor {
-  /* otherwise editor could grow the width and not shrink it */
-  position: absolute;
+  /* otherwise editor couldn't be resized */
+  position: absolute !important;
 }
