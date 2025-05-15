@@ -57,7 +57,7 @@ export function ResponseEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
 }: ResponseEditorProps) {
-  // const { fetchError, validationErrors } = useSchemaStore();
+  const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);

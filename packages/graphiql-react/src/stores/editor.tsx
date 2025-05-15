@@ -412,7 +412,8 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
     if (!queryEditor) {
       return;
     }
-    queryEditor.operationName = operationName;
+    // FIXME MONACO
+    // queryEditor.operationName = operationName;
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },
