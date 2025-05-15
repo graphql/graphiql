@@ -1,4 +1,4 @@
-import { invalidCharacters, normalizeWhitespace } from '../../utility/whitespace';
+import { invalidCharacters, normalizeWhitespace } from './whitespace';
 
 describe('normalizeWhitespace', () => {
   it('removes unicode characters', () => {
