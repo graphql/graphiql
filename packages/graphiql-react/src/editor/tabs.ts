@@ -191,6 +191,7 @@ export function synchronizeActiveTabValues(state: TabsState): TabsState {
     variables: variableEditor?.getValue() ?? null,
     headers: headerEditor?.getValue() ?? null,
     response: responseEditor?.getValue() ?? null,
+    // @ts-expect-error -- FIXME MONACO
     operationName: queryEditor?.operationName ?? null,
   });
 }
