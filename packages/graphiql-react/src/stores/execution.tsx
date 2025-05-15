@@ -19,10 +19,10 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
-import { getAutoCompleteLeafs } from './editor';
+import { getAutoCompleteLeafs } from '../editor';
 import { createStore } from 'zustand';
-import { editorStore } from './editor/context';
-import { createBoundedUseStore } from './utility';
+import { editorStore } from './editor';
+import { createBoundedUseStore } from '../utility';
 
 type ExecutionContextType = {
   /**
