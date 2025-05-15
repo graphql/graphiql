@@ -132,7 +132,7 @@ export function QueryEditor({
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   // const codeMirrorRef = useRef<CodeMirrorType>(undefined);
-  const schema = useSchemaStore(store => store.schema)
+  const schema = useSchemaStore(store => store.schema);
 
   // const onClickReferenceRef = useRef<
   //   NonNullable<QueryEditorProps['onClickReference']>

@@ -139,7 +139,7 @@ export function HeaderEditor({
     HEADERS_MODEL.onDidChangeContent(
       debounce(500, () => {
         const value = HEADERS_MODEL.getValue();
-        const { storage } = storageStore.getState()
+        const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY, value);
         updateActiveTabValues({ headers: value });
       }),
