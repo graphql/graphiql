@@ -1,6 +1,4 @@
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
-
 import { useExecutionStore, useEditorStore } from '../stores';
 import {
   commonKeys,
@@ -16,7 +14,7 @@ import {
   prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { WriteableEditorProps } from './types';
+import { WriteableEditorProps, SchemaReference } from './types';
 import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 
