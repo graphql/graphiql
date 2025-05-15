@@ -1,12 +1,12 @@
-@import '../editor/style/codemirror.css';
-@import '../editor/style/fold.css';
-@import '../editor/style/editor.css';
+@import 'codemirror.css';
+@import 'fold.css';
+@import 'editor.css';
 
-@import '../editor/style/lint.css';
-@import '../editor/style/hint.css';
-@import '../editor/style/info.css';
-@import '../editor/style/jump.css';
-@import '../editor/style/auto-insertion.css';
+@import 'lint.css';
+@import 'hint.css';
+@import 'info.css';
+@import 'jump.css';
+@import 'auto-insertion.css';
 
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {

@@ -10,7 +10,7 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { ImagePreview } from './components';
+import { ImagePreview } from './image-preview';
 import { useEditorStore } from './context';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
@@ -60,7 +60,7 @@ export function ResponseEditor({
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorStore();
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
     responseTooltip,
@@ -102,10 +102,6 @@ export function ResponseEditor({
       );
 
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialResponse,
         lineWrapping: true,
