@@ -75,11 +75,13 @@ export function getOrCreateModel({
   value: string;
 }) {
   const language = uri.split('.').pop();
-
-  return (
-    editor.getModel(Uri.file(uri)) ??
-    editor.createModel(value, language, Uri.file(uri))
-  );
+ const model = editor.getModel(Uri.file(uri))
+  if (model) {
+    console.log('✅ Model', uri, 'is already created');
+    return model
+  }
+  console.log('❌ Model', uri, "isn't yet created");
+  return editor.createModel(value, language, Uri.file(uri))
 }
 
 export const OPERATIONS_MODEL = getOrCreateModel({
