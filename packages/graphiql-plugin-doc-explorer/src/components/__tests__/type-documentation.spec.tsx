@@ -10,7 +10,7 @@ import {
 import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { unwrapType } from './test-utils';
-import { schemaStore } from '../../../../graphiql-react/dist/schema';
+import { schemaStore } from '../../../../graphiql-react/dist/stores/schema';
 
 const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = ({
   type,

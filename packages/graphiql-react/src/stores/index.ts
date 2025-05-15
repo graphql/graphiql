@@ -1,7 +1,7 @@
 export {
   editorStore,
   useEditorStore,
-  CodeMirrorEditorWithOperationFacts,
+  type CodeMirrorEditorWithOperationFacts,
 } from './editor';
 export { executionStore, useExecutionStore } from './execution';
 export { pluginStore, usePluginStore } from './plugin';

@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryStore } from '../context';
 import { Tooltip, GraphiQLProvider } from '@graphiql/react';
-import { editorStore } from '../../../graphiql-react/dist/stores';
+import { editorStore } from '../../../graphiql-react/dist/stores/editor';
 
 const mockQuery = /* GraphQL */ `
   query Test($string: String) {

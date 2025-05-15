@@ -52,12 +52,9 @@ import {
   cn,
   KEY_MAP,
 } from '@graphiql/react';
+import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
-  HistoryContextProvider,
-  HISTORY_PLUGIN,
-} from '@graphiql/plugin-history';
-import {
-  DocExplorerContextProvider,
+  DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 
@@ -69,7 +66,7 @@ import {
 export type GraphiQLProps =
   //
   Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'> &
-    Omit<ComponentPropsWithoutRef<typeof HistoryContextProvider>, 'children'> &
+    Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
     // `children` prop should be optional
     GraphiQLInterfaceProps;
 
@@ -139,11 +136,11 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       referencePlugin={referencePlugin}
       {...props}
     >
-      <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
-        <DocExplorerContextProvider>
+      <HistoryStore maxHistoryLength={maxHistoryLength}>
+        <DocExplorerStore>
           <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
-        </DocExplorerContextProvider>
-      </HistoryContextProvider>
+        </DocExplorerStore>
+      </HistoryStore>
     </GraphiQLProvider>
   );
 };
