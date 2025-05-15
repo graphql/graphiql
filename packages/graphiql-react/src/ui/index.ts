@@ -6,3 +6,4 @@ export * from './markdown';
 export * from './spinner';
 export * from './tabs';
 export * from './tooltip';
+export { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';

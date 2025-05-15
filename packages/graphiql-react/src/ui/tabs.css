@@ -52,7 +52,7 @@
   }
 
   .graphiql-tab-button {
-    border-radius: var(--border-radius-8) var(--border-radius-8) 0 0;
+    border-radius: var(--border-radius-12) var(--border-radius-12) 0 0;
     padding: var(--px-4) 28px var(--px-4) var(--px-8);
 
     &:hover {

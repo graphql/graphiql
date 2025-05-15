@@ -42,6 +42,7 @@ import {
   VariableEditor,
   WriteableEditorProps,
   cn,
+  VisuallyHidden,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -479,6 +480,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <Dialog.Title className="graphiql-dialog-title">
             Short Keys
           </Dialog.Title>
+          <VisuallyHidden>
+            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
+            <Dialog.Description>
+              This modal provides a list of available keyboard shortcuts and
+              their functions.
+            </Dialog.Description>
+          </VisuallyHidden>
           <Dialog.Close />
         </div>
         <div className="graphiql-dialog-section">
@@ -493,6 +501,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <Dialog.Title className="graphiql-dialog-title">
             Settings
           </Dialog.Title>
+          <VisuallyHidden>
+            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
+            <Dialog.Description>
+              This modal lets you adjust header persistence, interface theme,
+              and clear local storage.
+            </Dialog.Description>
+          </VisuallyHidden>
           <Dialog.Close />
         </div>
         {showPersistHeadersSettings ? (

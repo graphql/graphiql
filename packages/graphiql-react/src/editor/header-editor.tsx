@@ -131,7 +131,7 @@ export function HeaderEditor({
         updateActiveTabValues({ headers: value });
       }),
     );
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
