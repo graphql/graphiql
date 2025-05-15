@@ -1,4 +1,4 @@
-import { editor, editor as MONACO_EDITOR } from 'monaco-editor';
+import { editor } from 'monaco-editor';
 import {
   OPERATIONS_MODEL,
   VARIABLES_MODEL,
@@ -396,15 +396,14 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
 // 'peekViewResult.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view result list.
 // 'peekViewEditor.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view editor.
 
-
 // this should be called somewhere else, but fine here for now
-MONACO_EDITOR.defineTheme('graphiql-DARK', editorThemeDark);
-MONACO_EDITOR.defineTheme('graphiql-LIGHT', editorThemeLight);
+editor.defineTheme('graphiql-DARK', editorThemeDark);
+editor.defineTheme('graphiql-LIGHT', editorThemeLight);
 
 export function createEditor(
   type: 'operations' | 'variables' | 'headers' | 'results',
   domElement: HTMLDivElement,
-): { model: MONACO_EDITOR.ITextModel; editor: Editor } {
+): { model: editor.ITextModel; editor: Editor } {
   const model = {
     operations: OPERATIONS_MODEL,
     variables: VARIABLES_MODEL,
@@ -412,7 +411,7 @@ export function createEditor(
     results: RESULTS_MODEL,
   }[type];
 
-  const editor = MONACO_EDITOR.create(domElement, {
+  const monacoEditor = editor.create(domElement, {
     language: type === 'operations' ? 'graphql' : 'json',
     automaticLayout: true,
     // the default theme
@@ -446,5 +445,5 @@ export function createEditor(
     model,
   });
 
-  return { model, editor };
+  return { model, editor: monacoEditor };
 }
