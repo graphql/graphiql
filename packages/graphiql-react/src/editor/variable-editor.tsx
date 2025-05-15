@@ -1,14 +1,13 @@
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 
-import { useExecutionStore } from '../execution';
+import { useExecutionStore, useEditorStore } from '../stores';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorStore } from './context';
 import {
   useChangeHandler,
   useCompletion,
