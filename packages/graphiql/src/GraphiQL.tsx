@@ -596,6 +596,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       ? 'Show editor tools'
       : 'Hide editor tools';
 
+  const EditorToolsIcon =
+    editorToolsResize.hiddenElement === 'second'
+      ? ChevronUpIcon
+      : ChevronDownIcon;
+
   const editors = (
     <div className="graphiql-editors" ref={editorResize.firstRef}>
       <section
@@ -655,17 +660,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             aria-label={editorToolsText}
             className="graphiql-toggle-editor-tools"
           >
-            {editorToolsResize.hiddenElement === 'second' ? (
-              <ChevronUpIcon
-                className="graphiql-chevron-icon"
-                aria-hidden="true"
-              />
-            ) : (
-              <ChevronDownIcon
-                className="graphiql-chevron-icon"
-                aria-hidden="true"
-              />
-            )}
+            <EditorToolsIcon
+              className="graphiql-chevron-icon"
+              aria-hidden="true"
+            />
           </UnStyledButton>
         </Tooltip>
       </div>
