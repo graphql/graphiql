@@ -40,16 +40,12 @@ import {
   useDragResize,
   useEditorStore,
   useExecutionStore,
-  UseHeaderEditorArgs,
   mergeQuery,
   usePluginStore,
   prettifyEditors,
-  UseQueryEditorArgs,
-  UseResponseEditorArgs,
   useSchemaStore,
   useStorage,
   useTheme,
-  UseVariableEditorArgs,
   VariableEditor,
   WriteableEditorProps,
   isMacOs,
@@ -156,11 +152,16 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
   [Key in keyof Obj as `${string & Key}${Suffix}`]: Obj[Key];
 };
 
+type QueryEditorProps = ComponentPropsWithoutRef<typeof QueryEditor>;
+type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
+type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
+type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
+
 export type GraphiQLInterfaceProps = WriteableEditorProps &
-  AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
-  AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
-  AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
-  Pick<UseResponseEditorArgs, 'responseTooltip'> & {
+  AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'> &
+  AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'> &
+  AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'> &
+  Pick<ResponseEditorProps, 'responseTooltip'> & {
     children?: ReactNode;
     /**
      * Set the default state for the editor tools.
