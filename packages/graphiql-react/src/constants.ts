@@ -80,7 +80,7 @@ export function getOrCreateModel({
     console.log('✅ Model', uri, 'is already created');
     return model
   }
-  console.log('❌ Model', uri, "isn't yet created");
+  console.log('🚀 Model', uri, "isn't yet created, creating...");
   return editor.createModel(value, language, Uri.file(uri))
 }
 

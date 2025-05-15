@@ -111,7 +111,15 @@ export function ResponseEditor({
   }, [responseEditor, fetchError, validationErrors]);
   */
   useEffect(() => {
-    setResponseEditor(createEditor('results', ref.current));
+    // Build the editor
+    const { model, editor } = createEditor('results', ref.current);
+    setResponseEditor(editor);
+
+    // Clean‑up on unmount **or** when deps change
+    return () => {
+      editor.dispose();
+      model.dispose();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

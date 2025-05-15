@@ -7,6 +7,7 @@ import {
   editorThemeDark,
   editorThemeLight,
 } from './constants';
+import { Editor } from './editor/types';
 
 // this should be called somewhere else, but fine here for now
 MONACO_EDITOR.defineTheme('graphiql-DARK', editorThemeDark);
@@ -15,8 +16,15 @@ MONACO_EDITOR.defineTheme('graphiql-LIGHT', editorThemeLight);
 export function createEditor(
   type: 'operations' | 'variables' | 'headers' | 'results',
   domElement: HTMLDivElement,
-) {
-  return MONACO_EDITOR.create(domElement, {
+): { model: MONACO_EDITOR.ITextModel; editor: Editor } {
+  const model = {
+    operations: OPERATIONS_MODEL,
+    variables: VARIABLES_MODEL,
+    headers: HEADERS_MODEL,
+    results: RESULTS_MODEL,
+  }[type];
+
+  const editor = MONACO_EDITOR.create(domElement, {
     language: type === 'operations' ? 'graphql' : 'json',
     automaticLayout: true,
     // the default theme
@@ -47,11 +55,8 @@ export function createEditor(
       readOnly: true,
       lineNumbers: 'off',
     }),
-    model: {
-      operations: OPERATIONS_MODEL,
-      variables: VARIABLES_MODEL,
-      headers: HEADERS_MODEL,
-      results: RESULTS_MODEL,
-    }[type],
+    model,
   });
+
+  return { model, editor };
 }

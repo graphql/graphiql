@@ -10,10 +10,11 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
-import { HEADERS_MODEL, KEY_MAP } from '../constants';
+import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
+import { IDisposable } from 'monaco-editor';
 
 type HeaderEditorProps = WriteableEditorProps & {
   /**
@@ -119,18 +120,29 @@ export function HeaderEditor({
   }, [headerEditor, isHidden]);
   */
   useEffect(() => {
-    setHeaderEditor(createEditor('headers', ref.current));
-    if (!shouldPersistHeaders) {
-      return;
+    // Build the editor
+    const { model, editor } = createEditor('headers', ref.current);
+    setHeaderEditor(editor);
+
+    let disposable: IDisposable;
+
+    if (shouldPersistHeaders) {
+      const { storage } = storageStore.getState();
+      // 2️⃣ Subscribe to content changes
+      disposable = model.onDidChangeContent(
+        debounce(500, () => {
+          const value = model.getValue();
+          storage.set(STORAGE_KEY, value);
+          updateActiveTabValues({ headers: value });
+        }),
+      );
     }
-    HEADERS_MODEL.onDidChangeContent(
-      debounce(500, () => {
-        const value = HEADERS_MODEL.getValue();
-        const { storage } = storageStore.getState();
-        storage.set(STORAGE_KEY, value);
-        updateActiveTabValues({ headers: value });
-      }),
-    );
+    // 3️⃣ Clean‑up on unmount **or** when deps change
+    return () => {
+      disposable.dispose(); // remove the listener
+      editor.dispose();
+      model.dispose();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

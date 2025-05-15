@@ -131,15 +131,26 @@ export function VariableEditor({
   }, [variableEditor, isHidden]);
   */
   useEffect(() => {
-    setVariableEditor(createEditor('variables', ref.current));
-    VARIABLES_MODEL.onDidChangeContent(
+    // Build the editor
+    const { model, editor } = createEditor('variables', ref.current);
+    setVariableEditor(editor);
+
+    // 2️⃣ Subscribe to content changes
+    const disposable = model.onDidChangeContent(
       debounce(500, () => {
-        const value = VARIABLES_MODEL.getValue();
+        const value = model.getValue();
         const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY, value);
         updateActiveTabValues({ variables: value });
       }),
     );
+
+    // 3️⃣ Clean‑up on unmount **or** when deps change
+    return () => {
+      disposable.dispose(); // remove the listener
+      editor.dispose();
+      model.dispose();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

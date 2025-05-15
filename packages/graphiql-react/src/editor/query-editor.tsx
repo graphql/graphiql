@@ -266,36 +266,36 @@ export function QueryEditor({
     if (!queryEditor) {
       return;
     }
+    */
 
-    function getAndUpdateOperationFacts(
-      editorInstance: CodeMirrorEditorWithOperationFacts,
-    ) {
-      const operationFacts = getOperationFacts(
-        schemaStore.getState().schema,
-        editorInstance.getValue(),
-      );
+  function getAndUpdateOperationFacts(editorInstance: Editor) {
+    const operationFacts = getOperationFacts(
+      schemaStore.getState().schema,
+      editorInstance.getValue(),
+    );
 
-      // Update operation name should any query names change.
-      const operationName = getSelectedOperationName(
-        editorInstance.operations ?? undefined,
-        editorInstance.operationName ?? undefined,
-        operationFacts?.operations,
-      );
+    // // Update operation name should any query names change.
+    // const operationName = getSelectedOperationName(
+    //   editorInstance.operations ?? undefined,
+    //   editorInstance.operationName ?? undefined,
+    //   operationFacts?.operations,
+    // );
+    //
+    // // Store the operation facts on editor properties
+    // editorInstance.documentAST = operationFacts?.documentAST ?? null;
+    // editorInstance.operationName = operationName ?? null;
+    // editorInstance.operations = operationFacts?.operations ?? null;
+    //
+    // // Update variable types for the variable editor
+    // if (variableEditor) {
+    //   updateVariableEditor(variableEditor, operationFacts);
+    //   codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
+    // }
+    //
+    // return operationFacts ? { ...operationFacts, operationName } : null;
+  }
 
-      // Store the operation facts on editor properties
-      editorInstance.documentAST = operationFacts?.documentAST ?? null;
-      editorInstance.operationName = operationName ?? null;
-      editorInstance.operations = operationFacts?.operations ?? null;
-
-      // Update variable types for the variable editor
-      if (variableEditor) {
-        updateVariableEditor(variableEditor, operationFacts);
-        codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-      }
-
-      return operationFacts ? { ...operationFacts, operationName } : null;
-    }
-
+  /*
     const handleChange = debounce(
       100,
       (editorInstance: CodeMirrorEditorWithOperationFacts) => {
@@ -380,31 +380,50 @@ export function QueryEditor({
   const schema = useSchemaStore(store => store.schema);
 
   useEffect(() => {
-    setQueryEditor(createEditor('operations', ref.current));
-    OPERATIONS_MODEL.onDidChangeContent(
-      debounce(100, () => {
-        const value = OPERATIONS_MODEL.getValue();
-        storage?.set(STORAGE_KEY_QUERY, value);
-        updateActiveTabValues({
-          query: value,
-          operationName: /* operationFacts?.operationName ?? */ null,
-        });
-      }),
-    );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+    // Build the editor
+    const { model, editor } = createEditor('operations', ref.current);
+    setQueryEditor(editor);
+    // eslint-disable-next-line
+    console.log('editor', editor);
 
-  useEffect(() => {
-    // add the runOperationAction to the operation and variables editors
-    queryEditor?.addAction({
-      id: 'graphql-run-operation',
-      label: 'Run Operation',
-      contextMenuOrder: 0,
-      contextMenuGroupId: 'graphql',
-      // eslint-disable-next-line no-bitwise
-      keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
-      run: executionStore.getState().run,
-    });
-  }, [queryEditor]);
+    const { run } = executionStore.getState();
+
+    const disposables = [
+      // Subscribe to content changes
+      model.onDidChangeContent(
+        debounce(100, () => {
+          const value = model.getValue();
+          // eslint-disable-next-line
+          console.log('query editor', { value });
+
+          storage.set(STORAGE_KEY_QUERY, value);
+          updateActiveTabValues({
+            query: value,
+            operationName: /* operationFacts?.operationName ?? */ null,
+          });
+        }),
+      ),
+      // add the runOperationAction to the operation and variables editors
+      editor.addAction({
+        id: 'graphql-run-operation',
+        label: 'Run Operation',
+        contextMenuOrder: 0,
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+        run,
+      }),
+      editor,
+      model,
+    ];
+
+    // 3️⃣ Clean‑up on unmount **or** when deps change
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
     if (schema) {
