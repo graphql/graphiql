@@ -1,6 +1,6 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
-import { EditorContextProvider } from './editor';
+import { EditorContextProvider } from './stores/editor';
 import { ExecutionContextProvider } from './stores/execution';
 import { PluginContextProvider } from './stores/plugin';
 import { SchemaContextProvider } from './stores/schema';
