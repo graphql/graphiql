@@ -19,6 +19,7 @@ import {
 } from './hooks';
 import { WriteableEditorProps } from './types';
 import { KEY_MAP } from '../constants';
+import { clsx } from 'clsx';
 
 export type UseVariableEditorArgs = WriteableEditorProps & {
   /**
@@ -32,6 +33,11 @@ export type UseVariableEditorArgs = WriteableEditorProps & {
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
+  /**
+   * Visually hide the header editor.
+   * @default false
+   */
+  isHidden?: boolean;
 };
 
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
@@ -49,11 +55,12 @@ export function useVariableEditor({
   onClickReference,
   onEdit,
   readOnly = false,
-}: UseVariableEditorArgs = {}) {
+  isHidden = false
+}: UseVariableEditorArgs) {
   const { initialVariables, variableEditor, setVariableEditor } =
     useEditorStore();
   const run = useExecutionStore(store => store.run);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     let isActive = true;
 
@@ -63,10 +70,6 @@ export function useVariableEditor({
         return;
       }
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialVariables,
         lineNumbers: true,
@@ -130,7 +133,15 @@ export function useVariableEditor({
   useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
   useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
 
-  return ref;
+  useEffect(() => {
+    if (!isHidden) {
+      variableEditor?.refresh();
+    }
+  }, [variableEditor, isHidden]);
+
+  return (
+    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
+  );
 }
 
 export const STORAGE_KEY = 'variables';
