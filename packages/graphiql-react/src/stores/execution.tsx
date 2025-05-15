@@ -165,8 +165,10 @@ export const executionStore = createStore<
     }
 
     if (externalFragments) {
+      // @ts-expect-error -- FIXME MONACO
       const fragmentDependencies = queryEditor.documentAST
         ? getFragmentDependenciesForAST(
+            // @ts-expect-error -- FIXME MONACO
             queryEditor.documentAST,
             externalFragments,
           )
@@ -218,10 +220,12 @@ export const executionStore = createStore<
           query,
           variables,
           operationName:
+            // @ts-expect-error -- FIXME MONACO
             operationName ?? queryEditor.operationName ?? undefined,
         },
         {
           headers: headers ?? undefined,
+          // @ts-expect-error -- FIXME MONACO
           documentAST: queryEditor.documentAST ?? undefined,
         },
       );
