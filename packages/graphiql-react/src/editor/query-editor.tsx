@@ -59,7 +59,7 @@ type QueryEditorProps = WriteableEditorProps & {
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 };
-
+/*
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
   variableEditor: Editor,
@@ -96,7 +96,7 @@ function updateEditorExternalFragments(
   editor.options.lint.externalFragments = externalFragmentList;
   editor.options.hintOptions.externalFragments = externalFragmentList;
 }
-
+*/
 export function QueryEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
@@ -116,7 +116,7 @@ export function QueryEditor({
   const ref = useRef<HTMLDivElement>(null!);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
   const schema = useSchemaStore(store => store.schema);
-
+  /*
   const onClickReferenceRef = useRef<
     NonNullable<QueryEditorProps['onClickReference']>
   >(() => {});
@@ -261,11 +261,9 @@ export function QueryEditor({
 
   useSynchronizeOption(queryEditor, 'keyMap', keyMap);
 
-  /**
-   * We don't use the generic `useChangeHandler` hook here because we want to
-   * have additional logic that updates the operation facts that we store as
-   * properties on the editor.
-   */
+  // We don't use the generic `useChangeHandler` hook here because we want to
+  // have additional logic that updates the operation facts that we store as
+  // properties on the editor.
   useEffect(() => {
     if (!queryEditor) {
       return;
@@ -379,7 +377,7 @@ export function QueryEditor({
   // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
   useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
   useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
-
+  */
   useEffect(() => {
     setQueryEditor(createEditor('operations', ref.current));
     OPERATIONS_MODEL.onDidChangeContent(
@@ -415,7 +413,7 @@ export function QueryEditor({
 
   return <div className="graphiql-editor" ref={ref} />;
 }
-
+/*
 function useSynchronizeSchema(
   editor: Editor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
@@ -473,7 +471,7 @@ function useSynchronizeExternalFragments(
     }
   }, [editor, externalFragments, codeMirrorRef]);
 }
-
+*/
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 export const STORAGE_KEY_QUERY = 'query';
