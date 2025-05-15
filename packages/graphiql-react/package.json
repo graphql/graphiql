@@ -23,7 +23,9 @@
     "react",
     "graphql",
     "sdk",
-    "codemirror"
+    "monaco-editor",
+    "monaco-graphql",
+    "monaco"
   ],
   "files": [
     "dist",

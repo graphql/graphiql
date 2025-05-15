@@ -20,12 +20,7 @@ import {
   useStorage,
 } from '../stores';
 import { markdown, debounce } from '../utility';
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import {
   useCompletion,
   copyQuery,
@@ -396,7 +391,7 @@ export function QueryEditor({
         });
       }),
     );
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
     // add the runOperationAction to the operation and variables editors

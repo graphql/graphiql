@@ -4,12 +4,7 @@ import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useSchemaStore, useEditorStore } from '../stores';
 
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { CommonEditorProps, Editor } from './types';
@@ -117,7 +112,7 @@ export function ResponseEditor({
   */
   useEffect(() => {
     setResponseEditor(createEditor('results', ref.current));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <section

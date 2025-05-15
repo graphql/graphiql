@@ -1,11 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useExecutionStore, useEditorStore, storageStore } from '../stores';
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import {
   useChangeHandler,
   useCompletion,
@@ -145,7 +140,7 @@ export function VariableEditor({
         updateActiveTabValues({ variables: value });
       }),
     );
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
