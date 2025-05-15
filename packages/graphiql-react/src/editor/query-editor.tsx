@@ -37,7 +37,7 @@ import {
   CodeMirrorType,
   WriteableEditorProps,
 } from './types';
-import { normalizeWhitespace } from './whitespace';
+import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_MAP } from '../constants';
 
 type QueryEditorProps = WriteableEditorProps & {
