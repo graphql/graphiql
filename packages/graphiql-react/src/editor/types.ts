@@ -1,4 +1,4 @@
-import type { Editor } from 'codemirror';
+import { editor } from 'monaco-editor';
 
 export type CodeMirrorType = typeof import('codemirror');
 
@@ -29,3 +29,5 @@ export type WriteableEditorProps = CommonEditorProps & {
 };
 
 export type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+
+export type Editor = editor.IStandaloneCodeEditor;
