@@ -113,11 +113,18 @@ export const executionStore = createStore<
       responseEditor,
       variableEditor,
       updateActiveTabValues,
+      operationName,
+      documentAST,
     } = editorStore.getState();
     if (!queryEditor || !responseEditor) {
       return;
     }
-    const { subscription, operationName, queryId, fetcher } = get();
+    const {
+      subscription,
+      operationName: execOperationName,
+      queryId,
+      fetcher,
+    } = get();
 
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {
@@ -219,14 +226,11 @@ export const executionStore = createStore<
         {
           query,
           variables,
-          operationName:
-            // @ts-expect-error -- FIXME MONACO
-            operationName ?? queryEditor.operationName ?? undefined,
+          operationName: execOperationName ?? operationName,
         },
         {
           headers: headers ?? undefined,
-          // @ts-expect-error -- FIXME MONACO
-          documentAST: queryEditor.documentAST ?? undefined,
+          documentAST,
         },
       );
 
@@ -275,6 +279,7 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
   fetcher,
   getDefaultFieldNames,
   children,
+  // TODO: we have it on editor, maybe we should remove it here?
   operationName = null,
 }) => {
   useEffect(() => {

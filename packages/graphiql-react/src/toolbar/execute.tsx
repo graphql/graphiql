@@ -6,12 +6,16 @@ import { KEY_MAP } from '../constants';
 import './execute.css';
 
 export const ExecuteButton: FC = () => {
-  const { queryEditor, setOperationName } = useEditorStore();
-  const { isFetching, subscription, operationName, run, stop } =
-    useExecutionStore();
-  // @ts-expect-error -- FIXME MONACO
-  const operations = queryEditor?.operations || [];
-  const hasOptions = operations.length > 1 && typeof operationName !== 'string';
+  const { setOperationName, operations = [], operationName } = useEditorStore();
+  const {
+    isFetching,
+    subscription,
+    operationName: execOperationName,
+    run,
+    stop,
+  } = useExecutionStore();
+  const hasOptions =
+    operations.length > 1 && typeof execOperationName !== 'string';
   const isRunning = isFetching || Boolean(subscription);
 
   const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery[0]})`;
@@ -29,7 +33,6 @@ export const ExecuteButton: FC = () => {
       </Tooltip>
 
       <DropdownMenu.Content>
-        {/* @ts-expect-error -- FIXME MONACO */}
         {operations.map((operation, i) => {
           const opName = operation.name
             ? operation.name.value
@@ -40,10 +43,8 @@ export const ExecuteButton: FC = () => {
               onSelect={() => {
                 const selectedOperationName = operation.name?.value;
                 if (
-                  queryEditor &&
                   selectedOperationName &&
-                  // @ts-expect-error -- FIXME MONACO
-                  selectedOperationName !== queryEditor.operationName
+                  selectedOperationName !== operationName
                 ) {
                   setOperationName(selectedOperationName);
                 }
