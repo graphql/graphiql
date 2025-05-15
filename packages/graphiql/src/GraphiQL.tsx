@@ -591,10 +591,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     </div>
   );
 
-  const editorToolsText =
-    editorToolsResize.hiddenElement === 'second'
-      ? 'Show editor tools'
-      : 'Hide editor tools';
+  const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
     editorToolsResize.hiddenElement === 'second'
