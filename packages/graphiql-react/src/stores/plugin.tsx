@@ -48,6 +48,8 @@ type PluginStoreType = {
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
+
+  setPlugins(plugins: GraphiQLPlugin[]): void;
 };
 
 type PluginStoreProps = Pick<
@@ -86,16 +88,7 @@ export const pluginStore = createStore<PluginStoreType>((set, get) => ({
       return { visiblePlugin: newVisiblePlugin };
     });
   },
-}));
-
-export const PluginStore: FC<PluginStoreProps> = ({
-  onTogglePluginVisibility,
-  children,
-  visiblePlugin,
-  plugins = [],
-  referencePlugin,
-}) => {
-  useEffect(() => {
+  setPlugins(plugins) {
     const seenTitles = new Set<string>();
     const msg = 'All GraphiQL plugins must have a unique title';
     for (const { title } of plugins) {
@@ -107,6 +100,18 @@ export const PluginStore: FC<PluginStoreProps> = ({
       }
       seenTitles.add(title);
     }
+    set({ plugins });
+  },
+}));
+
+export const PluginStore: FC<PluginStoreProps> = ({
+  onTogglePluginVisibility,
+  children,
+  visiblePlugin,
+  plugins = [],
+  referencePlugin,
+}) => {
+  useEffect(() => {
     // TODO: visiblePlugin initial data
     // const storedValue = storage.get(STORAGE_KEY);
     // const pluginForStoredValue = plugins.find(
@@ -118,9 +123,8 @@ export const PluginStore: FC<PluginStoreProps> = ({
     // if (storedValue) {
     //   storage.set(STORAGE_KEY, '');
     // }
-
+    pluginStore.getState().setPlugins(plugins);
     pluginStore.setState({
-      plugins,
       onTogglePluginVisibility,
       referencePlugin,
     });
