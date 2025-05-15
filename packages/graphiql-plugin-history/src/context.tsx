@@ -1,7 +1,10 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
+import {
+  HistoryStore as ToolkitHistoryStore,
+  QueryStoreItem,
+} from '@graphiql/toolkit';
 import {
   useExecutionStore,
   useEditorStore,
@@ -9,7 +12,7 @@ import {
   createBoundedUseStore,
 } from '@graphiql/react';
 
-const historyStore = createStore<HistoryContextType>((set, get) => ({
+const historyStore = createStore<HistoryStoreType>((set, get) => ({
   historyStorage: null!,
   actions: {
     addToHistory(operation) {
@@ -36,8 +39,8 @@ const historyStore = createStore<HistoryContextType>((set, get) => ({
   },
 }));
 
-type HistoryContextType = {
-  historyStorage: HistoryStore;
+type HistoryStoreType = {
+  historyStorage: ToolkitHistoryStore;
   actions: {
     /**
      * Add an operation to the history.
@@ -100,7 +103,7 @@ type HistoryContextType = {
   };
 };
 
-type HistoryContextProviderProps = {
+type HistoryStoreProps = {
   children: ReactNode;
   /**
    * The maximum number of executed operations to store.
@@ -110,12 +113,12 @@ type HistoryContextProviderProps = {
 };
 
 /**
- * The functions send the entire operation so users can customize their own application with
- * <HistoryContext.Provider value={customizedFunctions} /> and get access to the operation plus
- * any additional props they added for their needs (i.e., build their own functions that may save
- * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
+ * The functions send the entire operation so users can customize their own application and get
+ * access to the operation plus any additional props they added for their needs (i.e., build their
+ * own functions that may save to a backend instead of localStorage and might need an id property
+ * added to the `QueryStoreItem`)
  */
-export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
+export const HistoryStore: FC<HistoryStoreProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
@@ -125,7 +128,7 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   const storage = useStorage();
 
   const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
-    new HistoryStore(storage, maxHistoryLength);
+    new ToolkitHistoryStore(storage, maxHistoryLength);
 
   useEffect(() => {
     historyStore.setState({ historyStorage });
