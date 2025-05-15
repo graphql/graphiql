@@ -1,5 +1,4 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import type {
   DocumentNode,
   FragmentDefinitionNode,
@@ -40,6 +39,7 @@ import {
   CodeMirrorEditor,
   CodeMirrorType,
   WriteableEditorProps,
+  SchemaReference,
 } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_MAP } from '../constants';
