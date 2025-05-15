@@ -294,39 +294,8 @@ export function QueryEditor({
   }
 
   /*
-    const handleChange = debounce(
-      100,
-      (editorInstance: CodeMirrorEditorWithOperationFacts) => {
-        const query = editorInstance.getValue();
-        storage.set(STORAGE_KEY_QUERY, query);
-
-        const currentOperationName = editorInstance.operationName;
-        const operationFacts = getAndUpdateOperationFacts(editorInstance);
-        if (operationFacts?.operationName !== undefined) {
-          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
-        }
-
-        // Invoke callback props only after the operation facts have been updated
-        onEdit?.(query, operationFacts?.documentAST);
-        if (
-          operationFacts?.operationName &&
-          currentOperationName !== operationFacts.operationName
-        ) {
-          setOperationName(operationFacts.operationName);
-        }
-
-        updateActiveTabValues({
-          query,
-          operationName: operationFacts?.operationName ?? null,
-        });
-      },
-    ) as (editorInstance: CodeMirrorEditor) => void;
-
     // Call once to initially update the values
     getAndUpdateOperationFacts(queryEditor);
-
-    queryEditor.on('change', handleChange);
-    return () => queryEditor.off('change', handleChange);
   }, [
     onEdit,
     queryEditor,
@@ -381,21 +350,36 @@ export function QueryEditor({
 
     const { run } = executionStore.getState();
 
+    const handleChange = debounce(100, () => {
+      const query = editor.getValue();
+      storage.set(STORAGE_KEY_QUERY, query);
+      // eslint-disable-next-line no-console
+      console.log('handleChange', query)
+
+      const currentOperationName = editorStore.getState().operationName;
+      const operationFacts = getAndUpdateOperationFacts(editor);
+      if (operationFacts?.operationName !== undefined) {
+        storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
+      }
+
+      // Invoke callback props only after the operation facts have been updated
+      onEdit?.(query, operationFacts?.documentAST);
+      if (
+        operationFacts?.operationName &&
+        currentOperationName !== operationFacts.operationName
+      ) {
+        setOperationName(operationFacts.operationName);
+      }
+
+      updateActiveTabValues({
+        query,
+        operationName: operationFacts?.operationName ?? null,
+      });
+    });
+
     const disposables = [
       // Subscribe to content changes
-      model.onDidChangeContent(
-        debounce(100, () => {
-          const value = model.getValue();
-          // eslint-disable-next-line
-          console.log('query editor', { value });
-
-          storage.set(STORAGE_KEY_QUERY, value);
-          updateActiveTabValues({
-            query: value,
-            operationName: /* operationFacts?.operationName ?? */ null,
-          });
-        }),
-      ),
+      model.onDidChangeContent(handleChange),
       // add the runOperationAction to the operation and variables editors
       editor.addAction({
         id: 'graphql-run',
