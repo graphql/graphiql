@@ -149,52 +149,54 @@ type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
-export type GraphiQLInterfaceProps = WriteableEditorProps &
-  AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'> &
-  AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'> &
-  AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'> &
-  Pick<ResponseEditorProps, 'responseTooltip'> & {
-    children?: ReactNode;
-    /**
-     * Set the default state for the editor tools.
-     * - `false` hides the editor tools
-     * - `true` shows the editor tools
-     * - `'variables'` specifically shows the variables editor
-     * - `'headers'` specifically shows the headers editor
-     * By default, the editor tools are initially shown when at least one of the
-     * editors has contents.
-     */
-    defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
-    /**
-     * Toggle if the headers' editor should be shown inside the editor tools.
-     * @default true
-     */
-    isHeadersEditorEnabled?: boolean;
-    /**
-     * Indicates if settings for persisting headers should appear in the
-     * settings modal.
-     */
-    showPersistHeadersSettings?: boolean;
-    defaultTheme?: Theme;
-    /**
-     * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
-     * This is useful when you want to make sure that GraphiQL is always
-     * rendered with a specific theme.
-     */
-    forcedTheme?: (typeof THEMES)[number];
-    /**
-     * Additional class names which will be appended to the container element.
-     */
-    className?: string;
-    /**
-     * When the user clicks a close tab button, this function is invoked with
-     * the index of the tab that is about to be closed. It can return a promise
-     * that should resolve to `true` (meaning the tab may be closed) or `false`
-     * (meaning the tab may not be closed).
-     * @param index The index of the tab that should be closed.
-     */
-    confirmCloseTab?(index: number): Promise<boolean> | boolean;
-  };
+export interface GraphiQLInterfaceProps
+  extends WriteableEditorProps,
+    AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
+    AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
+    AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
+    Pick<ResponseEditorProps, 'responseTooltip'> {
+  children?: ReactNode;
+  /**
+   * Set the default state for the editor tools.
+   * - `false` hides the editor tools
+   * - `true` shows the editor tools
+   * - `'variables'` specifically shows the variables editor
+   * - `'headers'` specifically shows the headers editor
+   * By default, the editor tools are initially shown when at least one of the
+   * editors has contents.
+   */
+  defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
+  /**
+   * Toggle if the headers' editor should be shown inside the editor tools.
+   * @default true
+   */
+  isHeadersEditorEnabled?: boolean;
+  /**
+   * Indicates if settings for persisting headers should appear in the
+   * settings modal.
+   */
+  showPersistHeadersSettings?: boolean;
+  defaultTheme?: Theme;
+  /**
+   * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
+   * This is useful when you want to make sure that GraphiQL is always
+   * rendered with a specific theme.
+   */
+  forcedTheme?: (typeof THEMES)[number];
+  /**
+   * Additional class names which will be appended to the container element.
+   */
+  className?: string;
+
+  /**
+   * When the user clicks a close tab button, this function is invoked with
+   * the index of the tab that is about to be closed. It can return a promise
+   * that should resolve to `true` (meaning the tab may be closed) or `false`
+   * (meaning the tab may not be closed).
+   * @param index The index of the tab that should be closed.
+   */
+  confirmCloseTab?(index: number): Promise<boolean> | boolean;
+}
 
 const THEMES = ['light', 'dark', 'system'] as const;
 
