@@ -1,4 +1,4 @@
-export { ImagePreview, ResponseEditor, VariableEditor } from './components';
+export { ImagePreview, ResponseEditor } from './components';
 export { EditorContextProvider, useEditorStore } from './context';
 export { HeaderEditor } from './header-editor';
 export {
@@ -14,13 +14,12 @@ export {
 } from './hooks';
 export { QueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
-export { useVariableEditor } from './variable-editor';
+export { VariableEditor } from './variable-editor';
 
 export type {
   ResponseTooltipType,
   UseResponseEditorArgs,
 } from './response-editor';
 export type { TabsState } from './tabs';
-export type { UseVariableEditorArgs } from './variable-editor';
 
 export type { CommonEditorProps, KeyMap, WriteableEditorProps } from './types';

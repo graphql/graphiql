@@ -41,7 +41,6 @@ export type {
   ResponseTooltipType,
   TabsState,
   UseResponseEditorArgs,
-  UseVariableEditorArgs,
   WriteableEditorProps,
 } from './editor';
 export type { GraphiQLPlugin } from './plugin';

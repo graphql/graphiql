@@ -21,7 +21,7 @@ import { WriteableEditorProps } from './types';
 import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 
-export type UseVariableEditorArgs = WriteableEditorProps & {
+type VariableEditorProps = WriteableEditorProps & {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
@@ -49,14 +49,14 @@ function importCodeMirrorImports() {
   ]);
 }
 
-export function useVariableEditor({
+export function VariableEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
-  isHidden = false
-}: UseVariableEditorArgs) {
+  isHidden = false,
+}: VariableEditorProps) {
   const { initialVariables, variableEditor, setVariableEditor } =
     useEditorStore();
   const run = useExecutionStore(store => store.run);
@@ -95,6 +95,7 @@ export function useVariableEditor({
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         extraKeys: commonKeys,
       });
+
       function showHint() {
         newEditor.showHint({ completeSingle: false, container });
       }
