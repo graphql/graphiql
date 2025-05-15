@@ -17,7 +17,7 @@ import {
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { useEditorStore } from './editor';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import { SchemaReference } from '../editor/types';
 import { createBoundedUseStore } from '../utility';
 import { executionStore, useExecutionStore } from './execution';
 
