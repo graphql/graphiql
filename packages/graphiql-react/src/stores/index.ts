@@ -1,8 +1,4 @@
-export {
-  editorStore,
-  useEditorStore,
-  type CodeMirrorEditorWithOperationFacts,
-} from './editor';
+export { editorStore, useEditorStore } from './editor';
 export { executionStore, useExecutionStore } from './execution';
 export { pluginStore, usePluginStore } from './plugin';
 export { schemaStore, useSchemaStore } from './schema';
