@@ -12,18 +12,22 @@ import {
   OperationFacts,
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
-import { executionStore } from '../execution';
+import {
+  executionStore,
+  pluginStore,
+  schemaStore,
+  useSchemaStore,
+  useEditorStore,
+  useStorage,
+  CodeMirrorEditorWithOperationFacts,
+} from '../stores';
 import { markdown, debounce } from '../utility';
-import { pluginStore } from '../plugin';
-import { schemaStore, useSchemaStore } from '../schema';
-import { useStorage } from '../storage';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
 import {
   useCompletion,
   copyQuery,
