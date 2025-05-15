@@ -27,17 +27,12 @@ type AdditionalLocateInfo = {
   project: GraphQLProjectConfig;
 };
 
-type LineNumber = string;
-type CharacterNumber = string;
 type RelayLSPLocateCommand = (
   // either Type, Type.field or Type.field(argument)
   projectName: string,
   typeName: string,
   info: AdditionalLocateInfo,
-) =>
-  | `${string}:${LineNumber}:${CharacterNumber}`
-  | `${string}:${LineNumber}`
-  | string;
+) => `${string}:${string}:${string}` | `${string}:${string}` | string;
 
 type GraphQLLocateCommand = (
   projectName: string,
