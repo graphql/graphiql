@@ -17,4 +17,3 @@ globalThis.MonacoEnvironment = {
     return new EditorWorker();
   },
 };
-

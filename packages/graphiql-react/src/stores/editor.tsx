@@ -227,15 +227,15 @@ interface EditorStoreType extends TabsState {
   /**
    * @remarks from graphiql 5
    */
-  documentAST?: OperationFacts['documentAST']
+  documentAST?: OperationFacts['documentAST'];
   /**
    * @remarks from graphiql 5
    */
-  operationName?: string
+  operationName?: string;
   /**
    * @remarks from graphiql 5
    */
-  operations?: OperationFacts['operations']
+  operations?: OperationFacts['operations'];
 }
 
 type EditorStoreProps = Pick<
