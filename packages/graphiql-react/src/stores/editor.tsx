@@ -36,6 +36,7 @@ import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor'
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
+import { editor } from 'monaco-editor';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -43,6 +44,8 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   operations: OperationDefinitionNode[] | null;
   variableToType: VariableToType | null;
 };
+
+interface Editor extends editor.IStandaloneCodeEditor {}
 
 interface EditorStoreType extends TabsState {
   /**
@@ -84,41 +87,41 @@ interface EditorStoreType extends TabsState {
   /**
    * The CodeMirror editor instance for the headers editor.
    */
-  headerEditor: CodeMirrorEditor | null;
+  headerEditor: Editor | null;
   /**
    * The CodeMirror editor instance for the query editor. This editor also
    * stores the operation facts that are derived from the current editor
    * contents.
    */
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  queryEditor: Editor | null;
   /**
    * The CodeMirror editor instance for the response editor.
    */
-  responseEditor: CodeMirrorEditor | null;
+  responseEditor: Editor | null;
   /**
    * The CodeMirror editor instance for the variables editor.
    */
-  variableEditor: CodeMirrorEditor | null;
+  variableEditor: Editor | null;
 
   /**
    * Set the CodeMirror editor instance for the headers editor.
    */
-  setHeaderEditor(newEditor: CodeMirrorEditor): void;
+  setHeaderEditor(newEditor: Editor): void;
 
   /**
    * Set the CodeMirror editor instance for the query editor.
    */
-  setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
+  setQueryEditor(newEditor: Editor): void;
 
   /**
    * Set the CodeMirror editor instance for the response editor.
    */
-  setResponseEditor(newEditor: CodeMirrorEditor): void;
+  setResponseEditor(newEditor: Editor): void;
 
   /**
    * Set the CodeMirror editor instance for the variables editor.
    */
-  setVariableEditor(newEditor: CodeMirrorEditor): void;
+  setVariableEditor(newEditor: Editor): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.

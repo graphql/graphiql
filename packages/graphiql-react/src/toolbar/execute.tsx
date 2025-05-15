@@ -9,8 +9,6 @@ export const ExecuteButton: FC = () => {
   const { queryEditor, setOperationName } = useEditorStore();
   const { isFetching, subscription, operationName, run, stop } =
     useExecutionStore();
-
-  // @ts-expect-error FIXME: MONACO
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
   const isRunning = isFetching || Boolean(subscription);
@@ -30,7 +28,6 @@ export const ExecuteButton: FC = () => {
       </Tooltip>
 
       <DropdownMenu.Content>
-        {/* @ts-expect-error FIXME: MONACO */}
         {operations.map((operation, i) => {
           const opName = operation.name
             ? operation.name.value
@@ -43,7 +40,6 @@ export const ExecuteButton: FC = () => {
                 if (
                   queryEditor &&
                   selectedOperationName &&
-                  // @ts-expect-error FIXME: MONACO
                   selectedOperationName !== queryEditor.operationName
                 ) {
                   setOperationName(selectedOperationName);

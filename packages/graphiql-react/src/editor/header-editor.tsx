@@ -1,4 +1,3 @@
-// @ts-nocheck -- codemirror editor complain about type errors
 import { useEffect, useRef } from 'react';
 
 import {

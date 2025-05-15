@@ -156,7 +156,6 @@ export function copyQuery() {
 
 export function mergeQuery() {
   const { queryEditor } = editorStore.getState();
-  // @ts-expect-error FIXME: MONACO
   const documentAST = queryEditor?.documentAST;
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {

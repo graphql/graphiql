@@ -1,4 +1,3 @@
-// @ts-nocheck -- codemirror editor complain about type errors
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';

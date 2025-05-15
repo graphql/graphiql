@@ -81,6 +81,7 @@ export default defineConfig({
       external: [
         'react/jsx-runtime',
         'react-dom/client',
+        'monaco-graphql/esm/initializeMode',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
         ...Object.keys(packageJSON.dependencies),
