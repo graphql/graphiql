@@ -6,7 +6,7 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorStore } from './context';
+import { useEditorStore, useExecutionStore } from '../stores';
 import {
   useChangeHandler,
   useKeyMap,
@@ -15,7 +15,6 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
-import { useExecutionStore } from '../execution';
 import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 
