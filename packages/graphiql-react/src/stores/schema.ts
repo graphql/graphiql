@@ -18,7 +18,7 @@ import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { useEditorStore } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
-import { createBoundedUseStore } from './utility';
+import { createBoundedUseStore } from '../utility';
 import { executionStore, useExecutionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
