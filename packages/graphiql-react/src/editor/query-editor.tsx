@@ -378,7 +378,7 @@ export function QueryEditor({
     });
 
     const disposables = [
-      // Subscribe to content changes
+      // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
       // add the runOperationAction to the operation and variables editors
       editor.addAction({

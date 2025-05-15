@@ -10,10 +10,11 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { KEY_MAP, VARIABLES_MODEL } from '../constants';
+import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
+import { KeyCode, KeyMod } from 'monaco-editor';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**
@@ -44,7 +45,6 @@ export function VariableEditor({
 }: VariableEditorProps) {
   const {
     initialVariables,
-    variableEditor,
     setVariableEditor,
     updateActiveTabValues,
   } = useEditorStore();
@@ -52,13 +52,7 @@ export function VariableEditor({
   const ref = useRef<HTMLDivElement>(null!);
   /*
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialVariables,
@@ -72,14 +66,12 @@ export function VariableEditor({
         readOnly: readOnly ? 'nocursor' : false,
         foldGutter: true,
         lint: {
-          // @ts-expect-error
           variableToType: undefined,
         },
         hintOptions: {
           closeOnUnfocus: false,
           completeSingle: false,
           container,
-          // @ts-expect-error
           variableToType: undefined,
         },
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
@@ -108,10 +100,6 @@ export function VariableEditor({
 
       setVariableEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
   }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
 
   useSynchronizeOption(variableEditor, 'keyMap', keyMap);
@@ -119,10 +107,6 @@ export function VariableEditor({
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
   useCompletion(variableEditor, onClickReference);
-
-  useKeyMap(variableEditor, KEY_MAP.runQuery, run);
-  useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   useEffect(() => {
     if (!isHidden) {
@@ -134,22 +118,50 @@ export function VariableEditor({
     // Build the editor
     const { model, editor } = createEditor('variables', ref.current);
     setVariableEditor(editor);
+    const { storage } = storageStore.getState();
 
     // 2️⃣ Subscribe to content changes
-    const disposable = model.onDidChangeContent(
-      debounce(500, () => {
-        const value = model.getValue();
-        const { storage } = storageStore.getState();
-        storage.set(STORAGE_KEY, value);
-        updateActiveTabValues({ variables: value });
+    const disposables = [
+      model.onDidChangeContent(
+        debounce(500, () => {
+          const value = model.getValue();
+          storage.set(STORAGE_KEY, value);
+          updateActiveTabValues({ variables: value });
+        }),
+      ),
+      editor.addAction({
+        id: 'graphql-run',
+        label: 'Run Operation',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+        run,
       }),
-    );
+      editor.addAction({
+        id: 'graphql-prettify',
+        label: 'Prettify Editors',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
+        run: prettifyEditors,
+      }),
+      editor.addAction({
+        id: 'graphql-merge',
+        label: 'Merge Fragments into Query',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
+        run: mergeQuery,
+      }),
+      editor,
+      model,
+    ];
 
     // 3️⃣ Clean‑up on unmount **or** when deps change
     return () => {
-      disposable.dispose(); // remove the listener
-      editor.dispose();
-      model.dispose();
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
