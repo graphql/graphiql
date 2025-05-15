@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useStorage } from './storage';
+import { useStorage } from './stores';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
