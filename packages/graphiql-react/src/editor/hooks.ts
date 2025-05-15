@@ -33,7 +33,9 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   value: EditorConfiguration[K],
 ) {
   useEffect(() => {
+    /*
     editor?.setOption(option, value);
+     */
   }, [editor, option, value]);
 }
 
@@ -76,8 +78,10 @@ export function useChangeHandler(
       updateTab(newValue);
       callback?.(newValue);
     };
+    /*
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
+     */
   }, [callback, editor, storageKey, tabProperty]);
 }
 
@@ -89,7 +93,7 @@ export function useCompletion(
     if (!editor) {
       return;
     }
-
+    /*
     const handleCompletion = (
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
@@ -113,6 +117,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
+   */
   }, [callback, editor]);
 }
 
@@ -127,6 +132,7 @@ export function useKeyMap(
     if (!editor) {
       return;
     }
+    /*
     for (const key of keys) {
       editor.removeKeyMap(key);
     }
@@ -139,6 +145,7 @@ export function useKeyMap(
       keyMap[key] = () => callback();
     }
     editor.addKeyMap(keyMap);
+    */
   }, [editor, keys, callback]);
 }
 
@@ -156,6 +163,7 @@ export function copyQuery() {
 
 export function mergeQuery() {
   const { queryEditor } = editorStore.getState();
+  // @ts-expect-error -- FIXME MONACO
   const documentAST = queryEditor?.documentAST;
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {
@@ -226,35 +234,37 @@ export function getAutoCompleteLeafs() {
   const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
 
   if (insertions && insertions.length > 0) {
-    // queryEditor.operation(() => {
-    //   const cursor = queryEditor.getCursor();
-    //   const cursorIndex = queryEditor.indexFromPos(cursor);
-    //   queryEditor.setValue(result || '');
-    //   let added = 0;
-    //   const markers = insertions.map(({ index, string }) =>
-    //     queryEditor.markText(
-    //       queryEditor.posFromIndex(index + added),
-    //       queryEditor.posFromIndex(index + (added += string.length)),
-    //       {
-    //         className: 'auto-inserted-leaf',
-    //         clearOnEnter: true,
-    //         title: 'Automatically added leaf fields',
-    //       },
-    //     ),
-    //   );
-    //   setTimeout(() => {
-    //     for (const marker of markers) {
-    //       marker.clear();
-    //     }
-    //   }, 7000);
-    //   let newCursorIndex = cursorIndex;
-    //   for (const { index, string } of insertions) {
-    //     if (index < cursorIndex) {
-    //       newCursorIndex += string.length;
-    //     }
-    //   }
-    //   queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-    // });
+  /*
+    queryEditor.operation(() => {
+      const cursor = queryEditor.getCursor();
+      const cursorIndex = queryEditor.indexFromPos(cursor);
+      queryEditor.setValue(result || '');
+      let added = 0;
+      const markers = insertions.map(({ index, string }) =>
+        queryEditor.markText(
+          queryEditor.posFromIndex(index + added),
+          queryEditor.posFromIndex(index + (added += string.length)),
+          {
+            className: 'auto-inserted-leaf',
+            clearOnEnter: true,
+            title: 'Automatically added leaf fields',
+          },
+        ),
+      );
+      setTimeout(() => {
+        for (const marker of markers) {
+          marker.clear();
+        }
+      }, 7000);
+      let newCursorIndex = cursorIndex;
+      for (const { index, string } of insertions) {
+        if (index < cursorIndex) {
+          newCursorIndex += string.length;
+        }
+      }
+      queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+    });
+  */
   }
 
   return result;
