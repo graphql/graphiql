@@ -1,9 +1,14 @@
 import { Completion, CompletionContext } from '@codemirror/autocomplete';
 import { EditorView } from '@codemirror/view';
 import { GraphQLSchema } from 'graphql';
-import { ContextToken, CompletionItem } from 'graphql-language-service';
+import {
+  ContextToken,
+  CompletionItem,
+  AutocompleteSuggestionOptions,
+} from 'graphql-language-service';
 import { Position } from './helpers';
 export interface GqlExtensionsOptions {
+  showErrorOnInvalidSchema?: boolean;
   onShowInDocs?: (field?: string, type?: string, parentType?: string) => void;
   onFillAllFields?: (
     view: EditorView,
@@ -17,4 +22,5 @@ export interface GqlExtensionsOptions {
     ctx: CompletionContext,
     item: Completion,
   ) => Node | Promise<Node | null> | null;
+  autocompleteOptions?: AutocompleteSuggestionOptions;
 }

@@ -1,6 +1,6 @@
 {
-  "fileTypes": ["python"],
-  "injectionSelector": "L:source.python -string -comment",
+  "scopeName": "inline.graphql.python",
+  "injectionSelector": "L:(meta.embedded.block.python | source.python -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
@@ -142,6 +142,5 @@
         }
       ]
     }
-  ],
-  "scopeName": "inline.graphql.python"
+  ]
 }

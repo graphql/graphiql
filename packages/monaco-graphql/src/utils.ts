@@ -55,10 +55,9 @@ export function toCompletion(
 ): GraphQLWorkerCompletionItem {
   const results: GraphQLWorkerCompletionItem = {
     label: entry.label,
-    insertText: entry.insertText,
-    insertTextFormat: entry.insertTextFormat,
+    insertText: entry?.insertText,
     sortText: entry.sortText,
-    filterText: entry.filterText,
+    filterText: entry?.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
     range: range ? toMonacoRange(range) : undefined,
@@ -67,9 +66,15 @@ export function toCompletion(
   if (entry.insertTextFormat) {
     results.insertTextFormat = entry.insertTextFormat;
   }
+  if (entry.insertTextMode) {
+    results.insertTextMode = entry.insertTextMode;
+  }
 
   if (entry.command) {
     results.command = { ...entry.command, id: entry.command.command };
+  }
+  if (entry.labelDetails) {
+    results.labelDetails = entry.labelDetails;
   }
 
   return results;

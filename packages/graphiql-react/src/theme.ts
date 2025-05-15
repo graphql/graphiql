@@ -1,5 +1,5 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { useStorageContext } from './storage';
+import { useEffect, useState } from 'react';
+import { useStorage } from './stores';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -7,15 +7,11 @@ import { useStorageContext } from './storage';
  */
 export type Theme = 'light' | 'dark' | null;
 
-export function useTheme() {
-  const storageContext = useStorageContext();
+export function useTheme(defaultTheme: Theme = null) {
+  const storage = useStorage();
 
   const [theme, setThemeInternal] = useState<Theme>(() => {
-    if (!storageContext) {
-      return null;
-    }
-
-    const stored = storageContext.get(STORAGE_KEY);
+    const stored = storage.get(STORAGE_KEY);
     switch (stored) {
       case 'light':
         return 'light';
@@ -24,32 +20,25 @@ export function useTheme() {
       default:
         if (typeof stored === 'string') {
           // Remove the invalid stored value
-          storageContext.set(STORAGE_KEY, '');
+          storage.set(STORAGE_KEY, '');
         }
-        return null;
+        return defaultTheme;
     }
   });
 
-  useLayoutEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
+  useEffect(() => {
     document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
     }
   }, [theme]);
 
-  const setTheme = useCallback(
-    (newTheme: Theme) => {
-      storageContext?.set(STORAGE_KEY, newTheme || '');
-      setThemeInternal(newTheme);
-    },
-    [storageContext],
-  );
+  const setTheme = (newTheme: Theme) => {
+    storage.set(STORAGE_KEY, newTheme || '');
+    setThemeInternal(newTheme);
+  };
 
-  return useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
+  return { theme, setTheme };
 }
 
 const STORAGE_KEY = 'theme';

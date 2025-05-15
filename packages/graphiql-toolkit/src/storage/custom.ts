@@ -25,7 +25,7 @@ export function createLocalStorage({
     removeItem: key => localStorage.removeItem(getStorageKey(key)),
     get length() {
       let keys = 0;
-      for (const key in window.localStorage) {
+      for (const key in localStorage) {
         if (key.indexOf(storageKeyPrefix) === 0) {
           keys += 1;
         }
@@ -35,9 +35,9 @@ export function createLocalStorage({
 
     clear() {
       // We only want to clear the namespaced items
-      for (const key in window.localStorage) {
+      for (const key in localStorage) {
         if (key.indexOf(storageKeyPrefix) === 0) {
-          window.localStorage.removeItem(key);
+          localStorage.removeItem(key);
         }
       }
     },

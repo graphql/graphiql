@@ -14,3 +14,4 @@ export { default as startServer } from './startServer';
 export * from './GraphQLCache';
 export * from './parseDocument';
 export * from './findGraphQLTags';
+export * from './types';

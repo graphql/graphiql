@@ -9,10 +9,8 @@ import {
 } from '../fixtures/fixtures';
 
 describe('history', () => {
-  beforeEach(() => {});
   it('defaults to closed history panel', () => {
     cy.visit('/');
-
     cy.get('.graphiql-history').should('not.exist');
   });
 
@@ -135,7 +133,7 @@ describe('history', () => {
     cy.get('.graphiql-history ul').should('have.length', 2); // favorites and items
     cy.get(favorites).should('have.length', 1);
     cy.get(items).should('have.length', 1);
-    cy.get('.graphiql-history-item-label').eq(0).should('have.text', 'Test'); // favorite so now at top of list
+    cy.get('.graphiql-history-item-label').eq(0).should('have.text', 'Test'); // favorite so now at top of a list
 
     cy.get(
       '.graphiql-history-item:nth-child(1) > button[aria-label="Remove favorite"]',

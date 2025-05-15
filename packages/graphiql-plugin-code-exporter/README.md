@@ -1,105 +1,81 @@
 # GraphiQL Code Exporter Plugin
 
 This package provides a plugin that integrates the
-[GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter)
-into the GraphiQL UI.
+[GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
 
-## Install
+## Installation
 
-Use your favorite package manager to install the package:
+Install the plugin using your preferred package manager:
 
 ```sh
-npm i -S @graphiql/plugin-code-exporter
+npm install @graphiql/plugin-code-exporter
 ```
 
-The following packages are peer dependencies, so make sure you have them
-installed as well:
+Make sure to also install the required peer dependencies:
 
 ```sh
-npm i -S react react-dom graphql
+npm install react react-dom graphql
 ```
 
 ## Usage
 
-See
-[GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter)
-for all details on available `props` and how to
-[create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+Refer to the
+[GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter) for full details on available `props` and how to [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+
+Example integration:
 
 ```jsx
-import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import { useState } from 'react';
-
-import 'graphiql/graphiql.css';
-import '@graphiql/plugin-code-exporter/dist/style.css';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+import 'graphiql/style.css';
+import '@graphiql/plugin-code-exporter/style.css';
 
 const fetcher = createGraphiQLFetcher({
-  url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+  url: 'https://countries.trevorblades.com',
 });
+function getQuery(arg, spaceCount = 2) {
+  const spaces = ' '.repeat(spaceCount);
+  const { query } = arg.operationDataList[0];
+  return spaces + query.replaceAll('\n', '\n' + spaces);
+}
 
-/*
-Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for details
-*/
-
-const removeQueryName = query =>
-  query.replace(
-    /^[^{(]+([{(])/,
-    (_match, openingCurlyBracketsOrParenthesis) =>
-      `query ${openingCurlyBracketsOrParenthesis}`,
-  );
-
-const getQuery = (arg, spaceCount) => {
-  const { operationDataList } = arg;
-  const { query } = operationDataList[0];
-  const anonymousQuery = removeQueryName(query);
-  return (
-    ' '.repeat(spaceCount) +
-    anonymousQuery.replaceAll('\n', '\n' + ' '.repeat(spaceCount))
-  );
-};
-
-const exampleSnippetOne = {
-  name: 'Example One',
-  language: 'JavaScript',
-  codeMirrorMode: 'jsx',
-  options: [],
-  generate: arg => `export const query = graphql\`
-${getQuery(arg, 2)}
-\`
-`,
-};
-
-const exampleSnippetTwo = {
-  name: 'Example Two',
-  language: 'JavaScript',
-  codeMirrorMode: 'jsx',
-  options: [],
-  generate: arg => `import { graphql } from 'graphql'
-
-export const query = graphql\`
-${getQuery(arg, 2)}
-\`
-`,
-};
-
-const snippets = [exampleSnippetOne, exampleSnippetTwo];
-
-const exporter = codeExporterPlugin({
-  snippets,
-  codeMirrorTheme: 'graphiql',
+const codeExporter = codeExporterPlugin({
+  /**
+   * Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for details.
+   */
+  snippets: [
+    {
+      name: 'Example One',
+      language: 'JavaScript',
+      codeMirrorMode: 'jsx',
+      options: [],
+      generate: arg =>
+        ['export const query = graphql`', getQuery(arg), '`'].join('\n'),
+    },
+    {
+      name: 'Example Two',
+      language: 'JavaScript',
+      codeMirrorMode: 'jsx',
+      options: [],
+      generate: arg =>
+        [
+          "import { graphql } from 'graphql'",
+          '',
+          'export const query = graphql`',
+          getQuery(arg),
+          '`',
+        ].join('\n'),
+    },
+  ],
 });
-
-function GraphiQLWithExplorer() {
-  return (
-    <GraphiQL fetcher={fetcher} defaultQuery={query} plugins={[exporter]} />
-  );
+function App() {
+  return <GraphiQL fetcher={fetcher} plugins={[codeExporter]} />;
 }
 ```
 
 ## CDN bundles
 
-You can also use this plugin when using the
-[CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the
-[example HTML file](examples/index.html) that shows how you can do this.
+You can also use this plugin via an ESM-based CDN like [esm.sh](https://esm.sh).
+
+See the [CDN example](./example/index.html) for a working demo.

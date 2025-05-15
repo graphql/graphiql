@@ -19,7 +19,8 @@ const nextConfig = {
       // where vscode contains a version of `marked` with modules pre-transpiled, which seems to break the build.
       //
       // (the error mentions that exports.Lexer is a const that can't be re-declared)
-      '../common/marked/marked.js': 'marked',
+      // this import has moved a bit, so let's make it absolute from the module path
+      'monaco-editor/esm/vs/common/marked/marked.js': 'marked',
     };
     if (!options.isServer) {
       config.plugins.push(
@@ -38,6 +39,16 @@ const nextConfig = {
               worker: {
                 id: 'graphql',
                 entry: 'monaco-graphql/esm/graphql.worker.js',
+              },
+            },
+            // TOD: webpack monaco editor plugin breaks on languages: ['typescript']
+            // so this was necessary
+            // see: https://github.com/microsoft/monaco-editor/issues/2738
+            {
+              label: 'typescript',
+              worker: {
+                id: 'typescript',
+                entry: 'monaco-editor/esm/vs/language/typescript/ts.worker.js',
               },
             },
           ],

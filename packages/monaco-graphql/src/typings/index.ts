@@ -9,6 +9,10 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
 } from 'graphql';
+import {
+  AutocompleteSuggestionOptions,
+  JSONSchema6,
+} from 'graphql-language-service';
 import type { Options as PrettierConfig } from 'prettier';
 
 export type BaseSchemaConfig = {
@@ -64,6 +68,19 @@ export type SchemaConfig = {
    * A stringified introspection JSON result
    */
   introspectionJSONString?: string;
+  /**
+   * JSON schemas ued for custom scalars
+   * @example
+   * ```ts
+   * {
+   *  customScalarSchemas: {
+   *    DateTime: {
+   *      type": "string",
+   *      format": "date-time"
+   *    }
+   *  }
+   */
+  customScalarSchemas?: Record<string, JSONSchema6>;
 };
 
 /**
@@ -113,10 +130,12 @@ export type GraphQLLanguageConfig = {
    * Custom validation rules following `graphql` `ValidationRule` signature
    */
   customValidationRules?: ValidationRule[];
+  completionSettings?: Omit<CompletionSettings, 'uri'>;
   /**
    * Should field leafs be automatically expanded & filled on autocomplete?
    *
    * NOTE: this can be annoying with required arguments
+   * @deprecated use `completionSettings.fillLeafsOnComplete` instead
    */
   fillLeafsOnComplete?: boolean;
 };
@@ -211,23 +230,17 @@ export type DiagnosticSettings = {
   jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
 };
 
-export type CompletionSettings = {
+export type CompletionSettings = AutocompleteSuggestionOptions & {
   /**
-   * EXPERIMENTAL: Automatically fill required leaf nodes recursively
-   * upon triggering code completion events.
-   *
-   *
-   * - [x] fills required nodes
-   * - [x] automatically expands relay-style node/edge fields
-   * - [ ] automatically jumps to first required argument field
-   *      - then, continues to prompt for required argument fields
-   *      - (fixing this will make it non-experimental)
-   *      - when it runs out of arguments, or you choose `{` as a completion option
-   *        that appears when all required arguments are supplied, the argument
-   *        selection closes `)` and the leaf field expands again `{ \n| }`
+   * @deprecated use fillLeafsOnComplete for parity. still experimental
    */
   __experimental__fillLeafsOnComplete?: boolean;
 };
+
+// export type CompletionSettings = {
+
+//   __experimental__fillLeafsOnComplete?: boolean;
+// };
 
 /**
  * Configuration to initialize the editor with

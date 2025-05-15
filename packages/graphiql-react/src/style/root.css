@@ -1,3 +1,13 @@
+@import 'codemirror.css';
+@import 'fold.css';
+@import 'editor.css';
+
+@import 'lint.css';
+@import 'hint.css';
+@import 'info.css';
+@import 'jump.css';
+@import 'auto-insertion.css';
+
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {
   box-sizing: border-box;
@@ -68,7 +78,7 @@
   /* Layout */
   --sidebar-width: 60px;
   --toolbar-width: 40px;
-  --session-header-height: 51px;
+  --session-header-height: 38.5px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -121,15 +131,15 @@ body.graphiql-dark [data-radix-popper-content-wrapper] {
 .graphiql-dialog {
   &,
   &:is(button) {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
     font-family: var(--font-family);
     font-size: var(--font-size-body);
-    font-weight: var(----font-weight-regular);
+    font-weight: var(--font-weight-regular);
     line-height: var(--line-height);
   }
 
   & input {
-    color: hsla(var(--color-neutral), 1);
+    color: hsl(var(--color-neutral));
     font-family: var(--font-family);
     font-size: var(--font-size-caption);
 

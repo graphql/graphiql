@@ -10,7 +10,8 @@ export default defineConfig({
     react(),
     monacoEditorPlugin({
       publicPath: 'workers',
-      languageWorkers: ['json', 'editorWorkerService'],
+      // note that this only loads the worker, not the full main process language support
+      languageWorkers: ['json', 'typescript', 'editorWorkerService'],
       customWorkers: [
         {
           label: 'graphql',
@@ -18,5 +19,23 @@ export default defineConfig({
         },
       ],
     }),
+    watchPackages(['monaco-graphql', 'graphql-language-service']),
   ],
 });
+
+function watchPackages(packageNames: string[]) {
+  let isWatching = false;
+
+  return {
+    name: 'vite-plugin-watch-packages',
+    buildStart() {
+      if (!isWatching) {
+        for (const packageName of packageNames) {
+          this.addWatchFile(require.resolve(packageName));
+        }
+
+        isWatching = true;
+      }
+    },
+  };
+}

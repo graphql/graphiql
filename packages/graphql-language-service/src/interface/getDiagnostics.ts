@@ -75,7 +75,6 @@ export function getDiagnostics(
           );
   }
   const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
-
   try {
     ast = parse(enhancedQuery);
   } catch (error) {
@@ -143,8 +142,8 @@ function annotations(
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
         : 'variable' in node && node.variable !== undefined
-        ? node.variable
-        : node;
+          ? node.variable
+          : node;
     if (highlightNode) {
       invariant(
         error.locations,

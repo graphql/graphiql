@@ -1,0 +1,3 @@
+# this file contains delicate whitespace character assertions that i could not get prettier to ignore
+# if removed it will cause the tests to fail
+../packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts

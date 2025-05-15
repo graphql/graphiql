@@ -1,12 +1,10 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+/**
+ * This example commands.ts shows you how to create various custom commands and
+ * overwrite existing commands.
+ *
+ * For more comprehensive examples of custom commands, please read more here:
+ * https://on.cypress.io/custom-commands
+ */
 
 /// <reference types="cypress" />
 
@@ -26,7 +24,7 @@ declare namespace Cypress {
 
   interface Chainable {
     /**
-     * Custom command to select DOM element by data-cy attribute.
+     * Custom command to select a DOM element by `data-cy` attribute.
      * @example cy.dataCy('greeting')
      */
     dataCy(value: string): Chainable<Element>;
@@ -49,22 +47,31 @@ declare namespace Cypress {
   }
 }
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('dataCy', value => {
   return cy.get(`[data-cy="${value}"]`);
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('clickExecuteQuery', () => {
+  // Check CodeMirror was initialized
+  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('.graphiql-execute-button').click();
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('clickPrettify', () => {
+  // Check CodeMirror was initialized
+  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
+// @ts-expect-error -- fixme
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `/?query=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
     url += `&variables=${encodeURIComponent(
+      // @ts-expect-error -- fixme
       JSON.stringify(variables, null, 2) || variablesString,
     )}`;
   }
@@ -134,11 +141,11 @@ function codeWithLineNumbers(code: string): string {
     .join('\n');
 }
 
-function normalize(str: string) {
+function normalize(str: string): string {
   return str.replaceAll('​', '');
 }
 
-function normalizeWhitespace(str: string) {
+function normalizeWhitespace(str: string): string {
   return str.replaceAll('\xA0', ' ');
 }
 

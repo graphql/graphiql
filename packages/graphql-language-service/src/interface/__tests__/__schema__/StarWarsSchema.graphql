@@ -14,6 +14,7 @@ enum Episode {
 
 interface Character {
   id: String!
+  # hello
   name: String
   friends: [Character]
   appearsIn: [Episode]
@@ -30,6 +31,7 @@ type Human implements Character {
 
 type Droid implements Character {
   id: String!
+  # yes
   name: String
   friends: [Character]
   appearsIn: [Episode]
@@ -41,13 +43,18 @@ type Droid implements Character {
 input InputType {
   key: String!
   value: Int = 42
+  obj: InputType
 }
 
 interface TestInterface {
+  """
+  example
+  """
   testField: String!
 }
 
 interface AnotherInterface implements TestInterface {
+  # hello
   testField: String!
 }
 
@@ -61,6 +68,7 @@ type Query {
   droid(id: String!): Droid
   inputTypeTest(args: InputType = { key: "key" }): TestType
   deprecatedField: TestType @deprecated(reason: "Use test instead.")
+  union: TestUnion
 }
 
 union TestUnion = Droid | TestType

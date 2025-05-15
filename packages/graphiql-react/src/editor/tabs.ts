@@ -1,8 +1,7 @@
-import { StorageAPI } from '@graphiql/toolkit';
-import { useCallback, useMemo } from 'react';
-import { editor } from 'monaco-editor';
+'use no memo'; // can't figure why it isn't optimized
 
-import debounce from '../utility/debounce';
+import { storageStore, editorStore } from '../stores';
+import { debounce } from '../utility';
 
 export type TabDefinition = {
   /**
@@ -67,10 +66,15 @@ export function getDefaultTabState({
   defaultQuery,
   defaultHeaders,
   headers,
-  defaultTabs,
   query,
   variables,
-  storage,
+  defaultTabs = [
+    {
+      query: query ?? defaultQuery,
+      variables,
+      headers: headers ?? defaultHeaders,
+    },
+  ],
   shouldPersistHeaders,
 }: {
   defaultQuery: string;
@@ -79,10 +83,10 @@ export function getDefaultTabState({
   defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
-  storage: StorageAPI | null;
   shouldPersistHeaders?: boolean;
 }) {
-  const storedState = storage?.get(STORAGE_KEY);
+  const { storage } = storageStore.getState();
+  const storedState = storage.get(STORAGE_KEY);
   try {
     if (!storedState) {
       throw new Error('Storage for tabs is empty');
@@ -134,15 +138,7 @@ export function getDefaultTabState({
   } catch {
     return {
       activeTabIndex: 0,
-      tabs: (
-        defaultTabs || [
-          {
-            query: query ?? defaultQuery,
-            variables,
-            headers: headers ?? defaultHeaders,
-          },
-        ]
-      ).map(createTab),
+      tabs: defaultTabs.map(createTab),
     };
   }
 }
@@ -187,35 +183,17 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function useSynchronizeActiveTabValues({
-  queryEditor,
-  variableEditor,
-  headerEditor,
-  responseEditor,
-}: {
-  queryEditor: editor.IStandaloneCodeEditor | null;
-  variableEditor: editor.IStandaloneCodeEditor | null;
-  headerEditor: editor.IStandaloneCodeEditor | null;
-  responseEditor: editor.IStandaloneCodeEditor | null;
-}) {
-  return useCallback<(state: TabsState) => TabsState>(
-    state => {
-      const query = queryEditor?.getValue() ?? null;
-      const variables = variableEditor?.getValue() ?? null;
-      const headers = headerEditor?.getValue() ?? null;
-      // @ts-expect-error FIXME: MONACO
-      const operationName = queryEditor?.operationName ?? null;
-      const response = responseEditor?.getValue() ?? null;
-      return setPropertiesInActiveTab(state, {
-        query,
-        variables,
-        headers,
-        response,
-        operationName,
-      });
-    },
-    [queryEditor, variableEditor, headerEditor, responseEditor],
-  );
+export function synchronizeActiveTabValues(state: TabsState): TabsState {
+  const { queryEditor, variableEditor, headerEditor, responseEditor } =
+    editorStore.getState();
+  return setPropertiesInActiveTab(state, {
+    query: queryEditor?.getValue() ?? null,
+    variables: variableEditor?.getValue() ?? null,
+    headers: headerEditor?.getValue() ?? null,
+    response: responseEditor?.getValue() ?? null,
+    // @ts-expect-error FIXME: MONACO
+    operationName: queryEditor?.operationName ?? null,
+  });
 }
 
 export function serializeTabState(
@@ -231,58 +209,38 @@ export function serializeTabState(
   );
 }
 
-export function useStoreTabs({
-  storage,
-  shouldPersistHeaders,
-}: {
-  storage: StorageAPI | null;
-  shouldPersistHeaders?: boolean;
-}) {
-  const store = useMemo(
-    () =>
-      debounce(500, (value: string) => {
-        storage?.set(STORAGE_KEY, value);
-      }),
-    [storage],
-  );
-  return useCallback(
-    (currentState: TabsState) => {
-      store(serializeTabState(currentState, shouldPersistHeaders));
-    },
-    [shouldPersistHeaders, store],
-  );
+export function storeTabs({ tabs, activeTabIndex }: TabsState) {
+  const { storage } = storageStore.getState();
+  const { shouldPersistHeaders } = editorStore.getState();
+  const store = debounce(500, (value: string) => {
+    storage.set(STORAGE_KEY, value);
+  });
+  store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
 }
 
-export function useSetEditorValues({
-  queryEditor,
-  variableEditor,
-  headerEditor,
-  responseEditor,
+export function setEditorValues({
+  query,
+  variables,
+  headers,
+  response,
 }: {
-  queryEditor: editor.IStandaloneCodeEditor | null;
-  variableEditor: editor.IStandaloneCodeEditor | null;
-  headerEditor: editor.IStandaloneCodeEditor | null;
-  responseEditor: editor.IStandaloneCodeEditor | null;
+  query: string | null;
+  variables?: string | null;
+  headers?: string | null;
+  response: string | null;
 }) {
-  return useCallback(
-    ({
-      query,
-      variables,
-      headers,
-      response,
-    }: {
-      query: string | null;
-      variables?: string | null;
-      headers?: string | null;
-      response: string | null;
-    }) => {
-      queryEditor?.setValue(query ?? '');
-      variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? '');
-      responseEditor?.setValue(response ?? '');
-    },
-    [headerEditor, queryEditor, responseEditor, variableEditor],
-  );
+  const {
+    queryEditor,
+    variableEditor,
+    headerEditor,
+    responseEditor,
+    defaultHeaders,
+  } = editorStore.getState();
+
+  queryEditor?.setValue(query ?? '');
+  variableEditor?.setValue(variables ?? '');
+  headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+  responseEditor?.setValue(response ?? '');
 }
 
 export function createTab({
@@ -290,14 +248,15 @@ export function createTab({
   variables = null,
   headers = null,
 }: Partial<TabDefinition> = {}): TabState {
+  const operationName = query ? fuzzyExtractOperationName(query) : null;
   return {
     id: guid(),
     hash: hashFromTabContents({ query, variables, headers }),
-    title: (query && fuzzyExtractOperationName(query)) || DEFAULT_TITLE,
+    title: operationName || DEFAULT_TITLE,
     query,
     variables,
     headers,
-    operationName: null,
+    operationName,
     response: null,
   };
 }
@@ -353,11 +312,12 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
-export function clearHeadersFromTabs(storage: StorageAPI | null) {
-  const persistedTabs = storage?.get(STORAGE_KEY);
+export function clearHeadersFromTabs() {
+  const { storage } = storageStore.getState();
+  const persistedTabs = storage.get(STORAGE_KEY);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);
-    storage?.set(
+    storage.set(
       STORAGE_KEY,
       JSON.stringify(parsedTabs, (key, value) =>
         key === 'headers' ? null : value,

@@ -1,13 +1,10 @@
+'use no memo';
+
 import { KeyMap } from './types';
+import { isMacOs } from '../utility/is-macos';
 
 export const DEFAULT_EDITOR_THEME = 'graphiql';
 export const DEFAULT_KEY_MAP: KeyMap = 'sublime';
-
-let isMacOs = false;
-
-if (typeof window === 'object') {
-  isMacOs = window.navigator.platform.toLowerCase().indexOf('mac') === 0;
-}
 
 export const commonKeys = {
   // Persistent search box in Query Editor
@@ -30,26 +27,26 @@ export async function importCodeMirror(
   addons: Promise<any>[],
   options?: { useCommonAddons?: boolean },
 ) {
-  const CodeMirror = await import('codemirror').then(c =>
+  const CodeMirror = await import('codemirror').then(mod =>
     // Depending on bundler and settings the dynamic import either returns a
-    // function (e.g. parcel) or an object containing a `default` property
-    typeof c === 'function' ? c : c.default,
+    // function (e.g., parcel) or an object containing a `default` property
+    typeof mod === 'function' ? mod : mod.default,
   );
   await Promise.all(
     options?.useCommonAddons === false
       ? addons
       : [
-          import('codemirror/addon/hint/show-hint'),
-          import('codemirror/addon/edit/matchbrackets'),
-          import('codemirror/addon/edit/closebrackets'),
-          import('codemirror/addon/fold/brace-fold'),
-          import('codemirror/addon/fold/foldgutter'),
-          import('codemirror/addon/lint/lint'),
-          import('codemirror/addon/search/searchcursor'),
-          import('codemirror/addon/search/jump-to-line'),
-          import('codemirror/addon/dialog/dialog'),
+          import('codemirror/addon/hint/show-hint.js'),
+          import('codemirror/addon/edit/matchbrackets.js'),
+          import('codemirror/addon/edit/closebrackets.js'),
+          import('codemirror/addon/fold/brace-fold.js'),
+          import('codemirror/addon/fold/foldgutter.js'),
+          import('codemirror/addon/lint/lint.js'),
+          import('codemirror/addon/search/searchcursor.js'),
+          import('codemirror/addon/search/jump-to-line.js'),
+          import('codemirror/addon/dialog/dialog.js'),
           // @ts-expect-error
-          import('codemirror/keymap/sublime'),
+          import('codemirror/keymap/sublime.js'),
           ...addons,
         ],
   );

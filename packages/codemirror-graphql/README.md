@@ -15,7 +15,7 @@ typeahead hinter powered by your GraphQL Schema.
 ### Getting Started
 
 ```sh
-npm install --save codemirror-graphql
+npm install codemirror-graphql
 ```
 
 CodeMirror helpers install themselves to the global CodeMirror when they are
@@ -121,5 +121,5 @@ CodeMirror.fromTextArea(myTextarea, {
 });
 ```
 
-Build for the web with [webpack](http://webpack.github.io/) or
-[browserify](http://browserify.org/).
+Build for the web with [webpack](http://webpack.github.io) or
+[browserify](http://browserify.org).

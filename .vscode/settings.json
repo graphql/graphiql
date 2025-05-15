@@ -1,5 +1,15 @@
 {
   "npm.packageManager": "yarn",
   "editor.formatOnSave": true,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "editor.trimAutoWhitespace": false,
+  "coverage-gutters.showLineCoverage": true,
+  "coverage-gutters.coverageBaseDir": "coverage",
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info",
+    "cov.xml",
+    "coverage.xml",
+    "jacoco.xml",
+    "coverage.cobertura.xml"
+  ]
 }

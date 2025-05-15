@@ -42,14 +42,17 @@ export class DiagnosticsAdapter {
       const modelUri = model.uri.toString();
       // if the config changes, this adapter will be re-instantiated, so we only need to check this once
       const jsonValidationForModel =
-        defaults.diagnosticSettings?.validateVariablesJSON &&
-        defaults.diagnosticSettings.validateVariablesJSON[modelUri];
+        defaults.diagnosticSettings?.validateVariablesJSON?.[modelUri];
+      // once on adding a model, this is also fired when schema or other config changes
+      onChangeTimeout = setTimeout(() => {
+        void this._doValidate(model.uri, modeId, jsonValidationForModel);
+      }, 400);
 
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(onChangeTimeout);
         onChangeTimeout = setTimeout(() => {
           void this._doValidate(model.uri, modeId, jsonValidationForModel);
-        }, 200);
+        }, 400);
       });
     };
 
@@ -94,9 +97,10 @@ export class DiagnosticsAdapter {
         }
       }),
     );
-
     for (const model of editor.getModels()) {
-      onModelAdd(model);
+      if (getModelLanguageId(model) === this.defaults.languageId) {
+        onModelAdd(model);
+      }
     }
   }
 
@@ -124,6 +128,9 @@ export class DiagnosticsAdapter {
     editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
+      // only import the json mode if users configure it
+      await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+
       if (variablesUris.length < 1) {
         throw new Error('no variables URI strings provided to validate');
       }
@@ -142,12 +149,17 @@ export class DiagnosticsAdapter {
         schema: jsonSchema,
         fileMatch: variablesUris,
       };
+      const currentSchemas =
+        languages.json.jsonDefaults.diagnosticsOptions.schemas?.filter(
+          s => s.uri !== schemaUri,
+        ) || [];
+
       // TODO: export from api somehow?
       languages.json.jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
         ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
-        schemas: [configResult],
+        schemas: [...currentSchemas, configResult],
         enableSchemaRequest: false,
       });
     }

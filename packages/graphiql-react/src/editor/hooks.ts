@@ -1,18 +1,19 @@
-import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
+import { fillLeafs, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
-import { parse, print } from 'graphql';
-import { useCallback, useEffect, useMemo } from 'react';
-
-import { useExplorerContext } from '../explorer';
-import { usePluginContext } from '../plugin';
-import { useSchemaContext } from '../schema';
-import { useStorageContext } from '../storage';
-import debounce from '../utility/debounce';
+import { print } from 'graphql';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  schemaStore,
+  storageStore,
+  editorStore,
+  useEditorStore,
+  executionStore,
+} from '../stores';
+import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
-import { useEditorContext } from './context';
-import { CodeMirrorEditor } from './types';
+import { CodeMirrorEditor, SchemaReference } from './types';
 import { editor as MONACO_EDITOR } from 'monaco-editor';
 
 export function useSynchronizeValue(
@@ -41,30 +42,28 @@ export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
-  caller: Function,
 ) {
-  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
-  const storage = useStorageContext();
-
   useEffect(() => {
     if (!editor) {
       return;
     }
+    const { storage } = storageStore.getState();
 
     const store = debounce(500, (value: string) => {
-      if (!storage || storageKey === null) {
+      if (storageKey === null) {
         return;
       }
       storage.set(storageKey, value);
     });
 
+    const { updateActiveTabValues } = editorStore.getState();
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
 
     const handleChange = (
       editorInstance: CodeMirrorEditor,
-      changeObj: EditorChange | undefined,
+      changeObj?: EditorChange,
     ) => {
       // When we signal a change manually without actually changing anything
       // we don't want to invoke the callback.
@@ -79,24 +78,13 @@ export function useChangeHandler(
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [
-    callback,
-    editor,
-    storage,
-    storageKey,
-    tabProperty,
-    updateActiveTabValues,
-  ]);
+  }, [callback, editor, storageKey, tabProperty]);
 }
 
 export function useCompletion(
   editor: CodeMirrorEditor | null,
-  callback: ((reference: SchemaReference) => void) | null,
-  caller: Function,
+  callback?: (reference: SchemaReference) => void,
 ) {
-  const { schema } = useSchemaContext({ nonNull: true, caller });
-  const explorer = useExplorerContext();
-  const plugin = usePluginContext();
   useEffect(() => {
     if (!editor) {
       return;
@@ -106,8 +94,12 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      onHasCompletion(instance, changeObj, schema, explorer, plugin, type => {
-        callback?.({ kind: 'Type', type, schema: schema || undefined });
+      void onHasCompletion(instance, changeObj, type => {
+        callback?.({
+          kind: 'Type',
+          type,
+          schema: schemaStore.getState().schema || undefined,
+        });
       });
     };
     editor.on(
@@ -121,14 +113,14 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, explorer, plugin, schema]);
+  }, [callback, editor]);
 }
 
 type EmptyCallback = () => void;
 
 export function useKeyMap(
   editor: CodeMirrorEditor | null,
-  keys: string[],
+  keys: string[] | readonly string[],
   callback?: EmptyCallback,
 ) {
   useEffect(() => {
@@ -139,241 +131,254 @@ export function useKeyMap(
       editor.removeKeyMap(key);
     }
 
-    if (callback) {
-      const keyMap: Record<string, EmptyCallback> = {};
-      for (const key of keys) {
-        keyMap[key] = () => callback();
-      }
-      editor.addKeyMap(keyMap);
+    if (!callback) {
+      return;
     }
+    const keyMap: Record<string, EmptyCallback> = {};
+    for (const key of keys) {
+      keyMap[key] = () => callback();
+    }
+    editor.addKeyMap(keyMap);
   }, [editor, keys, callback]);
 }
 
-export type UseCopyQueryArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-  /**
-   * Invoked when the current contents of the query editor are copied to the
-   * clipboard.
-   * @param query The content that has been copied.
-   */
-  onCopyQuery?: (query: string) => void;
-};
+export function copyQuery() {
+  const { queryEditor, onCopyQuery } = editorStore.getState();
+  if (!queryEditor) {
+    return;
+  }
 
-export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useCopyQuery,
-  });
-  return useCallback(() => {
-    if (!queryEditor) {
-      return;
-    }
+  const query = queryEditor.getValue();
+  copyToClipboard(query);
 
-    const query = queryEditor.getValue();
-    copyToClipboard(query);
-
-    onCopyQuery?.(query);
-  }, [queryEditor, onCopyQuery]);
+  onCopyQuery?.(query);
 }
 
-type UseMergeQueryArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-};
+export function mergeQuery() {
+  const { queryEditor } = editorStore.getState();
+  // @ts-expect-error FIXME: MONACO
+  const documentAST = queryEditor?.documentAST;
+  const query = queryEditor?.getValue();
+  if (!documentAST || !query) {
+    return;
+  }
 
-export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useMergeQuery,
-  });
-  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
-  return useCallback(() => {
-    // @ts-expect-error FIXME: MONACO
-    const documentAST = queryEditor?.documentAST;
-    const query = queryEditor?.getValue();
-    if (!documentAST || !query) {
-      return;
-    }
-
-    queryEditor.setValue(print(mergeAst(documentAST, schema)));
-  }, [queryEditor, schema]);
+  const { schema } = schemaStore.getState();
+  queryEditor.setValue(print(mergeAst(documentAST, schema)));
 }
 
-type UsePrettifyEditorsArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-};
-
-export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
-  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || usePrettifyEditors,
-  });
-  return useCallback(() => {
-    if (variableEditor) {
-      const variableEditorContent = variableEditor.getValue();
-      try {
-        const prettifiedVariableEditorContent = JSON.stringify(
-          JSON.parse(variableEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedVariableEditorContent !== variableEditorContent) {
-          variableEditor.setValue(prettifiedVariableEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+export async function prettifyEditors() {
+  const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+    editorStore.getState();
+  if (variableEditor) {
+    const variableEditorContent = variableEditor.getValue();
+    try {
+      const prettifiedVariableEditorContent = JSON.stringify(
+        JSON.parse(variableEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedVariableEditorContent !== variableEditorContent) {
+        variableEditor.setValue(prettifiedVariableEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (headerEditor) {
-      const headerEditorContent = headerEditor.getValue();
+  if (headerEditor) {
+    const headerEditorContent = headerEditor.getValue();
 
-      try {
-        const prettifiedHeaderEditorContent = JSON.stringify(
-          JSON.parse(headerEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedHeaderEditorContent !== headerEditorContent) {
-          headerEditor.setValue(prettifiedHeaderEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+    try {
+      const prettifiedHeaderEditorContent = JSON.stringify(
+        JSON.parse(headerEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedHeaderEditorContent !== headerEditorContent) {
+        headerEditor.setValue(prettifiedHeaderEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (queryEditor) {
-      const editorContent = queryEditor.getValue();
-      const prettifiedEditorContent = print(parse(editorContent));
-
+  if (queryEditor) {
+    const editorContent = queryEditor.getValue();
+    try {
+      const prettifiedEditorContent = await onPrettifyQuery(editorContent);
       if (prettifiedEditorContent !== editorContent) {
         queryEditor.setValue(prettifiedEditorContent);
       }
+    } catch {
+      /* Parsing query failed, skip prettification */
     }
-  }, [queryEditor, variableEditor, headerEditor]);
+  }
 }
 
-export type UseAutoCompleteLeafsArgs = {
-  /**
-   * A function to determine which field leafs are automatically added when
-   * trying to execute a query with missing selection sets. It will be called
-   * with the `GraphQLType` for which fields need to be added.
-   */
-  getDefaultFieldNames?: GetDefaultFieldNamesFn;
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-};
+export function getAutoCompleteLeafs() {
+  const { queryEditor } = editorStore.getState();
+  if (!queryEditor) {
+    return;
+  }
+  const { schema } = schemaStore.getState();
+  const query = queryEditor.getValue();
+  const { getDefaultFieldNames } = executionStore.getState();
+  const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
 
-export function useAutoCompleteLeafs({
-  getDefaultFieldNames,
-  caller,
-}: UseAutoCompleteLeafsArgs = {}) {
-  const { schema } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-    caller: caller || useAutoCompleteLeafs,
-  });
-  return useCallback(() => {
-    if (!queryEditor) {
-      return;
-    }
+  if (insertions && insertions.length > 0) {
+    // queryEditor.operation(() => {
+    //   const cursor = queryEditor.getCursor();
+    //   const cursorIndex = queryEditor.indexFromPos(cursor);
+    //   queryEditor.setValue(result || '');
+    //   let added = 0;
+    //   const markers = insertions.map(({ index, string }) =>
+    //     queryEditor.markText(
+    //       queryEditor.posFromIndex(index + added),
+    //       queryEditor.posFromIndex(index + (added += string.length)),
+    //       {
+    //         className: 'auto-inserted-leaf',
+    //         clearOnEnter: true,
+    //         title: 'Automatically added leaf fields',
+    //       },
+    //     ),
+    //   );
+    //   setTimeout(() => {
+    //     for (const marker of markers) {
+    //       marker.clear();
+    //     }
+    //   }, 7000);
+    //   let newCursorIndex = cursorIndex;
+    //   for (const { index, string } of insertions) {
+    //     if (index < cursorIndex) {
+    //       newCursorIndex += string.length;
+    //     }
+    //   }
+    //   queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+    // });
+  }
 
-    const query = queryEditor.getValue();
-    const { insertions, result } = fillLeafs(
-      schema,
-      query,
-      getDefaultFieldNames,
-    );
-    if (insertions && insertions.length > 0) {
-      // FIXME: MONACO
-      // queryEditor.operation(() => {
-      //   const cursor = queryEditor.getCursor();
-      //   const cursorIndex = queryEditor.indexFromPos(cursor);
-      //   queryEditor.setValue(result || '');
-      //   let added = 0;
-      //   const markers = insertions.map(({ index, string }) =>
-      //     queryEditor.markText(
-      //       queryEditor.posFromIndex(index + added),
-      //       queryEditor.posFromIndex(index + (added += string.length)),
-      //       {
-      //         className: 'auto-inserted-leaf',
-      //         clearOnEnter: true,
-      //         title: 'Automatically added leaf fields',
-      //       },
-      //     ),
-      //   );
-      //   setTimeout(() => {
-      //     for (const marker of markers) {
-      //       marker.clear();
-      //     }
-      //   }, 7000);
-      //   let newCursorIndex = cursorIndex;
-      //   for (const { index, string } of insertions) {
-      //     if (index < cursorIndex) {
-      //       newCursorIndex += string.length;
-      //     }
-      //   }
-      //   queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-      // });
-    }
-
-    return result;
-  }, [getDefaultFieldNames, queryEditor, schema]);
+  return result;
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
+export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+  // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
+  'use no memo';
+  const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
+  let valueString = '';
+  const editorValue = editorInstance?.getValue() ?? false;
+  if (editorValue && editorValue.length > 0) {
+    valueString = editorValue;
+  }
+
+  const handleEditorValue = useCallback(
+    (value: string) => editorInstance?.setValue(value),
+    [editorInstance],
+  );
+  return useMemo<[string, (val: string) => void]>(
+    () => [valueString, handleEditorValue],
+    [valueString, handleEditorValue],
+  );
+};
 
 /**
- * useState-like hook for current tab operations editor state
+ * useState-like hook for the current tab operations editor state
  */
-export function useOperationsEditorState(): [
-  opString: string,
-  handleEditOperations: (content: string) => void,
-] {
-  const { queryEditor } = useEditorContext({
-    nonNull: true,
-  });
-  const opString = queryEditor?.getValue() ?? '';
-  const handleEditOperations = useCallback(
-    (value: string) => queryEditor?.setValue(value),
-    [queryEditor],
-  );
-  return useMemo(
-    () => [opString, handleEditOperations],
-    [opString, handleEditOperations],
-  );
-}
+export const useOperationsEditorState = (): [
+  operations: string,
+  setOperations: (content: string) => void,
+] => {
+  return useEditorState('query');
+};
 
 /**
- * useState-like hook for variables tab operations editor state
+ * useState-like hook for current tab variables editor state
  */
-export function useVariablesEditorState(): [
-  varsString: string,
-  handleEditVariables: (content: string) => void,
-] {
-  const { variableEditor } = useEditorContext({
-    nonNull: true,
+export const useVariablesEditorState = (): [
+  variables: string,
+  setVariables: (content: string) => void,
+] => {
+  return useEditorState('variable');
+};
+
+/**
+ * useState-like hook for current tab variables editor state
+ */
+export const useHeadersEditorState = (): [
+  headers: string,
+  setHeaders: (content: string) => void,
+] => {
+  return useEditorState('header');
+};
+
+/**
+ * Implements an optimistic caching strategy around a useState-like hook in
+ * order to prevent loss of updates when the hook has an internal delay and the
+ * update function is called again before the updated state is sent out.
+ *
+ * Use this as a wrapper around `useOperationsEditorState`,
+ * `useVariablesEditorState`, or `useHeadersEditorState` if you anticipate
+ * calling them with great frequency (due to, for instance, mouse, keyboard, or
+ * network events).
+ *
+ * @example
+ * ```ts
+ * const [operationsString, handleEditOperations] =
+ *   useOptimisticState(useOperationsEditorState());
+ * ```
+ */
+export function useOptimisticState([
+  upstreamState,
+  upstreamSetState,
+]: ReturnType<typeof useEditorState>): ReturnType<typeof useEditorState> {
+  const lastStateRef = useRef({
+    /** The last thing that we sent upstream; we're expecting this back */
+    pending: null as string | null,
+    /** The last thing we received from upstream */
+    last: upstreamState,
   });
-  const varsString = variableEditor?.getValue() ?? '';
-  const handleEditVariables = useCallback(
-    (value: string) => variableEditor?.setValue(value),
-    [variableEditor],
-  );
-  return useMemo(
-    () => [varsString, handleEditVariables],
-    [varsString, handleEditVariables],
-  );
+
+  const [state, setOperationsText] = useState(upstreamState);
+
+  useEffect(() => {
+    if (lastStateRef.current.last === upstreamState) {
+      // No change; ignore
+      return;
+    }
+    lastStateRef.current.last = upstreamState;
+    if (lastStateRef.current.pending === null) {
+      // Gracefully accept update from upstream
+      setOperationsText(upstreamState);
+      return;
+    }
+    if (lastStateRef.current.pending === upstreamState) {
+      // They received our update and sent it back to us - clear pending, and
+      // send next if appropriate
+      lastStateRef.current.pending = null;
+      if (upstreamState !== state) {
+        // Change has occurred; upstream it
+        lastStateRef.current.pending = state;
+        upstreamSetState(state);
+      }
+      return;
+    }
+    // They got a different update; overwrite our local state (!!)
+    lastStateRef.current.pending = null;
+    setOperationsText(upstreamState);
+  }, [upstreamState, state, upstreamSetState]);
+
+  const setState = (newState: string) => {
+    setOperationsText(newState);
+    if (
+      lastStateRef.current.pending === null &&
+      lastStateRef.current.last !== newState
+    ) {
+      // No pending updates and change has occurred... send it upstream
+      lastStateRef.current.pending = newState;
+      upstreamSetState(newState);
+    }
+  };
+
+  return [state, setState];
 }

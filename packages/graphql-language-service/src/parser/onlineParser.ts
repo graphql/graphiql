@@ -211,7 +211,7 @@ function getToken(
 }
 
 // Utility function to assign from object to another object.
-function assign(to: Object, from: Object): Object {
+function assign(to: object, from: object): object {
   const keys = Object.keys(from);
   for (let i = 0; i < keys.length; i++) {
     // @ts-ignore
@@ -315,7 +315,6 @@ function isList(state: State): boolean | null | undefined {
     Array.isArray(state.rule) &&
     typeof state.rule[state.step] !== 'string' &&
     (state.rule[state.step] as Rule);
-  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
   return step && step.isList;
 }
 

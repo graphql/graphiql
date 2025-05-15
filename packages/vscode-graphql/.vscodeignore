@@ -11,3 +11,15 @@ renovate.json
 *.tsbuildinfo
 esbuild.js
 dist/**
+
+# exclude all node_modules by default
+../../node_modules/**
+
+# @astrojs/compiler relies on the filesystem structure, therefore can't be bundled
+!../../node_modules/@astrojs/compiler
+# astrojs-compiler-sync relies on the filesystem structure, therefore can't be bundled
+!../../node_modules/astrojs-compiler-sync
+# synckit is the dependency of astrojs-compiler-sync
+!../../node_modules/synckit
+# @pkgr/core is the dependency of synckit
+!../../node_modules/@pkgr/core

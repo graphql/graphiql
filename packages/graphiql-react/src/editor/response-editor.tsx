@@ -1,9 +1,9 @@
 // @ts-nocheck -- codemirror editor complain about type errors
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
-import { ComponentType, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
-import { useSchemaContext } from '../schema';
+import { ComponentType, useEffect, useRef, JSX } from 'react';
+import { createRoot } from 'react-dom/client';
+import { useSchemaStore, useEditorStore } from '../stores';
 
 import {
   commonKeys,
@@ -11,8 +11,7 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { ImagePreview } from './components';
-import { useEditorContext } from './context';
+import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
 
@@ -27,32 +26,41 @@ export type ResponseTooltipType = ComponentType<{
   token: Token;
 }>;
 
-export type UseResponseEditorArgs = CommonEditorProps & {
+type ResponseEditorProps = CommonEditorProps & {
   /**
-   * Customize the tooltip when hovering over properties in the response
-   * editor.
+   * Customize the tooltip when hovering over properties in the response editor.
    */
   responseTooltip?: ResponseTooltipType;
 };
 
-export function useResponseEditor(
-  {
-    responseTooltip,
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-  }: UseResponseEditorArgs = {},
-  caller?: Function,
-) {
-  const { fetchError, validationErrors } = useSchemaContext({
-    nonNull: true,
-    caller: caller || useResponseEditor,
-  });
+// To make react-compiler happy, otherwise complains about using dynamic imports in Component
+function importCodeMirrorImports() {
+  return importCodeMirror(
+    [
+      import('codemirror/addon/fold/foldgutter.js'),
+      import('codemirror/addon/fold/brace-fold.js'),
+      import('codemirror/addon/dialog/dialog.js'),
+      import('codemirror/addon/search/search.js'),
+      import('codemirror/addon/search/searchcursor.js'),
+      import('codemirror/addon/search/jump-to-line.js'),
+      // @ts-expect-error
+      import('codemirror/keymap/sublime.js'),
+      import('codemirror-graphql/esm/results/mode.js'),
+      import('codemirror-graphql/esm/utils/info-addon.js'),
+    ],
+    { useCommonAddons: false },
+  );
+}
+
+export function ResponseEditor({
+  responseTooltip,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+}: ResponseEditorProps) {
+  const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
-    useEditorContext({
-      nonNull: true,
-      caller: caller || useResponseEditor,
-    });
-  const ref = useRef<HTMLDivElement>(null);
+    useEditorStore();
+  const ref = useRef<HTMLDivElement>(null!);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
     responseTooltip,
@@ -63,62 +71,37 @@ export function useResponseEditor(
 
   useEffect(() => {
     let isActive = true;
-    void importCodeMirror(
-      [
-        import('codemirror/addon/fold/foldgutter'),
-        import('codemirror/addon/fold/brace-fold'),
-        import('codemirror/addon/dialog/dialog'),
-        import('codemirror/addon/search/search'),
-        import('codemirror/addon/search/searchcursor'),
-        import('codemirror/addon/search/jump-to-line'),
-        // @ts-expect-error
-        import('codemirror/keymap/sublime'),
-        import('codemirror-graphql/esm/results/mode'),
-        import('codemirror-graphql/esm/utils/info-addon'),
-      ],
-      { useCommonAddons: false },
-    ).then(CodeMirror => {
+
+    void importCodeMirrorImports().then(CodeMirror => {
       // Don't continue if the effect has already been cleaned up
       if (!isActive) {
         return;
       }
 
       // Handle image tooltips and custom tooltips
-      const tooltipDiv = document.createElement('div');
+      const tooltipContainer = document.createElement('div');
+      const tooltipRoot = createRoot(tooltipContainer);
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
         (token: Token, _options: any, _cm: CodeMirrorEditor, pos: Position) => {
-          const infoElements: JSX.Element[] = [];
+          const ResponseTooltip = responseTooltipRef.current;
+          const infoElements: JSX.Element[] = [
+            ResponseTooltip && <ResponseTooltip pos={pos} token={token} />,
+            ImagePreview.shouldRender(token) && (
+              <ImagePreview key="image-preview" token={token} />
+            ),
+          ].filter((v): v is JSX.Element => Boolean(v));
 
-          const ResponseTooltipComponent = responseTooltipRef.current;
-          if (ResponseTooltipComponent) {
-            infoElements.push(
-              <ResponseTooltipComponent pos={pos} token={token} />,
-            );
+          if (infoElements.length) {
+            tooltipRoot.render(infoElements);
+            return tooltipContainer;
           }
-
-          if (ImagePreview.shouldRender(token)) {
-            infoElements.push(
-              <ImagePreview key="image-preview" token={token} />,
-            );
-          }
-
-          // We can't refactor to root.unmount() from React 18 because we support React 16/17 too
-          if (!infoElements.length) {
-            ReactDOM.unmountComponentAtNode(tooltipDiv);
-            return null;
-          }
-          ReactDOM.render(infoElements, tooltipDiv);
-          return tooltipDiv;
+          tooltipRoot.unmount();
         },
       );
 
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialResponse,
         lineWrapping: true,
@@ -146,10 +129,18 @@ export function useResponseEditor(
     if (fetchError) {
       responseEditor?.setValue(fetchError);
     }
-    if (validationErrors.length > 0) {
+    if (validationErrors.length) {
       responseEditor?.setValue(formatError(validationErrors));
     }
   }, [responseEditor, fetchError, validationErrors]);
 
-  return ref;
+  return (
+    <section
+      className="result-window"
+      aria-label="Result Window"
+      aria-live="polite"
+      aria-atomic="true"
+      ref={ref}
+    />
+  );
 }

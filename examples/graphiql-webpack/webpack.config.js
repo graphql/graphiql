@@ -1,29 +1,68 @@
-const path = require('node:path');
-const webpack = require('webpack');
+const { GenerateSW } = require('workbox-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const path = require('node:path');
+const isDev = process.env.NODE_ENV === 'development';
+const isHMR = process.env.WEBPACK_SERVE;
 
-const relPath = (...args) => path.resolve(__dirname, ...args);
-const rootPath = (...args) => relPath(...args);
+const prodPlugins = [];
 
-const resultConfig = {
-  mode: process.env.NODE_ENV,
-  entry: './index.jsx',
-  context: rootPath('src'),
+if (!isHMR) {
+  prodPlugins.push(
+    new GenerateSW({
+      maximumFileSizeToCacheInBytes: 1024 * 1024 * 20,
+    }),
+  );
+}
+
+/**
+ * @type {import('webpack').Configuration}
+ */
+module.exports = {
+  entry: isDev
+    ? [
+        'react-hot-loader/patch', // activate HMR for React
+        'webpack-dev-server/client?http://localhost:8080', // bundle the client for webpack-dev-server and connect to the provided endpoint
+        'webpack/hot/only-dev-server', // bundle the client for hot reloading, `only-` means to only hot reload for successful updates
+        './src/index.jsx', // the entry point of our app
+      ]
+    : './src/index.jsx',
+  mode: process.env.NODE_ENV ?? 'development',
+  devtool: 'inline-source-map',
+  performance: {
+    hints: false,
+  },
   output: {
-    path: rootPath('dist'),
-    filename: '[name].js',
+    filename: '[name].[contenthash].js',
+    clean: true,
   },
   module: {
     rules: [
-      // you can also use ts-loader of course
-      // i prefer to use babel-loader & @babel/plugin-typescript
-      // so we can experiment with how changing browserslistrc targets impacts
-      // monaco-graphql bundling
       {
-        test: /\.(js|jsx|ts|tsx)$/,
-        use: [{ loader: 'babel-loader' }],
+        test: /\.html$/,
+        use: ['file?name=[name].[ext]'],
+      },
+      // for graphql module, which uses mjs still
+      {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
+        include: /node_modules/,
+      },
+      {
+        test: /\.(js|jsx)$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['@babel/preset-env', { modules: false }],
+                '@babel/preset-react',
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -35,49 +74,45 @@ const resultConfig = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        type: 'asset/resource',
+        use: ['file-loader'],
       },
     ],
   },
   resolve: {
-    extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
+    extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
   },
   plugins: [
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1,
+    ...prodPlugins,
+    new CopyPlugin({
+      patterns: [{ from: 'public' }],
     }),
-    // in order to prevent async modules for CDN builds
-    // until we can guarantee it will work with the CDN properly
-    // and so that graphiql.min.js can retain parity
     new HtmlWebpackPlugin({
-      template: relPath('src/index.html.ejs'),
-      filename: 'index.html',
+      template: path.join(__dirname, '/index.html.ejs'),
     }),
-
-    new MonacoWebpackPlugin({
-      languages: ['json', 'graphql'],
-      publicPath: '/',
-      customLanguages: [
-        {
-          label: 'graphql',
-          worker: {
-            id: 'graphql',
-            entry: 'monaco-graphql/esm/graphql.worker.js',
+    new WebpackManifestPlugin({
+      seed: {
+        name: 'GraphiQL PWA',
+        icons: [
+          {
+            src: 'logo.svg',
+            sizes: '48x48 72x72 96x96 128x128 256x256 512x512',
+            type: 'image/svg+xml',
+            purpose: 'any',
           },
-        },
-      ],
+        ],
+        background_color: '#ffffff',
+        theme_color: '#D60590',
+        start_url: './index.html',
+        display: 'standalone',
+        display_override: ['fullscreen', 'minimal-ui'],
+        'logo.svg': 'auto/logo.svg',
+      },
     }),
   ],
+  devServer: {
+    hot: true,
+    // bypass simple localhost CORS restrictions by setting
+    // these to 127.0.0.1 in /etc/hosts
+    allowedHosts: ['local.test.com', 'graphiql.com'],
+  },
 };
-
-if (process.env.ANALYZE) {
-  resultConfig.plugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-      reportFilename: rootPath('build/analyzer.html'),
-    }),
-  );
-}
-
-module.exports = resultConfig;

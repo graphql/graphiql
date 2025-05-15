@@ -98,7 +98,6 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
 
 let describeOrSkip = describe.skip;
 
-// TODO: disable when defer/stream is merged to graphql
 if (!version.includes('15.5')) {
   describeOrSkip = describe;
 }

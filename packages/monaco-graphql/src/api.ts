@@ -90,7 +90,12 @@ export class MonacoGraphQLAPI {
     return this._diagnosticSettings;
   }
   public get completionSettings(): CompletionSettings {
-    return this._completionSettings;
+    return {
+      ...this._completionSettings,
+      fillLeafsOnComplete:
+        this._completionSettings?.__experimental__fillLeafsOnComplete ??
+        this._completionSettings?.fillLeafsOnComplete,
+    };
   }
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;

@@ -25,27 +25,47 @@ export async function activate(context: ExtensionContext) {
   );
 
   const config = getConfig();
-  const { debug } = config;
+  const { debug, transport } = config;
   if (debug) {
     // eslint-disable-next-line no-console
-    console.log('Extension "vscode-graphql" is now active!');
+    console.log(`Extension "vscode-graphql" is now activating (${transport})!`);
   }
-
-  const serverPath = path.join('out', 'server', 'index.js');
-  const serverModule = context.asAbsolutePath(serverPath);
 
   const debugOptions = {
     execArgv: ['--nolazy', '--inspect=localhost:6009'],
   };
 
+  let transportKind;
+  let server;
+  switch (transport) {
+    case 'ipc':
+      transportKind = TransportKind.ipc;
+      server = 'serverIpc';
+      break;
+    case 'stdio':
+      transportKind = TransportKind.stdio;
+      server = 'serverStdio';
+      break;
+    default:
+      if (debug) {
+        // eslint-disable-next-line no-console
+        console.log('Transport not recognized. Defaulting to IPC!');
+      }
+      transportKind = TransportKind.ipc;
+      server = 'serverIpc';
+      break;
+  }
+  const serverPath = path.join('out', server, 'index.js');
+  const serverModule = context.asAbsolutePath(serverPath);
+
   const serverOptions: ServerOptions = {
     run: {
       module: serverModule,
-      transport: TransportKind.ipc,
+      transport: transportKind,
     },
     debug: {
       module: serverModule,
-      transport: TransportKind.ipc,
+      transport: transportKind,
       options: { ...(debug ? debugOptions : {}) },
     },
   };
@@ -58,7 +78,9 @@ export async function activate(context: ExtensionContext) {
       { scheme: 'file', language: 'typescript' },
       { scheme: 'file', language: 'typescriptreact' },
       { scheme: 'file', language: 'vue' },
+      { scheme: 'file', language: 'vue-html' },
       { scheme: 'file', language: 'svelte' },
+      { scheme: 'file', language: 'astro' },
     ],
     synchronize: {
       // TODO: This should include any referenced graphql files inside the graphql-config
@@ -76,7 +98,7 @@ export async function activate(context: ExtensionContext) {
         // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
-          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts,*.json}',
+          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.cts,*.mts,*.json,*.astro}',
         ),
       ],
     },

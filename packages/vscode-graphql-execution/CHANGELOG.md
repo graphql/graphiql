@@ -1,5 +1,37 @@
 # vscode-graphql-execution
 
+## 0.3.2
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+## 0.3.1
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0 for bundled libraries & tests
+
+## 0.3.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+## 0.2.6
+
+### Patch Changes
+
+- [#3519](https://github.com/graphql/graphiql/pull/3519) [`8188e3e6`](https://github.com/graphql/graphiql/commit/8188e3e6fd979bcf2fbdf9568deb0c88d0df99e2) Thanks [@acao](https://github.com/acao)! - bump ovsx
+
+## 0.2.5
+
+### Patch Changes
+
+- [#3480](https://github.com/graphql/graphiql/pull/3480) [`a1fced10`](https://github.com/graphql/graphiql/commit/a1fced10bf37a339709243a9576b3fdcae832fb8) Thanks [@craig-riecke](https://github.com/craig-riecke)! - Fix execution extension esbuild bundling
+
 ## 0.2.4
 
 ### Patch Changes

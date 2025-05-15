@@ -1,7 +1,6 @@
 import { clsx } from 'clsx';
-import { forwardRef, ReactElement } from 'react';
+import { forwardRef, JSX, FC } from 'react';
 import { CloseIcon } from '../icons';
-import { createComponentGroup } from '../utility/component-group';
 import { UnStyledButton } from './button';
 import * as D from '@radix-ui/react-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -26,10 +25,7 @@ const DialogClose = forwardRef<
 ));
 DialogClose.displayName = 'Dialog.Close';
 
-export function DialogRoot({
-  children,
-  ...props
-}: D.DialogProps): ReactElement {
+export const DialogRoot: FC<D.DialogProps> = ({ children, ...props }) => {
   return (
     <D.Root {...props}>
       <D.Portal>
@@ -38,9 +34,9 @@ export function DialogRoot({
       </D.Portal>
     </D.Root>
   );
-}
+};
 
-export const Dialog = createComponentGroup(DialogRoot, {
+export const Dialog = Object.assign(DialogRoot, {
   Close: DialogClose,
   Title: D.Title,
   Trigger: D.Trigger,

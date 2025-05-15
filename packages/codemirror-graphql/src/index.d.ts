@@ -13,7 +13,5 @@ declare module 'codemirror' {
     hint?: ShowHintOptions['hint'];
   }
 
-  interface CodeMirrorHintMap {}
-
-  const hint: CodeMirrorHintMap;
+  const hint: object;
 }

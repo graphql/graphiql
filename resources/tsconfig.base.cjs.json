@@ -20,7 +20,7 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2017", "es2018", "esnext"],
+    "lib": ["dom", "es2017", "es2018", "es2021", "esnext"],
     "types": ["node", "jest"],
     "baseUrl": "."
   },

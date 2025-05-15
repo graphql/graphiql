@@ -4,6 +4,28 @@ schema {
 
 directive @test(testArg: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+scalar SomeCustomScalar
+scalar EmailAddress
+scalar Even
+scalar SpecialScalar
+scalar SpecialDate
+scalar FooBar
+scalar Foo
+
+"""
+An input type with custom scalars
+"""
+input CustomScalarsInput {
+  """
+  example email
+  """
+  email: EmailAddress
+  """
+  example even
+  """
+  even: Even
+}
+
 enum Episode {
   NEWHOPE
   EMPIRE

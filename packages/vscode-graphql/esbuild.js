@@ -6,15 +6,19 @@ const logger = console;
 const isWatchMode = arg === '--watch';
 
 build({
-  entryPoints: ['src/extension.ts', 'src/server/index.ts'],
+  entryPoints: [
+    'src/extension.ts',
+    'src/serverIpc/index.ts',
+    'src/serverStdio/index.ts',
+  ],
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
   outdir: 'out/',
   format: 'cjs',
   sourcemap: true,
-  // Avoid bundling @vue/compiler-sfc's dynamic dependencies
   external: [
+    // Avoid bundling @vue/compiler-sfc's dynamic dependencies
     'squirrelly',
     'teacup',
     'coffee-script',

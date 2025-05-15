@@ -1,6 +1,6 @@
 {
-  "fileTypes": ["re", "ml"],
-  "injectionSelector": "L:source -string -comment",
+  "scopeName": "inline.graphql.re",
+  "injectionSelector": "L:(meta.embedded.block.reason | meta.embedded.block.ocaml | source.ocaml | source.reason -string -comment)",
   "patterns": [
     {
       "contentName": "meta.embedded.block.graphql",
@@ -30,6 +30,5 @@
       "end": "(\\|}( )?])",
       "patterns": [{ "include": "source.graphql" }]
     }
-  ],
-  "scopeName": "inline.graphql.re"
+  ]
 }
