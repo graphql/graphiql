@@ -219,22 +219,22 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   colors: {
-    'editor.foreground': editorColors.light.delimiters, // Editor default foreground color.
-    'editorCursor.foreground': editorColors.light.yellow_default, // Color of the editor cursor.
-    'editor.selectionBackground': editorColors.light.selections, // Color of the editor selection.
+    'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
+    'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
+    'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.
     'editor.background': '#ffffff00', // white with a 00 alpha value
-    'editorLineNumber.foreground': editorColors.light.delimiters, // Color of editor line numbers.
-    'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of editor active line number.
+    'editorLineNumber.foreground': editorColors.light.delimiters, // Color of line numbers in the editor.
+    'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of active line number in the editor.
     'editorError.foreground': editorColors.light.orange_default, // Foreground color of error squigglies in the editor.
     'editorWarning.foreground': editorColors.light.orange_default, // Foreground color of warning squigglies in the editor.
     'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-    'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
-    'editorBracketMatch.border': editorColors.light.selections, // Color for matching brackets boxes
-    'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the editor indentation guides.
+    'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets in the editor
+    'editorBracketMatch.border': editorColors.light.selections, // Color for matching bracket boxes in the editor.
+    'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the indentation guides in the editor.
     'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
     'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
-    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Editor marker navigation widget error color.
-    'editorMarkerNavigationWarning.background': '#ffffff00', // Editor marker navigation widget warning color.
+    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
+    'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
   },
   rules: [
     // operations editor (graphql)
