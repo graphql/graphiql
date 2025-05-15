@@ -10,7 +10,7 @@ import {
   GraphQLDocumentMode,
   OperationFacts,
 } from 'graphql-language-service';
-import { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   executionStore,
   pluginStore,
@@ -24,19 +24,13 @@ import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import {
   useCompletion,
   copyQuery,
-  useKeyMap,
   mergeQuery,
   prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import {
-  Editor,
-  CodeMirrorType,
-  WriteableEditorProps,
-  SchemaReference,
-} from './types';
+import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_MAP, MONACO_GRAPHQL_API, OPERATIONS_MODEL } from '../constants';
+import { KEY_MAP, MONACO_GRAPHQL_API } from '../constants';
 import { KeyCode, KeyMod } from 'monaco-editor';
 import { createEditor } from '../create-editor';
 
@@ -113,7 +107,7 @@ export function QueryEditor({
   } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  const codeMirrorRef = useRef<CodeMirrorType>(undefined);
+
   /*
   const onClickReferenceRef = useRef<
     NonNullable<QueryEditorProps['onClickReference']>
@@ -369,11 +363,7 @@ export function QueryEditor({
     const { run } = executionStore.getState();
     run();
   };
-
   useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
-  // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
   useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
   */
 
@@ -405,13 +395,28 @@ export function QueryEditor({
       ),
       // add the runOperationAction to the operation and variables editors
       editor.addAction({
-        id: 'graphql-run-operation',
+        id: 'graphql-run',
         label: 'Run Operation',
-        contextMenuOrder: 0,
         contextMenuGroupId: 'graphql',
         // eslint-disable-next-line no-bitwise
         keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
         run,
+      }),
+      editor.addAction({
+        id: 'graphql-copy',
+        label: 'Copy Query',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
+        run: copyQuery,
+      }),
+      editor.addAction({
+        id: 'graphql-prettify',
+        label: 'Prettify Editors',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
+        run: prettifyEditors,
       }),
       editor,
       model,
