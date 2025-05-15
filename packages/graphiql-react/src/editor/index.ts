@@ -1,12 +1,11 @@
 export {
-  HeaderEditor,
   ImagePreview,
   QueryEditor,
   ResponseEditor,
   VariableEditor,
 } from './components';
 export { EditorContextProvider, useEditorStore } from './context';
-export { useHeaderEditor } from './header-editor';
+export { HeaderEditor } from './header-editor';
 export {
   getAutoCompleteLeafs,
   copyQuery,
@@ -22,7 +21,6 @@ export { useQueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
 export { useVariableEditor } from './variable-editor';
 
-export type { UseHeaderEditorArgs } from './header-editor';
 export type { UseQueryEditorArgs } from './query-editor';
 export type {
   ResponseTooltipType,

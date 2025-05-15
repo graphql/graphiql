@@ -19,7 +19,7 @@ import { useExecutionStore } from '../execution';
 import { KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
 
-type UseHeaderEditorArgs = WriteableEditorProps & {
+type HeaderEditorProps = WriteableEditorProps & {
   /**
    * Invoked when the contents of the headers editor change.
    * @param value The new contents of the editor.
@@ -41,13 +41,13 @@ function importCodeMirrorImports() {
   ]);
 }
 
-export function useHeaderEditor({
+export function HeaderEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
   isHidden = false,
-}: UseHeaderEditorArgs = {}) {
+}: HeaderEditorProps) {
   const {
     initialHeaders,
     headerEditor,
@@ -55,7 +55,7 @@ export function useHeaderEditor({
     shouldPersistHeaders,
   } = useEditorStore();
   const run = useExecutionStore(store => store.run);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
     let isActive = true;
@@ -67,10 +67,6 @@ export function useHeaderEditor({
       }
 
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialHeaders,
         lineNumbers: true,
@@ -135,7 +131,7 @@ export function useHeaderEditor({
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
-);
+  );
 }
 
 export const STORAGE_KEY = 'headers';
