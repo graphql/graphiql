@@ -44,7 +44,7 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   variableToType: VariableToType | null;
 };
 
-interface EditorStore extends TabsState {
+interface EditorStoreType extends TabsState {
   /**
    * Add a new tab.
    */
@@ -225,8 +225,8 @@ interface EditorStore extends TabsState {
   onPrettifyQuery: (query: string) => MaybePromise<string>;
 }
 
-type EditorContextProviderProps = Pick<
-  EditorStore,
+type EditorStoreProps = Pick<
+  EditorStoreType,
   | 'onTabChange'
   | 'onEditOperationName'
   | 'defaultHeaders'
@@ -297,13 +297,13 @@ type EditorContextProviderProps = Pick<
    * typing in the editor.
    */
   variables?: string;
-  onPrettifyQuery?: EditorStore['onPrettifyQuery'];
+  onPrettifyQuery?: EditorStoreType['onPrettifyQuery'];
 };
 
-const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+const DEFAULT_PRETTIFY_QUERY: EditorStoreType['onPrettifyQuery'] = query =>
   print(parse(query));
 
-export const editorStore = createStore<EditorStore>((set, get) => ({
+export const editorStore = createStore<EditorStoreType>((set, get) => ({
   tabs: null!,
   activeTabIndex: null!,
   addTab() {
@@ -444,7 +444,7 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 }));
 
-export const EditorContextProvider: FC<EditorContextProviderProps> = ({
+export const EditorStore: FC<EditorStoreProps> = ({
   externalFragments,
   onEditOperationName,
   defaultHeaders,

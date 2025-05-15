@@ -1,6 +1,6 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
-import { EditorContextProvider } from './stores/editor';
+import { EditorStore } from './stores/editor';
 import { ExecutionContextProvider } from './stores/execution';
 import { PluginContextProvider } from './stores/plugin';
 import { SchemaContextProvider } from './stores/schema';
@@ -8,7 +8,7 @@ import { StorageContextProvider } from './stores/storage';
 
 type GraphiQLProviderProps =
   //
-  ComponentPropsWithoutRef<typeof EditorContextProvider> &
+  ComponentPropsWithoutRef<typeof EditorStore> &
     ComponentPropsWithoutRef<typeof ExecutionContextProvider> &
     ComponentPropsWithoutRef<typeof PluginContextProvider> &
     ComponentPropsWithoutRef<typeof SchemaContextProvider> &
@@ -93,7 +93,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   };
   return (
     <StorageContextProvider storage={storage}>
-      <EditorContextProvider {...editorContextProps}>
+      <EditorStore {...editorContextProps}>
         <SchemaContextProvider {...schemaContextProps}>
           <ExecutionContextProvider {...executionContextProps}>
             <PluginContextProvider {...pluginContextProps}>
@@ -101,7 +101,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
             </PluginContextProvider>
           </ExecutionContextProvider>
         </SchemaContextProvider>
-      </EditorContextProvider>
+      </EditorStore>
     </StorageContextProvider>
   );
 };
