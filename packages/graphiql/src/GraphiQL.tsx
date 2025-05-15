@@ -55,12 +55,11 @@ import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, ShortKeys } from './ui';
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps =
-  //
-  Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'> &
-    Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
-    // `children` prop should be optional
-    GraphiQLInterfaceProps;
+export interface GraphiQLProps
+  // `children` prop should be optional
+  extends GraphiQLInterfaceProps,
+    Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,
+    Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> {}
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
