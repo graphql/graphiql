@@ -1,8 +1,6 @@
 import './style/root.css';
 
 export {
-  useEditorStore,
-  //
   QueryEditor,
   useOperationsEditorState,
   //
@@ -23,11 +21,14 @@ export {
   useEditorState,
   useOptimisticState,
 } from './editor';
-export { useExecutionStore } from './execution';
-export { usePluginStore } from './plugin';
+export {
+  useEditorStore,
+  useExecutionStore,
+  usePluginStore,
+  useSchemaStore,
+  useStorage,
+} from './stores';
 export { GraphiQLProvider } from './provider';
-export { useSchemaStore } from './schema';
-export { useStorage } from './storage';
 export { useTheme } from './theme';
 
 export * from './utility';
@@ -42,8 +43,8 @@ export type {
   TabsState,
   WriteableEditorProps,
 } from './editor';
-export type { GraphiQLPlugin } from './plugin';
-export type { SchemaContextType } from './schema';
+export type { GraphiQLPlugin } from './stores/plugin';
+export type { SchemaContextType } from './stores/schema';
 export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
 export { KEY_MAP } from './constants';
