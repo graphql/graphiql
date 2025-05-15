@@ -2,7 +2,7 @@
 import { Storage, StorageAPI } from '@graphiql/toolkit';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { createBoundedUseStore } from './utility';
+import { createBoundedUseStore } from '../utility';
 
 type StorageContextType = {
   storage: StorageAPI;
