@@ -1,8 +1,7 @@
 'use no memo'; // can't figure why it isn't optimized
 
-import { storageStore } from '../storage';
-import { debounce } from '../utility/debounce';
-import { editorStore } from './context';
+import { storageStore, editorStore } from '../stores';
+import { debounce } from '../utility';
 
 export type TabDefinition = {
   /**
