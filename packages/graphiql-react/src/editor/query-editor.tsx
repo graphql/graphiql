@@ -394,7 +394,7 @@ export function useQueryEditor({
   useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
   useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
 
-  return ref;
+  return <div className="graphiql-editor" ref={ref} />;
 }
 
 function useSynchronizeSchema(
