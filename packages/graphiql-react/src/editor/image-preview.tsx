@@ -15,14 +15,11 @@ const ImagePreview_: FC<ImagePreviewProps> = props => {
   });
   const [mime, setMime] = useState<string | null>(null);
 
-  const ref = useRef<HTMLImageElement>(null);
+  const ref = useRef<HTMLImageElement>(null!);
 
   const src = tokenToURL(props.token)?.href;
 
   useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
     if (!src) {
       setDimensions({ width: null, height: null });
       setMime(null);

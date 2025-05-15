@@ -1,4 +1,4 @@
-export { ImagePreview, ResponseEditor } from './components';
+export { ImagePreview } from './image-preview';
 export { EditorContextProvider, useEditorStore } from './context';
 export { HeaderEditor } from './header-editor';
 export {
