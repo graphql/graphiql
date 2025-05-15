@@ -913,14 +913,12 @@ export class MessageProcessor {
         project,
       });
       if (typeof locateResult === 'string') {
-        const [uri, line = '1', character = '1'] = locateResult.split(':');
-        const startLine = Math.max(parseInt(line, 10) - 1, 0);
-        const startCharacter = Math.max(parseInt(character, 10) - 1, 0);
+        const [uri, startLine = '1', endLine = '1'] = locateResult.split(':');
         return {
           uri,
           range: new Range(
-            new Position(startLine, startCharacter),
-            new Position(startLine, startCharacter),
+            new Position(parseInt(startLine, 10), 0),
+            new Position(parseInt(endLine, 10), 0),
           ),
         };
       }

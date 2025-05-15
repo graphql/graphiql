@@ -180,7 +180,7 @@ module.exports = {
         );
         return { uri: path, range }; // range.start.line/range.end.character/etc, base 1
         // you can also return relay LSP style
-        // return '/path/to/file.py:20:1'; // (range: 20:1 20:1 )
+        // return '/path/to/file.py:20:23'; // (range: 20:1 )
         // return '/path/to/file.py'; // (range: 1:1 1:1)
       },
     },

@@ -465,10 +465,10 @@ describe('MessageProcessor', () => {
       () => 'hello:2:4',
     );
     expect(customResult2.uri).toEqual('hello');
-    expect(customResult2.range.start.line).toEqual(1);
-    expect(customResult2.range.start.character).toEqual(3);
-    expect(customResult2.range.end.line).toEqual(1);
-    expect(customResult2.range.end.character).toEqual(3);
+    expect(customResult2.range.start.line).toEqual(2);
+    expect(customResult2.range.start.character).toEqual(0);
+    expect(customResult2.range.end.line).toEqual(4);
+
     const customResult3 = messageProcessor._getCustomLocateResult(
       project,
       { definitions: result, printedName: 'example' },
@@ -496,10 +496,9 @@ describe('MessageProcessor', () => {
       },
     }));
     const result2 = await messageProcessor.handleDefinitionRequest(test);
-    expect(result2[0].range.start.line).toBe(2);
-    expect(result2[0].range.start.character).toBe(3);
-    expect(result2[0].range.end.line).toBe(2);
-    expect(result2[0].range.end.character).toBe(3);
+    expect(result2[0].range.start.line).toBe(3);
+    expect(result2[0].range.end.line).toBe(4);
+    expect(result2[0].range.end.character).toBe(0);
     messageProcessor._graphQLCache.getProjectForFile = oldGetProject;
   });
   it('runs hover requests', async () => {
