@@ -59,10 +59,11 @@ type QueryEditorProps = WriteableEditorProps & {
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 };
+
 /*
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
-  variableEditor: Editor,
+  variableEditor: CodeMirrorEditor,
   operationFacts?: OperationFacts,
 ) {
   variableEditor.state.lint.linterOptions.variableToType =
@@ -72,7 +73,10 @@ function updateVariableEditor(
     operationFacts?.variableToType;
 }
 
-function updateEditorSchema(editor: Editor, schema: GraphQLSchema | null) {
+function updateEditorSchema(
+  editor: CodeMirrorEditor,
+  schema: GraphQLSchema | null,
+) {
   editor.state.lint.linterOptions.schema = schema;
   editor.options.lint.schema = schema;
   editor.options.hintOptions.schema = schema;
@@ -81,7 +85,7 @@ function updateEditorSchema(editor: Editor, schema: GraphQLSchema | null) {
 }
 
 function updateEditorValidationRules(
-  editor: Editor,
+  editor: CodeMirrorEditor,
   validationRules: ValidationRule[] | null,
 ) {
   editor.state.lint.linterOptions.validationRules = validationRules;
@@ -89,7 +93,7 @@ function updateEditorValidationRules(
 }
 
 function updateEditorExternalFragments(
-  editor: Editor,
+  editor: CodeMirrorEditor,
   externalFragmentList: FragmentDefinitionNode[],
 ) {
   editor.state.lint.linterOptions.externalFragments = externalFragmentList;
@@ -115,7 +119,6 @@ export function QueryEditor({
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
-  const schema = useSchemaStore(store => store.schema);
   /*
   const onClickReferenceRef = useRef<
     NonNullable<QueryEditorProps['onClickReference']>
@@ -378,6 +381,9 @@ export function QueryEditor({
   useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
   useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
   */
+
+  const schema = useSchemaStore(store => store.schema);
+
   useEffect(() => {
     setQueryEditor(createEditor('operations', ref.current));
     OPERATIONS_MODEL.onDidChangeContent(
@@ -413,9 +419,10 @@ export function QueryEditor({
 
   return <div className="graphiql-editor" ref={ref} />;
 }
+
 /*
 function useSynchronizeSchema(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const schema = useSchemaStore(store => store.schema ?? null);
@@ -435,7 +442,7 @@ function useSynchronizeSchema(
 }
 
 function useSynchronizeValidationRules(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const validationRules = useEditorStore(store => store.validationRules);
@@ -443,6 +450,7 @@ function useSynchronizeValidationRules(
     if (!editor) {
       return;
     }
+
     const didChange = editor.options.lint.validationRules !== validationRules;
     updateEditorValidationRules(editor, validationRules);
 
@@ -453,7 +461,7 @@ function useSynchronizeValidationRules(
 }
 
 function useSynchronizeExternalFragments(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
   const externalFragments = useEditorStore(store => store.externalFragments);
