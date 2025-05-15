@@ -12,7 +12,7 @@ import { VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
-import { storageStore, useStorage } from '../storage';
+import { storageStore, useStorage, executionStore } from '../stores';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
@@ -35,7 +35,6 @@ import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
-import { executionStore } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
