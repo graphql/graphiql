@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime';
+import 'regenerator-runtime/runtime.js';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';

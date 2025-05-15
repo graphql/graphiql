@@ -1,7 +1,7 @@
 ---
 'graphiql': major
-'@graphiql/react': major
+'@graphiql/react': minor
 'monaco-graphql': major
 ---
 
-release `graphiql` with `monaco-editor` support
+replace Codemirror editor with Monaco editor and Monaco GraphQL
