@@ -24,7 +24,7 @@ import { createStore } from 'zustand';
 import { editorStore } from './editor';
 import { createBoundedUseStore } from '../utility';
 
-type ExecutionContextType = {
+type ExecutionStoreType = {
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the
@@ -80,8 +80,8 @@ type ExecutionContextType = {
   fetcher: Fetcher;
 };
 
-type ExecutionContextProviderProps = Pick<
-  ExecutionContextType,
+type ExecutionStoreProps = Pick<
+  ExecutionStoreType,
   'getDefaultFieldNames' | 'fetcher'
 > & {
   children: ReactNode;
@@ -92,8 +92,7 @@ type ExecutionContextProviderProps = Pick<
 };
 
 export const executionStore = createStore<
-  ExecutionContextType &
-    Pick<ExecutionContextProviderProps, 'getDefaultFieldNames'>
+  ExecutionStoreType & Pick<ExecutionStoreProps, 'getDefaultFieldNames'>
 >((set, get) => ({
   isFetching: false,
   subscription: null,
@@ -268,7 +267,7 @@ export const executionStore = createStore<
   },
 }));
 
-export const ExecutionContextProvider: FC<ExecutionContextProviderProps> = ({
+export const ExecutionStore: FC<ExecutionStoreProps> = ({
   fetcher,
   getDefaultFieldNames,
   children,
