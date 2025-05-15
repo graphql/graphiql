@@ -1,7 +1,7 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { createBoundedUseStore } from './utility';
+import { createBoundedUseStore } from '../utility';
 
 export type GraphiQLPlugin = {
   /**
