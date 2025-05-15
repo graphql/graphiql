@@ -84,7 +84,7 @@ implementation of a GraphQL IDE - Graph*i*QL - in the
 ## Available stores
 
 There are multiple stores that own different parts of the state that make up a
-complete GraphQL IDE. For each context there is a component
+complete GraphQL IDE. For each store there is a component
 (`<name>Store`) that makes sure the store is initialized and managed
 properly. These components contains all the logic related to state management.
 
