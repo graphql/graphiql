@@ -1,10 +1,10 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
 import { EditorContextProvider } from './editor';
-import { ExecutionContextProvider } from './execution';
-import { PluginContextProvider } from './plugin';
-import { SchemaContextProvider } from './schema';
-import { StorageContextProvider } from './storage';
+import { ExecutionContextProvider } from './stores/execution';
+import { PluginContextProvider } from './stores/plugin';
+import { SchemaContextProvider } from './stores/schema';
+import { StorageContextProvider } from './stores/storage';
 
 type GraphiQLProviderProps =
   //
