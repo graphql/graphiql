@@ -18,6 +18,7 @@ import {
   useSchemaStore,
   useEditorStore,
   useStorage,
+  editorStore,
 } from '../stores';
 import { markdown, debounce } from '../utility';
 import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
@@ -267,26 +268,29 @@ export function QueryEditor({
       schemaStore.getState().schema,
       editorInstance.getValue(),
     );
+    const prevState = editorStore.getState();
 
-    // // Update operation name should any query names change.
-    // const operationName = getSelectedOperationName(
-    //   editorInstance.operations ?? undefined,
-    //   editorInstance.operationName ?? undefined,
-    //   operationFacts?.operations,
-    // );
-    //
-    // // Store the operation facts on editor properties
-    // editorInstance.documentAST = operationFacts?.documentAST ?? null;
-    // editorInstance.operationName = operationName ?? null;
-    // editorInstance.operations = operationFacts?.operations ?? null;
-    //
-    // // Update variable types for the variable editor
-    // if (variableEditor) {
-    //   updateVariableEditor(variableEditor, operationFacts);
-    //   codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-    // }
-    //
-    // return operationFacts ? { ...operationFacts, operationName } : null;
+    // Update the operation name should any query names change.
+    const operationName = getSelectedOperationName(
+      prevState.operations,
+      prevState.operationName,
+      operationFacts?.operations,
+    );
+
+    // Store the operation facts
+    editorStore.setState({
+      documentAST: operationFacts?.documentAST,
+      operationName,
+      operations: operationFacts?.operations,
+    });
+
+    // Update variable types for the variable editor
+    if (variableEditor) {
+      // updateVariableEditor(variableEditor, operationFacts);
+      // codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
+    }
+
+    return operationFacts ? { ...operationFacts, operationName } : null;
   }
 
   /*
@@ -364,7 +368,6 @@ export function QueryEditor({
     run();
   };
   useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
   */
 
   const schema = useSchemaStore(store => store.schema);
@@ -417,6 +420,14 @@ export function QueryEditor({
         // eslint-disable-next-line no-bitwise
         keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
         run: prettifyEditors,
+      }),
+      editor.addAction({
+        id: 'graphql-merge',
+        label: 'Merge Fragments into Query',
+        contextMenuGroupId: 'graphql',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
+        run: mergeQuery,
       }),
       editor,
       model,

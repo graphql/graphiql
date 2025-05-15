@@ -8,7 +8,7 @@ import {
   visit,
   print,
 } from 'graphql';
-import { VariableToType } from 'graphql-language-service';
+import { OperationFacts, VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
@@ -223,6 +223,19 @@ interface EditorStoreType extends TabsState {
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
+
+  /**
+   * @remarks from graphiql 5
+   */
+  documentAST?: OperationFacts['documentAST']
+  /**
+   * @remarks from graphiql 5
+   */
+  operationName?: string
+  /**
+   * @remarks from graphiql 5
+   */
+  operations?: OperationFacts['operations']
 }
 
 type EditorStoreProps = Pick<
