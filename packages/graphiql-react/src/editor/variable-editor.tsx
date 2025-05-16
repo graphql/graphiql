@@ -124,7 +124,7 @@ export function VariableEditor({
         disposable.dispose(); // remove the listener
       }
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
