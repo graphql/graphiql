@@ -4,10 +4,10 @@ import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
-import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
-import { CommonEditorProps, Editor } from './types';
+import { CommonEditorProps } from './types';
 import { createEditor } from '../create-editor';
 
 export type ResponseTooltipType = ComponentType<{
@@ -114,7 +114,7 @@ export function ResponseEditor({
 
     const disposables = [editor, editor.getModel()!];
 
-    // Clean‑up on unmount **or** when deps change
+    // Clean‑up on unmount or when deps change
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener

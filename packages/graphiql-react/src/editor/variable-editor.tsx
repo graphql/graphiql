@@ -1,25 +1,12 @@
 import { useEffect, useRef } from 'react';
-import {
-  useExecutionStore,
-  useEditorStore,
-  storageStore,
-  editorStore,
-} from '../stores';
-import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
-import {
-  useChangeHandler,
-  useCompletion,
-  useKeyMap,
-  mergeQuery,
-  prettifyEditors,
-  useSynchronizeOption,
-} from './hooks';
+import { useEditorStore, storageStore, editorStore } from '../stores';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { KEY_BINDINGS, KEY_MAP } from '../constants';
+import { KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
-import { KeyCode, KeyMod } from 'monaco-editor';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**
@@ -48,7 +35,6 @@ export function VariableEditor({
   isHidden = false,
 }: VariableEditorProps) {
   const { initialVariables } = useEditorStore();
-  const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
   /*
   useEffect(() => {
@@ -136,7 +122,7 @@ export function VariableEditor({
       model,
     ];
 
-    // 3️⃣ Clean‑up on unmount **or** when deps change
+    // 3️⃣ Clean‑up on unmount or when deps change
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener

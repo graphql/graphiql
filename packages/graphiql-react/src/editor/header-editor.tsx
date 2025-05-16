@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
 
-import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
-import { KEY_BINDINGS, KEY_MAP } from '../constants';
+import { KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
-import { IDisposable } from 'monaco-editor';
+import type { IDisposable } from '../monaco-editor';
 
 type HeaderEditorProps = WriteableEditorProps & {
   /**
@@ -115,7 +115,7 @@ export function HeaderEditor({
         ),
       );
     }
-    // 3️⃣ Clean‑up on unmount **or** when deps change
+    // 3️⃣ Clean‑up on unmount or when deps change
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener

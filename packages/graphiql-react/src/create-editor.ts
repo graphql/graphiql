@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import { editor } from './monaco-editor';
 import { MODELS } from './constants';
 import { Editor } from './editor/types';
 import { RefObject } from 'react';
@@ -44,118 +44,118 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   colors: {
-    'editor.foreground': editorColors.dark.delimiters, // Default foreground color of the editor.
-    'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
-    'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
+    // 'editor.foreground': editorColors.dark.delimiters, // Default foreground color of the editor.
+    //   'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
+    //   'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
     'editor.background': '#ffffff00', // white with a 00 alpha value
-    'editorLineNumber.foreground': editorColors.dark.delimiters, // Color of line numbers in the editor.
-    'editorLineNumber.activeForeground': editorColors.dark.delimitersActive, // Color of active line number in the editor.
-    'editorError.foreground': editorColors.dark.orange_default, // Foreground color of error squigglies in the editor.
-    'editorWarning.foreground': editorColors.dark.orange_default, // Foreground color of warning squigglies in the editor.
-    'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-    'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
-    'editorBracketMatch.border': editorColors.dark.selections, // Color of matching bracket boxes
-    'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of indentation guides in the editor.
-    'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
-    'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border in the editor.
-    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
-    'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
+    //   'editorLineNumber.foreground': editorColors.dark.delimiters, // Color of line numbers in the editor.
+    //   'editorLineNumber.activeForeground': editorColors.dark.delimitersActive, // Color of active line number in the editor.
+    //   'editorError.foreground': editorColors.dark.orange_default, // Foreground color of error squigglies in the editor.
+    //   'editorWarning.foreground': editorColors.dark.orange_default, // Foreground color of warning squigglies in the editor.
+    //   'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
+    //   'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
+    //   'editorBracketMatch.border': editorColors.dark.selections, // Color of matching bracket boxes
+    //   'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of indentation guides in the editor.
+    //   'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
+    //   'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border in the editor.
+    //   // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
+    //   'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
   },
   rules: [
     // operations editor (graphql)
-    {
-      foreground: editorColors.dark.keywords,
-      token: 'string.quote.gql',
-    },
-    {
-      foreground: editorColors.dark.orange_default,
-      token: 'string.invalid.gql',
-    },
-    {
-      foreground: editorColors.dark.yellow_default,
-      token: 'string.gql',
-    },
-    {
-      foreground: editorColors.dark.yellow_default,
-      token: 'number.gql',
-    },
-    {
-      foreground: editorColors.dark.yellow_default,
-      token: 'number.float.gql',
-    },
-    {
-      foreground: editorColors.dark.keywords,
-      token: 'keyword.gql',
-    },
-    {
-      foreground: editorColors.dark.operators,
-      token: 'operator.gql',
-    },
-    {
-      foreground: editorColors.dark.types,
-      token: 'type.identifier.gql',
-    },
-    {
-      foreground: editorColors.dark.fields,
-      token: 'key.identifier.gql',
-    },
-    {
-      foreground: editorColors.dark.arguments,
-      token: 'argument.identifier.gql',
-    },
-    {
-      foreground: editorColors.dark.delimiters,
-      token: 'delimiter.gql',
-    },
-    {
-      foreground: editorColors.dark.delimiters,
-      token: 'delimiter.parenthesis.gql',
-    },
-    {
-      foreground: editorColors.dark.delimiters,
-      token: 'delimiter.curly.gql',
-    },
-    {
-      foreground: editorColors.dark.delimiters,
-      token: 'delimiter.square.gql',
-    },
-    {
-      foreground: editorColors.dark.text2,
-      token: 'comment.gql',
-    },
+    //   {
+    //     foreground: editorColors.dark.keywords,
+    //     token: 'string.quote.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.orange_default,
+    //     token: 'string.invalid.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.yellow_default,
+    //     token: 'string.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.yellow_default,
+    //     token: 'number.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.yellow_default,
+    //     token: 'number.float.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.keywords,
+    //     token: 'keyword.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.operators,
+    //     token: 'operator.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.types,
+    //     token: 'type.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.fields,
+    //     token: 'key.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.arguments,
+    //     token: 'argument.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.delimiters,
+    //     token: 'delimiter.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.delimiters,
+    //     token: 'delimiter.parenthesis.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.delimiters,
+    //     token: 'delimiter.curly.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.delimiters,
+    //     token: 'delimiter.square.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.text2,
+    //     token: 'comment.gql',
+    //   },
     // variables editor & results viewer (json)
-    {
-      foreground: editorColors.dark.text2,
-      token: 'delimiter.bracket.json',
-    },
-    {
-      foreground: editorColors.dark.text2,
-      token: 'delimiter.array.json',
-    },
-    {
-      foreground: editorColors.dark.text2,
-      token: 'delimiter.comma.json',
-    },
-    {
-      foreground: editorColors.dark.text2,
-      token: 'delimiter.colon.json',
-    },
-    {
-      foreground: editorColors.dark.keywords,
-      token: 'string.key.json',
-    },
-    {
-      foreground: editorColors.dark.values,
-      token: 'string.value.json',
-    },
-    {
-      foreground: editorColors.dark.values,
-      token: 'number.json',
-    },
-    {
-      foreground: editorColors.dark.values,
-      token: 'keyword.json',
-    },
+    //   {
+    //     foreground: editorColors.dark.text2,
+    //     token: 'delimiter.bracket.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.text2,
+    //     token: 'delimiter.array.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.text2,
+    //     token: 'delimiter.comma.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.text2,
+    //     token: 'delimiter.colon.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.keywords,
+    //     token: 'string.key.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.values,
+    //     token: 'string.value.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.values,
+    //     token: 'number.json',
+    //   },
+    //   {
+    //     foreground: editorColors.dark.values,
+    //     token: 'keyword.json',
+    //   },
   ],
 };
 
@@ -163,114 +163,114 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   colors: {
-    'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
-    'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
-    'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.
-    'editor.background': '#ffffff00', // white with a 00 alpha value
-    'editorLineNumber.foreground': editorColors.light.delimiters, // Color of line numbers in the editor.
-    'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of active line number in the editor.
-    'editorError.foreground': editorColors.light.orange_default, // Foreground color of error squigglies in the editor.
-    'editorWarning.foreground': editorColors.light.orange_default, // Foreground color of warning squigglies in the editor.
-    'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-    'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets in the editor
-    'editorBracketMatch.border': editorColors.light.selections, // Color for matching bracket boxes in the editor.
-    'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the indentation guides in the editor.
-    'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
-    'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
-    // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
-    'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
+    //   'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
+    //   'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
+    //   'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.
+    'editor.background': '#ff0000', // white with a 00 alpha value
+    //   'editorLineNumber.foreground': editorColors.light.delimiters, // Color of line numbers in the editor.
+    //   'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of active line number in the editor.
+    //   'editorError.foreground': editorColors.light.orange_default, // Foreground color of error squigglies in the editor.
+    //   'editorWarning.foreground': editorColors.light.orange_default, // Foreground color of warning squigglies in the editor.
+    //   'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
+    //   'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets in the editor
+    //   'editorBracketMatch.border': editorColors.light.selections, // Color for matching bracket boxes in the editor.
+    //   'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the indentation guides in the editor.
+    //   'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
+    //   'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
+    //   // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
+    //   'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
   },
   rules: [
     // operations editor (graphql)
-    {
-      foreground: editorColors.light.keywords,
-      token: 'string.quote.gql',
-    },
-    {
-      foreground: editorColors.light.orange_default,
-      token: 'string.invalid.gql',
-    },
-    {
-      foreground: editorColors.light.yellow_default,
-      token: 'string.gql',
-    },
-    {
-      foreground: editorColors.light.yellow_default,
-      token: 'number.gql',
-    },
-    {
-      foreground: editorColors.light.yellow_default,
-      token: 'number.float.gql',
-    },
-    {
-      foreground: editorColors.light.operators,
-      token: 'operator.gql',
-    },
-    {
-      foreground: editorColors.light.types,
-      token: 'type.identifier.gql',
-    },
-    {
-      foreground: editorColors.light.fields,
-      token: 'key.identifier.gql',
-    },
-    {
-      foreground: editorColors.light.arguments,
-      token: 'argument.identifier.gql',
-    },
-    {
-      foreground: editorColors.light.delimiters,
-      token: 'delimiter.gql',
-    },
-    {
-      foreground: editorColors.light.delimiters,
-      token: 'delimiter.parenthesis.gql',
-    },
-    {
-      foreground: editorColors.light.delimiters,
-      token: 'delimiter.curly.gql',
-    },
-    {
-      foreground: editorColors.light.delimiters,
-      token: 'delimiter.square.gql',
-    },
-    {
-      foreground: editorColors.light.text2,
-      token: 'comment.gql',
-    },
+    //   {
+    //     foreground: editorColors.light.keywords,
+    //     token: 'string.quote.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.orange_default,
+    //     token: 'string.invalid.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.yellow_default,
+    //     token: 'string.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.yellow_default,
+    //     token: 'number.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.yellow_default,
+    //     token: 'number.float.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.operators,
+    //     token: 'operator.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.types,
+    //     token: 'type.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.fields,
+    //     token: 'key.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.arguments,
+    //     token: 'argument.identifier.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.delimiters,
+    //     token: 'delimiter.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.delimiters,
+    //     token: 'delimiter.parenthesis.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.delimiters,
+    //     token: 'delimiter.curly.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.delimiters,
+    //     token: 'delimiter.square.gql',
+    //   },
+    //   {
+    //     foreground: editorColors.light.text2,
+    //     token: 'comment.gql',
+    //   },
     // variables editor & results viewer (json)
-    {
-      foreground: editorColors.light.text2,
-      token: 'delimiter.bracket.json',
-    },
-    {
-      foreground: editorColors.light.text2,
-      token: 'delimiter.array.json',
-    },
-    {
-      foreground: editorColors.light.text2,
-      token: 'delimiter.comma.json',
-    },
-    {
-      foreground: editorColors.light.text2,
-      token: 'delimiter.colon.json',
-    },
-    {
-      foreground: editorColors.light.keywords,
-      token: 'string.key.json',
-    },
-    {
-      foreground: editorColors.light.values,
-      token: 'string.value.json',
-    },
-    {
-      foreground: editorColors.light.values,
-      token: 'number.json',
-    },
-    {
-      foreground: editorColors.light.values,
-      token: 'keyword.json',
-    },
+    //   {
+    //     foreground: editorColors.light.text2,
+    //     token: 'delimiter.bracket.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.text2,
+    //     token: 'delimiter.array.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.text2,
+    //     token: 'delimiter.comma.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.text2,
+    //     token: 'delimiter.colon.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.keywords,
+    //     token: 'string.key.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.values,
+    //     token: 'string.value.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.values,
+    //     token: 'number.json',
+    //   },
+    //   {
+    //     foreground: editorColors.light.values,
+    //     token: 'keyword.json',
+    //   },
   ],
 };
 
