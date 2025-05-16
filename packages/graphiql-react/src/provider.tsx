@@ -1,3 +1,4 @@
+/* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
 import { EditorContextProvider } from './editor';
 import { ExecutionContextProvider } from './execution';
@@ -14,41 +15,55 @@ type GraphiQLProviderProps =
     ComponentPropsWithoutRef<typeof StorageContextProvider>;
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  children,
-  dangerouslyAssumeSchemaIsValid,
-  defaultQuery,
   defaultHeaders,
+  defaultQuery,
   defaultTabs,
   externalFragments,
-  fetcher,
-  getDefaultFieldNames,
   headers,
-  inputValueDeprecation,
-  introspectionQueryName,
   onEditOperationName,
-  onSchemaChange,
   onTabChange,
-  onTogglePluginVisibility,
-  operationName,
-  plugins,
-  referencePlugin,
   query,
   response,
-  schema,
-  schemaDescription,
   shouldPersistHeaders,
-  storage,
   validationRules,
   variables,
+  onCopyQuery,
+  onPrettifyQuery,
+
+  dangerouslyAssumeSchemaIsValid,
+  fetcher,
+  inputValueDeprecation,
+  introspectionQueryName,
+  onSchemaChange,
+  schema,
+  schemaDescription,
+
+  getDefaultFieldNames,
+  operationName,
+
+  onTogglePluginVisibility,
+  plugins,
+  referencePlugin,
   visiblePlugin,
+
+  storage,
+
+  children,
 }) => {
+  if (!fetcher) {
+    throw new TypeError(
+      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
   const editorContextProps = {
-    defaultQuery,
     defaultHeaders,
+    defaultQuery,
     defaultTabs,
     externalFragments,
     headers,
+    onCopyQuery,
     onEditOperationName,
+    onPrettifyQuery,
     onTabChange,
     query,
     response,
@@ -66,15 +81,15 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     schemaDescription,
   };
   const executionContextProps = {
-    getDefaultFieldNames,
     fetcher,
+    getDefaultFieldNames,
     operationName,
   };
   const pluginContextProps = {
     onTogglePluginVisibility,
     plugins,
-    visiblePlugin,
     referencePlugin,
+    visiblePlugin,
   };
   return (
     <StorageContextProvider storage={storage}>

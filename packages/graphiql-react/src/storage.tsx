@@ -27,13 +27,18 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   storage,
   children,
 }) => {
-  const $storage = useStorage();
+  const isMounted = useStorageStore(store => Boolean(store.storage));
 
   useEffect(() => {
     storageStore.setState({ storage: new StorageAPI(storage) });
   }, [storage]);
 
-  return $storage && (children as ReactElement);
+  if (!isMounted) {
+    // Ensure storage was initialized
+    return null;
+  }
+
+  return children as ReactElement;
 };
 
 const useStorageStore = createBoundedUseStore(storageStore);

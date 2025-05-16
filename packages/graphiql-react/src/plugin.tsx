@@ -20,7 +20,7 @@ export type GraphiQLPlugin = {
   title: string;
 };
 
-export type PluginContextType = {
+type PluginContextType = {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
