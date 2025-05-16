@@ -385,10 +385,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
     const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
     setActiveSecondaryEditor(tabName);
-    // Execute on next tick, otherwise doesn't focus
+    // Execute on the next tick, otherwise doesn't focus
     requestAnimationFrame(() => {
       focusOnEditorAndMoveCaretToLastPosition(
-        tabName === 'variables' ? variableEditor : headerEditor,
+        tabName === 'variables' ? variableEditor! : headerEditor,
       );
     })
   };

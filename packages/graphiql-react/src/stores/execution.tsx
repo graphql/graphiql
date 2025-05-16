@@ -23,6 +23,7 @@ import { getAutoCompleteLeafs } from '../editor';
 import { createStore } from 'zustand';
 import { editorStore } from './editor';
 import { createBoundedUseStore } from '../utility';
+import { Editor } from '../editor/types';
 
 type ExecutionStoreType = {
   /**
@@ -132,10 +133,27 @@ export const executionStore = createStore<
       return;
     }
 
-    const setResponse = (value: string) => {
-      responseEditor.setValue(value);
+    function setResponse(value: string): void {
+      responseEditor?.setValue(value);
       updateActiveTabValues({ response: value });
-    };
+    }
+
+    function setError(error: unknown, editor?: Editor): void {
+      if (!editor) {
+        return;
+      }
+      let message;
+      const name = editor.getModel()!.uri.path.endsWith('variable.json')
+        ? 'Variables'
+        : 'Headers';
+      if (error instanceof TypeError) {
+        message = `${name} are not a JSONC object.`;
+      } else {
+        message = `${name} are invalid JSONC: ${error instanceof Error ? error.message : error}.`;
+      }
+      // Need to stringify since the response editor uses `json` language
+      setResponse(JSON.stringify({ errors: [{ message }] }, null, 2));
+    }
 
     const newQueryId = queryId + 1;
     set({ queryId: newQueryId });
@@ -145,29 +163,18 @@ export const executionStore = createStore<
     // the current query from the editor.
     let query = getAutoCompleteLeafs() || queryEditor.getValue();
 
-    const variablesString = variableEditor?.getValue();
-    let variables: Record<string, unknown> | undefined;
+    let variables: Record<string, unknown>;
     try {
-      variables = tryParseJsonObject({
-        json: variablesString,
-        errorMessageParse: 'Variables are invalid JSON',
-        errorMessageType: 'Variables are not a JSON object.',
-      });
+      variables = tryParseJsonObject(variableEditor?.getValue());
     } catch (error) {
-      setResponse(error instanceof Error ? error.message : `${error}`);
+      setError(error, variableEditor);
       return;
     }
-
-    const headersString = headerEditor?.getValue();
-    let headers: Record<string, unknown> | undefined;
+    let headers: Record<string, unknown>;
     try {
-      headers = tryParseJsonObject({
-        json: headersString,
-        errorMessageParse: 'Headers are invalid JSON',
-        errorMessageType: 'Headers are not a JSON object.',
-      });
+      headers = tryParseJsonObject(headerEditor?.getValue());
     } catch (error) {
-      setResponse(error instanceof Error ? error.message : `${error}`);
+      setError(error, headerEditor);
       return;
     }
 
@@ -295,29 +302,12 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 
 export const useExecutionStore = createBoundedUseStore(executionStore);
 
-function tryParseJsonObject({
-  json,
-  errorMessageParse,
-  errorMessageType,
-}: {
-  json?: string;
-  errorMessageParse: string;
-  errorMessageType: string;
-}) {
-  let parsed: Record<string, any> | undefined;
-  try {
-    parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
-  } catch (error) {
-    throw new Error(
-      `${errorMessageParse}: ${
-        error instanceof Error ? error.message : error
-      }.`,
-    );
-  }
+function tryParseJsonObject(json?: string) {
+  const parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
   const isObject =
     typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
-  if (parsed !== undefined && !isObject) {
-    throw new Error(errorMessageType);
+  if (!isObject && parsed !== undefined) {
+    throw new TypeError();
   }
   return parsed;
 }

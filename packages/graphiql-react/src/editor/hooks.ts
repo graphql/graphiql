@@ -13,14 +13,11 @@ import {
 } from '../stores';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
-import { CodeMirrorEditor, SchemaReference } from './types';
+import { CodeMirrorEditor, Editor, SchemaReference } from './types';
 
-export function useSynchronizeValue(
-  editor: CodeMirrorEditor | null,
-  value?: string,
-) {
+export function useSynchronizeValue(editor?: Editor, value = '') {
   useEffect(() => {
-    if (editor && typeof value === 'string' && value !== editor.getValue()) {
+    if (editor && editor.getValue() !== value) {
       editor.setValue(value);
     }
   }, [editor, value]);
