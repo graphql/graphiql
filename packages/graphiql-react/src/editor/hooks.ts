@@ -120,7 +120,7 @@ export function useCompletion(
   }, [callback, editor]);
 }
 
-export function copyQuery() {
+export function copyQuery(): void {
   const { queryEditor, onCopyQuery } = editorStore.getState();
   if (!queryEditor) {
     return;
@@ -132,7 +132,7 @@ export function copyQuery() {
   onCopyQuery?.(query);
 }
 
-export function mergeQuery() {
+export function mergeQuery(): void {
   const { queryEditor, documentAST } = editorStore.getState();
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {
@@ -142,7 +142,7 @@ export function mergeQuery() {
   queryEditor!.setValue(print(mergeAst(documentAST, schema)));
 }
 
-export async function prettifyEditors() {
+export async function prettifyEditors(): Promise<void> {
   const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
     editorStore.getState();
   if (variableEditor) {
@@ -157,7 +157,8 @@ export async function prettifyEditors() {
         variableEditor.setValue(prettifiedVariableEditorContent);
       }
     } catch {
-      /* Parsing JSON failed, skip prettification */
+      // eslint-disable-next-line no-console
+      console.error('Parsing JSON failed, skip prettification.');
     }
   }
 
@@ -174,20 +175,23 @@ export async function prettifyEditors() {
         headerEditor.setValue(prettifiedHeaderEditorContent);
       }
     } catch {
-      /* Parsing JSON failed, skip prettification */
+      // eslint-disable-next-line no-console
+      console.error('Parsing JSON failed, skip prettification.');
     }
   }
 
-  if (queryEditor) {
-    const editorContent = queryEditor.getValue();
-    try {
-      const prettifiedEditorContent = await onPrettifyQuery(editorContent);
-      if (prettifiedEditorContent !== editorContent) {
-        queryEditor.setValue(prettifiedEditorContent);
-      }
-    } catch {
-      /* Parsing query failed, skip prettification */
+  if (!queryEditor) {
+    return;
+  }
+  const editorContent = queryEditor.getValue();
+  try {
+    const prettifiedEditorContent = await onPrettifyQuery(editorContent);
+    if (prettifiedEditorContent !== editorContent) {
+      queryEditor.setValue(prettifiedEditorContent);
     }
+  } catch {
+    // eslint-disable-next-line no-console
+    console.error('Parsing query failed, skip prettification.');
   }
 }
 
