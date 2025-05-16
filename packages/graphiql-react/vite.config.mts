@@ -88,6 +88,7 @@ export default defineConfig({
         }),
         /monaco-graphql\//,
         /monaco-editor\//,
+        /prettier\//,
       ],
       output: {
         preserveModules: true,
