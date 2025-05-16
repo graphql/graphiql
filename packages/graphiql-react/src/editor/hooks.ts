@@ -11,7 +11,7 @@ import {
   useEditorStore,
   executionStore,
 } from '../stores';
-import { debounce } from '../utility';
+import { debounce, formatJSONC } from '../utility';
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditor, Editor, SchemaReference } from './types';
 
@@ -142,53 +142,45 @@ export function mergeQuery(): void {
 export async function prettifyEditors(): Promise<void> {
   const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
     editorStore.getState();
+
   if (variableEditor) {
-    const variableEditorContent = variableEditor.getValue();
     try {
-      const prettifiedVariableEditorContent = JSON.stringify(
-        JSON.parse(variableEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedVariableEditorContent !== variableEditorContent) {
-        variableEditor.setValue(prettifiedVariableEditorContent);
+      const content = variableEditor.getValue();
+      const formatted = await formatJSONC(content);
+      if (formatted !== content) {
+        variableEditor.setValue(formatted);
       }
-    } catch {
+    } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Parsing JSON failed, skip prettification.');
+      console.error('Parsing JSON failed, skip prettification.', error);
     }
   }
 
   if (headerEditor) {
-    const headerEditorContent = headerEditor.getValue();
-
     try {
-      const prettifiedHeaderEditorContent = JSON.stringify(
-        JSON.parse(headerEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedHeaderEditorContent !== headerEditorContent) {
-        headerEditor.setValue(prettifiedHeaderEditorContent);
+      const content = headerEditor.getValue();
+      const formatted = await formatJSONC(content);
+      if (formatted !== content) {
+        headerEditor.setValue(formatted);
       }
-    } catch {
+    } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Parsing JSON failed, skip prettification.');
+      console.error('Parsing JSON failed, skip prettification.', error);
     }
   }
 
   if (!queryEditor) {
     return;
   }
-  const editorContent = queryEditor.getValue();
   try {
-    const prettifiedEditorContent = await onPrettifyQuery(editorContent);
-    if (prettifiedEditorContent !== editorContent) {
-      queryEditor.setValue(prettifiedEditorContent);
+    const content = queryEditor.getValue();
+    const formatted = await onPrettifyQuery(content);
+    if (formatted !== content) {
+      queryEditor.setValue(formatted);
     }
-  } catch {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Parsing query failed, skip prettification.');
+    console.error('Parsing query failed, skip prettification.', error);
   }
 }
 

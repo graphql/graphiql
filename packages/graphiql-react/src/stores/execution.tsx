@@ -22,7 +22,7 @@ import getValue from 'get-value';
 import { getAutoCompleteLeafs } from '../editor';
 import { createStore } from 'zustand';
 import { editorStore } from './editor';
-import { createBoundedUseStore } from '../utility';
+import { createBoundedUseStore, formatJSONC, parseJSONC } from '../utility';
 import { Editor } from '../editor/types';
 
 type ExecutionStoreType = {
@@ -165,14 +165,14 @@ export const executionStore = createStore<
 
     let variables: Record<string, unknown>;
     try {
-      variables = tryParseJsonObject(variableEditor?.getValue());
+      variables = await tryParseJsonObject(variableEditor?.getValue());
     } catch (error) {
       setError(error, variableEditor);
       return;
     }
     let headers: Record<string, unknown>;
     try {
-      headers = tryParseJsonObject(headerEditor?.getValue());
+      headers = await tryParseJsonObject(headerEditor?.getValue());
     } catch (error) {
       setError(error, headerEditor);
       return;
@@ -302,8 +302,11 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 
 export const useExecutionStore = createBoundedUseStore(executionStore);
 
-function tryParseJsonObject(json?: string) {
-  const parsed = json?.trim() && JSON.parse(json);
+async function tryParseJsonObject(json = '') {
+  // `jsonc-parser` doesn't support trailing commas,
+  // so we need first to format with prettier, which will remove them
+  const formatted = await formatJSONC(json);
+  const parsed = parseJSONC(formatted);
   const isObject =
     typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
   if (parsed && !isObject) {
