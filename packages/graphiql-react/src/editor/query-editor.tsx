@@ -18,7 +18,7 @@ import {
   useStorage,
   editorStore,
 } from '../stores';
-import { markdown, debounce } from '../utility';
+import { markdown, debounce, isMacOs } from '../utility';
 import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import {
   useCompletion,
@@ -31,6 +31,17 @@ import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MODELS, MONACO_GRAPHQL_API } from '../constants';
 import { createEditor } from '../create-editor';
+import {
+  KeyCode,
+  KeyMod,
+  editor,
+  IDisposable,
+  IRange,
+  languages,
+  Range,
+} from '../monaco-editor';
+
+import IEditorMouseEvent = editor.IEditorMouseEvent;
 
 type QueryEditorProps = WriteableEditorProps & {
   /**
@@ -342,29 +353,104 @@ export function QueryEditor({
       });
     });
 
+    const handleMouseDown = (e: IEditorMouseEvent) => {
+      const { position } = e.target;
+      if (!position) {
+        return;
+      }
+      console.log('on mouse down');
+      const word = editor.getModel()!.getWordAtPosition(position);
+      if (word) {
+        // eslint-disable-next-line no-console
+        console.info(word);
+        // eslint-disable-next-line no-console
+        console.info(`Clicked on word "${word.word}"`);
+      }
+    };
+
+    let linkProvider: IDisposable;
+    let previousRange: IRange | null = null;
+
+    const handleMove = (e: IEditorMouseEvent) => {
+      const { position } = e.target;
+      if (!position) {
+        return;
+      }
+      const word = editor.getModel()!.getWordAtPosition(position);
+      const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
+
+      if (!word || !isCmdPressed) {
+        previousRange = null;
+        linkProvider?.dispose();
+        return;
+      }
+
+      const currentRange = {
+        startLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endLineNumber: position.lineNumber,
+        endColumn: word.endColumn,
+      };
+
+      // Check if it's the same word
+      const sameAsLast =
+        previousRange &&
+        currentRange.startLineNumber === previousRange.startLineNumber &&
+        currentRange.startColumn === previousRange.startColumn &&
+        currentRange.endLineNumber === previousRange.endLineNumber &&
+        currentRange.endColumn === previousRange.endColumn;
+      if (sameAsLast) {
+        // Skip re-registering
+        return;
+      }
+
+      // Update last word
+      previousRange = currentRange;
+
+      // Dispose previous provider and register a new one
+      linkProvider?.dispose();
+      linkProvider = languages.registerLinkProvider('graphql', {
+        provideLinks(model, token) {
+          return {
+            links: [
+              {
+                range: new Range(
+                  currentRange.startLineNumber,
+                  currentRange.startColumn,
+                  currentRange.endLineNumber,
+                  currentRange.endColumn,
+                ),
+                tooltip: 'Go to node definition',
+                url: 'https://example.com/docs/node',
+              },
+            ],
+          };
+        },
+      });
+    };
+
     const model = editor.getModel()!;
 
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
+      editor.addAction({
+        id: 'graphql-go-to-definition',
+        label: 'Go to Definition',
+        contextMenuGroupId: 'navigation',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.CtrlCmd | KeyCode.F12],
+        run() {
+          // eslint-disable-next-line no-console
+          console.log('Go to Definition');
+        },
+      }),
       editor.addAction(KEY_BINDINGS.runQuery),
       editor.addAction(KEY_BINDINGS.copyQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),
-      editor.onMouseDown(e => {
-        const { position } = e.target;
-        if (!position) {
-          return;
-        }
-
-        const word = editor.getModel()!.getWordAtPosition(position);
-        if (word) {
-          // eslint-disable-next-line no-console
-          console.info(word)
-          // eslint-disable-next-line no-console
-          console.info(`Clicked on word "${word.word}"`);
-        }
-      }),
+      editor.onMouseDown(handleMouseDown),
+      editor.onMouseMove(handleMove),
       editor,
       model,
     ];
