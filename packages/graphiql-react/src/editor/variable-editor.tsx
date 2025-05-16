@@ -1,5 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useExecutionStore, useEditorStore, storageStore } from '../stores';
+import {
+  useExecutionStore,
+  useEditorStore,
+  storageStore,
+  editorStore,
+} from '../stores';
 import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import {
   useChangeHandler,
@@ -43,8 +48,7 @@ export function VariableEditor({
   readOnly = false,
   isHidden = false,
 }: VariableEditorProps) {
-  const { initialVariables, setVariableEditor, updateActiveTabValues } =
-    useEditorStore();
+  const { initialVariables } = useEditorStore();
   const run = useExecutionStore(store => store.run);
   const ref = useRef<HTMLDivElement>(null!);
   /*
@@ -112,9 +116,10 @@ export function VariableEditor({
   }, [variableEditor, isHidden]);
   */
   useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('variable', ref.current);
-    setVariableEditor(editor);
+    const { model, editor } = createEditor('variable', ref);
+    setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
 
     // 2️⃣ Subscribe to content changes
@@ -122,6 +127,7 @@ export function VariableEditor({
       model.onDidChangeContent(
         debounce(500, () => {
           const value = model.getValue();
+          console.log('storage', storage);
           storage.set(STORAGE_KEY, value);
           updateActiveTabValues({ variables: value });
         }),
@@ -139,7 +145,7 @@ export function VariableEditor({
         disposable.dispose(); // remove the listener
       }
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, []);
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />

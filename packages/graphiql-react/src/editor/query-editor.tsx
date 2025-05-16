@@ -102,9 +102,7 @@ export function QueryEditor({
     initialQuery,
     queryEditor,
     setOperationName,
-    setQueryEditor,
     variableEditor,
-    updateActiveTabValues,
   } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
@@ -342,14 +340,11 @@ export function QueryEditor({
   const schema = useSchemaStore(store => store.schema);
 
   useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('query', ref.current);
-    setQueryEditor(editor);
-    // eslint-disable-next-line
-    console.log('editor', editor);
+    const { model, editor } = createEditor('query', ref);
 
-    const { run } = executionStore.getState();
-
+    setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);

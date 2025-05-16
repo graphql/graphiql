@@ -2,7 +2,7 @@ import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useSchemaStore, useEditorStore } from '../stores';
+import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
 import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
 import { ImagePreview } from './image-preview';
@@ -34,8 +34,7 @@ export function ResponseEditor({
   keyMap = DEFAULT_KEY_MAP,
 }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
-  const { initialResponse, responseEditor, setResponseEditor } =
-    useEditorStore();
+  const { initialResponse } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
@@ -111,16 +110,17 @@ export function ResponseEditor({
   }, [responseEditor, fetchError, validationErrors]);
   */
   useEffect(() => {
+    const { setEditor } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('response', ref.current);
-    setResponseEditor(editor);
+    const { model, editor } = createEditor('response', ref);
+    setEditor({ responseEditor: editor });
 
     // Clean‑up on unmount **or** when deps change
     return () => {
       editor.dispose();
       model.dispose();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, []);
 
   return (
     <section
