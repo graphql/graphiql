@@ -236,8 +236,17 @@ export function setEditorValues({
     responseEditor,
     defaultHeaders,
   } = editorStore.getState();
+  if (queryEditor) {
+    queryEditor.setValue(query ?? '');
+    // Focus on editor content when tab is changed
+    const model = queryEditor.getModel()!;
+    const lastLine = model.getLineCount();
+    const lastColumn = model.getLineMaxColumn(lastLine);
 
-  queryEditor?.setValue(query ?? '');
+    queryEditor.setPosition({ lineNumber: lastLine, column: lastColumn });
+    queryEditor.focus();
+  }
+
   variableEditor?.setValue(variables ?? '');
   headerEditor?.setValue(headers ?? defaultHeaders ?? '');
   responseEditor?.setValue(response ?? '');

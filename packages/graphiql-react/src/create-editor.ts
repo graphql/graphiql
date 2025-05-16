@@ -399,17 +399,15 @@ editor.defineTheme('graphiql-LIGHT', editorThemeLight);
 export function createEditor(
   type: keyof typeof MODELS,
   domElement: RefObject<HTMLDivElement>,
-): { model: editor.ITextModel; editor: Editor } {
-  const model = MODELS[type];
-
-  const monacoEditor = editor.create(domElement.current, {
+): Editor {
+  return editor.create(domElement.current, {
     language: type === 'query' ? 'graphql' : 'json',
     automaticLayout: true,
+    fontSize: 15,
     // the default theme
     theme: 'graphiql-DARK',
     // folding: false, // disable folding
     fontFamily: "'Fira Code', monospace", // TODO: set the font (this is problematic because the font has to be installed locally)
-    fontSize: 13, // default is 12
     // lineDecorationsWidth: 100,
     lineNumbersMinChars: 2,
     minimap: {
@@ -433,8 +431,6 @@ export function createEditor(
       readOnly: true,
       lineNumbers: 'off',
     }),
-    model,
+    model: MODELS[type],
   });
-
-  return { model, editor: monacoEditor };
 }

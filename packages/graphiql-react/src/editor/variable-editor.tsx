@@ -115,10 +115,10 @@ export function VariableEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('variable', ref);
+    const editor = createEditor('variable', ref);
     setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
-
+    const model = editor.getModel()!;
     // 2️⃣ Subscribe to content changes
     const disposables = [
       model.onDidChangeContent(

@@ -339,7 +339,7 @@ export function QueryEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('query', ref);
+    const editor = createEditor('query', ref);
 
     setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
@@ -368,6 +368,8 @@ export function QueryEditor({
         operationName: operationFacts?.operationName ?? null,
       });
     });
+
+    const model = editor.getModel()!
 
     const disposables = [
       // 2️⃣ Subscribe to content changes

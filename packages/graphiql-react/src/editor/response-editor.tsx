@@ -109,10 +109,10 @@ export function ResponseEditor({
   useEffect(() => {
     const { setEditor } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('response', ref);
+    const editor = createEditor('response', ref);
     setEditor({ responseEditor: editor });
 
-    const disposables = [editor, model];
+    const disposables = [editor, editor.getModel()!];
 
     // Clean‑up on unmount **or** when deps change
     return () => {
