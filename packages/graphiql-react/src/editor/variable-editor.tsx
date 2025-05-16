@@ -113,7 +113,7 @@ export function VariableEditor({
   */
   useEffect(() => {
     // Build the editor
-    const { model, editor } = createEditor('variables', ref.current);
+    const { model, editor } = createEditor('variable', ref.current);
     setVariableEditor(editor);
     const { storage } = storageStore.getState();
 

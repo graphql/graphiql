@@ -343,7 +343,7 @@ export function QueryEditor({
 
   useEffect(() => {
     // Build the editor
-    const { model, editor } = createEditor('operations', ref.current);
+    const { model, editor } = createEditor('query', ref.current);
     setQueryEditor(editor);
     // eslint-disable-next-line
     console.log('editor', editor);

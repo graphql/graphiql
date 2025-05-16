@@ -33,7 +33,13 @@ import {
 } from '../editor/tabs';
 import { CodeMirrorEditor, Editor } from '../editor/types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
-import { DEFAULT_QUERY } from '../constants';
+import {
+  DEFAULT_QUERY,
+  HEADER_MODEL,
+  QUERY_MODEL,
+  RESPONSE_MODEL,
+  VARIABLE_MODEL,
+} from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 
@@ -408,6 +414,10 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
   queryEditor: null!,
   responseEditor: null!,
   variableEditor: null!,
+  headerModel: HEADER_MODEL,
+  queryModel: QUERY_MODEL,
+  variableModel: VARIABLE_MODEL,
+  responseModel: RESPONSE_MODEL,
   setHeaderEditor(headerEditor) {
     set({ headerEditor });
   },

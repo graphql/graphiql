@@ -85,17 +85,15 @@ export const KEY_BINDINGS = Object.freeze({
   },
 });
 
-const OPERATIONS_URI = 'operations.graphql';
-const VARIABLES_URI = 'variables.json';
-const HEADERS_URI = 'headers.json';
-const RESULTS_URI = 'results.json';
+const QUERY_URI = 'query.graphql';
+const VARIABLE_URI = 'variable.json';
+const HEADER_URI = 'header.json';
+const RESPONSE_URI = 'response.json';
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
     validateVariablesJSON: {
-      [Uri.file(OPERATIONS_URI).toString()]: [
-        Uri.file(VARIABLES_URI).toString(),
-      ],
+      [Uri.file(QUERY_URI).toString()]: [Uri.file(VARIABLE_URI).toString()],
     },
     jsonDiagnosticSettings: {
       validate: true,
@@ -124,22 +122,22 @@ export function getOrCreateModel({
   return editor.createModel(value, language, Uri.file(uri));
 }
 
-export const OPERATIONS_MODEL = getOrCreateModel({
-  uri: OPERATIONS_URI,
+export const QUERY_MODEL = getOrCreateModel({
+  uri: QUERY_URI,
   value: DEFAULT_QUERY,
 });
 
-export const VARIABLES_MODEL = getOrCreateModel({
-  uri: VARIABLES_URI,
+export const VARIABLE_MODEL = getOrCreateModel({
+  uri: VARIABLE_URI,
   value: '',
 });
 
-export const HEADERS_MODEL = getOrCreateModel({
-  uri: HEADERS_URI,
+export const HEADER_MODEL = getOrCreateModel({
+  uri: HEADER_URI,
   value: '',
 });
 
-export const RESULTS_MODEL = getOrCreateModel({
-  uri: RESULTS_URI,
+export const RESPONSE_MODEL = getOrCreateModel({
+  uri: RESPONSE_URI,
   value: '',
 });

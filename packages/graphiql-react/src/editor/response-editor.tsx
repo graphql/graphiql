@@ -112,7 +112,7 @@ export function ResponseEditor({
   */
   useEffect(() => {
     // Build the editor
-    const { model, editor } = createEditor('results', ref.current);
+    const { model, editor } = createEditor('response', ref.current);
     setResponseEditor(editor);
 
     // Clean‑up on unmount **or** when deps change

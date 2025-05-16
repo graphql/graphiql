@@ -1,9 +1,9 @@
 import { editor } from 'monaco-editor';
 import {
-  OPERATIONS_MODEL,
-  VARIABLES_MODEL,
-  HEADERS_MODEL,
-  RESULTS_MODEL,
+  QUERY_MODEL,
+  VARIABLE_MODEL,
+  HEADER_MODEL,
+  RESPONSE_MODEL,
 } from './constants';
 import { Editor } from './editor/types';
 
@@ -401,18 +401,18 @@ editor.defineTheme('graphiql-DARK', editorThemeDark);
 editor.defineTheme('graphiql-LIGHT', editorThemeLight);
 
 export function createEditor(
-  type: 'operations' | 'variables' | 'headers' | 'results',
+  type: 'query' | 'variable' | 'header' | 'response',
   domElement: HTMLDivElement,
 ): { model: editor.ITextModel; editor: Editor } {
   const model = {
-    operations: OPERATIONS_MODEL,
-    variables: VARIABLES_MODEL,
-    headers: HEADERS_MODEL,
-    results: RESULTS_MODEL,
+    query: QUERY_MODEL,
+    variable: VARIABLE_MODEL,
+    header: HEADER_MODEL,
+    response: RESPONSE_MODEL,
   }[type];
 
   const monacoEditor = editor.create(domElement, {
-    language: type === 'operations' ? 'graphql' : 'json',
+    language: type === 'query' ? 'graphql' : 'json',
     automaticLayout: true,
     // the default theme
     theme: 'graphiql-DARK',
@@ -438,7 +438,7 @@ export function createEditor(
     // wrappingIndent: 'none',
     wrappingStrategy: 'advanced',
     fixedOverflowWidgets: true,
-    ...(type === 'results' && {
+    ...(type === 'response' && {
       readOnly: true,
       lineNumbers: 'off',
     }),

@@ -99,7 +99,7 @@ export function HeaderEditor({
   */
   useEffect(() => {
     // Build the editor
-    const { model, editor } = createEditor('headers', ref.current);
+    const { model, editor } = createEditor('header', ref.current);
     setHeaderEditor(editor);
 
     const disposables: IDisposable[] = [
