@@ -118,37 +118,24 @@ export function QueryEditor({
   }, [onClickReference]);
 
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialQuery,
-        lineNumbers: true,
-        tabSize: 2,
         foldGutter: true,
-        mode: 'graphql',
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
         lint: {
-          // @ts-expect-error
           schema: undefined,
           validationRules: null,
           // linting accepts string or FragmentDefinitionNode[]
           externalFragments: undefined,
         },
         hintOptions: {
-          // @ts-expect-error
           schema: undefined,
           closeOnUnfocus: false,
           completeSingle: false,
@@ -236,11 +223,7 @@ export function QueryEditor({
 
       setQueryEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
+  }, [editorTheme, initialQuery]);
 
   // We don't use the generic `useChangeHandler` hook here because we want to
   // have additional logic that updates the operation facts that we store as
@@ -334,6 +317,7 @@ export function QueryEditor({
     // Build the editor
     const editor = createEditor(ref, {
       model: MODELS.query,
+      readOnly
     });
 
     setEditor({ queryEditor: editor });

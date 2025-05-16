@@ -73,9 +73,7 @@ export function ResponseEditor({
       const newEditor = CodeMirror(container, {
         value: initialResponse,
         lineWrapping: true,
-        readOnly: true,
         theme: editorTheme,
-        mode: 'graphql-results',
         foldGutter: true,
         gutters: ['CodeMirror-foldgutter'],
         info: true,
@@ -84,7 +82,7 @@ export function ResponseEditor({
 
       setResponseEditor(newEditor);
     });
-  }, [editorTheme, initialResponse, setResponseEditor]);
+  }, [editorTheme, initialResponse]);
 
   useEffect(() => {
     if (fetchError) {
@@ -98,7 +96,11 @@ export function ResponseEditor({
   useEffect(() => {
     const { setEditor } = editorStore.getState();
     // Build the editor
-    const editor = createEditor('response', ref);
+    const editor = createEditor(ref, {
+      model: MODELS.response,
+      readOnly: true,
+      lineNumbers: 'off',
+    });
     setEditor({ responseEditor: editor });
 
     const disposables = [editor, editor.getModel()!];

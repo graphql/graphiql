@@ -39,13 +39,10 @@ export function HeaderEditor({
       const newEditor = CodeMirror(container, {
         value: initialHeaders,
         lineNumbers: true,
-        tabSize: 2,
-        mode: { name: 'javascript', json: true },
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
         foldGutter: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         extraKeys: commonKeys,
@@ -73,7 +70,7 @@ export function HeaderEditor({
 
       setHeaderEditor(newEditor);
     });
-  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+  }, [editorTheme, initialHeaders]);
 
   useChangeHandler(
     headerEditor,
@@ -92,7 +89,8 @@ export function HeaderEditor({
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
     const editor = createEditor(ref, {
-      model: MODELS.header
+      model: MODELS.header,
+      readOnly
     });
     setEditor({ headerEditor: editor });
     const model = editor.getModel()!;
