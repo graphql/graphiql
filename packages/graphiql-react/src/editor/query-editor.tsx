@@ -93,7 +93,6 @@ function updateEditorExternalFragments(
 */
 export function QueryEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
@@ -249,8 +248,6 @@ export function QueryEditor({
       isActive = false;
     };
   }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
-
-  useSynchronizeOption(queryEditor, 'keyMap', keyMap);
 
   // We don't use the generic `useChangeHandler` hook here because we want to
   // have additional logic that updates the operation facts that we store as

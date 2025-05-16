@@ -404,25 +404,9 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
     const newState = Object.fromEntries(entries);
     set(newState);
   },
-  setHeaderEditor(headerEditor) {
-    set({ headerEditor });
-  },
-  setQueryEditor(queryEditor) {
-    set({ queryEditor });
-  },
-  setResponseEditor(responseEditor) {
-    set({ responseEditor });
-  },
-  setVariableEditor(variableEditor) {
-    set({ variableEditor });
-  },
   setOperationName(operationName) {
-    const { queryEditor, onEditOperationName, updateActiveTabValues } = get();
-    if (!queryEditor) {
-      return;
-    }
-    // FIXME MONACO
-    // queryEditor.operationName = operationName;
+    const { onEditOperationName, updateActiveTabValues } = get();
+    editorStore.setState({ operationName });
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },

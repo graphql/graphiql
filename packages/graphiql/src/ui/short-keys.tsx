@@ -17,7 +17,10 @@ const SHORT_KEYS = Object.entries({
 });
 
 interface ShortKeysProps {
-  /** @default 'sublime' */
+  /**
+   * @default 'sublime'
+   * @deprecated
+   */
   keyMap?: string;
 }
 
@@ -47,18 +50,18 @@ export const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
           ))}
         </tbody>
       </table>
-      <p>
-        The editors use{' '}
-        <a
-          href="https://codemirror.net/5/doc/manual.html#keymaps"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          CodeMirror Key Maps
-        </a>{' '}
-        that add more short keys. This instance of Graph<em>i</em>QL uses{' '}
-        <code>{keyMap}</code>.
-      </p>
+      {/*<p>*/}
+      {/*  The editors use{' '}*/}
+      {/*  <a*/}
+      {/*    href="https://codemirror.net/5/doc/manual.html#keymaps"*/}
+      {/*    target="_blank"*/}
+      {/*    rel="noopener noreferrer"*/}
+      {/*  >*/}
+      {/*    CodeMirror Key Maps*/}
+      {/*  </a>{' '}*/}
+      {/*  that add more short keys. This instance of Graph<em>i</em>QL uses{' '}*/}
+      {/*  <code>{keyMap}</code>.*/}
+      {/*</p>*/}
     </div>
   );
 };

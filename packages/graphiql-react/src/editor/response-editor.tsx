@@ -31,7 +31,6 @@ type ResponseEditorProps = CommonEditorProps & {
 export function ResponseEditor({
   responseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
 }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse } = useEditorStore();
@@ -98,8 +97,6 @@ export function ResponseEditor({
     };
   }, [editorTheme, initialResponse, setResponseEditor]);
 
-  useSynchronizeOption(responseEditor, 'keyMap', keyMap);
-
   useEffect(() => {
     if (fetchError) {
       responseEditor?.setValue(fetchError);
@@ -115,10 +112,13 @@ export function ResponseEditor({
     const { model, editor } = createEditor('response', ref);
     setEditor({ responseEditor: editor });
 
+    const disposables = [editor, model];
+
     // Clean‑up on unmount **or** when deps change
     return () => {
-      editor.dispose();
-      model.dispose();
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
     };
   }, []);
 

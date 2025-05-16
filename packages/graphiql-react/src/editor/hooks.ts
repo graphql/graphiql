@@ -120,34 +120,6 @@ export function useCompletion(
   }, [callback, editor]);
 }
 
-type EmptyCallback = () => void;
-
-export function useKeyMap(
-  editor: CodeMirrorEditor | null,
-  keys: string[] | readonly string[],
-  callback?: EmptyCallback,
-) {
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    /*
-    for (const key of keys) {
-      editor.removeKeyMap(key);
-    }
-
-    if (!callback) {
-      return;
-    }
-    const keyMap: Record<string, EmptyCallback> = {};
-    for (const key of keys) {
-      keyMap[key] = () => callback();
-    }
-    editor.addKeyMap(keyMap);
-    */
-  }, [editor, keys, callback]);
-}
-
 export function copyQuery() {
   const { queryEditor, onCopyQuery } = editorStore.getState();
   if (!queryEditor) {

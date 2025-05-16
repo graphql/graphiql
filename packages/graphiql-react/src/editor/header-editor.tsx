@@ -26,7 +26,6 @@ type HeaderEditorProps = WriteableEditorProps & {
 
 export function HeaderEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
   isHidden = false,
@@ -75,8 +74,6 @@ export function HeaderEditor({
       setHeaderEditor(newEditor);
     });
   }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
-
-  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
 
   useChangeHandler(
     headerEditor,

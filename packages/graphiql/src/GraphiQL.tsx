@@ -74,7 +74,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   referencePlugin = DOC_EXPLORER_PLUGIN,
 
   editorTheme,
-  keyMap,
   readOnly,
   onEditQuery,
   onEditVariables,
@@ -103,12 +102,17 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
+  // @ts-expect-error -- Prop is removed
+  if (props.keyMap) {
+    throw new TypeError(
+      '`keyMap` was removed. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs',
+    );
+  }
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
     showPersistHeadersSettings:
       showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
     editorTheme,
-    keyMap,
     readOnly,
     onEditQuery,
     onEditVariables,
@@ -214,7 +218,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   confirmCloseTab,
   className,
   editorTheme,
-  keyMap,
   onEditQuery,
   readOnly,
   onEditVariables,
@@ -490,7 +493,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <Dialog.Close />
         </div>
         <div className="graphiql-dialog-section">
-          <ShortKeys keyMap={keyMap} />
+          <ShortKeys />
         </div>
       </Dialog>
       <Dialog
@@ -618,7 +621,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       >
         <QueryEditor
           editorTheme={editorTheme}
-          keyMap={keyMap}
           onClickReference={onClickReference}
           onEdit={onEditQuery}
           readOnly={readOnly}
@@ -686,7 +688,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <VariableEditor
           editorTheme={editorTheme}
           isHidden={activeSecondaryEditor !== 'variables'}
-          keyMap={keyMap}
           onEdit={onEditVariables}
           onClickReference={onClickReference}
           readOnly={readOnly}
@@ -695,7 +696,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <HeaderEditor
             editorTheme={editorTheme}
             isHidden={activeSecondaryEditor !== 'headers'}
-            keyMap={keyMap}
             onEdit={onEditHeaders}
             readOnly={readOnly}
           />
@@ -778,7 +778,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               <ResponseEditor
                 editorTheme={editorTheme}
                 responseTooltip={responseTooltip}
-                keyMap={keyMap}
               />
               {footer}
             </div>

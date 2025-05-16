@@ -42,7 +42,6 @@ type VariableEditorProps = WriteableEditorProps & {
 
 export function VariableEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
@@ -102,8 +101,6 @@ export function VariableEditor({
       setVariableEditor(newEditor);
     });
   }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
-
-  useSynchronizeOption(variableEditor, 'keyMap', keyMap);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 

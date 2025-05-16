@@ -1,10 +1,6 @@
 import { editor } from 'monaco-editor';
 
-export type CodeMirrorType = typeof import('codemirror');
-
 export type CodeMirrorEditor = Editor & { options?: any };
-
-export type KeyMap = 'sublime' | 'emacs' | 'vim';
 
 export type CommonEditorProps = {
   /**
@@ -12,12 +8,6 @@ export type CommonEditorProps = {
    * @default 'graphiql'
    */
   editorTheme?: string;
-  /**
-   * Sets the key map to use when using the editor.
-   * @default 'sublime'
-   * @see {@link https://codemirror.net/5/doc/manual.html#keymaps}
-   */
-  keyMap?: KeyMap;
 };
 
 export type WriteableEditorProps = CommonEditorProps & {
