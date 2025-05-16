@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
-import { storageStore, useEditorStore } from '../stores';
-import { useChangeHandler, useKeyMap, useSynchronizeOption } from './hooks';
+import { editorStore, storageStore, useEditorStore } from '../stores';
+import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
 import { KEY_BINDINGS, KEY_MAP } from '../constants';
 import { clsx } from 'clsx';
@@ -31,13 +31,7 @@ export function HeaderEditor({
   readOnly = false,
   isHidden = false,
 }: HeaderEditorProps) {
-  const {
-    initialHeaders,
-    headerEditor,
-    setHeaderEditor,
-    shouldPersistHeaders,
-    updateActiveTabValues,
-  } = useEditorStore();
+  const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
   useEffect(() => {
@@ -98,9 +92,10 @@ export function HeaderEditor({
   }, [headerEditor, isHidden]);
   */
   useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const { model, editor } = createEditor('header', ref.current);
-    setHeaderEditor(editor);
+    const { model, editor } = createEditor('header', ref);
+    setEditor({ headerEditor: editor });
 
     const disposables: IDisposable[] = [
       editor.addAction(KEY_BINDINGS.runQuery),

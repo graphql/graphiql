@@ -33,13 +33,7 @@ import {
 } from '../editor/tabs';
 import { CodeMirrorEditor, Editor } from '../editor/types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
-import {
-  DEFAULT_QUERY,
-  HEADER_MODEL,
-  QUERY_MODEL,
-  RESPONSE_MODEL,
-  VARIABLE_MODEL,
-} from '../constants';
+import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 
@@ -88,43 +82,31 @@ interface EditorStoreType extends TabsState {
   ): void;
 
   /**
-   * The CodeMirror editor instance for the headers editor.
+   * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
-  headerEditor: Editor | null;
+  headerEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the query editor. This editor also
-   * stores the operation facts that are derived from the current editor
-   * contents.
+   * The Monaco Editor instance used in the query editor.
    */
-  queryEditor: Editor | null;
+  queryEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the response editor.
+   * The Monaco Editor instance used in the response editor.
    */
-  responseEditor: Editor | null;
+  responseEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the variables editor.
+   * The Monaco Editor instance used in the variable editor.
    */
-  variableEditor: Editor | null;
+  variableEditor?: Editor;
 
   /**
-   * Set the CodeMirror editor instance for the headers editor.
+   * The Monaco Editor instance used in the specified editor.
    */
-  setHeaderEditor(newEditor: Editor): void;
-
-  /**
-   * Set the CodeMirror editor instance for the query editor.
-   */
-  setQueryEditor(newEditor: Editor): void;
-
-  /**
-   * Set the CodeMirror editor instance for the response editor.
-   */
-  setResponseEditor(newEditor: Editor): void;
-
-  /**
-   * Set the CodeMirror editor instance for the variables editor.
-   */
-  setVariableEditor(newEditor: Editor): void;
+  setEditor(
+    state: Pick<
+      EditorStoreType,
+      'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
+    >,
+  ): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.
@@ -229,6 +211,8 @@ interface EditorStoreType extends TabsState {
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
+
+  // Operation facts that are derived from the query editor.
 
   /**
    * @remarks from graphiql 5
@@ -410,14 +394,16 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
       return updated;
     });
   },
-  headerEditor: null!,
-  queryEditor: null!,
-  responseEditor: null!,
-  variableEditor: null!,
-  headerModel: HEADER_MODEL,
-  queryModel: QUERY_MODEL,
-  variableModel: VARIABLE_MODEL,
-  responseModel: RESPONSE_MODEL,
+  setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+    const entries = Object.entries({
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+    }).filter(([_key, value]) => value);
+    const newState = Object.fromEntries(entries);
+    set(newState);
+  },
   setHeaderEditor(headerEditor) {
     set({ headerEditor });
   },

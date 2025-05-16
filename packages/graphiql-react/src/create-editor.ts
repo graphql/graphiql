@@ -6,6 +6,7 @@ import {
   RESPONSE_MODEL,
 } from './constants';
 import { Editor } from './editor/types';
+import { RefObject } from 'react';
 
 const editorColors = {
   dark: {
@@ -402,7 +403,7 @@ editor.defineTheme('graphiql-LIGHT', editorThemeLight);
 
 export function createEditor(
   type: 'query' | 'variable' | 'header' | 'response',
-  domElement: HTMLDivElement,
+  domElement: RefObject<HTMLDivElement>,
 ): { model: editor.ITextModel; editor: Editor } {
   const model = {
     query: QUERY_MODEL,
@@ -411,7 +412,7 @@ export function createEditor(
     response: RESPONSE_MODEL,
   }[type];
 
-  const monacoEditor = editor.create(domElement, {
+  const monacoEditor = editor.create(domElement.current, {
     language: type === 'query' ? 'graphql' : 'json',
     automaticLayout: true,
     // the default theme
