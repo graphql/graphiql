@@ -5,6 +5,7 @@ import { ExecutionStore } from './stores/execution';
 import { PluginStore } from './stores/plugin';
 import { SchemaStore } from './stores/schema';
 import { StorageStore } from './stores/storage';
+import { ThemeStore } from './stores/theme';
 
 type GraphiQLProviderProps =
   //
@@ -12,7 +13,8 @@ type GraphiQLProviderProps =
     ComponentPropsWithoutRef<typeof ExecutionStore> &
     ComponentPropsWithoutRef<typeof PluginStore> &
     ComponentPropsWithoutRef<typeof SchemaStore> &
-    ComponentPropsWithoutRef<typeof StorageStore>;
+    ComponentPropsWithoutRef<typeof StorageStore> &
+    ComponentPropsWithoutRef<typeof ThemeStore>;
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
@@ -47,6 +49,8 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   visiblePlugin,
 
   storage,
+
+  defaultTheme,
 
   children,
 }) => {
@@ -93,13 +97,15 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   };
   return (
     <StorageStore storage={storage}>
-      <EditorStore {...editorContextProps}>
-        <SchemaStore {...schemaContextProps}>
-          <ExecutionStore {...executionContextProps}>
-            <PluginStore {...pluginContextProps}>{children}</PluginStore>
-          </ExecutionStore>
-        </SchemaStore>
-      </EditorStore>
+      <ThemeStore defaultTheme={defaultTheme}>
+        <EditorStore {...editorContextProps}>
+          <SchemaStore {...schemaContextProps}>
+            <ExecutionStore {...executionContextProps}>
+              <PluginStore {...pluginContextProps}>{children}</PluginStore>
+            </ExecutionStore>
+          </SchemaStore>
+        </EditorStore>
+      </ThemeStore>
     </StorageStore>
   );
 };

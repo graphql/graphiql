@@ -123,12 +123,14 @@ export const PluginStore: FC<PluginStoreProps> = ({
     // if (storedValue) {
     //   storage.set(STORAGE_KEY, '');
     // }
-    pluginStore.getState().setPlugins(plugins);
+    const { setPlugins, setVisiblePlugin } = pluginStore.getState()
+
+    setPlugins(plugins);
+    setVisiblePlugin(visiblePlugin ?? null);
     pluginStore.setState({
       onTogglePluginVisibility,
       referencePlugin,
     });
-    pluginStore.getState().setVisiblePlugin(visiblePlugin ?? null);
   }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
   return children as ReactElement;
