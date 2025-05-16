@@ -43,8 +43,7 @@ export function HeaderEditor({
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -67,8 +66,6 @@ export function HeaderEditor({
           editorInstance.execCommand('autocomplete');
         }
       });
-
-      setHeaderEditor(newEditor);
     });
   }, [editorTheme, initialHeaders]);
 

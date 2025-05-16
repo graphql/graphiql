@@ -74,13 +74,9 @@ export function ResponseEditor({
         value: initialResponse,
         lineWrapping: true,
         theme: editorTheme,
-        foldGutter: true,
-        gutters: ['CodeMirror-foldgutter'],
         info: true,
         extraKeys: commonKeys,
       });
-
-      setResponseEditor(newEditor);
     });
   }, [editorTheme, initialResponse]);
 

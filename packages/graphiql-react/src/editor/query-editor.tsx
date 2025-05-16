@@ -124,7 +124,6 @@ export function QueryEditor({
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialQuery,
-        foldGutter: true,
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
@@ -139,7 +138,6 @@ export function QueryEditor({
           schema: undefined,
           closeOnUnfocus: false,
           completeSingle: false,
-          container,
           externalFragments: undefined,
           autocompleteOptions: {
             // for the query editor, restrict to executable type definitions
@@ -147,19 +145,17 @@ export function QueryEditor({
           },
         },
         info: {
-          schema: undefined,
           renderDescription: (text: string) => markdown.render(text),
           onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },
         jump: {
-          schema: undefined,
           onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: {
           ...commonKeys,
           'Cmd-S'() {
@@ -220,8 +216,6 @@ export function QueryEditor({
       newEditor.operationName = null;
       newEditor.operations = null;
       newEditor.variableToType = null;
-
-      setQueryEditor(newEditor);
     });
   }, [editorTheme, initialQuery]);
 

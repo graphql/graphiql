@@ -42,15 +42,10 @@ export function VariableEditor({
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialVariables,
-        lineNumbers: true,
-        tabSize: 2,
-        mode: 'graphql-variables',
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
-        foldGutter: true,
         lint: {
           variableToType: undefined,
         },
@@ -60,7 +55,7 @@ export function VariableEditor({
           container,
           variableToType: undefined,
         },
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -83,10 +78,8 @@ export function VariableEditor({
           editorInstance.execCommand('autocomplete');
         }
       });
-
-      setVariableEditor(newEditor);
     });
-  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
+  }, [editorTheme, initialVariables]);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
@@ -103,6 +96,7 @@ export function VariableEditor({
     // Build the editor
     const editor = createEditor(ref, {
       model: MODELS.variable,
+      readOnly,
     });
     setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
