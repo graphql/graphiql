@@ -133,9 +133,12 @@ export function useKeyMap(
     if (!editor) {
       return;
     }
-    for (const key of keys) {
-      editor.removeKeyMap(key);
-    }
+    const handleRemoveKeys = () => {
+      for (const key of keys) {
+        editor.removeKeyMap(key);
+      }
+    };
+    handleRemoveKeys();
 
     if (callback) {
       const keyMap: Record<string, EmptyCallback> = {};
@@ -144,6 +147,7 @@ export function useKeyMap(
       }
       editor.addKeyMap(keyMap);
     }
+    return handleRemoveKeys;
   }, [editor, keys, callback]);
 }
 
