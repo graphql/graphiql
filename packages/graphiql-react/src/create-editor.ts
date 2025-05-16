@@ -430,7 +430,7 @@ export function createEditor(
       verticalScrollbarSize: 10,
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
-    fontFamily: 'var(----font-family-mono)',
+    fontFamily: '"Fira Code"',
     // lineDecorationsWidth: 100,
     lineNumbersMinChars: 2,
     // scrollPredominantAxis: false,
