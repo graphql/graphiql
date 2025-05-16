@@ -87,8 +87,6 @@ export const KEY_BINDINGS = Object.freeze({
 
 const QUERY_URI = 'query.graphql';
 const VARIABLE_URI = 'variable.json';
-const HEADER_URI = 'header.json';
-const RESPONSE_URI = 'response.json';
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
@@ -115,29 +113,19 @@ export function getOrCreateModel({
   const language = uri.split('.').pop();
   const model = editor.getModel(Uri.file(uri));
   if (model) {
-    console.log('✅ Model', uri, 'is already created');
+    // eslint-disable-next-line no-console
+    console.info('✅ Model', uri, 'is already created');
     return model;
   }
-  console.log('🚀 Model', uri, "isn't yet created, creating...");
+  // eslint-disable-next-line no-console
+  console.info('🚀 Model', uri, "isn't yet created, creating...");
   return editor.createModel(value, language, Uri.file(uri));
 }
 
-export const QUERY_MODEL = getOrCreateModel({
-  uri: QUERY_URI,
-  value: DEFAULT_QUERY,
-});
-
-export const VARIABLE_MODEL = getOrCreateModel({
-  uri: VARIABLE_URI,
-  value: '',
-});
-
-export const HEADER_MODEL = getOrCreateModel({
-  uri: HEADER_URI,
-  value: '',
-});
-
-export const RESPONSE_MODEL = getOrCreateModel({
-  uri: RESPONSE_URI,
-  value: '',
-});
+export const MODELS = {
+  // TODO, maybe add DEFAUL_QUERY as default value
+  query: getOrCreateModel({ uri: QUERY_URI, value: '' }),
+  variable: getOrCreateModel({ uri: VARIABLE_URI, value: '' }),
+  header: getOrCreateModel({ uri: 'header.json', value: '' }),
+  response: getOrCreateModel({ uri: 'response.json', value: '' }),
+};

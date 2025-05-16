@@ -1,10 +1,5 @@
 import { editor } from 'monaco-editor';
-import {
-  QUERY_MODEL,
-  VARIABLE_MODEL,
-  HEADER_MODEL,
-  RESPONSE_MODEL,
-} from './constants';
+import { MODELS } from './constants';
 import { Editor } from './editor/types';
 import { RefObject } from 'react';
 
@@ -402,15 +397,10 @@ editor.defineTheme('graphiql-DARK', editorThemeDark);
 editor.defineTheme('graphiql-LIGHT', editorThemeLight);
 
 export function createEditor(
-  type: 'query' | 'variable' | 'header' | 'response',
+  type: keyof typeof MODELS,
   domElement: RefObject<HTMLDivElement>,
 ): { model: editor.ITextModel; editor: Editor } {
-  const model = {
-    query: QUERY_MODEL,
-    variable: VARIABLE_MODEL,
-    header: HEADER_MODEL,
-    response: RESPONSE_MODEL,
-  }[type];
+  const model = MODELS[type];
 
   const monacoEditor = editor.create(domElement.current, {
     language: type === 'query' ? 'graphql' : 'json',
