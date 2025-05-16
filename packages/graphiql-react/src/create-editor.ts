@@ -51,6 +51,7 @@ const bg = {
 
 const baseColors = {
   'editor.background': '#ffffff00', // white with a 00 alpha value
+  'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
   // 'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
   //  'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
   // 'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border
@@ -330,7 +331,6 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
 // 'button.hoverBackground': "#FFFFFF00", // Button background color when hovering.
 // 'badge.background': "#FFFFFF00", // Badge background color. Badges are small information labels, e.g. for search results count.
 // 'badge.foreground': "#FFFFFF00", // Badge foreground color. Badges are small information labels, e.g. for search results count.
-// 'scrollbar.shadow': "#FFFFFF00", // Scrollbar shadow to indicate that the view is scrolled.
 // 'scrollbarSlider.background': "#FFFFFF00", // Slider background color.
 // 'scrollbarSlider.hoverBackground': "#FFFFFF00", // Slider background color when hovering.
 // 'scrollbarSlider.activeBackground': "#FFFFFF00", // Slider background color when active.
@@ -431,8 +431,8 @@ export function createEditor(
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
+    lineNumbersMinChars: 2, // reduce line numbers width on the left size
     // lineDecorationsWidth: 100,
-    lineNumbersMinChars: 2,
     // scrollPredominantAxis: false,
     // wrappingIndent: 'none',
     wrappingStrategy: 'advanced',
