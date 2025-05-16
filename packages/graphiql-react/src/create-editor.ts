@@ -432,11 +432,9 @@ export function createEditor(
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
-    // lineDecorationsWidth: 100,
     // scrollPredominantAxis: false,
-    // wrappingIndent: 'none',
-    wrappingStrategy: 'advanced',
-    fixedOverflowWidgets: true,
+    // wrappingStrategy: 'advanced',
+    // fixedOverflowWidgets: true,
     ...options,
   });
 }
