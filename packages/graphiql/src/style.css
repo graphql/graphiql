@@ -208,6 +208,7 @@ button.graphiql-tab-add {
 .graphiql-container .graphiql-response .result-window {
   position: relative;
   flex: 1;
+  padding-top: var(--px-16);
 }
 
 /* The footer below the response view */

@@ -177,13 +177,8 @@ export const executionStore = createStore<
     }
 
     if (externalFragments) {
-      // @ts-expect-error -- FIXME MONACO
-      const fragmentDependencies = queryEditor.documentAST
-        ? getFragmentDependenciesForAST(
-            // @ts-expect-error -- FIXME MONACO
-            queryEditor.documentAST,
-            externalFragments,
-          )
+      const fragmentDependencies = documentAST
+        ? getFragmentDependenciesForAST(documentAST, externalFragments)
         : [];
       if (fragmentDependencies.length > 0) {
         query +=

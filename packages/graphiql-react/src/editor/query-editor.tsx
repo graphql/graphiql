@@ -311,7 +311,7 @@ export function QueryEditor({
     // Build the editor
     const editor = createEditor(ref, {
       model: MODELS.query,
-      readOnly
+      readOnly,
     });
 
     setEditor({ queryEditor: editor });
@@ -351,6 +351,20 @@ export function QueryEditor({
       editor.addAction(KEY_BINDINGS.copyQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.onMouseDown(e => {
+        const { position } = e.target;
+        if (!position) {
+          return;
+        }
+
+        const word = editor.getModel()!.getWordAtPosition(position);
+        if (word) {
+          // eslint-disable-next-line no-console
+          console.info(word)
+          // eslint-disable-next-line no-console
+          console.info(`Clicked on word "${word.word}"`);
+        }
+      }),
       editor,
       model,
     ];

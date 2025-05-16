@@ -184,15 +184,19 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
 }
 
 export function synchronizeActiveTabValues(state: TabsState): TabsState {
-  const { queryEditor, variableEditor, headerEditor, responseEditor } =
-    editorStore.getState();
+  const {
+    queryEditor,
+    variableEditor,
+    headerEditor,
+    responseEditor,
+    operationName,
+  } = editorStore.getState();
   return setPropertiesInActiveTab(state, {
     query: queryEditor?.getValue() ?? null,
     variables: variableEditor?.getValue() ?? null,
     headers: headerEditor?.getValue() ?? null,
     response: responseEditor?.getValue() ?? null,
-    // @ts-expect-error -- FIXME MONACO
-    operationName: queryEditor?.operationName ?? null,
+    operationName: operationName ?? null,
   });
 }
 
