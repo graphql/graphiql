@@ -229,7 +229,7 @@ interface EditorStoreType extends TabsState {
   /**
    *
    */
-  focusOnEditorAndMoveCaretToLastPosition(editor: Editor): void
+  focusOnEditorAndMoveCaretToLastPosition(editor?: Editor): void
 }
 
 type EditorStoreProps = Pick<
@@ -409,6 +409,9 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
     set(newState);
   },
   focusOnEditorAndMoveCaretToLastPosition(editor) {
+    if (!editor) {
+      return
+    }
     const model = editor.getModel()!;
     const lastLine = model.getLineCount();
     const lastColumn = model.getLineMaxColumn(lastLine);
@@ -418,7 +421,7 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
   },
   setOperationName(operationName) {
     const { onEditOperationName, updateActiveTabValues } = get();
-    editorStore.setState({ operationName });
+    set({ operationName });
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },
