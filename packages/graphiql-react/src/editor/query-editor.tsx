@@ -12,8 +12,6 @@ import {
 } from 'graphql-language-service';
 import { useEffect, useRef } from 'react';
 import {
-  executionStore,
-  pluginStore,
   schemaStore,
   useSchemaStore,
   useEditorStore,
@@ -21,7 +19,7 @@ import {
   editorStore,
 } from '../stores';
 import { markdown, debounce } from '../utility';
-import { commonKeys, DEFAULT_EDITOR_THEME, DEFAULT_KEY_MAP } from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import {
   useCompletion,
   copyQuery,
@@ -97,12 +95,8 @@ export function QueryEditor({
   onEdit,
   readOnly = false,
 }: QueryEditorProps) {
-  const {
-    initialQuery,
-    queryEditor,
-    setOperationName,
-    variableEditor,
-  } = useEditorStore();
+  const { initialQuery, queryEditor, setOperationName, variableEditor } =
+    useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
 
@@ -369,7 +363,7 @@ export function QueryEditor({
       });
     });
 
-    const model = editor.getModel()!
+    const model = editor.getModel()!;
 
     const disposables = [
       // 2️⃣ Subscribe to content changes
@@ -382,7 +376,7 @@ export function QueryEditor({
       model,
     ];
 
-    // 3️⃣ Clean‑up on unmount **or** when deps change
+    // 3️⃣ Clean‑up on unmount or when deps change
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener
