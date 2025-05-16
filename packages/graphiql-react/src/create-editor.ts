@@ -46,9 +46,14 @@ const editorColors = {
 
 const baseColors = {
   'editor.background': '#ffffff00', // white with a 00 alpha value
-  'editorHoverWidget.background': 'hsl(var(--color-base))', // Background color of the editor hover.
-  //  'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor.
-  //  // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor.
+  'editorHoverWidget.background': 'hsl(var(--color-base))', // Background color of the editor hover
+  //  'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
+  //  // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
+  //   'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border
+  //   'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled
+  //   'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
+  //   'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
+
 };
 
 export const editorThemeDark: editor.IStandaloneThemeData = {
@@ -63,12 +68,8 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     //   'editorLineNumber.activeForeground': editorColors.dark.delimitersActive, // Color of active line number in the editor.
     //   'editorError.foreground': editorColors.dark.orange_default, // Foreground color of error squigglies in the editor.
     //   'editorWarning.foreground': editorColors.dark.orange_default, // Foreground color of warning squigglies in the editor.
-    //   'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-    //   'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
     //   'editorBracketMatch.border': editorColors.dark.selections, // Color of matching bracket boxes
     //   'editorIndentGuide.background': editorColors.dark.indentGuides, // Color of indentation guides in the editor.
-    //   'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
-    //   'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border in the editor.
   },
   rules: [
     // operations editor (graphql)
@@ -180,12 +181,8 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
     //   'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of active line number in the editor.
     //   'editorError.foreground': editorColors.light.orange_default, // Foreground color of error squigglies in the editor.
     //   'editorWarning.foreground': editorColors.light.orange_default, // Foreground color of warning squigglies in the editor.
-    //   'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-    //   'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets in the editor
     //   'editorBracketMatch.border': editorColors.light.selections, // Color for matching bracket boxes in the editor.
     //   'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the indentation guides in the editor.
-    //   'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
-    //   'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border.
   },
   rules: [
     // operations editor (graphql)
