@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
 
-import { useExecutionContext } from '../execution';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorContext } from './context';
+import { useEditorStore } from './context';
 import {
   useChangeHandler,
   useKeyMap,
@@ -16,6 +15,7 @@ import {
   useSynchronizeOption,
 } from './hooks';
 import { WriteableEditorProps } from './types';
+import { useExecutionStore } from '../execution';
 
 export type UseHeaderEditorArgs = WriteableEditorProps & {
   /**
@@ -32,29 +32,22 @@ function importCodeMirrorImports() {
     import('codemirror/mode/javascript/javascript.js'),
   ]);
 }
-const _useHeaderEditor = useHeaderEditor;
 
-export function useHeaderEditor(
-  {
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-    onEdit,
-    readOnly = false,
-  }: UseHeaderEditorArgs = {},
-  caller?: Function,
-) {
+export function useHeaderEditor({
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+  onEdit,
+  readOnly = false,
+}: UseHeaderEditorArgs = {}) {
   const {
     initialHeaders,
     headerEditor,
     setHeaderEditor,
     shouldPersistHeaders,
-  } = useEditorContext({
-    nonNull: true,
-    caller: caller || _useHeaderEditor,
-  });
-  const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: caller || _useHeaderEditor });
-  const prettify = usePrettifyEditors({ caller: caller || _useHeaderEditor });
+  } = useEditorStore();
+  const { run } = useExecutionStore();
+  const merge = useMergeQuery();
+  const prettify = usePrettifyEditors();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -125,10 +118,9 @@ export function useHeaderEditor(
     onEdit,
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
-    _useHeaderEditor,
   );
 
-  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
+  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(headerEditor, ['Shift-Ctrl-M'], merge);
 

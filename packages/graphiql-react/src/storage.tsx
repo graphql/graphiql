@@ -1,7 +1,8 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { Storage, StorageAPI } from '@graphiql/toolkit';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { useStore, createStore } from 'zustand';
+import { createStore } from 'zustand';
+import { createBoundedUseStore } from './utility';
 
 type StorageContextType = {
   storage: StorageAPI;
@@ -35,8 +36,6 @@ export const StorageContextProvider: FC<StorageContextProviderProps> = ({
   return $storage && (children as ReactElement);
 };
 
-function useStorage() {
-  return useStore(storageStore, state => state.storage);
-}
+const useStorageStore = createBoundedUseStore(storageStore);
 
-export { useStorage };
+export const useStorage = () => useStorageStore(store => store.storage);
