@@ -29,8 +29,7 @@ import {
 } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_BINDINGS, KEY_MAP, MONACO_GRAPHQL_API } from '../constants';
-import { KeyCode, KeyMod } from 'monaco-editor';
+import { KEY_BINDINGS, MONACO_GRAPHQL_API } from '../constants';
 import { createEditor } from '../create-editor';
 
 type QueryEditorProps = WriteableEditorProps & {
@@ -385,9 +384,12 @@ export function QueryEditor({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
-    if (schema) {
-      MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    if (!schema) {
+      return;
     }
+    // eslint-disable-next-line no-console
+    console.log('setting setSchemaConfig')
+    MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
   }, [schema]);
 
   return <div className="graphiql-editor" ref={ref} />;
