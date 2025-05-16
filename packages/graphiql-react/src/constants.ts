@@ -104,28 +104,29 @@ export const MONACO_GRAPHQL_API = initializeMode({
 });
 
 export function getOrCreateModel({
-  uri,
+  path,
   value,
 }: {
-  uri: string;
+  path: `${string}.${string}`;
   value: string;
 }) {
-  const language = uri.split('.').pop();
-  const model = editor.getModel(Uri.file(uri));
+  const uri = Uri.file(path);
+  const model = editor.getModel(uri);
   if (model) {
     // eslint-disable-next-line no-console
-    console.info('✅ Model', uri, 'is already created');
+    console.info('✅ Model', path, 'is already created');
     return model;
   }
   // eslint-disable-next-line no-console
-  console.info('🚀 Model', uri, "isn't yet created, creating...");
-  return editor.createModel(value, language, Uri.file(uri));
+  console.info('🚀 Model', path, "isn't yet created, creating...");
+  const language = path.split('.').at(-1)!;
+  return editor.createModel(value, language, uri);
 }
 
 export const MODELS = {
   // TODO, maybe add DEFAUL_QUERY as default value
-  query: getOrCreateModel({ uri: QUERY_URI, value: '' }),
-  variable: getOrCreateModel({ uri: VARIABLE_URI, value: '' }),
-  header: getOrCreateModel({ uri: 'header.json', value: '' }),
-  response: getOrCreateModel({ uri: 'response.json', value: '' }),
+  query: getOrCreateModel({ path: QUERY_URI, value: '' }),
+  variable: getOrCreateModel({ path: VARIABLE_URI, value: '' }),
+  header: getOrCreateModel({ path: 'header.json', value: '' }),
+  response: getOrCreateModel({ path: 'response.json', value: '' }),
 };
