@@ -1,7 +1,11 @@
 import { editor } from './monaco-editor';
-import { MODELS } from './constants';
 import { Editor } from './editor/types';
 import { RefObject } from 'react';
+
+export const EDITOR_THEME = {
+  dark: 'graphiql-DARK',
+  light: 'graphiql-LIGHT',
+};
 
 const editorColors = {
   dark: {
@@ -166,7 +170,7 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
     //   'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
     //   'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
     //   'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.
-    'editor.background': '#ff0000', // white with a 00 alpha value
+    'editor.background': '#ffffff00', // white with a 00 alpha value
     //   'editorLineNumber.foreground': editorColors.light.delimiters, // Color of line numbers in the editor.
     //   'editorLineNumber.activeForeground': editorColors.light.delimitersActive, // Color of active line number in the editor.
     //   'editorError.foreground': editorColors.light.orange_default, // Foreground color of error squigglies in the editor.
@@ -393,26 +397,37 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
 // 'peekViewEditor.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view editor.
 
 // this should be called somewhere else, but fine here for now
-editor.defineTheme('graphiql-DARK', editorThemeDark);
-editor.defineTheme('graphiql-LIGHT', editorThemeLight);
+editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
+editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
 
 export function createEditor(
-  type: keyof typeof MODELS,
   domElement: RefObject<HTMLDivElement>,
+  options: editor.IStandaloneEditorConstructionOptions,
 ): Editor {
+  const { model } = options;
+  if (!model) {
+    throw new Error('options.model is required');
+  }
+  const language = model.uri.path.split('.').at(-1)!;
+  console.log({ language });
+
   return editor.create(domElement.current, {
-    language: type === 'query' ? 'graphql' : 'json',
+    language,
     automaticLayout: true,
     fontSize: 15,
-    // the default theme
-    theme: 'graphiql-DARK',
+    // disable the minimap
+    minimap: {
+      enabled: false,
+    },
+    tabSize: 2,
+    // Remove a line selection border
+    renderLineHighlight: 'none',
+    // Toggle word wrap on resizing editors
+    wordWrap: 'on',
     // folding: false, // disable folding
     fontFamily: "'Fira Code', monospace", // TODO: set the font (this is problematic because the font has to be installed locally)
     // lineDecorationsWidth: 100,
     lineNumbersMinChars: 2,
-    minimap: {
-      enabled: false, // disable the minimap
-    },
     overviewRulerLanes: 0, // remove unnecessary cruft on right side of editors
     scrollbar: {
       // hide the scrollbars
@@ -422,15 +437,9 @@ export function createEditor(
     },
     // scrollPredominantAxis: false,
     scrollBeyondLastLine: false, // cleans up unnecessary "padding" on the bottom of each editor
-    tabSize: 2,
-    wordWrap: 'on',
     // wrappingIndent: 'none',
     wrappingStrategy: 'advanced',
     fixedOverflowWidgets: true,
-    ...(type === 'response' && {
-      readOnly: true,
-      lineNumbers: 'off',
-    }),
-    model: MODELS[type],
+    ...options,
   });
 }

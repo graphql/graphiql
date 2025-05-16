@@ -3,7 +3,7 @@ import { useEditorStore, storageStore, editorStore } from '../stores';
 import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { KEY_BINDINGS } from '../constants';
+import { KEY_BINDINGS, MODELS } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
@@ -101,7 +101,9 @@ export function VariableEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const editor = createEditor('variable', ref);
+    const editor = createEditor(ref, {
+      model: MODELS.variable,
+    });
     setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
     const model = editor.getModel()!;

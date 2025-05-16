@@ -29,7 +29,7 @@ import {
 } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_BINDINGS, MONACO_GRAPHQL_API } from '../constants';
+import { KEY_BINDINGS, MODELS, MONACO_GRAPHQL_API } from '../constants';
 import { createEditor } from '../create-editor';
 
 type QueryEditorProps = WriteableEditorProps & {
@@ -332,7 +332,9 @@ export function QueryEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const editor = createEditor('query', ref);
+    const editor = createEditor(ref, {
+      model: MODELS.query,
+    });
 
     setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
@@ -388,7 +390,7 @@ export function QueryEditor({
       return;
     }
     // eslint-disable-next-line no-console
-    console.log('setting setSchemaConfig')
+    console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
   }, [schema]);
 

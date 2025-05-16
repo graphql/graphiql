@@ -2,6 +2,8 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { storageStore } from './index';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
+import { EDITOR_THEME } from '../create-editor';
+import { editor } from '../monaco-editor';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -28,11 +30,6 @@ type ThemeStoreProps = {
 export const themeStore = createStore<ThemeStoreType>(set => ({
   theme: null,
   setTheme(theme) {
-    document.body.classList.remove('graphiql-light', 'graphiql-dark');
-    if (theme) {
-      document.body.classList.add(`graphiql-${theme}`);
-    }
-
     const { storage } = storageStore.getState();
     storage.set(STORAGE_KEY, theme ?? '');
     set({ theme });
@@ -43,6 +40,7 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
   children,
   defaultTheme = null,
 }) => {
+  const theme = useThemeStore(store => store.theme);
   useEffect(() => {
     const { storage } = storageStore.getState();
 
@@ -64,6 +62,18 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
 
     themeStore.setState({ theme: getInitialTheme() });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+
+  useEffect(() => {
+    document.body.classList.remove('graphiql-light', 'graphiql-dark');
+    if (theme) {
+      document.body.classList.add(`graphiql-${theme}`);
+
+      // Update theme for editors
+      const newTheme =
+        theme === 'dark' ? EDITOR_THEME.dark : EDITOR_THEME.light;
+      editor.setTheme(newTheme);
+    }
+  }, [theme]);
 
   return children as ReactElement;
 };

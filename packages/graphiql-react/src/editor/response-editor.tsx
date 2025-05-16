@@ -9,6 +9,7 @@ import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { CommonEditorProps } from './types';
 import { createEditor } from '../create-editor';
+import { MODELS } from '../constants';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -44,14 +45,7 @@ export function ResponseEditor({
   }, [responseTooltip]);
 
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       // Handle image tooltips and custom tooltips
       const tooltipContainer = document.createElement('div');
       const tooltipRoot = createRoot(tooltipContainer);
@@ -84,17 +78,12 @@ export function ResponseEditor({
         mode: 'graphql-results',
         foldGutter: true,
         gutters: ['CodeMirror-foldgutter'],
-        // @ts-expect-error
         info: true,
         extraKeys: commonKeys,
       });
 
       setResponseEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
   }, [editorTheme, initialResponse, setResponseEditor]);
 
   useEffect(() => {
