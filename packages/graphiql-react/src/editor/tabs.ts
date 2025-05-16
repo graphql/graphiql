@@ -235,16 +235,12 @@ export function setEditorValues({
     headerEditor,
     responseEditor,
     defaultHeaders,
+    focusOnEditorAndMoveCaretToLastPosition,
   } = editorStore.getState();
   if (queryEditor) {
     queryEditor.setValue(query ?? '');
     // Focus on editor content when tab is changed
-    const model = queryEditor.getModel()!;
-    const lastLine = model.getLineCount();
-    const lastColumn = model.getLineMaxColumn(lastLine);
-
-    queryEditor.setPosition({ lineNumber: lastLine, column: lastColumn });
-    queryEditor.focus();
+    focusOnEditorAndMoveCaretToLastPosition(queryEditor);
   }
 
   variableEditor?.setValue(variables ?? '');
