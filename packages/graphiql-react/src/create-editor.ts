@@ -44,16 +44,19 @@ const editorColors = {
   },
 };
 
+const bg = {
+  dark: '#212a3b',
+  light: '#fff',
+};
+
 const baseColors = {
   'editor.background': '#ffffff00', // white with a 00 alpha value
-  'editorHoverWidget.background': 'hsl(var(--color-base))', // Background color of the editor hover
   // 'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
   //  'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
   // 'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border
   // 'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled
   // 'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
   // 'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-
 };
 
 export const editorThemeDark: editor.IStandaloneThemeData = {
@@ -61,6 +64,7 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
   inherit: true,
   colors: {
     ...baseColors,
+    'editorHoverWidget.background': bg.dark, // Background color of the editor hover
     // 'editor.foreground': editorColors.dark.delimiters, // Default foreground color of the editor.
     // 'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
     // 'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
@@ -174,6 +178,7 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
   inherit: true,
   colors: {
     ...baseColors,
+    'editorHoverWidget.background': bg.light, // Background color of the editor hover
     // 'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
     // 'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
     // 'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.
@@ -415,28 +420,20 @@ export function createEditor(
     language,
     automaticLayout: true,
     fontSize: 15,
-    // disable the minimap
-    minimap: {
-      enabled: false,
-    },
+    minimap: { enabled: false }, // disable the minimap
     tabSize: 2,
-    // Remove a line selection border
-    renderLineHighlight: 'none',
-    // Toggle word wrap on resizing editors
-    wordWrap: 'on',
-    // folding: false, // disable folding
-    fontFamily: "'Fira Code', monospace", // TODO: set the font (this is problematic because the font has to be installed locally)
+    renderLineHighlight: 'none', // Remove a line selection border
+    wordWrap: 'on', // Toggle word wrap on resizing editors
+    stickyScroll: { enabled: false }, // Disable sticky scroll widget
+    overviewRulerLanes: 0, // remove unnecessary error highlight on the scroll
+    scrollbar: {
+      verticalScrollbarSize: 10,
+    },
+    scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
+    fontFamily: 'var(----font-family-mono)',
     // lineDecorationsWidth: 100,
     lineNumbersMinChars: 2,
-    overviewRulerLanes: 0, // remove unnecessary cruft on right side of editors
-    scrollbar: {
-      // hide the scrollbars
-      horizontal: 'hidden',
-      // vertical: 'hidden',
-      verticalScrollbarSize: 4,
-    },
     // scrollPredominantAxis: false,
-    scrollBeyondLastLine: false, // cleans up unnecessary "padding" on the bottom of each editor
     // wrappingIndent: 'none',
     wrappingStrategy: 'advanced',
     fixedOverflowWidgets: true,
