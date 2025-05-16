@@ -1,5 +1,5 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
-import { editor, KeyCode, KeyMod, Uri } from 'monaco-editor';
+import { editor, KeyCode, KeyMod, Uri } from './monaco-editor';
 import { copyQuery, mergeQuery, prettifyEditors } from './editor';
 import { executionStore } from './stores';
 
@@ -85,13 +85,26 @@ export const KEY_BINDINGS = Object.freeze({
   },
 });
 
-const QUERY_URI = 'query.graphql';
-const VARIABLE_URI = 'variable.json';
+const QUERY_URI = Uri.file('query.graphql');
+const VARIABLE_URI = Uri.file('variable.json');
+const HEADER_URI = Uri.file('header.json');
+const RESPONSE_URI = Uri.file('response.json');
+
+// 👇 Set diagnostics options for jsonc
+// languages.json.jsonDefaults.setDiagnosticsOptions({
+//   // Fixes Comments are not permitted in JSON.(521)
+//   allowComments: true,
+//   // Fixes Trailing comma json(519)
+//   trailingCommas: 'ignore',
+//   // enableSchemaRequest: false,
+//   // schemas: [], // optional: you can define schemas here
+//   // schemaValidation: 0,
+// });
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
     validateVariablesJSON: {
-      [Uri.file(QUERY_URI).toString()]: [Uri.file(VARIABLE_URI).toString()],
+      [QUERY_URI.toString()]: [VARIABLE_URI.toString()],
     },
     jsonDiagnosticSettings: {
       validate: true,
@@ -101,16 +114,23 @@ export const MONACO_GRAPHQL_API = initializeMode({
       trailingCommas: 'ignore',
     },
   },
+  // schemas: [
+  //   {
+  //     // anything that monaco.URI.from() is compatible with
+  //     uri: 'schema.graphql',
+  //     // match the monaco file uris for this schema.
+  //     // accepts specific filenames and anything `picomatch` supports.
+  //     fileMatch: ['**/*.graphql'],
+  //     schema,
+  //   },
+  // ],
 });
 
-export function getOrCreateModel({
-  path,
-  value,
-}: {
-  path: `${string}.${string}`;
-  value: string;
-}) {
-  const uri = Uri.file(path);
+export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
+  const { path } = uri;
+  // eslint-disable-next-line no-console
+  console.log(uri.toString());
+
   const model = editor.getModel(uri);
   if (model) {
     // eslint-disable-next-line no-console
@@ -125,8 +145,8 @@ export function getOrCreateModel({
 
 export const MODELS = {
   // TODO, maybe add DEFAUL_QUERY as default value
-  query: getOrCreateModel({ path: QUERY_URI, value: '' }),
-  variable: getOrCreateModel({ path: VARIABLE_URI, value: '' }),
-  header: getOrCreateModel({ path: 'header.json', value: '' }),
-  response: getOrCreateModel({ path: 'response.json', value: '' }),
+  query: getOrCreateModel({ uri: QUERY_URI, value: '' }),
+  variable: getOrCreateModel({ uri: VARIABLE_URI, value: '' }),
+  header: getOrCreateModel({ uri: HEADER_URI, value: '' }),
+  response: getOrCreateModel({ uri: RESPONSE_URI, value: '' }),
 };
