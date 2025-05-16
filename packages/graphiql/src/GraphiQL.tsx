@@ -29,7 +29,6 @@ import {
   Spinner,
   Tab,
   Tabs,
-  Theme,
   Tooltip,
   UnStyledButton,
   useDragResize,
@@ -38,7 +37,7 @@ import {
   usePluginStore,
   useSchemaStore,
   useStorage,
-  useTheme,
+  useThemeStore,
   VariableEditor,
   WriteableEditorProps,
   cn,
@@ -82,7 +81,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled,
   showPersistHeadersSettings,
-  defaultTheme,
   forcedTheme,
   confirmCloseTab,
   className,
@@ -120,7 +118,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     responseTooltip,
     defaultEditorToolsVisibility,
     isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
-    defaultTheme,
     forcedTheme:
       forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
     confirmCloseTab,
@@ -181,7 +178,6 @@ export interface GraphiQLInterfaceProps
    * settings modal.
    */
   showPersistHeadersSettings?: boolean;
-  defaultTheme?: Theme;
   /**
    * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
    * This is useful when you want to make sure that GraphiQL is always
@@ -212,7 +208,6 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled,
-  defaultTheme,
   defaultEditorToolsVisibility,
   children,
   confirmCloseTab,
@@ -244,7 +239,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
-  const { theme, setTheme } = useTheme(defaultTheme);
+  const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -388,9 +383,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     // Execute on the next tick, otherwise doesn't focus
     requestAnimationFrame(() => {
       focusOnEditorAndMoveCaretToLastPosition(
-        tabName === 'variables' ? variableEditor! : headerEditor,
+        tabName === 'variables' ? variableEditor : headerEditor,
       );
-    })
+    });
   };
 
   const toggleEditorTools: ButtonHandler = () => {
