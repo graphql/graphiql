@@ -143,9 +143,7 @@ export const executionStore = createStore<
         return;
       }
       let message;
-      const name = editor.getModel()!.uri.path.endsWith('variable.json')
-        ? 'Variables'
-        : 'Headers';
+      const name = editor === variableEditor ? 'Variables' : 'Headers';
       if (error instanceof TypeError) {
         message = `${name} are not a JSONC object.`;
       } else {
