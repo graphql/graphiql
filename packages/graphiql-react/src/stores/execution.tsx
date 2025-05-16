@@ -303,10 +303,10 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 export const useExecutionStore = createBoundedUseStore(executionStore);
 
 function tryParseJsonObject(json?: string) {
-  const parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
+  const parsed = json?.trim() && JSON.parse(json);
   const isObject =
     typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
-  if (!isObject && parsed !== undefined) {
+  if (parsed && !isObject) {
     throw new TypeError();
   }
   return parsed;
