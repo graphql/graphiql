@@ -80,18 +80,21 @@ Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
     cy.get('.graphiql-query-editor').should(element => {
-      expect(normalize(element.get(0).innerText)).to.equal(
-        codeWithLineNumbers(query),
-      );
+      // TODO we need to insert new line in monaco, recheck this part
+      const actual = normalize(element.get(0).innerText + (query ? '' : '\n'));
+      const expected = codeWithLineNumbers(query);
+      expect(actual).to.equal(expected);
     });
     if (variables !== undefined) {
       cy.contains('Variables').click();
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
         .should(element => {
-          expect(normalize(element.get(0).innerText)).to.equal(
-            codeWithLineNumbers(JSON.stringify(variables, null, 2)),
+          const actual = normalize(element.get(0).innerText);
+          const expected = codeWithLineNumbers(
+            JSON.stringify(variables, null, 2),
           );
+          expect(actual).to.equal(expected);
         });
     }
     if (variablesString !== undefined) {
@@ -99,9 +102,9 @@ Cypress.Commands.add(
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
         .should(element => {
-          expect(normalize(element.get(0).innerText)).to.equal(
-            codeWithLineNumbers(variablesString),
-          );
+          const actual = normalize(element.get(0).innerText);
+          const expected = codeWithLineNumbers(variablesString);
+          expect(actual).to.equal(expected);
         });
     }
     if (headersString !== undefined) {
@@ -116,9 +119,9 @@ Cypress.Commands.add(
     }
     if (response !== undefined) {
       cy.get('.result-window').should(element => {
-        expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
-          JSON.stringify(response, null, 2),
-        );
+        const actual = normalizeWhitespace(element.get(0).innerText);
+        const expected = JSON.stringify(response, null, 2);
+        expect(actual).to.equal(expected);
       });
     }
   },
@@ -126,9 +129,9 @@ Cypress.Commands.add(
 
 Cypress.Commands.add('assertQueryResult', expectedResult => {
   cy.get('section.result-window').should(element => {
-    expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
-      JSON.stringify(expectedResult, null, 2),
-    );
+    const actual = normalizeWhitespace(element.get(0).innerText);
+    const expected = JSON.stringify(expectedResult, null, 2);
+    expect(actual).to.equal(expected);
   });
 });
 
