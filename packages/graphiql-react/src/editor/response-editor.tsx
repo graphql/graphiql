@@ -34,7 +34,7 @@ export function ResponseEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
 }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
-  const { initialResponse } = useEditorStore();
+  const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
@@ -79,7 +79,7 @@ export function ResponseEditor({
       });
     });
   }, [editorTheme, initialResponse]);
-
+  */
   useEffect(() => {
     if (fetchError) {
       responseEditor?.setValue(fetchError);
@@ -88,7 +88,7 @@ export function ResponseEditor({
       responseEditor?.setValue(formatError(validationErrors));
     }
   }, [responseEditor, fetchError, validationErrors]);
-  */
+
   useEffect(() => {
     const { setEditor } = editorStore.getState();
     // Build the editor

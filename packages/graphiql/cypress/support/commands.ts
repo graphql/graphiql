@@ -39,6 +39,8 @@ declare namespace Cypress {
 
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
 
+    containQueryResult(expectedResult: string): Chainable<Element>;
+
     assertLinterMarkWithMessage(
       text: string,
       severity: 'error' | 'warning',
@@ -54,15 +56,11 @@ Cypress.Commands.add('dataCy', value => {
 
 // @ts-expect-error -- fixme
 Cypress.Commands.add('clickExecuteQuery', () => {
-  // Check CodeMirror was initialized
-  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('.graphiql-execute-button').click();
 });
 
 // @ts-expect-error -- fixme
 Cypress.Commands.add('clickPrettify', () => {
-  // Check CodeMirror was initialized
-  cy.get('.graphiql-query-editor .CodeMirror-scroll').should('exist');
   return cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
@@ -131,6 +129,13 @@ Cypress.Commands.add('assertQueryResult', expectedResult => {
     expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
       JSON.stringify(expectedResult, null, 2),
     );
+  });
+});
+
+Cypress.Commands.add('containQueryResult', expected => {
+  cy.get('section.result-window').should(element => {
+    const actual = element.get(0).textContent;
+    expect(actual.replaceAll(' ', ' ')).to.contain(expected);
   });
 });
 
