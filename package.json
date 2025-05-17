@@ -30,7 +30,7 @@
     "watch-vscode": "yarn tsc && yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
     "check": "yarn tsc --noEmit",
-    "cypress-open": "yarn workspace graphiql cypress-open",
+    "cypress-open": "concurrently 'yarn dev:graphiql' 'yarn workspace graphiql cypress-open'",
     "e2e": "yarn workspace graphiql e2e",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 ESLINT_USE_FLAT_CONFIG=false eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
