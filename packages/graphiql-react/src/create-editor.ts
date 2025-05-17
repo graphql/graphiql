@@ -51,7 +51,10 @@ const bg = {
 
 const baseColors = {
   'editor.background': '#ffffff00', // white with a 00 alpha value
-  'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled.
+  'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled
+  'textLink.foreground': '#d60590cc', // Foreground color for links in text
+  'textLink.activeForeground': '#d60590', // Foreground color for active links in text
+  'editorLink.activeForeground': '#d60590', // Color of active links
   // 'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
   //  'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
   // 'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border
@@ -83,29 +86,27 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     // 'focusBorder': "#FFFFFF00", // Overall border color for focused elements. This color is only used if not overridden by a component.
     // 'contrastBorder': "#FFFFFF00", // An extra border around elements to separate them from others for greater contrast.
     // 'contrastActiveBorder': "#FFFFFF00", // An extra border around active elements to separate them from others for greater contrast.
-    // 'selection.background': "#FFFFFF00", // The background color of text selections in the workbench (e.g. for input fields or text areas). Note that this does not apply to selections within the editor.
+    // 'selection.background': "#FFFFFF00", // The background color of text selections in the workbench (e.g. for input fields or text areas). Note that this does not apply to selections within the editor
     // 'textSeparator.foreground': "#FFFFFF00", // Color for text separators.
-    // 'textLink.foreground': "#FFFFFF00", // Foreground color for links in text.
-    // 'textLink.activeForeground': "#FFFFFF00", // Foreground color for active links in text.
-    // 'textPreformat.foreground': "#FFFFFF00", // Foreground color for preformatted text segments.
-    // 'textBlockQuote.background': "#FFFFFF00", // Background color for block quotes in text.
-    // 'textBlockQuote.border': "#FFFFFF00", // Border color for block quotes in text.
-    // 'textCodeBlock.background': "#FFFFFF00", // Background color for code blocks in text.
-    // 'widget.shadow': "#FFFFFF00", // Shadow color of widgets such as find/replace inside the editor.
-    // 'input.background': "#FFFFFF00", // Input box background.
-    // 'input.foreground': "#FFFFFF00", // Input box foreground.
-    // 'input.border': "#FFFFFF00", // Input box border.
-    // 'inputOption.activeBorder': "#FFFFFF00", // Border color of activated options in input fields.
-    // 'input.placeholderForeground': "#FFFFFF00", // Input box foreground color for placeholder text.
-    // 'inputValidation.infoBackground': "#FFFFFF00", // Input validation background color for information severity.
-    // 'inputValidation.infoBorder': "#FFFFFF00", // Input validation border color for information severity.
-    // 'inputValidation.warningBackground': "#FFFFFF00", // Input validation background color for information warning.
-    // 'inputValidation.warningBorder': "#FFFFFF00", // Input validation border color for warning severity.
-    // 'inputValidation.errorBackground': "#FFFFFF00", // Input validation background color for error severity.
-    // 'inputValidation.errorBorder': "#FFFFFF00", // Input validation border color for error severity.
-    // 'dropdown.background': "#FFFFFF00", // Dropdown background.
-    // 'dropdown.foreground': "#FFFFFF00", // Dropdown foreground.
-    // 'dropdown.border': "#FFFFFF00", // Dropdown border.
+    // 'textPreformat.foreground': "#FFFFFF00", // Foreground color for preformatted text segments
+    // 'textBlockQuote.background': "#FFFFFF00", // Background color for block quotes in text
+    // 'textBlockQuote.border': "#FFFFFF00", // Border color for block quotes in text
+    // 'textCodeBlock.background': "#FFFFFF00", // Background color for code blocks in text
+    // 'widget.shadow': "#FFFFFF00", // Shadow color of widgets such as find/replace inside the editor
+    // 'input.background': "#FFFFFF00", // Input box background
+    // 'input.foreground': "#FFFFFF00", // Input box foreground
+    // 'input.border': "#FFFFFF00", // Input box border
+    // 'inputOption.activeBorder': "#FFFFFF00", // Border color of activated options in input fields
+    // 'input.placeholderForeground': "#FFFFFF00", // Input box foreground color for placeholder text
+    // 'inputValidation.infoBackground': "#FFFFFF00", // Input validation background color for information severity
+    // 'inputValidation.infoBorder': "#FFFFFF00", // Input validation border color for information severity
+    // 'inputValidation.warningBackground': "#FFFFFF00", // Input validation background color for information warning
+    // 'inputValidation.warningBorder': "#FFFFFF00", // Input validation border color for warning severity
+    // 'inputValidation.errorBackground': "#FFFFFF00", // Input validation background color for error severity
+    // 'inputValidation.errorBorder': "#FFFFFF00", // Input validation border color for error severity
+    // 'dropdown.background': "#FFFFFF00", // Dropdown background
+    // 'dropdown.foreground': "#FFFFFF00", // Dropdown foreground
+    // 'dropdown.border': "#FFFFFF00", // Dropdown border
     // 'list.focusBackground': "#FFFFFF00", // List/Tree background color for the focused item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.
     // 'list.focusForeground': "#FFFFFF00", // List/Tree foreground color for the focused item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.
     // 'list.activeSelectionBackground': "#FFFFFF00", // List/Tree background color for the selected item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.
@@ -141,7 +142,6 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     // 'editor.hoverHighlightBackground': "#FFFFFF00", // Highlight below the word for which a hover is shown.
 
     // 'editorHoverWidget.border': "#FFFFFF00", // Border color of the editor hover.
-    // 'editorLink.activeForeground': "#FFFFFF00", // Color of active links.
     // 'diffEditor.insertedTextBackground': "#FFFFFF00", // Background color for text that got inserted.
     // 'diffEditor.removedTextBackground': "#FFFFFF00", // Background color for text that got removed.
     // 'diffEditor.insertedTextBorder': "#FFFFFF00", // Outline color for the text that got inserted.

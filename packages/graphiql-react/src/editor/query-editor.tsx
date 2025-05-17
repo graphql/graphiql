@@ -20,13 +20,7 @@ import {
 } from '../stores';
 import { markdown, debounce, isMacOs } from '../utility';
 import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
-import {
-  useCompletion,
-  copyQuery,
-  mergeQuery,
-  prettifyEditors,
-  useSynchronizeOption,
-} from './hooks';
+import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MODELS, MONACO_GRAPHQL_API } from '../constants';
@@ -36,7 +30,7 @@ import {
   KeyMod,
   editor,
   IDisposable,
-  IRange,
+  Uri,
   languages,
   Range,
 } from '../monaco-editor';
@@ -369,9 +363,16 @@ export function QueryEditor({
     };
 
     let linkProvider: IDisposable;
-    let previousRange: IRange | null = null;
+    let previousRange:
+      | readonly [
+          startLineNumber: number,
+          startColumn: number,
+          endLineNumber: number,
+          endColumn: number,
+        ]
+      | null = null;
 
-    const handleMove = (e: IEditorMouseEvent) => {
+    const handleMove = debounce(5, (e: IEditorMouseEvent) => {
       const { position } = e.target;
       if (!position) {
         return;
@@ -385,20 +386,22 @@ export function QueryEditor({
         return;
       }
 
-      const currentRange = {
-        startLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endLineNumber: position.lineNumber,
-        endColumn: word.endColumn,
-      };
+      const currentRange = [
+        position.lineNumber,
+        word.startColumn,
+        position.lineNumber,
+        word.endColumn,
+      ] as const;
 
       // Check if it's the same word
       const sameAsLast =
         previousRange &&
-        currentRange.startLineNumber === previousRange.startLineNumber &&
-        currentRange.startColumn === previousRange.startColumn &&
-        currentRange.endLineNumber === previousRange.endLineNumber &&
-        currentRange.endColumn === previousRange.endColumn;
+        currentRange[0] === previousRange[0] &&
+        currentRange[1] === previousRange[1] &&
+        currentRange[2] === previousRange[2] &&
+        currentRange[3] === previousRange[3];
+      // eslint-disable-next-line
+      console.log('Same as the last word', sameAsLast);
       if (sameAsLast) {
         // Skip re-registering
         return;
@@ -414,20 +417,15 @@ export function QueryEditor({
           return {
             links: [
               {
-                range: new Range(
-                  currentRange.startLineNumber,
-                  currentRange.startColumn,
-                  currentRange.endLineNumber,
-                  currentRange.endColumn,
-                ),
+                range: new Range(...currentRange),
                 tooltip: 'Go to node definition',
-                url: 'https://example.com/docs/node',
+                url: Uri.parse('command:goToCustomNode?nodeId=abc123'),
               },
             ],
           };
         },
       });
-    };
+    });
 
     const model = editor.getModel()!;
 
