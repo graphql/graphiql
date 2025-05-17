@@ -138,6 +138,7 @@ Cypress.Commands.add('assertQueryResult', expectedResult => {
 Cypress.Commands.add('containQueryResult', expected => {
   cy.get('section.result-window').should(element => {
     const actual = element.get(0).textContent;
+    // Monaco editor adds non-breaking spaces for all spaces, we need to normalize them
     expect(actual.replaceAll(' ', ' ')).to.contain(expected);
   });
 });
