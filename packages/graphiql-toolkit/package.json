@@ -22,7 +22,6 @@
     "types:check": "tsc --noEmit",
     "build": "tsup",
     "dev": "tsup --watch",
-    "prebuild": "yarn types:check",
     "test": "vitest run"
   },
   "dependencies": {
