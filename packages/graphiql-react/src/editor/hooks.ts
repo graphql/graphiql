@@ -15,9 +15,9 @@ import { debounce, formatJSONC } from '../utility';
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditor, Editor, SchemaReference } from './types';
 
-export function useSynchronizeValue(editor?: Editor, value = '') {
+export function useSynchronizeValue(editor?: Editor, value?: string) {
   useEffect(() => {
-    if (editor && editor.getValue() !== value) {
+    if (typeof value === 'string' && editor && editor.getValue() !== value) {
       editor.setValue(value);
     }
   }, [editor, value]);
@@ -232,23 +232,21 @@ export function getAutoCompleteLeafs() {
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
-export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
+export const useEditorState = (
+  editor: 'query' | 'variable' | 'header',
+): [string, (val: string) => void] => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
   const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
-  let valueString = '';
-  const editorValue = editorInstance?.getValue() ?? false;
-  if (editorValue && editorValue.length > 0) {
-    valueString = editorValue;
-  }
+  const editorValue = editorInstance?.getValue() ?? '';
 
-  const handleEditorValue = useCallback(
+  const handleChange = useCallback(
     (value: string) => editorInstance?.setValue(value),
     [editorInstance],
   );
-  return useMemo<[string, (val: string) => void]>(
-    () => [valueString, handleEditorValue],
-    [valueString, handleEditorValue],
+  return useMemo(
+    () => [editorValue, handleChange],
+    [editorValue, handleChange],
   );
 };
 
