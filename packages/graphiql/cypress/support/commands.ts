@@ -109,9 +109,9 @@ Cypress.Commands.add(
       cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(1)
         .should(element => {
-          expect(normalize(element.get(0).innerText)).to.equal(
-            codeWithLineNumbers(headersString),
-          );
+          const actual = normalize(element.get(0).innerText);
+          const expected = codeWithLineNumbers(headersString);
+          expect(actual).to.equal(expected);
         });
     }
     if (response !== undefined) {

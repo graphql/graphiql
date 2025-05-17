@@ -222,14 +222,17 @@ export const executionStore = createStore<
           setResponse(formatResult(result));
         }
       };
+      const $headers = headers ?? undefined;
+      const opName = execOperationName ?? operationName
+
       const fetch = fetcher(
         {
           query,
           variables,
-          operationName: execOperationName ?? operationName,
+          operationName: opName,
         },
         {
-          headers: headers ?? undefined,
+          headers: $headers,
           documentAST,
         },
       );

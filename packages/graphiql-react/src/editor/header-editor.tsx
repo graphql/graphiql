@@ -37,13 +37,10 @@ export function HeaderEditor({
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        value: initialHeaders,
-        lineNumbers: true,
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -67,7 +64,7 @@ export function HeaderEditor({
         }
       });
     });
-  }, [editorTheme, initialHeaders]);
+  }, [editorTheme]);
 
   useChangeHandler(
     headerEditor,
@@ -85,12 +82,15 @@ export function HeaderEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
+    const model = MODELS.header;
     const editor = createEditor(ref, {
       model: MODELS.header,
-      readOnly
+      readOnly,
     });
+    if (initialHeaders) {
+      editor.setValue(initialHeaders);
+    }
     setEditor({ headerEditor: editor });
-    const model = editor.getModel()!;
     const disposables: IDisposable[] = [
       editor.addAction(KEY_BINDINGS.runQuery),
       editor.addAction(KEY_BINDINGS.prettify),

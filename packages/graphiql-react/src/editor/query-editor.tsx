@@ -128,7 +128,6 @@ export function QueryEditor({
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        value: initialQuery,
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
@@ -222,7 +221,7 @@ export function QueryEditor({
       newEditor.operations = null;
       newEditor.variableToType = null;
     });
-  }, [editorTheme, initialQuery]);
+  }, [editorTheme]);
 
   // We don't use the generic `useChangeHandler` hook here because we want to
   // have additional logic that updates the operation facts that we store as
@@ -269,10 +268,8 @@ export function QueryEditor({
   }, [
     onEdit,
     queryEditor,
-    setOperationName,
     storage,
     variableEditor,
-    updateActiveTabValues,
   ]);
 
   useSynchronizeSchema(queryEditor, codeMirrorRef);
@@ -314,10 +311,14 @@ export function QueryEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
+    const model = MODELS.query;
     const editor = createEditor(ref, {
-      model: MODELS.query,
+      model,
       readOnly,
     });
+    if (initialQuery) {
+      editor.setValue(initialQuery);
+    }
 
     setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
@@ -426,8 +427,6 @@ export function QueryEditor({
         },
       });
     });
-
-    const model = editor.getModel()!;
 
     const disposables = [
       // 2️⃣ Subscribe to content changes

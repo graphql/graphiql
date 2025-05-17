@@ -41,7 +41,6 @@ export function VariableEditor({
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        value: initialVariables,
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
@@ -55,7 +54,6 @@ export function VariableEditor({
           container,
           variableToType: undefined,
         },
-        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -79,7 +77,7 @@ export function VariableEditor({
         }
       });
     });
-  }, [editorTheme, initialVariables]);
+  }, [editorTheme]);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
@@ -94,13 +92,16 @@ export function VariableEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
+    const model = MODELS.variable;
     const editor = createEditor(ref, {
-      model: MODELS.variable,
+      model,
       readOnly,
     });
+    if (initialVariables) {
+      editor.setValue(initialVariables);
+    }
     setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
-    const model = editor.getModel()!;
     // 2️⃣ Subscribe to content changes
     const disposables = [
       model.onDidChangeContent(

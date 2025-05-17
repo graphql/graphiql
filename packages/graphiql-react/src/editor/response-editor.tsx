@@ -71,14 +71,13 @@ export function ResponseEditor({
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        value: initialResponse,
         lineWrapping: true,
         theme: editorTheme,
         info: true,
         extraKeys: commonKeys,
       });
     });
-  }, [editorTheme, initialResponse]);
+  }, [editorTheme]);
   */
   useEffect(() => {
     if (fetchError) {
@@ -92,14 +91,18 @@ export function ResponseEditor({
   useEffect(() => {
     const { setEditor } = editorStore.getState();
     // Build the editor
+    const model = MODELS.response
     const editor = createEditor(ref, {
-      model: MODELS.response,
+      model,
       readOnly: true,
       lineNumbers: 'off',
     });
+    if (initialResponse) {
+      editor.setValue(initialResponse)
+    }
     setEditor({ responseEditor: editor });
 
-    const disposables = [editor, editor.getModel()!];
+    const disposables = [editor, model];
 
     // Clean‑up on unmount or when deps change
     return () => {
