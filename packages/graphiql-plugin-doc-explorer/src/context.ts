@@ -16,7 +16,7 @@ import {
 } from 'graphql';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
-  SchemaContextType,
+  SchemaReference,
   useSchemaStore,
   createBoundedUseStore,
 } from '@graphiql/react';
@@ -66,9 +66,7 @@ export type DocExplorerStoreType = {
      * the initial stack item.
      */
     reset(): void;
-    resolveSchemaReferenceToNavItem(
-      schemaReference: SchemaContextType['schemaReference'],
-    ): void;
+    resolveSchemaReferenceToNavItem(schemaReference: SchemaReference): void;
     /**
      * Replace the nav stack with an updated version using the new schema.
      */
@@ -154,7 +152,7 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
         set(state => {
           const oldNavStack = state.explorerNavStack;
           if (oldNavStack.length === 1) {
-            return oldNavStack;
+            return state;
           }
           // Spread is needed
           const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
