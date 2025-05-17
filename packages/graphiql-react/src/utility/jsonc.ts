@@ -17,6 +17,8 @@ export function formatJSONC(content: string) {
       // @ts-expect-error -- Fixes ConfigError: Couldn't resolve parser "jsonc"
       { parsers: parsersBabel },
     ],
+    // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}
+    printWidth: 0
   });
 }
 

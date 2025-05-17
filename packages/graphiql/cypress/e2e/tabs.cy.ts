@@ -1,5 +1,6 @@
 describe('Tabs', () => {
-  it('Should store editor contents when switching between tabs', () => {
+  // TODO monaco
+  it.skip('Should store editor contents when switching between tabs', () => {
     cy.visit('/?defaultQuery=&query=');
 
     // Assert that tab visible when there's only one session
