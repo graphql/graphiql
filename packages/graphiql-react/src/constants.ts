@@ -85,10 +85,10 @@ export const KEY_BINDINGS = Object.freeze({
   },
 });
 
-const QUERY_URI = Uri.file('query.graphql');
-const VARIABLE_URI = Uri.file('variable.json');
-const HEADER_URI = Uri.file('header.json');
-const RESPONSE_URI = Uri.file('response.json');
+export const QUERY_URI = Uri.file('query.graphql');
+export const VARIABLE_URI = Uri.file('variable.json');
+export const HEADER_URI = Uri.file('header.json');
+export const RESPONSE_URI = Uri.file('response.json');
 
 // 👇 Set diagnostics options for jsonc
 // languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -142,11 +142,3 @@ export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   const language = path.split('.').at(-1)!;
   return editor.createModel(value, language, uri);
 }
-
-export const MODELS = {
-  // TODO, maybe add DEFAUL_QUERY as default value
-  query: getOrCreateModel({ uri: QUERY_URI, value: '' }),
-  variable: getOrCreateModel({ uri: VARIABLE_URI, value: '' }),
-  header: getOrCreateModel({ uri: HEADER_URI, value: '' }),
-  response: getOrCreateModel({ uri: RESPONSE_URI, value: '' }),
-};

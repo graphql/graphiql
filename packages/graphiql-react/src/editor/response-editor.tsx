@@ -9,7 +9,7 @@ import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { CommonEditorProps } from './types';
 import { createEditor } from '../create-editor';
-import { MODELS } from '../constants';
+import { getOrCreateModel, RESPONSE_URI } from '../constants';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -91,15 +91,12 @@ export function ResponseEditor({
   useEffect(() => {
     const { setEditor } = editorStore.getState();
     // Build the editor
-    const model = MODELS.response
+    const model = getOrCreateModel({ uri: RESPONSE_URI, value: initialResponse })
     const editor = createEditor(ref, {
       model,
       readOnly: true,
       lineNumbers: 'off',
     });
-    if (initialResponse) {
-      editor.setValue(initialResponse)
-    }
     setEditor({ responseEditor: editor });
 
     const disposables = [editor, model];

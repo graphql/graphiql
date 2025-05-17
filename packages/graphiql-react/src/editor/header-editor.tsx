@@ -4,7 +4,7 @@ import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
-import { KEY_BINDINGS, MODELS } from '../constants';
+import { getOrCreateModel, HEADER_URI, KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';
 import { createEditor } from '../create-editor';
 import { debounce } from '../utility';
@@ -82,14 +82,11 @@ export function HeaderEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const model = MODELS.header;
+    const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     const editor = createEditor(ref, {
-      model: MODELS.header,
+      model,
       readOnly,
     });
-    if (initialHeaders) {
-      editor.setValue(initialHeaders);
-    }
     setEditor({ headerEditor: editor });
     const disposables: IDisposable[] = [
       editor.addAction(KEY_BINDINGS.runQuery),

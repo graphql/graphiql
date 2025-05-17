@@ -23,7 +23,12 @@ import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_BINDINGS, MODELS, MONACO_GRAPHQL_API } from '../constants';
+import {
+  getOrCreateModel,
+  KEY_BINDINGS,
+  MONACO_GRAPHQL_API,
+  QUERY_URI,
+} from '../constants';
 import { createEditor } from '../create-editor';
 import {
   KeyCode,
@@ -311,14 +316,11 @@ export function QueryEditor({
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     // Build the editor
-    const model = MODELS.query;
+    const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
     const editor = createEditor(ref, {
       model,
       readOnly,
     });
-    if (initialQuery) {
-      editor.setValue(initialQuery);
-    }
 
     setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
