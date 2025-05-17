@@ -36,8 +36,8 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit",
+    "prebuild": "yarn types:check",
     "build": "vite build && UMD=true vite build",
     "cypress-open": "yarn dev 'cypress open --browser electron'",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",

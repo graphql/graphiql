@@ -30,6 +30,9 @@
     "svelte",
     "typescript"
   ],
+  "scripts": {
+    "types:check": "tsc --noEmit"
+  },
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",

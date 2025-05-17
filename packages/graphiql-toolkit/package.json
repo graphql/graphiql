@@ -19,10 +19,10 @@
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.mts",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "build": "tsup",
     "dev": "tsup --watch",
     "prebuild": "yarn types:check",
-    "types:check": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
