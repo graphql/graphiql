@@ -1,7 +1,7 @@
 {
   "name": "@graphiql/react",
   "version": "0.33.0",
-  "sideEffects": false,
+  "sideEffects": ["./src/workers.ts"],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
