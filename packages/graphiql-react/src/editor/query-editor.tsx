@@ -10,39 +10,32 @@ import {
   GraphQLDocumentMode,
   OperationFacts,
 } from 'graphql-language-service';
-import { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
-  executionStore,
-  pluginStore,
   schemaStore,
   useSchemaStore,
   useEditorStore,
   useStorage,
-  CodeMirrorEditorWithOperationFacts,
+  editorStore,
 } from '../stores';
-import { markdown, debounce } from '../utility';
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
-import {
-  useCompletion,
-  copyQuery,
-  useKeyMap,
-  mergeQuery,
-  prettifyEditors,
-  useSynchronizeOption,
-} from './hooks';
-import {
-  CodeMirrorEditor,
-  CodeMirrorType,
-  WriteableEditorProps,
-  SchemaReference,
-} from './types';
+import { markdown, debounce, isMacOs } from '../utility';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { useCompletion, useSynchronizeOption } from './hooks';
+import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import { KEY_MAP } from '../constants';
+import { KEY_BINDINGS, MODELS, MONACO_GRAPHQL_API } from '../constants';
+import { createEditor } from '../create-editor';
+import {
+  KeyCode,
+  KeyMod,
+  editor,
+  IDisposable,
+  Uri,
+  languages,
+  Range,
+} from '../monaco-editor';
+
+import IEditorMouseEvent = editor.IEditorMouseEvent;
 
 type QueryEditorProps = WriteableEditorProps & {
   /**
@@ -59,19 +52,7 @@ type QueryEditorProps = WriteableEditorProps & {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror([
-    import('codemirror/addon/comment/comment.js'),
-    import('codemirror/addon/search/search.js'),
-    import('codemirror-graphql/esm/hint.js'),
-    import('codemirror-graphql/esm/lint.js'),
-    import('codemirror-graphql/esm/info.js'),
-    import('codemirror-graphql/esm/jump.js'),
-    import('codemirror-graphql/esm/mode.js'),
-  ]);
-}
-
+/*
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
   variableEditor: CodeMirrorEditor,
@@ -111,26 +92,19 @@ function updateEditorExternalFragments(
   editor.options.lint.externalFragments = externalFragmentList;
   editor.options.hintOptions.externalFragments = externalFragmentList;
 }
-
+*/
 export function QueryEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
 }: QueryEditorProps) {
-  const {
-    initialQuery,
-    queryEditor,
-    setOperationName,
-    setQueryEditor,
-    variableEditor,
-    updateActiveTabValues,
-  } = useEditorStore();
+  const { initialQuery, queryEditor, setOperationName, variableEditor } =
+    useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
+  /*
   const onClickReferenceRef = useRef<
     NonNullable<QueryEditorProps['onClickReference']>
   >(() => {});
@@ -149,41 +123,26 @@ export function QueryEditor({
   }, [onClickReference]);
 
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialQuery,
-        lineNumbers: true,
-        tabSize: 2,
-        foldGutter: true,
-        mode: 'graphql',
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
         lint: {
-          // @ts-expect-error
           schema: undefined,
           validationRules: null,
           // linting accepts string or FragmentDefinitionNode[]
           externalFragments: undefined,
         },
         hintOptions: {
-          // @ts-expect-error
           schema: undefined,
           closeOnUnfocus: false,
           completeSingle: false,
-          container,
           externalFragments: undefined,
           autocompleteOptions: {
             // for the query editor, restrict to executable type definitions
@@ -191,19 +150,17 @@ export function QueryEditor({
           },
         },
         info: {
-          schema: undefined,
           renderDescription: (text: string) => markdown.render(text),
           onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },
         jump: {
-          schema: undefined,
           onClick(reference: SchemaReference) {
             onClickReferenceRef.current(reference);
           },
         },
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: {
           ...commonKeys,
           'Cmd-S'() {
@@ -264,89 +221,51 @@ export function QueryEditor({
       newEditor.operationName = null;
       newEditor.operations = null;
       newEditor.variableToType = null;
-
-      setQueryEditor(newEditor);
     });
+  }, [editorTheme, initialQuery]);
 
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
-
-  useSynchronizeOption(queryEditor, 'keyMap', keyMap);
-
-  /**
-   * We don't use the generic `useChangeHandler` hook here because we want to
-   * have additional logic that updates the operation facts that we store as
-   * properties on the editor.
-   */
+  // We don't use the generic `useChangeHandler` hook here because we want to
+  // have additional logic that updates the operation facts that we store as
+  // properties on the editor.
   useEffect(() => {
     if (!queryEditor) {
       return;
     }
+    */
 
-    function getAndUpdateOperationFacts(
-      editorInstance: CodeMirrorEditorWithOperationFacts,
-    ) {
-      const operationFacts = getOperationFacts(
-        schemaStore.getState().schema,
-        editorInstance.getValue(),
-      );
+  function getAndUpdateOperationFacts(editorInstance: Editor) {
+    const operationFacts = getOperationFacts(
+      schemaStore.getState().schema,
+      editorInstance.getValue(),
+    );
+    const prevState = editorStore.getState();
 
-      // Update operation name should any query names change.
-      const operationName = getSelectedOperationName(
-        editorInstance.operations ?? undefined,
-        editorInstance.operationName ?? undefined,
-        operationFacts?.operations,
-      );
+    // Update the operation name should any query names change.
+    const operationName = getSelectedOperationName(
+      prevState.operations,
+      prevState.operationName,
+      operationFacts?.operations,
+    );
 
-      // Store the operation facts on editor properties
-      editorInstance.documentAST = operationFacts?.documentAST ?? null;
-      editorInstance.operationName = operationName ?? null;
-      editorInstance.operations = operationFacts?.operations ?? null;
+    // Store the operation facts
+    editorStore.setState({
+      documentAST: operationFacts?.documentAST,
+      operationName,
+      operations: operationFacts?.operations,
+    });
 
-      // Update variable types for the variable editor
-      if (variableEditor) {
-        updateVariableEditor(variableEditor, operationFacts);
-        codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-      }
-
-      return operationFacts ? { ...operationFacts, operationName } : null;
+    // Update variable types for the variable editor
+    if (variableEditor) {
+      // updateVariableEditor(variableEditor, operationFacts);
+      // codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
     }
 
-    const handleChange = debounce(
-      100,
-      (editorInstance: CodeMirrorEditorWithOperationFacts) => {
-        const query = editorInstance.getValue();
-        storage.set(STORAGE_KEY_QUERY, query);
+    return operationFacts ? { ...operationFacts, operationName } : null;
+  }
 
-        const currentOperationName = editorInstance.operationName;
-        const operationFacts = getAndUpdateOperationFacts(editorInstance);
-        if (operationFacts?.operationName !== undefined) {
-          storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
-        }
-
-        // Invoke callback props only after the operation facts have been updated
-        onEdit?.(query, operationFacts?.documentAST);
-        if (
-          operationFacts?.operationName &&
-          currentOperationName !== operationFacts.operationName
-        ) {
-          setOperationName(operationFacts.operationName);
-        }
-
-        updateActiveTabValues({
-          query,
-          operationName: operationFacts?.operationName ?? null,
-        });
-      },
-    ) as (editorInstance: CodeMirrorEditor) => void;
-
+  /*
     // Call once to initially update the values
     getAndUpdateOperationFacts(queryEditor);
-
-    queryEditor.on('change', handleChange);
-    return () => queryEditor.off('change', handleChange);
   }, [
     onEdit,
     queryEditor,
@@ -387,16 +306,174 @@ export function QueryEditor({
     const { run } = executionStore.getState();
     run();
   };
-
   useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
-  // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
-  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
+  */
+
+  const schema = useSchemaStore(store => store.schema);
+
+  useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
+    // Build the editor
+    const editor = createEditor(ref, {
+      model: MODELS.query,
+      readOnly,
+    });
+
+    setEditor({ queryEditor: editor });
+    const handleChange = debounce(100, () => {
+      const query = editor.getValue();
+      storage.set(STORAGE_KEY_QUERY, query);
+      // eslint-disable-next-line no-console
+      console.log('handleChange', query);
+
+      const currentOperationName = editorStore.getState().operationName;
+      const operationFacts = getAndUpdateOperationFacts(editor);
+      if (operationFacts?.operationName !== undefined) {
+        storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
+      }
+
+      // Invoke callback props only after the operation facts have been updated
+      onEdit?.(query, operationFacts?.documentAST);
+      if (
+        operationFacts?.operationName &&
+        currentOperationName !== operationFacts.operationName
+      ) {
+        setOperationName(operationFacts.operationName);
+      }
+
+      updateActiveTabValues({
+        query,
+        operationName: operationFacts?.operationName ?? null,
+      });
+    });
+
+    const handleMouseDown = (e: IEditorMouseEvent) => {
+      const { position } = e.target;
+      if (!position) {
+        return;
+      }
+      console.log('on mouse down');
+      const word = editor.getModel()!.getWordAtPosition(position);
+      if (word) {
+        // eslint-disable-next-line no-console
+        console.info(word);
+        // eslint-disable-next-line no-console
+        console.info(`Clicked on word "${word.word}"`);
+      }
+    };
+
+    let linkProvider: IDisposable;
+    let previousRange:
+      | readonly [
+          startLineNumber: number,
+          startColumn: number,
+          endLineNumber: number,
+          endColumn: number,
+        ]
+      | null = null;
+
+    const handleMove = debounce(5, (e: IEditorMouseEvent) => {
+      const { position } = e.target;
+      if (!position) {
+        return;
+      }
+      const word = editor.getModel()!.getWordAtPosition(position);
+      const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
+
+      if (!word || !isCmdPressed) {
+        previousRange = null;
+        linkProvider?.dispose();
+        return;
+      }
+
+      const currentRange = [
+        position.lineNumber,
+        word.startColumn,
+        position.lineNumber,
+        word.endColumn,
+      ] as const;
+
+      // Check if it's the same word
+      const sameAsLast =
+        previousRange &&
+        currentRange[0] === previousRange[0] &&
+        currentRange[1] === previousRange[1] &&
+        currentRange[2] === previousRange[2] &&
+        currentRange[3] === previousRange[3];
+      // eslint-disable-next-line
+      console.log('Same as the last word', sameAsLast);
+      if (sameAsLast) {
+        // Skip re-registering
+        return;
+      }
+
+      // Update last word
+      previousRange = currentRange;
+
+      // Dispose previous provider and register a new one
+      linkProvider?.dispose();
+      linkProvider = languages.registerLinkProvider('graphql', {
+        provideLinks(model, token) {
+          return {
+            links: [
+              {
+                range: new Range(...currentRange),
+                tooltip: 'Go to node definition',
+                url: Uri.parse('command:goToCustomNode?nodeId=abc123'),
+              },
+            ],
+          };
+        },
+      });
+    });
+
+    const model = editor.getModel()!;
+
+    const disposables = [
+      // 2️⃣ Subscribe to content changes
+      model.onDidChangeContent(handleChange),
+      editor.addAction({
+        id: 'graphql-go-to-definition',
+        label: 'Go to Definition',
+        contextMenuGroupId: 'navigation',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [KeyMod.CtrlCmd | KeyCode.F12],
+        run() {
+          // eslint-disable-next-line no-console
+          console.log('Go to Definition');
+        },
+      }),
+      editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.copyQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.onMouseDown(handleMouseDown),
+      editor.onMouseMove(handleMove),
+      editor,
+      model,
+    ];
+
+    // 3️⃣ Clean‑up on unmount or when deps change
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+
+  useEffect(() => {
+    if (!schema) {
+      return;
+    }
+    // eslint-disable-next-line no-console
+    console.log('setting setSchemaConfig');
+    MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+  }, [schema]);
 
   return <div className="graphiql-editor" ref={ref} />;
 }
 
+/*
 function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
@@ -455,7 +532,7 @@ function useSynchronizeExternalFragments(
     }
   }, [editor, externalFragments, codeMirrorRef]);
 }
-
+*/
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 export const STORAGE_KEY_QUERY = 'query';

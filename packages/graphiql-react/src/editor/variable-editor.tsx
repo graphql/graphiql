@@ -1,22 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { useExecutionStore, useEditorStore } from '../stores';
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
-import {
-  useChangeHandler,
-  useCompletion,
-  useKeyMap,
-  mergeQuery,
-  prettifyEditors,
-  useSynchronizeOption,
-} from './hooks';
+import { useEditorStore, storageStore, editorStore } from '../stores';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { KEY_MAP } from '../constants';
+import { KEY_BINDINGS, MODELS } from '../constants';
 import { clsx } from 'clsx';
+import { createEditor } from '../create-editor';
+import { debounce } from '../utility';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**
@@ -37,59 +27,35 @@ type VariableEditorProps = WriteableEditorProps & {
   isHidden?: boolean;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror([
-    import('codemirror-graphql/esm/variables/hint.js'),
-    import('codemirror-graphql/esm/variables/lint.js'),
-    import('codemirror-graphql/esm/variables/mode.js'),
-  ]);
-}
-
 export function VariableEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onClickReference,
   onEdit,
   readOnly = false,
   isHidden = false,
 }: VariableEditorProps) {
-  const { initialVariables, variableEditor, setVariableEditor } =
-    useEditorStore();
-  const run = useExecutionStore(store => store.run);
+  const { initialVariables } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
+  /*
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialVariables,
-        lineNumbers: true,
-        tabSize: 2,
-        mode: 'graphql-variables',
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
-        foldGutter: true,
         lint: {
-          // @ts-expect-error
           variableToType: undefined,
         },
         hintOptions: {
           closeOnUnfocus: false,
           completeSingle: false,
           container,
-          // @ts-expect-error
           variableToType: undefined,
         },
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -112,30 +78,53 @@ export function VariableEditor({
           editorInstance.execCommand('autocomplete');
         }
       });
-
-      setVariableEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
-
-  useSynchronizeOption(variableEditor, 'keyMap', keyMap);
+  }, [editorTheme, initialVariables]);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
   useCompletion(variableEditor, onClickReference);
-
-  useKeyMap(variableEditor, KEY_MAP.runQuery, run);
-  useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   useEffect(() => {
     if (!isHidden) {
       variableEditor?.refresh();
     }
   }, [variableEditor, isHidden]);
+  */
+  useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
+    // Build the editor
+    const editor = createEditor(ref, {
+      model: MODELS.variable,
+      readOnly,
+    });
+    setEditor({ variableEditor: editor });
+    const { storage } = storageStore.getState();
+    const model = editor.getModel()!;
+    // 2️⃣ Subscribe to content changes
+    const disposables = [
+      model.onDidChangeContent(
+        debounce(500, () => {
+          const value = model.getValue();
+          console.log('storage', storage);
+          storage.set(STORAGE_KEY, value);
+          updateActiveTabValues({ variables: value });
+        }),
+      ),
+      editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor,
+      model,
+    ];
+
+    // 3️⃣ Clean‑up on unmount or when deps change
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />

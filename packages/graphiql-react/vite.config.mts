@@ -82,14 +82,21 @@ export default defineConfig({
         'react/jsx-runtime',
         'react-dom/client',
         // Exclude peer dependencies and dependencies from bundle
-        ...Object.keys(packageJSON.peerDependencies),
-        ...Object.keys(packageJSON.dependencies),
-        // Exclude `codemirror/...` and `codemirror-graphql/...` but not `../style/codemirror.css`
-        /codemirror[/-]/,
+        ...Object.keys({
+          ...packageJSON.peerDependencies,
+          ...packageJSON.dependencies,
+        }),
+        /monaco-graphql\//,
+        /monaco-editor\//,
+        /prettier\//,
+        /zustand\//,
       ],
       output: {
         preserveModules: true,
       },
     },
+  },
+  worker: {
+    format: 'es',
   },
 });

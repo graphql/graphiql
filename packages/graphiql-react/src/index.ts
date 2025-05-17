@@ -1,4 +1,5 @@
 import './style/root.css';
+import './workers';
 
 export {
   QueryEditor,
@@ -27,9 +28,9 @@ export {
   usePluginStore,
   useSchemaStore,
   useStorage,
+  useThemeStore,
 } from './stores';
 export { GraphiQLProvider } from './provider';
-export { useTheme } from './theme';
 
 export * from './utility';
 export * from './icons';
@@ -38,12 +39,10 @@ export * from './toolbar';
 
 export type {
   CommonEditorProps,
-  KeyMap,
   ResponseTooltipType,
   TabsState,
   WriteableEditorProps,
 } from './editor';
 export type { GraphiQLPlugin } from './stores/plugin';
-export type { Theme } from './theme';
 export { clsx as cn } from 'clsx';
 export { KEY_MAP } from './constants';

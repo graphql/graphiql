@@ -22,7 +22,8 @@ import getValue from 'get-value';
 import { getAutoCompleteLeafs } from '../editor';
 import { createStore } from 'zustand';
 import { editorStore } from './editor';
-import { createBoundedUseStore } from '../utility';
+import { createBoundedUseStore, formatJSONC, parseJSONC } from '../utility';
+import { Editor } from '../editor/types';
 
 type ExecutionStoreType = {
   /**
@@ -113,11 +114,18 @@ export const executionStore = createStore<
       responseEditor,
       variableEditor,
       updateActiveTabValues,
+      operationName,
+      documentAST,
     } = editorStore.getState();
     if (!queryEditor || !responseEditor) {
       return;
     }
-    const { subscription, operationName, queryId, fetcher } = get();
+    const {
+      subscription,
+      operationName: execOperationName,
+      queryId,
+      fetcher,
+    } = get();
 
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {
@@ -125,10 +133,25 @@ export const executionStore = createStore<
       return;
     }
 
-    const setResponse = (value: string) => {
-      responseEditor.setValue(value);
+    function setResponse(value: string): void {
+      responseEditor?.setValue(value);
       updateActiveTabValues({ response: value });
-    };
+    }
+
+    function setError(error: unknown, editor?: Editor): void {
+      if (!editor) {
+        return;
+      }
+      let message;
+      const name = editor === variableEditor ? 'Variables' : 'Headers';
+      if (error instanceof TypeError) {
+        message = `${name} are not a JSONC object.`;
+      } else {
+        message = `${name} are invalid JSONC: ${error instanceof Error ? error.message : error}.`;
+      }
+      // Need to stringify since the response editor uses `json` language
+      setResponse(JSON.stringify({ errors: [{ message }] }, null, 2));
+    }
 
     const newQueryId = queryId + 1;
     set({ queryId: newQueryId });
@@ -138,38 +161,24 @@ export const executionStore = createStore<
     // the current query from the editor.
     let query = getAutoCompleteLeafs() || queryEditor.getValue();
 
-    const variablesString = variableEditor?.getValue();
-    let variables: Record<string, unknown> | undefined;
+    let variables: Record<string, unknown>;
     try {
-      variables = tryParseJsonObject({
-        json: variablesString,
-        errorMessageParse: 'Variables are invalid JSON',
-        errorMessageType: 'Variables are not a JSON object.',
-      });
+      variables = await tryParseJsonObject(variableEditor?.getValue());
     } catch (error) {
-      setResponse(error instanceof Error ? error.message : `${error}`);
+      setError(error, variableEditor);
       return;
     }
-
-    const headersString = headerEditor?.getValue();
-    let headers: Record<string, unknown> | undefined;
+    let headers: Record<string, unknown>;
     try {
-      headers = tryParseJsonObject({
-        json: headersString,
-        errorMessageParse: 'Headers are invalid JSON',
-        errorMessageType: 'Headers are not a JSON object.',
-      });
+      headers = await tryParseJsonObject(headerEditor?.getValue());
     } catch (error) {
-      setResponse(error instanceof Error ? error.message : `${error}`);
+      setError(error, headerEditor);
       return;
     }
 
     if (externalFragments) {
-      const fragmentDependencies = queryEditor.documentAST
-        ? getFragmentDependenciesForAST(
-            queryEditor.documentAST,
-            externalFragments,
-          )
+      const fragmentDependencies = documentAST
+        ? getFragmentDependenciesForAST(documentAST, externalFragments)
         : [];
       if (fragmentDependencies.length > 0) {
         query +=
@@ -217,12 +226,11 @@ export const executionStore = createStore<
         {
           query,
           variables,
-          operationName:
-            operationName ?? queryEditor.operationName ?? undefined,
+          operationName: execOperationName ?? operationName,
         },
         {
           headers: headers ?? undefined,
-          documentAST: queryEditor.documentAST ?? undefined,
+          documentAST,
         },
       );
 
@@ -271,6 +279,7 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
   fetcher,
   getDefaultFieldNames,
   children,
+  // TODO: we have it on editor, maybe we should remove it here?
   operationName = null,
 }) => {
   useEffect(() => {
@@ -286,29 +295,15 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 
 export const useExecutionStore = createBoundedUseStore(executionStore);
 
-function tryParseJsonObject({
-  json,
-  errorMessageParse,
-  errorMessageType,
-}: {
-  json?: string;
-  errorMessageParse: string;
-  errorMessageType: string;
-}) {
-  let parsed: Record<string, any> | undefined;
-  try {
-    parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
-  } catch (error) {
-    throw new Error(
-      `${errorMessageParse}: ${
-        error instanceof Error ? error.message : error
-      }.`,
-    );
-  }
+async function tryParseJsonObject(json = '') {
+  // `jsonc-parser` doesn't support trailing commas,
+  // so we need first to format with prettier, which will remove them
+  const formatted = await formatJSONC(json);
+  const parsed = parseJSONC(formatted);
   const isObject =
     typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
-  if (parsed !== undefined && !isObject) {
-    throw new Error(errorMessageType);
+  if (parsed && !isObject) {
+    throw new TypeError();
   }
   return parsed;
 }

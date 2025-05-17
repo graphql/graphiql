@@ -11,16 +11,13 @@ import {
   useEditorStore,
   executionStore,
 } from '../stores';
-import { debounce } from '../utility';
+import { debounce, formatJSONC } from '../utility';
 import { onHasCompletion } from './completion';
-import { CodeMirrorEditor, SchemaReference } from './types';
+import { CodeMirrorEditor, Editor, SchemaReference } from './types';
 
-export function useSynchronizeValue(
-  editor: CodeMirrorEditor | null,
-  value?: string,
-) {
+export function useSynchronizeValue(editor?: Editor, value = '') {
   useEffect(() => {
-    if (editor && typeof value === 'string' && value !== editor.getValue()) {
+    if (editor && editor.getValue() !== value) {
       editor.setValue(value);
     }
   }, [editor, value]);
@@ -32,7 +29,9 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   value: EditorConfiguration[K],
 ) {
   useEffect(() => {
+    /*
     editor?.setOption(option, value);
+     */
   }, [editor, option, value]);
 }
 
@@ -75,8 +74,10 @@ export function useChangeHandler(
       updateTab(newValue);
       callback?.(newValue);
     };
+    /*
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
+     */
   }, [callback, editor, storageKey, tabProperty]);
 }
 
@@ -88,7 +89,7 @@ export function useCompletion(
     if (!editor) {
       return;
     }
-
+    /*
     const handleCompletion = (
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
@@ -112,36 +113,11 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
+   */
   }, [callback, editor]);
 }
 
-type EmptyCallback = () => void;
-
-export function useKeyMap(
-  editor: CodeMirrorEditor | null,
-  keys: string[] | readonly string[],
-  callback?: EmptyCallback,
-) {
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    for (const key of keys) {
-      editor.removeKeyMap(key);
-    }
-
-    if (!callback) {
-      return;
-    }
-    const keyMap: Record<string, EmptyCallback> = {};
-    for (const key of keys) {
-      keyMap[key] = () => callback();
-    }
-    editor.addKeyMap(keyMap);
-  }, [editor, keys, callback]);
-}
-
-export function copyQuery() {
+export function copyQuery(): void {
   const { queryEditor, onCopyQuery } = editorStore.getState();
   if (!queryEditor) {
     return;
@@ -153,64 +129,58 @@ export function copyQuery() {
   onCopyQuery?.(query);
 }
 
-export function mergeQuery() {
-  const { queryEditor } = editorStore.getState();
-  const documentAST = queryEditor?.documentAST;
+export function mergeQuery(): void {
+  const { queryEditor, documentAST } = editorStore.getState();
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {
     return;
   }
-
   const { schema } = schemaStore.getState();
-  queryEditor.setValue(print(mergeAst(documentAST, schema)));
+  queryEditor!.setValue(print(mergeAst(documentAST, schema)));
 }
 
-export async function prettifyEditors() {
+export async function prettifyEditors(): Promise<void> {
   const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
     editorStore.getState();
+
   if (variableEditor) {
-    const variableEditorContent = variableEditor.getValue();
     try {
-      const prettifiedVariableEditorContent = JSON.stringify(
-        JSON.parse(variableEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedVariableEditorContent !== variableEditorContent) {
-        variableEditor.setValue(prettifiedVariableEditorContent);
+      const content = variableEditor.getValue();
+      const formatted = await formatJSONC(content);
+      if (formatted !== content) {
+        variableEditor.setValue(formatted);
       }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Parsing JSON failed, skip prettification.', error);
     }
   }
 
   if (headerEditor) {
-    const headerEditorContent = headerEditor.getValue();
-
     try {
-      const prettifiedHeaderEditorContent = JSON.stringify(
-        JSON.parse(headerEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedHeaderEditorContent !== headerEditorContent) {
-        headerEditor.setValue(prettifiedHeaderEditorContent);
+      const content = headerEditor.getValue();
+      const formatted = await formatJSONC(content);
+      if (formatted !== content) {
+        headerEditor.setValue(formatted);
       }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Parsing JSON failed, skip prettification.', error);
     }
   }
 
-  if (queryEditor) {
-    const editorContent = queryEditor.getValue();
-    try {
-      const prettifiedEditorContent = await onPrettifyQuery(editorContent);
-      if (prettifiedEditorContent !== editorContent) {
-        queryEditor.setValue(prettifiedEditorContent);
-      }
-    } catch {
-      /* Parsing query failed, skip prettification */
+  if (!queryEditor) {
+    return;
+  }
+  try {
+    const content = queryEditor.getValue();
+    const formatted = await onPrettifyQuery(content);
+    if (formatted !== content) {
+      queryEditor.setValue(formatted);
     }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Parsing query failed, skip prettification.', error);
   }
 }
 
@@ -225,35 +195,37 @@ export function getAutoCompleteLeafs() {
   const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
 
   if (insertions && insertions.length > 0) {
-    queryEditor.operation(() => {
-      const cursor = queryEditor.getCursor();
-      const cursorIndex = queryEditor.indexFromPos(cursor);
-      queryEditor.setValue(result || '');
-      let added = 0;
-      const markers = insertions.map(({ index, string }) =>
-        queryEditor.markText(
-          queryEditor.posFromIndex(index + added),
-          queryEditor.posFromIndex(index + (added += string.length)),
-          {
-            className: 'auto-inserted-leaf',
-            clearOnEnter: true,
-            title: 'Automatically added leaf fields',
-          },
-        ),
-      );
-      setTimeout(() => {
-        for (const marker of markers) {
-          marker.clear();
+    /*
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'auto-inserted-leaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => {
+          for (const marker of markers) {
+            marker.clear();
+          }
+        }, 7000);
+        let newCursorIndex = cursorIndex;
+        for (const { index, string } of insertions) {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
         }
-      }, 7000);
-      let newCursorIndex = cursorIndex;
-      for (const { index, string } of insertions) {
-        if (index < cursorIndex) {
-          newCursorIndex += string.length;
-        }
-      }
-      queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-    });
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    */
   }
 
   return result;

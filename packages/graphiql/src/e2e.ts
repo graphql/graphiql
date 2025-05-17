@@ -95,6 +95,9 @@ const root = ReactDOM.createRoot(document.getElementById('graphiql'));
 const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
+  // TODO: enable strict mode after monaco-editor migration
+  // React.createElement(React.StrictMode, {
+  //   children:
   React.createElement(GraphiQL, {
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
@@ -120,4 +123,5 @@ root.render(
     defaultQuery: parameters.defaultQuery,
     defaultTheme: parameters.defaultTheme,
   }),
+  // }),
 );

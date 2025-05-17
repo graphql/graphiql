@@ -2,17 +2,14 @@ import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useSchemaStore, useEditorStore } from '../stores';
+import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
 import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
-import { CodeMirrorEditor, CommonEditorProps } from './types';
+import { CommonEditorProps } from './types';
+import { createEditor } from '../create-editor';
+import { MODELS } from '../constants';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -32,35 +29,14 @@ type ResponseEditorProps = CommonEditorProps & {
   responseTooltip?: ResponseTooltipType;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror(
-    [
-      import('codemirror/addon/fold/foldgutter.js'),
-      import('codemirror/addon/fold/brace-fold.js'),
-      import('codemirror/addon/dialog/dialog.js'),
-      import('codemirror/addon/search/search.js'),
-      import('codemirror/addon/search/searchcursor.js'),
-      import('codemirror/addon/search/jump-to-line.js'),
-      // @ts-expect-error
-      import('codemirror/keymap/sublime.js'),
-      import('codemirror-graphql/esm/results/mode.js'),
-      import('codemirror-graphql/esm/utils/info-addon.js'),
-    ],
-    { useCommonAddons: false },
-  );
-}
-
 export function ResponseEditor({
   responseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
 }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
-  const { initialResponse, responseEditor, setResponseEditor } =
-    useEditorStore();
+  const { initialResponse } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
-
+  /*
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
     responseTooltip,
   );
@@ -69,14 +45,7 @@ export function ResponseEditor({
   }, [responseTooltip]);
 
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       // Handle image tooltips and custom tooltips
       const tooltipContainer = document.createElement('div');
       const tooltipRoot = createRoot(tooltipContainer);
@@ -104,25 +73,12 @@ export function ResponseEditor({
       const newEditor = CodeMirror(container, {
         value: initialResponse,
         lineWrapping: true,
-        readOnly: true,
         theme: editorTheme,
-        mode: 'graphql-results',
-        foldGutter: true,
-        gutters: ['CodeMirror-foldgutter'],
-        // @ts-expect-error
         info: true,
         extraKeys: commonKeys,
       });
-
-      setResponseEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialResponse, setResponseEditor]);
-
-  useSynchronizeOption(responseEditor, 'keyMap', keyMap);
+  }, [editorTheme, initialResponse]);
 
   useEffect(() => {
     if (fetchError) {
@@ -132,6 +88,26 @@ export function ResponseEditor({
       responseEditor?.setValue(formatError(validationErrors));
     }
   }, [responseEditor, fetchError, validationErrors]);
+  */
+  useEffect(() => {
+    const { setEditor } = editorStore.getState();
+    // Build the editor
+    const editor = createEditor(ref, {
+      model: MODELS.response,
+      readOnly: true,
+      lineNumbers: 'off',
+    });
+    setEditor({ responseEditor: editor });
+
+    const disposables = [editor, editor.getModel()!];
+
+    // Clean‑up on unmount or when deps change
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []);
 
   return (
     <section

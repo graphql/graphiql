@@ -8,7 +8,7 @@ import {
   visit,
   print,
 } from 'graphql';
-import { VariableToType } from 'graphql-language-service';
+import { OperationFacts, VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
@@ -31,7 +31,7 @@ import {
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../editor/tabs';
-import { CodeMirrorEditor } from '../editor/types';
+import { CodeMirrorEditor, Editor } from '../editor/types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
@@ -82,43 +82,31 @@ interface EditorStoreType extends TabsState {
   ): void;
 
   /**
-   * The CodeMirror editor instance for the headers editor.
+   * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
-  headerEditor: CodeMirrorEditor | null;
+  headerEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the query editor. This editor also
-   * stores the operation facts that are derived from the current editor
-   * contents.
+   * The Monaco Editor instance used in the query editor.
    */
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  queryEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the response editor.
+   * The Monaco Editor instance used in the response editor.
    */
-  responseEditor: CodeMirrorEditor | null;
+  responseEditor?: Editor;
   /**
-   * The CodeMirror editor instance for the variables editor.
+   * The Monaco Editor instance used in the variable editor.
    */
-  variableEditor: CodeMirrorEditor | null;
+  variableEditor?: Editor;
 
   /**
-   * Set the CodeMirror editor instance for the headers editor.
+   * The Monaco Editor instance used in the specified editor.
    */
-  setHeaderEditor(newEditor: CodeMirrorEditor): void;
-
-  /**
-   * Set the CodeMirror editor instance for the query editor.
-   */
-  setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
-
-  /**
-   * Set the CodeMirror editor instance for the response editor.
-   */
-  setResponseEditor(newEditor: CodeMirrorEditor): void;
-
-  /**
-   * Set the CodeMirror editor instance for the variables editor.
-   */
-  setVariableEditor(newEditor: CodeMirrorEditor): void;
+  setEditor(
+    state: Pick<
+      EditorStoreType,
+      'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
+    >,
+  ): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.
@@ -223,6 +211,25 @@ interface EditorStoreType extends TabsState {
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
+
+  // Operation facts that are derived from the query editor.
+
+  /**
+   * @remarks from graphiql 5
+   */
+  documentAST?: OperationFacts['documentAST'];
+  /**
+   * @remarks from graphiql 5
+   */
+  operationName?: string;
+  /**
+   * @remarks from graphiql 5
+   */
+  operations?: OperationFacts['operations'];
+  /**
+   *
+   */
+  focusOnEditorAndMoveCaretToLastPosition(editor?: Editor): void
 }
 
 type EditorStoreProps = Pick<
@@ -391,28 +398,30 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
       return updated;
     });
   },
-  headerEditor: null!,
-  queryEditor: null!,
-  responseEditor: null!,
-  variableEditor: null!,
-  setHeaderEditor(headerEditor) {
-    set({ headerEditor });
+  setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+    const entries = Object.entries({
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+    }).filter(([_key, value]) => value);
+    const newState = Object.fromEntries(entries);
+    set(newState);
   },
-  setQueryEditor(queryEditor) {
-    set({ queryEditor });
-  },
-  setResponseEditor(responseEditor) {
-    set({ responseEditor });
-  },
-  setVariableEditor(variableEditor) {
-    set({ variableEditor });
+  focusOnEditorAndMoveCaretToLastPosition(editor) {
+    if (!editor) {
+      return
+    }
+    const model = editor.getModel()!;
+    const lastLine = model.getLineCount();
+    const lastColumn = model.getLineMaxColumn(lastLine);
+
+    editor.setPosition({ lineNumber: lastLine, column: lastColumn });
+    editor.focus();
   },
   setOperationName(operationName) {
-    const { queryEditor, onEditOperationName, updateActiveTabValues } = get();
-    if (!queryEditor) {
-      return;
-    }
-    queryEditor.operationName = operationName;
+    const { onEditOperationName, updateActiveTabValues } = get();
+    set({ operationName });
     updateActiveTabValues({ operationName });
     onEditOperationName?.(operationName);
   },

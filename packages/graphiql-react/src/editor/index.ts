@@ -18,7 +18,6 @@ export {
 export type { TabsState } from './tabs';
 export type {
   CommonEditorProps,
-  KeyMap,
   WriteableEditorProps,
   SchemaReference,
 } from './types';

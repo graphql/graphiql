@@ -184,14 +184,19 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
 }
 
 export function synchronizeActiveTabValues(state: TabsState): TabsState {
-  const { queryEditor, variableEditor, headerEditor, responseEditor } =
-    editorStore.getState();
+  const {
+    queryEditor,
+    variableEditor,
+    headerEditor,
+    responseEditor,
+    operationName,
+  } = editorStore.getState();
   return setPropertiesInActiveTab(state, {
     query: queryEditor?.getValue() ?? null,
     variables: variableEditor?.getValue() ?? null,
     headers: headerEditor?.getValue() ?? null,
     response: responseEditor?.getValue() ?? null,
-    operationName: queryEditor?.operationName ?? null,
+    operationName: operationName ?? null,
   });
 }
 
@@ -234,9 +239,14 @@ export function setEditorValues({
     headerEditor,
     responseEditor,
     defaultHeaders,
+    focusOnEditorAndMoveCaretToLastPosition,
   } = editorStore.getState();
+  if (queryEditor) {
+    queryEditor.setValue(query ?? '');
+    // Focus on editor content when tab is changed
+    focusOnEditorAndMoveCaretToLastPosition(queryEditor);
+  }
 
-  queryEditor?.setValue(query ?? '');
   variableEditor?.setValue(variables ?? '');
   headerEditor?.setValue(headers ?? defaultHeaders ?? '');
   responseEditor?.setValue(response ?? '');

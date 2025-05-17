@@ -1,22 +1,14 @@
 import { useEffect, useRef } from 'react';
 
-import {
-  commonKeys,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_KEY_MAP,
-  importCodeMirror,
-} from './common';
-import { useEditorStore, useExecutionStore } from '../stores';
-import {
-  useChangeHandler,
-  useKeyMap,
-  mergeQuery,
-  prettifyEditors,
-  useSynchronizeOption,
-} from './hooks';
+import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { editorStore, storageStore, useEditorStore } from '../stores';
+import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
-import { KEY_MAP } from '../constants';
+import { KEY_BINDINGS, MODELS } from '../constants';
 import { clsx } from 'clsx';
+import { createEditor } from '../create-editor';
+import { debounce } from '../utility';
+import type { IDisposable } from '../monaco-editor';
 
 type HeaderEditorProps = WriteableEditorProps & {
   /**
@@ -32,52 +24,26 @@ type HeaderEditorProps = WriteableEditorProps & {
   isHidden?: boolean;
 };
 
-// To make react-compiler happy, otherwise complains about using dynamic imports in Component
-function importCodeMirrorImports() {
-  return importCodeMirror([
-    // @ts-expect-error
-    import('codemirror/mode/javascript/javascript.js'),
-  ]);
-}
-
 export function HeaderEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
   isHidden = false,
 }: HeaderEditorProps) {
-  const {
-    initialHeaders,
-    headerEditor,
-    setHeaderEditor,
-    shouldPersistHeaders,
-  } = useEditorStore();
-  const run = useExecutionStore(store => store.run);
+  const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
-
+  /*
   useEffect(() => {
-    let isActive = true;
-
     void importCodeMirrorImports().then(CodeMirror => {
-      // Don't continue if the effect has already been cleaned up
-      if (!isActive) {
-        return;
-      }
-
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         value: initialHeaders,
         lineNumbers: true,
-        tabSize: 2,
-        mode: { name: 'javascript', json: true },
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        readOnly: readOnly ? 'nocursor' : false,
-        foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-linenumbers'],
         extraKeys: commonKeys,
       });
 
@@ -100,16 +66,8 @@ export function HeaderEditor({
           editorInstance.execCommand('autocomplete');
         }
       });
-
-      setHeaderEditor(newEditor);
     });
-
-    return () => {
-      isActive = false;
-    };
-  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
-
-  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
+  }, [editorTheme, initialHeaders]);
 
   useChangeHandler(
     headerEditor,
@@ -118,15 +76,49 @@ export function HeaderEditor({
     'headers',
   );
 
-  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
-  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
-
   useEffect(() => {
     if (!isHidden) {
       headerEditor?.refresh();
     }
   }, [headerEditor, isHidden]);
+  */
+  useEffect(() => {
+    const { setEditor, updateActiveTabValues } = editorStore.getState();
+    // Build the editor
+    const editor = createEditor(ref, {
+      model: MODELS.header,
+      readOnly
+    });
+    setEditor({ headerEditor: editor });
+    const model = editor.getModel()!;
+    const disposables: IDisposable[] = [
+      editor.addAction(KEY_BINDINGS.runQuery),
+      editor.addAction(KEY_BINDINGS.prettify),
+      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor,
+      model,
+    ];
+
+    if (shouldPersistHeaders) {
+      const { storage } = storageStore.getState();
+      // 2️⃣ Subscribe to content changes
+      disposables.unshift(
+        model.onDidChangeContent(
+          debounce(500, () => {
+            const value = model.getValue();
+            storage.set(STORAGE_KEY, value);
+            updateActiveTabValues({ headers: value });
+          }),
+        ),
+      );
+    }
+    // 3️⃣ Clean‑up on unmount or when deps change
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />

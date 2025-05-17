@@ -9,14 +9,12 @@ type Dimensions = {
 };
 
 const ImagePreview_: FC<ImagePreviewProps> = props => {
-  const [dimensions, setDimensions] = useState<Dimensions>({
+  const [{ width, height }, setDimensions] = useState<Dimensions>({
     width: null,
     height: null,
   });
   const [mime, setMime] = useState<string | null>(null);
-
   const ref = useRef<HTMLImageElement>(null!);
-
   const src = tokenToURL(props.token)?.href;
 
   useEffect(() => {
@@ -35,17 +33,10 @@ const ImagePreview_: FC<ImagePreviewProps> = props => {
       });
   }, [src]);
 
-  const dims =
-    dimensions.width !== null && dimensions.height !== null ? (
-      <div>
-        {dimensions.width}x{dimensions.height}
-        {mime === null ? null : ' ' + mime}
-      </div>
-    ) : null;
-
   return (
     <div>
       <img
+        alt=""
         onLoad={() => {
           setDimensions({
             width: ref.current?.naturalWidth ?? null,
@@ -55,7 +46,12 @@ const ImagePreview_: FC<ImagePreviewProps> = props => {
         ref={ref}
         src={src}
       />
-      {dims}
+      {width !== null && height !== null && (
+        <div>
+          {width}x{height}
+          {mime && ' ' + mime}
+        </div>
+      )}
     </div>
   );
 };

@@ -23,7 +23,9 @@
     "react",
     "graphql",
     "sdk",
-    "codemirror"
+    "monaco-editor",
+    "monaco-graphql",
+    "monaco"
   ],
   "files": [
     "dist",
@@ -41,16 +43,17 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
+    "monaco-editor": "^0.52.2",
+    "monaco-graphql": "^1.6.1",
+    "jsonc-parser": "^3.3.1",
+    "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/toolkit": "^0.11.2",
     "@radix-ui/react-dialog": "^1.1",
     "@radix-ui/react-dropdown-menu": "^2.1",
     "@radix-ui/react-tooltip": "^1.2",
     "@radix-ui/react-visually-hidden": "^1.2",
-    "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
-    "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.2.1",
     "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^12",
     "get-value": "^3.0.1",

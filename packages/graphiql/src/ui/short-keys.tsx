@@ -17,48 +17,53 @@ const SHORT_KEYS = Object.entries({
 });
 
 interface ShortKeysProps {
-  /** @default 'sublime' */
+  /**
+   * @default 'sublime'
+   * @deprecated
+   */
   keyMap?: string;
 }
 
-export const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
-  return (
-    <div>
-      <table className="graphiql-table">
-        <thead>
-          <tr>
-            <th>Short Key</th>
-            <th>Function</th>
-          </tr>
-        </thead>
-        <tbody>
-          {SHORT_KEYS.map(([title, keys]) => (
-            <tr key={title}>
-              <td>
-                {keys.split('-').map((key, index, array) => (
-                  <Fragment key={key}>
-                    <code className="graphiql-key">{key}</code>
-                    {index !== array.length - 1 && ' + '}
-                  </Fragment>
-                ))}
-              </td>
-              <td>{title}</td>
+export const ShortKeys: FC<ShortKeysProps> = () =>
+  // { keyMap = 'sublime' }
+  {
+    return (
+      <div>
+        <table className="graphiql-table">
+          <thead>
+            <tr>
+              <th>Short Key</th>
+              <th>Function</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <p>
-        The editors use{' '}
-        <a
-          href="https://codemirror.net/5/doc/manual.html#keymaps"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          CodeMirror Key Maps
-        </a>{' '}
-        that add more short keys. This instance of Graph<em>i</em>QL uses{' '}
-        <code>{keyMap}</code>.
-      </p>
-    </div>
-  );
-};
+          </thead>
+          <tbody>
+            {SHORT_KEYS.map(([title, keys]) => (
+              <tr key={title}>
+                <td>
+                  {keys.split('-').map((key, index, array) => (
+                    <Fragment key={key}>
+                      <code className="graphiql-key">{key}</code>
+                      {index !== array.length - 1 && ' + '}
+                    </Fragment>
+                  ))}
+                </td>
+                <td>{title}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/*<p>*/}
+        {/*  The editors use{' '}*/}
+        {/*  <a*/}
+        {/*    href="https://codemirror.net/5/doc/manual.html#keymaps"*/}
+        {/*    target="_blank"*/}
+        {/*    rel="noopener noreferrer"*/}
+        {/*  >*/}
+        {/*    CodeMirror Key Maps*/}
+        {/*  </a>{' '}*/}
+        {/*  that add more short keys. This instance of Graph<em>i</em>QL uses{' '}*/}
+        {/*  <code>{keyMap}</code>.*/}
+        {/*</p>*/}
+      </div>
+    );
+  };

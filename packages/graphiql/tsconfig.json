@@ -11,9 +11,6 @@
   "exclude": ["**/*.spec.tsx"],
   "references": [
     {
-      "path": "../codemirror-graphql"
-    },
-    {
       "path": "../graphql-language-service"
     }
   ]
