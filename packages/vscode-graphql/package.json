@@ -171,6 +171,7 @@
     ]
   },
   "scripts": {
+    "types:check": "tsc --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
     "build-bundles": "npm run compile -- --sourcemap",

@@ -36,7 +36,6 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit",
     "build": "vite build && UMD=true vite build",
     "cypress-open": "yarn dev 'cypress open --browser electron'",

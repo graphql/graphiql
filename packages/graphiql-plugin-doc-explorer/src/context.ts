@@ -15,8 +15,12 @@ import {
   isUnionType,
 } from 'graphql';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { SchemaContextType, useSchemaStore } from '@graphiql/react';
-import { createStore, useStore } from 'zustand';
+import {
+  createBoundedUseStore,
+  SchemaContextType,
+  useSchemaStore,
+} from '@graphiql/react';
+import { createStore } from 'zustand';
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -150,7 +154,7 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
         set(state => {
           const oldNavStack = state.explorerNavStack;
           if (oldNavStack.length === 1) {
-            return oldNavStack;
+            return state;
           }
           // Spread is needed
           const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
@@ -257,11 +261,7 @@ export const DocExplorerContextProvider: FC<{
   return children as ReactElement;
 };
 
-function useDocExplorerStore<T>(
-  selector: (state: DocExplorerContextType) => T,
-): T {
-  return useStore(docExplorerStore, selector);
-}
+const useDocExplorerStore = createBoundedUseStore(docExplorerStore);
 
 export const useDocExplorer = () =>
   useDocExplorerStore(state => state.explorerNavStack);

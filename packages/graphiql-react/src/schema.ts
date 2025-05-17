@@ -16,9 +16,10 @@ import {
   validateSchema,
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore, useStore } from 'zustand';
+import { createStore } from 'zustand';
 import { useEditorContext } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
+import { createBoundedUseStore } from './utility';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -373,11 +374,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   return children as ReactElement;
 };
 
-export function useSchemaStore<T>(
-  selector?: (state: SchemaContextType) => T,
-): T {
-  return useStore(schemaStore, selector!);
-}
+export const useSchemaStore = createBoundedUseStore(schemaStore);
 
 type IntrospectionArgs = {
   /**

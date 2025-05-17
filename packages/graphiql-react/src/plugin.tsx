@@ -1,6 +1,7 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore, useStore } from 'zustand';
+import { createStore } from 'zustand';
+import { createBoundedUseStore } from './utility';
 
 export type GraphiQLPlugin = {
   /**
@@ -129,8 +130,6 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
   return children as ReactElement;
 };
 
-export function usePluginStore() {
-  return useStore(pluginStore);
-}
+export const usePluginStore = createBoundedUseStore(pluginStore);
 
 // const STORAGE_KEY = 'visiblePlugin';
