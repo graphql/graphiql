@@ -1,11 +1,12 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore, useStore } from 'zustand';
+import { createStore } from 'zustand';
 import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
 import {
   useExecutionContext,
   useEditorContext,
   useStorage,
+  createBoundedUseStore,
 } from '@graphiql/react';
 
 const historyStore = createStore<HistoryContextType>((set, get) => ({
@@ -146,9 +147,7 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   return children as ReactElement;
 };
 
-function useHistoryStore<T>(selector: (state: HistoryContextType) => T): T {
-  return useStore(historyStore, selector);
-}
+const useHistoryStore = createBoundedUseStore(historyStore);
 
 export const useHistory = () =>
   useHistoryStore(state => state.historyStorage.queries);
