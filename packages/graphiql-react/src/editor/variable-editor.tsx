@@ -20,11 +20,6 @@ type VariableEditorProps = WriteableEditorProps & {
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
-  /**
-   * Visually hide the header editor.
-   * @default false
-   */
-  isHidden?: boolean;
 };
 
 export function VariableEditor({
@@ -32,6 +27,7 @@ export function VariableEditor({
   onEdit,
   readOnly = false,
   isHidden = false,
+  ...props
 }: VariableEditorProps) {
   const { initialVariables } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
@@ -80,12 +76,6 @@ export function VariableEditor({
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
   useCompletion(variableEditor, onClickReference);
-
-  useEffect(() => {
-    if (!isHidden) {
-      variableEditor?.refresh();
-    }
-  }, [variableEditor, isHidden]);
   */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
@@ -126,7 +116,11 @@ export function VariableEditor({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
-    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
+    <div
+      ref={ref}
+      {...props}
+      className={clsx('graphiql-editor', props.className)}
+    />
   );
 }
 

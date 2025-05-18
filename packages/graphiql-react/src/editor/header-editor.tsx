@@ -16,18 +16,12 @@ type HeaderEditorProps = WriteableEditorProps & {
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
-
-  /**
-   * Visually hide the header editor.
-   * @default false
-   */
-  isHidden?: boolean;
 };
 
 export function HeaderEditor({
   onEdit,
   readOnly = false,
-  isHidden = false,
+  ...props
 }: HeaderEditorProps) {
   const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
@@ -70,12 +64,6 @@ export function HeaderEditor({
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
   );
-
-  useEffect(() => {
-    if (!isHidden) {
-      headerEditor?.refresh();
-    }
-  }, [headerEditor, isHidden]);
   */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
@@ -116,7 +104,11 @@ export function HeaderEditor({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
-    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
+    <div
+      ref={ref}
+      {...props}
+      className={clsx('graphiql-editor', props.className)}
+    />
   );
 }
 

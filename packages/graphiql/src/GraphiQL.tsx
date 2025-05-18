@@ -687,14 +687,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.secondRef}
       >
         <VariableEditor
-          isHidden={activeSecondaryEditor !== 'variables'}
+          className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
           onClickReference={onClickReference}
           readOnly={readOnly}
         />
         {isHeadersEditorEnabled && (
           <HeaderEditor
-            isHidden={activeSecondaryEditor !== 'headers'}
+            className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
             onEdit={onEditHeaders}
             readOnly={readOnly}
           />

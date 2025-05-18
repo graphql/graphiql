@@ -39,6 +39,7 @@ import {
   languages,
   Range,
 } from '../monaco-editor';
+import { clsx } from 'clsx';
 
 type QueryEditorProps = WriteableEditorProps & {
   /**
@@ -100,6 +101,7 @@ export function QueryEditor({
   onClickReference,
   onEdit,
   readOnly = false,
+  ...props
 }: QueryEditorProps) {
   const { initialQuery, queryEditor, setOperationName, variableEditor } =
     useEditorStore();
@@ -467,7 +469,13 @@ export function QueryEditor({
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
   }, [schema]);
 
-  return <div className="graphiql-editor" ref={ref} />;
+  return (
+    <div
+      ref={ref}
+      {...props}
+      className={clsx('graphiql-editor', props.className)}
+    />
+  );
 }
 
 /*

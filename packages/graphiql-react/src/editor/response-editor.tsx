@@ -9,6 +9,8 @@ import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { createEditor } from '../create-editor';
 import { getOrCreateModel, RESPONSE_URI } from '../constants';
+import { clsx } from 'clsx';
+import { CommonEditorProps } from './types';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -21,14 +23,17 @@ export type ResponseTooltipType = ComponentType<{
   token: Token;
 }>;
 
-type ResponseEditorProps = {
+interface ResponseEditorProps extends CommonEditorProps {
   /**
    * Customize the tooltip when hovering over properties in the response editor.
    */
   responseTooltip?: ResponseTooltipType;
-};
+}
 
-export function ResponseEditor({ responseTooltip }: ResponseEditorProps) {
+export function ResponseEditor({
+  responseTooltip,
+  ...props
+}: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
@@ -109,11 +114,12 @@ export function ResponseEditor({ responseTooltip }: ResponseEditorProps) {
 
   return (
     <section
-      className="result-window"
+      ref={ref}
       aria-label="Result Window"
       aria-live="polite"
       aria-atomic="true"
-      ref={ref}
+      {...props}
+      className={clsx('result-window', props.className)}
     />
   );
 }
