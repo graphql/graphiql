@@ -145,6 +145,9 @@ function removeImportsFromE2EFile(): PluginOption {
           .join('\n');
         return {
           code: transformedCode,
+          // Remove source map to clean vite warning:
+          // a plugin (remove-imports-from-e2e-file) was used to transform files, but didn't generate a sourcemap for the transformation
+          map: null,
         };
       }
     },

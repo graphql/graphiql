@@ -3,4 +3,4 @@ export { executionStore, useExecutionStore } from './execution';
 export { pluginStore, usePluginStore } from './plugin';
 export { schemaStore, useSchemaStore } from './schema';
 export { storageStore, useStorage } from './storage';
-export { themeStore, useThemeStore } from './theme';
+export { themeStore, useThemeStore, type Theme } from './theme';

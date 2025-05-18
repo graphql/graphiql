@@ -29,6 +29,7 @@ export {
   useSchemaStore,
   useStorage,
   useThemeStore,
+  type Theme
 } from './stores';
 export { GraphiQLProvider } from './provider';
 

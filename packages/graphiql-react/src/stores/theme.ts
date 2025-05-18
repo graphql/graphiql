@@ -9,7 +9,7 @@ import { editor } from '../monaco-editor';
  * The value `null` semantically means that the user does not explicitly choose
  * any theme, so we use the system default.
  */
-type Theme = 'light' | 'dark' | null;
+export type Theme = 'light' | 'dark' | null;
 
 type ThemeStoreType = {
   theme: Theme;
