@@ -1,7 +1,6 @@
 import { version as graphqlVersion } from 'graphql';
 
-// TODO monaco
-describe.skip('Linting', () => {
+describe('Linting', () => {
   it('Does not mark valid fields', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `
