@@ -63,6 +63,16 @@ const umdConfig = defineConfig({
       },
     },
   },
+  worker: {
+    format: 'es',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'workers/[name].js',
+        // Just to group worker assets, add shared/internal chunks too
+        chunkFileNames: 'workers/[name].js',
+      },
+    },
+  },
 });
 
 const esmConfig = defineConfig({

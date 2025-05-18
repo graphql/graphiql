@@ -282,12 +282,13 @@ describe('GraphiQL', () => {
       // Mock the container width
       const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        .mockReturnValue({ left: 0, right: 900 });
+        .mockReturnValue({ left: 0, right: 900 } as DOMRect);
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editors = container.querySelector('.graphiql-editors')!;
+      const editors =
+        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -320,7 +321,7 @@ describe('GraphiQL', () => {
       // Mock the container width
       const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        .mockReturnValue({ left: 0, right: 1200 });
+        .mockReturnValue({ left: 0, right: 1200 } as DOMRect);
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -350,9 +351,10 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 797 / (1200 - 797) = 1.977667493796526
-        expect(container.querySelector('.graphiql-plugin')!.style.flex).toBe(
-          '1.977667493796526',
-        );
+        expect(
+          container.querySelector<HTMLDivElement>('.graphiql-plugin')!.style
+            .flex,
+        ).toBe('1.977667493796526');
       });
 
       clientWidthSpy.mockRestore();
