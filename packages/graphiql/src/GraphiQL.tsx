@@ -71,8 +71,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
   plugins = [],
   referencePlugin = DOC_EXPLORER_PLUGIN,
-
-  editorTheme,
   readOnly,
   onEditQuery,
   onEditVariables,

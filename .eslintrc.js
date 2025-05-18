@@ -409,11 +409,10 @@ module.exports = {
         projectService: {
           allowDefaultProject: [
             'examples/monaco-graphql-react-vite/vite.config.ts',
-            'packages/graphiql/vite.config.mts',
-            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax,graphiql}/vitest.config.mts',
+            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',
-            'packages/graphiql/src/GraphiQL.spec.tsx',
+            'packages/graphiql/cypress.config.ts',
             'packages/vscode-graphql-syntax/tests/*.spec.ts',
             'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
             'packages/monaco-graphql/test/monaco-editor.test.ts',
