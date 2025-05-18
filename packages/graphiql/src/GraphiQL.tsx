@@ -110,7 +110,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
     showPersistHeadersSettings:
       showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
-    editorTheme,
     readOnly,
     onEditQuery,
     onEditVariables,

@@ -25,7 +25,6 @@ export function VariableEditor({
   onClickReference,
   onEdit,
   readOnly = false,
-  isHidden = false,
   ...props
 }: VariableEditorProps) {
   const { initialVariables } = useEditorStore();
