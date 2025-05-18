@@ -52,6 +52,34 @@ export const ShortKeys: FC<ShortKeysProps> = () =>
             ))}
           </tbody>
         </table>
+        <p>
+          This Graph<em>i</em>QL editor uses{' '}
+          <a
+            href="https://code.visualstudio.com/docs/reference/default-keybindings"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Monaco editor shortcuts
+          </a>
+          , with keybindings similar to VS Code. See the full list of shortcuts
+          for{' '}
+          <a
+            href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            macOS
+          </a>{' '}
+          or{' '}
+          <a
+            href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Windows
+          </a>
+          .
+        </p>
       </div>
     );
   };
