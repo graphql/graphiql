@@ -33,17 +33,22 @@
       crossorigin
       src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
     ></script>
-    <script>
+    <script type="module">
+      function getWorkerUrl(label) {
+        switch (label) {
+          case 'json':
+            return '/dist/assets/json.worker-BrPxNTcO.js';
+          case 'graphql':
+            return '/dist/assets/graphql.worker-BysbK_0B.js';
+        }
+        return '/dist/assets/editor.worker-IGM5BnlP.js';
+      }
+
       globalThis.MonacoEnvironment = {
-        getWorkerUrl(_workerId, label) {
-          switch (label) {
-            case 'json':
-              return 'https://esm.sh/monaco-editor@0.52.2/esm/vs/language/json/json.worker.js';
-            case 'graphql': {
-              return 'https://esm.sh/monaco-graphql@1.6.0/esm/graphql.worker.js';
-            }
-          }
-          return 'https://esm.sh/monaco-editor@0.52.2/esm/vs/editor/editor.worker.js';
+        // MonacoEnvironment.getWorkerUrl throws Uncaught SyntaxError: Unexpected token 'export'
+        getWorker(_workerId, label) {
+          const url = new URL(getWorkerUrl(label), import.meta.url);
+          return new Worker(url, { type: 'module' });
         },
       };
     </script>

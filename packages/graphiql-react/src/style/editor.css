@@ -16,6 +16,8 @@
    * @see https://github.com/microsoft/monaco-editor/issues/4455
    */
   outline-width: 0 !important;
+}
+.graphiql-response .monaco-editor {
   /* Add some padding so it doesn’t touch the tabs */
   padding-top: var(--px-16);
 }
