@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { commonKeys } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
@@ -25,7 +25,6 @@ type HeaderEditorProps = WriteableEditorProps & {
 };
 
 export function HeaderEditor({
-  editorTheme = DEFAULT_EDITOR_THEME,
   onEdit,
   readOnly = false,
   isHidden = false,
@@ -37,7 +36,6 @@ export function HeaderEditor({
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -64,7 +62,7 @@ export function HeaderEditor({
         }
       });
     });
-  }, [editorTheme]);
+  }, []);
 
   useChangeHandler(
     headerEditor,

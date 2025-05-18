@@ -2,15 +2,7 @@ import type { editor } from '../monaco-editor';
 
 export type CodeMirrorEditor = Editor & { options?: any };
 
-export type CommonEditorProps = {
-  /**
-   * Sets the color theme you want to use for the editor.
-   * @default 'graphiql'
-   */
-  editorTheme?: string;
-};
-
-export type WriteableEditorProps = CommonEditorProps & {
+export type WriteableEditorProps = {
   /**
    * Makes the editor read-only.
    * @default false

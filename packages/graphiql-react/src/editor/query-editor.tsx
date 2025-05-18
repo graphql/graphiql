@@ -19,7 +19,7 @@ import {
   editorStore,
 } from '../stores';
 import { markdown, debounce, isMacOs } from '../utility';
-import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { commonKeys } from './common';
 import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
@@ -33,14 +33,12 @@ import { createEditor } from '../create-editor';
 import {
   KeyCode,
   KeyMod,
-  editor,
+  editor as monacoEditor,
   IDisposable,
   Uri,
   languages,
   Range,
 } from '../monaco-editor';
-
-import IEditorMouseEvent = editor.IEditorMouseEvent;
 
 type QueryEditorProps = WriteableEditorProps & {
   /**
@@ -99,7 +97,6 @@ function updateEditorExternalFragments(
 }
 */
 export function QueryEditor({
-  editorTheme = DEFAULT_EDITOR_THEME,
   onClickReference,
   onEdit,
   readOnly = false,
@@ -133,7 +130,6 @@ export function QueryEditor({
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -174,7 +170,7 @@ export function QueryEditor({
             // empty
           },
         },
-      }) as CodeMirrorEditorWithOperationFacts;
+      });
 
       function showHint() {
         newEditor.showHint({ completeSingle: true, container });
@@ -226,7 +222,7 @@ export function QueryEditor({
       newEditor.operations = null;
       newEditor.variableToType = null;
     });
-  }, [editorTheme]);
+  }, []);
 
   // We don't use the generic `useChangeHandler` hook here because we want to
   // have additional logic that updates the operation facts that we store as
@@ -350,13 +346,13 @@ export function QueryEditor({
       });
     });
 
-    const handleMouseDown = (e: IEditorMouseEvent) => {
+    const handleMouseDown = (e: monacoEditor.IEditorMouseEvent) => {
       const { position } = e.target;
       if (!position) {
         return;
       }
       console.log('on mouse down');
-      const word = editor.getModel()!.getWordAtPosition(position);
+      const word = model.getWordAtPosition(position);
       if (word) {
         // eslint-disable-next-line no-console
         console.info(word);
@@ -380,7 +376,7 @@ export function QueryEditor({
       if (!position) {
         return;
       }
-      const word = editor.getModel()!.getWordAtPosition(position);
+      const word = model.getWordAtPosition(position);
       const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
 
       if (!word || !isCmdPressed) {
