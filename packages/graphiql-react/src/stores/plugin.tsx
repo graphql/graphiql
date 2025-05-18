@@ -123,7 +123,7 @@ export const PluginStore: FC<PluginStoreProps> = ({
     // if (storedValue) {
     //   storage.set(STORAGE_KEY, '');
     // }
-    const { setPlugins, setVisiblePlugin } = pluginStore.getState()
+    const { setPlugins, setVisiblePlugin } = pluginStore.getState();
 
     setPlugins(plugins);
     setVisiblePlugin(visiblePlugin ?? null);

@@ -229,7 +229,7 @@ interface EditorStoreType extends TabsState {
   /**
    *
    */
-  focusOnEditorAndMoveCaretToLastPosition(editor?: Editor): void
+  focusOnEditorAndMoveCaretToLastPosition(editor?: Editor): void;
 }
 
 type EditorStoreProps = Pick<
@@ -410,7 +410,7 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
   },
   focusOnEditorAndMoveCaretToLastPosition(editor) {
     if (!editor) {
-      return
+      return;
     }
     const model = editor.getModel()!;
     const lastLine = model.getLineCount();

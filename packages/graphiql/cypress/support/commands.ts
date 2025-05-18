@@ -79,16 +79,18 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        const actual = normalizeMonacoWhitespace(element.get(0).innerText);
-        const expected = query;
-        expect(actual).to.equal(expected);
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+      const expected = query;
+      expect(actual).to.equal(expected);
+    });
     if (variables !== undefined) {
       cy.contains('Variables').click();
-      cy.get('.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text')
+      cy.get(
+        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
+      )
         .eq(0)
         .should(element => {
           const actual = normalizeMonacoWhitespace(element.get(0).innerText);
@@ -98,7 +100,9 @@ Cypress.Commands.add(
     }
     if (variablesString !== undefined) {
       cy.contains('Variables').click();
-      cy.get('.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text')
+      cy.get(
+        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
+      )
         .eq(0)
         .should(element => {
           const actual = normalizeMonacoWhitespace(element.get(0).innerText);

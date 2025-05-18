@@ -223,7 +223,7 @@ export const executionStore = createStore<
         }
       };
       const $headers = headers ?? undefined;
-      const opName = execOperationName ?? operationName
+      const opName = execOperationName ?? operationName;
 
       const fetch = fetcher(
         {

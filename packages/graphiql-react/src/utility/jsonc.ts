@@ -18,7 +18,7 @@ export function formatJSONC(content: string) {
       { parsers: parsersBabel },
     ],
     // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}
-    printWidth: 0
+    printWidth: 0,
   });
 }
 

@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme } from '@graphiql/react';
-import '@graphiql/react/workers-es'
+import '@graphiql/react/workers-es';
 import './style.css';
 
 /**

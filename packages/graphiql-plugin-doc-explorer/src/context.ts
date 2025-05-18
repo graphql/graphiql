@@ -66,7 +66,9 @@ export type DocExplorerStoreType = {
      * the initial stack item.
      */
     reset(): void;
-    resolveSchemaReferenceToNavItem(schemaReference: SchemaReference | null): void;
+    resolveSchemaReferenceToNavItem(
+      schemaReference: SchemaReference | null,
+    ): void;
     /**
      * Replace the nav stack with an updated version using the new schema.
      */

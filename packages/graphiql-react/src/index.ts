@@ -28,7 +28,7 @@ export {
   useSchemaStore,
   useStorage,
   useThemeStore,
-  type Theme
+  type Theme,
 } from './stores';
 export { GraphiQLProvider } from './provider';
 
@@ -42,7 +42,7 @@ export type {
   ResponseTooltipType,
   TabsState,
   WriteableEditorProps,
-  SchemaReference
+  SchemaReference,
 } from './editor';
 export type { GraphiQLPlugin } from './stores/plugin';
 export { clsx as cn } from 'clsx';
