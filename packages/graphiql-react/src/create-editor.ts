@@ -44,31 +44,51 @@ const editorColors = {
   },
 };
 
-const bg = {
-  dark: '#212a3b',
-  light: '#fff',
+const colors = {
+  transparent: '#ffffff00',
+  bg: {
+    dark: '#212a3b',
+    light: '#ffffffff',
+  },
+  primary: {
+    dark: '#ff5794',
+    light: '#d60590',
+  },
+  primaryBg: {
+    dark: '#ff579419',
+    light: '#d6059019',
+  },
 };
 
-const baseColors = {
-  'editor.background': '#ffffff00', // white with a 00 alpha value
-  'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled
-  'textLink.foreground': '#d60590cc', // Foreground color for links in text
-  'textLink.activeForeground': '#d60590', // Foreground color for active links in text
-  'editorLink.activeForeground': '#d60590', // Color of active links
+const getBaseColors = (
+  theme: 'dark' | 'light',
+): editor.IStandaloneThemeData['colors'] => ({
+  'editor.background': colors.bg[theme], // white with a 00 alpha value
+  'scrollbar.shadow': colors.transparent, // Scrollbar shadow to indicate that the view is scrolled
+  'textLink.foreground': colors.primary[theme], // Foreground color for links in text
+  'textLink.activeForeground': colors.primary[theme], // Foreground color for active links in text
+  'editorLink.activeForeground': colors.primary[theme], // Color of active links
+  'editorHoverWidget.background': colors.bg[theme], // Background color of the editor hover
+  'list.hoverBackground': colors.primaryBg[theme], // List/Tree background when hovering over items using the mouse.
+  'menu.background': colors.bg[theme], // Background color of the context menu
+
+  'editorSuggestWidget.background': colors.bg[theme], // Background color of the suggest widget.
+  'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget.
+  'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget.
+
+
   // 'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
-  //  'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
+  // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
   // 'editorOverviewRuler.border': '#ffffff00', // Color of the overview ruler border
-  // 'scrollbar.shadow': '#ffffff00', // Scrollbar shadow to indicate that the view is scrolled
   // 'editorBracketMatch.background': '#ffffff00', // Background color behind matching brackets
   // 'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position.
-};
+});
 
 export const editorThemeDark: editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   colors: {
-    ...baseColors,
-    'editorHoverWidget.background': bg.dark, // Background color of the editor hover
+    ...getBaseColors('dark'),
     // 'editor.foreground': editorColors.dark.delimiters, // Default foreground color of the editor.
     // 'editorCursor.foreground': editorColors.dark.yellow_default, // Color of the editor cursor.
     // 'editor.selectionBackground': editorColors.dark.selections, // Color of the editor selection.
@@ -113,7 +133,6 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     // 'list.activeSelectionForeground': "#FFFFFF00", // List/Tree foreground color for the selected item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.
     // 'list.inactiveSelectionBackground': "#FFFFFF00", // List/Tree background color for the selected item when the list/tree is inactive. An active list/tree has keyboard focus, an inactive does not.
     // 'list.inactiveSelectionForeground': "#FFFFFF00", // List/Tree foreground color for the selected item when the list/tree is inactive. An active list/tree has keyboard focus, an inactive does not.
-    // 'list.hoverBackground': "#FFFFFF00", // List/Tree background when hovering over items using the mouse.
     // 'list.hoverForeground': "#FFFFFF00", // List/Tree foreground when hovering over items using the mouse.
     // 'list.dropBackground': "#FFFFFF00", // List/Tree drag and drop background when moving items around using the mouse.
     // 'list.highlightForeground': "#FFFFFF00", // List/Tree foreground color of the match highlights when searching inside the list/tree.
@@ -172,10 +191,8 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
     // 'editorMarkerNavigationError.background': "#FFFFFF00", // Editor marker navigation widget error color.
     // 'editorMarkerNavigationWarning.background': "#FFFFFF00", // Editor marker navigation widget warning color.
     // 'editorMarkerNavigation.background': "#FFFFFF00", // Editor marker navigation widget background.
-    // 'editorSuggestWidget.background': "#FFFFFF00", // Background color of the suggest widget.
     // 'editorSuggestWidget.border': "#FFFFFF00", // Border color of the suggest widget.
     // 'editorSuggestWidget.foreground': "#FFFFFF00", // Foreground color of the suggest widget.
-    // 'editorSuggestWidget.selectedBackground': "#FFFFFF00", // Background color of the selected entry in the suggest widget.
     // 'editorSuggestWidget.highlightForeground': "#FFFFFF00", // Color of the match highlights in the suggest widget.
     // 'editor.wordHighlightBackground': "#FFFFFF00", // Background color of a symbol during read-access, like reading a variable.
     // 'editor.wordHighlightStrongBackground': "#FFFFFF00", // Background color of a symbol during write-access, like writing to a variable.
@@ -295,8 +312,7 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   colors: {
-    ...baseColors,
-    'editorHoverWidget.background': bg.light, // Background color of the editor hover
+    ...getBaseColors('light'),
     // 'editor.foreground': editorColors.light.delimiters, // Default foreground color in the editor.
     // 'editorCursor.foreground': editorColors.light.yellow_default, // Color of the cursor in the editor.
     // 'editor.selectionBackground': editorColors.light.selections, // Color of the selection in the editor.

@@ -371,7 +371,7 @@ export function QueryEditor({
         ]
       | null = null;
 
-    const handleMove = debounce(5, (e: IEditorMouseEvent) => {
+    const handleMove = debounce(5, (e: monacoEditor.IEditorMouseEvent) => {
       const { position } = e.target;
       if (!position) {
         return;

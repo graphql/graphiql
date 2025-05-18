@@ -212,7 +212,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   children,
   confirmCloseTab,
   className,
-  editorTheme,
   onEditQuery,
   readOnly,
   onEditVariables,
@@ -623,7 +622,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.firstRef}
       >
         <QueryEditor
-          editorTheme={editorTheme}
           onClickReference={onClickReference}
           onEdit={onEditQuery}
           readOnly={readOnly}
@@ -689,7 +687,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.secondRef}
       >
         <VariableEditor
-          editorTheme={editorTheme}
           isHidden={activeSecondaryEditor !== 'variables'}
           onEdit={onEditVariables}
           onClickReference={onClickReference}
@@ -697,7 +694,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         />
         {isHeadersEditorEnabled && (
           <HeaderEditor
-            editorTheme={editorTheme}
             isHidden={activeSecondaryEditor !== 'headers'}
             onEdit={onEditHeaders}
             readOnly={readOnly}
@@ -778,10 +774,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             />
             <div className="graphiql-response" ref={editorResize.secondRef}>
               {isExecutionFetching && <Spinner />}
-              <ResponseEditor
-                editorTheme={editorTheme}
-                responseTooltip={responseTooltip}
-              />
+              <ResponseEditor responseTooltip={responseTooltip} />
               {footer}
             </div>
           </div>

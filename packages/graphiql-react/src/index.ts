@@ -38,7 +38,6 @@ export * from './ui';
 export * from './toolbar';
 
 export type {
-  CommonEditorProps,
   ResponseTooltipType,
   TabsState,
   WriteableEditorProps,

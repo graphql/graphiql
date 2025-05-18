@@ -2,8 +2,6 @@
 
 import { isMacOs } from '../utility/is-macos';
 
-export const DEFAULT_EDITOR_THEME = 'graphiql';
-
 export const commonKeys = {
   // Persistent search box in Query Editor
   [isMacOs ? 'Cmd-F' : 'Ctrl-F']: 'findPersistent',

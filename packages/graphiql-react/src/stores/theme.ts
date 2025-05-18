@@ -24,7 +24,15 @@ type ThemeStoreProps = {
   /**
    * @default null
    */
-  defaultTheme: Theme;
+  defaultTheme?: Theme;
+  /**
+   * Sets the color theme for the monaco editors.
+   * @default { dark: 'graphiql-DARK', light: 'graphiql-LIGHT' }
+   */
+  editorTheme?: {
+    dark: string;
+    light: string;
+  };
 };
 
 export const themeStore = createStore<ThemeStoreType>(set => ({
@@ -39,6 +47,7 @@ export const themeStore = createStore<ThemeStoreType>(set => ({
 export const ThemeStore: FC<ThemeStoreProps> = ({
   children,
   defaultTheme = null,
+  editorTheme = EDITOR_THEME,
 }) => {
   const theme = useThemeStore(store => store.theme);
   useEffect(() => {
@@ -69,11 +78,8 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
       document.body.classList.add(`graphiql-${theme}`);
     }
     const resolvedTheme = theme ?? getSystemTheme();
-    // Update theme for editors
-    const newTheme =
-      resolvedTheme === 'dark' ? EDITOR_THEME.dark : EDITOR_THEME.light;
-    editor.setTheme(newTheme);
-  }, [theme]);
+    editor.setTheme(editorTheme[resolvedTheme]);
+  }, [theme, editorTheme]);
 
   return children as ReactElement;
 };

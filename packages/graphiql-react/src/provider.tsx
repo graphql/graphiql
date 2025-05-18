@@ -51,6 +51,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   storage,
 
   defaultTheme,
+  editorTheme,
 
   children,
 }) => {
@@ -97,7 +98,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   };
   return (
     <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme}>
+      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
         <EditorStore {...editorContextProps}>
           <SchemaStore {...schemaContextProps}>
             <ExecutionStore {...executionContextProps}>

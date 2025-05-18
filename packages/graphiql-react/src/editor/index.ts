@@ -16,8 +16,4 @@ export {
   useHeadersEditorState,
 } from './hooks';
 export type { TabsState } from './tabs';
-export type {
-  CommonEditorProps,
-  WriteableEditorProps,
-  SchemaReference,
-} from './types';
+export type { WriteableEditorProps, SchemaReference } from './types';

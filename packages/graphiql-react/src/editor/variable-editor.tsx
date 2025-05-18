@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useEditorStore, storageStore, editorStore } from '../stores';
-import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { commonKeys } from './common';
 import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
 import { getOrCreateModel, KEY_BINDINGS, VARIABLE_URI } from '../constants';
@@ -28,7 +28,6 @@ type VariableEditorProps = WriteableEditorProps & {
 };
 
 export function VariableEditor({
-  editorTheme = DEFAULT_EDITOR_THEME,
   onClickReference,
   onEdit,
   readOnly = false,
@@ -41,7 +40,6 @@ export function VariableEditor({
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -77,7 +75,7 @@ export function VariableEditor({
         }
       });
     });
-  }, [editorTheme]);
+  }, []);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 

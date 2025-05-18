@@ -4,10 +4,9 @@ import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
-import { commonKeys, DEFAULT_EDITOR_THEME } from './common';
+import { commonKeys } from './common';
 import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
-import { CommonEditorProps } from './types';
 import { createEditor } from '../create-editor';
 import { getOrCreateModel, RESPONSE_URI } from '../constants';
 
@@ -22,17 +21,14 @@ export type ResponseTooltipType = ComponentType<{
   token: Token;
 }>;
 
-type ResponseEditorProps = CommonEditorProps & {
+type ResponseEditorProps = {
   /**
    * Customize the tooltip when hovering over properties in the response editor.
    */
   responseTooltip?: ResponseTooltipType;
 };
 
-export function ResponseEditor({
-  responseTooltip,
-  editorTheme = DEFAULT_EDITOR_THEME,
-}: ResponseEditorProps) {
+export function ResponseEditor({ responseTooltip }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
@@ -72,12 +68,11 @@ export function ResponseEditor({
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         lineWrapping: true,
-        theme: editorTheme,
         info: true,
         extraKeys: commonKeys,
       });
     });
-  }, [editorTheme]);
+  }, []);
   */
   useEffect(() => {
     if (fetchError) {
@@ -110,7 +105,7 @@ export function ResponseEditor({
         disposable.dispose(); // remove the listener
       }
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <section
