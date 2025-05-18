@@ -76,6 +76,8 @@ const getBaseColors = (
   'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget.
   'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget.
 
+  'menu.selectionBackground': colors.primaryBg[theme], // hover background
+  'menu.selectionForeground': colors.primary[theme], // hover text color
 
   // 'editorMarkerNavigationWarning.background': '#ffffff00', // Marker navigation widget warning color in the editor
   // 'editorMarkerNavigationError.background': '#FFFFFF00', // Marker navigation widget error color in the editor
