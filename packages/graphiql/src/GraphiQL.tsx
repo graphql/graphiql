@@ -231,9 +231,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     shouldPersistHeaders,
     tabs,
     activeTabIndex,
-    variableEditor,
-    headerEditor,
-    focusOnEditorAndMoveCaretToLastPosition,
+    // variableEditor,
+    // headerEditor,
+    // focusOnEditorAndMoveCaretToLastPosition,
   } = useEditorStore();
   const isExecutionFetching = useExecutionStore(store => store.isFetching);
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
@@ -381,11 +381,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
     setActiveSecondaryEditor(tabName);
     // Execute on the next tick, otherwise doesn't focus
-    requestAnimationFrame(() => {
-      focusOnEditorAndMoveCaretToLastPosition(
-        tabName === 'variables' ? variableEditor : headerEditor,
-      );
-    });
+    // requestAnimationFrame(() => {
+    //   focusOnEditorAndMoveCaretToLastPosition(
+    //     tabName === 'variables' ? variableEditor : headerEditor,
+    //   );
+    // });
   };
 
   const toggleEditorTools: ButtonHandler = () => {

@@ -67,16 +67,27 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
     document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
-
-      // Update theme for editors
-      const newTheme =
-        theme === 'dark' ? EDITOR_THEME.dark : EDITOR_THEME.light;
-      editor.setTheme(newTheme);
     }
+    const resolvedTheme = theme ?? getSystemTheme();
+    // Update theme for editors
+    const newTheme =
+      resolvedTheme === 'dark' ? EDITOR_THEME.dark : EDITOR_THEME.light;
+    editor.setTheme(newTheme);
   }, [theme]);
 
   return children as ReactElement;
 };
+
+/**
+ * Get the resolved theme - dark or light
+ * @see https://github.com/pacocoursey/next-themes/blob/c89d0191ce0f19215d7ddfa9eb28e1e4f94d37e5/next-themes/src/index.tsx#L255
+ */
+function getSystemTheme() {
+  const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+  const isDark = mediaQueryList.matches;
+  const systemTheme = isDark ? 'dark' : 'light';
+  return systemTheme;
+}
 
 const STORAGE_KEY = 'theme';
 

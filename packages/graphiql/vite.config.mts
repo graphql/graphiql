@@ -63,6 +63,9 @@ const umdConfig = defineConfig({
       },
     },
   },
+  worker: {
+    format: 'es',
+  },
 });
 
 const esmConfig = defineConfig({
@@ -98,26 +101,18 @@ const esmConfig = defineConfig({
       },
     },
   },
-  plugins: [...plugins, htmlPlugin(), dts({ rollupTypes: true })],
+  plugins: [
+    ...plugins,
+    htmlPlugin(),
+    process.env.NODE_ENV === 'production' && removeImportsFromE2EFile(),
+    dts({ rollupTypes: true }),
+  ],
+  worker: {
+    format: 'es',
+  },
 });
 
 function htmlPlugin(): PluginOption {
-  const htmlForVite = /* HTML */ `
-    <link href="/src/style.css" rel="stylesheet" />
-    <script type="module">
-      import React from 'react';
-      import ReactDOM from 'react-dom/client';
-      import GraphiQL from './src/cdn';
-
-      Object.assign(globalThis, {
-        React,
-        ReactDOM,
-        GraphiQL,
-      });
-    </script>
-    <script type="module" src="/src/e2e.ts"></script>
-  `;
-
   return {
     name: 'html-replace-umd-with-src',
     transformIndexHtml: {
@@ -129,8 +124,29 @@ function htmlPlugin(): PluginOption {
           html.indexOf(start),
           html.indexOf(end) + end.length,
         );
-        return html.replace(contentToReplace, htmlForVite);
+        return html.replace(
+          contentToReplace,
+          '<script type="module" src="/src/e2e.ts"></script>',
+        );
       },
+    },
+  };
+}
+
+function removeImportsFromE2EFile(): PluginOption {
+  return {
+    name: 'remove-imports-from-e2e-file',
+    enforce: 'pre', // Ensure it runs before Vite's own transformers
+    transform(code: string, id: string) {
+      if (id.endsWith('e2e.ts')) {
+        const transformedCode = code
+          .split('\n')
+          .filter(line => !line.startsWith('import '))
+          .join('\n');
+        return {
+          code: transformedCode,
+        };
+      }
     },
   };
 }

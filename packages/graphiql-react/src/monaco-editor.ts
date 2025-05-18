@@ -1,1 +1,1 @@
-export * from 'monaco-graphql/esm/monaco-editor'
+export * from 'monaco-editor';

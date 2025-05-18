@@ -1,8 +1,10 @@
 'use no memo';
 
-import { TabsState, Theme } from '@graphiql/react';
-
-/* global React, ReactDOM, GraphiQL */
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import GraphiQL from './cdn';
+import { TabsState } from '@graphiql/react';
+import './style.css';
 
 /**
  * UMD GraphiQL Example
@@ -91,7 +93,7 @@ function getSchemaUrl(): string {
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
-const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
 root.render(
