@@ -1,7 +1,7 @@
 {
   "name": "@graphiql/react",
   "version": "0.33.0",
-  "sideEffects": false,
+  "sideEffects": ["src/setup-workers.ts"],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -16,10 +16,6 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./font/*": "./font/*",
-    "./workers-es": {
-      "types": "./dist/workers-es.d.ts",
-      "import": "./dist/workers-es.js"
-    },
     ".": "./dist/index.js"
   },
   "types": "dist/index.d.ts",

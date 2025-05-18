@@ -69,7 +69,7 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: ['src/index.ts', 'src/workers-es.ts'],
+      entry: 'src/index.ts',
       fileName(_format, entryName) {
         const filePath = entryName.replace(/\.svg$/, '');
         return `${filePath}.js`;
