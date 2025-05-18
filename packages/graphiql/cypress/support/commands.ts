@@ -79,41 +79,42 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
-    cy.get('.graphiql-query-editor').should(element => {
-      // TODO we need to insert new line in monaco, recheck this part
-      const actual = normalize(element.get(0).innerText + (query ? '' : '\n'));
-      const expected = codeWithLineNumbers(query);
-      expect(actual).to.equal(expected);
-    });
+    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
+      element => {
+        const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+        const expected = query;
+        expect(actual).to.equal(expected);
+      },
+    );
     if (variables !== undefined) {
       cy.contains('Variables').click();
-      cy.get('.graphiql-editor-tool .graphiql-editor')
+      cy.get('.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text')
         .eq(0)
         .should(element => {
-          const actual = normalize(element.get(0).innerText);
-          const expected = codeWithLineNumbers(
-            JSON.stringify(variables, null, 2),
-          );
+          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const expected = JSON.stringify(variables, null, 2);
           expect(actual).to.equal(expected);
         });
     }
     if (variablesString !== undefined) {
       cy.contains('Variables').click();
-      cy.get('.graphiql-editor-tool .graphiql-editor')
+      cy.get('.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text')
         .eq(0)
         .should(element => {
-          const actual = normalize(element.get(0).innerText);
-          const expected = codeWithLineNumbers(variablesString);
+          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const expected = variablesString;
           expect(actual).to.equal(expected);
         });
     }
     if (headersString !== undefined) {
       cy.contains('Headers').click();
-      cy.get('.graphiql-editor-tool .graphiql-editor')
+      cy.get(
+        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
+      )
         .eq(1)
         .should(element => {
-          const actual = normalize(element.get(0).innerText);
-          const expected = codeWithLineNumbers(headersString);
+          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const expected = headersString;
           expect(actual).to.equal(expected);
         });
     }
@@ -135,24 +136,17 @@ Cypress.Commands.add('assertQueryResult', expectedResult => {
   });
 });
 
+// Monaco editor adds non-breaking spaces for all spaces, we need to normalize them
+function normalizeMonacoWhitespace(str: string): string {
+  return str.replaceAll(' ', ' ');
+}
+
 Cypress.Commands.add('containQueryResult', expected => {
   cy.get('section.result-window').should(element => {
-    const actual = element.get(0).textContent;
-    // Monaco editor adds non-breaking spaces for all spaces, we need to normalize them
-    expect(actual.replaceAll(' ', ' ')).to.contain(expected);
+    const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
+    expect(actual).to.contain(expected);
   });
 });
-
-function codeWithLineNumbers(code: string): string {
-  return code
-    .split('\n')
-    .map((line, i) => `${i + 1}\n${line}`)
-    .join('\n');
-}
-
-function normalize(str: string): string {
-  return str.replaceAll('​', '');
-}
 
 function normalizeWhitespace(str: string): string {
   return str.replaceAll('\xA0', ' ');
