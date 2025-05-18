@@ -38,12 +38,12 @@
         getWorkerUrl(_workerId, label) {
           switch (label) {
             case 'json':
-              return 'https://unpkg.com/monaco-editor@0.52.2/esm/vs/language/json/json.worker.js';
+              return 'https://esm.sh/monaco-editor@0.52.2/esm/vs/language/json/json.worker.js';
             case 'graphql': {
-              return 'https://unpkg.com/monaco-graphql@1.6.0/esm/graphql.worker.js';
+              return 'https://esm.sh/monaco-graphql@1.6.0/esm/graphql.worker.js';
             }
           }
-          return 'https://unpkg.com/monaco-editor@0.52.2/esm/vs/editor/editor.worker.js';
+          return 'https://esm.sh/monaco-editor@0.52.2/esm/vs/editor/editor.worker.js';
         },
       };
     </script>
