@@ -6,8 +6,7 @@ import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
 import { getOrCreateModel, HEADER_URI, KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';
-import { createEditor } from '../create-editor';
-import { debounce } from '../utility';
+import { debounce, createEditor } from '../utility';
 import type { IDisposable } from '../monaco-editor';
 
 type HeaderEditorProps = WriteableEditorProps & {

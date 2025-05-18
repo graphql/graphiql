@@ -1,11 +1,7 @@
-import { editor } from './monaco-editor';
-import { Editor } from './editor/types';
 import { RefObject } from 'react';
-
-export const EDITOR_THEME = {
-  dark: 'graphiql-DARK',
-  light: 'graphiql-LIGHT',
-};
+import { editor } from '../monaco-editor';
+import { Editor } from '../editor/types';
+import { EDITOR_THEME } from '../constants';
 
 const editorColors = {
   dark: {

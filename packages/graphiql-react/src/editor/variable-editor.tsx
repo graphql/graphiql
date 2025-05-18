@@ -5,8 +5,7 @@ import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
 import { getOrCreateModel, KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import { clsx } from 'clsx';
-import { createEditor } from '../create-editor';
-import { debounce } from '../utility';
+import { debounce, createEditor } from '../utility';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**

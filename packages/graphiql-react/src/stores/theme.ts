@@ -2,7 +2,7 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { storageStore } from './index';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
-import { EDITOR_THEME } from '../create-editor';
+import { EDITOR_THEME } from '../constants';
 import { editor } from '../monaco-editor';
 
 /**

@@ -18,7 +18,7 @@ import {
   useStorage,
   editorStore,
 } from '../stores';
-import { markdown, debounce, isMacOs } from '../utility';
+import { markdown, debounce, isMacOs, createEditor } from '../utility';
 import { commonKeys } from './common';
 import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
@@ -29,7 +29,6 @@ import {
   MONACO_GRAPHQL_API,
   QUERY_URI,
 } from '../constants';
-import { createEditor } from '../create-editor';
 import {
   KeyCode,
   KeyMod,

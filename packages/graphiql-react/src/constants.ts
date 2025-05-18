@@ -3,6 +3,11 @@ import { editor, KeyCode, KeyMod, Uri } from './monaco-editor';
 import { copyQuery, mergeQuery, prettifyEditors } from './editor';
 import { executionStore } from './stores';
 
+export const EDITOR_THEME = {
+  dark: 'graphiql-DARK',
+  light: 'graphiql-LIGHT',
+};
+
 export const KEY_MAP = Object.freeze({
   prettify: ['Shift-Ctrl-P'],
   mergeFragments: ['Shift-Ctrl-M'],
