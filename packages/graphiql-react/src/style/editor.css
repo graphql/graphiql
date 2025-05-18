@@ -4,11 +4,7 @@
   width: 100%;
 
   &.hidden {
-    /* Just setting `display: none;` would break the editor gutters */
-    left: -9999px;
-    position: absolute;
-    top: -9999px;
-    visibility: hidden;
+    display: none;
   }
 }
 
@@ -20,4 +16,6 @@
    * @see https://github.com/microsoft/monaco-editor/issues/4455
    */
   outline-width: 0 !important;
+  /* Add some padding so it doesn’t touch the tabs */
+  padding-top: var(--px-16);
 }
