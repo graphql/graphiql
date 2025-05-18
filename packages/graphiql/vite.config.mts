@@ -63,9 +63,6 @@ const umdConfig = defineConfig({
       },
     },
   },
-  worker: {
-    format: 'es',
-  },
 });
 
 const esmConfig = defineConfig({

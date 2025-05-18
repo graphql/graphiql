@@ -1,5 +1,4 @@
 import './style/root.css';
-import './workers';
 
 export {
   QueryEditor,
