@@ -52,18 +52,6 @@ export const ShortKeys: FC<ShortKeysProps> = () =>
             ))}
           </tbody>
         </table>
-        {/*<p>*/}
-        {/*  The editors use{' '}*/}
-        {/*  <a*/}
-        {/*    href="https://codemirror.net/5/doc/manual.html#keymaps"*/}
-        {/*    target="_blank"*/}
-        {/*    rel="noopener noreferrer"*/}
-        {/*  >*/}
-        {/*    CodeMirror Key Maps*/}
-        {/*  </a>{' '}*/}
-        {/*  that add more short keys. This instance of Graph<em>i</em>QL uses{' '}*/}
-        {/*  <code>{keyMap}</code>.*/}
-        {/*</p>*/}
       </div>
     );
   };
