@@ -446,8 +446,8 @@ export function QueryEditor({
       editor.addAction(KEY_BINDINGS.copyQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),
-      editor.onMouseDown(handleMouseDown),
-      editor.onMouseMove(handleMove),
+      // editor.onMouseDown(handleMouseDown),
+      // editor.onMouseMove(handleMove),
       editor,
       model,
     ];
