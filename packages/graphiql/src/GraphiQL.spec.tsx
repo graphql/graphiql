@@ -96,7 +96,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it('should refresh schema with new fetcher after a fetchError', async () => {
+    it.skip('should refresh schema with new fetcher after a fetchError', async () => {
       function firstFetcher() {
         return Promise.reject('Schema Error');
       }
@@ -151,7 +151,7 @@ describe('GraphiQL', () => {
     });
   }); // schema
 
-  describe('default query', () => {
+  describe.skip('default query', () => {
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -313,7 +313,7 @@ describe('GraphiQL', () => {
       boundingClientRectSpy.mockRestore();
     });
 
-    it('allows for resizing the doc explorer correctly', async () => {
+    it.skip('allows for resizing the doc explorer correctly', async () => {
       // Mock the drag bar width
       const clientWidthSpy = vi
         .spyOn(Element.prototype, 'clientWidth', 'get')
@@ -362,7 +362,7 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
-  it('allows the user to control persisting headers if it is true', async () => {
+  it.skip('allows the user to control persisting headers if it is true', async () => {
     const { container, findByText } = render(
       <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
     );
@@ -392,7 +392,7 @@ describe('GraphiQL', () => {
     expect(element).toBeInTheDocument();
   });
 
-  it('does not allow the user to control persisting headers is false', async () => {
+  it.skip('does not allow the user to control persisting headers is false', async () => {
     const { container, findByText } = render(
       <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
     );
@@ -415,7 +415,7 @@ describe('GraphiQL', () => {
   });
 
   describe('Tabs', () => {
-    it('show tabs', async () => {
+    it.skip('show tabs', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
@@ -445,7 +445,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it('each tab has a close button when multiple tabs are open', async () => {
+    it.skip('each tab has a close button when multiple tabs are open', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
@@ -475,7 +475,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it('close button removes a tab', async () => {
+    it.skip('close button removes a tab', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       act(() => {

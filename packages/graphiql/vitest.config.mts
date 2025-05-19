@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 import { plugins } from './vite.config.mjs';
 
@@ -7,5 +8,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts'],
+    alias: [
+      {
+        find: /^monaco-editor$/,
+        replacement: path.resolve(
+          '../../node_modules/monaco-editor/esm/vs/editor/editor.api',
+        ),
+      },
+    ],
   },
 });
