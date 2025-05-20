@@ -4,10 +4,15 @@ import '@testing-library/jest-dom';
 
 vi.mock('zustand'); // to make it works like Jest (auto-mocking)
 
-// Mocking clipboard object
-window.navigator.clipboard = {
-  write: vi.fn().mockResolvedValue(null),
-};
+/**
+ * Fixes TypeError: document.queryCommandSupported is not a function
+ */
+Object.defineProperty(navigator, 'clipboard', {
+  writable: false,
+  value: {
+    write: async () => null,
+  },
+});
 
 /**
  * Fixes TypeError: Cannot read properties of null (reading 'webkitBackingStorePixelRatio')
@@ -17,34 +22,40 @@ import 'vitest-canvas-mock';
 /**
  * Fixes Error: Unexpected usage
  */
-window.Worker ||= class {
-  removeEventListener() {}
-
-  postMessage() {}
-
-  terminate() {}
-};
+Object.defineProperty(window, 'Worker', {
+  writable: false,
+  value: vi.fn().mockReturnValue({
+    removeEventListener() {},
+    postMessage() {},
+    terminate() {},
+  }),
+});
 
 /**
  * Fixes ReferenceError: ResizeObserver is not defined
  */
-window.ResizeObserver ||= class {
-  observe() {}
-
-  disconnect() {}
-};
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: false,
+  value: vi.fn().mockReturnValue({
+    observe() {},
+    disconnect() {},
+  }),
+});
 
 /**
  * ReferenceError: ClipboardItem is not defined
  */
-window.ClipboardItem = vi.fn();
+Object.defineProperty(window, 'ClipboardItem', {
+  writable: false,
+  value: vi.fn(),
+});
 
 /**
  * Fixes TypeError: mainWindow.matchMedia is not a function
  * @see https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
  */
 Object.defineProperty(window, 'matchMedia', {
-  writable: true,
+  writable: false,
   value: vi.fn().mockImplementation(query => ({
     matches: false,
     media: query,
