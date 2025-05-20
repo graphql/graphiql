@@ -1,14 +1,14 @@
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 
-import { useExecutionContext } from '../execution';
+import { useExecutionStore } from '../execution';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorContext } from './context';
+import { useEditorStore } from './context';
 import {
   useChangeHandler,
   useCompletion,
@@ -42,27 +42,18 @@ function importCodeMirrorImports() {
   ]);
 }
 
-// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
-const _useVariableEditor = useVariableEditor;
-
-export function useVariableEditor(
-  {
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-    onClickReference,
-    onEdit,
-    readOnly = false,
-  }: UseVariableEditorArgs = {},
-  caller?: Function,
-) {
+export function useVariableEditor({
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+  onClickReference,
+  onEdit,
+  readOnly = false,
+}: UseVariableEditorArgs = {}) {
   const { initialVariables, variableEditor, setVariableEditor } =
-    useEditorContext({
-      nonNull: true,
-      caller: caller || _useVariableEditor,
-    });
-  const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: caller || _useVariableEditor });
-  const prettify = usePrettifyEditors({ caller: caller || _useVariableEditor });
+    useEditorStore();
+  const { run } = useExecutionStore();
+  const merge = useMergeQuery();
+  const prettify = usePrettifyEditors();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let isActive = true;
@@ -137,17 +128,11 @@ export function useVariableEditor(
 
   useSynchronizeOption(variableEditor, 'keyMap', keyMap);
 
-  useChangeHandler(
-    variableEditor,
-    onEdit,
-    STORAGE_KEY,
-    'variables',
-    _useVariableEditor,
-  );
+  useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
 
   useCompletion(variableEditor, onClickReference);
 
-  useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
+  useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(variableEditor, ['Shift-Ctrl-M'], merge);
 
