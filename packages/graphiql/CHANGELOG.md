@@ -1,5 +1,23 @@
 # Change Log
 
+## 4.1.0
+
+### Minor Changes
+
+- [#3946](https://github.com/graphql/graphiql/pull/3946) [`71755b7`](https://github.com/graphql/graphiql/commit/71755b7f412f8f3dd9f5194d3f1e0168b9ad07af) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(@graphiql/react): migrate React context to zustand:
+  - replace `useExecutionContext` with `useExecutionStore` hook
+  - replace `useEditorContext` with `useEditorStore` hook
+  - replace `useAutoCompleteLeafs` hook with `getAutoCompleteLeafs` function
+
+### Patch Changes
+
+- [#3963](https://github.com/graphql/graphiql/pull/3963) [`6d631e2`](https://github.com/graphql/graphiql/commit/6d631e2e558d038476fe235b1506bc52ecf68781) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix headers are not set in the refetch of introspection query
+
+- Updated dependencies [[`71755b7`](https://github.com/graphql/graphiql/commit/71755b7f412f8f3dd9f5194d3f1e0168b9ad07af), [`6d631e2`](https://github.com/graphql/graphiql/commit/6d631e2e558d038476fe235b1506bc52ecf68781)]:
+  - @graphiql/plugin-doc-explorer@0.2.1
+  - @graphiql/plugin-history@0.2.1
+  - @graphiql/react@0.34.0
+
 ## 4.0.5
 
 ### Patch Changes
