@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useEditorStore, storageStore, editorStore } from '../stores';
 import { commonKeys } from './common';
-import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
+import { useChangeHandler } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import { clsx } from 'clsx';
@@ -72,8 +72,6 @@ export function VariableEditor({
   }, []);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
-
-  useCompletion(variableEditor, onClickReference);
   */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();

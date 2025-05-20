@@ -12,8 +12,7 @@ import {
   executionStore,
 } from '../stores';
 import { debounce, formatJSONC } from '../utility';
-import { onHasCompletion } from './completion';
-import { CodeMirrorEditor, Editor, SchemaReference } from './types';
+import { CodeMirrorEditor, Editor } from './types';
 
 export function useSynchronizeValue(editor?: Editor, value?: string) {
   useEffect(() => {
@@ -21,18 +20,6 @@ export function useSynchronizeValue(editor?: Editor, value?: string) {
       editor.setValue(value);
     }
   }, [editor, value]);
-}
-
-export function useSynchronizeOption<K extends keyof EditorConfiguration>(
-  editor: CodeMirrorEditor | null,
-  option: K,
-  value: EditorConfiguration[K],
-) {
-  useEffect(() => {
-    /*
-    editor?.setOption(option, value);
-     */
-  }, [editor, option, value]);
 }
 
 export function useChangeHandler(
@@ -79,42 +66,6 @@ export function useChangeHandler(
     return () => editor.off('change', handleChange);
      */
   }, [callback, editor, storageKey, tabProperty]);
-}
-
-export function useCompletion(
-  editor: CodeMirrorEditor | null,
-  callback?: (reference: SchemaReference) => void,
-) {
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    /*
-    const handleCompletion = (
-      instance: CodeMirrorEditor,
-      changeObj?: EditorChange,
-    ) => {
-      void onHasCompletion(instance, changeObj, type => {
-        callback?.({
-          kind: 'Type',
-          type,
-          schema: schemaStore.getState().schema || undefined,
-        });
-      });
-    };
-    editor.on(
-      // @ts-expect-error @TODO additional args for hasCompletion event
-      'hasCompletion',
-      handleCompletion,
-    );
-    return () =>
-      editor.off(
-        // @ts-expect-error @TODO additional args for hasCompletion event
-        'hasCompletion',
-        handleCompletion,
-      );
-   */
-  }, [callback, editor]);
 }
 
 export function copyQuery(): void {

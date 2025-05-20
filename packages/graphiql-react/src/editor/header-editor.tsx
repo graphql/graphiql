@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { commonKeys } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
-import { useChangeHandler, useSynchronizeOption } from './hooks';
+import { useChangeHandler } from './hooks';
 import { WriteableEditorProps } from './types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';

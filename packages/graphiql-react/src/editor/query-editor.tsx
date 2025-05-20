@@ -26,7 +26,6 @@ import {
   createEditor,
 } from '../utility';
 import { commonKeys } from './common';
-import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -278,8 +277,6 @@ export function QueryEditor({
   useSynchronizeSchema(queryEditor, codeMirrorRef);
   useSynchronizeValidationRules(queryEditor, codeMirrorRef);
   useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
-
-  useCompletion(queryEditor, onClickReference);
 
   const runAtCursor = () => {
     if (!queryEditor?.operations || !queryEditor.hasFocus()) {
