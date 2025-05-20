@@ -229,7 +229,7 @@ export type SchemaContextType = {
    */
   currentHeaders: string;
   /**
-   * `true` when no `schema` provided via `props` or `schema` is provided as `null`
+   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
    */
   shouldIntrospect: boolean;
 };
