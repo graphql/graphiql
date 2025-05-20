@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { useEditorContext } from './editor';
+import { useEditorStore } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
 
@@ -296,12 +296,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const { headerEditor } = useEditorContext({
-    nonNull: true,
-    caller: SchemaContextProvider,
-  });
-
-  const { introspect } = useSchemaStore();
+  const headerEditor = useEditorStore(store => store.headerEditor);
 
   /**
    * Synchronize prop changes with state
@@ -332,9 +327,8 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     }));
 
     // Trigger introspection
-    void introspect();
+    void schemaStore.getState().introspect();
   }, [
-    introspect,
     schema,
     dangerouslyAssumeSchemaIsValid,
     onSchemaChange,
@@ -351,7 +345,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
-        void introspect();
+        void schemaStore.getState().introspect();
       }
     }
 
@@ -359,7 +353,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     return () => {
       window.removeEventListener('keydown', triggerIntrospection);
     };
-  }, [introspect]);
+  }, []);
 
   return children as ReactElement;
 };
