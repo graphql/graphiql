@@ -36,11 +36,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [install]
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-
       - id: cache-modules
         uses: actions/cache@v4
         with:
@@ -109,18 +107,15 @@ jobs:
     name: Vitest Unit Tests
     runs-on: ubuntu-latest
     needs: [build]
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-
       - id: cache-modules
         uses: actions/cache@v4
         with:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -131,11 +126,9 @@ jobs:
     name: ESLint
     runs-on: ubuntu-latest
     needs: [build]
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-
       - id: cache-modules
         uses: actions/cache@v4
         with:
@@ -148,11 +141,29 @@ jobs:
           path: ${{ env.BUILD-CACHE-LIST }}
       - run: yarn eslint
 
+  types-check:
+    name: Types Check
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - id: cache-modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+          key: modules-${{ github.sha }}
+      - uses: actions/cache@v4
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - run: yarn types:check
+
   e2e:
     name: Cypress
     runs-on: ubuntu-latest
     needs: [build]
-
     steps:
       - uses: actions/checkout@v4
       - id: cache-modules

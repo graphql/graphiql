@@ -159,6 +159,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",

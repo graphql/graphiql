@@ -25,6 +25,7 @@
     "src"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "test": "vitest"
   },
   "keywords": [

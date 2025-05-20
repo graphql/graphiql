@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.14.5",
+  "version": "2.14.6",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
@@ -30,6 +30,9 @@
     "svelte",
     "typescript"
   ],
+  "scripts": {
+    "types:check": "tsc --noEmit"
+  },
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",

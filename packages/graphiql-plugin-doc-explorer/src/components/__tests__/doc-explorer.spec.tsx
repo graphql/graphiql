@@ -30,14 +30,14 @@ function makeSchema(fieldName = 'field') {
 
 const defaultSchemaContext = {
   ...schemaStore.getInitialState(),
-  introspect() {},
+  async introspect() {},
   schema: makeSchema(),
 };
 
 const withErrorSchemaContext = {
   ...schemaStore.getInitialState(),
   fetchError: 'Error fetching schema',
-  introspect() {},
+  async introspect() {},
   schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
 };
 

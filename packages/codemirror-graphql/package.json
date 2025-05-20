@@ -35,6 +35,7 @@
     "!jest.config.js"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "build": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest"
   },

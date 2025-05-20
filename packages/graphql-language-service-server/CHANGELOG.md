@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.14.6
+
+### Patch Changes
+
+- [#3954](https://github.com/graphql/graphiql/pull/3954) [`8ec7a77`](https://github.com/graphql/graphiql/commit/8ec7a77e77078f7cb3826263518c8df6ab16bc24) Thanks [@dimaMachina](https://github.com/dimaMachina)! - [lsp] Fix parsing of relay style locations in locateCommand results
+
 ## 2.14.5
 
 ### Patch Changes

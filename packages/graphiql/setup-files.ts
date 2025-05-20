@@ -85,8 +85,8 @@ vi.mock('monaco-editor', async () => {
         const { value } = mockedTextAreas[path];
         return value;
       },
-      setValue(newValue) {
-        mockedTextAreas[path] = newValue;
+      setValue(newValue: string) {
+        mockedTextAreas[path].value = newValue;
       },
     });
   };
