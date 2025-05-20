@@ -5401,6 +5401,13 @@
     loupe "^3.1.2"
     tinyrainbow "^1.2.0"
 
+"@vitest/web-worker@3.1.4":
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/@vitest/web-worker/-/web-worker-3.1.4.tgz#28b7797d14e9314290099c93ed6b4594e01e7471"
+  integrity sha512-Bm2r4y3Gpl81qIz/7lvUy43fhGRiBqXOgfE/FzQtfRKKDfpsRu7ZfbcGFHe20oyE9fb55we1IXRSq1lsBwB1hA==
+  dependencies:
+    debug "^4.4.0"
+
 "@volar/language-core@2.4.12", "@volar/language-core@~2.4.11":
   version "2.4.12"
   resolved "https://registry.yarnpkg.com/@volar/language-core/-/language-core-2.4.12.tgz#98c8424f8d81a9cad1760a587b1c6db27d05f0cc"
