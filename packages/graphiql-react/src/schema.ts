@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { useEditorStore } from './editor';
+import { editorStore } from './editor/context';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
 
@@ -52,17 +52,16 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
     set({ schemaReference });
   },
   requestCounter: 0,
-  currentHeaders: '',
+  shouldIntrospect: true,
   /**
    * Fetch the schema
    */
-  introspect() {
+  async introspect() {
     const {
-      schema,
       requestCounter,
       fetcher,
-      currentHeaders,
       onSchemaChange,
+      shouldIntrospect,
       ...rest
     } = get();
 
@@ -71,20 +70,15 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
      * prop is passed an introspection result, we do continue but skip the
      * introspection request.
      */
-    if (isSchema(schema) || schema === null) {
+    if (!shouldIntrospect) {
       return;
     }
     const counter = requestCounter + 1;
     set({ requestCounter: counter });
 
-    const maybeIntrospectionData = schema;
-
-    async function fetchIntrospectionData() {
-      if (maybeIntrospectionData) {
-        // No need to introspect if we already have the data
-        return maybeIntrospectionData;
-      }
-
+    try {
+      const { headerEditor } = editorStore.getState();
+      const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
         set({ fetchError: 'Introspection failed as headers are invalid.' });
@@ -148,48 +142,38 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
       }
 
       set({ isFetching: false });
-
+      let introspectionData: IntrospectionQuery | undefined;
       if (result?.data && '__schema' in result.data) {
-        return result.data as IntrospectionQuery;
+        introspectionData = result.data as IntrospectionQuery;
+      } else {
+        // handle as if it were an error if the fetcher response is not a string or response.data is not present
+        const responseString =
+          typeof result === 'string' ? result : formatResult(result);
+        set({ fetchError: responseString });
       }
-
-      // handle as if it were an error if the fetcher response is not a string or response.data is not present
-      const responseString =
-        typeof result === 'string' ? result : formatResult(result);
-      set({ fetchError: responseString });
-    }
-
-    fetchIntrospectionData()
-      .then(introspectionData => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime or if there is no introspection data.
-         */
-        if (counter !== get().requestCounter || !introspectionData) {
-          return;
-        }
-
-        try {
-          const newSchema = buildClientSchema(introspectionData);
-          set({ schema: newSchema });
-          onSchemaChange?.(newSchema);
-        } catch (error) {
-          set({ fetchError: formatError(error) });
-        }
-      })
-      .catch(error => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime.
-         */
-        if (counter !== get().requestCounter) {
-          return;
-        }
-        set({
-          fetchError: formatError(error),
-          isFetching: false,
-        });
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime or if there is no introspection data.
+       */
+      if (counter !== get().requestCounter || !introspectionData) {
+        return;
+      }
+      const newSchema = buildClientSchema(introspectionData);
+      set({ schema: newSchema });
+      onSchemaChange?.(newSchema);
+    } catch (error) {
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime.
+       */
+      if (counter !== get().requestCounter) {
+        return;
+      }
+      set({
+        fetchError: formatError(error),
+        isFetching: false,
       });
+    }
   },
 }));
 
@@ -207,7 +191,7 @@ export type SchemaContextType = {
    * it will be validated, unless this is explicitly skipped using the
    * `dangerouslyAssumeSchemaIsValid` prop.
    */
-  introspect(): void;
+  introspect(): Promise<void>;
   /**
    * If there currently is an introspection request in-flight.
    */
@@ -235,10 +219,9 @@ export type SchemaContextType = {
    */
   requestCounter: number;
   /**
-   * Keep a ref to the current headers.
-   * @default ''
+   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
    */
-  currentHeaders: string;
+  shouldIntrospect: boolean;
 };
 
 type SchemaContextProviderProps = {
@@ -307,8 +290,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const headerEditor = useEditorStore(store => store.headerEditor);
-
   /**
    * Synchronize prop changes with state
    */
@@ -324,6 +305,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       fetcher,
       onSchemaChange,
       schema: newSchema,
+      shouldIntrospect: !isSchema(schema) && schema !== null,
       inputValueDeprecation,
       introspectionQueryName,
       schemaDescription,
@@ -333,11 +315,10 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
        * override this change.
        */
       requestCounter: requestCounter + 1,
-      currentHeaders: headerEditor?.getValue(),
     }));
 
     // Trigger introspection
-    schemaStore.getState().introspect();
+    void schemaStore.getState().introspect();
   }, [
     schema,
     dangerouslyAssumeSchemaIsValid,
@@ -346,7 +327,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     inputValueDeprecation,
     introspectionQueryName,
     schemaDescription,
-    headerEditor,
   ]);
 
   /**
@@ -355,7 +335,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
-        schemaStore.getState().introspect();
+        void schemaStore.getState().introspect();
       }
     }
 
