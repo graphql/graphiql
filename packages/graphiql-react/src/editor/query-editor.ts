@@ -13,11 +13,10 @@ import {
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
 import { executionStore } from '../execution';
-import { markdown } from '../markdown';
-import { usePluginStore } from '../plugin';
-import { useSchemaStore } from '../schema';
+import { markdown, debounce } from '../utility';
+import { pluginStore } from '../plugin';
+import { schemaStore, useSchemaStore } from '../schema';
 import { useStorage } from '../storage';
-import { debounce } from '../utility/debounce';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
@@ -27,12 +26,10 @@ import {
 import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
 import {
   useCompletion,
-  useCopyQuery,
-  UseCopyQueryArgs,
-  UsePrettifyEditorsArgs,
+  copyQuery,
   useKeyMap,
-  useMergeQuery,
-  usePrettifyEditors,
+  mergeQuery,
+  prettifyEditors,
   useSynchronizeOption,
 } from './hooks';
 import {
@@ -41,23 +38,22 @@ import {
   WriteableEditorProps,
 } from './types';
 import { normalizeWhitespace } from './whitespace';
+import { KEY_MAP } from '../constants';
 
-export type UseQueryEditorArgs = WriteableEditorProps &
-  Pick<UseCopyQueryArgs, 'onCopyQuery'> &
-  Pick<UsePrettifyEditorsArgs, 'onPrettifyQuery'> & {
-    /**
-     * Invoked when a reference to the GraphQL schema (type or field) is clicked
-     * as part of the editor or one of its tooltips.
-     * @param reference The reference that has been clicked.
-     */
-    onClickReference?(reference: SchemaReference): void;
-    /**
-     * Invoked when the contents of the query editor change.
-     * @param value The new contents of the editor.
-     * @param documentAST The editor contents parsed into a GraphQL document.
-     */
-    onEdit?(value: string, documentAST?: DocumentNode): void;
-  };
+export type UseQueryEditorArgs = WriteableEditorProps & {
+  /**
+   * Invoked when a reference to the GraphQL schema (type or field) is clicked
+   * as part of the editor or one of its tooltips.
+   * @param reference The reference that has been clicked.
+   */
+  onClickReference?(reference: SchemaReference): void;
+  /**
+   * Invoked when the contents of the query editor change.
+   * @param value The new contents of the editor.
+   * @param documentAST The editor contents parsed into a GraphQL document.
+   */
+  onEdit?(value: string, documentAST?: DocumentNode): void;
+};
 
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
 function importCodeMirrorImports() {
@@ -71,8 +67,6 @@ function importCodeMirrorImports() {
     import('codemirror-graphql/esm/mode.js'),
   ]);
 }
-
-const _useQueryEditor = useQueryEditor;
 
 // To make react-compiler happy since we mutate variableEditor
 function updateVariableEditor(
@@ -114,34 +108,22 @@ function updateEditorExternalFragments(
   editor.options.hintOptions.externalFragments = externalFragmentList;
 }
 
-export function useQueryEditor(
-  {
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-    onClickReference,
-    onCopyQuery,
-    onEdit,
-    onPrettifyQuery,
-    readOnly = false,
-  }: UseQueryEditorArgs = {},
-  caller?: Function,
-) {
-  const { schema, setSchemaReference } = useSchemaStore();
+export function useQueryEditor({
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+  onClickReference,
+  onEdit,
+  readOnly = false,
+}: UseQueryEditorArgs = {}) {
   const {
-    externalFragments,
     initialQuery,
     queryEditor,
     setOperationName,
     setQueryEditor,
-    validationRules,
     variableEditor,
     updateActiveTabValues,
   } = useEditorStore();
   const storage = useStorage();
-  const plugin = usePluginStore();
-  const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors({ onPrettifyQuery });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
@@ -150,16 +132,17 @@ export function useQueryEditor(
   >(() => {});
 
   useEffect(() => {
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const { setSchemaReference } = schemaStore.getState();
     onClickReferenceRef.current = reference => {
-      const referencePlugin = plugin?.referencePlugin;
       if (!referencePlugin) {
         return;
       }
-      plugin.setVisiblePlugin(referencePlugin);
+      setVisiblePlugin(referencePlugin);
       setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [onClickReference, plugin, setSchemaReference]);
+  }, [onClickReference]);
 
   useEffect(() => {
     let isActive = true;
@@ -306,7 +289,7 @@ export function useQueryEditor(
       editorInstance: CodeMirrorEditorWithOperationFacts,
     ) {
       const operationFacts = getOperationFacts(
-        schema,
+        schemaStore.getState().schema,
         editorInstance.getValue(),
       );
 
@@ -367,31 +350,20 @@ export function useQueryEditor(
   }, [
     onEdit,
     queryEditor,
-    schema,
     setOperationName,
     storage,
     variableEditor,
     updateActiveTabValues,
   ]);
 
-  useSynchronizeSchema(queryEditor, schema ?? null, codeMirrorRef);
-  useSynchronizeValidationRules(
-    queryEditor,
-    validationRules ?? null,
-    codeMirrorRef,
-  );
-  useSynchronizeExternalFragments(
-    queryEditor,
-    externalFragments,
-    codeMirrorRef,
-  );
+  useSynchronizeSchema(queryEditor, codeMirrorRef);
+  useSynchronizeValidationRules(queryEditor, codeMirrorRef);
+  useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
 
   useCompletion(queryEditor, onClickReference);
 
   const runAtCursor = () => {
-    const { run } = executionStore.getState();
-
-    if (!queryEditor || !queryEditor.operations || !queryEditor.hasFocus()) {
+    if (!queryEditor?.operations || !queryEditor.hasFocus()) {
       return;
     }
 
@@ -412,31 +384,25 @@ export function useQueryEditor(
     if (operationName && operationName !== queryEditor.operationName) {
       setOperationName(operationName);
     }
-
+    const { run } = executionStore.getState();
     run();
   };
 
-  useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], runAtCursor);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
-  useKeyMap(
-    queryEditor,
-    [
-      'Shift-Ctrl-P',
-      // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
-      'Shift-Ctrl-F',
-    ],
-    prettify,
-  );
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], merge);
+  useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
+  useKeyMap(queryEditor, KEY_MAP.copyQuery, copyQuery);
+  // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
+  useKeyMap(queryEditor, ['Shift-Ctrl-P', 'Shift-Ctrl-F'], prettifyEditors);
+  useKeyMap(queryEditor, KEY_MAP.mergeFragments, mergeQuery);
 
   return ref;
 }
 
 function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
-  schema: GraphQLSchema | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
+  const schema = useSchemaStore(store => store.schema ?? null);
+
   useEffect(() => {
     if (!editor) {
       return;
@@ -445,17 +411,17 @@ function useSynchronizeSchema(
     const didChange = editor.options.lint.schema !== schema;
     updateEditorSchema(editor, schema);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
   }, [editor, schema, codeMirrorRef]);
 }
 
 function useSynchronizeValidationRules(
   editor: CodeMirrorEditor | null,
-  validationRules: ValidationRule[] | null,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
+  const validationRules = useEditorStore(store => store.validationRules);
   useEffect(() => {
     if (!editor) {
       return;
@@ -464,32 +430,30 @@ function useSynchronizeValidationRules(
     const didChange = editor.options.lint.validationRules !== validationRules;
     updateEditorValidationRules(editor, validationRules);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
   }, [editor, validationRules, codeMirrorRef]);
 }
 
 function useSynchronizeExternalFragments(
   editor: CodeMirrorEditor | null,
-  externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: RefObject<CodeMirrorType | undefined>,
 ) {
-  const externalFragmentList = [...externalFragments.values()]; // eslint-disable-line react-hooks/exhaustive-deps -- false positive, variable is optimized by react-compiler, no need to wrap with useMemo
-
+  const externalFragments = useEditorStore(store => store.externalFragments);
   useEffect(() => {
     if (!editor) {
       return;
     }
-
+    const externalFragmentList = [...externalFragments.values()];
     const didChange =
       editor.options.lint.externalFragments !== externalFragmentList;
     updateEditorExternalFragments(editor, externalFragmentList);
 
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
+    if (didChange) {
+      codeMirrorRef.current?.signal(editor, 'change', editor);
     }
-  }, [editor, externalFragmentList, codeMirrorRef]);
+  }, [editor, externalFragments, codeMirrorRef]);
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;

@@ -142,6 +142,11 @@ module.exports = {
             property: 'navigator',
             message: 'Use `navigator` instead',
           },
+          {
+            object: 'window',
+            property: 'getComputedStyle',
+            message: 'Use `getComputedStyle` instead',
+          },
         ],
         'no-return-assign': 'error',
         'no-return-await': 'error',

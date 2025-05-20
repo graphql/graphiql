@@ -43,7 +43,7 @@ describe('GraphiQL', () => {
 
       // @ts-expect-error fetcher is a required prop to GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
+        'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
       );
       spy.mockRestore();
     });
@@ -100,6 +100,7 @@ describe('GraphiQL', () => {
       function firstFetcher() {
         return Promise.reject('Schema Error');
       }
+
       function secondFetcher() {
         return Promise.resolve(simpleIntrospection);
       }
