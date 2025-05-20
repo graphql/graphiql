@@ -143,48 +143,42 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
       }
 
       set({ isFetching: false });
-
+      let introspectionData: IntrospectionQuery | undefined;
       if (result?.data && '__schema' in result.data) {
-        return result.data as IntrospectionQuery;
+        introspectionData = result.data as IntrospectionQuery;
+      } else {
+        // handle as if it were an error if the fetcher response is not a string or response.data is not present
+        const responseString =
+          typeof result === 'string' ? result : formatResult(result);
+        set({ fetchError: responseString });
       }
-
-      // handle as if it were an error if the fetcher response is not a string or response.data is not present
-      const responseString =
-        typeof result === 'string' ? result : formatResult(result);
-      set({ fetchError: responseString });
-    }
-
-    fetchIntrospectionData()
-      .then(introspectionData => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime or if there is no introspection data.
-         */
-        if (counter !== get().requestCounter || !introspectionData) {
-          return;
-        }
-
-        try {
-          const newSchema = buildClientSchema(introspectionData);
-          set({ schema: newSchema });
-          onSchemaChange?.(newSchema);
-        } catch (error) {
-          set({ fetchError: formatError(error) });
-        }
-      })
-      .catch(error => {
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime.
-         */
-        if (counter !== get().requestCounter) {
-          return;
-        }
-        set({
-          fetchError: formatError(error),
-          isFetching: false,
-        });
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime or if there is no introspection data.
+       */
+      if (counter !== get().requestCounter || !introspectionData) {
+        return;
+      }
+      try {
+        const newSchema = buildClientSchema(introspectionData);
+        set({ schema: newSchema });
+        onSchemaChange?.(newSchema);
+      } catch (error) {
+        set({ fetchError: formatError(error) });
+      }
+    } catch (error) {
+      /**
+       * Don't continue if another introspection request has been started in
+       * the meantime.
+       */
+      if (counter !== get().requestCounter) {
+        return;
+      }
+      set({
+        fetchError: formatError(error),
+        isFetching: false,
       });
+    }
   },
 }));
 
