@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useStorage } from '../storage';
+import { useStorage } from '../stores';
 import { debounce } from './debounce';
 
 type ResizableElement = 'first' | 'second';

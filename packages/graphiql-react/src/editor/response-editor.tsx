@@ -2,7 +2,7 @@ import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useSchemaStore } from '../schema';
+import { useSchemaStore, useEditorStore } from '../stores';
 
 import {
   commonKeys,
@@ -10,8 +10,7 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { ImagePreview } from './components';
-import { useEditorStore } from './context';
+import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
 
@@ -26,7 +25,7 @@ export type ResponseTooltipType = ComponentType<{
   token: Token;
 }>;
 
-export type UseResponseEditorArgs = CommonEditorProps & {
+type ResponseEditorProps = CommonEditorProps & {
   /**
    * Customize the tooltip when hovering over properties in the response editor.
    */
@@ -52,15 +51,15 @@ function importCodeMirrorImports() {
   );
 }
 
-export function useResponseEditor({
+export function ResponseEditor({
   responseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
-}: UseResponseEditorArgs = {}) {
+}: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorStore();
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
     responseTooltip,
@@ -102,10 +101,6 @@ export function useResponseEditor({
       );
 
       const container = ref.current;
-      if (!container) {
-        return;
-      }
-
       const newEditor = CodeMirror(container, {
         value: initialResponse,
         lineWrapping: true,
@@ -138,5 +133,13 @@ export function useResponseEditor({
     }
   }, [responseEditor, fetchError, validationErrors]);
 
-  return ref;
+  return (
+    <section
+      className="result-window"
+      aria-label="Result Window"
+      aria-live="polite"
+      aria-atomic="true"
+      ref={ref}
+    />
+  );
 }

@@ -1,7 +1,7 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { createBoundedUseStore } from './utility';
+import { createBoundedUseStore } from '../utility';
 
 export type GraphiQLPlugin = {
   /**
@@ -20,7 +20,7 @@ export type GraphiQLPlugin = {
   title: string;
 };
 
-type PluginContextType = {
+type PluginStoreType = {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
@@ -48,10 +48,12 @@ type PluginContextType = {
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
+
+  setPlugins(plugins: GraphiQLPlugin[]): void;
 };
 
-type PluginContextProviderProps = Pick<
-  PluginContextType,
+type PluginStoreProps = Pick<
+  PluginStoreType,
   'referencePlugin' | 'onTogglePluginVisibility'
 > & {
   children: ReactNode;
@@ -69,14 +71,14 @@ type PluginContextProviderProps = Pick<
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
-export const pluginStore = createStore<PluginContextType>((set, get) => ({
+export const pluginStore = createStore<PluginStoreType>((set, get) => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,
   setVisiblePlugin(plugin) {
     const { plugins, onTogglePluginVisibility } = get();
     const byTitle = typeof plugin === 'string';
-    const newVisiblePlugin: PluginContextType['visiblePlugin'] =
+    const newVisiblePlugin: PluginStoreType['visiblePlugin'] =
       (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) || null;
     set(({ visiblePlugin }) => {
       if (newVisiblePlugin === visiblePlugin) {
@@ -86,16 +88,7 @@ export const pluginStore = createStore<PluginContextType>((set, get) => ({
       return { visiblePlugin: newVisiblePlugin };
     });
   },
-}));
-
-export const PluginContextProvider: FC<PluginContextProviderProps> = ({
-  onTogglePluginVisibility,
-  children,
-  visiblePlugin,
-  plugins = [],
-  referencePlugin,
-}) => {
-  useEffect(() => {
+  setPlugins(plugins) {
     const seenTitles = new Set<string>();
     const msg = 'All GraphiQL plugins must have a unique title';
     for (const { title } of plugins) {
@@ -107,6 +100,18 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
       }
       seenTitles.add(title);
     }
+    set({ plugins });
+  },
+}));
+
+export const PluginStore: FC<PluginStoreProps> = ({
+  onTogglePluginVisibility,
+  children,
+  visiblePlugin,
+  plugins = [],
+  referencePlugin,
+}) => {
+  useEffect(() => {
     // TODO: visiblePlugin initial data
     // const storedValue = storage.get(STORAGE_KEY);
     // const pluginForStoredValue = plugins.find(
@@ -118,9 +123,8 @@ export const PluginContextProvider: FC<PluginContextProviderProps> = ({
     // if (storedValue) {
     //   storage.set(STORAGE_KEY, '');
     // }
-
+    pluginStore.getState().setPlugins(plugins);
     pluginStore.setState({
-      plugins,
       onTogglePluginVisibility,
       referencePlugin,
     });

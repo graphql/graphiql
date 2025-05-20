@@ -8,9 +8,8 @@ import {
   isNonNullType,
 } from 'graphql';
 import { markdown } from '../utility';
-import { pluginStore } from '../plugin';
+import { pluginStore, schemaStore } from '../stores';
 import { importCodeMirror } from './common';
-import { schemaStore } from '../schema';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info

@@ -2,12 +2,12 @@ import { act, render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { FC, useEffect } from 'react';
 import {
-  DocExplorerContextProvider,
+  DocExplorerStore,
   useDocExplorer,
   useDocExplorerActions,
 } from '../../context';
 import { DocExplorer } from '../doc-explorer';
-import { schemaStore } from '../../../../graphiql-react/dist/schema';
+import { schemaStore } from '../../../../graphiql-react/dist/stores/schema';
 
 function makeSchema(fieldName = 'field') {
   return new GraphQLSchema({
@@ -43,9 +43,9 @@ const withErrorSchemaContext = {
 
 const DocExplorerWithContext: FC = () => {
   return (
-    <DocExplorerContextProvider>
+    <DocExplorerStore>
       <DocExplorer />
-    </DocExplorerContextProvider>
+    </DocExplorerStore>
   );
 };
 
@@ -109,9 +109,9 @@ describe('DocExplorer', () => {
       schema: initialSchema,
     });
     const { container, rerender } = render(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <SetInitialStack />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
 
     // First proper render of doc explorer
@@ -122,9 +122,9 @@ describe('DocExplorer', () => {
       });
     });
     rerender(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <DocExplorer />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
 
     const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
@@ -138,9 +138,9 @@ describe('DocExplorer', () => {
       });
     });
     rerender(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <DocExplorer />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
     const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
     // Because `Query.field` still exists in the new schema, we can still render it
@@ -171,9 +171,9 @@ describe('DocExplorer', () => {
       schema: initialSchema,
     });
     const { container, rerender } = render(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <SetInitialStack />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
 
     // First proper render of doc explorer
@@ -184,9 +184,9 @@ describe('DocExplorer', () => {
       });
     });
     rerender(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <DocExplorer />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
 
     const title = container.querySelector('.graphiql-doc-explorer-title')!;
@@ -200,9 +200,9 @@ describe('DocExplorer', () => {
       });
     });
     rerender(
-      <DocExplorerContextProvider>
+      <DocExplorerStore>
         <DocExplorer />
-      </DocExplorerContextProvider>,
+      </DocExplorerStore>,
     );
     const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
     // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`

@@ -1,17 +1,14 @@
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 
-import { useExecutionStore } from '../execution';
 import {
   commonKeys,
   DEFAULT_EDITOR_THEME,
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { useEditorStore } from './context';
+import { useEditorStore, useExecutionStore } from '../stores';
 import {
   useChangeHandler,
-  useCompletion,
   useKeyMap,
   mergeQuery,
   prettifyEditors,
@@ -19,41 +16,46 @@ import {
 } from './hooks';
 import { WriteableEditorProps } from './types';
 import { KEY_MAP } from '../constants';
+import { clsx } from 'clsx';
 
-export type UseVariableEditorArgs = WriteableEditorProps & {
+type HeaderEditorProps = WriteableEditorProps & {
   /**
-   * Invoked when a reference to the GraphQL schema (type or field) is clicked
-   * as part of the editor or one of its tooltips.
-   * @param reference The reference that has been clicked.
-   */
-  onClickReference?(reference: SchemaReference): void;
-  /**
-   * Invoked when the contents of the variables' editor change.
+   * Invoked when the contents of the headers editor change.
    * @param value The new contents of the editor.
    */
   onEdit?(value: string): void;
+
+  /**
+   * Visually hide the header editor.
+   * @default false
+   */
+  isHidden?: boolean;
 };
 
 // To make react-compiler happy, otherwise complains about using dynamic imports in Component
 function importCodeMirrorImports() {
   return importCodeMirror([
-    import('codemirror-graphql/esm/variables/hint.js'),
-    import('codemirror-graphql/esm/variables/lint.js'),
-    import('codemirror-graphql/esm/variables/mode.js'),
+    // @ts-expect-error
+    import('codemirror/mode/javascript/javascript.js'),
   ]);
 }
 
-export function useVariableEditor({
+export function HeaderEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
-  onClickReference,
   onEdit,
   readOnly = false,
-}: UseVariableEditorArgs = {}) {
-  const { initialVariables, variableEditor, setVariableEditor } =
-    useEditorStore();
+  isHidden = false,
+}: HeaderEditorProps) {
+  const {
+    initialHeaders,
+    headerEditor,
+    setHeaderEditor,
+    shouldPersistHeaders,
+  } = useEditorStore();
   const run = useExecutionStore(store => store.run);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null!);
+
   useEffect(() => {
     let isActive = true;
 
@@ -62,36 +64,23 @@ export function useVariableEditor({
       if (!isActive) {
         return;
       }
-      const container = ref.current;
-      if (!container) {
-        return;
-      }
 
+      const container = ref.current;
       const newEditor = CodeMirror(container, {
-        value: initialVariables,
+        value: initialHeaders,
         lineNumbers: true,
         tabSize: 2,
-        mode: 'graphql-variables',
+        mode: { name: 'javascript', json: true },
         theme: editorTheme,
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
         readOnly: readOnly ? 'nocursor' : false,
         foldGutter: true,
-        lint: {
-          // @ts-expect-error
-          variableToType: undefined,
-        },
-        hintOptions: {
-          closeOnUnfocus: false,
-          completeSingle: false,
-          container,
-          // @ts-expect-error
-          variableToType: undefined,
-        },
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         extraKeys: commonKeys,
       });
+
       function showHint() {
         newEditor.showHint({ completeSingle: false, container });
       }
@@ -112,25 +101,36 @@ export function useVariableEditor({
         }
       });
 
-      setVariableEditor(newEditor);
+      setHeaderEditor(newEditor);
     });
 
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
+  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
 
-  useSynchronizeOption(variableEditor, 'keyMap', keyMap);
+  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
 
-  useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
+  useChangeHandler(
+    headerEditor,
+    onEdit,
+    shouldPersistHeaders ? STORAGE_KEY : null,
+    'headers',
+  );
 
-  useCompletion(variableEditor, onClickReference);
+  useKeyMap(headerEditor, KEY_MAP.runQuery, run);
+  useKeyMap(headerEditor, KEY_MAP.prettify, prettifyEditors);
+  useKeyMap(headerEditor, KEY_MAP.mergeFragments, mergeQuery);
 
-  useKeyMap(variableEditor, KEY_MAP.runQuery, run);
-  useKeyMap(variableEditor, KEY_MAP.prettify, prettifyEditors);
-  useKeyMap(variableEditor, KEY_MAP.mergeFragments, mergeQuery);
+  useEffect(() => {
+    if (!isHidden) {
+      headerEditor?.refresh();
+    }
+  }, [headerEditor, isHidden]);
 
-  return ref;
+  return (
+    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
+  );
 }
 
-export const STORAGE_KEY = 'variables';
+export const STORAGE_KEY = 'headers';

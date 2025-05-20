@@ -9,13 +9,12 @@ import { DocExplorer } from './components';
 export * from './components';
 
 export {
-  DocExplorerContextProvider,
+  DocExplorerStore,
   useDocExplorer,
   useDocExplorerActions,
 } from './context';
 
 export type {
-  DocExplorerContextType,
   DocExplorerFieldDef,
   DocExplorerNavStack,
   DocExplorerNavStackItem,
