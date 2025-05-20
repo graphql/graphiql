@@ -96,7 +96,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it.skip('should refresh schema with new fetcher after a fetchError', async () => {
+    it('should refresh schema with new fetcher after a fetchError', async () => {
       function firstFetcher() {
         return Promise.reject('Schema Error');
       }
@@ -151,15 +151,15 @@ describe('GraphiQL', () => {
     });
   }); // schema
 
-  describe.skip('default query', () => {
+  describe('default query', () => {
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
-          '.graphiql-query-editor .mockCodeMirror',
-        );
-        expect(mockEditor!.value).toContain('# Welcome to GraphiQL');
+          '.graphiql-query-editor .mockMonaco',
+        )!;
+        expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
     });
 
@@ -169,9 +169,10 @@ describe('GraphiQL', () => {
       );
 
       await waitFor(() => {
-        expect(
-          container.querySelector('.graphiql-query-editor .mockCodeMirror'),
-        ).toHaveValue('GraphQL Party!!');
+        const mockEditor = container.querySelector(
+          '.graphiql-query-editor .mockMonaco',
+        )!;
+        expect(mockEditor).toHaveValue('GraphQL Party!!');
       });
     });
   }); // default query
@@ -313,7 +314,7 @@ describe('GraphiQL', () => {
       boundingClientRectSpy.mockRestore();
     });
 
-    it.skip('allows for resizing the doc explorer correctly', async () => {
+    it('allows for resizing the doc explorer correctly', async () => {
       // Mock the drag bar width
       const clientWidthSpy = vi
         .spyOn(Element.prototype, 'clientWidth', 'get')
@@ -362,7 +363,7 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
-  it.skip('allows the user to control persisting headers if it is true', async () => {
+  it('allows the user to control persisting headers if it is true', async () => {
     const { container, findByText } = render(
       <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
     );
@@ -392,7 +393,7 @@ describe('GraphiQL', () => {
     expect(element).toBeInTheDocument();
   });
 
-  it.skip('does not allow the user to control persisting headers is false', async () => {
+  it('does not allow the user to control persisting headers is false', async () => {
     const { container, findByText } = render(
       <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
     );
@@ -415,7 +416,7 @@ describe('GraphiQL', () => {
   });
 
   describe('Tabs', () => {
-    it.skip('show tabs', async () => {
+    it('show tabs', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
@@ -445,7 +446,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it.skip('each tab has a close button when multiple tabs are open', async () => {
+    it('each tab has a close button when multiple tabs are open', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
@@ -475,7 +476,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it.skip('close button removes a tab', async () => {
+    it('close button removes a tab', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       act(() => {

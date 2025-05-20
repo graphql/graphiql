@@ -3,9 +3,9 @@ import { useEditorStore, storageStore, editorStore } from '../stores';
 import { commonKeys } from './common';
 import { useChangeHandler, useCompletion, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
-import { getOrCreateModel, KEY_BINDINGS, VARIABLE_URI } from '../constants';
+import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import { clsx } from 'clsx';
-import { debounce, createEditor } from '../utility';
+import { debounce, getOrCreateModel, createEditor } from '../utility';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**

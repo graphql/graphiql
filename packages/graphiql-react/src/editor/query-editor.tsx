@@ -18,17 +18,18 @@ import {
   useStorage,
   editorStore,
 } from '../stores';
-import { markdown, debounce, isMacOs, createEditor } from '../utility';
+import {
+  markdown,
+  debounce,
+  isMacOs,
+  getOrCreateModel,
+  createEditor,
+} from '../utility';
 import { commonKeys } from './common';
 import { useCompletion, useSynchronizeOption } from './hooks';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
-import {
-  getOrCreateModel,
-  KEY_BINDINGS,
-  MONACO_GRAPHQL_API,
-  QUERY_URI,
-} from '../constants';
+import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
 import {
   KeyCode,
   KeyMod,

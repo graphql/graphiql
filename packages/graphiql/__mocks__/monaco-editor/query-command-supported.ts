@@ -1,1 +1,0 @@
-global.document.queryCommandSupported = () => false;

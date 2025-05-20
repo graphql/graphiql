@@ -4,9 +4,9 @@ import { commonKeys } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { useChangeHandler, useSynchronizeOption } from './hooks';
 import { WriteableEditorProps } from './types';
-import { getOrCreateModel, HEADER_URI, KEY_BINDINGS } from '../constants';
+import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import { clsx } from 'clsx';
-import { debounce, createEditor } from '../utility';
+import { debounce, getOrCreateModel, createEditor } from '../utility';
 import type { IDisposable } from '../monaco-editor';
 
 type HeaderEditorProps = WriteableEditorProps & {

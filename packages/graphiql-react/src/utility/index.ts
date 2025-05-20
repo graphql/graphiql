@@ -1,5 +1,5 @@
 export { createBoundedUseStore } from './create-bounded-use-store';
-export { createEditor } from './create-editor';
+export { getOrCreateModel, createEditor } from './create-editor';
 export { debounce } from './debounce';
 export { isMacOs } from './is-macos';
 export { formatJSONC, parseJSONC } from './jsonc';

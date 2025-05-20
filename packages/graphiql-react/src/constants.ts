@@ -1,5 +1,5 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
-import { editor, KeyCode, KeyMod, Uri } from './monaco-editor';
+import { KeyCode, KeyMod, Uri } from './monaco-editor';
 import { copyQuery, mergeQuery, prettifyEditors } from './editor';
 import { executionStore } from './stores';
 
@@ -130,20 +130,3 @@ export const MONACO_GRAPHQL_API = initializeMode({
   //   },
   // ],
 });
-
-export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
-  const { path } = uri;
-  // eslint-disable-next-line no-console
-  console.log(uri.toString());
-
-  const model = editor.getModel(uri);
-  if (model) {
-    // eslint-disable-next-line no-console
-    console.info('✅ Model', path, 'is already created');
-    return model;
-  }
-  // eslint-disable-next-line no-console
-  console.info('🚀 Model', path, "isn't yet created, creating...");
-  const language = path.split('.').at(-1)!;
-  return editor.createModel(value, language, uri);
-}

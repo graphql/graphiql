@@ -7,8 +7,8 @@ import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 import { commonKeys } from './common';
 import { ImagePreview } from './image-preview';
 import { useSynchronizeOption } from './hooks';
-import { createEditor } from '../utility';
-import { getOrCreateModel, RESPONSE_URI } from '../constants';
+import { getOrCreateModel, createEditor } from '../utility';
+import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
 import { CommonEditorProps } from './types';
 
