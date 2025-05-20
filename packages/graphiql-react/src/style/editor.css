@@ -21,3 +21,11 @@
   /* Add some padding so it doesn’t touch the tabs */
   padding-top: var(--px-16);
 }
+
+.monaco-editor .highlight {
+  color: hsl(var(--color-primary)) !important;
+}
+
+.monaco-editor input:focus-visible {
+  outline-color: hsl(var(--color-primary));
+}
