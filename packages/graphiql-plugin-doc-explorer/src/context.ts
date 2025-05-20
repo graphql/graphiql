@@ -154,7 +154,7 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
         set(state => {
           const oldNavStack = state.explorerNavStack;
           if (oldNavStack.length === 1) {
-            return oldNavStack;
+            return state;
           }
           // Spread is needed
           const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];

@@ -29,10 +29,10 @@
     "dist"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch",
     "build": "vite build",
-    "test": "vitest",
-    "types:check": "tsc --noEmit"
+    "test": "vitest"
   },
   "peerDependencies": {
     "react": "^18 || ^19",

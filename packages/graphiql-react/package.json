@@ -30,10 +30,10 @@
     "font"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch",
     "build": "vite build",
-    "test": "vitest",
-    "types:check": "tsc --noEmit"
+    "test": "vitest"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
