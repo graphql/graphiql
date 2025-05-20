@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { useEditorStore } from './editor';
+import { editorStore } from './editor/context';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
 
@@ -52,17 +52,14 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
     set({ schemaReference });
   },
   requestCounter: 0,
-  currentHeaders: '',
   shouldIntrospect: true,
   /**
    * Fetch the schema
    */
   async introspect() {
     const {
-      schema,
       requestCounter,
       fetcher,
-      currentHeaders,
       onSchemaChange,
       shouldIntrospect,
       ...rest
@@ -73,13 +70,15 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
      * prop is passed an introspection result, we do continue but skip the
      * introspection request.
      */
-    if (isSchema(schema) || schema === null) {
+    if (!shouldIntrospect) {
       return;
     }
     const counter = requestCounter + 1;
     set({ requestCounter: counter });
 
     try {
+      const { headerEditor } = editorStore.getState();
+      const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
         set({ fetchError: 'Introspection failed as headers are invalid.' });
@@ -220,11 +219,6 @@ export type SchemaContextType = {
    */
   requestCounter: number;
   /**
-   * Keep a ref to the current headers.
-   * @default ''
-   */
-  currentHeaders: string;
-  /**
    * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
    */
   shouldIntrospect: boolean;
@@ -296,8 +290,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const headerEditor = useEditorStore(store => store.headerEditor);
-
   /**
    * Synchronize prop changes with state
    */
@@ -323,7 +315,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
        * override this change.
        */
       requestCounter: requestCounter + 1,
-      currentHeaders: headerEditor?.getValue(),
     }));
 
     // Trigger introspection
@@ -336,7 +327,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     inputValueDeprecation,
     introspectionQueryName,
     schemaDescription,
-    headerEditor,
   ]);
 
   /**
