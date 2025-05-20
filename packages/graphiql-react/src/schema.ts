@@ -53,16 +53,18 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
   },
   requestCounter: 0,
   currentHeaders: '',
+  shouldIntrospect: true,
   /**
    * Fetch the schema
    */
-  introspect() {
+  async introspect() {
     const {
       schema,
       requestCounter,
       fetcher,
       currentHeaders,
       onSchemaChange,
+      shouldIntrospect,
       ...rest
     } = get();
 
@@ -77,14 +79,7 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
     const counter = requestCounter + 1;
     set({ requestCounter: counter });
 
-    const maybeIntrospectionData = schema;
-
-    async function fetchIntrospectionData() {
-      if (maybeIntrospectionData) {
-        // No need to introspect if we already have the data
-        return maybeIntrospectionData;
-      }
-
+    try {
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
         set({ fetchError: 'Introspection failed as headers are invalid.' });
@@ -207,7 +202,7 @@ export type SchemaContextType = {
    * it will be validated, unless this is explicitly skipped using the
    * `dangerouslyAssumeSchemaIsValid` prop.
    */
-  introspect(): void;
+  introspect(): Promise<void>;
   /**
    * If there currently is an introspection request in-flight.
    */
@@ -239,6 +234,10 @@ export type SchemaContextType = {
    * @default ''
    */
   currentHeaders: string;
+  /**
+   * `true` when no `schema` provided via `props` or `schema` is provided as `null`
+   */
+  shouldIntrospect: boolean;
 };
 
 type SchemaContextProviderProps = {
@@ -329,6 +328,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       fetcher,
       onSchemaChange,
       schema: newSchema,
+      shouldIntrospect: !isSchema(schema) && schema !== null,
       inputValueDeprecation,
       introspectionQueryName,
       schemaDescription,
@@ -342,7 +342,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     }));
 
     // Trigger introspection
-    introspect();
+    void introspect();
   }, [
     introspect,
     schema,
@@ -361,7 +361,7 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
-        introspect();
+        void introspect();
       }
     }
 
