@@ -159,13 +159,9 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
       if (counter !== get().requestCounter || !introspectionData) {
         return;
       }
-      try {
-        const newSchema = buildClientSchema(introspectionData);
-        set({ schema: newSchema });
-        onSchemaChange?.(newSchema);
-      } catch (error) {
-        set({ fetchError: formatError(error) });
-      }
+      const newSchema = buildClientSchema(introspectionData);
+      set({ schema: newSchema });
+      onSchemaChange?.(newSchema);
     } catch (error) {
       /**
        * Don't continue if another introspection request has been started in
