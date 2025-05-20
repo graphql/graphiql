@@ -42,6 +42,7 @@ export type {
   ResponseTooltipType,
   TabsState,
   WriteableEditorProps,
+  SchemaReference,
 } from './editor';
 export type { GraphiQLPlugin } from './stores/plugin';
 export type { Theme } from './theme';

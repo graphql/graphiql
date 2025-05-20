@@ -63,6 +63,7 @@
     "src"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
