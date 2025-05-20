@@ -1,7 +1,6 @@
 import { act, render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { FC, useEffect } from 'react';
-import type { SchemaContextType } from '@graphiql/react';
 import {
   DocExplorerContextProvider,
   useDocExplorer,
@@ -29,22 +28,17 @@ function makeSchema(fieldName = 'field') {
   });
 }
 
-const defaultSchemaContext: SchemaContextType = {
-  fetchError: null,
-  introspect() {},
-  isFetching: false,
+const defaultSchemaContext = {
+  ...schemaStore.getInitialState(),
+  async introspect() {},
   schema: makeSchema(),
-  validationErrors: [],
 };
 
-const withErrorSchemaContext: SchemaContextType = {
+const withErrorSchemaContext = {
+  ...schemaStore.getInitialState(),
   fetchError: 'Error fetching schema',
-  introspect() {},
-  isFetching: false,
+  async introspect() {},
   schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
-  validationErrors: [],
-  schemaReference: null!,
-  setSchemaReference: null!,
 };
 
 const DocExplorerWithContext: FC = () => {

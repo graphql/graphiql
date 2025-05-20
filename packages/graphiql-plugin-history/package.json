@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -29,10 +29,10 @@
     "dist"
   ],
   "scripts": {
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch",
     "build": "vite build",
-    "test": "vitest",
-    "types:check": "tsc --noEmit"
+    "test": "vitest"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -41,7 +41,7 @@
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
     "@graphiql/toolkit": "^0.11.2",
-    "@graphiql/react": "^0.33.0",
+    "@graphiql/react": "^0.34.0",
     "zustand": "^5"
   },
   "devDependencies": {

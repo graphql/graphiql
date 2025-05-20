@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "GraphQL language support for CodeMirror 6",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "build": "cm-buildhelper src/index.ts",
     "prepare": "yarn build",
     "test": "vitest run"
