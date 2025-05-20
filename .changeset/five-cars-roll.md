@@ -3,7 +3,7 @@
 '@graphiql/plugin-explorer': patch
 '@graphiql/plugin-history': patch
 '@graphiql/react': minor
-'graphiql': patch
+'graphiql': minor
 ---
 
 feat(@graphiql/react): migrate React context to zustand:
