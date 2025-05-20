@@ -1,5 +1,4 @@
 import { $ } from 'execa';
-import { version } from 'graphql';
 
 // eslint-disable-next-line no-control-regex
 const ANSI_COLOR_REGEX = /\u001b\[\d+m/g;
@@ -10,22 +9,26 @@ describe('monaco-editor', () => {
       await $`yarn workspace example-monaco-graphql-react-vite build`;
     // When process.env.CI is set, stdout contain ANSI color codes, and vite doesn't have
     // `--no-colors` flag
-    const lines = stdout.replaceAll(ANSI_COLOR_REGEX, '').split('\n');
-    // expect(lines[0]).toBe('$ vite build');
-    // expect(lines[1]).toMatch(' building for production...');
-    // expect(lines[2]).toBe('transforming...');
-    expect(lines[3]).toMatch(
-      `✓ ${parseInt(version, 10) > 16 ? 862 : 848} modules transformed.`,
-    );
-    // expect(lines[4]).toBe('rendering chunks...');
-    // expect(lines[5]).toBe('computing gzip size...');
-    // expect(lines[6]).toMatch('dist/index.html');
-    // expect(lines[7]).toMatch('dist/assets/codicon-');
-    // expect(lines[8]).toMatch('dist/assets/index-');
-    // expect(lines[9]).toMatch('dist/assets/graphql-');
-    // expect(lines[10]).toMatch('dist/assets/jsonMode-');
-    // expect(lines[11]).toMatch('dist/assets/graphqlMode-');
-    // expect(lines[12]).toMatch('dist/assets/index-');
-    // expect(lines[13]).toMatch('✓ built in ');
+    const output = stdout
+      .replaceAll(ANSI_COLOR_REGEX, '')
+      .split('\n')
+      .slice(2, -1)
+      .join('\n');
+    expect(output).toMatchInlineSnapshot(`
+      "transforming...
+      ✓ 898 modules transformed.
+      rendering chunks...
+      computing gzip size...
+      dist/index.html                          1.84 kB │ gzip:     0.83 kB
+      dist/assets/codicon-BA2IlpFX.ttf        79.57 kB
+      dist/assets/index-B9YNSYcm.css         154.01 kB │ gzip:    21.97 kB
+      dist/assets/graphql-jqsxtyuU.js          4.15 kB │ gzip:     1.59 kB
+      dist/assets/typescript-C-tQdLSa.js       9.11 kB │ gzip:     2.96 kB
+      dist/assets/index-Dl026pIL.js           22.57 kB │ gzip:     5.39 kB
+      dist/assets/tsMode-DC0QyPbI.js          42.22 kB │ gzip:     8.25 kB
+      dist/assets/jsonMode-vVGcHoLD.js        85.52 kB │ gzip:    15.63 kB
+      dist/assets/graphqlMode-DXMFqJ36.js    247.13 kB │ gzip:    43.84 kB
+      dist/assets/index-Cdgf-Cyp.js        6,402.53 kB │ gzip: 1,177.47 kB"
+    `);
   }, 30_000);
 });
