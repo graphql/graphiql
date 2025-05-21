@@ -1,1 +1,1 @@
-import '@graphiql/react/setup-workers/webpack'
+import '@graphiql/react/setup-workers/webpack';

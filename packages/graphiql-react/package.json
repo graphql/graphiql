@@ -1,7 +1,10 @@
 {
   "name": "@graphiql/react",
   "version": "0.34.0",
-  "sideEffects": ["dist/setup-workers/webpack.js", "dist/setup-workers/vite.js"],
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",

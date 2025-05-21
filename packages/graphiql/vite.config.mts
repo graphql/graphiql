@@ -96,9 +96,9 @@ const esmConfig = defineConfig({
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys({
           ...packageJSON.peerDependencies,
-          ...packageJSON.dependencies
+          ...packageJSON.dependencies,
         }),
-        /^@graphiql\/react\//
+        /^@graphiql\/react\//,
       ],
       output: {
         preserveModules: true,

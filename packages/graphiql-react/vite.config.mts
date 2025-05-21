@@ -73,7 +73,10 @@ export const plugins: PluginOption[] = [
       const dest = './dist/setup-workers/webpack.js';
 
       console.info(`Build finished! Writing "${dest}"...`);
-      const content = await fs.readFile('./src/setup-workers/webpack.ts', 'utf8');
+      const content = await fs.readFile(
+        './src/setup-workers/webpack.ts',
+        'utf8',
+      );
       await fs.writeFile(
         dest,
         // Strip TypeScript types

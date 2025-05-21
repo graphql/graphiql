@@ -1,7 +1,10 @@
 {
   "name": "graphiql",
   "version": "4.1.0",
-  "sideEffects": ["dist/setup-workers/webpack.js", "dist/setup-workers/vite.js"],
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
