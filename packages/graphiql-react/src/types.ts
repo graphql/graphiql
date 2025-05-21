@@ -1,7 +1,7 @@
-import type { editor } from './monaco-editor';
-import { HTMLAttributes } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
+import type { editor as monacoEditor } from './monaco-editor';
 
-export interface EditorProps extends HTMLAttributes<HTMLDivElement> {
+export interface EditorProps extends ComponentPropsWithoutRef<'div'> {
   /**
    * Makes the editor read-only.
    * @default false
@@ -11,4 +11,4 @@ export interface EditorProps extends HTMLAttributes<HTMLDivElement> {
 
 export type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 
-export type MonacoEditor = editor.IStandaloneCodeEditor;
+export type MonacoEditor = monacoEditor.IStandaloneCodeEditor;
