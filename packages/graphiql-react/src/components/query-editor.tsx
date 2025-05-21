@@ -29,15 +29,8 @@ import {
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
-import {
-  KeyCode,
-  KeyMod,
-  editor as monacoEditor,
-  IDisposable,
-  Uri,
-  languages,
-} from '../monaco-editor';
-import { Range } from '../monaco-editor';
+import type { editor as monacoEditor, IDisposable } from '../monaco-editor';
+import { Range, Uri, languages } from '../monaco-editor';
 import { clsx } from 'clsx';
 
 interface QueryEditorProps extends EditorProps {
