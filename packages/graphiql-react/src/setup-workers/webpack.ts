@@ -13,11 +13,10 @@ globalThis.MonacoEnvironment = {
             import.meta.url,
           ),
         );
-      case 'graphql': {
+      case 'graphql':
         return new Worker(
           new URL('monaco-graphql/esm/graphql.worker.js', import.meta.url),
         );
-      }
     }
     return new Worker(
       new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url),

@@ -18,9 +18,8 @@ globalThis.MonacoEnvironment = {
     switch (label) {
       case 'json':
         return new JsonWorker();
-      case 'graphql': {
+      case 'graphql':
         return new GraphQLWorker();
-      }
     }
     return new EditorWorker();
   },

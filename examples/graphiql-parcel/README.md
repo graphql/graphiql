@@ -1,4 +1,4 @@
-## GraphiQL Parcel Example
+# GraphiQL Parcel Example
 
 > [!WARNING]
 >
