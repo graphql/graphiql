@@ -46,8 +46,6 @@ export function ResponseEditor({
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        lineWrapping: true,
-        info: true,
         extraKeys: commonKeys,
       });
     });
@@ -73,6 +71,7 @@ export function ResponseEditor({
       model,
       readOnly: true,
       lineNumbers: 'off',
+      wordWrap: 'on', // Toggle word wrap on resizing editors
     });
     setEditor({ responseEditor: editor });
 
