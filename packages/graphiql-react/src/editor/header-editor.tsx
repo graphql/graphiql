@@ -27,11 +27,7 @@ export function HeaderEditor({
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
-      const newEditor = CodeMirror(container, {
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        showCursorWhenSelecting: true,
-      });
+      const newEditor = CodeMirror(container, {});
 
       function showHint() {
         newEditor.showHint({ completeSingle: false, container });

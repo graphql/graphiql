@@ -130,9 +130,6 @@ export function QueryEditor({
 
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        showCursorWhenSelecting: true,
         lint: {
           schema: undefined,
           validationRules: null,
