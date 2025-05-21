@@ -1,9 +1,8 @@
-import { forwardRef, ReactNode, HTMLAttributes } from 'react';
+import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
-
 import './index.css';
 
 interface TabProps {
@@ -35,7 +34,7 @@ TabRoot.displayName = 'Tab';
 
 const TabButton = forwardRef<
   HTMLButtonElement,
-  HTMLAttributes<HTMLButtonElement>
+  ComponentPropsWithoutRef<'button'>
 >(({ children, className, ...props }, ref) => (
   <UnStyledButton
     {...props}
@@ -50,7 +49,7 @@ TabButton.displayName = 'Tab.Button';
 
 const TabClose = forwardRef<
   HTMLButtonElement,
-  HTMLAttributes<HTMLButtonElement>
+  ComponentPropsWithoutRef<'button'>
 >((props, ref) => (
   <UnStyledButton
     aria-label="Close Tab"

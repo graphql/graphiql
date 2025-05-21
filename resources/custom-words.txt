@@ -211,6 +211,7 @@ tsup
 typeahead
 typeaheads
 typedoc
+turbopack
 unfocus
 unnormalized
 unparsable
