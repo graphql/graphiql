@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { forwardRef, JSX, FC } from 'react';
+import { forwardRef, FC, ComponentPropsWithoutRef } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
 import * as D from '@radix-ui/react-dialog';
@@ -9,7 +9,7 @@ import './index.css';
 
 const DialogClose = forwardRef<
   HTMLButtonElement,
-  JSX.IntrinsicElements['button']
+  ComponentPropsWithoutRef<'button'>
 >((props, ref) => (
   <D.Close asChild>
     <UnStyledButton
