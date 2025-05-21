@@ -6,8 +6,7 @@
     "graphiql": "^4.1.0",
     "graphql": "^16.11.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-scripts": "5.0.1"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "vite": "^6.3.4",
