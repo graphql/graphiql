@@ -16,7 +16,7 @@
    * @see https://github.com/microsoft/monaco-editor/issues/4455
    */
   outline-width: 0 !important;
-  
+
   .highlight {
     color: hsl(var(--color-primary)) !important;
   }
