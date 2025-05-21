@@ -25,7 +25,6 @@ globalThis.MonacoEnvironment = {
           new URL('monaco-graphql/esm/graphql.worker.js', import.meta.url),
         );
       }
-      case 'ts':
       case 'typescript': {
         return new Worker(
           new URL(

@@ -1,6 +1,6 @@
-import jsonWorkerUrl from 'monaco-editor/esm/vs/language/json/json.worker.js?worker&url';
-import editorWorkerUrl from 'monaco-editor/esm/vs/editor/editor.worker.js?worker&url';
-import graphQLWorkerUrl from 'monaco-graphql/esm/graphql.worker.js?worker&url';
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
+import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
 
 /**
  * Setup Monaco Editor workers for Vite.
@@ -17,17 +17,11 @@ globalThis.MonacoEnvironment = {
     console.info('setup-workers/vite', { label });
     switch (label) {
       case 'json':
-        return new Worker(new URL(jsonWorkerUrl, import.meta.url), {
-          type: 'module',
-        });
+        return new JsonWorker();
       case 'graphql': {
-        return new Worker(new URL(graphQLWorkerUrl, import.meta.url), {
-          type: 'module',
-        });
+        return new GraphQLWorker();
       }
     }
-    return new Worker(new URL(editorWorkerUrl, import.meta.url), {
-      type: 'module',
-    });
-  }
+    return new EditorWorker();
+  },
 };
