@@ -1,5 +1,3 @@
-@import url('codemirror/addon/lint/lint.css');
-
 /* Text styles */
 .CodeMirror-lint-mark-error,
 .CodeMirror-lint-mark-warning {
