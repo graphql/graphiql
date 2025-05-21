@@ -57,7 +57,7 @@
     "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^1.2.1",
     "copy-to-clipboard": "^3.2.0",
-    "framer-motion": "^12",
+    "framer-motion": "^12.12",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.1",
     "markdown-it": "^14.1.0",
