@@ -226,11 +226,6 @@ interface EditorStoreType extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
-
-  /**
-   *
-   */
-  focusOnEditorAndMoveCaretToLastPosition(editor?: MonacoEditor): void;
 }
 
 type EditorStoreProps = Pick<
@@ -408,17 +403,6 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
     }).filter(([_key, value]) => value);
     const newState = Object.fromEntries(entries);
     set(newState);
-  },
-  focusOnEditorAndMoveCaretToLastPosition(editor) {
-    if (!editor) {
-      return;
-    }
-    const model = editor.getModel()!;
-    const lastLine = model.getLineCount();
-    const lastColumn = model.getLineMaxColumn(lastLine);
-
-    editor.setPosition({ lineNumber: lastLine, column: lastColumn });
-    editor.focus();
   },
   setOperationName(operationName) {
     const { onEditOperationName, updateActiveTabValues } = get();

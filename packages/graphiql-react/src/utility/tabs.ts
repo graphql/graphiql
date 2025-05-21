@@ -239,14 +239,8 @@ export function setEditorValues({
     headerEditor,
     responseEditor,
     defaultHeaders,
-    focusOnEditorAndMoveCaretToLastPosition,
   } = editorStore.getState();
-  if (queryEditor) {
-    queryEditor.setValue(query ?? '');
-    // Focus on editor content when tab is changed
-    focusOnEditorAndMoveCaretToLastPosition(queryEditor);
-  }
-
+  queryEditor?.setValue(query ?? '');
   variableEditor?.setValue(variables ?? '');
   headerEditor?.setValue(headers ?? defaultHeaders ?? '');
   responseEditor?.setValue(response ?? '');
