@@ -1,17 +1,3 @@
-@import url('codemirror/lib/codemirror.css');
-
-/* Make the editors fill up their container and make them scrollable */
-.graphiql-container .CodeMirror {
-  height: 100%;
-  position: absolute;
-  width: 100%;
-}
-
-/* Override font settings */
-.graphiql-container .CodeMirror {
-  font-family: var(--font-family-mono);
-}
-
 /* Set default background color */
 .graphiql-container .CodeMirror,
 .graphiql-container .CodeMirror-gutters {

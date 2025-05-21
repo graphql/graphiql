@@ -25,27 +25,6 @@ if (majorVersion < 16) {
 }
 
 /**
- * Setup workers for GraphiQL UMD bundle
- */
-function getWorkerUrl(label: string) {
-  switch (label) {
-    case 'json':
-      return '/dist/workers/json.worker.js';
-    case 'graphql':
-      return '/dist/workers/graphql.worker.js';
-  }
-  return '/dist/workers/editor.worker.js';
-}
-
-globalThis.MonacoEnvironment = {
-  // MonacoEnvironment.getWorkerUrl throws Uncaught SyntaxError: Unexpected token 'export'
-  getWorker(_workerId: string, label: string) {
-    const url = new URL(getWorkerUrl(label), import.meta.url);
-    return new Worker(url, { type: 'module' });
-  },
-};
-
-/**
  * For the CDN bundle we add some static properties to the component function
  * so that they can be accessed in the inline-script in the HTML file.
  */

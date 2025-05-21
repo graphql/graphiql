@@ -6,7 +6,7 @@ import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
 
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    // console.info('self.MonacoEnvironment', { label });
+    console.info('setup-workers', { label });
     switch (label) {
       case 'json':
         return new JsonWorker();
