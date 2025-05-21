@@ -3,7 +3,12 @@ import { clsx } from 'clsx';
 import { useEditorStore, editorStore } from '../stores';
 import { EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
-import { getOrCreateModel, createEditor, useChangeHandler } from '../utility';
+import {
+  getOrCreateModel,
+  createEditor,
+  useChangeHandler,
+  onEditorContainerKeyDown,
+} from '../utility';
 
 interface VariableEditorProps extends EditorProps {
   /**
@@ -59,6 +64,8 @@ export function VariableEditor({
   return (
     <div
       ref={ref}
+      tabIndex={0}
+      onKeyDown={onEditorContainerKeyDown}
       {...props}
       className={clsx('graphiql-editor', props.className)}
     />

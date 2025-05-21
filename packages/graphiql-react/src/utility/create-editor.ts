@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { KeyboardEventHandler, RefObject } from 'react';
 import type { Uri } from '../monaco-editor';
 import { editor as monacoEditor } from '../monaco-editor';
 import { MonacoEditor } from '../types';
@@ -6,6 +6,15 @@ import { MonacoEditor } from '../types';
 export const EDITOR_THEME = {
   dark: 'graphiql-DARK',
   light: 'graphiql-LIGHT',
+};
+
+export const onEditorContainerKeyDown: KeyboardEventHandler<
+  HTMLDivElement
+> = event => {
+  const isFocusd = document.activeElement === event.target;
+  if (isFocusd && event.code === 'Enter') {
+    event.currentTarget.querySelector('textarea')?.focus();
+  }
 };
 
 export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
@@ -481,6 +490,7 @@ export function createEditor(
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
+    tabIndex: -1,
     // scrollPredominantAxis: false,
     // wrappingStrategy: 'advanced',
     // fixedOverflowWidgets: true,

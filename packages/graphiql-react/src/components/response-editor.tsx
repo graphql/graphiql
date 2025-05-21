@@ -3,7 +3,11 @@ import { ComponentType, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 import { ImagePreview } from './image-preview';
-import { getOrCreateModel, createEditor } from '../utility';
+import {
+  getOrCreateModel,
+  createEditor,
+  onEditorContainerKeyDown,
+} from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
 import { EditorProps } from '../types';
@@ -138,6 +142,8 @@ export function ResponseEditor({
       aria-label="Result Window"
       aria-live="polite"
       aria-atomic="true"
+      tabIndex={0}
+      onKeyDown={onEditorContainerKeyDown}
       {...props}
       className={clsx('result-window', props.className)}
     />

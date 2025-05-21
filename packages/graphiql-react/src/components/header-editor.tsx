@@ -8,6 +8,7 @@ import {
   getOrCreateModel,
   createEditor,
   useChangeHandler,
+  onEditorContainerKeyDown,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -68,6 +69,8 @@ export function HeaderEditor({
   return (
     <div
       ref={ref}
+      tabIndex={0}
+      onKeyDown={onEditorContainerKeyDown}
       {...props}
       className={clsx('graphiql-editor', props.className)}
     />

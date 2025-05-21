@@ -25,6 +25,7 @@ import {
   isMacOs,
   getOrCreateModel,
   createEditor,
+  onEditorContainerKeyDown,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { normalizeWhitespace } from '../utility/whitespace';
@@ -410,6 +411,8 @@ export function QueryEditor({
   return (
     <div
       ref={ref}
+      tabIndex={0}
+      onKeyDown={onEditorContainerKeyDown}
       {...props}
       className={clsx('graphiql-editor', props.className)}
     />
