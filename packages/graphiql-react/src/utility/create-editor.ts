@@ -96,7 +96,7 @@ const getBaseColors = (
   'highlighted.label': colors.primary[theme],
   'quickInput.widget': colors.primary[theme],
   highlight: colors.primary[theme],
-  'editorWidget.background': colors.bg[theme],    // Background color of editor widgets, such as find/replace
+  'editorWidget.background': colors.bg[theme], // Background color of editor widgets, such as find/replace
   'input.background': colors.secondary[theme], // Input box background
   focusBorder: colors.primary[theme], // Overall border color for focused elements. This color is only used if not overridden by a component
   'toolbar.hoverBackground': colors.primaryBg[theme],
