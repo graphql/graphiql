@@ -1,10 +1,12 @@
-import { forwardRef, JSX } from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 import './index.css';
 
+type UnStyledButtonProps = HTMLAttributes<HTMLButtonElement>;
+
 export const UnStyledButton = forwardRef<
   HTMLButtonElement,
-  JSX.IntrinsicElements['button']
+  UnStyledButtonProps
 >((props, ref) => (
   <button
     {...props}
@@ -14,23 +16,24 @@ export const UnStyledButton = forwardRef<
 ));
 UnStyledButton.displayName = 'UnStyledButton';
 
-type ButtonProps = { state?: 'success' | 'error' };
+interface ButtonProps extends UnStyledButtonProps {
+  state?: 'success' | 'error';
+}
 
-export const Button = forwardRef<
-  HTMLButtonElement,
-  ButtonProps & JSX.IntrinsicElements['button']
->((props, ref) => (
-  <button
-    {...props}
-    ref={ref}
-    className={clsx(
-      'graphiql-button',
-      {
-        success: 'graphiql-button-success',
-        error: 'graphiql-button-error',
-      }[props.state!],
-      props.className,
-    )}
-  />
-));
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (props, ref) => (
+    <button
+      {...props}
+      ref={ref}
+      className={clsx(
+        'graphiql-button',
+        {
+          success: 'graphiql-button-success',
+          error: 'graphiql-button-error',
+        }[props.state!],
+        props.className,
+      )}
+    />
+  ),
+);
 Button.displayName = 'Button';
