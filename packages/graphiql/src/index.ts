@@ -9,11 +9,6 @@
 import './style.css';
 
 /**
- * GraphiQL
- */
-export { GraphiQLProvider } from '@graphiql/react';
-
-/**
  * Definitions
  */
 export { GraphiQL } from './GraphiQL';
