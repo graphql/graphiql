@@ -146,7 +146,7 @@ export function ResponseEditor({
             ),
             contents: [
               {
-                value: `<div data-id="${hoverId}">Loading...</div>`, // Will be replaced by React
+                value: `<div data-id="${hoverId}">Loading...</div>`,
                 supportHtml: true,
               },
             ],
