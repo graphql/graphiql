@@ -11,8 +11,8 @@ export const EDITOR_THEME = {
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement
 > = event => {
-  const isFocusd = document.activeElement === event.target;
-  if (isFocusd && event.code === 'Enter') {
+  const isFocused = document.activeElement === event.target;
+  if (isFocused && event.code === 'Enter') {
     event.currentTarget.querySelector('textarea')?.focus();
   }
 };
