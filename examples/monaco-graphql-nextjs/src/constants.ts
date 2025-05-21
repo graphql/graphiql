@@ -2,7 +2,7 @@ import { editor, Uri } from 'monaco-graphql/esm/monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { parse, print } from 'graphql';
 
-type ModelType = 'operations' | 'variables' | 'response' | 'typescript';
+type ModelType = 'operations' | 'variables' | 'response' | 'ts';
 
 export const GRAPHQL_URL = 'https://countries.trevorblades.com';
 
@@ -41,7 +41,7 @@ query Example($code: ID!, $filter: LanguageFilterInput!) {
 /* cSpell:enable */
 
 let prettyOp = '';
-const makeOpTemplate = (op: string) => {
+export const makeOpTemplate = (op: string) => {
   try {
     prettyOp = print(parse(op));
     return `
@@ -61,24 +61,19 @@ export const DEFAULT_VALUE: Record<ModelType, string> = {
   "code": "UA"
 }`,
   response: '',
-  typescript: makeOpTemplate(operations),
+  ts: makeOpTemplate(operations),
 };
 
-export const FILE_SYSTEM_PATH: Record<
-  ModelType,
-  `${string}.${'graphql' | 'json' | 'ts'}`
-> = {
-  operations: 'operations.graphql',
-  variables: 'variables.json',
-  response: 'response.json',
-  typescript: 'typescript.ts',
-};
+export const OPERATIONS_URI = Uri.file('operations.graphql')
+export const VARIABLES_URI = Uri.file('variables.json')
+export const RESPONSE_URI = Uri.file('response.json')
+export const TS_URI = Uri.file('typescript.ts')
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
     validateVariablesJSON: {
-      [Uri.file(FILE_SYSTEM_PATH.operations).toString()]: [
-        Uri.file(FILE_SYSTEM_PATH.variables).toString(),
+      [OPERATIONS_URI.toString()]: [
+        VARIABLES_URI.toString(),
       ],
     },
     jsonDiagnosticSettings: {
@@ -91,27 +86,11 @@ export const MONACO_GRAPHQL_API = initializeMode({
   },
 });
 
-export const MODEL: Record<ModelType, editor.ITextModel> = {
-  operations: getOrCreateModel('operations'),
-  variables: getOrCreateModel('variables'),
-  response: getOrCreateModel('response'),
-  typescript: getOrCreateModel('typescript'),
-};
-
-MODEL.operations.onDidChangeContent(() => {
-  const value = MODEL.operations.getValue();
-  MODEL.typescript.setValue(makeOpTemplate(value));
-});
-
-function getOrCreateModel(type: ModelType): editor.ITextModel {
-  const uri = Uri.file(FILE_SYSTEM_PATH[type]);
-  const defaultValue = DEFAULT_VALUE[type];
-  let language = uri.path.split('.').pop();
-  console.log({ language });
+export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
+  const { path } = uri;
+  let language = path.split('.').at(-1)!;
   if (language === 'ts') {
     language = 'typescript';
   }
-  return (
-    editor.getModel(uri) ?? editor.createModel(defaultValue, language, uri)
-  );
+  return editor.getModel(uri) ?? editor.createModel(value, language, uri);
 }
