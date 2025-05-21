@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useEditorStore, storageStore, editorStore } from '../stores';
+import { useEditorStore, editorStore } from '../stores';
 import { useChangeHandler } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import { clsx } from 'clsx';
-import { debounce, getOrCreateModel, createEditor } from '../utility';
+import { getOrCreateModel, createEditor } from '../utility';
 
 type VariableEditorProps = WriteableEditorProps & {
   /**
@@ -28,11 +28,9 @@ export function VariableEditor({
 }: VariableEditorProps) {
   const { initialVariables } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
-  /*
-  useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
-  */
+  useChangeHandler(onEdit, STORAGE_KEY, 'variables');
   useEffect(() => {
-    const { setEditor, updateActiveTabValues } = editorStore.getState();
+    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({
       uri: VARIABLE_URI,
       value: initialVariables,
@@ -40,17 +38,8 @@ export function VariableEditor({
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ variableEditor: editor });
-    const { storage } = storageStore.getState();
     // 2️⃣ Subscribe to content changes
     const disposables = [
-      model.onDidChangeContent(
-        debounce(500, () => {
-          const value = model.getValue();
-          console.log('storage', storage);
-          storage.set(STORAGE_KEY, value);
-          updateActiveTabValues({ variables: value });
-        }),
-      ),
       editor.addAction(KEY_BINDINGS.runQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),

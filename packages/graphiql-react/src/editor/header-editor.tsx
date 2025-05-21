@@ -23,14 +23,11 @@ export function HeaderEditor({
 }: HeaderEditorProps) {
   const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
-  /*
   useChangeHandler(
-    headerEditor,
     onEdit,
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
   );
-  */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });

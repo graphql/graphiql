@@ -1,5 +1,4 @@
 import { fillLeafs, mergeAst } from '@graphiql/toolkit';
-import type { EditorChange, EditorConfiguration } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
@@ -12,7 +11,8 @@ import {
   executionStore,
 } from '../stores';
 import { debounce, formatJSONC } from '../utility';
-import { CodeMirrorEditor, Editor } from './types';
+import { Editor } from './types';
+import { editor as monacoEditor } from '../monaco-editor';
 
 export function useSynchronizeValue(editor?: Editor, value?: string) {
   useEffect(() => {
@@ -23,11 +23,14 @@ export function useSynchronizeValue(editor?: Editor, value?: string) {
 }
 
 export function useChangeHandler(
-  editor: CodeMirrorEditor | null,
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
 ) {
+  const editor = useEditorStore(
+    store =>
+      store[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
+  );
   useEffect(() => {
     if (!editor) {
       return;
@@ -46,25 +49,16 @@ export function useChangeHandler(
       updateActiveTabValues({ [tabProperty]: value });
     });
 
-    const handleChange = (
-      editorInstance: CodeMirrorEditor,
-      changeObj?: EditorChange,
-    ) => {
-      // When we signal a change manually without actually changing anything
-      // we don't want to invoke the callback.
-      if (!changeObj) {
-        return;
-      }
-
-      const newValue = editorInstance.getValue();
+    const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
+      const newValue = editor.getValue();
       store(newValue);
       updateTab(newValue);
       callback?.(newValue);
     };
-    /*
-    editor.on('change', handleChange);
-    return () => editor.off('change', handleChange);
-     */
+    const disposable = editor.getModel()!.onDidChangeContent(handleChange);
+    return () => {
+      disposable.dispose();
+    };
   }, [callback, editor, storageKey, tabProperty]);
 }
 
