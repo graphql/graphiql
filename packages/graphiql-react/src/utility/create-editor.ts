@@ -1,5 +1,6 @@
 import { RefObject } from 'react';
-import type { Uri, editor as monacoEditor } from '../monaco-editor';
+import type { Uri } from '../monaco-editor';
+import { editor as monacoEditor } from '../monaco-editor';
 import { MonacoEditor } from '../types';
 
 export const EDITOR_THEME = {
@@ -12,7 +13,7 @@ export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   // eslint-disable-next-line no-console
   console.log(uri.toString());
 
-  const model = editor.getModel(uri);
+  const model = monacoEditor.getModel(uri);
   if (model) {
     // eslint-disable-next-line no-console
     console.info('✅ Model', path, 'is already created');
@@ -21,7 +22,7 @@ export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   // eslint-disable-next-line no-console
   console.info('🚀 Model', path, "isn't yet created, creating...");
   const language = path.split('.').at(-1)!;
-  return editor.createModel(value, language, uri);
+  return monacoEditor.createModel(value, language, uri);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
@@ -465,7 +466,7 @@ export function createEditor(
   // eslint-disable-next-line no-console -- TODO monaco
   console.log({ language });
 
-  return editor.create(domElement.current, {
+  return monacoEditor.create(domElement.current, {
     language,
     automaticLayout: true,
     fontSize: 15,
