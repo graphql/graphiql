@@ -64,16 +64,16 @@ export const plugins: PluginOption[] = [
     // we must use original import paths `monaco-editor/esm/...` and `monaco-graphql/esm/...` in Next.js
     name: 'ignore-setup-workers-file',
     load(id) {
-      return id.endsWith('setup-workers/index.ts') ? '' : null;
+      return id.endsWith('setup-workers/webpack.ts') ? '' : null;
     },
   },
   {
     name: 'copy-original-setup-workers-file',
     async closeBundle() {
-      const dest = './dist/setup-workers/index.js';
+      const dest = './dist/setup-workers/webpack.js';
 
       console.info(`Build finished! Writing "${dest}"...`);
-      const content = await fs.readFile('./src/setup-workers/index.ts', 'utf8');
+      const content = await fs.readFile('./src/setup-workers/webpack.ts', 'utf8');
       await fs.writeFile(
         dest,
         // Strip TypeScript types
@@ -95,7 +95,7 @@ export default defineConfig({
     lib: {
       entry: [
         'src/index.ts',
-        'src/setup-workers/index.ts',
+        'src/setup-workers/webpack.ts',
         'src/setup-workers/vite.ts',
       ],
       fileName(_format, entryName) {

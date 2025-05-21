@@ -80,7 +80,12 @@ const esmConfig = defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: ['src/index.ts', 'src/e2e.tsx'],
+      entry: [
+        'src/index.ts',
+        'src/e2e.tsx',
+        'src/setup-workers/webpack.ts',
+        'src/setup-workers/vite.ts',
+      ],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
       cssFileName: 'style',
@@ -89,8 +94,11 @@ const esmConfig = defineConfig({
       external: [
         'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
-        ...Object.keys(packageJSON.peerDependencies),
-        ...Object.keys(packageJSON.dependencies),
+        ...Object.keys({
+          ...packageJSON.peerDependencies,
+          ...packageJSON.dependencies
+        }),
+        /^@graphiql\/react\//
       ],
       output: {
         preserveModules: true,
@@ -112,7 +120,11 @@ const esmConfig = defineConfig({
     ...plugins,
     htmlPlugin(),
     process.env.NODE_ENV === 'production' && removeImportsFromE2EFile(),
-    dts({ rollupTypes: true }),
+    dts({
+      include: ['src/**'],
+      outDir: ['dist'],
+      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+    }),
   ],
   worker: {
     format: 'es',

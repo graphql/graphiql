@@ -1,7 +1,7 @@
 {
   "name": "graphiql",
   "version": "4.1.0",
-  "sideEffects": ["dist/setup-workers/index.js", "dist/setup-workers/vite.js"],
+  "sideEffects": ["dist/setup-workers/webpack.js", "dist/setup-workers/vite.js"],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
@@ -35,9 +35,9 @@
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
     ".": "./dist/index.js",
-    "./setup-workers": {
-      "types": "./dist/setup-workers/index.d.ts",
-      "import": "./dist/setup-workers/index.js"
+    "./setup-workers/webpack": {
+      "types": "./dist/setup-workers/webpack.d.ts",
+      "import": "./dist/setup-workers/webpack.js"
     },
     "./setup-workers/vite": {
       "types": "./dist/setup-workers/vite.d.ts",
