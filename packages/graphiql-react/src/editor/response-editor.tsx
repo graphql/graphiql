@@ -103,6 +103,7 @@ export function ResponseEditor({
     setEditor({ responseEditor: editor });
 
     let lastRoot: Root | undefined;
+    let timerId: ReturnType<typeof setTimeout> | undefined;
 
     function renderReactTooltip(containerId: string, path: string) {
       const el = document.querySelector<HTMLDivElement>(
@@ -132,8 +133,10 @@ export function ResponseEditor({
 
           // Return a placeholder content with a unique ID for now
           const hoverId = `hover-${position.lineNumber}-${position.column}`;
-
-          setTimeout(() => {
+          if (timerId) {
+            clearTimeout(timerId);
+          }
+          timerId = setTimeout(() => {
             renderReactTooltip(hoverId, word?.word); // render the React component after DOM is ready
           }, 500);
 
