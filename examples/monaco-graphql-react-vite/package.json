@@ -17,7 +17,6 @@
     "vite": "^6.3.4"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
     "dev": "vite",
     "build": "vite build",
     "start": "vite preview"

@@ -18,6 +18,12 @@ export default defineConfig({
   ],
   worker: {
     format: 'es',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'workers/[name].js',
+        chunkFileNames: 'workers/[name].js',
+      },
+    },
   },
 });
 
