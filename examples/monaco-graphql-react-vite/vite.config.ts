@@ -7,6 +7,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       output: {
+        entryFileNames: '[name].js',
         chunkFileNames: 'assets/[name].js',
       },
     },
