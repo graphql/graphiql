@@ -17,6 +17,7 @@ import {
   useEditorStore,
   useStorage,
   editorStore,
+  executionStore,
 } from '../stores';
 import {
   markdown,
@@ -55,55 +56,13 @@ interface QueryEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
-/*
-// To make react-compiler happy since we mutate variableEditor
-function updateVariableEditor(
-  variableEditor: CodeMirrorEditor,
-  operationFacts?: OperationFacts,
-) {
-  variableEditor.state.lint.linterOptions.variableToType =
-    operationFacts?.variableToType;
-  variableEditor.options.lint.variableToType = operationFacts?.variableToType;
-  variableEditor.options.hintOptions.variableToType =
-    operationFacts?.variableToType;
-}
-
-function updateEditorSchema(
-  editor: CodeMirrorEditor,
-  schema: GraphQLSchema | null,
-) {
-  editor.state.lint.linterOptions.schema = schema;
-  editor.options.lint.schema = schema;
-  editor.options.hintOptions.schema = schema;
-  editor.options.info.schema = schema;
-  editor.options.jump.schema = schema;
-}
-
-function updateEditorValidationRules(
-  editor: CodeMirrorEditor,
-  validationRules: ValidationRule[] | null,
-) {
-  editor.state.lint.linterOptions.validationRules = validationRules;
-  editor.options.lint.validationRules = validationRules;
-}
-
-function updateEditorExternalFragments(
-  editor: CodeMirrorEditor,
-  externalFragmentList: FragmentDefinitionNode[],
-) {
-  editor.state.lint.linterOptions.externalFragments = externalFragmentList;
-  editor.options.lint.externalFragments = externalFragmentList;
-  editor.options.hintOptions.externalFragments = externalFragmentList;
-}
-*/
 export function QueryEditor({
   onClickReference,
   onEdit,
   readOnly = false,
   ...props
 }: QueryEditorProps) {
-  const { initialQuery, queryEditor, setOperationName, variableEditor } =
-    useEditorStore();
+  const { initialQuery, setOperationName } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
 
@@ -251,12 +210,6 @@ export function QueryEditor({
       operations: operationFacts?.operations,
     });
 
-    // Update variable types for the variable editor
-    if (variableEditor) {
-      // updateVariableEditor(variableEditor, operationFacts);
-      // codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
-    }
-
     return operationFacts ? { ...operationFacts, operationName } : null;
   }
 
@@ -269,13 +222,15 @@ export function QueryEditor({
     storage,
     variableEditor,
   ]);
-
-  useSynchronizeSchema(queryEditor, codeMirrorRef);
-  useSynchronizeValidationRules(queryEditor, codeMirrorRef);
-  useSynchronizeExternalFragments(queryEditor, codeMirrorRef);
-
+  */
   const runAtCursor = () => {
-    if (!queryEditor?.operations || !queryEditor.hasFocus()) {
+    const {
+      queryEditor,
+      operations,
+      operationName: $operationName,
+    } = editorStore.getState();
+
+    if (!operations || !queryEditor.hasFocus()) {
       return;
     }
 
@@ -283,7 +238,7 @@ export function QueryEditor({
 
     // Loop through all operations to see if one contains the cursor.
     let operationName: string | undefined;
-    for (const operation of queryEditor.operations) {
+    for (const operation of operations) {
       if (
         operation.loc &&
         operation.loc.start <= cursorIndex &&
@@ -293,14 +248,12 @@ export function QueryEditor({
       }
     }
 
-    if (operationName && operationName !== queryEditor.operationName) {
+    if (operationName && operationName !== $operationName) {
       setOperationName(operationName);
     }
     const { run } = executionStore.getState();
     run();
   };
-  useKeyMap(queryEditor, KEY_MAP.runQuery, runAtCursor);
-  */
 
   const schema = useSchemaStore(store => store.schema);
 
@@ -420,18 +373,21 @@ export function QueryEditor({
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
+      // editor.addAction({
+      //   id: 'graphql-go-to-definition',
+      //   label: 'Go to Definition',
+      //   contextMenuGroupId: 'navigation',
+      //   // eslint-disable-next-line no-bitwise
+      //   keybindings: [KeyMod.CtrlCmd | KeyCode.F12],
+      //   run() {
+      //     // eslint-disable-next-line no-console
+      //     console.log('Go to Definition');
+      //   },
+      // }),
       editor.addAction({
-        id: 'graphql-go-to-definition',
-        label: 'Go to Definition',
-        contextMenuGroupId: 'navigation',
-        // eslint-disable-next-line no-bitwise
-        keybindings: [KeyMod.CtrlCmd | KeyCode.F12],
-        run() {
-          // eslint-disable-next-line no-console
-          console.log('Go to Definition');
-        },
+        ...KEY_BINDINGS.runQuery,
+        run: runAtCursor,
       }),
-      editor.addAction(KEY_BINDINGS.runQuery),
       editor.addAction(KEY_BINDINGS.copyQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),
@@ -467,66 +423,6 @@ export function QueryEditor({
   );
 }
 
-/*
-function useSynchronizeSchema(
-  editor: CodeMirrorEditor | null,
-  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
-) {
-  const schema = useSchemaStore(store => store.schema ?? null);
-
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    const didChange = editor.options.lint.schema !== schema;
-    updateEditorSchema(editor, schema);
-
-    if (didChange) {
-      codeMirrorRef.current?.signal(editor, 'change', editor);
-    }
-  }, [editor, schema, codeMirrorRef]);
-}
-
-function useSynchronizeValidationRules(
-  editor: CodeMirrorEditor | null,
-  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
-) {
-  const validationRules = useEditorStore(store => store.validationRules);
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    const didChange = editor.options.lint.validationRules !== validationRules;
-    updateEditorValidationRules(editor, validationRules);
-
-    if (didChange) {
-      codeMirrorRef.current?.signal(editor, 'change', editor);
-    }
-  }, [editor, validationRules, codeMirrorRef]);
-}
-
-function useSynchronizeExternalFragments(
-  editor: CodeMirrorEditor | null,
-  codeMirrorRef: RefObject<CodeMirrorType | undefined>,
-) {
-  const externalFragments = useEditorStore(store => store.externalFragments);
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    const externalFragmentList = [...externalFragments.values()];
-    const didChange =
-      editor.options.lint.externalFragments !== externalFragmentList;
-    updateEditorExternalFragments(editor, externalFragmentList);
-
-    if (didChange) {
-      codeMirrorRef.current?.signal(editor, 'change', editor);
-    }
-  }, [editor, externalFragments, codeMirrorRef]);
-}
-*/
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 export const STORAGE_KEY_QUERY = 'query';

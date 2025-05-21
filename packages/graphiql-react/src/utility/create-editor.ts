@@ -1,7 +1,11 @@
 import { RefObject } from 'react';
 import { editor, Uri } from '../monaco-editor';
 import { MonacoEditor } from '../types';
-import { EDITOR_THEME } from '../constants';
+
+export const EDITOR_THEME = {
+  dark: 'graphiql-DARK',
+  light: 'graphiql-LIGHT',
+};
 
 export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   const { path } = uri;
