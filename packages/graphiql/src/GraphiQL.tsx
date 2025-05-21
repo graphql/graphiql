@@ -55,7 +55,7 @@ import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, ShortKeys } from './ui';
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-interface GraphiQLProps
+export interface GraphiQLProps
   // `children` prop should be optional
   extends GraphiQLInterfaceProps,
     Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,

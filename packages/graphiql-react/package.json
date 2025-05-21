@@ -1,10 +1,7 @@
 {
   "name": "@graphiql/react",
   "version": "0.34.0",
-  "sideEffects": [
-    "src/setup-workers.ts",
-    "dist/setup-workers.js"
-  ],
+  "sideEffects": ["dist/setup-workers/index.js", "dist/setup-workers/vite.js"],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -19,7 +16,15 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./font/*": "./font/*",
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./setup-workers": {
+      "types": "./dist/setup-workers/index.d.ts",
+      "import": "./dist/setup-workers/index.js"
+    },
+    "./setup-workers/vite": {
+      "types": "./dist/setup-workers/vite.d.ts",
+      "import": "./dist/setup-workers/vite.js"
+    }
   },
   "types": "dist/index.d.ts",
   "keywords": [

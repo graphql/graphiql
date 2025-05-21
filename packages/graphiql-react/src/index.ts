@@ -1,4 +1,3 @@
-import './setup-workers';
 import './style/root.css';
 
 export {

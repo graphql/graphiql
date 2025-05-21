@@ -2,8 +2,8 @@
 
 import type { FC } from 'react';
 import dynamic from 'next/dynamic';
+import '@graphiql/react/setup-workers';
 import 'graphiql/style.css';
-import './setup-workers';
 
 // dynamically import our GraphiQL component
 const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
