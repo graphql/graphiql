@@ -1,6 +1,7 @@
+// @ts-expect-error
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    console.info('MonacoEnvironment.getWorker', { label });
+    console.log('self.MonacoEnvironment', { label });
     switch (label) {
       case 'json':
         return new Worker(

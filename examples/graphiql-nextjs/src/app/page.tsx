@@ -1,18 +1,14 @@
-'use client'
+'use client';
 
-import { FC } from 'react';
-import dynamic from 'next/dynamic'
+import type { FC } from 'react';
+import dynamic from 'next/dynamic';
 import 'graphiql/style.css';
+import './setup-workers';
 
-// dynamically import our React component
-const GraphiQL = dynamic(
-  async () => {
-    // await import('./worker');
-    return import('graphiql').then(mod => mod.GraphiQL);
-  },
-  { ssr: false }
-);
-
+// dynamically import our GraphiQL component
+const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  ssr: false,
+});
 
 async function fetcher(graphQLParams: Record<string, unknown>) {
   const response = await fetch('https://graphql.earthdata.nasa.gov/api', {
