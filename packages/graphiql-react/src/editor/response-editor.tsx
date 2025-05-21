@@ -117,45 +117,48 @@ export function ResponseEditor({
       lastRoot.render(<ImagePreview path={path} />);
     }
 
+    const provideHover: languages.HoverProvider['provideHover'] = (
+      $model,
+      position,
+    ) => {
+      if ($model.uri !== model.uri) {
+        return null; // Ignore for other editors
+      }
+      const word = $model.getWordAtPosition(position);
+      if (!word?.word.startsWith('/')) {
+        return null;
+      }
+      if (!ImagePreview.shouldRender(word.word)) {
+        return null;
+      }
+
+      // Return a placeholder content with a unique ID for now
+      const hoverId = `hover-${position.lineNumber}-${position.column}`;
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      timerId = setTimeout(() => {
+        renderReactTooltip(hoverId, word?.word); // render the React component after DOM is ready
+      }, 500);
+
+      return {
+        range: new Range(
+          position.lineNumber,
+          word.startColumn,
+          position.lineNumber,
+          word.endColumn,
+        ),
+        contents: [
+          {
+            value: `<div data-id="${hoverId}">Loading...</div>`,
+            supportHtml: true,
+          },
+        ],
+      };
+    };
+
     const disposables = [
-      languages.registerHoverProvider('json', {
-        provideHover($model, position) {
-          if ($model.uri !== model.uri) {
-            return null; // Ignore for other editors
-          }
-          const word = $model.getWordAtPosition(position);
-          if (!word?.word.startsWith('/')) {
-            return null;
-          }
-          if (!ImagePreview.shouldRender(word.word)) {
-            return null;
-          }
-
-          // Return a placeholder content with a unique ID for now
-          const hoverId = `hover-${position.lineNumber}-${position.column}`;
-          if (timerId) {
-            clearTimeout(timerId);
-          }
-          timerId = setTimeout(() => {
-            renderReactTooltip(hoverId, word?.word); // render the React component after DOM is ready
-          }, 500);
-
-          return {
-            range: new Range(
-              position.lineNumber,
-              word.startColumn,
-              position.lineNumber,
-              word.endColumn,
-            ),
-            contents: [
-              {
-                value: `<div data-id="${hoverId}">Loading...</div>`,
-                supportHtml: true,
-              },
-            ],
-          };
-        },
-      }),
+      languages.registerHoverProvider('json', { provideHover }),
       editor,
       model,
     ];
