@@ -242,10 +242,9 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
     _token: monaco.CancellationToken,
   ): Promise<languages.CompletionList> {
     try {
-      const resource = model.uri;
       const worker = await this._worker(model.uri);
       const completionItems = await worker.doComplete(
-        resource.toString(),
+        model.uri.toString(),
         position,
       );
       return {
