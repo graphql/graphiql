@@ -56,6 +56,7 @@ export function ResponseEditor({
       readOnly: true,
       lineNumbers: 'off',
       wordWrap: 'on', // Toggle word wrap on resizing editors
+      contextmenu: false, // Disable the right-click context menu
     });
     setEditor({ responseEditor: editor });
 
