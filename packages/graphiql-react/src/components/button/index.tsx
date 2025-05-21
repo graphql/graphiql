@@ -1,8 +1,8 @@
-import { forwardRef, HTMLAttributes } from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { clsx } from 'clsx';
 import './index.css';
 
-type UnStyledButtonProps = HTMLAttributes<HTMLButtonElement>;
+type UnStyledButtonProps = ComponentPropsWithoutRef<'button'>;
 
 export const UnStyledButton = forwardRef<
   HTMLButtonElement,
