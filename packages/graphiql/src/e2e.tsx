@@ -1,6 +1,6 @@
 'use no memo';
 
-import React from 'react';
+// import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme } from '@graphiql/react';
@@ -96,34 +96,35 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
+const props = {
+  fetcher: GraphiQL.createFetcher({
+    url: getSchemaUrl(),
+    subscriptionUrl: 'ws://localhost:8081/subscriptions',
+  }),
+  query: parameters.query,
+  variables: parameters.variables,
+  headers: parameters.headers,
+  defaultHeaders: parameters.defaultHeaders,
+  onEditQuery,
+  onEditVariables,
+  onEditHeaders,
+  defaultEditorToolsVisibility: true,
+  isHeadersEditorEnabled: true,
+  shouldPersistHeaders: true,
+  inputValueDeprecation: !graphqlVersion.includes('15.5'),
+  confirmCloseTab:
+    parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
+  onPrettifyQuery:
+    parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
+  onTabChange,
+  forcedTheme: parameters.forcedTheme,
+  defaultQuery: parameters.defaultQuery,
+  defaultTheme: parameters.defaultTheme,
+};
+
 root.render(
   // TODO: enable strict mode after monaco-editor migration
-  // React.createElement(React.StrictMode, {
-  //   children:
-  React.createElement(GraphiQL, {
-    fetcher: GraphiQL.createFetcher({
-      url: getSchemaUrl(),
-      subscriptionUrl: 'ws://localhost:8081/subscriptions',
-    }),
-    query: parameters.query,
-    variables: parameters.variables,
-    headers: parameters.headers,
-    defaultHeaders: parameters.defaultHeaders,
-    onEditQuery,
-    onEditVariables,
-    onEditHeaders,
-    defaultEditorToolsVisibility: true,
-    isHeadersEditorEnabled: true,
-    shouldPersistHeaders: true,
-    inputValueDeprecation: !graphqlVersion.includes('15.5'),
-    confirmCloseTab:
-      parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
-    onPrettifyQuery:
-      parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
-    onTabChange,
-    forcedTheme: parameters.forcedTheme,
-    defaultQuery: parameters.defaultQuery,
-    defaultTheme: parameters.defaultTheme,
-  }),
-  // }),
+  // <StrictMode>
+  <GraphiQL {...props} />,
+  // </StrictMode>,
 );
