@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import fs from 'node:fs/promises';
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
@@ -59,34 +58,6 @@ export const plugins: PluginOption[] = [
     outDir: ['dist'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
-  // Vite transform workers source code,
-  // we must use original import paths `monaco-editor/esm/...` and `monaco-graphql/esm/...`
-  {
-    name: 'ignore-setup-workers',
-    load(id) {
-      if (id.endsWith('setup-workers.ts')) {
-        // Must return some valid code because this import has side effects, otherwise he will
-        // not be included in ./dist/index.js
-        return 'pLaCeHoLdEr';
-      }
-      return null;
-    },
-  },
-  {
-    name: 'post-build',
-    async closeBundle() {
-      const dest = './dist/setup-workers.js';
-
-      console.info(`Build finished! Writing "${dest}"...`);
-      const content = await fs.readFile('./src/setup-workers.ts', 'utf8');
-      await fs.writeFile(
-        dest,
-        // Strip TypeScript types
-        content.replaceAll(': string', ''),
-        'utf8',
-      );
-    },
-  },
 ];
 
 export default defineConfig({
