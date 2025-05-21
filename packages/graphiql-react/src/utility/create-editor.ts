@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { editor, Uri } from '../monaco-editor';
+import type { Uri, editor as monacoEditor } from '../monaco-editor';
 import { MonacoEditor } from '../types';
 
 export const EDITOR_THEME = {
@@ -84,7 +84,7 @@ const colors = {
 
 const getBaseColors = (
   theme: 'dark' | 'light',
-): editor.IStandaloneThemeData['colors'] => ({
+): monacoEditor.IStandaloneThemeData['colors'] => ({
   'editor.background': colors.transparent, // white with a 00 alpha value
   'scrollbar.shadow': colors.transparent, // Scrollbar shadow to indicate that the view is scrolled
   'textLink.foreground': colors.primary[theme], // Foreground color for links in text
@@ -120,7 +120,7 @@ const getBaseColors = (
   // 'editor.lineHighlightBorder': '#ffffff00', // Background color for the border around the line at the cursor position
 });
 
-export const editorThemeDark: editor.IStandaloneThemeData = {
+export const editorThemeDark: monacoEditor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   colors: {
@@ -340,7 +340,7 @@ export const editorThemeDark: editor.IStandaloneThemeData = {
   ],
 };
 
-export const editorThemeLight: editor.IStandaloneThemeData = {
+export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   colors: {
@@ -450,12 +450,12 @@ export const editorThemeLight: editor.IStandaloneThemeData = {
 };
 
 // this should be called somewhere else, but fine here for now
-editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
+monacoEditor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
+monacoEditor.defineTheme(EDITOR_THEME.light, editorThemeLight);
 
 export function createEditor(
   domElement: RefObject<HTMLDivElement>,
-  options: editor.IStandaloneEditorConstructionOptions,
+  options: monacoEditor.IStandaloneEditorConstructionOptions,
 ): MonacoEditor {
   const { model } = options;
   if (!model) {
