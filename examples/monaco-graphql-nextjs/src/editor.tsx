@@ -5,6 +5,7 @@ import {
   KeyMod,
   KeyCode,
   languages,
+  Uri,
 } from 'monaco-graphql/esm/monaco-editor';
 
 // to get typescript mode working
@@ -20,8 +21,48 @@ import {
   MONACO_GRAPHQL_API,
   STORAGE_KEY,
   GRAPHQL_URL,
-  MODEL,
+  OPERATIONS_URI,
+  VARIABLES_URI,
+  RESPONSE_URI,
+  TS_URI,
+  DEFAULT_VALUE,
+  makeOpTemplate,
 } from './constants';
+
+/**
+ * Setup Monaco Editor workers for Webpack/Turbopack projects like Next.js.
+ */
+globalThis.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    console.info('setup-workers/webpack', { label });
+    switch (label) {
+      case 'json':
+        return new Worker(
+          new URL(
+            'monaco-editor/esm/vs/language/json/json.worker.js',
+            import.meta.url,
+          ),
+        );
+      case 'graphql': {
+        return new Worker(
+          new URL('monaco-graphql/esm/graphql.worker.js', import.meta.url),
+        );
+      }
+      case 'ts':
+      case 'typescript': {
+        return new Worker(
+          new URL(
+            'monaco-editor/esm/vs/language/typescript/ts.worker.js',
+            import.meta.url,
+          ),
+        );
+      }
+    }
+    return new Worker(
+      new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url),
+    );
+  },
+};
 
 const fetcher = createGraphiQLFetcher({ url: GRAPHQL_URL });
 
@@ -45,7 +86,7 @@ function debounce<F extends (...args: any[]) => any>(duration: number, fn: F) {
   let timeout = 0;
   return (...args: Parameters<F>) => {
     if (timeout) {
-      window.clearTimeout(timeout);
+      clearTimeout(timeout);
     }
     timeout = window.setTimeout(() => {
       timeout = 0;
