@@ -55,7 +55,7 @@ import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, ShortKeys } from './ui';
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export interface GraphiQLProps
+interface GraphiQLProps
   // `children` prop should be optional
   extends GraphiQLInterfaceProps,
     Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,
@@ -148,7 +148,7 @@ type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
-export interface GraphiQLInterfaceProps
+interface GraphiQLInterfaceProps
   extends EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
@@ -202,7 +202,7 @@ const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
-export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled,
   defaultEditorToolsVisibility,
