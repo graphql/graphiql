@@ -36,8 +36,8 @@ import {
   IDisposable,
   Uri,
   languages,
-  Range,
 } from '../monaco-editor';
+import { Range } from '../monaco-editor';
 import { clsx } from 'clsx';
 
 interface QueryEditorProps extends EditorProps {

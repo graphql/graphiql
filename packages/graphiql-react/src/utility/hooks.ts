@@ -13,7 +13,7 @@ import {
 import { debounce } from './debounce';
 import { formatJSONC } from './jsonc';
 import { MonacoEditor } from '../types';
-import { editor as monacoEditor } from '../monaco-editor';
+import type { editor as monacoEditor } from '../monaco-editor';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {

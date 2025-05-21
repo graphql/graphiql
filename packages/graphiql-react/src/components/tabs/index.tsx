@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, JSX } from 'react';
+import { forwardRef, ReactNode, HTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../../icons';
@@ -6,12 +6,12 @@ import { UnStyledButton } from '../button';
 
 import './index.css';
 
-type TabProps = {
+interface TabProps {
   isActive?: boolean;
   value: object;
   className?: string;
   children: ReactNode;
-};
+}
 
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(
   ({ isActive, value, children, className, ...props }, ref) => (
@@ -35,7 +35,7 @@ TabRoot.displayName = 'Tab';
 
 const TabButton = forwardRef<
   HTMLButtonElement,
-  JSX.IntrinsicElements['button']
+  HTMLAttributes<HTMLButtonElement>
 >(({ children, className, ...props }, ref) => (
   <UnStyledButton
     {...props}
@@ -48,19 +48,20 @@ const TabButton = forwardRef<
 ));
 TabButton.displayName = 'Tab.Button';
 
-const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
-  (props, ref) => (
-    <UnStyledButton
-      aria-label="Close Tab"
-      {...props}
-      ref={ref}
-      type="button"
-      className={clsx('graphiql-tab-close', props.className)}
-    >
-      <CloseIcon />
-    </UnStyledButton>
-  ),
-);
+const TabClose = forwardRef<
+  HTMLButtonElement,
+  HTMLAttributes<HTMLButtonElement>
+>((props, ref) => (
+  <UnStyledButton
+    aria-label="Close Tab"
+    {...props}
+    ref={ref}
+    type="button"
+    className={clsx('graphiql-tab-close', props.className)}
+  >
+    <CloseIcon />
+  </UnStyledButton>
+));
 TabClose.displayName = 'Tab.Close';
 
 export const Tab = Object.assign(TabRoot, {
@@ -68,12 +69,12 @@ export const Tab = Object.assign(TabRoot, {
   Close: TabClose,
 });
 
-type TabsProps = {
+interface TabsProps {
   values: object[];
   onReorder: (newOrder: any[]) => void;
   className?: string;
   children: ReactNode;
-};
+}
 
 export const Tabs = forwardRef<HTMLUListElement, TabsProps>(
   ({ values, onReorder, children, className, ...props }, ref) => (

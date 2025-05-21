@@ -7,12 +7,12 @@ import { getOrCreateModel, createEditor } from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
 import { EditorProps } from '../types';
-import {
+import type {
   languages,
-  Range,
   editor as monacoEditor,
   Position,
 } from '../monaco-editor';
+import { Range } from '../monaco-editor';
 
 type ResponseTooltipType = ComponentType<{
   /**
