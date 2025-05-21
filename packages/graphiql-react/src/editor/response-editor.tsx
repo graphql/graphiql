@@ -1,6 +1,5 @@
 import { formatError } from '@graphiql/toolkit';
-import type { Position, Token } from 'codemirror';
-import { ComponentType, useEffect, useRef, JSX } from 'react';
+import { ComponentType, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
@@ -10,17 +9,22 @@ import { getOrCreateModel, createEditor } from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
 import { CommonEditorProps } from './types';
-import { languages, Range } from '../monaco-editor';
+import {
+  languages,
+  Range,
+  editor as monacoEditor,
+  Position,
+} from '../monaco-editor';
 
 export type ResponseTooltipType = ComponentType<{
   /**
-   * The position of the token in the editor contents.
+   * A position in the editor.
    */
-  pos: Position;
+  position: Position;
   /**
-   * The token that has been hovered over.
+   * Word that has been hovered over.
    */
-  token: Token;
+  word: monacoEditor.IWordAtPosition;
 }>;
 
 interface ResponseEditorProps extends CommonEditorProps {
@@ -31,45 +35,15 @@ interface ResponseEditorProps extends CommonEditorProps {
 }
 
 export function ResponseEditor({
-  responseTooltip,
+  responseTooltip: ResponseTooltip,
   ...props
 }: ResponseEditorProps) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
-  const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
-    responseTooltip,
-  );
-  useEffect(() => {
-    responseTooltipRef.current = responseTooltip;
-  }, [responseTooltip]);
-
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
-      // Handle image tooltips and custom tooltips
-      const tooltipContainer = document.createElement('div');
-      const tooltipRoot = createRoot(tooltipContainer);
-      CodeMirror.registerHelper(
-        'info',
-        'graphql-results',
-        (token: Token, _options: any, _cm: CodeMirrorEditor, pos: Position) => {
-          const ResponseTooltip = responseTooltipRef.current;
-          const infoElements: JSX.Element[] = [
-            ResponseTooltip && <ResponseTooltip pos={pos} token={token} />,
-            ImagePreview.shouldRender(token) && (
-              <ImagePreview key="image-preview" token={token} />
-            ),
-          ].filter((v): v is JSX.Element => Boolean(v));
-
-          if (infoElements.length) {
-            tooltipRoot.render(infoElements);
-            return tooltipContainer;
-          }
-          tooltipRoot.unmount();
-        },
-      );
-
       const container = ref.current;
       const newEditor = CodeMirror(container, {
         lineWrapping: true,
@@ -105,18 +79,6 @@ export function ResponseEditor({
     let lastRoot: Root | undefined;
     let timerId: ReturnType<typeof setTimeout> | undefined;
 
-    function renderReactTooltip(containerId: string, path: string) {
-      const el = document.querySelector<HTMLDivElement>(
-        `[data-id="${containerId}"]`,
-      );
-      if (!el) {
-        return;
-      }
-      lastRoot?.unmount();
-      lastRoot = createRoot(el);
-      lastRoot.render(<ImagePreview path={path} />);
-    }
-
     const provideHover: languages.HoverProvider['provideHover'] = (
       $model,
       position,
@@ -124,11 +86,11 @@ export function ResponseEditor({
       if ($model.uri !== model.uri) {
         return null; // Ignore for other editors
       }
-      const word = $model.getWordAtPosition(position);
-      if (!word?.word.startsWith('/')) {
+      const wordAtPosition = $model.getWordAtPosition(position);
+      if (!wordAtPosition?.word.startsWith('/')) {
         return null;
       }
-      if (!ImagePreview.shouldRender(word.word)) {
+      if (!ImagePreview.shouldRender(wordAtPosition.word)) {
         return null;
       }
 
@@ -138,15 +100,31 @@ export function ResponseEditor({
         clearTimeout(timerId);
       }
       timerId = setTimeout(() => {
-        renderReactTooltip(hoverId, word?.word); // render the React component after DOM is ready
+        const el = document.querySelector<HTMLDivElement>(
+          `[data-id="${hoverId}"]`,
+        );
+        if (!el) {
+          return;
+        }
+        lastRoot?.unmount();
+        lastRoot = createRoot(el);
+        lastRoot.render(
+          // Handle image tooltips and custom tooltips
+          <>
+            {ResponseTooltip && (
+              <ResponseTooltip position={position} word={wordAtPosition} />
+            )}
+            <ImagePreview path={wordAtPosition.word} />
+          </>,
+        );
       }, 500);
 
       return {
         range: new Range(
           position.lineNumber,
-          word.startColumn,
+          wordAtPosition.startColumn,
           position.lineNumber,
-          word.endColumn,
+          wordAtPosition.endColumn,
         ),
         contents: [
           {
