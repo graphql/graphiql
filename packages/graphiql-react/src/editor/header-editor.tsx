@@ -24,33 +24,6 @@ export function HeaderEditor({
   const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
-  useEffect(() => {
-    void importCodeMirrorImports().then(CodeMirror => {
-      const container = ref.current;
-      const newEditor = CodeMirror(container, {});
-
-      function showHint() {
-        newEditor.showHint({ completeSingle: false, container });
-      }
-
-      newEditor.addKeyMap({
-        'Cmd-Space': showHint,
-        'Ctrl-Space': showHint,
-        'Alt-Space': showHint,
-        'Shift-Space': showHint,
-      });
-
-      newEditor.on('keyup', (editorInstance, event) => {
-        const { code, key, shiftKey } = event;
-        const isLetter = code.startsWith('Key');
-        const isNumber = !shiftKey && code.startsWith('Digit');
-        if (isLetter || isNumber || key === '_' || key === '"') {
-          editorInstance.execCommand('autocomplete');
-        }
-      });
-    });
-  }, []);
-
   useChangeHandler(
     headerEditor,
     onEdit,

@@ -29,20 +29,6 @@ export function VariableEditor({
   const { initialVariables } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   /*
-  useEffect(() => {
-    void importCodeMirrorImports().then(CodeMirror => {
-      const container = ref.current;
-      const newEditor = CodeMirror(container, {
-        hintOptions: {
-          closeOnUnfocus: false,
-          completeSingle: false,
-          container,
-          variableToType: undefined,
-        },
-      });
-    });
-  }, []);
-
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY, 'variables');
   */
   useEffect(() => {
