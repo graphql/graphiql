@@ -1,8 +1,8 @@
+import { NextConfig } from 'next';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import { patchWebpackConfig } from 'next-global-css';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
