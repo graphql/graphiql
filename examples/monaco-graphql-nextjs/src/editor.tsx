@@ -90,12 +90,6 @@ function debounce<F extends (...args: any[]) => any>(duration: number, fn: F) {
   };
 }
 
-// set these early on so that initial variables with comments don't flash an error
-// languages.json.jsonDefaults.setDiagnosticsOptions({
-//   allowComments: true,
-//   trailingCommas: 'ignore',
-// });
-
 export default function Editor(): ReactElement {
   const operationsRef = useRef<HTMLDivElement>(null!);
   const variablesRef = useRef<HTMLDivElement>(null!);

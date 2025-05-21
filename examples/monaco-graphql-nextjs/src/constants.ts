@@ -1,4 +1,4 @@
-import { editor, Uri } from 'monaco-graphql/esm/monaco-editor';
+import { editor, Uri, languages } from 'monaco-graphql/esm/monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { parse, print } from 'graphql';
 
@@ -44,10 +44,9 @@ let prettyOp = '';
 export const makeOpTemplate = (op: string) => {
   try {
     prettyOp = print(parse(op));
-    return `
-    const graphql = (arg: TemplateStringsArray): string => arg[0]
+    return `const graphql = (arg: TemplateStringsArray): string => arg[0]
     
-    const op = graphql\`\n${prettyOp}\n\``;
+const op = graphql\`\n${prettyOp}\n\``;
   } catch {
     return prettyOp;
   }
@@ -64,17 +63,21 @@ export const DEFAULT_VALUE: Record<ModelType, string> = {
   ts: makeOpTemplate(operations),
 };
 
-export const OPERATIONS_URI = Uri.file('operations.graphql')
-export const VARIABLES_URI = Uri.file('variables.json')
-export const RESPONSE_URI = Uri.file('response.json')
-export const TS_URI = Uri.file('typescript.ts')
+export const OPERATIONS_URI = Uri.file('operations.graphql');
+export const VARIABLES_URI = Uri.file('variables.json');
+export const RESPONSE_URI = Uri.file('response.json');
+export const TS_URI = Uri.file('typescript.ts');
+
+// set these early on so that initial variables with comments don't flash an error
+languages.json.jsonDefaults.setDiagnosticsOptions({
+  allowComments: true,
+  trailingCommas: 'ignore',
+});
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
     validateVariablesJSON: {
-      [OPERATIONS_URI.toString()]: [
-        VARIABLES_URI.toString(),
-      ],
+      [OPERATIONS_URI.toString()]: [VARIABLES_URI.toString()],
     },
     jsonDiagnosticSettings: {
       validate: true,
