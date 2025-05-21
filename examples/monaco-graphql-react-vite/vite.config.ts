@@ -5,6 +5,11 @@ import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 export default defineConfig({
   build: {
     minify: false,
+    rollupOptions: {
+      output: {
+        chunkFileNames: 'assets/[name].js',
+      },
+    },
   },
   plugins: [
     react(),
