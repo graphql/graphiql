@@ -9,6 +9,7 @@ import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
+import './setup-workers/vite'
 
 const majorVersion = parseInt(version.slice(0, 2), 10);
 
