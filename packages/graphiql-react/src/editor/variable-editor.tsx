@@ -48,7 +48,7 @@ export function VariableEditor({
       model,
     ];
 
-    // 3️⃣ Clean‑up on unmount or when deps change
+    // 3️⃣ Clean‑up on unmount
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener

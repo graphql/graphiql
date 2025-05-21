@@ -121,14 +121,13 @@ export function ResponseEditor({
         ],
       };
     };
-
     const disposables = [
-      languages.registerHoverProvider('json', { provideHover }),
+      languages.registerHoverProvider(model.getLanguageId(), { provideHover }),
       editor,
       model,
     ];
 
-    // Clean‑up on unmount or when deps change
+    // Clean‑up on unmount
     return () => {
       for (const disposable of disposables) {
         disposable.dispose(); // remove the listener
