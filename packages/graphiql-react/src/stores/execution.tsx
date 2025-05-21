@@ -150,7 +150,7 @@ export const executionStore = createStore<
         message = `${name} are invalid JSONC: ${error instanceof Error ? error.message : error}.`;
       }
       // Need to stringify since the response editor uses `json` language
-      setResponse(JSON.stringify({ errors: [{ message }] }, null, 2));
+      setResponse(formatError({ message }));
     }
 
     const newQueryId = queryId + 1;

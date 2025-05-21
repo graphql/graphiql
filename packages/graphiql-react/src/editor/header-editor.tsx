@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { commonKeys } from './common';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { useChangeHandler } from './hooks';
 import { WriteableEditorProps } from './types';
@@ -32,7 +31,6 @@ export function HeaderEditor({
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        extraKeys: commonKeys,
       });
 
       function showHint() {

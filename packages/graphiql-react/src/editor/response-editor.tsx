@@ -2,8 +2,6 @@ import { formatError } from '@graphiql/toolkit';
 import { ComponentType, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
-
-import { commonKeys } from './common';
 import { ImagePreview } from './image-preview';
 import { getOrCreateModel, createEditor } from '../utility';
 import { RESPONSE_URI } from '../constants';
@@ -41,16 +39,6 @@ export function ResponseEditor({
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
-  /*
-  useEffect(() => {
-    void importCodeMirrorImports().then(CodeMirror => {
-      const container = ref.current;
-      const newEditor = CodeMirror(container, {
-        extraKeys: commonKeys,
-      });
-    });
-  }, []);
-  */
   useEffect(() => {
     if (fetchError) {
       responseEditor?.setValue(fetchError);

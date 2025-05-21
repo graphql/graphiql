@@ -25,7 +25,6 @@ import {
   getOrCreateModel,
   createEditor,
 } from '../utility';
-import { commonKeys } from './common';
 import { Editor, WriteableEditorProps, SchemaReference } from './types';
 import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -163,7 +162,6 @@ export function QueryEditor({
         },
         gutters: ['CodeMirror-linenumbers'],
         extraKeys: {
-          ...commonKeys,
           'Cmd-S'() {
             // empty
           },

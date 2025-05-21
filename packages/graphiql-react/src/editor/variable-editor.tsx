@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useEditorStore, storageStore, editorStore } from '../stores';
-import { commonKeys } from './common';
 import { useChangeHandler } from './hooks';
 import { WriteableEditorProps, SchemaReference } from './types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
@@ -46,7 +45,6 @@ export function VariableEditor({
           container,
           variableToType: undefined,
         },
-        extraKeys: commonKeys,
       });
 
       function showHint() {
