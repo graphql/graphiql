@@ -62,11 +62,11 @@ export function ResponseEditor({
 
   useEffect(() => {
     const { setEditor } = editorStore.getState();
-    // Build the editor
     const model = getOrCreateModel({
       uri: RESPONSE_URI,
       value: initialResponse,
     });
+    // Build the editor
     const editor = createEditor(ref, {
       model,
       readOnly: true,

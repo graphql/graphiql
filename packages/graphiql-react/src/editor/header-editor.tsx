@@ -66,12 +66,9 @@ export function HeaderEditor({
   */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
-    // Build the editor
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
-    const editor = createEditor(ref, {
-      model,
-      readOnly,
-    });
+    // Build the editor
+    const editor = createEditor(ref, { model, readOnly });
     setEditor({ headerEditor: editor });
     const disposables: IDisposable[] = [
       editor.addAction(KEY_BINDINGS.runQuery),

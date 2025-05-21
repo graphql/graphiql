@@ -75,15 +75,12 @@ export function VariableEditor({
   */
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
-    // Build the editor
     const model = getOrCreateModel({
       uri: VARIABLE_URI,
       value: initialVariables,
     });
-    const editor = createEditor(ref, {
-      model,
-      readOnly,
-    });
+    // Build the editor
+    const editor = createEditor(ref, { model, readOnly });
     setEditor({ variableEditor: editor });
     const { storage } = storageStore.getState();
     // 2️⃣ Subscribe to content changes

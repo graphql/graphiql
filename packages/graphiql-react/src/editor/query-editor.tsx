@@ -310,13 +310,9 @@ export function QueryEditor({
 
   useEffect(() => {
     const { setEditor, updateActiveTabValues } = editorStore.getState();
-    // Build the editor
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
-    const editor = createEditor(ref, {
-      model,
-      readOnly,
-    });
-
+    // Build the editor
+    const editor = createEditor(ref, { model, readOnly });
     setEditor({ queryEditor: editor });
     const handleChange = debounce(100, () => {
       const query = editor.getValue();

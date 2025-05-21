@@ -466,7 +466,6 @@ export function createEditor(
     minimap: { enabled: false }, // disable the minimap
     tabSize: 2,
     renderLineHighlight: 'none', // Remove a line selection border
-    wordWrap: 'on', // Toggle word wrap on resizing editors
     stickyScroll: { enabled: false }, // Disable sticky scroll widget
     overviewRulerLanes: 0, // remove unnecessary error highlight on the scroll
     scrollbar: {
