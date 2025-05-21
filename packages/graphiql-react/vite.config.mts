@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import fs from 'node:fs/promises';
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
@@ -58,6 +59,29 @@ export const plugins: PluginOption[] = [
     outDir: ['dist'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
+  {
+    // Vite transform workers source code,
+    // we must use original import paths `monaco-editor/esm/...` and `monaco-graphql/esm/...` in Next.js
+    name: 'ignore-setup-workers-file',
+    load(id) {
+      return id.endsWith('setup-workers/index.ts') ? '' : null;
+    },
+  },
+  {
+    name: 'copy-original-setup-workers-file',
+    async closeBundle() {
+      const dest = './dist/setup-workers/index.js';
+
+      console.info(`Build finished! Writing "${dest}"...`);
+      const content = await fs.readFile('./src/setup-workers/index.ts', 'utf8');
+      await fs.writeFile(
+        dest,
+        // Strip TypeScript types
+        content.replaceAll(': string', ''),
+        'utf8',
+      );
+    },
+  },
 ];
 
 export default defineConfig({
@@ -69,7 +93,11 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: [
+        'src/index.ts',
+        'src/setup-workers/index.ts',
+        'src/setup-workers/vite.ts',
+      ],
       fileName(_format, entryName) {
         const filePath = entryName.replace(/\.svg$/, '');
         return `${filePath}.js`;
