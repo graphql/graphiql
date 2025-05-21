@@ -402,7 +402,7 @@ export function QueryEditor({
       // Dispose previous provider and register a new one
       linkProvider?.dispose();
       linkProvider = languages.registerLinkProvider('graphql', {
-        provideLinks(model, token) {
+        provideLinks(_model, _token) {
           return {
             links: [
               {

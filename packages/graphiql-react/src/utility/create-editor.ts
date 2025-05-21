@@ -20,6 +20,7 @@ export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   return editor.createModel(value, language, uri);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
 const editorColors = {
   dark: {
     indentGuides: '#363739',
@@ -457,6 +458,7 @@ export function createEditor(
     throw new Error('options.model is required');
   }
   const language = model.uri.path.split('.').at(-1)!;
+  // eslint-disable-next-line no-console -- TODO monaco
   console.log({ language });
 
   return editor.create(domElement.current, {

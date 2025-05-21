@@ -21,6 +21,7 @@ type VariableEditorProps = WriteableEditorProps & {
 };
 
 export function VariableEditor({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
   onClickReference,
   onEdit,
   readOnly = false,
