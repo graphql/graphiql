@@ -1,7 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useEffect, useRef, JSX } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, Root } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 
 import { commonKeys } from './common';
@@ -10,6 +10,7 @@ import { getOrCreateModel, createEditor } from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
 import { CommonEditorProps } from './types';
+import { languages, Range } from '../monaco-editor';
 
 export type ResponseTooltipType = ComponentType<{
   /**
@@ -101,7 +102,60 @@ export function ResponseEditor({
     });
     setEditor({ responseEditor: editor });
 
-    const disposables = [editor, model];
+    let lastRoot: Root | undefined;
+
+    function renderReactTooltip(containerId: string, path: string) {
+      const el = document.querySelector<HTMLDivElement>(
+        `[data-id="${containerId}"]`,
+      );
+      if (!el) {
+        return;
+      }
+      lastRoot?.unmount();
+      lastRoot = createRoot(el);
+      lastRoot.render(<ImagePreview path={path} />);
+    }
+
+    const disposables = [
+      languages.registerHoverProvider('json', {
+        provideHover($model, position) {
+          if ($model.uri !== model.uri) {
+            return null; // Ignore for other editors
+          }
+          const word = $model.getWordAtPosition(position);
+          if (!word?.word.startsWith('/')) {
+            return null;
+          }
+          if (!ImagePreview.shouldRender(word.word)) {
+            return null;
+          }
+
+          // Return a placeholder content with a unique ID for now
+          const hoverId = `hover-${position.lineNumber}-${position.column}`;
+
+          setTimeout(() => {
+            renderReactTooltip(hoverId, word?.word); // render the React component after DOM is ready
+          }, 500);
+
+          return {
+            range: new Range(
+              position.lineNumber,
+              word.startColumn,
+              position.lineNumber,
+              word.endColumn,
+            ),
+            contents: [
+              {
+                value: `<div data-id="${hoverId}">Loading...</div>`, // Will be replaced by React
+                supportHtml: true,
+              },
+            ],
+          };
+        },
+      }),
+      editor,
+      model,
+    ];
 
     // Clean‑up on unmount or when deps change
     return () => {
