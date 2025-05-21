@@ -17,7 +17,7 @@ import {
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { editorStore } from './editor';
-import { SchemaReference } from '../editor/types';
+import { SchemaReference } from '../types';
 import { createBoundedUseStore } from '../utility';
 import { executionStore, useExecutionStore } from './execution';
 

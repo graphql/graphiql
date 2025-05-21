@@ -1,6 +1,6 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
 import { KeyCode, KeyMod, Uri } from './monaco-editor';
-import { copyQuery, mergeQuery, prettifyEditors } from './editor';
+import { copyQuery, mergeQuery, prettifyEditors } from './utility';
 import { executionStore } from './stores';
 
 export const EDITOR_THEME = {

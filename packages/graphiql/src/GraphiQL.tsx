@@ -39,7 +39,7 @@ import {
   useStorage,
   useThemeStore,
   VariableEditor,
-  WriteableEditorProps,
+  EditorProps,
   cn,
   VisuallyHidden,
 } from '@graphiql/react';
@@ -149,7 +149,7 @@ type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
 export interface GraphiQLInterfaceProps
-  extends WriteableEditorProps,
+  extends EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,

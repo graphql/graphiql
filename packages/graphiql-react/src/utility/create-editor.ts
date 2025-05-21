@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 import { editor, Uri } from '../monaco-editor';
-import { Editor } from '../editor/types';
+import { MonacoEditor } from '../types';
 import { EDITOR_THEME } from '../constants';
 
 export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
@@ -452,7 +452,7 @@ editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
 export function createEditor(
   domElement: RefObject<HTMLDivElement>,
   options: editor.IStandaloneEditorConstructionOptions,
-): Editor {
+): MonacoEditor {
   const { model } = options;
   if (!model) {
     throw new Error('options.model is required');

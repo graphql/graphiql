@@ -2,27 +2,6 @@ import './setup-workers';
 import './style/root.css';
 
 export {
-  QueryEditor,
-  useOperationsEditorState,
-  //
-  VariableEditor,
-  useVariablesEditorState,
-  //
-  HeaderEditor,
-  useHeadersEditorState,
-  //
-  ResponseEditor,
-  //
-  copyQuery,
-  prettifyEditors,
-  mergeQuery,
-  //
-  ImagePreview,
-  getAutoCompleteLeafs,
-  useEditorState,
-  useOptimisticState,
-} from './editor';
-export {
   useEditorStore,
   useExecutionStore,
   usePluginStore,
@@ -31,19 +10,13 @@ export {
   useThemeStore,
   type Theme,
 } from './stores';
-export { GraphiQLProvider } from './provider';
 
 export * from './utility';
+export type { TabsState } from './utility/tabs';
 export * from './icons';
-export * from './ui';
-export * from './toolbar';
+export * from './components';
 
-export type {
-  ResponseTooltipType,
-  TabsState,
-  WriteableEditorProps,
-  SchemaReference,
-} from './editor';
+export type { EditorProps, SchemaReference } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
 export { clsx as cn } from 'clsx';
 export { KEY_MAP } from './constants';
