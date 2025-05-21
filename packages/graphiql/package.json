@@ -1,9 +1,10 @@
 {
   "name": "graphiql",
   "version": "4.1.0",
-  "sideEffects": false,
+  "sideEffects": ["dist/setup-workers/index.js", "dist/setup-workers/vite.js"],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
+    "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
@@ -33,7 +34,15 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./setup-workers": {
+      "types": "./dist/setup-workers/index.d.ts",
+      "import": "./dist/setup-workers/index.js"
+    },
+    "./setup-workers/vite": {
+      "types": "./dist/setup-workers/vite.d.ts",
+      "import": "./dist/setup-workers/vite.js"
+    }
   },
   "scripts": {
     "types:check": "tsc --noEmit",
