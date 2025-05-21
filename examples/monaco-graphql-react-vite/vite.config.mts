@@ -16,6 +16,9 @@ export default defineConfig({
     react(),
     watchPackages(['monaco-graphql', 'graphql-language-service']),
   ],
+  worker: {
+    format: 'es',
+  },
 });
 
 function watchPackages(packageNames: string[]) {
