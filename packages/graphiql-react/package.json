@@ -2,7 +2,8 @@
   "name": "@graphiql/react",
   "version": "0.34.0",
   "sideEffects": [
-    "src/setup-workers.ts"
+    "src/setup-workers.ts",
+    "dist/setup-workers.js"
   ],
   "repository": {
     "type": "git",
