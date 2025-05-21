@@ -19,6 +19,7 @@
     "vite-plugin-monaco-editor": "^1.1.0"
   },
   "scripts": {
+    "types:check": "tsc --noEmit",
     "dev": "vite",
     "build": "vite build"
   }

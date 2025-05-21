@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "dev": "next --turbopack",
     "build": "next build",
     "start": "next start"
