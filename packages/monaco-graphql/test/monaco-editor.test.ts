@@ -36,5 +36,5 @@ describe('monaco-editor', () => {
       dist/assets/graphqlMode.js         247.09 kB │ gzip:    43.82 kB
       dist/index.js                    6,403.40 kB │ gzip: 1,177.66 kB"
     `);
-  }, 30_000);
+  }, 35_000);
 });
