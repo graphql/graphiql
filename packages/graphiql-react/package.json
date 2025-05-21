@@ -20,13 +20,9 @@
     "./style.css": "./dist/style.css",
     "./font/*": "./font/*",
     ".": "./dist/index.js",
-    "./setup-workers/webpack": {
-      "types": "./dist/setup-workers/webpack.d.ts",
-      "import": "./dist/setup-workers/webpack.js"
-    },
-    "./setup-workers/vite": {
-      "types": "./dist/setup-workers/vite.d.ts",
-      "import": "./dist/setup-workers/vite.js"
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
     }
   },
   "types": "dist/index.d.ts",
