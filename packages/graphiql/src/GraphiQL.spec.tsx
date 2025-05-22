@@ -50,7 +50,7 @@ describe('GraphiQL', () => {
     });
 
     it('should construct correctly with fetcher', async () => {
-      await act(() => {
+      act(() => {
         expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
       });
     });

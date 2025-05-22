@@ -184,6 +184,7 @@ export interface SchemaStoreType
    * `dangerouslyAssumeSchemaIsValid` prop.
    */
   introspect(): Promise<void>;
+
   /**
    * If there currently is an introspection request in-flight.
    */

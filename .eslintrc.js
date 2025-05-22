@@ -393,6 +393,7 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
         '@typescript-eslint/no-unnecessary-type-conversion': 'error',
+        // '@typescript-eslint/await-thenable': 'error', // TODO
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-deprecated': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',

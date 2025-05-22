@@ -84,7 +84,6 @@ export class GraphQLWorker {
         document,
         graphQLPosition,
       );
-      console.log('❤️', 'doHover', hover);
       const location = {
         column: graphQLPosition.character,
         line: graphQLPosition.line,

@@ -9,6 +9,7 @@ import {
   useStorage,
   editorStore,
   executionStore,
+  pluginStore,
 } from '../stores';
 import {
   debounce,
@@ -18,8 +19,14 @@ import {
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
-import type { editor as monacoEditor } from '../monaco-editor';
+import {
+  type editor as monacoEditor,
+  languages,
+  Range,
+} from '../monaco-editor';
 import { clsx } from 'clsx';
+import { getContextAtPosition } from 'graphql-language-service/esm/parser';
+import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
 interface QueryEditorProps extends EditorProps {
   /**
@@ -38,7 +45,6 @@ interface QueryEditorProps extends EditorProps {
 }
 
 export const QueryEditor: FC<QueryEditorProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
   onClickReference,
   onEdit,
   readOnly = false,
@@ -49,17 +55,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   const ref = useRef<HTMLDivElement>(null!);
 
   /*
-  const onClickReferenceRef = reference => {
-    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-    const { setSchemaReference } = schemaStore.getState();
-      if (!referencePlugin) {
-        return;
-      }
-      setVisiblePlugin(referencePlugin);
-      setSchemaReference(reference);
-      onClickReference?.(reference);
-    };
-
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
       const container = ref.current;
@@ -217,100 +212,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // Call once to initially update the values
     getAndUpdateOperationFacts(editor);
 
-    // const handleMouseDown = (e: monacoEditor.IEditorMouseEvent) => {
-    //   const { position } = e.target;
-    //   if (!position) {
-    //     return;
-    //   }
-    //   console.log('on mouse down');
-    //   const word = model.getWordAtPosition(position);
-    //   if (word) {
-    //     // eslint-disable-next-line no-console
-    //     console.info(word);
-    //     // eslint-disable-next-line no-console
-    //     console.info(`Clicked on word "${word.word}"`);
-    //   }
-    // };
-    //
-    // let linkProvider: IDisposable;
-    // let previousRange:
-    //   | readonly [
-    //       startLineNumber: number,
-    //       startColumn: number,
-    //       endLineNumber: number,
-    //       endColumn: number,
-    //     ]
-    //   | null = null;
-    //
-    // const handleMove = debounce(5, (e: monacoEditor.IEditorMouseEvent) => {
-    //   const { position } = e.target;
-    //   if (!position) {
-    //     return;
-    //   }
-    //   const word = model.getWordAtPosition(position);
-    //   const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
-    //
-    //   if (!word || !isCmdPressed) {
-    //     previousRange = null;
-    //     linkProvider?.dispose();
-    //     return;
-    //   }
-    //
-    //   const currentRange = [
-    //     position.lineNumber,
-    //     word.startColumn,
-    //     position.lineNumber,
-    //     word.endColumn,
-    //   ] as const;
-    //
-    //   // Check if it's the same word
-    //   const sameAsLast =
-    //     previousRange &&
-    //     currentRange[0] === previousRange[0] &&
-    //     currentRange[1] === previousRange[1] &&
-    //     currentRange[2] === previousRange[2] &&
-    //     currentRange[3] === previousRange[3];
-    //   // eslint-disable-next-line
-    //   console.log('Same as the last word', sameAsLast);
-    //   if (sameAsLast) {
-    //     // Skip re-registering
-    //     return;
-    //   }
-    //
-    //   // Update last word
-    //   previousRange = currentRange;
-    //
-    //   // Dispose previous provider and register a new one
-    //   linkProvider?.dispose();
-    //   linkProvider = languages.registerLinkProvider('graphql', {
-    //     provideLinks(_model, _token) {
-    //       return {
-    //         links: [
-    //           {
-    //             range: new Range(...currentRange),
-    //             tooltip: 'Go to node definition',
-    //             url: Uri.parse('command:goToCustomNode?nodeId=abc123'),
-    //           },
-    //         ],
-    //       };
-    //     },
-    //   });
-    // });
-
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
-      // editor.addAction({
-      //   id: 'graphql-go-to-definition',
-      //   label: 'Go to Definition',
-      //   contextMenuGroupId: 'navigation',
-      //   // eslint-disable-next-line no-bitwise
-      //   keybindings: [KeyMod.CtrlCmd | KeyCode.F12],
-      //   run() {
-      //     // eslint-disable-next-line no-console
-      //     console.log('Go to Definition');
-      //   },
-      // }),
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
         run: runAtCursor,
@@ -318,8 +222,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       editor.addAction(KEY_BINDINGS.copyQuery),
       editor.addAction(KEY_BINDINGS.prettify),
       editor.addAction(KEY_BINDINGS.mergeFragments),
-      // editor.onMouseDown(handleMouseDown),
-      // editor.onMouseMove(handleMove),
       editor,
       model,
     ];
@@ -339,7 +241,87 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-  }, [schema]);
+
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const { setSchemaReference } = schemaStore.getState();
+    if (!referencePlugin) {
+      return;
+    }
+
+    const disposables = [
+      languages.registerDefinitionProvider('graphql', {
+        provideDefinition(model, p, _token) {
+          const graphQLPosition = toGraphQLPosition(p);
+          const context = getContextAtPosition(
+            model.getValue(),
+            graphQLPosition,
+            schema,
+          );
+          if (!context) {
+            return null;
+          }
+          const { typeInfo, token } = context;
+          const { kind, step } = token.state;
+
+          if (
+            (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
+            (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef) ||
+            (kind === 'ObjectField' && step === 0 && typeInfo.fieldDef) ||
+            (kind === 'Directive' && step === 1 && typeInfo.directiveDef) ||
+            (kind === 'Variable' && typeInfo.type) ||
+            (kind === 'Argument' && step === 0 && typeInfo.argDef) ||
+            (kind === 'EnumValue' &&
+              typeInfo.enumValue &&
+              'description' in typeInfo.enumValue) ||
+            (kind === 'NamedType' &&
+              typeInfo.type &&
+              'description' in typeInfo.type)
+          ) {
+            return {
+              uri: model.uri,
+              range: new Range(p.lineNumber, p.column, p.lineNumber, p.column),
+            };
+          }
+
+          return null;
+        },
+      }),
+      languages.registerReferenceProvider('graphql', {
+        provideReferences(model, p, _context, _token) {
+          const graphQLPosition = toGraphQLPosition(p);
+          const context = getContextAtPosition(
+            model.getValue(),
+            graphQLPosition,
+            schema,
+          );
+          if (!context) {
+            return null;
+          }
+          const { typeInfo, token } = context;
+          const { kind } = token.state;
+          if (!kind) {
+            return null;
+          }
+
+          setVisiblePlugin(referencePlugin);
+          setSchemaReference({ kind, typeInfo });
+          onClickReference?.({ kind, typeInfo });
+
+          return [
+            {
+              uri: model.uri,
+              range: new Range(p.lineNumber, p.column, p.lineNumber, p.column),
+            },
+          ];
+        },
+      }),
+    ];
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose();
+      }
+    };
+  }, [onClickReference, schema]);
 
   return (
     <div
