@@ -13,7 +13,7 @@ export const onEditorContainerKeyDown: KeyboardEventHandler<
 > = event => {
   const isFocused = document.activeElement === event.target;
   if (isFocused && event.code === 'Enter') {
-    event.preventDefault()
+    event.preventDefault();
     event.currentTarget.querySelector('textarea')?.focus();
   }
 };
@@ -34,44 +34,6 @@ export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   const language = path.split('.').at(-1)!;
   return monacoEditor.createModel(value, language, uri);
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
-const editorColors = {
-  dark: {
-    indentGuides: '#363739',
-    delimiters: '#55565c',
-    delimitersActive: '#a4a4a4',
-    selections: '#363739',
-    keywords: '#a4a4a4',
-    operators: '#a4a4a4',
-    text1: '#fff',
-    text2: '#bfbfbf',
-    text3: '#a4a4a4',
-    fields: '#948ae3',
-    arguments: '#fc618d',
-    types: '#5ad4e6',
-    values: '#7bd88f',
-    orange_default: '#ee8e57',
-    yellow_default: '#fce566',
-  },
-  light: {
-    indentGuides: '#d7d7d7', // surface3
-    delimiters: '#bcbcbc', // text4
-    delimitersActive: '#757575', // text3
-    selections: '#d7d7d7', // surface3
-    keywords: '#757575', // text3
-    operators: '#757575', // text3
-    text1: '#1b1b1b', // text1
-    text2: '#4a4a4a', // text2
-    text3: '#757575', // text3
-    fields: '#5c4cdd', // violet_default
-    arguments: '#d60690', // pink_default
-    types: '#0b6af9', // blue_default
-    values: '#128934', // green_default
-    orange_default: '#af5f15', // orange_default
-    yellow_default: '#767800', // yellow_default
-  },
-};
 
 const colors = {
   transparent: '#ffffff00',
@@ -253,102 +215,7 @@ export const editorThemeDark: monacoEditor.IStandaloneThemeData = {
     // 'peekViewResult.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view result list
     // 'peekViewEditor.matchHighlightBackground': "#FFFFFF00", // Match highlight color in the peek view editor
   },
-  rules: [
-    // operations editor (graphql)
-    //   {
-    //     foreground: editorColors.dark.keywords,
-    //     token: 'string.quote.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.orange_default,
-    //     token: 'string.invalid.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.yellow_default,
-    //     token: 'string.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.yellow_default,
-    //     token: 'number.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.yellow_default,
-    //     token: 'number.float.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.keywords,
-    //     token: 'keyword.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.operators,
-    //     token: 'operator.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.types,
-    //     token: 'type.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.fields,
-    //     token: 'key.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.arguments,
-    //     token: 'argument.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.delimiters,
-    //     token: 'delimiter.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.delimiters,
-    //     token: 'delimiter.parenthesis.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.delimiters,
-    //     token: 'delimiter.curly.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.delimiters,
-    //     token: 'delimiter.square.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.text2,
-    //     token: 'comment.gql',
-    //   },
-    // variables editor & results viewer (json)
-    //   {
-    //     foreground: editorColors.dark.text2,
-    //     token: 'delimiter.bracket.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.text2,
-    //     token: 'delimiter.array.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.text2,
-    //     token: 'delimiter.comma.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.text2,
-    //     token: 'delimiter.colon.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.keywords,
-    //     token: 'string.key.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.values,
-    //     token: 'string.value.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.values,
-    //     token: 'number.json',
-    //   },
-    //   {
-    //     foreground: editorColors.dark.values,
-    //     token: 'keyword.json',
-    //   },
-  ],
+  rules: [],
 };
 
 export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
@@ -366,98 +233,7 @@ export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
     // 'editorBracketMatch.border': editorColors.light.selections, // Color for matching bracket boxes in the editor
     // 'editorIndentGuide.background': editorColors.light.indentGuides, // Color of the indentation guides in the editor
   },
-  rules: [
-    // operations editor (graphql)
-    //   {
-    //     foreground: editorColors.light.keywords,
-    //     token: 'string.quote.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.orange_default,
-    //     token: 'string.invalid.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.yellow_default,
-    //     token: 'string.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.yellow_default,
-    //     token: 'number.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.yellow_default,
-    //     token: 'number.float.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.operators,
-    //     token: 'operator.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.types,
-    //     token: 'type.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.fields,
-    //     token: 'key.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.arguments,
-    //     token: 'argument.identifier.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.delimiters,
-    //     token: 'delimiter.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.delimiters,
-    //     token: 'delimiter.parenthesis.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.delimiters,
-    //     token: 'delimiter.curly.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.delimiters,
-    //     token: 'delimiter.square.gql',
-    //   },
-    //   {
-    //     foreground: editorColors.light.text2,
-    //     token: 'comment.gql',
-    //   },
-    // variables editor & results viewer (json)
-    //   {
-    //     foreground: editorColors.light.text2,
-    //     token: 'delimiter.bracket.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.text2,
-    //     token: 'delimiter.array.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.text2,
-    //     token: 'delimiter.comma.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.text2,
-    //     token: 'delimiter.colon.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.keywords,
-    //     token: 'string.key.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.values,
-    //     token: 'string.value.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.values,
-    //     token: 'number.json',
-    //   },
-    //   {
-    //     foreground: editorColors.light.values,
-    //     token: 'keyword.json',
-    //   },
-  ],
+  rules: [],
 };
 
 // this should be called somewhere else, but fine here for now

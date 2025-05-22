@@ -217,17 +217,14 @@ export function QueryEditor({
     variableEditor,
   ]);
   */
-  const runAtCursor = () => {
-    const {
-      queryEditor,
-      operations,
-      operationName: $operationName,
-    } = editorStore.getState();
-    if (!operations || !queryEditor?.hasTextFocus()) {
+  const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
+    const { operations, operationName: $operationName } =
+      editorStore.getState();
+    if (!operations) {
       return;
     }
-    const position = queryEditor.getPosition()!;
-    const cursorIndex = queryEditor.getModel()!.getOffsetAt(position)
+    const position = editor.getPosition()!;
+    const cursorIndex = editor.getModel()!.getOffsetAt(position);
 
     // Loop through all operations to see if one contains the cursor.
     let operationName: string | undefined;
