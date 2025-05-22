@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { clsx } from 'clsx';
 import { useEditorStore, editorStore } from '../stores';
 import { EditorProps, SchemaReference } from '../types';
@@ -25,13 +25,13 @@ interface VariableEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export function VariableEditor({
+export const VariableEditor: FC<VariableEditorProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
   onClickReference,
   onEdit,
   readOnly = false,
   ...props
-}: VariableEditorProps) {
+}) => {
   const { initialVariables } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY, 'variables');
@@ -70,6 +70,6 @@ export function VariableEditor({
       className={clsx('graphiql-editor', props.className)}
     />
   );
-}
+};
 
 export const STORAGE_KEY = 'variables';

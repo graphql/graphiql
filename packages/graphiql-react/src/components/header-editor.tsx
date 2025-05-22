@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { clsx } from 'clsx';
 import { editorStore, storageStore, useEditorStore } from '../stores';
 import { EditorProps } from '../types';
@@ -19,11 +19,11 @@ interface HeaderEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export function HeaderEditor({
+export const HeaderEditor: FC<HeaderEditorProps> = ({
   onEdit,
   readOnly = false,
   ...props
-}: HeaderEditorProps) {
+}) => {
   const { initialHeaders, shouldPersistHeaders } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
@@ -75,6 +75,6 @@ export function HeaderEditor({
       className={clsx('graphiql-editor', props.className)}
     />
   );
-}
+};
 
 export const STORAGE_KEY = 'headers';

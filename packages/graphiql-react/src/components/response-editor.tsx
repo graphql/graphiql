@@ -1,5 +1,5 @@
 import { formatError } from '@graphiql/toolkit';
-import { ComponentType, useEffect, useRef } from 'react';
+import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useSchemaStore, useEditorStore, editorStore } from '../stores';
 import { ImagePreview } from './image-preview';
@@ -32,10 +32,10 @@ interface ResponseEditorProps extends Omit<EditorProps, 'readOnly'> {
   responseTooltip?: ResponseTooltipType;
 }
 
-export function ResponseEditor({
+export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
-}: ResponseEditorProps) {
+}) => {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor } = useEditorStore();
   const ref = useRef<HTMLDivElement>(null!);
@@ -148,4 +148,4 @@ export function ResponseEditor({
       className={clsx('result-window', props.className)}
     />
   );
-}
+};

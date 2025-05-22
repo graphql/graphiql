@@ -1,7 +1,7 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
-import { useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import {
   schemaStore,
   useSchemaStore,
@@ -37,13 +37,13 @@ interface QueryEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
-export function QueryEditor({
+export const QueryEditor: FC<QueryEditorProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
   onClickReference,
   onEdit,
   readOnly = false,
   ...props
-}: QueryEditorProps) {
+}) => {
   const { initialQuery, setOperationName } = useEditorStore();
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
@@ -370,7 +370,7 @@ export function QueryEditor({
       className={clsx('graphiql-editor', props.className)}
     />
   );
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
