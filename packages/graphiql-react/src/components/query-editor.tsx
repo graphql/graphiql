@@ -388,6 +388,7 @@ export function QueryEditor({
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 export const STORAGE_KEY_QUERY = 'query';

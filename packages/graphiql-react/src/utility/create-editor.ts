@@ -11,7 +11,7 @@ export const EDITOR_THEME = {
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement
 > = event => {
-  const el = event.currentTarget
+  const el = event.currentTarget;
   const isFocused = el === document.activeElement;
   if (isFocused && event.code === 'Enter') {
     event.preventDefault();

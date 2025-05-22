@@ -1,3 +1,4 @@
+/* eslint-disable import-x/default */
 import { createRoot } from 'react-dom/client';
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
