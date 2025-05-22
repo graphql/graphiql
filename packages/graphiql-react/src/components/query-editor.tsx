@@ -49,14 +49,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   const ref = useRef<HTMLDivElement>(null!);
 
   /*
-  const onClickReferenceRef = useRef<
-    NonNullable<QueryEditorProps['onClickReference']>
-  >(() => {});
-
-  useEffect(() => {
+  const onClickReferenceRef = reference => {
     const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
     const { setSchemaReference } = schemaStore.getState();
-    onClickReferenceRef.current = reference => {
       if (!referencePlugin) {
         return;
       }
@@ -64,7 +59,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       setSchemaReference(reference);
       onClickReference?.(reference);
     };
-  }, [onClickReference]);
 
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
@@ -81,20 +75,12 @@ export const QueryEditor: FC<QueryEditorProps> = ({
         info: {
           renderDescription: (text: string) => markdown.render(text),
           onClick(reference: SchemaReference) {
-            onClickReferenceRef.current(reference);
+            onClickReferenceRef(reference);
           },
         },
         jump: {
           onClick(reference: SchemaReference) {
-            onClickReferenceRef.current(reference);
-          },
-        },
-        extraKeys: {
-          'Cmd-S'() {
-            // empty
-          },
-          'Ctrl-S'() {
-            // empty
+            onClickReferenceRef(reference);
           },
         },
       });
@@ -109,12 +95,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
         'Alt-Space': showHint,
         'Shift-Space': showHint,
         'Shift-Alt-Space': showHint,
-      });
-
-      newEditor.on('keyup', (editorInstance, event) => {
-        if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
-          editorInstance.execCommand('autocomplete');
-        }
       });
 
       let showingHints = false;
@@ -371,9 +351,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     />
   );
 };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
-const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 export const STORAGE_KEY_QUERY = 'query';
 

@@ -105,7 +105,7 @@ export function getHoverInformation(
   return '';
 }
 
-function renderMdCodeStart(into: string[], options: any) {
+function renderMdCodeStart(into: string[], options: HoverConfig) {
   if (options.useMarkdown) {
     text(into, '```graphql\n');
   }
@@ -119,7 +119,7 @@ function renderMdCodeEnd(into: string[], options: any) {
 export function renderField(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
 ) {
   renderQualifiedField(into, typeInfo, options);
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type!);
@@ -128,7 +128,7 @@ export function renderField(
 function renderQualifiedField(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
 ) {
   if (!typeInfo.fieldDef) {
     return;
@@ -144,7 +144,7 @@ function renderQualifiedField(
 export function renderDirective(
   into: string[],
   typeInfo: AllTypeInfo,
-  _options: any,
+  _options: HoverConfig,
 ) {
   if (!typeInfo.directiveDef) {
     return;
@@ -153,7 +153,11 @@ export function renderDirective(
   text(into, name);
 }
 
-export function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
+export function renderArg(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: HoverConfig,
+) {
   if (typeInfo.directiveDef) {
     renderDirective(into, typeInfo, options);
   } else if (typeInfo.fieldDef) {
@@ -174,7 +178,7 @@ export function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
 function renderTypeAnnotation(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
   t: GraphQLType,
 ) {
   text(into, ': ');
@@ -184,7 +188,7 @@ function renderTypeAnnotation(
 export function renderEnumValue(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
 ) {
   if (!typeInfo.enumValue) {
     return;
@@ -198,7 +202,7 @@ export function renderEnumValue(
 export function renderType(
   into: string[],
   typeInfo: AllTypeInfo,
-  options: any,
+  options: HoverConfig,
   t: GraphQLType,
 ) {
   if (!t) {
@@ -219,7 +223,7 @@ export function renderType(
 
 function renderDescription(
   into: string[],
-  options: any,
+  options: HoverConfig,
   // TODO: Figure out the right type for this one
   def: any,
 ) {
@@ -237,14 +241,14 @@ function renderDescription(
 
 function renderDeprecation(
   into: string[],
-  _options: any,
-  def: GraphQLField<any, any> | GraphQLFieldConfig<any, any>,
+  _options: HoverConfig,
+  def: GraphQLField<unknown, unknown> | GraphQLFieldConfig<unknown, unknown>,
 ) {
   if (!def) {
     return;
   }
 
-  const reason = def.deprecationReason || null;
+  const reason = def.deprecationReason;
   if (!reason) {
     return;
   }
