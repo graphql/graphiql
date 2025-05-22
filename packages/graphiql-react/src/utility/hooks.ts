@@ -14,6 +14,7 @@ import { debounce } from './debounce';
 import { formatJSONC } from './jsonc';
 import { MonacoEditor } from '../types';
 import type { editor as monacoEditor } from '../monaco-editor';
+import { Range } from '../monaco-editor';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
@@ -138,41 +139,63 @@ export function getAutoCompleteLeafs() {
   const { schema } = schemaStore.getState();
   const query = queryEditor.getValue();
   const { getDefaultFieldNames } = executionStore.getState();
-  const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
-
-  if (insertions && insertions.length > 0) {
-    /*
-      queryEditor.operation(() => {
-        const cursor = queryEditor.getCursor();
-        const cursorIndex = queryEditor.indexFromPos(cursor);
-        queryEditor.setValue(result || '');
-        let added = 0;
-        const markers = insertions.map(({ index, string }) =>
-          queryEditor.markText(
-            queryEditor.posFromIndex(index + added),
-            queryEditor.posFromIndex(index + (added += string.length)),
-            {
-              className: 'auto-inserted-leaf',
-              clearOnEnter: true,
-              title: 'Automatically added leaf fields',
-            },
-          ),
-        );
-        setTimeout(() => {
-          for (const marker of markers) {
-            marker.clear();
-          }
-        }, 7000);
-        let newCursorIndex = cursorIndex;
-        for (const { index, string } of insertions) {
-          if (index < cursorIndex) {
-            newCursorIndex += string.length;
-          }
-        }
-        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-      });
-    */
+  const { insertions, result = '' } = fillLeafs(
+    schema,
+    query,
+    getDefaultFieldNames,
+  );
+  if (!insertions.length) {
+    return result;
   }
+  const model = queryEditor.getModel()!;
+
+  // Save the current cursor position as an offset
+  const selection = queryEditor.getSelection()!;
+  const cursorIndex = model.getOffsetAt(selection.getPosition());
+
+  // Replace entire content
+  model.setValue(result);
+
+  let added = 0;
+  const decorations = insertions.map(({ index, string }) => {
+    const start = model.getPositionAt(index + added);
+    const end = model.getPositionAt(index + (added += string.length));
+    return {
+      range: new Range(
+        start.lineNumber,
+        start.column,
+        end.lineNumber,
+        end.column,
+      ),
+      options: {
+        className: 'auto-inserted-leaf',
+        hoverMessage: { value: 'Automatically added leaf fields' },
+        isWholeLine: false,
+      },
+    };
+  });
+
+  // Create a decoration collection (initially empty)
+  const decorationCollection = queryEditor.createDecorationsCollection([]);
+
+  // Apply decorations
+  decorationCollection.set(decorations);
+
+  // Clear decorations after 7 seconds
+  setTimeout(() => {
+    decorationCollection.clear();
+  }, 7000);
+
+  // Adjust the cursor position based on insertions
+  let newCursorIndex = cursorIndex;
+  for (const { index, string } of insertions) {
+    if (index < cursorIndex) {
+      newCursorIndex += string.length;
+    }
+  }
+
+  const newCursorPosition = model.getPositionAt(newCursorIndex);
+  queryEditor.setPosition(newCursorPosition);
 
   return result;
 }
