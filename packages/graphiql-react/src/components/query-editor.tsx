@@ -223,12 +223,11 @@ export function QueryEditor({
       operations,
       operationName: $operationName,
     } = editorStore.getState();
-
-    if (!operations || !queryEditor.hasFocus()) {
+    if (!operations || !queryEditor?.hasTextFocus()) {
       return;
     }
-
-    const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
+    const position = queryEditor.getPosition()!;
+    const cursorIndex = queryEditor.getModel()!.getOffsetAt(position)
 
     // Loop through all operations to see if one contains the cursor.
     let operationName: string | undefined;
@@ -260,8 +259,6 @@ export function QueryEditor({
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
-      // eslint-disable-next-line no-console
-      console.log('handleChange', query);
 
       const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
@@ -283,86 +280,88 @@ export function QueryEditor({
         operationName: operationFacts?.operationName ?? null,
       });
     });
+    // Call once to initially update the values
+    getAndUpdateOperationFacts(editor);
 
-    const handleMouseDown = (e: monacoEditor.IEditorMouseEvent) => {
-      const { position } = e.target;
-      if (!position) {
-        return;
-      }
-      console.log('on mouse down');
-      const word = model.getWordAtPosition(position);
-      if (word) {
-        // eslint-disable-next-line no-console
-        console.info(word);
-        // eslint-disable-next-line no-console
-        console.info(`Clicked on word "${word.word}"`);
-      }
-    };
-
-    let linkProvider: IDisposable;
-    let previousRange:
-      | readonly [
-          startLineNumber: number,
-          startColumn: number,
-          endLineNumber: number,
-          endColumn: number,
-        ]
-      | null = null;
-
-    const handleMove = debounce(5, (e: monacoEditor.IEditorMouseEvent) => {
-      const { position } = e.target;
-      if (!position) {
-        return;
-      }
-      const word = model.getWordAtPosition(position);
-      const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
-
-      if (!word || !isCmdPressed) {
-        previousRange = null;
-        linkProvider?.dispose();
-        return;
-      }
-
-      const currentRange = [
-        position.lineNumber,
-        word.startColumn,
-        position.lineNumber,
-        word.endColumn,
-      ] as const;
-
-      // Check if it's the same word
-      const sameAsLast =
-        previousRange &&
-        currentRange[0] === previousRange[0] &&
-        currentRange[1] === previousRange[1] &&
-        currentRange[2] === previousRange[2] &&
-        currentRange[3] === previousRange[3];
-      // eslint-disable-next-line
-      console.log('Same as the last word', sameAsLast);
-      if (sameAsLast) {
-        // Skip re-registering
-        return;
-      }
-
-      // Update last word
-      previousRange = currentRange;
-
-      // Dispose previous provider and register a new one
-      linkProvider?.dispose();
-      linkProvider = languages.registerLinkProvider('graphql', {
-        provideLinks(_model, _token) {
-          return {
-            links: [
-              {
-                range: new Range(...currentRange),
-                tooltip: 'Go to node definition',
-                url: Uri.parse('command:goToCustomNode?nodeId=abc123'),
-              },
-            ],
-          };
-        },
-      });
-    });
+    // const handleMouseDown = (e: monacoEditor.IEditorMouseEvent) => {
+    //   const { position } = e.target;
+    //   if (!position) {
+    //     return;
+    //   }
+    //   console.log('on mouse down');
+    //   const word = model.getWordAtPosition(position);
+    //   if (word) {
+    //     // eslint-disable-next-line no-console
+    //     console.info(word);
+    //     // eslint-disable-next-line no-console
+    //     console.info(`Clicked on word "${word.word}"`);
+    //   }
+    // };
+    //
+    // let linkProvider: IDisposable;
+    // let previousRange:
+    //   | readonly [
+    //       startLineNumber: number,
+    //       startColumn: number,
+    //       endLineNumber: number,
+    //       endColumn: number,
+    //     ]
+    //   | null = null;
+    //
+    // const handleMove = debounce(5, (e: monacoEditor.IEditorMouseEvent) => {
+    //   const { position } = e.target;
+    //   if (!position) {
+    //     return;
+    //   }
+    //   const word = model.getWordAtPosition(position);
+    //   const isCmdPressed = isMacOs ? e.event.metaKey : e.event.ctrlKey;
+    //
+    //   if (!word || !isCmdPressed) {
+    //     previousRange = null;
+    //     linkProvider?.dispose();
+    //     return;
+    //   }
+    //
+    //   const currentRange = [
+    //     position.lineNumber,
+    //     word.startColumn,
+    //     position.lineNumber,
+    //     word.endColumn,
+    //   ] as const;
+    //
+    //   // Check if it's the same word
+    //   const sameAsLast =
+    //     previousRange &&
+    //     currentRange[0] === previousRange[0] &&
+    //     currentRange[1] === previousRange[1] &&
+    //     currentRange[2] === previousRange[2] &&
+    //     currentRange[3] === previousRange[3];
+    //   // eslint-disable-next-line
+    //   console.log('Same as the last word', sameAsLast);
+    //   if (sameAsLast) {
+    //     // Skip re-registering
+    //     return;
+    //   }
+    //
+    //   // Update last word
+    //   previousRange = currentRange;
+    //
+    //   // Dispose previous provider and register a new one
+    //   linkProvider?.dispose();
+    //   linkProvider = languages.registerLinkProvider('graphql', {
+    //     provideLinks(_model, _token) {
+    //       return {
+    //         links: [
+    //           {
+    //             range: new Range(...currentRange),
+    //             tooltip: 'Go to node definition',
+    //             url: Uri.parse('command:goToCustomNode?nodeId=abc123'),
+    //           },
+    //         ],
+    //       };
+    //     },
+    //   });
+    // });
 
     const disposables = [
       // 2️⃣ Subscribe to content changes
