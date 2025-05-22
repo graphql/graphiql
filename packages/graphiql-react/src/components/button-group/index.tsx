@@ -1,10 +1,10 @@
-import { forwardRef, JSX } from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { clsx } from 'clsx';
 import './index.css';
 
 export const ButtonGroup = forwardRef<
   HTMLDivElement,
-  JSX.IntrinsicElements['div']
+  ComponentPropsWithoutRef<'div'>
 >((props, ref) => (
   <div
     {...props}

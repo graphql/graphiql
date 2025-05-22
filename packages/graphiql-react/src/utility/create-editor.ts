@@ -13,6 +13,7 @@ export const onEditorContainerKeyDown: KeyboardEventHandler<
 > = event => {
   const isFocused = document.activeElement === event.target;
   if (isFocused && event.code === 'Enter') {
+    event.preventDefault()
     event.currentTarget.querySelector('textarea')?.focus();
   }
 };
@@ -490,7 +491,7 @@ export function createEditor(
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
-    tabIndex: -1,
+    tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter ot its container
     // scrollPredominantAxis: false,
     // wrappingStrategy: 'advanced',
     // fixedOverflowWidgets: true,

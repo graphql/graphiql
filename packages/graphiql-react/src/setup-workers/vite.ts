@@ -4,12 +4,12 @@ import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
 
 /**
  * Setup Monaco Editor workers for Vite.
+ * Vite needs to know ahead of time that you are loading a web worker.
+ * Vite doesn’t support instantiating web workers directly from bare module imports like:
  *
- * Vite doesn’t support instantiating web workers directly from bare module imports like this:
- * ```
+ * ```js
  * new Worker(new URL('monaco-editor/esm/vs/language/json/json.worker.js', import.meta.url))
  * ```
- * Vite needs to know ahead of time that you are loading a web worker.
  */
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
