@@ -68,21 +68,11 @@ export function QueryEditor({
 
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
-      codeMirrorRef.current = CodeMirror;
-
       const container = ref.current;
       const newEditor = CodeMirror(container, {
-        lint: {
-          schema: undefined,
-          validationRules: null,
-          // linting accepts string or FragmentDefinitionNode[]
-          externalFragments: undefined,
-        },
         hintOptions: {
-          schema: undefined,
           closeOnUnfocus: false,
           completeSingle: false,
-          externalFragments: undefined,
           autocompleteOptions: {
             // for the query editor, restrict to executable type definitions
             mode: GraphQLDocumentMode.EXECUTABLE,
@@ -99,7 +89,6 @@ export function QueryEditor({
             onClickReferenceRef.current(reference);
           },
         },
-        gutters: ['CodeMirror-linenumbers'],
         extraKeys: {
           'Cmd-S'() {
             // empty
@@ -154,11 +143,6 @@ export function QueryEditor({
           change.update?.(change.from, change.to, text);
         }
       });
-
-      newEditor.documentAST = null;
-      newEditor.operationName = null;
-      newEditor.operations = null;
-      newEditor.variableToType = null;
     });
   }, []);
     */
