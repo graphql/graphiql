@@ -1,15 +1,6 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
-import type {
-  DocumentNode,
-  FragmentDefinitionNode,
-  GraphQLSchema,
-  ValidationRule,
-} from 'graphql';
-import {
-  getOperationFacts,
-  GraphQLDocumentMode,
-  OperationFacts,
-} from 'graphql-language-service';
+import type { DocumentNode } from 'graphql';
+import { getOperationFacts } from 'graphql-language-service';
 import { useEffect, useRef } from 'react';
 import {
   schemaStore,
@@ -20,18 +11,14 @@ import {
   executionStore,
 } from '../stores';
 import {
-  markdown,
   debounce,
-  isMacOs,
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
-import { normalizeWhitespace } from '../utility/whitespace';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
-import type { editor as monacoEditor, IDisposable } from '../monaco-editor';
-import { Range, Uri, languages } from '../monaco-editor';
+import type { editor as monacoEditor } from '../monaco-editor';
 import { clsx } from 'clsx';
 
 interface QueryEditorProps extends EditorProps {
@@ -51,6 +38,7 @@ interface QueryEditorProps extends EditorProps {
 }
 
 export function QueryEditor({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO monaco
   onClickReference,
   onEdit,
   readOnly = false,
@@ -173,14 +161,6 @@ export function QueryEditor({
       newEditor.variableToType = null;
     });
   }, []);
-
-  // We don't use the generic `useChangeHandler` hook here because we want to
-  // have additional logic that updates the operation facts that we store as
-  // properties on the editor.
-  useEffect(() => {
-    if (!queryEditor) {
-      return;
-    }
     */
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
@@ -207,16 +187,6 @@ export function QueryEditor({
     return operationFacts ? { ...operationFacts, operationName } : null;
   }
 
-  /*
-    // Call once to initially update the values
-    getAndUpdateOperationFacts(queryEditor);
-  }, [
-    onEdit,
-    queryEditor,
-    storage,
-    variableEditor,
-  ]);
-  */
   const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
     const { operations, operationName: $operationName } =
       editorStore.getState();
@@ -253,6 +223,9 @@ export function QueryEditor({
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ queryEditor: editor });
+
+    // We don't use the generic `useChangeHandler` hook here because we want to
+    // have additional logic that updates the operation facts that we save in `editorStore`
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
