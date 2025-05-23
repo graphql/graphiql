@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 import { DropdownMenu } from '../dropdown-menu';
@@ -10,15 +10,12 @@ type ToolbarMenuProps = {
   label: string;
 };
 
-const ToolbarMenuRoot = ({
-  button,
-  children,
-  label,
-  ...props
-}: ToolbarMenuProps & {
-  children: ReactNode;
-  className?: string;
-} & DropdownMenuProps) => {
+const ToolbarMenuRoot: FC<
+  ToolbarMenuProps & {
+    children: ReactNode;
+    className?: string;
+  } & DropdownMenuProps
+> = ({ button, children, label, ...props }) => {
   return (
     <DropdownMenu {...props}>
       <Tooltip label={label}>

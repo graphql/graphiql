@@ -82,7 +82,7 @@ const esmConfig = defineConfig({
     lib: {
       entry: [
         'src/index.ts',
-        'src/e2e.tsx',
+        'src/e2e.ts',
         'src/setup-workers/webpack.ts',
         'src/setup-workers/vite.ts',
       ],
@@ -145,7 +145,7 @@ function htmlPlugin(): PluginOption {
         );
         return html.replace(
           contentToReplace,
-          '<script type="module" src="/src/e2e.tsx"></script>',
+          '<script type="module" src="/src/e2e.ts"></script>',
         );
       },
     },
@@ -157,7 +157,7 @@ function removeImportsFromE2EFile(): PluginOption {
     name: 'remove-imports-from-e2e-file',
     enforce: 'pre', // Ensure it runs before Vite's own transformers
     transform(code: string, id: string) {
-      if (id.endsWith('e2e.tsx')) {
+      if (id.endsWith('e2e.ts')) {
         const transformedCode = code
           .split('\n')
           .filter(line => !line.startsWith('import '))

@@ -1,6 +1,6 @@
 'use no memo';
 
-// import { StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme } from '@graphiql/react';
@@ -125,6 +125,6 @@ const props = {
 root.render(
   // TODO: enable strict mode after monaco-editor migration
   // <StrictMode>
-  <GraphiQL {...props} />,
+  React.createElement(GraphiQL, props),
   // </StrictMode>,
 );
