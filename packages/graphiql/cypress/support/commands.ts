@@ -178,8 +178,12 @@ Cypress.Commands.add(
         }[severity];
         expect(markers[0].severity).eq(markerSeverity);
       }
-      cy.contains(text).trigger('mousemove');
-      cy.contains(message, { timeout: 30_000 });
+      cy.contains(text).trigger('mousemove', {
+        // Hover in the right corner, because some errors like `Expected comma or closing brace` are
+        // highlighted at the end
+        position: 'right',
+      });
+      cy.contains(message);
     });
   },
 );
