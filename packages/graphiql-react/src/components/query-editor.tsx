@@ -20,11 +20,11 @@ import {
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
 import {
-  editor as monacoEditor,
-  Uri,
+  type editor as monacoEditor,
   languages,
   Range,
 } from '../monaco-editor';
+import * as monaco from '../monaco-editor';
 import { clsx } from 'clsx';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
@@ -178,8 +178,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   const schema = useSchemaStore(store => store.schema);
 
   useEffect(() => {
-    globalThis.__MONACO_EDITOR = monacoEditor;
-    globalThis.__MONACO_URI = Uri;
+    globalThis.__MONACO = monaco;
 
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });

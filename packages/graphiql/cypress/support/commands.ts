@@ -160,12 +160,25 @@ function normalizeWhitespace(str: string): string {
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message) => {
-    cy.contains(text)
-      .should('have.class', 'CodeMirror-lint-mark')
-      .and('have.class', `CodeMirror-lint-mark-${severity}`);
-    if (message) {
-      cy.contains(text).trigger('mouseover');
+    // Ensure error is visible in the DOM
+    cy.get('.squiggly-error', { timeout: 8_000 });
+    cy.window().then(win => {
+      const { editor, Uri, MarkerSeverity } = win.__MONACO;
+      const markers = editor.getModelMarkers({
+        resource: Uri.parse('query.graphql'),
+      });
+      expect(markers.length).to.be.greaterThan(0);
+      if (!message) {
+        return;
+      }
+      cy.contains(text).trigger('mousemove');
       cy.contains(message);
-    }
+      expect(markers[0].message).eq(message);
+      const markerSeverity = {
+        error: MarkerSeverity.Error,
+        warning: MarkerSeverity.Warning,
+      }[severity];
+      expect(markers[0].severity).eq(markerSeverity);
+    });
   },
 );

@@ -1,8 +1,8 @@
-import type { editor, Uri } from 'monaco-editor';
+// eslint-disable-next-line import-x/no-extraneous-dependencies
+import * as monaco from 'monaco-editor';
 
 declare global {
   interface Window {
-    __MONACO_EDITOR: typeof editor;
-    __MONACO_URI: typeof Uri;
+    __MONACO: typeof monaco
   }
 }
