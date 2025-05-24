@@ -98,10 +98,6 @@ export function useDragResize({
    */
   useEffect(() => {
     function hide(element: HTMLDivElement) {
-      // We hide elements off screen because of codemirror. If the page is loaded
-      // and the codemirror container would have zero width, the layout isn't
-      // instant pretty. By always giving the editor some width we avoid any
-      // layout shifts when the editor reappears.
       element.style.left = '-1000px';
       element.style.position = 'absolute';
       element.style.opacity = '0';
@@ -158,10 +154,13 @@ export function useDragResize({
     });
 
     function setHiddenElementWithCallback(element: ResizableElement | null) {
-      if (element !== hiddenElement) {
-        setHiddenElement(element);
+      setHiddenElement(prevHiddenElement => {
+        if (element === prevHiddenElement) {
+          return prevHiddenElement;
+        }
         onHiddenElementChange?.(element);
-      }
+        return element;
+      });
     }
 
     const dragBarContainer = dragBarRef.current;
@@ -246,7 +245,6 @@ export function useDragResize({
     };
   }, [
     direction,
-    hiddenElement,
     onHiddenElementChange,
     sizeThresholdFirst,
     sizeThresholdSecond,
