@@ -20,7 +20,8 @@ import {
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
 import {
-  type editor as monacoEditor,
+  editor as monacoEditor,
+  Uri,
   languages,
   Range,
 } from '../monaco-editor';
@@ -177,6 +178,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   const schema = useSchemaStore(store => store.schema);
 
   useEffect(() => {
+    globalThis.__MONACO_EDITOR = monacoEditor;
+    globalThis.__MONACO_URI = Uri;
+
     const { setEditor, updateActiveTabValues } = editorStore.getState();
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
     // Build the editor
