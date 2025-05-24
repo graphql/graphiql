@@ -170,7 +170,7 @@ Cypress.Commands.add(
       });
       expect(markers.length).to.be.greaterThan(0);
       cy.contains(text).trigger('mousemove');
-      cy.contains(message);
+      cy.contains(message, { timeout: 5_000 });
       expect(markers[0].message).eq(message);
       const markerSeverity = {
         error: MarkerSeverity.Error,

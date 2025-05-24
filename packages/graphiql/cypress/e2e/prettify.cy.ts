@@ -40,7 +40,7 @@ describeOrSkip('GraphiQL Prettify', () => {
       cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
       // Wait diagnostic error
       cy.get('.squiggly-error', { timeout: 9_000 });
-      // Run short cut
+      // Run shortcut
       cy.get('.graphiql-query-editor textarea').type('{shift}{ctrl}P', {
         force: true,
       });
