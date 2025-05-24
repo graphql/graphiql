@@ -1,17 +1,38 @@
+/* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { copyQuery, mergeQuery, prettifyEditors } from './utility';
 import { executionStore } from './stores';
 
 export const KEY_MAP = Object.freeze({
-  prettify: ['Shift-Ctrl-P'],
-  mergeFragments: ['Shift-Ctrl-M'],
-  runQuery: ['Ctrl-Enter', 'Cmd-Enter'],
-  autoComplete: ['Ctrl-Space'],
-  copyQuery: ['Shift-Ctrl-C'],
-  refetchSchema: ['Shift-Ctrl-R'],
-  searchInEditor: ['Ctrl-F'],
-  searchInDocs: ['Ctrl-K'],
+  prettify: {
+    key: 'Shift-Ctrl-P',
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
+  },
+  mergeFragments: {
+    key: 'Shift-Ctrl-M',
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
+  },
+  runQuery: {
+    key: 'Cmd-Enter',
+    keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+  },
+  autoComplete: {
+    key: 'Ctrl-Space',
+  },
+  copyQuery: {
+    key: 'Shift-Ctrl-C',
+    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
+  },
+  refetchSchema: {
+    key: 'Shift-Ctrl-R',
+  },
+  searchInEditor: {
+    key: 'Ctrl-F',
+  },
+  searchInDocs: {
+    key: 'Ctrl-K',
+  },
 } as const);
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
@@ -36,13 +57,13 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#   Prettify query:  ${KEY_MAP.prettify[0]} (or press the prettify button)
+#   Prettify query:  ${KEY_MAP.prettify.key} (or press the prettify button)
 #
-#  Merge fragments:  ${KEY_MAP.mergeFragments[0]} (or press the merge button)
+#  Merge fragments:  ${KEY_MAP.mergeFragments.key} (or press the merge button)
 #
-#        Run Query:  ${KEY_MAP.runQuery[0]} (or press the play button)
+#        Run Query:  ${KEY_MAP.runQuery.key} (or press the play button)
 #
-#    Auto Complete:  ${KEY_MAP.autoComplete[0]} (or just start typing)
+#    Auto Complete:  ${KEY_MAP.autoComplete.key} (or just start typing)
 #
 
 `;
@@ -52,24 +73,21 @@ export const KEY_BINDINGS = Object.freeze({
     id: 'graphql-prettify',
     label: 'Prettify Editors',
     contextMenuGroupId: 'graphql',
-    // eslint-disable-next-line no-bitwise
-    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyP],
+    keybindings: KEY_MAP.prettify.keybindings,
     run: prettifyEditors,
   },
   mergeFragments: {
     id: 'graphql-merge',
     label: 'Merge Fragments into Query',
     contextMenuGroupId: 'graphql',
-    // eslint-disable-next-line no-bitwise
-    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
+    keybindings: KEY_MAP.mergeFragments.keybindings,
     run: mergeQuery,
   },
   runQuery: {
     id: 'graphql-run',
     label: 'Run Operation',
     contextMenuGroupId: 'graphql',
-    // eslint-disable-next-line no-bitwise
-    keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+    keybindings: KEY_MAP.runQuery.keybindings,
     run() {
       // Fixes error - Cannot access 'executionStore' before initialization
       return executionStore.getState().run();
@@ -79,8 +97,7 @@ export const KEY_BINDINGS = Object.freeze({
     id: 'graphql-copy',
     label: 'Copy Query',
     contextMenuGroupId: 'graphql',
-    // eslint-disable-next-line no-bitwise
-    keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
+    keybindings: KEY_MAP.copyQuery.keybindings,
     run: copyQuery,
   },
 });
@@ -98,7 +115,7 @@ const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
   trailingCommas: 'ignore',
 };
 
-// Set diagnostics options for json
+// Set diagnostics options for JSON
 languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
 export const MONACO_GRAPHQL_API = initializeMode({
@@ -109,7 +126,7 @@ export const MONACO_GRAPHQL_API = initializeMode({
     jsonDiagnosticSettings: {
       validate: true,
       schemaValidation: 'error',
-      // set these again, because we are entirely re-setting them here
+      // Set these again, because we are entirely re-setting them here
       ...JSON_DIAGNOSTIC_OPTIONS,
     },
   },

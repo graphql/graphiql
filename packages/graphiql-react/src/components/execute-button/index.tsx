@@ -19,7 +19,7 @@ export const ExecuteButton: FC = () => {
     operations.length > 1 && typeof execOperationName !== 'string';
   const isRunning = isFetching || Boolean(subscription);
 
-  const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery[0]})`;
+  const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery.key})`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',

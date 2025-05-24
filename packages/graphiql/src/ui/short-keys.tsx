@@ -6,14 +6,14 @@ function withMacOS(key: string) {
 }
 
 const SHORT_KEYS = Object.entries({
-  'Search in editor': withMacOS(KEY_MAP.searchInEditor[0]),
-  'Search in documentation': withMacOS(KEY_MAP.searchInDocs[0]),
-  'Execute query': withMacOS(KEY_MAP.runQuery[0]),
-  'Prettify editors': KEY_MAP.prettify[0],
+  'Search in editor': withMacOS(KEY_MAP.searchInEditor.key),
+  'Search in documentation': withMacOS(KEY_MAP.searchInDocs.key),
+  'Execute query': withMacOS(KEY_MAP.runQuery.key),
+  'Prettify editors': KEY_MAP.prettify.key,
   'Merge fragments definitions into operation definition':
-    KEY_MAP.mergeFragments[0],
-  'Copy query': KEY_MAP.copyQuery[0],
-  'Re-fetch schema using introspection': KEY_MAP.refetchSchema[0],
+    KEY_MAP.mergeFragments.key,
+  'Copy query': KEY_MAP.copyQuery.key,
+  'Re-fetch schema using introspection': KEY_MAP.refetchSchema.key,
 });
 
 interface ShortKeysProps {
