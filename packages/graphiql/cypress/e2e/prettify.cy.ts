@@ -38,12 +38,12 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     it('should work while click on key map short cut', () => {
       cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
-      cy.get('.graphiql-query-editor textarea')
-        .click({ force: true })
-        .type('{shift}{ctrl}P', {
-          force: true,
-        });
+      // Wait diagnostic error
+      cy.get('.squiggly-error', { timeout: 9_000 });
+      // Run short cut
+      cy.get('.graphiql-query-editor textarea').type('{shift}{ctrl}P', {
+        force: true,
+      });
       cy.get('.graphiql-query-editor textarea').type('{esc}');
       cy.assertHasValues({ query: resultQuery });
     });
