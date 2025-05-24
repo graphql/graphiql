@@ -77,17 +77,14 @@ describe('QueryHistoryItem', () => {
     const mockedSetQueryEditor = vi.fn();
     const mockedSetVariableEditor = vi.fn();
     const mockedSetHeaderEditor = vi.fn();
-    type MonacoEditorWithOperationFacts = NonNullable<
-      ReturnType<typeof editorStore.getInitialState>['queryEditor']
-    >;
     type MonacoEditor = NonNullable<
-      ReturnType<typeof editorStore.getInitialState>['variableEditor']
+      ReturnType<typeof editorStore.getInitialState>['queryEditor']
     >;
 
     editorStore.setState({
       queryEditor: {
         setValue: mockedSetQueryEditor,
-      } as unknown as MonacoEditorWithOperationFacts,
+      } as unknown as MonacoEditor,
       variableEditor: {
         setValue: mockedSetVariableEditor,
       } as unknown as MonacoEditor,

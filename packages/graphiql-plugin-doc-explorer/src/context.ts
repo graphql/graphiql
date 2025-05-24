@@ -21,6 +21,7 @@ import {
   createBoundedUseStore,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
+import { getSchemaReference } from './schema-reference';
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -114,36 +115,42 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
         if (!schemaReference) {
           return;
         }
+        const { kind, typeInfo } = schemaReference;
+        const ref = getSchemaReference(kind, typeInfo);
+        if (!ref) {
+          return;
+        }
+
         const { push } = get().actions;
-        switch (schemaReference.kind) {
+        switch (ref.kind) {
           case 'Type': {
             push({
-              name: schemaReference.type.name,
-              def: schemaReference.type,
+              name: ref.type.name,
+              def: ref.type,
             });
             break;
           }
           case 'Field': {
             push({
-              name: schemaReference.field.name,
-              def: schemaReference.field,
+              name: ref.field.name,
+              def: ref.field,
             });
             break;
           }
           case 'Argument': {
-            if (schemaReference.field) {
+            if (ref.field) {
               push({
-                name: schemaReference.field.name,
-                def: schemaReference.field,
+                name: ref.field.name,
+                def: ref.field,
               });
             }
             break;
           }
           case 'EnumValue': {
-            if (schemaReference.type) {
+            if (ref.type) {
               push({
-                name: schemaReference.type.name,
-                def: schemaReference.type,
+                name: ref.type.name,
+                def: ref.type,
               });
             }
             break;

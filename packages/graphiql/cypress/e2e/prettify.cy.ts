@@ -38,6 +38,9 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     it('should work while click on key map short cut', () => {
       cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
+      // Wait diagnostic error
+      cy.get('.squiggly-error', { timeout: 9_000 });
+      // Run shortcut
       cy.get('.graphiql-query-editor textarea').type('{shift}{ctrl}P', {
         force: true,
       });

@@ -47,7 +47,7 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'deprecatedField',
       'warning',
-      'The field Test.deprecatedField is deprecated.',
+      'The field Test.deprecatedField is deprecated. No longer in use, try `test` instead.',
     );
   });
 
@@ -65,7 +65,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '"42"',
       'error',
-      'Expected } but found [end of file].',
+      'Expected comma or closing brace',
+      'variable.json',
     );
   });
 
@@ -83,7 +84,7 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'unusedVariable',
       'error',
-      'Variable "$unusedVariable" does not appear in any GraphQL query.',
+      'Property unusedVariable is not allowed.',
     );
   });
 
@@ -100,7 +101,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '42',
       'error',
-      'Expected value of type "String".',
+      'Incorrect type. Expected one of string, null.',
+      'variable.json',
     );
   });
 
@@ -117,7 +119,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'null',
       'error',
-      'Type "String!" is non-nullable and cannot be null.',
+      'Incorrect type. Expected "string".',
+      'variable.json',
     );
   });
 
@@ -134,7 +137,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '"42"',
       'error',
-      'Type "TestInput" must be an Object.',
+      'Incorrect type. Expected "object".',
+      'variable.json',
     );
   });
 

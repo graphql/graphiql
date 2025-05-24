@@ -7,5 +7,6 @@ module.exports = {
   plugins: [
     require.resolve('@babel/plugin-proposal-class-properties'),
     require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
+    require.resolve('@babel/plugin-transform-class-static-block'),
   ],
 };
