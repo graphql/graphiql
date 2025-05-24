@@ -148,9 +148,9 @@ export const executionStore = createStore<
       let message;
       const name = editor === variableEditor ? 'Variables' : 'Headers';
       if (error instanceof TypeError) {
-        message = `${name} are not a JSONC object.`;
+        message = `${name} are not a JSON object.`;
       } else {
-        message = `${name} are invalid JSONC: ${error instanceof Error ? error.message : error}.`;
+        message = `${name} are invalid JSON: ${error instanceof Error ? error.message : error}.`;
       }
       // Need to stringify since the response editor uses `json` language
       setResponse(formatError({ message }));
@@ -164,14 +164,14 @@ export const executionStore = createStore<
     // the current query from the editor.
     let query = getAutoCompleteLeafs() || queryEditor.getValue();
 
-    let variables: Record<string, unknown>;
+    let variables: Record<string, unknown> | undefined;
     try {
       variables = await tryParseJsonObject(variableEditor?.getValue());
     } catch (error) {
       setError(error, variableEditor);
       return;
     }
-    let headers: Record<string, unknown>;
+    let headers: Record<string, unknown> | undefined;
     try {
       headers = await tryParseJsonObject(headerEditor?.getValue());
     } catch (error) {
@@ -225,17 +225,14 @@ export const executionStore = createStore<
           setResponse(formatResult(result));
         }
       };
-      const $headers = headers ?? undefined;
-      const opName = execOperationName ?? operationName;
-
       const fetch = fetcher(
         {
           query,
           variables,
-          operationName: opName,
+          operationName: execOperationName ?? operationName,
         },
         {
-          headers: $headers,
+          headers,
           documentAST,
         },
       );
@@ -301,14 +298,18 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 
 export const useExecutionStore = createBoundedUseStore(executionStore);
 
-async function tryParseJsonObject(json = '') {
+async function tryParseJsonObject(
+  json = '',
+): Promise<Record<string, unknown> | undefined> {
   // `jsonc-parser` doesn't support trailing commas,
   // so we need first to format with prettier, which will remove them
   const formatted = await formatJSONC(json);
   const parsed = parseJSONC(formatted);
-  const isObject =
-    typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
-  if (parsed && !isObject) {
+  if (!parsed) {
+    return;
+  }
+  const isObject = typeof parsed === 'object' && !Array.isArray(parsed);
+  if (!isObject) {
     throw new TypeError();
   }
   return parsed;
