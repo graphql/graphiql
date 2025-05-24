@@ -1,5 +1,5 @@
 import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
-import { KeyCode, KeyMod, Uri } from './monaco-editor';
+import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { copyQuery, mergeQuery, prettifyEditors } from './utility';
 import { executionStore } from './stores';
 
@@ -90,16 +90,16 @@ export const VARIABLE_URI = Uri.file('variable.json');
 export const HEADER_URI = Uri.file('header.json');
 export const RESPONSE_URI = Uri.file('response.json');
 
-// 👇 Set diagnostics options for jsonc
-// languages.json.jsonDefaults.setDiagnosticsOptions({
-//   // Fixes Comments are not permitted in JSON.(521)
-//   allowComments: true,
-//   // Fixes Trailing comma json(519)
-//   trailingCommas: 'ignore',
-//   // enableSchemaRequest: false,
-//   // schemas: [], // optional: you can define schemas here
-//   // schemaValidation: 0,
-// });
+// set these early on so that initial variables with comments don't flash an error
+const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
+  // Fixes Comments are not permitted in JSON.(521)
+  allowComments: true,
+  // Fixes Trailing comma json(519)
+  trailingCommas: 'ignore',
+};
+
+// Set diagnostics options for json
+languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {
@@ -110,18 +110,7 @@ export const MONACO_GRAPHQL_API = initializeMode({
       validate: true,
       schemaValidation: 'error',
       // set these again, because we are entirely re-setting them here
-      allowComments: true,
-      trailingCommas: 'ignore',
+      ...JSON_DIAGNOSTIC_OPTIONS,
     },
   },
-  // schemas: [
-  //   {
-  //     // anything that monaco.URI.from() is compatible with
-  //     uri: 'schema.graphql',
-  //     // match the monaco file uris for this schema.
-  //     // accepts specific filenames and anything `picomatch` supports.
-  //     fileMatch: ['**/*.graphql'],
-  //     schema,
-  //   },
-  // ],
 });
