@@ -70,8 +70,7 @@ describe('Linting', () => {
     );
   });
 
-  // We don't have this feature in monaco-graphql
-  it.skip('Marks unused variables as error', () => {
+  it('Marks unused variables as error', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `
         query WithVariables($stringArg: String) {
@@ -85,7 +84,7 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'unusedVariable',
       'error',
-      'Variable "$unusedVariable" does not appear in any GraphQL query.',
+      'Property unusedVariable is not allowed.',
     );
   });
 

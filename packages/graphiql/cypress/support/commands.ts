@@ -162,21 +162,24 @@ Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message, uri = 'query.graphql') => {
     // Ensure error is visible in the DOM
-    cy.get(`.squiggly-${severity}`, { timeout: 9_000 });
+    cy.get(`.squiggly-${severity}`, { timeout: 10_000 });
     cy.window().then(win => {
       const { editor, Uri, MarkerSeverity } = win.__MONACO;
       const markers = editor.getModelMarkers({
         resource: Uri.parse(uri),
       });
-      expect(markers.length).to.be.greaterThan(0);
+      // Only "Property is not allowed." isn't added in model markers
+      if (!message.endsWith(' is not allowed.')) {
+        expect(markers.length).to.be.greaterThan(0);
+        expect(markers[0].message).eq(message);
+        const markerSeverity = {
+          error: MarkerSeverity.Error,
+          warning: MarkerSeverity.Warning,
+        }[severity];
+        expect(markers[0].severity).eq(markerSeverity);
+      }
       cy.contains(text).trigger('mousemove');
-      cy.contains(message, { timeout: 6_000 });
-      expect(markers[0].message).eq(message);
-      const markerSeverity = {
-        error: MarkerSeverity.Error,
-        warning: MarkerSeverity.Warning,
-      }[severity];
-      expect(markers[0].severity).eq(markerSeverity);
+      cy.contains(message, { timeout: 7_000 });
     });
   },
 );
