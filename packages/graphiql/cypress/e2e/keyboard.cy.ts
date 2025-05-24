@@ -15,7 +15,6 @@ describe('GraphiQL keyboard interactions', () => {
     cy.get('@escapeHandler').should('have.been.called');
   });
 
-  // TODO recheck this test
   it('Does prevent the escape key from being handled outside the editor if closing the autocomplete dialog', () => {
     cy.visit('/');
     const mockFn = cy.stub().as('escapeHandler');
@@ -26,10 +25,10 @@ describe('GraphiQL keyboard interactions', () => {
         }
       });
     });
-
     cy.get('.graphiql-query-editor textarea').type('{\n  t', { force: true });
+    // Wait autocomplete dialog to appear
+    cy.get('.monaco-list').should('exist');
     cy.get('.graphiql-query-editor textarea').type('{esc}');
-
     cy.get('@escapeHandler').should('not.have.been.called');
   });
 });
