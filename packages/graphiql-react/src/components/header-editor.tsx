@@ -1,10 +1,9 @@
 import { FC, useEffect, useRef } from 'react';
 import { clsx } from 'clsx';
-import { editorStore, storageStore, useEditorStore } from '../stores';
+import { editorStore, useEditorStore } from '../stores';
 import { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
-  debounce,
   getOrCreateModel,
   createEditor,
   useChangeHandler,
@@ -32,7 +31,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
     'headers',
   );
   useEffect(() => {
-    const { setEditor, updateActiveTabValues } = editorStore.getState();
+    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
@@ -44,20 +43,6 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
       editor,
       model,
     ];
-
-    if (shouldPersistHeaders) {
-      const { storage } = storageStore.getState();
-      // 2️⃣ Subscribe to content changes
-      disposables.unshift(
-        model.onDidChangeContent(
-          debounce(500, () => {
-            const value = model.getValue();
-            storage.set(STORAGE_KEY, value);
-            updateActiveTabValues({ headers: value });
-          }),
-        ),
-      );
-    }
     // 3️⃣ Clean‑up on unmount
     return () => {
       for (const disposable of disposables) {
