@@ -47,7 +47,7 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'deprecatedField',
       'warning',
-      'The field Test.deprecatedField is deprecated.',
+      'The field Test.deprecatedField is deprecated. No longer in use, try `test` instead.',
     );
   });
 
