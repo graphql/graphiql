@@ -44,7 +44,8 @@ declare namespace Cypress {
     assertLinterMarkWithMessage(
       text: string,
       severity: 'error' | 'warning',
-      message?: string,
+      message: string,
+      uri?: 'query.graphql' | 'variable.json',
     ): Chainable<Element>;
   }
 }
@@ -159,18 +160,15 @@ function normalizeWhitespace(str: string): string {
 
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
-  (text, severity, message) => {
+  (text, severity, message, uri = 'query.graphql') => {
     // Ensure error is visible in the DOM
     cy.get(`.squiggly-${severity}`, { timeout: 9_000 });
     cy.window().then(win => {
       const { editor, Uri, MarkerSeverity } = win.__MONACO;
       const markers = editor.getModelMarkers({
-        resource: Uri.parse('query.graphql'),
+        resource: Uri.parse(uri),
       });
       expect(markers.length).to.be.greaterThan(0);
-      if (!message) {
-        return;
-      }
       cy.contains(text).trigger('mousemove');
       cy.contains(message);
       expect(markers[0].message).eq(message);

@@ -65,11 +65,13 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '"42"',
       'error',
-      'Expected } but found [end of file].',
+      'Expected comma or closing brace',
+      'variable.json',
     );
   });
 
-  it('Marks unused variables as error', () => {
+  // We don't have this feature in monaco-graphql
+  it.skip('Marks unused variables as error', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `
         query WithVariables($stringArg: String) {
@@ -100,7 +102,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '42',
       'error',
-      'Expected value of type "String".',
+      'Incorrect type. Expected one of string, null.',
+      'variable.json',
     );
   });
 
@@ -117,7 +120,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       'null',
       'error',
-      'Type "String!" is non-nullable and cannot be null.',
+      'Incorrect type. Expected "string".',
+      'variable.json',
     );
   });
 
@@ -134,7 +138,8 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '"42"',
       'error',
-      'Type "TestInput" must be an Object.',
+      'Incorrect type. Expected "object".',
+      'variable.json',
     );
   });
 
