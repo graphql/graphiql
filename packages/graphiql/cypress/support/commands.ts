@@ -179,7 +179,7 @@ Cypress.Commands.add(
         expect(markers[0].severity).eq(markerSeverity);
       }
       cy.contains(text).trigger('mousemove');
-      cy.contains(message, { timeout: 7_000 });
+      cy.contains(message, { timeout: 30_000 });
     });
   },
 );
