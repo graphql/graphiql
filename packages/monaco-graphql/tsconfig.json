@@ -7,10 +7,7 @@
     "outDir": "./dist",
     "target": "es5",
     "noUncheckedIndexedAccess": true,
-    "lib": [
-      "dom",
-      "ESNext"
-    ],
+    "lib": ["dom", "ESNext"],
     "paths": {
       "*": ["*"]
     }
