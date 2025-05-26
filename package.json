@@ -129,7 +129,7 @@
     "turbo": "^2.5.2"
   },
   "resolutions": {
-    "monaco-editor": "0.47.0",
+    "monaco-editor": "0.52.2",
     "@babel/traverse": "^7.23.2",
     "vscode-languageserver-types": "3.17.3",
     "markdown-it": "14.1.0",

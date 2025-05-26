@@ -526,9 +526,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
-          ...RESTRICTED_IMPORTS
-            // TODO: enable when monaco-editor will be migrated over codemirror
-            .filter(({ name }) => name !== 'monaco-editor'),
+          ...RESTRICTED_IMPORTS,
           {
             name: 'react',
             importNames: ['memo', 'useCallback', 'useMemo'],
