@@ -50,7 +50,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "monaco-editor": "^0.47",
+    "monaco-editor": "^0.52.2",
     "monaco-graphql": "^1.6.1",
     "jsonc-parser": "^3.3.1",
     "prettier": "^3.5.3",
