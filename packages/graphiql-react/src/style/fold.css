@@ -1,5 +1,3 @@
-@import url('codemirror/addon/fold/foldgutter.css');
-
 .CodeMirror-foldgutter {
   width: var(--px-12);
 }

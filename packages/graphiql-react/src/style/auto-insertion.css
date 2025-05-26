@@ -1,4 +1,4 @@
-.auto-inserted-leaf.cm-property {
+.auto-inserted-leaf {
   animation-duration: 6s;
   animation-name: insertionFade;
   border-radius: var(--border-radius-4);
@@ -8,7 +8,7 @@
 @keyframes insertionFade {
   from,
   to {
-    background-color: none;
+    background-color: transparent;
   }
 
   15%,

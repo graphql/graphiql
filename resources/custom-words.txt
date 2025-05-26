@@ -67,6 +67,7 @@ dotansimha
 edcore
 envrc
 esbuild
+estree
 execa
 exfiltrate
 filesfor
@@ -210,6 +211,7 @@ tsup
 typeahead
 typeaheads
 typedoc
+turbopack
 unfocus
 unnormalized
 unparsable

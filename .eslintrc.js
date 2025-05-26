@@ -393,6 +393,7 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
         '@typescript-eslint/no-unnecessary-type-conversion': 'error',
+        // '@typescript-eslint/await-thenable': 'error', // TODO
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-deprecated': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',
@@ -409,11 +410,10 @@ module.exports = {
         projectService: {
           allowDefaultProject: [
             'examples/monaco-graphql-react-vite/vite.config.ts',
-            'packages/graphiql/vite.config.mts',
-            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax,graphiql}/vitest.config.mts',
+            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',
-            'packages/graphiql/src/GraphiQL.spec.tsx',
+            'packages/graphiql/cypress.config.ts',
             'packages/vscode-graphql-syntax/tests/*.spec.ts',
             'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
             'packages/monaco-graphql/test/monaco-editor.test.ts',
@@ -515,7 +515,9 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
-          ...RESTRICTED_IMPORTS,
+          ...RESTRICTED_IMPORTS
+            // TODO: enable when monaco-editor will be migrated over codemirror
+            .filter(({ name }) => name !== 'monaco-editor'),
           {
             name: 'react',
             importNames: ['memo', 'useCallback', 'useMemo'],

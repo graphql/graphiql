@@ -1,7 +1,5 @@
-'use no memo';
-
 /**
- *  Copyright (c) 2021 GraphQL Contributors.
+ *  Copyright (c) 2025 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -11,6 +9,7 @@ import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
+import './setup-workers/vite';
 
 const majorVersion = parseInt(version.slice(0, 2), 10);
 

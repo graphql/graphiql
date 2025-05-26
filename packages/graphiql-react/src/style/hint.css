@@ -1,5 +1,3 @@
-@import url('codemirror/addon/hint/show-hint.css');
-
 /* Popup styles */
 .CodeMirror-hints {
   background: hsl(var(--color-base));

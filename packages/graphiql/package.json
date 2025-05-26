@@ -1,9 +1,13 @@
 {
   "name": "graphiql",
   "version": "4.1.0",
-  "sideEffects": false,
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
+    "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
@@ -33,12 +37,16 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
+    }
   },
   "scripts": {
     "types:check": "tsc --noEmit",
     "build": "vite build && UMD=true vite build",
-    "cypress-open": "yarn dev 'cypress open --browser electron'",
+    "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
@@ -62,6 +70,8 @@
     "vite-plugin-dts": "^4.5.3",
     "vite": "^6.3.4",
     "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/web-worker": "3.1.4",
+    "vitest-canvas-mock": "0.3.3",
     "@graphiql/toolkit": "^0.11.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",

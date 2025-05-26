@@ -1,3 +1,6 @@
+/* Monaco import is only needed for CDN bundle */
+@import 'monaco-editor/min/vs/editor/editor.main.css';
+
 @import '@graphiql/react/font/roboto.css';
 @import '@graphiql/react/font/fira-code.css';
 @import '@graphiql/react/style.css';

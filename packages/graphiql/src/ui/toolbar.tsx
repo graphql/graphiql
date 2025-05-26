@@ -37,7 +37,7 @@ export const GraphiQLToolbar: FC<{
   const prettify = (
     <ToolbarButton
       onClick={prettifyEditors}
-      label={`Prettify query (${KEY_MAP.prettify[0]})`}
+      label={`Prettify query (${KEY_MAP.prettify.key})`}
     >
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
@@ -46,7 +46,7 @@ export const GraphiQLToolbar: FC<{
   const merge = (
     <ToolbarButton
       onClick={mergeQuery}
-      label={`Merge fragments into query (${KEY_MAP.mergeFragments[0]})`}
+      label={`Merge fragments into query (${KEY_MAP.mergeFragments.key})`}
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
@@ -55,7 +55,7 @@ export const GraphiQLToolbar: FC<{
   const copy = (
     <ToolbarButton
       onClick={copyQuery}
-      label={`Copy query (${KEY_MAP.copyQuery[0]})`}
+      label={`Copy query (${KEY_MAP.copyQuery.key})`}
     >
       <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
