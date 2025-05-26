@@ -19,6 +19,7 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
       ref={ref}
       value={value}
       aria-selected={isActive}
+      dragElastic={false} // Prevent over scrolling of container
       role="tab"
       className={clsx(
         'graphiql-tab',

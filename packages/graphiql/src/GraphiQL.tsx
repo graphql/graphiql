@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, useEffect, Children } from 'react';
+import { useState, useEffect, Children, useRef } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -691,6 +691,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     </div>
   );
 
+  const tabContainerRef = useRef<HTMLUListElement>(null!);
+
   return (
     <div className={cn('graphiql-container', className)}>
       {sidebar}
@@ -715,6 +717,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <div ref={pluginResize.secondRef} className="graphiql-sessions">
           <div className="graphiql-session-header">
             <Tabs
+              ref={tabContainerRef}
               values={tabs}
               onReorder={moveTab}
               aria-label="Select active operation"
@@ -723,6 +726,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               {tabs.map((tab, index, arr) => (
                 <Tab
                   key={tab.id}
+                  // Prevent overscrolling of container
+                  dragConstraints={tabContainerRef}
                   value={tab}
                   isActive={index === activeTabIndex}
                 >
