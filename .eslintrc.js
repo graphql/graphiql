@@ -322,7 +322,7 @@ module.exports = {
         'unicorn/no-typeof-undefined': 'error',
         'unicorn/prefer-at': 'error',
         'unicorn/consistent-destructuring': 'error',
-        'prefer-destructuring': [
+        '@typescript-eslint/prefer-destructuring': [
           'error',
           { VariableDeclarator: { object: true } },
         ],
