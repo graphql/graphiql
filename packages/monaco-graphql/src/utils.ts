@@ -38,40 +38,39 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return new Position(position.lineNumber - 1, position.column - 1);
 }
 
-export type GraphQLWorkerCompletionItem = GraphQLCompletionItem & {
+export type GraphQLWorkerCompletionItem = Omit<
+  GraphQLCompletionItem,
+  'documentation'
+> & {
   range?: monaco.IRange;
   command?: monaco.languages.CompletionItem['command'];
+  documentation?: monaco.languages.CompletionItem['documentation'];
 };
 
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range?: GraphQLRange,
 ): GraphQLWorkerCompletionItem {
-  const results: GraphQLWorkerCompletionItem = {
+  return {
     label: entry.label,
     insertText: entry.insertText,
     sortText: entry.sortText,
     filterText: entry.filterText,
-    documentation: entry.documentation,
+    ...(entry.documentation && {
+      documentation: {
+        value: entry.documentation,
+      },
+    }),
     detail: entry.detail,
-    range: range ? toMonacoRange(range) : undefined,
+    ...(range && { range: toMonacoRange(range) }),
     kind: entry.kind,
+    ...(entry.insertTextFormat && { insertTextFormat: entry.insertTextFormat }),
+    ...(entry.insertTextMode && { insertTextMode: entry.insertTextMode }),
+    ...(entry.command && {
+      command: { ...entry.command, id: entry.command.command },
+    }),
+    ...(entry.labelDetails && { labelDetails: entry.labelDetails }),
   };
-  if (entry.insertTextFormat) {
-    results.insertTextFormat = entry.insertTextFormat;
-  }
-  if (entry.insertTextMode) {
-    results.insertTextMode = entry.insertTextMode;
-  }
-
-  if (entry.command) {
-    results.command = { ...entry.command, id: entry.command.command };
-  }
-  if (entry.labelDetails) {
-    results.labelDetails = entry.labelDetails;
-  }
-
-  return results;
 }
 
 /**

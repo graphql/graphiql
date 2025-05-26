@@ -37,3 +37,24 @@
   max-width: none !important;
   max-height: none !important;
 }
+
+.monaco-editor
+  .suggest-widget
+  .monaco-list
+  .monaco-list-row
+  > .contents
+  > .main {
+  & > .left {
+    flex-grow: 0;
+  }
+
+  /* Align type autocomplete suggestion on right */
+  & > .right {
+    flex-grow: 1;
+    margin-left: auto;
+
+    /*& > .details-label {*/
+    /*display: unset;*/
+    /*}*/
+  }
+}

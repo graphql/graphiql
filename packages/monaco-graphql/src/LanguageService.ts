@@ -210,7 +210,7 @@ export class LanguageService {
     position: IPosition,
   ) => {
     const schema = this.getSchemaForFile(uri);
-    if (!documentText || documentText.length < 1 || !schema?.schema) {
+    if (!documentText || !schema?.schema) {
       return [];
     }
     return getAutocompleteSuggestions(
