@@ -147,6 +147,10 @@ module.exports = {
             property: 'getComputedStyle',
             message: 'Use `getComputedStyle` instead',
           },
+          {
+            object: 'self',
+            message: 'Use `globalThis` instead',
+          },
         ],
         'no-return-assign': 'error',
         'no-return-await': 'error',
@@ -380,6 +384,13 @@ module.exports = {
       },
     },
     {
+      files: ['packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}'],
+      excludedFiles: ['packages/graphiql-toolkit/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-condition': 'error',
+      },
+    },
+    {
       // Rules that requires type information
       files: ['**/*.{ts,tsx,mts,cts}'],
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
@@ -572,6 +583,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
+        '@typescript-eslint/no-unnecessary-condition': 'off',
       },
     },
   ],

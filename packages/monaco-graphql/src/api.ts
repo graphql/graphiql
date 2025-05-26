@@ -59,10 +59,10 @@ export class MonacoGraphQLAPI {
     if (schemas) {
       this.setSchemaConfig(schemas);
     }
-    this._modeConfiguration = modeConfiguration ?? modeConfigurationDefault;
-    this._completionSettings = completionSettings ?? completionSettingDefault;
-    this._diagnosticSettings = diagnosticSettings ?? diagnosticSettingDefault;
-    this._formattingOptions = formattingOptions ?? formattingDefaults;
+    this._modeConfiguration = modeConfiguration;
+    this._completionSettings = completionSettings;
+    this._diagnosticSettings = diagnosticSettings;
+    this._formattingOptions = formattingOptions;
   }
 
   public get onDidChange(): monaco.IEvent<MonacoGraphQLAPI> {
@@ -93,8 +93,8 @@ export class MonacoGraphQLAPI {
     return {
       ...this._completionSettings,
       fillLeafsOnComplete:
-        this._completionSettings?.__experimental__fillLeafsOnComplete ??
-        this._completionSettings?.fillLeafsOnComplete,
+        this._completionSettings.__experimental__fillLeafsOnComplete ??
+        this._completionSettings.fillLeafsOnComplete,
     };
   }
   public get externalFragmentDefinitions() {
@@ -107,7 +107,7 @@ export class MonacoGraphQLAPI {
    * @param schemas {SchemaConfig[]}
    */
   public setSchemaConfig(schemas: SchemaConfig[]): void {
-    this._schemas = schemas || null;
+    this._schemas = schemas;
     this._schemasById = schemas.reduce((result, schema) => {
       result[schema.uri] = schema;
       return result;
@@ -122,22 +122,22 @@ export class MonacoGraphQLAPI {
   }
 
   public setModeConfiguration(modeConfiguration: ModeConfiguration): void {
-    this._modeConfiguration = modeConfiguration || Object.create(null);
+    this._modeConfiguration = modeConfiguration;
     this._onDidChange.fire(this);
   }
 
   public setFormattingOptions(formattingOptions: FormattingOptions): void {
-    this._formattingOptions = formattingOptions || Object.create(null);
+    this._formattingOptions = formattingOptions;
     this._onDidChange.fire(this);
   }
 
   public setDiagnosticSettings(diagnosticSettings: DiagnosticSettings): void {
-    this._diagnosticSettings = diagnosticSettings || Object.create(null);
+    this._diagnosticSettings = diagnosticSettings;
     this._onDidChange.fire(this);
   }
 
   public setCompletionSettings(completionSettings: CompletionSettings): void {
-    this._completionSettings = completionSettings || Object.create(null);
+    this._completionSettings = completionSettings;
     this._onDidChange.fire(this);
   }
 }

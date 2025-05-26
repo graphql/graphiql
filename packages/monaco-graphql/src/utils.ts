@@ -19,8 +19,7 @@ import { Position } from 'graphql-language-service';
 // for backwards compatibility
 export const getModelLanguageId = (model: monaco.editor.ITextModel) => {
   if ('getModeId' in model) {
-    // for <0.30.0 support
-    // @ts-expect-error
+    // @ts-expect-error -- for <0.30.0 support
     return model.getModeId();
   }
   return model.getLanguageId();
@@ -50,9 +49,9 @@ export function toCompletion(
 ): GraphQLWorkerCompletionItem {
   const results: GraphQLWorkerCompletionItem = {
     label: entry.label,
-    insertText: entry?.insertText,
+    insertText: entry.insertText,
     sortText: entry.sortText,
-    filterText: entry?.filterText,
+    filterText: entry.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
     range: range ? toMonacoRange(range) : undefined,
@@ -155,5 +154,5 @@ export const getStringSchema = (schemaConfig: SchemaConfig) => {
       documentString: printSchema(schema),
     };
   }
-  throw new Error('no schema supplied');
+  throw new Error('No schema supplied');
 };

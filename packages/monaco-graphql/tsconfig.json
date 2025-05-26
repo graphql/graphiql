@@ -6,6 +6,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "es5",
+    "noUncheckedIndexedAccess": true,
     "lib": [
       "dom",
       "es5",
