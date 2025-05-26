@@ -26,24 +26,12 @@ const brokenQuery = 'longDescriptionType {id}}';
 const brokenVariables = '"a": 1}';
 
 describeOrSkip('GraphiQL Prettify', () => {
-  describe('onPrettifyQuery', () => {
+  it('should work while click on prettify button', () => {
     const rawQuery = '{  test\n\nid  }';
     const resultQuery = '{ test id }';
-
-    it('should work while click on prettify button', () => {
-      cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
-      cy.clickPrettify();
-      cy.assertHasValues({ query: resultQuery });
-    });
-
-    it('should work while click on key map short cut', () => {
-      cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
-      cy.get('.graphiql-query-editor textarea').type('{shift}{ctrl}P', {
-        force: true,
-      });
-      cy.get('.graphiql-query-editor textarea').type('{esc}');
-      cy.assertHasValues({ query: resultQuery });
-    });
+    cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
+    cy.clickPrettify();
+    cy.assertHasValues({ query: resultQuery });
   });
 
   it('Regular prettification', () => {

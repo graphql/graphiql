@@ -29,7 +29,6 @@ import {
   Spinner,
   Tab,
   Tabs,
-  Theme,
   Tooltip,
   UnStyledButton,
   useDragResize,
@@ -38,10 +37,11 @@ import {
   usePluginStore,
   useSchemaStore,
   useStorage,
-  useTheme,
+  useThemeStore,
   VariableEditor,
-  WriteableEditorProps,
+  EditorProps,
   cn,
+  VisuallyHidden,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -71,9 +71,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
   plugins = [],
   referencePlugin = DOC_EXPLORER_PLUGIN,
-
-  editorTheme,
-  keyMap,
   readOnly,
   onEditQuery,
   onEditVariables,
@@ -82,7 +79,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled,
   showPersistHeadersSettings,
-  defaultTheme,
   forcedTheme,
   confirmCloseTab,
   className,
@@ -102,12 +98,16 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
+  // @ts-expect-error -- Prop is removed
+  if (props.keyMap) {
+    throw new TypeError(
+      '`keyMap` was removed. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs',
+    );
+  }
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
     showPersistHeadersSettings:
       showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
-    editorTheme,
-    keyMap,
     readOnly,
     onEditQuery,
     onEditVariables,
@@ -115,7 +115,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     responseTooltip,
     defaultEditorToolsVisibility,
     isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
-    defaultTheme,
     forcedTheme:
       forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
     confirmCloseTab,
@@ -149,8 +148,8 @@ type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
-export interface GraphiQLInterfaceProps
-  extends WriteableEditorProps,
+interface GraphiQLInterfaceProps
+  extends EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
@@ -176,7 +175,6 @@ export interface GraphiQLInterfaceProps
    * settings modal.
    */
   showPersistHeadersSettings?: boolean;
-  defaultTheme?: Theme;
   /**
    * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
    * This is useful when you want to make sure that GraphiQL is always
@@ -204,16 +202,13 @@ const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
-export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled,
-  defaultTheme,
   defaultEditorToolsVisibility,
   children,
   confirmCloseTab,
   className,
-  editorTheme,
-  keyMap,
   onEditQuery,
   readOnly,
   onEditVariables,
@@ -237,7 +232,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
-  const { theme, setTheme } = useTheme(defaultTheme);
+  const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -376,9 +371,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     if (editorToolsResize.hiddenElement === 'second') {
       editorToolsResize.setHiddenElement(null);
     }
-    setActiveSecondaryEditor(
-      event.currentTarget.dataset.name as 'variables' | 'headers',
-    );
+    const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
+    setActiveSecondaryEditor(tabName);
   };
 
   const toggleEditorTools: ButtonHandler = () => {
@@ -479,10 +473,17 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <Dialog.Title className="graphiql-dialog-title">
             Short Keys
           </Dialog.Title>
+          <VisuallyHidden>
+            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
+            <Dialog.Description>
+              This modal provides a list of available keyboard shortcuts and
+              their functions.
+            </Dialog.Description>
+          </VisuallyHidden>
           <Dialog.Close />
         </div>
         <div className="graphiql-dialog-section">
-          <ShortKeys keyMap={keyMap} />
+          <ShortKeys />
         </div>
       </Dialog>
       <Dialog
@@ -493,6 +494,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <Dialog.Title className="graphiql-dialog-title">
             Settings
           </Dialog.Title>
+          <VisuallyHidden>
+            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
+            <Dialog.Description>
+              This modal lets you adjust header persistence, interface theme,
+              and clear local storage.
+            </Dialog.Description>
+          </VisuallyHidden>
           <Dialog.Close />
         </div>
         {showPersistHeadersSettings ? (
@@ -602,8 +610,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.firstRef}
       >
         <QueryEditor
-          editorTheme={editorTheme}
-          keyMap={keyMap}
           onClickReference={onClickReference}
           onEdit={onEditQuery}
           readOnly={readOnly}
@@ -669,18 +675,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.secondRef}
       >
         <VariableEditor
-          editorTheme={editorTheme}
-          isHidden={activeSecondaryEditor !== 'variables'}
-          keyMap={keyMap}
+          className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
           onClickReference={onClickReference}
           readOnly={readOnly}
         />
         {isHeadersEditorEnabled && (
           <HeaderEditor
-            editorTheme={editorTheme}
-            isHidden={activeSecondaryEditor !== 'headers'}
-            keyMap={keyMap}
+            className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
             onEdit={onEditHeaders}
             readOnly={readOnly}
           />
@@ -760,11 +762,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             />
             <div className="graphiql-response" ref={editorResize.secondRef}>
               {isExecutionFetching && <Spinner />}
-              <ResponseEditor
-                editorTheme={editorTheme}
-                responseTooltip={responseTooltip}
-                keyMap={keyMap}
-              />
+              <ResponseEditor responseTooltip={responseTooltip} />
               {footer}
             </div>
           </div>

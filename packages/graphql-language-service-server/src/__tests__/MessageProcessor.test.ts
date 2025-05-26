@@ -359,7 +359,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly removes from the file cache with the didClose handler', async () => {
-    await messageProcessor.handleDidCloseNotification(initialDocument);
+    messageProcessor.handleDidCloseNotification(initialDocument);
 
     const position = { line: 4, character: 5 };
     const params = { textDocument: initialDocument.textDocument, position };
@@ -407,7 +407,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
+    expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
 
   it('retrieves custom results from locateCommand', async () => {
