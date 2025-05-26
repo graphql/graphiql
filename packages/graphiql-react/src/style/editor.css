@@ -51,7 +51,7 @@
   /* Align type autocomplete suggestion on right */
   & > .right {
     flex-grow: 1;
-    margin-left: auto;
+    margin-right: auto;
 
     /*& > .details-label {*/
     /*display: unset;*/
