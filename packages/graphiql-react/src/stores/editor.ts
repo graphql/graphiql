@@ -485,6 +485,7 @@ export const EditorStore: FC<EditorStoreProps> = ({
           map.set(fragment.name.value, fragment);
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
     } else if (externalFragments) {
       throw new Error(
         'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
