@@ -14,10 +14,6 @@ type TypeLinkProps = {
 export const TypeLink: FC<TypeLinkProps> = ({ type }) => {
   const { push } = useDocExplorerActions();
 
-  if (!type) {
-    return null;
-  }
-
   return renderType(type, namedType => (
     <a
       className="graphiql-doc-explorer-type-name"

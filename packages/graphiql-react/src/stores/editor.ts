@@ -342,7 +342,7 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
         activeTabIndex: index,
       };
       storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
       onTabChange?.(updated);
       return updated;
     });
@@ -350,13 +350,13 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
   moveTab(newOrder) {
     set(current => {
       const { onTabChange } = get();
-      const activeTab = current.tabs[current.activeTabIndex];
+      const activeTab = current.tabs[current.activeTabIndex]!;
       const updated = {
         tabs: newOrder,
         activeTabIndex: newOrder.indexOf(activeTab),
       };
       storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
       onTabChange?.(updated);
       return updated;
     });
@@ -375,16 +375,15 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
         activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
       };
       storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
       onTabChange?.(updated);
       return updated;
     });
   },
   updateActiveTabValues(partialTab) {
     set(current => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Vitest fails with TypeError: Cannot read properties of null (reading 'map') in `setPropertiesInActiveTab` when `tabs` is `null`
       if (!current.tabs) {
-        // Vitest fails with TypeError: Cannot read properties of null (reading 'map')
-        // in `setPropertiesInActiveTab` when `tabs` is `null`
         return current;
       }
       const { onTabChange } = get();
