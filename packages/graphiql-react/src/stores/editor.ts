@@ -326,7 +326,7 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
       onTabChange?.(updated);
       return updated;
     });
@@ -525,7 +525,7 @@ export const EditorStore: FC<EditorStoreProps> = ({
       tabs,
       activeTabIndex,
       initialQuery:
-        query ?? (activeTabIndex === 0 ? tabs[0].query : null) ?? '',
+        query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
       initialVariables: variables ?? '',
       initialHeaders: headers ?? defaultHeaders ?? '',
       initialResponse: response,

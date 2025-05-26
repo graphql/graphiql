@@ -104,7 +104,7 @@ export function getDefaultTabState({
       let matchingTabIndex = -1;
 
       for (let index = 0; index < parsed.tabs.length; index++) {
-        const tab = parsed.tabs[index];
+        const tab = parsed.tabs[index]!;
         tab.hash = hashFromTabContents({
           query: tab.query,
           variables: tab.variables,
