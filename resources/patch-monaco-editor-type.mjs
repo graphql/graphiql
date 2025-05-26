@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const filePath = path.resolve(
   './packages/monaco-graphql/esm/monaco-editor.d.ts',
-); // Adjust this path
+);
 
 const newContent = fs.readFileSync(filePath, 'utf8');
 
