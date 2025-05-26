@@ -9,17 +9,16 @@
     "jsonc-parser": "^3.2.0",
     "monaco-editor": "^0.52.2",
     "monaco-graphql": "^1.6.1",
-    "prettier": "3.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^6.3.4",
-    "vite-plugin-monaco-editor": "^1.1.0"
+    "vite": "^6.3.4"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "vite preview"
   }
 }
