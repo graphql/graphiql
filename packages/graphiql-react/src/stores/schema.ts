@@ -101,11 +101,7 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
       set({ isFetching: true, fetchError: null });
       let result = await fetch;
 
-      if (
-        typeof result !== 'object' ||
-        result === null ||
-        !('data' in result)
-      ) {
+      if (typeof result !== 'object' || !('data' in result)) {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = fetcherReturnToPromise(
@@ -127,7 +123,7 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
 
       set({ isFetching: false });
       let introspectionData: IntrospectionQuery | undefined;
-      if (result?.data && '__schema' in result.data) {
+      if (result.data && '__schema' in result.data) {
         introspectionData = result.data as IntrospectionQuery;
       } else {
         // handle as if it were an error if the fetcher response is not a string or response.data is not present

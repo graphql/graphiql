@@ -178,18 +178,15 @@ export const executionStore = createStore<
       setError(error, headerEditor);
       return;
     }
-
-    if (externalFragments) {
-      const fragmentDependencies = documentAST
-        ? getFragmentDependenciesForAST(documentAST, externalFragments)
-        : [];
-      if (fragmentDependencies.length > 0) {
-        query +=
-          '\n' +
-          fragmentDependencies
-            .map((node: FragmentDefinitionNode) => print(node))
-            .join('\n');
-      }
+    const fragmentDependencies = documentAST
+      ? getFragmentDependenciesForAST(documentAST, externalFragments)
+      : [];
+    if (fragmentDependencies.length > 0) {
+      query +=
+        '\n' +
+        fragmentDependencies
+          .map((node: FragmentDefinitionNode) => print(node))
+          .join('\n');
     }
 
     setResponse('');
@@ -207,7 +204,6 @@ export const executionStore = createStore<
         if (
           !maybeMultipart &&
           typeof result === 'object' &&
-          result !== null &&
           'hasNext' in result
         ) {
           maybeMultipart = [result];
@@ -248,9 +244,7 @@ export const executionStore = createStore<
           },
           error(error: Error) {
             set({ isFetching: false });
-            if (error) {
-              setResponse(formatError(error));
-            }
+            setResponse(formatError(error));
             set({ subscription: null });
           },
           complete() {
