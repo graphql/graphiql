@@ -149,14 +149,14 @@
           ],
           "description": "legacy mode for graphql config v2 config",
           "default": null
+        },
+        "graphql-config.dotEnvPath": {
+          "type": [
+            "string"
+          ],
+          "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
+          "default": null
         }
-      },
-      "graphql-config.dotEnvPath": {
-        "type": [
-          "string"
-        ],
-        "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
-        "default": null
       }
     },
     "commands": [
