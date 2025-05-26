@@ -148,7 +148,7 @@ function normalizeMonacoWhitespace(str: string): string {
 
 Cypress.Commands.add('containQueryResult', expected => {
   cy.get('section.result-window').should(element => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- TODO monaco check if we need it
+    // TODO monaco check if we need it
     const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
     expect(actual).to.contain(expected);
   });

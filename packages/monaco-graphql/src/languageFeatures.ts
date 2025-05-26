@@ -33,16 +33,16 @@ export class DiagnosticsAdapter {
     const onModelAdd = (model: editor.IModel): void => {
       const modeId = getModelLanguageId(model);
       if (modeId !== this.defaults.languageId) {
-        // it is tempting to load json models we cared about here
-        // into the webworker, however setDiagnosticOptions() needs
-        // to be called here from main process anyway, and the worker
-        // is already generating json schema itself!
+        // it is tempting to load JSON models we cared about here
+        // into the web worker, however setDiagnosticOptions() needs
+        // to be called here from the main process anyway, and the worker
+        // is already generating JSON schema itself!
         return;
       }
       const modelUri = model.uri.toString();
       // if the config changes, this adapter will be re-instantiated, so we only need to check this once
       const jsonValidationForModel =
-        defaults.diagnosticSettings?.validateVariablesJSON?.[modelUri];
+        defaults.diagnosticSettings.validateVariablesJSON?.[modelUri];
       // once on adding a model, this is also fired when schema or other config changes
       onChangeTimeout = setTimeout(() => {
         void this._doValidate(model.uri, modeId, jsonValidationForModel);
@@ -83,8 +83,8 @@ export class DiagnosticsAdapter {
       }),
       {
         dispose: () => {
-          for (const key in this._listener) {
-            this._listener[key].dispose();
+          for (const listener of Object.values(this._listener)) {
+            listener.dispose();
           }
         },
       },
@@ -105,8 +105,8 @@ export class DiagnosticsAdapter {
   }
 
   public dispose(): void {
-    for (const d of this._disposables) {
-      d?.dispose();
+    for (const disposable of this._disposables) {
+      disposable.dispose();
     }
     this._disposables = [];
   }
@@ -118,8 +118,7 @@ export class DiagnosticsAdapter {
   ) {
     const worker = await this._worker(resource);
 
-    // to handle an edge case bug that happens when
-    // typing before the schema is present
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to handle an edge case bug that happens when typing before the schema is present
     if (!worker) {
       return;
     }
@@ -128,11 +127,11 @@ export class DiagnosticsAdapter {
     editor.setModelMarkers(editor.getModel(resource)!, languageId, diagnostics);
 
     if (variablesUris) {
-      // only import the json mode if users configure it
+      // only import the JSON mode if users configure it
       await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
 
-      if (variablesUris.length < 1) {
-        throw new Error('no variables URI strings provided to validate');
+      if (!variablesUris.length) {
+        throw new Error('No variables URI strings provided to validate');
       }
       const jsonSchema = await worker.doGetVariablesJSONSchema(
         resource.toString(),
@@ -142,7 +141,7 @@ export class DiagnosticsAdapter {
       }
 
       const schemaUri = Uri.file(
-        variablesUris[0].replace('.json', '-schema.json'),
+        variablesUris[0]!.replace('.json', '-schema.json'),
       ).toString();
       const configResult = {
         uri: schemaUri,
@@ -158,7 +157,7 @@ export class DiagnosticsAdapter {
       languages.json.jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
-        ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
+        ...this.defaults.diagnosticSettings.jsonDiagnosticSettings,
         schemas: [...currentSchemas, configResult],
         enableSchemaRequest: false,
       });
