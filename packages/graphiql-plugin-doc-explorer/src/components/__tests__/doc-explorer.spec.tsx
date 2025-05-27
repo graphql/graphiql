@@ -127,7 +127,7 @@ describe('DocExplorer', () => {
       </DocExplorerStore>,
     );
 
-    const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title = container.querySelector('.graphiql-doc-explorer-title')!;
     expect(title.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with _same_ field name
@@ -142,7 +142,7 @@ describe('DocExplorer', () => {
         <DocExplorer />
       </DocExplorerStore>,
     );
-    const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
     // Because `Query.field` still exists in the new schema, we can still render it
     expect(title2.textContent).toEqual('field');
   });

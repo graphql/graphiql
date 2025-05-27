@@ -75,8 +75,8 @@ describe('TypeDocumentation', () => {
     );
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Possible Types');
   });
 
@@ -86,8 +86,8 @@ describe('TypeDocumentation', () => {
     );
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Enum Values');
     const enums = container.querySelectorAll(
       '.graphiql-doc-explorer-enum-value',
@@ -105,8 +105,8 @@ describe('TypeDocumentation', () => {
 
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Enum Values');
 
     let enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
@@ -118,8 +118,8 @@ describe('TypeDocumentation', () => {
 
     const deprecatedTitle = container.querySelectorAll(
       '.graphiql-doc-explorer-section-title',
-    )[1];
-    deprecatedTitle.childNodes[0].remove();
+    )[1]!;
+    deprecatedTitle.childNodes[0]!.remove();
     expect(deprecatedTitle).toHaveTextContent('Deprecated Enum Values');
 
     enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');

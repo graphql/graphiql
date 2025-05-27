@@ -73,7 +73,7 @@ describe('FieldDocumentation', () => {
   it('should render a simple string field', () => {
     const { container } = render(
       <FieldDocumentationWithContext
-        field={exampleObject.getFields().string}
+        field={exampleObject.getFields().string!}
       />,
     );
     expect(
@@ -90,7 +90,7 @@ describe('FieldDocumentation', () => {
   it('should re-render on field change', () => {
     const { container, rerender } = render(
       <FieldDocumentationWithContext
-        field={exampleObject.getFields().string}
+        field={exampleObject.getFields().string!}
       />,
     );
     expect(
@@ -105,7 +105,7 @@ describe('FieldDocumentation', () => {
 
     rerender(
       <FieldDocumentationWithContext
-        field={exampleObject.getFields().stringWithArgs}
+        field={exampleObject.getFields().stringWithArgs!}
       />,
     );
     expect(
@@ -119,7 +119,7 @@ describe('FieldDocumentation', () => {
   it('should render a string field with arguments', () => {
     const { container, getByText } = render(
       <FieldDocumentationWithContext
-        field={exampleObject.getFields().stringWithArgs}
+        field={exampleObject.getFields().stringWithArgs!}
       />,
     );
     expect(
@@ -150,7 +150,7 @@ describe('FieldDocumentation', () => {
   it('should render a string field with directives', () => {
     const { container } = render(
       <FieldDocumentationWithContext
-        field={exampleObject.getFields().stringWithDirective}
+        field={exampleObject.getFields().stringWithDirective!}
       />,
     );
     expect(

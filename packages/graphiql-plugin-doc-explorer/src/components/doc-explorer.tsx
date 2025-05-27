@@ -19,7 +19,7 @@ export const DocExplorer: FC = () => {
     content = (
       <div className="graphiql-doc-explorer-error">Error fetching schema</div>
     );
-  } else if (validationErrors.length > 0) {
+  } else if (validationErrors[0]) {
     content = (
       <div className="graphiql-doc-explorer-error">
         Schema is invalid: {validationErrors[0].message}

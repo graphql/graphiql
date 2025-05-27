@@ -335,9 +335,7 @@ describe('GraphiQL', () => {
         );
       });
 
-      const dragBar = container.querySelectorAll(
-        '.graphiql-horizontal-drag-bar',
-      )[0];
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {

@@ -53,7 +53,7 @@ function onEditHeaders(newHeaders: string): void {
 }
 
 function onTabChange(tabsState: TabsState): void {
-  const activeTab = tabsState.tabs[tabsState.activeTabIndex];
+  const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
   parameters.query = activeTab.query ?? undefined;
   parameters.variables = activeTab.variables ?? undefined;
   parameters.headers = activeTab.headers ?? undefined;

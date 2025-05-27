@@ -75,7 +75,8 @@ const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   const fields: DocExplorerFieldDef[] = [];
   const deprecatedFields: DocExplorerFieldDef[] = [];
 
-  for (const field of Object.keys(fieldMap).map(name => fieldMap[name])) {
+  // TODO: maybe can be refactored to Object.values(fieldMap) ?
+  for (const field of Object.keys(fieldMap).map(name => fieldMap[name]!)) {
     if (field.deprecationReason) {
       deprecatedFields.push(field);
     } else {

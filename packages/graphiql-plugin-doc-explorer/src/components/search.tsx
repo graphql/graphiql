@@ -195,7 +195,7 @@ export function useSearchResults() {
         break;
       }
 
-      const type = typeMap[typeName];
+      const type = typeMap[typeName]!;
       if (withinType !== type && isMatch(typeName, searchValue)) {
         matches.types.push({ type });
       }
@@ -210,7 +210,7 @@ export function useSearchResults() {
 
       const fields = type.getFields();
       for (const fieldName in fields) {
-        const field = fields[fieldName];
+        const field = fields[fieldName]!;
         let matchingArgs: GraphQLArgument[] | undefined;
 
         if (!isMatch(fieldName, searchValue)) {
