@@ -5,11 +5,8 @@ import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
 import './index.css';
 
-interface TabProps {
+interface TabProps extends ComponentPropsWithoutRef<typeof Reorder.Item> {
   isActive?: boolean;
-  value: object;
-  className?: string;
-  children: ReactNode;
 }
 
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(

@@ -726,7 +726,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               {tabs.map((tab, index, arr) => (
                 <Tab
                   key={tab.id}
-                  // Prevent overscrolling of container
+                  // Prevent overscroll over container
                   dragConstraints={tabContainerRef}
                   value={tab}
                   isActive={index === activeTabIndex}
