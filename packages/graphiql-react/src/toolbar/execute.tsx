@@ -1,18 +1,24 @@
 import { FC } from 'react';
-import { useEditorStore } from '../editor';
-import { useExecutionStore } from '../execution';
+import { useEditorContext } from '../editor';
+import { useExecutionContext } from '../execution';
 import { PlayIcon, StopIcon } from '../icons';
 import { DropdownMenu, Tooltip } from '../ui';
 import './execute.css';
 
 export const ExecuteButton: FC = () => {
-  const { queryEditor, setOperationName } = useEditorStore();
-  const { isFetching, subscription, operationName, run, stop } =
-    useExecutionStore();
+  const { queryEditor, setOperationName } = useEditorContext({
+    nonNull: true,
+    caller: ExecuteButton,
+  });
+  const { isFetching, isSubscribed, operationName, run, stop } =
+    useExecutionContext({
+      nonNull: true,
+      caller: ExecuteButton,
+    });
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
-  const isRunning = isFetching || Boolean(subscription);
+  const isRunning = isFetching || isSubscribed;
 
   const label = `${isRunning ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
   const buttonProps = {

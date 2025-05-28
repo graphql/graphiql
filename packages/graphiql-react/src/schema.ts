@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { editorStore } from './editor/context';
+import { useEditorContext } from './editor';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
 
@@ -290,6 +290,11 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
+  const { headerEditor } = useEditorContext({
+    nonNull: true,
+    caller: SchemaContextProvider,
+  });
+
   /**
    * Synchronize prop changes with state
    */

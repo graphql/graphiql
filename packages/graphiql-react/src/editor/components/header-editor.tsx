@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { clsx } from 'clsx';
-import { useEditorStore } from '../context';
+import { useEditorContext } from '../context';
 import { useHeaderEditor, UseHeaderEditorArgs } from '../header-editor';
 import '../style/codemirror.css';
 import '../style/fold.css';
@@ -18,8 +18,11 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   isHidden,
   ...hookArgs
 }) => {
-  const headerEditor = useEditorStore(store => store.headerEditor);
-  const ref = useHeaderEditor(hookArgs);
+  const { headerEditor } = useEditorContext({
+    nonNull: true,
+    caller: HeaderEditor,
+  });
+  const ref = useHeaderEditor(hookArgs, HeaderEditor);
 
   useEffect(() => {
     if (!isHidden) {

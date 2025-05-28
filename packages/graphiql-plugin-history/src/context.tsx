@@ -3,8 +3,8 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
 import {
-  useExecutionStore,
-  useEditorStore,
+  useExecutionContext,
+  useEditorContext,
   useStorage,
   createBoundedUseStore,
 } from '@graphiql/react';
@@ -119,8 +119,8 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const { isFetching } = useExecutionStore();
-  const { tabs, activeTabIndex } = useEditorStore();
+  const { isFetching } = useExecutionContext({ nonNull: true });
+  const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
   const activeTab = tabs[activeTabIndex];
   const storage = useStorage();
 

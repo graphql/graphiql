@@ -1,4 +1,9 @@
-import { fillLeafs, mergeAst, MaybePromise } from '@graphiql/toolkit';
+import {
+  fillLeafs,
+  GetDefaultFieldNamesFn,
+  mergeAst,
+  MaybePromise,
+} from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
@@ -6,13 +11,12 @@ import { parse, print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePluginStore } from '../plugin';
-import { schemaStore, useSchemaStore } from '../schema';
+import { useSchemaStore } from '../schema';
 import { storageStore } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
-import { editorStore, useEditorStore } from './context';
+import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
-import { executionStore } from '../execution';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,
@@ -40,7 +44,9 @@ export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
+  caller: Function,
 ) {
+  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
   useEffect(() => {
     if (!editor) {
       return;
@@ -54,7 +60,6 @@ export function useChangeHandler(
       storage.set(storageKey, value);
     });
 
-    const { updateActiveTabValues } = editorStore.getState();
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
@@ -76,7 +81,7 @@ export function useChangeHandler(
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [callback, editor, storageKey, tabProperty]);
+  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
 }
 
 export function useCompletion(
@@ -155,9 +160,18 @@ export type UseCopyQueryArgs = {
   onCopyQuery?: (query: string) => void;
 };
 
-export function useCopyQuery({ onCopyQuery }: UseCopyQueryArgs = {}) {
+// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
+const _useCopyQuery = useCopyQuery;
+const _useMergeQuery = useMergeQuery;
+const _usePrettifyEditors = usePrettifyEditors;
+const _useAutoCompleteLeafs = useAutoCompleteLeafs;
+
+export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || _useCopyQuery,
+  });
   return () => {
-    const { queryEditor } = editorStore.getState();
     if (!queryEditor) {
       return;
     }
@@ -169,21 +183,35 @@ export function useCopyQuery({ onCopyQuery }: UseCopyQueryArgs = {}) {
   };
 }
 
-export function useMergeQuery() {
+type UseMergeQueryArgs = {
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
+  caller?: Function;
+};
+
+export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || _useMergeQuery,
+  });
+  const { schema } = useSchemaStore();
   return () => {
-    const { queryEditor } = editorStore.getState();
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
     if (!documentAST || !query) {
       return;
     }
 
-    const { schema } = schemaStore.getState();
     queryEditor.setValue(print(mergeAst(documentAST, schema)));
   };
 }
 
 export type UsePrettifyEditorsArgs = {
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
+  caller?: Function;
   /**
    * Invoked when the prettify callback is invoked.
    * @param query The current value of the query editor.
@@ -201,11 +229,14 @@ function DEFAULT_PRETTIFY_QUERY(query: string): string {
 }
 
 export function usePrettifyEditors({
+  caller,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 }: UsePrettifyEditorsArgs = {}) {
+  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || _usePrettifyEditors,
+  });
   return async () => {
-    const { queryEditor, headerEditor, variableEditor } =
-      editorStore.getState();
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -253,56 +284,82 @@ export function usePrettifyEditors({
   };
 }
 
-export function getAutoCompleteLeafs() {
-  const { queryEditor } = editorStore.getState();
-  if (!queryEditor) {
-    return;
-  }
-  const { schema } = schemaStore.getState();
-  const query = queryEditor.getValue();
-  const { getDefaultFieldNames } = executionStore.getState();
-  const { insertions, result } = fillLeafs(schema, query, getDefaultFieldNames);
+export type UseAutoCompleteLeafsArgs = {
+  /**
+   * A function to determine which field leafs are automatically added when
+   * trying to execute a query with missing selection sets. It will be called
+   * with the `GraphQLType` for which fields need to be added.
+   */
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
+  caller?: Function;
+};
 
-  if (insertions && insertions.length > 0) {
-    queryEditor.operation(() => {
-      const cursor = queryEditor.getCursor();
-      const cursorIndex = queryEditor.indexFromPos(cursor);
-      queryEditor.setValue(result || '');
-      let added = 0;
-      const markers = insertions.map(({ index, string }) =>
-        queryEditor.markText(
-          queryEditor.posFromIndex(index + added),
-          queryEditor.posFromIndex(index + (added += string.length)),
-          {
-            className: 'auto-inserted-leaf',
-            clearOnEnter: true,
-            title: 'Automatically added leaf fields',
-          },
-        ),
-      );
-      setTimeout(() => {
-        for (const marker of markers) {
-          marker.clear();
-        }
-      }, 7000);
-      let newCursorIndex = cursorIndex;
-      for (const { index, string } of insertions) {
-        if (index < cursorIndex) {
-          newCursorIndex += string.length;
-        }
-      }
-      queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
-    });
-  }
+export function useAutoCompleteLeafs({
+  getDefaultFieldNames,
+  caller,
+}: UseAutoCompleteLeafsArgs = {}) {
+  const { schema } = useSchemaStore();
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || _useAutoCompleteLeafs,
+  });
+  return () => {
+    if (!queryEditor) {
+      return;
+    }
 
-  return result;
+    const query = queryEditor.getValue();
+    const { insertions, result } = fillLeafs(
+      schema,
+      query,
+      getDefaultFieldNames,
+    );
+    if (insertions && insertions.length > 0) {
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'auto-inserted-leaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => {
+          for (const marker of markers) {
+            marker.clear();
+          }
+        }, 7000);
+        let newCursorIndex = cursorIndex;
+        for (const { index, string } of insertions) {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        }
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    }
+
+    return result;
+  };
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
 export const useEditorState = (editor: 'query' | 'variable' | 'header') => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
+  const context = useEditorContext({ nonNull: true });
+
+  const editorInstance = context[`${editor}Editor` as const];
   let valueString = '';
   const editorValue = editorInstance?.getValue() ?? false;
   if (editorValue && editorValue.length > 0) {

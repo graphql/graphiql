@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
 import {
-  useEditorStore,
+  useEditorContext,
   Tooltip,
   StorageContextProvider,
 } from '@graphiql/react';
@@ -16,7 +16,7 @@ vi.mock('@graphiql/react', async () => {
   const mockedSetHeaderEditor = vi.fn();
   return {
     ...originalModule,
-    useEditorStore() {
+    useEditorContext() {
       return {
         queryEditor: { setValue: mockedSetQueryEditor },
         variableEditor: { setValue: mockedSetVariableEditor },
@@ -24,7 +24,7 @@ vi.mock('@graphiql/react', async () => {
         tabs: [],
       };
     },
-    useExecutionStore() {
+    useExecutionContext() {
       return {};
     },
   };
@@ -78,10 +78,12 @@ function getMockProps(
 }
 
 describe('QueryHistoryItem', () => {
-  const store = useEditorStore();
-  const mockedSetQueryEditor = store.queryEditor!.setValue as Mock;
-  const mockedSetVariableEditor = store.variableEditor!.setValue as Mock;
-  const mockedSetHeaderEditor = store.headerEditor!.setValue as Mock;
+  const mockedSetQueryEditor = useEditorContext()!.queryEditor!
+    .setValue as Mock;
+  const mockedSetVariableEditor = useEditorContext()!.variableEditor!
+    .setValue as Mock;
+  const mockedSetHeaderEditor = useEditorContext()!.headerEditor!
+    .setValue as Mock;
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
     mockedSetVariableEditor.mockClear();

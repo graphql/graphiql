@@ -19,7 +19,7 @@ export type Observable<T> = {
   ): Unsubscribable;
 };
 
-// This type just taken from https://github.com/ReactiveX/rxjs/blob/master/src/internal/types.ts#L41
+// These type just taken from https://github.com/ReactiveX/rxjs/blob/master/src/internal/types.ts#L41
 export type Unsubscribable = {
   unsubscribe: () => void;
 };
