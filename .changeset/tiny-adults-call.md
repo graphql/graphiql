@@ -3,7 +3,7 @@
 '@graphiql/plugin-explorer': patch
 '@graphiql/plugin-history': patch
 '@graphiql/toolkit': patch
-'@graphiql/react': minor
+'@graphiql/react': patch
 'graphiql': patch
 ---
 
