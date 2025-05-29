@@ -5,14 +5,10 @@ export {
   ResponseEditor,
   VariableEditor,
 } from './components';
-export {
-  EditorContext,
-  EditorContextProvider,
-  useEditorContext,
-} from './context';
+export { EditorContextProvider, useEditorStore } from './context';
 export { useHeaderEditor } from './header-editor';
 export {
-  useAutoCompleteLeafs,
+  getAutoCompleteLeafs,
   useCopyQuery,
   useMergeQuery,
   usePrettifyEditors,
@@ -26,7 +22,6 @@ export { useQueryEditor } from './query-editor';
 export { useResponseEditor } from './response-editor';
 export { useVariableEditor } from './variable-editor';
 
-export type { EditorContextType } from './context';
 export type { UseHeaderEditorArgs } from './header-editor';
 export type { UseQueryEditorArgs } from './query-editor';
 export type {

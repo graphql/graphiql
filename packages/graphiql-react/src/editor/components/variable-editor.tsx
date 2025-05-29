@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { clsx } from 'clsx';
 
-import { useEditorContext } from '../context';
+import { useEditorStore } from '../context';
 import { useVariableEditor, UseVariableEditorArgs } from '../variable-editor';
 
 import '../style/codemirror.css';
@@ -22,11 +22,8 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   isHidden,
   ...hookArgs
 }) => {
-  const { variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: VariableEditor,
-  });
-  const ref = useVariableEditor(hookArgs, VariableEditor);
+  const variableEditor = useEditorStore(store => store.variableEditor);
+  const ref = useVariableEditor(hookArgs);
 
   useEffect(() => {
     if (!isHidden) {

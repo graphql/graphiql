@@ -16,9 +16,9 @@ import {
 } from 'graphql';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
-  createBoundedUseStore,
   SchemaContextType,
   useSchemaStore,
+  createBoundedUseStore,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
 
