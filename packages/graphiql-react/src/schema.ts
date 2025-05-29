@@ -62,6 +62,8 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
       fetcher,
       onSchemaChange,
       shouldIntrospect,
+      // @ts-expect-error -- temporally until v 5
+      headerEditor,
       ...rest
     } = get();
 
@@ -77,7 +79,6 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
     set({ requestCounter: counter });
 
     try {
-      const { headerEditor } = editorStore.getState();
       const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
@@ -294,6 +295,13 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
     nonNull: true,
     caller: SchemaContextProvider,
   });
+
+  useEffect(() => {
+    if (headerEditor) {
+      // @ts-expect-error -- temporally until v5, to fix https://github.com/graphql/graphiql/issues/3969
+      schemaStore.setState({ headerEditor });
+    }
+  }, [headerEditor]);
 
   /**
    * Synchronize prop changes with state
