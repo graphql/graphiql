@@ -1,5 +1,15 @@
 # @graphiql/plugin-history
 
+## 0.2.2
+
+### Patch Changes
+
+- [#3970](https://github.com/graphql/graphiql/pull/3970) [`7054591`](https://github.com/graphql/graphiql/commit/70545912d1b3bb9e0c45e766a5c89896a9c4dfb7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - revert https://github.com/graphql/graphiql/pull/3946 to have support multiple embedded graphiql instances on the same page
+
+- Updated dependencies [[`7054591`](https://github.com/graphql/graphiql/commit/70545912d1b3bb9e0c45e766a5c89896a9c4dfb7)]:
+  - @graphiql/toolkit@0.11.3
+  - @graphiql/react@0.34.1
+
 ## 0.2.1
 
 ### Patch Changes
