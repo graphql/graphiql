@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { Fragment, useState, useEffect, Children, cloneElement } from 'react';
+import { Fragment, useState, useEffect, Children } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -36,14 +36,14 @@ import {
   ToolbarButton,
   Tooltip,
   UnStyledButton,
-  useCopyQuery,
+  copyQuery,
   useDragResize,
   useEditorStore,
   useExecutionStore,
   UseHeaderEditorArgs,
-  useMergeQuery,
+  mergeQuery,
   usePluginStore,
-  usePrettifyEditors,
+  prettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   useSchemaStore,
@@ -54,6 +54,7 @@ import {
   WriteableEditorProps,
   isMacOs,
   cn,
+  KEY_MAP,
 } from '@graphiql/react';
 import {
   HistoryContextProvider,
@@ -83,34 +84,26 @@ export type GraphiQLProps =
  * @see https://github.com/graphql/graphiql#usage
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
-  dangerouslyAssumeSchemaIsValid,
-  confirmCloseTab,
-  defaultQuery,
-  defaultTabs,
-  externalFragments,
-  fetcher,
-  getDefaultFieldNames,
-  headers,
-  inputValueDeprecation,
-  introspectionQueryName,
   maxHistoryLength,
-  onEditOperationName,
-  onSchemaChange,
-  onTabChange,
-  onTogglePluginVisibility,
-  operationName,
   plugins = [],
   referencePlugin = DOC_EXPLORER_PLUGIN,
-  query,
-  response,
-  schema,
-  schemaDescription,
-  shouldPersistHeaders,
-  storage,
-  validationRules,
-  variables,
-  visiblePlugin,
-  defaultHeaders,
+
+  editorTheme,
+  keyMap,
+  readOnly,
+  onEditQuery,
+  onEditVariables,
+  onEditHeaders,
+  responseTooltip,
+  defaultEditorToolsVisibility,
+  isHeadersEditorEnabled,
+  showPersistHeadersSettings,
+  defaultTheme,
+  forcedTheme,
+  confirmCloseTab,
+  className,
+
+  children,
   ...props
 }) => {
   // @ts-expect-error -- Prop is removed
@@ -125,44 +118,34 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
-  const graphiqlProps = {
-    getDefaultFieldNames,
-    dangerouslyAssumeSchemaIsValid,
-    defaultQuery,
-    defaultHeaders,
-    defaultTabs,
-    externalFragments,
-    fetcher,
-    headers,
-    inputValueDeprecation,
-    introspectionQueryName,
-    onEditOperationName,
-    onSchemaChange,
-    onTabChange,
-    onTogglePluginVisibility,
-    plugins: [referencePlugin, HISTORY_PLUGIN, ...plugins],
-    referencePlugin,
-    visiblePlugin,
-    operationName,
-    query,
-    response,
-    schema,
-    schemaDescription,
-    shouldPersistHeaders,
-    storage,
-    validationRules,
-    variables,
+  const interfaceProps: GraphiQLInterfaceProps = {
+    // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
+    showPersistHeadersSettings:
+      showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
+    editorTheme,
+    keyMap,
+    readOnly,
+    onEditQuery,
+    onEditVariables,
+    onEditHeaders,
+    responseTooltip,
+    defaultEditorToolsVisibility,
+    isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
+    defaultTheme,
+    forcedTheme:
+      forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
+    confirmCloseTab,
+    className,
   };
   return (
-    <GraphiQLProvider {...graphiqlProps}>
+    <GraphiQLProvider
+      plugins={[referencePlugin, HISTORY_PLUGIN, ...plugins]}
+      referencePlugin={referencePlugin}
+      {...props}
+    >
       <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <DocExplorerContextProvider>
-          <GraphiQLInterface
-            confirmCloseTab={confirmCloseTab}
-            showPersistHeadersSettings={shouldPersistHeaders !== false}
-            forcedTheme={props.forcedTheme}
-            {...props}
-          />
+          <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
         </DocExplorerContextProvider>
       </HistoryContextProvider>
     </GraphiQLProvider>
@@ -175,7 +158,6 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
 
 export type GraphiQLInterfaceProps = WriteableEditorProps &
   AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
-  Pick<UseQueryEditorArgs, 'onCopyQuery' | 'onPrettifyQuery'> &
   AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
   AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
   Pick<UseResponseEditorArgs, 'responseTooltip'> & {
@@ -225,8 +207,25 @@ const THEMES = ['light', 'dark', 'system'] as const;
 
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
-export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
-  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
+type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
+
+export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+  forcedTheme,
+  isHeadersEditorEnabled,
+  defaultTheme,
+  defaultEditorToolsVisibility,
+  children,
+  confirmCloseTab,
+  className,
+  editorTheme,
+  keyMap,
+  onEditQuery,
+  readOnly,
+  onEditVariables,
+  onEditHeaders,
+  responseTooltip,
+  showPersistHeadersSettings,
+}) => {
   const {
     initialVariables,
     initialHeaders,
@@ -239,15 +238,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     tabs,
     activeTabIndex,
   } = useEditorStore();
-  const executionContext = useExecutionStore();
+  const isExecutionFetching = useExecutionStore(store => store.isFetching);
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
-  const forcedTheme =
-    props.forcedTheme && THEMES.includes(props.forcedTheme)
-      ? props.forcedTheme
-      : undefined;
-  const { theme, setTheme } = useTheme(props.defaultTheme);
+  const { theme, setTheme } = useTheme(defaultTheme);
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -280,14 +275,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     direction: 'vertical',
     initiallyHidden: (() => {
       if (
-        props.defaultEditorToolsVisibility === 'variables' ||
-        props.defaultEditorToolsVisibility === 'headers'
+        defaultEditorToolsVisibility === 'variables' ||
+        defaultEditorToolsVisibility === 'headers'
       ) {
         return;
       }
 
-      if (typeof props.defaultEditorToolsVisibility === 'boolean') {
-        return props.defaultEditorToolsVisibility ? undefined : 'second';
+      if (typeof defaultEditorToolsVisibility === 'boolean') {
+        return defaultEditorToolsVisibility ? undefined : 'second';
       }
 
       return initialVariables || initialHeaders ? undefined : 'second';
@@ -300,10 +295,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     'variables' | 'headers'
   >(() => {
     if (
-      props.defaultEditorToolsVisibility === 'variables' ||
-      props.defaultEditorToolsVisibility === 'headers'
+      defaultEditorToolsVisibility === 'variables' ||
+      defaultEditorToolsVisibility === 'headers'
     ) {
-      return props.defaultEditorToolsVisibility;
+      return defaultEditorToolsVisibility;
     }
     return !initialVariables && initialHeaders && isHeadersEditorEnabled
       ? 'headers'
@@ -316,7 +311,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     'success' | 'error' | null
   >(null);
 
-  const { logo, toolbar, footer } = Children.toArray(props.children).reduce<{
+  const { logo, toolbar, footer } = Children.toArray(children).reduce<{
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
@@ -327,11 +322,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           acc.logo = curr;
           break;
         case GraphiQL.Toolbar:
-          // @ts-expect-error -- fix type error
-          acc.toolbar = cloneElement(curr, {
-            onCopyQuery: props.onCopyQuery,
-            onPrettifyQuery: props.onPrettifyQuery,
-          });
+          acc.toolbar = curr;
           break;
         case GraphiQL.Footer:
           acc.footer = curr;
@@ -341,36 +332,30 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     },
     {
       logo: <GraphiQL.Logo />,
-      toolbar: (
-        <GraphiQL.Toolbar
-          // @ts-expect-error -- Prop exists but hidden for users
-          onCopyQuery={props.onCopyQuery}
-          onPrettifyQuery={props.onPrettifyQuery}
-        />
-      ),
+      toolbar: <GraphiQL.Toolbar />,
     },
   );
 
-  const onClickReference = () => {
+  function onClickReference() {
     if (pluginResize.hiddenElement === 'first') {
       pluginResize.setHiddenElement(null);
     }
-  };
+  }
 
-  const handleClearData = () => {
+  function handleClearData() {
     try {
       storageContext.clear();
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
     }
-  };
+  }
 
-  const handlePersistHeaders: MouseEventHandler<HTMLButtonElement> = event => {
+  const handlePersistHeaders: ButtonHandler = event => {
     setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
   };
 
-  const handleChangeTheme: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleChangeTheme: ButtonHandler = event => {
     const selectedTheme = event.currentTarget.dataset.theme as
       | 'light'
       | 'dark'
@@ -378,13 +363,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     setTheme(selectedTheme || null);
   };
 
-  const handleShowDialog: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleShowDialog: ButtonHandler = event => {
     setShowDialog(
       event.currentTarget.dataset.value as 'short-keys' | 'settings',
     );
   };
 
-  const handlePluginClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handlePluginClick: ButtonHandler = event => {
     const pluginIndex = Number(event.currentTarget.dataset.index!);
     const plugin = plugins.find((_, index) => pluginIndex === index)!;
     const isVisible = plugin === visiblePlugin;
@@ -397,7 +382,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     }
   };
 
-  const handleToolsTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleToolsTabClick: ButtonHandler = event => {
     if (editorToolsResize.hiddenElement === 'second') {
       editorToolsResize.setHiddenElement(null);
     }
@@ -406,61 +391,46 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     );
   };
 
-  const toggleEditorTools: MouseEventHandler<HTMLButtonElement> = () => {
+  const toggleEditorTools: ButtonHandler = () => {
     editorToolsResize.setHiddenElement(
       editorToolsResize.hiddenElement === 'second' ? null : 'second',
     );
   };
 
-  const handleOpenShortKeysDialog = (isOpen: boolean) => {
+  function handleOpenShortKeysDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
     }
-  };
+  }
 
-  const handleOpenSettingsDialog = (isOpen: boolean) => {
+  function handleOpenSettingsDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
       setClearStorageStatus(null);
     }
-  };
-  const confirmClose = props.confirmCloseTab;
+  }
 
-  const handleTabClose: MouseEventHandler<HTMLButtonElement> = async event => {
+  const handleTabClose: ButtonHandler = async event => {
     const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
     const index = Number(tabButton.id.replace(TAB_CLASS_PREFIX, ''));
-
-    /** TODO:
-     * Move everything after into `editorContext.closeTab` once zustand will be used instead of
-     * React context, since now we can't use execution context inside editor context, since editor
-     * context is used in execution context.
-     */
-    const shouldCloseTab = confirmClose ? await confirmClose(index) : true;
+    const shouldCloseTab = confirmCloseTab
+      ? await confirmCloseTab(index)
+      : true;
 
     if (!shouldCloseTab) {
       return;
     }
-
-    if (activeTabIndex === index) {
-      executionContext.stop();
-    }
     closeTab(index);
   };
 
-  const handleTabClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const handleTabClick: ButtonHandler = event => {
     const index = Number(event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''));
-    /** TODO:
-     * Move everything after into `editorContext.changeTab` once zustand will be used instead of
-     * React context, since now we can't use execution context inside editor context, since editor
-     * context is used in execution context.
-     */
-    executionContext.stop();
     changeTab(index);
   };
 
   return (
     <Tooltip.Provider>
-      <div className={cn('graphiql-container', props.className)}>
+      <div className={cn('graphiql-container', className)}>
         <div className="graphiql-sidebar">
           {plugins.map((plugin, index) => {
             const isVisible = plugin === visiblePlugin;
@@ -582,13 +552,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                   ref={editorToolsResize.firstRef}
                 >
                   <QueryEditor
-                    editorTheme={props.editorTheme}
-                    keyMap={props.keyMap}
+                    editorTheme={editorTheme}
+                    keyMap={keyMap}
                     onClickReference={onClickReference}
-                    onCopyQuery={props.onCopyQuery}
-                    onPrettifyQuery={props.onPrettifyQuery}
-                    onEdit={props.onEditQuery}
-                    readOnly={props.readOnly}
+                    onEdit={onEditQuery}
+                    readOnly={readOnly}
                   />
                   <div
                     className="graphiql-toolbar"
@@ -673,20 +641,20 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
                   ref={editorToolsResize.secondRef}
                 >
                   <VariableEditor
-                    editorTheme={props.editorTheme}
+                    editorTheme={editorTheme}
                     isHidden={activeSecondaryEditor !== 'variables'}
-                    keyMap={props.keyMap}
-                    onEdit={props.onEditVariables}
+                    keyMap={keyMap}
+                    onEdit={onEditVariables}
                     onClickReference={onClickReference}
-                    readOnly={props.readOnly}
+                    readOnly={readOnly}
                   />
                   {isHeadersEditorEnabled && (
                     <HeaderEditor
-                      editorTheme={props.editorTheme}
+                      editorTheme={editorTheme}
                       isHidden={activeSecondaryEditor !== 'headers'}
-                      keyMap={props.keyMap}
-                      onEdit={props.onEditHeaders}
-                      readOnly={props.readOnly}
+                      keyMap={keyMap}
+                      onEdit={onEditHeaders}
+                      readOnly={readOnly}
                     />
                   )}
                 </section>
@@ -698,11 +666,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
               />
 
               <div className="graphiql-response" ref={editorResize.secondRef}>
-                {executionContext.isFetching ? <Spinner /> : null}
+                {isExecutionFetching && <Spinner />}
                 <ResponseEditor
-                  editorTheme={props.editorTheme}
-                  responseTooltip={props.responseTooltip}
-                  keyMap={props.keyMap}
+                  editorTheme={editorTheme}
+                  responseTooltip={responseTooltip}
+                  keyMap={keyMap}
                 />
                 {footer}
               </div>
@@ -720,7 +688,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             <Dialog.Close />
           </div>
           <div className="graphiql-dialog-section">
-            <ShortKeys keyMap={props.keyMap} />
+            <ShortKeys keyMap={keyMap} />
           </div>
         </Dialog>
         <Dialog
@@ -733,7 +701,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
             </Dialog.Title>
             <Dialog.Close />
           </div>
-          {props.showPersistHeadersSettings ? (
+          {showPersistHeadersSettings ? (
             <div className="graphiql-dialog-section">
               <div>
                 <div className="graphiql-dialog-section-title">
@@ -827,20 +795,19 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
   );
 };
 
-const modifier = isMacOs ? '⌘' : 'Ctrl';
+function withMacOS(key: string) {
+  return isMacOs ? key.replace('Ctrl', '⌘') : key;
+}
 
 const SHORT_KEYS = Object.entries({
-  'Search in editor': [modifier, 'F'],
-  'Search in documentation': [modifier, 'K'],
-  'Execute query': [modifier, 'Enter'],
-  'Prettify editors': ['Ctrl', 'Shift', 'P'],
-  'Merge fragments definitions into operation definition': [
-    'Ctrl',
-    'Shift',
-    'M',
-  ],
-  'Copy query': ['Ctrl', 'Shift', 'C'],
-  'Re-fetch schema using introspection': ['Ctrl', 'Shift', 'R'],
+  'Search in editor': withMacOS(KEY_MAP.searchInEditor[0]),
+  'Search in documentation': withMacOS(KEY_MAP.searchInDocs[0]),
+  'Execute query': withMacOS(KEY_MAP.runQuery[0]),
+  'Prettify editors': KEY_MAP.prettify[0],
+  'Merge fragments definitions into operation definition':
+    KEY_MAP.mergeFragments[0],
+  'Copy query': KEY_MAP.copyQuery[0],
+  'Re-fetch schema using introspection': KEY_MAP.refetchSchema[0],
 });
 
 interface ShortKeysProps {
@@ -862,7 +829,7 @@ const ShortKeys: FC<ShortKeysProps> = ({ keyMap = 'sublime' }) => {
           {SHORT_KEYS.map(([title, keys]) => (
             <tr key={title}>
               <td>
-                {keys.map((key, index, array) => (
+                {keys.split('-').map((key, index, array) => (
                   <Fragment key={key}>
                     <code className="graphiql-key">{key}</code>
                     {index !== array.length - 1 && ' + '}
@@ -925,41 +892,36 @@ const DefaultToolbarRenderProps: FC<{
 // Configure the UI by providing this Component as a child of GraphiQL.
 const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps;
-}> = ({
-  children = DefaultToolbarRenderProps,
-  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onCopyQuery
-  onCopyQuery,
-  // @ts-expect-error -- Hide this prop for user, we use cloneElement to pass onPrettifyQuery
-  onPrettifyQuery,
-}) => {
-  // eslint-disable-next-line react-hooks/react-compiler
-  'use no memo';
+}> = ({ children = DefaultToolbarRenderProps }) => {
   if (typeof children !== 'function') {
     throw new TypeError(
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-  const onCopy = useCopyQuery({ onCopyQuery });
-  const onMerge = useMergeQuery();
-  const onPrettify = usePrettifyEditors({ onPrettifyQuery });
 
   const prettify = (
-    <ToolbarButton onClick={onPrettify} label="Prettify query (Shift-Ctrl-P)">
+    <ToolbarButton
+      onClick={prettifyEditors}
+      label={`Prettify query (${KEY_MAP.prettify[0]})`}
+    >
       <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
 
   const merge = (
     <ToolbarButton
-      onClick={onMerge}
-      label="Merge fragments into query (Shift-Ctrl-M)"
+      onClick={mergeQuery}
+      label={`Merge fragments into query (${KEY_MAP.mergeFragments[0]})`}
     >
       <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
 
   const copy = (
-    <ToolbarButton onClick={onCopy} label="Copy query (Shift-Ctrl-C)">
+    <ToolbarButton
+      onClick={copyQuery}
+      label={`Copy query (${KEY_MAP.copyQuery[0]})`}
+    >
       <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
@@ -968,8 +930,8 @@ const GraphiQLToolbar: FC<{
 };
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-const GraphiQLFooter: FC<{ children: ReactNode }> = props => {
-  return <div className="graphiql-footer">{props.children}</div>;
+const GraphiQLFooter: FC<{ children: ReactNode }> = ({ children }) => {
+  return <div className="graphiql-footer">{children}</div>;
 };
 
 function getChildComponentType(child: ReactNode) {
