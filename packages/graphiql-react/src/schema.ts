@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { useEditorContext } from './editor';
+import { editorStore } from './editor/context';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { createBoundedUseStore } from './utility';
 
@@ -62,8 +62,6 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
       fetcher,
       onSchemaChange,
       shouldIntrospect,
-      // @ts-expect-error -- temporally until v 5
-      headerEditor,
       ...rest
     } = get();
 
@@ -79,6 +77,7 @@ export const schemaStore = createStore<SchemaStore>((set, get) => ({
     set({ requestCounter: counter });
 
     try {
+      const { headerEditor } = editorStore.getState();
       const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
@@ -291,18 +290,6 @@ export const SchemaContextProvider: FC<SchemaContextProviderProps> = ({
       'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const { headerEditor } = useEditorContext({
-    nonNull: true,
-    caller: SchemaContextProvider,
-  });
-
-  useEffect(() => {
-    if (headerEditor) {
-      // @ts-expect-error -- temporally until v5, to fix https://github.com/graphql/graphiql/issues/3969
-      schemaStore.setState({ headerEditor });
-    }
-  }, [headerEditor]);
-
   /**
    * Synchronize prop changes with state
    */
