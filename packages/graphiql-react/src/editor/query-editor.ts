@@ -12,7 +12,7 @@ import {
   OperationFacts,
 } from 'graphql-language-service';
 import { RefObject, useEffect, useRef } from 'react';
-import { executionStore } from '../execution';
+import { useExecutionContext } from '../execution';
 import { markdown } from '../markdown';
 import { usePluginStore } from '../plugin';
 import { useSchemaStore } from '../schema';
@@ -24,7 +24,10 @@ import {
   DEFAULT_KEY_MAP,
   importCodeMirror,
 } from './common';
-import { CodeMirrorEditorWithOperationFacts, useEditorStore } from './context';
+import {
+  CodeMirrorEditorWithOperationFacts,
+  useEditorContext,
+} from './context';
 import {
   useCompletion,
   useCopyQuery,
@@ -136,12 +139,19 @@ export function useQueryEditor(
     validationRules,
     variableEditor,
     updateActiveTabValues,
-  } = useEditorStore();
+  } = useEditorContext({
+    nonNull: true,
+    caller: caller || _useQueryEditor,
+  });
+  const executionContext = useExecutionContext();
   const storage = useStorage();
   const plugin = usePluginStore();
   const copy = useCopyQuery({ caller: caller || _useQueryEditor, onCopyQuery });
-  const merge = useMergeQuery();
-  const prettify = usePrettifyEditors({ onPrettifyQuery });
+  const merge = useMergeQuery({ caller: caller || _useQueryEditor });
+  const prettify = usePrettifyEditors({
+    caller: caller || _useQueryEditor,
+    onPrettifyQuery,
+  });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>(undefined);
 
@@ -388,10 +398,15 @@ export function useQueryEditor(
 
   useCompletion(queryEditor, onClickReference);
 
+  const run = executionContext?.run;
   const runAtCursor = () => {
-    const { run } = executionStore.getState();
-
-    if (!queryEditor || !queryEditor.operations || !queryEditor.hasFocus()) {
+    if (
+      !run ||
+      !queryEditor ||
+      !queryEditor.operations ||
+      !queryEditor.hasFocus()
+    ) {
+      run?.();
       return;
     }
 

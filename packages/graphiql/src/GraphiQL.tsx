@@ -38,8 +38,8 @@ import {
   UnStyledButton,
   useCopyQuery,
   useDragResize,
-  useEditorStore,
-  useExecutionStore,
+  useEditorContext,
+  useExecutionContext,
   UseHeaderEditorArgs,
   useMergeQuery,
   usePluginStore,
@@ -238,8 +238,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     shouldPersistHeaders,
     tabs,
     activeTabIndex,
-  } = useEditorStore();
-  const executionContext = useExecutionStore();
+  } = useEditorContext({ nonNull: true });
+  const executionContext = useExecutionContext({ nonNull: true });
   const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
   const storageContext = useStorage();
   const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();

@@ -1,8 +1,12 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { storageStore } from '../storage';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- fixme
+import { useCallback } from 'react';
+
 import { debounce } from '../utility/debounce';
-import { editorStore } from './context';
+import { CodeMirrorEditorWithOperationFacts } from './context';
+import { CodeMirrorEditor } from './types';
 
 export type TabDefinition = {
   /**
@@ -186,16 +190,34 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function synchronizeActiveTabValues(state: TabsState): TabsState {
-  const { queryEditor, variableEditor, headerEditor, responseEditor } =
-    editorStore.getState();
-  return setPropertiesInActiveTab(state, {
-    query: queryEditor?.getValue() ?? null,
-    variables: variableEditor?.getValue() ?? null,
-    headers: headerEditor?.getValue() ?? null,
-    response: responseEditor?.getValue() ?? null,
-    operationName: queryEditor?.operationName ?? null,
-  });
+export function useSynchronizeActiveTabValues({
+  queryEditor,
+  variableEditor,
+  headerEditor,
+  responseEditor,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  variableEditor: CodeMirrorEditor | null;
+  headerEditor: CodeMirrorEditor | null;
+  responseEditor: CodeMirrorEditor | null;
+}) {
+  return useCallback<(state: TabsState) => TabsState>(
+    state => {
+      const query = queryEditor?.getValue() ?? null;
+      const variables = variableEditor?.getValue() ?? null;
+      const headers = headerEditor?.getValue() ?? null;
+      const operationName = queryEditor?.operationName ?? null;
+      const response = responseEditor?.getValue() ?? null;
+      return setPropertiesInActiveTab(state, {
+        query,
+        variables,
+        headers,
+        response,
+        operationName,
+      });
+    },
+    [queryEditor, variableEditor, headerEditor, responseEditor],
+  );
 }
 
 export function serializeTabState(
@@ -211,38 +233,55 @@ export function serializeTabState(
   );
 }
 
-export function storeTabs({ tabs, activeTabIndex }: TabsState) {
-  const { storage } = storageStore.getState();
-  const { shouldPersistHeaders } = editorStore.getState();
-  const store = debounce(500, (value: string) => {
-    storage.set(STORAGE_KEY, value);
-  });
-  store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+export function useStoreTabs({
+  shouldPersistHeaders,
+}: {
+  shouldPersistHeaders?: boolean;
+}) {
+  return useCallback(
+    (currentState: TabsState) => {
+      const { storage } = storageStore.getState();
+      const store = debounce(500, (value: string) => {
+        storage.set(STORAGE_KEY, value);
+      });
+      store(serializeTabState(currentState, shouldPersistHeaders));
+    },
+    [shouldPersistHeaders],
+  );
 }
 
-export function setEditorValues({
-  query,
-  variables,
-  headers,
-  response,
+export function useSetEditorValues({
+  queryEditor,
+  variableEditor,
+  headerEditor,
+  responseEditor,
+  defaultHeaders,
 }: {
-  query: string | null;
-  variables?: string | null;
-  headers?: string | null;
-  response: string | null;
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  variableEditor: CodeMirrorEditor | null;
+  headerEditor: CodeMirrorEditor | null;
+  responseEditor: CodeMirrorEditor | null;
+  defaultHeaders?: string;
 }) {
-  const {
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    defaultHeaders,
-  } = editorStore.getState();
-
-  queryEditor?.setValue(query ?? '');
-  variableEditor?.setValue(variables ?? '');
-  headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-  responseEditor?.setValue(response ?? '');
+  return useCallback(
+    ({
+      query,
+      variables,
+      headers,
+      response,
+    }: {
+      query: string | null;
+      variables?: string | null;
+      headers?: string | null;
+      response: string | null;
+    }) => {
+      queryEditor?.setValue(query ?? '');
+      variableEditor?.setValue(variables ?? '');
+      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+      responseEditor?.setValue(response ?? '');
+    },
+    [headerEditor, queryEditor, responseEditor, variableEditor, defaultHeaders],
+  );
 }
 
 export function createTab({
