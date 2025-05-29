@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-doc-explorer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.34.0",
+    "@graphiql/react": "^0.34.1",
     "@headlessui/react": "^2.2",
     "zustand": "^5"
   },
