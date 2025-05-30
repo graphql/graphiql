@@ -15,7 +15,7 @@ import {
   validateSchema,
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
+import type { StateCreator } from 'zustand';
 import { editorStore } from './editor';
 import { SchemaReference } from '../types';
 import { createBoundedUseStore } from '../utility';
@@ -23,11 +23,15 @@ import { executionStore, useExecutionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
+export const createSchemaSlice: StateCreator<
+  SchemaSlice,
+  [],
+  [],
+  SchemaSlice
+> = (set, get) => ({
   inputValueDeprecation: null!,
   introspectionQueryName: null!,
   schemaDescription: null!,
-  fetcher: null!, // Explicitly set to null, as it's safe since we have TypeError thrown
   onSchemaChange: undefined,
 
   fetchError: null,
@@ -155,9 +159,9 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
       });
     }
   },
-}));
+});
 
-export interface SchemaStoreType
+export interface SchemaSlice
   extends Pick<
     SchemaStoreProps,
     | 'inputValueDeprecation'

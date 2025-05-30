@@ -18,8 +18,7 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
-import { createStore } from 'zustand';
-import { editorStore } from './editor';
+import type { StateCreator } from 'zustand';
 import {
   createBoundedUseStore,
   formatJSONC,
@@ -28,7 +27,7 @@ import {
 } from '../utility';
 import { MonacoEditor } from '../types';
 
-type ExecutionStoreType = {
+interface ExecutionSlice {
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the
@@ -52,14 +51,17 @@ type ExecutionStoreType = {
    * @default null
    */
   operationName: string | null;
+
   /**
    * Start a GraphQL request based on the current editor contents.
    */
   run(): void;
+
   /**
    * Stop the GraphQL request that is currently in-flight.
    */
   stop(): void;
+
   /**
    * A function to determine which field leafs are automatically added when
    * trying to execute a query with missing selection sets. It will be called
@@ -82,10 +84,10 @@ type ExecutionStoreType = {
    * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
    */
   fetcher: Fetcher;
-};
+}
 
 type ExecutionStoreProps = Pick<
-  ExecutionStoreType,
+  ExecutionSlice,
   'getDefaultFieldNames' | 'fetcher'
 > & {
   children: ReactNode;
@@ -95,9 +97,12 @@ type ExecutionStoreProps = Pick<
   operationName?: string;
 };
 
-export const executionStore = createStore<
-  ExecutionStoreType & Pick<ExecutionStoreProps, 'getDefaultFieldNames'>
->((set, get) => ({
+export const createExecutionSlice: StateCreator<
+  ExecutionSlice,
+  [],
+  [],
+  ExecutionSlice
+> = (set, get) => ({
   isFetching: false,
   subscription: null,
   operationName: null,
@@ -270,7 +275,7 @@ export const executionStore = createStore<
       set({ subscription: null });
     }
   },
-}));
+});
 
 export const ExecutionStore: FC<ExecutionStoreProps> = ({
   fetcher,
@@ -361,9 +366,8 @@ function mergeIncrementalResult(
     }
   }
 
-  const { items } = incrementalResult;
+  const { items, data, id } = incrementalResult;
   if (items) {
-    const { id } = incrementalResult;
     if (id) {
       path = pathsMap.get(executionResult)?.get(id);
       if (path === undefined) {
@@ -382,10 +386,7 @@ function mergeIncrementalResult(
       }
     }
   }
-
-  const { data } = incrementalResult;
   if (data) {
-    const { id } = incrementalResult;
     if (id) {
       path = pathsMap.get(executionResult)?.get(id);
       if (path === undefined) {
@@ -422,9 +423,8 @@ function mergeIncrementalResult(
 
   if (incrementalResult.completed) {
     // Remove tracking and add additional errors
-    for (const { id, errors } of incrementalResult.completed) {
-      pathsMap.get(executionResult)?.delete(id);
-
+    for (const { id: completedId, errors } of incrementalResult.completed) {
+      pathsMap.get(executionResult)?.delete(completedId);
       if (errors) {
         executionResult.errors ||= [];
         (executionResult.errors as GraphQLError[]).push(...errors);

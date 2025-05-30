@@ -1,8 +1,8 @@
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
+import type { StateCreator } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 
-export type GraphiQLPlugin = {
+export interface GraphiQLPlugin {
   /**
    * A component that renders content into the plugin pane.
    */
@@ -17,14 +17,15 @@ export type GraphiQLPlugin = {
    * title the provider component will throw an error.
    */
   title: string;
-};
+}
 
-type PluginStoreType = {
+interface PluginSlice {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
    */
   plugins: GraphiQLPlugin[];
+
   /**
    * Defines the plugin which is currently visible.
    * @param plugin The plugin that should become visible. You can either pass
@@ -33,6 +34,7 @@ type PluginStoreType = {
    * be visible.
    */
   setVisiblePlugin(plugin: GraphiQLPlugin | string | null): void;
+
   /**
    * The plugin which is currently visible.
    */
@@ -41,6 +43,7 @@ type PluginStoreType = {
    * The plugin which is used to display the reference documentation when selecting a type.
    */
   referencePlugin?: GraphiQLPlugin;
+
   /**
    * Invoked when the visibility state of any plugin changes.
    * @param visiblePlugin The plugin object that is now visible. If no plugin
@@ -49,10 +52,10 @@ type PluginStoreType = {
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
 
   setPlugins(plugins: GraphiQLPlugin[]): void;
-};
+}
 
 type PluginStoreProps = Pick<
-  PluginStoreType,
+  PluginSlice,
   'referencePlugin' | 'onTogglePluginVisibility'
 > & {
   children: ReactNode;
@@ -70,14 +73,19 @@ type PluginStoreProps = Pick<
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
-export const pluginStore = createStore<PluginStoreType>((set, get) => ({
+export const createPluginSlice: StateCreator<
+  PluginSlice,
+  [],
+  [],
+  PluginSlice
+> = (set, get) => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,
   setVisiblePlugin(plugin) {
     const { plugins, onTogglePluginVisibility } = get();
     const byTitle = typeof plugin === 'string';
-    const newVisiblePlugin: PluginStoreType['visiblePlugin'] =
+    const newVisiblePlugin: PluginSlice['visiblePlugin'] =
       (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) || null;
     set(({ visiblePlugin }) => {
       if (newVisiblePlugin === visiblePlugin) {
@@ -101,7 +109,7 @@ export const pluginStore = createStore<PluginStoreType>((set, get) => ({
     }
     set({ plugins });
   },
-}));
+});
 
 export const PluginStore: FC<PluginStoreProps> = ({
   onTogglePluginVisibility,

@@ -1,14 +1,12 @@
-import { createStore } from 'zustand';
+import type { StateCreator } from 'zustand';
 import {
-  DocumentNode,
   FragmentDefinitionNode,
-  OperationDefinitionNode,
   parse,
   ValidationRule,
   visit,
   print,
 } from 'graphql';
-import { OperationFacts, VariableToType } from 'graphql-language-service';
+import { OperationFacts } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
@@ -37,14 +35,7 @@ import { MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
 import { createBoundedUseStore, useSynchronizeValue } from '../utility';
 
-export type CodeMirrorEditorWithOperationFacts = {
-  documentAST: DocumentNode | null;
-  operationName: string | null;
-  operations: OperationDefinitionNode[] | null;
-  variableToType: VariableToType | null;
-};
-
-interface EditorStoreType extends TabsState {
+interface EditorSlice extends TabsState {
   /**
    * Add a new tab.
    */
@@ -103,7 +94,7 @@ interface EditorStoreType extends TabsState {
    */
   setEditor(
     state: Pick<
-      EditorStoreType,
+      EditorSlice,
       'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
     >,
   ): void;
@@ -229,7 +220,7 @@ interface EditorStoreType extends TabsState {
 }
 
 type EditorStoreProps = Pick<
-  EditorStoreType,
+  EditorSlice,
   | 'onTabChange'
   | 'onEditOperationName'
   | 'defaultHeaders'
@@ -300,13 +291,18 @@ type EditorStoreProps = Pick<
    * typing in the editor.
    */
   variables?: string;
-  onPrettifyQuery?: EditorStoreType['onPrettifyQuery'];
+  onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 };
 
-const DEFAULT_PRETTIFY_QUERY: EditorStoreType['onPrettifyQuery'] = query =>
+const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   print(parse(query));
 
-export const editorStore = createStore<EditorStoreType>((set, get) => ({
+export const createEditorSlice: StateCreator<
+  EditorSlice,
+  [],
+  [],
+  EditorSlice
+> = (set, get) => ({
   tabs: null!,
   activeTabIndex: null!,
   addTab() {
@@ -435,7 +431,7 @@ export const editorStore = createStore<EditorStoreType>((set, get) => ({
   initialResponse: null!,
   initialVariables: null!,
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
-}));
+});
 
 export const EditorStore: FC<EditorStoreProps> = ({
   externalFragments,
