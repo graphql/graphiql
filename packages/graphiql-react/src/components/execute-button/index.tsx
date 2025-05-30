@@ -11,12 +11,12 @@ export const ExecuteButton: FC = () => {
   const {
     isFetching,
     subscription,
-    operationName: execOperationName,
+    overrideOperationName,
     run,
     stop,
   } = useExecutionStore();
   const hasOptions =
-    operations.length > 1 && typeof execOperationName !== 'string';
+    operations.length > 1 && typeof overrideOperationName !== 'string';
   const isRunning = isFetching || Boolean(subscription);
 
   const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery.key})`;

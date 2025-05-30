@@ -29,7 +29,7 @@ export interface ExecutionSlice {
    * first partial response and `false` while fetching subsequent batches.
    * @default false
    */
-  isFetching: boolean;
+  isIntrospecting: boolean;
   /**
    * Represents an active GraphQL subscription.
    *
@@ -45,7 +45,7 @@ export interface ExecutionSlice {
    * The operation name that will be sent with all GraphQL requests.
    * @default null
    */
-  operationName: string | null;
+  overrideOperationName: string | null;
 
   /**
    * Start a GraphQL request based on the current editor contents.
@@ -98,16 +98,16 @@ export const createExecutionSlice: StateCreator<
   [],
   ExecutionSlice
 > = (set, get) => ({
-  isFetching: false,
+  isIntrospecting: false,
   subscription: null,
-  operationName: null,
+  overrideOperationName: null,
   getDefaultFieldNames: undefined,
   queryId: 0,
   fetcher: null!,
   stop() {
     const { subscription } = get();
     subscription?.unsubscribe();
-    set({ isFetching: false, subscription: null });
+    set({ isIntrospecting: false, subscription: null });
   },
   async run() {
     const {
@@ -125,7 +125,7 @@ export const createExecutionSlice: StateCreator<
     }
     const {
       subscription,
-      operationName: execOperationName,
+      overrideOperationName,
       queryId,
       fetcher,
     } = get();
@@ -190,7 +190,7 @@ export const createExecutionSlice: StateCreator<
     }
 
     setResponse('');
-    set({ isFetching: true });
+    set({ isIntrospecting: true });
     try {
       const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
@@ -214,10 +214,10 @@ export const createExecutionSlice: StateCreator<
             mergeIncrementalResult(fullResponse, part);
           }
 
-          set({ isFetching: false });
+          set({ isIntrospecting: false });
           setResponse(formatResult(fullResponse));
         } else {
-          set({ isFetching: false });
+          set({ isIntrospecting: false });
           setResponse(formatResult(result));
         }
       };
@@ -225,7 +225,7 @@ export const createExecutionSlice: StateCreator<
         {
           query,
           variables,
-          operationName: execOperationName ?? operationName,
+          operationName: overrideOperationName ?? operationName,
         },
         {
           headers,
@@ -243,12 +243,12 @@ export const createExecutionSlice: StateCreator<
             handleResponse(result);
           },
           error(error: Error) {
-            set({ isFetching: false });
+            set({ isIntrospecting: false });
             setResponse(formatError(error));
             set({ subscription: null });
           },
           complete() {
-            set({ isFetching: false, subscription: null });
+            set({ isIntrospecting: false, subscription: null });
           },
         });
         set({ subscription: newSubscription });
@@ -260,12 +260,12 @@ export const createExecutionSlice: StateCreator<
         for await (const result of value) {
           handleResponse(result);
         }
-        set({ isFetching: false, subscription: null });
+        set({ isIntrospecting: false, subscription: null });
       } else {
         handleResponse(value);
       }
     } catch (error) {
-      set({ isFetching: false });
+      set({ isIntrospecting: false });
       setResponse(formatError(error));
       set({ subscription: null });
     }
@@ -281,7 +281,7 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 }) => {
   useEffect(() => {
     executionStore.setState({
-      operationName,
+      overrideOperationName: operationName,
       getDefaultFieldNames,
       fetcher,
     });
