@@ -29,7 +29,7 @@ import {
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
-import { MonacoEditor } from '../types';
+import { AllSlices, MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
 import { useSynchronizeValue } from '../utility';
 
@@ -295,12 +295,10 @@ type EditorStoreProps = Pick<
 const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   print(parse(query));
 
-export const createEditorSlice: StateCreator<
-  EditorSlice,
-  [],
-  [],
-  EditorSlice
-> = (set, get) => ({
+export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
+  set,
+  get,
+) => ({
   tabs: null!,
   activeTabIndex: null!,
   addTab() {
@@ -326,11 +324,10 @@ export const createEditorSlice: StateCreator<
     });
   },
   changeTab(index) {
-    const { stop } = executionStore.getState();
+    const { stop, onTabChange } = get();
     stop();
 
     set(current => {
-      const { onTabChange } = get();
       const updated = {
         ...current,
         activeTabIndex: index,
@@ -356,10 +353,9 @@ export const createEditorSlice: StateCreator<
     });
   },
   closeTab(index) {
-    const { activeTabIndex, onTabChange } = get();
+    const { activeTabIndex, onTabChange, stop } = get();
 
     if (activeTabIndex === index) {
-      const { stop } = executionStore.getState();
       stop();
     }
 

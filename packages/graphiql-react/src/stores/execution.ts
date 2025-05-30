@@ -20,7 +20,7 @@ import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { formatJSONC, parseJSONC, getAutoCompleteLeafs } from '../utility';
-import { MonacoEditor } from '../types';
+import { AllSlices, MonacoEditor } from '../types';
 
 export interface ExecutionSlice {
   /**
@@ -93,7 +93,7 @@ type ExecutionStoreProps = Pick<
 };
 
 export const createExecutionSlice: StateCreator<
-  ExecutionSlice,
+  AllSlices,
   [],
   [],
   ExecutionSlice
@@ -119,17 +119,14 @@ export const createExecutionSlice: StateCreator<
       updateActiveTabValues,
       operationName,
       documentAST,
-    } = editorStore.getState();
-    if (!queryEditor || !responseEditor) {
-      return;
-    }
-    const {
       subscription,
       overrideOperationName,
       queryId,
       fetcher,
     } = get();
-
+    if (!queryEditor || !responseEditor) {
+      return;
+    }
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {
       stop();

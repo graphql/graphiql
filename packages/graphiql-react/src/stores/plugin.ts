@@ -1,5 +1,6 @@
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
+import type { AllSlices } from '../types';
 
 export interface GraphiQLPlugin {
   /**
@@ -72,12 +73,10 @@ type PluginStoreProps = Pick<
   visiblePlugin?: GraphiQLPlugin | string;
 };
 
-export const createPluginSlice: StateCreator<
-  PluginSlice,
-  [],
-  [],
-  PluginSlice
-> = (set, get) => ({
+export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
+  set,
+  get,
+) => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,

@@ -16,16 +16,14 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
-import { SchemaReference } from '../types';
+import { AllSlices, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-export const createSchemaSlice: StateCreator<
-  SchemaSlice,
-  [],
-  [],
-  SchemaSlice
-> = (set, get) => ({
+export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
+  set,
+  get,
+) => ({
   inputValueDeprecation: null!,
   introspectionQueryName: null!,
   schemaDescription: null!,
@@ -48,7 +46,14 @@ export const createSchemaSlice: StateCreator<
    * Fetch the schema
    */
   async introspect() {
-    const { requestCounter, shouldIntrospect, onSchemaChange, ...rest } = get();
+    const {
+      requestCounter,
+      shouldIntrospect,
+      onSchemaChange,
+      headerEditor,
+      fetcher,
+      ...rest
+    } = get();
 
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -62,7 +67,6 @@ export const createSchemaSlice: StateCreator<
     set({ requestCounter: counter });
 
     try {
-      const { headerEditor } = editorStore.getState();
       const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
@@ -82,7 +86,6 @@ export const createSchemaSlice: StateCreator<
         introspectionQueryName,
         introspectionQuerySansSubscriptions,
       } = generateIntrospectionQuery(rest);
-      const { fetcher } = executionStore.getState();
       const fetch = fetcherReturnToPromise(
         fetcher(
           {
