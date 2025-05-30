@@ -1,6 +1,5 @@
 import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
-import { createBoundedUseStore } from '../utility';
 
 export interface GraphiQLPlugin {
   /**
@@ -19,7 +18,7 @@ export interface GraphiQLPlugin {
   title: string;
 }
 
-interface PluginSlice {
+export interface PluginSlice {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
@@ -142,7 +141,5 @@ export const PluginStore: FC<PluginStoreProps> = ({
 
   return children as ReactElement;
 };
-
-export const usePluginStore = createBoundedUseStore(pluginStore);
 
 // const STORAGE_KEY = 'visiblePlugin';

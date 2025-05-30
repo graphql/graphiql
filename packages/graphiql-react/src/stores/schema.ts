@@ -16,10 +16,7 @@ import {
 } from 'graphql';
 import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
-import { editorStore } from './editor';
 import { SchemaReference } from '../types';
-import { createBoundedUseStore } from '../utility';
-import { executionStore, useExecutionStore } from './execution';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -325,8 +322,6 @@ export const SchemaStore: FC<SchemaStoreProps> = ({
 
   return children as ReactElement;
 };
-
-export const useSchemaStore = createBoundedUseStore(schemaStore);
 
 type IntrospectionArgs = {
   /**

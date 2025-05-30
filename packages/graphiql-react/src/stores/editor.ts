@@ -11,8 +11,6 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from './storage';
-import { executionStore } from './execution';
-
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
 import { STORAGE_KEY_QUERY } from '../components/query-editor';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../components/variable-editor';
@@ -33,9 +31,9 @@ import {
 } from '../utility/tabs';
 import { MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
-import { createBoundedUseStore, useSynchronizeValue } from '../utility';
+import { useSynchronizeValue } from '../utility';
 
-interface EditorSlice extends TabsState {
+export interface EditorSlice extends TabsState {
   /**
    * Add a new tab.
    */
@@ -556,7 +554,5 @@ export const EditorStore: FC<EditorStoreProps> = ({
   }
   return children as ReactElement;
 };
-
-export const useEditorStore = createBoundedUseStore(editorStore);
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';

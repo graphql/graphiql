@@ -19,15 +19,10 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import {
-  createBoundedUseStore,
-  formatJSONC,
-  parseJSONC,
-  getAutoCompleteLeafs,
-} from '../utility';
+import { formatJSONC, parseJSONC, getAutoCompleteLeafs } from '../utility';
 import { MonacoEditor } from '../types';
 
-interface ExecutionSlice {
+export interface ExecutionSlice {
   /**
    * If there is currently a GraphQL request in-flight. For multipart
    * requests like subscriptions, this will be `true` while fetching the
@@ -294,8 +289,6 @@ export const ExecutionStore: FC<ExecutionStoreProps> = ({
 
   return children as ReactElement;
 };
-
-export const useExecutionStore = createBoundedUseStore(executionStore);
 
 async function tryParseJsonObject(
   json = '',
