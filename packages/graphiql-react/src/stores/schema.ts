@@ -163,7 +163,7 @@ export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
 
 export interface SchemaSlice
   extends Pick<
-    SchemaStoreProps,
+    SchemaProps,
     | 'inputValueDeprecation'
     | 'introspectionQueryName'
     | 'schemaDescription'
@@ -217,8 +217,7 @@ export interface SchemaSlice
   shouldIntrospect: boolean;
 }
 
-type SchemaStoreProps = {
-  children: ReactNode;
+export interface SchemaProps extends IntrospectionArgs {
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies
    * to both schemas fetched via introspection and schemas explicitly passed
@@ -239,6 +238,7 @@ type SchemaStoreProps = {
    * @param schema The GraphQL schema that is now used for GraphiQL.
    */
   onSchemaChange?(schema: GraphQLSchema): void;
+
   /**
    * Explicitly provide the GraphiQL schema that shall be used for GraphiQL.
    * If this props is...
@@ -256,9 +256,9 @@ type SchemaStoreProps = {
    *   run without a schema.
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
-} & IntrospectionArgs;
+}
 
-export const SchemaStore: FC<SchemaStoreProps> = ({
+const SchemaStore: FC<SchemaProps> = ({
   onSchemaChange,
   dangerouslyAssumeSchemaIsValid = false,
   children,

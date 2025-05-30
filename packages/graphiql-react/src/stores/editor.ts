@@ -7,7 +7,7 @@ import {
   print,
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from './storage';
@@ -217,15 +217,15 @@ export interface EditorSlice extends TabsState {
   operations?: OperationFacts['operations'];
 }
 
-type EditorStoreProps = Pick<
-  EditorSlice,
-  | 'onTabChange'
-  | 'onEditOperationName'
-  | 'defaultHeaders'
-  | 'defaultQuery'
-  | 'onCopyQuery'
-> & {
-  children: ReactNode;
+export interface EditorProps
+  extends Pick<
+    EditorSlice,
+    | 'onTabChange'
+    | 'onEditOperationName'
+    | 'defaultHeaders'
+    | 'defaultQuery'
+    | 'onCopyQuery'
+  > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
    * included in the query document (depending on usage). You can either pass
@@ -290,7 +290,7 @@ type EditorStoreProps = Pick<
    */
   variables?: string;
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
-};
+}
 
 const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   print(parse(query));
@@ -427,7 +427,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 });
 
-export const EditorStore: FC<EditorStoreProps> = ({
+const EditorStore: FC<EditorProps> = ({
   externalFragments,
   onEditOperationName,
   defaultHeaders,

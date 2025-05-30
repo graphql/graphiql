@@ -54,11 +54,8 @@ export interface PluginSlice {
   setPlugins(plugins: GraphiQLPlugin[]): void;
 }
 
-type PluginStoreProps = Pick<
-  PluginSlice,
-  'referencePlugin' | 'onTogglePluginVisibility'
-> & {
-  children: ReactNode;
+export interface PluginProps
+  extends Pick<PluginSlice, 'referencePlugin' | 'onTogglePluginVisibility'> {
   /**
    * This prop accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).
@@ -71,7 +68,7 @@ type PluginStoreProps = Pick<
    * calling the `setVisiblePlugin` function provided by the context.
    */
   visiblePlugin?: GraphiQLPlugin | string;
-};
+}
 
 export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
   set,
@@ -109,7 +106,7 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
   },
 });
 
-export const PluginStore: FC<PluginStoreProps> = ({
+const PluginStore: FC<PluginProps> = ({
   onTogglePluginVisibility,
   children,
   visiblePlugin,

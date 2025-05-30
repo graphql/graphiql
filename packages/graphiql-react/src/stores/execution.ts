@@ -14,7 +14,7 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
@@ -81,16 +81,13 @@ export interface ExecutionSlice {
   fetcher: Fetcher;
 }
 
-type ExecutionStoreProps = Pick<
-  ExecutionSlice,
-  'getDefaultFieldNames' | 'fetcher'
-> & {
-  children: ReactNode;
+export interface ExecutionProps
+  extends Pick<ExecutionSlice, 'getDefaultFieldNames' | 'fetcher'> {
   /**
    * This prop sets the operation name that is passed with a GraphQL request.
    */
   operationName?: string;
-};
+}
 
 export const createExecutionSlice: StateCreator<
   AllSlices,
@@ -269,7 +266,7 @@ export const createExecutionSlice: StateCreator<
   },
 });
 
-export const ExecutionStore: FC<ExecutionStoreProps> = ({
+const ExecutionStore: FC<ExecutionProps> = ({
   fetcher,
   getDefaultFieldNames,
   children,
