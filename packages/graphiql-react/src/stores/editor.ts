@@ -22,13 +22,13 @@ import {
   TabDefinition,
   TabsState,
   TabState,
-  storeTabs,
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
+import { debounce } from '../utility';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -221,6 +221,8 @@ export interface EditorSlice extends TabsState {
     headers?: string | null;
     response: string | null;
   }): void;
+
+  storeTabs(tabsState: TabsState): void;
 }
 
 export interface EditorProps
@@ -315,6 +317,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
         onTabChange,
         synchronizeActiveTabValues,
         setEditorValues,
+        storeTabs,
       } = get();
 
       // Make sure the current tab stores the latest values
@@ -336,7 +339,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
     });
   },
   changeTab(index) {
-    const { stop, onTabChange, setEditorValues } = get();
+    const { stop, onTabChange, setEditorValues, storeTabs } = get();
     stop();
 
     set(current => {
@@ -352,7 +355,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   },
   moveTab(newOrder) {
     set(current => {
-      const { onTabChange, setEditorValues } = get();
+      const { onTabChange, setEditorValues, storeTabs } = get();
       const activeTab = current.tabs[current.activeTabIndex]!;
       const updated = {
         tabs: newOrder,
@@ -365,7 +368,8 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
     });
   },
   closeTab(index) {
-    const { activeTabIndex, onTabChange, stop, setEditorValues } = get();
+    const { activeTabIndex, onTabChange, stop, setEditorValues, storeTabs } =
+      get();
 
     if (activeTabIndex === index) {
       stop();
@@ -388,7 +392,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
       if (!current.tabs) {
         return current;
       }
-      const { onTabChange } = get();
+      const { onTabChange, storeTabs } = get();
       const updated = setPropertiesInActiveTab(current, partialTab);
       storeTabs(updated);
       onTabChange?.(updated);
@@ -465,6 +469,14 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? defaultHeaders ?? '');
     responseEditor?.setValue(response ?? '');
+  },
+  storeTabs({ tabs, activeTabIndex }) {
+    const { storage } = storageStore.getState();
+    const { shouldPersistHeaders } = get();
+    const store = debounce(500, (value: string) => {
+      storage.set(STORAGE_KEY_TABS, value);
+    });
+    store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
   },
 });
 

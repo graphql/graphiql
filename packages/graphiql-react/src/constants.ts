@@ -1,8 +1,6 @@
 /* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
-import { copyQuery, mergeQuery, prettifyEditors } from './utility';
-import { executionStore } from './stores';
 
 export const KEY_MAP = Object.freeze({
   prettify: {
@@ -74,31 +72,24 @@ export const KEY_BINDINGS = Object.freeze({
     label: 'Prettify Editors',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.prettify.keybindings,
-    run: prettifyEditors,
   },
   mergeFragments: {
     id: 'graphql-merge',
     label: 'Merge Fragments into Query',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.mergeFragments.keybindings,
-    run: mergeQuery,
   },
   runQuery: {
     id: 'graphql-run',
     label: 'Run Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.runQuery.keybindings,
-    run() {
-      // Fixes error - Cannot access 'executionStore' before initialization
-      return executionStore.getState().run();
-    },
   },
   copyQuery: {
     id: 'graphql-copy',
     label: 'Copy Query',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
-    run: copyQuery,
   },
 });
 
