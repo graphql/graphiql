@@ -5,6 +5,10 @@
 .secrets
 *.log
 
+.yarn/*
+!.yarn/releases/*
+!.yarn/plugins/*
+
 node_modules/
 coverage/
 .nyc_output
