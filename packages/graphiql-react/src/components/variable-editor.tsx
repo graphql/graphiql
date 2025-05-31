@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { clsx } from 'clsx';
-import { useEditorStore, editorStore } from '../stores';
+import { useGraphiQL } from './provider';
 import { EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import {
@@ -8,6 +8,7 @@ import {
   createEditor,
   useChangeHandler,
   onEditorContainerKeyDown,
+  pick,
 } from '../utility';
 
 interface VariableEditorProps extends EditorProps {
@@ -32,11 +33,12 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialVariables } = useEditorStore();
+  const { initialVariables, setEditor } = useGraphiQL(
+    pick('initialVariables', 'setEditor'),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY, 'variables');
   useEffect(() => {
-    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({
       uri: VARIABLE_URI,
       value: initialVariables,

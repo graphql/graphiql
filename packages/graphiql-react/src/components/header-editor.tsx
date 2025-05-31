@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { clsx } from 'clsx';
-import { editorStore, useEditorStore } from '../stores';
+import { useGraphiQL } from './provider';
 import { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
@@ -8,6 +8,7 @@ import {
   createEditor,
   useChangeHandler,
   onEditorContainerKeyDown,
+  pick,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -23,7 +24,9 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialHeaders, shouldPersistHeaders } = useEditorStore();
+  const { initialHeaders, shouldPersistHeaders, setEditor } = useGraphiQL(
+    pick('initialHeaders', 'shouldPersistHeaders', 'setEditor'),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
     onEdit,
@@ -31,7 +34,6 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
     'headers',
   );
   useEffect(() => {
-    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });

@@ -1,12 +1,13 @@
 import { formatError } from '@graphiql/toolkit';
 import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { useSchemaStore, useEditorStore, editorStore } from '../stores';
+import { useGraphiQL } from './provider';
 import { ImagePreview } from './image-preview';
 import {
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
+  pick,
 } from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
@@ -36,8 +37,21 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const { fetchError, validationErrors } = useSchemaStore();
-  const { initialResponse, responseEditor } = useEditorStore();
+  const {
+    fetchError,
+    validationErrors,
+    initialResponse,
+    responseEditor,
+    setEditor,
+  } = useGraphiQL(
+    pick(
+      'fetchError',
+      'validationErrors',
+      'initialResponse',
+      'responseEditor',
+      'setEditor',
+    ),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
@@ -49,7 +63,6 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({
       uri: RESPONSE_URI,
       value: initialResponse,
