@@ -6,17 +6,25 @@ import type {
   ReactNode,
 } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
-import { useStore, create } from 'zustand';
-import { EditorProps, createEditorSlice } from '../stores/editor';
+import { useStore, create, UseBoundStore, StoreApi } from 'zustand';
+import {
+  EditorProps,
+  createEditorSlice,
+  PERSIST_HEADERS_STORAGE_KEY,
+} from '../stores/editor';
 import { ExecutionProps, createExecutionSlice } from '../stores/execution';
 import { PluginProps, createPluginSlice } from '../stores/plugin';
 import { SchemaProps, createSchemaSlice } from '../stores/schema';
-import { StorageStore } from '../stores/storage';
+import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { AllSlices } from '../types';
 import { pick, useSynchronizeValue } from '../utility';
 import { FragmentDefinitionNode, parse, visit } from 'graphql';
-import { DEFAULT_PRETTIFY_QUERY } from '../constants';
+import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
+import { STORAGE_KEY_QUERY } from './query-editor';
+import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
+import { getDefaultTabState } from '../utility/tabs';
 
 interface InnerGraphiQLProviderProps
   extends EditorProps,
@@ -32,16 +40,7 @@ type GraphiQLProviderProps =
     ComponentPropsWithoutRef<typeof StorageStore> &
     ComponentPropsWithoutRef<typeof ThemeStore>;
 
-type GraphiQLStore = ReturnType<typeof createGraphiQLStore>;
-
-function createGraphiQLStore() {
-  return create<AllSlices>((...args) => ({
-    ...createEditorSlice(...args),
-    ...createExecutionSlice(...args),
-    ...createPluginSlice(...args),
-    ...createSchemaSlice(...args),
-  }));
-}
+type GraphiQLStore = UseBoundStore<StoreApi<AllSlices>>;
 
 const GraphiQLContext = createContext<GraphiQLStore>(null!);
 
@@ -70,14 +69,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   defaultQuery,
   defaultTabs,
   externalFragments,
-  headers,
   onEditOperationName,
   onTabChange,
-  query,
-  response,
   shouldPersistHeaders = false,
   validationRules = [],
-  variables,
   onCopyQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
@@ -97,6 +92,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   referencePlugin,
   visiblePlugin,
   children,
+  ...props
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
   if (!fetcher) {
@@ -104,17 +100,51 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
-  const synchronizeValueProps = {
-    headers,
-    query,
-    response,
-    variables,
-  };
-
+  const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
+
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    storeRef.current = createGraphiQLStore();
+    // We only need to compute it lazily during the initial render.
+    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
+    const variables =
+      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
+    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
+    const response = props.response ?? '';
+
+    const { tabs, activeTabIndex } = getDefaultTabState({
+      defaultHeaders,
+      defaultQuery: defaultQuery || DEFAULT_QUERY,
+      defaultTabs,
+      headers,
+      query,
+      shouldPersistHeaders,
+      variables,
+    });
+
+    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+
+    const $shouldPersistHeaders =
+      shouldPersistHeaders !== false && isStored
+        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+        : shouldPersistHeaders;
+
+    storeRef.current = create<AllSlices>((...args) => ({
+      ...createEditorSlice({
+        activeTabIndex,
+        initialHeaders: headers ?? defaultHeaders ?? '',
+        initialQuery:
+          query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
+        initialResponse: response,
+        initialVariables: variables ?? '',
+        shouldPersistHeaders: $shouldPersistHeaders,
+        tabs,
+      })(...args),
+      ...createExecutionSlice(...args),
+      ...createPluginSlice(...args),
+      ...createSchemaSlice(...args),
+    }));
+    storeRef.current.getState().storeTabs({ activeTabIndex, tabs });
   }
   // TODO:
   // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
@@ -171,7 +201,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   return (
     <GraphiQLContext.Provider value={storeRef.current}>
-      <SynchronizeValue {...synchronizeValueProps}>{children}</SynchronizeValue>
+      <SynchronizeValue {...props}>{children}</SynchronizeValue>
     </GraphiQLContext.Provider>
   );
 };

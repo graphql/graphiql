@@ -6,17 +6,13 @@ import type {
   DocumentNode,
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
-import { FC, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
-import { storageStore, useStorage } from './storage';
+import { storageStore } from './storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
-import { STORAGE_KEY_QUERY } from '../components/query-editor';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../components/variable-editor';
 
 import {
   createTab,
-  getDefaultTabState,
   setPropertiesInActiveTab,
   TabDefinition,
   TabsState,
@@ -26,7 +22,7 @@ import {
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
-import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
+import { DEFAULT_PRETTIFY_QUERY } from '../constants';
 import { debounce } from '../utility';
 
 export interface EditorSlice extends TabsState {
@@ -305,243 +301,196 @@ export interface EditorProps
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 }
 
-export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
-  set,
-  get,
-) => ({
-  tabs: null!,
-  activeTabIndex: null!,
-  addTab() {
-    set(current => {
-      const {
-        defaultQuery,
-        defaultHeaders,
-        onTabChange,
-        synchronizeActiveTabValues,
-        setEditorValues,
-        storeTabs,
-      } = get();
+export const createEditorSlice =
+  (
+    initial: Pick<
+      EditorSlice,
+      | 'shouldPersistHeaders'
+      | 'tabs'
+      | 'activeTabIndex'
+      | 'initialQuery'
+      | 'initialVariables'
+      | 'initialHeaders'
+      | 'initialResponse'
+    >,
+  ): StateCreator<AllSlices, [], [], EditorSlice> =>
+  (set, get) => ({
+    ...initial,
 
-      // Make sure the current tab stores the latest values
-      const updatedValues = synchronizeActiveTabValues(current);
-      const updated = {
-        tabs: [
-          ...updatedValues.tabs,
-          createTab({
-            headers: defaultHeaders,
-            query: defaultQuery,
-          }),
-        ],
-        activeTabIndex: updatedValues.tabs.length,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]!);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  changeTab(index) {
-    const { stop, onTabChange, setEditorValues, storeTabs } = get();
-    stop();
+    addTab() {
+      set(current => {
+        const {
+          defaultQuery,
+          defaultHeaders,
+          onTabChange,
+          synchronizeActiveTabValues,
+          setEditorValues,
+          storeTabs,
+        } = get();
 
-    set(current => {
-      const updated = {
-        ...current,
-        activeTabIndex: index,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]!);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  moveTab(newOrder) {
-    set(current => {
-      const { onTabChange, setEditorValues, storeTabs } = get();
-      const activeTab = current.tabs[current.activeTabIndex]!;
-      const updated = {
-        tabs: newOrder,
-        activeTabIndex: newOrder.indexOf(activeTab),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]!);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  closeTab(index) {
-    const { activeTabIndex, onTabChange, stop, setEditorValues, storeTabs } =
-      get();
-
-    if (activeTabIndex === index) {
+        // Make sure the current tab stores the latest values
+        const updatedValues = synchronizeActiveTabValues(current);
+        const updated = {
+          tabs: [
+            ...updatedValues.tabs,
+            createTab({
+              headers: defaultHeaders,
+              query: defaultQuery,
+            }),
+          ],
+          activeTabIndex: updatedValues.tabs.length,
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    changeTab(index) {
+      const { stop, onTabChange, setEditorValues, storeTabs } = get();
       stop();
-    }
 
-    set(current => {
-      const updated = {
-        tabs: current.tabs.filter((_tab, i) => index !== i),
-        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]!);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  updateActiveTabValues(partialTab) {
-    set(current => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Vitest fails with TypeError: Cannot read properties of null (reading 'map') in `setPropertiesInActiveTab` when `tabs` is `null`
-      if (!current.tabs) {
-        return current;
+      set(current => {
+        const updated = {
+          ...current,
+          activeTabIndex: index,
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    moveTab(newOrder) {
+      set(current => {
+        const { onTabChange, setEditorValues, storeTabs } = get();
+        const activeTab = current.tabs[current.activeTabIndex]!;
+        const updated = {
+          tabs: newOrder,
+          activeTabIndex: newOrder.indexOf(activeTab),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    closeTab(index) {
+      const { activeTabIndex, onTabChange, stop, setEditorValues, storeTabs } =
+        get();
+
+      if (activeTabIndex === index) {
+        stop();
       }
-      const { onTabChange, storeTabs } = get();
-      const updated = setPropertiesInActiveTab(current, partialTab);
-      storeTabs(updated);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
-    const entries = Object.entries({
-      headerEditor,
-      queryEditor,
-      responseEditor,
-      variableEditor,
-    }).filter(([_key, value]) => value);
-    const newState = Object.fromEntries(entries);
-    set(newState);
-  },
-  setOperationName(operationName) {
-    const { onEditOperationName, updateActiveTabValues } = get();
-    set({ operationName });
-    updateActiveTabValues({ operationName });
-    onEditOperationName?.(operationName);
-  },
-  shouldPersistHeaders: false,
-  setShouldPersistHeaders(persist) {
-    const { headerEditor, tabs, activeTabIndex } = get();
-    const { storage } = storageStore.getState();
-    if (persist) {
-      storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-      const serializedTabs = serializeTabState({ tabs, activeTabIndex }, true);
-      storage.set(STORAGE_KEY_TABS, serializedTabs);
-    } else {
-      storage.set(STORAGE_KEY_HEADERS, '');
-      clearHeadersFromTabs();
-    }
-    set({ shouldPersistHeaders: persist });
-    storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-  },
-  onEditOperationName: undefined,
-  externalFragments: null!,
-  onTabChange: undefined,
-  defaultQuery: undefined,
-  defaultHeaders: undefined,
-  validationRules: null!,
-  initialHeaders: null!,
-  initialQuery: null!,
-  initialResponse: null!,
-  initialVariables: null!,
-  onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
-  synchronizeActiveTabValues(tabsState) {
-    const {
-      queryEditor,
-      variableEditor,
-      headerEditor,
-      responseEditor,
-      operationName,
-    } = get();
-    return setPropertiesInActiveTab(tabsState, {
-      query: queryEditor?.getValue() ?? null,
-      variables: variableEditor?.getValue() ?? null,
-      headers: headerEditor?.getValue() ?? null,
-      response: responseEditor?.getValue() ?? null,
-      operationName: operationName ?? null,
-    });
-  },
-  setEditorValues({ query, variables, headers, response }) {
-    const {
-      queryEditor,
-      variableEditor,
-      headerEditor,
-      responseEditor,
-      defaultHeaders,
-    } = get();
-    queryEditor?.setValue(query ?? '');
-    variableEditor?.setValue(variables ?? '');
-    headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-    responseEditor?.setValue(response ?? '');
-  },
-  storeTabs({ tabs, activeTabIndex }) {
-    const { storage } = storageStore.getState();
-    const { shouldPersistHeaders } = get();
-    const store = debounce(500, (value: string) => {
-      storage.set(STORAGE_KEY_TABS, value);
-    });
-    store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
-  },
-  setOperationFacts({ documentAST, operationName, operations }) {
-    set({
-      documentAST,
-      operationName,
-      operations,
-    });
-  },
-});
 
-const EditorStore: FC<EditorProps> = ({
-  // externalFragments,
-  // onEditOperationName,
-  defaultHeaders,
-  // onTabChange,
-  defaultQuery,
-  // shouldPersistHeaders = false,
-  // validationRules = [],
-  // onCopyQuery,
-  // onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-  ...props
-}) => {
-  const storage = useStorage();
+      set(current => {
+        const updated = {
+          tabs: current.tabs.filter((_tab, i) => index !== i),
+          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    updateActiveTabValues(partialTab) {
+      set(current => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Vitest fails with TypeError: Cannot read properties of null (reading 'map') in `setPropertiesInActiveTab` when `tabs` is `null`
+        if (!current.tabs) {
+          return current;
+        }
+        const { onTabChange, storeTabs } = get();
+        const updated = setPropertiesInActiveTab(current, partialTab);
+        storeTabs(updated);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+      const entries = Object.entries({
+        headerEditor,
+        queryEditor,
+        responseEditor,
+        variableEditor,
+      }).filter(([_key, value]) => value);
+      const newState = Object.fromEntries(entries);
+      set(newState);
+    },
+    setOperationName(operationName) {
+      const { onEditOperationName, updateActiveTabValues } = get();
+      set({ operationName });
+      updateActiveTabValues({ operationName });
+      onEditOperationName?.(operationName);
+    },
+    setShouldPersistHeaders(persist) {
+      const { headerEditor, tabs, activeTabIndex } = get();
+      const { storage } = storageStore.getState();
+      if (persist) {
+        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(
+          { tabs, activeTabIndex },
+          true,
+        );
+        storage.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs();
+      }
+      set({ shouldPersistHeaders: persist });
+      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    },
+    onEditOperationName: undefined,
+    externalFragments: null!,
+    onTabChange: undefined,
+    defaultQuery: undefined,
+    defaultHeaders: undefined,
+    validationRules: null!,
+    onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
+    synchronizeActiveTabValues(tabsState) {
+      const {
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        responseEditor,
+        operationName,
+      } = get();
+      return setPropertiesInActiveTab(tabsState, {
+        query: queryEditor?.getValue() ?? null,
+        variables: variableEditor?.getValue() ?? null,
+        headers: headerEditor?.getValue() ?? null,
+        response: responseEditor?.getValue() ?? null,
+        operationName: operationName ?? null,
+      });
+    },
+    setEditorValues({ query, variables, headers, response }) {
+      const {
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        responseEditor,
+        defaultHeaders,
+      } = get();
+      queryEditor?.setValue(query ?? '');
+      variableEditor?.setValue(variables ?? '');
+      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+      responseEditor?.setValue(response ?? '');
+    },
+    storeTabs({ tabs, activeTabIndex }) {
+      const { storage } = storageStore.getState();
+      const { shouldPersistHeaders } = get();
+      const store = debounce(500, (value: string) => {
+        storage.set(STORAGE_KEY_TABS, value);
+      });
+      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    },
+    setOperationFacts({ documentAST, operationName, operations }) {
+      set({
+        documentAST,
+        operationName,
+        operations,
+      });
+    },
+  });
 
-  useEffect(() => {
-    // We only need to compute it lazily during the initial render.
-    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
-    const variables =
-      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
-    const response = props.response ?? '';
-
-    const { tabs, activeTabIndex } = getDefaultTabState({
-      query,
-      variables,
-      headers,
-      defaultTabs: props.defaultTabs,
-      defaultQuery: defaultQuery || DEFAULT_QUERY,
-      defaultHeaders,
-      shouldPersistHeaders,
-    });
-    storeTabs({ tabs, activeTabIndex });
-
-    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
-
-    const $shouldPersistHeaders =
-      shouldPersistHeaders !== false && isStored
-        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-        : shouldPersistHeaders;
-
-    editorStore.setState({
-      shouldPersistHeaders: $shouldPersistHeaders,
-      tabs,
-      activeTabIndex,
-      initialQuery:
-        query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-      initialVariables: variables ?? '',
-      initialHeaders: headers ?? defaultHeaders ?? '',
-      initialResponse: response,
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-
-  return null;
-};
-
-const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
+export const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
