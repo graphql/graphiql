@@ -28,6 +28,7 @@ package-lock.json
 
 vite.config.d.ts
 vite.config.js
+tsconfig.vitest-temp.json
 
 .next/
 .turbo/
