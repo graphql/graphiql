@@ -55,6 +55,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     setVisiblePlugin,
     setSchemaReference,
     run,
+    operations,
+    operationName,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -143,12 +145,10 @@ export const QueryEditor: FC<QueryEditorProps> = ({
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
     const operationFacts = getOperationFacts(schema, editorInstance.getValue());
-    const prevState = editorStore.getState();
-
     // Update the operation name should any query names change.
     const newOperationName = getSelectedOperationName(
-      prevState.operations,
-      prevState.operationName,
+      operations,
+      operationName,
       operationFacts?.operations,
     );
 
@@ -165,8 +165,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   }
 
   const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
-    const { operations, operationName: $operationName } =
-      editorStore.getState();
     if (!operations) {
       return;
     }
@@ -185,7 +183,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       }
     }
 
-    if (newOperationName && newOperationName !== $operationName) {
+    if (newOperationName && newOperationName !== operationName) {
       setOperationName(newOperationName);
     }
     run();
@@ -202,8 +200,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
-
-      const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
       if (operationFacts?.operationName !== undefined) {
         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
@@ -213,7 +209,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       onEdit?.(query, operationFacts?.documentAST);
       if (
         operationFacts?.operationName &&
-        currentOperationName !== operationFacts.operationName
+        operationName !== operationFacts.operationName
       ) {
         setOperationName(operationFacts.operationName);
       }
