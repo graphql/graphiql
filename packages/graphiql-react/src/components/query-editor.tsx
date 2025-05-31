@@ -66,6 +66,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'setVisiblePlugin',
       'setSchemaReference',
       'run',
+      'operations',
+      'operationName',
     ),
   );
   const storage = useStorage();
@@ -172,19 +174,19 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const cursorIndex = editor.getModel()!.getOffsetAt(position);
 
     // Loop through all operations to see if one contains the cursor.
-    let operationName: string | undefined;
+    let newOperationName: string | undefined;
     for (const operation of operations) {
       if (
         operation.loc &&
         operation.loc.start <= cursorIndex &&
         operation.loc.end >= cursorIndex
       ) {
-        operationName = operation.name?.value;
+        newOperationName = operation.name?.value;
       }
     }
 
-    if (operationName && operationName !== $operationName) {
-      setOperationName(operationName);
+    if (newOperationName && newOperationName !== $operationName) {
+      setOperationName(newOperationName);
     }
     run();
   };
