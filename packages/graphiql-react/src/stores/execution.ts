@@ -30,7 +30,7 @@ export interface ExecutionSlice {
    * first partial response and `false` while fetching subsequent batches.
    * @default false
    */
-  isIntrospecting: boolean;
+  isFetching: boolean;
   /**
    * Represents an active GraphQL subscription.
    *
@@ -96,7 +96,7 @@ export const createExecutionSlice: StateCreator<
   [],
   ExecutionSlice
 > = (set, get) => ({
-  isIntrospecting: false,
+  isFetching: false,
   subscription: null,
   overrideOperationName: null,
   getDefaultFieldNames: undefined,
@@ -105,7 +105,7 @@ export const createExecutionSlice: StateCreator<
   stop() {
     const { subscription } = get();
     subscription?.unsubscribe();
-    set({ isIntrospecting: false, subscription: null });
+    set({ isFetching: false, subscription: null });
   },
   async run() {
     const {
@@ -185,7 +185,7 @@ export const createExecutionSlice: StateCreator<
     }
 
     setResponse('');
-    set({ isIntrospecting: true });
+    set({ isFetching: true });
     try {
       const fullResponse: ExecutionResult = {};
       const handleResponse = (result: ExecutionResult) => {
@@ -209,10 +209,10 @@ export const createExecutionSlice: StateCreator<
             mergeIncrementalResult(fullResponse, part);
           }
 
-          set({ isIntrospecting: false });
+          set({ isFetching: false });
           setResponse(formatResult(fullResponse));
         } else {
-          set({ isIntrospecting: false });
+          set({ isFetching: false });
           setResponse(formatResult(result));
         }
       };
@@ -238,12 +238,12 @@ export const createExecutionSlice: StateCreator<
             handleResponse(result);
           },
           error(error: Error) {
-            set({ isIntrospecting: false });
+            set({ isFetching: false });
             setResponse(formatError(error));
             set({ subscription: null });
           },
           complete() {
-            set({ isIntrospecting: false, subscription: null });
+            set({ isFetching: false, subscription: null });
           },
         });
         set({ subscription: newSubscription });
@@ -255,12 +255,12 @@ export const createExecutionSlice: StateCreator<
         for await (const result of value) {
           handleResponse(result);
         }
-        set({ isIntrospecting: false, subscription: null });
+        set({ isFetching: false, subscription: null });
       } else {
         handleResponse(value);
       }
     } catch (error) {
-      set({ isIntrospecting: false });
+      set({ isFetching: false });
       setResponse(formatError(error));
       set({ subscription: null });
     }

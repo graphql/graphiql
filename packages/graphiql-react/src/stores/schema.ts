@@ -28,7 +28,7 @@ export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
   onSchemaChange: undefined,
 
   fetchError: null,
-  isFetching: false,
+  isIntrospecting: false,
   schema: null,
   /**
    * Derive validation errors from the schema
@@ -100,7 +100,7 @@ export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
         });
         return;
       }
-      set({ isFetching: true, fetchError: null });
+      set({ isIntrospecting: true, fetchError: null });
       let result = await fetch;
 
       if (typeof result !== 'object' || !('data' in result)) {
@@ -123,7 +123,7 @@ export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
         result = await fetch2;
       }
 
-      set({ isFetching: false });
+      set({ isIntrospecting: false });
       let introspectionData: IntrospectionQuery | undefined;
       if (result.data && '__schema' in result.data) {
         introspectionData = result.data as IntrospectionQuery;
@@ -153,7 +153,7 @@ export const createSchemaSlice: StateCreator<AllSlices, [], [], SchemaSlice> = (
       }
       set({
         fetchError: formatError(error),
-        isFetching: false,
+        isIntrospecting: false,
       });
     }
   },
@@ -186,7 +186,7 @@ export interface SchemaSlice
   /**
    * If there currently is an introspection request in-flight.
    */
-  isFetching: boolean;
+  isIntrospecting: boolean;
   /**
    * The current GraphQL schema.
    */
