@@ -334,8 +334,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     };
   }, [
     onClickReference,
-    referencePlugin,
     schema,
+    referencePlugin,
     setSchemaReference,
     setVisiblePlugin,
   ]);
