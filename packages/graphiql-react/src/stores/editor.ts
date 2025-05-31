@@ -7,7 +7,7 @@ import type {
 } from 'graphql';
 import { parse, visit, print } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
-import { FC, ReactElement, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from './storage';
@@ -499,7 +499,6 @@ const EditorStore: FC<EditorProps> = ({
   defaultHeaders,
   onTabChange,
   defaultQuery,
-  children,
   shouldPersistHeaders = false,
   validationRules = [],
   onCopyQuery,
@@ -604,7 +603,7 @@ const EditorStore: FC<EditorProps> = ({
     // Ensure store was initialized
     return null;
   }
-  return children as ReactElement;
+  return null;
 };
 
 const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';

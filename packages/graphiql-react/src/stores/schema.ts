@@ -14,7 +14,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
+import { Dispatch, FC, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
 import { AllSlices, SchemaReference } from '../types';
 
@@ -261,7 +261,6 @@ export interface SchemaProps extends IntrospectionArgs {
 const SchemaStore: FC<SchemaProps> = ({
   onSchemaChange,
   dangerouslyAssumeSchemaIsValid = false,
-  children,
   schema,
   inputValueDeprecation = false,
   introspectionQueryName = 'IntrospectionQuery',
@@ -323,7 +322,7 @@ const SchemaStore: FC<SchemaProps> = ({
     };
   }, []);
 
-  return children as ReactElement;
+  return null;
 };
 
 type IntrospectionArgs = {

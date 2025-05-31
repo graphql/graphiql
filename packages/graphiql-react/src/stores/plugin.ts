@@ -1,4 +1,4 @@
-import { ComponentType, FC, ReactElement, ReactNode, useEffect } from 'react';
+import { ComponentType, FC, useEffect } from 'react';
 import type { StateCreator } from 'zustand';
 import type { AllSlices } from '../types';
 
@@ -108,7 +108,6 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
 
 const PluginStore: FC<PluginProps> = ({
   onTogglePluginVisibility,
-  children,
   visiblePlugin,
   plugins = [],
   referencePlugin,
@@ -135,7 +134,7 @@ const PluginStore: FC<PluginProps> = ({
     });
   }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
-  return children as ReactElement;
+  return null;
 };
 
 // const STORAGE_KEY = 'visiblePlugin';

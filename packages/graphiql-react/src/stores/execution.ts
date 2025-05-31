@@ -14,7 +14,7 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { FC, ReactElement, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
@@ -270,7 +270,6 @@ export const createExecutionSlice: StateCreator<
 const ExecutionStore: FC<ExecutionProps> = ({
   fetcher,
   getDefaultFieldNames,
-  children,
   // TODO: we have it on editor, maybe we should remove it here?
   operationName = null,
 }) => {
@@ -282,7 +281,7 @@ const ExecutionStore: FC<ExecutionProps> = ({
     });
   }, [getDefaultFieldNames, operationName, fetcher]);
 
-  return children as ReactElement;
+  return null;
 };
 
 async function tryParseJsonObject(
