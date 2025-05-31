@@ -6,8 +6,8 @@ import {
   QueryStoreItem,
 } from '@graphiql/toolkit';
 import {
-  useExecutionStore,
-  useEditorStore,
+  useGraphiQL,
+  pick,
   useStorage,
   createBoundedUseStore,
 } from '@graphiql/react';
@@ -122,8 +122,9 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const isFetching = useExecutionStore(store => store.isFetching);
-  const { tabs, activeTabIndex } = useEditorStore();
+  const { isFetching, tabs, activeTabIndex } = useGraphiQL(
+    pick('isFetching', 'tabs', 'activeTabIndex'),
+  );
   const activeTab = tabs[activeTabIndex]!;
   const storage = useStorage();
 

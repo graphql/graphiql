@@ -32,10 +32,8 @@ import {
   Tooltip,
   UnStyledButton,
   useDragResize,
-  useEditorStore,
-  useExecutionStore,
-  usePluginStore,
-  useSchemaStore,
+  useGraphiQL,
+  pick,
   useStorage,
   useThemeStore,
   VariableEditor,
@@ -227,11 +225,33 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     shouldPersistHeaders,
     tabs,
     activeTabIndex,
-  } = useEditorStore();
-  const isExecutionFetching = useExecutionStore(store => store.isFetching);
-  const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
+    isIntrospecting,
+    isFetching,
+    introspect,
+    visiblePlugin,
+    setVisiblePlugin,
+    plugins,
+  } = useGraphiQL(
+    pick(
+      'initialVariables',
+      'initialHeaders',
+      'setShouldPersistHeaders',
+      'addTab',
+      'moveTab',
+      'closeTab',
+      'changeTab',
+      'shouldPersistHeaders',
+      'tabs',
+      'activeTabIndex',
+      'isIntrospecting',
+      'isFetching',
+      'introspect',
+      'visiblePlugin',
+      'setVisiblePlugin',
+      'plugins',
+    ),
+  );
   const storageContext = useStorage();
-  const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
   const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
@@ -434,13 +454,13 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <Tooltip label="Re-fetch GraphQL schema">
         <UnStyledButton
           type="button"
-          disabled={isSchemaFetching}
+          disabled={isIntrospecting}
           onClick={introspect}
           aria-label="Re-fetch GraphQL schema"
           style={{ marginTop: 'auto' }}
         >
           <ReloadIcon
-            className={cn(isSchemaFetching && 'graphiql-spin')}
+            className={cn(isIntrospecting && 'graphiql-spin')}
             aria-hidden="true"
           />
         </UnStyledButton>
@@ -766,7 +786,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               ref={editorResize.dragBarRef}
             />
             <div className="graphiql-response" ref={editorResize.secondRef}>
-              {isExecutionFetching && <Spinner />}
+              {isFetching && <Spinner />}
               <ResponseEditor responseTooltip={responseTooltip} />
               {footer}
             </div>

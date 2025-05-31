@@ -17,7 +17,8 @@ import {
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
   SchemaReference,
-  useSchemaStore,
+  useGraphiQL,
+  pick,
   createBoundedUseStore,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
@@ -245,7 +246,9 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
 export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { schema, validationErrors, schemaReference } = useSchemaStore();
+  const { schema, validationErrors, schemaReference } = useGraphiQL(
+    pick('schema', 'validationErrors', 'schemaReference'),
+  );
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =

@@ -4,9 +4,12 @@ import type {
   FC,
   ReactElement,
   ReactNode,
+  RefObject,
 } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
-import { useStore, create, UseBoundStore, StoreApi } from 'zustand';
+import { useStore, UseBoundStore, StoreApi } from 'zustand';
+import { createWithEqualityFn as create } from 'zustand/traditional';
+import { shallow } from 'zustand/vanilla/shallow';
 import {
   EditorProps,
   createEditorSlice,
@@ -48,7 +51,7 @@ type GraphiQLProviderProps =
 
 type GraphiQLStore = UseBoundStore<StoreApi<AllSlices>>;
 
-const GraphiQLContext = createContext<GraphiQLStore>(null!);
+const GraphiQLContext = createContext<RefObject<GraphiQLStore>>(null!);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   storage,
@@ -111,46 +114,54 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    // We only need to compute it lazily during the initial render.
-    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
-    const variables =
-      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
-    const response = props.response ?? '';
+    function getInitialState() {
+      // We only need to compute it lazily during the initial render.
+      const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
+      const variables =
+        props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
+      const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
+      const response = props.response ?? '';
 
-    const { tabs, activeTabIndex } = getDefaultTabState({
-      defaultHeaders,
-      defaultQuery: defaultQuery || DEFAULT_QUERY,
-      defaultTabs,
-      headers,
-      query,
-      shouldPersistHeaders,
-      variables,
-    });
+      const { tabs, activeTabIndex } = getDefaultTabState({
+        defaultHeaders,
+        defaultQuery: defaultQuery || DEFAULT_QUERY,
+        defaultTabs,
+        headers,
+        query,
+        shouldPersistHeaders,
+        variables,
+      });
 
-    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
 
-    const $shouldPersistHeaders =
-      shouldPersistHeaders !== false && isStored
-        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-        : shouldPersistHeaders;
+      const $shouldPersistHeaders =
+        shouldPersistHeaders !== false && isStored
+          ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+          : shouldPersistHeaders;
 
-    storeRef.current = create<AllSlices>((...args) => ({
-      ...createEditorSlice({
-        activeTabIndex,
-        initialHeaders: headers ?? defaultHeaders ?? '',
-        initialQuery:
-          query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-        initialResponse: response,
-        initialVariables: variables ?? '',
-        shouldPersistHeaders: $shouldPersistHeaders,
-        tabs,
-      })(...args),
-      ...createExecutionSlice(...args),
-      ...createPluginSlice(...args),
-      ...createSchemaSlice(...args),
-    }));
-    storeRef.current.getState().storeTabs({ activeTabIndex, tabs });
+      const store = create<AllSlices>(
+        (...args) => ({
+          ...createEditorSlice({
+            activeTabIndex,
+            initialHeaders: headers ?? defaultHeaders ?? '',
+            initialQuery:
+              query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
+            initialResponse: response,
+            initialVariables: variables ?? '',
+            shouldPersistHeaders: $shouldPersistHeaders,
+            tabs,
+          })(...args),
+          ...createExecutionSlice(...args),
+          ...createPluginSlice(...args),
+          ...createSchemaSlice(...args),
+        }),
+        shallow,
+      );
+      store.getState().storeTabs({ activeTabIndex, tabs });
+      return store;
+    }
+
+    storeRef.current = getInitialState();
   }
   // TODO:
   // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
@@ -290,7 +301,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   }, []);
 
   return (
-    <GraphiQLContext.Provider value={storeRef.current}>
+    <GraphiQLContext.Provider value={storeRef}>
       <SynchronizeValue {...props}>{children}</SynchronizeValue>
     </GraphiQLContext.Provider>
   );
@@ -323,5 +334,5 @@ export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
   if (!store) {
     throw new Error('Missing `GraphiQLContext.Provider` in the tree');
   }
-  return useStore(store, selector);
+  return useStore(store.current, selector);
 }

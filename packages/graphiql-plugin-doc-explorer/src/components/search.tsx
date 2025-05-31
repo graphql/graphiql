@@ -16,7 +16,7 @@ import {
 } from '@headlessui/react';
 import {
   isMacOs,
-  useSchemaStore,
+  useGraphiQL,
   MagnifyingGlassIcon,
   debounce,
 } from '@graphiql/react';
@@ -158,7 +158,7 @@ type FieldMatch = {
 
 export function useSearchResults() {
   const explorerNavStack = useDocExplorer();
-  const schema = useSchemaStore(store => store.schema);
+  const schema = useGraphiQL(state => state.schema);
 
   const navItem = explorerNavStack.at(-1)!;
 
