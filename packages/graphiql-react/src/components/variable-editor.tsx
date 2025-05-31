@@ -9,6 +9,8 @@ import {
   useChangeHandler,
   onEditorContainerKeyDown,
   pick,
+  usePrettifyEditors,
+  useMergeQuery,
 } from '../utility';
 
 interface VariableEditorProps extends EditorProps {
@@ -33,9 +35,11 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialVariables, setEditor } = useGraphiQL(
-    pick('initialVariables', 'setEditor'),
+  const { initialVariables, setEditor, run } = useGraphiQL(
+    pick('initialVariables', 'setEditor', 'run'),
   );
+  const prettifyEditors = usePrettifyEditors();
+  const mergeQuery = useMergeQuery();
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY, 'variables');
   useEffect(() => {
@@ -48,9 +52,9 @@ export const VariableEditor: FC<VariableEditorProps> = ({
     setEditor({ variableEditor: editor });
     // 2️⃣ Subscribe to content changes
     const disposables = [
-      editor.addAction(KEY_BINDINGS.runQuery),
-      editor.addAction(KEY_BINDINGS.prettify),
-      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
+      editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
+      editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
       editor,
       model,
     ];

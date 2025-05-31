@@ -58,76 +58,82 @@ export function useChangeHandler(
   }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
 }
 
-export function useCopyQuery(): void {
+export function useCopyQuery() {
   const { queryEditor, onCopyQuery } = useGraphiQL(
     pick('queryEditor', 'onCopyQuery'),
   );
-  if (!queryEditor) {
-    return;
-  }
+  return (): void => {
+    if (!queryEditor) {
+      return;
+    }
 
-  const query = queryEditor.getValue();
-  copyToClipboard(query);
+    const query = queryEditor.getValue();
+    copyToClipboard(query);
 
-  onCopyQuery?.(query);
+    onCopyQuery?.(query);
+  };
 }
 
-export function useMergeQuery(): void {
+export function useMergeQuery() {
   const { queryEditor, documentAST, schema } = useGraphiQL(
     pick('queryEditor', 'documentAST', 'schema'),
   );
-  const query = queryEditor?.getValue();
-  if (!documentAST || !query) {
-    return;
-  }
-  queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+  return (): void => {
+    const query = queryEditor?.getValue();
+    if (!documentAST || !query) {
+      return;
+    }
+    queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+  };
 }
 
-export async function usePrettifyEditors(): Promise<void> {
+export function usePrettifyEditors() {
   const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
     useGraphiQL(
       pick('queryEditor', 'headerEditor', 'variableEditor', 'onPrettifyQuery'),
     );
 
-  if (variableEditor) {
+  return async (): Promise<void> => {
+    if (variableEditor) {
+      try {
+        const content = variableEditor.getValue();
+        const formatted = await formatJSONC(content);
+        if (formatted !== content) {
+          variableEditor.setValue(formatted);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Parsing JSON failed, skip prettification.', error);
+      }
+    }
+
+    if (headerEditor) {
+      try {
+        const content = headerEditor.getValue();
+        const formatted = await formatJSONC(content);
+        if (formatted !== content) {
+          headerEditor.setValue(formatted);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Parsing JSON failed, skip prettification.', error);
+      }
+    }
+
+    if (!queryEditor) {
+      return;
+    }
     try {
-      const content = variableEditor.getValue();
-      const formatted = await formatJSONC(content);
+      const content = queryEditor.getValue();
+      const formatted = await onPrettifyQuery(content);
       if (formatted !== content) {
-        variableEditor.setValue(formatted);
+        queryEditor.setValue(formatted);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Parsing JSON failed, skip prettification.', error);
+      console.error('Parsing query failed, skip prettification.', error);
     }
-  }
-
-  if (headerEditor) {
-    try {
-      const content = headerEditor.getValue();
-      const formatted = await formatJSONC(content);
-      if (formatted !== content) {
-        headerEditor.setValue(formatted);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Parsing JSON failed, skip prettification.', error);
-    }
-  }
-
-  if (!queryEditor) {
-    return;
-  }
-  try {
-    const content = queryEditor.getValue();
-    const formatted = await onPrettifyQuery(content);
-    if (formatted !== content) {
-      queryEditor.setValue(formatted);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Parsing query failed, skip prettification.', error);
-  }
+  };
 }
 
 export function getAutoCompleteLeafs({

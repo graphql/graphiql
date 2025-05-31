@@ -10,6 +10,9 @@ import {
   createEditor,
   onEditorContainerKeyDown,
   pick,
+  useCopyQuery,
+  usePrettifyEditors,
+  useMergeQuery,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -188,6 +191,10 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     }
     run();
   };
+  const copyQuery = useCopyQuery();
+  const prettifyEditors = usePrettifyEditors();
+  const mergeQuery = useMergeQuery();
+
   useEffect(() => {
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
@@ -225,13 +232,10 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
-      editor.addAction({
-        ...KEY_BINDINGS.runQuery,
-        run: runAtCursor,
-      }),
-      editor.addAction(KEY_BINDINGS.copyQuery),
-      editor.addAction(KEY_BINDINGS.prettify),
-      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run: runAtCursor }),
+      editor.addAction({ ...KEY_BINDINGS.copyQuery, run: copyQuery }),
+      editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
+      editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
       editor,
       model,
     ];

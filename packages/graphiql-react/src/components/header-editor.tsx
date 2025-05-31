@@ -9,6 +9,8 @@ import {
   useChangeHandler,
   onEditorContainerKeyDown,
   pick,
+  usePrettifyEditors,
+  useMergeQuery,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -24,8 +26,8 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialHeaders, shouldPersistHeaders, setEditor } = useGraphiQL(
-    pick('initialHeaders', 'shouldPersistHeaders', 'setEditor'),
+  const { initialHeaders, shouldPersistHeaders, setEditor, run } = useGraphiQL(
+    pick('initialHeaders', 'shouldPersistHeaders', 'setEditor', 'run'),
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
@@ -33,15 +35,17 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
   );
+  const prettifyEditors = usePrettifyEditors();
+  const mergeQuery = useMergeQuery();
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ headerEditor: editor });
     const disposables = [
-      editor.addAction(KEY_BINDINGS.runQuery),
-      editor.addAction(KEY_BINDINGS.prettify),
-      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
+      editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
+      editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
       editor,
       model,
     ];
