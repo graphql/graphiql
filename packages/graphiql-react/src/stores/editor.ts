@@ -5,7 +5,6 @@ import type {
   OperationDefinitionNode,
   DocumentNode,
 } from 'graphql';
-import { parse, visit, print } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
 import { FC, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
@@ -27,7 +26,7 @@ import {
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
-import { DEFAULT_QUERY } from '../constants';
+import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
 import { debounce } from '../utility';
 
 export interface EditorSlice extends TabsState {
@@ -306,9 +305,6 @@ export interface EditorProps
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 }
 
-const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
-  print(parse(query));
-
 export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   set,
   get,
@@ -494,50 +490,18 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
 });
 
 const EditorStore: FC<EditorProps> = ({
-  externalFragments,
-  onEditOperationName,
+  // externalFragments,
+  // onEditOperationName,
   defaultHeaders,
-  onTabChange,
+  // onTabChange,
   defaultQuery,
-  shouldPersistHeaders = false,
-  validationRules = [],
-  onCopyQuery,
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
+  // shouldPersistHeaders = false,
+  // validationRules = [],
+  // onCopyQuery,
+  // onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
   ...props
 }) => {
   const storage = useStorage();
-  const isMounted = useEditorStore(store => Boolean(store.tabs));
-
-  // TODO:
-  // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
-  // useEffect(() => {
-  //   const propValue = shouldPersistHeaders;
-  //   if (lastShouldPersistHeadersProp.current !== propValue) {
-  //     editorStore.getState().setShouldPersistHeaders(propValue);
-  //     lastShouldPersistHeadersProp.current = propValue;
-  //   }
-  // }, [shouldPersistHeaders]);
-
-  const $externalFragments = (() => {
-    const map = new Map<string, FragmentDefinitionNode>();
-    if (Array.isArray(externalFragments)) {
-      for (const fragment of externalFragments) {
-        map.set(fragment.name.value, fragment);
-      }
-    } else if (typeof externalFragments === 'string') {
-      visit(parse(externalFragments, {}), {
-        FragmentDefinition(fragment) {
-          map.set(fragment.name.value, fragment);
-        },
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-    } else if (externalFragments) {
-      throw new Error(
-        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
-      );
-    }
-    return map;
-  })();
 
   useEffect(() => {
     // We only need to compute it lazily during the initial render.
@@ -577,32 +541,6 @@ const EditorStore: FC<EditorProps> = ({
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
-  useEffect(() => {
-    editorStore.setState({
-      externalFragments: $externalFragments,
-      onTabChange,
-      onEditOperationName,
-      defaultQuery,
-      defaultHeaders,
-      validationRules,
-      onCopyQuery,
-      onPrettifyQuery,
-    });
-  }, [
-    $externalFragments,
-    onTabChange,
-    onEditOperationName,
-    defaultQuery,
-    defaultHeaders,
-    validationRules,
-    onCopyQuery,
-    onPrettifyQuery,
-  ]);
-
-  if (!isMounted) {
-    // Ensure store was initialized
-    return null;
-  }
   return null;
 };
 

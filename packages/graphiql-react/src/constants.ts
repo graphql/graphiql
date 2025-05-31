@@ -1,6 +1,8 @@
 /* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
+import { parse, print } from 'graphql';
+import { EditorSlice } from './stores';
 
 export const KEY_MAP = Object.freeze({
   prettify: {
@@ -122,3 +124,6 @@ export const MONACO_GRAPHQL_API = initializeMode({
     },
   },
 });
+
+export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
+  print(parse(query));
