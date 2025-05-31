@@ -7,9 +7,8 @@ import type {
   RefObject,
 } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
-import { useStore, UseBoundStore, StoreApi } from 'zustand';
-import { createWithEqualityFn as create } from 'zustand/traditional';
-import { shallow } from 'zustand/vanilla/shallow';
+import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
+import { useShallow } from 'zustand/shallow';
 import {
   EditorProps,
   createEditorSlice,
@@ -139,24 +138,21 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
           : shouldPersistHeaders;
 
-      const store = create<AllSlices>(
-        (...args) => ({
-          ...createEditorSlice({
-            activeTabIndex,
-            initialHeaders: headers ?? defaultHeaders ?? '',
-            initialQuery:
-              query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-            initialResponse: response,
-            initialVariables: variables ?? '',
-            shouldPersistHeaders: $shouldPersistHeaders,
-            tabs,
-          })(...args),
-          ...createExecutionSlice(...args),
-          ...createPluginSlice(...args),
-          ...createSchemaSlice(...args),
-        }),
-        shallow,
-      );
+      const store = create<AllSlices>((...args) => ({
+        ...createEditorSlice({
+          activeTabIndex,
+          initialHeaders: headers ?? defaultHeaders ?? '',
+          initialQuery:
+            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
+          initialResponse: response,
+          initialVariables: variables ?? '',
+          shouldPersistHeaders: $shouldPersistHeaders,
+          tabs,
+        })(...args),
+        ...createExecutionSlice(...args),
+        ...createPluginSlice(...args),
+        ...createSchemaSlice(...args),
+      }));
       store.getState().storeTabs({ activeTabIndex, tabs });
       return store;
     }
@@ -334,5 +330,5 @@ export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
   if (!store) {
     throw new Error('Missing `GraphiQLContext.Provider` in the tree');
   }
-  return useStore(store.current, selector);
+  return useStore(store.current, useShallow(selector));
 }
