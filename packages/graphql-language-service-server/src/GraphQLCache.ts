@@ -151,7 +151,7 @@ export class GraphQLCache {
       ttl: schemaCacheTTL ?? 1000 * 30,
       ttlAutopurge: true,
       updateAgeOnGet: false,
-    });
+    }) as Map<string, GraphQLSchema>;
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
