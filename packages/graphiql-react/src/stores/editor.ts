@@ -31,7 +31,6 @@ import {
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
-import { useSynchronizeValue } from '../utility';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -442,16 +441,6 @@ const EditorStore: FC<EditorProps> = ({
 }) => {
   const storage = useStorage();
   const isMounted = useEditorStore(store => Boolean(store.tabs));
-
-  const headerEditor = useEditorStore(store => store.headerEditor);
-  const queryEditor = useEditorStore(store => store.queryEditor);
-  const responseEditor = useEditorStore(store => store.responseEditor);
-  const variableEditor = useEditorStore(store => store.variableEditor);
-
-  useSynchronizeValue(headerEditor, props.headers);
-  useSynchronizeValue(queryEditor, props.query);
-  useSynchronizeValue(responseEditor, props.response);
-  useSynchronizeValue(variableEditor, props.variables);
 
   // TODO:
   // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);

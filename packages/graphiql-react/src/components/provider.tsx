@@ -1,5 +1,10 @@
 /* eslint sort-keys: "error" */
-import type { ComponentPropsWithoutRef, FC } from 'react';
+import type {
+  ComponentPropsWithoutRef,
+  FC,
+  ReactElement,
+  ReactNode,
+} from 'react';
 import { createContext, useContext, useRef } from 'react';
 import { useStore, create } from 'zustand';
 import { EditorProps, createEditorSlice } from '../stores/editor';
@@ -9,6 +14,7 @@ import { SchemaProps, createSchemaSlice } from '../stores/schema';
 import { StorageStore } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { AllSlices } from '../types';
+import { pick, useSynchronizeValue } from '../utility';
 
 type GraphiQLProviderProps =
   //
@@ -77,21 +83,24 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
+  const synchronizeValueProps = {
+    headers,
+    query,
+    response,
+    variables,
+  };
+
   const editorContextProps = {
     defaultHeaders,
     defaultQuery,
     defaultTabs,
     externalFragments,
-    headers,
     onCopyQuery,
     onEditOperationName,
     onPrettifyQuery,
     onTabChange,
-    query,
-    response,
     shouldPersistHeaders,
     validationRules,
-    variables,
   };
   const schemaContextProps = {
     dangerouslyAssumeSchemaIsValid,
@@ -122,11 +131,37 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     <StorageStore storage={storage}>
       <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
         <GraphiQLContext.Provider value={storeRef.current}>
-          {children}
+          <SynchronizeValue {...synchronizeValueProps}>
+            {children}
+          </SynchronizeValue>
         </GraphiQLContext.Provider>
       </ThemeStore>
     </StorageStore>
   );
+};
+
+interface SynchronizeValueProps
+  extends Pick<EditorProps, 'headers' | 'query' | 'response' | 'variables'> {
+  children: ReactNode;
+}
+
+const SynchronizeValue: FC<SynchronizeValueProps> = ({
+  children,
+  headers,
+  query,
+  response,
+  variables,
+}) => {
+  const { headerEditor, queryEditor, responseEditor, variableEditor } =
+    useGraphiQL(
+      pick('headerEditor', 'queryEditor', 'responseEditor', 'variableEditor'),
+    );
+
+  useSynchronizeValue(headerEditor, headers);
+  useSynchronizeValue(queryEditor, query);
+  useSynchronizeValue(responseEditor, response);
+  useSynchronizeValue(variableEditor, variables);
+  return children as ReactElement;
 };
 
 export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
