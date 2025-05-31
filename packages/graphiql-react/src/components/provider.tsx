@@ -1,20 +1,36 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
-import { EditorStore } from '../stores/editor';
-import { ExecutionStore } from '../stores/execution';
-import { PluginStore } from '../stores/plugin';
-import { SchemaStore } from '../stores/schema';
+import { createContext, useContext, useRef } from 'react';
+import { useStore, create } from 'zustand';
+import { EditorProps, createEditorSlice } from '../stores/editor';
+import { ExecutionProps, createExecutionSlice } from '../stores/execution';
+import { PluginProps, createPluginSlice } from '../stores/plugin';
+import { SchemaProps, createSchemaSlice } from '../stores/schema';
 import { StorageStore } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
+import { AllSlices } from '../types';
 
 type GraphiQLProviderProps =
   //
-  ComponentPropsWithoutRef<typeof EditorStore> &
-    ComponentPropsWithoutRef<typeof ExecutionStore> &
-    ComponentPropsWithoutRef<typeof PluginStore> &
-    ComponentPropsWithoutRef<typeof SchemaStore> &
+  EditorProps &
+    ExecutionProps &
+    PluginProps &
+    SchemaProps &
     ComponentPropsWithoutRef<typeof StorageStore> &
     ComponentPropsWithoutRef<typeof ThemeStore>;
+
+type GraphiQLStore = ReturnType<typeof createGraphiQLStore>;
+
+function createGraphiQLStore() {
+  return create<AllSlices>((...args) => ({
+    ...createEditorSlice(...args),
+    ...createExecutionSlice(...args),
+    ...createPluginSlice(...args),
+    ...createSchemaSlice(...args),
+  }));
+}
+
+const GraphiQLContext = createContext<GraphiQLStore>(null!);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
@@ -97,17 +113,27 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     referencePlugin,
     visiblePlugin,
   };
+  const storeRef = useRef<GraphiQLStore | null>(null);
+  if (storeRef.current === null) {
+    storeRef.current = createGraphiQLStore();
+  }
+
   return (
     <StorageStore storage={storage}>
       <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <EditorStore {...editorContextProps}>
-          <SchemaStore {...schemaContextProps}>
-            <ExecutionStore {...executionContextProps}>
-              <PluginStore {...pluginContextProps}>{children}</PluginStore>
-            </ExecutionStore>
-          </SchemaStore>
-        </EditorStore>
+        <GraphiQLContext.Provider value={storeRef.current}>
+          {children}
+        </GraphiQLContext.Provider>
       </ThemeStore>
     </StorageStore>
   );
 };
+
+export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
+  const store = useContext(GraphiQLContext);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- fixme
+  if (!store) {
+    throw new Error('Missing `GraphiQLContext.Provider` in the tree');
+  }
+  return useStore(store, selector);
+}
