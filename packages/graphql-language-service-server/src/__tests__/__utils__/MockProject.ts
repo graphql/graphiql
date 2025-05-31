@@ -24,7 +24,7 @@ const modules = [
   'json-parse-even-better-errors',
   'lines-and-columns',
   '@babel/code-frame',
-  '@babel/highlight',
+  // '@babel/highlight',
   // these i think are just required by jest when you console log from a test
   'jest-message-util',
   'stack-utils',
