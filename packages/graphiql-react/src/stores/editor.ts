@@ -1,11 +1,11 @@
 import type { StateCreator } from 'zustand';
-import {
+import type {
   FragmentDefinitionNode,
-  parse,
   ValidationRule,
-  visit,
-  print,
+  OperationDefinitionNode,
+  DocumentNode,
 } from 'graphql';
+import { parse, visit, print } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
 import { FC, ReactElement, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
@@ -223,6 +223,12 @@ export interface EditorSlice extends TabsState {
   }): void;
 
   storeTabs(tabsState: TabsState): void;
+
+  setOperationFacts(facts: {
+    documentAST?: DocumentNode;
+    operationName?: string;
+    operations?: OperationDefinitionNode[];
+  }): void;
 }
 
 export interface EditorProps
@@ -477,6 +483,13 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
       storage.set(STORAGE_KEY_TABS, value);
     });
     store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+  },
+  setOperationFacts({ documentAST, operationName, operations }) {
+    set({
+      documentAST,
+      operationName,
+      operations,
+    });
   },
 });
 

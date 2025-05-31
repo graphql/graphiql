@@ -60,6 +60,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     run,
     operations,
     operationName,
+    setOperationFacts,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -73,6 +74,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'run',
       'operations',
       'operationName',
+      'setOperationFacts',
     ),
   );
   const storage = useStorage();
@@ -154,9 +156,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       operationName,
       operationFacts?.operations,
     );
-
-    // Store the operation facts
-    editorStore.setState({
+    setOperationFacts({
       documentAST: operationFacts?.documentAST,
       operationName: newOperationName,
       operations: operationFacts?.operations,
