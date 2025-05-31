@@ -2,20 +2,14 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import {
-  schemaStore,
-  useSchemaStore,
-  useEditorStore,
-  useStorage,
-  editorStore,
-  executionStore,
-  pluginStore,
-} from '../stores';
+import { useStorage } from '../stores';
+import { useGraphiQL } from './provider';
 import {
   debounce,
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
+  pick,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -51,7 +45,27 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialQuery, setOperationName } = useEditorStore();
+  const {
+    initialQuery,
+    setOperationName,
+    schema,
+    setEditor,
+    updateActiveTabValues,
+    referencePlugin,
+    setVisiblePlugin,
+    setSchemaReference,
+  } = useGraphiQL(
+    pick(
+      'initialQuery',
+      'setOperationName',
+      'schema',
+      'setEditor',
+      'updateActiveTabValues',
+      'referencePlugin',
+      'setVisiblePlugin',
+      'setSchemaReference',
+    ),
+  );
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
 
@@ -124,10 +138,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     */
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
-    const operationFacts = getOperationFacts(
-      schemaStore.getState().schema,
-      editorInstance.getValue(),
-    );
+    const operationFacts = getOperationFacts(schema, editorInstance.getValue());
     const prevState = editorStore.getState();
 
     // Update the operation name should any query names change.
@@ -174,13 +185,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const { run } = executionStore.getState();
     run();
   };
-
-  const schema = useSchemaStore(store => store.schema);
-
   useEffect(() => {
     globalThis.__MONACO = monaco;
-
-    const { setEditor, updateActiveTabValues } = editorStore.getState();
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
@@ -244,9 +250,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-
-    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-    const { setSchemaReference } = schemaStore.getState();
     if (!referencePlugin) {
       return;
     }
@@ -324,7 +327,13 @@ export const QueryEditor: FC<QueryEditorProps> = ({
         disposable.dispose();
       }
     };
-  }, [onClickReference, schema]);
+  }, [
+    onClickReference,
+    referencePlugin,
+    schema,
+    setSchemaReference,
+    setVisiblePlugin,
+  ]);
 
   return (
     <div
