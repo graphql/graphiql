@@ -62,9 +62,6 @@
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
-    "identity-obj-proxy": "^3.0.0",
-    "babel-plugin-macros": "^3.1.0",
-    "graphql-http": "^1.22.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
@@ -91,6 +88,7 @@
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
     "babel-jest": "^29.4.3",
+    "babel-plugin-macros": "^3.1.0",
     "babel-plugin-transform-import-meta": "^2.2.1",
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
@@ -109,6 +107,8 @@
     "eslint-plugin-unicorn": "^56.0.0",
     "execa": "^7.1.1",
     "fetch-mock": "6.5.2",
+    "graphql-http": "^1.22.1",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "js-green-licenses": "4.0.0",
     "mkdirp": "^1.0.4",
@@ -117,12 +117,12 @@
     "prettier": "3.3.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
+    "turbo": "^2.5.2",
     "typedoc": "^0.19.2",
     "typescript": "^4.6.3",
     "vitest": "^2.1.9",
     "wgutils": "^1.2.5",
-    "wsrun": "^5.2.4",
-    "turbo": "^2.5.2"
+    "wsrun": "^5.2.4"
   },
   "resolutions": {
     "@babel/traverse": "^7.23.2",
