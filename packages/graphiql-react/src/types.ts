@@ -23,32 +23,7 @@ export interface SchemaReference {
 
 export type MonacoEditor = monacoEditor.IStandaloneCodeEditor;
 
-type OverlapError<K extends PropertyKey> = {
-  ERROR: 'Conflicting keys found';
-  CONFLICT_KEYS: K;
-};
-
-type MergeWithoutOverlap<A, B> = keyof A & keyof B extends never
-  ? A & B
-  : OverlapError<keyof A & keyof B>;
-
-type MergeMany<T extends any[], Acc = unknown> = T extends [
-  infer Head,
-  ...infer Tail,
-]
-  ? MergeWithoutOverlap<Acc, Head> extends infer Merged
-    ? Merged extends OverlapError<any>
-      ? Merged
-      : MergeMany<Tail, Merged>
-    : never
-  : Acc;
-
-export type AllSlices = MergeMany<
-  [
-    //
-    EditorSlice,
-    ExecutionSlice,
-    PluginSlice,
-    SchemaSlice,
-  ]
->;
+export type AllSlices = EditorSlice &
+  ExecutionSlice &
+  PluginSlice &
+  SchemaSlice;
