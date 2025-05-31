@@ -106,35 +106,3 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
   },
 });
 
-const PluginStore: FC<PluginProps> = ({
-  onTogglePluginVisibility,
-  visiblePlugin,
-  plugins = [],
-  referencePlugin,
-}) => {
-  useEffect(() => {
-    // TODO: visiblePlugin initial data
-    // const storedValue = storage.get(STORAGE_KEY);
-    // const pluginForStoredValue = plugins.find(
-    //   plugin => plugin.title === storedValue,
-    // );
-    // if (pluginForStoredValue) {
-    //   return pluginForStoredValue;
-    // }
-    // if (storedValue) {
-    //   storage.set(STORAGE_KEY, '');
-    // }
-    const { setPlugins, setVisiblePlugin } = pluginStore.getState();
-
-    setPlugins(plugins);
-    setVisiblePlugin(visiblePlugin ?? null);
-    pluginStore.setState({
-      onTogglePluginVisibility,
-      referencePlugin,
-    });
-  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
-
-  return null;
-};
-
-// const STORAGE_KEY = 'visiblePlugin';

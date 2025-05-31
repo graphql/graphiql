@@ -85,10 +85,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   schemaDescription,
 
   getDefaultFieldNames,
-  operationName,
+  operationName = null,
 
   onTogglePluginVisibility,
-  plugins,
+  plugins = [],
   referencePlugin,
   visiblePlugin,
   children,
@@ -176,7 +176,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     }
     return map;
   })();
-
+  // Editor sync
   useEffect(() => {
     storeRef.current.setState({
       defaultHeaders,
@@ -198,6 +198,37 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     onCopyQuery,
     onPrettifyQuery,
   ]);
+  // Execution sync
+  useEffect(() => {
+    storeRef.current.setState({
+      fetcher,
+      getDefaultFieldNames,
+      overrideOperationName: operationName,
+    });
+  }, [getDefaultFieldNames, operationName, fetcher]);
+  // Plugin sync
+  useEffect(() => {
+    // TODO: visiblePlugin initial data
+    // const storedValue = storage.get(STORAGE_KEY);
+    // const pluginForStoredValue = plugins.find(
+    //   plugin => plugin.title === storedValue,
+    // );
+    // if (pluginForStoredValue) {
+    //   return pluginForStoredValue;
+    // }
+    // if (storedValue) {
+    //   storage.set(STORAGE_KEY, '');
+    // }
+    const store = storeRef.current;
+    const { setPlugins, setVisiblePlugin } = store.getState();
+
+    setPlugins(plugins);
+    setVisiblePlugin(visiblePlugin ?? null);
+    store.setState({
+      onTogglePluginVisibility,
+      referencePlugin,
+    });
+  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
 
   return (
     <GraphiQLContext.Provider value={storeRef.current}>
@@ -205,6 +236,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     </GraphiQLContext.Provider>
   );
 };
+
+// const STORAGE_KEY = 'visiblePlugin';
 
 const SynchronizeValue: FC<SynchronizeValueProps> = ({
   children,

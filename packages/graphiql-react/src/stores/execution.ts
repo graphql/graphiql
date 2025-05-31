@@ -267,23 +267,6 @@ export const createExecutionSlice: StateCreator<
   },
 });
 
-const ExecutionStore: FC<ExecutionProps> = ({
-  fetcher,
-  getDefaultFieldNames,
-  // TODO: we have it on editor, maybe we should remove it here?
-  operationName = null,
-}) => {
-  useEffect(() => {
-    executionStore.setState({
-      overrideOperationName: operationName,
-      getDefaultFieldNames,
-      fetcher,
-    });
-  }, [getDefaultFieldNames, operationName, fetcher]);
-
-  return null;
-};
-
 async function tryParseJsonObject(
   json = '',
 ): Promise<Record<string, unknown> | undefined> {
