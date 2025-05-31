@@ -184,32 +184,6 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function synchronizeActiveTabValues(
-  {
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    operationName,
-  }: Pick<
-    AllSlices,
-    | 'queryEditor'
-    | 'variableEditor'
-    | 'headerEditor'
-    | 'responseEditor'
-    | 'operationName'
-  >,
-  tabsState: TabsState,
-): TabsState {
-  return setPropertiesInActiveTab(tabsState, {
-    query: queryEditor?.getValue() ?? null,
-    variables: variableEditor?.getValue() ?? null,
-    headers: headerEditor?.getValue() ?? null,
-    response: responseEditor?.getValue() ?? null,
-    operationName: operationName ?? null,
-  });
-}
-
 export function serializeTabState(
   tabState: TabsState,
   shouldPersistHeaders = false,
@@ -230,30 +204,6 @@ export function storeTabs({ tabs, activeTabIndex }: TabsState) {
     storage.set(STORAGE_KEY, value);
   });
   store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
-}
-
-export function setEditorValues({
-  query,
-  variables,
-  headers,
-  response,
-}: {
-  query: string | null;
-  variables?: string | null;
-  headers?: string | null;
-  response: string | null;
-}) {
-  const {
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    defaultHeaders,
-  } = editorStore.getState();
-  queryEditor?.setValue(query ?? '');
-  variableEditor?.setValue(variables ?? '');
-  headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-  responseEditor?.setValue(response ?? '');
 }
 
 export function createTab({

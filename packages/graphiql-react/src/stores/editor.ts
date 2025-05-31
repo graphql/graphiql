@@ -22,9 +22,7 @@ import {
   TabDefinition,
   TabsState,
   TabState,
-  setEditorValues,
   storeTabs,
-  synchronizeActiveTabValues,
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
@@ -214,6 +212,15 @@ export interface EditorSlice extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
+
+  synchronizeActiveTabValues(tabsState: TabsState): TabsState;
+
+  setEditorValues(values: {
+    query: string | null;
+    variables?: string | null;
+    headers?: string | null;
+    response: string | null;
+  }): void;
 }
 
 export interface EditorProps
@@ -302,11 +309,16 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   activeTabIndex: null!,
   addTab() {
     set(current => {
-      const state = get();
-      const { defaultQuery, defaultHeaders, onTabChange } = state;
+      const {
+        defaultQuery,
+        defaultHeaders,
+        onTabChange,
+        synchronizeActiveTabValues,
+        setEditorValues,
+      } = get();
 
       // Make sure the current tab stores the latest values
-      const updatedValues = synchronizeActiveTabValues(state, current);
+      const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
         tabs: [
           ...updatedValues.tabs,
@@ -324,7 +336,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
     });
   },
   changeTab(index) {
-    const { stop, onTabChange } = get();
+    const { stop, onTabChange, setEditorValues } = get();
     stop();
 
     set(current => {
@@ -340,7 +352,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   },
   moveTab(newOrder) {
     set(current => {
-      const { onTabChange } = get();
+      const { onTabChange, setEditorValues } = get();
       const activeTab = current.tabs[current.activeTabIndex]!;
       const updated = {
         tabs: newOrder,
@@ -353,7 +365,7 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
     });
   },
   closeTab(index) {
-    const { activeTabIndex, onTabChange, stop } = get();
+    const { activeTabIndex, onTabChange, stop, setEditorValues } = get();
 
     if (activeTabIndex === index) {
       stop();
@@ -425,6 +437,35 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   initialResponse: null!,
   initialVariables: null!,
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
+  synchronizeActiveTabValues(tabsState) {
+    const {
+      queryEditor,
+      variableEditor,
+      headerEditor,
+      responseEditor,
+      operationName,
+    } = get();
+    return setPropertiesInActiveTab(tabsState, {
+      query: queryEditor?.getValue() ?? null,
+      variables: variableEditor?.getValue() ?? null,
+      headers: headerEditor?.getValue() ?? null,
+      response: responseEditor?.getValue() ?? null,
+      operationName: operationName ?? null,
+    });
+  },
+  setEditorValues({ query, variables, headers, response }) {
+    const {
+      queryEditor,
+      variableEditor,
+      headerEditor,
+      responseEditor,
+      defaultHeaders,
+    } = get();
+    queryEditor?.setValue(query ?? '');
+    variableEditor?.setValue(variables ?? '');
+    headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+    responseEditor?.setValue(response ?? '');
+  },
 });
 
 const EditorStore: FC<EditorProps> = ({
