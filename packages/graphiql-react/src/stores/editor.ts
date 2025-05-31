@@ -302,10 +302,11 @@ export const createEditorSlice: StateCreator<AllSlices, [], [], EditorSlice> = (
   activeTabIndex: null!,
   addTab() {
     set(current => {
-      const { defaultQuery, defaultHeaders, onTabChange } = get();
+      const state = get();
+      const { defaultQuery, defaultHeaders, onTabChange } = state;
 
       // Make sure the current tab stores the latest values
-      const updatedValues = synchronizeActiveTabValues(current);
+      const updatedValues = synchronizeActiveTabValues(state, current);
       const updated = {
         tabs: [
           ...updatedValues.tabs,

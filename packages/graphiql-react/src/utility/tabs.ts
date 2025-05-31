@@ -1,7 +1,8 @@
 'use no memo'; // can't figure why it isn't optimized
 
-import { storageStore, editorStore } from '../stores';
+import { storageStore } from '../stores';
 import { debounce } from './debounce';
+import { AllSlices } from '../types';
 
 export type TabDefinition = {
   /**
@@ -183,15 +184,24 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function synchronizeActiveTabValues(state: TabsState): TabsState {
-  const {
+export function synchronizeActiveTabValues(
+  {
     queryEditor,
     variableEditor,
     headerEditor,
     responseEditor,
     operationName,
-  } = editorStore.getState();
-  return setPropertiesInActiveTab(state, {
+  }: Pick<
+    AllSlices,
+    | 'queryEditor'
+    | 'variableEditor'
+    | 'headerEditor'
+    | 'responseEditor'
+    | 'operationName'
+  >,
+  tabsState: TabsState,
+): TabsState {
+  return setPropertiesInActiveTab(tabsState, {
     query: queryEditor?.getValue() ?? null,
     variables: variableEditor?.getValue() ?? null,
     headers: headerEditor?.getValue() ?? null,
