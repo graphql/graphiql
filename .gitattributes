@@ -11,3 +11,5 @@
 *.css text eol=lf
 *.sh text eol=lf
 *.yml text eol=lf
+
+.yarn/releases/*.cjs export-ignore binary linguist-generated
