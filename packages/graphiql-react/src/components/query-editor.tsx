@@ -54,6 +54,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     referencePlugin,
     setVisiblePlugin,
     setSchemaReference,
+    run,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -64,6 +65,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'referencePlugin',
       'setVisiblePlugin',
       'setSchemaReference',
+      'run',
     ),
   );
   const storage = useStorage();
@@ -142,7 +144,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const prevState = editorStore.getState();
 
     // Update the operation name should any query names change.
-    const operationName = getSelectedOperationName(
+    const newOperationName = getSelectedOperationName(
       prevState.operations,
       prevState.operationName,
       operationFacts?.operations,
@@ -151,11 +153,13 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // Store the operation facts
     editorStore.setState({
       documentAST: operationFacts?.documentAST,
-      operationName,
+      operationName: newOperationName,
       operations: operationFacts?.operations,
     });
 
-    return operationFacts ? { ...operationFacts, operationName } : null;
+    return operationFacts
+      ? { ...operationFacts, operationName: newOperationName }
+      : null;
   }
 
   const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
@@ -182,7 +186,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     if (operationName && operationName !== $operationName) {
       setOperationName(operationName);
     }
-    const { run } = executionStore.getState();
     run();
   };
   useEffect(() => {
