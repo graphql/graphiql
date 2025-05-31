@@ -8,18 +8,19 @@ export { debounce } from './debounce';
 export { isMacOs } from './is-macos';
 export { formatJSONC, parseJSONC } from './jsonc';
 export { markdown } from './markdown';
+export { pick } from './pick';
 export { useDragResize } from './resize';
 
 export {
   useSynchronizeValue,
-  getAutoCompleteLeafs,
+  useAutoCompleteLeafs,
   useOptimisticState,
   useEditorState,
   useOperationsEditorState,
   useVariablesEditorState,
   useHeadersEditorState,
-  copyQuery,
-  mergeQuery,
-  prettifyEditors,
+  useCopyQuery,
+  useMergeQuery,
+  usePrettifyEditors,
   useChangeHandler,
 } from './hooks';

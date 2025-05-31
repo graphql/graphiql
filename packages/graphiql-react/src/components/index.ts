@@ -4,7 +4,7 @@ export { ToolbarMenu } from './toolbar-menu';
 
 export { HeaderEditor } from './header-editor';
 export { ImagePreview } from './image-preview';
-export { GraphiQLProvider } from './provider';
+export { GraphiQLProvider, useGraphiQL } from './provider';
 export { QueryEditor } from './query-editor';
 export { ResponseEditor } from './response-editor';
 export { VariableEditor } from './variable-editor';

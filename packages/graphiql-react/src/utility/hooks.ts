@@ -3,18 +3,13 @@ import copyToClipboard from 'copy-to-clipboard';
 import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  schemaStore,
-  storageStore,
-  editorStore,
-  useEditorStore,
-  executionStore,
-} from '../stores';
+import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import { formatJSONC } from './jsonc';
 import { MonacoEditor } from '../types';
-import type { editor as monacoEditor } from '../monaco-editor';
-import { Range } from '../monaco-editor';
+import { type editor as monacoEditor, Range } from '../monaco-editor';
+import { useGraphiQL } from '../components';
+import { pick } from './pick';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
@@ -29,10 +24,11 @@ export function useChangeHandler(
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
 ) {
-  const editor = useEditorStore(
-    store =>
-      store[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
+  const { editor, updateActiveTabValues } = useGraphiQL(state => ({
+    editor:
+      state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
+    updateActiveTabValues: state.updateActiveTabValues,
+  }));
   useEffect(() => {
     if (!editor) {
       return;
@@ -45,8 +41,6 @@ export function useChangeHandler(
       }
       storage.set(storageKey, value);
     });
-
-    const { updateActiveTabValues } = editorStore.getState();
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
@@ -61,11 +55,13 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty]);
+  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
 }
 
-export function copyQuery(): void {
-  const { queryEditor, onCopyQuery } = editorStore.getState();
+export function useCopyQuery(): void {
+  const { queryEditor, onCopyQuery } = useGraphiQL(
+    pick('queryEditor', 'onCopyQuery'),
+  );
   if (!queryEditor) {
     return;
   }
@@ -76,19 +72,22 @@ export function copyQuery(): void {
   onCopyQuery?.(query);
 }
 
-export function mergeQuery(): void {
-  const { queryEditor, documentAST } = editorStore.getState();
+export function useMergeQuery(): void {
+  const { queryEditor, documentAST, schema } = useGraphiQL(
+    pick('queryEditor', 'documentAST', 'schema'),
+  );
   const query = queryEditor?.getValue();
   if (!documentAST || !query) {
     return;
   }
-  const { schema } = schemaStore.getState();
   queryEditor!.setValue(print(mergeAst(documentAST, schema)));
 }
 
-export async function prettifyEditors(): Promise<void> {
+export async function usePrettifyEditors(): Promise<void> {
   const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-    editorStore.getState();
+    useGraphiQL(
+      pick('queryEditor', 'headerEditor', 'variableEditor', 'onPrettifyQuery'),
+    );
 
   if (variableEditor) {
     try {
@@ -131,14 +130,14 @@ export async function prettifyEditors(): Promise<void> {
   }
 }
 
-export function getAutoCompleteLeafs() {
-  const { queryEditor } = editorStore.getState();
+export function useAutoCompleteLeafs() {
+  const { queryEditor, schema, getDefaultFieldNames } = useGraphiQL(
+    pick('queryEditor', 'schema', 'getDefaultFieldNames'),
+  );
   if (!queryEditor) {
     return;
   }
-  const { schema } = schemaStore.getState();
   const query = queryEditor.getValue();
-  const { getDefaultFieldNames } = executionStore.getState();
   const { insertions, result = '' } = fillLeafs(
     schema,
     query,
@@ -206,7 +205,7 @@ export const useEditorState = (
 ): [string, (val: string) => void] => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
+  const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
   const editorValue = editorInstance?.getValue() ?? '';
 
   const handleChange = useCallback(
