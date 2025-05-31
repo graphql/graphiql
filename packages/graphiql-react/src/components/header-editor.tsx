@@ -11,6 +11,7 @@ import {
   pick,
   usePrettifyEditors,
   useMergeQuery,
+  cleanupDisposables,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -49,12 +50,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
       editor,
       model,
     ];
-    // 3️⃣ Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

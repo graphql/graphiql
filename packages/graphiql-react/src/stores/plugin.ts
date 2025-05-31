@@ -105,4 +105,3 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
     set({ plugins });
   },
 });
-

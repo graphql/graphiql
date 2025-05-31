@@ -1,3 +1,4 @@
+export { cleanupDisposables } from './cleanup-disposables';
 export { createBoundedUseStore } from './create-bounded-use-store';
 export {
   getOrCreateModel,

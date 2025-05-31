@@ -8,6 +8,7 @@ import {
   createEditor,
   onEditorContainerKeyDown,
   pick,
+  cleanupDisposables,
 } from '../utility';
 import { RESPONSE_URI } from '../constants';
 import { clsx } from 'clsx';
@@ -140,13 +141,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       editor,
       model,
     ];
-
-    // Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

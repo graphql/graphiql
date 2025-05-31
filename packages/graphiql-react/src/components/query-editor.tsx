@@ -13,6 +13,7 @@ import {
   useCopyQuery,
   usePrettifyEditors,
   useMergeQuery,
+  cleanupDisposables,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -239,13 +240,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       editor,
       model,
     ];
-
-    // 3️⃣ Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
@@ -327,11 +322,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
         },
       }),
     ];
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose();
-      }
-    };
+    return cleanupDisposables(disposables);
   }, [
     onClickReference,
     schema,

@@ -11,6 +11,7 @@ import {
   pick,
   usePrettifyEditors,
   useMergeQuery,
+  cleanupDisposables,
 } from '../utility';
 
 interface VariableEditorProps extends EditorProps {
@@ -58,13 +59,7 @@ export const VariableEditor: FC<VariableEditorProps> = ({
       editor,
       model,
     ];
-
-    // 3️⃣ Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (

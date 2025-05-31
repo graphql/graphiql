@@ -121,7 +121,7 @@ export default defineConfig({
         /monaco-editor\//,
         /prettier\//,
         /graphql-language-service\//,
-        /zustand\//
+        /zustand\//,
       ],
       output: {
         preserveModules: true,
