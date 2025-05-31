@@ -1,8 +1,6 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { storageStore } from '../stores';
-import { debounce } from './debounce';
-import { AllSlices } from '../types';
 
 export type TabDefinition = {
   /**

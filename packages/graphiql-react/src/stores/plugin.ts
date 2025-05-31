@@ -1,4 +1,4 @@
-import { ComponentType, FC, useEffect } from 'react';
+import { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
 import type { AllSlices } from '../types';
 

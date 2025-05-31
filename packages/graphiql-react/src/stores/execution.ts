@@ -14,7 +14,6 @@ import {
   print,
 } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { FC, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
