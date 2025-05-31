@@ -19,7 +19,13 @@ import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { AllSlices } from '../types';
 import { pick, useSynchronizeValue } from '../utility';
-import { FragmentDefinitionNode, parse, visit } from 'graphql';
+import {
+  FragmentDefinitionNode,
+  parse,
+  visit,
+  isSchema,
+  validateSchema,
+} from 'graphql';
 import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
 import { STORAGE_KEY_QUERY } from './query-editor';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
@@ -76,13 +82,13 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   onCopyQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
-  dangerouslyAssumeSchemaIsValid,
+  dangerouslyAssumeSchemaIsValid = false,
   fetcher,
-  inputValueDeprecation,
-  introspectionQueryName,
+  inputValueDeprecation = false,
+  introspectionQueryName = 'IntrospectionQuery',
   onSchemaChange,
   schema,
-  schemaDescription,
+  schemaDescription = false,
 
   getDefaultFieldNames,
   operationName = null,
@@ -229,6 +235,59 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       referencePlugin,
     });
   }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
+  /**
+   * Synchronize prop changes with state
+   */
+  useEffect(() => {
+    const newSchema = isSchema(schema) || schema == null ? schema : undefined;
+
+    const validationErrors =
+      !newSchema || dangerouslyAssumeSchemaIsValid
+        ? []
+        : validateSchema(newSchema);
+    const store = storeRef.current;
+    store.setState(({ requestCounter }) => ({
+      inputValueDeprecation,
+      introspectionQueryName,
+      onSchemaChange,
+      /**
+       * Increment the counter so that in-flight introspection requests don't
+       * override this change.
+       */
+      requestCounter: requestCounter + 1,
+      schema: newSchema,
+      schemaDescription,
+      shouldIntrospect: !isSchema(schema) && schema !== null,
+      validationErrors,
+    }));
+
+    // Trigger introspection
+    void store.getState().introspect();
+  }, [
+    schema,
+    dangerouslyAssumeSchemaIsValid,
+    onSchemaChange,
+    inputValueDeprecation,
+    introspectionQueryName,
+    schemaDescription,
+    fetcher, // should refresh schema with new fetcher after a fetchError
+  ]);
+
+  /**
+   * Trigger introspection manually via a short key
+   */
+  useEffect(() => {
+    function triggerIntrospection(event: KeyboardEvent) {
+      if (event.ctrlKey && event.key === 'R') {
+        void storeRef.current.getState().introspect();
+      }
+    }
+
+    window.addEventListener('keydown', triggerIntrospection);
+    return () => {
+      window.removeEventListener('keydown', triggerIntrospection);
+    };
+  }, []);
 
   return (
     <GraphiQLContext.Provider value={storeRef.current}>

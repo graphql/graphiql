@@ -11,10 +11,8 @@ import {
   GraphQLError,
   GraphQLSchema,
   IntrospectionQuery,
-  isSchema,
-  validateSchema,
 } from 'graphql';
-import { Dispatch, FC, useEffect } from 'react';
+import { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
 import { AllSlices, SchemaReference } from '../types';
 
@@ -257,73 +255,6 @@ export interface SchemaProps extends IntrospectionArgs {
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
 }
-
-const SchemaStore: FC<SchemaProps> = ({
-  onSchemaChange,
-  dangerouslyAssumeSchemaIsValid = false,
-  schema,
-  inputValueDeprecation = false,
-  introspectionQueryName = 'IntrospectionQuery',
-  schemaDescription = false,
-}) => {
-  const fetcher = useExecutionStore(store => store.fetcher);
-
-  /**
-   * Synchronize prop changes with state
-   */
-  useEffect(() => {
-    const newSchema = isSchema(schema) || schema == null ? schema : undefined;
-
-    const validationErrors =
-      !newSchema || dangerouslyAssumeSchemaIsValid
-        ? []
-        : validateSchema(newSchema);
-
-    schemaStore.setState(({ requestCounter }) => ({
-      onSchemaChange,
-      schema: newSchema,
-      shouldIntrospect: !isSchema(schema) && schema !== null,
-      inputValueDeprecation,
-      introspectionQueryName,
-      schemaDescription,
-      validationErrors,
-      /**
-       * Increment the counter so that in-flight introspection requests don't
-       * override this change.
-       */
-      requestCounter: requestCounter + 1,
-    }));
-
-    // Trigger introspection
-    void schemaStore.getState().introspect();
-  }, [
-    schema,
-    dangerouslyAssumeSchemaIsValid,
-    onSchemaChange,
-    inputValueDeprecation,
-    introspectionQueryName,
-    schemaDescription,
-    fetcher, // should refresh schema with new fetcher after a fetchError
-  ]);
-
-  /**
-   * Trigger introspection manually via a short key
-   */
-  useEffect(() => {
-    function triggerIntrospection(event: KeyboardEvent) {
-      if (event.ctrlKey && event.key === 'R') {
-        void schemaStore.getState().introspect();
-      }
-    }
-
-    window.addEventListener('keydown', triggerIntrospection);
-    return () => {
-      window.removeEventListener('keydown', triggerIntrospection);
-    };
-  }, []);
-
-  return null;
-};
 
 type IntrospectionArgs = {
   /**
