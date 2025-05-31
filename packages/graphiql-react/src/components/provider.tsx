@@ -18,12 +18,17 @@ import { pick, useSynchronizeValue } from '../utility';
 import { FragmentDefinitionNode, parse, visit } from 'graphql';
 import { DEFAULT_PRETTIFY_QUERY } from '../constants';
 
+interface InnerGraphiQLProviderProps
+  extends EditorProps,
+    ExecutionProps,
+    PluginProps,
+    SchemaProps {
+  children: ReactNode;
+}
+
 type GraphiQLProviderProps =
   //
-  EditorProps &
-    ExecutionProps &
-    PluginProps &
-    SchemaProps &
+  InnerGraphiQLProviderProps &
     ComponentPropsWithoutRef<typeof StorageStore> &
     ComponentPropsWithoutRef<typeof ThemeStore>;
 
@@ -41,6 +46,26 @@ function createGraphiQLStore() {
 const GraphiQLContext = createContext<GraphiQLStore>(null!);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
+  storage,
+  defaultTheme,
+  editorTheme,
+  ...props
+}) => {
+  return (
+    <StorageStore storage={storage}>
+      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
+        <InnerGraphiQLProvider {...props} />
+      </ThemeStore>
+    </StorageStore>
+  );
+};
+
+interface SynchronizeValueProps
+  extends Pick<EditorProps, 'headers' | 'query' | 'response' | 'variables'> {
+  children: ReactNode;
+}
+
+const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   defaultHeaders,
   defaultQuery,
   defaultTabs,
@@ -71,12 +96,6 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   plugins,
   referencePlugin,
   visiblePlugin,
-
-  storage,
-
-  defaultTheme,
-  editorTheme,
-
   children,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
@@ -151,22 +170,11 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   ]);
 
   return (
-    <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <GraphiQLContext.Provider value={storeRef.current}>
-          <SynchronizeValue {...synchronizeValueProps}>
-            {children}
-          </SynchronizeValue>
-        </GraphiQLContext.Provider>
-      </ThemeStore>
-    </StorageStore>
+    <GraphiQLContext.Provider value={storeRef.current}>
+      <SynchronizeValue {...synchronizeValueProps}>{children}</SynchronizeValue>
+    </GraphiQLContext.Provider>
   );
 };
-
-interface SynchronizeValueProps
-  extends Pick<EditorProps, 'headers' | 'query' | 'response' | 'variables'> {
-  children: ReactNode;
-}
 
 const SynchronizeValue: FC<SynchronizeValueProps> = ({
   children,
