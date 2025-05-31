@@ -7735,7 +7735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv-formats@npm:~3.0.1":
+"ajv-formats@npm:^3.0.1, ajv-formats@npm:~3.0.1":
   version: 3.0.1
   resolution: "ajv-formats@npm:3.0.1"
   dependencies:
@@ -12238,6 +12238,7 @@ __metadata:
     "@graphiql/plugin-explorer": "npm:^4.0.6"
     "@graphiql/react": "npm:^0.34.1"
     "@graphiql/toolkit": "npm:^0.11.3"
+    ajv-formats: "npm:^3.0.1"
     babel-loader: "npm:^9.1.2"
     copy-webpack-plugin: "npm:11.0.0"
     cross-env: "npm:^7.0.2"
