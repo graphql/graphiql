@@ -19,8 +19,9 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { formatJSONC, parseJSONC, getAutoCompleteLeafs } from '../utility';
+import { formatJSONC, parseJSONC } from '../utility';
 import { AllSlices, MonacoEditor } from '../types';
+import { getAutoCompleteLeafs } from '../utility/hooks';
 
 export interface ExecutionSlice {
   /**
@@ -156,7 +157,7 @@ export const createExecutionSlice: StateCreator<
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    let query = getAutoCompleteLeafs() || queryEditor.getValue();
+    let query = getAutoCompleteLeafs(get()) || queryEditor.getValue();
 
     let variables: Record<string, unknown> | undefined;
     try {

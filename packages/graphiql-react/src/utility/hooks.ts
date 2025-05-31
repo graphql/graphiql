@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import { formatJSONC } from './jsonc';
-import { MonacoEditor } from '../types';
+import { AllSlices, MonacoEditor } from '../types';
 import { type editor as monacoEditor, Range } from '../monaco-editor';
 import { useGraphiQL } from '../components';
 import { pick } from './pick';
@@ -130,10 +130,11 @@ export async function usePrettifyEditors(): Promise<void> {
   }
 }
 
-export function useAutoCompleteLeafs() {
-  const { queryEditor, schema, getDefaultFieldNames } = useGraphiQL(
-    pick('queryEditor', 'schema', 'getDefaultFieldNames'),
-  );
+export function getAutoCompleteLeafs({
+  queryEditor,
+  schema,
+  getDefaultFieldNames,
+}: Pick<AllSlices, 'queryEditor' | 'schema' | 'getDefaultFieldNames'>) {
   if (!queryEditor) {
     return;
   }

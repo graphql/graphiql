@@ -13,7 +13,6 @@ export { useDragResize } from './resize';
 
 export {
   useSynchronizeValue,
-  useAutoCompleteLeafs,
   useOptimisticState,
   useEditorState,
   useOperationsEditorState,

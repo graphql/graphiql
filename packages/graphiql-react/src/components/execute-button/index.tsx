@@ -1,20 +1,34 @@
 import { FC } from 'react';
-import { useEditorStore, useExecutionStore } from '../../stores';
+import { useGraphiQL } from '../provider';
 import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
 import { KEY_MAP } from '../../constants';
+import { pick } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
-  const { setOperationName, operations = [], operationName } = useEditorStore();
   const {
+    setOperationName,
+    operations = [],
+    operationName,
     isFetching,
     subscription,
     overrideOperationName,
     run,
     stop,
-  } = useExecutionStore();
+  } = useGraphiQL(
+    pick(
+      'setOperationName',
+      'operations',
+      'operationName',
+      'isFetching',
+      'subscription',
+      'overrideOperationName',
+      'run',
+      'stop',
+    ),
+  );
   const hasOptions =
     operations.length > 1 && typeof overrideOperationName !== 'string';
   const isRunning = isFetching || Boolean(subscription);
