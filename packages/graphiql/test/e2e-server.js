@@ -5,12 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-console, import-x/no-extraneous-dependencies */
+/* eslint-disable no-console */
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
-import { useServer } from 'graphql-ws/lib/use/ws';
+import { useServer } from 'graphql-ws/use/ws';
 import { WebSocketServer } from 'ws';
 import {
   getGraphQLParameters,

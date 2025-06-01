@@ -13864,20 +13864,15 @@ __metadata:
     babel-plugin-react-compiler: "npm:19.1.0-rc.1"
     cross-env: "npm:^7.0.2"
     cypress: "npm:^13.13.2"
-    express: "npm:^4.20.0"
-    graphql: "npm:^17.0.0-alpha.8"
-    graphql-helix: "npm:^1.13.0"
-    graphql-subscriptions: "npm:^2.0.0"
+    graphql: "npm:^16.11.0"
     lightningcss: "npm:^1.29.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
     start-server-and-test: "npm:^1.10.11"
-    subscriptions-transport-ws: "npm:0.11.0"
     typescript: "npm:^4.6.3"
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
-    ws: "npm:8.17.1"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
@@ -14047,6 +14042,28 @@ __metadata:
   peerDependencies:
     graphql: ">=0.11 <=16"
   checksum: 10c0/505c1b1332b1a45a4a410ada0f335cc21b1a9511deb034bf0631d786d5fe328af2b4887dadc99a9eb3b7f9be0e1d0643e5cada6e3485d05b20851eabb5e7b92d
+  languageName: node
+  linkType: hard
+
+"graphql-ws@npm:^6.0.5":
+  version: 6.0.5
+  resolution: "graphql-ws@npm:6.0.5"
+  peerDependencies:
+    "@fastify/websocket": ^10 || ^11
+    crossws: ~0.3
+    graphql: ^15.10.1 || ^16
+    uWebSockets.js: ^20
+    ws: ^8
+  peerDependenciesMeta:
+    "@fastify/websocket":
+      optional: true
+    crossws:
+      optional: true
+    uWebSockets.js:
+      optional: true
+    ws:
+      optional: true
+  checksum: 10c0/7b882a4f47be2c67e8ae2357fb84ac7026ed8d6152eebb164aed53b8d1234f123a9a6d036fd53c8aea97a6197c7f748861205dc289ff418666cd0446571635e9
   languageName: node
   linkType: hard
 
@@ -22611,6 +22628,20 @@ __metadata:
   checksum: 10c0/019d33d81adff3f9f1bfcff18125fb2d3c65564f437d9be539270ee74b994986abb8260c7c2ce90e8f30162178b09dbbce33c6389273afac4f36069c48521f57
   languageName: node
   linkType: hard
+
+"test-server@workspace:packages/graphiql/test":
+  version: 0.0.0-use.local
+  resolution: "test-server@workspace:packages/graphiql/test"
+  dependencies:
+    express: "npm:^4.20.0"
+    graphql: "npm:^17.0.0-alpha.8"
+    graphql-helix: "npm:^1.13.0"
+    graphql-subscriptions: "npm:^2.0.0"
+    graphql-ws: "npm:^6.0.5"
+    subscriptions-transport-ws: "npm:0.11.0"
+    ws: "npm:8.17.1"
+  languageName: unknown
+  linkType: soft
 
 "thenify-all@npm:^1.0.0":
   version: 1.6.0

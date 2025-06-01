@@ -6,6 +6,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "packages/graphiql/test",
       "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-nextjs",
       "examples/monaco-graphql-react-vite",
