@@ -2,7 +2,6 @@
   "name": "netlify-function",
   "private": true,
   "dependencies": {
-    "graphql": "^17.0.0-alpha.8",
     "graphql-helix": "^1.13.0"
   }
 }
