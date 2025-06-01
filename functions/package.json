@@ -1,0 +1,8 @@
+{
+  "name": "netlify-function",
+  "private": true,
+  "dependencies": {
+    "graphql": "^17.0.0-alpha.8",
+    "graphql-http": "^1.22.1"
+  }
+}
