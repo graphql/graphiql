@@ -18412,7 +18412,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "netlify-function@workspace:functions"
   dependencies:
-    graphql: "npm:^17.0.0-alpha.8"
     graphql-helix: "npm:^1.13.0"
   languageName: unknown
   linkType: soft
