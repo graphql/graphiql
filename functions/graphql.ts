@@ -40,6 +40,7 @@ export const handler: NetlifyHandler = async (event, context) => {
     const res = {
       status: 200,
       setHeader: (_name: string, _value: string) => {},
+      writeHead: (_name: string, _value: string) => {},
       end: chunk => chunks.push(chunk),
       write: chunk => chunks.push(chunk),
     };
