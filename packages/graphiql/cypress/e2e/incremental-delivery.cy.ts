@@ -120,13 +120,13 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
         data: {
           person: {
             name: 'Mark',
-            age: 1000,
             friends: [
               { name: 'James', age: 1000 },
               { name: 'Mary', age: 1000 },
               { name: 'John', age: 1000 },
               { name: 'Patrica', age: 1000 },
             ],
+            age: 1000,
           },
         },
       });
