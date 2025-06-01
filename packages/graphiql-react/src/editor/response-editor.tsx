@@ -11,7 +11,7 @@ import {
   importCodeMirror,
 } from './common';
 import { ImagePreview } from './components';
-import { useEditorContext } from './context';
+import { useEditorStore } from './context';
 import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, CommonEditorProps } from './types';
 
@@ -52,23 +52,14 @@ function importCodeMirrorImports() {
   );
 }
 
-// To make react-compiler happy, otherwise complains about - Hooks may not be referenced as normal values
-const _useResponseEditor = useResponseEditor;
-
-export function useResponseEditor(
-  {
-    responseTooltip,
-    editorTheme = DEFAULT_EDITOR_THEME,
-    keyMap = DEFAULT_KEY_MAP,
-  }: UseResponseEditorArgs = {},
-  caller?: Function,
-) {
+export function useResponseEditor({
+  responseTooltip,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
+}: UseResponseEditorArgs = {}) {
   const { fetchError, validationErrors } = useSchemaStore();
   const { initialResponse, responseEditor, setResponseEditor } =
-    useEditorContext({
-      nonNull: true,
-      caller: caller || _useResponseEditor,
-    });
+    useEditorStore();
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(

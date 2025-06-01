@@ -7,7 +7,7 @@ import {
   StarFilledIcon,
   StarIcon,
   TrashIcon,
-  useEditorContext,
+  useEditorStore,
   Button,
   Tooltip,
   UnStyledButton,
@@ -112,10 +112,7 @@ type QueryHistoryItemProps = {
 export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
     useHistoryActions();
-  const { headerEditor, queryEditor, variableEditor } = useEditorContext({
-    nonNull: true,
-    caller: HistoryItem,
-  });
+  const { headerEditor, queryEditor, variableEditor } = useEditorStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);
