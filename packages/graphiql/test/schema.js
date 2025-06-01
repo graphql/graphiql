@@ -21,9 +21,7 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-  // eslint-disable-next-line import-x/namespace
   GraphQLDeferDirective,
-  // eslint-disable-next-line import-x/namespace
   GraphQLStreamDirective,
   specifiedDirectives,
   version,

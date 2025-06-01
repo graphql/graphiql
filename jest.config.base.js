@@ -1,6 +1,5 @@
 module.exports = dir => {
   const package = require(`${dir}/package.json`);
-  const setupFilesAfterEnv = [];
   return {
     globals: {
       'ts-jest': {
@@ -10,7 +9,6 @@ module.exports = dir => {
     clearMocks: true,
     collectCoverage: true,
     coverageDirectory: `${__dirname}/coverage/jest`,
-    setupFilesAfterEnv,
     moduleNameMapper: {
       '^graphql-language-service-([^/]+)': `${__dirname}/packages/graphql-language-service/src/$1`,
       '^graphql-language-([^/]+)': `${__dirname}/packages/graphql-language-$1/src`,
