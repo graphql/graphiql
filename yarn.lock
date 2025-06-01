@@ -13931,7 +13931,7 @@ __metadata:
     cross-env: "npm:^7.0.2"
     cypress: "npm:^13.13.2"
     express: "npm:^4.20.0"
-    graphql: "npm:^16.11.0"
+    graphql: "npm:^17.0.0-alpha.8"
     graphql-helix: "npm:^1.13.0"
     graphql-subscriptions: "npm:^2.0.0"
     lightningcss: "npm:^1.29.3"
@@ -14120,6 +14120,13 @@ __metadata:
   version: 16.11.0
   resolution: "graphql@npm:16.11.0"
   checksum: 10c0/124da7860a2292e9acf2fed0c71fc0f6a9b9ca865d390d112bdd563c1f474357141501c12891f4164fe984315764736ad67f705219c62f7580681d431a85db88
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^17.0.0-alpha.8":
+  version: 17.0.0-alpha.8
+  resolution: "graphql@npm:17.0.0-alpha.8"
+  checksum: 10c0/e33ddf6afa36b6640e290412f1f307a0b2b9b3895ed7e273e4a4920f78fb8aa3118db359fa4da3f1c8c3493ea86db29b837b9436250ea9afa05f67b608bd6a8f
   languageName: node
   linkType: hard
 
