@@ -19,36 +19,16 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
     const mockStreamSuccess = {
       data: {
         streamable: [
-          {
-            text: 'Hi',
-          },
-          {
-            text: '你好',
-          },
-          {
-            text: 'Hola',
-          },
-          {
-            text: 'أهلاً',
-          },
-          {
-            text: 'Bonjour',
-          },
-          {
-            text: 'سلام',
-          },
-          {
-            text: '안녕',
-          },
-          {
-            text: 'Ciao',
-          },
-          {
-            text: 'हेलो',
-          },
-          {
-            text: 'Здорово',
-          },
+          { text: 'Hi' },
+          { text: '你好' },
+          { text: 'Hola' },
+          { text: 'أهلاً' },
+          { text: 'Bonjour' },
+          { text: 'سلام' },
+          { text: '안녕' },
+          { text: 'Ciao' },
+          { text: 'हेलो' },
+          { text: 'Здорово' },
         ],
       },
     };
@@ -140,25 +120,13 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
         data: {
           person: {
             name: 'Mark',
-            friends: [
-              {
-                name: 'James',
-                age: 1000,
-              },
-              {
-                name: 'Mary',
-                age: 1000,
-              },
-              {
-                name: 'John',
-                age: 1000,
-              },
-              {
-                name: 'Patrica',
-                age: 1000,
-              },
-            ],
             age: 1000,
+            friends: [
+              { name: 'James', age: 1000 },
+              { name: 'Mary', age: 1000 },
+              { name: 'John', age: 1000 },
+              { name: 'Patrica', age: 1000 },
+            ],
           },
         },
       });
