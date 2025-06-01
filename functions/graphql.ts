@@ -13,6 +13,13 @@ import type {
 import { testSchema } from '../packages/graphiql/test/schema.js';
 import { customExecute } from '../packages/graphiql/test/execute.js';
 
+import {
+  getGraphQLParameters,
+  processRequest,
+  sendResult,
+  Request as HelixRequest,
+} from 'graphql-helix';
+
 /**
  * Handler options when using the netlify adapter
  *
@@ -26,38 +33,62 @@ export type HandlerOptions<Context extends OperationContext = undefined> =
  *
  * @category Server/@netlify/functions
  */
-export function createHandler<Context extends OperationContext = undefined>(
-  options: HandlerOptions<Context>,
-): NetlifyHandler {
-  const handler = createRawHandler(options);
-  return async function handleRequest(req, ctx) {
-    try {
-      const [body, init] = await handler({
-        method: req.httpMethod,
-        url: req.rawUrl,
-        headers: req.headers,
-        body: req.body,
-        raw: req,
-        context: ctx,
-      });
-      return {
-        // if body is null, return undefined
-        body: body ?? undefined,
-        statusCode: init.status,
-      };
-    } catch (err) {
-      // The handler shouldn't throw errors.
-      // If you wish to handle them differently, consider implementing your own request handler.
-      console.error(
-        'Internal error occurred during request handling. Please check your implementation.',
-        err,
-      );
-      return { statusCode: 500 };
-    }
+/**
+ * Netlify-compatible GraphQL handler using graphql-helix
+ */
+export const handler: NetlifyHandler = async (event, context) => {
+  try {
+    const request = toHelixRequest(event);
+    const { operationName, query, variables } = getGraphQLParameters(request);
+
+    const result = await processRequest({
+      operationName,
+      query,
+      variables,
+      request,
+      schema: testSchema,
+      execute: customExecute,
+      contextFactory: () => ({ netlifyContext: context }),
+    });
+
+    const chunks: unknown[] = [];
+    const res = {
+      status: 200,
+      setHeader: (_name: string, _value: string) => {},
+      end: chunk => chunks.push(chunk),
+      write: chunk => chunks.push(chunk),
+    };
+
+    await sendResult(result, res);
+
+    return {
+      statusCode: result.status ?? 200,
+      body: chunks.join(''),
+      headers: { 'Content-Type': 'application/json' },
+    };
+  } catch (err) {
+    // The handler shouldn't throw errors.
+    // If you wish to handle them differently, consider implementing your own request handler.
+    console.error(
+      'Internal error occurred during request handling. Please check your implementation.',
+      err,
+    );
+    return { statusCode: 500, body: 'Internal Server Error' };
+  }
+};
+
+/**
+ * Convert a Netlify request to a GraphQL Helix compatible request
+ */
+function toHelixRequest(req: NetlifyHandlerEvent): HelixRequest {
+  const url = new URL(
+    req.rawUrl ?? '',
+    `https://${req.headers.host ?? 'localhost'}`,
+  );
+  return {
+    method: req.httpMethod,
+    headers: req.headers,
+    body: req.body ? JSON.parse(req.body) : undefined,
+    query: Object.fromEntries(url.searchParams.entries()),
   };
 }
-
-export const handler = createHandler({
-  schema: testSchema,
-  execute: customExecute,
-});

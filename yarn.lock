@@ -13913,15 +13913,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-http@npm:^1.22.1":
-  version: 1.22.1
-  resolution: "graphql-http@npm:1.22.1"
-  peerDependencies:
-    graphql: ">=0.11 <=16"
-  checksum: 10c0/969b65dbebbdb6616632e9278d050cc71ba2ae4ff8038b4d83be26d46fc83a4ae54545a0ead052cab0ddfae92d2ddff6aceaef877e74a33f4c7d7e3acc1fab89
-  languageName: node
-  linkType: hard
-
 "graphql-language-service-cli@workspace:packages/graphql-language-service-cli":
   version: 0.0.0-use.local
   resolution: "graphql-language-service-cli@workspace:packages/graphql-language-service-cli"
@@ -18422,7 +18413,7 @@ __metadata:
   resolution: "netlify-function@workspace:functions"
   dependencies:
     graphql: "npm:^17.0.0-alpha.8"
-    graphql-http: "npm:^1.22.1"
+    graphql-helix: "npm:^1.13.0"
   languageName: unknown
   linkType: soft
 
