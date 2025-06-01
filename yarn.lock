@@ -14920,6 +14920,7 @@ __metadata:
     "@types/glob": "npm:^8.1.0"
     "@types/mkdirp": "npm:^1.0.1"
     "@types/mock-fs": "npm:^4.13.4"
+    "@whatwg-node/fetch": "npm:^0.9.0"
     cosmiconfig-toml-loader: "npm:^1.0.0"
     cross-env: "npm:^7.0.2"
     debounce-promise: "npm:^3.1.2"
