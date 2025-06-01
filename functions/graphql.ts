@@ -1,13 +1,6 @@
-import {
-  createHandler as createRawHandler,
-  HandlerOptions as RawHandlerOptions,
-  OperationContext,
-} from 'graphql-http';
-
 import type {
   Handler as NetlifyHandler,
   HandlerEvent as NetlifyHandlerEvent,
-  HandlerContext as NetlifyHandlerContext,
 } from '@netlify/functions';
 
 import { testSchema } from '../packages/graphiql/test/schema.js';
@@ -19,14 +12,6 @@ import {
   sendResult,
   Request as HelixRequest,
 } from 'graphql-helix';
-
-/**
- * Handler options when using the netlify adapter
- *
- * @category Server/@netlify/functions
- */
-export type HandlerOptions<Context extends OperationContext = undefined> =
-  RawHandlerOptions<NetlifyHandlerEvent, NetlifyHandlerContext, Context>;
 
 /**
  * Create a GraphQL over HTTP spec compliant request handler for netlify functions
@@ -62,7 +47,7 @@ export const handler: NetlifyHandler = async (event, context) => {
     await sendResult(result, res);
 
     return {
-      statusCode: result.status ?? 200,
+      statusCode: 200,
       body: chunks.join(''),
       headers: { 'Content-Type': 'application/json' },
     };
@@ -73,7 +58,10 @@ export const handler: NetlifyHandler = async (event, context) => {
       'Internal error occurred during request handling. Please check your implementation.',
       err,
     );
-    return { statusCode: 500, body: 'Internal Server Error' };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ errors: [{ message: err.message }] }),
+    };
   }
 };
 
