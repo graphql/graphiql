@@ -108,7 +108,6 @@
     "execa": "^7.1.1",
     "fetch-mock": "6.5.2",
     "graphql-http": "^1.22.1",
-    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "js-green-licenses": "4.0.0",
     "mkdirp": "^1.0.4",

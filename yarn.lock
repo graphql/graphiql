@@ -13897,7 +13897,6 @@ __metadata:
     execa: "npm:^7.1.1"
     fetch-mock: "npm:6.5.2"
     graphql-http: "npm:^1.22.1"
-    identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:^27.5.1"
     js-green-licenses: "npm:4.0.0"
     mkdirp: "npm:^1.0.4"
@@ -14169,13 +14168,6 @@ __metadata:
   version: 2.1.0
   resolution: "hard-rejection@npm:2.1.0"
   checksum: 10c0/febc3343a1ad575aedcc112580835b44a89a89e01f400b4eda6e8110869edfdab0b00cd1bd4c3bfec9475a57e79e0b355aecd5be46454b6a62b9a359af60e564
-  languageName: node
-  linkType: hard
-
-"harmony-reflect@npm:^1.4.6":
-  version: 1.6.1
-  resolution: "harmony-reflect@npm:1.6.1"
-  checksum: 10c0/4303396a081480599d500e16ab18fca7cee45866eecec93f838af1bb6bacb0ebba873e397451605cb5333ee24626da61af58686a1587f01f2e2437aa5739ad83
   languageName: node
   linkType: hard
 
@@ -14631,15 +14623,6 @@ __metadata:
   version: 7.1.1
   resolution: "idb@npm:7.1.1"
   checksum: 10c0/72418e4397638797ee2089f97b45fc29f937b830bc0eb4126f4a9889ecf10320ceacf3a177fe5d7ffaf6b4fe38b20bbd210151549bfdc881db8081eed41c870d
-  languageName: node
-  linkType: hard
-
-"identity-obj-proxy@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "identity-obj-proxy@npm:3.0.0"
-  dependencies:
-    harmony-reflect: "npm:^1.4.6"
-  checksum: 10c0/a3fc4de0042d7b45bf8652d5596c80b42139d8625c9cd6a8834e29e1b6dce8fccabd1228e08744b78677a19ceed7201a32fed8ca3dc3e4852e8fee24360a6cfc
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-module.exports = (dir) => {
+module.exports = dir => {
   const package = require(`${dir}/package.json`);
   const setupFilesAfterEnv = [];
   return {
