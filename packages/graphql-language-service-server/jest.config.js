@@ -5,8 +5,8 @@ module.exports = {
   ...baseConfig,
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
-    // In `MessageProcessor.spec.ts` we import GraphQL schema from graphiql which uses graphql 17
-    // Which produce `Duplicate "graphql" modules cannot be used at the same time` error
+    // In `MessageProcessor.spec.ts`, we import a GraphQL schema from `graphiql`,
+    // which depends on GraphQL v17. This causes an error `Duplicate "graphql" modules cannot be used at the same time`
     '^graphql$': path.resolve(__dirname, '../../node_modules/graphql'),
   },
 };
