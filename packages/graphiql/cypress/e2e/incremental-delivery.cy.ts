@@ -1,11 +1,10 @@
-// import { version } from 'graphql';
+import { version } from 'graphql';
 
 let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe;
-// TODO: add support to graphql-http for IncrementalDelivery first
-// if (parseInt(version, 10) < 17) {
 
-describeOrSkip = describe.skip;
-// }
+if (parseInt(version, 10) < 17) {
+  describeOrSkip = describe.skip;
+}
 
 describeOrSkip('IncrementalDelivery support via fetcher', () => {
   describe('When operation contains @stream', () => {
@@ -20,36 +19,16 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
     const mockStreamSuccess = {
       data: {
         streamable: [
-          {
-            text: 'Hi',
-          },
-          {
-            text: '你好',
-          },
-          {
-            text: 'Hola',
-          },
-          {
-            text: 'أهلاً',
-          },
-          {
-            text: 'Bonjour',
-          },
-          {
-            text: 'سلام',
-          },
-          {
-            text: '안녕',
-          },
-          {
-            text: 'Ciao',
-          },
-          {
-            text: 'हेलो',
-          },
-          {
-            text: 'Здорово',
-          },
+          { text: 'Hi' },
+          { text: '你好' },
+          { text: 'Hola' },
+          { text: 'أهلاً' },
+          { text: 'Bonjour' },
+          { text: 'سلام' },
+          { text: '안녕' },
+          { text: 'Ciao' },
+          { text: 'हेलो' },
+          { text: 'Здорово' },
         ],
       },
     };
@@ -142,22 +121,10 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
           person: {
             name: 'Mark',
             friends: [
-              {
-                name: 'James',
-                age: 1000,
-              },
-              {
-                name: 'Mary',
-                age: 1000,
-              },
-              {
-                name: 'John',
-                age: 1000,
-              },
-              {
-                name: 'Patrica',
-                age: 1000,
-              },
+              { name: 'James', age: 1000 },
+              { name: 'Mary', age: 1000 },
+              { name: 'John', age: 1000 },
+              { name: 'Patrica', age: 1000 },
             ],
             age: 1000,
           },
