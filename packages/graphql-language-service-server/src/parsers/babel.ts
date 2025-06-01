@@ -1,11 +1,8 @@
-import { parse, ParseResult, ParserPlugin } from '@babel/parser';
+import { parse, ParserPlugin } from '@babel/parser';
 import { BABEL_PLUGINS, PARSER_OPTIONS } from '../constants';
 import { SourceParser } from './types';
 
-export const babelParser = (
-  text: string,
-  plugins?: ParserPlugin[],
-): ParseResult => {
+export const babelParser = (text: string, plugins?: ParserPlugin[]) => {
   const babelPlugins = [...BABEL_PLUGINS];
   if (plugins) {
     babelPlugins.push(...plugins);
