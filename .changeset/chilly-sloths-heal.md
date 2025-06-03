@@ -11,8 +11,7 @@
 - replace `onCopyQuery` hook with `copyQuery` function
 - replace `onMergeQuery` hook with `mergeQuery` function
 - replace `onPrettifyEditors` hook with `prettifyEditors` function
-- remove `fetcher` prop from `SchemaContextProvider` and `schemaStore`
-- add `fetcher` to `executionStore`
+- remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
 - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
 - remove exports (use `GraphiQLProvider`)
   - EditorContextProvider
