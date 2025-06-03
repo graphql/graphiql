@@ -18,6 +18,7 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import setValue from 'set-value';
 import getValue from 'get-value';
 
+<<<<<<<< HEAD:packages/graphiql-react/src/stores/execution.ts
 import { createStore } from 'zustand';
 import { editorStore } from './editor';
 import {
@@ -27,6 +28,12 @@ import {
   getAutoCompleteLeafs,
 } from '../utility';
 import { MonacoEditor } from '../types';
+========
+import { getAutoCompleteLeafs } from '../editor';
+import { createStore } from 'zustand';
+import { editorStore } from './editor';
+import { createBoundedUseStore } from '../utility';
+>>>>>>>> graphiql-5:packages/graphiql-react/src/stores/execution.tsx
 
 type ExecutionStoreType = {
   /**
@@ -123,12 +130,16 @@ export const executionStore = createStore<
     if (!queryEditor || !responseEditor) {
       return;
     }
+<<<<<<<< HEAD:packages/graphiql-react/src/stores/execution.ts
     const {
       subscription,
       operationName: execOperationName,
       queryId,
       fetcher,
     } = get();
+========
+    const { subscription, operationName, queryId, fetcher } = get();
+>>>>>>>> graphiql-5:packages/graphiql-react/src/stores/execution.tsx
 
     // If there's an active subscription, unsubscribe it and return
     if (subscription) {

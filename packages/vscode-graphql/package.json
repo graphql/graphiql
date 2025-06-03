@@ -149,14 +149,14 @@
           ],
           "description": "legacy mode for graphql config v2 config",
           "default": null
+        },
+        "graphql-config.dotEnvPath": {
+          "type": [
+            "string"
+          ],
+          "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
+          "default": null
         }
-      },
-      "graphql-config.dotEnvPath": {
-        "type": [
-          "string"
-        ],
-        "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
-        "default": null
       }
     },
     "commands": [
@@ -191,7 +191,7 @@
   "dependencies": {
     "graphql": "^16.9.0 || ^17.0.0-alpha.2",
     "graphql-language-service-server": "^2.14.2",
-    "vscode-languageclient": "8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vscode-languageclient": "8.0.2"
   }
 }

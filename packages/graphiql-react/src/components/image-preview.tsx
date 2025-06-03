@@ -13,8 +13,15 @@ const ImagePreview_: FC<ImagePreviewProps> = ({ path }) => {
     height: null,
   });
   const [mime, setMime] = useState<string | null>(null);
+<<<<<<<< HEAD:packages/graphiql-react/src/components/image-preview.tsx
   const ref = useRef<HTMLImageElement>(null!);
   const src = pathToURL(path)?.href;
+========
+
+  const ref = useRef<HTMLImageElement>(null!);
+
+  const src = tokenToURL(props.token)?.href;
+>>>>>>>> graphiql-5:packages/graphiql-react/src/image-preview.tsx
 
   useEffect(() => {
     if (!src) {
