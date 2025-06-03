@@ -4,7 +4,6 @@
 'graphql-language-service': patch
 '@graphiql/plugin-history': patch
 'codemirror-graphql': patch
-'@graphiql/toolkit': patch
 '@graphiql/react': minor
 'graphiql': patch
 ---
@@ -23,4 +22,7 @@
   - StorageContextProvider
   - ExecutionContextType
   - PluginContextType
-
+feat(@graphiql/react): migrate React context to zustand:
+  - replace `useExecutionContext` with `useExecutionStore` hook
+  - replace `useEditorContext` with `useEditorStore` hook
+  - replace `useAutoCompleteLeafs` hook with `getAutoCompleteLeafs` function
