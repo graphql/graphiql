@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.14.6",
+  "version": "2.14.8",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
@@ -69,6 +69,7 @@
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@types/mock-fs": "^4.13.4",
+    "@whatwg-node/fetch": "npm:^0.9.0",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
     "graphql": "^16.9.0",

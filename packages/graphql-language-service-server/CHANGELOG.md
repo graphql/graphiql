@@ -1,5 +1,17 @@
 # graphql-language-service-server
 
+## 2.14.8
+
+### Patch Changes
+
+- [#3975](https://github.com/graphql/graphiql/pull/3975) [`4375aa7`](https://github.com/graphql/graphiql/commit/4375aa7a16e875949840be6cb6e216d0abdd835b) Thanks [@benjie](https://github.com/benjie)! - fix `GraphQLCache._schemaMap` type, should be `LRUCache`
+
+## 2.14.7
+
+### Patch Changes
+
+- [#3964](https://github.com/graphql/graphiql/pull/3964) [`12cd5d7`](https://github.com/graphql/graphiql/commit/12cd5d7c8e89ed8ddfcc33267043f2107c770641) Thanks [@pleb](https://github.com/pleb)! - fix vs code extension setting graphql-config.dotEnvPath incorrect registration path
+
 ## 2.14.6
 
 ### Patch Changes

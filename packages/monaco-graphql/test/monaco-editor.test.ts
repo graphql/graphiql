@@ -12,9 +12,8 @@ describe('monaco-editor', () => {
     // `--no-colors` flag
     const lines = stdout.replaceAll(ANSI_COLOR_REGEX, '').split('\n');
     // expect(lines[0]).toBe('$ vite build');
-    // expect(lines[1]).toMatch(' building for production...');
     // expect(lines[2]).toBe('transforming...');
-    expect(lines[3]).toMatch(
+    expect(lines[2]).toMatch(
       `✓ ${parseInt(version, 10) > 16 ? 862 : 848} modules transformed.`,
     );
     // expect(lines[4]).toBe('rendering chunks...');

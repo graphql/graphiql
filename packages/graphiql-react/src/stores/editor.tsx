@@ -36,6 +36,7 @@ import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor'
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
+import { executionStore } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -299,6 +300,9 @@ type EditorStoreProps = Pick<
   variables?: string;
   onPrettifyQuery?: EditorStoreType['onPrettifyQuery'];
 };
+
+const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+  print(parse(query));
 
 const DEFAULT_PRETTIFY_QUERY: EditorStoreType['onPrettifyQuery'] = query =>
   print(parse(query));
