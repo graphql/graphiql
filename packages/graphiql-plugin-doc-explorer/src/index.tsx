@@ -24,7 +24,7 @@ export type {
 export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
   title: 'Documentation Explorer',
   icon: function Icon() {
-    const { visiblePlugin } = usePluginStore();
+    const visiblePlugin = usePluginStore(store => store.visiblePlugin);
     return visiblePlugin === DOC_EXPLORER_PLUGIN ? (
       <DocsFilledIcon />
     ) : (

@@ -1,7 +1,18 @@
+export const KEY_MAP = Object.freeze({
+  prettify: ['Shift-Ctrl-P'],
+  mergeFragments: ['Shift-Ctrl-M'],
+  runQuery: ['Ctrl-Enter', 'Cmd-Enter'],
+  autoComplete: ['Ctrl-Space'],
+  copyQuery: ['Shift-Ctrl-C'],
+  refetchSchema: ['Shift-Ctrl-R'],
+  searchInEditor: ['Ctrl-F'],
+  searchInDocs: ['Ctrl-K'],
+} as const);
+
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
+# GraphiQL is an in-browser tool for writing, validating, and testing
+# GraphQL queries.
 #
 # Type queries into this side of the screen, and you will see intelligent
 # typeaheads aware of the current GraphQL type schema and live syntax and
@@ -20,13 +31,13 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
+#   Prettify query:  ${KEY_MAP.prettify[0]} (or press the prettify button)
 #
-#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
+#  Merge fragments:  ${KEY_MAP.mergeFragments[0]} (or press the merge button)
 #
-#        Run Query:  Ctrl-Enter (or press the play button)
+#        Run Query:  ${KEY_MAP.runQuery[0]} (or press the play button)
 #
-#    Auto Complete:  Ctrl-Space (or just start typing)
+#    Auto Complete:  ${KEY_MAP.autoComplete[0]} (or just start typing)
 #
 
 `;

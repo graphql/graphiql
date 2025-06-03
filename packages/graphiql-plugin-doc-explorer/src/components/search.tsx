@@ -158,7 +158,7 @@ type FieldMatch = {
 
 export function useSearchResults() {
   const explorerNavStack = useDocExplorer();
-  const { schema } = useSchemaStore();
+  const schema = useSchemaStore(store => store.schema);
 
   const navItem = explorerNavStack.at(-1)!;
 

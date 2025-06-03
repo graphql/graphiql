@@ -215,7 +215,7 @@ const EnumValue: FC<{ value: GraphQLEnumValue }> = ({ value }) => {
 };
 
 const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
-  const { schema } = useSchemaStore();
+  const schema = useSchemaStore(store => store.schema);
   if (!schema || !isAbstractType(type)) {
     return null;
   }

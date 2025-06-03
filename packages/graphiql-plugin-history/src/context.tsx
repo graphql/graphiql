@@ -119,7 +119,7 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const { isFetching } = useExecutionStore();
+  const isFetching = useExecutionStore(store => store.isFetching);
   const { tabs, activeTabIndex } = useEditorStore();
   const activeTab = tabs[activeTabIndex];
   const storage = useStorage();

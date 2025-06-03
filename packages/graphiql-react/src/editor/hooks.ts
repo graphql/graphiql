@@ -1,12 +1,11 @@
-import { fillLeafs, mergeAst, MaybePromise } from '@graphiql/toolkit';
+import { fillLeafs, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
-import { parse, print } from 'graphql';
+import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { usePluginStore } from '../plugin';
-import { schemaStore, useSchemaStore } from '../schema';
+import { schemaStore } from '../schema';
 import { storageStore } from '../storage';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
@@ -83,8 +82,6 @@ export function useCompletion(
   editor: CodeMirrorEditor | null,
   callback?: (reference: SchemaReference) => void,
 ) {
-  const { schema, setSchemaReference } = useSchemaStore();
-  const plugin = usePluginStore();
   useEffect(() => {
     if (!editor) {
       return;
@@ -94,12 +91,11 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      const schemaContext = { schema, setSchemaReference };
-      onHasCompletion(instance, changeObj, schemaContext, plugin, type => {
+      void onHasCompletion(instance, changeObj, type => {
         callback?.({
           kind: 'Type',
           type,
-          schema: schema || undefined,
+          schema: schemaStore.getState().schema || undefined,
         });
       });
     };
@@ -114,14 +110,14 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, plugin, schema, setSchemaReference]);
+  }, [callback, editor]);
 }
 
 type EmptyCallback = () => void;
 
 export function useKeyMap(
   editor: CodeMirrorEditor | null,
-  keys: string[],
+  keys: string[] | readonly string[],
   callback?: EmptyCallback,
 ) {
   useEffect(() => {
@@ -132,125 +128,88 @@ export function useKeyMap(
       editor.removeKeyMap(key);
     }
 
-    if (callback) {
-      const keyMap: Record<string, EmptyCallback> = {};
-      for (const key of keys) {
-        keyMap[key] = () => callback();
-      }
-      editor.addKeyMap(keyMap);
+    if (!callback) {
+      return;
     }
+    const keyMap: Record<string, EmptyCallback> = {};
+    for (const key of keys) {
+      keyMap[key] = () => callback();
+    }
+    editor.addKeyMap(keyMap);
   }, [editor, keys, callback]);
 }
 
-export type UseCopyQueryArgs = {
-  /**
-   * This is only meant to be used internally in `@graphiql/react`.
-   */
-  caller?: Function;
-  /**
-   * Invoked when the current contents of the query editor are copied to the
-   * clipboard.
-   * @param query The content that has been copied.
-   */
-  onCopyQuery?: (query: string) => void;
-};
+export function copyQuery() {
+  const { queryEditor, onCopyQuery } = editorStore.getState();
+  if (!queryEditor) {
+    return;
+  }
 
-export function useCopyQuery({ onCopyQuery }: UseCopyQueryArgs = {}) {
-  return () => {
-    const { queryEditor } = editorStore.getState();
-    if (!queryEditor) {
-      return;
-    }
+  const query = queryEditor.getValue();
+  copyToClipboard(query);
 
-    const query = queryEditor.getValue();
-    copyToClipboard(query);
-
-    onCopyQuery?.(query);
-  };
+  onCopyQuery?.(query);
 }
 
-export function useMergeQuery() {
-  return () => {
-    const { queryEditor } = editorStore.getState();
-    const documentAST = queryEditor?.documentAST;
-    const query = queryEditor?.getValue();
-    if (!documentAST || !query) {
-      return;
-    }
+export function mergeQuery() {
+  const { queryEditor } = editorStore.getState();
+  const documentAST = queryEditor?.documentAST;
+  const query = queryEditor?.getValue();
+  if (!documentAST || !query) {
+    return;
+  }
 
-    const { schema } = schemaStore.getState();
-    queryEditor.setValue(print(mergeAst(documentAST, schema)));
-  };
+  const { schema } = schemaStore.getState();
+  queryEditor.setValue(print(mergeAst(documentAST, schema)));
 }
 
-export type UsePrettifyEditorsArgs = {
-  /**
-   * Invoked when the prettify callback is invoked.
-   * @param query The current value of the query editor.
-   * @default
-   * import { parse, print } from 'graphql'
-   *
-   * (query) => print(parse(query))
-   * @returns The formatted query.
-   */
-  onPrettifyQuery?: (query: string) => MaybePromise<string>;
-};
-
-function DEFAULT_PRETTIFY_QUERY(query: string): string {
-  return print(parse(query));
-}
-
-export function usePrettifyEditors({
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-}: UsePrettifyEditorsArgs = {}) {
-  return async () => {
-    const { queryEditor, headerEditor, variableEditor } =
-      editorStore.getState();
-    if (variableEditor) {
-      const variableEditorContent = variableEditor.getValue();
-      try {
-        const prettifiedVariableEditorContent = JSON.stringify(
-          JSON.parse(variableEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedVariableEditorContent !== variableEditorContent) {
-          variableEditor.setValue(prettifiedVariableEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+export async function prettifyEditors() {
+  const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+    editorStore.getState();
+  if (variableEditor) {
+    const variableEditorContent = variableEditor.getValue();
+    try {
+      const prettifiedVariableEditorContent = JSON.stringify(
+        JSON.parse(variableEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedVariableEditorContent !== variableEditorContent) {
+        variableEditor.setValue(prettifiedVariableEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (headerEditor) {
-      const headerEditorContent = headerEditor.getValue();
+  if (headerEditor) {
+    const headerEditorContent = headerEditor.getValue();
 
-      try {
-        const prettifiedHeaderEditorContent = JSON.stringify(
-          JSON.parse(headerEditorContent),
-          null,
-          2,
-        );
-        if (prettifiedHeaderEditorContent !== headerEditorContent) {
-          headerEditor.setValue(prettifiedHeaderEditorContent);
-        }
-      } catch {
-        /* Parsing JSON failed, skip prettification */
+    try {
+      const prettifiedHeaderEditorContent = JSON.stringify(
+        JSON.parse(headerEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedHeaderEditorContent !== headerEditorContent) {
+        headerEditor.setValue(prettifiedHeaderEditorContent);
       }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
     }
+  }
 
-    if (queryEditor) {
-      const editorContent = queryEditor.getValue();
-      try {
-        const prettifiedEditorContent = await onPrettifyQuery(editorContent);
-        if (prettifiedEditorContent !== editorContent) {
-          queryEditor.setValue(prettifiedEditorContent);
-        }
-      } catch {
-        /* Parsing query failed, skip prettification */
+  if (queryEditor) {
+    const editorContent = queryEditor.getValue();
+    try {
+      const prettifiedEditorContent = await onPrettifyQuery(editorContent);
+      if (prettifiedEditorContent !== editorContent) {
+        queryEditor.setValue(prettifiedEditorContent);
       }
+    } catch {
+      /* Parsing query failed, skip prettification */
     }
-  };
+  }
 }
 
 export function getAutoCompleteLeafs() {
@@ -381,26 +340,28 @@ export function useOptimisticState([
   useEffect(() => {
     if (lastStateRef.current.last === upstreamState) {
       // No change; ignore
-    } else {
-      lastStateRef.current.last = upstreamState;
-      if (lastStateRef.current.pending === null) {
-        // Gracefully accept update from upstream
-        setOperationsText(upstreamState);
-      } else if (lastStateRef.current.pending === upstreamState) {
-        // They received our update and sent it back to us - clear pending, and
-        // send next if appropriate
-        lastStateRef.current.pending = null;
-        if (upstreamState !== state) {
-          // Change has occurred; upstream it
-          lastStateRef.current.pending = state;
-          upstreamSetState(state);
-        }
-      } else {
-        // They got a different update; overwrite our local state (!!)
-        lastStateRef.current.pending = null;
-        setOperationsText(upstreamState);
-      }
+      return;
     }
+    lastStateRef.current.last = upstreamState;
+    if (lastStateRef.current.pending === null) {
+      // Gracefully accept update from upstream
+      setOperationsText(upstreamState);
+      return;
+    }
+    if (lastStateRef.current.pending === upstreamState) {
+      // They received our update and sent it back to us - clear pending, and
+      // send next if appropriate
+      lastStateRef.current.pending = null;
+      if (upstreamState !== state) {
+        // Change has occurred; upstream it
+        lastStateRef.current.pending = state;
+        upstreamSetState(state);
+      }
+      return;
+    }
+    // They got a different update; overwrite our local state (!!)
+    lastStateRef.current.pending = null;
+    setOperationsText(upstreamState);
   }, [upstreamState, state, upstreamSetState]);
 
   const setState = (newState: string) => {

@@ -6,9 +6,11 @@ import {
   parse,
   ValidationRule,
   visit,
+  print,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect, useRef } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
+import { MaybePromise } from '@graphiql/toolkit';
 
 import { storageStore, useStorage } from '../storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
@@ -33,6 +35,7 @@ import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
+import { executionStore } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -202,11 +205,33 @@ interface EditorStore extends TabsState {
    * Headers to be set when opening a new tab
    */
   defaultHeaders?: string;
+
+  /**
+   * Invoked when the current contents of the query editor are copied to the
+   * clipboard.
+   * @param query The content that has been copied.
+   */
+  onCopyQuery?: (query: string) => void;
+
+  /**
+   * Invoked when the prettify callback is invoked.
+   * @param query The current value of the query editor.
+   * @default
+   * import { parse, print } from 'graphql'
+   *
+   * (query) => print(parse(query))
+   * @returns The formatted query.
+   */
+  onPrettifyQuery: (query: string) => MaybePromise<string>;
 }
 
 type EditorContextProviderProps = Pick<
   EditorStore,
-  'onTabChange' | 'onEditOperationName' | 'defaultHeaders' | 'defaultQuery'
+  | 'onTabChange'
+  | 'onEditOperationName'
+  | 'defaultHeaders'
+  | 'defaultQuery'
+  | 'onCopyQuery'
 > & {
   children: ReactNode;
   /**
@@ -272,7 +297,11 @@ type EditorContextProviderProps = Pick<
    * typing in the editor.
    */
   variables?: string;
+  onPrettifyQuery?: EditorStore['onPrettifyQuery'];
 };
+
+const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+  print(parse(query));
 
 export const editorStore = createStore<EditorStore>((set, get) => ({
   tabs: null!,
@@ -300,6 +329,9 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     });
   },
   changeTab(index) {
+    const { stop } = executionStore.getState();
+    stop();
+
     set(current => {
       const { onTabChange } = get();
       const updated = {
@@ -327,8 +359,14 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
     });
   },
   closeTab(index) {
+    const { activeTabIndex, onTabChange } = get();
+
+    if (activeTabIndex === index) {
+      const { stop } = executionStore.getState();
+      stop();
+    }
+
     set(current => {
-      const { onTabChange } = get();
       const updated = {
         tabs: current.tabs.filter((_tab, i) => index !== i),
         activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
@@ -403,6 +441,7 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   initialQuery: null!,
   initialResponse: null!,
   initialVariables: null!,
+  onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 }));
 
 export const EditorContextProvider: FC<EditorContextProviderProps> = ({
@@ -414,6 +453,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
   children,
   shouldPersistHeaders = false,
   validationRules = [],
+  onCopyQuery,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
   ...props
 }) => {
   const storage = useStorage();
@@ -459,14 +500,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     return map;
   })();
 
-  const initialRendered = useRef(false);
-
   useEffect(() => {
-    if (initialRendered.current) {
-      return;
-    }
-    initialRendered.current = true;
-
     // We only need to compute it lazily during the initial render.
     const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
     const variables =
@@ -474,7 +508,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
     const response = props.response ?? '';
 
-    const tabState = getDefaultTabState({
+    const { tabs, activeTabIndex } = getDefaultTabState({
       query,
       variables,
       headers,
@@ -483,7 +517,7 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       defaultHeaders,
       shouldPersistHeaders,
     });
-    storeTabs(tabState);
+    storeTabs({ tabs, activeTabIndex });
 
     const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
 
@@ -494,11 +528,10 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
 
     editorStore.setState({
       shouldPersistHeaders: $shouldPersistHeaders,
-      ...tabState,
+      tabs,
+      activeTabIndex,
       initialQuery:
-        query ??
-        (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
-        '',
+        query ?? (activeTabIndex === 0 ? tabs[0].query : null) ?? '',
       initialVariables: variables ?? '',
       initialHeaders: headers ?? defaultHeaders ?? '',
       initialResponse: response,
@@ -513,6 +546,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
       defaultQuery,
       defaultHeaders,
       validationRules,
+      onCopyQuery,
+      onPrettifyQuery,
     });
   }, [
     $externalFragments,
@@ -521,6 +556,8 @@ export const EditorContextProvider: FC<EditorContextProviderProps> = ({
     defaultQuery,
     defaultHeaders,
     validationRules,
+    onCopyQuery,
+    onPrettifyQuery,
   ]);
 
   if (!isMounted) {
