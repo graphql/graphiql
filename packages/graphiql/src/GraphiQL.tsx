@@ -42,7 +42,6 @@ import {
   VariableEditor,
   WriteableEditorProps,
   cn,
-  KEY_MAP,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
