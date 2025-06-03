@@ -22,7 +22,7 @@
   - StorageContextProvider
   - ExecutionContextType
   - PluginContextType
-feat(@graphiql/react): migrate React context to zustand:
+- feat(@graphiql/react): migrate React context to zustand:
   - replace `useExecutionContext` with `useExecutionStore` hook
   - replace `useEditorContext` with `useEditorStore` hook
-  - replace `useAutoCompleteLeafs` hook with `getAutoCompleteLeafs` function
+- prefer `getComputedStyle` over `window. getComputedStyle`
