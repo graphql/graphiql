@@ -14,13 +14,13 @@
 - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
 - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
 - remove exports (use `GraphiQLProvider`)
-  - EditorContextProvider
-  - ExecutionContextProvider
-  - PluginContextProvider
-  - SchemaContextProvider
-  - StorageContextProvider
-  - ExecutionContextType
-  - PluginContextType
+  - `EditorContextProvider`
+  - `ExecutionContextProvider`
+  - `PluginContextProvider`
+  - `SchemaContextProvider`
+  - `StorageContextProvider`
+  - `ExecutionContextType`
+  - `PluginContextType`
 - feat(@graphiql/react): migrate React context to zustand:
   - replace `useExecutionContext` with `useExecutionStore` hook
   - replace `useEditorContext` with `useEditorStore` hook
