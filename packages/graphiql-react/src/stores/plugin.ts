@@ -122,14 +122,10 @@ export const PluginStore: FC<PluginStoreProps> = ({
     // if (storedValue) {
     //   storage.set(STORAGE_KEY, '');
     // }
-<<<<<<<< HEAD:packages/graphiql-react/src/stores/plugin.ts
     const { setPlugins, setVisiblePlugin } = pluginStore.getState();
 
     setPlugins(plugins);
     setVisiblePlugin(visiblePlugin ?? null);
-========
-    pluginStore.getState().setPlugins(plugins);
->>>>>>>> graphiql-5:packages/graphiql-react/src/stores/plugin.tsx
     pluginStore.setState({
       onTogglePluginVisibility,
       referencePlugin,

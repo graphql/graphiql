@@ -8,7 +8,6 @@ import {
   visit,
   print,
 } from 'graphql';
-<<<<<<<< HEAD:packages/graphiql-react/src/stores/editor.ts
 import { OperationFacts, VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
@@ -20,17 +19,6 @@ import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor'
 import { STORAGE_KEY_QUERY } from '../components/query-editor';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../components/variable-editor';
 
-========
-import { VariableToType } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { MaybePromise } from '@graphiql/toolkit';
-
-import { storageStore, useStorage } from './storage';
-import { executionStore } from './execution';
-import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../editor/header-editor';
-import { useSynchronizeValue } from '../editor/hooks';
-import { STORAGE_KEY_QUERY } from '../editor/query-editor';
->>>>>>>> graphiql-5:packages/graphiql-react/src/stores/editor.tsx
 import {
   createTab,
   getDefaultTabState,
@@ -44,14 +32,8 @@ import {
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
-<<<<<<<< HEAD:packages/graphiql-react/src/stores/editor.ts
 } from '../utility/tabs';
 import { MonacoEditor } from '../types';
-========
-} from '../editor/tabs';
-import { CodeMirrorEditor } from '../editor/types';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
->>>>>>>> graphiql-5:packages/graphiql-react/src/stores/editor.tsx
 import { DEFAULT_QUERY } from '../constants';
 import { createBoundedUseStore, useSynchronizeValue } from '../utility';
 
@@ -229,7 +211,6 @@ interface EditorStoreType extends TabsState {
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
-<<<<<<<< HEAD:packages/graphiql-react/src/stores/editor.ts
 
   // Operation facts that are derived from the query editor.
 
@@ -245,8 +226,6 @@ interface EditorStoreType extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
-========
->>>>>>>> graphiql-5:packages/graphiql-react/src/stores/editor.tsx
 }
 
 type EditorStoreProps = Pick<
