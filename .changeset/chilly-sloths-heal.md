@@ -24,4 +24,4 @@
 - feat(@graphiql/react): migrate React context to zustand:
   - replace `useExecutionContext` with `useExecutionStore` hook
   - replace `useEditorContext` with `useEditorStore` hook
-- prefer `getComputedStyle` over `window. getComputedStyle`
+- prefer `getComputedStyle` over `window.getComputedStyle`
