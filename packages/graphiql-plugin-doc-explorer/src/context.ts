@@ -16,7 +16,7 @@ import {
 } from 'graphql';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
-  SchemaContextType,
+  SchemaReference,
   useSchemaStore,
   createBoundedUseStore,
 } from '@graphiql/react';
@@ -45,7 +45,7 @@ export type DocExplorerNavStack = [
   ...DocExplorerNavStackItem[],
 ];
 
-export type DocExplorerContextType = {
+export type DocExplorerStoreType = {
   /**
    * A stack of navigation items. The last item in the list is the current one.
    * This list always contains at least one item.
@@ -67,7 +67,7 @@ export type DocExplorerContextType = {
      */
     reset(): void;
     resolveSchemaReferenceToNavItem(
-      schemaReference: SchemaContextType['schemaReference'],
+      schemaReference: SchemaReference | null,
     ): void;
     /**
      * Replace the nav stack with an updated version using the new schema.
@@ -78,7 +78,7 @@ export type DocExplorerContextType = {
 
 const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
 
-export const docExplorerStore = createStore<DocExplorerContextType>(
+export const docExplorerStore = createStore<DocExplorerStoreType>(
   (set, get) => ({
     explorerNavStack: INITIAL_NAV_STACK,
     actions: {
@@ -235,7 +235,7 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
   }),
 );
 
-export const DocExplorerContextProvider: FC<{
+export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const { schema, validationErrors, schemaReference } = useSchemaStore();

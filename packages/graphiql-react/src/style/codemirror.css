@@ -168,7 +168,7 @@
 .graphiql-container .cm-searching {
   background-color: hsla(var(--color-warning), var(--alpha-background-light));
   /**
-   * When cycling through search results, CodeMirror overlays the current 
+   * When cycling through search results, CodeMirror overlays the current
    * selection with another element that has the .CodeMirror-selected class
    * applied. This adds another background color (see above), but this extra
    * box does not quite match the height of this element. To match them up we

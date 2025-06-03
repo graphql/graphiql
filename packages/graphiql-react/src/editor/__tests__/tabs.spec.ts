@@ -7,7 +7,7 @@ import {
   clearHeadersFromTabs,
   STORAGE_KEY,
 } from '../tabs';
-import { storageStore } from '../../storage';
+import { storageStore } from '../../stores/storage';
 
 describe('createTab', () => {
   it('creates with default title', () => {

@@ -1,9 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
-import { HistoryContextProvider } from '../context';
+import { HistoryStore } from '../context';
 import { Tooltip, GraphiQLProvider } from '@graphiql/react';
-import { editorStore } from '../../../graphiql-react/dist/editor/context';
+import { editorStore } from '../../../graphiql-react/dist/stores/editor';
 
 const mockQuery = /* GraphQL */ `
   query Test($string: String) {
@@ -25,9 +25,9 @@ const QueryHistoryItemWithContext: typeof HistoryItem = props => {
   return (
     <Tooltip.Provider>
       <GraphiQLProvider fetcher={vi.fn()}>
-        <HistoryContextProvider>
+        <HistoryStore>
           <HistoryItem {...props} />
-        </HistoryContextProvider>
+        </HistoryStore>
       </GraphiQLProvider>
     </Tooltip.Provider>
   );

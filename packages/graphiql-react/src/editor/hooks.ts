@@ -1,17 +1,19 @@
 import { fillLeafs, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
-import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { schemaStore } from '../schema';
-import { storageStore } from '../storage';
+import {
+  schemaStore,
+  storageStore,
+  editorStore,
+  useEditorStore,
+  executionStore,
+} from '../stores';
 import { debounce } from '../utility';
 import { onHasCompletion } from './completion';
-import { editorStore, useEditorStore } from './context';
-import { CodeMirrorEditor } from './types';
-import { executionStore } from '../execution';
+import { CodeMirrorEditor, SchemaReference } from './types';
 
 export function useSynchronizeValue(
   editor: CodeMirrorEditor | null,

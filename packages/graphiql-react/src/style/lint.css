@@ -5,7 +5,7 @@
 .CodeMirror-lint-mark-warning {
   background-repeat: repeat-x;
   /**
-   * The following two are very specific to the font size, so we use 
+   * The following two are very specific to the font size, so we use
    * "magic values" instead of variables.
    */
   background-size: 10px 3px;

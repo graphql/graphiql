@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { useEditorStore } from '../editor';
-import { useExecutionStore } from '../execution';
+import { useEditorStore, useExecutionStore } from '../stores';
 import { PlayIcon, StopIcon } from '../icons';
 import { DropdownMenu, Tooltip } from '../ui';
 import { KEY_MAP } from '../constants';

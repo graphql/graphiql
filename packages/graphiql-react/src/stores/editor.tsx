@@ -12,10 +12,11 @@ import { VariableToType } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
-import { storageStore, useStorage } from '../storage';
-import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
-import { useSynchronizeValue } from './hooks';
-import { STORAGE_KEY_QUERY } from './query-editor';
+import { storageStore, useStorage } from './storage';
+import { executionStore } from './execution';
+import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../editor/header-editor';
+import { useSynchronizeValue } from '../editor/hooks';
+import { STORAGE_KEY_QUERY } from '../editor/query-editor';
 import {
   createTab,
   getDefaultTabState,
@@ -29,13 +30,12 @@ import {
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
-} from './tabs';
-import { CodeMirrorEditor } from './types';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
+} from '../editor/tabs';
+import { CodeMirrorEditor } from '../editor/types';
+import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../editor/variable-editor';
 import { DEFAULT_QUERY } from '../constants';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
-import { executionStore } from '../execution';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   documentAST: DocumentNode | null;
@@ -44,7 +44,7 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   variableToType: VariableToType | null;
 };
 
-interface EditorStore extends TabsState {
+interface EditorStoreType extends TabsState {
   /**
    * Add a new tab.
    */
@@ -225,8 +225,8 @@ interface EditorStore extends TabsState {
   onPrettifyQuery: (query: string) => MaybePromise<string>;
 }
 
-type EditorContextProviderProps = Pick<
-  EditorStore,
+type EditorStoreProps = Pick<
+  EditorStoreType,
   | 'onTabChange'
   | 'onEditOperationName'
   | 'defaultHeaders'
@@ -297,13 +297,13 @@ type EditorContextProviderProps = Pick<
    * typing in the editor.
    */
   variables?: string;
-  onPrettifyQuery?: EditorStore['onPrettifyQuery'];
+  onPrettifyQuery?: EditorStoreType['onPrettifyQuery'];
 };
 
-const DEFAULT_PRETTIFY_QUERY: EditorStore['onPrettifyQuery'] = query =>
+const DEFAULT_PRETTIFY_QUERY: EditorStoreType['onPrettifyQuery'] = query =>
   print(parse(query));
 
-export const editorStore = createStore<EditorStore>((set, get) => ({
+export const editorStore = createStore<EditorStoreType>((set, get) => ({
   tabs: null!,
   activeTabIndex: null!,
   addTab() {
@@ -444,7 +444,7 @@ export const editorStore = createStore<EditorStore>((set, get) => ({
   onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
 }));
 
-export const EditorContextProvider: FC<EditorContextProviderProps> = ({
+export const EditorStore: FC<EditorStoreProps> = ({
   externalFragments,
   onEditOperationName,
   defaultHeaders,

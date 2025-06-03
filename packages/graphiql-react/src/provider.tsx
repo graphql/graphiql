@@ -1,18 +1,18 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC } from 'react';
-import { EditorContextProvider } from './editor';
-import { ExecutionContextProvider } from './execution';
-import { PluginContextProvider } from './plugin';
-import { SchemaContextProvider } from './schema';
-import { StorageContextProvider } from './storage';
+import { EditorStore } from './stores/editor';
+import { ExecutionStore } from './stores/execution';
+import { PluginStore } from './stores/plugin';
+import { SchemaStore } from './stores/schema';
+import { StorageStore } from './stores/storage';
 
 type GraphiQLProviderProps =
   //
-  ComponentPropsWithoutRef<typeof EditorContextProvider> &
-    ComponentPropsWithoutRef<typeof ExecutionContextProvider> &
-    ComponentPropsWithoutRef<typeof PluginContextProvider> &
-    ComponentPropsWithoutRef<typeof SchemaContextProvider> &
-    ComponentPropsWithoutRef<typeof StorageContextProvider>;
+  ComponentPropsWithoutRef<typeof EditorStore> &
+    ComponentPropsWithoutRef<typeof ExecutionStore> &
+    ComponentPropsWithoutRef<typeof PluginStore> &
+    ComponentPropsWithoutRef<typeof SchemaStore> &
+    ComponentPropsWithoutRef<typeof StorageStore>;
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
@@ -92,16 +92,14 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     visiblePlugin,
   };
   return (
-    <StorageContextProvider storage={storage}>
-      <EditorContextProvider {...editorContextProps}>
-        <SchemaContextProvider {...schemaContextProps}>
-          <ExecutionContextProvider {...executionContextProps}>
-            <PluginContextProvider {...pluginContextProps}>
-              {children}
-            </PluginContextProvider>
-          </ExecutionContextProvider>
-        </SchemaContextProvider>
-      </EditorContextProvider>
-    </StorageContextProvider>
+    <StorageStore storage={storage}>
+      <EditorStore {...editorContextProps}>
+        <SchemaStore {...schemaContextProps}>
+          <ExecutionStore {...executionContextProps}>
+            <PluginStore {...pluginContextProps}>{children}</PluginStore>
+          </ExecutionStore>
+        </SchemaStore>
+      </EditorStore>
+    </StorageStore>
   );
 };
