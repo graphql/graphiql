@@ -1,7 +1,6 @@
 ---
 '@graphiql/plugin-doc-explorer': patch
 '@graphiql/plugin-explorer': patch
-'graphql-language-service': patch
 '@graphiql/plugin-history': patch
 'codemirror-graphql': patch
 '@graphiql/react': minor
