@@ -359,6 +359,7 @@ export function getVariablesJSONSchema(
     type: 'object',
     properties: {},
     required: [],
+    additionalProperties: false,
   };
 
   const runtimeOptions: JSONSchemaRunningOptions = {
