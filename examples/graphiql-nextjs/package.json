@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "graphiql": "^4.1.0",
+    "graphiql": "^5.0.0-rc.0",
     "next": "15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

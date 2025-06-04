@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.2.2",
+  "version": "0.3.0-rc.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/react": "^0.34.1",
+    "@graphiql/react": "^0.35.0-rc.0",
     "@graphiql/toolkit": "^0.11.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "zustand": "^5"
