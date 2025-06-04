@@ -3,7 +3,7 @@ body {
   height: 100vh;
 }
 
-#__next {
+#root {
   display: flex;
   height: inherit;
 }

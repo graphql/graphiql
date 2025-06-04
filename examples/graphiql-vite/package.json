@@ -1,14 +1,10 @@
 {
-  "name": "example-monaco-graphql-react-vite",
-  "private": true,
+  "name": "example-graphiql-vite",
   "version": "0.0.0",
+  "private": true,
   "dependencies": {
-    "@graphiql/toolkit": "^0.11.3",
+    "graphiql": "^4.1.0",
     "graphql": "^16.11.0",
-    "graphql-language-service": "^5.4.0",
-    "jsonc-parser": "^3.2.0",
-    "monaco-editor": "^0.52.2",
-    "monaco-graphql": "^1.6.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
