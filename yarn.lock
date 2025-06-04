@@ -9492,7 +9492,7 @@ __metadata:
     codemirror: "npm:^5.65.3"
     cross-env: "npm:^7.0.2"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:5.3.1"
+    graphql-language-service: "npm:5.4.0"
     rimraf: "npm:^3.0.2"
     sane: "npm:2.0.0"
   peerDependencies:
@@ -12210,7 +12210,7 @@ __metadata:
     marked: "npm:^4.2.12"
     monaco-editor: "npm:^0.39.0"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
-    monaco-graphql: "npm:^1.6.1"
+    monaco-graphql: "npm:^1.6.2"
     next: "npm:13.4.7"
     next-global-css: "npm:1.3.1"
     prettier: "npm:3.3.2"
@@ -12227,10 +12227,10 @@ __metadata:
     "@graphiql/toolkit": "npm:^0.11.3"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphql: "npm:^16.11.0"
-    graphql-language-service: "npm:^5.3.1"
+    graphql-language-service: "npm:^5.4.0"
     jsonc-parser: "npm:^3.2.0"
     monaco-editor: "npm:^0.52.2"
-    monaco-graphql: "npm:^1.6.1"
+    monaco-graphql: "npm:^1.6.2"
     prettier: "npm:3.3.2"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
@@ -12256,13 +12256,13 @@ __metadata:
     file-loader: "npm:6.2.0"
     fork-ts-checker-webpack-plugin: "npm:7.3.0"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:^5.3.1"
+    graphql-language-service: "npm:^5.4.0"
     html-webpack-plugin: "npm:^5.5.0"
     json-schema: "npm:^0.4.0"
     jsonc-parser: "npm:^3.2.0"
     monaco-editor: "npm:^0.39.0"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
-    monaco-graphql: "npm:^1.6.1"
+    monaco-graphql: "npm:^1.6.2"
     prettier: "npm:3.3.2"
     style-loader: "npm:^3.3.1"
     typescript: "npm:^4.6.3"
@@ -13979,7 +13979,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-language-service@npm:5.3.1, graphql-language-service@npm:^5.3.0, graphql-language-service@npm:^5.3.1, graphql-language-service@workspace:packages/graphql-language-service":
+"graphql-language-service@npm:5.4.0, graphql-language-service@npm:^5.3.0, graphql-language-service@npm:^5.3.1, graphql-language-service@npm:^5.4.0, graphql-language-service@workspace:packages/graphql-language-service":
   version: 0.0.0-use.local
   resolution: "graphql-language-service@workspace:packages/graphql-language-service"
   dependencies:
@@ -18247,13 +18247,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-graphql@npm:^1.6.1, monaco-graphql@workspace:packages/monaco-graphql":
+"monaco-graphql@npm:^1.6.2, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:
     execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:^5.3.1"
+    graphql-language-service: "npm:^5.4.0"
     monaco-editor: "npm:^0.39.0"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
