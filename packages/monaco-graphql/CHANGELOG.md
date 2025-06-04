@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.6.2
+
+### Patch Changes
+
+- [#3983](https://github.com/graphql/graphiql/pull/3983) [`403dfc2`](https://github.com/graphql/graphiql/commit/403dfc21c61c9c07fce00607c1416a449bc0d57f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused `MonacoCompletionItem` type
+
+  fix `types` field in `package.json`, should be first, before `import` or `require` fields
+
+  fixed `monaco-graphql` severity, it was hardcoded to `5` which is not valid value of monaco severity
+
+- Updated dependencies [[`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7)]:
+  - graphql-language-service@5.4.0
+
 ## 1.6.1
 
 ### Patch Changes

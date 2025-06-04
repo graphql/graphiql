@@ -5,6 +5,10 @@
 .secrets
 *.log
 
+.yarn/*
+!.yarn/releases/*
+!.yarn/plugins/*
+
 node_modules/
 coverage/
 .nyc_output
@@ -28,6 +32,7 @@ package-lock.json
 
 vite.config.d.ts
 vite.config.js
+tsconfig.vitest-temp.json
 
 .next/
 .turbo/
@@ -46,5 +51,6 @@ packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
 packages/graphiql/typedoc/
+packages/graphiql/webpack/
 
 packages/graphiql/cypress/downloads/

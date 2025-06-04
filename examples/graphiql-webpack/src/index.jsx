@@ -5,14 +5,11 @@ import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import 'graphiql/style.css';
-import '@graphiql/plugin-explorer/style.css';
-import '@graphiql/plugin-code-exporter/style.css';
+import 'graphiql/setup-workers/webpack';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorage } from '@graphiql/react';
 
-export const STARTING_URL =
-  'https://swapi-graphql.netlify.app/.netlify/functions/index';
+export const STARTING_URL = 'https://countries.trevorblades.com';
 
 import './index.css';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
