@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "test": "vitest"
   },

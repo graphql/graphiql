@@ -1,7 +1,10 @@
 {
   "name": "@graphiql/react",
   "version": "0.34.1",
-  "sideEffects": false,
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -16,14 +19,20 @@
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./font/*": "./font/*",
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
+    }
   },
   "types": "dist/index.d.ts",
   "keywords": [
     "react",
     "graphql",
     "sdk",
-    "codemirror"
+    "monaco-editor",
+    "monaco-graphql",
+    "monaco"
   ],
   "files": [
     "dist",
@@ -31,7 +40,7 @@
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "test": "vitest"
   },
@@ -46,15 +55,16 @@
     "@radix-ui/react-dropdown-menu": "^2.1",
     "@radix-ui/react-tooltip": "^1.2",
     "@radix-ui/react-visually-hidden": "^1.2",
-    "@types/codemirror": "^5.60.8",
     "clsx": "^1.2.1",
-    "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.2.1",
     "copy-to-clipboard": "^3.2.0",
-    "framer-motion": "^12",
+    "framer-motion": "^12.12",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.1",
+    "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
+    "monaco-editor": "^0.47",
+    "monaco-graphql": "^1.6.1",
+    "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",
     "zustand": "^5"

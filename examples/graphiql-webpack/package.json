@@ -17,6 +17,7 @@
     "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "regenerator-runtime": "^0.13.9"
   },
   "devDependencies": {
@@ -29,8 +30,8 @@
     "copy-webpack-plugin": "11.0.0",
     "cross-env": "^7.0.2",
     "css-loader": "^6.7.3",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
-    "react-dom": "^19.1.0",
     "react-hot-loader": "^4.13.1",
     "style-loader": "^3.3.1",
     "webpack": "5.94.0",

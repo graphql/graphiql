@@ -8,7 +8,6 @@
     <style>
       body {
         margin: 0;
-        overflow: hidden; /* in Firefox */
       }
 
       #graphiql {
@@ -33,6 +32,30 @@
       crossorigin
       src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
     ></script>
+    <script type="module">
+      /**
+       * Setup workers for GraphiQL UMD bundle
+       */
+      function getWorkerUrl(label) {
+        switch (label) {
+          case 'json':
+            return '/dist/workers/json.worker.js';
+          case 'graphql':
+            return '/dist/workers/graphql.worker.js';
+        }
+        return '/dist/workers/editor.worker.js';
+      }
+
+      globalThis.MonacoEnvironment = {
+        // `MonacoEnvironment.getWorkerUrl` throws Uncaught SyntaxError: Unexpected token 'export',
+        // we use` MonacoEnvironment getWorker` instead
+        getWorker(_workerId, label) {
+          console.log('setup workers in cdn');
+          const url = new URL(getWorkerUrl(label), import.meta.url);
+          return new Worker(url, { type: 'module' });
+        },
+      };
+    </script>
     <script src="/dist/index.umd.js"></script>
     <script type="module" src="/dist/e2e.js"></script>
     <!--vite-replace-end-->
