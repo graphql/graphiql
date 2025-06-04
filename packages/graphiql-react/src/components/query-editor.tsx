@@ -33,14 +33,14 @@ interface QueryEditorProps extends EditorProps {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
-   * @param reference The reference that has been clicked.
+   * @param reference - The reference that has been clicked.
    */
   onClickReference?(reference: SchemaReference): void;
 
   /**
    * Invoked when the contents of the query editor change.
    * @param value The new contents of the editor.
-   * @param documentAST The editor contents parsed into a GraphQL document.
+   * @param documentAST - The editor contents parsed into a GraphQL document.
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }

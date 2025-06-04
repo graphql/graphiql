@@ -1,14 +1,12 @@
 import { createStore } from 'zustand';
 import {
-  DocumentNode,
   FragmentDefinitionNode,
-  OperationDefinitionNode,
   parse,
   ValidationRule,
   visit,
   print,
 } from 'graphql';
-import { OperationFacts, VariableToType } from 'graphql-language-service';
+import { OperationFacts } from 'graphql-language-service';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { MaybePromise } from '@graphiql/toolkit';
 
@@ -36,13 +34,6 @@ import {
 import { MonacoEditor } from '../types';
 import { DEFAULT_QUERY } from '../constants';
 import { createBoundedUseStore, useSynchronizeValue } from '../utility';
-
-export type CodeMirrorEditorWithOperationFacts = {
-  documentAST: DocumentNode | null;
-  operationName: string | null;
-  operations: OperationDefinitionNode[] | null;
-  variableToType: VariableToType | null;
-};
 
 interface EditorStoreType extends TabsState {
   /**
@@ -99,7 +90,7 @@ interface EditorStoreType extends TabsState {
   variableEditor?: MonacoEditor;
 
   /**
-   * The Monaco Editor instance used in the specified editor.
+   * Set the Monaco Editor instance used in the specified editor.
    */
   setEditor(
     state: Pick<
