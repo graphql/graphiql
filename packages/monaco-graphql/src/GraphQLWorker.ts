@@ -17,14 +17,11 @@ import {
   GraphQLWorkerCompletionItem,
 } from './utils';
 
-export type MonacoCompletionItem = monaco.languages.CompletionItem & {
-  isDeprecated?: boolean;
-  deprecationReason?: string | null;
-};
 export class GraphQLWorker {
   private _ctx: monaco.worker.IWorkerContext;
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
+
   constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     this._languageService = new LanguageService(createData.languageConfig);
@@ -82,24 +79,18 @@ export class GraphQLWorker {
         return null;
       }
       const graphQLPosition = toGraphQLPosition(position);
-
       const hover = this._languageService.getHover(
         uri,
         document,
         graphQLPosition,
       );
-
+      const location = {
+        column: graphQLPosition.character,
+        line: graphQLPosition.line,
+      };
       return {
         content: hover,
-        range: toMonacoRange(
-          getRange(
-            {
-              column: graphQLPosition.character,
-              line: graphQLPosition.line,
-            },
-            document,
-          ),
-        ),
+        range: toMonacoRange(getRange(location, document)),
       };
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -157,9 +148,11 @@ export class GraphQLWorker {
     }
     return null;
   }
+
   public doUpdateSchema(schema: SchemaConfig) {
     return this._languageService.updateSchema(schema);
   }
+
   public doUpdateSchemas(schemas: SchemaConfig[]) {
     return this._languageService.updateSchemas(schemas);
   }
