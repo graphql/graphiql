@@ -78,7 +78,7 @@ export function toCompletion(
 /**
  * Monaco and VSCode have slightly different ideas of marker severity.
  * for example, vscode has Error = 1, whereas monaco has Error = 8. this takes care of that
- * @param severity optional vscode diagnostic severity to convert to monaco MarkerSeverity
+ * @param severity - optional vscode diagnostic severity to convert to monaco MarkerSeverity
  * @returns the matching marker severity level on monaco's terms
  */
 export function toMonacoSeverity(
