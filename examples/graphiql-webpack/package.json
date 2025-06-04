@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "description": "A GraphiQL example with webpack and typescript",
+  "description": "A GraphiQL example with Webpack",
   "scripts": {
     "build-demo": "webpack-cli && mkdirp ../../packages/graphiql/webpack && cp -r dist/** ../../packages/graphiql/webpack",
     "start": "NODE_ENV=development webpack-cli serve"
