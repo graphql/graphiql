@@ -12,7 +12,7 @@ describe('monaco-editor', () => {
     const output = stdout
       .replaceAll(ANSI_COLOR_REGEX, '')
       .split('\n')
-      .slice(2, -1)
+      .slice(1, -1)
       .join('\n')
       // To replace two or more spaces and everything until the end of the line
       // Because kb fails on CI
