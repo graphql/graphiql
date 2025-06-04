@@ -9,8 +9,8 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "vite": "^6.3.4",
-    "@vitejs/plugin-react": "^4.4.1"
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.4"
   },
   "scripts": {
     "dev": "vite",
