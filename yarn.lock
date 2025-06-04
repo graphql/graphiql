@@ -18393,7 +18393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-graphql@npm:^1.6.2, monaco-graphql@workspace:packages/monaco-graphql":
+"monaco-graphql@npm:^1.6.1, monaco-graphql@npm:^1.6.2, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:
