@@ -5,15 +5,6 @@ import { FC, useEffect, useRef } from 'react';
 import { useStorage } from '../stores';
 import { useGraphiQL } from './provider';
 import {
-  schemaStore,
-  useSchemaStore,
-  useEditorStore,
-  useStorage,
-  editorStore,
-  executionStore,
-  pluginStore,
-} from '../stores';
-import {
   debounce,
   getOrCreateModel,
   createEditor,
