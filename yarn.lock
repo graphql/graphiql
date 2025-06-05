@@ -3313,7 +3313,7 @@ __metadata:
     graphql-language-service: "npm:^5.3.1"
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.1.0"
-    monaco-editor: "npm:^0.47"
+    monaco-editor: "npm:^0.52.2"
     monaco-graphql: "npm:^1.6.1"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
@@ -12536,6 +12536,7 @@ __metadata:
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
     "@babel/plugin-syntax-dynamic-import": "npm:^7.8.3"
+    "@babel/plugin-transform-class-static-block": "npm:^7.27.1"
     "@babel/preset-env": "npm:^7.20.2"
     "@babel/preset-react": "npm:^7.18.6"
     "@graphiql/plugin-code-exporter": "npm:^4.0.6-rc.0"
@@ -12623,7 +12624,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.5.0"
     json-schema: "npm:^0.4.0"
     jsonc-parser: "npm:^3.2.0"
-    monaco-editor: "npm:^0.47.0"
+    monaco-editor: "npm:^0.52.2"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
     monaco-graphql: "npm:^1.6.2"
     prettier: "npm:3.3.2"
@@ -18613,10 +18614,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:0.47.0":
-  version: 0.47.0
-  resolution: "monaco-editor@npm:0.47.0"
-  checksum: 10c0/bbe4fc284a7803e4ed0fa69b6e31c41ef6f5d259722e8a876ce2850b7139e68eff3a6435306e11eff848db8662b818e40f9cafc6f7a53d4a4551fed362d5dc02
+"monaco-editor@npm:0.52.2":
+  version: 0.52.2
+  resolution: "monaco-editor@npm:0.52.2"
+  checksum: 10c0/5a92da64f1e2ab375c0ce99364137f794d057c97bed10ecc65a08d6e6846804b8ecbd377eacf01e498f7dfbe1b21e8be64f728256681448f0484df90e767b435
   languageName: node
   linkType: hard
 
@@ -18627,7 +18628,7 @@ __metadata:
     execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.4.0"
-    monaco-editor: "npm:^0.39.0"
+    monaco-editor: "npm:^0.52.2"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
     vscode-languageserver-types: "npm:^3.17.1"
