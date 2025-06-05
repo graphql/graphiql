@@ -5,6 +5,15 @@ import { FC, useEffect, useRef } from 'react';
 import { useStorage } from '../stores';
 import { useGraphiQL } from './provider';
 import {
+  schemaStore,
+  useSchemaStore,
+  useEditorStore,
+  useStorage,
+  editorStore,
+  executionStore,
+  pluginStore,
+} from '../stores';
+import {
   debounce,
   getOrCreateModel,
   createEditor,
@@ -31,14 +40,14 @@ interface QueryEditorProps extends EditorProps {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
-   * @param reference The reference that has been clicked.
+   * @param reference - The reference that has been clicked.
    */
   onClickReference?(reference: SchemaReference): void;
 
   /**
    * Invoked when the contents of the query editor change.
    * @param value The new contents of the editor.
-   * @param documentAST The editor contents parsed into a GraphQL document.
+   * @param documentAST - The editor contents parsed into a GraphQL document.
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
@@ -169,6 +178,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   }
 
   const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
+    const { operations, operationName: $operationName } =
+      editorStore.getState();
     if (!operations) {
       return;
     }
@@ -208,6 +219,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
+
+      const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
       if (operationFacts?.operationName !== undefined) {
         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
@@ -250,6 +263,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+
+    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
+    const { setSchemaReference } = schemaStore.getState();
     if (!referencePlugin) {
       return;
     }

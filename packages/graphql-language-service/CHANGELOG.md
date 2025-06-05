@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.4.0
+
+### Minor Changes
+
+- [#3982](https://github.com/graphql/graphiql/pull/3982) [`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: set `additionalProperties: false` to report unused variables
+
 ## 5.3.1
 
 ### Patch Changes

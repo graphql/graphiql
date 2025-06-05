@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "graphiql": "^4.1.0",
+    "graphiql": "^5.0.0-rc.0",
     "graphql": "^16.11.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "vite": "^6.3.4",
-    "@vitejs/plugin-react": "^4.4.1"
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.4"
   },
   "scripts": {
     "dev": "vite",

@@ -15,7 +15,11 @@ import {
   version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
-import { testSchema as graphiqlSchema } from '../../../graphiql/test/schema.js';
+import * as graphql from 'graphql';
+
+import { createSchema } from '../../../graphiql/test/schema.js';
+
+const graphiqlSchema = createSchema(graphql);
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 

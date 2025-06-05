@@ -5,21 +5,25 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-console, import-x/no-extraneous-dependencies */
+/* eslint-disable no-console */
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
-import { useServer } from 'graphql-ws/lib/use/ws';
+import { useServer } from 'graphql-ws/use/ws';
 import { WebSocketServer } from 'ws';
 import {
   getGraphQLParameters,
   processRequest,
   sendResult,
 } from 'graphql-helix'; // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
+import * as graphql from 'graphql';
 
-import { testSchema as schema } from './schema.js';
-import { customExecute } from './execute.js';
+import { createSchema } from './schema.js';
+import { createExecute } from './execute.js';
+
+const schema = createSchema(graphql);
+const customExecute = createExecute(graphql);
 
 const app = express();
 
@@ -44,6 +48,7 @@ async function handler(req, res) {
 
   sendResult(result, res);
 }
+
 // Server
 app.use(express.json());
 

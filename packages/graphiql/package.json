@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "4.1.0",
+  "version": "5.0.0-rc.0",
   "sideEffects": [
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"
@@ -54,10 +54,10 @@
     "test": "vitest"
   },
   "dependencies": {
-    "react-compiler-runtime": "19.1.0-rc.1",
-    "@graphiql/react": "^0.34.0",
-    "@graphiql/plugin-history": "^0.2.1",
-    "@graphiql/plugin-doc-explorer": "^0.2.1"
+    "@graphiql/plugin-doc-explorer": "^0.3.0-rc.0",
+    "@graphiql/plugin-history": "^0.3.0-rc.0",
+    "@graphiql/react": "^0.35.0-rc.0",
+    "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -65,28 +65,23 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "lightningcss": "^1.29.3",
-    "babel-plugin-react-compiler": "19.1.0-rc.1",
-    "vite-plugin-dts": "^4.5.3",
-    "vite": "^6.3.4",
-    "@vitejs/plugin-react": "^4.4.1",
-    "@vitest/web-worker": "3.1.4",
-    "vitest-canvas-mock": "0.3.3",
-    "@graphiql/toolkit": "^0.11.2",
+    "@graphiql/toolkit": "^0.11.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/web-worker": "3.1.4",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
-    "express": "^4.20.0",
     "graphql": "^16.11.0",
-    "graphql-helix": "^1.13.0",
-    "graphql-subscriptions": "^2.0.0",
+    "lightningcss": "^1.29.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "start-server-and-test": "^1.10.11",
-    "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
-    "ws": "8.17.1"
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest-canvas-mock": "0.3.3"
   }
 }

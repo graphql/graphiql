@@ -74,21 +74,21 @@ export function toCompletion(
 }
 
 /**
- * Monaco and Vscode have slightly different ideas of marker severity.
+ * Monaco and VSCode have slightly different ideas of marker severity.
  * for example, vscode has Error = 1, whereas monaco has Error = 8. this takes care of that
- * @param severity optional vscode diagnostic severity to convert to monaco MarkerSeverity
- * @returns {monaco.MarkerSeverity} the matching marker severity level on monaco's terms
+ * @param severity - optional vscode diagnostic severity to convert to monaco MarkerSeverity
+ * @returns the matching marker severity level on monaco's terms
  */
 export function toMonacoSeverity(
   severity?: Diagnostic['severity'],
 ): monaco.MarkerSeverity {
-  // Can't use monaco.MarkerSeverity due error:
+  // Can't use `monaco.MarkerSeverity` type due error:
   // ReferenceError: window is not defined
   const severityMap = {
-    1: 8,
-    2: 4,
-    3: 2,
-    4: 1,
+    1: 8, // MarkerSeverity.Error
+    2: 4, // MarkerSeverity.Warning
+    3: 2, // MarkerSeverity.Info
+    4: 1, // MarkerSeverity.Hint
   };
 
   return severity ? severityMap[severity] : severityMap[2];

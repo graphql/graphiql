@@ -108,6 +108,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
+  if (validationRules) {
+    throw new Error(
+      "`validationRules` isn't yet implemented, submit an issue in GitHub",
+    );
+  }
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
 

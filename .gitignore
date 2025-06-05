@@ -5,6 +5,10 @@
 .secrets
 *.log
 
+.yarn/*
+!.yarn/releases/*
+!.yarn/plugins/*
+
 node_modules/
 coverage/
 .nyc_output
@@ -47,5 +51,6 @@ packages/graphiql/*.css
 packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
 packages/graphiql/typedoc/
+packages/graphiql/webpack/
 
 packages/graphiql/cypress/downloads/

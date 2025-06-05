@@ -80,7 +80,7 @@ export interface EditorSlice extends TabsState {
   variableEditor?: MonacoEditor;
 
   /**
-   * The Monaco Editor instance used in the specified editor.
+   * Set the Monaco Editor instance used in the specified editor.
    */
   setEditor(
     state: Pick<
@@ -396,10 +396,6 @@ export const createEditorSlice =
     },
     updateActiveTabValues(partialTab) {
       set(current => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Vitest fails with TypeError: Cannot read properties of null (reading 'map') in `setPropertiesInActiveTab` when `tabs` is `null`
-        if (!current.tabs) {
-          return current;
-        }
         const { onTabChange, storeTabs } = get();
         const updated = setPropertiesInActiveTab(current, partialTab);
         storeTabs(updated);

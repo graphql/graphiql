@@ -18,13 +18,13 @@ interface VariableEditorProps extends EditorProps {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
-   * @param reference The reference that has been clicked.
+   * @param reference - The reference that has been clicked.
    */
   onClickReference?(reference: SchemaReference): void;
 
   /**
    * Invoked when the contents of the variables' editor change.
-   * @param value The new contents of the editor.
+   * @param value - The new contents of the editor.
    */
   onEdit?(value: string): void;
 }

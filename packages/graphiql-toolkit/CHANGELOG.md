@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.11.3
+
+### Patch Changes
+
+- [#3970](https://github.com/graphql/graphiql/pull/3970) [`7054591`](https://github.com/graphql/graphiql/commit/70545912d1b3bb9e0c45e766a5c89896a9c4dfb7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - revert https://github.com/graphql/graphiql/pull/3946 to have support multiple embedded graphiql instances on the same page
+
 ## 0.11.2
 
 ### Patch Changes
