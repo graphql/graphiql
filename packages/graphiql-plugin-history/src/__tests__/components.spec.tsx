@@ -1,9 +1,27 @@
+import { Mock } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryStore } from '../context';
-import { Tooltip, GraphiQLProvider } from '@graphiql/react';
-import { editorStore } from '../../../graphiql-react/dist/stores/editor';
+import { Tooltip, GraphiQLProvider, useGraphiQL } from '@graphiql/react';
+
+vi.mock('@graphiql/react', async () => {
+  const originalModule = await vi.importActual('@graphiql/react');
+  const mockedSetQueryEditor = vi.fn();
+  const mockedSetVariableEditor = vi.fn();
+  const mockedSetHeaderEditor = vi.fn();
+  return {
+    ...originalModule,
+    useGraphiQL() {
+      return {
+        queryEditor: { setValue: mockedSetQueryEditor },
+        variableEditor: { setValue: mockedSetVariableEditor },
+        headerEditor: { setValue: mockedSetHeaderEditor },
+        tabs: [],
+      };
+    },
+  };
+});
 
 const mockQuery = /* GraphQL */ `
   query Test($string: String) {
@@ -53,6 +71,19 @@ function getMockProps(
 }
 
 describe('QueryHistoryItem', () => {
+  const { queryEditor, variableEditor, headerEditor } = useGraphiQL(
+    state => state,
+  );
+  const mockedSetQueryEditor = queryEditor!.setValue as Mock;
+  const mockedSetVariableEditor = variableEditor!.setValue as Mock;
+  const mockedSetHeaderEditor = headerEditor!.setValue as Mock;
+
+  beforeEach(() => {
+    mockedSetQueryEditor.mockClear();
+    mockedSetVariableEditor.mockClear();
+    mockedSetHeaderEditor.mockClear();
+  });
+
   it('renders operationName if label is not provided', () => {
     const otherMockProps = { item: { operationName: mockOperationName } };
     const props = getMockProps(otherMockProps);
@@ -74,26 +105,6 @@ describe('QueryHistoryItem', () => {
   });
 
   it('selects the item when history label button is clicked', () => {
-    const mockedSetQueryEditor = vi.fn();
-    const mockedSetVariableEditor = vi.fn();
-    const mockedSetHeaderEditor = vi.fn();
-    type MonacoEditor = NonNullable<
-      ReturnType<typeof editorStore.getInitialState>['queryEditor']
-    >;
-
-    editorStore.setState({
-      queryEditor: {
-        setValue: mockedSetQueryEditor,
-      } as unknown as MonacoEditor,
-      variableEditor: {
-        setValue: mockedSetVariableEditor,
-      } as unknown as MonacoEditor,
-      headerEditor: {
-        setValue: mockedSetHeaderEditor,
-        getValue: () => '',
-      } as unknown as MonacoEditor,
-    });
-
     const otherMockProps = { item: { operationName: mockOperationName } };
     const mockProps = getMockProps(otherMockProps);
     const { container } = render(

@@ -58,6 +58,17 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   editorTheme,
   ...props
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
+  if (!props.fetcher) {
+    throw new TypeError(
+      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
+  if (props.validationRules) {
+    throw new Error(
+      "`validationRules` isn't yet implemented, submit an issue in GitHub",
+    );
+  }
   return (
     <StorageStore storage={storage}>
       <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
@@ -102,17 +113,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   children,
   ...props
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  if (!fetcher) {
-    throw new TypeError(
-      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
-    );
-  }
-  if (validationRules) {
-    throw new Error(
-      "`validationRules` isn't yet implemented, submit an issue in GitHub",
-    );
-  }
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
 

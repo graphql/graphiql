@@ -189,7 +189,7 @@ interface GraphiQLInterfaceProps
    * the index of the tab that is about to be closed. It can return a promise
    * that should resolve to `true` (meaning the tab may be closed) or `false`
    * (meaning the tab may not be closed).
-   * @param index The index of the tab that should be closed.
+   * @param index - The index of the tab that should be closed.
    */
   confirmCloseTab?(index: number): Promise<boolean> | boolean;
 }
