@@ -9,9 +9,9 @@ import {
   onEditorContainerKeyDown,
   pick,
   cleanupDisposables,
+  cn,
 } from '../utility';
 import { RESPONSE_URI } from '../constants';
-import { clsx } from 'clsx';
 import { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
@@ -153,7 +153,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('result-window', props.className)}
+      className={cn('result-window', props.className)}
     />
   );
 };

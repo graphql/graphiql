@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import './index.css';
 
 type UnStyledButtonProps = ComponentPropsWithoutRef<'button'>;
@@ -11,7 +11,7 @@ export const UnStyledButton = forwardRef<
   <button
     {...props}
     ref={ref}
-    className={clsx('graphiql-un-styled', props.className)}
+    className={cn('graphiql-un-styled', props.className)}
   />
 ));
 UnStyledButton.displayName = 'UnStyledButton';
@@ -25,7 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       {...props}
       ref={ref}
-      className={clsx(
+      className={cn(
         'graphiql-button',
         {
           success: 'graphiql-button-success',

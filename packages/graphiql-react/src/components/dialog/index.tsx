@@ -1,4 +1,4 @@
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import { forwardRef, FC, ComponentPropsWithoutRef } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
@@ -16,7 +16,7 @@ const DialogClose = forwardRef<
       {...props}
       ref={ref}
       type="button"
-      className={clsx('graphiql-dialog-close', props.className)}
+      className={cn('graphiql-dialog-close', props.className)}
     >
       <VisuallyHidden>Close dialog</VisuallyHidden>
       <CloseIcon />

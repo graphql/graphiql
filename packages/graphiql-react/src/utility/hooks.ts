@@ -103,7 +103,10 @@ export function usePrettifyEditors() {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Parsing variables JSON failed, skip prettification.', error);
+        console.error(
+          'Parsing variables JSON failed, skip prettification.',
+          error,
+        );
       }
     }
 
@@ -116,7 +119,10 @@ export function usePrettifyEditors() {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Parsing headers JSON failed, skip prettification.', error);
+        console.error(
+          'Parsing headers JSON failed, skip prettification.',
+          error,
+        );
       }
     }
 

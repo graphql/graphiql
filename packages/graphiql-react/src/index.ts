@@ -9,5 +9,4 @@ export * from './components';
 
 export type { EditorProps, SchemaReference } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
-export { clsx as cn } from 'clsx';
 export { KEY_MAP } from './constants';

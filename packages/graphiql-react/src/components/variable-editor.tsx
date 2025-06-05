@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef } from 'react';
-import { clsx } from 'clsx';
 import { useGraphiQL } from './provider';
 import { EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
@@ -12,6 +11,7 @@ import {
   usePrettifyEditors,
   useMergeQuery,
   cleanupDisposables,
+  cn,
 } from '../utility';
 
 interface VariableEditorProps extends EditorProps {
@@ -68,7 +68,7 @@ export const VariableEditor: FC<VariableEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('graphiql-editor', props.className)}
+      className={cn('graphiql-editor', props.className)}
     />
   );
 };

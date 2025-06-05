@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
@@ -18,7 +18,7 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
       aria-selected={isActive}
       dragElastic={false} // Prevent over scrolling of container
       role="tab"
-      className={clsx(
+      className={cn(
         'graphiql-tab',
         isActive && 'graphiql-tab-active',
         className,
@@ -38,7 +38,7 @@ const TabButton = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={clsx('graphiql-tab-button', className)}
+    className={cn('graphiql-tab-button', className)}
   >
     {children}
   </UnStyledButton>
@@ -54,7 +54,7 @@ const TabClose = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={clsx('graphiql-tab-close', props.className)}
+    className={cn('graphiql-tab-close', props.className)}
   >
     <CloseIcon />
   </UnStyledButton>
@@ -82,7 +82,7 @@ export const Tabs = forwardRef<HTMLUListElement, TabsProps>(
       onReorder={onReorder}
       axis="x"
       role="tablist"
-      className={clsx('graphiql-tabs', className)}
+      className={cn('graphiql-tabs', className)}
     >
       {children}
     </Reorder.Group>

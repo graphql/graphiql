@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef } from 'react';
-import { clsx } from 'clsx';
 import { useGraphiQL } from './provider';
 import { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
@@ -12,6 +11,7 @@ import {
   usePrettifyEditors,
   useMergeQuery,
   cleanupDisposables,
+  cn,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -59,7 +59,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('graphiql-editor', props.className)}
+      className={cn('graphiql-editor', props.className)}
     />
   );
 };

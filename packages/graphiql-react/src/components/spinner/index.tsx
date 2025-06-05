@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import './index.css';
 
 export const Spinner = forwardRef<
@@ -9,7 +9,7 @@ export const Spinner = forwardRef<
   <div
     {...props}
     ref={ref}
-    className={clsx('graphiql-spinner', props.className)}
+    className={cn('graphiql-spinner', props.className)}
   />
 ));
 Spinner.displayName = 'Spinner';

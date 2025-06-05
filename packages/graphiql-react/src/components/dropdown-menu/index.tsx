@@ -1,5 +1,5 @@
 import { ComponentProps, FC, forwardRef } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import {
   Trigger,
   Portal,
@@ -17,7 +17,7 @@ const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
       <button
         {...props}
         ref={ref}
-        className={clsx('graphiql-un-styled', props.className)}
+        className={cn('graphiql-un-styled', props.className)}
       />
     </Trigger>
   ),
@@ -36,7 +36,7 @@ const Content: FC<DropdownMenuContentProps> = ({
       <RadixContent
         align={align}
         sideOffset={sideOffset}
-        className={clsx('graphiql-dropdown-content', className)}
+        className={cn('graphiql-dropdown-content', className)}
         {...props}
       >
         {children}
@@ -46,7 +46,7 @@ const Content: FC<DropdownMenuContentProps> = ({
 };
 
 const Item: FC<DropdownMenuItemProps> = ({ className, children, ...props }) => (
-  <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
+  <RadixItem className={cn('graphiql-dropdown-item', className)} {...props}>
     {children}
   </RadixItem>
 );

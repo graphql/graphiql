@@ -11,7 +11,7 @@ export { formatJSONC, parseJSONC } from './jsonc';
 export { markdown } from './markdown';
 export { pick } from './pick';
 export { useDragResize } from './resize';
-
+export { clsx as cn } from 'clsx';
 export {
   useSynchronizeValue,
   useOptimisticState,

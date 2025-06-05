@@ -14,6 +14,7 @@ import {
   usePrettifyEditors,
   useMergeQuery,
   cleanupDisposables,
+  cn,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -23,7 +24,6 @@ import {
   Range,
 } from '../monaco-editor';
 import * as monaco from '../monaco-editor';
-import { clsx } from 'clsx';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
@@ -169,8 +169,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   }
 
   const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
-    const { operations, operationName: $operationName } =
-      editorStore.getState();
     if (!operations) {
       return;
     }
@@ -211,7 +209,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
 
-      const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
       if (operationFacts?.operationName !== undefined) {
         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
@@ -254,9 +251,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-
-    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-    const { setSchemaReference } = schemaStore.getState();
     if (!referencePlugin) {
       return;
     }
@@ -344,7 +338,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('graphiql-editor', props.className)}
+      className={cn('graphiql-editor', props.className)}
     />
   );
 };
