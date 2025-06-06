@@ -9,3 +9,5 @@
 import './style.css';
 
 export { GraphiQL } from './GraphiQL';
+
+export { HISTORY_PLUGIN } from '@graphiql/plugin-history';

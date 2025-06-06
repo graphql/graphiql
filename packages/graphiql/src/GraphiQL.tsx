@@ -67,7 +67,7 @@ export interface GraphiQLProps
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [],
+  plugins = [HISTORY_PLUGIN],
   referencePlugin = DOC_EXPLORER_PLUGIN,
   readOnly,
   onEditQuery,
@@ -120,7 +120,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   };
   return (
     <GraphiQLProvider
-      plugins={[referencePlugin, HISTORY_PLUGIN, ...plugins]}
+      plugins={[referencePlugin, ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
     >
