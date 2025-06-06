@@ -111,9 +111,11 @@ export class GraphQLWorker {
       { useMarkdownDescription: true },
     );
     if (jsonSchema) {
-      jsonSchema.$id = 'monaco://variables-schema.json';
-      jsonSchema.title = 'GraphQL Variables';
-      return jsonSchema;
+      return {
+        ...jsonSchema,
+        $id: 'monaco://variables-schema.json',
+        title: 'GraphQL Variables',
+      };
     }
 
     return null;

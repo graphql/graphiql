@@ -12,10 +12,10 @@ import { languages } from './monaco-editor';
 
 export const LANGUAGE_ID = 'graphql';
 
-let api: MonacoGraphQLAPI;
+let api: MonacoGraphQLAPI | undefined;
 
 /**
- * Initialize the mode & worker synchronously with provided configuration
+ * Initialize the mode and worker synchronously with the provided configuration
  *
  * @param config
  * @returns {MonacoGraphQLAPI}
@@ -29,7 +29,7 @@ export function initializeMode(
     // export to the global monaco API
 
     // eslint-disable-next-line promise/prefer-await-to-then -- ignore to leave initializeMode sync
-    void getMode().then(mode => mode.setupMode(api));
+    void getMode().then(mode => mode.setupMode(api!));
   }
 
   return api;
