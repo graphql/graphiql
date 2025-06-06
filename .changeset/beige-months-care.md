@@ -1,7 +1,7 @@
 ---
-'@graphiql/plugin-doc-explorer': patch
-'@graphiql/plugin-explorer': patch
-'@graphiql/plugin-history': patch
+'@graphiql/plugin-doc-explorer': minor
+'@graphiql/plugin-explorer': major
+'@graphiql/plugin-history': minor
 '@graphiql/react': minor
 'graphiql': major
 ---
