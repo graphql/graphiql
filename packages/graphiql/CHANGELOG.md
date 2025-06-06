@@ -1,5 +1,23 @@
 # Change Log
 
+## 5.0.0-rc.1
+
+### Major Changes
+
+- [#3990](https://github.com/graphql/graphiql/pull/3990) [`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - allow multiple independent instances of GraphiQL on the same page
+  - store `onClickReference` in query editor in React `ref`
+  - remove `onClickReference` from variable editor
+  - fix shortcut text per OS for run query in execute query button's tooltip and in default query
+  - allow override all default GraphiQL plugins
+  - adjust operation argument color to be purple from GraphiQL v2 on dark/light theme
+
+### Patch Changes
+
+- Updated dependencies [[`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92)]:
+  - @graphiql/plugin-doc-explorer@0.3.0-rc.1
+  - @graphiql/plugin-history@0.3.0-rc.1
+  - @graphiql/react@0.35.0-rc.1
+
 ## 5.0.0-rc.0
 
 ### Major Changes
