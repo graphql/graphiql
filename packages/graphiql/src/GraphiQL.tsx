@@ -112,7 +112,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onEditHeaders,
     responseTooltip,
     defaultEditorToolsVisibility,
-    isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
+    isHeadersEditorEnabled,
     forcedTheme:
       forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
     confirmCloseTab,
@@ -202,7 +202,7 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
-  isHeadersEditorEnabled,
+  isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
   children,
   confirmCloseTab,
