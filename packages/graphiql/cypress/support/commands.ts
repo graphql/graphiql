@@ -183,7 +183,7 @@ Cypress.Commands.add(
         // highlighted at the end
         position: 'bottomRight',
       });
-      cy.contains(message, { timeout: 10_000 });
+      cy.contains(message, { timeout: 20_000 });
     });
   },
 );

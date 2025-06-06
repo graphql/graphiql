@@ -32,8 +32,11 @@ module.exports = {
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
     // symlinks
+    'packages/graphiql-react/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-history/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-history/__mocks__/monaco-editor.ts',
   ],
   overrides: [
     {
