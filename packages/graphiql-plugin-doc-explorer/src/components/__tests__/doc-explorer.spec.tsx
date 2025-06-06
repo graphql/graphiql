@@ -67,7 +67,7 @@ describe('DocExplorer', () => {
     vi.resetModules();
   });
 
-  it('renders spinner when the schema is loading', async () => {
+  it('renders spinner when the schema is loading', () => {
     useGraphiQL.mockImplementation(cb =>
       cb({ ...defaultSchemaContext, isFetching: true }),
     );
