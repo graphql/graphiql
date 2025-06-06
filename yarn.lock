@@ -12669,7 +12669,6 @@ __metadata:
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
     "@babel/plugin-syntax-dynamic-import": "npm:^7.8.3"
-    "@babel/plugin-transform-class-static-block": "npm:^7.27.1"
     "@babel/preset-env": "npm:^7.20.2"
     "@babel/preset-react": "npm:^7.18.6"
     "@graphiql/plugin-code-exporter": "npm:^4.0.6-rc.0"
