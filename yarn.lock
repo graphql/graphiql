@@ -3306,7 +3306,6 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.4.1"
     babel-plugin-react-compiler: "npm:19.1.0-rc.1"
     clsx: "npm:^1.2.1"
-    copy-to-clipboard: "npm:^3.2.0"
     framer-motion: "npm:^12.12"
     get-value: "npm:^3.0.1"
     graphql: "npm:^16.9.0"
@@ -10145,7 +10144,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.0.8, copy-to-clipboard@npm:^3.2.0":
+"copy-to-clipboard@npm:^3.0.8":
   version: 3.3.2
   resolution: "copy-to-clipboard@npm:3.3.2"
   dependencies:

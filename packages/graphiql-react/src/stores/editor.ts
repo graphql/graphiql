@@ -7,7 +7,6 @@ import type {
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
 import { MaybePromise } from '@graphiql/toolkit';
-
 import { storageStore } from './storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
 
@@ -501,6 +500,22 @@ export const createEditorSlice =
         operationName,
         operations,
       });
+    },
+    async copyQuery() {
+      const { queryEditor, onCopyQuery } = get();
+      if (!queryEditor) {
+        return;
+      }
+
+      const query = queryEditor.getValue();
+      onCopyQuery?.(query);
+      try {
+        await navigator.clipboard.writeText(query);
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : error;
+        // eslint-disable-next-line no-console
+        console.error('Failed to copy query!', msg);
+      }
     },
   });
 

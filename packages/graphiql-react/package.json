@@ -56,7 +56,6 @@
     "@radix-ui/react-tooltip": "^1.2",
     "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^1.2.1",
-    "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^12.12",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.1",
