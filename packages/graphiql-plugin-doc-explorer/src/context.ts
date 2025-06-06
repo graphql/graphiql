@@ -16,11 +16,13 @@ import {
 } from 'graphql';
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
+  SchemaReference,
+  useGraphiQL,
+  pick,
   createBoundedUseStore,
-  SchemaContextType,
-  useSchemaStore,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
+import { getSchemaReference } from './schema-reference';
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -45,7 +47,7 @@ export type DocExplorerNavStack = [
   ...DocExplorerNavStackItem[],
 ];
 
-export type DocExplorerContextType = {
+export type DocExplorerStoreType = {
   /**
    * A stack of navigation items. The last item in the list is the current one.
    * This list always contains at least one item.
@@ -67,7 +69,7 @@ export type DocExplorerContextType = {
      */
     reset(): void;
     resolveSchemaReferenceToNavItem(
-      schemaReference: SchemaContextType['schemaReference'],
+      schemaReference: SchemaReference | null,
     ): void;
     /**
      * Replace the nav stack with an updated version using the new schema.
@@ -78,7 +80,7 @@ export type DocExplorerContextType = {
 
 const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
 
-export const docExplorerStore = createStore<DocExplorerContextType>(
+export const docExplorerStore = createStore<DocExplorerStoreType>(
   (set, get) => ({
     explorerNavStack: INITIAL_NAV_STACK,
     actions: {
@@ -114,36 +116,42 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
         if (!schemaReference) {
           return;
         }
+        const { kind, typeInfo } = schemaReference;
+        const ref = getSchemaReference(kind, typeInfo);
+        if (!ref) {
+          return;
+        }
+
         const { push } = get().actions;
-        switch (schemaReference.kind) {
+        switch (ref.kind) {
           case 'Type': {
             push({
-              name: schemaReference.type.name,
-              def: schemaReference.type,
+              name: ref.type.name,
+              def: ref.type,
             });
             break;
           }
           case 'Field': {
             push({
-              name: schemaReference.field.name,
-              def: schemaReference.field,
+              name: ref.field.name,
+              def: ref.field,
             });
             break;
           }
           case 'Argument': {
-            if (schemaReference.field) {
+            if (ref.field) {
               push({
-                name: schemaReference.field.name,
-                def: schemaReference.field,
+                name: ref.field.name,
+                def: ref.field,
               });
             }
             break;
           }
           case 'EnumValue': {
-            if (schemaReference.type) {
+            if (ref.type) {
               push({
-                name: schemaReference.type.name,
-                def: schemaReference.type,
+                name: ref.type.name,
+                def: ref.type,
               });
             }
             break;
@@ -235,10 +243,12 @@ export const docExplorerStore = createStore<DocExplorerContextType>(
   }),
 );
 
-export const DocExplorerContextProvider: FC<{
+export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { schema, validationErrors, schemaReference } = useSchemaStore();
+  const { schema, validationErrors, schemaReference } = useGraphiQL(
+    pick('schema', 'validationErrors', 'schemaReference'),
+  );
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =

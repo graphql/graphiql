@@ -1,11 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import {
-  editor,
-  KeyMod,
-  KeyCode,
-  languages,
-} from 'monaco-graphql/esm/monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/esm/monaco-editor';
 
 // to get typescript mode working
 import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
@@ -20,7 +15,13 @@ import {
   MONACO_GRAPHQL_API,
   STORAGE_KEY,
   GRAPHQL_URL,
-  MODEL,
+  OPERATIONS_URI,
+  VARIABLES_URI,
+  RESPONSE_URI,
+  TS_URI,
+  DEFAULT_VALUE,
+  makeOpTemplate,
+  getOrCreateModel,
 } from './constants';
 
 const fetcher = createGraphiQLFetcher({ url: GRAPHQL_URL });
@@ -45,7 +46,7 @@ function debounce<F extends (...args: any[]) => any>(duration: number, fn: F) {
   let timeout = 0;
   return (...args: Parameters<F>) => {
     if (timeout) {
-      window.clearTimeout(timeout);
+      clearTimeout(timeout);
     }
     timeout = window.setTimeout(() => {
       timeout = 0;
@@ -54,58 +55,82 @@ function debounce<F extends (...args: any[]) => any>(duration: number, fn: F) {
   };
 }
 
-const queryAction: editor.IActionDescriptor = {
-  id: 'graphql-run',
-  label: 'Run Operation',
-  contextMenuOrder: 0,
-  contextMenuGroupId: 'graphql',
-  keybindings: [
-    // eslint-disable-next-line no-bitwise
-    KeyMod.CtrlCmd | KeyCode.Enter,
-  ],
-  async run() {
-    const result = await fetcher({
-      query: MODEL.operations.getValue(),
-      variables: JSONC.parse(MODEL.variables.getValue()),
-    });
-    // TODO: this demo only supports a single iteration for http GET/POST,
-    // no multipart or subscriptions yet.
-    // @ts-expect-error
-    const data = await result.next();
-    MODEL.response.setValue(JSON.stringify(data.value, null, 2));
-  },
-};
-// set these early on so that initial variables with comments don't flash an error
-languages.json.jsonDefaults.setDiagnosticsOptions({
-  allowComments: true,
-  trailingCommas: 'ignore',
-});
-
 export default function Editor(): ReactElement {
-  const operationsRef = useRef<HTMLDivElement>(null);
-  const variablesRef = useRef<HTMLDivElement>(null);
-  const responseRef = useRef<HTMLDivElement>(null);
-  const typescriptRef = useRef<HTMLDivElement>(null);
-  const [operationsEditor, setOperationsEditor] =
-    useState<editor.IStandaloneCodeEditor>();
-  const [variablesEditor, setVariablesEditor] =
-    useState<editor.IStandaloneCodeEditor>();
-  const [responseEditor, setResponseEditor] =
-    useState<editor.IStandaloneCodeEditor>();
-  const [typescriptEditor, setTypescriptEditor] =
-    useState<editor.IStandaloneCodeEditor>();
+  const operationsRef = useRef<HTMLDivElement>(null!);
+  const variablesRef = useRef<HTMLDivElement>(null!);
+  const responseRef = useRef<HTMLDivElement>(null!);
+  const tsRef = useRef<HTMLDivElement>(null!);
+
   const [schema, setSchema] = useState<IntrospectionQuery>();
   const [loading, setLoading] = useState(false);
   /**
    * Create the models & editors
    */
   useEffect(() => {
-    if (!operationsEditor) {
-      const codeEditor = editor.create(operationsRef.current!, {
+    const MODEL = {
+      operations: getOrCreateModel({
+        uri: OPERATIONS_URI,
+        value: DEFAULT_VALUE.operations,
+      }),
+      variables: getOrCreateModel({
+        uri: VARIABLES_URI,
+        value: DEFAULT_VALUE.variables,
+      }),
+      response: getOrCreateModel({
+        uri: RESPONSE_URI,
+        value: DEFAULT_VALUE.response,
+      }),
+      ts: getOrCreateModel({
+        uri: TS_URI,
+        value: DEFAULT_VALUE.ts,
+      }),
+    };
+    const EDITOR = {
+      operations: editor.create(operationsRef.current, {
         model: MODEL.operations,
         ...DEFAULT_EDITOR_OPTIONS,
-      });
-      codeEditor.addAction(queryAction);
+      }),
+      variables: editor.create(variablesRef.current, {
+        model: MODEL.variables,
+        ...DEFAULT_EDITOR_OPTIONS,
+      }),
+      response: editor.create(responseRef.current, {
+        model: MODEL.response,
+        ...DEFAULT_EDITOR_OPTIONS,
+        readOnly: true,
+        smoothScrolling: true,
+      }),
+      ts: editor.create(tsRef.current, {
+        model: MODEL.ts,
+        ...DEFAULT_EDITOR_OPTIONS,
+        smoothScrolling: true,
+        readOnly: false,
+        'semanticHighlighting.enabled': true,
+        language: 'typescript',
+      }),
+    };
+    const queryAction: editor.IActionDescriptor = {
+      id: 'graphql-run',
+      label: 'Run Operation',
+      contextMenuOrder: 0,
+      contextMenuGroupId: 'graphql',
+      // eslint-disable-next-line no-bitwise
+      keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
+      async run() {
+        const result = await fetcher({
+          query: MODEL.operations.getValue(),
+          variables: JSONC.parse(MODEL.variables.getValue()),
+        });
+        // TODO: this demo only supports a single iteration for http GET/POST,
+        // no multipart or subscriptions yet.
+        // @ts-expect-error
+        const data = await result.next();
+        MODEL.response.setValue(JSON.stringify(data.value, null, 2));
+      },
+    };
+
+    const disposables = [
+      EDITOR.operations.addAction(queryAction),
       MODEL.operations.onDidChangeContent(
         debounce(300, () => {
           localStorage.setItem(
@@ -113,15 +138,12 @@ export default function Editor(): ReactElement {
             MODEL.operations.getValue(),
           );
         }),
-      );
-      setOperationsEditor(codeEditor);
-    }
-    if (!variablesEditor) {
-      const codeEditor = editor.create(variablesRef.current!, {
-        model: MODEL.variables,
-        ...DEFAULT_EDITOR_OPTIONS,
-      });
-      codeEditor.addAction(queryAction);
+      ),
+      MODEL.operations.onDidChangeContent(() => {
+        const value = MODEL.operations.getValue();
+        MODEL.ts.setValue(makeOpTemplate(value));
+      }),
+      EDITOR.variables.addAction(queryAction),
       MODEL.variables.onDidChangeContent(
         debounce(300, () => {
           localStorage.setItem(
@@ -129,32 +151,17 @@ export default function Editor(): ReactElement {
             MODEL.variables.getValue(),
           );
         }),
-      );
-      setVariablesEditor(codeEditor);
-    }
-    if (!responseEditor) {
-      setResponseEditor(
-        editor.create(responseRef.current!, {
-          model: MODEL.response,
-          ...DEFAULT_EDITOR_OPTIONS,
-          readOnly: true,
-          smoothScrolling: true,
-        }),
-      );
-    }
-    if (!typescriptEditor) {
-      setTypescriptEditor(
-        editor.create(typescriptRef.current!, {
-          model: MODEL.typescript,
-          ...DEFAULT_EDITOR_OPTIONS,
-          smoothScrolling: true,
-          readOnly: false,
-          'semanticHighlighting.enabled': true,
-          language: 'typescript',
-        }),
-      );
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only run once on mount
+      ),
+      ...Object.values(EDITOR),
+      ...Object.values(MODEL),
+    ];
+    // Clean‑up on unmount
+    return () => {
+      for (const disposable of disposables) {
+        disposable.dispose(); // remove the listener
+      }
+    };
+  }, []);
   /**
    * Handle the initial schema load
    */
@@ -180,7 +187,7 @@ export default function Editor(): ReactElement {
       </div>
       <div className="pane">
         <div ref={responseRef} className="left-editor" />
-        <div ref={typescriptRef} className="left-editor" />
+        <div ref={tsRef} className="left-editor" />
       </div>
     </>
   );

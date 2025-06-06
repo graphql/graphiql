@@ -1,5 +1,72 @@
 # Change Log
 
+## 5.0.0-rc.1
+
+### Major Changes
+
+- [#3990](https://github.com/graphql/graphiql/pull/3990) [`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - allow multiple independent instances of GraphiQL on the same page
+  - store `onClickReference` in query editor in React `ref`
+  - remove `onClickReference` from variable editor
+  - fix shortcut text per OS for run query in execute query button's tooltip and in default query
+  - allow override all default GraphiQL plugins
+  - adjust operation argument color to be purple from GraphiQL v2 on dark/light theme
+
+### Patch Changes
+
+- Updated dependencies [[`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92)]:
+  - @graphiql/plugin-doc-explorer@0.3.0-rc.1
+  - @graphiql/plugin-history@0.3.0-rc.1
+  - @graphiql/react@0.35.0-rc.1
+
+## 5.0.0-rc.0
+
+### Major Changes
+
+- [#3966](https://github.com/graphql/graphiql/pull/3966) [`17bee1c`](https://github.com/graphql/graphiql/commit/17bee1ced4637cfa5e0e6cddc7716d89cfa49687) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Remove examples: `GraphiQL x Parcel` and `GraphiQL x Create React App`
+
+  Add new examples: `GraphiQL x Vite` and `GraphiQL x Next.js`
+
+- [#3234](https://github.com/graphql/graphiql/pull/3234) [`86a96e5`](https://github.com/graphql/graphiql/commit/86a96e5f1779b5d0e84ad4179dbd6c5d4947fb91) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Migration from Codemirror to [Monaco Editor](https://github.com/microsoft/monaco-editor)
+
+  Replacing `codemirror-graphql` with [`monaco-graphql`](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql)
+
+  Support for comments in **Variables** and **Headers** editors
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
+
+  - replace `onMergeQuery` hook with `mergeQuery` function
+  - replace `onPrettifyEditors` hook with `prettifyEditors` function
+  - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
+  - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
+  - remove exports (use `GraphiQLProvider`)
+    - `EditorContextProvider`
+    - `ExecutionContextProvider`
+    - `PluginContextProvider`
+    - `SchemaContextProvider`
+    - `StorageContextProvider`
+    - `ExecutionContextType`
+    - `PluginContextType`
+  - feat(@graphiql/react): migrate React context to zustand:
+    - replace `useExecutionContext` with `useExecutionStore` hook
+    - replace `useEditorContext` with `useEditorStore` hook
+  - prefer `getComputedStyle` over `window.getComputedStyle`
+
+- [#3950](https://github.com/graphql/graphiql/pull/3950) [`2455907`](https://github.com/graphql/graphiql/commit/245590708cea52ff6f1bcce8664781f7e56029cb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - remove `useQueryEditor`, `useVariableEditor`, `useHeaderEditor`, `useResponseEditor` hooks
+  - remove `UseHeaderEditorArgs`, `UseQueryEditorArgs`, `UseResponseEditorArgs`, `UseVariableEditorArgs` exports
+  - rename components
+    - `StorageContextProvider` => `StorageStore`
+    - `EditorContextProvider` => `EditorStore`
+    - `SchemaContextProvider` => `SchemaStore`
+    - `ExecutionContextProvider` => `ExecutionStore`
+    - `HistoryContextProvider` => `HistoryStore`
+    - `ExplorerContextProvider` => `ExplorerStore`
+- Updated dependencies [[`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e), [`86a96e5`](https://github.com/graphql/graphiql/commit/86a96e5f1779b5d0e84ad4179dbd6c5d4947fb91), [`2455907`](https://github.com/graphql/graphiql/commit/245590708cea52ff6f1bcce8664781f7e56029cb)]:
+  - @graphiql/plugin-doc-explorer@0.3.0-rc.0
+  - @graphiql/plugin-history@0.3.0-rc.0
+  - @graphiql/react@0.35.0-rc.0
+
 ## 4.1.2
 
 ### Patch Changes

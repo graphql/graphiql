@@ -1,0 +1,56 @@
+.graphiql-editor {
+  height: 100%;
+  width: 100%;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+.monaco-editor {
+  /* otherwise editor couldn't be resized */
+  position: absolute !important;
+  /**
+   * Monaco-editor from v0.52 shows some blue lines for all editors
+   * @see https://github.com/microsoft/monaco-editor/issues/4455
+   */
+  outline-width: 0 !important;
+
+  .highlight {
+    color: hsl(var(--color-primary)) !important;
+  }
+  input:focus-visible {
+    outline-color: hsl(var(--color-primary));
+  }
+}
+
+.graphiql-response .monaco-editor {
+  /* Add some padding so it doesn’t touch the tabs */
+  padding-top: var(--px-16);
+}
+
+/* Make hover contents be dynamic */
+.monaco-hover,
+.monaco-hover-content {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.monaco-editor
+  .suggest-widget
+  .monaco-list
+  .monaco-list-row
+  > .contents
+  > .main {
+  & > .left {
+    flex-grow: 0;
+  }
+
+  /* Align type autocomplete suggestion on right */
+  & > .right {
+    flex-grow: 1;
+    margin-right: auto;
+  }
+}

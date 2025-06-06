@@ -1,0 +1,1 @@
+../../graphiql/__mocks__/monaco-editor.ts

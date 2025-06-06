@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "declaration": true,
+    "noUncheckedIndexedAccess": true,
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   }
 }
