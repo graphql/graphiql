@@ -1,7 +1,6 @@
 'use no memo'; // can't figure why it isn't optimized
 
-import { storageStore, editorStore } from '../stores';
-import { debounce } from './debounce';
+import { storageStore } from '../stores';
 
 export type TabDefinition = {
   /**
@@ -104,7 +103,7 @@ export function getDefaultTabState({
       let matchingTabIndex = -1;
 
       for (let index = 0; index < parsed.tabs.length; index++) {
-        const tab = parsed.tabs[index];
+        const tab = parsed.tabs[index]!;
         tab.hash = hashFromTabContents({
           query: tab.query,
           variables: tab.variables,
@@ -183,23 +182,6 @@ function hasStringOrNullKey(obj: Record<string, any>, key: string) {
   return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
 }
 
-export function synchronizeActiveTabValues(state: TabsState): TabsState {
-  const {
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    operationName,
-  } = editorStore.getState();
-  return setPropertiesInActiveTab(state, {
-    query: queryEditor?.getValue() ?? null,
-    variables: variableEditor?.getValue() ?? null,
-    headers: headerEditor?.getValue() ?? null,
-    response: responseEditor?.getValue() ?? null,
-    operationName: operationName ?? null,
-  });
-}
-
 export function serializeTabState(
   tabState: TabsState,
   shouldPersistHeaders = false,
@@ -211,39 +193,6 @@ export function serializeTabState(
       ? null
       : value,
   );
-}
-
-export function storeTabs({ tabs, activeTabIndex }: TabsState) {
-  const { storage } = storageStore.getState();
-  const { shouldPersistHeaders } = editorStore.getState();
-  const store = debounce(500, (value: string) => {
-    storage.set(STORAGE_KEY, value);
-  });
-  store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
-}
-
-export function setEditorValues({
-  query,
-  variables,
-  headers,
-  response,
-}: {
-  query: string | null;
-  variables?: string | null;
-  headers?: string | null;
-  response: string | null;
-}) {
-  const {
-    queryEditor,
-    variableEditor,
-    headerEditor,
-    responseEditor,
-    defaultHeaders,
-  } = editorStore.getState();
-  queryEditor?.setValue(query ?? '');
-  variableEditor?.setValue(variables ?? '');
-  headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-  responseEditor?.setValue(response ?? '');
 }
 
 export function createTab({

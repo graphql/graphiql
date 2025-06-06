@@ -1,5 +1,5 @@
-// eslint-disable-next-line import-x/no-extraneous-dependencies
-import * as monaco from 'monaco-editor';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import type * as monaco from 'monaco-editor';
 
 declare global {
   interface Window {

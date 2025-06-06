@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, useEffect, Children } from 'react';
+import { useState, useEffect, Children, useRef } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -32,10 +32,8 @@ import {
   Tooltip,
   UnStyledButton,
   useDragResize,
-  useEditorStore,
-  useExecutionStore,
-  usePluginStore,
-  useSchemaStore,
+  useGraphiQL,
+  pick,
   useStorage,
   useThemeStore,
   VariableEditor,
@@ -69,7 +67,7 @@ export interface GraphiQLProps
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [],
+  plugins = [HISTORY_PLUGIN],
   referencePlugin = DOC_EXPLORER_PLUGIN,
   readOnly,
   onEditQuery,
@@ -114,7 +112,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onEditHeaders,
     responseTooltip,
     defaultEditorToolsVisibility,
-    isHeadersEditorEnabled: isHeadersEditorEnabled ?? true,
+    isHeadersEditorEnabled,
     forcedTheme:
       forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
     confirmCloseTab,
@@ -122,7 +120,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   };
   return (
     <GraphiQLProvider
-      plugins={[referencePlugin, HISTORY_PLUGIN, ...plugins]}
+      plugins={[referencePlugin, ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
     >
@@ -187,7 +185,7 @@ interface GraphiQLInterfaceProps
    * the index of the tab that is about to be closed. It can return a promise
    * that should resolve to `true` (meaning the tab may be closed) or `false`
    * (meaning the tab may not be closed).
-   * @param index The index of the tab that should be closed.
+   * @param index - The index of the tab that should be closed.
    */
   confirmCloseTab?(index: number): Promise<boolean> | boolean;
 }
@@ -200,7 +198,7 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
-  isHeadersEditorEnabled,
+  isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
   children: $children,
   confirmCloseTab,
@@ -223,11 +221,33 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     shouldPersistHeaders,
     tabs,
     activeTabIndex,
-  } = useEditorStore();
-  const isExecutionFetching = useExecutionStore(store => store.isFetching);
-  const { isFetching: isSchemaFetching, introspect } = useSchemaStore();
+    isFetching,
+    isIntrospecting,
+    introspect,
+    visiblePlugin,
+    setVisiblePlugin,
+    plugins,
+  } = useGraphiQL(
+    pick(
+      'initialVariables',
+      'initialHeaders',
+      'setShouldPersistHeaders',
+      'addTab',
+      'moveTab',
+      'closeTab',
+      'changeTab',
+      'shouldPersistHeaders',
+      'tabs',
+      'activeTabIndex',
+      'isFetching',
+      'isIntrospecting',
+      'introspect',
+      'visiblePlugin',
+      'setVisiblePlugin',
+      'plugins',
+    ),
+  );
   const storageContext = useStorage();
-  const { visiblePlugin, setVisiblePlugin, plugins } = usePluginStore();
   const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
@@ -436,13 +456,13 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <Tooltip label="Re-fetch GraphQL schema">
         <UnStyledButton
           type="button"
-          disabled={isSchemaFetching}
+          disabled={isIntrospecting}
           onClick={introspect}
           aria-label="Re-fetch GraphQL schema"
           style={{ marginTop: 'auto' }}
         >
           <ReloadIcon
-            className={cn(isSchemaFetching && 'graphiql-spin')}
+            className={cn(isIntrospecting && 'graphiql-spin')}
             aria-hidden="true"
           />
         </UnStyledButton>
@@ -679,7 +699,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <VariableEditor
           className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
-          onClickReference={onClickReference}
           readOnly={readOnly}
         />
         {isHeadersEditorEnabled && (
@@ -692,6 +711,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       </section>
     </div>
   );
+
+  const tabContainerRef = useRef<HTMLUListElement>(null!);
 
   return (
     <Tooltip.Provider>
@@ -718,6 +739,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <div ref={pluginResize.secondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs
+                ref={tabContainerRef}
                 values={tabs}
                 onReorder={moveTab}
                 aria-label="Select active operation"
@@ -726,6 +748,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                 {tabs.map((tab, index, arr) => (
                   <Tab
                     key={tab.id}
+                    // Prevent overscroll over container
+                    dragConstraints={tabContainerRef}
                     value={tab}
                     isActive={index === activeTabIndex}
                   >
@@ -764,7 +788,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                 ref={editorResize.dragBarRef}
               />
               <div className="graphiql-response" ref={editorResize.secondRef}>
-                {isExecutionFetching && <Spinner />}
+                {isFetching && <Spinner />}
                 <ResponseEditor responseTooltip={responseTooltip} />
                 {footer}
               </div>

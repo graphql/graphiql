@@ -38,8 +38,8 @@ const ImagePreview_: FC<ImagePreviewProps> = ({ path }) => {
         alt=""
         onLoad={() => {
           setDimensions({
-            width: ref.current?.naturalWidth ?? null,
-            height: ref.current?.naturalHeight ?? null,
+            width: ref.current.naturalWidth,
+            height: ref.current.naturalHeight,
           });
         }}
         ref={ref}

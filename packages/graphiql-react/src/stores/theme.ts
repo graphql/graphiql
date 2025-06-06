@@ -11,6 +11,11 @@ import { editor as monacoEditor } from '../monaco-editor';
  */
 export type Theme = 'light' | 'dark' | null;
 
+type MonacoTheme =
+  | monacoEditor.BuiltinTheme
+  | (typeof EDITOR_THEME)[keyof typeof EDITOR_THEME]
+  | ({} & string);
+
 type ThemeStoreType = {
   theme: Theme;
   /**
@@ -30,8 +35,8 @@ type ThemeStoreProps = {
    * @default { dark: 'graphiql-DARK', light: 'graphiql-LIGHT' }
    */
   editorTheme?: {
-    dark: string;
-    light: string;
+    dark: MonacoTheme;
+    light: MonacoTheme;
   };
 };
 

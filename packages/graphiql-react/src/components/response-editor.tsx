@@ -1,15 +1,17 @@
 import { formatError } from '@graphiql/toolkit';
 import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { useSchemaStore, useEditorStore, editorStore } from '../stores';
+import { useGraphiQL } from './provider';
 import { ImagePreview } from './image-preview';
 import {
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
+  pick,
+  cleanupDisposables,
+  cn,
 } from '../utility';
-import { RESPONSE_URI } from '../constants';
-import { clsx } from 'clsx';
+import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
 import { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
@@ -36,8 +38,23 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const { fetchError, validationErrors } = useSchemaStore();
-  const { initialResponse, responseEditor } = useEditorStore();
+  const {
+    fetchError,
+    validationErrors,
+    initialResponse,
+    responseEditor,
+    setEditor,
+    run,
+  } = useGraphiQL(
+    pick(
+      'fetchError',
+      'validationErrors',
+      'initialResponse',
+      'responseEditor',
+      'setEditor',
+      'run',
+    ),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
@@ -49,7 +66,6 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({
       uri: RESPONSE_URI,
       value: initialResponse,
@@ -124,16 +140,11 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     };
     const disposables = [
       languages.registerHoverProvider(model.getLanguageId(), { provideHover }),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor,
       model,
     ];
-
-    // Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
@@ -145,7 +156,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('result-window', props.className)}
+      className={cn('result-window', props.className)}
     />
   );
 };

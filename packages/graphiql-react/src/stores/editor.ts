@@ -1,41 +1,31 @@
-import { createStore } from 'zustand';
-import {
+import type { StateCreator } from 'zustand';
+import type {
   FragmentDefinitionNode,
-  parse,
   ValidationRule,
-  visit,
-  print,
+  OperationDefinitionNode,
+  DocumentNode,
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { MaybePromise } from '@graphiql/toolkit';
-
-import { storageStore, useStorage } from './storage';
-import { executionStore } from './execution';
-
+import { MaybePromise, mergeAst } from '@graphiql/toolkit';
+import { storageStore } from './storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
-import { STORAGE_KEY_QUERY } from '../components/query-editor';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from '../components/variable-editor';
 
 import {
   createTab,
-  getDefaultTabState,
   setPropertiesInActiveTab,
   TabDefinition,
   TabsState,
   TabState,
-  setEditorValues,
-  storeTabs,
-  synchronizeActiveTabValues,
   clearHeadersFromTabs,
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
-import { MonacoEditor } from '../types';
-import { DEFAULT_QUERY } from '../constants';
-import { createBoundedUseStore, useSynchronizeValue } from '../utility';
+import { AllSlices, MonacoEditor } from '../types';
+import { DEFAULT_PRETTIFY_QUERY } from '../constants';
+import { debounce, formatJSONC } from '../utility';
+import { print } from 'graphql';
 
-interface EditorStoreType extends TabsState {
+export interface EditorSlice extends TabsState {
   /**
    * Add a new tab.
    */
@@ -94,7 +84,7 @@ interface EditorStoreType extends TabsState {
    */
   setEditor(
     state: Pick<
-      EditorStoreType,
+      EditorSlice,
       'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
     >,
   ): void;
@@ -217,17 +207,40 @@ interface EditorStoreType extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
+
+  storeTabs(tabsState: TabsState): void;
+
+  setOperationFacts(facts: {
+    documentAST?: DocumentNode;
+    operationName?: string;
+    operations?: OperationDefinitionNode[];
+  }): void;
+
+  /**
+   * Copy a query to clipboard.
+   */
+  copyQuery: () => Promise<void>;
+
+  /**
+   * Merge fragments definitions into operation definition.
+   */
+  mergeQuery: () => void;
+
+  /**
+   * Prettify query, variable and header editors.
+   */
+  prettifyEditors: () => Promise<void>;
 }
 
-type EditorStoreProps = Pick<
-  EditorStoreType,
-  | 'onTabChange'
-  | 'onEditOperationName'
-  | 'defaultHeaders'
-  | 'defaultQuery'
-  | 'onCopyQuery'
-> & {
-  children: ReactNode;
+export interface EditorProps
+  extends Pick<
+    EditorSlice,
+    | 'onTabChange'
+    | 'onEditOperationName'
+    | 'defaultHeaders'
+    | 'defaultQuery'
+    | 'onCopyQuery'
+  > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
    * included in the query document (depending on usage). You can either pass
@@ -291,267 +304,275 @@ type EditorStoreProps = Pick<
    * typing in the editor.
    */
   variables?: string;
-  onPrettifyQuery?: EditorStoreType['onPrettifyQuery'];
-};
+  onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
+}
 
-const DEFAULT_PRETTIFY_QUERY: EditorStoreType['onPrettifyQuery'] = query =>
-  print(parse(query));
+type CreateEditorSlice = (
+  initial: Pick<
+    EditorSlice,
+    | 'shouldPersistHeaders'
+    | 'tabs'
+    | 'activeTabIndex'
+    | 'initialQuery'
+    | 'initialVariables'
+    | 'initialHeaders'
+    | 'initialResponse'
+  >,
+) => StateCreator<AllSlices, [], [], EditorSlice>;
 
-export const editorStore = createStore<EditorStoreType>((set, get) => ({
-  tabs: null!,
-  activeTabIndex: null!,
-  addTab() {
-    set(current => {
-      const { defaultQuery, defaultHeaders, onTabChange } = get();
-
-      // Make sure the current tab stores the latest values
-      const updatedValues = synchronizeActiveTabValues(current);
-      const updated = {
-        tabs: [
-          ...updatedValues.tabs,
-          createTab({
-            headers: defaultHeaders,
-            query: defaultQuery,
-          }),
-        ],
-        activeTabIndex: updatedValues.tabs.length,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  changeTab(index) {
-    const { stop } = executionStore.getState();
-    stop();
-
-    set(current => {
-      const { onTabChange } = get();
-      const updated = {
-        ...current,
-        activeTabIndex: index,
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  moveTab(newOrder) {
-    set(current => {
-      const { onTabChange } = get();
-      const activeTab = current.tabs[current.activeTabIndex];
-      const updated = {
-        tabs: newOrder,
-        activeTabIndex: newOrder.indexOf(activeTab),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  closeTab(index) {
-    const { activeTabIndex, onTabChange } = get();
-
-    if (activeTabIndex === index) {
-      const { stop } = executionStore.getState();
-      stop();
-    }
-
-    set(current => {
-      const updated = {
-        tabs: current.tabs.filter((_tab, i) => index !== i),
-        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-      };
-      storeTabs(updated);
-      setEditorValues(updated.tabs[updated.activeTabIndex]);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  updateActiveTabValues(partialTab) {
-    set(current => {
-      if (!current.tabs) {
-        // Vitest fails with TypeError: Cannot read properties of null (reading 'map')
-        // in `setPropertiesInActiveTab` when `tabs` is `null`
-        return current;
-      }
-      const { onTabChange } = get();
-      const updated = setPropertiesInActiveTab(current, partialTab);
-      storeTabs(updated);
-      onTabChange?.(updated);
-      return updated;
-    });
-  },
-  setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
-    const entries = Object.entries({
-      headerEditor,
+export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
+  function setEditorValues({
+    query,
+    variables,
+    headers,
+    response,
+  }: {
+    query: string | null;
+    variables?: string | null;
+    headers?: string | null;
+    response: string | null;
+  }) {
+    const {
       queryEditor,
-      responseEditor,
       variableEditor,
-    }).filter(([_key, value]) => value);
-    const newState = Object.fromEntries(entries);
-    set(newState);
-  },
-  setOperationName(operationName) {
-    const { onEditOperationName, updateActiveTabValues } = get();
-    set({ operationName });
-    updateActiveTabValues({ operationName });
-    onEditOperationName?.(operationName);
-  },
-  shouldPersistHeaders: false,
-  setShouldPersistHeaders(persist) {
-    const { headerEditor, tabs, activeTabIndex } = get();
-    const { storage } = storageStore.getState();
-    if (persist) {
-      storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-      const serializedTabs = serializeTabState({ tabs, activeTabIndex }, true);
-      storage.set(STORAGE_KEY_TABS, serializedTabs);
-    } else {
-      storage.set(STORAGE_KEY_HEADERS, '');
-      clearHeadersFromTabs();
-    }
-    set({ shouldPersistHeaders: persist });
-    storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-  },
-  onEditOperationName: undefined,
-  externalFragments: null!,
-  onTabChange: undefined,
-  defaultQuery: undefined,
-  defaultHeaders: undefined,
-  validationRules: null!,
-  initialHeaders: null!,
-  initialQuery: null!,
-  initialResponse: null!,
-  initialVariables: null!,
-  onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
-}));
-
-export const EditorStore: FC<EditorStoreProps> = ({
-  externalFragments,
-  onEditOperationName,
-  defaultHeaders,
-  onTabChange,
-  defaultQuery,
-  children,
-  shouldPersistHeaders = false,
-  validationRules = [],
-  onCopyQuery,
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-  ...props
-}) => {
-  const storage = useStorage();
-  const isMounted = useEditorStore(store => Boolean(store.tabs));
-
-  const headerEditor = useEditorStore(store => store.headerEditor);
-  const queryEditor = useEditorStore(store => store.queryEditor);
-  const responseEditor = useEditorStore(store => store.responseEditor);
-  const variableEditor = useEditorStore(store => store.variableEditor);
-
-  useSynchronizeValue(headerEditor, props.headers);
-  useSynchronizeValue(queryEditor, props.query);
-  useSynchronizeValue(responseEditor, props.response);
-  useSynchronizeValue(variableEditor, props.variables);
-
-  // TODO:
-  // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
-  // useEffect(() => {
-  //   const propValue = shouldPersistHeaders;
-  //   if (lastShouldPersistHeadersProp.current !== propValue) {
-  //     editorStore.getState().setShouldPersistHeaders(propValue);
-  //     lastShouldPersistHeadersProp.current = propValue;
-  //   }
-  // }, [shouldPersistHeaders]);
-
-  const $externalFragments = (() => {
-    const map = new Map<string, FragmentDefinitionNode>();
-    if (Array.isArray(externalFragments)) {
-      for (const fragment of externalFragments) {
-        map.set(fragment.name.value, fragment);
-      }
-    } else if (typeof externalFragments === 'string') {
-      visit(parse(externalFragments, {}), {
-        FragmentDefinition(fragment) {
-          map.set(fragment.name.value, fragment);
-        },
-      });
-    } else if (externalFragments) {
-      throw new Error(
-        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
-      );
-    }
-    return map;
-  })();
-
-  useEffect(() => {
-    // We only need to compute it lazily during the initial render.
-    const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
-    const variables =
-      props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
-    const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
-    const response = props.response ?? '';
-
-    const { tabs, activeTabIndex } = getDefaultTabState({
-      query,
-      variables,
-      headers,
-      defaultTabs: props.defaultTabs,
-      defaultQuery: defaultQuery || DEFAULT_QUERY,
+      headerEditor,
+      responseEditor,
       defaultHeaders,
-      shouldPersistHeaders,
-    });
-    storeTabs({ tabs, activeTabIndex });
-
-    const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
-
-    const $shouldPersistHeaders =
-      shouldPersistHeaders !== false && isStored
-        ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-        : shouldPersistHeaders;
-
-    editorStore.setState({
-      shouldPersistHeaders: $shouldPersistHeaders,
-      tabs,
-      activeTabIndex,
-      initialQuery:
-        query ?? (activeTabIndex === 0 ? tabs[0].query : null) ?? '',
-      initialVariables: variables ?? '',
-      initialHeaders: headers ?? defaultHeaders ?? '',
-      initialResponse: response,
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-
-  useEffect(() => {
-    editorStore.setState({
-      externalFragments: $externalFragments,
-      onTabChange,
-      onEditOperationName,
-      defaultQuery,
-      defaultHeaders,
-      validationRules,
-      onCopyQuery,
-      onPrettifyQuery,
-    });
-  }, [
-    $externalFragments,
-    onTabChange,
-    onEditOperationName,
-    defaultQuery,
-    defaultHeaders,
-    validationRules,
-    onCopyQuery,
-    onPrettifyQuery,
-  ]);
-
-  if (!isMounted) {
-    // Ensure store was initialized
-    return null;
+    } = get();
+    queryEditor?.setValue(query ?? '');
+    variableEditor?.setValue(variables ?? '');
+    headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+    responseEditor?.setValue(response ?? '');
   }
-  return children as ReactElement;
+
+  function synchronizeActiveTabValues(tabsState: TabsState): TabsState {
+    const {
+      queryEditor,
+      variableEditor,
+      headerEditor,
+      responseEditor,
+      operationName,
+    } = get();
+    return setPropertiesInActiveTab(tabsState, {
+      query: queryEditor?.getValue() ?? null,
+      variables: variableEditor?.getValue() ?? null,
+      headers: headerEditor?.getValue() ?? null,
+      response: responseEditor?.getValue() ?? null,
+      operationName: operationName ?? null,
+    });
+  }
+
+  return {
+    ...initial,
+
+    addTab() {
+      set(current => {
+        const { defaultQuery, defaultHeaders, onTabChange, storeTabs } = get();
+
+        // Make sure the current tab stores the latest values
+        const updatedValues = synchronizeActiveTabValues(current);
+        const updated = {
+          tabs: [
+            ...updatedValues.tabs,
+            createTab({
+              headers: defaultHeaders,
+              query: defaultQuery,
+            }),
+          ],
+          activeTabIndex: updatedValues.tabs.length,
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    changeTab(index) {
+      const { stop, onTabChange, storeTabs } = get();
+      stop();
+
+      set(current => {
+        const updated = {
+          ...current,
+          activeTabIndex: index,
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    moveTab(newOrder) {
+      set(current => {
+        const { onTabChange, storeTabs } = get();
+        const activeTab = current.tabs[current.activeTabIndex]!;
+        const updated = {
+          tabs: newOrder,
+          activeTabIndex: newOrder.indexOf(activeTab),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    closeTab(index) {
+      const { activeTabIndex, onTabChange, stop, storeTabs } = get();
+
+      if (activeTabIndex === index) {
+        stop();
+      }
+
+      set(current => {
+        const updated = {
+          tabs: current.tabs.filter((_tab, i) => index !== i),
+          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+        };
+        storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    updateActiveTabValues(partialTab) {
+      set(current => {
+        const { onTabChange, storeTabs } = get();
+        const updated = setPropertiesInActiveTab(current, partialTab);
+        storeTabs(updated);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
+    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+      const entries = Object.entries({
+        headerEditor,
+        queryEditor,
+        responseEditor,
+        variableEditor,
+      }).filter(([_key, value]) => value);
+      const newState = Object.fromEntries(entries);
+      set(newState);
+    },
+    setOperationName(operationName) {
+      const { onEditOperationName, updateActiveTabValues } = get();
+      set({ operationName });
+      updateActiveTabValues({ operationName });
+      onEditOperationName?.(operationName);
+    },
+    setShouldPersistHeaders(persist) {
+      const { headerEditor, tabs, activeTabIndex } = get();
+      const { storage } = storageStore.getState();
+      if (persist) {
+        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(
+          { tabs, activeTabIndex },
+          true,
+        );
+        storage.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs();
+      }
+      set({ shouldPersistHeaders: persist });
+      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    },
+    onEditOperationName: undefined,
+    externalFragments: null!,
+    onTabChange: undefined,
+    defaultQuery: undefined,
+    defaultHeaders: undefined,
+    validationRules: null!,
+    onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
+    storeTabs({ tabs, activeTabIndex }) {
+      const { storage } = storageStore.getState();
+      const { shouldPersistHeaders } = get();
+      const store = debounce(500, (value: string) => {
+        storage.set(STORAGE_KEY_TABS, value);
+      });
+      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    },
+    setOperationFacts({ documentAST, operationName, operations }) {
+      set({
+        documentAST,
+        operationName,
+        operations,
+      });
+    },
+    async copyQuery() {
+      const { queryEditor, onCopyQuery } = get();
+      if (!queryEditor) {
+        return;
+      }
+
+      const query = queryEditor.getValue();
+      onCopyQuery?.(query);
+      try {
+        await navigator.clipboard.writeText(query);
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : error;
+        // eslint-disable-next-line no-console
+        console.error('Failed to copy query!', msg);
+      }
+    },
+    async prettifyEditors() {
+      const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+        get();
+
+      if (variableEditor) {
+        try {
+          const content = variableEditor.getValue();
+          const formatted = await formatJSONC(content);
+          if (formatted !== content) {
+            variableEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(
+            'Parsing variables JSON failed, skip prettification.',
+            error,
+          );
+        }
+      }
+
+      if (headerEditor) {
+        try {
+          const content = headerEditor.getValue();
+          const formatted = await formatJSONC(content);
+          if (formatted !== content) {
+            headerEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(
+            'Parsing headers JSON failed, skip prettification.',
+            error,
+          );
+        }
+      }
+
+      if (!queryEditor) {
+        return;
+      }
+      try {
+        const content = queryEditor.getValue();
+        const formatted = await onPrettifyQuery(content);
+        if (formatted !== content) {
+          queryEditor.setValue(formatted);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Parsing query failed, skip prettification.', error);
+      }
+    },
+    mergeQuery() {
+      const { queryEditor, documentAST, schema } = get();
+      const query = queryEditor?.getValue();
+      if (!documentAST || !query) {
+        return;
+      }
+      queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+    },
+  };
 };
 
-export const useEditorStore = createBoundedUseStore(editorStore);
-
-const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
+export const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';

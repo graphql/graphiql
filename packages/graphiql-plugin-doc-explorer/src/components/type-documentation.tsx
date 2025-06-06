@@ -9,7 +9,7 @@ import {
   isNamedType,
   isObjectType,
 } from 'graphql';
-import { useSchemaStore, Button, MarkdownContent } from '@graphiql/react';
+import { useGraphiQL, Button, MarkdownContent } from '@graphiql/react';
 import { DocExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
@@ -75,7 +75,8 @@ const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   const fields: DocExplorerFieldDef[] = [];
   const deprecatedFields: DocExplorerFieldDef[] = [];
 
-  for (const field of Object.keys(fieldMap).map(name => fieldMap[name])) {
+  // TODO: maybe can be refactored to Object.values(fieldMap) ?
+  for (const field of Object.keys(fieldMap).map(name => fieldMap[name]!)) {
     if (field.deprecationReason) {
       deprecatedFields.push(field);
     } else {
@@ -172,15 +173,15 @@ const EnumValues: FC<{ type: GraphQLNamedType }> = ({ type }) => {
 
   return (
     <>
-      {values.length > 0 ? (
+      {values.length > 0 && (
         <ExplorerSection title="Enum Values">
           {values.map(value => (
             <EnumValue key={value.name} value={value} />
           ))}
         </ExplorerSection>
-      ) : null}
-      {deprecatedValues.length > 0 ? (
-        showDeprecated || values.length === 0 ? (
+      )}
+      {deprecatedValues.length > 0 &&
+        (showDeprecated || !values.length ? (
           <ExplorerSection title="Deprecated Enum Values">
             {deprecatedValues.map(value => (
               <EnumValue key={value.name} value={value} />
@@ -190,8 +191,7 @@ const EnumValues: FC<{ type: GraphQLNamedType }> = ({ type }) => {
           <Button type="button" onClick={handleShowDeprecated}>
             Show Deprecated Values
           </Button>
-        )
-      ) : null}
+        ))}
     </>
   );
 };
@@ -215,7 +215,7 @@ const EnumValue: FC<{ value: GraphQLEnumValue }> = ({ value }) => {
 };
 
 const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
-  const schema = useSchemaStore(store => store.schema);
+  const schema = useGraphiQL(state => state.schema);
   if (!schema || !isAbstractType(type)) {
     return null;
   }

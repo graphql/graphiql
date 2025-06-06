@@ -50,31 +50,26 @@ declare namespace Cypress {
   }
 }
 
-// @ts-expect-error -- fixme
 Cypress.Commands.add('dataCy', value => {
-  return cy.get(`[data-cy="${value}"]`);
+  cy.get(`[data-cy="${value}"]`);
 });
 
-// @ts-expect-error -- fixme
 Cypress.Commands.add('clickExecuteQuery', () => {
-  return cy.get('.graphiql-execute-button').click();
+  cy.get('.graphiql-execute-button').click();
 });
 
-// @ts-expect-error -- fixme
 Cypress.Commands.add('clickPrettify', () => {
-  return cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
+  cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
-// @ts-expect-error -- fixme
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `/?query=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
     url += `&variables=${encodeURIComponent(
-      // @ts-expect-error -- fixme
       JSON.stringify(variables, null, 2) || variablesString,
     )}`;
   }
-  return cy.visit(url);
+  cy.visit(url);
 });
 
 Cypress.Commands.add(
@@ -83,7 +78,7 @@ Cypress.Commands.add(
     cy.get(
       '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
     ).should(element => {
-      const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+      const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
       const expected = query;
       expect(actual).to.equal(expected);
     });
@@ -94,7 +89,7 @@ Cypress.Commands.add(
       )
         .eq(0)
         .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
           const expected = JSON.stringify(variables, null, 2);
           expect(actual).to.equal(expected);
         });
@@ -106,7 +101,7 @@ Cypress.Commands.add(
       )
         .eq(0)
         .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
           const expected = variablesString;
           expect(actual).to.equal(expected);
         });
@@ -118,14 +113,14 @@ Cypress.Commands.add(
       )
         .eq(1)
         .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+          const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
           const expected = headersString;
           expect(actual).to.equal(expected);
         });
     }
     if (response !== undefined) {
       cy.get('.result-window').should(element => {
-        const actual = normalizeWhitespace(element.get(0).innerText);
+        const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
         const expected = JSON.stringify(response, null, 2);
         expect(actual).to.equal(expected);
       });
@@ -135,7 +130,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add('assertQueryResult', expectedResult => {
   cy.get('section.result-window').should(element => {
-    const actual = normalizeWhitespace(element.get(0).innerText);
+    const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
     const expected = JSON.stringify(expectedResult, null, 2);
     expect(actual).to.equal(expected);
   });
@@ -148,15 +143,10 @@ function normalizeMonacoWhitespace(str: string): string {
 
 Cypress.Commands.add('containQueryResult', expected => {
   cy.get('section.result-window').should(element => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- TODO monaco check if we need it
     const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
     expect(actual).to.contain(expected);
   });
 });
-
-function normalizeWhitespace(str: string): string {
-  return str.replaceAll('\xA0', ' ');
-}
 
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
@@ -182,6 +172,7 @@ Cypress.Commands.add(
         // Hover in the right corner, because some errors like `Expected comma or closing brace` are
         // highlighted at the end
         position: 'bottomRight',
+        force: true, // otherwise popup doesn't show
       });
       cy.contains(message);
     });

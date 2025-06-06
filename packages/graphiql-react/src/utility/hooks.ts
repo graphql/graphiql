@@ -1,20 +1,10 @@
-import { fillLeafs, mergeAst } from '@graphiql/toolkit';
-import copyToClipboard from 'copy-to-clipboard';
-import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  schemaStore,
-  storageStore,
-  editorStore,
-  useEditorStore,
-  executionStore,
-} from '../stores';
+import { storageStore } from '../stores';
 import { debounce } from './debounce';
-import { formatJSONC } from './jsonc';
 import { MonacoEditor } from '../types';
-import type { editor as monacoEditor } from '../monaco-editor';
-import { Range } from '../monaco-editor';
+import { type editor as monacoEditor } from '../monaco-editor';
+import { useGraphiQL } from '../components';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
@@ -29,10 +19,11 @@ export function useChangeHandler(
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
 ) {
-  const editor = useEditorStore(
-    store =>
-      store[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
+  const { editor, updateActiveTabValues } = useGraphiQL(state => ({
+    editor:
+      state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
+    updateActiveTabValues: state.updateActiveTabValues,
+  }));
   useEffect(() => {
     if (!editor) {
       return;
@@ -45,8 +36,6 @@ export function useChangeHandler(
       }
       storage.set(storageKey, value);
     });
-
-    const { updateActiveTabValues } = editorStore.getState();
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
@@ -61,146 +50,7 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty]);
-}
-
-export function copyQuery(): void {
-  const { queryEditor, onCopyQuery } = editorStore.getState();
-  if (!queryEditor) {
-    return;
-  }
-
-  const query = queryEditor.getValue();
-  copyToClipboard(query);
-
-  onCopyQuery?.(query);
-}
-
-export function mergeQuery(): void {
-  const { queryEditor, documentAST } = editorStore.getState();
-  const query = queryEditor?.getValue();
-  if (!documentAST || !query) {
-    return;
-  }
-  const { schema } = schemaStore.getState();
-  queryEditor!.setValue(print(mergeAst(documentAST, schema)));
-}
-
-export async function prettifyEditors(): Promise<void> {
-  const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-    editorStore.getState();
-
-  if (variableEditor) {
-    try {
-      const content = variableEditor.getValue();
-      const formatted = await formatJSONC(content);
-      if (formatted !== content) {
-        variableEditor.setValue(formatted);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(
-        'Parsing variables JSON failed, skip prettification.',
-        error,
-      );
-    }
-  }
-
-  if (headerEditor) {
-    try {
-      const content = headerEditor.getValue();
-      const formatted = await formatJSONC(content);
-      if (formatted !== content) {
-        headerEditor.setValue(formatted);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Parsing headers JSON failed, skip prettification.', error);
-    }
-  }
-
-  if (!queryEditor) {
-    return;
-  }
-  try {
-    const content = queryEditor.getValue();
-    const formatted = await onPrettifyQuery(content);
-    if (formatted !== content) {
-      queryEditor.setValue(formatted);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Parsing query failed, skip prettification.', error);
-  }
-}
-
-export function getAutoCompleteLeafs() {
-  const { queryEditor } = editorStore.getState();
-  if (!queryEditor) {
-    return;
-  }
-  const { schema } = schemaStore.getState();
-  const query = queryEditor.getValue();
-  const { getDefaultFieldNames } = executionStore.getState();
-  const { insertions, result = '' } = fillLeafs(
-    schema,
-    query,
-    getDefaultFieldNames,
-  );
-  if (!insertions.length) {
-    return result;
-  }
-  const model = queryEditor.getModel()!;
-
-  // Save the current cursor position as an offset
-  const selection = queryEditor.getSelection()!;
-  const cursorIndex = model.getOffsetAt(selection.getPosition());
-
-  // Replace entire content
-  model.setValue(result);
-
-  let added = 0;
-  const decorations = insertions.map(({ index, string }) => {
-    const start = model.getPositionAt(index + added);
-    const end = model.getPositionAt(index + (added += string.length));
-    return {
-      range: new Range(
-        start.lineNumber,
-        start.column,
-        end.lineNumber,
-        end.column,
-      ),
-      options: {
-        className: 'auto-inserted-leaf',
-        hoverMessage: { value: 'Automatically added leaf fields' },
-        isWholeLine: false,
-      },
-    };
-  });
-
-  // Create a decoration collection (initially empty)
-  const decorationCollection = queryEditor.createDecorationsCollection([]);
-
-  // Apply decorations
-  decorationCollection.set(decorations);
-
-  // Clear decorations after 7 seconds
-  setTimeout(() => {
-    decorationCollection.clear();
-  }, 7000);
-
-  // Adjust the cursor position based on insertions
-  let newCursorIndex = cursorIndex;
-  for (const { index, string } of insertions) {
-    if (index < cursorIndex) {
-      newCursorIndex += string.length;
-    }
-  }
-
-  const newCursorPosition = model.getPositionAt(newCursorIndex);
-  queryEditor.setPosition(newCursorPosition);
-
-  return result;
+  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
@@ -209,7 +59,7 @@ export const useEditorState = (
 ): [string, (val: string) => void] => {
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
-  const editorInstance = useEditorStore(store => store[`${editor}Editor`]);
+  const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
   const editorValue = editorInstance?.getValue() ?? '';
 
   const handleChange = useCallback(

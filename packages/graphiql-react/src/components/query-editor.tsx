@@ -2,20 +2,16 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import {
-  schemaStore,
-  useSchemaStore,
-  useEditorStore,
-  useStorage,
-  editorStore,
-  executionStore,
-  pluginStore,
-} from '../stores';
+import { useStorage } from '../stores';
+import { useGraphiQL } from './provider';
 import {
   debounce,
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
+  pick,
+  cleanupDisposables,
+  cn,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
@@ -25,7 +21,6 @@ import {
   Range,
 } from '../monaco-editor';
 import * as monaco from '../monaco-editor';
-import { clsx } from 'clsx';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
@@ -51,10 +46,49 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialQuery, setOperationName } = useEditorStore();
+  const {
+    initialQuery,
+    setOperationName,
+    schema,
+    setEditor,
+    updateActiveTabValues,
+    referencePlugin,
+    setVisiblePlugin,
+    setSchemaReference,
+    run,
+    operations,
+    operationName,
+    setOperationFacts,
+    copyQuery,
+    prettifyEditors,
+    mergeQuery,
+  } = useGraphiQL(
+    pick(
+      'initialQuery',
+      'setOperationName',
+      'schema',
+      'setEditor',
+      'updateActiveTabValues',
+      'referencePlugin',
+      'setVisiblePlugin',
+      'setSchemaReference',
+      'run',
+      'operations',
+      'operationName',
+      'setOperationFacts',
+      'copyQuery',
+      'prettifyEditors',
+      'mergeQuery',
+    ),
+  );
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-
+  const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
+    null!,
+  );
+  useEffect(() => {
+    onClickReferenceRef.current = onClickReference;
+  }, [onClickReference]);
   /*
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
@@ -124,65 +158,56 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     */
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
-    const operationFacts = getOperationFacts(
-      schemaStore.getState().schema,
-      editorInstance.getValue(),
-    );
-    const prevState = editorStore.getState();
-
+    const operationFacts = getOperationFacts(schema, editorInstance.getValue());
     // Update the operation name should any query names change.
-    const operationName = getSelectedOperationName(
-      prevState.operations,
-      prevState.operationName,
+    const newOperationName = getSelectedOperationName(
+      operations,
+      operationName,
       operationFacts?.operations,
     );
-
-    // Store the operation facts
-    editorStore.setState({
+    setOperationFacts({
       documentAST: operationFacts?.documentAST,
-      operationName,
+      operationName: newOperationName,
       operations: operationFacts?.operations,
     });
 
-    return operationFacts ? { ...operationFacts, operationName } : null;
+    return operationFacts
+      ? { ...operationFacts, operationName: newOperationName }
+      : null;
   }
 
-  const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
-    const { operations, operationName: $operationName } =
-      editorStore.getState();
-    if (!operations) {
-      return;
-    }
-    const position = editor.getPosition()!;
-    const cursorIndex = editor.getModel()!.getOffsetAt(position);
+  const runAtCursorRef = useRef<monacoEditor.IActionDescriptor['run']>(null!);
 
-    // Loop through all operations to see if one contains the cursor.
-    let operationName: string | undefined;
-    for (const operation of operations) {
-      if (
-        operation.loc &&
-        operation.loc.start <= cursorIndex &&
-        operation.loc.end >= cursorIndex
-      ) {
-        operationName = operation.name?.value;
+  useEffect(() => {
+    runAtCursorRef.current = editor => {
+      if (!operations) {
+        return;
       }
-    }
+      const position = editor.getPosition()!;
+      const cursorIndex = editor.getModel()!.getOffsetAt(position);
 
-    if (operationName && operationName !== $operationName) {
-      setOperationName(operationName);
-    }
-    const { run } = executionStore.getState();
-    run();
-  };
+      // Loop through all operations to see if one contains the cursor.
+      let newOperationName: string | undefined;
+      for (const operation of operations) {
+        if (
+          operation.loc &&
+          operation.loc.start <= cursorIndex &&
+          operation.loc.end >= cursorIndex
+        ) {
+          newOperationName = operation.name?.value;
+        }
+      }
 
-  const schema = useSchemaStore(store => store.schema);
+      if (newOperationName && newOperationName !== operationName) {
+        setOperationName(newOperationName);
+      }
+      run();
+    };
+  }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
     globalThis.__MONACO = monaco;
-
-    const { setEditor, updateActiveTabValues } = editorStore.getState();
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
-    // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ queryEditor: editor });
 
@@ -192,7 +217,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       const query = editor.getValue();
       storage.set(STORAGE_KEY_QUERY, query);
 
-      const currentOperationName = editorStore.getState().operationName;
       const operationFacts = getAndUpdateOperationFacts(editor);
       if (operationFacts?.operationName !== undefined) {
         storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
@@ -202,7 +226,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       onEdit?.(query, operationFacts?.documentAST);
       if (
         operationFacts?.operationName &&
-        currentOperationName !== operationFacts.operationName
+        operationName !== operationFacts.operationName
       ) {
         setOperationName(operationFacts.operationName);
       }
@@ -216,25 +240,18 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     getAndUpdateOperationFacts(editor);
 
     const disposables = [
-      // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
-        run: runAtCursor,
+        run: (...args) => runAtCursorRef.current(...args),
       }),
-      editor.addAction(KEY_BINDINGS.copyQuery),
-      editor.addAction(KEY_BINDINGS.prettify),
-      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.addAction({ ...KEY_BINDINGS.copyQuery, run: copyQuery }),
+      editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
+      editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
       editor,
       model,
     ];
-
-    // 3️⃣ Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
@@ -244,9 +261,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-
-    const { referencePlugin, setVisiblePlugin } = pluginStore.getState();
-    const { setSchemaReference } = schemaStore.getState();
     if (!referencePlugin) {
       return;
     }
@@ -308,7 +322,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
 
           setVisiblePlugin(referencePlugin);
           setSchemaReference({ kind, typeInfo });
-          onClickReference?.({ kind, typeInfo });
+          onClickReferenceRef.current?.({ kind, typeInfo });
 
           return [
             {
@@ -319,12 +333,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
         },
       }),
     ];
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose();
-      }
-    };
-  }, [onClickReference, schema]);
+    return cleanupDisposables(disposables);
+  }, [schema, referencePlugin, setSchemaReference, setVisiblePlugin]);
 
   return (
     <div
@@ -332,7 +342,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('graphiql-editor', props.className)}
+      className={cn('graphiql-editor', props.className)}
     />
   );
 };

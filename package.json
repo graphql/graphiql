@@ -12,7 +12,6 @@
       "examples/monaco-graphql-nextjs",
       "examples/monaco-graphql-react-vite",
       "examples/graphiql-vite",
-      "examples/graphiql-nextjs",
       "examples/graphiql-webpack"
     ]
   },
@@ -128,7 +127,6 @@
     "wsrun": "^5.2.4"
   },
   "resolutions": {
-    "monaco-editor": "0.47.0",
     "@babel/traverse": "^7.23.2",
     "vscode-languageserver-types": "3.17.3",
     "markdown-it": "14.1.0",

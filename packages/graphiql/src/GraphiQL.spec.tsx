@@ -335,9 +335,7 @@ describe('GraphiQL', () => {
         );
       });
 
-      const dragBar = container.querySelectorAll(
-        '.graphiql-horizontal-drag-bar',
-      )[0];
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -644,6 +642,40 @@ describe('GraphiQL', () => {
           ).toHaveLength(1);
         });
       });
+    });
+  });
+
+  it('should support multiple instances', async () => {
+    const { container, getAllByLabelText } = render(
+      <>
+        <GraphiQL fetcher={noOpFetcher} />
+        <GraphiQL fetcher={noOpFetcher} />
+      </>,
+    );
+    const [firstEl, secondEl] = container.querySelectorAll(
+      '.graphiql-container',
+    );
+    expect(firstEl).toBeInTheDocument();
+    expect(secondEl).toBeInTheDocument();
+    const [showDocExplorerButton] = getAllByLabelText(
+      'Show Documentation Explorer',
+    );
+    const [addTab] = getAllByLabelText('New tab');
+    fireEvent.click(showDocExplorerButton!);
+    fireEvent.click(addTab!);
+
+    await waitFor(() => {
+      // Plugin store
+      expect(
+        firstEl!.querySelector('.graphiql-doc-explorer'),
+      ).toBeInTheDocument();
+      expect(
+        secondEl!.querySelector('.graphiql-doc-explorer'),
+      ).not.toBeInTheDocument();
+
+      // Editor store
+      expect(firstEl!.querySelectorAll('.graphiql-tab').length).toBe(2);
+      expect(secondEl!.querySelectorAll('.graphiql-tab').length).toBe(1);
     });
   });
 });

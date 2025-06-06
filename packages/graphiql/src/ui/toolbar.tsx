@@ -1,13 +1,12 @@
 import type { FC, ReactNode } from 'react';
 import {
   CopyIcon,
-  copyQuery,
   KEY_MAP,
   MergeIcon,
-  mergeQuery,
-  prettifyEditors,
   PrettifyIcon,
   ToolbarButton,
+  useGraphiQL,
+  pick,
 } from '@graphiql/react';
 
 const DefaultToolbarRenderProps: FC<{
@@ -33,7 +32,9 @@ export const GraphiQLToolbar: FC<{
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-
+  const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQL(
+    pick('copyQuery', 'prettifyEditors', 'mergeQuery'),
+  );
   const prettify = (
     <ToolbarButton
       onClick={prettifyEditors}

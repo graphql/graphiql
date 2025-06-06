@@ -2,36 +2,6 @@
 
 import '@testing-library/jest-dom';
 
-vi.mock('zustand'); // to make it works like Jest (auto-mocking)
-
-/**
- * Fixes TypeError: document.queryCommandSupported is not a function
- */
-if (!navigator.clipboard) {
-  Object.defineProperty(navigator, 'clipboard', {
-    writable: false,
-    value: {
-      write: async () => null,
-    },
-  });
-}
-
-/**
- * Fixes TypeError: mainWindow.matchMedia is not a function
- * @see https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
- */
-if (!window.matchMedia) {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: false,
-    value: vi.fn().mockImplementation(query => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // deprecated
-      removeListener: vi.fn(), // deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-}
+// to make it works like Jest (auto-mocking)
+vi.mock('zustand');
+vi.mock('monaco-editor');

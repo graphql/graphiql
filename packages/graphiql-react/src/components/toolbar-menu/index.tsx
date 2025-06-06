@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '../../utility';
 import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
@@ -20,7 +20,7 @@ const ToolbarMenuRoot: FC<
     <DropdownMenu {...props}>
       <Tooltip label={label}>
         <DropdownMenu.Button
-          className={clsx(
+          className={cn(
             'graphiql-un-styled graphiql-toolbar-menu',
             props.className,
           )}

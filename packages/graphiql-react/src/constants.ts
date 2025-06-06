@@ -1,8 +1,15 @@
 /* eslint-disable no-bitwise */
-import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
+import { initializeMode } from 'monaco-graphql/esm/lite.js';
+import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
-import { copyQuery, mergeQuery, prettifyEditors } from './utility';
-import { executionStore } from './stores';
+import { EditorSlice } from './stores';
+
+const isMacOs =
+  typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
+
+export function formatShortcutForOS(key: string, replaced = '⌘') {
+  return isMacOs ? key.replace('Ctrl', replaced) : key;
+}
 
 export const KEY_MAP = Object.freeze({
   prettify: {
@@ -14,11 +21,11 @@ export const KEY_MAP = Object.freeze({
     keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
   },
   runQuery: {
-    key: 'Cmd-Enter',
+    key: 'Ctrl-Enter',
     keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
   },
   autoComplete: {
-    key: 'Ctrl-Space',
+    key: 'Space',
   },
   copyQuery: {
     key: 'Shift-Ctrl-C',
@@ -61,7 +68,7 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 #  Merge fragments:  ${KEY_MAP.mergeFragments.key} (or press the merge button)
 #
-#        Run Query:  ${KEY_MAP.runQuery.key} (or press the play button)
+#        Run Query:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
 #
 #    Auto Complete:  ${KEY_MAP.autoComplete.key} (or just start typing)
 #
@@ -74,31 +81,24 @@ export const KEY_BINDINGS = Object.freeze({
     label: 'Prettify Editors',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.prettify.keybindings,
-    run: prettifyEditors,
   },
   mergeFragments: {
     id: 'graphql-merge',
     label: 'Merge Fragments into Query',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.mergeFragments.keybindings,
-    run: mergeQuery,
   },
   runQuery: {
     id: 'graphql-run',
     label: 'Run Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.runQuery.keybindings,
-    run() {
-      // Fixes error - Cannot access 'executionStore' before initialization
-      return executionStore.getState().run();
-    },
   },
   copyQuery: {
     id: 'graphql-copy',
     label: 'Copy Query',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
-    run: copyQuery,
   },
 });
 
@@ -131,3 +131,6 @@ export const MONACO_GRAPHQL_API = initializeMode({
     },
   },
 });
+
+export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
+  print(parse(query));

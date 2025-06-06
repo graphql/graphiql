@@ -1,25 +1,38 @@
 import { FC } from 'react';
-import { useEditorStore, useExecutionStore } from '../../stores';
+import { useGraphiQL } from '../provider';
 import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
-import { KEY_MAP } from '../../constants';
+import { KEY_MAP, formatShortcutForOS } from '../../constants';
+import { pick } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
-  const { setOperationName, operations = [], operationName } = useEditorStore();
   const {
+    setOperationName,
+    operations = [],
+    operationName,
     isFetching,
-    subscription,
-    operationName: execOperationName,
+    overrideOperationName,
     run,
     stop,
-  } = useExecutionStore();
+  } = useGraphiQL(
+    pick(
+      'setOperationName',
+      'operations',
+      'operationName',
+      'isFetching',
+      'overrideOperationName',
+      'run',
+      'stop',
+    ),
+  );
+  const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const hasOptions =
-    operations.length > 1 && typeof execOperationName !== 'string';
-  const isRunning = isFetching || Boolean(subscription);
+    operations.length > 1 && typeof overrideOperationName !== 'string';
+  const isRunning = isFetching || isSubscribed;
 
-  const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery.key})`;
+  const label = `${isRunning ? 'Stop' : 'Execute'} query (${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')})`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',

@@ -15,10 +15,11 @@ import {
   ComboboxOption,
 } from '@headlessui/react';
 import {
-  isMacOs,
-  useSchemaStore,
+  formatShortcutForOS,
+  useGraphiQL,
   MagnifyingGlassIcon,
   debounce,
+  KEY_MAP,
 } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { renderType } from './utils';
@@ -91,7 +92,9 @@ export const Search: FC = () => {
         <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
-          placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
+          placeholder={formatShortcutForOS(
+            KEY_MAP.searchInDocs.key.replace('-', ' '),
+          )}
           ref={inputRef}
           value={searchValue}
           data-cy="doc-explorer-input"
@@ -158,7 +161,7 @@ type FieldMatch = {
 
 export function useSearchResults() {
   const explorerNavStack = useDocExplorer();
-  const schema = useSchemaStore(store => store.schema);
+  const schema = useGraphiQL(state => state.schema);
 
   const navItem = explorerNavStack.at(-1)!;
 
@@ -195,7 +198,7 @@ export function useSearchResults() {
         break;
       }
 
-      const type = typeMap[typeName];
+      const type = typeMap[typeName]!;
       if (withinType !== type && isMatch(typeName, searchValue)) {
         matches.types.push({ type });
       }
@@ -210,7 +213,7 @@ export function useSearchResults() {
 
       const fields = type.getFields();
       for (const fieldName in fields) {
-        const field = fields[fieldName];
+        const field = fields[fieldName]!;
         let matchingArgs: GraphQLArgument[] | undefined;
 
         if (!isMatch(fieldName, searchValue)) {

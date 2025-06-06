@@ -42,7 +42,7 @@
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
-    "test": "vitest"
+    "test": "vitest --typecheck"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -56,13 +56,12 @@
     "@radix-ui/react-tooltip": "^1.2",
     "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^1.2.1",
-    "copy-to-clipboard": "^3.2.0",
     "framer-motion": "^12.12",
     "get-value": "^3.0.1",
     "graphql-language-service": "^5.3.1",
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
-    "monaco-editor": "^0.47",
+    "monaco-editor": "^0.52.2",
     "monaco-graphql": "^1.6.1",
     "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",

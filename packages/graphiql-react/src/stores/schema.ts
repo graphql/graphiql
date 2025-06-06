@@ -11,27 +11,23 @@ import {
   GraphQLError,
   GraphQLSchema,
   IntrospectionQuery,
-  isSchema,
-  validateSchema,
 } from 'graphql';
-import { Dispatch, FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
-import { editorStore } from './editor';
-import { SchemaReference } from '../types';
-import { createBoundedUseStore } from '../utility';
-import { executionStore, useExecutionStore } from './execution';
+import { Dispatch } from 'react';
+import type { StateCreator } from 'zustand';
+import { AllSlices, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
+type CreateSchemaSlice = StateCreator<AllSlices, [], [], SchemaSlice>;
+
+export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
   inputValueDeprecation: null!,
   introspectionQueryName: null!,
   schemaDescription: null!,
-  fetcher: null!, // Explicitly set to null, as it's safe since we have TypeError thrown
   onSchemaChange: undefined,
 
   fetchError: null,
-  isFetching: false,
+  isIntrospecting: false,
   schema: null,
   /**
    * Derive validation errors from the schema
@@ -47,7 +43,14 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
    * Fetch the schema
    */
   async introspect() {
-    const { requestCounter, shouldIntrospect, onSchemaChange, ...rest } = get();
+    const {
+      requestCounter,
+      shouldIntrospect,
+      onSchemaChange,
+      headerEditor,
+      fetcher,
+      ...rest
+    } = get();
 
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -61,7 +64,6 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
     set({ requestCounter: counter });
 
     try {
-      const { headerEditor } = editorStore.getState();
       const currentHeaders = headerEditor?.getValue();
       const parsedHeaders = parseHeaderString(currentHeaders);
       if (!parsedHeaders.isValidJSON) {
@@ -81,7 +83,6 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
         introspectionQueryName,
         introspectionQuerySansSubscriptions,
       } = generateIntrospectionQuery(rest);
-      const { fetcher } = executionStore.getState();
       const fetch = fetcherReturnToPromise(
         fetcher(
           {
@@ -98,14 +99,10 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
         });
         return;
       }
-      set({ isFetching: true, fetchError: null });
+      set({ isIntrospecting: true, fetchError: null });
       let result = await fetch;
 
-      if (
-        typeof result !== 'object' ||
-        result === null ||
-        !('data' in result)
-      ) {
+      if (typeof result !== 'object' || !('data' in result)) {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = fetcherReturnToPromise(
@@ -125,9 +122,9 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
         result = await fetch2;
       }
 
-      set({ isFetching: false });
+      set({ isIntrospecting: false });
       let introspectionData: IntrospectionQuery | undefined;
-      if (result?.data && '__schema' in result.data) {
+      if (result.data && '__schema' in result.data) {
         introspectionData = result.data as IntrospectionQuery;
       } else {
         // handle as if it were an error if the fetcher response is not a string or response.data is not present
@@ -155,15 +152,15 @@ export const schemaStore = createStore<SchemaStoreType>((set, get) => ({
       }
       set({
         fetchError: formatError(error),
-        isFetching: false,
+        isIntrospecting: false,
       });
     }
   },
-}));
+});
 
-export interface SchemaStoreType
+export interface SchemaSlice
   extends Pick<
-    SchemaStoreProps,
+    SchemaProps,
     | 'inputValueDeprecation'
     | 'introspectionQueryName'
     | 'schemaDescription'
@@ -188,7 +185,7 @@ export interface SchemaStoreType
   /**
    * If there currently is an introspection request in-flight.
    */
-  isFetching: boolean;
+  isIntrospecting: boolean;
   /**
    * The current GraphQL schema.
    */
@@ -217,8 +214,7 @@ export interface SchemaStoreType
   shouldIntrospect: boolean;
 }
 
-type SchemaStoreProps = {
-  children: ReactNode;
+export interface SchemaProps extends IntrospectionArgs {
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies
    * to both schemas fetched via introspection and schemas explicitly passed
@@ -239,6 +235,7 @@ type SchemaStoreProps = {
    * @param schema The GraphQL schema that is now used for GraphiQL.
    */
   onSchemaChange?(schema: GraphQLSchema): void;
+
   /**
    * Explicitly provide the GraphiQL schema that shall be used for GraphiQL.
    * If this props is...
@@ -256,77 +253,7 @@ type SchemaStoreProps = {
    *   run without a schema.
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
-} & IntrospectionArgs;
-
-export const SchemaStore: FC<SchemaStoreProps> = ({
-  onSchemaChange,
-  dangerouslyAssumeSchemaIsValid = false,
-  children,
-  schema,
-  inputValueDeprecation = false,
-  introspectionQueryName = 'IntrospectionQuery',
-  schemaDescription = false,
-}) => {
-  const fetcher = useExecutionStore(store => store.fetcher);
-
-  /**
-   * Synchronize prop changes with state
-   */
-  useEffect(() => {
-    const newSchema = isSchema(schema) || schema == null ? schema : undefined;
-
-    const validationErrors =
-      !newSchema || dangerouslyAssumeSchemaIsValid
-        ? []
-        : validateSchema(newSchema);
-
-    schemaStore.setState(({ requestCounter }) => ({
-      onSchemaChange,
-      schema: newSchema,
-      shouldIntrospect: !isSchema(schema) && schema !== null,
-      inputValueDeprecation,
-      introspectionQueryName,
-      schemaDescription,
-      validationErrors,
-      /**
-       * Increment the counter so that in-flight introspection requests don't
-       * override this change.
-       */
-      requestCounter: requestCounter + 1,
-    }));
-
-    // Trigger introspection
-    void schemaStore.getState().introspect();
-  }, [
-    schema,
-    dangerouslyAssumeSchemaIsValid,
-    onSchemaChange,
-    inputValueDeprecation,
-    introspectionQueryName,
-    schemaDescription,
-    fetcher, // should refresh schema with new fetcher after a fetchError
-  ]);
-
-  /**
-   * Trigger introspection manually via a short key
-   */
-  useEffect(() => {
-    function triggerIntrospection(event: KeyboardEvent) {
-      if (event.ctrlKey && event.key === 'R') {
-        void schemaStore.getState().introspect();
-      }
-    }
-
-    window.addEventListener('keydown', triggerIntrospection);
-    return () => {
-      window.removeEventListener('keydown', triggerIntrospection);
-    };
-  }, []);
-
-  return children as ReactElement;
-};
-
-export const useSchemaStore = createBoundedUseStore(schemaStore);
+}
 
 type IntrospectionArgs = {
   /**

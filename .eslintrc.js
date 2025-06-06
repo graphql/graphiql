@@ -32,8 +32,11 @@ module.exports = {
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
     // symlinks
+    'packages/graphiql-react/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-history/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-history/__mocks__/monaco-editor.ts',
   ],
   overrides: [
     {
@@ -146,6 +149,10 @@ module.exports = {
             object: 'window',
             property: 'getComputedStyle',
             message: 'Use `getComputedStyle` instead',
+          },
+          {
+            object: 'self',
+            message: 'Use `globalThis` instead',
           },
         ],
         'no-return-assign': 'error',
@@ -367,6 +374,7 @@ module.exports = {
         'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/prefer-array-some': 'error',
+        // '@typescript-eslint/prefer-for-of': 'error', TODO
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
@@ -377,6 +385,13 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-require-imports': 'off',
         'import-x/no-named-as-default-member': 'off',
+      },
+    },
+    {
+      files: ['packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}'],
+      excludedFiles: ['packages/graphiql-toolkit/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-condition': 'error',
       },
     },
     {
@@ -515,9 +530,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
-          ...RESTRICTED_IMPORTS
-            // TODO: enable when monaco-editor will be migrated over codemirror
-            .filter(({ name }) => name !== 'monaco-editor'),
+          ...RESTRICTED_IMPORTS,
           {
             name: 'react',
             importNames: ['memo', 'useCallback', 'useMemo'],
@@ -572,6 +585,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
+        '@typescript-eslint/no-unnecessary-condition': 'off',
       },
     },
   ],

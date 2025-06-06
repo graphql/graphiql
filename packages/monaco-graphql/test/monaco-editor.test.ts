@@ -7,7 +7,7 @@ describe('monaco-editor', () => {
   it('should include in bundle only graphql/json languages', async () => {
     const { stdout } =
       await $`yarn workspace example-monaco-graphql-react-vite build`;
-    // When process.env.CI is set, stdout contain ANSI color codes, and vite doesn't have
+    // When process.env.CI is set, stdout contains ANSI color codes, and vite doesn't have
     // `--no-colors` flag
     const output = stdout
       .replaceAll(ANSI_COLOR_REGEX, '')
@@ -19,7 +19,7 @@ describe('monaco-editor', () => {
       .replaceAll(/\s{2,}.*/gm, '');
     expect(output).toMatchInlineSnapshot(`
       "transforming...
-      ✓ 1038 modules transformed.
+      ✓ 1108 modules transformed.
       rendering chunks...
       computing gzip size...
       dist/index.html

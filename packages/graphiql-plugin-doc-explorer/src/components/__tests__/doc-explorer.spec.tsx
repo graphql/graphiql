@@ -1,4 +1,6 @@
-import { act, render } from '@testing-library/react';
+import { Mock } from 'vitest';
+import { useGraphiQL as $useGraphiQL } from '@graphiql/react';
+import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { FC, useEffect } from 'react';
 import {
@@ -7,7 +9,17 @@ import {
   useDocExplorerActions,
 } from '../../context';
 import { DocExplorer } from '../doc-explorer';
-import { schemaStore } from '../../../../graphiql-react/dist/stores/schema';
+
+const useGraphiQL = $useGraphiQL as Mock;
+
+vi.mock('@graphiql/react', async () => {
+  const originalModule =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return {
+    ...originalModule,
+    useGraphiQL: vi.fn(),
+  };
+});
 
 function makeSchema(fieldName = 'field') {
   return new GraphQLSchema({
@@ -29,15 +41,16 @@ function makeSchema(fieldName = 'field') {
 }
 
 const defaultSchemaContext = {
-  ...schemaStore.getInitialState(),
-  async introspect() {},
+  fetchError: null,
+  introspect() {},
+  isFetching: false,
   schema: makeSchema(),
+  validationErrors: [],
 };
 
 const withErrorSchemaContext = {
-  ...schemaStore.getInitialState(),
+  ...defaultSchemaContext,
   fetchError: 'Error fetching schema',
-  async introspect() {},
   schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
 };
 
@@ -50,21 +63,29 @@ const DocExplorerWithContext: FC = () => {
 };
 
 describe('DocExplorer', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
   it('renders spinner when the schema is loading', () => {
-    schemaStore.setState({ isFetching: true });
+    useGraphiQL.mockImplementation(cb =>
+      cb({ ...defaultSchemaContext, isFetching: true }),
+    );
     const { container } = render(<DocExplorerWithContext />);
     const spinner = container.querySelectorAll('.graphiql-spinner');
     expect(spinner).toHaveLength(1);
   });
   it('renders with null schema', () => {
-    schemaStore.setState({ ...defaultSchemaContext, schema: null });
+    useGraphiQL.mockImplementation(cb =>
+      cb({ ...defaultSchemaContext, schema: null }),
+    );
     const { container } = render(<DocExplorerWithContext />);
     const error = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(error).toHaveLength(1);
     expect(error[0]).toHaveTextContent('No GraphQL schema available');
   });
   it('renders with schema', () => {
-    schemaStore.setState(defaultSchemaContext);
+    useGraphiQL.mockImplementation(cb => cb(defaultSchemaContext));
     const { container } = render(<DocExplorerWithContext />);
     const error = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(error).toHaveLength(0);
@@ -73,14 +94,11 @@ describe('DocExplorer', () => {
     ).toHaveTextContent('GraphQL Schema for testing');
   });
   it('renders correctly with schema error', () => {
-    schemaStore.setState(withErrorSchemaContext);
+    useGraphiQL.mockImplementation(cb => cb(withErrorSchemaContext));
     const { rerender, container } = render(<DocExplorerWithContext />);
     const error = container.querySelector('.graphiql-doc-explorer-error');
     expect(error).toHaveTextContent('Error fetching schema');
-
-    act(() => {
-      schemaStore.setState(defaultSchemaContext);
-    });
+    useGraphiQL.mockImplementation(cb => cb(defaultSchemaContext));
     rerender(<DocExplorerWithContext />);
     const errors = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(errors).toHaveLength(0);
@@ -104,10 +122,9 @@ describe('DocExplorer', () => {
     };
 
     // Initial render, set initial state
-    schemaStore.setState({
-      ...defaultSchemaContext,
-      schema: initialSchema,
-    });
+    useGraphiQL.mockImplementation(cb =>
+      cb({ ...defaultSchemaContext, schema: initialSchema }),
+    );
     const { container, rerender } = render(
       <DocExplorerStore>
         <SetInitialStack />
@@ -115,34 +132,28 @@ describe('DocExplorer', () => {
     );
 
     // First proper render of doc explorer
-    act(() => {
-      schemaStore.setState({
-        ...defaultSchemaContext,
-        schema: initialSchema,
-      });
-    });
     rerender(
       <DocExplorerStore>
         <DocExplorer />
       </DocExplorerStore>,
     );
 
-    const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title = container.querySelector('.graphiql-doc-explorer-title')!;
     expect(title.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with _same_ field name
-    act(() => {
-      schemaStore.setState({
+    useGraphiQL.mockImplementation(cb =>
+      cb({
         ...defaultSchemaContext,
         schema: makeSchema(), // <<< New, but equivalent, schema
-      });
-    });
+      }),
+    );
     rerender(
       <DocExplorerStore>
         <DocExplorer />
       </DocExplorerStore>,
     );
-    const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
     // Because `Query.field` still exists in the new schema, we can still render it
     expect(title2.textContent).toEqual('field');
   });
@@ -166,10 +177,9 @@ describe('DocExplorer', () => {
     };
 
     // Initial render, set initial state
-    schemaStore.setState({
-      ...defaultSchemaContext,
-      schema: initialSchema,
-    });
+    useGraphiQL.mockImplementation(cb =>
+      cb({ ...defaultSchemaContext, schema: initialSchema }),
+    );
     const { container, rerender } = render(
       <DocExplorerStore>
         <SetInitialStack />
@@ -177,12 +187,6 @@ describe('DocExplorer', () => {
     );
 
     // First proper render of doc explorer
-    act(() => {
-      schemaStore.setState({
-        ...defaultSchemaContext,
-        schema: initialSchema,
-      });
-    });
     rerender(
       <DocExplorerStore>
         <DocExplorer />
@@ -193,12 +197,12 @@ describe('DocExplorer', () => {
     expect(title.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with a different field name
-    act(() => {
-      schemaStore.setState({
+    useGraphiQL.mockImplementation(cb =>
+      cb({
         ...defaultSchemaContext,
         schema: makeSchema('field2'), // <<< New schema with a new field name
-      });
-    });
+      }),
+    );
     rerender(
       <DocExplorerStore>
         <DocExplorer />

@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { clsx } from 'clsx';
-import { editorStore, useEditorStore } from '../stores';
+import { useGraphiQL } from './provider';
 import { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
@@ -8,6 +7,9 @@ import {
   createEditor,
   useChangeHandler,
   onEditorContainerKeyDown,
+  pick,
+  cleanupDisposables,
+  cn,
 } from '../utility';
 
 interface HeaderEditorProps extends EditorProps {
@@ -23,7 +25,23 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialHeaders, shouldPersistHeaders } = useEditorStore();
+  const {
+    initialHeaders,
+    shouldPersistHeaders,
+    setEditor,
+    run,
+    prettifyEditors,
+    mergeQuery,
+  } = useGraphiQL(
+    pick(
+      'initialHeaders',
+      'shouldPersistHeaders',
+      'setEditor',
+      'run',
+      'prettifyEditors',
+      'mergeQuery',
+    ),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
     onEdit,
@@ -31,24 +49,18 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
     'headers',
   );
   useEffect(() => {
-    const { setEditor } = editorStore.getState();
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ headerEditor: editor });
     const disposables = [
-      editor.addAction(KEY_BINDINGS.runQuery),
-      editor.addAction(KEY_BINDINGS.prettify),
-      editor.addAction(KEY_BINDINGS.mergeFragments),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
+      editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
+      editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
       editor,
       model,
     ];
-    // 3️⃣ Clean‑up on unmount
-    return () => {
-      for (const disposable of disposables) {
-        disposable.dispose(); // remove the listener
-      }
-    };
+    return cleanupDisposables(disposables);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
@@ -57,7 +69,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={clsx('graphiql-editor', props.className)}
+      className={cn('graphiql-editor', props.className)}
     />
   );
 };

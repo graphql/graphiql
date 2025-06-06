@@ -1,6 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
-import { clsx } from 'clsx';
-import { markdown } from '../../utility';
+import { cn, markdown } from '../../utility';
 import './index.css';
 
 interface MarkdownContentProps
@@ -15,7 +14,7 @@ export const MarkdownContent = forwardRef<HTMLDivElement, MarkdownContentProps>(
     <div
       {...props}
       ref={ref}
-      className={clsx(
+      className={cn(
         `graphiql-markdown-${type}`,
         onlyShowFirstChild && 'graphiql-markdown-preview',
         props.className,
