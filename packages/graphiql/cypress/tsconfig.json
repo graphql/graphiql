@@ -3,7 +3,8 @@
     "target": "es5",
     "lib": ["es2021", "dom"],
     "types": ["cypress", "node"],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "strict": true
   },
   "include": ["**/*.ts"]
 }
