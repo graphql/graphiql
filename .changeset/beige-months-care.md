@@ -1,11 +1,7 @@
 ---
-'@graphiql/plugin-code-exporter': patch
 '@graphiql/plugin-doc-explorer': patch
 '@graphiql/plugin-explorer': patch
-'graphql-language-service': patch
 '@graphiql/plugin-history': patch
-'codemirror-graphql': patch
-'@graphiql/toolkit': patch
 '@graphiql/react': minor
 'monaco-graphql': patch
 'graphiql': major
