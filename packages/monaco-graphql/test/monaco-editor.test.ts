@@ -14,7 +14,7 @@ describe('monaco-editor', () => {
     // expect(lines[0]).toBe('$ vite build');
     // expect(lines[2]).toBe('transforming...');
     expect(lines[2]).toMatch(
-      `✓ ${parseInt(version, 10) > 16 ? 862 : 848} modules transformed.`,
+      `✓ ${parseInt(version, 10) > 16 ? 862 : 1604} modules transformed.`,
     );
     // expect(lines[4]).toBe('rendering chunks...');
     // expect(lines[5]).toBe('computing gzip size...');
