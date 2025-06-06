@@ -697,7 +697,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <VariableEditor
           className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
-          onClickReference={onClickReference}
           readOnly={readOnly}
         />
         {isHeadersEditorEnabled && (
