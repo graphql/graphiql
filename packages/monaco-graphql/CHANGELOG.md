@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.7.0
+
+### Minor Changes
+
+- [#3996](https://github.com/graphql/graphiql/pull/3996) [`662c143`](https://github.com/graphql/graphiql/commit/662c1434932de12f1d213992c2b3bc85d5d38370) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support monaco-editor 0.52
+  - remove unnecessary conditions
+  - render Markdown in completion popup descriptions
+
 ## 1.6.2
 
 ### Patch Changes
