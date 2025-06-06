@@ -19,8 +19,7 @@ import { Position } from 'graphql-language-service';
 // for backwards compatibility
 export const getModelLanguageId = (model: monaco.editor.ITextModel) => {
   if ('getModeId' in model) {
-    // for <0.30.0 support
-    // @ts-expect-error
+    // @ts-expect-error -- for <0.30.0 support
     return model.getModeId();
   }
   return model.getLanguageId();
@@ -39,40 +38,39 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return new Position(position.lineNumber - 1, position.column - 1);
 }
 
-export type GraphQLWorkerCompletionItem = GraphQLCompletionItem & {
+export type GraphQLWorkerCompletionItem = Omit<
+  GraphQLCompletionItem,
+  'documentation'
+> & {
   range?: monaco.IRange;
   command?: monaco.languages.CompletionItem['command'];
+  documentation?: monaco.languages.CompletionItem['documentation'];
 };
 
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range?: GraphQLRange,
 ): GraphQLWorkerCompletionItem {
-  const results: GraphQLWorkerCompletionItem = {
+  return {
     label: entry.label,
-    insertText: entry?.insertText,
+    insertText: entry.insertText,
     sortText: entry.sortText,
-    filterText: entry?.filterText,
-    documentation: entry.documentation,
+    filterText: entry.filterText,
+    ...(entry.documentation && {
+      documentation: {
+        value: entry.documentation,
+      },
+    }),
     detail: entry.detail,
-    range: range ? toMonacoRange(range) : undefined,
+    ...(range && { range: toMonacoRange(range) }),
     kind: entry.kind,
+    ...(entry.insertTextFormat && { insertTextFormat: entry.insertTextFormat }),
+    ...(entry.insertTextMode && { insertTextMode: entry.insertTextMode }),
+    ...(entry.command && {
+      command: { ...entry.command, id: entry.command.command },
+    }),
+    ...(entry.labelDetails && { labelDetails: entry.labelDetails }),
   };
-  if (entry.insertTextFormat) {
-    results.insertTextFormat = entry.insertTextFormat;
-  }
-  if (entry.insertTextMode) {
-    results.insertTextMode = entry.insertTextMode;
-  }
-
-  if (entry.command) {
-    results.command = { ...entry.command, id: entry.command.command };
-  }
-  if (entry.labelDetails) {
-    results.labelDetails = entry.labelDetails;
-  }
-
-  return results;
 }
 
 /**
@@ -155,5 +153,5 @@ export const getStringSchema = (schemaConfig: SchemaConfig) => {
       documentString: printSchema(schema),
     };
   }
-  throw new Error('no schema supplied');
+  throw new Error('No schema supplied');
 };

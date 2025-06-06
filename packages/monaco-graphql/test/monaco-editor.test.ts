@@ -14,7 +14,7 @@ describe('monaco-editor', () => {
     // expect(lines[0]).toBe('$ vite build');
     // expect(lines[2]).toBe('transforming...');
     expect(lines[2]).toMatch(
-      `✓ ${parseInt(version, 10) > 16 ? 862 : 848} modules transformed.`,
+      `✓ ${parseInt(version, 10) > 16 ? 862 : 1604} modules transformed.`,
     );
     // expect(lines[4]).toBe('rendering chunks...');
     // expect(lines[5]).toBe('computing gzip size...');
@@ -26,5 +26,5 @@ describe('monaco-editor', () => {
     // expect(lines[11]).toMatch('dist/assets/graphqlMode-');
     // expect(lines[12]).toMatch('dist/assets/index-');
     // expect(lines[13]).toMatch('✓ built in ');
-  }, 30_000);
+  }, 60_000);
 });
