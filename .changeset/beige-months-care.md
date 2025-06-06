@@ -3,7 +3,6 @@
 '@graphiql/plugin-explorer': patch
 '@graphiql/plugin-history': patch
 '@graphiql/react': minor
-'monaco-graphql': patch
 'graphiql': major
 ---
 
