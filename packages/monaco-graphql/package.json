@@ -1,7 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -59,8 +59,7 @@
   },
   "files": [
     "dist",
-    "esm",
-    "src"
+    "esm"
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
@@ -73,7 +72,7 @@
   "devDependencies": {
     "execa": "^7.1.1",
     "graphql": "^16.9.0",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.52.2",
     "prettier": "3.3.2",
     "vscode-languageserver-types": "^3.17.1"
   },

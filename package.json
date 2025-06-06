@@ -62,7 +62,7 @@
     "test:ci": "yarn build && jest --coverage && yarn vitest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
-    "tsc": "tsc --build",
+    "tsc": "tsc --build && node resources/patch-monaco-editor-type.mjs",
     "vitest": "turbo run test",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack",
     "gen-agenda": "wgutils agenda gen"

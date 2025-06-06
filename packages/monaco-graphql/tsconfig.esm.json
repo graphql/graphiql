@@ -7,16 +7,7 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./esm",
-    "lib": [
-      "dom",
-      "es5",
-      "es6",
-      "es2015",
-      "Es2016",
-      "ES2017",
-      "ES2018",
-      "ESNext"
-    ],
+    "lib": ["dom", "ESNext"],
     "paths": {
       "*": ["*"]
     }

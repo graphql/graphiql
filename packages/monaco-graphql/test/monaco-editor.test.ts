@@ -39,5 +39,5 @@ describe('monaco-editor', () => {
       dist/assets/graphqlMode.js
       dist/index.js"
     `);
-  }, 50_000);
+  }, 60_000);
 });
