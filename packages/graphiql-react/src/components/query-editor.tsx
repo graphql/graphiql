@@ -83,7 +83,12 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   );
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-
+  const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
+    null!,
+  );
+  useEffect(() => {
+    onClickReferenceRef.current = onClickReference;
+  }, [onClickReference]);
   /*
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
@@ -319,7 +324,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
 
           setVisiblePlugin(referencePlugin);
           setSchemaReference({ kind, typeInfo });
-          onClickReference?.({ kind, typeInfo });
+          onClickReferenceRef.current?.({ kind, typeInfo });
 
           return [
             {
@@ -331,13 +336,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       }),
     ];
     return cleanupDisposables(disposables);
-  }, [
-    onClickReference,
-    schema,
-    referencePlugin,
-    setSchemaReference,
-    setVisiblePlugin,
-  ]);
+  }, [schema, referencePlugin, setSchemaReference, setVisiblePlugin]);
 
   return (
     <div
