@@ -4,6 +4,7 @@ import type {
   PluginSlice,
   SchemaSlice,
 } from './stores';
+import { AllSlices } from './types';
 
 describe('Types', () => {
   it('should not have conflicting types', () => {
@@ -30,8 +31,7 @@ describe('Types', () => {
     type Actual = MergeMany<
       [EditorSlice, ExecutionSlice, PluginSlice, SchemaSlice]
     >;
-    type Expected = EditorSlice & ExecutionSlice & PluginSlice & SchemaSlice;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    expectTypeOf<Actual>().toEqualTypeOf<Expected>;
+    expectTypeOf<Actual>().toEqualTypeOf<AllSlices>;
   });
 });
