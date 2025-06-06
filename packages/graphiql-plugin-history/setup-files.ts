@@ -18,6 +18,17 @@ if (!navigator.clipboard) {
 }
 
 /**
+ * ReferenceError: ClipboardItem is not defined
+ */
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (!window.ClipboardItem) {
+  Object.defineProperty(window, 'ClipboardItem', {
+    writable: false,
+    value: vi.fn(),
+  });
+}
+
+/**
  * Fixes TypeError: mainWindow.matchMedia is not a function
  * @see https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
  */

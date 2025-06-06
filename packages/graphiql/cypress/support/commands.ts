@@ -182,9 +182,8 @@ Cypress.Commands.add(
         // Hover in the right corner, because some errors like `Expected comma or closing brace` are
         // highlighted at the end
         position: 'bottomRight',
-        timeout: 6_000,
       });
-      cy.contains(message);
+      cy.contains(message, { timeout: 6_000 });
     });
   },
 );
