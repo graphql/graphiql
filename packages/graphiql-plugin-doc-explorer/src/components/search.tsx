@@ -15,10 +15,11 @@ import {
   ComboboxOption,
 } from '@headlessui/react';
 import {
-  isMacOs,
+  formatShortcutForOS,
   useGraphiQL,
   MagnifyingGlassIcon,
   debounce,
+  KEY_MAP,
 } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { renderType } from './utils';
@@ -91,7 +92,9 @@ export const Search: FC = () => {
         <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
-          placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
+          placeholder={formatShortcutForOS(
+            KEY_MAP.searchInDocs.key.replace('-', ' '),
+          )}
           ref={inputRef}
           value={searchValue}
           data-cy="doc-explorer-input"
