@@ -1,5 +1,4 @@
 import { fillLeafs, mergeAst } from '@graphiql/toolkit';
-import copyToClipboard from 'copy-to-clipboard';
 import { print } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -56,22 +55,6 @@ export function useChangeHandler(
       disposable.dispose();
     };
   }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
-}
-
-export function useCopyQuery() {
-  const { queryEditor, onCopyQuery } = useGraphiQL(
-    pick('queryEditor', 'onCopyQuery'),
-  );
-  return (): void => {
-    if (!queryEditor) {
-      return;
-    }
-
-    const query = queryEditor.getValue();
-    copyToClipboard(query);
-
-    onCopyQuery?.(query);
-  };
 }
 
 export function useMergeQuery() {

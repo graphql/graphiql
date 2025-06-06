@@ -19,7 +19,6 @@ export {
   useOperationsEditorState,
   useVariablesEditorState,
   useHeadersEditorState,
-  useCopyQuery,
   useMergeQuery,
   usePrettifyEditors,
   useChangeHandler,

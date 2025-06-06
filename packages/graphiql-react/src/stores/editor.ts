@@ -224,6 +224,21 @@ export interface EditorSlice extends TabsState {
     operationName?: string;
     operations?: OperationDefinitionNode[];
   }): void;
+
+  /**
+   * Copy query to clipboard
+   */
+  copyQuery: () => void;
+
+  /**
+   *
+   */
+  mergeQuery?: () => void;
+
+  /**
+   *
+   */
+  prettifyEditors?: () => Promise<void>;
 }
 
 export interface EditorProps
