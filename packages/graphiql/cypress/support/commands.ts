@@ -125,7 +125,7 @@ Cypress.Commands.add(
     }
     if (response !== undefined) {
       cy.get('.result-window').should(element => {
-        const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+        const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
         const expected = JSON.stringify(response, null, 2);
         expect(actual).to.equal(expected);
       });
@@ -135,7 +135,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add('assertQueryResult', expectedResult => {
   cy.get('section.result-window').should(element => {
-    const actual = normalizeMonacoWhitespace(element.get(0).innerText);
+    const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
     const expected = JSON.stringify(expectedResult, null, 2);
     expect(actual).to.equal(expected);
   });
