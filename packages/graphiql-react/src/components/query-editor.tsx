@@ -10,7 +10,6 @@ import {
   createEditor,
   onEditorContainerKeyDown,
   pick,
-  usePrettifyEditors,
   useMergeQuery,
   cleanupDisposables,
   cn,
@@ -62,6 +61,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     operationName,
     setOperationFacts,
     copyQuery,
+    prettifyEditors,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -77,6 +77,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'operationName',
       'setOperationFacts',
       'copyQuery',
+      'prettifyEditors',
     ),
   );
   const storage = useStorage();
@@ -198,7 +199,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     };
   }, [operationName, operations, run, setOperationName]);
 
-  const prettifyEditors = usePrettifyEditors();
   const mergeQuery = useMergeQuery();
 
   useEffect(() => {

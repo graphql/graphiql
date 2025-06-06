@@ -4,7 +4,6 @@ import { print } from 'graphql';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
-import { formatJSONC } from './jsonc';
 import { AllSlices, MonacoEditor } from '../types';
 import { type editor as monacoEditor, Range } from '../monaco-editor';
 import { useGraphiQL } from '../components';
@@ -67,61 +66,6 @@ export function useMergeQuery() {
       return;
     }
     queryEditor!.setValue(print(mergeAst(documentAST, schema)));
-  };
-}
-
-export function usePrettifyEditors() {
-  const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-    useGraphiQL(
-      pick('queryEditor', 'headerEditor', 'variableEditor', 'onPrettifyQuery'),
-    );
-
-  return async (): Promise<void> => {
-    if (variableEditor) {
-      try {
-        const content = variableEditor.getValue();
-        const formatted = await formatJSONC(content);
-        if (formatted !== content) {
-          variableEditor.setValue(formatted);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-          'Parsing variables JSON failed, skip prettification.',
-          error,
-        );
-      }
-    }
-
-    if (headerEditor) {
-      try {
-        const content = headerEditor.getValue();
-        const formatted = await formatJSONC(content);
-        if (formatted !== content) {
-          headerEditor.setValue(formatted);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-          'Parsing headers JSON failed, skip prettification.',
-          error,
-        );
-      }
-    }
-
-    if (!queryEditor) {
-      return;
-    }
-    try {
-      const content = queryEditor.getValue();
-      const formatted = await onPrettifyQuery(content);
-      if (formatted !== content) {
-        queryEditor.setValue(formatted);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Parsing query failed, skip prettification.', error);
-    }
   };
 }
 

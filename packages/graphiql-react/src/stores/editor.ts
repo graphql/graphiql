@@ -22,7 +22,7 @@ import {
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
 import { DEFAULT_PRETTIFY_QUERY } from '../constants';
-import { debounce } from '../utility';
+import { debounce, formatJSONC } from '../utility';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -225,9 +225,9 @@ export interface EditorSlice extends TabsState {
   }): void;
 
   /**
-   * Copy query to clipboard
+   * Copy a query to clipboard.
    */
-  copyQuery: () => void;
+  copyQuery: () => Promise<void>;
 
   /**
    *
@@ -235,9 +235,9 @@ export interface EditorSlice extends TabsState {
   mergeQuery?: () => void;
 
   /**
-   *
+   * Prettify query, variable and header editors.
    */
-  prettifyEditors?: () => Promise<void>;
+  prettifyEditors: () => Promise<void>;
 }
 
 export interface EditorProps
@@ -515,6 +515,56 @@ export const createEditorSlice =
         const msg = error instanceof Error ? error.message : error;
         // eslint-disable-next-line no-console
         console.error('Failed to copy query!', msg);
+      }
+    },
+    async prettifyEditors() {
+      const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+        get();
+
+      if (variableEditor) {
+        try {
+          const content = variableEditor.getValue();
+          const formatted = await formatJSONC(content);
+          if (formatted !== content) {
+            variableEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(
+            'Parsing variables JSON failed, skip prettification.',
+            error,
+          );
+        }
+      }
+
+      if (headerEditor) {
+        try {
+          const content = headerEditor.getValue();
+          const formatted = await formatJSONC(content);
+          if (formatted !== content) {
+            headerEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(
+            'Parsing headers JSON failed, skip prettification.',
+            error,
+          );
+        }
+      }
+
+      if (!queryEditor) {
+        return;
+      }
+      try {
+        const content = queryEditor.getValue();
+        const formatted = await onPrettifyQuery(content);
+        if (formatted !== content) {
+          queryEditor.setValue(formatted);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Parsing query failed, skip prettification.', error);
       }
     },
   });

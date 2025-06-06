@@ -8,7 +8,6 @@ import {
   useChangeHandler,
   onEditorContainerKeyDown,
   pick,
-  usePrettifyEditors,
   useMergeQuery,
   cleanupDisposables,
   cn,
@@ -27,8 +26,20 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialHeaders, shouldPersistHeaders, setEditor, run } = useGraphiQL(
-    pick('initialHeaders', 'shouldPersistHeaders', 'setEditor', 'run'),
+  const {
+    initialHeaders,
+    shouldPersistHeaders,
+    setEditor,
+    run,
+    prettifyEditors,
+  } = useGraphiQL(
+    pick(
+      'initialHeaders',
+      'shouldPersistHeaders',
+      'setEditor',
+      'run',
+      'prettifyEditors',
+    ),
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
@@ -36,7 +47,6 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
     shouldPersistHeaders ? STORAGE_KEY : null,
     'headers',
   );
-  const prettifyEditors = usePrettifyEditors();
   const mergeQuery = useMergeQuery();
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });

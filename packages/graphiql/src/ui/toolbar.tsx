@@ -4,7 +4,6 @@ import {
   KEY_MAP,
   MergeIcon,
   useMergeQuery,
-  usePrettifyEditors,
   PrettifyIcon,
   ToolbarButton,
   useGraphiQL,
@@ -34,8 +33,9 @@ export const GraphiQLToolbar: FC<{
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-  const { copyQuery } = useGraphiQL(pick('copyQuery'));
-  const prettifyEditors = usePrettifyEditors();
+  const { copyQuery, prettifyEditors } = useGraphiQL(
+    pick('copyQuery', 'prettifyEditors'),
+  );
   const mergeQuery = useMergeQuery();
 
   const prettify = (
