@@ -26,6 +26,7 @@
     "example-graphiql-vite": "0.0.0"
   },
   "changesets": [
+    "beige-months-care",
     "chilly-sloths-heal",
     "nasty-pandas-taste",
     "soft-cars-notice",
