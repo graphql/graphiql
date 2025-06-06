@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "sideEffects": false,
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
