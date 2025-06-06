@@ -11,7 +11,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
-import { RESPONSE_URI } from '../constants';
+import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
 import { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
@@ -44,6 +44,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     initialResponse,
     responseEditor,
     setEditor,
+    run,
   } = useGraphiQL(
     pick(
       'fetchError',
@@ -51,6 +52,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       'initialResponse',
       'responseEditor',
       'setEditor',
+      'run',
     ),
   );
   const ref = useRef<HTMLDivElement>(null!);
@@ -138,6 +140,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     };
     const disposables = [
       languages.registerHoverProvider(model.getLanguageId(), { provideHover }),
+      editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor,
       model,
     ];
