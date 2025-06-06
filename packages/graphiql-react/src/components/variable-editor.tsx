@@ -42,10 +42,8 @@ export const VariableEditor: FC<VariableEditorProps> = ({
       uri: VARIABLE_URI,
       value: initialVariables,
     });
-    // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ variableEditor: editor });
-    // 2️⃣ Subscribe to content changes
     const disposables = [
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),

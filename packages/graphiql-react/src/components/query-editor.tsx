@@ -208,7 +208,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
-    // Build the editor
     const editor = createEditor(ref, { model, readOnly });
     setEditor({ queryEditor: editor });
 
@@ -241,7 +240,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     getAndUpdateOperationFacts(editor);
 
     const disposables = [
-      // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
