@@ -1,6 +1,4 @@
 import * as React from 'react';
-
-import './select-server-plugin.css';
 import { useStorage, useSchemaStore } from '@graphiql/react';
 
 export const LAST_URL_KEY = 'lastURL';

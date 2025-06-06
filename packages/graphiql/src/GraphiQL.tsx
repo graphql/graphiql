@@ -316,10 +316,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
     'success' | 'error' | null
   >(null);
 
-  const { logo, toolbar, footer } = Children.toArray(props.children).reduce<{
+  const { logo, toolbar, footer, children } = Children.toArray(props.children).reduce<{
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
+    children: ReactNode[]
   }>(
     (acc, curr) => {
       switch (getChildComponentType(curr)) {
@@ -336,6 +337,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
         case GraphiQL.Footer:
           acc.footer = curr;
           break;
+        default:
+          acc.children.push(curr)
       }
       return acc;
     },
@@ -348,6 +351,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           onPrettifyQuery={props.onPrettifyQuery}
         />
       ),
+      children: []
     },
   );
 
@@ -823,6 +827,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = props => {
           </div>
         </Dialog>
       </div>
+      {children}
     </Tooltip.Provider>
   );
 };
