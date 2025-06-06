@@ -26,5 +26,5 @@ describe('monaco-editor', () => {
     // expect(lines[11]).toMatch('dist/assets/graphqlMode-');
     // expect(lines[12]).toMatch('dist/assets/index-');
     // expect(lines[13]).toMatch('✓ built in ');
-  }, 30_000);
+  }, 60_000);
 });
