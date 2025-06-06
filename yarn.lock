@@ -12303,7 +12303,7 @@ __metadata:
     copy-webpack-plugin: "npm:11.0.0"
     cross-env: "npm:^7.0.2"
     css-loader: "npm:^6.7.3"
-    graphiql: "npm:^4.1.1"
+    graphiql: "npm:^4.1.2"
     graphql: "npm:^16.9.0"
     graphql-ws: "npm:^5.5.5"
     html-webpack-plugin: "npm:^5.5.0"
@@ -14026,7 +14026,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphiql@npm:^4.1.1, graphiql@workspace:packages/graphiql":
+"graphiql@npm:^4.1.2, graphiql@workspace:packages/graphiql":
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
