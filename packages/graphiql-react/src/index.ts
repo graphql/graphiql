@@ -9,4 +9,4 @@ export * from './components';
 
 export type { EditorProps, SchemaReference, AllSlices } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
-export { KEY_MAP } from './constants';
+export { KEY_MAP, formatShortcutForOS } from './constants';

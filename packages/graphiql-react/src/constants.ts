@@ -3,10 +3,13 @@ import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { EditorSlice } from './stores';
-import { formatShortcutForOS } from './utility';
 
-export const isMacOs =
+const isMacOs =
   typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
+
+export function formatShortcutForOS(key: string, replaced = '⌘') {
+  return isMacOs ? key.replace('Ctrl', replaced) : key;
+}
 
 export const KEY_MAP = Object.freeze({
   prettify: {

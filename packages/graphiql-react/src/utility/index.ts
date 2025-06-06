@@ -6,7 +6,6 @@ export {
   onEditorContainerKeyDown,
 } from './create-editor';
 export { debounce } from './debounce';
-export { formatShortcutForOS } from './format-shortcut-for-os';
 export { formatJSONC, parseJSONC } from './jsonc';
 export { markdown } from './markdown';
 export { pick } from './pick';

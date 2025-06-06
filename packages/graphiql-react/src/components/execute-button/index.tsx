@@ -3,8 +3,8 @@ import { useGraphiQL } from '../provider';
 import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
-import { KEY_MAP } from '../../constants';
-import { formatShortcutForOS, pick } from '../../utility';
+import { KEY_MAP, formatShortcutForOS } from '../../constants';
+import { pick } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
