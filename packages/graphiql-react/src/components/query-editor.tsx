@@ -10,7 +10,6 @@ import {
   createEditor,
   onEditorContainerKeyDown,
   pick,
-  useMergeQuery,
   cleanupDisposables,
   cn,
 } from '../utility';
@@ -62,6 +61,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     setOperationFacts,
     copyQuery,
     prettifyEditors,
+    mergeQuery,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -78,6 +78,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'setOperationFacts',
       'copyQuery',
       'prettifyEditors',
+      'mergeQuery',
     ),
   );
   const storage = useStorage();
@@ -198,8 +199,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       run();
     };
   }, [operationName, operations, run, setOperationName]);
-
-  const mergeQuery = useMergeQuery();
 
   useEffect(() => {
     globalThis.__MONACO = monaco;

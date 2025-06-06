@@ -8,7 +8,6 @@ import {
   useChangeHandler,
   onEditorContainerKeyDown,
   pick,
-  useMergeQuery,
   cleanupDisposables,
   cn,
 } from '../utility';
@@ -35,10 +34,16 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   readOnly = false,
   ...props
 }) => {
-  const { initialVariables, setEditor, run, prettifyEditors } = useGraphiQL(
-    pick('initialVariables', 'setEditor', 'run', 'prettifyEditors'),
-  );
-  const mergeQuery = useMergeQuery();
+  const { initialVariables, setEditor, run, prettifyEditors, mergeQuery } =
+    useGraphiQL(
+      pick(
+        'initialVariables',
+        'setEditor',
+        'run',
+        'prettifyEditors',
+        'mergeQuery',
+      ),
+    );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY, 'variables');
   useEffect(() => {

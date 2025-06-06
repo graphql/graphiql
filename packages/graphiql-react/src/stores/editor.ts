@@ -6,7 +6,7 @@ import type {
   DocumentNode,
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
-import { MaybePromise } from '@graphiql/toolkit';
+import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { storageStore } from './storage';
 import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
 
@@ -23,6 +23,7 @@ import {
 import { AllSlices, MonacoEditor } from '../types';
 import { DEFAULT_PRETTIFY_QUERY } from '../constants';
 import { debounce, formatJSONC } from '../utility';
+import { print } from 'graphql';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -230,9 +231,9 @@ export interface EditorSlice extends TabsState {
   copyQuery: () => Promise<void>;
 
   /**
-   *
+   * Merge fragments into query.
    */
-  mergeQuery?: () => void;
+  mergeQuery: () => void;
 
   /**
    * Prettify query, variable and header editors.
@@ -566,6 +567,14 @@ export const createEditorSlice =
         // eslint-disable-next-line no-console
         console.error('Parsing query failed, skip prettification.', error);
       }
+    },
+    mergeQuery() {
+      const { queryEditor, documentAST, schema } = get();
+      const query = queryEditor?.getValue();
+      if (!documentAST || !query) {
+        return;
+      }
+      queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
   });
 

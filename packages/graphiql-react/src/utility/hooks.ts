@@ -1,5 +1,4 @@
-import { fillLeafs, mergeAst } from '@graphiql/toolkit';
-import { print } from 'graphql';
+import { fillLeafs } from '@graphiql/toolkit';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
@@ -7,7 +6,6 @@ import { debounce } from './debounce';
 import { AllSlices, MonacoEditor } from '../types';
 import { type editor as monacoEditor, Range } from '../monaco-editor';
 import { useGraphiQL } from '../components';
-import { pick } from './pick';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
@@ -54,19 +52,6 @@ export function useChangeHandler(
       disposable.dispose();
     };
   }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
-}
-
-export function useMergeQuery() {
-  const { queryEditor, documentAST, schema } = useGraphiQL(
-    pick('queryEditor', 'documentAST', 'schema'),
-  );
-  return (): void => {
-    const query = queryEditor?.getValue();
-    if (!documentAST || !query) {
-      return;
-    }
-    queryEditor!.setValue(print(mergeAst(documentAST, schema)));
-  };
 }
 
 export function getAutoCompleteLeafs({

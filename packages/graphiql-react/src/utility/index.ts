@@ -19,6 +19,5 @@ export {
   useOperationsEditorState,
   useVariablesEditorState,
   useHeadersEditorState,
-  useMergeQuery,
   useChangeHandler,
 } from './hooks';
