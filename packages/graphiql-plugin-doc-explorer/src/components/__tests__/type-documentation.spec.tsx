@@ -10,13 +10,21 @@ import {
 import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { unwrapType } from './test-utils';
-import { schemaStore } from '../../../../graphiql-react/dist/stores/schema';
+
+vi.mock('@graphiql/react', async () => {
+  const originalModule = await vi.importActual('@graphiql/react');
+  return {
+    ...originalModule,
+    useGraphiQL: () => ({
+      schema: ExampleSchema,
+    }),
+  };
+});
 
 const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = ({
   type,
 }) => {
   useEffect(() => {
-    schemaStore.setState({ schema: ExampleSchema });
     docExplorerStore.setState({
       explorerNavStack: [
         {

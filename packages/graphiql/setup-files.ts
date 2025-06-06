@@ -71,29 +71,32 @@ if (!window.matchMedia) {
 }
 
 vi.mock('monaco-editor', async () => {
-  const actual =
+  const originalModule =
     await vi.importActual<typeof import('monaco-editor')>('monaco-editor');
   const mockedTextAreas: Record<string, HTMLTextAreaElement> = {};
 
-  const create: (typeof actual)['editor']['create'] = (
+  const create: (typeof originalModule)['editor']['create'] = (
     editorContainer,
     options,
   ) => {
     const { path } = options!.model!.uri;
     const textAreaEl = mockedTextAreas[path]!;
     editorContainer.append(textAreaEl);
-    return Object.assign(actual.editor.create(editorContainer, options), {
-      getValue() {
-        const { value } = mockedTextAreas[path]!;
-        return value;
+    return Object.assign(
+      originalModule.editor.create(editorContainer, options),
+      {
+        getValue() {
+          const { value } = mockedTextAreas[path]!;
+          return value;
+        },
+        setValue(newValue: string) {
+          mockedTextAreas[path]!.value = newValue;
+        },
       },
-      setValue(newValue: string) {
-        mockedTextAreas[path]!.value = newValue;
-      },
-    });
+    );
   };
 
-  const createModel: (typeof actual)['editor']['createModel'] = (
+  const createModel: (typeof originalModule)['editor']['createModel'] = (
     value,
     language,
     uri,
@@ -104,7 +107,7 @@ vi.mock('monaco-editor', async () => {
       textarea.className = 'mockMonaco';
       mockedTextAreas[uri.path] = textarea;
     }
-    return actual.editor.createModel(value, language, uri);
+    return originalModule.editor.createModel(value, language, uri);
   };
 
   process.on('unhandledRejection', reason => {
@@ -120,9 +123,9 @@ vi.mock('monaco-editor', async () => {
   });
 
   return {
-    ...actual,
+    ...originalModule,
     editor: {
-      ...actual.editor,
+      ...originalModule.editor,
       createModel,
       create,
     },
