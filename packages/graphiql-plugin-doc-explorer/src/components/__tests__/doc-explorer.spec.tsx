@@ -13,7 +13,8 @@ import { DocExplorer } from '../doc-explorer';
 const useGraphiQL = $useGraphiQL as Mock;
 
 vi.mock('@graphiql/react', async () => {
-  const originalModule = await vi.importActual('@graphiql/react');
+  const originalModule =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
   return {
     ...originalModule,
     useGraphiQL: vi.fn(),

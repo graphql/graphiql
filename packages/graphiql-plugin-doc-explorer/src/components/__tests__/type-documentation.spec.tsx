@@ -10,14 +10,17 @@ import {
 import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { unwrapType } from './test-utils';
+import { AllSlices } from '@graphiql/react';
 
 vi.mock('@graphiql/react', async () => {
-  const originalModule = await vi.importActual('@graphiql/react');
+  const originalModule =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  const useGraphiQL: (typeof originalModule)['useGraphiQL'] = cb =>
+    cb({ schema: ExampleSchema } as AllSlices);
+
   return {
     ...originalModule,
-    useGraphiQL: () => ({
-      schema: ExampleSchema,
-    }),
+    useGraphiQL,
   };
 });
 
