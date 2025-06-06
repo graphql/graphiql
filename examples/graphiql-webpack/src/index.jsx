@@ -1,31 +1,26 @@
 import 'regenerator-runtime/runtime.js';
-import * as React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import 'graphiql/style.css';
-import '@graphiql/plugin-explorer/style.css';
-import '@graphiql/plugin-code-exporter/style.css';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorage } from '@graphiql/react';
-
-export const STARTING_URL =
-  'https://swapi-graphql.netlify.app/.netlify/functions/index';
-
-import './index.css';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
+import './index.css';
+
+export const STARTING_URL = 'https://countries.trevorblades.com';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/service-worker.js')
       .then(registration => {
-        console.log('SW registered: ', registration);
+        console.log('SW registered:', registration);
       })
       .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
+        console.error('SW registration failed:', registrationError);
       });
   });
 }
@@ -59,24 +54,21 @@ const style = { height: '100vh' };
  */
 const explorer = explorerPlugin();
 
-const App = () => {
-  // TODO: `storage` will be always `null`, fix it to have access outside `StorageContextProvider` after zustand migration
-  const storage = useStorage();
-  const lastUrl = storage?.get(LAST_URL_KEY);
-  const [currentUrl, setUrl] = React.useState(lastUrl ?? STARTING_URL);
+function App() {
+  const [currentUrl, setUrl] = useState('');
   // TODO: a breaking change where we make URL an internal state concern, and then expose hooks
   // so that you can handle/set URL state internally from a plugin
   // fetcher could then pass a dynamic URL config object to the fetcher internally
-  const exporter = React.useMemo(
+  const exporter = useMemo(
     () =>
       codeExporterPlugin({ snippets: getSnippets({ serverUrl: currentUrl }) }),
     [currentUrl],
   );
-  const fetcher = React.useMemo(
+  const fetcher = useMemo(
     () => createGraphiQLFetcher({ url: currentUrl }),
     [currentUrl],
   );
-  const serverSelect = React.useMemo(
+  const serverSelect = useMemo(
     () => serverSelectPlugin({ url: currentUrl, setUrl }),
     [currentUrl],
   );
@@ -87,9 +79,26 @@ const App = () => {
       plugins={[serverSelect, explorer, exporter]}
       fetcher={fetcher}
       shouldPersistHeaders
-    />
+    >
+      <GraphiQLStorageBound setUrl={setUrl} />
+    </GraphiQL>
   );
-};
+}
+
+/**
+ * `useStorage` is a context hook that's only available within the `<GraphiQL>`
+ * provider tree. `<GraphiQLStorageBound>` must be rendered as a child of `<GraphiQL>`.
+ */
+function GraphiQLStorageBound({ setUrl }) {
+  const storage = useStorage();
+  const lastUrl = storage.get(LAST_URL_KEY) ?? STARTING_URL;
+
+  useEffect(() => {
+    setUrl(lastUrl);
+  }, [lastUrl, setUrl]);
+
+  return null;
+}
 
 const root = createRoot(document.getElementById('root'));
 root.render(<App />);
