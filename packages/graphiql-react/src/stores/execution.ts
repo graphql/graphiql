@@ -89,12 +89,9 @@ export interface ExecutionProps
   operationName?: string;
 }
 
-export const createExecutionSlice: StateCreator<
-  AllSlices,
-  [],
-  [],
-  ExecutionSlice
-> = (set, get) => ({
+type CreateExecutionSlice = StateCreator<AllSlices, [], [], ExecutionSlice>;
+
+export const createExecutionSlice: CreateExecutionSlice = (set, get) => ({
   isFetching: false,
   subscription: null,
   overrideOperationName: null,

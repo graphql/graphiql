@@ -316,266 +316,263 @@ export interface EditorProps
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 }
 
-export const createEditorSlice =
-  (
-    initial: Pick<
-      EditorSlice,
-      | 'shouldPersistHeaders'
-      | 'tabs'
-      | 'activeTabIndex'
-      | 'initialQuery'
-      | 'initialVariables'
-      | 'initialHeaders'
-      | 'initialResponse'
-    >,
-  ): StateCreator<AllSlices, [], [], EditorSlice> =>
-  (set, get) => ({
-    ...initial,
+type CreateEditorSlice = (
+  initial: Pick<
+    EditorSlice,
+    | 'shouldPersistHeaders'
+    | 'tabs'
+    | 'activeTabIndex'
+    | 'initialQuery'
+    | 'initialVariables'
+    | 'initialHeaders'
+    | 'initialResponse'
+  >,
+) => StateCreator<AllSlices, [], [], EditorSlice>;
 
-    addTab() {
-      set(current => {
-        const {
-          defaultQuery,
-          defaultHeaders,
-          onTabChange,
-          synchronizeActiveTabValues,
-          setEditorValues,
-          storeTabs,
-        } = get();
+export const createEditorSlice: CreateEditorSlice = initial => (set, get) => ({
+  ...initial,
 
-        // Make sure the current tab stores the latest values
-        const updatedValues = synchronizeActiveTabValues(current);
-        const updated = {
-          tabs: [
-            ...updatedValues.tabs,
-            createTab({
-              headers: defaultHeaders,
-              query: defaultQuery,
-            }),
-          ],
-          activeTabIndex: updatedValues.tabs.length,
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    changeTab(index) {
-      const { stop, onTabChange, setEditorValues, storeTabs } = get();
-      stop();
-
-      set(current => {
-        const updated = {
-          ...current,
-          activeTabIndex: index,
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    moveTab(newOrder) {
-      set(current => {
-        const { onTabChange, setEditorValues, storeTabs } = get();
-        const activeTab = current.tabs[current.activeTabIndex]!;
-        const updated = {
-          tabs: newOrder,
-          activeTabIndex: newOrder.indexOf(activeTab),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    closeTab(index) {
-      const { activeTabIndex, onTabChange, stop, setEditorValues, storeTabs } =
-        get();
-
-      if (activeTabIndex === index) {
-        stop();
-      }
-
-      set(current => {
-        const updated = {
-          tabs: current.tabs.filter((_tab, i) => index !== i),
-          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    updateActiveTabValues(partialTab) {
-      set(current => {
-        const { onTabChange, storeTabs } = get();
-        const updated = setPropertiesInActiveTab(current, partialTab);
-        storeTabs(updated);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
-      const entries = Object.entries({
-        headerEditor,
-        queryEditor,
-        responseEditor,
-        variableEditor,
-      }).filter(([_key, value]) => value);
-      const newState = Object.fromEntries(entries);
-      set(newState);
-    },
-    setOperationName(operationName) {
-      const { onEditOperationName, updateActiveTabValues } = get();
-      set({ operationName });
-      updateActiveTabValues({ operationName });
-      onEditOperationName?.(operationName);
-    },
-    setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
-      if (persist) {
-        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(
-          { tabs, activeTabIndex },
-          true,
-        );
-        storage.set(STORAGE_KEY_TABS, serializedTabs);
-      } else {
-        storage.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs();
-      }
-      set({ shouldPersistHeaders: persist });
-      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-    },
-    onEditOperationName: undefined,
-    externalFragments: null!,
-    onTabChange: undefined,
-    defaultQuery: undefined,
-    defaultHeaders: undefined,
-    validationRules: null!,
-    onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
-    synchronizeActiveTabValues(tabsState) {
+  addTab() {
+    set(current => {
       const {
-        queryEditor,
-        variableEditor,
-        headerEditor,
-        responseEditor,
-        operationName,
-      } = get();
-      return setPropertiesInActiveTab(tabsState, {
-        query: queryEditor?.getValue() ?? null,
-        variables: variableEditor?.getValue() ?? null,
-        headers: headerEditor?.getValue() ?? null,
-        response: responseEditor?.getValue() ?? null,
-        operationName: operationName ?? null,
-      });
-    },
-    setEditorValues({ query, variables, headers, response }) {
-      const {
-        queryEditor,
-        variableEditor,
-        headerEditor,
-        responseEditor,
+        defaultQuery,
         defaultHeaders,
+        onTabChange,
+        synchronizeActiveTabValues,
+        setEditorValues,
+        storeTabs,
       } = get();
-      queryEditor?.setValue(query ?? '');
-      variableEditor?.setValue(variables ?? '');
-      headerEditor?.setValue(headers ?? defaultHeaders ?? '');
-      responseEditor?.setValue(response ?? '');
-    },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
-      const { shouldPersistHeaders } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY_TABS, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
-    },
-    setOperationFacts({ documentAST, operationName, operations }) {
-      set({
-        documentAST,
-        operationName,
-        operations,
-      });
-    },
-    async copyQuery() {
-      const { queryEditor, onCopyQuery } = get();
-      if (!queryEditor) {
-        return;
-      }
 
-      const query = queryEditor.getValue();
-      onCopyQuery?.(query);
+      // Make sure the current tab stores the latest values
+      const updatedValues = synchronizeActiveTabValues(current);
+      const updated = {
+        tabs: [
+          ...updatedValues.tabs,
+          createTab({
+            headers: defaultHeaders,
+            query: defaultQuery,
+          }),
+        ],
+        activeTabIndex: updatedValues.tabs.length,
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  changeTab(index) {
+    const { stop, onTabChange, setEditorValues, storeTabs } = get();
+    stop();
+
+    set(current => {
+      const updated = {
+        ...current,
+        activeTabIndex: index,
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  moveTab(newOrder) {
+    set(current => {
+      const { onTabChange, setEditorValues, storeTabs } = get();
+      const activeTab = current.tabs[current.activeTabIndex]!;
+      const updated = {
+        tabs: newOrder,
+        activeTabIndex: newOrder.indexOf(activeTab),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  closeTab(index) {
+    const { activeTabIndex, onTabChange, stop, setEditorValues, storeTabs } =
+      get();
+
+    if (activeTabIndex === index) {
+      stop();
+    }
+
+    set(current => {
+      const updated = {
+        tabs: current.tabs.filter((_tab, i) => index !== i),
+        activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+      };
+      storeTabs(updated);
+      setEditorValues(updated.tabs[updated.activeTabIndex]!);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  updateActiveTabValues(partialTab) {
+    set(current => {
+      const { onTabChange, storeTabs } = get();
+      const updated = setPropertiesInActiveTab(current, partialTab);
+      storeTabs(updated);
+      onTabChange?.(updated);
+      return updated;
+    });
+  },
+  setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+    const entries = Object.entries({
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+    }).filter(([_key, value]) => value);
+    const newState = Object.fromEntries(entries);
+    set(newState);
+  },
+  setOperationName(operationName) {
+    const { onEditOperationName, updateActiveTabValues } = get();
+    set({ operationName });
+    updateActiveTabValues({ operationName });
+    onEditOperationName?.(operationName);
+  },
+  setShouldPersistHeaders(persist) {
+    const { headerEditor, tabs, activeTabIndex } = get();
+    const { storage } = storageStore.getState();
+    if (persist) {
+      storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+      const serializedTabs = serializeTabState({ tabs, activeTabIndex }, true);
+      storage.set(STORAGE_KEY_TABS, serializedTabs);
+    } else {
+      storage.set(STORAGE_KEY_HEADERS, '');
+      clearHeadersFromTabs();
+    }
+    set({ shouldPersistHeaders: persist });
+    storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+  },
+  onEditOperationName: undefined,
+  externalFragments: null!,
+  onTabChange: undefined,
+  defaultQuery: undefined,
+  defaultHeaders: undefined,
+  validationRules: null!,
+  onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
+  synchronizeActiveTabValues(tabsState) {
+    const {
+      queryEditor,
+      variableEditor,
+      headerEditor,
+      responseEditor,
+      operationName,
+    } = get();
+    return setPropertiesInActiveTab(tabsState, {
+      query: queryEditor?.getValue() ?? null,
+      variables: variableEditor?.getValue() ?? null,
+      headers: headerEditor?.getValue() ?? null,
+      response: responseEditor?.getValue() ?? null,
+      operationName: operationName ?? null,
+    });
+  },
+  setEditorValues({ query, variables, headers, response }) {
+    const {
+      queryEditor,
+      variableEditor,
+      headerEditor,
+      responseEditor,
+      defaultHeaders,
+    } = get();
+    queryEditor?.setValue(query ?? '');
+    variableEditor?.setValue(variables ?? '');
+    headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+    responseEditor?.setValue(response ?? '');
+  },
+  storeTabs({ tabs, activeTabIndex }) {
+    const { storage } = storageStore.getState();
+    const { shouldPersistHeaders } = get();
+    const store = debounce(500, (value: string) => {
+      storage.set(STORAGE_KEY_TABS, value);
+    });
+    store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+  },
+  setOperationFacts({ documentAST, operationName, operations }) {
+    set({
+      documentAST,
+      operationName,
+      operations,
+    });
+  },
+  async copyQuery() {
+    const { queryEditor, onCopyQuery } = get();
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    onCopyQuery?.(query);
+    try {
+      await navigator.clipboard.writeText(query);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : error;
+      // eslint-disable-next-line no-console
+      console.error('Failed to copy query!', msg);
+    }
+  },
+  async prettifyEditors() {
+    const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+      get();
+
+    if (variableEditor) {
       try {
-        await navigator.clipboard.writeText(query);
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : error;
-        // eslint-disable-next-line no-console
-        console.error('Failed to copy query!', msg);
-      }
-    },
-    async prettifyEditors() {
-      const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-        get();
-
-      if (variableEditor) {
-        try {
-          const content = variableEditor.getValue();
-          const formatted = await formatJSONC(content);
-          if (formatted !== content) {
-            variableEditor.setValue(formatted);
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            'Parsing variables JSON failed, skip prettification.',
-            error,
-          );
-        }
-      }
-
-      if (headerEditor) {
-        try {
-          const content = headerEditor.getValue();
-          const formatted = await formatJSONC(content);
-          if (formatted !== content) {
-            headerEditor.setValue(formatted);
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            'Parsing headers JSON failed, skip prettification.',
-            error,
-          );
-        }
-      }
-
-      if (!queryEditor) {
-        return;
-      }
-      try {
-        const content = queryEditor.getValue();
-        const formatted = await onPrettifyQuery(content);
+        const content = variableEditor.getValue();
+        const formatted = await formatJSONC(content);
         if (formatted !== content) {
-          queryEditor.setValue(formatted);
+          variableEditor.setValue(formatted);
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Parsing query failed, skip prettification.', error);
+        console.error(
+          'Parsing variables JSON failed, skip prettification.',
+          error,
+        );
       }
-    },
-    mergeQuery() {
-      const { queryEditor, documentAST, schema } = get();
-      const query = queryEditor?.getValue();
-      if (!documentAST || !query) {
-        return;
+    }
+
+    if (headerEditor) {
+      try {
+        const content = headerEditor.getValue();
+        const formatted = await formatJSONC(content);
+        if (formatted !== content) {
+          headerEditor.setValue(formatted);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(
+          'Parsing headers JSON failed, skip prettification.',
+          error,
+        );
       }
-      queryEditor!.setValue(print(mergeAst(documentAST, schema)));
-    },
-  });
+    }
+
+    if (!queryEditor) {
+      return;
+    }
+    try {
+      const content = queryEditor.getValue();
+      const formatted = await onPrettifyQuery(content);
+      if (formatted !== content) {
+        queryEditor.setValue(formatted);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Parsing query failed, skip prettification.', error);
+    }
+  },
+  mergeQuery() {
+    const { queryEditor, documentAST, schema } = get();
+    const query = queryEditor?.getValue();
+    if (!documentAST || !query) {
+      return;
+    }
+    queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+  },
+});
 
 export const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';

@@ -70,10 +70,9 @@ export interface PluginProps
   visiblePlugin?: GraphiQLPlugin | string;
 }
 
-export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
-  set,
-  get,
-) => ({
+type CreatePluginSlice = StateCreator<AllSlices, [], [], PluginSlice>;
+
+export const createPluginSlice: CreatePluginSlice = (set, get) => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,
