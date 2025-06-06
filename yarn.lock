@@ -12576,7 +12576,7 @@ __metadata:
     "@types/react": "npm:^19.1.2"
     graphql: "npm:^16.9.0"
     jsonc-parser: "npm:^3.2.0"
-    monaco-editor: "npm:^0.39.0"
+    monaco-editor: "npm:^0.52.2"
     monaco-graphql: "npm:^1.6.2"
     next: "npm:15.3.3"
     react: "npm:^19.1.0"
@@ -18614,7 +18614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:0.52.2":
+"monaco-editor@npm:^0.52.2":
   version: 0.52.2
   resolution: "monaco-editor@npm:0.52.2"
   checksum: 10c0/5a92da64f1e2ab375c0ce99364137f794d057c97bed10ecc65a08d6e6846804b8ecbd377eacf01e498f7dfbe1b21e8be64f728256681448f0484df90e767b435
