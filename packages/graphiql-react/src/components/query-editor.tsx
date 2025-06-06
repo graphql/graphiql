@@ -168,30 +168,35 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       : null;
   }
 
-  const runAtCursor: monacoEditor.IActionDescriptor['run'] = editor => {
-    if (!operations) {
-      return;
-    }
-    const position = editor.getPosition()!;
-    const cursorIndex = editor.getModel()!.getOffsetAt(position);
+  const runAtCursorRef = useRef<monacoEditor.IActionDescriptor['run']>(null!);
 
-    // Loop through all operations to see if one contains the cursor.
-    let newOperationName: string | undefined;
-    for (const operation of operations) {
-      if (
-        operation.loc &&
-        operation.loc.start <= cursorIndex &&
-        operation.loc.end >= cursorIndex
-      ) {
-        newOperationName = operation.name?.value;
+  useEffect(() => {
+    runAtCursorRef.current = editor => {
+      if (!operations) {
+        return;
       }
-    }
+      const position = editor.getPosition()!;
+      const cursorIndex = editor.getModel()!.getOffsetAt(position);
 
-    if (newOperationName && newOperationName !== operationName) {
-      setOperationName(newOperationName);
-    }
-    run();
-  };
+      // Loop through all operations to see if one contains the cursor.
+      let newOperationName: string | undefined;
+      for (const operation of operations) {
+        if (
+          operation.loc &&
+          operation.loc.start <= cursorIndex &&
+          operation.loc.end >= cursorIndex
+        ) {
+          newOperationName = operation.name?.value;
+        }
+      }
+
+      if (newOperationName && newOperationName !== operationName) {
+        setOperationName(newOperationName);
+      }
+      run();
+    };
+  }, [operationName, operations, run, setOperationName]);
+
   const copyQuery = useCopyQuery();
   const prettifyEditors = usePrettifyEditors();
   const mergeQuery = useMergeQuery();
@@ -234,7 +239,10 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const disposables = [
       // 2️⃣ Subscribe to content changes
       model.onDidChangeContent(handleChange),
-      editor.addAction({ ...KEY_BINDINGS.runQuery, run: runAtCursor }),
+      editor.addAction({
+        ...KEY_BINDINGS.runQuery,
+        run: (...args) => runAtCursorRef.current(...args),
+      }),
       editor.addAction({ ...KEY_BINDINGS.copyQuery, run: copyQuery }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),

@@ -13,7 +13,6 @@ export const ExecuteButton: FC = () => {
     operations = [],
     operationName,
     isFetching,
-    subscription,
     overrideOperationName,
     run,
     stop,
@@ -23,15 +22,15 @@ export const ExecuteButton: FC = () => {
       'operations',
       'operationName',
       'isFetching',
-      'subscription',
       'overrideOperationName',
       'run',
       'stop',
     ),
   );
+  const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const hasOptions =
     operations.length > 1 && typeof overrideOperationName !== 'string';
-  const isRunning = isFetching || Boolean(subscription);
+  const isRunning = isFetching || isSubscribed;
 
   const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery.key})`;
   const buttonProps = {
