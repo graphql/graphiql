@@ -6,7 +6,7 @@ import { MonacoEditor } from '../types';
 export const EDITOR_THEME = {
   dark: 'graphiql-DARK',
   light: 'graphiql-LIGHT',
-};
+} as const;
 
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement
