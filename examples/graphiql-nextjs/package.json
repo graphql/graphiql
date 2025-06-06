@@ -5,7 +5,7 @@
   "scripts": {
     "types:check": "tsc --noEmit",
     "dev": "next --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
