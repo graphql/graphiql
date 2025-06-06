@@ -300,6 +300,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
+    children: ReactNode[];
   }>(
     (acc, curr) => {
       switch (getChildComponentType(curr)) {
@@ -312,12 +313,15 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         case GraphiQL.Footer:
           acc.footer = curr;
           break;
+        default:
+          acc.children.push(curr);
       }
       return acc;
     },
     {
       logo: <GraphiQL.Logo />,
       toolbar: <GraphiQL.Toolbar />,
+      children: [],
     },
   );
 
