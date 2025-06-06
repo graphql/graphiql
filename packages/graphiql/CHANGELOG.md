@@ -49,6 +49,12 @@
   - @graphiql/plugin-history@0.3.0-rc.0
   - @graphiql/react@0.35.0-rc.0
 
+## 4.1.2
+
+### Patch Changes
+
+- [#3993](https://github.com/graphql/graphiql/pull/3993) [`70d2216`](https://github.com/graphql/graphiql/commit/70d22164d67b925f3342800161a2b568997bd689) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix `TypeError: Cannot read properties of null (reading 'get')` and update graphiql webpack example to show how to use `useStorage` hook with `GraphiQL` component
+
 ## 4.1.1
 
 ### Patch Changes

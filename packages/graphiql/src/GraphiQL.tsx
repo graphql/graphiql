@@ -126,11 +126,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     >
       <HistoryStore maxHistoryLength={maxHistoryLength}>
         <DocExplorerStore>
-          <Tooltip.Provider>
-            <GraphiQLInterface {...interfaceProps}>
-              {children}
-            </GraphiQLInterface>
-          </Tooltip.Provider>
+          <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
         </DocExplorerStore>
       </HistoryStore>
     </GraphiQLProvider>
@@ -204,7 +200,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
-  children,
+  children: $children,
   confirmCloseTab,
   className,
   onEditQuery,
@@ -316,10 +312,13 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     'success' | 'error' | null
   >(null);
 
-  const { logo, toolbar, footer } = Children.toArray(children).reduce<{
+  const { logo, toolbar, footer, children } = Children.toArray(
+    $children,
+  ).reduce<{
     logo?: ReactNode;
     toolbar?: ReactNode;
     footer?: ReactNode;
+    children: ReactNode[];
   }>(
     (acc, curr) => {
       switch (getChildComponentType(curr)) {
@@ -332,12 +331,15 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         case GraphiQL.Footer:
           acc.footer = curr;
           break;
+        default:
+          acc.children.push(curr);
       }
       return acc;
     },
     {
       logo: <GraphiQL.Logo />,
       toolbar: <GraphiQL.Toolbar />,
+      children: [],
     },
   );
 
@@ -713,86 +715,89 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const tabContainerRef = useRef<HTMLUListElement>(null!);
 
   return (
-    <div className={cn('graphiql-container', className)}>
-      {sidebar}
-      <div className="graphiql-main">
-        <div
-          ref={pluginResize.firstRef}
-          className="graphiql-plugin"
-          style={{
-            // Make sure the container shrinks when containing long
-            // non-breaking texts
-            minWidth: '200px',
-          }}
-        >
-          {PluginContent ? <PluginContent /> : null}
-        </div>
-        {visiblePlugin && (
+    <Tooltip.Provider>
+      <div className={cn('graphiql-container', className)}>
+        {sidebar}
+        <div className="graphiql-main">
           <div
-            className="graphiql-horizontal-drag-bar"
-            ref={pluginResize.dragBarRef}
-          />
-        )}
-        <div ref={pluginResize.secondRef} className="graphiql-sessions">
-          <div className="graphiql-session-header">
-            <Tabs
-              ref={tabContainerRef}
-              values={tabs}
-              onReorder={moveTab}
-              aria-label="Select active operation"
-              className="no-scrollbar"
-            >
-              {tabs.map((tab, index, arr) => (
-                <Tab
-                  key={tab.id}
-                  // Prevent overscroll over container
-                  dragConstraints={tabContainerRef}
-                  value={tab}
-                  isActive={index === activeTabIndex}
-                >
-                  <Tab.Button
-                    aria-controls="graphiql-session"
-                    id={`graphiql-session-tab-${index}`}
-                    title={tab.title}
-                    onClick={handleTabClick}
-                  >
-                    {tab.title}
-                  </Tab.Button>
-                  {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
-                </Tab>
-              ))}
-            </Tabs>
-            <Tooltip label="New tab">
-              <UnStyledButton
-                type="button"
-                className="graphiql-tab-add"
-                onClick={addTab}
-                aria-label="New tab"
-              >
-                <PlusIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-            {logo}
-          </div>
-          <div
-            role="tabpanel"
-            id="graphiql-session" // used by aria-controls="graphiql-session"
-            aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+            ref={pluginResize.firstRef}
+            className="graphiql-plugin"
+            style={{
+              // Make sure the container shrinks when containing long
+              // non-breaking texts
+              minWidth: '200px',
+            }}
           >
-            {editors}
+            {PluginContent ? <PluginContent /> : null}
+          </div>
+          {visiblePlugin && (
             <div
               className="graphiql-horizontal-drag-bar"
-              ref={editorResize.dragBarRef}
+              ref={pluginResize.dragBarRef}
             />
-            <div className="graphiql-response" ref={editorResize.secondRef}>
-              {isFetching && <Spinner />}
-              <ResponseEditor responseTooltip={responseTooltip} />
-              {footer}
+          )}
+          <div ref={pluginResize.secondRef} className="graphiql-sessions">
+            <div className="graphiql-session-header">
+              <Tabs
+                ref={tabContainerRef}
+                values={tabs}
+                onReorder={moveTab}
+                aria-label="Select active operation"
+                className="no-scrollbar"
+              >
+                {tabs.map((tab, index, arr) => (
+                  <Tab
+                    key={tab.id}
+                    // Prevent overscroll over container
+                    dragConstraints={tabContainerRef}
+                    value={tab}
+                    isActive={index === activeTabIndex}
+                  >
+                    <Tab.Button
+                      aria-controls="graphiql-session"
+                      id={`graphiql-session-tab-${index}`}
+                      title={tab.title}
+                      onClick={handleTabClick}
+                    >
+                      {tab.title}
+                    </Tab.Button>
+                    {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
+                  </Tab>
+                ))}
+              </Tabs>
+              <Tooltip label="New tab">
+                <UnStyledButton
+                  type="button"
+                  className="graphiql-tab-add"
+                  onClick={addTab}
+                  aria-label="New tab"
+                >
+                  <PlusIcon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+              {logo}
+            </div>
+            <div
+              role="tabpanel"
+              id="graphiql-session" // used by aria-controls="graphiql-session"
+              aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+            >
+              {editors}
+              <div
+                className="graphiql-horizontal-drag-bar"
+                ref={editorResize.dragBarRef}
+              />
+              <div className="graphiql-response" ref={editorResize.secondRef}>
+                {isFetching && <Spinner />}
+                <ResponseEditor responseTooltip={responseTooltip} />
+                {footer}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {children}
+    </Tooltip.Provider>
   );
 };
 
