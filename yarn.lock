@@ -18490,7 +18490,7 @@ __metadata:
     execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.4.0"
-    monaco-editor: "npm:^0.39.0"
+    monaco-editor: "npm:^0.52.2"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
     vscode-languageserver-types: "npm:^3.17.1"
