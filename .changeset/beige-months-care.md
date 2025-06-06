@@ -16,3 +16,4 @@
 - remove `onClickReference` from variable editor
 - fix shortcut text per OS for run query in execute query button's tooltip and in default query
 - allow override all default GraphiQL plugins
+- adjust operation argument color to be purple from GraphiQL v2 on dark/light theme
