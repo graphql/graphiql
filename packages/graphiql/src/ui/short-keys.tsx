@@ -1,14 +1,10 @@
 import { FC, Fragment } from 'react';
-import { isMacOs, KEY_MAP } from '@graphiql/react';
-
-function withMacOS(key: string) {
-  return isMacOs ? key.replace('Ctrl', '⌘') : key;
-}
+import { formatShortcutForOS, KEY_MAP } from '@graphiql/react';
 
 const SHORT_KEYS = Object.entries({
-  'Search in editor': withMacOS(KEY_MAP.searchInEditor.key),
-  'Search in documentation': withMacOS(KEY_MAP.searchInDocs.key),
-  'Execute query': withMacOS(KEY_MAP.runQuery.key),
+  'Search in editor': formatShortcutForOS(KEY_MAP.searchInEditor.key),
+  'Search in documentation': formatShortcutForOS(KEY_MAP.searchInDocs.key),
+  'Execute query': formatShortcutForOS(KEY_MAP.runQuery.key),
   'Prettify editors': KEY_MAP.prettify.key,
   'Merge fragments definitions into operation definition':
     KEY_MAP.mergeFragments.key,
@@ -16,15 +12,7 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': KEY_MAP.refetchSchema.key,
 });
 
-interface ShortKeysProps {
-  /**
-   * @default 'sublime'
-   * @deprecated
-   */
-  keyMap?: string;
-}
-
-export const ShortKeys: FC<ShortKeysProps> = () =>
+export const ShortKeys: FC = () =>
   // { keyMap = 'sublime' }
   {
     return (

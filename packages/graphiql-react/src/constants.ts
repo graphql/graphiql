@@ -1,8 +1,12 @@
 /* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
-import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { parse, print } from 'graphql';
+import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { EditorSlice } from './stores';
+import { formatShortcutForOS } from './utility';
+
+export const isMacOs =
+  typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
 
 export const KEY_MAP = Object.freeze({
   prettify: {
@@ -14,11 +18,11 @@ export const KEY_MAP = Object.freeze({
     keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyM],
   },
   runQuery: {
-    key: 'Cmd-Enter',
+    key: 'Ctrl-Enter',
     keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
   },
   autoComplete: {
-    key: 'Ctrl-Space',
+    key: 'Space',
   },
   copyQuery: {
     key: 'Shift-Ctrl-C',
@@ -61,7 +65,7 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 #  Merge fragments:  ${KEY_MAP.mergeFragments.key} (or press the merge button)
 #
-#        Run Query:  ${KEY_MAP.runQuery.key} (or press the play button)
+#        Run Query:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
 #
 #    Auto Complete:  ${KEY_MAP.autoComplete.key} (or just start typing)
 #

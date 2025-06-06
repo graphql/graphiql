@@ -4,7 +4,7 @@ import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
 import { KEY_MAP } from '../../constants';
-import { pick } from '../../utility';
+import { formatShortcutForOS, pick } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
@@ -32,7 +32,7 @@ export const ExecuteButton: FC = () => {
     operations.length > 1 && typeof overrideOperationName !== 'string';
   const isRunning = isFetching || isSubscribed;
 
-  const label = `${isRunning ? 'Stop' : 'Execute'} query (${KEY_MAP.runQuery.key})`;
+  const label = `${isRunning ? 'Stop' : 'Execute'} query (${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')})`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',

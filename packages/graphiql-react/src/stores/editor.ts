@@ -231,7 +231,7 @@ export interface EditorSlice extends TabsState {
   copyQuery: () => Promise<void>;
 
   /**
-   * Merge fragments into query.
+   * Merge fragments definitions into operation definition.
    */
   mergeQuery: () => void;
 
