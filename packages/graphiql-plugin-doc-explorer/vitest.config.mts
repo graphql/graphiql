@@ -16,6 +16,11 @@ export default defineConfig({
           '../../node_modules/monaco-editor/esm/vs/editor/editor.api',
         ),
       },
+      {
+        // fixes TypeError: document.queryCommandSupported is not a function
+        find: 'monaco-graphql/esm/initializeMode.js',
+        replacement: path.resolve('../../node_modules/monaco-graphql/esm/lite'),
+      },
     ],
   },
 });
