@@ -58,7 +58,11 @@ export const Search: FC = () => {
 
   const navItem = explorerNavStack.at(-1)!;
 
-  const onSelect = (def: TypeMatch | FieldMatch) => {
+  const onSelect = (def: TypeMatch | FieldMatch | null) => {
+    // `null` when we remove search value
+    if (!def) {
+      return;
+    }
     push(
       'field' in def
         ? { name: def.field.name, def: def.field }
@@ -106,9 +110,9 @@ export const Search: FC = () => {
             results.types.length +
             results.fields.length ===
           0 ? (
-            <li className="graphiql-doc-explorer-search-empty">
+            <div className="graphiql-doc-explorer-search-empty">
               No results found
-            </li>
+            </div>
           ) : (
             results.within.map((result, i) => (
               <ComboboxOption

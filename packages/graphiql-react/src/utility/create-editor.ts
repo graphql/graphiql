@@ -21,15 +21,8 @@ export const onEditorContainerKeyDown: KeyboardEventHandler<
 
 export function getOrCreateModel({ uri, value }: { uri: Uri; value: string }) {
   const model = monacoEditor.getModel(uri);
-  if (model) {
-    // eslint-disable-next-line no-console
-    console.info('✅ Model', uri.path, 'is already created');
-    return model;
-  }
-  // eslint-disable-next-line no-console
-  console.info('🚀 Model', uri.path, "isn't yet created, creating...");
   const language = uri.path.split('.').at(-1)!;
-  return monacoEditor.createModel(value, language, uri);
+  return model ?? monacoEditor.createModel(value, language, uri);
 }
 
 const colors = {

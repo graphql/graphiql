@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { initializeMode } from 'monaco-graphql/esm/lite.js';
+import { initializeMode } from 'monaco-graphql/esm/initializeMode.js';
 import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { EditorSlice } from './stores';

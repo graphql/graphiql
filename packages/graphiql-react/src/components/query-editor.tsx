@@ -261,6 +261,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    // eslint-disable-next-line no-console
+    console.log('referencePlugin', referencePlugin);
     if (!referencePlugin) {
       return;
     }
@@ -274,6 +276,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
             graphQLPosition,
             schema,
           );
+          // eslint-disable-next-line no-console
+          console.log('provideDefinition.context', context);
           if (!context) {
             return null;
           }
@@ -311,6 +315,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
             graphQLPosition,
             schema,
           );
+          // eslint-disable-next-line no-console
+          console.log('provideReferences.context', context);
           if (!context) {
             return null;
           }
