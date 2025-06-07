@@ -309,8 +309,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     'settings' | 'short-keys' | null
   >(null);
   const [clearStorageStatus, setClearStorageStatus] = useState<
-    'success' | 'error' | null
-  >(null);
+    'success' | 'error' | undefined
+  >();
 
   const { logo, toolbar, footer, children } = Children.toArray(
     $children,
@@ -412,7 +412,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   function handleOpenSettingsDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
-      setClearStorageStatus(null);
+      setClearStorageStatus(undefined);
     }
   }
 
@@ -603,7 +603,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           </div>
           <Button
             type="button"
-            state={clearStorageStatus || undefined}
+            state={clearStorageStatus}
             disabled={clearStorageStatus === 'success'}
             onClick={handleClearData}
           >
@@ -728,7 +728,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               minWidth: '200px',
             }}
           >
-            {PluginContent ? <PluginContent /> : null}
+            {PluginContent && <PluginContent />}
           </div>
           {visiblePlugin && (
             <div
