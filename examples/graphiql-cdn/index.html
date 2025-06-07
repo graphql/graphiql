@@ -1,5 +1,5 @@
 <!--
- *  Copyright (c) 2021 GraphQL Contributors
+ *  Copyright (c) 2025 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -10,7 +10,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GraphiQL 4 with React 19 and GraphiQL Explorer</title>
+    <title>GraphiQL 5 with React 19 and GraphiQL Explorer</title>
     <style>
       body {
         margin: 0;
@@ -48,7 +48,7 @@
 
           "graphiql": "https://esm.sh/graphiql@5.0.0-rc.1?standalone&external=react,react/jsx-runtime,react-dom,@graphiql/react",
           "@graphiql/plugin-explorer": "https://esm.sh/@graphiql/plugin-explorer@5.0.0-rc.1?standalone&external=react,react/jsx-runtime,react-dom,@graphiql/react,graphql",
-          "@graphiql/react": "https://esm.sh/@graphiql/react@0.35.0-rc.1?standalone&external=react,react/jsx-runtime,react-dom,graphql,@graphiql/toolkit",
+          "@graphiql/react": "https://esm.sh/@graphiql/react@0.36.0-canary-75298f4c.0?standalone&external=react,react/jsx-runtime,react-dom,graphql,@graphiql/toolkit",
 
           "@graphiql/toolkit": "https://esm.sh/@graphiql/toolkit?standalone&external=graphql",
           "graphql": "https://esm.sh/graphql@16.11.0"
@@ -60,12 +60,12 @@
       import React from 'react';
       import ReactDOM from 'react-dom/client';
       // Import GraphiQL and the Explorer plugin
-      import { GraphiQL } from 'graphiql';
+      import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
       import { createGraphiQLFetcher } from '@graphiql/toolkit';
       import { explorerPlugin } from '@graphiql/plugin-explorer';
 
       import createJSONWorker from 'https://esm.sh/monaco-editor/esm/vs/language/json/json.worker.js?worker';
-      import createGraphQLWorker from 'https://esm.sh/monaco-graphql@1.7.0/esm/graphql.worker.js?worker';
+      import createGraphQLWorker from 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker';
       import createEditorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker';
 
       globalThis.MonacoEnvironment = {
@@ -84,13 +84,13 @@
       const fetcher = createGraphiQLFetcher({
         url: 'https://countries.trevorblades.com',
       });
-      const explorer = explorerPlugin();
+      const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
       function App() {
         return React.createElement(GraphiQL, {
           fetcher,
           defaultEditorToolsVisibility: true,
-          plugins: [explorer],
+          plugins,
         });
       }
 
