@@ -3322,8 +3322,6 @@ __metadata:
     graphql-language-service: "npm:^5.3.1"
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.1.0"
-    monaco-editor: "npm:^0.52.2"
-    monaco-graphql: "npm:^1.7.0"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
@@ -3336,6 +3334,8 @@ __metadata:
     zustand: "npm:^5"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    monaco-editor: ^0.52.2
+    monaco-graphql: ^1.7.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
