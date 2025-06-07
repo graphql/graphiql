@@ -12,62 +12,60 @@ const SHORT_KEYS = Object.entries({
   'Re-fetch schema using introspection': KEY_MAP.refetchSchema.key,
 });
 
-export const ShortKeys: FC = () =>
-  // { keyMap = 'sublime' }
-  {
-    return (
-      <div>
-        <table className="graphiql-table">
-          <thead>
-            <tr>
-              <th>Short Key</th>
-              <th>Function</th>
+export const ShortKeys: FC = () => {
+  return (
+    <div>
+      <table className="graphiql-table">
+        <thead>
+          <tr>
+            <th>Short Key</th>
+            <th>Function</th>
+          </tr>
+        </thead>
+        <tbody>
+          {SHORT_KEYS.map(([title, keys]) => (
+            <tr key={title}>
+              <td>
+                {keys.split('-').map((key, index, array) => (
+                  <Fragment key={key}>
+                    <code className="graphiql-key">{key}</code>
+                    {index !== array.length - 1 && ' + '}
+                  </Fragment>
+                ))}
+              </td>
+              <td>{title}</td>
             </tr>
-          </thead>
-          <tbody>
-            {SHORT_KEYS.map(([title, keys]) => (
-              <tr key={title}>
-                <td>
-                  {keys.split('-').map((key, index, array) => (
-                    <Fragment key={key}>
-                      <code className="graphiql-key">{key}</code>
-                      {index !== array.length - 1 && ' + '}
-                    </Fragment>
-                  ))}
-                </td>
-                <td>{title}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p>
-          This Graph<em>i</em>QL editor uses{' '}
-          <a
-            href="https://code.visualstudio.com/docs/reference/default-keybindings"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Monaco editor shortcuts
-          </a>
-          , with keybindings similar to VS Code. See the full list of shortcuts
-          for{' '}
-          <a
-            href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf"
-            target="_blank"
-            rel="noreferrer"
-          >
-            macOS
-          </a>{' '}
-          or{' '}
-          <a
-            href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Windows
-          </a>
-          .
-        </p>
-      </div>
-    );
-  };
+          ))}
+        </tbody>
+      </table>
+      <p>
+        This Graph<em>i</em>QL editor uses{' '}
+        <a
+          href="https://code.visualstudio.com/docs/reference/default-keybindings"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Monaco editor shortcuts
+        </a>
+        , with keybindings similar to VS Code. See the full list of shortcuts
+        for{' '}
+        <a
+          href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          macOS
+        </a>{' '}
+        or{' '}
+        <a
+          href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Windows
+        </a>
+        .
+      </p>
+    </div>
+  );
+};
