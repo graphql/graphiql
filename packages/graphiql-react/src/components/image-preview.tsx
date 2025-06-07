@@ -1,11 +1,13 @@
 import { FC, useEffect, useRef, useState } from 'react';
 
-type ImagePreviewProps = { path: string };
+interface ImagePreviewProps {
+  path: string;
+}
 
-type Dimensions = {
+interface Dimensions {
   width: number | null;
   height: number | null;
-};
+}
 
 const ImagePreview_: FC<ImagePreviewProps> = ({ path }) => {
   const [{ width, height }, setDimensions] = useState<Dimensions>({

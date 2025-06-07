@@ -16,15 +16,15 @@ type MonacoTheme =
   | (typeof EDITOR_THEME)[keyof typeof EDITOR_THEME]
   | ({} & string);
 
-type ThemeStoreType = {
+interface ThemeStoreType {
   theme: Theme;
   /**
    * Set a new theme
    */
   setTheme: (newTheme: Theme) => void;
-};
+}
 
-type ThemeStoreProps = {
+interface ThemeStoreProps {
   children: ReactNode;
   /**
    * @default null
@@ -38,7 +38,7 @@ type ThemeStoreProps = {
     dark: MonacoTheme;
     light: MonacoTheme;
   };
-};
+}
 
 export const themeStore = createStore<ThemeStoreType>(set => ({
   theme: null,

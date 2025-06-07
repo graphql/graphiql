@@ -255,7 +255,7 @@ export interface SchemaProps extends IntrospectionArgs {
   schema?: GraphQLSchema | IntrospectionQuery | null;
 }
 
-type IntrospectionArgs = {
+interface IntrospectionArgs {
   /**
    * Can be used to set the equally named option for introspecting a GraphQL
    * server.
@@ -275,7 +275,7 @@ type IntrospectionArgs = {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   schemaDescription?: boolean;
-};
+}
 
 function generateIntrospectionQuery({
   inputValueDeprecation,

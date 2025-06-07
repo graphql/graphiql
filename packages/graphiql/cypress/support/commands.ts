@@ -8,13 +8,13 @@
 
 /// <reference types="cypress" />
 
-type Op = {
+interface Op {
   query: string;
   variables?: Record<string, any>;
   variablesString?: string;
   headersString?: string;
   response?: Record<string, any>;
-};
+}
 declare namespace Cypress {
   type MockResult =
     | { data: any }

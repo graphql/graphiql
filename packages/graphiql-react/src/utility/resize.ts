@@ -4,7 +4,7 @@ import { debounce } from './debounce';
 
 type ResizableElement = 'first' | 'second';
 
-type UseDragResizeArgs = {
+interface UseDragResizeArgs {
   /**
    * Set the default sizes for the two resizable halves by passing their ratio
    * (first divided by second).
@@ -19,12 +19,14 @@ type UseDragResizeArgs = {
    * Choose one of the two halves that should initially be hidden.
    */
   initiallyHidden?: ResizableElement;
+
   /**
    * Invoked when the visibility of one of the halves changes.
    * @param hiddenElement The element that is now hidden after the change
    * (`null` if both are visible).
    */
   onHiddenElementChange?(hiddenElement: ResizableElement | null): void;
+
   /**
    * The minimum width in pixels for the first half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
@@ -42,7 +44,7 @@ type UseDragResizeArgs = {
    * is available).
    */
   storageKey?: string;
-};
+}
 
 export function useDragResize({
   defaultSizeRelation = 1,

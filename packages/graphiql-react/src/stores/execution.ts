@@ -344,7 +344,7 @@ async function tryParseJsonObject(
   return parsed;
 }
 
-type IncrementalResult = {
+interface IncrementalResult {
   data?: Record<string, unknown> | null;
   errors?: ReadonlyArray<GraphQLError>;
   extensions?: Record<string, unknown>;
@@ -360,7 +360,7 @@ type IncrementalResult = {
   }>;
   id?: string;
   subPath?: ReadonlyArray<string | number>;
-};
+}
 
 const pathsMap = new WeakMap<
   ExecutionResult,
