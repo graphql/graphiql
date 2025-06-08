@@ -7,11 +7,12 @@ import {
   PluginSlice,
   SchemaSlice,
 } from './stores';
+import { RuleKind } from 'graphql-language-service';
 
 export type EditorProps = ComponentPropsWithoutRef<'div'>;
 
 export interface SchemaReference {
-  kind: string;
+  kind: RuleKind;
   typeInfo: AllTypeInfo;
 }
 
