@@ -49,8 +49,10 @@ describe('GraphiQL', () => {
       spy.mockRestore();
     });
 
-    it('should construct correctly with fetcher', async () => {
-      act(() => {
+    it('should construct correctly with fetcher', () => {
+      // `return` fix error:
+      // Warning: An update to GraphiQLInterface inside a test was not wrapped in act(...).
+      return act(() => {
         expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
       });
     });

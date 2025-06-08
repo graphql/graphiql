@@ -3323,7 +3323,7 @@ __metadata:
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.1.0"
     monaco-editor: "npm:^0.52.2"
-    monaco-graphql: "npm:^1.6.1"
+    monaco-graphql: "npm:^1.7.0"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
@@ -18816,7 +18816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-graphql@npm:^1.6.1, monaco-graphql@npm:^1.7.0, monaco-graphql@workspace:packages/monaco-graphql":
+"monaco-graphql@npm:^1.7.0, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:

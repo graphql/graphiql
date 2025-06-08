@@ -2,7 +2,7 @@
 
 import { storageStore } from '../stores';
 
-export type TabDefinition = {
+export interface TabDefinition {
   /**
    * The contents of the query editor of this tab.
    */
@@ -15,12 +15,12 @@ export type TabDefinition = {
    * The contents of the headers editor of this tab.
    */
   headers?: string | null;
-};
+}
 
 /**
  * This object describes the state of a single tab.
  */
-export type TabState = TabDefinition & {
+export interface TabState extends TabDefinition {
   /**
    * A GUID value generated when the tab was created.
    */
@@ -44,7 +44,7 @@ export type TabState = TabDefinition & {
    * The contents of the response editor of this tab.
    */
   response: string | null;
-};
+}
 
 /**
  * This object describes the state of all tabs.

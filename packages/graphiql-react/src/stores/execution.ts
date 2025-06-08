@@ -344,7 +344,7 @@ async function tryParseJsonObject(
   return parsed;
 }
 
-type IncrementalResult = {
+interface IncrementalResult {
   data?: Record<string, unknown> | null;
   errors?: ReadonlyArray<GraphQLError>;
   extensions?: Record<string, unknown>;
@@ -360,7 +360,7 @@ type IncrementalResult = {
   }>;
   id?: string;
   subPath?: ReadonlyArray<string | number>;
-};
+}
 
 const pathsMap = new WeakMap<
   ExecutionResult,
@@ -368,9 +368,9 @@ const pathsMap = new WeakMap<
 >();
 
 /**
- * @param executionResult The complete execution result object which will be
+ * @param executionResult - The complete execution result object which will be
  * mutated by merging the contents of the incremental result.
- * @param incrementalResult The incremental result that will be merged into the
+ * @param incrementalResult - The incremental result that will be merged into the
  * complete execution result.
  */
 function mergeIncrementalResult(

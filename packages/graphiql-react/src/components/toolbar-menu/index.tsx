@@ -5,10 +5,10 @@ import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
 import './index.css';
 
-type ToolbarMenuProps = {
+interface ToolbarMenuProps {
   button: ReactNode;
   label: string;
-};
+}
 
 const ToolbarMenuRoot: FC<
   ToolbarMenuProps & {

@@ -89,6 +89,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
+
   /*
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {

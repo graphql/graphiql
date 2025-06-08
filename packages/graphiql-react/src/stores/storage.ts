@@ -3,11 +3,11 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 
-type StorageStoreType = {
+interface StorageStoreType {
   storage: StorageAPI;
-};
+}
 
-type StorageStoreProps = {
+interface StorageStoreProps {
   children: ReactNode;
   /**
    * Provide a custom storage API.
@@ -16,7 +16,7 @@ type StorageStoreProps = {
    * for details on the required interface.
    */
   storage?: Storage;
-};
+}
 
 export const storageStore = createStore<StorageStoreType>(() => ({
   storage: null!,

@@ -8,10 +8,10 @@ import { AllSlices } from './types';
 
 describe('Types', () => {
   it('should not have conflicting types', () => {
-    type OverlapError<K extends PropertyKey> = {
+    interface OverlapError<K extends PropertyKey> {
       ERROR: 'Conflicting keys found';
       CONFLICT_KEYS: K;
-    };
+    }
 
     type MergeWithoutOverlap<A, B> = keyof A & keyof B extends never
       ? A & B

@@ -40,6 +40,7 @@ import {
   EditorProps,
   cn,
   VisuallyHidden,
+  KEY_MAP,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -196,6 +197,13 @@ const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
+const LABEL = {
+  refetchSchema: `Re-fetch GraphQL schema (${KEY_MAP.refetchSchema.key})`,
+  shortCutDialog: 'Open short keys dialog',
+  settingsDialogs: 'Open settings dialog',
+  newTab: 'New tab',
+};
+
 const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled = true,
@@ -309,8 +317,8 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     'settings' | 'short-keys' | null
   >(null);
   const [clearStorageStatus, setClearStorageStatus] = useState<
-    'success' | 'error' | null
-  >(null);
+    'success' | 'error' | undefined
+  >();
 
   const { logo, toolbar, footer, children } = Children.toArray(
     $children,
@@ -412,7 +420,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   function handleOpenSettingsDialog(isOpen: boolean) {
     if (!isOpen) {
       setShowDialog(null);
-      setClearStorageStatus(null);
+      setClearStorageStatus(undefined);
     }
   }
 
@@ -453,12 +461,12 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           </Tooltip>
         );
       })}
-      <Tooltip label="Re-fetch GraphQL schema">
+      <Tooltip label={LABEL.refetchSchema}>
         <UnStyledButton
           type="button"
           disabled={isIntrospecting}
           onClick={introspect}
-          aria-label="Re-fetch GraphQL schema"
+          aria-label={LABEL.refetchSchema}
           style={{ marginTop: 'auto' }}
         >
           <ReloadIcon
@@ -467,22 +475,22 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           />
         </UnStyledButton>
       </Tooltip>
-      <Tooltip label="Open short keys dialog">
+      <Tooltip label={LABEL.shortCutDialog}>
         <UnStyledButton
           type="button"
           data-value="short-keys"
           onClick={handleShowDialog}
-          aria-label="Open short keys dialog"
+          aria-label={LABEL.shortCutDialog}
         >
           <KeyboardShortcutIcon aria-hidden="true" />
         </UnStyledButton>
       </Tooltip>
-      <Tooltip label="Open settings dialog">
+      <Tooltip label={LABEL.settingsDialogs}>
         <UnStyledButton
           type="button"
           data-value="settings"
           onClick={handleShowDialog}
-          aria-label="Open settings dialog"
+          aria-label={LABEL.settingsDialogs}
         >
           <SettingsIcon aria-hidden="true" />
         </UnStyledButton>
@@ -603,7 +611,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           </div>
           <Button
             type="button"
-            state={clearStorageStatus || undefined}
+            state={clearStorageStatus}
             disabled={clearStorageStatus === 'success'}
             onClick={handleClearData}
           >
@@ -728,7 +736,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               minWidth: '200px',
             }}
           >
-            {PluginContent ? <PluginContent /> : null}
+            {PluginContent && <PluginContent />}
           </div>
           {visiblePlugin && (
             <div
@@ -765,12 +773,12 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                   </Tab>
                 ))}
               </Tabs>
-              <Tooltip label="New tab">
+              <Tooltip label={LABEL.newTab}>
                 <UnStyledButton
                   type="button"
                   className="graphiql-tab-add"
                   onClick={addTab}
-                  aria-label="New tab"
+                  aria-label={LABEL.newTab}
                 >
                   <PlusIcon aria-hidden="true" />
                 </UnStyledButton>
