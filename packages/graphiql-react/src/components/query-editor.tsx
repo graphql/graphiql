@@ -322,7 +322,13 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       }),
     ];
     return cleanupDisposables(disposables);
-  }, [schema, referencePlugin, setSchemaReference, setVisiblePlugin]);
+  }, [
+    schema,
+    referencePlugin,
+    setSchemaReference,
+    setVisiblePlugin,
+    externalFragments,
+  ]);
 
   return (
     <div

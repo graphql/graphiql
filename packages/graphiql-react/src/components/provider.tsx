@@ -66,7 +66,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }
   if (props.validationRules) {
     throw new Error(
-      "`validationRules` isn't yet implemented, submit an issue in GitHub",
+      '`validationRules` prop is removed. Use own GraphQL worker.',
     );
   }
   return (
