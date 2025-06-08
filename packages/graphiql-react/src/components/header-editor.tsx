@@ -20,10 +20,7 @@ interface HeaderEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export const HeaderEditor: FC<HeaderEditorProps> = ({
-  onEdit,
-  ...props
-}) => {
+export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
   const {
     initialHeaders,
     shouldPersistHeaders,

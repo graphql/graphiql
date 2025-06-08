@@ -8,7 +8,7 @@ import {
   SchemaSlice,
 } from './stores';
 
-export type EditorProps = ComponentPropsWithoutRef<'div'>
+export type EditorProps = ComponentPropsWithoutRef<'div'>;
 
 export interface SchemaReference {
   kind: string;
