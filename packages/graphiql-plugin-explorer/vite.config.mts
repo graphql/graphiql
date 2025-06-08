@@ -6,7 +6,7 @@ import packageJSON from './package.json';
 
 export default defineConfig({
   plugins: [
-    react({ jsxRuntime: 'classic' }),
+    react(),
     svgr({
       svgrOptions: {
         titleProp: true,
@@ -27,25 +27,13 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys({
           ...packageJSON.peerDependencies,
           ...packageJSON.dependencies,
         }),
       ],
-      output: {
-        chunkFileNames: '[name].[format].js',
-        globals: {
-          '@graphiql/react': 'GraphiQL.React',
-          graphql: 'GraphiQL.GraphQL',
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
-    },
-    commonjsOptions: {
-      esmExternals: true,
-      requireReturnsDefault: 'auto',
     },
   },
 });

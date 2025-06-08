@@ -3,8 +3,6 @@ import { FC } from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';
-
-import './graphiql-code-exporter.d.ts';
 import './index.css';
 
 type GraphiQLCodeExporterPluginProps = Omit<GraphiQLCodeExporterProps, 'query'>;

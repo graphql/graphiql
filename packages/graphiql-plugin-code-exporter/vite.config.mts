@@ -4,7 +4,7 @@ import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic' }), dts({ include: ['src/**'] })],
+  plugins: [react(), dts({ include: ['src/**'] })],
   css: {
     transformer: 'lightningcss',
   },
@@ -18,6 +18,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
         ...Object.keys({
           ...packageJSON.peerDependencies,
