@@ -1,13 +1,13 @@
 'use no memo';
 
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme } from '@graphiql/react';
 import './style.css';
 
 /**
- * UMD GraphiQL Example
+ * CDN GraphiQL Example
  *
  * This is a simple example that provides a primitive query string parser on top of GraphiQL props
  * It assumes a global umd GraphiQL, which would be provided by an index.html in the default example
@@ -96,7 +96,7 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
-const props = {
+const props: ComponentProps<typeof GraphiQL> = {
   fetcher: GraphiQL.createFetcher({
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',

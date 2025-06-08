@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback } from 'react';
+import { CSSProperties, FC, useCallback } from 'react';
 import {
   GraphiQLPlugin,
   useGraphiQL,
