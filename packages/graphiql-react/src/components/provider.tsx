@@ -143,16 +143,45 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
           : shouldPersistHeaders;
 
+      const $externalFragments = (() => {
+        const map = new Map<string, FragmentDefinitionNode>();
+        if (Array.isArray(externalFragments)) {
+          for (const fragment of externalFragments) {
+            map.set(fragment.name.value, fragment);
+          }
+        } else if (typeof externalFragments === 'string') {
+          visit(parse(externalFragments, {}), {
+            FragmentDefinition(fragment) {
+              map.set(fragment.name.value, fragment);
+            },
+          });
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
+        } else if (externalFragments) {
+          throw new Error(
+            'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
+          );
+        }
+        return map;
+      })();
+
       const store = create<AllSlices>((...args) => ({
         ...createEditorSlice({
           activeTabIndex,
+          defaultHeaders,
+          defaultQuery,
+          externalFragments: $externalFragments,
           initialHeaders: headers ?? defaultHeaders ?? '',
           initialQuery:
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
           initialResponse: response,
           initialVariables: variables ?? '',
+          onCopyQuery,
+          onEditOperationName,
+          onPrettifyQuery,
+          onTabChange,
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
+          validationRules,
         })(...args),
         ...createExecutionSlice(...args),
         ...createPluginSlice(...args),
@@ -174,48 +203,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   //   }
   // }, [shouldPersistHeaders]);
 
-  const $externalFragments = (() => {
-    const map = new Map<string, FragmentDefinitionNode>();
-    if (Array.isArray(externalFragments)) {
-      for (const fragment of externalFragments) {
-        map.set(fragment.name.value, fragment);
-      }
-    } else if (typeof externalFragments === 'string') {
-      visit(parse(externalFragments, {}), {
-        FragmentDefinition(fragment) {
-          map.set(fragment.name.value, fragment);
-        },
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-    } else if (externalFragments) {
-      throw new Error(
-        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
-      );
-    }
-    return map;
-  })();
-  // Editor sync
-  useEffect(() => {
-    storeRef.current.setState({
-      defaultHeaders,
-      defaultQuery,
-      externalFragments: $externalFragments,
-      onCopyQuery,
-      onEditOperationName,
-      onPrettifyQuery,
-      onTabChange,
-      validationRules,
-    });
-  }, [
-    $externalFragments,
-    onTabChange,
-    onEditOperationName,
-    defaultQuery,
-    defaultHeaders,
-    validationRules,
-    onCopyQuery,
-    onPrettifyQuery,
-  ]);
   // Execution sync
   useEffect(() => {
     storeRef.current.setState({
