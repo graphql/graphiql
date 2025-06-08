@@ -23,6 +23,8 @@ import {
 import * as monaco from '../monaco-editor';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
+// @ts-expect-error -- no types
+import * as Platform from 'monaco-editor/esm/vs/base/common/platform';
 
 interface QueryEditorProps extends EditorProps {
   /**
@@ -89,6 +91,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
+
   /*
   useEffect(() => {
     void importCodeMirrorImports().then(CodeMirror => {
@@ -262,7 +265,13 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
     // eslint-disable-next-line no-console
-    console.log('referencePlugin', referencePlugin);
+    console.log(
+      Platform,
+      'Platform.isMacintosh',
+      Platform.isMacintosh,
+      'Platform.isLinux',
+      Platform.isLinux,
+    );
     if (!referencePlugin) {
       return;
     }
@@ -276,8 +285,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
             graphQLPosition,
             schema,
           );
-          // eslint-disable-next-line no-console
-          console.log('provideDefinition.context', context);
           if (!context) {
             return null;
           }
@@ -315,8 +322,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
             graphQLPosition,
             schema,
           );
-          // eslint-disable-next-line no-console
-          console.log('provideReferences.context', context);
           if (!context) {
             return null;
           }
