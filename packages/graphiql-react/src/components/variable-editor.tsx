@@ -22,7 +22,6 @@ interface VariableEditorProps extends EditorProps {
 
 export const VariableEditor: FC<VariableEditorProps> = ({
   onEdit,
-  readOnly = false,
   ...props
 }) => {
   const { initialVariables, setEditor, run, prettifyEditors, mergeQuery } =
@@ -42,7 +41,7 @@ export const VariableEditor: FC<VariableEditorProps> = ({
       uri: VARIABLE_URI,
       value: initialVariables,
     });
-    const editor = createEditor(ref, { model, readOnly });
+    const editor = createEditor(ref, { model });
     setEditor({ variableEditor: editor });
     const disposables = [
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),

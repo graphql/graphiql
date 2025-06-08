@@ -70,7 +70,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
   plugins = [HISTORY_PLUGIN],
   referencePlugin = DOC_EXPLORER_PLUGIN,
-  readOnly,
   onEditQuery,
   onEditVariables,
   onEditHeaders,
@@ -103,11 +102,14 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       '`keyMap` was removed. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs',
     );
   }
+  // @ts-expect-error -- Prop is removed
+  if (props.readOnly) {
+    throw new TypeError('`readOnly` was removed.');
+  }
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
     showPersistHeadersSettings:
       showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
-    readOnly,
     onEditQuery,
     onEditVariables,
     onEditHeaders,
@@ -212,7 +214,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   confirmCloseTab,
   className,
   onEditQuery,
-  readOnly,
   onEditVariables,
   onEditHeaders,
   responseTooltip,
@@ -639,11 +640,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         aria-label="Query Editor"
         ref={editorToolsResize.firstRef}
       >
-        <QueryEditor
-          onClickReference={onClickReference}
-          onEdit={onEditQuery}
-          readOnly={readOnly}
-        />
+        <QueryEditor onClickReference={onClickReference} onEdit={onEditQuery} />
         <div
           className="graphiql-toolbar"
           role="toolbar"
@@ -707,13 +704,11 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <VariableEditor
           className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
-          readOnly={readOnly}
         />
         {isHeadersEditorEnabled && (
           <HeaderEditor
             className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
             onEdit={onEditHeaders}
-            readOnly={readOnly}
           />
         )}
       </section>
