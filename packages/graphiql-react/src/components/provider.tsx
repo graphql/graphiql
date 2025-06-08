@@ -157,7 +157,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           });
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
         } else if (externalFragments) {
-          throw new Error(
+          throw new TypeError(
             'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
           );
         }
