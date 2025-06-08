@@ -232,7 +232,7 @@ export type DiagnosticSettings = {
 
 export type CompletionSettings = AutocompleteSuggestionOptions & {
   /**
-   * @deprecated use fillLeafsOnComplete for parity. still experimental
+   * @deprecated use `fillLeafsOnComplete` for parity. still experimental
    */
   __experimental__fillLeafsOnComplete?: boolean;
 };
