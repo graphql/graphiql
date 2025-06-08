@@ -50,7 +50,7 @@ describe('GraphiQL', () => {
     });
 
     it('should construct correctly with fetcher', () => {
-      // Return fix error:
+      // `return` fix error:
       // Warning: An update to GraphiQLInterface inside a test was not wrapped in act(...).
       return act(() => {
         expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
