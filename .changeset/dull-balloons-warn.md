@@ -1,4 +1,5 @@
 ---
+'@graphiql/react': minor
 'graphiql': major
 ---
 
