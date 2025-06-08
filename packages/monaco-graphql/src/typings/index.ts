@@ -15,15 +15,6 @@ import {
 } from 'graphql-language-service';
 import type { Options as PrettierConfig } from 'prettier';
 
-export type BaseSchemaConfig = {
-  buildSchemaOptions?: BuildSchemaOptions;
-  schema?: GraphQLSchema;
-  documentString?: string;
-  documentAST?: DocumentNode;
-  introspectionJSON?: IntrospectionQuery;
-  introspectionJSONString?: string;
-};
-
 /**
  * Inspired by the `monaco-json` schema object in `DiagnosticSettings["schemas"]`,
  * which we use :)
@@ -75,10 +66,11 @@ export type SchemaConfig = {
    * {
    *  customScalarSchemas: {
    *    DateTime: {
-   *      type": "string",
-   *      format": "date-time"
+   *      type: "string",
+   *      format: "date-time"
    *    }
    *  }
+   * ```
    */
   customScalarSchemas?: Record<string, JSONSchema6>;
 };
@@ -87,10 +79,6 @@ export type SchemaConfig = {
  * This schema loader is focused on performance for the monaco worker runtime
  * We favor taking in stringified schema representations as they can be used to communicate
  * Across the main/webworker process boundary
- *
- * @param schemaConfig {SchemaConfig}
- * @param parser {LanguageService['parse']}
- * @returns {GraphQLSchema}
  */
 export type SchemaLoader = (
   schemaConfig: SchemaConfig,
@@ -139,18 +127,6 @@ export type GraphQLLanguageConfig = {
    */
   fillLeafsOnComplete?: boolean;
 };
-
-export interface IDisposable {
-  dispose(): void;
-}
-
-export type JSONDiagnosticOptions = monaco.languages.json.DiagnosticsOptions;
-
-export interface IEvent<T> {
-  (listener: (e: T) => any, thisArg?: any): IDisposable;
-}
-
-export type FilePointer = string | string[];
 
 export type FormattingOptions = { prettierConfig?: PrettierConfig };
 
@@ -219,13 +195,12 @@ export type DiagnosticSettings = {
    */
   validateVariablesJSON?: Record<string, string[]>;
   /**
-   * the default `JSONDiagnosticOptions` from `monaco-editor`'s `json` mode - to use when applying variablesJSON.
+   * The default `JSONDiagnosticOptions` from `monaco-editor`'s `json` mode - to use when applying variablesJSON.
    * some examples of settings to provide here:
    *
    * - `allowComments: true` enables jsonc editing
    * - `validateSchema: 'warning'`
    * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
-   * {languages.json.DiagnosticsOptions}
    */
   jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
 };
