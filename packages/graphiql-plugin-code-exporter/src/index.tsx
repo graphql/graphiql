@@ -1,5 +1,5 @@
 import { useOperationsEditorState, type GraphiQLPlugin } from '@graphiql/react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';

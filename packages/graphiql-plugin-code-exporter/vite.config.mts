@@ -24,14 +24,6 @@ export default defineConfig({
           ...packageJSON.dependencies,
         }),
       ],
-      output: {
-        globals: {
-          '@graphiql/react': 'GraphiQL.React',
-          graphql: 'GraphiQL.GraphQL',
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
 });
