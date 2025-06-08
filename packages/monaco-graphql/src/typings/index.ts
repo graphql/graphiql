@@ -237,17 +237,12 @@ export type CompletionSettings = AutocompleteSuggestionOptions & {
   __experimental__fillLeafsOnComplete?: boolean;
 };
 
-// export type CompletionSettings = {
-
-//   __experimental__fillLeafsOnComplete?: boolean;
-// };
-
 /**
  * Configuration to initialize the editor with
  */
 export type MonacoGraphQLInitializeConfig = {
   /**
-   * custom (experimental) settings for autocompletion behaviour
+   * custom (experimental) settings for autocompletion behavior
    */
   completionSettings?: CompletionSettings;
   /**
@@ -255,21 +250,21 @@ export type MonacoGraphQLInitializeConfig = {
    */
   diagnosticSettings?: DiagnosticSettings;
   /**
-   * provide prettier formatting options as `prettierConfig.<option>`
+   * Provide prettier formatting options as `prettierConfig.<option>`
    * @example
    * ```ts
-   *  initializeMode({
-   *   formattingOptions: { prettierConfig: { useTabs: true } }
-   *  })
+   * initializeMode({
+   *  formattingOptions: { prettierConfig: { useTabs: true } }
+   * })
    * ```
    */
   formattingOptions?: FormattingOptions;
   /**
-   * Generic monaco language mode options, same as for the official monaco json mode
+   * Generic monaco language mode options, same as for the official monaco JSON mode
    */
   modeConfiguration?: ModeConfiguration;
   /**
-   * Specify array of `SchemaConfig` items used to initialize the `GraphQLWorker` if available.
+   * Specify an array of `SchemaConfig` items used to initialize the `GraphQLWorker` if available.
    * You can also `api.setSchemaConfig()` after instantiating the mode.
    */
   schemas?: SchemaConfig[];
