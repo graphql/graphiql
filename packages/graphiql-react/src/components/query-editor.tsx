@@ -61,6 +61,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     copyQuery,
     prettifyEditors,
     mergeQuery,
+    externalFragments,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -78,6 +79,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'copyQuery',
       'prettifyEditors',
       'mergeQuery',
+      'externalFragments',
     ),
   );
   const storage = useStorage();
@@ -259,6 +261,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       return;
     }
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
+      ...externalFragments.values(),
+    ]);
     if (!referencePlugin) {
       return;
     }
