@@ -75,7 +75,7 @@ const MonacoGraphQLAPI = initializeMode({
   ],
 });
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -119,7 +119,7 @@ monaco.languages.graphql.setSchemaConfig([
   },
 ]);
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -156,7 +156,7 @@ import { initializeMode } from 'monaco-graphql/initializeMode';
 
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -478,6 +478,7 @@ you'll want to create your own `my-graphql.worker.ts` file, and add your custom
 config such as `schemaLoader` to `createData`:
 
 ```ts
+// my-graphql.worker.ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
 // @ts-expect-error - ignore missing types
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
@@ -507,7 +508,7 @@ import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worke
 // specify the path to your language worker
 import GraphQLWorker from 'worker-loader!./my-graphql.worker';
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
   },
@@ -517,7 +518,7 @@ window.MonacoEnvironment = {
 or, if you have webpack configured for it:
 
 ```ts
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
     return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
   },
