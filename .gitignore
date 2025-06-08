@@ -46,11 +46,7 @@ packages/codemirror-graphql/*.d.ts
 packages/codemirror-graphql/*.map
 !packages/codemirror-graphql/*.config.js
 
-packages/graphiql/graphiql*.js
-packages/graphiql/*.css
-packages/graphiql/*.map
 packages/graphiql/cypress/screenshots/
+packages/graphiql/cypress/downloads/
 packages/graphiql/typedoc/
 packages/graphiql/webpack/
-
-packages/graphiql/cypress/downloads/

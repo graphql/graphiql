@@ -28,7 +28,7 @@
   "scripts": {
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
-    "build": "vite build && UMD=true vite build",
+    "build": "vite build",
     "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts"
   },
   "dependencies": {
