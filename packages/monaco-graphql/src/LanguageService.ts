@@ -224,10 +224,6 @@ export class LanguageService {
   };
   /**
    * get diagnostics using graphql validation
-   * @param uri
-   * @param documentText
-   * @param customRules
-   * @returns
    */
   public getDiagnostics = (
     uri: string,
