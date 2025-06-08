@@ -85,7 +85,7 @@
     "vite-plugin-svgr": "^4.3.0"
   },
   "browser": {
-    "//": "Disables injection of Node.js globals like `process` in esm.sh. Without this, `process` will be polyfilled, which can interfere with browser behavior—e.g., the Mac `Cmd` key may not work properly when loading modules from a CDN.",
+    "//": "Prevents esm.sh from injecting Node.js globals like `process`, which can break browser features (e.g., Mac `Cmd` key) when loading from CDN.",
     "process": false,
     "buffer": false
   }

@@ -16,7 +16,7 @@ import 'vitest-canvas-mock';
 defineWebWorkers();
 
 /**
- * Fixes TypeError: Cannot read properties of undefined (reading 'write')
+ * Fixes TypeError: document.queryCommandSupported is not a function
  */
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (!navigator.clipboard) {

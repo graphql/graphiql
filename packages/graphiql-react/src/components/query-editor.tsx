@@ -23,8 +23,6 @@ import {
 import * as monaco from '../monaco-editor';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
-// @ts-expect-error -- no types
-import * as Platform from 'monaco-editor/esm/vs/base/common/platform';
 
 interface QueryEditorProps extends EditorProps {
   /**
@@ -264,14 +262,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // eslint-disable-next-line no-console
     console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-    // eslint-disable-next-line no-console
-    console.log(
-      Platform,
-      'Platform.isMacintosh',
-      Platform.isMacintosh,
-      'Platform.isLinux',
-      Platform.isLinux,
-    );
     if (!referencePlugin) {
       return;
     }
