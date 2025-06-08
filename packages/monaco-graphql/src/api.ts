@@ -103,8 +103,6 @@ export class MonacoGraphQLAPI {
 
   /**
    * override all schema config.
-   *
-   * @param schemas {SchemaConfig[]}
    */
   public setSchemaConfig(schemas: SchemaConfig[]): void {
     this._schemas = schemas;
