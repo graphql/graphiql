@@ -190,7 +190,7 @@ export type DiagnosticSettings = {
    * ```ts
    * validateVariablesJSON: {
    *   "monaco://my-operation.graphql": ["monaco://my-variables.json"]
-   *  }
+   * }
    * ```
    */
   validateVariablesJSON?: Record<string, string[]>;
@@ -229,7 +229,7 @@ export type MonacoGraphQLInitializeConfig = {
    * @example
    * ```ts
    * initializeMode({
-   *  formattingOptions: { prettierConfig: { useTabs: true } }
+   *   formattingOptions: { prettierConfig: { useTabs: true } }
    * })
    * ```
    */
