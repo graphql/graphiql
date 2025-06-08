@@ -72,6 +72,7 @@ export class MonacoGraphQLAPI {
   public get languageId(): string {
     return this._languageId;
   }
+
   public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
@@ -79,6 +80,7 @@ export class MonacoGraphQLAPI {
   public get schemas(): SchemaConfig[] | null {
     return this._schemas;
   }
+
   public schemasById(): Record<string, SchemaConfig> {
     return this._schemasById;
   }
@@ -86,9 +88,11 @@ export class MonacoGraphQLAPI {
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
   }
+
   public get diagnosticSettings(): DiagnosticSettings {
     return this._diagnosticSettings;
   }
+
   public get completionSettings(): CompletionSettings {
     return {
       ...this._completionSettings,
@@ -97,6 +101,7 @@ export class MonacoGraphQLAPI {
         this._completionSettings.fillLeafsOnComplete,
     };
   }
+
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;
   }
