@@ -41,9 +41,7 @@ function makeSchema(fieldName = 'field') {
 }
 
 const defaultSchemaContext = {
-  fetchError: null,
   introspect() {},
-  isFetching: false,
   schema: makeSchema(),
   validationErrors: [],
 };
@@ -69,7 +67,7 @@ describe('DocExplorer', () => {
 
   it('renders spinner when the schema is loading', () => {
     useGraphiQL.mockImplementation(cb =>
-      cb({ ...defaultSchemaContext, isFetching: true }),
+      cb({ ...defaultSchemaContext, isIntrospecting: true }),
     );
     const { container } = render(<DocExplorerWithContext />);
     const spinner = container.querySelectorAll('.graphiql-spinner');
