@@ -104,7 +104,6 @@ export default function Editor(): ReactElement {
         model: MODEL.ts,
         ...DEFAULT_EDITOR_OPTIONS,
         smoothScrolling: true,
-        readOnly: false,
         'semanticHighlighting.enabled': true,
         language: 'typescript',
       }),
