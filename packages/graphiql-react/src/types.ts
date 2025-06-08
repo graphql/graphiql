@@ -8,13 +8,7 @@ import {
   SchemaSlice,
 } from './stores';
 
-export interface EditorProps extends ComponentPropsWithoutRef<'div'> {
-  /**
-   * Makes the editor read-only.
-   * @default false
-   */
-  readOnly?: boolean;
-}
+export type EditorProps = ComponentPropsWithoutRef<'div'>
 
 export interface SchemaReference {
   kind: string;

@@ -13,3 +13,7 @@
 - Added new examples: [**GraphiQL x Vite**](https://github.com/graphql/graphiql/tree/graphiql-5/examples/graphiql-vite) and [**GraphiQL x
   Next.js**](https://github.com/graphql/graphiql/tree/graphiql-5/examples/graphiql-nextjs)
 - Removed examples: **GraphiQL x Parcel** and **GraphiQL x Create React App**
+- UMD build is removed. Use the ESM-based CDN instead.
+- Removed props
+  - `keyMap`. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs
+  - `readOnly`

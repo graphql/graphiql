@@ -43,7 +43,6 @@ interface QueryEditorProps extends EditorProps {
 export const QueryEditor: FC<QueryEditorProps> = ({
   onClickReference,
   onEdit,
-  readOnly = false,
   ...props
 }) => {
   const {
@@ -209,7 +208,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
-    const editor = createEditor(ref, { model, readOnly });
+    const editor = createEditor(ref, { model });
     setEditor({ queryEditor: editor });
 
     // We don't use the generic `useChangeHandler` hook here because we want to

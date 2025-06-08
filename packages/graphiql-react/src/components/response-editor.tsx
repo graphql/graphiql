@@ -27,7 +27,7 @@ type ResponseTooltipType = ComponentType<{
   word: monacoEditor.IWordAtPosition;
 }>;
 
-interface ResponseEditorProps extends Omit<EditorProps, 'readOnly'> {
+interface ResponseEditorProps extends EditorProps {
   /**
    * Customize the tooltip when hovering over properties in the response editor.
    */

@@ -22,7 +22,6 @@ interface HeaderEditorProps extends EditorProps {
 
 export const HeaderEditor: FC<HeaderEditorProps> = ({
   onEdit,
-  readOnly = false,
   ...props
 }) => {
   const {
@@ -51,7 +50,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     // Build the editor
-    const editor = createEditor(ref, { model, readOnly });
+    const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
     const disposables = [
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
