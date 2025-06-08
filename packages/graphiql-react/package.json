@@ -86,6 +86,7 @@
   },
   "browser": {
     "//": "Disables injection of Node.js globals like `process` in esm.sh. Without this, `process` will be polyfilled, which can interfere with browser behavior—e.g., the Mac `Cmd` key may not work properly when loading modules from a CDN.",
-    "process": false
+    "process": false,
+    "buffer": false
   }
 }

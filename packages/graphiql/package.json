@@ -83,5 +83,9 @@
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3",
     "vitest-canvas-mock": "0.3.3"
+  },
+  "browser": {
+    "//": "esm.sh polyfills `process`, we don't need it",
+    "process": false
   }
 }
