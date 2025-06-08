@@ -9,8 +9,8 @@ import { TypeDocumentation } from './type-documentation';
 import './doc-explorer.css';
 
 export const DocExplorer: FC = () => {
-  const { fetchError, isFetching, schema, validationErrors } = useGraphiQL(
-    pick('fetchError', 'isFetching', 'schema', 'validationErrors'),
+  const { fetchError, isIntrospecting, schema, validationErrors } = useGraphiQL(
+    pick('fetchError', 'isIntrospecting', 'schema', 'validationErrors'),
   );
   const explorerNavStack = useDocExplorer();
   const { pop } = useDocExplorerActions();
@@ -27,7 +27,7 @@ export const DocExplorer: FC = () => {
         Schema is invalid: {validationErrors[0].message}
       </div>
     );
-  } else if (isFetching) {
+  } else if (isIntrospecting) {
     // Schema is undefined when it is being loaded via introspection.
     content = <Spinner />;
   } else if (!schema) {
