@@ -67,7 +67,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   // @ts-expect-error -- runtime check
   if (props.validationRules) {
     throw new Error(
-      '`validationRules` prop is removed. Use own GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
+      '`validationRules` prop is removed. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
     );
   }
   return (
