@@ -132,6 +132,13 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
             break;
           }
           case 'Field': {
+            // Show a field type on stack
+            if (ref.type) {
+              push({
+                name: ref.type.name,
+                def: ref.type,
+              });
+            }
             push({
               name: ref.field.name,
               def: ref.field,
