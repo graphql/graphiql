@@ -493,7 +493,9 @@ const RequireOperationNameRule: ValidationRule = context => {
         return;
       }
       context.reportError(
-        new GraphQLError('Oh nooo, all operations must be named.', { nodes: [node] }),
+        new GraphQLError('Oh nooo, all operations must be named.', {
+          nodes: [node],
+        }),
       );
     },
   };
@@ -501,7 +503,9 @@ const RequireOperationNameRule: ValidationRule = context => {
 
 globalThis.onmessage = () => {
   initialize((ctx: monaco.worker.IWorkerContext, createData: ICreateData) => {
-    createData.languageConfig.customValidationRules = [RequireOperationNameRule];
+    createData.languageConfig.customValidationRules = [
+      RequireOperationNameRule,
+    ];
     return new GraphQLWorker(ctx, createData);
   });
 };
