@@ -215,7 +215,8 @@ export type CompletionSettings = AutocompleteSuggestionOptions & {
 /**
  * Configuration to initialize the editor with
  */
-export type MonacoGraphQLInitializeConfig = {
+export interface MonacoGraphQLInitializeConfig
+  extends Pick<GraphQLLanguageConfig, 'schemas'> {
   /**
    * custom (experimental) settings for autocompletion behavior
    */
@@ -238,12 +239,7 @@ export type MonacoGraphQLInitializeConfig = {
    * Generic monaco language mode options, same as for the official monaco JSON mode
    */
   modeConfiguration?: ModeConfiguration;
-  /**
-   * Specify an array of `SchemaConfig` items used to initialize the `GraphQLWorker` if available.
-   * You can also `api.setSchemaConfig()` after instantiating the mode.
-   */
-  schemas?: SchemaConfig[];
-};
+}
 
 export interface ICreateData {
   languageId: string;
