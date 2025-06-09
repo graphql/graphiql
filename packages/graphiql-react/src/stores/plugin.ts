@@ -41,8 +41,9 @@ export interface PluginSlice {
   visiblePlugin: GraphiQLPlugin | null;
   /**
    * The plugin which is used to display the reference documentation when selecting a type.
+   * Pass `null` to remove plugin.
    */
-  referencePlugin?: GraphiQLPlugin;
+  referencePlugin?: GraphiQLPlugin | null;
 
   /**
    * Invoked when the visibility state of any plugin changes.

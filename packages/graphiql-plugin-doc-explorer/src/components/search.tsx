@@ -47,7 +47,10 @@ export const Search: FC = () => {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.metaKey && event.key === 'k') {
+      const key = navigator.userAgent.includes('Mac')
+        ? event.metaKey
+        : event.ctrlKey;
+      if (key && event.key === 'k') {
         inputRef.current.focus();
       }
     }

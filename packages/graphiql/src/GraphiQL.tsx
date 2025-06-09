@@ -123,7 +123,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   };
   return (
     <GraphiQLProvider
-      plugins={[referencePlugin, ...plugins]}
+      plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
     >
