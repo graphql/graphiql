@@ -64,9 +64,10 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
   }
+  // @ts-expect-error -- runtime check
   if (props.validationRules) {
     throw new Error(
-      '`validationRules` prop is removed. Use own GraphQL worker.',
+      '`validationRules` prop is removed. Use own GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
     );
   }
   return (
@@ -91,7 +92,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   onEditOperationName,
   onTabChange,
   shouldPersistHeaders = false,
-  validationRules = [],
   onCopyQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
@@ -181,7 +181,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onTabChange,
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
-          validationRules,
         })(...args),
         ...createExecutionSlice(...args),
         ...createPluginSlice(...args),

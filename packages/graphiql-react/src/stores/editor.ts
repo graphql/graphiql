@@ -164,12 +164,6 @@ export interface EditorSlice extends TabsState {
   onTabChange?(tabState: TabsState): void;
 
   /**
-   * A list of custom validation rules that are run in addition to the rules
-   * provided by the GraphQL spec.
-   */
-  validationRules: ValidationRule[];
-
-  /**
    * Headers to be set when opening a new tab.
    */
   defaultHeaders?: string;
@@ -290,12 +284,7 @@ export interface EditorProps
    * @default false
    */
   shouldPersistHeaders?: boolean;
-  /**
-   * This prop accepts custom validation rules for GraphQL documents that are
-   * run against the contents of the query editor (in addition to the rules
-   * that are specified in the GraphQL spec).
-   */
-  validationRules?: ValidationRule[];
+
   /**
    * This prop can be used to set the contents of the variables editor. Every
    * time this prop changes, the contents of the variables editor are replaced.
@@ -321,7 +310,6 @@ type CreateEditorSlice = (
     | 'onTabChange'
     | 'defaultQuery'
     | 'defaultHeaders'
-    | 'validationRules'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
   >,
