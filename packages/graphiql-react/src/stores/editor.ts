@@ -1,7 +1,6 @@
 import type { StateCreator } from 'zustand';
 import type {
   FragmentDefinitionNode,
-  ValidationRule,
   OperationDefinitionNode,
   DocumentNode,
 } from 'graphql';
