@@ -61,6 +61,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     copyQuery,
     prettifyEditors,
     mergeQuery,
+    externalFragments,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -78,6 +79,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'copyQuery',
       'prettifyEditors',
       'mergeQuery',
+      'externalFragments',
     ),
   );
   const storage = useStorage();
@@ -258,24 +260,27 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     if (!schema) {
       return;
     }
-    // eslint-disable-next-line no-console
-    console.log('setting setSchemaConfig');
     MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
+      ...externalFragments.values(),
+    ]);
     if (!referencePlugin) {
       return;
     }
 
+    let currentSchemaReference: SchemaReference | null = null;
+
     const disposables = [
       languages.registerDefinitionProvider('graphql', {
-        provideDefinition(model, p, _token) {
-          const graphQLPosition = toGraphQLPosition(p);
+        provideDefinition(model, position, _token) {
+          const graphQLPosition = toGraphQLPosition(position);
           const context = getContextAtPosition(
             model.getValue(),
             graphQLPosition,
             schema,
           );
           if (!context) {
-            return null;
+            return;
           }
           const { typeInfo, token } = context;
           const { kind, step } = token.state;
@@ -294,47 +299,36 @@ export const QueryEditor: FC<QueryEditorProps> = ({
               typeInfo.type &&
               'description' in typeInfo.type)
           ) {
-            return {
-              uri: model.uri,
-              range: new Range(p.lineNumber, p.column, p.lineNumber, p.column),
-            };
+            currentSchemaReference = { kind, typeInfo };
+            const { lineNumber, column } = position;
+            const range = new Range(lineNumber, column, lineNumber, column);
+            return [{ uri: model.uri, range }];
           }
-
-          return null;
+          currentSchemaReference = null;
         },
       }),
       languages.registerReferenceProvider('graphql', {
-        provideReferences(model, p, _context, _token) {
-          const graphQLPosition = toGraphQLPosition(p);
-          const context = getContextAtPosition(
-            model.getValue(),
-            graphQLPosition,
-            schema,
-          );
-          if (!context) {
-            return null;
+        provideReferences(model, { lineNumber, column }, _context, _token) {
+          if (!currentSchemaReference) {
+            return;
           }
-          const { typeInfo, token } = context;
-          const { kind } = token.state;
-          if (!kind) {
-            return null;
-          }
-
           setVisiblePlugin(referencePlugin);
-          setSchemaReference({ kind, typeInfo });
-          onClickReferenceRef.current?.({ kind, typeInfo });
+          setSchemaReference(currentSchemaReference);
+          onClickReferenceRef.current?.(currentSchemaReference);
 
-          return [
-            {
-              uri: model.uri,
-              range: new Range(p.lineNumber, p.column, p.lineNumber, p.column),
-            },
-          ];
+          const range = new Range(lineNumber, column, lineNumber, column);
+          return [{ uri: model.uri, range }];
         },
       }),
     ];
     return cleanupDisposables(disposables);
-  }, [schema, referencePlugin, setSchemaReference, setVisiblePlugin]);
+  }, [
+    schema,
+    referencePlugin,
+    setSchemaReference,
+    setVisiblePlugin,
+    externalFragments,
+  ]);
 
   return (
     <div

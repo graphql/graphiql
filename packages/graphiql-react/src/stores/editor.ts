@@ -1,7 +1,6 @@
 import type { StateCreator } from 'zustand';
 import type {
   FragmentDefinitionNode,
-  ValidationRule,
   OperationDefinitionNode,
   DocumentNode,
 } from 'graphql';
@@ -21,7 +20,6 @@ import {
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
 import { AllSlices, MonacoEditor } from '../types';
-import { DEFAULT_PRETTIFY_QUERY } from '../constants';
 import { debounce, formatJSONC } from '../utility';
 import { print } from 'graphql';
 
@@ -120,7 +118,7 @@ export interface EditorSlice extends TabsState {
   initialVariables: string;
 
   /**
-   * A map of fragment definitions using the fragment name as key which are
+   * A map of fragment definitions using the fragment name as a key which are
    * made available to include in the query.
    */
   externalFragments: Map<string, FragmentDefinitionNode>;
@@ -141,7 +139,7 @@ export interface EditorSlice extends TabsState {
    * - The `query` prop
    * - The value persisted in storage
    * These default contents will only be used for the first tab. When opening
-   * more tabs the query editor will start out empty.
+   * more tabs, the query editor will start out empty.
    */
   defaultQuery?: string;
 
@@ -165,13 +163,7 @@ export interface EditorSlice extends TabsState {
   onTabChange?(tabState: TabsState): void;
 
   /**
-   * A list of custom validation rules that are run in addition to the rules
-   * provided by the GraphQL spec.
-   */
-  validationRules: ValidationRule[];
-
-  /**
-   * Headers to be set when opening a new tab
+   * Headers to be set when opening a new tab.
    */
   defaultHeaders?: string;
 
@@ -291,12 +283,7 @@ export interface EditorProps
    * @default false
    */
   shouldPersistHeaders?: boolean;
-  /**
-   * This prop accepts custom validation rules for GraphQL documents that are
-   * run against the contents of the query editor (in addition to the rules
-   * that are specified in the GraphQL spec).
-   */
-  validationRules?: ValidationRule[];
+
   /**
    * This prop can be used to set the contents of the variables editor. Every
    * time this prop changes, the contents of the variables editor are replaced.
@@ -317,6 +304,13 @@ type CreateEditorSlice = (
     | 'initialVariables'
     | 'initialHeaders'
     | 'initialResponse'
+    | 'onEditOperationName'
+    | 'externalFragments'
+    | 'onTabChange'
+    | 'defaultQuery'
+    | 'defaultHeaders'
+    | 'onPrettifyQuery'
+    | 'onCopyQuery'
   >,
 ) => StateCreator<AllSlices, [], [], EditorSlice>;
 
@@ -364,7 +358,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   return {
     ...initial,
-
     addTab() {
       set(current => {
         const { defaultQuery, defaultHeaders, onTabChange, storeTabs } = get();
@@ -476,13 +469,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       set({ shouldPersistHeaders: persist });
       storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
     },
-    onEditOperationName: undefined,
-    externalFragments: null!,
-    onTabChange: undefined,
-    defaultQuery: undefined,
-    defaultHeaders: undefined,
-    validationRules: null!,
-    onPrettifyQuery: DEFAULT_PRETTIFY_QUERY,
     storeTabs({ tabs, activeTabIndex }) {
       const { storage } = storageStore.getState();
       const { shouldPersistHeaders } = get();
