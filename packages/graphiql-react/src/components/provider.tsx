@@ -50,7 +50,7 @@ type GraphiQLProviderProps =
 
 type GraphiQLStore = UseBoundStore<StoreApi<AllSlices>>;
 
-const GraphiQLContext = createContext<RefObject<GraphiQLStore>>(null!);
+const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   storage,
@@ -317,7 +317,6 @@ const SynchronizeValue: FC<SynchronizeValueProps> = ({
 
 export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
   const store = useContext(GraphiQLContext);
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- fixme
   if (!store) {
     throw new Error('Missing `GraphiQLContext.Provider` in the tree');
   }
