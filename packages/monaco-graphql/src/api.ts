@@ -15,16 +15,25 @@ import type {
   ModeConfiguration,
   MonacoGraphQLInitializeConfig,
   SchemaConfig,
+  GraphQLLanguageConfig,
 } from './typings';
 
-export type MonacoGraphQLAPIOptions = {
+export interface MonacoGraphQLAPIOptions
+  extends Pick<
+      // Optional fields
+      MonacoGraphQLInitializeConfig,
+      'schemas'
+    >,
+    Pick<
+      // Required fields
+      Required<MonacoGraphQLInitializeConfig>,
+      | 'modeConfiguration'
+      | 'formattingOptions'
+      | 'diagnosticSettings'
+      | 'completionSettings'
+    > {
   languageId: string;
-  schemas?: SchemaConfig[];
-  modeConfiguration: ModeConfiguration;
-  formattingOptions: FormattingOptions;
-  diagnosticSettings: DiagnosticSettings;
-  completionSettings: CompletionSettings;
-};
+}
 
 export type SchemaEntry = {
   schema: GraphQLSchema;
