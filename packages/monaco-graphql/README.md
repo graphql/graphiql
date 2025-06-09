@@ -493,7 +493,7 @@ const RequireOperationNameRule: ValidationRule = context => {
         return;
       }
       context.reportError(
-        new GraphQLError('Oh nooo, all operations must be named.', {
+        new GraphQLError('Oups, all operations must be named.', {
           nodes: [node],
         }),
       );
