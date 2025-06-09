@@ -479,34 +479,40 @@ config such as `schemaLoader` to `createData`:
 
 ```ts
 // my-graphql.worker.ts
-import type { worker as WorkerNamespace } from 'monaco-editor';
-// @ts-expect-error - ignore missing types
-import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
-
+import type * as monaco from 'monaco-editor';
+import type { ICreateData } from 'monaco-graphql';
+// @ts-expect-error -- ignore missing types
+import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
+import { GraphQLError, ValidationRule } from 'graphql';
 
-import { myValidationRules } from './custom';
+const RequireOperationNameRule: ValidationRule = context => {
+  return {
+    OperationDefinition(node) {
+      if (node.name) {
+        return;
+      }
+      context.reportError(
+        new GraphQLError('Oh nooo, all operations must be named.', { nodes: [node] }),
+      );
+    },
+  };
+};
 
 globalThis.onmessage = () => {
-  worker.initialize(
-    (
-      ctx: WorkerNamespace.IWorkerContext,
-      createData: monaco.languages.graphql.ICreateData,
-    ) => {
-      createData.languageConfig.customValidationRules = myValidationRules;
-      return new GraphQLWorker(ctx, createData);
-    },
-  );
+  initialize((ctx: monaco.worker.IWorkerContext, createData: ICreateData) => {
+    createData.languageConfig.customValidationRules = [RequireOperationNameRule];
+    return new GraphQLWorker(ctx, createData);
+  });
 };
 ```
 
 then, in your application:
 
 ```ts
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
-
-// specify the path to your language worker
-import GraphQLWorker from 'worker-loader!./my-graphql.worker';
+// Vite query suffixes https://vite.dev/guide/features.html#import-with-query-suffixes
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import GraphQLWorker from './my-graphql.worker?worker';
 
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
