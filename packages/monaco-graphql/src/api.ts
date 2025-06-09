@@ -41,10 +41,7 @@ export class MonacoGraphQLAPI {
   private _schemas: SchemaConfig[] | null = null;
   private _schemasById: Record<string, SchemaConfig> = Object.create(null);
   private _languageId: string;
-  private _externalFragmentDefinitions:
-    | string
-    | FragmentDefinitionNode[]
-    | null = null;
+  private _externalFragmentDefinitions: GraphQLLanguageConfig['externalFragmentDefinitions'];
 
   constructor({
     languageId,
