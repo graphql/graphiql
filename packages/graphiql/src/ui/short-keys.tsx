@@ -2,6 +2,7 @@ import { FC, Fragment } from 'react';
 import { formatShortcutForOS, KEY_MAP } from '@graphiql/react';
 
 const SHORT_KEYS = Object.entries({
+  'Open the Command Palette': 'F1 (in editors)',
   'Execute query': formatShortcutForOS(KEY_MAP.runQuery.key),
   'Prettify editors': KEY_MAP.prettify.key,
   'Copy query': KEY_MAP.copyQuery.key,
