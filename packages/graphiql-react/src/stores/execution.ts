@@ -73,11 +73,9 @@ export interface ExecutionSlice {
    * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
    */
   fetcher: Fetcher;
-
-  actions: ExecutionActions;
 }
 
-interface ExecutionActions {
+export interface ExecutionActions {
   /**
    * Start a GraphQL request based on the current editor contents.
    */

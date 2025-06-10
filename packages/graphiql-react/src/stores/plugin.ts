@@ -45,11 +45,9 @@ export interface PluginSlice {
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
-
-  actions: PluginActions;
 }
 
-interface PluginActions {
+export interface PluginActions {
   /**
    * Defines the plugin which is currently visible.
    * @param plugin - The plugin that should become visible. You can either pass

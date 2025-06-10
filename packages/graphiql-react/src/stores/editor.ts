@@ -143,11 +143,9 @@ export interface EditorSlice extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
-
-  actions: EditorActions;
 }
 
-interface EditorActions {
+export interface EditorActions {
   /**
    * Add a new tab.
    */
