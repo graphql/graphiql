@@ -23,6 +23,7 @@ import {
   GraphiQLPlugin,
   DocsFilledIcon,
   DocsIcon,
+  isMacOs,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
 import { getSchemaReference } from './schema-reference';
@@ -294,12 +295,11 @@ export const DocExplorerStore: FC<{
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      const key = navigator.userAgent.includes('Mac') ? 'metaKey' : 'ctrlKey';
       const shouldFocusInput =
-        event[key] &&
         // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
         // shortcut for `Cmd/Ctrl+K`
         event.altKey &&
+        event[isMacOs ? 'metaKey' : 'ctrlKey'] &&
         // Using `event.code` because `event.key` will trigger different character
         // in English `˚` and in French `È`
         event.code === 'KeyK';

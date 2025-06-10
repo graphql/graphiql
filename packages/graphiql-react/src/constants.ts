@@ -4,7 +4,7 @@ import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { EditorSlice } from './stores';
 
-const isMacOs =
+export const isMacOs =
   typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
 
 export function formatShortcutForOS(key: string, replaced = '⌘') {
