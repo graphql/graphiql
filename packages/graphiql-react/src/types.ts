@@ -6,6 +6,11 @@ import {
   ExecutionSlice,
   PluginSlice,
   SchemaSlice,
+  //
+  EditorActions,
+  ExecutionActions,
+  PluginActions,
+  SchemaActions,
 } from './stores';
 import { RuleKind } from 'graphql-language-service';
 
@@ -22,3 +27,12 @@ export type AllSlices = EditorSlice &
   ExecutionSlice &
   PluginSlice &
   SchemaSlice;
+
+export type AllActions = EditorActions &
+  ExecutionActions &
+  PluginActions &
+  SchemaActions;
+
+export interface SlicesWithActions extends AllSlices {
+  actions: AllActions;
+}

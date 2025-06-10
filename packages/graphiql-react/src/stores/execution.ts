@@ -20,7 +20,7 @@ import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { formatJSONC, parseJSONC } from '../utility';
-import { AllSlices, MonacoEditor } from '../types';
+import { SlicesWithActions, MonacoEditor } from '../types';
 import { Range } from '../monaco-editor';
 
 export interface ExecutionSlice {
@@ -95,7 +95,7 @@ export interface ExecutionProps
   operationName?: string;
 }
 
-type CreateExecutionSlice = StateCreator<AllSlices, [], [], ExecutionSlice>;
+type CreateExecutionSlice = StateCreator<SlicesWithActions, [], [], ExecutionSlice>;
 
 export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
   function getAutoCompleteLeafs() {

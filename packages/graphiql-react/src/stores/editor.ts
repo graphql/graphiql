@@ -19,7 +19,7 @@ import {
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
-import { AllSlices, MonacoEditor } from '../types';
+import { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { print } from 'graphql';
 
@@ -320,7 +320,7 @@ type CreateEditorSlice = (
     | 'onPrettifyQuery'
     | 'onCopyQuery'
   >,
-) => StateCreator<AllSlices, [], [], EditorSlice>;
+) => StateCreator<SlicesWithActions, [], [], EditorSlice>;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   function setEditorValues({

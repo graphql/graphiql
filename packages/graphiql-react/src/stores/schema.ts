@@ -14,11 +14,11 @@ import {
 } from 'graphql';
 import { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
-import { AllSlices, SchemaReference } from '../types';
+import { SlicesWithActions, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-type CreateSchemaSlice = StateCreator<AllSlices, [], [], SchemaSlice>;
+type CreateSchemaSlice = StateCreator<SlicesWithActions, [], [], SchemaSlice>;
 
 export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
   inputValueDeprecation: null!,

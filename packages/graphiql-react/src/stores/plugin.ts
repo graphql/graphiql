@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
-import type { AllSlices } from '../types';
+import type { SlicesWithActions } from '../types';
 
 export interface GraphiQLPlugin {
   /**
@@ -77,7 +77,7 @@ export interface PluginProps
   visiblePlugin?: GraphiQLPlugin | string;
 }
 
-type CreatePluginSlice = StateCreator<AllSlices, [], [], PluginSlice>;
+type CreatePluginSlice = StateCreator<SlicesWithActions, [], [], PluginSlice>;
 
 export const createPluginSlice: CreatePluginSlice = set => ({
   plugins: [],
