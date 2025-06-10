@@ -224,7 +224,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     //   storage.set(STORAGE_KEY, '');
     // }
     const store = storeRef.current;
-    const { setPlugins, setVisiblePlugin } = store.getState();
+    const { setPlugins, setVisiblePlugin } = store.getState().actions;
 
     setPlugins(plugins);
     setVisiblePlugin(visiblePlugin ?? null);

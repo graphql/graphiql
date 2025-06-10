@@ -132,9 +132,6 @@ export function createEditor(
     fontFamily: '"Fira Code"',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
     tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter ot its container
-    // scrollPredominantAxis: false,
-    // wrappingStrategy: 'advanced',
-    // fixedOverflowWidgets: true,
     ...options,
   });
 }
