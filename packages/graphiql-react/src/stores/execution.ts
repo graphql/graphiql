@@ -185,7 +185,7 @@ export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
           queryEditor,
           responseEditor,
           variableEditor,
-          updateActiveTabValues,
+          actions,
           operationName,
           documentAST,
           subscription,
@@ -198,13 +198,13 @@ export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
         }
         // If there's an active subscription, unsubscribe it and return
         if (subscription) {
-          stop();
+          actions.stop();
           return;
         }
 
         function setResponse(value: string): void {
           responseEditor?.setValue(value);
-          updateActiveTabValues({ response: value });
+          actions.updateActiveTabValues({ response: value });
         }
 
         function setError(error: unknown, editor?: MonacoEditor): void {
