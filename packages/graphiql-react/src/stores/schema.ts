@@ -173,6 +173,40 @@ export interface SchemaSlice
   fetchError: string | null;
 
   /**
+   * If there currently is an introspection request in-flight.
+   */
+  isIntrospecting: boolean;
+
+  /**
+   * The current GraphQL schema.
+   */
+  schema: MaybeGraphQLSchema;
+
+  /**
+   * A list of errors from validating the current GraphQL schema. The schema is
+   * valid if and only if this list is empty.
+   */
+  validationErrors: readonly GraphQLError[];
+
+  /**
+   * The last type selected by the user.
+   */
+  schemaReference: SchemaReference | null;
+
+  /**
+   * A counter that is incremented each time introspection is triggered or the
+   * schema state is updated.
+   */
+  requestCounter: number;
+
+  /**
+   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
+   */
+  shouldIntrospect: boolean;
+}
+
+export interface SchemaActions {
+  /**
    * Trigger building the GraphQL schema. This might trigger an introspection
    * request if no schema is passed via props and if using a schema is not
    * explicitly disabled by passing `null` as value for the `schema` prop. If
@@ -183,35 +217,9 @@ export interface SchemaSlice
   introspect(): Promise<void>;
 
   /**
-   * If there currently is an introspection request in-flight.
-   */
-  isIntrospecting: boolean;
-  /**
-   * The current GraphQL schema.
-   */
-  schema: MaybeGraphQLSchema;
-  /**
-   * A list of errors from validating the current GraphQL schema. The schema is
-   * valid if and only if this list is empty.
-   */
-  validationErrors: readonly GraphQLError[];
-  /**
-   * The last type selected by the user.
-   */
-  schemaReference: SchemaReference | null;
-  /**
    * Set the current selected type.
    */
   setSchemaReference: Dispatch<SchemaReference>;
-  /**
-   * A counter that is incremented each time introspection is triggered or the
-   * schema state is updated.
-   */
-  requestCounter: number;
-  /**
-   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
-   */
-  shouldIntrospect: boolean;
 }
 
 export interface SchemaProps extends IntrospectionArgs {
@@ -263,11 +271,13 @@ interface IntrospectionArgs {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   inputValueDeprecation?: boolean;
+
   /**
    * Can be used to set a custom operation name for the introspection query.
    * @default 'IntrospectionQuery'
    */
   introspectionQueryName?: string;
+
   /**
    * Can be used to set the equally named option for introspecting a GraphQL
    * server.
