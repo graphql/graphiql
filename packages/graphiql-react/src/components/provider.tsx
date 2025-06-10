@@ -343,4 +343,8 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   return useStore(store.current, useShallow(selector));
 }
 
+/**
+ * Actions are functions used to update values in your store. They are static and never change.
+ * @see https://tkdodo.eu/blog/working-with-zustand#separate-actions-from-state
+ */
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);

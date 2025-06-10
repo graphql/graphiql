@@ -155,4 +155,9 @@ const useHistoryStore = createBoundedUseStore(historyStore);
 
 export const useHistory = () =>
   useHistoryStore(state => state.historyStorage.queries);
+
+/**
+ * Actions are functions used to update values in your store. They are static and never change.
+ * @see https://tkdodo.eu/blog/working-with-zustand#separate-actions-from-state
+ */
 export const useHistoryActions = () => useHistoryStore(state => state.actions);

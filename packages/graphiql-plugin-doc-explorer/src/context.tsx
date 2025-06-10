@@ -332,5 +332,10 @@ const useDocExplorerStore = createBoundedUseStore(docExplorerStore);
 
 export const useDocExplorer = () =>
   useDocExplorerStore(state => state.explorerNavStack);
+
+/**
+ * Actions are functions used to update values in your store. They are static and never change.
+ * @see https://tkdodo.eu/blog/working-with-zustand#separate-actions-from-state
+ */
 export const useDocExplorerActions = () =>
   useDocExplorerStore(state => state.actions);
