@@ -86,7 +86,7 @@
   },
   "browser": {
     "//": "Prevents esm.sh from injecting Node.js globals like `process`, which can break browser features (e.g., Mac `Cmd` key) when loading from CDN.",
-    "process": false,
-    "buffer": false
+    "buffer": false,
+    "process": false
   }
 }
