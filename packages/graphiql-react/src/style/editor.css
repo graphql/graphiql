@@ -22,6 +22,10 @@
   input:focus-visible {
     outline-color: hsl(var(--color-primary));
   }
+
+  .quick-input-widget {
+    width: 550px !important;
+  }
 }
 
 .graphiql-response .monaco-editor {
