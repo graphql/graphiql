@@ -4,7 +4,7 @@ export {
   DocExplorerStore,
   useDocExplorer,
   useDocExplorerActions,
-  DOC_EXPLORER_PLUGIN
+  DOC_EXPLORER_PLUGIN,
 } from './context';
 
 export type {
