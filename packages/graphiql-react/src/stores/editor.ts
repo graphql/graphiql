@@ -320,7 +320,12 @@ type CreateEditorSlice = (
     | 'onPrettifyQuery'
     | 'onCopyQuery'
   >,
-) => StateCreator<SlicesWithActions, [], [], EditorSlice>;
+) => StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  EditorSlice & { actions: EditorActions }
+>;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   function setEditorValues({
@@ -368,35 +373,42 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     ...initial,
     actions: {
       addTab() {
-        set(current => {
-          const { defaultQuery, defaultHeaders, onTabChange, actions } =
-            get();
-
-          // Make sure the current tab stores the latest values
-          const updatedValues = synchronizeActiveTabValues(current);
-          const updated = {
-            tabs: [
-              ...updatedValues.tabs,
-              createTab({
-                headers: defaultHeaders,
-                query: defaultQuery,
-              }),
-            ],
-            activeTabIndex: updatedValues.tabs.length,
-          };
-          actions.storeTabs(updated);
-          setEditorValues(updated.tabs[updated.activeTabIndex]!);
-          onTabChange?.(updated);
-          return updated;
-        });
+        set(
+          ({
+            defaultQuery,
+            defaultHeaders,
+            onTabChange,
+            tabs,
+            activeTabIndex,
+            actions,
+          }) => {
+            // Make sure the current tab stores the latest values
+            const updatedValues = synchronizeActiveTabValues({
+              tabs,
+              activeTabIndex,
+            });
+            const updated = {
+              tabs: [
+                ...updatedValues.tabs,
+                createTab({
+                  headers: defaultHeaders,
+                  query: defaultQuery,
+                }),
+              ],
+              activeTabIndex: updatedValues.tabs.length,
+            };
+            actions.storeTabs(updated);
+            setEditorValues(updated.tabs[updated.activeTabIndex]!);
+            onTabChange?.(updated);
+            return updated;
+          },
+        );
       },
       changeTab(index) {
-        const { actions, onTabChange } = get();
-        actions.stop();
-
-        set(current => {
+        set(({ actions, onTabChange, tabs }) => {
+          actions.stop();
           const updated = {
-            ...current,
+            tabs,
             activeTabIndex: index,
           };
           actions.storeTabs(updated);
@@ -406,8 +418,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         });
       },
       moveTab(newOrder) {
-        set(({ ...current, onTabChange, actions }) => {
-          const activeTab = current.tabs[current.activeTabIndex]!;
+        set(({ onTabChange, actions, tabs, activeTabIndex }) => {
+          const activeTab = tabs[activeTabIndex]!;
           const updated = {
             tabs: newOrder,
             activeTabIndex: newOrder.indexOf(activeTab),
@@ -419,16 +431,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         });
       },
       closeTab(index) {
-        const { activeTabIndex, onTabChange, actions } = get();
-
-        if (activeTabIndex === index) {
-          actions.stop();
-        }
-
-        set(current => {
+        set(({ activeTabIndex, onTabChange, actions, tabs }) => {
+          if (activeTabIndex === index) {
+            actions.stop();
+          }
           const updated = {
-            tabs: current.tabs.filter((_tab, i) => index !== i),
-            activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
+            tabs: tabs.filter((_tab, i) => index !== i),
+            activeTabIndex: Math.max(activeTabIndex - 1, 0),
           };
           actions.storeTabs(updated);
           setEditorValues(updated.tabs[updated.activeTabIndex]!);
@@ -437,8 +446,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         });
       },
       updateActiveTabValues(partialTab) {
-        set(({ ...current, onTabChange, actions }) => {
-          const updated = setPropertiesInActiveTab(current, partialTab);
+        set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+          const updated = setPropertiesInActiveTab(
+            { tabs, activeTabIndex },
+            partialTab,
+          );
           actions.storeTabs(updated);
           onTabChange?.(updated);
           return updated;
