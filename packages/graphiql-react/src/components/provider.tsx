@@ -19,7 +19,7 @@ import { PluginProps, createPluginSlice } from '../stores/plugin';
 import { SchemaProps, createSchemaSlice } from '../stores/schema';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
-import { AllSlices } from '../types';
+import { SlicesWithActions } from '../types';
 import { pick, useSynchronizeValue } from '../utility';
 import {
   FragmentDefinitionNode,
@@ -48,7 +48,7 @@ type GraphiQLProviderProps =
     ComponentPropsWithoutRef<typeof StorageStore> &
     ComponentPropsWithoutRef<typeof ThemeStore>;
 
-type GraphiQLStore = UseBoundStore<StoreApi<AllSlices>>;
+type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
@@ -164,8 +164,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         return map;
       })();
 
-      const store = create<AllSlices>((...args) => ({
-        ...createEditorSlice({
+      const store = create<SlicesWithActions>((...args) => {
+        const { actions: editorActions, ...editorSlice } = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
           defaultQuery,
@@ -181,12 +181,30 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onTabChange,
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
-        })(...args),
-        ...createExecutionSlice(...args),
-        ...createPluginSlice(...args),
-        ...createSchemaSlice(...args),
-      }));
-      store.getState().storeTabs({ activeTabIndex, tabs });
+        })(...args);
+        const { actions: executionActions, ...executionSlice } =
+          createExecutionSlice(...args);
+        const { actions: pluginActions, ...pluginSlice } = createPluginSlice(
+          ...args,
+        );
+        const { actions: schemaActions, ...schemaSlice } = createSchemaSlice(
+          ...args,
+        );
+        return {
+          ...editorSlice,
+          ...executionSlice,
+          ...pluginSlice,
+          ...schemaSlice,
+          actions: {
+            ...editorActions,
+            ...executionActions,
+            ...pluginActions,
+            ...schemaActions,
+          },
+        };
+      });
+      const { actions } = store.getState();
+      actions.storeTabs({ activeTabIndex, tabs });
       return store;
     }
 
@@ -260,7 +278,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     }));
 
     // Trigger introspection
-    void store.getState().introspect();
+    const { actions } = store.getState();
+    void actions.introspect();
   }, [
     schema,
     dangerouslyAssumeSchemaIsValid,
@@ -277,7 +296,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   useEffect(() => {
     function triggerIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
-        void storeRef.current.getState().introspect();
+        const { actions } = storeRef.current.getState();
+        void actions.introspect();
       }
     }
 
@@ -315,10 +335,12 @@ const SynchronizeValue: FC<SynchronizeValueProps> = ({
   return children as ReactElement;
 };
 
-export function useGraphiQL<T>(selector: (state: AllSlices) => T): T {
+export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
   if (!store) {
     throw new Error('Missing `GraphiQLContext.Provider` in the tree');
   }
   return useStore(store.current, useShallow(selector));
 }
+
+export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
