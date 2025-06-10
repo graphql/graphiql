@@ -1,5 +1,21 @@
 # @graphiql/react
 
+## 0.35.0-rc.2
+
+### Minor Changes
+
+- [#3999](https://github.com/graphql/graphiql/pull/3999) [`866a8f3`](https://github.com/graphql/graphiql/commit/866a8f39a27d213315ccc55ec06353bb3280b270) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update graphiql-cdn example to show how to load workers with esm.sh
+
+- [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - support `externalFragments` prop and remove `validationRules` prop
+
+- [#4003](https://github.com/graphql/graphiql/pull/4003) [`0c8e390`](https://github.com/graphql/graphiql/commit/0c8e3906cf58055f898cb173b2e912a494ae8439) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `readOnly` prop
+  document `keyMap` prop was removed in migration guide
+
+### Patch Changes
+
+- Updated dependencies [[`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d)]:
+  - monaco-graphql@1.7.1-rc.0
+
 ## 0.35.0-rc.1
 
 ### Minor Changes

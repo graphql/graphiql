@@ -1,5 +1,18 @@
 # @graphiql/plugin-doc-explorer
 
+## 0.3.0-rc.2
+
+### Patch Changes
+
+- [#4006](https://github.com/graphql/graphiql/pull/4006) [`7792dc9`](https://github.com/graphql/graphiql/commit/7792dc98814abcd6dc5f5cd94ae84c308a260dcf) Thanks [@dimaMachina](https://github.com/dimaMachina)! - push field type on stack too before field
+
+- [#4007](https://github.com/graphql/graphiql/pull/4007) [`f9780bd`](https://github.com/graphql/graphiql/commit/f9780bd44f67acad0a9bb10f57eb6059db60e1ec) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Use an additional `Alt` key for focus doc explorer search input instead of `Cmd/Ctrl+K` because monaco-editor has a built-in shortcut for `Cmd/Ctrl+K`
+
+- [#4004](https://github.com/graphql/graphiql/pull/4004) [`16fdd6a`](https://github.com/graphql/graphiql/commit/16fdd6a16684c9f250ee53ea2dfbb24435cee6a9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - show spinner in doc explorer based on `isIntrospecting` value, and not based on `isFetching`
+
+- Updated dependencies [[`866a8f3`](https://github.com/graphql/graphiql/commit/866a8f39a27d213315ccc55ec06353bb3280b270), [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d), [`0c8e390`](https://github.com/graphql/graphiql/commit/0c8e3906cf58055f898cb173b2e912a494ae8439)]:
+  - @graphiql/react@0.35.0-rc.2
+
 ## 0.3.0-rc.1
 
 ### Minor Changes

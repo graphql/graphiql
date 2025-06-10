@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 5.0.0-rc.2
+
+### Major Changes
+
+- [#4002](https://github.com/graphql/graphiql/pull/4002) [`2d9faec`](https://github.com/graphql/graphiql/commit/2d9faec57830b38aa175929c47a55c959c327535) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove UMD builds
+
 ## 5.0.0-rc.1
 
 ### Major Changes
