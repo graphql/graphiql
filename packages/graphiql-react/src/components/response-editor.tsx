@@ -87,14 +87,16 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       $model,
       position,
     ) => {
-      if ($model.uri !== model.uri) {
+      const sameModel = $model.uri === model.uri;
+      if (!sameModel) {
         return null; // Ignore for other editors
       }
       const wordAtPosition = $model.getWordAtPosition(position);
       if (!wordAtPosition?.word.startsWith('/')) {
         return null;
       }
-      if (!ImagePreview.shouldRender(wordAtPosition.word)) {
+      const shouldRender = ImagePreview.shouldRender(wordAtPosition.word);
+      if (!shouldRender) {
         return null;
       }
 
@@ -138,8 +140,9 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
         ],
       };
     };
+    const languageId = model.getLanguageId();
     const disposables = [
-      languages.registerHoverProvider(model.getLanguageId(), { provideHover }),
+      languages.registerHoverProvider(languageId, { provideHover }),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor,
       model,

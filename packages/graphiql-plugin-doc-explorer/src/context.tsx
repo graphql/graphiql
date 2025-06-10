@@ -20,9 +20,27 @@ import {
   useGraphiQL,
   pick,
   createBoundedUseStore,
+  GraphiQLPlugin,
+  DocsFilledIcon,
+  DocsIcon,
+  isMacOs,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
 import { getSchemaReference } from './schema-reference';
+import { DocExplorer } from './components';
+
+export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
+  title: 'Documentation Explorer',
+  icon: function Icon() {
+    const visiblePlugin = useGraphiQL(state => state.visiblePlugin);
+    return visiblePlugin === DOC_EXPLORER_PLUGIN ? (
+      <DocsFilledIcon />
+    ) : (
+      <DocsIcon />
+    );
+  },
+  content: DocExplorer,
+};
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -274,6 +292,38 @@ export const DocExplorerStore: FC<{
       rebuildNavStackWithSchema(schema);
     }
   }, [schema, validationErrors]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const shouldFocusInput =
+        // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
+        // shortcut for `Cmd/Ctrl+K`
+        event.altKey &&
+        event[isMacOs ? 'metaKey' : 'ctrlKey'] &&
+        // Using `event.code` because `event.key` will trigger different character
+        // in English `˚` and in French `È`
+        event.code === 'KeyK';
+      if (!shouldFocusInput) {
+        return;
+      }
+      const button = document.querySelector<HTMLButtonElement>(
+        '.graphiql-sidebar button[aria-label="Show Documentation Explorer"]',
+      );
+      button?.click();
+      // Execute on next tick when doc explorer is opened and input exists in DOM
+      requestAnimationFrame(() => {
+        const el = document.querySelector<HTMLDivElement>(
+          '.graphiql-doc-explorer-search-input',
+        );
+        el?.click();
+      });
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return children as ReactElement;
 };

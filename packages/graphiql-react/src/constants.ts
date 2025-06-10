@@ -4,7 +4,7 @@ import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import { EditorSlice } from './stores';
 
-const isMacOs =
+export const isMacOs =
   typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
 
 export function formatShortcutForOS(key: string, replaced = '⌘') {
@@ -38,7 +38,7 @@ export const KEY_MAP = Object.freeze({
     key: 'Ctrl-F',
   },
   searchInDocs: {
-    key: 'Ctrl-K',
+    key: 'Ctrl-Alt-K',
   },
 });
 
@@ -75,7 +75,7 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 
 `;
 
-export const KEY_BINDINGS = Object.freeze({
+export const KEY_BINDINGS = {
   prettify: {
     id: 'graphql-prettify',
     label: 'Prettify Editors',
@@ -100,7 +100,7 @@ export const KEY_BINDINGS = Object.freeze({
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
   },
-});
+} as const;
 
 export const QUERY_URI = Uri.file('query.graphql');
 export const VARIABLE_URI = Uri.file('variable.json');
