@@ -165,7 +165,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       })();
 
       const store = create<SlicesWithActions>((...args) => {
-        const { actions: editorActions, ...editorSlice } = createEditorSlice({
+        const editorSlice = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
           defaultQuery,
@@ -182,24 +182,19 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
         })(...args);
-        const { actions: executionActions, ...executionSlice } =
-          createExecutionSlice(...args);
-        const { actions: pluginActions, ...pluginSlice } = createPluginSlice(
-          ...args,
-        );
-        const { actions: schemaActions, ...schemaSlice } = createSchemaSlice(
-          ...args,
-        );
+        const executionSlice = createExecutionSlice(...args);
+        const pluginSlice = createPluginSlice(...args);
+        const schemaSlice = createSchemaSlice(...args);
         return {
           ...editorSlice,
           ...executionSlice,
           ...pluginSlice,
           ...schemaSlice,
           actions: {
-            ...editorActions,
-            ...executionActions,
-            ...pluginActions,
-            ...schemaActions,
+            ...editorSlice.actions,
+            ...executionSlice.actions,
+            ...pluginSlice.actions,
+            ...schemaSlice.actions,
           },
         };
       });
