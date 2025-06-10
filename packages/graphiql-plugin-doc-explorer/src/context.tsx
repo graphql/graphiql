@@ -270,10 +270,9 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
 export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { schema, validationErrors, schemaReference, visiblePlugin } =
-    useGraphiQL(
-      pick('schema', 'validationErrors', 'schemaReference', 'visiblePlugin'),
-    );
+  const { schema, validationErrors, schemaReference } = useGraphiQL(
+    pick('schema', 'validationErrors', 'schemaReference'),
+  );
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
@@ -307,12 +306,10 @@ export const DocExplorerStore: FC<{
       if (!shouldFocusInput) {
         return;
       }
-      if (visiblePlugin !== DOC_EXPLORER_PLUGIN) {
-        const button = document.querySelector<HTMLButtonElement>(
-          '.graphiql-sidebar button[aria-label*="Documentation Explorer"]',
-        );
-        button?.click();
-      }
+      const button = document.querySelector<HTMLButtonElement>(
+        '.graphiql-sidebar button[aria-label="Show Documentation Explorer"]',
+      );
+      button?.click();
       // Execute on next tick when doc explorer is opened and input exists in DOM
       requestAnimationFrame(() => {
         const el = document.querySelector<HTMLDivElement>(
@@ -326,7 +323,7 @@ export const DocExplorerStore: FC<{
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [visiblePlugin]);
+  }, []);
 
   return children as ReactElement;
 };
