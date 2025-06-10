@@ -20,9 +20,26 @@ import {
   useGraphiQL,
   pick,
   createBoundedUseStore,
+  GraphiQLPlugin,
+  DocsFilledIcon,
+  DocsIcon,
 } from '@graphiql/react';
 import { createStore } from 'zustand';
 import { getSchemaReference } from './schema-reference';
+import { DocExplorer } from './components';
+
+export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
+  title: 'Documentation Explorer',
+  icon: function Icon() {
+    const visiblePlugin = useGraphiQL(state => state.visiblePlugin);
+    return visiblePlugin === DOC_EXPLORER_PLUGIN ? (
+      <DocsFilledIcon />
+    ) : (
+      <DocsIcon />
+    );
+  },
+  content: DocExplorer,
+};
 
 export type DocExplorerFieldDef =
   | GraphQLField<unknown, unknown>
@@ -253,9 +270,10 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
 export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { schema, validationErrors, schemaReference } = useGraphiQL(
-    pick('schema', 'validationErrors', 'schemaReference'),
-  );
+  const { schema, validationErrors, schemaReference, visiblePlugin } =
+    useGraphiQL(
+      pick('schema', 'validationErrors', 'schemaReference', 'visiblePlugin'),
+    );
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
@@ -274,6 +292,41 @@ export const DocExplorerStore: FC<{
       rebuildNavStackWithSchema(schema);
     }
   }, [schema, validationErrors]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
+      // shortcut for `Cmd/Ctrl+K`
+      const key = navigator.userAgent.includes('Mac') ? 'metaKey' : 'ctrlKey';
+      const shouldFocusInput =
+        event[key] &&
+        event.altKey &&
+        // Using `event.code` because `event.key` will trigger different character
+        // in English `˚` and in French `È`
+        event.code === 'KeyK';
+      if (!shouldFocusInput) {
+        return;
+      }
+      if (visiblePlugin !== DOC_EXPLORER_PLUGIN) {
+        const button = document.querySelector<HTMLButtonElement>(
+          '.graphiql-sidebar button[aria-label*="Documentation Explorer"]',
+        );
+        button?.click();
+      }
+      // Execute on next tick when doc explorer is opened and input exists in DOM
+      requestAnimationFrame(() => {
+        const el = document.querySelector<HTMLInputElement>(
+          '.graphiql-doc-explorer-search-input',
+        );
+        el?.click();
+      });
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [visiblePlugin]);
 
   return children as ReactElement;
 };
