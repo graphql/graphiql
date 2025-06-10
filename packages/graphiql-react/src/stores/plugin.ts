@@ -73,16 +73,16 @@ export interface PluginProps
 
 type CreatePluginSlice = StateCreator<AllSlices, [], [], PluginSlice>;
 
-export const createPluginSlice: CreatePluginSlice = (set, get) => ({
+export const createPluginSlice: CreatePluginSlice = set => ({
   plugins: [],
   visiblePlugin: null,
   referencePlugin: undefined,
   setVisiblePlugin(plugin) {
-    const { plugins, onTogglePluginVisibility } = get();
-    const byTitle = typeof plugin === 'string';
-    const newVisiblePlugin: PluginSlice['visiblePlugin'] =
-      (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) || null;
-    set(({ visiblePlugin }) => {
+    set(({ visiblePlugin, plugins, onTogglePluginVisibility }) => {
+      const byTitle = typeof plugin === 'string';
+      const newVisiblePlugin: PluginSlice['visiblePlugin'] =
+        (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) ||
+        null;
       if (newVisiblePlugin === visiblePlugin) {
         return { visiblePlugin };
       }

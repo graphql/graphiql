@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, useEffect, Children, useRef } from 'react';
+import { useState, useEffect, Children, useRef, Fragment } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -121,17 +121,22 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     confirmCloseTab,
     className,
   };
+  const hasHistoryPlugin = plugins.includes(HISTORY_PLUGIN);
+  const HistoryToUse = hasHistoryPlugin ? HistoryStore : Fragment;
+  const DocExplorerToUse =
+    referencePlugin === DOC_EXPLORER_PLUGIN ? DocExplorerStore : Fragment;
+
   return (
     <GraphiQLProvider
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
     >
-      <HistoryStore maxHistoryLength={maxHistoryLength}>
-        <DocExplorerStore>
+      <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
+        <DocExplorerToUse>
           <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
-        </DocExplorerStore>
-      </HistoryStore>
+        </DocExplorerToUse>
+      </HistoryToUse>
     </GraphiQLProvider>
   );
 };
