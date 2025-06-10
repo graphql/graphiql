@@ -369,7 +369,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     actions: {
       addTab() {
         set(current => {
-          const { defaultQuery, defaultHeaders, onTabChange, storeTabs } =
+          const { defaultQuery, defaultHeaders, onTabChange, actions } =
             get();
 
           // Make sure the current tab stores the latest values
@@ -384,46 +384,45 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
             ],
             activeTabIndex: updatedValues.tabs.length,
           };
-          storeTabs(updated);
+          actions.storeTabs(updated);
           setEditorValues(updated.tabs[updated.activeTabIndex]!);
           onTabChange?.(updated);
           return updated;
         });
       },
       changeTab(index) {
-        const { stop, onTabChange, storeTabs } = get();
-        stop();
+        const { actions, onTabChange } = get();
+        actions.stop();
 
         set(current => {
           const updated = {
             ...current,
             activeTabIndex: index,
           };
-          storeTabs(updated);
+          actions.storeTabs(updated);
           setEditorValues(updated.tabs[updated.activeTabIndex]!);
           onTabChange?.(updated);
           return updated;
         });
       },
       moveTab(newOrder) {
-        set(current => {
-          const { onTabChange, storeTabs } = get();
+        set(({ ...current, onTabChange, actions }) => {
           const activeTab = current.tabs[current.activeTabIndex]!;
           const updated = {
             tabs: newOrder,
             activeTabIndex: newOrder.indexOf(activeTab),
           };
-          storeTabs(updated);
+          actions.storeTabs(updated);
           setEditorValues(updated.tabs[updated.activeTabIndex]!);
           onTabChange?.(updated);
           return updated;
         });
       },
       closeTab(index) {
-        const { activeTabIndex, onTabChange, stop, storeTabs } = get();
+        const { activeTabIndex, onTabChange, actions } = get();
 
         if (activeTabIndex === index) {
-          stop();
+          actions.stop();
         }
 
         set(current => {
@@ -431,17 +430,16 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
             tabs: current.tabs.filter((_tab, i) => index !== i),
             activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
           };
-          storeTabs(updated);
+          actions.storeTabs(updated);
           setEditorValues(updated.tabs[updated.activeTabIndex]!);
           onTabChange?.(updated);
           return updated;
         });
       },
       updateActiveTabValues(partialTab) {
-        set(current => {
-          const { onTabChange, storeTabs } = get();
+        set(({ ...current, onTabChange, actions }) => {
           const updated = setPropertiesInActiveTab(current, partialTab);
-          storeTabs(updated);
+          actions.storeTabs(updated);
           onTabChange?.(updated);
           return updated;
         });
@@ -457,9 +455,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         set(newState);
       },
       setOperationName(operationName) {
-        const { onEditOperationName, updateActiveTabValues } = get();
+        const { onEditOperationName, actions } = get();
         set({ operationName });
-        updateActiveTabValues({ operationName });
+        actions.updateActiveTabValues({ operationName });
         onEditOperationName?.(operationName);
       },
       setShouldPersistHeaders(persist) {
