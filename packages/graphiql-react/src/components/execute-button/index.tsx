@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { useGraphiQL } from '../provider';
+import type { FC } from 'react';
+import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
@@ -8,24 +8,14 @@ import { pick } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
+  const { setOperationName, run, stop } = useGraphiQLActions();
   const {
-    setOperationName,
     operations = [],
     operationName,
     isFetching,
     overrideOperationName,
-    run,
-    stop,
   } = useGraphiQL(
-    pick(
-      'setOperationName',
-      'operations',
-      'operationName',
-      'isFetching',
-      'overrideOperationName',
-      'run',
-      'stop',
-    ),
+    pick('operations', 'operationName', 'isFetching', 'overrideOperationName'),
   );
   const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const hasOptions =
