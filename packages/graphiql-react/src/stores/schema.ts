@@ -18,7 +18,14 @@ import { SlicesWithActions, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-type CreateSchemaSlice = StateCreator<SlicesWithActions, [], [], SchemaSlice>;
+type CreateSchemaSlice = StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  SchemaSlice & {
+    actions: SchemaActions;
+  }
+>;
 
 export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
   inputValueDeprecation: null!,

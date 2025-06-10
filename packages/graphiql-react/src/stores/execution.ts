@@ -95,7 +95,14 @@ export interface ExecutionProps
   operationName?: string;
 }
 
-type CreateExecutionSlice = StateCreator<SlicesWithActions, [], [], ExecutionSlice>;
+type CreateExecutionSlice = StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  ExecutionSlice & {
+    actions: ExecutionActions;
+  }
+>;
 
 export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
   function getAutoCompleteLeafs() {
