@@ -45,20 +45,6 @@ export const Search: FC = () => {
     debouncedGetSearchResults(searchValue);
   }, [debouncedGetSearchResults, searchValue]);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      const key = navigator.userAgent.includes('Mac')
-        ? event.metaKey
-        : event.ctrlKey;
-      if (key && event.key === 'k') {
-        inputRef.current.focus();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const navItem = explorerNavStack.at(-1)!;
 
   const onSelect = (def: TypeMatch | FieldMatch | null) => {
@@ -100,7 +86,7 @@ export const Search: FC = () => {
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
           placeholder={formatShortcutForOS(
-            KEY_MAP.searchInDocs.key.replace('-', ' '),
+            formatShortcutForOS(KEY_MAP.searchInDocs.key).replaceAll('-', ' '),
           )}
           ref={inputRef}
           value={searchValue}
