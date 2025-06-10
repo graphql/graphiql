@@ -295,11 +295,11 @@ export const DocExplorerStore: FC<{
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
-      // shortcut for `Cmd/Ctrl+K`
       const key = navigator.userAgent.includes('Mac') ? 'metaKey' : 'ctrlKey';
       const shouldFocusInput =
         event[key] &&
+        // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
+        // shortcut for `Cmd/Ctrl+K`
         event.altKey &&
         // Using `event.code` because `event.key` will trigger different character
         // in English `˚` and in French `È`
@@ -315,7 +315,7 @@ export const DocExplorerStore: FC<{
       }
       // Execute on next tick when doc explorer is opened and input exists in DOM
       requestAnimationFrame(() => {
-        const el = document.querySelector<HTMLInputElement>(
+        const el = document.querySelector<HTMLDivElement>(
           '.graphiql-doc-explorer-search-input',
         );
         el?.click();
