@@ -183,7 +183,7 @@ module.exports = {
         'init-declarations': 'off',
         'no-catch-shadow': 'error',
         'no-label-var': 'error',
-        'no-restricted-globals': 'off',
+        'no-restricted-globals': ['error', 'stop'],
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': 'error',
         'no-undef-init': 'off',
