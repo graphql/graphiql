@@ -61,6 +61,7 @@ const getBaseColors = (
   'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget
   'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget
   'quickInput.background': colors.bg[theme],
+  'quickInputList.focusForeground': colors.primary[theme],
   'highlighted.label': colors.primary[theme],
   'quickInput.widget': colors.primary[theme],
   highlight: colors.primary[theme],
