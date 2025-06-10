@@ -5,8 +5,7 @@ import {
   MergeIcon,
   PrettifyIcon,
   ToolbarButton,
-  useGraphiQL,
-  pick,
+  useGraphiQLActions,
 } from '@graphiql/react';
 
 const DefaultToolbarRenderProps: FC<{
@@ -32,9 +31,7 @@ export const GraphiQLToolbar: FC<{
       'The `GraphiQL.Toolbar` component requires a render prop function as its child.',
     );
   }
-  const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQL(
-    pick('copyQuery', 'prettifyEditors', 'mergeQuery'),
-  );
+  const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQLActions();
   const prettify = (
     <ToolbarButton
       onClick={prettifyEditors}
