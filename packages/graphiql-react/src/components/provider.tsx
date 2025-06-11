@@ -43,21 +43,21 @@ interface InnerGraphiQLProviderProps
 }
 
 type GraphiQLProviderProps =
-  //
+//
   InnerGraphiQLProviderProps &
-    ComponentPropsWithoutRef<typeof StorageStore> &
-    ComponentPropsWithoutRef<typeof ThemeStore>;
+  ComponentPropsWithoutRef<typeof StorageStore> &
+  ComponentPropsWithoutRef<typeof ThemeStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  storage,
-  defaultTheme,
-  editorTheme,
-  ...props
-}) => {
+                                                              storage,
+                                                              defaultTheme,
+                                                              editorTheme,
+                                                              ...props
+                                                            }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
   if (!props.fetcher) {
     throw new TypeError(
@@ -85,34 +85,34 @@ interface SynchronizeValueProps
 }
 
 const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
-  defaultHeaders,
-  defaultQuery,
-  defaultTabs,
-  externalFragments,
-  onEditOperationName,
-  onTabChange,
-  shouldPersistHeaders = false,
-  onCopyQuery,
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
+                                                                 defaultHeaders,
+                                                                 defaultQuery,
+                                                                 defaultTabs,
+                                                                 externalFragments,
+                                                                 onEditOperationName,
+                                                                 onTabChange,
+                                                                 shouldPersistHeaders = false,
+                                                                 onCopyQuery,
+                                                                 onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
-  dangerouslyAssumeSchemaIsValid = false,
-  fetcher,
-  inputValueDeprecation = false,
-  introspectionQueryName = 'IntrospectionQuery',
-  onSchemaChange,
-  schema,
-  schemaDescription = false,
+                                                                 dangerouslyAssumeSchemaIsValid = false,
+                                                                 fetcher,
+                                                                 inputValueDeprecation = false,
+                                                                 introspectionQueryName = 'IntrospectionQuery',
+                                                                 onSchemaChange,
+                                                                 schema,
+                                                                 schemaDescription = false,
 
-  getDefaultFieldNames,
-  operationName = null,
+                                                                 getDefaultFieldNames,
+                                                                 operationName = null,
 
-  onTogglePluginVisibility,
-  plugins = [],
-  referencePlugin,
-  visiblePlugin,
-  children,
-  ...props
-}) => {
+                                                                 onTogglePluginVisibility,
+                                                                 plugins = [],
+                                                                 referencePlugin,
+                                                                 visiblePlugin,
+                                                                 children,
+                                                                 ...props
+                                                               }) => {
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
 
@@ -267,16 +267,16 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
    * Trigger introspection manually via a short key
    */
   useEffect(() => {
-    function triggerIntrospection(event: KeyboardEvent) {
+    function runIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
         const { actions } = storeRef.current.getState();
         void actions.introspect();
       }
     }
 
-    window.addEventListener('keydown', triggerIntrospection);
+    window.addEventListener('keydown', runIntrospection);
     return () => {
-      window.removeEventListener('keydown', triggerIntrospection);
+      window.removeEventListener('keydown', runIntrospection);
     };
   }, []);
 
@@ -290,12 +290,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 // const STORAGE_KEY = 'visiblePlugin';
 
 const SynchronizeValue: FC<SynchronizeValueProps> = ({
-  children,
-  headers,
-  query,
-  response,
-  variables,
-}) => {
+                                                       children,
+                                                       headers,
+                                                       query,
+                                                       response,
+                                                       variables,
+                                                     }) => {
   const { headerEditor, queryEditor, responseEditor, variableEditor } =
     useGraphiQL(
       pick('headerEditor', 'queryEditor', 'responseEditor', 'variableEditor'),
