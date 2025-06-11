@@ -84,6 +84,29 @@ interface SynchronizeValueProps
   children: ReactNode;
 }
 
+function getExternalFragments(
+  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+) {
+  const map = new Map<string, FragmentDefinitionNode>();
+  if (Array.isArray(externalFragments)) {
+    for (const fragment of externalFragments) {
+      map.set(fragment.name.value, fragment);
+    }
+  } else if (typeof externalFragments === 'string') {
+    visit(parse(externalFragments, {}), {
+      FragmentDefinition(fragment) {
+        map.set(fragment.name.value, fragment);
+      },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
+  } else if (externalFragments) {
+    throw new TypeError(
+      'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of `FragmentDefinitionNode` objects.',
+    );
+  }
+  return map;
+}
+
 const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   defaultHeaders,
   defaultQuery,
@@ -143,33 +166,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
           : shouldPersistHeaders;
 
-      const $externalFragments = (() => {
-        const map = new Map<string, FragmentDefinitionNode>();
-        if (Array.isArray(externalFragments)) {
-          for (const fragment of externalFragments) {
-            map.set(fragment.name.value, fragment);
-          }
-        } else if (typeof externalFragments === 'string') {
-          visit(parse(externalFragments, {}), {
-            FragmentDefinition(fragment) {
-              map.set(fragment.name.value, fragment);
-            },
-          });
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-        } else if (externalFragments) {
-          throw new TypeError(
-            'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
-          );
-        }
-        return map;
-      })();
-
       const store = create<SlicesWithActions>((...args) => {
         const editorSlice = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
           defaultQuery,
-          externalFragments: $externalFragments,
+          externalFragments: getExternalFragments(externalFragments),
           initialHeaders: headers ?? defaultHeaders ?? '',
           initialQuery:
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
