@@ -20,7 +20,7 @@ import { SchemaProps, createSchemaSlice } from '../stores/schema';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
-import { pick, useSynchronizeValue } from '../utility';
+import { pick, useDidUpdate, useSynchronizeValue } from '../utility';
 import {
   FragmentDefinitionNode,
   parse,
@@ -182,7 +182,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
         })(...args);
-        const executionSlice = createExecutionSlice(...args);
+        const executionSlice = createExecutionSlice({
+          fetcher,
+          getDefaultFieldNames,
+          overrideOperationName: operationName,
+        })(...args);
         const pluginSlice = createPluginSlice(...args);
         const schemaSlice = createSchemaSlice(...args);
         return {
@@ -216,13 +220,9 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   // }, [shouldPersistHeaders]);
 
   // Execution sync
-  useEffect(() => {
-    storeRef.current.setState({
-      fetcher,
-      getDefaultFieldNames,
-      overrideOperationName: operationName,
-    });
-  }, [getDefaultFieldNames, operationName, fetcher]);
+  useDidUpdate(() => {
+    storeRef.current.setState({ fetcher });
+  }, [fetcher]);
   // Plugin sync
   useEffect(() => {
     // TODO: visiblePlugin initial data

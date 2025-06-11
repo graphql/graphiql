@@ -172,3 +172,15 @@ export function useOptimisticState([
 
   return [state, setState];
 }
+
+export const useDidUpdate: typeof useEffect = (callback, dependencies) => {
+  const didMountRef = useRef(false);
+
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    callback();
+  }, dependencies); // eslint-disable-line react-hooks/exhaustive-deps
+};
