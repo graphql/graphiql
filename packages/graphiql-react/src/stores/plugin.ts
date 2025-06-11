@@ -77,7 +77,9 @@ export interface PluginProps
   visiblePlugin?: GraphiQLPlugin | string;
 }
 
-type CreatePluginSlice = StateCreator<
+type CreatePluginSlice = (
+  initial: Pick<PluginSlice, 'onTogglePluginVisibility' | 'referencePlugin'>,
+) => StateCreator<
   SlicesWithActions,
   [],
   [],
@@ -86,10 +88,10 @@ type CreatePluginSlice = StateCreator<
   }
 >;
 
-export const createPluginSlice: CreatePluginSlice = set => ({
+export const createPluginSlice: CreatePluginSlice = initial => set => ({
+  ...initial,
   plugins: [],
   visiblePlugin: null,
-  referencePlugin: undefined,
   actions: {
     setVisiblePlugin(plugin) {
       set(({ visiblePlugin, plugins, onTogglePluginVisibility }) => {

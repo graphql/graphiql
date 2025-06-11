@@ -187,7 +187,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           getDefaultFieldNames,
           overrideOperationName: operationName,
         })(...args);
-        const pluginSlice = createPluginSlice(...args);
+        const pluginSlice = createPluginSlice({
+          onTogglePluginVisibility,
+          referencePlugin,
+        })(...args);
         const schemaSlice = createSchemaSlice(...args);
         return {
           ...editorSlice,
@@ -241,11 +244,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
     setPlugins(plugins);
     setVisiblePlugin(visiblePlugin ?? null);
-    store.setState({
-      onTogglePluginVisibility,
-      referencePlugin,
-    });
-  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
+  }, [plugins, visiblePlugin]);
   /**
    * Synchronize prop changes with state
    */
