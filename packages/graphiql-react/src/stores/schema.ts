@@ -18,7 +18,15 @@ import { SlicesWithActions, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-type CreateSchemaSlice = StateCreator<
+type CreateSchemaSlice = (
+  initial: Pick<
+    SchemaSlice,
+    | 'inputValueDeprecation'
+    | 'introspectionQueryName'
+    | 'onSchemaChange'
+    | 'schemaDescription'
+  >,
+) => StateCreator<
   SlicesWithActions,
   [],
   [],
@@ -27,11 +35,8 @@ type CreateSchemaSlice = StateCreator<
   }
 >;
 
-export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
-  inputValueDeprecation: null!,
-  introspectionQueryName: null!,
-  schemaDescription: null!,
-  onSchemaChange: undefined,
+export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
+  ...initial,
 
   fetchError: null,
   isIntrospecting: false,
@@ -246,7 +251,7 @@ export interface SchemaProps extends IntrospectionArgs {
    * Invoked after a new GraphQL schema was built. This includes both fetching
    * the schema via introspection and passing the schema using the `schema`
    * prop.
-   * @param schema The GraphQL schema that is now used for GraphiQL.
+   * @param schema - The GraphQL schema that is now used for GraphiQL.
    */
   onSchemaChange?(schema: GraphQLSchema): void;
 

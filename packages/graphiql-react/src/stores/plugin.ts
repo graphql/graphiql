@@ -1,6 +1,7 @@
 import { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions } from '../types';
+import { storageStore } from './storage';
 
 export interface GraphiQLPlugin {
   /**
@@ -25,6 +26,7 @@ export interface PluginSlice {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
+   * @default []
    */
   plugins: GraphiQLPlugin[];
 
@@ -41,7 +43,7 @@ export interface PluginSlice {
 
   /**
    * Invoked when the visibility state of any plugin changes.
-   * @param visiblePlugin The plugin object that is now visible. If no plugin
+   * @param visiblePlugin - The plugin object that is now visible. If no plugin
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
@@ -55,7 +57,7 @@ export interface PluginActions {
    * prop) or the plugin title as string. If `null` is passed, no plugin will
    * be visible.
    */
-  setVisiblePlugin(plugin: GraphiQLPlugin | string | null): void;
+  setVisiblePlugin(plugin?: GraphiQLPlugin | string | null): void;
 
   setPlugins(plugins: GraphiQLPlugin[]): void;
 }
@@ -65,6 +67,7 @@ export interface PluginProps
   /**
    * This prop accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).
+   * @default []
    */
   plugins?: GraphiQLPlugin[];
 
@@ -77,7 +80,9 @@ export interface PluginProps
   visiblePlugin?: GraphiQLPlugin | string;
 }
 
-type CreatePluginSlice = StateCreator<
+type CreatePluginSlice = (
+  initial: Pick<PluginSlice, 'onTogglePluginVisibility' | 'referencePlugin'>,
+) => StateCreator<
   SlicesWithActions,
   [],
   [],
@@ -86,12 +91,12 @@ type CreatePluginSlice = StateCreator<
   }
 >;
 
-export const createPluginSlice: CreatePluginSlice = set => ({
+export const createPluginSlice: CreatePluginSlice = initial => set => ({
   plugins: [],
   visiblePlugin: null,
-  referencePlugin: undefined,
+  ...initial,
   actions: {
-    setVisiblePlugin(plugin) {
+    setVisiblePlugin(plugin = null) {
       set(({ visiblePlugin, plugins, onTogglePluginVisibility }) => {
         const byTitle = typeof plugin === 'string';
         const newVisiblePlugin: PluginSlice['visiblePlugin'] =
@@ -101,6 +106,8 @@ export const createPluginSlice: CreatePluginSlice = set => ({
           return { visiblePlugin };
         }
         onTogglePluginVisibility?.(newVisiblePlugin);
+        const { storage } = storageStore.getState();
+        storage.set(STORAGE_KEY_VISIBLE_PLUGIN, newVisiblePlugin?.title ?? '');
         return { visiblePlugin: newVisiblePlugin };
       });
     },
@@ -122,3 +129,5 @@ export const createPluginSlice: CreatePluginSlice = set => ({
     },
   },
 });
+
+export const STORAGE_KEY_VISIBLE_PLUGIN = 'visiblePlugin';

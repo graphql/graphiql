@@ -34,7 +34,7 @@ interface QueryEditorProps extends EditorProps {
 
   /**
    * Invoked when the contents of the query editor change.
-   * @param value The new contents of the editor.
+   * @param value - The new contents of the editor.
    * @param documentAST - The editor contents parsed into a GraphQL document.
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
@@ -175,6 +175,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     runAtCursorRef.current = editor => {
       if (!operations) {
+        run();
         return;
       }
       const position = editor.getPosition()!;

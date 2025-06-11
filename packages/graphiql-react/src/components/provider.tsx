@@ -10,17 +10,19 @@ import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import {
-  EditorProps,
   createEditorSlice,
-  PERSIST_HEADERS_STORAGE_KEY,
-} from '../stores/editor';
-import { ExecutionProps, createExecutionSlice } from '../stores/execution';
-import { PluginProps, createPluginSlice } from '../stores/plugin';
-import { SchemaProps, createSchemaSlice } from '../stores/schema';
+  createExecutionSlice,
+  createPluginSlice,
+  createSchemaSlice,
+} from '../stores';
+import { EditorProps, PERSIST_HEADERS_STORAGE_KEY } from '../stores/editor';
+import { ExecutionProps } from '../stores/execution';
+import { PluginProps, STORAGE_KEY_VISIBLE_PLUGIN } from '../stores/plugin';
+import { SchemaProps } from '../stores/schema';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
-import { pick, useSynchronizeValue } from '../utility';
+import { pick, useDidUpdate, useSynchronizeValue } from '../utility';
 import {
   FragmentDefinitionNode,
   parse,
@@ -118,6 +120,20 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
+    function getInitialVisiblePlugin() {
+      const storedValue = storage.get(STORAGE_KEY_VISIBLE_PLUGIN);
+      const pluginForStoredValue = plugins.find(
+        plugin => plugin.title === storedValue,
+      );
+      if (pluginForStoredValue) {
+        return pluginForStoredValue;
+      }
+      if (storedValue) {
+        storage.set(STORAGE_KEY_VISIBLE_PLUGIN, '');
+      }
+      return visiblePlugin;
+    }
+
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
@@ -143,33 +159,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
           : shouldPersistHeaders;
 
-      const $externalFragments = (() => {
-        const map = new Map<string, FragmentDefinitionNode>();
-        if (Array.isArray(externalFragments)) {
-          for (const fragment of externalFragments) {
-            map.set(fragment.name.value, fragment);
-          }
-        } else if (typeof externalFragments === 'string') {
-          visit(parse(externalFragments, {}), {
-            FragmentDefinition(fragment) {
-              map.set(fragment.name.value, fragment);
-            },
-          });
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-        } else if (externalFragments) {
-          throw new TypeError(
-            'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
-          );
-        }
-        return map;
-      })();
-
       const store = create<SlicesWithActions>((...args) => {
         const editorSlice = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
           defaultQuery,
-          externalFragments: $externalFragments,
+          externalFragments: getExternalFragments(externalFragments),
           initialHeaders: headers ?? defaultHeaders ?? '',
           initialQuery:
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
@@ -182,9 +177,21 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
         })(...args);
-        const executionSlice = createExecutionSlice(...args);
-        const pluginSlice = createPluginSlice(...args);
-        const schemaSlice = createSchemaSlice(...args);
+        const executionSlice = createExecutionSlice({
+          fetcher,
+          getDefaultFieldNames,
+          overrideOperationName: operationName,
+        })(...args);
+        const pluginSlice = createPluginSlice({
+          onTogglePluginVisibility,
+          referencePlugin,
+        })(...args);
+        const schemaSlice = createSchemaSlice({
+          inputValueDeprecation,
+          introspectionQueryName,
+          onSchemaChange,
+          schemaDescription,
+        })(...args);
         return {
           ...editorSlice,
           ...executionSlice,
@@ -200,6 +207,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       });
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
+      actions.setPlugins(plugins);
+      const initialVisiblePlugin = getInitialVisiblePlugin();
+      actions.setVisiblePlugin(initialVisiblePlugin);
+
       return store;
     }
 
@@ -216,36 +227,17 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   // }, [shouldPersistHeaders]);
 
   // Execution sync
-  useEffect(() => {
-    storeRef.current.setState({
-      fetcher,
-      getDefaultFieldNames,
-      overrideOperationName: operationName,
-    });
-  }, [getDefaultFieldNames, operationName, fetcher]);
-  // Plugin sync
-  useEffect(() => {
-    // TODO: visiblePlugin initial data
-    // const storedValue = storage.get(STORAGE_KEY);
-    // const pluginForStoredValue = plugins.find(
-    //   plugin => plugin.title === storedValue,
-    // );
-    // if (pluginForStoredValue) {
-    //   return pluginForStoredValue;
-    // }
-    // if (storedValue) {
-    //   storage.set(STORAGE_KEY, '');
-    // }
-    const store = storeRef.current;
-    const { setPlugins, setVisiblePlugin } = store.getState().actions;
+  useDidUpdate(() => {
+    storeRef.current.setState({ fetcher });
+  }, [fetcher]);
 
-    setPlugins(plugins);
-    setVisiblePlugin(visiblePlugin ?? null);
-    store.setState({
-      onTogglePluginVisibility,
-      referencePlugin,
-    });
-  }, [plugins, onTogglePluginVisibility, referencePlugin, visiblePlugin]);
+  // Plugin sync
+  useDidUpdate(() => {
+    const { actions } = storeRef.current.getState();
+    actions.setPlugins(plugins);
+    actions.setVisiblePlugin(visiblePlugin);
+  }, [plugins, visiblePlugin]);
+
   /**
    * Synchronize prop changes with state
    */
@@ -258,16 +250,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         : validateSchema(newSchema);
     const store = storeRef.current;
     store.setState(({ requestCounter }) => ({
-      inputValueDeprecation,
-      introspectionQueryName,
-      onSchemaChange,
       /**
        * Increment the counter so that in-flight introspection requests don't
        * override this change.
        */
       requestCounter: requestCounter + 1,
       schema: newSchema,
-      schemaDescription,
       shouldIntrospect: !isSchema(schema) && schema !== null,
       validationErrors,
     }));
@@ -278,10 +266,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   }, [
     schema,
     dangerouslyAssumeSchemaIsValid,
-    onSchemaChange,
-    inputValueDeprecation,
-    introspectionQueryName,
-    schemaDescription,
     fetcher, // should refresh schema with new fetcher after a fetchError
   ]);
 
@@ -289,16 +273,16 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
    * Trigger introspection manually via a short key
    */
   useEffect(() => {
-    function triggerIntrospection(event: KeyboardEvent) {
+    function runIntrospection(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'R') {
         const { actions } = storeRef.current.getState();
         void actions.introspect();
       }
     }
 
-    window.addEventListener('keydown', triggerIntrospection);
+    window.addEventListener('keydown', runIntrospection);
     return () => {
-      window.removeEventListener('keydown', triggerIntrospection);
+      window.removeEventListener('keydown', runIntrospection);
     };
   }, []);
 
@@ -308,8 +292,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     </GraphiQLContext.Provider>
   );
 };
-
-// const STORAGE_KEY = 'visiblePlugin';
 
 const SynchronizeValue: FC<SynchronizeValueProps> = ({
   children,
@@ -343,3 +325,27 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
  * @see https://tkdodo.eu/blog/working-with-zustand#separate-actions-from-state
  */
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
+
+function getExternalFragments(
+  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+) {
+  const map = new Map<string, FragmentDefinitionNode>();
+  if (externalFragments) {
+    if (Array.isArray(externalFragments)) {
+      for (const fragment of externalFragments) {
+        map.set(fragment.name.value, fragment);
+      }
+    } else if (typeof externalFragments === 'string') {
+      visit(parse(externalFragments), {
+        FragmentDefinition(fragment) {
+          map.set(fragment.name.value, fragment);
+        },
+      });
+    } else {
+      throw new TypeError(
+        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of `FragmentDefinitionNode` objects.',
+      );
+    }
+  }
+  return map;
+}

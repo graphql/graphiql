@@ -22,7 +22,7 @@ interface UseDragResizeArgs {
 
   /**
    * Invoked when the visibility of one of the halves changes.
-   * @param hiddenElement The element that is now hidden after the change
+   * @param hiddenElement - The element that is now hidden after the change
    * (`null` if both are visible).
    */
   onHiddenElementChange?(hiddenElement: ResizableElement | null): void;

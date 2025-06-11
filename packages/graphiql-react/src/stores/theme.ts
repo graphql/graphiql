@@ -18,6 +18,7 @@ type MonacoTheme =
 
 interface ThemeStoreType {
   theme: Theme;
+
   /**
    * Set a new theme
    */
@@ -26,10 +27,12 @@ interface ThemeStoreType {
 
 interface ThemeStoreProps {
   children: ReactNode;
+
   /**
    * @default null
    */
   defaultTheme?: Theme;
+
   /**
    * Sets the color theme for the monaco editors.
    * @default { dark: 'graphiql-DARK', light: 'graphiql-LIGHT' }

@@ -13,34 +13,35 @@ import {
 } from '@graphiql/react';
 
 const historyStore = createStore<HistoryStoreType>((set, get) => ({
-  historyStorage: null!,
+  historyStorage: null,
   actions: {
     addToHistory(operation) {
       const { historyStorage } = get();
-      historyStorage.updateHistory(operation);
+      historyStorage?.updateHistory(operation);
       set({}); // trigger rerender
     },
     editLabel(operation, index) {
       const { historyStorage } = get();
-      historyStorage.editLabel(operation, index);
+      historyStorage?.editLabel(operation, index);
       set({}); // trigger rerender
     },
     toggleFavorite(operation) {
       const { historyStorage } = get();
-      historyStorage.toggleFavorite(operation);
+      historyStorage?.toggleFavorite(operation);
       set({}); // trigger rerender
     },
     setActive: item => item,
     deleteFromHistory(item, clearFavorites) {
       const { historyStorage } = get();
-      historyStorage.deleteHistory(item, clearFavorites);
+      historyStorage?.deleteHistory(item, clearFavorites);
       set({}); // trigger rerender
     },
   },
 }));
 
 type HistoryStoreType = {
-  historyStorage: ToolkitHistoryStore;
+  // Can be `null` if History plugin saved in `localStorage` as `visiblePlugin`
+  historyStorage: ToolkitHistoryStore | null;
   actions: {
     /**
      * Add an operation to the history.
@@ -153,8 +154,10 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
 
 const useHistoryStore = createBoundedUseStore(historyStore);
 
+const EMPTY_ARRAY: QueryStoreItem[] = [];
+
 export const useHistory = () =>
-  useHistoryStore(state => state.historyStorage.queries);
+  useHistoryStore(state => state.historyStorage?.queries ?? EMPTY_ARRAY);
 
 /**
  * Actions are functions used to update values in your store. They are static and never change.

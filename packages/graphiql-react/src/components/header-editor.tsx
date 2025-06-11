@@ -15,7 +15,7 @@ import {
 interface HeaderEditorProps extends EditorProps {
   /**
    * Invoked when the contents of the headers editor change.
-   * @param value The new contents of the editor.
+   * @param value - The new contents of the editor.
    */
   onEdit?(value: string): void;
 }

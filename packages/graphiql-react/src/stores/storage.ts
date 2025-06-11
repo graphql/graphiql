@@ -9,6 +9,7 @@ interface StorageStoreType {
 
 interface StorageStoreProps {
   children: ReactNode;
+
   /**
    * Provide a custom storage API.
    * @default localStorage
