@@ -14,11 +14,18 @@ import {
 } from 'graphql';
 import { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
-import { AllSlices, SchemaReference } from '../types';
+import { SlicesWithActions, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
-type CreateSchemaSlice = StateCreator<AllSlices, [], [], SchemaSlice>;
+type CreateSchemaSlice = StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  SchemaSlice & {
+    actions: SchemaActions;
+  }
+>;
 
 export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
   inputValueDeprecation: null!,
@@ -34,127 +41,126 @@ export const createSchemaSlice: CreateSchemaSlice = (set, get) => ({
    */
   validationErrors: [],
   schemaReference: null,
-  setSchemaReference(schemaReference) {
-    set({ schemaReference });
-  },
   requestCounter: 0,
   shouldIntrospect: true,
-  /**
-   * Fetch the schema
-   */
-  async introspect() {
-    const {
-      requestCounter,
-      shouldIntrospect,
-      onSchemaChange,
-      headerEditor,
-      fetcher,
-      ...rest
-    } = get();
-
-    /**
-     * Only introspect if there is no schema provided via props. If the
-     * prop is passed an introspection result, we do continue but skip the
-     * introspection request.
-     */
-    if (!shouldIntrospect) {
-      return;
-    }
-    const counter = requestCounter + 1;
-    set({ requestCounter: counter });
-
-    try {
-      const currentHeaders = headerEditor?.getValue();
-      const parsedHeaders = parseHeaderString(currentHeaders);
-      if (!parsedHeaders.isValidJSON) {
-        set({ fetchError: 'Introspection failed as headers are invalid.' });
-        return;
-      }
-
-      const fetcherOpts: FetcherOpts = parsedHeaders.headers
-        ? { headers: parsedHeaders.headers }
-        : {};
+  actions: {
+    setSchemaReference(schemaReference) {
+      set({ schemaReference });
+    },
+    async introspect() {
+      const {
+        requestCounter,
+        shouldIntrospect,
+        onSchemaChange,
+        headerEditor,
+        fetcher,
+        ...rest
+      } = get();
 
       /**
-       * Get an introspection query for settings given via props
+       * Only introspect if there is no schema provided via props. If the
+       * prop is passed an introspection result, we do continue but skip the
+       * introspection request.
        */
-      const {
-        introspectionQuery,
-        introspectionQueryName,
-        introspectionQuerySansSubscriptions,
-      } = generateIntrospectionQuery(rest);
-      const fetch = fetcherReturnToPromise(
-        fetcher(
-          {
-            query: introspectionQuery,
-            operationName: introspectionQueryName,
-          },
-          fetcherOpts,
-        ),
-      );
-
-      if (!isPromise(fetch)) {
-        set({
-          fetchError: 'Fetcher did not return a Promise for introspection.',
-        });
+      if (!shouldIntrospect) {
         return;
       }
-      set({ isIntrospecting: true, fetchError: null });
-      let result = await fetch;
+      const counter = requestCounter + 1;
+      set({ requestCounter: counter });
 
-      if (typeof result !== 'object' || !('data' in result)) {
-        // Try the stock introspection query first, falling back on the
-        // sans-subscriptions query for services which do not yet support it.
-        const fetch2 = fetcherReturnToPromise(
+      try {
+        const currentHeaders = headerEditor?.getValue();
+        const parsedHeaders = parseHeaderString(currentHeaders);
+        if (!parsedHeaders.isValidJSON) {
+          set({ fetchError: 'Introspection failed as headers are invalid.' });
+          return;
+        }
+
+        const fetcherOpts: FetcherOpts = parsedHeaders.headers
+          ? { headers: parsedHeaders.headers }
+          : {};
+
+        /**
+         * Get an introspection query for settings given via props
+         */
+        const {
+          introspectionQuery,
+          introspectionQueryName,
+          introspectionQuerySansSubscriptions,
+        } = generateIntrospectionQuery(rest);
+        const fetch = fetcherReturnToPromise(
           fetcher(
             {
-              query: introspectionQuerySansSubscriptions,
+              query: introspectionQuery,
               operationName: introspectionQueryName,
             },
             fetcherOpts,
           ),
         );
-        if (!isPromise(fetch2)) {
-          throw new Error(
-            'Fetcher did not return a Promise for introspection.',
-          );
-        }
-        result = await fetch2;
-      }
 
-      set({ isIntrospecting: false });
-      let introspectionData: IntrospectionQuery | undefined;
-      if (result.data && '__schema' in result.data) {
-        introspectionData = result.data as IntrospectionQuery;
-      } else {
-        // handle as if it were an error if the fetcher response is not a string or response.data is not present
-        const responseString =
-          typeof result === 'string' ? result : formatResult(result);
-        set({ fetchError: responseString });
+        if (!isPromise(fetch)) {
+          set({
+            fetchError: 'Fetcher did not return a Promise for introspection.',
+          });
+          return;
+        }
+        set({ isIntrospecting: true, fetchError: null });
+        let result = await fetch;
+
+        if (typeof result !== 'object' || !('data' in result)) {
+          // Try the stock introspection query first, falling back on the
+          // sans-subscriptions query for services which do not yet support it.
+          const fetch2 = fetcherReturnToPromise(
+            fetcher(
+              {
+                query: introspectionQuerySansSubscriptions,
+                operationName: introspectionQueryName,
+              },
+              fetcherOpts,
+            ),
+          );
+          if (!isPromise(fetch2)) {
+            throw new Error(
+              'Fetcher did not return a Promise for introspection.',
+            );
+          }
+          result = await fetch2;
+        }
+
+        set({ isIntrospecting: false });
+        let introspectionData: IntrospectionQuery | undefined;
+        if (result.data && '__schema' in result.data) {
+          introspectionData = result.data as IntrospectionQuery;
+        } else {
+          // handle as if it were an error if the fetcher response is not a string or response.data is not present
+          const responseString =
+            typeof result === 'string' ? result : formatResult(result);
+          set({ fetchError: responseString });
+        }
+        /**
+         * Don't continue if another introspection request has been started in
+         * the meantime or if there is no introspection data.
+         */
+        if (counter !== get().requestCounter || !introspectionData) {
+          return;
+        }
+        const newSchema = buildClientSchema(introspectionData);
+        set({ schema: newSchema });
+        onSchemaChange?.(newSchema);
+      } catch (error) {
+        /**
+         * Don't continue if another introspection request has been started in
+         * the meantime.
+         */
+        if (counter !== get().requestCounter) {
+          return;
+        }
+        set({
+          fetchError: formatError(error),
+          isIntrospecting: false,
+        });
       }
-      /**
-       * Don't continue if another introspection request has been started in
-       * the meantime or if there is no introspection data.
-       */
-      if (counter !== get().requestCounter || !introspectionData) {
-        return;
-      }
-      const newSchema = buildClientSchema(introspectionData);
-      set({ schema: newSchema });
-      onSchemaChange?.(newSchema);
-    } catch (error) {
-      /**
-       * Don't continue if another introspection request has been started in
-       * the meantime.
-       */
-      if (counter !== get().requestCounter) {
-        return;
-      }
-      set({
-        fetchError: formatError(error),
-        isIntrospecting: false,
-      });
-    }
+    },
   },
 });
 
@@ -173,6 +179,40 @@ export interface SchemaSlice
   fetchError: string | null;
 
   /**
+   * If there currently is an introspection request in-flight.
+   */
+  isIntrospecting: boolean;
+
+  /**
+   * The current GraphQL schema.
+   */
+  schema: MaybeGraphQLSchema;
+
+  /**
+   * A list of errors from validating the current GraphQL schema. The schema is
+   * valid if and only if this list is empty.
+   */
+  validationErrors: readonly GraphQLError[];
+
+  /**
+   * The last type selected by the user.
+   */
+  schemaReference: SchemaReference | null;
+
+  /**
+   * A counter that is incremented each time introspection is triggered or the
+   * schema state is updated.
+   */
+  requestCounter: number;
+
+  /**
+   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
+   */
+  shouldIntrospect: boolean;
+}
+
+export interface SchemaActions {
+  /**
    * Trigger building the GraphQL schema. This might trigger an introspection
    * request if no schema is passed via props and if using a schema is not
    * explicitly disabled by passing `null` as value for the `schema` prop. If
@@ -183,35 +223,9 @@ export interface SchemaSlice
   introspect(): Promise<void>;
 
   /**
-   * If there currently is an introspection request in-flight.
-   */
-  isIntrospecting: boolean;
-  /**
-   * The current GraphQL schema.
-   */
-  schema: MaybeGraphQLSchema;
-  /**
-   * A list of errors from validating the current GraphQL schema. The schema is
-   * valid if and only if this list is empty.
-   */
-  validationErrors: readonly GraphQLError[];
-  /**
-   * The last type selected by the user.
-   */
-  schemaReference: SchemaReference | null;
-  /**
    * Set the current selected type.
    */
   setSchemaReference: Dispatch<SchemaReference>;
-  /**
-   * A counter that is incremented each time introspection is triggered or the
-   * schema state is updated.
-   */
-  requestCounter: number;
-  /**
-   * `false` when `schema` is provided via `props` as `GraphQLSchema | null`
-   */
-  shouldIntrospect: boolean;
 }
 
 export interface SchemaProps extends IntrospectionArgs {
@@ -263,11 +277,13 @@ interface IntrospectionArgs {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   inputValueDeprecation?: boolean;
+
   /**
    * Can be used to set a custom operation name for the introspection query.
    * @default 'IntrospectionQuery'
    */
   introspectionQueryName?: string;
+
   /**
    * Can be used to set the equally named option for introspecting a GraphQL
    * server.

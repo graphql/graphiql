@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { useGraphiQL } from './provider';
+import { useGraphiQL, useGraphiQLActions } from './provider';
 import { EditorProps } from '../types';
 import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import {
@@ -7,7 +7,6 @@ import {
   createEditor,
   useChangeHandler,
   onEditorContainerKeyDown,
-  pick,
   cleanupDisposables,
   cn,
 } from '../utility';
@@ -24,16 +23,8 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   onEdit,
   ...props
 }) => {
-  const { initialVariables, setEditor, run, prettifyEditors, mergeQuery } =
-    useGraphiQL(
-      pick(
-        'initialVariables',
-        'setEditor',
-        'run',
-        'prettifyEditors',
-        'mergeQuery',
-      ),
-    );
+  const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
+  const initialVariables = useGraphiQL(state => state.initialVariables);
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY, 'variables');
   useEffect(() => {

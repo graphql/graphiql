@@ -20,7 +20,7 @@ import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { formatJSONC, parseJSONC } from '../utility';
-import { AllSlices, MonacoEditor } from '../types';
+import { SlicesWithActions, MonacoEditor } from '../types';
 import { Range } from '../monaco-editor';
 
 export interface ExecutionSlice {
@@ -31,6 +31,7 @@ export interface ExecutionSlice {
    * @default false
    */
   isFetching: boolean;
+
   /**
    * Represents an active GraphQL subscription.
    *
@@ -42,6 +43,7 @@ export interface ExecutionSlice {
    * @default null
    */
   subscription: Unsubscribable | null;
+
   /**
    * The operation name that will be sent with all GraphQL requests.
    * @default null
@@ -49,21 +51,12 @@ export interface ExecutionSlice {
   overrideOperationName: string | null;
 
   /**
-   * Start a GraphQL request based on the current editor contents.
-   */
-  run(): void;
-
-  /**
-   * Stop the GraphQL request that is currently in-flight.
-   */
-  stop(): void;
-
-  /**
    * A function to determine which field leafs are automatically added when
    * trying to execute a query with missing selection sets. It will be called
    * with the `GraphQLType` for which fields need to be added.
    */
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
+
   /**
    * @default 0
    */
@@ -82,6 +75,18 @@ export interface ExecutionSlice {
   fetcher: Fetcher;
 }
 
+export interface ExecutionActions {
+  /**
+   * Start a GraphQL request based on the current editor contents.
+   */
+  run(): void;
+
+  /**
+   * Stop the GraphQL request that is currently in-flight.
+   */
+  stop(): void;
+}
+
 export interface ExecutionProps
   extends Pick<ExecutionSlice, 'getDefaultFieldNames' | 'fetcher'> {
   /**
@@ -90,7 +95,14 @@ export interface ExecutionProps
   operationName?: string;
 }
 
-type CreateExecutionSlice = StateCreator<AllSlices, [], [], ExecutionSlice>;
+type CreateExecutionSlice = StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  ExecutionSlice & {
+    actions: ExecutionActions;
+  }
+>;
 
 export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
   function getAutoCompleteLeafs() {
@@ -167,162 +179,164 @@ export const createExecutionSlice: CreateExecutionSlice = (set, get) => {
     getDefaultFieldNames: undefined,
     queryId: 0,
     fetcher: null!,
-    stop() {
-      const { subscription } = get();
-      subscription?.unsubscribe();
-      set({ isFetching: false, subscription: null });
-    },
-    async run() {
-      const {
-        externalFragments,
-        headerEditor,
-        queryEditor,
-        responseEditor,
-        variableEditor,
-        updateActiveTabValues,
-        operationName,
-        documentAST,
-        subscription,
-        overrideOperationName,
-        queryId,
-        fetcher,
-      } = get();
-      if (!queryEditor || !responseEditor) {
-        return;
-      }
-      // If there's an active subscription, unsubscribe it and return
-      if (subscription) {
-        stop();
-        return;
-      }
-
-      function setResponse(value: string): void {
-        responseEditor?.setValue(value);
-        updateActiveTabValues({ response: value });
-      }
-
-      function setError(error: unknown, editor?: MonacoEditor): void {
-        if (!editor) {
+    actions: {
+      stop() {
+        const { subscription } = get();
+        subscription?.unsubscribe();
+        set({ isFetching: false, subscription: null });
+      },
+      async run() {
+        const {
+          externalFragments,
+          headerEditor,
+          queryEditor,
+          responseEditor,
+          variableEditor,
+          actions,
+          operationName,
+          documentAST,
+          subscription,
+          overrideOperationName,
+          queryId,
+          fetcher,
+        } = get();
+        if (!queryEditor || !responseEditor) {
           return;
         }
-        let message;
-        const name = editor === variableEditor ? 'Variables' : 'Headers';
-        if (error instanceof TypeError) {
-          message = `${name} are not a JSON object.`;
-        } else {
-          message = `${name} are invalid JSON: ${error instanceof Error ? error.message : error}.`;
+        // If there's an active subscription, unsubscribe it and return
+        if (subscription) {
+          actions.stop();
+          return;
         }
-        // Need to stringify since the response editor uses `json` language
-        setResponse(formatError({ message }));
-      }
 
-      const newQueryId = queryId + 1;
-      set({ queryId: newQueryId });
+        function setResponse(value: string): void {
+          responseEditor?.setValue(value);
+          actions.updateActiveTabValues({ response: value });
+        }
 
-      // Use the edited query after autoCompleteLeafs() runs or,
-      // in case autoCompletion fails (the function returns undefined),
-      // the current query from the editor.
-      let query = getAutoCompleteLeafs() || queryEditor.getValue();
-
-      let variables: Record<string, unknown> | undefined;
-      try {
-        variables = await tryParseJsonObject(variableEditor?.getValue());
-      } catch (error) {
-        setError(error, variableEditor);
-        return;
-      }
-      let headers: Record<string, unknown> | undefined;
-      try {
-        headers = await tryParseJsonObject(headerEditor?.getValue());
-      } catch (error) {
-        setError(error, headerEditor);
-        return;
-      }
-      const fragmentDependencies = documentAST
-        ? getFragmentDependenciesForAST(documentAST, externalFragments)
-        : [];
-      if (fragmentDependencies.length > 0) {
-        query +=
-          '\n' +
-          fragmentDependencies
-            .map((node: FragmentDefinitionNode) => print(node))
-            .join('\n');
-      }
-
-      setResponse('');
-      set({ isFetching: true });
-      try {
-        const fullResponse: ExecutionResult = {};
-        const handleResponse = (result: ExecutionResult) => {
-          // A different query was dispatched in the meantime, so don't
-          // show the results of this one.
-          if (newQueryId !== get().queryId) {
+        function setError(error: unknown, editor?: MonacoEditor): void {
+          if (!editor) {
             return;
           }
-
-          let maybeMultipart = Array.isArray(result) ? result : false;
-          if (
-            !maybeMultipart &&
-            typeof result === 'object' &&
-            'hasNext' in result
-          ) {
-            maybeMultipart = [result];
+          let message;
+          const name = editor === variableEditor ? 'Variables' : 'Headers';
+          if (error instanceof TypeError) {
+            message = `${name} are not a JSON object.`;
+          } else {
+            message = `${name} are invalid JSON: ${error instanceof Error ? error.message : error}.`;
           }
+          // Need to stringify since the response editor uses `json` language
+          setResponse(formatError({ message }));
+        }
 
-          if (maybeMultipart) {
-            for (const part of maybeMultipart) {
-              mergeIncrementalResult(fullResponse, part);
+        const newQueryId = queryId + 1;
+        set({ queryId: newQueryId });
+
+        // Use the edited query after autoCompleteLeafs() runs or,
+        // in case autoCompletion fails (the function returns undefined),
+        // the current query from the editor.
+        let query = getAutoCompleteLeafs() || queryEditor.getValue();
+
+        let variables: Record<string, unknown> | undefined;
+        try {
+          variables = await tryParseJsonObject(variableEditor?.getValue());
+        } catch (error) {
+          setError(error, variableEditor);
+          return;
+        }
+        let headers: Record<string, unknown> | undefined;
+        try {
+          headers = await tryParseJsonObject(headerEditor?.getValue());
+        } catch (error) {
+          setError(error, headerEditor);
+          return;
+        }
+        const fragmentDependencies = documentAST
+          ? getFragmentDependenciesForAST(documentAST, externalFragments)
+          : [];
+        if (fragmentDependencies.length > 0) {
+          query +=
+            '\n' +
+            fragmentDependencies
+              .map((node: FragmentDefinitionNode) => print(node))
+              .join('\n');
+        }
+
+        setResponse('');
+        set({ isFetching: true });
+        try {
+          const fullResponse: ExecutionResult = {};
+          const handleResponse = (result: ExecutionResult) => {
+            // A different query was dispatched in the meantime, so don't
+            // show the results of this one.
+            if (newQueryId !== get().queryId) {
+              return;
             }
 
-            set({ isFetching: false });
-            setResponse(formatResult(fullResponse));
-          } else {
-            set({ isFetching: false });
-            setResponse(formatResult(result));
-          }
-        };
-        const opName = overrideOperationName ?? operationName;
-        const fetch = fetcher(
-          { query, variables, operationName: opName },
-          { headers, documentAST },
-        );
+            let maybeMultipart = Array.isArray(result) ? result : false;
+            if (
+              !maybeMultipart &&
+              typeof result === 'object' &&
+              'hasNext' in result
+            ) {
+              maybeMultipart = [result];
+            }
 
-        const value = await fetch;
-        if (isObservable(value)) {
-          // If the fetcher returned an Observable, then subscribe to it, calling
-          // the callback on each next value and handling both errors and the
-          // completion of the Observable.
-          const newSubscription = value.subscribe({
-            next(result) {
-              handleResponse(result);
-            },
-            error(error: Error) {
+            if (maybeMultipart) {
+              for (const part of maybeMultipart) {
+                mergeIncrementalResult(fullResponse, part);
+              }
+
               set({ isFetching: false });
-              setResponse(formatError(error));
-              set({ subscription: null });
-            },
-            complete() {
-              set({ isFetching: false, subscription: null });
-            },
-          });
-          set({ subscription: newSubscription });
-        } else if (isAsyncIterable(value)) {
-          const newSubscription = {
-            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+              setResponse(formatResult(fullResponse));
+            } else {
+              set({ isFetching: false });
+              setResponse(formatResult(result));
+            }
           };
-          set({ subscription: newSubscription });
-          for await (const result of value) {
-            handleResponse(result);
+          const opName = overrideOperationName ?? operationName;
+          const fetch = fetcher(
+            { query, variables, operationName: opName },
+            { headers, documentAST },
+          );
+
+          const value = await fetch;
+          if (isObservable(value)) {
+            // If the fetcher returned an Observable, then subscribe to it, calling
+            // the callback on each next value and handling both errors and the
+            // completion of the Observable.
+            const newSubscription = value.subscribe({
+              next(result) {
+                handleResponse(result);
+              },
+              error(error: Error) {
+                set({ isFetching: false });
+                setResponse(formatError(error));
+                set({ subscription: null });
+              },
+              complete() {
+                set({ isFetching: false, subscription: null });
+              },
+            });
+            set({ subscription: newSubscription });
+          } else if (isAsyncIterable(value)) {
+            const newSubscription = {
+              unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+            };
+            set({ subscription: newSubscription });
+            for await (const result of value) {
+              handleResponse(result);
+            }
+            set({ isFetching: false, subscription: null });
+          } else {
+            handleResponse(value);
           }
-          set({ isFetching: false, subscription: null });
-        } else {
-          handleResponse(value);
+        } catch (error) {
+          set({ isFetching: false });
+          setResponse(formatError(error));
+          set({ subscription: null });
         }
-      } catch (error) {
-        set({ isFetching: false });
-        setResponse(formatError(error));
-        set({ subscription: null });
-      }
+      },
     },
   };
 };

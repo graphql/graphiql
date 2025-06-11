@@ -3,7 +3,7 @@ import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
 import { useStorage } from '../stores';
-import { useGraphiQL } from './provider';
+import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
   getOrCreateModel,
@@ -46,39 +46,31 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   ...props
 }) => {
   const {
-    initialQuery,
     setOperationName,
-    schema,
     setEditor,
     updateActiveTabValues,
-    referencePlugin,
     setVisiblePlugin,
     setSchemaReference,
     run,
-    operations,
-    operationName,
     setOperationFacts,
     copyQuery,
     prettifyEditors,
     mergeQuery,
+  } = useGraphiQLActions();
+  const {
+    initialQuery,
+    schema,
+    referencePlugin,
+    operations,
+    operationName,
     externalFragments,
   } = useGraphiQL(
     pick(
       'initialQuery',
-      'setOperationName',
       'schema',
-      'setEditor',
-      'updateActiveTabValues',
       'referencePlugin',
-      'setVisiblePlugin',
-      'setSchemaReference',
-      'run',
       'operations',
       'operationName',
-      'setOperationFacts',
-      'copyQuery',
-      'prettifyEditors',
-      'mergeQuery',
       'externalFragments',
     ),
   );

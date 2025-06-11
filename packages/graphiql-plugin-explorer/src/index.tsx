@@ -2,7 +2,7 @@ import { CSSProperties, FC, useCallback } from 'react';
 import {
   GraphiQLPlugin,
   useGraphiQL,
-  pick,
+  useGraphiQLActions,
   useOperationsEditorState,
   useOptimisticState,
 } from '@graphiql/react';
@@ -61,9 +61,8 @@ export type GraphiQLExplorerPluginProps = Omit<
 >;
 
 const ExplorerPlugin: FC<GraphiQLExplorerPluginProps> = props => {
-  const { setOperationName, schema, run } = useGraphiQL(
-    pick('setOperationName', 'schema', 'run'),
-  );
+  const { setOperationName, run } = useGraphiQLActions();
+  const schema = useGraphiQL(state => state.schema);
 
   // handle running the current operation from the plugin
   const handleRunOperation = useCallback(

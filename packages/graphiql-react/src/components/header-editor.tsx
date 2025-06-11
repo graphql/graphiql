@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { useGraphiQL } from './provider';
+import { useGraphiQL, useGraphiQLActions } from './provider';
 import { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
@@ -21,22 +21,9 @@ interface HeaderEditorProps extends EditorProps {
 }
 
 export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
-  const {
-    initialHeaders,
-    shouldPersistHeaders,
-    setEditor,
-    run,
-    prettifyEditors,
-    mergeQuery,
-  } = useGraphiQL(
-    pick(
-      'initialHeaders',
-      'shouldPersistHeaders',
-      'setEditor',
-      'run',
-      'prettifyEditors',
-      'mergeQuery',
-    ),
+  const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
+  const { initialHeaders, shouldPersistHeaders } = useGraphiQL(
+    pick('initialHeaders', 'shouldPersistHeaders'),
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(

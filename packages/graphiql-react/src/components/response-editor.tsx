@@ -1,7 +1,7 @@
 import { formatError } from '@graphiql/toolkit';
 import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { useGraphiQL } from './provider';
+import { useGraphiQL, useGraphiQLActions } from './provider';
 import { ImagePreview } from './image-preview';
 import {
   getOrCreateModel,
@@ -38,23 +38,16 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const {
-    fetchError,
-    validationErrors,
-    initialResponse,
-    responseEditor,
-    setEditor,
-    run,
-  } = useGraphiQL(
-    pick(
-      'fetchError',
-      'validationErrors',
-      'initialResponse',
-      'responseEditor',
-      'setEditor',
-      'run',
-    ),
-  );
+  const { setEditor, run } = useGraphiQLActions();
+  const { fetchError, validationErrors, initialResponse, responseEditor } =
+    useGraphiQL(
+      pick(
+        'fetchError',
+        'validationErrors',
+        'initialResponse',
+        'responseEditor',
+      ),
+    );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {

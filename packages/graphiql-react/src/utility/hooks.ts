@@ -4,7 +4,7 @@ import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import { MonacoEditor } from '../types';
 import { type editor as monacoEditor } from '../monaco-editor';
-import { useGraphiQL } from '../components';
+import { useGraphiQL, useGraphiQLActions } from '../components';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
@@ -19,11 +19,11 @@ export function useChangeHandler(
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
 ) {
-  const { editor, updateActiveTabValues } = useGraphiQL(state => ({
-    editor:
+  const { updateActiveTabValues } = useGraphiQLActions();
+  const editor = useGraphiQL(
+    state =>
       state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-    updateActiveTabValues: state.updateActiveTabValues,
-  }));
+  );
   useEffect(() => {
     if (!editor) {
       return;

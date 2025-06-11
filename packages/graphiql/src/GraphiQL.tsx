@@ -41,6 +41,7 @@ import {
   cn,
   VisuallyHidden,
   KEY_MAP,
+  useGraphiQLActions,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -225,39 +226,34 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   showPersistHeadersSettings,
 }) => {
   const {
-    initialVariables,
-    initialHeaders,
     setShouldPersistHeaders,
     addTab,
     moveTab,
     closeTab,
     changeTab,
+    introspect,
+    setVisiblePlugin,
+  } = useGraphiQLActions();
+  const {
+    initialVariables,
+    initialHeaders,
     shouldPersistHeaders,
     tabs,
     activeTabIndex,
     isFetching,
     isIntrospecting,
-    introspect,
     visiblePlugin,
-    setVisiblePlugin,
     plugins,
   } = useGraphiQL(
     pick(
       'initialVariables',
       'initialHeaders',
-      'setShouldPersistHeaders',
-      'addTab',
-      'moveTab',
-      'closeTab',
-      'changeTab',
       'shouldPersistHeaders',
       'tabs',
       'activeTabIndex',
       'isFetching',
       'isIntrospecting',
-      'introspect',
       'visiblePlugin',
-      'setVisiblePlugin',
       'plugins',
     ),
   );

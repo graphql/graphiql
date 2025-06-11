@@ -19,102 +19,53 @@ import {
   serializeTabState,
   STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
-import { AllSlices, MonacoEditor } from '../types';
+import { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { print } from 'graphql';
 
 export interface EditorSlice extends TabsState {
   /**
-   * Add a new tab.
-   */
-  addTab(): void;
-
-  /**
-   * Switch to a different tab.
-   * @param index The index of the tab that should be switched to.
-   */
-  changeTab(index: number): void;
-
-  /**
-   * Move a tab to a new spot.
-   * @param newOrder The new order for the tabs.
-   */
-  moveTab(newOrder: TabState[]): void;
-
-  /**
-   * Close a tab. If the currently active tab is closed, the tab before it will
-   * become active. If there is no tab before the closed one, the tab after it
-   * will become active.
-   * @param index The index of the tab that should be closed.
-   */
-  closeTab(index: number): void;
-
-  /**
-   * Update the state for the tab that is currently active. This will be
-   * reflected in the `tabs` object and the state will be persisted in storage
-   * (if available).
-   * @param partialTab A partial tab state object that will override the
-   * current values. The properties `id`, `hash` and `title` cannot be changed.
-   */
-  updateActiveTabValues(
-    partialTab: Partial<Omit<TabState, 'id' | 'hash' | 'title'>>,
-  ): void;
-
-  /**
    * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
   headerEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the query editor.
    */
   queryEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the response editor.
    */
   responseEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the variable editor.
    */
   variableEditor?: MonacoEditor;
 
   /**
-   * Set the Monaco Editor instance used in the specified editor.
-   */
-  setEditor(
-    state: Pick<
-      EditorSlice,
-      'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
-    >,
-  ): void;
-
-  /**
-   * Changes the operation name and invokes the `onEditOperationName` callback.
-   */
-  setOperationName(operationName: string): void;
-
-  /**
    * The contents of the headers editor when initially rendering the provider
    * component.
    */
-
   initialHeaders: string;
+
   /**
    * The contents of the query editor when initially rendering the provider
    * component.
    */
-
   initialQuery: string;
+
   /**
    * The contents of the response editor when initially rendering the provider
    * component.
    */
-
   initialResponse: string;
+
   /**
    * The contents of the variables editor when initially rendering the provider
    * component.
    */
-
   initialVariables: string;
 
   /**
@@ -127,11 +78,6 @@ export interface EditorSlice extends TabsState {
    * If the contents of the headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
-
-  /**
-   * Changes if headers should be persisted.
-   */
-  setShouldPersistHeaders(persist: boolean): void;
 
   /**
    * The initial contents of the query editor when loading GraphiQL and there
@@ -191,14 +137,74 @@ export interface EditorSlice extends TabsState {
    * @remarks from graphiql 5
    */
   documentAST?: OperationFacts['documentAST'];
+
   /**
    * @remarks from graphiql 5
    */
   operationName?: string;
+
   /**
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
+}
+
+export interface EditorActions {
+  /**
+   * Add a new tab.
+   */
+  addTab(): void;
+
+  /**
+   * Switch to a different tab.
+   * @param index The index of the tab that should be switched to.
+   */
+  changeTab(index: number): void;
+
+  /**
+   * Move a tab to a new spot.
+   * @param newOrder The new order for the tabs.
+   */
+  moveTab(newOrder: TabState[]): void;
+
+  /**
+   * Close a tab. If the currently active tab is closed, the tab before it will
+   * become active. If there is no tab before the closed one, the tab after it
+   * will become active.
+   * @param index The index of the tab that should be closed.
+   */
+  closeTab(index: number): void;
+
+  /**
+   * Update the state for the tab that is currently active. This will be
+   * reflected in the `tabs` object and the state will be persisted in storage
+   * (if available).
+   * @param partialTab A partial tab state object that will override the
+   * current values. The properties `id`, `hash` and `title` cannot be changed.
+   */
+  updateActiveTabValues(
+    partialTab: Partial<Omit<TabState, 'id' | 'hash' | 'title'>>,
+  ): void;
+
+  /**
+   * Set the Monaco Editor instance used in the specified editor.
+   */
+  setEditor(
+    state: Pick<
+      EditorSlice,
+      'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
+    >,
+  ): void;
+
+  /**
+   * Changes the operation name and invokes the `onEditOperationName` callback.
+   */
+  setOperationName(operationName: string): void;
+
+  /**
+   * Changes if headers should be persisted.
+   */
+  setShouldPersistHeaders(persist: boolean): void;
 
   storeTabs(tabsState: TabsState): void;
 
@@ -240,6 +246,7 @@ export interface EditorProps
    * `FragmentDefinitionNode` objects.
    */
   externalFragments?: string | FragmentDefinitionNode[];
+
   /**
    * This prop can be used to set the contents of the headers editor. Every
    * time this prop changes, the contents of the headers editor are replaced.
@@ -247,6 +254,7 @@ export interface EditorProps
    * typing in the editor.
    */
   headers?: string;
+
   /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
@@ -263,6 +271,7 @@ export interface EditorProps
    *```
    */
   defaultTabs?: TabDefinition[];
+
   /**
    * This prop can be used to set the contents of the query editor. Every time
    * this prop changes, the contents of the query editor are replaced. Note
@@ -270,6 +279,7 @@ export interface EditorProps
    * in the editor.
    */
   query?: string;
+
   /**
    * This prop can be used to set the contents of the response editor. Every
    * time this prop changes, the contents of the response editor are replaced.
@@ -277,6 +287,7 @@ export interface EditorProps
    * executing queries that will show a response.
    */
   response?: string;
+
   /**
    * This prop toggles if the contents of the headers editor are persisted in
    * storage.
@@ -291,6 +302,7 @@ export interface EditorProps
    * typing in the editor.
    */
   variables?: string;
+
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 }
 
@@ -312,7 +324,12 @@ type CreateEditorSlice = (
     | 'onPrettifyQuery'
     | 'onCopyQuery'
   >,
-) => StateCreator<AllSlices, [], [], EditorSlice>;
+) => StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  EditorSlice & { actions: EditorActions }
+>;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   function setEditorValues({
@@ -358,205 +375,215 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   return {
     ...initial,
-    addTab() {
-      set(current => {
-        const { defaultQuery, defaultHeaders, onTabChange, storeTabs } = get();
-
-        // Make sure the current tab stores the latest values
-        const updatedValues = synchronizeActiveTabValues(current);
-        const updated = {
-          tabs: [
-            ...updatedValues.tabs,
-            createTab({
-              headers: defaultHeaders,
-              query: defaultQuery,
-            }),
-          ],
-          activeTabIndex: updatedValues.tabs.length,
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    changeTab(index) {
-      const { stop, onTabChange, storeTabs } = get();
-      stop();
-
-      set(current => {
-        const updated = {
-          ...current,
-          activeTabIndex: index,
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    moveTab(newOrder) {
-      set(current => {
-        const { onTabChange, storeTabs } = get();
-        const activeTab = current.tabs[current.activeTabIndex]!;
-        const updated = {
-          tabs: newOrder,
-          activeTabIndex: newOrder.indexOf(activeTab),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    closeTab(index) {
-      const { activeTabIndex, onTabChange, stop, storeTabs } = get();
-
-      if (activeTabIndex === index) {
-        stop();
-      }
-
-      set(current => {
-        const updated = {
-          tabs: current.tabs.filter((_tab, i) => index !== i),
-          activeTabIndex: Math.max(current.activeTabIndex - 1, 0),
-        };
-        storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    updateActiveTabValues(partialTab) {
-      set(current => {
-        const { onTabChange, storeTabs } = get();
-        const updated = setPropertiesInActiveTab(current, partialTab);
-        storeTabs(updated);
-        onTabChange?.(updated);
-        return updated;
-      });
-    },
-    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
-      const entries = Object.entries({
-        headerEditor,
-        queryEditor,
-        responseEditor,
-        variableEditor,
-      }).filter(([_key, value]) => value);
-      const newState = Object.fromEntries(entries);
-      set(newState);
-    },
-    setOperationName(operationName) {
-      const { onEditOperationName, updateActiveTabValues } = get();
-      set({ operationName });
-      updateActiveTabValues({ operationName });
-      onEditOperationName?.(operationName);
-    },
-    setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
-      if (persist) {
-        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(
-          { tabs, activeTabIndex },
-          true,
+    actions: {
+      addTab() {
+        set(
+          ({
+            defaultQuery,
+            defaultHeaders,
+            onTabChange,
+            tabs,
+            activeTabIndex,
+            actions,
+          }) => {
+            // Make sure the current tab stores the latest values
+            const updatedValues = synchronizeActiveTabValues({
+              tabs,
+              activeTabIndex,
+            });
+            const updated = {
+              tabs: [
+                ...updatedValues.tabs,
+                createTab({
+                  headers: defaultHeaders,
+                  query: defaultQuery,
+                }),
+              ],
+              activeTabIndex: updatedValues.tabs.length,
+            };
+            actions.storeTabs(updated);
+            setEditorValues(updated.tabs[updated.activeTabIndex]!);
+            onTabChange?.(updated);
+            return updated;
+          },
         );
-        storage.set(STORAGE_KEY_TABS, serializedTabs);
-      } else {
-        storage.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs();
-      }
-      set({ shouldPersistHeaders: persist });
-      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-    },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
-      const { shouldPersistHeaders } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY_TABS, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
-    },
-    setOperationFacts({ documentAST, operationName, operations }) {
-      set({
-        documentAST,
-        operationName,
-        operations,
-      });
-    },
-    async copyQuery() {
-      const { queryEditor, onCopyQuery } = get();
-      if (!queryEditor) {
-        return;
-      }
+      },
+      changeTab(index) {
+        set(({ actions, onTabChange, tabs }) => {
+          actions.stop();
+          const updated = {
+            tabs,
+            activeTabIndex: index,
+          };
+          actions.storeTabs(updated);
+          setEditorValues(updated.tabs[updated.activeTabIndex]!);
+          onTabChange?.(updated);
+          return updated;
+        });
+      },
+      moveTab(newOrder) {
+        set(({ onTabChange, actions, tabs, activeTabIndex }) => {
+          const activeTab = tabs[activeTabIndex]!;
+          const updated = {
+            tabs: newOrder,
+            activeTabIndex: newOrder.indexOf(activeTab),
+          };
+          actions.storeTabs(updated);
+          setEditorValues(updated.tabs[updated.activeTabIndex]!);
+          onTabChange?.(updated);
+          return updated;
+        });
+      },
+      closeTab(index) {
+        set(({ activeTabIndex, onTabChange, actions, tabs }) => {
+          if (activeTabIndex === index) {
+            actions.stop();
+          }
+          const updated = {
+            tabs: tabs.filter((_tab, i) => index !== i),
+            activeTabIndex: Math.max(activeTabIndex - 1, 0),
+          };
+          actions.storeTabs(updated);
+          setEditorValues(updated.tabs[updated.activeTabIndex]!);
+          onTabChange?.(updated);
+          return updated;
+        });
+      },
+      updateActiveTabValues(partialTab) {
+        set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+          const updated = setPropertiesInActiveTab(
+            { tabs, activeTabIndex },
+            partialTab,
+          );
+          actions.storeTabs(updated);
+          onTabChange?.(updated);
+          return updated;
+        });
+      },
+      setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+        const entries = Object.entries({
+          headerEditor,
+          queryEditor,
+          responseEditor,
+          variableEditor,
+        }).filter(([_key, value]) => value);
+        const newState = Object.fromEntries(entries);
+        set(newState);
+      },
+      setOperationName(operationName) {
+        const { onEditOperationName, actions } = get();
+        set({ operationName });
+        actions.updateActiveTabValues({ operationName });
+        onEditOperationName?.(operationName);
+      },
+      setShouldPersistHeaders(persist) {
+        const { headerEditor, tabs, activeTabIndex } = get();
+        const { storage } = storageStore.getState();
+        if (persist) {
+          storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+          const serializedTabs = serializeTabState(
+            { tabs, activeTabIndex },
+            true,
+          );
+          storage.set(STORAGE_KEY_TABS, serializedTabs);
+        } else {
+          storage.set(STORAGE_KEY_HEADERS, '');
+          clearHeadersFromTabs();
+        }
+        set({ shouldPersistHeaders: persist });
+        storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+      },
+      storeTabs({ tabs, activeTabIndex }) {
+        const { storage } = storageStore.getState();
+        const { shouldPersistHeaders } = get();
+        const store = debounce(500, (value: string) => {
+          storage.set(STORAGE_KEY_TABS, value);
+        });
+        store(
+          serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders),
+        );
+      },
+      setOperationFacts({ documentAST, operationName, operations }) {
+        set({
+          documentAST,
+          operationName,
+          operations,
+        });
+      },
+      async copyQuery() {
+        const { queryEditor, onCopyQuery } = get();
+        if (!queryEditor) {
+          return;
+        }
 
-      const query = queryEditor.getValue();
-      onCopyQuery?.(query);
-      try {
-        await navigator.clipboard.writeText(query);
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : error;
-        // eslint-disable-next-line no-console
-        console.error('Failed to copy query!', msg);
-      }
-    },
-    async prettifyEditors() {
-      const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-        get();
-
-      if (variableEditor) {
+        const query = queryEditor.getValue();
+        onCopyQuery?.(query);
         try {
-          const content = variableEditor.getValue();
-          const formatted = await formatJSONC(content);
+          await navigator.clipboard.writeText(query);
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : error;
+          // eslint-disable-next-line no-console
+          console.error('Failed to copy query!', msg);
+        }
+      },
+      async prettifyEditors() {
+        const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
+          get();
+
+        if (variableEditor) {
+          try {
+            const content = variableEditor.getValue();
+            const formatted = await formatJSONC(content);
+            if (formatted !== content) {
+              variableEditor.setValue(formatted);
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(
+              'Parsing variables JSON failed, skip prettification.',
+              error,
+            );
+          }
+        }
+
+        if (headerEditor) {
+          try {
+            const content = headerEditor.getValue();
+            const formatted = await formatJSONC(content);
+            if (formatted !== content) {
+              headerEditor.setValue(formatted);
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(
+              'Parsing headers JSON failed, skip prettification.',
+              error,
+            );
+          }
+        }
+
+        if (!queryEditor) {
+          return;
+        }
+        try {
+          const content = queryEditor.getValue();
+          const formatted = await onPrettifyQuery(content);
           if (formatted !== content) {
-            variableEditor.setValue(formatted);
+            queryEditor.setValue(formatted);
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(
-            'Parsing variables JSON failed, skip prettification.',
-            error,
-          );
+          console.error('Parsing query failed, skip prettification.', error);
         }
-      }
-
-      if (headerEditor) {
-        try {
-          const content = headerEditor.getValue();
-          const formatted = await formatJSONC(content);
-          if (formatted !== content) {
-            headerEditor.setValue(formatted);
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            'Parsing headers JSON failed, skip prettification.',
-            error,
-          );
+      },
+      mergeQuery() {
+        const { queryEditor, documentAST, schema } = get();
+        const query = queryEditor?.getValue();
+        if (!documentAST || !query) {
+          return;
         }
-      }
-
-      if (!queryEditor) {
-        return;
-      }
-      try {
-        const content = queryEditor.getValue();
-        const formatted = await onPrettifyQuery(content);
-        if (formatted !== content) {
-          queryEditor.setValue(formatted);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Parsing query failed, skip prettification.', error);
-      }
-    },
-    mergeQuery() {
-      const { queryEditor, documentAST, schema } = get();
-      const query = queryEditor?.getValue();
-      if (!documentAST || !query) {
-        return;
-      }
-      queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+        queryEditor!.setValue(print(mergeAst(documentAST, schema)));
+      },
     },
   };
 };
