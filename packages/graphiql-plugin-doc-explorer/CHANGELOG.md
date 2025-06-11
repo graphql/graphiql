@@ -1,5 +1,16 @@
 # @graphiql/plugin-doc-explorer
 
+## 0.3.0-rc.3
+
+### Minor Changes
+
+- [#4009](https://github.com/graphql/graphiql/pull/4009) [`4936492`](https://github.com/graphql/graphiql/commit/49364924d0da05a86f7c6c3139d44aed0e474531) Thanks [@dimaMachina](https://github.com/dimaMachina)! - separate store actions from state, add `useGraphiQLActions` state
+
+### Patch Changes
+
+- Updated dependencies [[`4936492`](https://github.com/graphql/graphiql/commit/49364924d0da05a86f7c6c3139d44aed0e474531)]:
+  - @graphiql/react@0.35.0-rc.3
+
 ## 0.3.0-rc.2
 
 ### Patch Changes

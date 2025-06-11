@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 5.0.0-rc.3
+
+### Major Changes
+
+- [#4009](https://github.com/graphql/graphiql/pull/4009) [`4936492`](https://github.com/graphql/graphiql/commit/49364924d0da05a86f7c6c3139d44aed0e474531) Thanks [@dimaMachina](https://github.com/dimaMachina)! - separate store actions from state, add `useGraphiQLActions` state
+
 ## 5.0.0-rc.2
 
 ### Major Changes
