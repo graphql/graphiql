@@ -324,21 +324,22 @@ function getExternalFragments(
   externalFragments: InnerGraphiQLProviderProps['externalFragments'],
 ) {
   const map = new Map<string, FragmentDefinitionNode>();
-  if (Array.isArray(externalFragments)) {
-    for (const fragment of externalFragments) {
-      map.set(fragment.name.value, fragment);
-    }
-  } else if (typeof externalFragments === 'string') {
-    visit(parse(externalFragments, {}), {
-      FragmentDefinition(fragment) {
+  if (externalFragments) {
+    if (Array.isArray(externalFragments)) {
+      for (const fragment of externalFragments) {
         map.set(fragment.name.value, fragment);
-      },
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  } else if (externalFragments) {
-    throw new TypeError(
-      'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of `FragmentDefinitionNode` objects.',
-    );
+      }
+    } else if (typeof externalFragments === 'string') {
+      visit(parse(externalFragments, {}), {
+        FragmentDefinition(fragment) {
+          map.set(fragment.name.value, fragment);
+        },
+      });
+    } else {
+      throw new TypeError(
+        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of `FragmentDefinitionNode` objects.',
+      );
+    }
   }
   return map;
 }
