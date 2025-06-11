@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.35.0-rc.4
+
+### Minor Changes
+
+- [#4011](https://github.com/graphql/graphiql/pull/4011) [`30bc3f9`](https://github.com/graphql/graphiql/commit/30bc3f9cae4dbb11649a0952dad092e192ad653c) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix execute query shortcut in query editor, run it even there are no operations in query editor
+
+  fix plugin store, save last opened plugin in storage
+
 ## 0.35.0-rc.3
 
 ### Minor Changes
