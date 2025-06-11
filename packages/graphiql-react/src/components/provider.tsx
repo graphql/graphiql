@@ -330,7 +330,7 @@ function getExternalFragments(
         map.set(fragment.name.value, fragment);
       }
     } else if (typeof externalFragments === 'string') {
-      visit(parse(externalFragments, {}), {
+      visit(parse(externalFragments), {
         FragmentDefinition(fragment) {
           map.set(fragment.name.value, fragment);
         },
