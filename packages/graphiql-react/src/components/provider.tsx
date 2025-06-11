@@ -211,6 +211,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   useDidUpdate(() => {
     storeRef.current.setState({ fetcher });
   }, [fetcher]);
+
   // Plugin sync
   useEffect(() => {
     // TODO: visiblePlugin initial data
@@ -230,6 +231,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     setPlugins(plugins);
     setVisiblePlugin(visiblePlugin ?? null);
   }, [plugins, visiblePlugin]);
+
   /**
    * Synchronize prop changes with state
    */
