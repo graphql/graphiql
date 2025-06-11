@@ -28,14 +28,17 @@ export interface EditorSlice extends TabsState {
    * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
   headerEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the query editor.
    */
   queryEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the response editor.
    */
   responseEditor?: MonacoEditor;
+
   /**
    * The Monaco Editor instance used in the variable editor.
    */
@@ -45,25 +48,24 @@ export interface EditorSlice extends TabsState {
    * The contents of the headers editor when initially rendering the provider
    * component.
    */
-
   initialHeaders: string;
+
   /**
    * The contents of the query editor when initially rendering the provider
    * component.
    */
-
   initialQuery: string;
+
   /**
    * The contents of the response editor when initially rendering the provider
    * component.
    */
-
   initialResponse: string;
+
   /**
    * The contents of the variables editor when initially rendering the provider
    * component.
    */
-
   initialVariables: string;
 
   /**
@@ -135,10 +137,12 @@ export interface EditorSlice extends TabsState {
    * @remarks from graphiql 5
    */
   documentAST?: OperationFacts['documentAST'];
+
   /**
    * @remarks from graphiql 5
    */
   operationName?: string;
+
   /**
    * @remarks from graphiql 5
    */
