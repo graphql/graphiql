@@ -168,6 +168,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         })(...args);
         const pluginSlice = createPluginSlice({
           onTogglePluginVisibility,
+          plugins,
           referencePlugin,
         })(...args);
         const schemaSlice = createSchemaSlice({

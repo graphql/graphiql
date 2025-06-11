@@ -25,6 +25,7 @@ export interface PluginSlice {
   /**
    * A list of all current plugins, including the built-in ones (the doc
    * explorer and the history).
+   * @default []
    */
   plugins: GraphiQLPlugin[];
 
@@ -65,6 +66,7 @@ export interface PluginProps
   /**
    * This prop accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).
+   * @default []
    */
   plugins?: GraphiQLPlugin[];
 
@@ -78,7 +80,10 @@ export interface PluginProps
 }
 
 type CreatePluginSlice = (
-  initial: Pick<PluginSlice, 'onTogglePluginVisibility' | 'referencePlugin'>,
+  initial: Pick<
+    PluginSlice,
+    'onTogglePluginVisibility' | 'referencePlugin' | 'plugins'
+  >,
 ) => StateCreator<
   SlicesWithActions,
   [],
@@ -90,7 +95,6 @@ type CreatePluginSlice = (
 
 export const createPluginSlice: CreatePluginSlice = initial => set => ({
   ...initial,
-  plugins: [],
   visiblePlugin: null,
   actions: {
     setVisiblePlugin(plugin) {
