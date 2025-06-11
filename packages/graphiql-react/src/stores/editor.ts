@@ -94,7 +94,7 @@ export interface EditorSlice extends TabsState {
    * - Editing the contents of the query editor
    * - Selecting an operation for execution in a document that contains multiple
    *   operation definitions
-   * @param operationName The operation name after it has been changed.
+   * @param operationName - The operation name after it has been changed.
    */
   onEditOperationName?(operationName: string): void;
 
@@ -104,7 +104,7 @@ export interface EditorSlice extends TabsState {
    * - Adding a tab
    * - Switching to a different tab
    * - Closing a tab
-   * @param tabState The tab state after it has been updated.
+   * @param tabState - The tab state after it has been updated.
    */
   onTabChange?(tabState: TabsState): void;
 
@@ -116,13 +116,13 @@ export interface EditorSlice extends TabsState {
   /**
    * Invoked when the current contents of the query editor are copied to the
    * clipboard.
-   * @param query The content that has been copied.
+   * @param query - The content that has been copied.
    */
   onCopyQuery?: (query: string) => void;
 
   /**
    * Invoked when the prettify callback is invoked.
-   * @param query The current value of the query editor.
+   * @param query - The current value of the query editor.
    * @default
    * import { parse, print } from 'graphql'
    *
@@ -157,13 +157,13 @@ export interface EditorActions {
 
   /**
    * Switch to a different tab.
-   * @param index The index of the tab that should be switched to.
+   * @param index - The index of the tab that should be switched to.
    */
   changeTab(index: number): void;
 
   /**
    * Move a tab to a new spot.
-   * @param newOrder The new order for the tabs.
+   * @param newOrder - The new order for the tabs.
    */
   moveTab(newOrder: TabState[]): void;
 
@@ -171,7 +171,7 @@ export interface EditorActions {
    * Close a tab. If the currently active tab is closed, the tab before it will
    * become active. If there is no tab before the closed one, the tab after it
    * will become active.
-   * @param index The index of the tab that should be closed.
+   * @param index - The index of the tab that should be closed.
    */
   closeTab(index: number): void;
 
@@ -179,7 +179,7 @@ export interface EditorActions {
    * Update the state for the tab that is currently active. This will be
    * reflected in the `tabs` object and the state will be persisted in storage
    * (if available).
-   * @param partialTab A partial tab state object that will override the
+   * @param partialTab - A partial tab state object that will override the
    * current values. The properties `id`, `hash` and `title` cannot be changed.
    */
   updateActiveTabValues(

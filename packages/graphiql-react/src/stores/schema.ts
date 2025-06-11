@@ -251,7 +251,7 @@ export interface SchemaProps extends IntrospectionArgs {
    * Invoked after a new GraphQL schema was built. This includes both fetching
    * the schema via introspection and passing the schema using the `schema`
    * prop.
-   * @param schema The GraphQL schema that is now used for GraphiQL.
+   * @param schema - The GraphQL schema that is now used for GraphiQL.
    */
   onSchemaChange?(schema: GraphQLSchema): void;
 

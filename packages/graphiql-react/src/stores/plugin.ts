@@ -42,7 +42,7 @@ export interface PluginSlice {
 
   /**
    * Invoked when the visibility state of any plugin changes.
-   * @param visiblePlugin The plugin object that is now visible. If no plugin
+   * @param visiblePlugin - The plugin object that is now visible. If no plugin
    * is visible, the function will be invoked with `null`.
    */
   onTogglePluginVisibility?(visiblePlugin: GraphiQLPlugin | null): void;
