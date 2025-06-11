@@ -191,7 +191,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onTogglePluginVisibility,
           referencePlugin,
         })(...args);
-        const schemaSlice = createSchemaSlice(...args);
+        const schemaSlice = createSchemaSlice({
+          inputValueDeprecation,
+          introspectionQueryName,
+          onSchemaChange,
+          schemaDescription,
+        })(...args);
         return {
           ...editorSlice,
           ...executionSlice,
@@ -257,16 +262,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         : validateSchema(newSchema);
     const store = storeRef.current;
     store.setState(({ requestCounter }) => ({
-      inputValueDeprecation,
-      introspectionQueryName,
-      onSchemaChange,
       /**
        * Increment the counter so that in-flight introspection requests don't
        * override this change.
        */
       requestCounter: requestCounter + 1,
       schema: newSchema,
-      schemaDescription,
       shouldIntrospect: !isSchema(schema) && schema !== null,
       validationErrors,
     }));
@@ -277,10 +278,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   }, [
     schema,
     dangerouslyAssumeSchemaIsValid,
-    onSchemaChange,
-    inputValueDeprecation,
-    introspectionQueryName,
-    schemaDescription,
     fetcher, // should refresh schema with new fetcher after a fetchError
   ]);
 
