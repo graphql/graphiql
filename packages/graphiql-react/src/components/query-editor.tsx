@@ -175,6 +175,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   useEffect(() => {
     runAtCursorRef.current = editor => {
       if (!operations) {
+        run();
         return;
       }
       const position = editor.getPosition()!;
