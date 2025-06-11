@@ -10,13 +10,15 @@ import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import {
-  EditorProps,
   createEditorSlice,
-  PERSIST_HEADERS_STORAGE_KEY,
-} from '../stores/editor';
-import { ExecutionProps, createExecutionSlice } from '../stores/execution';
-import { PluginProps, createPluginSlice } from '../stores/plugin';
-import { SchemaProps, createSchemaSlice } from '../stores/schema';
+  createExecutionSlice,
+  createPluginSlice,
+  createSchemaSlice,
+} from '../stores';
+import { EditorProps, PERSIST_HEADERS_STORAGE_KEY } from '../stores/editor';
+import { ExecutionProps } from '../stores/execution';
+import { PluginProps, STORAGE_KEY_VISIBLE_PLUGIN } from '../stores/plugin';
+import { SchemaProps } from '../stores/schema';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
@@ -118,6 +120,20 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
+    function getInitialVisiblePlugin() {
+      const storedValue = storage.get(STORAGE_KEY_VISIBLE_PLUGIN);
+      const pluginForStoredValue = plugins.find(
+        plugin => plugin.title === storedValue,
+      );
+      if (pluginForStoredValue) {
+        return pluginForStoredValue;
+      }
+      if (storedValue) {
+        storage.set(STORAGE_KEY_VISIBLE_PLUGIN, '');
+      }
+      return visiblePlugin;
+    }
+
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
@@ -168,7 +184,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         })(...args);
         const pluginSlice = createPluginSlice({
           onTogglePluginVisibility,
-          plugins,
           referencePlugin,
         })(...args);
         const schemaSlice = createSchemaSlice({
@@ -192,6 +207,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       });
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
+      actions.setPlugins(plugins);
+      const initialVisiblePlugin = getInitialVisiblePlugin();
+      actions.setVisiblePlugin(initialVisiblePlugin);
+
       return store;
     }
 
@@ -213,23 +232,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   }, [fetcher]);
 
   // Plugin sync
-  useEffect(() => {
-    // TODO: visiblePlugin initial data
-    // const storedValue = storage.get(STORAGE_KEY);
-    // const pluginForStoredValue = plugins.find(
-    //   plugin => plugin.title === storedValue,
-    // );
-    // if (pluginForStoredValue) {
-    //   return pluginForStoredValue;
-    // }
-    // if (storedValue) {
-    //   storage.set(STORAGE_KEY, '');
-    // }
-    const store = storeRef.current;
-    const { setPlugins, setVisiblePlugin } = store.getState().actions;
-
-    setPlugins(plugins);
-    setVisiblePlugin(visiblePlugin ?? null);
+  useDidUpdate(() => {
+    const { actions } = storeRef.current.getState();
+    actions.setPlugins(plugins);
+    actions.setVisiblePlugin(visiblePlugin);
   }, [plugins, visiblePlugin]);
 
   /**
@@ -286,8 +292,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     </GraphiQLContext.Provider>
   );
 };
-
-// const STORAGE_KEY = 'visiblePlugin';
 
 const SynchronizeValue: FC<SynchronizeValueProps> = ({
   children,
