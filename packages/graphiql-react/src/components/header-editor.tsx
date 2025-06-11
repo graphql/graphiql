@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import { EditorProps } from '../types';
-import { HEADER_URI, KEY_BINDINGS } from '../constants';
+import { HEADER_URI, KEY_BINDINGS, STORAGE_KEY } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -28,7 +28,7 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
     onEdit,
-    shouldPersistHeaders ? STORAGE_KEY : null,
+    shouldPersistHeaders ? STORAGE_KEY.headers : null,
     'headers',
   );
   useEffect(() => {
@@ -56,5 +56,3 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
     />
   );
 };
-
-export const STORAGE_KEY = 'headers';

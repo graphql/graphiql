@@ -14,11 +14,11 @@ import {
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  EditorProps,
+  ExecutionProps,
+  PluginProps,
+  SchemaProps,
 } from '../stores';
-import { EditorProps, PERSIST_HEADERS_STORAGE_KEY } from '../stores/editor';
-import { ExecutionProps } from '../stores/execution';
-import { PluginProps, STORAGE_KEY_VISIBLE_PLUGIN } from '../stores/plugin';
-import { SchemaProps } from '../stores/schema';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
@@ -30,10 +30,11 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
-import { STORAGE_KEY_QUERY } from './query-editor';
-import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
-import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
+import {
+  DEFAULT_PRETTIFY_QUERY,
+  DEFAULT_QUERY,
+  STORAGE_KEY,
+} from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 
 interface InnerGraphiQLProviderProps
@@ -121,7 +122,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
     function getInitialVisiblePlugin() {
-      const storedValue = storage.get(STORAGE_KEY_VISIBLE_PLUGIN);
+      const storedValue = storage.get(STORAGE_KEY.visiblePlugin);
       const pluginForStoredValue = plugins.find(
         plugin => plugin.title === storedValue,
       );
@@ -129,17 +130,17 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         return pluginForStoredValue;
       }
       if (storedValue) {
-        storage.set(STORAGE_KEY_VISIBLE_PLUGIN, '');
+        storage.set(STORAGE_KEY.visiblePlugin, '');
       }
       return visiblePlugin;
     }
 
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
-      const query = props.query ?? storage.get(STORAGE_KEY_QUERY) ?? null;
+      const query = props.query ?? storage.get(STORAGE_KEY.query) ?? null;
       const variables =
-        props.variables ?? storage.get(STORAGE_KEY_VARIABLES) ?? null;
-      const headers = props.headers ?? storage.get(STORAGE_KEY_HEADERS) ?? null;
+        props.variables ?? storage.get(STORAGE_KEY.variables) ?? null;
+      const headers = props.headers ?? storage.get(STORAGE_KEY.headers) ?? null;
       const response = props.response ?? '';
 
       const { tabs, activeTabIndex } = getDefaultTabState({
@@ -152,11 +153,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         variables,
       });
 
-      const isStored = storage.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      const isStored = storage.get(STORAGE_KEY.persistHeaders) !== null;
 
       const $shouldPersistHeaders =
         shouldPersistHeaders !== false && isStored
-          ? storage.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+          ? storage.get(STORAGE_KEY.persistHeaders) === 'true'
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>((...args) => {

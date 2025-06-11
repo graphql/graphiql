@@ -14,7 +14,12 @@ import {
   cn,
 } from '../utility';
 import { MonacoEditor, EditorProps, SchemaReference } from '../types';
-import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
+import {
+  KEY_BINDINGS,
+  MONACO_GRAPHQL_API,
+  QUERY_URI,
+  STORAGE_KEY,
+} from '../constants';
 import {
   type editor as monacoEditor,
   languages,
@@ -210,11 +215,11 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // have additional logic that updates the operation facts that we save in `editorStore`
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
-      storage.set(STORAGE_KEY_QUERY, query);
+      storage.set(STORAGE_KEY.query, query);
 
       const operationFacts = getAndUpdateOperationFacts(editor);
       if (operationFacts?.operationName !== undefined) {
-        storage.set(STORAGE_KEY_OPERATION_NAME, operationFacts.operationName);
+        storage.set(STORAGE_KEY.operationName, operationFacts.operationName);
       }
 
       // Invoke callback props only after the operation facts have been updated
@@ -333,7 +338,3 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     />
   );
 };
-
-export const STORAGE_KEY_QUERY = 'query';
-
-const STORAGE_KEY_OPERATION_NAME = 'operationName';
