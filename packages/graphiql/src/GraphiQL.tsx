@@ -269,7 +269,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
   }, [forcedTheme, setTheme]);
 
-  const PluginContent = visiblePlugin?.content;
+  const PluginContent = plugins.find(plugin => plugin.title === visiblePlugin)?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -390,7 +390,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const handlePluginClick: ButtonHandler = event => {
     const pluginIndex = Number(event.currentTarget.dataset.index!);
     const plugin = plugins.find((_, index) => pluginIndex === index)!;
-    const isVisible = plugin === visiblePlugin;
+    const isVisible = plugin.title === visiblePlugin;
     if (isVisible) {
       setVisiblePlugin(null);
       pluginResize.setHiddenElement('first');
@@ -448,7 +448,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const sidebar = (
     <div className="graphiql-sidebar">
       {plugins.map((plugin, index) => {
-        const isVisible = plugin === visiblePlugin;
+        const isVisible = plugin.title === visiblePlugin;
         const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
         return (
           <Tooltip key={plugin.title} label={label}>

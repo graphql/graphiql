@@ -124,20 +124,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    function getInitialVisiblePlugin() {
-      const storedValue = storage.get(STORAGE_KEY.visiblePlugin);
-      const pluginForStoredValue = plugins.find(
-        plugin => plugin.title === storedValue,
-      );
-      if (pluginForStoredValue) {
-        return pluginForStoredValue;
-      }
-      if (storedValue) {
-        storage.set(STORAGE_KEY.visiblePlugin, '');
-      }
-      return visiblePlugin;
-    }
-
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.query ?? storage.get(STORAGE_KEY.query) ?? null;
@@ -232,15 +218,16 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
                 console.info('Hydration with storage finished');
               };
             },
-            partialize: state => ({ theme: state.theme }),
+            partialize: state => ({
+              theme: state.theme,
+              visiblePlugin: state.visiblePlugin,
+            }),
           },
         ),
       );
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
-      const initialVisiblePlugin = getInitialVisiblePlugin();
-      actions.setVisiblePlugin(initialVisiblePlugin);
 
       return store;
     }
