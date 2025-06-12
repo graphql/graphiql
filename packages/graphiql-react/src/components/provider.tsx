@@ -9,18 +9,20 @@ import type {
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+import { persist } from 'zustand/middleware';
 import {
   createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  createThemeSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
+  ThemeProps,
 } from '../stores';
 import { StorageStore, useStorage } from '../stores/storage';
-import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
 import { pick, useDidUpdate, useSynchronizeValue } from '../utility';
 import {
@@ -36,20 +38,20 @@ import {
   STORAGE_KEY,
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
+import { EDITOR_THEME } from '../utility/create-editor';
 
 interface InnerGraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
-    SchemaProps {
+    SchemaProps,
+    ThemeProps {
   children: ReactNode;
 }
 
 type GraphiQLProviderProps =
   //
-  InnerGraphiQLProviderProps &
-    ComponentPropsWithoutRef<typeof StorageStore> &
-    ComponentPropsWithoutRef<typeof ThemeStore>;
+  InnerGraphiQLProviderProps & ComponentPropsWithoutRef<typeof StorageStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
@@ -57,8 +59,6 @@ const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   storage,
-  defaultTheme,
-  editorTheme,
   ...props
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
@@ -75,9 +75,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }
   return (
     <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <InnerGraphiQLProvider {...props} />
-      </ThemeStore>
+      <InnerGraphiQLProvider {...props} />
     </StorageStore>
   );
 };
@@ -113,7 +111,12 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   plugins = [],
   referencePlugin,
   visiblePlugin,
+
   children,
+
+  defaultTheme = null,
+  editorTheme = EDITOR_THEME,
+
   ...props
 }) => {
   const storage = useStorage();
@@ -160,52 +163,79 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           ? storage.get(STORAGE_KEY.persistHeaders) === 'true'
           : shouldPersistHeaders;
 
-      const store = create<SlicesWithActions>((...args) => {
-        const editorSlice = createEditorSlice({
-          activeTabIndex,
-          defaultHeaders,
-          defaultQuery,
-          externalFragments: getExternalFragments(externalFragments),
-          initialHeaders: headers ?? defaultHeaders ?? '',
-          initialQuery:
-            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialResponse: response,
-          initialVariables: variables ?? '',
-          onCopyQuery,
-          onEditOperationName,
-          onPrettifyQuery,
-          onTabChange,
-          shouldPersistHeaders: $shouldPersistHeaders,
-          tabs,
-        })(...args);
-        const executionSlice = createExecutionSlice({
-          fetcher,
-          getDefaultFieldNames,
-          overrideOperationName: operationName,
-        })(...args);
-        const pluginSlice = createPluginSlice({
-          onTogglePluginVisibility,
-          referencePlugin,
-        })(...args);
-        const schemaSlice = createSchemaSlice({
-          inputValueDeprecation,
-          introspectionQueryName,
-          onSchemaChange,
-          schemaDescription,
-        })(...args);
-        return {
-          ...editorSlice,
-          ...executionSlice,
-          ...pluginSlice,
-          ...schemaSlice,
-          actions: {
-            ...editorSlice.actions,
-            ...executionSlice.actions,
-            ...pluginSlice.actions,
-            ...schemaSlice.actions,
+      const store = create<SlicesWithActions>()(
+        persist(
+          (...args) => {
+            const editorSlice = createEditorSlice({
+              activeTabIndex,
+              defaultHeaders,
+              defaultQuery,
+              externalFragments: getExternalFragments(externalFragments),
+              initialHeaders: headers ?? defaultHeaders ?? '',
+              initialQuery:
+                query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
+              initialResponse: response,
+              initialVariables: variables ?? '',
+              onCopyQuery,
+              onEditOperationName,
+              onPrettifyQuery,
+              onTabChange,
+              shouldPersistHeaders: $shouldPersistHeaders,
+              tabs,
+            })(...args);
+            const executionSlice = createExecutionSlice({
+              fetcher,
+              getDefaultFieldNames,
+              overrideOperationName: operationName,
+            })(...args);
+            const pluginSlice = createPluginSlice({
+              onTogglePluginVisibility,
+              referencePlugin,
+            })(...args);
+            const schemaSlice = createSchemaSlice({
+              inputValueDeprecation,
+              introspectionQueryName,
+              onSchemaChange,
+              schemaDescription,
+            })(...args);
+            const themeSlice = createThemeSlice({ editorTheme })(...args);
+            return {
+              ...editorSlice,
+              ...executionSlice,
+              ...pluginSlice,
+              ...schemaSlice,
+              ...themeSlice,
+              actions: {
+                ...editorSlice.actions,
+                ...executionSlice.actions,
+                ...pluginSlice.actions,
+                ...schemaSlice.actions,
+                ...themeSlice.actions,
+              },
+            };
           },
-        };
-      });
+          {
+            name: 'graphiql:theme',
+            onRehydrateStorage(_state) {
+              return (state, error) => {
+                if (state) {
+                  const theme =
+                    state.theme === undefined ? defaultTheme : state.theme;
+                  state.actions.setTheme(theme);
+                }
+                if (error) {
+                  // eslint-disable-next-line no-console
+                  console.error('An error happened during hydration', error);
+                  return;
+                }
+                // eslint-disable-next-line no-console
+                console.info('Hydration with storage finished');
+              };
+            },
+            partialize: state => ({ theme: state.theme }),
+          },
+        ),
+      );
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
