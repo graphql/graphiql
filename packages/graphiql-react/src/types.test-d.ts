@@ -3,11 +3,13 @@ import type {
   ExecutionSlice,
   PluginSlice,
   SchemaSlice,
+  ThemeSlice,
   //
   EditorActions,
   ExecutionActions,
   PluginActions,
   SchemaActions,
+  ThemeActions,
 } from './stores';
 import { AllSlices, AllActions } from './types';
 
@@ -34,7 +36,7 @@ describe('Should not have conflicting types', () => {
 
   it('AllSlices', () => {
     type Actual = MergeMany<
-      [EditorSlice, ExecutionSlice, PluginSlice, SchemaSlice]
+      [EditorSlice, ExecutionSlice, PluginSlice, SchemaSlice, ThemeSlice]
     >;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expectTypeOf<Actual>().toEqualTypeOf<AllSlices>;
@@ -42,7 +44,13 @@ describe('Should not have conflicting types', () => {
 
   it('AllActions', () => {
     type Actual = MergeMany<
-      [EditorActions, ExecutionActions, PluginActions, SchemaActions]
+      [
+        EditorActions,
+        ExecutionActions,
+        PluginActions,
+        SchemaActions,
+        ThemeActions,
+      ]
     >;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expectTypeOf<Actual>().toEqualTypeOf<AllActions>;
