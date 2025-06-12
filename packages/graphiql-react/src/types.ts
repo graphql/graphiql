@@ -11,6 +11,8 @@ import {
   ExecutionActions,
   PluginActions,
   SchemaActions,
+  ThemeSlice,
+  ThemeActions,
 } from './stores';
 import { RuleKind } from 'graphql-language-service';
 
@@ -26,12 +28,14 @@ export type MonacoEditor = monacoEditor.IStandaloneCodeEditor;
 export type AllSlices = EditorSlice &
   ExecutionSlice &
   PluginSlice &
-  SchemaSlice;
+  SchemaSlice &
+  ThemeSlice;
 
 export type AllActions = EditorActions &
   ExecutionActions &
   PluginActions &
-  SchemaActions;
+  SchemaActions &
+  ThemeActions;
 
 export interface SlicesWithActions extends AllSlices {
   actions: AllActions;
