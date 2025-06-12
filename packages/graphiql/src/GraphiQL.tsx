@@ -35,7 +35,6 @@ import {
   useGraphiQL,
   pick,
   useStorage,
-  useThemeStore,
   VariableEditor,
   EditorProps,
   cn,
@@ -233,6 +232,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     changeTab,
     introspect,
     setVisiblePlugin,
+    setTheme,
   } = useGraphiQLActions();
   const {
     initialVariables,
@@ -244,6 +244,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     isIntrospecting,
     visiblePlugin,
     plugins,
+    theme,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -255,10 +256,10 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'isIntrospecting',
       'visiblePlugin',
       'plugins',
+      'theme'
     ),
   );
   const storageContext = useStorage();
-  const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
     if (forcedTheme === 'system') {
