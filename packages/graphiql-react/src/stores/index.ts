@@ -23,4 +23,10 @@ export {
   type SchemaProps,
 } from './schema';
 export { storageStore, useStorage } from './storage';
-export { themeStore, useThemeStore, type Theme } from './theme';
+export {
+  createThemeSlice,
+  type ThemeSlice,
+  type ThemeActions,
+  type ThemeProps,
+  type Theme,
+} from './theme';
