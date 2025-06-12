@@ -2,8 +2,8 @@ import { FC, Fragment } from 'react';
 import { formatShortcutForOS, KEY_MAP } from '@graphiql/react';
 
 const SHORT_KEYS = Object.entries({
-  'Open the Command Palette (you must have focus in the editor)': 'F1',
   'Execute query': formatShortcutForOS(KEY_MAP.runQuery.key),
+  'Open the Command Palette (you must have focus in the editor)': 'F1',
   'Prettify editors': KEY_MAP.prettify.key,
   'Copy query': KEY_MAP.copyQuery.key,
   'Re-fetch schema using introspection': KEY_MAP.refetchSchema.key,
