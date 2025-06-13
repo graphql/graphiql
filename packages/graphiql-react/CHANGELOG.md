@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.35.0-rc.5
+
+### Minor Changes
+
+- [#4014](https://github.com/graphql/graphiql/pull/4014) [`4b39f11`](https://github.com/graphql/graphiql/commit/4b39f1118d008c2fac6e2df9c94a3f3271c4eeb9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - extract storage key constants
+
 ## 0.35.0-rc.4
 
 ### Minor Changes
