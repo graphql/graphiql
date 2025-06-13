@@ -1,5 +1,6 @@
 'use no memo'; // can't figure why it isn't optimized
 
+import { STORAGE_KEY } from '../constants';
 import { storageStore } from '../stores';
 
 export interface TabDefinition {
@@ -85,7 +86,7 @@ export function getDefaultTabState({
   shouldPersistHeaders?: boolean;
 }) {
   const { storage } = storageStore.getState();
-  const storedState = storage.get(STORAGE_KEY);
+  const storedState = storage.get(STORAGE_KEY.tabs);
   try {
     if (!storedState) {
       throw new Error('Storage for tabs is empty');
@@ -266,11 +267,11 @@ export function fuzzyExtractOperationName(str: string): string | null {
 
 export function clearHeadersFromTabs() {
   const { storage } = storageStore.getState();
-  const persistedTabs = storage.get(STORAGE_KEY);
+  const persistedTabs = storage.get(STORAGE_KEY.tabs);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);
     storage.set(
-      STORAGE_KEY,
+      STORAGE_KEY.tabs,
       JSON.stringify(parsedTabs, (key, value) =>
         key === 'headers' ? null : value,
       ),
@@ -279,5 +280,3 @@ export function clearHeadersFromTabs() {
 }
 
 const DEFAULT_TITLE = '<untitled>';
-
-export const STORAGE_KEY = 'tabState';

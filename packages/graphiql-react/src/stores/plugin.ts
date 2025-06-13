@@ -2,6 +2,7 @@ import { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions } from '../types';
 import { storageStore } from './storage';
+import { STORAGE_KEY } from '../constants';
 
 export interface GraphiQLPlugin {
   /**
@@ -107,7 +108,7 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
         }
         onTogglePluginVisibility?.(newVisiblePlugin);
         const { storage } = storageStore.getState();
-        storage.set(STORAGE_KEY_VISIBLE_PLUGIN, newVisiblePlugin?.title ?? '');
+        storage.set(STORAGE_KEY.visiblePlugin, newVisiblePlugin?.title ?? '');
         return { visiblePlugin: newVisiblePlugin };
       });
     },
@@ -129,5 +130,3 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
     },
   },
 });
-
-export const STORAGE_KEY_VISIBLE_PLUGIN = 'visiblePlugin';

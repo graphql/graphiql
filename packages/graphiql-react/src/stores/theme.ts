@@ -1,9 +1,10 @@
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { storageStore } from './index';
+import { storageStore } from './storage';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 import { EDITOR_THEME } from '../utility/create-editor';
 import { editor as monacoEditor } from '../monaco-editor';
+import { STORAGE_KEY } from '../constants';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -47,7 +48,7 @@ export const themeStore = createStore<ThemeStoreType>(set => ({
   theme: null,
   setTheme(theme) {
     const { storage } = storageStore.getState();
-    storage.set(STORAGE_KEY, theme ?? '');
+    storage.set(STORAGE_KEY.theme, theme ?? '');
     set({ theme });
   },
 }));
@@ -62,7 +63,7 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
     const { storage } = storageStore.getState();
 
     function getInitialTheme() {
-      const stored = storage.get(STORAGE_KEY);
+      const stored = storage.get(STORAGE_KEY.theme);
       switch (stored) {
         case 'light':
           return 'light';
@@ -71,7 +72,7 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
         default:
           if (typeof stored === 'string') {
             // Remove the invalid stored value
-            storage.set(STORAGE_KEY, '');
+            storage.set(STORAGE_KEY.theme, '');
           }
           return defaultTheme;
       }
@@ -102,7 +103,5 @@ function getSystemTheme() {
   const systemTheme = isDark ? 'dark' : 'light';
   return systemTheme;
 }
-
-const STORAGE_KEY = 'theme';
 
 export const useThemeStore = createBoundedUseStore(themeStore);

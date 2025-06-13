@@ -6,9 +6,8 @@ import type {
 } from 'graphql';
 import { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
+import { print } from 'graphql';
 import { storageStore } from './storage';
-import { STORAGE_KEY as STORAGE_KEY_HEADERS } from '../components/header-editor';
-
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -17,11 +16,10 @@ import {
   TabState,
   clearHeadersFromTabs,
   serializeTabState,
-  STORAGE_KEY as STORAGE_KEY_TABS,
 } from '../utility/tabs';
 import { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
-import { print } from 'graphql';
+import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -478,24 +476,24 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       const { headerEditor, tabs, activeTabIndex } = get();
       const { storage } = storageStore.getState();
       if (persist) {
-        storage.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        storage.set(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
         const serializedTabs = serializeTabState(
           { tabs, activeTabIndex },
           true,
         );
-        storage.set(STORAGE_KEY_TABS, serializedTabs);
+        storage.set(STORAGE_KEY.tabs, serializedTabs);
       } else {
-        storage.set(STORAGE_KEY_HEADERS, '');
+        storage.set(STORAGE_KEY.headers, '');
         clearHeadersFromTabs();
       }
       set({ shouldPersistHeaders: persist });
-      storage.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+      storage.set(STORAGE_KEY.persistHeaders, persist.toString());
     },
     storeTabs({ tabs, activeTabIndex }) {
       const { storage } = storageStore.getState();
       const { shouldPersistHeaders } = get();
       const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY_TABS, value);
+        storage.set(STORAGE_KEY.tabs, value);
       });
       store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
     },
@@ -587,5 +585,3 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     actions: $actions,
   };
 };
-
-export const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';

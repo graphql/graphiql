@@ -5,9 +5,9 @@ import {
   fuzzyExtractOperationName,
   getDefaultTabState,
   clearHeadersFromTabs,
-  STORAGE_KEY,
 } from './tabs';
 import { storageStore } from '../stores';
+import { STORAGE_KEY } from '../constants';
 
 describe('createTab', () => {
   it('creates with default title', () => {
@@ -179,10 +179,10 @@ describe('clearHeadersFromTabs', () => {
       },
       headers: '{ "authorization": "secret" }',
     };
-    storage.set(STORAGE_KEY, JSON.stringify(stateWithHeaders));
+    storage.set(STORAGE_KEY.tabs, JSON.stringify(stateWithHeaders));
     clearHeadersFromTabs();
 
-    expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual({
+    expect(JSON.parse(storage.get(STORAGE_KEY.tabs)!)).toEqual({
       ...stateWithHeaders,
       headers: null,
     });
