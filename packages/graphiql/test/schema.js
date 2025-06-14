@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -262,7 +263,7 @@ And external image:
         args: {
           delay: delayArgument(300),
         },
-        resolve: async function* sayHiInSomeLanguages(_value, args) {
+        async *resolve(_value, args) {
           let i = 0;
           for (const hi of [
             'Hi',
@@ -350,7 +351,8 @@ And external image:
           listObject: { type: new GraphQLList(TestInputObject) },
           deprecatedArg: {
             type: GraphQLString,
-            deprecationReason: 'deprecated argument',
+            deprecationReason:
+              'Argument "deprecatedArg" is deprecated. Use "string" instead.',
             description: 'Hello!',
           },
         },
