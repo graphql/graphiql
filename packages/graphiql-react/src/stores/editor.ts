@@ -467,10 +467,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       set(newState);
     },
     setOperationName(operationName) {
-      const { onEditOperationName, actions } = get();
-      set({ operationName });
-      actions.updateActiveTabValues({ operationName });
-      onEditOperationName?.(operationName);
+      set(({ onEditOperationName, actions }) => {
+        actions.updateActiveTabValues({ operationName });
+        onEditOperationName?.(operationName);
+        return { operationName };
+      });
     },
     setShouldPersistHeaders(persist) {
       const { headerEditor, tabs, activeTabIndex } = get();
@@ -486,8 +487,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         storage.set(STORAGE_KEY.headers, '');
         clearHeadersFromTabs();
       }
-      set({ shouldPersistHeaders: persist });
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
+      set({ shouldPersistHeaders: persist });
     },
     storeTabs({ tabs, activeTabIndex }) {
       const { storage } = storageStore.getState();

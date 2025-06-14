@@ -26,21 +26,25 @@ export interface TabState extends TabDefinition {
    * A GUID value generated when the tab was created.
    */
   id: string;
+
   /**
    * A hash that is unique for a combination of the contents of the query
    * editor, the variable editor and the header editor (i.e. all the editor
    * where the contents are persisted in storage).
    */
   hash: string;
+
   /**
    * The title of the tab shown in the tab element.
    */
   title: string;
+
   /**
    * The operation name derived from the contents of the query editor of this
    * tab.
    */
   operationName: string | null;
+
   /**
    * The contents of the response editor of this tab.
    */
