@@ -44,8 +44,8 @@ export class LanguageService {
   private _schemas: SchemaConfig[] = [];
   private _schemaCache: SchemaCache = schemaCache;
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
-  private _parseOptions: ParseOptions | undefined = undefined;
-  private _customValidationRules: ValidationRule[] | undefined = undefined;
+  private _parseOptions?: ParseOptions;
+  private _customValidationRules?: ValidationRule[];
   private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
     null;
   private _externalFragmentDefinitionsString: string | null = null;
@@ -224,10 +224,6 @@ export class LanguageService {
   };
   /**
    * get diagnostics using graphql validation
-   * @param uri
-   * @param documentText
-   * @param customRules
-   * @returns
    */
   public getDiagnostics = (
     uri: string,

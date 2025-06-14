@@ -6,6 +6,7 @@
   "access": "public",
   "baseBranch": "main",
   "ignore": [
+    "example-graphiql-vite",
     "example-graphiql-webpack",
     "example-monaco-graphql-nextjs",
     "example-monaco-graphql-react-vite",

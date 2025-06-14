@@ -43,7 +43,6 @@ describe('history', () => {
 
     cy.visit(`?query=${mockQuery2}&headers=${mockHeaders1}`);
     cy.clickExecuteQuery();
-    cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
   });
 
@@ -55,7 +54,6 @@ describe('history', () => {
 
     cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}`);
     cy.clickExecuteQuery();
-    cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 1);
   });
 
@@ -71,7 +69,6 @@ describe('history', () => {
       `?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables2}`,
     );
     cy.clickExecuteQuery();
-    cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
   });
 
@@ -83,7 +80,6 @@ describe('history', () => {
 
     cy.visit(`?query=${mockQuery1}&headers=${mockHeaders2}`);
     cy.clickExecuteQuery();
-    cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
   });
 

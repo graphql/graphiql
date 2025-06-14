@@ -15,10 +15,11 @@ import {
   ComboboxOption,
 } from '@headlessui/react';
 import {
-  isMacOs,
-  useSchemaStore,
+  formatShortcutForOS,
+  useGraphiQL,
   MagnifyingGlassIcon,
   debounce,
+  KEY_MAP,
 } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { renderType } from './utils';
@@ -44,20 +45,13 @@ export const Search: FC = () => {
     debouncedGetSearchResults(searchValue);
   }, [debouncedGetSearchResults, searchValue]);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.metaKey && event.key === 'k') {
-        inputRef.current.focus();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const navItem = explorerNavStack.at(-1)!;
 
-  const onSelect = (def: TypeMatch | FieldMatch) => {
+  const onSelect = (def: TypeMatch | FieldMatch | null) => {
+    // `null` when we remove search value
+    if (!def) {
+      return;
+    }
     push(
       'field' in def
         ? { name: def.field.name, def: def.field }
@@ -91,7 +85,9 @@ export const Search: FC = () => {
         <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
-          placeholder={`${isMacOs ? '⌘' : 'Ctrl'} K`}
+          placeholder={formatShortcutForOS(
+            formatShortcutForOS(KEY_MAP.searchInDocs.key).replaceAll('-', ' '),
+          )}
           ref={inputRef}
           value={searchValue}
           data-cy="doc-explorer-input"
@@ -103,9 +99,9 @@ export const Search: FC = () => {
             results.types.length +
             results.fields.length ===
           0 ? (
-            <li className="graphiql-doc-explorer-search-empty">
+            <div className="graphiql-doc-explorer-search-empty">
               No results found
-            </li>
+            </div>
           ) : (
             results.within.map((result, i) => (
               <ComboboxOption
@@ -158,7 +154,7 @@ type FieldMatch = {
 
 export function useSearchResults() {
   const explorerNavStack = useDocExplorer();
-  const { schema } = useSchemaStore();
+  const schema = useGraphiQL(state => state.schema);
 
   const navItem = explorerNavStack.at(-1)!;
 
@@ -195,7 +191,7 @@ export function useSearchResults() {
         break;
       }
 
-      const type = typeMap[typeName];
+      const type = typeMap[typeName]!;
       if (withinType !== type && isMatch(typeName, searchValue)) {
         matches.types.push({ type });
       }
@@ -210,7 +206,7 @@ export function useSearchResults() {
 
       const fields = type.getFields();
       for (const fieldName in fields) {
-        const field = fields[fieldName];
+        const field = fields[fieldName]!;
         let matchingArgs: GraphQLArgument[] | undefined;
 
         if (!isMatch(fieldName, searchValue)) {

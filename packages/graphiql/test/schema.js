@@ -235,9 +235,13 @@ Example query:
 }
 \`\`\`
 
-And we have a cool logo:
+And we have a local image:
 
-![](/resources/logo.svg)
+![GraphQL Logo](/resources/logo.svg)
+
+And external image:
+
+![Cat](https://placecats.com/300/200)
 `.trim();
 
   const TestType = new GraphQLObjectType({

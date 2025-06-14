@@ -15,16 +15,25 @@ import type {
   ModeConfiguration,
   MonacoGraphQLInitializeConfig,
   SchemaConfig,
+  GraphQLLanguageConfig,
 } from './typings';
 
-export type MonacoGraphQLAPIOptions = {
+export interface MonacoGraphQLAPIOptions
+  extends Pick<
+      // Optional fields
+      MonacoGraphQLInitializeConfig,
+      'schemas'
+    >,
+    Pick<
+      // Required fields
+      Required<MonacoGraphQLInitializeConfig>,
+      | 'modeConfiguration'
+      | 'formattingOptions'
+      | 'diagnosticSettings'
+      | 'completionSettings'
+    > {
   languageId: string;
-  schemas?: SchemaConfig[];
-  modeConfiguration: ModeConfiguration;
-  formattingOptions: FormattingOptions;
-  diagnosticSettings: DiagnosticSettings;
-  completionSettings: CompletionSettings;
-};
+}
 
 export type SchemaEntry = {
   schema: GraphQLSchema;
@@ -41,10 +50,7 @@ export class MonacoGraphQLAPI {
   private _schemas: SchemaConfig[] | null = null;
   private _schemasById: Record<string, SchemaConfig> = Object.create(null);
   private _languageId: string;
-  private _externalFragmentDefinitions:
-    | string
-    | FragmentDefinitionNode[]
-    | null = null;
+  private _externalFragmentDefinitions: GraphQLLanguageConfig['externalFragmentDefinitions'];
 
   constructor({
     languageId,
@@ -72,6 +78,7 @@ export class MonacoGraphQLAPI {
   public get languageId(): string {
     return this._languageId;
   }
+
   public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
@@ -79,6 +86,7 @@ export class MonacoGraphQLAPI {
   public get schemas(): SchemaConfig[] | null {
     return this._schemas;
   }
+
   public schemasById(): Record<string, SchemaConfig> {
     return this._schemasById;
   }
@@ -86,9 +94,11 @@ export class MonacoGraphQLAPI {
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
   }
+
   public get diagnosticSettings(): DiagnosticSettings {
     return this._diagnosticSettings;
   }
+
   public get completionSettings(): CompletionSettings {
     return {
       ...this._completionSettings,
@@ -97,14 +107,13 @@ export class MonacoGraphQLAPI {
         this._completionSettings.fillLeafsOnComplete,
     };
   }
+
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;
   }
 
   /**
    * override all schema config.
-   *
-   * @param schemas {SchemaConfig[]}
    */
   public setSchemaConfig(schemas: SchemaConfig[]): void {
     this._schemas = schemas;

@@ -1,11 +1,13 @@
 'use no memo';
 
-import { TabsState, Theme } from '@graphiql/react';
-
-/* global React, ReactDOM, GraphiQL */
+import React, { ComponentProps } from 'react';
+import ReactDOM from 'react-dom/client';
+import GraphiQL from './cdn';
+import type { TabsState, Theme } from '@graphiql/react';
+import './style.css';
 
 /**
- * UMD GraphiQL Example
+ * CDN GraphiQL Example
  *
  * This is a simple example that provides a primitive query string parser on top of GraphiQL props
  * It assumes a global umd GraphiQL, which would be provided by an index.html in the default example
@@ -51,7 +53,7 @@ function onEditHeaders(newHeaders: string): void {
 }
 
 function onTabChange(tabsState: TabsState): void {
-  const activeTab = tabsState.tabs[tabsState.activeTabIndex];
+  const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
   parameters.query = activeTab.query ?? undefined;
   parameters.variables = activeTab.variables ?? undefined;
   parameters.headers = activeTab.headers ?? undefined;
@@ -91,33 +93,38 @@ function getSchemaUrl(): string {
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
-const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
-root.render(
-  React.createElement(GraphiQL, {
-    fetcher: GraphiQL.createFetcher({
-      url: getSchemaUrl(),
-      subscriptionUrl: 'ws://localhost:8081/subscriptions',
-    }),
-    query: parameters.query,
-    variables: parameters.variables,
-    headers: parameters.headers,
-    defaultHeaders: parameters.defaultHeaders,
-    onEditQuery,
-    onEditVariables,
-    onEditHeaders,
-    defaultEditorToolsVisibility: true,
-    isHeadersEditorEnabled: true,
-    shouldPersistHeaders: true,
-    inputValueDeprecation: !graphqlVersion.includes('15.5'),
-    confirmCloseTab:
-      parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
-    onPrettifyQuery:
-      parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
-    onTabChange,
-    forcedTheme: parameters.forcedTheme,
-    defaultQuery: parameters.defaultQuery,
-    defaultTheme: parameters.defaultTheme,
+const props: ComponentProps<typeof GraphiQL> = {
+  fetcher: GraphiQL.createFetcher({
+    url: getSchemaUrl(),
+    subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
+  query: parameters.query,
+  variables: parameters.variables,
+  headers: parameters.headers,
+  defaultHeaders: parameters.defaultHeaders,
+  onEditQuery,
+  onEditVariables,
+  onEditHeaders,
+  defaultEditorToolsVisibility: true,
+  isHeadersEditorEnabled: true,
+  shouldPersistHeaders: true,
+  inputValueDeprecation: !graphqlVersion.includes('15.5'),
+  confirmCloseTab:
+    parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
+  onPrettifyQuery:
+    parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
+  onTabChange,
+  forcedTheme: parameters.forcedTheme,
+  defaultQuery: parameters.defaultQuery,
+  defaultTheme: parameters.defaultTheme,
+};
+
+root.render(
+  // TODO: enable strict mode after monaco-editor migration
+  // <StrictMode>
+  React.createElement(GraphiQL, props),
+  // </StrictMode>,
 );
