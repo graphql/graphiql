@@ -3299,7 +3299,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^0.35.0-rc.2, @graphiql/react@npm:^0.35.0-rc.3, @graphiql/react@npm:^0.35.0-rc.4, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:^0.35.0-rc.2, @graphiql/react@npm:^0.35.0-rc.3, @graphiql/react@npm:^0.35.0-rc.4, @graphiql/react@npm:^0.35.0-rc.5, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
@@ -12624,7 +12624,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.18.6"
     "@graphiql/plugin-code-exporter": "npm:^5.0.0-rc.1"
     "@graphiql/plugin-explorer": "npm:^5.0.0-rc.3"
-    "@graphiql/react": "npm:^0.35.0-rc.4"
+    "@graphiql/react": "npm:^0.35.0-rc.5"
     "@graphiql/toolkit": "npm:^0.11.3"
     ajv-formats: "npm:^3.0.1"
     babel-loader: "npm:^9.1.2"
