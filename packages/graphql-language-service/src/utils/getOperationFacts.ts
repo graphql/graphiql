@@ -90,9 +90,7 @@ export default function getOperationFacts(
       ...getOperationASTFacts(documentAST, schema),
       documentAST,
     };
-  } catch {
-    return;
-  }
+  } catch {}
 }
 
 /**

@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -235,9 +236,13 @@ Example query:
 }
 \`\`\`
 
-And we have a cool logo:
+And we have a local image:
 
-![](/resources/logo.svg)
+![GraphQL Logo](/resources/logo.svg)
+
+And external image:
+
+![Cat](https://placecats.com/300/200)
 `.trim();
 
   const TestType = new GraphQLObjectType({
@@ -258,7 +263,7 @@ And we have a cool logo:
         args: {
           delay: delayArgument(300),
         },
-        resolve: async function* sayHiInSomeLanguages(_value, args) {
+        async *resolve(_value, args) {
           let i = 0;
           for (const hi of [
             'Hi',
@@ -346,7 +351,8 @@ And we have a cool logo:
           listObject: { type: new GraphQLList(TestInputObject) },
           deprecatedArg: {
             type: GraphQLString,
-            deprecationReason: 'deprecated argument',
+            deprecationReason:
+              'Argument "deprecatedArg" is deprecated. Use "string" instead.',
             description: 'Hello!',
           },
         },

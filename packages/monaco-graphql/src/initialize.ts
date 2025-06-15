@@ -16,9 +16,6 @@ let api: MonacoGraphQLAPI | undefined;
 
 /**
  * Initialize the mode and worker synchronously with the provided configuration
- *
- * @param config
- * @returns {MonacoGraphQLAPI}
  */
 export function initializeMode(
   config?: MonacoGraphQLInitializeConfig,

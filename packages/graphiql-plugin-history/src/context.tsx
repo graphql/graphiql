@@ -1,43 +1,47 @@
 // eslint-disable-next-line react/jsx-filename-extension -- TODO
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { createStore } from 'zustand';
-import { HistoryStore, QueryStoreItem } from '@graphiql/toolkit';
 import {
-  useExecutionContext,
-  useEditorContext,
+  HistoryStore as ToolkitHistoryStore,
+  QueryStoreItem,
+} from '@graphiql/toolkit';
+import {
+  useGraphiQL,
+  pick,
   useStorage,
   createBoundedUseStore,
 } from '@graphiql/react';
 
-const historyStore = createStore<HistoryContextType>((set, get) => ({
-  historyStorage: null!,
+const historyStore = createStore<HistoryStoreType>((set, get) => ({
+  historyStorage: null,
   actions: {
     addToHistory(operation) {
       const { historyStorage } = get();
-      historyStorage.updateHistory(operation);
+      historyStorage?.updateHistory(operation);
       set({}); // trigger rerender
     },
     editLabel(operation, index) {
       const { historyStorage } = get();
-      historyStorage.editLabel(operation, index);
+      historyStorage?.editLabel(operation, index);
       set({}); // trigger rerender
     },
     toggleFavorite(operation) {
       const { historyStorage } = get();
-      historyStorage.toggleFavorite(operation);
+      historyStorage?.toggleFavorite(operation);
       set({}); // trigger rerender
     },
     setActive: item => item,
     deleteFromHistory(item, clearFavorites) {
       const { historyStorage } = get();
-      historyStorage.deleteHistory(item, clearFavorites);
+      historyStorage?.deleteHistory(item, clearFavorites);
       set({}); // trigger rerender
     },
   },
 }));
 
-type HistoryContextType = {
-  historyStorage: HistoryStore;
+type HistoryStoreType = {
+  // Can be `null` if History plugin saved in `localStorage` as `visiblePlugin`
+  historyStorage: ToolkitHistoryStore | null;
   actions: {
     /**
      * Add an operation to the history.
@@ -100,7 +104,7 @@ type HistoryContextType = {
   };
 };
 
-type HistoryContextProviderProps = {
+type HistoryStoreProps = {
   children: ReactNode;
   /**
    * The maximum number of executed operations to store.
@@ -110,22 +114,23 @@ type HistoryContextProviderProps = {
 };
 
 /**
- * The functions send the entire operation so users can customize their own application with
- * <HistoryContext.Provider value={customizedFunctions} /> and get access to the operation plus
- * any additional props they added for their needs (i.e., build their own functions that may save
- * to a backend instead of localStorage and might need an id property added to the QueryStoreItem)
+ * The functions send the entire operation so users can customize their own application and get
+ * access to the operation plus any additional props they added for their needs (i.e., build their
+ * own functions that may save to a backend instead of localStorage and might need an id property
+ * added to the `QueryStoreItem`)
  */
-export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
+export const HistoryStore: FC<HistoryStoreProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const { isFetching } = useExecutionContext({ nonNull: true });
-  const { tabs, activeTabIndex } = useEditorContext({ nonNull: true });
-  const activeTab = tabs[activeTabIndex];
+  const { isFetching, tabs, activeTabIndex } = useGraphiQL(
+    pick('isFetching', 'tabs', 'activeTabIndex'),
+  );
+  const activeTab = tabs[activeTabIndex]!;
   const storage = useStorage();
 
   const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
-    new HistoryStore(storage, maxHistoryLength);
+    new ToolkitHistoryStore(storage, maxHistoryLength);
 
   useEffect(() => {
     historyStore.setState({ historyStorage });
@@ -149,6 +154,13 @@ export const HistoryContextProvider: FC<HistoryContextProviderProps> = ({
 
 const useHistoryStore = createBoundedUseStore(historyStore);
 
+const EMPTY_ARRAY: QueryStoreItem[] = [];
+
 export const useHistory = () =>
-  useHistoryStore(state => state.historyStorage.queries);
+  useHistoryStore(state => state.historyStorage?.queries ?? EMPTY_ARRAY);
+
+/**
+ * Actions are functions used to update values in your store. They are static and never change.
+ * @see https://tkdodo.eu/blog/working-with-zustand#separate-actions-from-state
+ */
 export const useHistoryActions = () => useHistoryStore(state => state.actions);
