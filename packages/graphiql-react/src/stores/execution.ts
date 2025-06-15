@@ -8,12 +8,7 @@ import {
   isObservable,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import {
-  ExecutionResult,
-  FragmentDefinitionNode,
-  GraphQLError,
-  print,
-} from 'graphql';
+import { ExecutionResult, GraphQLError, print } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import setValue from 'set-value';
 import getValue from 'get-value';
@@ -185,9 +180,10 @@ export const createExecutionSlice: CreateExecutionSlice =
       queryId: 0,
       actions: {
         stop() {
-          const { subscription } = get();
-          subscription?.unsubscribe();
-          set({ isFetching: false, subscription: null });
+          set(({ subscription }) => {
+            subscription?.unsubscribe();
+            return { isFetching: false, subscription: null };
+          });
         },
         async run() {
           const {
@@ -258,12 +254,9 @@ export const createExecutionSlice: CreateExecutionSlice =
           const fragmentDependencies = documentAST
             ? getFragmentDependenciesForAST(documentAST, externalFragments)
             : [];
-          if (fragmentDependencies.length > 0) {
+          if (fragmentDependencies.length) {
             query +=
-              '\n' +
-              fragmentDependencies
-                .map((node: FragmentDefinitionNode) => print(node))
-                .join('\n');
+              '\n' + fragmentDependencies.map(node => print(node)).join('\n');
           }
 
           setResponse('');

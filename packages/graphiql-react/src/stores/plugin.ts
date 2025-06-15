@@ -98,13 +98,18 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
   ...initial,
   actions: {
     setVisiblePlugin(plugin = null) {
-      set(({ visiblePlugin, plugins, onTogglePluginVisibility }) => {
+      set(current => {
+        const {
+          visiblePlugin: currentVisiblePlugin,
+          plugins,
+          onTogglePluginVisibility,
+        } = current;
         const byTitle = typeof plugin === 'string';
         const newVisiblePlugin: PluginSlice['visiblePlugin'] =
           (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) ||
           null;
-        if (newVisiblePlugin === visiblePlugin) {
-          return { visiblePlugin };
+        if (newVisiblePlugin === currentVisiblePlugin) {
+          return current;
         }
         onTogglePluginVisibility?.(newVisiblePlugin);
         const { storage } = storageStore.getState();
