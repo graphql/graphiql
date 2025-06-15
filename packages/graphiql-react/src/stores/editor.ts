@@ -86,14 +86,6 @@ export interface EditorSlice extends TabsState {
   defaultQuery?: string;
 
   /**
-   * The initial content of the variable editor when loading GraphiQL and there
-   * is no value persisted in storage.
-   * The default value will only be used for the first tab. When opening
-   * more tabs, the variable editor will start out empty.
-   */
-  defaultVariables?: string;
-
-  /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
    * - Selecting an operation for execution in a document that contains multiple
@@ -241,7 +233,6 @@ export interface EditorProps
     | 'onEditOperationName'
     | 'defaultHeaders'
     | 'defaultQuery'
-    | 'defaultVariables'
     | 'onCopyQuery'
   > {
   /**

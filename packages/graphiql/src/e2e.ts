@@ -1,9 +1,9 @@
 'use no memo';
 
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, FC } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
-import type { TabsState, Theme } from '@graphiql/react';
+import type { TabsState, Theme, MonacoEditor } from '@graphiql/react';
 import './style.css';
 
 /**
@@ -19,8 +19,11 @@ import './style.css';
  */
 
 interface Params {
+  query?: string;
+  variables?: string;
+  headers?: string;
+
   defaultQuery?: string;
-  defaultVariables?: string;
   defaultHeaders?: string;
 
   confirmCloseTab?: 'true';
@@ -95,13 +98,32 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
+function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
+  React.useEffect(() => {
+    if (typeof value === 'string' && editor && editor.getValue() !== value) {
+      editor.setValue(value);
+    }
+  }, [editor, value]);
+}
+
+const SynchronizeValue: FC = () => {
+  const { headerEditor, queryEditor, variableEditor } =
+    GraphiQL.React.useGraphiQL(
+      GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
+    );
+
+  useSynchronizeValue(headerEditor, parameters.headers);
+  useSynchronizeValue(queryEditor, parameters.query);
+  useSynchronizeValue(variableEditor, parameters.variables);
+  return null;
+};
+
 const props: ComponentProps<typeof GraphiQL> = {
   fetcher: GraphiQL.createFetcher({
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
   defaultQuery: parameters.defaultQuery,
-  defaultVariables: parameters.defaultVariables,
   defaultHeaders: parameters.defaultHeaders,
   onEditQuery,
   onEditVariables,
@@ -117,6 +139,7 @@ const props: ComponentProps<typeof GraphiQL> = {
   onTabChange,
   forcedTheme: parameters.forcedTheme,
   defaultTheme: parameters.defaultTheme,
+  children: React.createElement(SynchronizeValue),
 };
 
 root.render(

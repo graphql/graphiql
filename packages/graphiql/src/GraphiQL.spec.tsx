@@ -262,7 +262,7 @@ describe('GraphiQL', () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
-          defaultVariables="{test: 'value'}"
+          defaultHeaders="🚀"
           defaultEditorToolsVisibility={false}
         />,
       );
