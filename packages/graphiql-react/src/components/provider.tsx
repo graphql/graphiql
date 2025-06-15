@@ -158,7 +158,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
       const query = storage.get(STORAGE_KEY.query) ?? null;
       const variables = storage.get(STORAGE_KEY.variables) ?? null;
       const headers = storage.get(STORAGE_KEY.headers) ?? null;
-      const response = '';
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
@@ -186,7 +185,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           initialHeaders: headers ?? defaultHeaders ?? '',
           initialQuery:
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialResponse: response,
+          initialResponse: '',
           initialVariables: variables ?? '',
           onCopyQuery,
           onEditOperationName,
