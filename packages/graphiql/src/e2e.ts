@@ -1,9 +1,9 @@
 'use no memo';
 
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, FC, Dispatch } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
-import type { TabsState, Theme } from '@graphiql/react';
+import type { TabsState, Theme, MonacoEditor } from '@graphiql/react';
 import './style.css';
 
 /**
@@ -22,12 +22,14 @@ interface Params {
   query?: string;
   variables?: string;
   headers?: string;
+
+  defaultQuery?: string;
+  defaultHeaders?: string;
+
   confirmCloseTab?: 'true';
   onPrettifyQuery?: 'true';
   forcedTheme?: 'light' | 'dark' | 'system';
-  defaultQuery?: string;
   defaultTheme?: Theme;
-  defaultHeaders?: string;
 }
 
 // Parse the search string to get url parameters.
@@ -96,14 +98,35 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
+function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
+  React.useEffect(() => {
+    if (typeof value === 'string' && editor && editor.getValue() !== value) {
+      editor.setValue(value);
+    }
+  }, [editor, value]);
+}
+
+const SynchronizeValue: FC<{ setIsMounted: Dispatch<boolean> }> = () => {
+  const { headerEditor, queryEditor, variableEditor } =
+    GraphiQL.React.useGraphiQL(
+      GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
+    );
+  // React.useEffect(() => {
+  //   setIsMounted(true);
+  // }, [setIsMounted]);
+
+  useSynchronizeValue(headerEditor, parameters.headers);
+  useSynchronizeValue(queryEditor, parameters.query);
+  useSynchronizeValue(variableEditor, parameters.variables);
+  return null;
+};
+
 const props: ComponentProps<typeof GraphiQL> = {
   fetcher: GraphiQL.createFetcher({
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
-  query: parameters.query,
-  variables: parameters.variables,
-  headers: parameters.headers,
+  defaultQuery: parameters.defaultQuery,
   defaultHeaders: parameters.defaultHeaders,
   onEditQuery,
   onEditVariables,
@@ -118,13 +141,25 @@ const props: ComponentProps<typeof GraphiQL> = {
     parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
   onTabChange,
   forcedTheme: parameters.forcedTheme,
-  defaultQuery: parameters.defaultQuery,
   defaultTheme: parameters.defaultTheme,
 };
 
-root.render(
-  // TODO: enable strict mode after monaco-editor migration
-  // <StrictMode>
-  React.createElement(GraphiQL, props),
-  // </StrictMode>,
-);
+function App() {
+  // const [isMounted, setIsMounted] = React.useState(false);
+
+  return React.createElement(
+    React.StrictMode,
+    null,
+    // isMounted &&
+    React.createElement(
+      GraphiQL,
+      props,
+      React.createElement(
+        SynchronizeValue,
+        // , { setIsMounted }
+      ),
+    ),
+  );
+}
+
+root.render(React.createElement(App));
