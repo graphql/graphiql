@@ -145,7 +145,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
-        defaultQuery: defaultQuery || DEFAULT_QUERY,
+        defaultQuery: defaultQuery ?? DEFAULT_QUERY,
         defaultTabs,
         headers,
         query,

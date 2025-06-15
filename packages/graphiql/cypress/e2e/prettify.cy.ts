@@ -29,7 +29,7 @@ describeOrSkip('GraphiQL Prettify', () => {
   it('should work while click on prettify button', () => {
     const rawQuery = '{  test\n\nid  }';
     const resultQuery = '{ test id }';
-    cy.visit(`/?query=${rawQuery}&onPrettifyQuery=true`);
+    cy.visit(`?query=${rawQuery}&onPrettifyQuery=true`);
     cy.clickPrettify();
     cy.assertHasValues({ query: resultQuery });
   });
