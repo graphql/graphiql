@@ -20,6 +20,7 @@ import './style.css';
 
 interface Params {
   defaultQuery?: string;
+  defaultVariables?: string;
   defaultHeaders?: string;
 
   confirmCloseTab?: 'true';
@@ -36,25 +37,25 @@ const parameters: Params = Object.fromEntries(
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery: string): void {
-  parameters.query = newQuery;
+  parameters.defaultQuery = newQuery;
   updateURL();
 }
 
 function onEditVariables(newVariables: string): void {
-  parameters.variables = newVariables;
+  parameters.defaultVariables = newVariables;
   updateURL();
 }
 
 function onEditHeaders(newHeaders: string): void {
-  parameters.headers = newHeaders;
+  parameters.defaultHeaders = newHeaders;
   updateURL();
 }
 
 function onTabChange(tabsState: TabsState): void {
   const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
-  parameters.query = activeTab.query ?? undefined;
-  parameters.variables = activeTab.variables ?? undefined;
-  parameters.headers = activeTab.headers ?? undefined;
+  parameters.defaultQuery = activeTab.query ?? undefined;
+  parameters.defaultVariables = activeTab.variables ?? undefined;
+  parameters.defaultHeaders = activeTab.headers ?? undefined;
   updateURL();
 }
 
@@ -100,6 +101,7 @@ const props: ComponentProps<typeof GraphiQL> = {
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
   defaultQuery: parameters.defaultQuery,
+  defaultVariables: parameters.defaultVariables,
   defaultHeaders: parameters.defaultHeaders,
   onEditQuery,
   onEditVariables,
