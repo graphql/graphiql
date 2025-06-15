@@ -1,105 +1,28 @@
-describe('Tabs', () => {
-  it('Should store editor contents when switching between tabs', () => {
-    cy.visit('/?defaultQuery=&query=');
+const DEFAULT_HEADERS = '{"foo":2}';
 
-    // Assert that tab visible when there's only one session
-    cy.get('.graphiql-tab-button').eq(0).should('exist');
-
-    // Enter a query without operation name
-    cy.get('.graphiql-query-editor textarea').type('{id', { force: true });
-
-    // Run the query
-    cy.clickExecuteQuery();
-
-    // Open a new tab
-    cy.get('.graphiql-tab-add').click();
-
-    // Enter a query
-    cy.get('.graphiql-query-editor textarea').type('query Foo {image', {
-      force: true,
-    });
-    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Foo');
-
-    // Enter variables
-    cy.get('.graphiql-editor-tool textarea')
-      .eq(0)
-      .type('{"someVar":42', { force: true });
-
-    // Enter headers
-    cy.contains('Headers').click();
-    cy.get('.graphiql-editor-tool textarea')
-      .eq(1)
-      .type('{"someHeader":"someValue"', { force: true });
-
-    // Run the query
-    cy.clickExecuteQuery();
-
-    // Switch back to the first tab
-    cy.get('.graphiql-tab-button').eq(0).click();
-
-    // Assert tab titles
-    cy.get('.graphiql-tab-button').eq(0).should('have.text', '<untitled>');
-    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Foo');
-
-    // Assert editor values
-    cy.assertHasValues({
-      query: '{id}',
-      variablesString: '',
-      headersString: '',
-      response: { data: { id: 'abc123' } },
-    });
-
-    // Switch back to the second tab
-    cy.get('.graphiql-tab-button').eq(1).click();
-
-    // Assert tab titles
-    cy.get('.graphiql-tab-button').eq(0).should('have.text', '<untitled>');
-    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Foo');
-
-    // Assert editor values
-    cy.assertHasValues({
-      query: 'query Foo {image}',
-      variablesString: '{"someVar":42}',
-      headersString: '{"someHeader":"someValue"}',
-      response: { data: { image: '/resources/logo.svg' } },
-    });
-
-    // Close tab
-    cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
-
-    // Assert that tab close button not visible when there is only 1 tab
-    cy.get('.graphiql-tab-button + .graphiql-tab-close').should('not.exist');
-
-    // Assert editor values
-    cy.assertHasValues({
-      query: '{id}',
-      variablesString: '',
-      headersString: '',
-      response: { data: { id: 'abc123' } },
-    });
-  });
-
-  describe('confirmCloseTab()', () => {
-    it('should keep tab when `Cancel` was clicked', () => {
-      cy.on('window:confirm', () => false);
-      cy.visit('/?confirmCloseTab=true');
-
+describe('Headers', () => {
+  describe('`defaultHeaders`', () => {
+    it('should have default headers while open new tabs', () => {
+      cy.visit(
+        `/?query={test}&defaultHeaders=${DEFAULT_HEADERS}&defaultQuery=`,
+      );
+      cy.assertHasValues({ query: '{test}', headersString: DEFAULT_HEADERS });
       cy.get('.graphiql-tab-add').click();
-
-      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
-
-      cy.get('.graphiql-tab-button').should('have.length', 2);
+      cy.assertHasValues({ query: '', headersString: DEFAULT_HEADERS });
+      cy.get('.graphiql-tab-add').click();
+      cy.assertHasValues({ query: '', headersString: DEFAULT_HEADERS });
     });
 
-    it('should close tab when `OK` was clicked', () => {
-      cy.on('window:confirm', () => true);
-      cy.visit('/?confirmCloseTab=true');
-
+    it('in case `headers` and `defaultHeaders` are set, `headers` should be on 1st tab and `defaultHeaders` for other opened tabs', () => {
+      const HEADERS = '{"bar":true}';
+      cy.visit(
+        `/?query={test}&defaultHeaders=${DEFAULT_HEADERS}&headers=${HEADERS}&defaultQuery=`,
+      );
+      cy.assertHasValues({ query: '{test}', headersString: HEADERS });
       cy.get('.graphiql-tab-add').click();
-
-      cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();
-
-      cy.get('.graphiql-tab-button').should('have.length', 1);
+      cy.assertHasValues({ query: '', headersString: DEFAULT_HEADERS });
+      cy.get('.graphiql-tab-add').click();
+      cy.assertHasValues({ query: '', headersString: DEFAULT_HEADERS });
     });
   });
 });
