@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.35.0-rc.6
+
+### Minor Changes
+
+- [#4017](https://github.com/graphql/graphiql/pull/4017) [`cff3da5`](https://github.com/graphql/graphiql/commit/cff3da541184d36d1c2e5c919dd4231e9905ccbb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - extract graphiql sidebar to react component
+
 ## 0.35.0-rc.5
 
 ### Minor Changes

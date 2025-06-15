@@ -15,14 +15,14 @@ describe('history', () => {
   });
 
   it('will save history item even when history panel is closed', () => {
-    cy.visit('/?query={test}');
+    cy.visit('?query={test}');
     cy.clickExecuteQuery();
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items').should('have.length', 1);
   });
 
   it('will save history item even when history panel is closed', () => {
-    cy.visit('/?query={test}');
+    cy.visit('?query={test}');
     cy.clickExecuteQuery();
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 1);
