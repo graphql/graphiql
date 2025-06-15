@@ -111,7 +111,6 @@ const SynchronizeValue: FC = () => {
     GraphiQL.React.useGraphiQL(
       GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
     );
-
   useSynchronizeValue(headerEditor, parameters.headers);
   useSynchronizeValue(queryEditor, parameters.query);
   useSynchronizeValue(variableEditor, parameters.variables);
@@ -142,9 +141,21 @@ const props: ComponentProps<typeof GraphiQL> = {
   children: React.createElement(SynchronizeValue),
 };
 
+function App() {
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, [setIsMounted]);
+
+  if (!isMounted) {
+    return null;
+  }
+  return React.createElement(GraphiQL, props);
+}
+
 root.render(
   // TODO: enable strict mode after monaco-editor migration
   // <StrictMode>
-  React.createElement(GraphiQL, props),
+  React.createElement(App),
   // </StrictMode>,
 );
