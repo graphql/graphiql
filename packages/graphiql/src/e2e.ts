@@ -50,7 +50,7 @@ function onEditVariables(newVariables: string): void {
 }
 
 function onEditHeaders(newHeaders: string): void {
-  parameters.defaultHeaders = newHeaders;
+  parameters.headers = newHeaders;
   updateURL();
 }
 
