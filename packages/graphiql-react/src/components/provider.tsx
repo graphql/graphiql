@@ -69,32 +69,32 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }
   // @ts-expect-error -- runtime check
   if (props.validationRules) {
-    throw new Error(
-      '`validationRules` prop is removed. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
+    throw new TypeError(
+      'The `validationRules` prop has been removed. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
     );
   }
   // @ts-expect-error -- runtime check
   if (props.query) {
     throw new TypeError(
-      '`query` was removed. Use `queryEditor.setValue(query)` instead.',
+      'The `query` prop has been removed. Use `queryEditor.setValue(query)` instead.',
     );
   }
   // @ts-expect-error -- runtime check
   if (props.variables) {
     throw new TypeError(
-      '`variables` was removed. Use `variableEditor.setValue(variables)` instead.',
+      'The `variables` prop has been removed. Use `variableEditor.setValue(variables)` instead.',
     );
   }
   // @ts-expect-error -- runtime check
   if (props.headers) {
     throw new TypeError(
-      '`headers` was removed. Use `headerEditor.setValue(headers)` instead.',
+      'The `headers` prop has been removed. Use `headerEditor.setValue(headers)` instead.',
     );
   }
   // @ts-expect-error -- runtime check
   if (props.response) {
     throw new TypeError(
-      '`response` was removed. Use `responseEditor.setValue(response)` instead.',
+      'The `response` prop has been removed. Use `responseEditor.setValue(response)` instead.',
     );
   }
   return (
