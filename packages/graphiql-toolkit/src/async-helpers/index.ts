@@ -67,6 +67,7 @@ async function asyncIterableToPromise<T>(
 
   const result = await iteratorNext();
   // ensure cleanup
+  // eslint-disable-next-line sonarjs/void-use -- conflicts with @typescript-eslint/no-floating-promises
   void iteratorReturn?.();
   return result.value;
 }

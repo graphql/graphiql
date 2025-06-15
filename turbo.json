@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["yarn.lock", "resources/patches/*"],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        // Run `build` in workspaces I depend on first
+        "^build"
+      ],
+      // Cache all files emitted to the packages's directories
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "dependsOn": [
+        // Run `build` in workspaces I depend on first
+        "^build"
+      ],
+      "cache": false
+    },
+    "types:check": {
+      "dependsOn": [
+        // Run `build` in workspaces I depend on first
+        "^build"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "outputs": ["dist/**"]
+    }
+  }
+}

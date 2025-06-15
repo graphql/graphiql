@@ -57,6 +57,7 @@ dedenting
 delivr
 devx
 dhanani
+dima
 dirpath
 divy
 Divyendu
@@ -67,6 +68,7 @@ dotansimha
 edcore
 envrc
 esbuild
+estree
 execa
 exfiltrate
 filesfor
@@ -95,6 +97,7 @@ hola
 htmling
 hurrell
 hyohyeon
+importmap
 ical
 imolorhe
 inno
@@ -117,6 +120,7 @@ linkify
 listbox
 lightningcss
 listvalues
+lightningcss
 lostplan
 maint
 manypkg
@@ -208,10 +212,12 @@ tsup
 typeahead
 typeaheads
 typedoc
+turbopack
 unfocus
 unnormalized
 unparsable
 unsubscribable
+uncurried
 urigo
 urql
 usememo

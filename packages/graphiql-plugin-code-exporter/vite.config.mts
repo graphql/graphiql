@@ -3,44 +3,28 @@ import react from '@vitejs/plugin-react';
 import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
 
-const IS_UMD = process.env.UMD === 'true';
-
 export default defineConfig({
-  plugins: [
-    react({ jsxRuntime: 'classic' }),
-    !IS_UMD && dts({ rollupTypes: true }),
-  ],
+  plugins: [react(), dts({ include: ['src/**'] })],
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
-    minify: IS_UMD
-      ? 'terser' // produce better bundle size than esbuild
-      : false,
-    // avoid clean cjs/es builds
-    emptyOutDir: !IS_UMD,
+    minify: false,
     lib: {
       entry: 'src/index.tsx',
-      fileName: 'index',
-      name: 'GraphiQLPluginCodeExporter',
-      formats: IS_UMD ? ['umd'] : ['cjs', 'es'],
+      fileName: (_format, filePath) => `${filePath}.js`,
+      formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
-        ...Object.keys(packageJSON.peerDependencies),
-        ...(IS_UMD ? [] : Object.keys(packageJSON.dependencies)),
+        ...Object.keys({
+          ...packageJSON.peerDependencies,
+          ...packageJSON.dependencies,
+        }),
       ],
-      output: {
-        chunkFileNames: '[name].[format].js',
-        globals: {
-          '@graphiql/react': 'GraphiQL.React',
-          graphql: 'GraphiQL.GraphQL',
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
-    },
-    commonjsOptions: {
-      esmExternals: true,
-      requireReturnsDefault: 'auto',
     },
   },
 });

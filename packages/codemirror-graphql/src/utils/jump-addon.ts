@@ -121,7 +121,7 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
 }
 
 const isMac =
-  typeof navigator !== 'undefined' && navigator?.appVersion.includes('Mac');
+  typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
 
 function isJumpModifier(key: string) {
   return key === (isMac ? 'Meta' : 'Control');

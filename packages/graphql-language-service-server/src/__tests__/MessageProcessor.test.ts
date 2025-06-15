@@ -359,7 +359,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly removes from the file cache with the didClose handler', async () => {
-    await messageProcessor.handleDidCloseNotification(initialDocument);
+    messageProcessor.handleDidCloseNotification(initialDocument);
 
     const position = { line: 4, character: 5 };
     const params = { textDocument: initialDocument.textDocument, position };
@@ -407,7 +407,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
+    expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
 
   it('retrieves custom results from locateCommand', async () => {
@@ -465,10 +465,10 @@ describe('MessageProcessor', () => {
       () => 'hello:2:4',
     );
     expect(customResult2.uri).toEqual('hello');
-    expect(customResult2.range.start.line).toEqual(2);
-    expect(customResult2.range.start.character).toEqual(0);
-    expect(customResult2.range.end.line).toEqual(4);
-
+    expect(customResult2.range.start.line).toEqual(1);
+    expect(customResult2.range.start.character).toEqual(3);
+    expect(customResult2.range.end.line).toEqual(1);
+    expect(customResult2.range.end.character).toEqual(3);
     const customResult3 = messageProcessor._getCustomLocateResult(
       project,
       { definitions: result, printedName: 'example' },
@@ -496,9 +496,10 @@ describe('MessageProcessor', () => {
       },
     }));
     const result2 = await messageProcessor.handleDefinitionRequest(test);
-    expect(result2[0].range.start.line).toBe(3);
-    expect(result2[0].range.end.line).toBe(4);
-    expect(result2[0].range.end.character).toBe(0);
+    expect(result2[0].range.start.line).toBe(2);
+    expect(result2[0].range.start.character).toBe(3);
+    expect(result2[0].range.end.line).toBe(2);
+    expect(result2[0].range.end.character).toBe(3);
     messageProcessor._graphQLCache.getProjectForFile = oldGetProject;
   });
   it('runs hover requests', async () => {
@@ -553,7 +554,7 @@ describe('MessageProcessor', () => {
     messageProcessor._getCachedDocument = (_uri: string) => null;
 
     const result = await messageProcessor.handleHoverRequest(test);
-    expect(result).toEqual({ contents: [] });
+    expect(result).toBeNull();
   });
   it('handles provided config', async () => {
     const msgProcessor = new MessageProcessor({

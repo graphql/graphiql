@@ -200,7 +200,7 @@ function getIndentation(str: string, index: number) {
 }
 
 function isFieldType(
-  fieldType: GraphQLOutputType | null | undefined,
+  fieldType?: GraphQLOutputType | null,
 ): GraphQLOutputType | void {
   if (fieldType) {
     return fieldType;

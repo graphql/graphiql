@@ -1,15 +1,15 @@
 import { useOperationsEditorState, type GraphiQLPlugin } from '@graphiql/react';
-import React from 'react';
+import { FC } from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';
-
-import './graphiql-code-exporter.d.ts';
 import './index.css';
 
 type GraphiQLCodeExporterPluginProps = Omit<GraphiQLCodeExporterProps, 'query'>;
 
-function GraphiQLCodeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
+const GraphiQLCodeExporterPlugin: FC<
+  GraphiQLCodeExporterPluginProps
+> = props => {
   const [operationsString] = useOperationsEditorState();
   return (
     <GraphiQLCodeExporter
@@ -18,7 +18,7 @@ function GraphiQLCodeExporterPlugin(props: GraphiQLCodeExporterPluginProps) {
       query={operationsString}
     />
   );
-}
+};
 
 export function codeExporterPlugin(
   props: GraphiQLCodeExporterPluginProps,

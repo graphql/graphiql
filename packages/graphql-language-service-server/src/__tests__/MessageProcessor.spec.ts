@@ -15,7 +15,11 @@ import {
   version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
-import { schema as graphiqlSchema } from '../../../graphiql/test/schema';
+import * as graphql from 'graphql';
+
+import { createSchema } from '../../../graphiql/test/schema.js';
+
+const graphiqlSchema = createSchema(graphql);
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -29,7 +33,7 @@ jest.mock('@whatwg-node/fetch', () => {
   };
 });
 
-const mockSchema = (schema: GraphQLSchema) => {
+function mockSchema(schema: GraphQLSchema) {
   const introspectionResult = {
     data: introspectionFromSchema(schema, { descriptions: true }),
   };
@@ -42,7 +46,7 @@ const mockSchema = (schema: GraphQLSchema) => {
       body: introspectionResult,
     },
   });
-};
+}
 
 const defaultFiles: MockFile[] = [
   ['query.graphql', 'query { bar ...B }'],
@@ -217,8 +221,8 @@ describe('MessageProcessor with config', () => {
         character: 0,
       },
       end: {
-        line: 2,
-        character: 1,
+        line: 0,
+        character: 25,
       },
     });
 
@@ -435,7 +439,7 @@ describe('MessageProcessor with config', () => {
         character: 0,
       },
       end: {
-        line: 102 + offset,
+        line: 106 + offset,
         character: 1,
       },
     });
@@ -449,11 +453,11 @@ describe('MessageProcessor with config', () => {
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 104 + offset,
+        line: 108 + offset,
         character: 0,
       },
       end: {
-        line: 112 + offset,
+        line: 116 + offset,
         character: 1,
       },
     });
@@ -541,6 +545,9 @@ describe('MessageProcessor with config', () => {
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     expect(await project.lsp._graphQLCache.getSchema('a')).toBeDefined();
+    expect(project.lsp._logger.info).not.toHaveBeenCalledWith(
+      expect.stringMatching(/SyntaxError: Unexpected token/),
+    );
 
     fetchMock.restore();
     mockSchema(
@@ -634,5 +641,66 @@ describe('MessageProcessor with config', () => {
 
     expect(project.lsp._logger.error).not.toHaveBeenCalled();
     project.lsp.handleShutdownRequest();
+  });
+
+  it('correctly handles a fragment inside a TypeScript file', async () => {
+    const project = new MockProject({
+      files: [
+        [
+          'schema.graphql',
+          `
+type Item {
+  foo: String
+  bar: Int
+}
+
+type Query {
+  items: [Item]
+}
+          `,
+        ],
+        [
+          'query.ts',
+          `
+import gql from 'graphql-tag'
+
+const query = gql\`
+  query {
+    items {
+      ...ItemFragment
+    }
+  }
+\`
+          `,
+        ],
+        [
+          'fragments.ts',
+          `
+import gql from 'graphql-tag'
+
+export const ItemFragment = gql\`
+  fragment ItemFragment on Item {
+    foo
+    bar
+  }
+\`
+          `,
+        ],
+        [
+          'graphql.config.json',
+          '{ "schema": "./schema.graphql", "documents": "./**.{graphql,ts}" }',
+        ],
+      ],
+    });
+
+    const initParams = await project.init('query.ts');
+    expect(initParams.diagnostics).toEqual([]);
+
+    const fragmentDefinition = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('query.ts') },
+      position: { character: 10, line: 6 },
+    });
+
+    expect(fragmentDefinition[0]?.uri).toEqual(project.uri('fragments.ts'));
   });
 });

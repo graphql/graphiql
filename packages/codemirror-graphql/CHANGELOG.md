@@ -1,5 +1,57 @@
 # Change Log
 
+## 2.2.3-rc.0
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
+  - replace `onMergeQuery` hook with `mergeQuery` function
+  - replace `onPrettifyEditors` hook with `prettifyEditors` function
+  - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
+  - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
+  - remove exports (use `GraphiQLProvider`)
+    - `EditorContextProvider`
+    - `ExecutionContextProvider`
+    - `PluginContextProvider`
+    - `SchemaContextProvider`
+    - `StorageContextProvider`
+    - `ExecutionContextType`
+    - `PluginContextType`
+  - feat(@graphiql/react): migrate React context to zustand:
+    - replace `useExecutionContext` with `useExecutionStore` hook
+    - replace `useEditorContext` with `useEditorStore` hook
+  - prefer `getComputedStyle` over `window.getComputedStyle`
+
+## 2.2.2
+
+### Patch Changes
+
+- Updated dependencies [[`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7)]:
+  - graphql-language-service@5.4.0
+
+## 2.2.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+- Updated dependencies [[`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe)]:
+  - graphql-language-service@5.3.1
+
+## 2.2.0
+
+### Minor Changes
+
+- [#3825](https://github.com/graphql/graphiql/pull/3825) [`7cdcabf`](https://github.com/graphql/graphiql/commit/7cdcabf9d401683e90c995476b187c6f8ea70f63) Thanks [@dimaMachina](https://github.com/dimaMachina)! - migrate `graphiql` from `jest` to `vitest`
+
+## 2.1.1
+
+### Patch Changes
+
+- [#3751](https://github.com/graphql/graphiql/pull/3751) [`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893) Thanks [@dimaMachina](https://github.com/dimaMachina)! - replace deprecated `navigator.platform` with `navigator.userAgent`
+
+  fix placeholder `⌘ K` in doc explorer search input for non mac devices, replace by `Ctrl K`
+
 ## 2.1.0
 
 ### Minor Changes

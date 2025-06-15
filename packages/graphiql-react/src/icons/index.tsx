@@ -76,9 +76,9 @@ function generateIcon(
       .trimStart()
       .toLowerCase() + ' icon';
 
-  function IconComponent(props: ComponentProps<'svg'>) {
+  const IconComponent: FC<ComponentProps<'svg'>> = props => {
     return <RawComponent title={title} {...props} />;
-  }
+  };
 
   IconComponent.displayName = RawComponent.name;
   return IconComponent;

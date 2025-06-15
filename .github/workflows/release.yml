@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [main, graphiql-v4]
+    branches: [main, graphiql-5]
 permissions: {}
 jobs:
   release:
@@ -12,6 +12,10 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
       - name: Checkout Code
         uses: actions/checkout@v4
         with:

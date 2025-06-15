@@ -81,24 +81,21 @@ Further details on how to use `@graphiql/react` can be found in the reference
 implementation of a GraphQL IDE - Graph*i*QL - in the
 [`graphiql` package](https://github.com/graphql/graphiql/blob/main/packages/graphiql/src/components/GraphiQL.tsx).
 
-## Available contexts
+## Available stores
 
-There are multiple contexts that own different parts of the state that make up a
-complete GraphQL IDE. For each context there is a provider component
-(`<name>ContextProvider`) that makes sure the context is initialized and managed
+There are multiple stores that own different parts of the state that make up a
+complete GraphQL IDE. For each store there is a component
+(`<name>Store`) that makes sure the store is initialized and managed
 properly. These components contains all the logic related to state management.
-In addition, for each context there is also a hook (`use<name>Context`) that
-allows you to consume its current value.
 
-Here is a list of all contexts that come with `@graphiql/react`
+In addition, for each store, there is also a hook that
+allows you to consume its current value:
 
-- `StorageContext`: Provides a storage API that can be used to persist state in
+- `useStorage`: Provides a storage API that can be used to persist state in
   the browser (by default using `localStorage`)
-- `EditorContext`: Manages all the editors and tabs
-- `SchemaContext`: Fetches, validates and stores the GraphQL schema
-- `ExecutionContext`: Executes GraphQL requests
-- `HistoryContext`: Persists executed requests in storage
-- `ExplorerContext`: Handles the state for the docs explorer
+- `useEditorStore`: Manages all the editors and tabs
+- `useSchemaStore`: Fetches, validates and stores the GraphQL schema
+- `useExecutionStore`: Executes GraphQL requests
 
 All context properties are documented using JSDoc comments. If you're using an
 IDE like VSCode for development these descriptions will show up in auto-complete
@@ -130,6 +127,6 @@ elements background.
 If you want to develop with `@graphiql/react` locally - in particular when
 working on the `graphiql` package - all you need to do is run `yarn dev` in the
 package folder in a separate terminal. This will build the package using Vite.
-When using it in combination with `yarn dev-graphiql` (running in the repo
+When using it in combination with `yarn dev:graphiql` (running in the repo
 root) this will give you auto-reloading when working on `graphiql` and
 `@graphiql/react` simultaneously.

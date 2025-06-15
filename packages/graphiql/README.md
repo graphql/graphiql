@@ -45,8 +45,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Examples
 
-- [`Unpkg (CDN)`](../../examples/graphiql-cdn) - A single HTML file using CDN
-  assets and a script tag
+- [`CDN (ESM-based)`](../../examples/graphiql-cdn) - A single HTML file using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) from http URLs and a `<script>` tag
 - [`Webpack`](../../examples/graphiql-webpack) - A starter for Webpack
 - [`Create React App`](../../examples/graphiql-create-react-app) - An example
   using [Create React App](https://create-react-app.dev)
@@ -58,16 +57,19 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 > If you're looking to upgrade from `graphiql@1.x` to `graphiql@2`, check out
 > the [migration guide](../../docs/migration/graphiql-2.0.0.md)!
 
-### UMD
+### CDN usage
 
-With `unpkg`/`jsdelivr`, etc.:
+#### ESM-based (recommended)
 
-```html
-<link href="https://unpkg.com/graphiql/dist/style.css" rel="stylesheet" />
-<script crossorigin src="https://unpkg.com/graphiql/dist/index.umd.js"></script>
-```
+Use the modern, ESM-based CDN approach.
+See the [ESM-based example](../../examples/graphiql-cdn) for setup details.
 
-(see: Usage UMD Bundle below for more required script tags)
+#### UMD (deprecated)
+
+> [!WARNING]
+>
+> The UMD CDN build is **deprecated** and will be removed in a future major release of GraphiQL.
+> Please migrate to the [ESM-based example](../../examples/graphiql-cdn).
 
 ## Usage
 
@@ -96,7 +98,7 @@ may return a `Promise` for queries or mutations, but also an `Observable` or an
 An easy way to get create such a function is the
 [`createGraphiQLFetcher`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
 method exported from the `@graphiql/toolkit` package. If you want to implement
-your own fetcher function you can use the `Fetcher` type from
+your own fetcher function, you can use the `Fetcher` type from
 `@graphiql/toolkit` to make sure the signature matches what GraphiQL expects.
 
 The following is everything you need to render GraphiQL in your React
@@ -105,7 +107,6 @@ application:
 ```jsx
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import 'graphiql/style.css';
 
@@ -114,12 +115,6 @@ const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 const root = createRoot(document.getElementById('root'));
 root.render(<GraphiQL fetcher={fetcher} />);
 ```
-
-### Using as UMD bundle over CDN (Unpkg, JSDelivr, etc)
-
-There exist pre-bundled static assets that allow you to easily render GraphiQL
-just by putting together a single HTML file. Check out the `index.html` file in
-the [example project](../../examples/graphiql-cdn) in this repository.
 
 ## Customize
 
@@ -207,4 +202,4 @@ has to be loaded for the theme prop to work.
 
 You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
-[here](../graphiql-react/src/editor/style/codemirror.css).
+[here](../graphiql-react/src/style/codemirror.css).

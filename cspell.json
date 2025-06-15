@@ -18,7 +18,9 @@
     "**/package.json",
     "**/esbuild.js",
     ".eslintrc.js",
-    ".vscode/extensions.json"
+    ".vscode/extensions.json",
+    "packages/monaco-graphql/test/monaco-editor.test.ts",
+    "working-group"
   ],
   "files": ["**/*.{js,cjs,mjs,ts,jsx,tsx,md,mdx,html,json,css,toml,yaml,yml}"]
 }

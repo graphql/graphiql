@@ -1,9 +1,8 @@
-import React, { CSSProperties, useCallback } from 'react';
+import { CSSProperties, FC, useCallback } from 'react';
 import {
   GraphiQLPlugin,
-  useEditorContext,
-  useExecutionContext,
-  useSchemaContext,
+  useGraphiQL,
+  useGraphiQLActions,
   useOperationsEditorState,
   useOptimisticState,
 } from '@graphiql/react';
@@ -11,13 +10,10 @@ import {
   Explorer as GraphiQLExplorer,
   GraphiQLExplorerProps,
 } from 'graphiql-explorer';
-
 import ArrowIcon from './icons/arrow.svg?react';
 import FolderPlusIcon from './icons/folder-plus.svg?react';
 import CheckboxUncheckedIcon from './icons/checkbox-unchecked.svg?react';
 import CheckboxCheckedIcon from './icons/checkbox-checked.svg?react';
-
-import './graphiql-explorer.d.ts';
 import './index.css';
 
 const colors = {
@@ -64,10 +60,9 @@ export type GraphiQLExplorerPluginProps = Omit<
   'onEdit' | 'query'
 >;
 
-function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
-  const { setOperationName } = useEditorContext({ nonNull: true });
-  const { schema } = useSchemaContext({ nonNull: true });
-  const { run } = useExecutionContext({ nonNull: true });
+const ExplorerPlugin: FC<GraphiQLExplorerPluginProps> = props => {
+  const { setOperationName, run } = useGraphiQLActions();
+  const schema = useGraphiQL(state => state.schema);
 
   // handle running the current operation from the plugin
   const handleRunOperation = useCallback(
@@ -102,7 +97,7 @@ function ExplorerPlugin(props: GraphiQLExplorerPluginProps) {
       {...props}
     />
   );
-}
+};
 
 export function explorerPlugin(
   props?: GraphiQLExplorerPluginProps,

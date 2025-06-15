@@ -1,75 +1,84 @@
 {
   "name": "graphiql",
-  "version": "4.0.0-alpha.5",
+  "version": "5.0.0-rc.3",
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
+    "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql"
   },
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "!dist/e2e.*",
+    "!dist/workers/*"
   ],
   "exports": {
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
     }
   },
   "scripts": {
-    "cypress-open": "yarn dev 'cypress open'",
-    "build": "vite build && UMD=true vite build",
-    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
-    "prebuild": "yarn types:check",
     "types:check": "tsc --noEmit",
+    "build": "vite build && UMD=true vite build",
+    "cypress-open": "cypress open --browser electron",
+    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
-    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'"
+    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
+    "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/react": "^1.0.0-alpha.4"
+    "@graphiql/plugin-doc-explorer": "^0.3.0-rc.3",
+    "@graphiql/plugin-history": "^0.3.0-rc.1",
+    "@graphiql/react": "^0.35.0-rc.3",
+    "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.10.0",
-    "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "14.0.0",
-    "@types/testing-library__jest-dom": "5.14.5",
+    "@graphiql/toolkit": "^0.11.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/web-worker": "3.1.4",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
-    "express": "^4.19.2",
-    "graphql": "^17.0.0-alpha.7",
-    "graphql-helix": "^1.13.0",
-    "graphql-subscriptions": "^2.0.0",
-    "postcss": "8.4.31",
-    "postcss-import": "15.1.0",
-    "postcss-lightningcss": "^1.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "graphql": "^16.11.0",
+    "lightningcss": "^1.29.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "start-server-and-test": "^1.10.11",
-    "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
-    "vite": "^5.4.0",
-    "vite-plugin-commonjs": "^0.10.1",
-    "vite-plugin-dts": "^4.0.1",
-    "ws": "8.17.1"
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest-canvas-mock": "0.3.3"
+  },
+  "browser": {
+    "//": "esm.sh polyfills `process`, we don't need it",
+    "process": false
   }
 }

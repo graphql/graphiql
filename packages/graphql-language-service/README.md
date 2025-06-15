@@ -32,7 +32,7 @@ by an IDE plugin, a browser application or desktop application.
 ## Parser
 
 A standalone online, immutable, dependency-free parser for
-[GraphQL](http://graphql.org/), used by the LSP interface methods
+[GraphQL](https://graphql.org), used by the LSP interface methods
 
 ## Utils
 

@@ -5,16 +5,9 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
-    "target": "es5",
-    "lib": [
-      "dom",
-      "es5",
-      "es2015.collection",
-      "es2015.promise",
-      "es2015.iterable",
-      "es6",
-      "ESNext"
-    ],
+    "target": "es2015",
+    "noUncheckedIndexedAccess": true,
+    "lib": ["dom", "ESNext"],
     "paths": {
       "*": ["*"]
     }

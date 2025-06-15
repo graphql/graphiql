@@ -1,13 +1,13 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "4.0.0-alpha.0",
+  "version": "5.0.0-rc.3",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-plugin-explorer"
   },
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "keywords": [
@@ -23,37 +23,32 @@
   "exports": {
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
-    }
+    ".": "./dist/index.js"
   },
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build && UMD=true vite build",
-    "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts",
-    "prebuild": "yarn types:check",
-    "types:check": "tsc --noEmit"
+    "types:check": "tsc --noEmit",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "build": "vite build",
+    "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts"
   },
   "dependencies": {
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
-    "@graphiql/react": "^1.0.0-alpha.0",
+    "@graphiql/react": "^0.35.0-rc.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-alpha.3",
-    "@vitejs/plugin-react": "^4.3.1",
-    "graphql": "^17.0.0-alpha.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@graphiql/react": "^0.35.0-rc.3",
+    "@vitejs/plugin-react": "^4.4.1",
+    "graphql": "^16.9.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^4.6.3",
-    "vite": "^5.4.0",
+    "vite": "^6.3.4",
     "vite-plugin-dts": "^4.0.1",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite-plugin-svgr": "^4.3.0"
   }
 }

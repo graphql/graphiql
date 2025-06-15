@@ -1,5 +1,47 @@
 # Change Log
 
+## 1.7.1-rc.0
+
+### Patch Changes
+
+- [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
+
+  - `BaseSchemaConfig`
+  - `IDisposable`
+  - `JSONDiagnosticOptions`
+  - `IEvent`
+  - `FilePointer`
+
+## 1.7.0
+
+### Minor Changes
+
+- [#3996](https://github.com/graphql/graphiql/pull/3996) [`662c143`](https://github.com/graphql/graphiql/commit/662c1434932de12f1d213992c2b3bc85d5d38370) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support monaco-editor 0.52
+  - remove unnecessary conditions
+  - render Markdown in completion popup descriptions
+
+## 1.6.2
+
+### Patch Changes
+
+- [#3983](https://github.com/graphql/graphiql/pull/3983) [`403dfc2`](https://github.com/graphql/graphiql/commit/403dfc21c61c9c07fce00607c1416a449bc0d57f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused `MonacoCompletionItem` type
+
+  fix `types` field in `package.json`, should be first, before `import` or `require` fields
+
+  fixed `monaco-graphql` severity, it was hardcoded to `5` which is not valid value of monaco severity
+
+- Updated dependencies [[`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7)]:
+  - graphql-language-service@5.4.0
+
+## 1.6.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+- Updated dependencies [[`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe)]:
+  - graphql-language-service@5.3.1
+
 ## 1.6.0
 
 ### Minor Changes

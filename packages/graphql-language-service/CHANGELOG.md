@@ -1,5 +1,17 @@
 # graphql-language-service
 
+## 5.4.0
+
+### Minor Changes
+
+- [#3982](https://github.com/graphql/graphiql/pull/3982) [`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: set `additionalProperties: false` to report unused variables
+
+## 5.3.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
 ## 5.3.0
 
 ### Minor Changes

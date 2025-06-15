@@ -1,25 +1,54 @@
+import { sep } from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
-import packageJSON from './package.json';
 import dts from 'vite-plugin-dts';
-import commonjs from 'vite-plugin-commonjs';
+import react from '@vitejs/plugin-react';
+import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
+import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
+import packageJSON from './package.json';
+
+const reactCompilerConfig: Partial<ReactCompilerConfig> = {
+  ...$reactCompilerConfig,
+  sources(filename) {
+    if (
+      filename.includes('__tests__') ||
+      /\.(spec|test)\.tsx?$/.test(filename)
+    ) {
+      return false;
+    }
+    return filename.includes(`packages${sep}graphiql${sep}src`);
+  },
+};
+
+export const plugins: PluginOption[] = [
+  react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
+    },
+  }),
+];
 
 const umdConfig = defineConfig({
   define: {
     // graphql v17
     'globalThis.process.env.NODE_ENV': 'true',
-    // https://github.com/graphql/graphql-js/blob/16.x.x/website/docs/tutorials/going-to-production.md#vite
+    // https://github.com/graphql/graphql-js/blob/16.x.x/website/pages/docs/going-to-production.mdx
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
-  // To bundle `const { createClient } = require('graphql-ws')` in `createWebsocketsFetcherFromUrl` function
-  plugins: [commonjs()],
+  plugins,
+  css: {
+    transformer: 'lightningcss',
+  },
   build: {
     minify: 'terser', // produce less bundle size
     sourcemap: true,
     emptyOutDir: false,
     lib: {
       entry: 'src/cdn.ts',
-      // 👇 The name of the exposed global variable. Required when the formats option includes umd or iife
+      /**
+       * The name of the exposed global variable. Required when the `formats` option includes `umd`
+       * or `iife`.
+       */
       name: 'GraphiQL',
       fileName: 'index',
       formats: ['umd'],
@@ -34,6 +63,16 @@ const umdConfig = defineConfig({
       },
     },
   },
+  worker: {
+    format: 'es',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'workers/[name].js',
+        // Just to group worker assets, add shared/internal chunks too
+        chunkFileNames: 'workers/[name].js',
+      },
+    },
+  },
 });
 
 const esmConfig = defineConfig({
@@ -41,20 +80,33 @@ const esmConfig = defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['cjs', 'es'],
+      entry: [
+        'src/index.ts',
+        'src/e2e.ts',
+        'src/setup-workers/webpack.ts',
+        'src/setup-workers/vite.ts',
+      ],
+      fileName: (_format, filePath) => `${filePath}.js`,
+      formats: ['es'],
+      cssFileName: 'style',
     },
     rollupOptions: {
       external: [
+        'react/jsx-runtime',
         // Exclude peer dependencies and dependencies from bundle
-        ...Object.keys(packageJSON.peerDependencies),
-        ...Object.keys(packageJSON.dependencies),
+        ...Object.keys({
+          ...packageJSON.peerDependencies,
+          ...packageJSON.dependencies,
+        }),
+        /^@graphiql\/react\//,
       ],
+      output: {
+        preserveModules: true,
+      },
     },
   },
   server: {
-    // prevent browser window from opening automatically
+    // Prevent a browser window from opening automatically
     open: false,
     proxy: {
       '/graphql': 'http://localhost:8080',
@@ -64,21 +116,22 @@ const esmConfig = defineConfig({
       },
     },
   },
-  plugins: [htmlPlugin(), dts({ rollupTypes: true })],
+  plugins: [
+    ...plugins,
+    htmlPlugin(),
+    process.env.NODE_ENV === 'production' && removeImportsFromE2EFile(),
+    dts({
+      include: ['src/**'],
+      outDir: ['dist'],
+      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+    }),
+  ],
+  worker: {
+    format: 'es',
+  },
 });
 
 function htmlPlugin(): PluginOption {
-  const htmlForVite = /* HTML */ `
-    <script type="module">
-      import React from 'react';
-      import ReactDOM from 'react-dom/client';
-      import GraphiQL from './src/cdn';
-
-      Object.assign(globalThis, { React, ReactDOM, GraphiQL });
-    </script>
-    <link href="/src/style.css" rel="stylesheet" />
-  `;
-
   return {
     name: 'html-replace-umd-with-src',
     transformIndexHtml: {
@@ -90,8 +143,32 @@ function htmlPlugin(): PluginOption {
           html.indexOf(start),
           html.indexOf(end) + end.length,
         );
-        return html.replace(contentToReplace, htmlForVite);
+        return html.replace(
+          contentToReplace,
+          '<script type="module" src="/src/e2e.ts"></script>',
+        );
       },
+    },
+  };
+}
+
+function removeImportsFromE2EFile(): PluginOption {
+  return {
+    name: 'remove-imports-from-e2e-file',
+    enforce: 'pre', // Ensure it runs before Vite's own transformers
+    transform(code: string, id: string) {
+      if (id.endsWith('e2e.ts')) {
+        const transformedCode = code
+          .split('\n')
+          .filter(line => !line.startsWith('import '))
+          .join('\n');
+        return {
+          code: transformedCode,
+          // Remove source map to clean vite warning:
+          // a plugin (remove-imports-from-e2e-file) was used to transform files, but didn't generate a sourcemap for the transformation
+          map: null,
+        };
+      }
     },
   };
 }

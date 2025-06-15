@@ -1,15 +1,15 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.14.0",
+  "version": "2.14.8",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
-    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
+    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphql-language-service-server"
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
@@ -30,11 +30,14 @@
     "svelte",
     "typescript"
   ],
+  "scripts": {
+    "types:check": "tsc --noEmit"
+  },
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2"
+    "graphql": "^16.0.0"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
@@ -47,13 +50,13 @@
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
     "graphql-config": "5.0.3",
-    "graphql-language-service": "^5.3.0",
+    "graphql-language-service": "^5.3.1",
     "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
-    "svelte": "^4.1.1",
+    "svelte": "^4.2.19",
     "svelte2tsx": "^0.7.0",
     "typescript": "^5.3.3",
     "vscode-jsonrpc": "^8.0.1",
@@ -66,9 +69,10 @@
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@types/mock-fs": "^4.13.4",
+    "@whatwg-node/fetch": "npm:^0.9.0",
     "cross-env": "^7.0.2",
     "debounce-promise": "^3.1.2",
-    "graphql": "^17.0.0-alpha.7",
+    "graphql": "^16.9.0",
     "mock-fs": "^5.2.0"
   }
 }

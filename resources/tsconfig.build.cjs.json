@@ -6,9 +6,6 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-toolkit"
-    },
-    {
       "path": "../packages/monaco-graphql"
     },
     {
