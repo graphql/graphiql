@@ -63,9 +63,9 @@ Cypress.Commands.add('clickPrettify', () => {
 });
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
-  let url = `/?query=${encodeURIComponent(query)}`;
+  let url = `/?defaultQuery=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
-    url += `&variables=${encodeURIComponent(
+    url += `&defaultVariables=${encodeURIComponent(
       JSON.stringify(variables, null, 2) || variablesString,
     )}`;
   }

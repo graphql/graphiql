@@ -66,7 +66,7 @@ describe('history', () => {
     cy.get('ul.graphiql-history-items li').should('have.length', 1);
 
     cy.visit(
-      `?query=${mockQuery1}&headers=${mockHeaders1}&variables=${mockVariables2}`,
+      `?defaultQuery=${mockQuery1}&defaultHeaders=${mockHeaders1}&defaultVariables=${mockVariables2}`,
     );
     cy.clickExecuteQuery();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
