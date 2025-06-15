@@ -52,7 +52,6 @@ codicon
 colmena
 combobox
 cshaver
-crossorigin
 dedenting
 delivr
 devx
