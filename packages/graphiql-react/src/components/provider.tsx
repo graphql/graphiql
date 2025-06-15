@@ -22,7 +22,7 @@ import {
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import { SlicesWithActions } from '../types';
-import { pick, useDidUpdate, useSynchronizeValue } from '../utility';
+import { useDidUpdate } from '../utility';
 import {
   FragmentDefinitionNode,
   parse,
@@ -73,6 +73,30 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
       '`validationRules` prop is removed. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.',
     );
   }
+  // @ts-expect-error -- runtime check
+  if (props.query) {
+    throw new TypeError(
+      '`query` was removed. Use `queryEditor.setValue(query)` instead.',
+    );
+  }
+  // @ts-expect-error -- runtime check
+  if (props.variables) {
+    throw new TypeError(
+      '`variables` was removed. Use `variableEditor.setValue(variables)` instead.',
+    );
+  }
+  // @ts-expect-error -- runtime check
+  if (props.headers) {
+    throw new TypeError(
+      '`headers` was removed. Use `headerEditor.setValue(headers)` instead.',
+    );
+  }
+  // @ts-expect-error -- runtime check
+  if (props.response) {
+    throw new TypeError(
+      '`response` was removed. Use `responseEditor.setValue(response)` instead.',
+    );
+  }
   return (
     <StorageStore storage={storage}>
       <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
@@ -81,11 +105,6 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
     </StorageStore>
   );
 };
-
-interface SynchronizeValueProps
-  extends Pick<EditorProps, 'headers' | 'query' | 'response' | 'variables'> {
-  children: ReactNode;
-}
 
 const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   defaultHeaders,
@@ -137,11 +156,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
-      const query = props.query ?? storage.get(STORAGE_KEY.query) ?? null;
-      const variables =
-        props.variables ?? storage.get(STORAGE_KEY.variables) ?? null;
-      const headers = props.headers ?? storage.get(STORAGE_KEY.headers) ?? null;
-      const response = props.response ?? '';
+      const query = storage.get(STORAGE_KEY.query) ?? null;
+      const variables = storage.get(STORAGE_KEY.variables) ?? null;
+      const headers = storage.get(STORAGE_KEY.headers) ?? null;
+      const response = '';
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
@@ -289,28 +307,9 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
   return (
     <GraphiQLContext.Provider value={storeRef}>
-      <SynchronizeValue {...props}>{children}</SynchronizeValue>
+      {children}
     </GraphiQLContext.Provider>
   );
-};
-
-const SynchronizeValue: FC<SynchronizeValueProps> = ({
-  children,
-  headers,
-  query,
-  response,
-  variables,
-}) => {
-  const { headerEditor, queryEditor, responseEditor, variableEditor } =
-    useGraphiQL(
-      pick('headerEditor', 'queryEditor', 'responseEditor', 'variableEditor'),
-    );
-
-  useSynchronizeValue(headerEditor, headers);
-  useSynchronizeValue(queryEditor, query);
-  useSynchronizeValue(responseEditor, response);
-  useSynchronizeValue(variableEditor, variables);
-  return children as ReactElement;
 };
 
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {

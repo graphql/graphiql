@@ -246,14 +246,6 @@ export interface EditorProps
   externalFragments?: string | FragmentDefinitionNode[];
 
   /**
-   * This prop can be used to set the contents of the headers editor. Every
-   * time this prop changes, the contents of the headers editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  headers?: string;
-
-  /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
    * there is no tab state persisted in storage.
@@ -271,35 +263,11 @@ export interface EditorProps
   defaultTabs?: TabDefinition[];
 
   /**
-   * This prop can be used to set the contents of the query editor. Every time
-   * this prop changes, the contents of the query editor are replaced. Note
-   * that the editor contents can be changed in between these updates by typing
-   * in the editor.
-   */
-  query?: string;
-
-  /**
-   * This prop can be used to set the contents of the response editor. Every
-   * time this prop changes, the contents of the response editor are replaced.
-   * Note that the editor contents can change in between these updates by
-   * executing queries that will show a response.
-   */
-  response?: string;
-
-  /**
    * This prop toggles if the contents of the headers editor are persisted in
    * storage.
    * @default false
    */
   shouldPersistHeaders?: boolean;
-
-  /**
-   * This prop can be used to set the contents of the variables editor. Every
-   * time this prop changes, the contents of the variables editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  variables?: string;
 
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
 }
