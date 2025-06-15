@@ -173,14 +173,21 @@ export function useOptimisticState([
   return [state, setState];
 }
 
-export const useDidUpdate: typeof useEffect = (callback, dependencies) => {
+// https://github.com/mantinedev/mantine/blob/master/packages/@mantine/hooks/src/use-did-update/use-did-update.ts
+export const useDidUpdate: typeof useEffect = (fn, dependencies) => {
   const didMountRef = useRef(false);
 
+  // React Strict Mode intentionally mounts → unmounts → mounts the component during development.
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
+    return () => {
+      didMountRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (didMountRef.current) {
+      return fn();
     }
-    callback();
+    didMountRef.current = true;
   }, dependencies); // eslint-disable-line react-hooks/exhaustive-deps
-};
+}
