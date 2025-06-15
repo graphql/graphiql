@@ -1,6 +1,6 @@
 'use no memo';
 
-import React, { ComponentProps, FC, Dispatch } from 'react';
+import React, { ComponentProps, FC } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme, MonacoEditor } from '@graphiql/react';
@@ -106,15 +106,11 @@ function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   }, [editor, value]);
 }
 
-const SynchronizeValue: FC<{ setIsMounted: Dispatch<boolean> }> = () => {
+const SynchronizeValue: FC = () => {
   const { headerEditor, queryEditor, variableEditor } =
     GraphiQL.React.useGraphiQL(
       GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
     );
-  // React.useEffect(() => {
-  //   setIsMounted(true);
-  // }, [setIsMounted]);
-
   useSynchronizeValue(headerEditor, parameters.headers);
   useSynchronizeValue(queryEditor, parameters.query);
   useSynchronizeValue(variableEditor, parameters.variables);
@@ -145,20 +141,10 @@ const props: ComponentProps<typeof GraphiQL> = {
 };
 
 function App() {
-  // const [isMounted, setIsMounted] = React.useState(false);
-
   return React.createElement(
     React.StrictMode,
     null,
-    // isMounted &&
-    React.createElement(
-      GraphiQL,
-      props,
-      React.createElement(
-        SynchronizeValue,
-        // , { setIsMounted }
-      ),
-    ),
+    React.createElement(GraphiQL, props, React.createElement(SynchronizeValue)),
   );
 }
 
