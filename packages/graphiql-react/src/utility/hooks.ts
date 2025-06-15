@@ -190,4 +190,4 @@ export const useDidUpdate: typeof useEffect = (fn, dependencies) => {
     }
     didMountRef.current = true;
   }, dependencies); // eslint-disable-line react-hooks/exhaustive-deps
-}
+};
