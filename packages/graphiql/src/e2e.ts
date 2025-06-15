@@ -19,15 +19,13 @@ import './style.css';
  */
 
 interface Params {
-  query?: string;
-  variables?: string;
-  headers?: string;
+  defaultQuery?: string;
+  defaultHeaders?: string;
+
   confirmCloseTab?: 'true';
   onPrettifyQuery?: 'true';
   forcedTheme?: 'light' | 'dark' | 'system';
-  defaultQuery?: string;
   defaultTheme?: Theme;
-  defaultHeaders?: string;
 }
 
 // Parse the search string to get url parameters.
@@ -101,9 +99,7 @@ const props: ComponentProps<typeof GraphiQL> = {
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
-  query: parameters.query,
-  variables: parameters.variables,
-  headers: parameters.headers,
+  defaultQuery: parameters.defaultQuery,
   defaultHeaders: parameters.defaultHeaders,
   onEditQuery,
   onEditVariables,
@@ -118,7 +114,6 @@ const props: ComponentProps<typeof GraphiQL> = {
     parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
   onTabChange,
   forcedTheme: parameters.forcedTheme,
-  defaultQuery: parameters.defaultQuery,
   defaultTheme: parameters.defaultTheme,
 };
 
