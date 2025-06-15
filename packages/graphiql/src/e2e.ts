@@ -1,6 +1,6 @@
 'use no memo';
 
-import React, { ComponentProps, FC } from 'react';
+import React, { ComponentProps, FC, Dispatch } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme, MonacoEditor } from '@graphiql/react';
@@ -106,11 +106,15 @@ function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   }, [editor, value]);
 }
 
-const SynchronizeValue: FC = () => {
+const SynchronizeValue: FC<{ setIsMounted: Dispatch<boolean> }> = () => {
   const { headerEditor, queryEditor, variableEditor } =
     GraphiQL.React.useGraphiQL(
       GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
     );
+  // React.useEffect(() => {
+  //   setIsMounted(true);
+  // }, [setIsMounted]);
+
   useSynchronizeValue(headerEditor, parameters.headers);
   useSynchronizeValue(queryEditor, parameters.query);
   useSynchronizeValue(variableEditor, parameters.variables);
@@ -138,22 +142,24 @@ const props: ComponentProps<typeof GraphiQL> = {
   onTabChange,
   forcedTheme: parameters.forcedTheme,
   defaultTheme: parameters.defaultTheme,
-  children: React.createElement(SynchronizeValue),
 };
 
 function App() {
-  const [isMounted, setIsMounted] = React.useState(false);
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, [setIsMounted]);
+  // const [isMounted, setIsMounted] = React.useState(false);
 
-  if (!isMounted) {
-    return null;
-  }
-  // eslint-disable-next-line react/no-children-prop
-  return React.createElement(React.StrictMode, {
-    children: React.createElement(GraphiQL, props),
-  });
+  return React.createElement(
+    React.StrictMode,
+    null,
+    // isMounted &&
+    React.createElement(
+      GraphiQL,
+      props,
+      React.createElement(
+        SynchronizeValue,
+        // , { setIsMounted }
+      ),
+    ),
+  );
 }
 
 root.render(React.createElement(App));
