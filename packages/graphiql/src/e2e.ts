@@ -123,8 +123,9 @@ const props: ComponentProps<typeof GraphiQL> = {
 };
 
 root.render(
-  // TODO: enable strict mode after monaco-editor migration
-  // <StrictMode>
-  React.createElement(GraphiQL, props),
-  // </StrictMode>,
+  React.createElement(
+    React.StrictMode,
+    null,
+    React.createElement(GraphiQL, props),
+  ),
 );
