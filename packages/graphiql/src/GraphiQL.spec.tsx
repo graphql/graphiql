@@ -148,7 +148,7 @@ describe('GraphiQL', () => {
     it('should not throw error if schema missing and query provided', async () => {
       await act(async () => {
         expect(() =>
-          render(<GraphiQL fetcher={noOpFetcher} query="{}" />),
+          render(<GraphiQL fetcher={noOpFetcher} defaultQuery="{}" />),
         ).not.toThrow();
       });
     });
@@ -262,7 +262,7 @@ describe('GraphiQL', () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
-          variables="{test: 'value'}"
+          defaultVariables="{test: 'value'}"
           defaultEditorToolsVisibility={false}
         />,
       );
