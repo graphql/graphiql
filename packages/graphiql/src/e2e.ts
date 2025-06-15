@@ -150,12 +150,10 @@ function App() {
   if (!isMounted) {
     return null;
   }
-  return React.createElement(GraphiQL, props);
+  // eslint-disable-next-line react/no-children-prop
+  return React.createElement(React.StrictMode, {
+    children: React.createElement(GraphiQL, props),
+  });
 }
 
-root.render(
-  // TODO: enable strict mode after monaco-editor migration
-  // <StrictMode>
-  React.createElement(App),
-  // </StrictMode>,
-);
+root.render(React.createElement(App));
