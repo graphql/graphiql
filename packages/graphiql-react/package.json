@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.35.0-rc.6",
+  "version": "0.35.0-rc.7",
   "sideEffects": [
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"
