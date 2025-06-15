@@ -133,7 +133,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   referencePlugin,
   visiblePlugin,
   children,
-  ...props
 }) => {
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
@@ -315,7 +314,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
   if (!store) {
-    throw new Error('Missing `GraphiQLContext.Provider` in the tree');
+    throw new Error('Missing `GraphiQLContext.Provider` in the tree.');
   }
   return useStore(store.current, useShallow(selector));
 }
