@@ -40,12 +40,12 @@ const parameters: Params = Object.fromEntries(
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery: string): void {
-  parameters.defaultQuery = newQuery;
+  parameters.query = newQuery;
   updateURL();
 }
 
 function onEditVariables(newVariables: string): void {
-  parameters.defaultVariables = newVariables;
+  parameters.variables = newVariables;
   updateURL();
 }
 
@@ -56,9 +56,9 @@ function onEditHeaders(newHeaders: string): void {
 
 function onTabChange(tabsState: TabsState): void {
   const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
-  parameters.defaultQuery = activeTab.query ?? undefined;
-  parameters.defaultVariables = activeTab.variables ?? undefined;
-  parameters.defaultHeaders = activeTab.headers ?? undefined;
+  parameters.query = activeTab.query ?? undefined;
+  parameters.variables = activeTab.variables ?? undefined;
+  parameters.headers = activeTab.headers ?? undefined;
   updateURL();
 }
 
