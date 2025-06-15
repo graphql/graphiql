@@ -68,6 +68,7 @@ export type TabsState = {
 
 export function getDefaultTabState({
   defaultQuery,
+  defaultVariables,
   defaultHeaders,
   headers,
   query,
@@ -75,13 +76,14 @@ export function getDefaultTabState({
   defaultTabs = [
     {
       query: query ?? defaultQuery,
-      variables,
+      variables: variables ?? defaultVariables,
       headers: headers ?? defaultHeaders,
     },
   ],
   shouldPersistHeaders,
 }: {
   defaultQuery: string;
+  defaultVariables?: string;
   defaultHeaders?: string;
   headers: string | null;
   defaultTabs?: TabDefinition[];

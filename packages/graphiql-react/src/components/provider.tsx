@@ -109,6 +109,7 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
 const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   defaultHeaders,
   defaultQuery,
+  defaultVariables,
   defaultTabs,
   externalFragments,
   onEditOperationName,
@@ -163,6 +164,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         defaultHeaders,
         defaultQuery: defaultQuery || DEFAULT_QUERY,
         defaultTabs,
+        defaultVariables,
         headers,
         query,
         shouldPersistHeaders,

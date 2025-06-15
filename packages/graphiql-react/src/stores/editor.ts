@@ -78,14 +78,20 @@ export interface EditorSlice extends TabsState {
   shouldPersistHeaders: boolean;
 
   /**
-   * The initial contents of the query editor when loading GraphiQL and there
-   * is no other source for the editor state. Other sources can be:
-   * - The `query` prop
-   * - The value persisted in storage
-   * These default contents will only be used for the first tab. When opening
+   * The initial content of the query editor when loading GraphiQL and there
+   * is no value persisted in storage.
+   * The default value will only be used for the first tab. When opening
    * more tabs, the query editor will start out empty.
    */
   defaultQuery?: string;
+
+  /**
+   * The initial content of the variable editor when loading GraphiQL and there
+   * is no value persisted in storage.
+   * The default value will only be used for the first tab. When opening
+   * more tabs, the variable editor will start out empty.
+   */
+  defaultVariables?: string;
 
   /**
    * Invoked when the operation name changes. Possible triggers are:
@@ -235,6 +241,7 @@ export interface EditorProps
     | 'onEditOperationName'
     | 'defaultHeaders'
     | 'defaultQuery'
+    | 'defaultVariables'
     | 'onCopyQuery'
   > {
   /**
