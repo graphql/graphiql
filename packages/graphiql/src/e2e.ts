@@ -3,8 +3,10 @@
 import React, { ComponentProps, FC } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
-import type { TabsState, Theme, MonacoEditor } from '@graphiql/react';
+import type { TabsState, Theme } from '@graphiql/react';
 import './style.css';
+
+const { useSynchronizeValue, useGraphiQL, pick } = GraphiQL.React;
 
 /**
  * CDN GraphiQL Example
@@ -98,22 +100,13 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
-function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
-  React.useEffect(() => {
-    if (typeof value === 'string' && editor && editor.getValue() !== value) {
-      editor.getModel()!.setValue(value);
-    }
-  }, [editor, value]);
-}
-
 const SynchronizeValue: FC = () => {
-  const { headerEditor, queryEditor, variableEditor } =
-    GraphiQL.React.useGraphiQL(
-      GraphiQL.React.pick('headerEditor', 'queryEditor', 'variableEditor'),
-    );
-  useSynchronizeValue(headerEditor, parameters.headers);
+  const { queryEditor, variableEditor, headerEditor } = useGraphiQL(
+    pick('headerEditor', 'queryEditor', 'variableEditor'),
+  );
   useSynchronizeValue(queryEditor, parameters.query);
   useSynchronizeValue(variableEditor, parameters.variables);
+  useSynchronizeValue(headerEditor, parameters.headers);
   return null;
 };
 

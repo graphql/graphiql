@@ -12,6 +12,7 @@ export { pick } from './pick';
 export { useDragResize } from './resize';
 export { clsx as cn } from 'clsx';
 export {
+  useSynchronizeValue,
   useOptimisticState,
   useEditorState,
   useOperationsEditorState,
