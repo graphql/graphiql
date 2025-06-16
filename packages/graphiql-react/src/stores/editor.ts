@@ -76,6 +76,8 @@ export interface EditorSlice extends TabsState {
    * is no value persisted in storage.
    * The default value will only be used for the first tab. When opening
    * more tabs, the query editor will start out empty.
+   *
+   * @default "# Welcome to GraphiQL..."
    */
   defaultQuery?: string;
 

@@ -48,7 +48,6 @@ export const STORAGE_KEY = {
   query: 'query',
   variables: 'variables',
   tabs: 'tabState',
-  operationName: 'operationName',
   persistHeaders: 'shouldPersistHeaders',
   theme: 'theme',
 } as const;
