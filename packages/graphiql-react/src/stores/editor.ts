@@ -468,7 +468,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         await navigator.clipboard.writeText(query);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Failed to copy query!', error);
+        console.warn('Failed to copy query!', error);
       }
     },
     async prettifyEditors() {
