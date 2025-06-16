@@ -339,36 +339,21 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   const $actions: EditorActions = {
     addTab() {
-      set(
-        ({
-          defaultQuery,
-          defaultHeaders,
-          onTabChange,
+      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex, actions }) => {
+        // Make sure the current tab stores the latest values
+        const updatedValues = synchronizeActiveTabValues({
           tabs,
           activeTabIndex,
-          actions,
-        }) => {
-          // Make sure the current tab stores the latest values
-          const updatedValues = synchronizeActiveTabValues({
-            tabs,
-            activeTabIndex,
-          });
-          const updated = {
-            tabs: [
-              ...updatedValues.tabs,
-              createTab({
-                headers: defaultHeaders,
-                query: defaultQuery,
-              }),
-            ],
-            activeTabIndex: updatedValues.tabs.length,
-          };
-          actions.storeTabs(updated);
-          setEditorValues(updated.tabs[updated.activeTabIndex]!);
-          onTabChange?.(updated);
-          return updated;
-        },
-      );
+        });
+        const updated = {
+          tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
+          activeTabIndex: updatedValues.tabs.length,
+        };
+        actions.storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
     },
     changeTab(index) {
       set(({ actions, onTabChange, tabs }) => {
