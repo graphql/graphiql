@@ -101,7 +101,7 @@ const graphqlVersion = GraphiQL.GraphQL.version;
 function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   React.useEffect(() => {
     if (typeof value === 'string' && editor && editor.getValue() !== value) {
-      editor.setValue(value);
+      editor.getModel()!.setValue(value);
     }
   }, [editor, value]);
 }
