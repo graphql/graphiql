@@ -485,7 +485,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(
+          console.warn(
             'Parsing variables JSON failed, skip prettification.',
             error,
           );
@@ -501,7 +501,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(
+          console.warn(
             'Parsing headers JSON failed, skip prettification.',
             error,
           );
@@ -519,7 +519,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Parsing query failed, skip prettification.', error);
+        console.warn('Parsing query failed, skip prettification.', error);
       }
     },
     mergeQuery() {
