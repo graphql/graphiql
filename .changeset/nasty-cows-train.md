@@ -5,6 +5,4 @@
 
 - Remove `query`, `variables`, `headers`, and `response` props in `<GraphiQL />` and `<GraphiQLProvider />`
 
-- Remove `useSynchronizeValue` hook
-
 - fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty.
