@@ -133,6 +133,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   referencePlugin,
   visiblePlugin,
   children,
+
+  ...props
 }) => {
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
@@ -155,9 +157,9 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
-      const query = storage.get(STORAGE_KEY.query) ?? null;
-      const variables = storage.get(STORAGE_KEY.variables) ?? null;
-      const headers = storage.get(STORAGE_KEY.headers) ?? null;
+      const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
+      const variables = props.initialVariables ?? storage.get(STORAGE_KEY.variables);
+      const headers = props.initialHeaders ?? storage.get(STORAGE_KEY.headers);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
@@ -183,9 +185,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           defaultQuery,
           externalFragments: getExternalFragments(externalFragments),
           initialHeaders: headers ?? defaultHeaders ?? '',
-          initialQuery:
-            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialResponse: '',
+          initialQuery: query ?? '',
           initialVariables: variables ?? '',
           onCopyQuery,
           onEditOperationName,
