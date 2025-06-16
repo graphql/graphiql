@@ -158,7 +158,8 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
-      const variables = props.initialVariables ?? storage.get(STORAGE_KEY.variables);
+      const variables =
+        props.initialVariables ?? storage.get(STORAGE_KEY.variables);
       const headers = props.initialHeaders ?? storage.get(STORAGE_KEY.headers);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
