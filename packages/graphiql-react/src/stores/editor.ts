@@ -55,12 +55,6 @@ export interface EditorSlice extends TabsState {
   initialQuery: string;
 
   /**
-   * The contents of the response editor when initially rendering the provider
-   * component.
-   */
-  initialResponse: string;
-
-  /**
    * The contents of the variables editor when initially rendering the provider
    * component.
    */
@@ -268,6 +262,9 @@ export interface EditorProps
   shouldPersistHeaders?: boolean;
 
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
+  initialQuery?: EditorSlice['initialQuery'];
+  initialVariables?: EditorSlice['initialVariables'];
+  initialHeaders?: EditorSlice['initialHeaders'];
 }
 
 type CreateEditorSlice = (
@@ -279,7 +276,6 @@ type CreateEditorSlice = (
     | 'initialQuery'
     | 'initialVariables'
     | 'initialHeaders'
-    | 'initialResponse'
     | 'onEditOperationName'
     | 'externalFragments'
     | 'onTabChange'
