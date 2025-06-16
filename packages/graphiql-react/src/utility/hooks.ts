@@ -9,7 +9,7 @@ import { useGraphiQL, useGraphiQLActions } from '../components';
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
   useEffect(() => {
     if (typeof value === 'string' && editor && editor.getValue() !== value) {
-      editor.getModel()!.setValue(value);
+      editor.setValue(value);
     }
   }, [editor, value]);
 }
