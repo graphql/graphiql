@@ -1,12 +1,10 @@
 'use no memo';
 
-import React, { ComponentProps, FC } from 'react';
+import React, { ComponentProps } from 'react';
 import ReactDOM from 'react-dom/client';
 import GraphiQL from './cdn';
 import type { TabsState, Theme } from '@graphiql/react';
 import './style.css';
-
-const { useSynchronizeValue, useGraphiQL, pick } = GraphiQL.React;
 
 /**
  * CDN GraphiQL Example
@@ -100,23 +98,19 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
-const SynchronizeValue: FC = () => {
-  const { queryEditor, variableEditor, headerEditor } = useGraphiQL(
-    pick('headerEditor', 'queryEditor', 'variableEditor'),
-  );
-  useSynchronizeValue(queryEditor, parameters.query);
-  useSynchronizeValue(variableEditor, parameters.variables);
-  useSynchronizeValue(headerEditor, parameters.headers);
-  return null;
-};
-
 const props: ComponentProps<typeof GraphiQL> = {
   fetcher: GraphiQL.createFetcher({
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
+
+  initialQuery: parameters.query,
+  initialVariables: parameters.variables,
+  initialHeaders: parameters.headers,
+
   defaultQuery: parameters.defaultQuery,
   defaultHeaders: parameters.defaultHeaders,
+
   onEditQuery,
   onEditVariables,
   onEditHeaders,
@@ -137,7 +131,7 @@ function App() {
   return React.createElement(
     React.StrictMode,
     null,
-    React.createElement(GraphiQL, props, React.createElement(SynchronizeValue)),
+    React.createElement(GraphiQL, props),
   );
 }
 
