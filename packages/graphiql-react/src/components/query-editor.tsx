@@ -218,10 +218,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       storage.set(STORAGE_KEY.query, query);
 
       const operationFacts = getAndUpdateOperationFacts(editor);
-      if (operationFacts?.operationName !== undefined) {
-        storage.set(STORAGE_KEY.operationName, operationFacts.operationName);
-      }
-
       // Invoke callback props only after the operation facts have been updated
       onEdit?.(query, operationFacts?.documentAST);
       if (
