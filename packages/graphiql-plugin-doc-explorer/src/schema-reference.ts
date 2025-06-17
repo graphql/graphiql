@@ -11,7 +11,7 @@ import type {
   GraphQLInputType,
   GraphQLType,
 } from 'graphql';
-import { Maybe } from 'graphql/jsutils/Maybe';
+import type { Maybe } from 'graphql/jsutils/Maybe';
 
 /**
  * Copied from packages/codemirror-graphql/src/jump.ts

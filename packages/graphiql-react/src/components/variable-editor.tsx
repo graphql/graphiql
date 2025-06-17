@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
-import { EditorProps } from '../types';
+import type { EditorProps } from '../types';
 import { KEY_BINDINGS, STORAGE_KEY, VARIABLE_URI } from '../constants';
 import {
   getOrCreateModel,

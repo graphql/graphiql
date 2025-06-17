@@ -13,7 +13,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
-import { MonacoEditor, EditorProps, SchemaReference } from '../types';
+import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
   MONACO_GRAPHQL_API,
