@@ -57,7 +57,10 @@ export const Search: FC = () => {
 
   const navItem = explorerNavStack.at(-1)!;
 
-  const onSelect = (def: TypeMatch | FieldMatch) => {
+  const onSelect = (def: TypeMatch | FieldMatch | null) => {
+    if (def === null) {
+      return;
+    }
     push(
       'field' in def
         ? { name: def.field.name, def: def.field }
