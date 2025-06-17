@@ -15,7 +15,7 @@ import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { formatJSONC, parseJSONC } from '../utility';
-import { SlicesWithActions, MonacoEditor } from '../types';
+import type { SlicesWithActions, MonacoEditor } from '../types';
 import { Range } from '../monaco-editor';
 
 export interface ExecutionSlice {

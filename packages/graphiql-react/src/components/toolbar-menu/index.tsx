@@ -1,6 +1,6 @@
-import { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { cn } from '../../utility';
-import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
+import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
 import './index.css';

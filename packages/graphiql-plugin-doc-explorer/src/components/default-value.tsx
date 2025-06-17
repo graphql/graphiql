@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { astFromValue, print, ValueNode } from 'graphql';
-import { DocExplorerFieldDef } from '../context';
+import type { DocExplorerFieldDef } from '../context';
 import './default-value.css';
 
 const printDefault = (ast?: ValueNode | null): string => {

@@ -2,8 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
-import { MonacoEditor } from '../types';
-import { type editor as monacoEditor } from '../monaco-editor';
+import type { MonacoEditor } from '../types';
+import type { editor as monacoEditor } from '../monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
 
 export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {

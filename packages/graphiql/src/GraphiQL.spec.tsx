@@ -9,7 +9,7 @@
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component } from 'react';
 import { GraphiQL } from './GraphiQL';
-import { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 

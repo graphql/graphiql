@@ -1,4 +1,4 @@
-import { Mock } from 'vitest';
+import type { Mock } from 'vitest';
 import { useGraphiQL as $useGraphiQL } from '@graphiql/react';
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
