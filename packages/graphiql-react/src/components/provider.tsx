@@ -1,11 +1,5 @@
 /* eslint sort-keys: "error" */
-import type {
-  ComponentPropsWithoutRef,
-  FC,
-  ReactElement,
-  ReactNode,
-  RefObject,
-} from 'react';
+import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
