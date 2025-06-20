@@ -12,7 +12,7 @@ import {
   cn,
 } from '../utility';
 import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
-import { EditorProps } from '../types';
+import type { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
 
