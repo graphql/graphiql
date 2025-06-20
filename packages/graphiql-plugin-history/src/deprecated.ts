@@ -6,5 +6,5 @@ import { useHistory, useHistoryActions } from './context';
 export function useHistoryContext() {
   const actions = useHistoryActions();
   const items = useHistory();
-  return { items, ...actions };
+  return { ...actions, items };
 }

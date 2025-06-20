@@ -30,16 +30,16 @@ export function useMergeQuery() {
  * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function useExecutionContext() {
+  const { run, stop } = useGraphiQLActions();
   const values = useGraphiQL(state => ({
     isFetching: state.isIntrospecting,
     isSubscribed: Boolean(state.subscription),
     operationName: state.operationName,
   }));
-  const { run, stop } = useGraphiQLActions();
   return {
-    ...values,
     run,
     stop,
+    ...values,
   };
 }
 
@@ -47,11 +47,11 @@ export function useExecutionContext() {
  * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function usePluginContext() {
-  const values = useGraphiQL(pick('plugins', 'visiblePlugin'));
   const { setVisiblePlugin } = useGraphiQLActions();
+  const values = useGraphiQL(pick('plugins', 'visiblePlugin'));
   return {
-    ...values,
     setVisiblePlugin,
+    ...values,
   };
 }
 
@@ -59,13 +59,13 @@ export function usePluginContext() {
  * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function useSchemaContext() {
+  const { introspect } = useGraphiQLActions();
   const values = useGraphiQL(
     pick('fetchError', 'isFetching', 'schema', 'validationErrors'),
   );
-  const { introspect } = useGraphiQLActions();
   return {
-    ...values,
     introspect,
+    ...values,
   };
 }
 
