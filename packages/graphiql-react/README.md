@@ -74,7 +74,7 @@ text. If you want to use the default fonts you can load them using these files:
 - `@graphiql/react/font/roboto.css`
 - `@graphiql/react/font/fira-code.css`.
 
-You can of course use any other method to load these fonts (for example loading
+You can, of course, use any other method to load these fonts (for example, loading
 them from Google Fonts).
 
 Further details on how to use `@graphiql/react` can be found in the reference
