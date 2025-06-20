@@ -12,3 +12,4 @@ export type {
   DocExplorerNavStack,
   DocExplorerNavStackItem,
 } from './context';
+export * from './deprecated'

@@ -3,7 +3,7 @@ import { pick } from './utility';
 import { useStorage } from './stores';
 
 /**
- * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()`
+ * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()` instead.
  */
 export function usePrettifyEditors() {
   const { prettifyEditors } = useGraphiQLActions();
@@ -11,7 +11,7 @@ export function usePrettifyEditors() {
 }
 
 /**
- * @deprecated Use `const { copyQuery } = useGraphiQLActions()`
+ * @deprecated Use `const { copyQuery } = useGraphiQLActions()` instead.
  */
 export function useCopyQuery() {
   const { copyQuery } = useGraphiQLActions();
@@ -19,7 +19,7 @@ export function useCopyQuery() {
 }
 
 /**
- * @deprecated Use `const { mergeQuery } = useGraphiQLActions()`
+ * @deprecated Use `const { mergeQuery } = useGraphiQLActions()` instead.
  */
 export function useMergeQuery() {
   const { mergeQuery } = useGraphiQLActions();
@@ -27,7 +27,7 @@ export function useMergeQuery() {
 }
 
 /**
- * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function useExecutionContext() {
   const values = useGraphiQL(state => ({
@@ -44,17 +44,7 @@ export function useExecutionContext() {
 }
 
 /**
- * @deprecated Use ``
- */
-export function useExplorerContext() {}
-
-/**
- * @deprecated Use ``
- */
-export function useHistoryContext() {}
-
-/**
- * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function usePluginContext() {
   const values = useGraphiQL(pick('plugins', 'visiblePlugin'));
@@ -66,7 +56,7 @@ export function usePluginContext() {
 }
 
 /**
- * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
  */
 export function useSchemaContext() {
   const values = useGraphiQL(
@@ -80,7 +70,7 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const { storage } = useStorage()`
+ * @deprecated Use `const { storage } = useStorage()` instead.
  */
 export function useStorageContext() {
   const { storage } = useStorage();

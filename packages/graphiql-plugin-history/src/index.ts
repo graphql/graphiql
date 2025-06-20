@@ -12,3 +12,4 @@ export const HISTORY_PLUGIN: GraphiQLPlugin = {
 export { History };
 
 export { HistoryStore, useHistory, useHistoryActions } from './context';
+export * from './deprecated'
