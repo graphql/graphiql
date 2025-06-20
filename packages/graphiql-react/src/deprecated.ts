@@ -1,5 +1,6 @@
 import { useGraphiQL, useGraphiQLActions } from './components';
 import { pick } from './utility';
+import { useStorage } from './stores';
 
 /**
  * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()`
@@ -79,6 +80,9 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use ``
+ * @deprecated Use `const { storage } = useStorage()`
  */
-export function useStorageContext() {}
+export function useStorageContext() {
+  const { storage } = useStorage();
+  return storage;
+}
