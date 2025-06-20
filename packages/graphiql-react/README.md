@@ -128,8 +128,8 @@ const { introspect } = useGraphiQLActions();
 const { theme, setTheme } = useThemeStore();
 
 // Or use a selector to access specific parts of the state
-const currentTheme = useThemeStore(state => state.theme);
 const schema = useGraphiQL(state => state.schema);
+const currentTheme = useThemeStore(state => state.theme);
 ```
 
 All store properties are documented using TSDoc comments. If you're using an
