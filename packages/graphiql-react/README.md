@@ -92,14 +92,15 @@ React hooks.
 - **`useGraphiQL`**: Access the current state.
 - **`useGraphiQLActions`**: Trigger actions that mutate the state.
 
-The `useGraphiQL` and `useGraphiQLActions` hooks expose the following store slices:
+The `useGraphiQLActions` hook **exposes all actions** across store slices.
+The `useGraphiQL` hook **provides access to the following store slices**:
 
-| Store Slice | Responsibilities                                                                |
-| ----------- | ------------------------------------------------------------------------------- |
-| `editor`    | Manages **query**, **variables**, **headers** and **response** editors and tabs |
-| `execution` | Handles execution of GraphQL requests                                           |
-| `plugin`    | Manages plugins and the currently active plugin                                 |
-| `schema`    | Fetches, validates, and stores the GraphQL schema                               |
+| Store Slice | Responsibilities                                                                 |
+| ----------- | -------------------------------------------------------------------------------- |
+| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs |
+| `execution` | Handles the execution of GraphQL requests                                        |
+| `plugin`    | Manages plugins and the currently active plugin                                  |
+| `schema`    | Fetches, validates, and stores the GraphQL schema                                |
 
 ### Theme Store
 
