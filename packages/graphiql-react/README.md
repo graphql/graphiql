@@ -110,8 +110,7 @@ The `useGraphiQL` hook **provides access to the following store slices**:
 ### Storage Store
 
 - **`useStorage`**
-  Provides a storage API that can be used to persist state in
-  the browser (by default using `localStorage`)
+  Provides a storage API that can be used to persist state in the browser (by default using `localStorage`)
 
 ### Usage Example
 
