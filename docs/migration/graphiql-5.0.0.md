@@ -18,3 +18,28 @@
   - `keyMap`. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs
   - `readOnly`
   - `validationRules`. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.'
+
+## `@graphiql/react`
+
+The `ToolbarMenu` component has changed.
+
+- The `label` and `className` props were removed
+- The `button` prop should now be a button element
+
+  ```jsx
+  <ToolbarMenu
+    label="Options"
+    button={
+      <ToolbarButton label="Options">
+        <SettingsIcon
+          className="graphiql-toolbar-icon"
+          aria-hidden="true"
+        />
+      </ToolbarButton>
+    }
+  >
+    <ToolbarMenu.Item onSelect={() => console.log('Clicked!')}>
+      Test
+    </ToolbarMenu.Item>
+  </ToolbarMenu>
+  ```
