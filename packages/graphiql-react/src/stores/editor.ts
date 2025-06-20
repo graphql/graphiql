@@ -4,7 +4,7 @@ import type {
   OperationDefinitionNode,
   DocumentNode,
 } from 'graphql';
-import { OperationFacts } from 'graphql-language-service';
+import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { print } from 'graphql';
 import { storageStore } from './storage';
@@ -17,7 +17,7 @@ import {
   clearHeadersFromTabs,
   serializeTabState,
 } from '../utility/tabs';
-import { SlicesWithActions, MonacoEditor } from '../types';
+import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
 
