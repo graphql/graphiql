@@ -84,18 +84,32 @@ implementation of a GraphQL IDE - Graph*i*QL - in the
 ## Available stores
 
 There are multiple stores that own different parts of the state that make up a
-complete GraphQL IDE. For each store there is a component
-(`<name>Store`) that makes sure the store is initialized and managed
-properly. These components contains all the logic related to state management.
+complete GraphQL IDE. These stores contain all the logic related to state management.
 
-In addition, for each store, there is also a hook that
-allows you to consume its current value:
+There are also hooks that allow you to consume its current value:
 
+- `useGraphiQL` and `useGraphiQLActions`:
+  - **editor**: Manages **query**, **variable**, **headers** and **response** editors and tabs
+  - **execution**: Executes GraphQL requests
+  - **plugin**: Manages plugins and current visible plugin
+  - **schema**: Fetches, validates, and stores the GraphQL schema
+- `useThemeStore`: Manages the current theme and set a new theme
 - `useStorage`: Provides a storage API that can be used to persist state in
   the browser (by default using `localStorage`)
-- `useEditorStore`: Manages all the editors and tabs
-- `useSchemaStore`: Fetches, validates and stores the GraphQL schema
-- `useExecutionStore`: Executes GraphQL requests
+  
+  Example:
+
+  ```js
+  import { useGraphiQL, useGraphiQLActions, useThemeStore } from '@graphiql/react';
+  
+  // ...
+  const { introspect } = useGraphiQLActions();
+  const { theme, setTheme } = useThemeStore();
+
+  // You can also use selectors to get specific parts of the state:
+  const theme = useThemeStore(state => state.theme);
+  const schema = useGraphiQL(state => state.schema);
+  ```
 
 All context properties are documented using JSDoc comments. If you're using an
 IDE like VSCode for development these descriptions will show up in auto-complete

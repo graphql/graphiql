@@ -58,7 +58,7 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
   defaultTheme = null,
   editorTheme = EDITOR_THEME,
 }) => {
-  const theme = useThemeStore(store => store.theme);
+  const theme = useThemeStore(state => state.theme);
   useEffect(() => {
     const { storage } = storageStore.getState();
 
