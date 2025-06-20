@@ -1,4 +1,4 @@
-import { useGraphiQLActions } from './components';
+import { useGraphiQL, useGraphiQLActions } from './components';
 
 /**
  * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()`
@@ -25,9 +25,21 @@ export function useMergeQuery() {
 }
 
 /**
- * @deprecated Use ``
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
  */
-export function useExecutionContext() {}
+export function useExecutionContext() {
+  const { run, stop } = useGraphiQLActions();
+  const values = useGraphiQL(state => ({
+    isFetching: state.isIntrospecting,
+    isSubscribed: Boolean(state.subscription),
+    operationName: state.operationName,
+  }));
+  return {
+    ...values,
+    run,
+    stop,
+  };
+}
 
 /**
  * @deprecated Use ``
