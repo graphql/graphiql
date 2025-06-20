@@ -31,10 +31,7 @@ The `ToolbarMenu` component has changed.
     label="Options"
     button={
       <ToolbarButton label="Options">
-        <SettingsIcon
-          className="graphiql-toolbar-icon"
-          aria-hidden="true"
-        />
+        <SettingsIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
     }
   >
