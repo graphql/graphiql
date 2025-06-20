@@ -23,3 +23,33 @@ export function useMergeQuery() {
   const { mergeQuery } = useGraphiQLActions();
   return mergeQuery;
 }
+
+/**
+ * @deprecated Use ``
+ */
+export function useExecutionContext() {}
+
+/**
+ * @deprecated Use ``
+ */
+export function useExplorerContext() {}
+
+/**
+ * @deprecated Use ``
+ */
+export function useHistoryContext() {}
+
+/**
+ * @deprecated Use ``
+ */
+export function usePluginContext() {}
+
+/**
+ * @deprecated Use ``
+ */
+export function useSchemaContext() {}
+
+/**
+ * @deprecated Use ``
+ */
+export function useStorageContext() {}
