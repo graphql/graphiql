@@ -65,9 +65,18 @@ export function usePluginContext() {
 }
 
 /**
- * @deprecated Use ``
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
  */
-export function useSchemaContext() {}
+export function useSchemaContext() {
+  const values = useGraphiQL(
+    pick('fetchError', 'isFetching', 'schema', 'validationErrors'),
+  );
+  const { introspect } = useGraphiQLActions();
+  return {
+    ...values,
+    introspect,
+  };
+}
 
 /**
  * @deprecated Use ``
