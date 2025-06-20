@@ -21,7 +21,7 @@ import {
 } from '../stores';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
-import { SlicesWithActions } from '../types';
+import type { SlicesWithActions } from '../types';
 import { pick, useDidUpdate, useSynchronizeValue } from '../utility';
 import {
   FragmentDefinitionNode,

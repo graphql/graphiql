@@ -12,9 +12,9 @@ import {
   GraphQLSchema,
   IntrospectionQuery,
 } from 'graphql';
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
-import { SlicesWithActions, SchemaReference } from '../types';
+import type { SlicesWithActions, SchemaReference } from '../types';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 

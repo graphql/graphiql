@@ -10,7 +10,7 @@ import {
   isObjectType,
 } from 'graphql';
 import { useGraphiQL, Button, MarkdownContent } from '@graphiql/react';
-import { DocExplorerFieldDef } from '../context';
+import type { DocExplorerFieldDef } from '../context';
 import { Argument } from './argument';
 import { DefaultValue } from './default-value';
 import { DeprecationReason } from './deprecation-reason';

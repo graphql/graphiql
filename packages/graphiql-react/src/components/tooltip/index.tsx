@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import * as T from '@radix-ui/react-tooltip';
 import './index.css';
 
