@@ -90,7 +90,7 @@ React hooks.
 ### Core Hooks
 
 - **`useGraphiQL`**: Access the current state.
-- **`useGraphiQLActions`**: Trigger actions that mutate the state.
+- **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
 
 The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
