@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import type { FC, ReactElement, ReactNode } from 'react';
 import {
   CopyIcon,
   KEY_MAP,
@@ -24,13 +24,13 @@ const DefaultToolbarRenderProps: FC<{
  * Configure the UI by providing this Component as a child of GraphiQL.
  */
 export const GraphiQLToolbar: FC<{
-  children?: typeof DefaultToolbarRenderProps;
+  children?: typeof DefaultToolbarRenderProps | ReactNode;
 }> = ({ children = DefaultToolbarRenderProps }) => {
   const isRenderProp = typeof children === 'function';
   const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQLActions();
 
   if (!isRenderProp) {
-    return children;
+    return children as ReactElement;
   }
 
   const prettify = (
