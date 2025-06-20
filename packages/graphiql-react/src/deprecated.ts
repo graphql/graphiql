@@ -1,4 +1,5 @@
 import { useGraphiQL, useGraphiQLActions } from './components';
+import { pick } from './utility';
 
 /**
  * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()`
@@ -28,12 +29,12 @@ export function useMergeQuery() {
  * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
  */
 export function useExecutionContext() {
-  const { run, stop } = useGraphiQLActions();
   const values = useGraphiQL(state => ({
     isFetching: state.isIntrospecting,
     isSubscribed: Boolean(state.subscription),
     operationName: state.operationName,
   }));
+  const { run, stop } = useGraphiQLActions();
   return {
     ...values,
     run,
@@ -52,9 +53,16 @@ export function useExplorerContext() {}
 export function useHistoryContext() {}
 
 /**
- * @deprecated Use ``
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks
  */
-export function usePluginContext() {}
+export function usePluginContext() {
+  const values = useGraphiQL(pick('plugins', 'visiblePlugin'));
+  const { setVisiblePlugin } = useGraphiQLActions();
+  return {
+    ...values,
+    setVisiblePlugin,
+  };
+}
 
 /**
  * @deprecated Use ``
