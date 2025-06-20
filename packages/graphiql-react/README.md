@@ -133,8 +133,8 @@ const theme = useThemeStore(state => state.theme);
 const schema = useGraphiQL(state => state.schema);
 ```
 
-All context properties are documented using JSDoc comments. If you're using an
-IDE like VSCode for development these descriptions will show up in auto-complete
+All store properties are documented using TSDoc comments. If you're using an
+IDE like VSCode for development, these descriptions will show up in auto-complete
 tooltips. All these descriptions can also be found in the
 [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql_react.html).
 
