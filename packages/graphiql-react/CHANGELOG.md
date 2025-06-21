@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.35.0-rc.7
+
+### Patch Changes
+
+- [#4020](https://github.com/graphql/graphiql/pull/4020) [`3c0ad34`](https://github.com/graphql/graphiql/commit/3c0ad34a8f2f9d0f912db9597f608d7405c2bd83) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - run cypress tests in React strict mode
+  - fix `defaultQuery` with empty string does not result in an empty default query
+  - fix `useDidUpdate` in React strict mode
+
 ## 0.35.0-rc.6
 
 ### Minor Changes

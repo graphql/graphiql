@@ -33,6 +33,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
+    "./graphiql.css": "./dist/style.css",
     ".": "./dist/index.js",
     "./setup-workers/*": {
       "types": "./dist/setup-workers/*.d.ts",

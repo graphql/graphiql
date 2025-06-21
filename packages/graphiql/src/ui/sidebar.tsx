@@ -15,7 +15,7 @@ import {
   useGraphiQL,
   useGraphiQLActions,
   useStorage,
-  useThemeStore,
+  useTheme,
   VisuallyHidden,
 } from '@graphiql/react';
 import { ShortKeys } from './short-keys';
@@ -55,8 +55,8 @@ export const Sidebar: FC<SidebarProps> = ({
   const forcedTheme =
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
 
-  const storageContext = useStorage();
-  const { theme, setTheme } = useThemeStore();
+  const storage = useStorage();
+  const { theme, setTheme } = useTheme();
   const { setShouldPersistHeaders, introspect, setVisiblePlugin } =
     useGraphiQLActions();
   const { shouldPersistHeaders, isIntrospecting, visiblePlugin, plugins } =
@@ -99,7 +99,7 @@ export const Sidebar: FC<SidebarProps> = ({
 
   function handleClearData() {
     try {
-      storageContext.clear();
+      storage.clear();
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');

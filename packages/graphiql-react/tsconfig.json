@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "noUncheckedIndexedAccess": true,
+    "importsNotUsedAsValues": "error",
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   }
 }
