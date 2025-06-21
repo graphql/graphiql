@@ -1,5 +1,56 @@
 # Upgrading `graphiql` from `4.x` to `5.0.0`
 
+You need to set up Monaco workers in your project:
+
+- For **Vite** projects you must import:
+
+  ```js
+  import "graphiql/setup-workers/vite"
+  ```
+
+  <Callout type="info">
+    See [Vite
+    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-vite/src/App.jsx).
+  </Callout>
+
+- For Webpack projects such as **Next.js** you must import:
+
+  ```js
+  import "graphiql/setup-workers/webpack"
+  ```
+
+  <Callout type="info">
+    See [Next.js
+    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-nextjs/src/app/page.tsx).
+  </Callout>
+
+- For ESM-based CDN usages, you must use
+  [`?worker` query](https://esm.sh/#web-worker) to load the module as a web
+  worker:
+
+  ```js /?worker/
+  import createJSONWorker from "https://esm.sh/monaco-editor/esm/vs/language/json/json.worker.js?worker"
+  import createGraphQLWorker from "https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker"
+  import createEditorWorker from "https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker"
+
+  globalThis.MonacoEnvironment = {
+    getWorker(_workerId, label) {
+      switch (label) {
+        case "json":
+          return createJSONWorker()
+        case "graphql":
+          return createGraphQLWorker()
+      }
+      return createEditorWorker()
+    }
+  }
+  ```
+
+  <Callout type="info">
+    See [CDN
+    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/index.html).
+  </Callout>
+
 ---
 
 ## `graphiql`
@@ -35,6 +86,7 @@
   - `initialVariables`
   - `initialHeaders`
 - feat: allow `children: ReactNode` for `<GraphiQL.Toolbar />` component
+- Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
 
 ---
 
@@ -87,7 +139,9 @@ The `ToolbarMenu` component has changed.
 ## @graphiql/plugin-doc-explorer
 
 - `useExplorerContext` hook is deprecated. Use new `useDocExplorer` and `useDocExplorerActions` hooks instead.
-
+- The shortcut to focus on the Doc Explorer search input is now `Cmd/Ctrl+Alt+K`
+  instead of the previous `Cmd/Ctrl+K`. This was changed because monaco-editor has
+  a built-in `Cmd/Ctrl+K` command.
 ---
 
 ## @graphiql/plugin-history
