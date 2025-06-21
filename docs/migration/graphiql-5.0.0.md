@@ -7,11 +7,10 @@ You need to set up Monaco workers in your project:
   ```js
   import "graphiql/setup-workers/vite"
   ```
-
-  <Callout type="info">
-    See [Vite
-    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-vite/src/App.jsx).
-  </Callout>
+  
+  > [!NOTE]
+  >
+  > See [Vite example](../../examples/graphiql-vite/src/App.jsx).
 
 - For Webpack projects such as **Next.js** you must import:
 
@@ -19,10 +18,9 @@ You need to set up Monaco workers in your project:
   import "graphiql/setup-workers/webpack"
   ```
 
-  <Callout type="info">
-    See [Next.js
-    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-nextjs/src/app/page.tsx).
-  </Callout>
+  > [!NOTE]
+  >
+  > See [Next.js example](../../examples/graphiql-nextjs/src/app/page.tsx).
 
 - For ESM-based CDN usages, you must use
   [`?worker` query](https://esm.sh/#web-worker) to load the module as a web
@@ -46,10 +44,9 @@ You need to set up Monaco workers in your project:
   }
   ```
 
-  <Callout type="info">
-    See [CDN
-    example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/index.html).
-  </Callout>
+  > [!NOTE]
+  >
+  > See [CDN example](../../examples/graphiql-cdn/index.html).
 
 ---
 
