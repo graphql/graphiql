@@ -25,14 +25,28 @@
   - `variables`
   - `headers`
   - `response`
+  > [!NOTE]
+  >
+  > If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
+  > and `initialHeaders` props instead. These props will only be used for the first tab.
+  > When opening more tabs, the query editor will start out empty.
 - Added new props
   - `initialQuery`
   - `initialVariables`
   - `initialHeaders`
+- feat: allow `children: ReactNode` for `<GraphiQL.Toolbar />` component
 
 ---
 
 ## `@graphiql/react`
+
+- `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks are deprecated.
+  Use new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#available-stores) for more details about them.
+- fix `defaultQuery` with empty string does not result in an empty default query
+- fix execute query shortcut in query editor, run it even there are no operations in query editor
+- fix plugin store, save last opened plugin in storage
+- fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
+- remove `useSynchronizeValue` hook
 
 The `ToolbarMenu` component has changed.
 
@@ -72,6 +86,10 @@ The `ToolbarMenu` component has changed.
 
 ## @graphiql/plugin-doc-explorer
 
+- `useExplorerContext` hook is deprecated. Use new `useDocExplorer` and `useDocExplorerActions` hooks instead.
+
 ---
 
 ## @graphiql/plugin-history
+
+- `useHistoryContext` hook is deprecated. Use new `useHistory` and `useHistoryActions` hooks instead.
