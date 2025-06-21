@@ -3210,11 +3210,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/plugin-code-exporter@npm:^5.0.0-rc.1, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
+"@graphiql/plugin-code-exporter@npm:^5.0.0-rc.2, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0-rc.2"
+    "@graphiql/react": "npm:^0.35.0-rc.8"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-code-exporter: "npm:^3.0.3"
     graphql: "npm:^16.9.0"
@@ -3231,11 +3231,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-doc-explorer@npm:^0.3.0-rc.3, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
+"@graphiql/plugin-doc-explorer@npm:^0.3.0-rc.4, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0-rc.3"
+    "@graphiql/react": "npm:^0.35.0-rc.8"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3278,11 +3278,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-history@npm:^0.3.0-rc.1, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
+"@graphiql/plugin-history@npm:^0.3.0-rc.3, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0-rc.4"
+    "@graphiql/react": "npm:^0.35.0-rc.8"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
@@ -3299,7 +3299,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^0.35.0-rc.2, @graphiql/react@npm:^0.35.0-rc.3, @graphiql/react@npm:^0.35.0-rc.4, @graphiql/react@npm:^0.35.0-rc.6, @graphiql/react@npm:^0.35.0-rc.7, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:^0.35.0-rc.3, @graphiql/react@npm:^0.35.0-rc.8, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
@@ -12606,7 +12606,7 @@ __metadata:
   resolution: "example-graphiql-vite@workspace:examples/graphiql-vite"
   dependencies:
     "@vitejs/plugin-react": "npm:^4.4.1"
-    graphiql: "npm:^5.0.0-rc.4"
+    graphiql: "npm:^5.0.0-rc.5"
     graphql: "npm:^16.11.0"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
@@ -12622,9 +12622,9 @@ __metadata:
     "@babel/plugin-syntax-dynamic-import": "npm:^7.8.3"
     "@babel/preset-env": "npm:^7.20.2"
     "@babel/preset-react": "npm:^7.18.6"
-    "@graphiql/plugin-code-exporter": "npm:^5.0.0-rc.1"
+    "@graphiql/plugin-code-exporter": "npm:^5.0.0-rc.2"
     "@graphiql/plugin-explorer": "npm:^5.0.0-rc.3"
-    "@graphiql/react": "npm:^0.35.0-rc.7"
+    "@graphiql/react": "npm:^0.35.0-rc.8"
     "@graphiql/toolkit": "npm:^0.11.3"
     ajv-formats: "npm:^3.0.1"
     babel-loader: "npm:^9.1.2"
@@ -12632,7 +12632,7 @@ __metadata:
     cross-env: "npm:^7.0.2"
     css-loader: "npm:^6.7.3"
     file-loader: "npm:^6.2.0"
-    graphiql: "npm:^5.0.0-rc.4"
+    graphiql: "npm:^5.0.0-rc.5"
     graphql: "npm:^16.9.0"
     graphql-ws: "npm:^5.5.5"
     html-webpack-plugin: "npm:^5.5.0"
@@ -14349,13 +14349,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphiql@npm:^5.0.0-rc.4, graphiql@workspace:packages/graphiql":
+"graphiql@npm:^5.0.0-rc.5, graphiql@workspace:packages/graphiql":
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
-    "@graphiql/plugin-doc-explorer": "npm:^0.3.0-rc.3"
-    "@graphiql/plugin-history": "npm:^0.3.0-rc.1"
-    "@graphiql/react": "npm:^0.35.0-rc.6"
+    "@graphiql/plugin-doc-explorer": "npm:^0.3.0-rc.4"
+    "@graphiql/plugin-history": "npm:^0.3.0-rc.3"
+    "@graphiql/react": "npm:^0.35.0-rc.8"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
