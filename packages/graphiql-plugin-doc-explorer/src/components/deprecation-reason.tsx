@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { MarkdownContent } from '@graphiql/react';
 import './deprecation-reason.css';
 

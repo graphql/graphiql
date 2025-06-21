@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.7.1-rc.0
+
+### Patch Changes
+
+- [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
+
+  - `BaseSchemaConfig`
+  - `IDisposable`
+  - `JSONDiagnosticOptions`
+  - `IEvent`
+  - `FilePointer`
+
 ## 1.7.0
 
 ### Minor Changes

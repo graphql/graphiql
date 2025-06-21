@@ -1,4 +1,4 @@
-import { ComponentProps, FC, SVGProps } from 'react';
+import type { ComponentProps, FC, SVGProps } from 'react';
 
 import _ArgumentIcon from './argument.svg?react';
 import _ChevronDownIcon from './chevron-down.svg?react';

@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { DirectiveNode } from 'graphql';
+import type { FC } from 'react';
+import type { DirectiveNode } from 'graphql';
 import './directive.css';
 
 type DirectiveProps = {

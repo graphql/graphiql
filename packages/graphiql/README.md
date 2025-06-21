@@ -202,4 +202,4 @@ has to be loaded for the theme prop to work.
 
 You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
-[here](../graphiql-react/src/editor/style/codemirror.css).
+[here](../graphiql-react/src/style/codemirror.css).

@@ -6,7 +6,7 @@ export default defineConfig({
   e2e: {
     baseUrl: `http://localhost:${PORT}`,
   },
-  video: false,
+  video: true,
   viewportWidth: 1920,
   viewportHeight: 1080,
 });

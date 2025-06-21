@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { DocExplorerFieldDef, useDocExplorerActions } from '../context';
 import './field-link.css';
 

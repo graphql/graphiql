@@ -11,6 +11,7 @@
       "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-nextjs",
       "examples/monaco-graphql-react-vite",
+      "examples/graphiql-vite",
       "examples/graphiql-webpack"
     ]
   },
@@ -18,6 +19,8 @@
   "scripts": {
     "types:check": "turbo run types:check",
     "dev:graphiql": "turbo run dev --filter=graphiql...",
+    "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
+    "dev:example-vite": "turbo run dev --filter=example-graphiql-vite...",
     "build:graphiql": "turbo run build --filter=graphiql...",
     "build": "yarn build-clean && yarn tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
@@ -32,7 +35,7 @@
     "watch-vscode": "yarn tsc && yarn workspace vscode-graphql compile",
     "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
     "check": "yarn tsc --noEmit",
-    "cypress-open": "yarn workspace graphiql cypress-open",
+    "cypress-open": "concurrently 'yarn dev:graphiql' 'yarn workspace graphiql cypress-open'",
     "e2e": "yarn workspace graphiql e2e",
     "eslint": "NODE_OPTIONS=--max-old-space-size=4096 ESLINT_USE_FLAT_CONFIG=false eslint --max-warnings=0 --ignore-path .gitignore --cache .",
     "format": "yarn eslint --fix && yarn pretty",
@@ -59,7 +62,7 @@
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
     "tsc": "tsc --build && node resources/patch-monaco-editor-type.mjs",
-    "vitest": "yarn wsrun -p -m test",
+    "vitest": "turbo run test",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack",
     "gen-agenda": "wgutils agenda gen"
   },

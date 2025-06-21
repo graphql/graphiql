@@ -1,9 +1,6 @@
-## GraphiQL Parcel Example
+# GraphiQL Parcel Example
 
-This example demonstrates how to transpile your own custom ES6 GraphiQL
-implementation with parcel bundler.
-
-### Setup
-
-1. `yarn` and `yarn start` from this folder to start parcel dev mode.
-1. `yarn build` to find production ready files.
+> [!WARNING]
+>
+> This example has been removed. You can find its last version [here](https://github.com/graphql/graphiql/tree/3b93d27f7568d93db5cd146157220b127eeea737/examples/graphiql-parcel).
+> We recommend using the [GraphiQL Vite](../graphiql-vite) or [GraphiQL Next.js](../graphiql-nextjs) examples instead.
