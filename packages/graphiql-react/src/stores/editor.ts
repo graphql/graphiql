@@ -72,10 +72,11 @@ export interface EditorSlice extends TabsState {
   shouldPersistHeaders: boolean;
 
   /**
-   * The initial content of the query editor when loading GraphiQL and there
-   * is no value persisted in storage.
-   * The default value will only be used for the first tab. When opening
-   * more tabs, the query editor will start out empty.
+   * The initial content of the query editor when loading GraphiQL and there is
+   * no saved query in storage and no `initialQuery` prop.
+   *
+   * This value is used only for the first tab. Additional tabs will open with
+   * an empty query editor.
    *
    * @default "# Welcome to GraphiQL..."
    */
