@@ -24,7 +24,7 @@ export const storageStore = createStore<StorageStoreType>(() => ({
 }));
 
 export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
-  const isMounted = useStorageStore(store => Boolean(store.storage));
+  const isMounted = useStorageStore(state => Boolean(state.storage));
 
   useEffect(() => {
     storageStore.setState({ storage: new StorageAPI(storage) });
@@ -40,4 +40,4 @@ export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
 
 const useStorageStore = createBoundedUseStore(storageStore);
 
-export const useStorage = () => useStorageStore(store => store.storage);
+export const useStorage = () => useStorageStore(state => state.storage);

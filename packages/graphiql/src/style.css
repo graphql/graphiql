@@ -201,7 +201,8 @@ button.graphiql-tab-add {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  --editor-background: transparent;
+  /* Add some padding so it doesn’t touch the tabs */
+  padding-top: var(--px-16);
   display: flex;
   width: 100%;
   flex-direction: column;
