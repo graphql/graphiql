@@ -24,11 +24,6 @@
   }
 }
 
-.graphiql-response .monaco-editor {
-  /* Add some padding so it doesn’t touch the tabs */
-  padding-top: var(--px-16);
-}
-
 /* Make hover contents be dynamic */
 .monaco-hover,
 .monaco-hover-content {
