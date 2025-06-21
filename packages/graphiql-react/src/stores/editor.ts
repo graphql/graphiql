@@ -55,12 +55,6 @@ export interface EditorSlice extends TabsState {
   initialQuery: string;
 
   /**
-   * The contents of the response editor when initially rendering the provider
-   * component.
-   */
-  initialResponse: string;
-
-  /**
    * The contents of the variables editor when initially rendering the provider
    * component.
    */
@@ -78,12 +72,13 @@ export interface EditorSlice extends TabsState {
   shouldPersistHeaders: boolean;
 
   /**
-   * The initial contents of the query editor when loading GraphiQL and there
-   * is no other source for the editor state. Other sources can be:
-   * - The `query` prop
-   * - The value persisted in storage
-   * These default contents will only be used for the first tab. When opening
-   * more tabs, the query editor will start out empty.
+   * The initial content of the query editor when loading GraphiQL and there is
+   * no saved query in storage and no `initialQuery` prop.
+   *
+   * This value is used only for the first tab. Additional tabs will open with
+   * an empty query editor.
+   *
+   * @default "# Welcome to GraphiQL..."
    */
   defaultQuery?: string;
 
@@ -246,14 +241,6 @@ export interface EditorProps
   externalFragments?: string | FragmentDefinitionNode[];
 
   /**
-   * This prop can be used to set the contents of the headers editor. Every
-   * time this prop changes, the contents of the headers editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  headers?: string;
-
-  /**
    * This prop can be used to define the default set of tabs, with their
    * queries, variables, and headers. It will be used as default only if
    * there is no tab state persisted in storage.
@@ -271,37 +258,16 @@ export interface EditorProps
   defaultTabs?: TabDefinition[];
 
   /**
-   * This prop can be used to set the contents of the query editor. Every time
-   * this prop changes, the contents of the query editor are replaced. Note
-   * that the editor contents can be changed in between these updates by typing
-   * in the editor.
-   */
-  query?: string;
-
-  /**
-   * This prop can be used to set the contents of the response editor. Every
-   * time this prop changes, the contents of the response editor are replaced.
-   * Note that the editor contents can change in between these updates by
-   * executing queries that will show a response.
-   */
-  response?: string;
-
-  /**
    * This prop toggles if the contents of the headers editor are persisted in
    * storage.
    * @default false
    */
   shouldPersistHeaders?: boolean;
 
-  /**
-   * This prop can be used to set the contents of the variables editor. Every
-   * time this prop changes, the contents of the variables editor are replaced.
-   * Note that the editor contents can be changed in between these updates by
-   * typing in the editor.
-   */
-  variables?: string;
-
   onPrettifyQuery?: EditorSlice['onPrettifyQuery'];
+  initialQuery?: EditorSlice['initialQuery'];
+  initialVariables?: EditorSlice['initialVariables'];
+  initialHeaders?: EditorSlice['initialHeaders'];
 }
 
 type CreateEditorSlice = (
@@ -313,7 +279,6 @@ type CreateEditorSlice = (
     | 'initialQuery'
     | 'initialVariables'
     | 'initialHeaders'
-    | 'initialResponse'
     | 'onEditOperationName'
     | 'externalFragments'
     | 'onTabChange'
@@ -373,36 +338,21 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   const $actions: EditorActions = {
     addTab() {
-      set(
-        ({
-          defaultQuery,
-          defaultHeaders,
-          onTabChange,
+      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex, actions }) => {
+        // Make sure the current tab stores the latest values
+        const updatedValues = synchronizeActiveTabValues({
           tabs,
           activeTabIndex,
-          actions,
-        }) => {
-          // Make sure the current tab stores the latest values
-          const updatedValues = synchronizeActiveTabValues({
-            tabs,
-            activeTabIndex,
-          });
-          const updated = {
-            tabs: [
-              ...updatedValues.tabs,
-              createTab({
-                headers: defaultHeaders,
-                query: defaultQuery,
-              }),
-            ],
-            activeTabIndex: updatedValues.tabs.length,
-          };
-          actions.storeTabs(updated);
-          setEditorValues(updated.tabs[updated.activeTabIndex]!);
-          onTabChange?.(updated);
-          return updated;
-        },
-      );
+        });
+        const updated = {
+          tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
+          activeTabIndex: updatedValues.tabs.length,
+        };
+        actions.storeTabs(updated);
+        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        onTabChange?.(updated);
+        return updated;
+      });
     },
     changeTab(index) {
       set(({ actions, onTabChange, tabs }) => {
@@ -516,9 +466,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       try {
         await navigator.clipboard.writeText(query);
       } catch (error) {
-        const msg = error instanceof Error ? error.message : error;
         // eslint-disable-next-line no-console
-        console.error('Failed to copy query!', msg);
+        console.warn('Failed to copy query!', error);
       }
     },
     async prettifyEditors() {
@@ -534,7 +483,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(
+          console.warn(
             'Parsing variables JSON failed, skip prettification.',
             error,
           );
@@ -550,7 +499,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(
+          console.warn(
             'Parsing headers JSON failed, skip prettification.',
             error,
           );
@@ -568,7 +517,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Parsing query failed, skip prettification.', error);
+        console.warn('Parsing query failed, skip prettification.', error);
       }
     },
     mergeQuery() {

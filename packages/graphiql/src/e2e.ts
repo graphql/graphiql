@@ -22,12 +22,14 @@ interface Params {
   query?: string;
   variables?: string;
   headers?: string;
+
+  defaultQuery?: string;
+  defaultHeaders?: string;
+
   confirmCloseTab?: 'true';
   onPrettifyQuery?: 'true';
   forcedTheme?: 'light' | 'dark' | 'system';
-  defaultQuery?: string;
   defaultTheme?: Theme;
-  defaultHeaders?: string;
 }
 
 // Parse the search string to get url parameters.
@@ -101,10 +103,14 @@ const props: ComponentProps<typeof GraphiQL> = {
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),
-  query: parameters.query,
-  variables: parameters.variables,
-  headers: parameters.headers,
+
+  initialQuery: parameters.query,
+  initialVariables: parameters.variables,
+  initialHeaders: parameters.headers,
+
+  defaultQuery: parameters.defaultQuery,
   defaultHeaders: parameters.defaultHeaders,
+
   onEditQuery,
   onEditVariables,
   onEditHeaders,
@@ -118,14 +124,15 @@ const props: ComponentProps<typeof GraphiQL> = {
     parameters.onPrettifyQuery === 'true' ? onPrettifyQuery : undefined,
   onTabChange,
   forcedTheme: parameters.forcedTheme,
-  defaultQuery: parameters.defaultQuery,
   defaultTheme: parameters.defaultTheme,
 };
 
-root.render(
-  React.createElement(
+function App() {
+  return React.createElement(
     React.StrictMode,
     null,
     React.createElement(GraphiQL, props),
-  ),
-);
+  );
+}
+
+root.render(React.createElement(App));

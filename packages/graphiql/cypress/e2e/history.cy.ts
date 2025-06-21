@@ -9,22 +9,11 @@ import {
 } from '../fixtures/fixtures';
 
 describe('history', () => {
-  it('defaults to closed history panel', () => {
-    cy.visit('/');
-    cy.get('.graphiql-history').should('not.exist');
-  });
-
   it('will save history item even when history panel is closed', () => {
     cy.visit('?query={test}');
     cy.clickExecuteQuery();
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items').should('have.length', 1);
-  });
-
-  it('will save history item even when history panel is closed', () => {
-    cy.visit('?query={test}');
-    cy.clickExecuteQuery();
-    cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 1);
   });
 

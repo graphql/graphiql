@@ -33,7 +33,6 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
   );
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
-    // Build the editor
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
     const disposables = [

@@ -78,13 +78,13 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalContent) {
     throw new TypeError(
-      '`toolbar.additionalContent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+      'The `toolbar.additionalContent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalComponent) {
     throw new TypeError(
-      '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+      'The `toolbar.additionalComponent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
   // @ts-expect-error -- Prop is removed
@@ -95,7 +95,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   }
   // @ts-expect-error -- Prop is removed
   if (props.readOnly) {
-    throw new TypeError('`readOnly` was removed.');
+    throw new TypeError('The `readOnly` prop has been removed.');
   }
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
