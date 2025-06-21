@@ -90,7 +90,7 @@ React hooks.
 ### Core Hooks
 
 - **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
-- **`useThemeStore`**: Manages the current theme and provides a method to update it.
+- **`useTheme`**: Manages the current theme and provides a method to update it.
 - **`useGraphiQL`**: Access the current state.
 - **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
 
@@ -107,21 +107,17 @@ The `useGraphiQL` hook **provides access to the following store slices**:
 ### Usage Example
 
 ```js
-import {
-  useGraphiQL,
-  useGraphiQLActions,
-  useThemeStore,
-} from '@graphiql/react';
+import { useGraphiQL, useGraphiQLActions, useTheme } from '@graphiql/react';
 
 // Get an action to fetch the schema
 const { introspect } = useGraphiQLActions();
 
 // Get the current theme and a method to change it
-const { theme, setTheme } = useThemeStore();
+const { theme, setTheme } = useTheme();
 
 // Or use a selector to access specific parts of the state
 const schema = useGraphiQL(state => state.schema);
-const currentTheme = useThemeStore(state => state.theme);
+const currentTheme = useTheme(state => state.theme);
 ```
 
 All store properties are documented using TSDoc comments. If you're using an

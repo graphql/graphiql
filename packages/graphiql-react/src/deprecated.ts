@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-export-from */
 import { useGraphiQL, useGraphiQLActions } from './components';
 import { pick } from './utility';
 import { useStorage } from './stores';
@@ -70,9 +71,6 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const { storage } = useStorage()` instead.
+ * @deprecated Use `const storage = useStorage()` instead.
  */
-export function useStorageContext() {
-  const { storage } = useStorage();
-  return storage;
-}
+export const useStorageContext = useStorage
