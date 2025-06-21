@@ -73,4 +73,4 @@ export function useSchemaContext() {
 /**
  * @deprecated Use `const storage = useStorage()` instead.
  */
-export const useStorageContext = useStorage
+export const useStorageContext = useStorage;
