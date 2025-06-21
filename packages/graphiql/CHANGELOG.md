@@ -1,5 +1,28 @@
 # Change Log
 
+## 5.0.0-rc.5
+
+### Minor Changes
+
+- [#4025](https://github.com/graphql/graphiql/pull/4025) [`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set "importsNotUsedAsValues": "error" in tsconfig
+
+- [#4026](https://github.com/graphql/graphiql/pull/4026) [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - deprecate `useExplorerContext`, `useHistoryContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks
+  - fix response editor overflow on `<GraphiQL.Footer />`
+  - export `GraphiQLProps` type
+  - allow `children: ReactNode` for `<GraphiQL.Toolbar />`
+  - change `ToolbarMenu` component:
+    - The `label` and `className` props were removed
+    - The `button` prop should now be a button element
+  - document `useGraphiQL` and `useGraphiQLActions` hooks in `@graphiql/react` README.md
+  - rename `useThemeStore` to `useTheme`
+
+### Patch Changes
+
+- Updated dependencies [[`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b), [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b)]:
+  - @graphiql/plugin-doc-explorer@0.3.0-rc.4
+  - @graphiql/plugin-history@0.3.0-rc.3
+  - @graphiql/react@0.35.0-rc.8
+
 ## 5.0.0-rc.4
 
 ### Minor Changes
