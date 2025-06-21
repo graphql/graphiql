@@ -70,25 +70,49 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
   // @ts-expect-error -- runtime check
   if (props.query) {
     throw new TypeError(
-      'The `query` prop has been removed. Use `queryEditor.setValue(query)` instead.',
+      'The `query` prop has been removed. Use `initialQuery` prop instead, or set value programmatically using:\n' +
+        `
+const queryEditor = useGraphiQL(state => state.queryEditor)
+
+useEffect(() => {
+  queryEditor.setValue(query)
+}, [query])`,
     );
   }
   // @ts-expect-error -- runtime check
   if (props.variables) {
     throw new TypeError(
-      'The `variables` prop has been removed. Use `variableEditor.setValue(variables)` instead.',
+      'The `variables` prop has been removed. Use `initialVariables` prop instead, or set value programmatically using:\n' +
+        `
+const variableEditor = useGraphiQL(state => state.variableEditor)
+
+useEffect(() => {
+  variableEditor.setValue(variables)
+}, [variables])`,
     );
   }
   // @ts-expect-error -- runtime check
   if (props.headers) {
     throw new TypeError(
-      'The `headers` prop has been removed. Use `headerEditor.setValue(headers)` instead.',
+      'The `headers` prop has been removed. Use `initialHeaders` prop instead, or set value programmatically using:\n' +
+        `
+const headerEditor = useGraphiQL(state => state.headerEditor)
+
+useEffect(() => {
+  headerEditor.setValue(headers)
+}, [headers])`,
     );
   }
   // @ts-expect-error -- runtime check
   if (props.response) {
     throw new TypeError(
-      'The `response` prop has been removed. Use `responseEditor.setValue(response)` instead.',
+      'The `response` prop has been removed. Set value programmatically using:\n' +
+        `
+const responseEditor = useGraphiQL(state => state.responseEditor)
+
+useEffect(() => {
+  responseEditor.setValue(response)
+}, [response])`,
     );
   }
   return (
