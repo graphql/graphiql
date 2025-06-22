@@ -2,7 +2,7 @@ import type { PersistStorage } from 'zustand/middleware';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, Theme } from '../types';
 
-export type Storage = PersistStorage<GraphiQLPersistedState>
+export type Storage = PersistStorage<GraphiQLPersistedState>;
 
 interface GraphiQLPersistedState {
   theme?: Theme;

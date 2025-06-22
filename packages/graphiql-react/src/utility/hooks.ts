@@ -28,7 +28,7 @@ export function useChangeHandler(
       if (storageKey === null) {
         return;
       }
-      storage.set(storageKey, value);
+      storage.setItem(storageKey, value);
     });
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });

@@ -174,10 +174,10 @@ describe('clearHeadersFromTabs', () => {
       },
       headers: '{ "authorization": "secret" }',
     };
-    storage.set(STORAGE_KEY.tabs, JSON.stringify(stateWithHeaders));
+    storage.setItem(STORAGE_KEY.tabs, JSON.stringify(stateWithHeaders));
     clearHeadersFromTabs();
 
-    expect(JSON.parse(storage.get(STORAGE_KEY.tabs)!)).toEqual({
+    expect(JSON.parse(storage.getItem(STORAGE_KEY.tabs)!)).toEqual({
       ...stateWithHeaders,
       headers: null,
     });
