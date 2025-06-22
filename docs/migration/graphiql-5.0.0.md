@@ -63,13 +63,13 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 - Added new examples: [**GraphiQL x Vite**](../../examples/graphiql-vite) and [**GraphiQL x Next.js**](../../examples/graphiql-nextjs)
 - Removed examples: **GraphiQL x Parcel** and **GraphiQL x Create React App**
 - Removed props
-  - `keyMap`. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs
-  - `readOnly`
-  - `validationRules`. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.'
   - `query`
   - `variables`
   - `headers`
   - `response`
+  - `readOnly`
+  - `keyMap`. To use Vim or Emacs keybindings in Monaco, you can use community plugins. Monaco Vim: https://github.com/brijeshb42/monaco-vim. Monaco Emacs: https://github.com/aioutecism/monaco-emacs
+  - `validationRules`. Use custom GraphQL worker, see https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#custom-webworker-for-passing-non-static-config-to-worker.'
 
 > [!NOTE]
 >
@@ -82,19 +82,25 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
   - `initialVariables`
   - `initialHeaders`
 - feat: allow `children: ReactNode` for `<GraphiQL.Toolbar />` component
-- Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
+- allow override all default GraphiQL plugins
 
 ---
 
 ## `@graphiql/react`
 
+> [!IMPORTANT]
+> 
+> Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
+
 - `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks are deprecated.
-  Use new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#available-stores) for more details about them.
+- Add new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#available-stores) for more details about them.
+- remove `useSynchronizeValue` hook
 - fix `defaultQuery` with empty string does not result in an empty default query
+- fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
 - fix execute query shortcut in query editor, run it even there are no operations in query editor
 - fix plugin store, save last opened plugin in storage
-- fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
-- remove `useSynchronizeValue` hook
+- remove `onClickReference` from variable editor
+- fix shortcut text per OS for default query and in run query in execute query button's tooltip
 
 The `ToolbarMenu` component has changed.
 
@@ -138,6 +144,8 @@ The `ToolbarMenu` component has changed.
 - The shortcut to focus on the Doc Explorer search input is now `Cmd/Ctrl+Alt+K`
   instead of the previous `Cmd/Ctrl+K`. This was changed because monaco-editor has
   a built-in `Cmd/Ctrl+K` command.
+- push a field type on stack too before field
+- fix: show spinner in doc explorer based on `isIntrospecting` value, and not based on `isFetching`
 
 ---
 
