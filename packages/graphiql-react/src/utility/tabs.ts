@@ -3,10 +3,6 @@
 import type { StateStorage } from 'zustand/middleware';
 import { STORAGE_KEY } from '../constants';
 
-const storageStore = {
-  getState: () => ({ storage: null }),
-};
-
 export interface TabDefinition {
   /**
    * The contents of the query editor of this tab.
@@ -148,46 +144,6 @@ export function getDefaultTabState({
   // }
 }
 
-function isTabsState(obj: any): obj is TabsState {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    !Array.isArray(obj) &&
-    hasNumberKey(obj, 'activeTabIndex') &&
-    'tabs' in obj &&
-    Array.isArray(obj.tabs) &&
-    obj.tabs.every(isTabState)
-  );
-}
-
-function isTabState(obj: any): obj is TabState {
-  // We don't persist the hash, so we skip the check here
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    !Array.isArray(obj) &&
-    hasStringKey(obj, 'id') &&
-    hasStringKey(obj, 'title') &&
-    hasStringOrNullKey(obj, 'query') &&
-    hasStringOrNullKey(obj, 'variables') &&
-    hasStringOrNullKey(obj, 'headers') &&
-    hasStringOrNullKey(obj, 'operationName') &&
-    hasStringOrNullKey(obj, 'response')
-  );
-}
-
-function hasNumberKey(obj: Record<string, any>, key: string) {
-  return key in obj && typeof obj[key] === 'number';
-}
-
-function hasStringKey(obj: Record<string, any>, key: string) {
-  return key in obj && typeof obj[key] === 'string';
-}
-
-function hasStringOrNullKey(obj: Record<string, any>, key: string) {
-  return key in obj && (typeof obj[key] === 'string' || obj[key] === null);
-}
-
 export function serializeTabState(
   tabState: TabsState,
   shouldPersistHeaders = false,
@@ -270,8 +226,7 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
-export function clearHeadersFromTabs() {
-  const { storage } = storageStore.getState();
+export function clearHeadersFromTabs(storage: StateStorage) {
   const persistedTabs = storage.getItem(STORAGE_KEY.tabs);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);

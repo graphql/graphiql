@@ -250,7 +250,8 @@ useEffect(() => {
               };
             },
             partialize(state) {
-              console.log('partialize', state)
+              // eslint-disable-next-line no-console
+              console.log('partialize', state);
               return {
                 activeTabIndex: state.activeTabIndex,
                 tabs: state.tabs,
