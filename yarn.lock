@@ -3352,6 +3352,7 @@ __metadata:
     meros: "npm:^1.1.4"
     subscriptions-transport-ws: "npm:0.11.0"
     tsup: "npm:^8.2.4"
+    zustand: "npm:^5"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     graphql-ws: ">= 4.5.0"

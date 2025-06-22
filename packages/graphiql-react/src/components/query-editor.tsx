@@ -2,7 +2,6 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { useStorage } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
