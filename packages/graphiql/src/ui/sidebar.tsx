@@ -14,7 +14,6 @@ import {
   useDragResize,
   useGraphiQL,
   useGraphiQLActions,
-  useStorage,
   VisuallyHidden,
 } from '@graphiql/react';
 import { ShortKeys } from './short-keys';
@@ -54,7 +53,6 @@ export const Sidebar: FC<SidebarProps> = ({
   const forcedTheme =
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
 
-  const storage = useStorage();
   const { setShouldPersistHeaders, introspect, setVisiblePlugin, setTheme } =
     useGraphiQLActions();
   const {
@@ -63,6 +61,7 @@ export const Sidebar: FC<SidebarProps> = ({
     visiblePlugin,
     plugins,
     theme,
+    storage,
   } = useGraphiQL(
     pick(
       'shouldPersistHeaders',
@@ -70,6 +69,7 @@ export const Sidebar: FC<SidebarProps> = ({
       'visiblePlugin',
       'plugins',
       'theme',
+      'storage',
     ),
   );
 

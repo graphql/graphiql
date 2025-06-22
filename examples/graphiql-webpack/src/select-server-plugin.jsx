@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useStorage, useSchemaStore } from '@graphiql/react';
+import { useGraphiQL, useSchemaStore } from '@graphiql/react';
 
 export const LAST_URL_KEY = 'lastURL';
 
@@ -7,8 +7,8 @@ export const PREV_URLS_KEY = 'previousURLs';
 
 const SelectServer = ({ url, setUrl }) => {
   const inputRef = React.useRef(null);
-  const storage = useStorage();
-  const lastUrl = storage.get(LAST_URL_KEY);
+  const storage = useGraphiQL(state => state.storage);
+  const lastUrl = storage.getItem(LAST_URL_KEY);
   const currentUrl = lastUrl ?? url;
   const [inputValue, setInputValue] = React.useState(currentUrl);
   const [previousUrls, setPreviousUrls] = React.useState(

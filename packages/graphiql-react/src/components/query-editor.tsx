@@ -69,6 +69,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     operations,
     operationName,
     externalFragments,
+    storage,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -77,9 +78,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'operations',
       'operationName',
       'externalFragments',
+      'storage',
     ),
   );
-  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
     null!,
@@ -215,7 +216,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     // have additional logic that updates the operation facts that we save in `editorStore`
     const handleChange = debounce(100, () => {
       const query = editor.getValue();
-      storage.set(STORAGE_KEY.query, query);
+      storage.setItem(STORAGE_KEY.query, query);
 
       const operationFacts = getAndUpdateOperationFacts(editor);
       // Invoke callback props only after the operation facts have been updated
