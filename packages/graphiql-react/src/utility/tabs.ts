@@ -71,7 +71,6 @@ export type TabsState = {
 };
 
 export function getDefaultTabState({
-  storage,
   defaultQuery,
   defaultHeaders,
   headers,
@@ -84,72 +83,69 @@ export function getDefaultTabState({
       headers: headers ?? defaultHeaders,
     },
   ],
-  shouldPersistHeaders,
 }: {
-  storage: StateStorage;
-  defaultQuery: string;
   defaultHeaders?: string;
-  headers: string | null;
+  defaultQuery: string;
   defaultTabs?: TabDefinition[];
+  headers: string | null;
   query: string | null;
   variables: string | null;
-  shouldPersistHeaders?: boolean;
 }) {
-  const storedState = storage.getItem(STORAGE_KEY.tabs);
-  try {
-    if (!storedState) {
-      throw new Error('Storage for tabs is empty');
-    }
-    const parsed = JSON.parse(storedState);
-    // if headers are not persisted, do not derive the hash using default headers state
-    // or else you will get new tabs on every refresh
-    const headersForHash = shouldPersistHeaders ? headers : undefined;
-    if (isTabsState(parsed)) {
-      const expectedHash = hashFromTabContents({
-        query,
-        variables,
-        headers: headersForHash,
-      });
-      let matchingTabIndex = -1;
-
-      for (let index = 0; index < parsed.tabs.length; index++) {
-        const tab = parsed.tabs[index]!;
-        tab.hash = hashFromTabContents({
-          query: tab.query,
-          variables: tab.variables,
-          headers: tab.headers,
-        });
-        if (tab.hash === expectedHash) {
-          matchingTabIndex = index;
-        }
-      }
-
-      if (matchingTabIndex >= 0) {
-        parsed.activeTabIndex = matchingTabIndex;
-      } else {
-        const operationName = query ? fuzzyExtractOperationName(query) : null;
-        parsed.tabs.push({
-          id: guid(),
-          hash: expectedHash,
-          title: operationName || DEFAULT_TITLE,
-          query,
-          variables,
-          headers,
-          operationName,
-          response: null,
-        });
-        parsed.activeTabIndex = parsed.tabs.length - 1;
-      }
-
-      return parsed;
-    }
-    throw new Error('Storage for tabs is invalid');
-  } catch {
-    return {
-      activeTabIndex: 0,
-      tabs: defaultTabs.map(createTab),
-    };
-  }
+  // const storedState = storage.getItem(STORAGE_KEY.tabs);
+  // try {
+  //   if (!storedState) {
+  //     throw new Error('Storage for tabs is empty');
+  //   }
+  //   const parsed = JSON.parse(storedState);
+  //   // if headers are not persisted, do not derive the hash using default headers state
+  //   // or else you will get new tabs on every refresh
+  //   const headersForHash = shouldPersistHeaders ? headers : undefined;
+  //   if (isTabsState(parsed)) {
+  //     const expectedHash = hashFromTabContents({
+  //       query,
+  //       variables,
+  //       headers: headersForHash,
+  //     });
+  //     let matchingTabIndex = -1;
+  //
+  //     for (let index = 0; index < parsed.tabs.length; index++) {
+  //       const tab = parsed.tabs[index]!;
+  //       tab.hash = hashFromTabContents({
+  //         query: tab.query,
+  //         variables: tab.variables,
+  //         headers: tab.headers,
+  //       });
+  //       if (tab.hash === expectedHash) {
+  //         matchingTabIndex = index;
+  //       }
+  //     }
+  //
+  //     if (matchingTabIndex >= 0) {
+  //       parsed.activeTabIndex = matchingTabIndex;
+  //     } else {
+  //       const operationName = query ? fuzzyExtractOperationName(query) : null;
+  //       parsed.tabs.push({
+  //         id: guid(),
+  //         hash: expectedHash,
+  //         title: operationName || DEFAULT_TITLE,
+  //         query,
+  //         variables,
+  //         headers,
+  //         operationName,
+  //         response: null,
+  //       });
+  //       parsed.activeTabIndex = parsed.tabs.length - 1;
+  //     }
+  //
+  //     return parsed;
+  //   }
+  //   throw new Error('Storage for tabs is invalid');
+  // } catch {
+  return {
+    activeTabIndex: 0,
+    tabs: defaultTabs.map(createTab),
+  };
+  // }
 }
 
 function isTabsState(obj: any): obj is TabsState {

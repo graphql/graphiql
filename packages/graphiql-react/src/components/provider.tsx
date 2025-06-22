@@ -169,8 +169,6 @@ useEffect(() => {
         defaultTabs,
         headers,
         query,
-        shouldPersistHeaders,
-        storage,
         variables,
       });
 
@@ -254,6 +252,8 @@ useEffect(() => {
             partialize(state) {
               console.log('partialize', state)
               return {
+                activeTabIndex: state.activeTabIndex,
+                tabs: state.tabs,
                 theme: state.theme,
                 visiblePlugin: state.visiblePlugin,
               };
