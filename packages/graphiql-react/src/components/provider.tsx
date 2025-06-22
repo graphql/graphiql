@@ -85,7 +85,6 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   ...props
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
   if (!fetcher) {
     throw new TypeError(
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
