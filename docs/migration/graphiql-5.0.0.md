@@ -58,9 +58,9 @@ To remove all default plugins (currently **Doc Explorer** and **History**), set
 `referencePlugin={null}` and pass an empty array to the `plugins` prop:
 
 ```jsx
-import { GraphiQL } from "graphiql"
+import { GraphiQL } from 'graphiql';
 
-const myPlugins = []
+const myPlugins = [];
 
 function App() {
   return (
@@ -68,7 +68,7 @@ function App() {
       referencePlugin={null} // Removes Doc Explorer plugin
       plugins={myPlugins} // Removes History plugin
     />
-  )
+  );
 }
 ```
 
@@ -84,13 +84,13 @@ If you're adding custom plugins (e.g., the **Explorer** plugin) and want to keep
 the **History** plugin, you must explicitly include it in the `plugins` array:
 
 ```jsx
-import { GraphiQL, HISTORY_PLUGIN } from "graphiql"
-import { explorerPlugin } from "@graphiql/plugin-explorer"
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
+import { explorerPlugin } from '@graphiql/plugin-explorer';
 
-const myPlugins = [HISTORY_PLUGIN, explorerPlugin()]
+const myPlugins = [HISTORY_PLUGIN, explorerPlugin()];
 
 function App() {
-  return <GraphiQL plugins={myPlugins} />
+  return <GraphiQL plugins={myPlugins} />;
 }
 ```
 
@@ -134,7 +134,7 @@ function App() {
 ## `@graphiql/react`
 
 > [!IMPORTANT]
-> 
+>
 > Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
 
 - `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks are deprecated.
