@@ -8,9 +8,9 @@ You need to set up Monaco workers in your project:
   import 'graphiql/setup-workers/vite';
   ```
 
-  > [!NOTE]
-  >
-  > See [Vite example](../../examples/graphiql-vite/src/App.jsx).
+> [!NOTE]
+>
+> See [Vite example](../../examples/graphiql-vite/src/App.jsx).
 
 - For Webpack projects such as **Next.js** you must import:
 
