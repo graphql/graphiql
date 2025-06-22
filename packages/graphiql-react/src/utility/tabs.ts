@@ -93,7 +93,7 @@ export function getDefaultTabState({
   shouldPersistHeaders?: boolean;
 }) {
   const { storage } = storageStore.getState();
-  const storedState = storage.get(STORAGE_KEY.tabs);
+  const storedState = storage.getItem(STORAGE_KEY.tabs);
   try {
     if (!storedState) {
       throw new Error('Storage for tabs is empty');
@@ -274,10 +274,10 @@ export function fuzzyExtractOperationName(str: string): string | null {
 
 export function clearHeadersFromTabs() {
   const { storage } = storageStore.getState();
-  const persistedTabs = storage.get(STORAGE_KEY.tabs);
+  const persistedTabs = storage.getItem(STORAGE_KEY.tabs);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);
-    storage.set(
+    storage.setItem(
       STORAGE_KEY.tabs,
       JSON.stringify(parsedTabs, (key, value) =>
         key === 'headers' ? null : value,
