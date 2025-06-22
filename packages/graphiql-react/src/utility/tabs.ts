@@ -83,16 +83,12 @@ export function getDefaultTabState({
   defaultHeaders?: string;
   defaultQuery: string;
   defaultTabs?: TabDefinition[];
-  headers: string | null;
-  query: string | null;
-  variables: string | null;
+  headers?: string;
+  query?: string;
+  variables?: string;
 }) {
-  // const storedState = storage.getItem(STORAGE_KEY.tabs);
   // try {
-  //   if (!storedState) {
-  //     throw new Error('Storage for tabs is empty');
-  //   }
-  //   const parsed = JSON.parse(storedState);
+  //   const parsed = storedState;
   //   // if headers are not persisted, do not derive the hash using default headers state
   //   // or else you will get new tabs on every refresh
   //   const headersForHash = shouldPersistHeaders ? headers : undefined;

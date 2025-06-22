@@ -159,10 +159,9 @@ useEffect(() => {
         throw new TypeError('Unexpected `storage` prop is undefined.');
       }
       // We only need to compute it lazily during the initial render.
-      const query = initialQuery ?? storage.getItem(STORAGE_KEY.query);
-      const variables =
-        initialVariables ?? storage.getItem(STORAGE_KEY.variables);
-      const headers = initialHeaders ?? storage.getItem(STORAGE_KEY.headers);
+      const query = initialQuery;
+      const variables = initialVariables;
+      const headers = initialHeaders;
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
