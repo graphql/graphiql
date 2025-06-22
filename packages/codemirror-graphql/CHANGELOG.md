@@ -4,45 +4,13 @@
 
 ### Patch Changes
 
-- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-  - replace `onMergeQuery` hook with `mergeQuery` function
-  - replace `onPrettifyEditors` hook with `prettifyEditors` function
-  - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
-  - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
-  - remove exports (use `GraphiQLProvider`)
-    - `EditorContextProvider`
-    - `ExecutionContextProvider`
-    - `PluginContextProvider`
-    - `SchemaContextProvider`
-    - `StorageContextProvider`
-    - `ExecutionContextType`
-    - `PluginContextType`
-  - feat(@graphiql/react): migrate React context to zustand:
-    - replace `useExecutionContext` with `useExecutionStore` hook
-    - replace `useEditorContext` with `useEditorStore` hook
-  - prefer `getComputedStyle` over `window.getComputedStyle`
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
 
 ## 2.2.3-rc.0
 
 ### Patch Changes
 
-- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-  - replace `onMergeQuery` hook with `mergeQuery` function
-  - replace `onPrettifyEditors` hook with `prettifyEditors` function
-  - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
-  - add `onCopyQuery` and `onPrettifyQuery` props to `EditorContextProvider`
-  - remove exports (use `GraphiQLProvider`)
-    - `EditorContextProvider`
-    - `ExecutionContextProvider`
-    - `PluginContextProvider`
-    - `SchemaContextProvider`
-    - `StorageContextProvider`
-    - `ExecutionContextType`
-    - `PluginContextType`
-  - feat(@graphiql/react): migrate React context to zustand:
-    - replace `useExecutionContext` with `useExecutionStore` hook
-    - replace `useEditorContext` with `useEditorStore` hook
-  - prefer `getComputedStyle` over `window.getComputedStyle`
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
 
 ## 2.2.2
 
