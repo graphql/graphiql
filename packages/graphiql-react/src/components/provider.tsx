@@ -83,6 +83,10 @@ export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   storage = createJSONStorage(() => localStorage),
 
+  initialQuery,
+  initialVariables,
+  initialHeaders,
+
   ...props
 }) => {
   if (!fetcher) {
@@ -153,13 +157,11 @@ useEffect(() => {
         throw new TypeError('Unexpected `storage` prop is undefined.');
       }
       // We only need to compute it lazily during the initial render.
-      const query =
-        props.initialQuery ?? (await storage.getItem(STORAGE_KEY.query));
+      const query = initialQuery ?? (await storage.getItem(STORAGE_KEY.query));
       const variables =
-        props.initialVariables ??
-        (await storage.getItem(STORAGE_KEY.variables));
+        initialVariables ?? (await storage.getItem(STORAGE_KEY.variables));
       const headers =
-        props.initialHeaders ?? (await storage.getItem(STORAGE_KEY.headers));
+        initialHeaders ?? (await storage.getItem(STORAGE_KEY.headers));
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
