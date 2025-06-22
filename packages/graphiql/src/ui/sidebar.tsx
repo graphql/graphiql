@@ -15,7 +15,6 @@ import {
   useGraphiQL,
   useGraphiQLActions,
   useStorage,
-  useTheme,
   VisuallyHidden,
 } from '@graphiql/react';
 import { ShortKeys } from './short-keys';
@@ -56,18 +55,23 @@ export const Sidebar: FC<SidebarProps> = ({
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
 
   const storage = useStorage();
-  const { theme, setTheme } = useTheme();
-  const { setShouldPersistHeaders, introspect, setVisiblePlugin } =
+  const { setShouldPersistHeaders, introspect, setVisiblePlugin, setTheme } =
     useGraphiQLActions();
-  const { shouldPersistHeaders, isIntrospecting, visiblePlugin, plugins } =
-    useGraphiQL(
-      pick(
-        'shouldPersistHeaders',
-        'isIntrospecting',
-        'visiblePlugin',
-        'plugins',
-      ),
-    );
+  const {
+    shouldPersistHeaders,
+    isIntrospecting,
+    visiblePlugin,
+    plugins,
+    theme,
+  } = useGraphiQL(
+    pick(
+      'shouldPersistHeaders',
+      'isIntrospecting',
+      'visiblePlugin',
+      'plugins',
+      'theme',
+    ),
+  );
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -127,7 +131,7 @@ export const Sidebar: FC<SidebarProps> = ({
   const handlePluginClick: ButtonHandler = event => {
     const pluginIndex = Number(event.currentTarget.dataset.index!);
     const plugin = plugins.find((_, index) => pluginIndex === index)!;
-    const isVisible = plugin === visiblePlugin;
+    const isVisible = plugin.title === visiblePlugin;
     if (isVisible) {
       setVisiblePlugin(null);
       setHiddenElement('first');
@@ -140,7 +144,7 @@ export const Sidebar: FC<SidebarProps> = ({
   return (
     <div className="graphiql-sidebar">
       {plugins.map((plugin, index) => {
-        const isVisible = plugin === visiblePlugin;
+        const isVisible = plugin.title === visiblePlugin;
         const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
         return (
           <Tooltip key={plugin.title} label={label}>

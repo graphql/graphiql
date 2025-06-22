@@ -212,6 +212,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    plugins
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -220,10 +221,13 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'plugins'
     ),
   );
 
-  const PluginContent = plugins.find(plugin => plugin.title === visiblePlugin)?.content;
+  const PluginContent = plugins.find(
+    plugin => plugin.title === visiblePlugin,
+  )?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,

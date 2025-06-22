@@ -1,7 +1,7 @@
-import { StateCreator } from 'zustand';
-import { EDITOR_THEME } from '../utility/create-editor';
+import type { StateCreator } from 'zustand';
+import type { EDITOR_THEME } from '../utility/create-editor';
 import { editor as monacoEditor } from '../monaco-editor';
-import { SlicesWithActions } from '../types';
+import type { SlicesWithActions } from '../types';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose

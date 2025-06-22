@@ -17,7 +17,6 @@ import {
   ThemeProps,
 } from '../stores';
 import { StorageStore, useStorage } from '../stores/storage';
-import { ThemeStore } from '../stores/theme';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
