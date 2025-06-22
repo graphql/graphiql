@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.0.0-rc.6",
+  "version": "5.0.0",
   "sideEffects": [
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"
@@ -50,9 +50,9 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.3.0-rc.4",
-    "@graphiql/plugin-history": "^0.3.0-rc.3",
-    "@graphiql/react": "^0.35.0-rc.9",
+    "@graphiql/plugin-doc-explorer": "^0.3.0",
+    "@graphiql/plugin-history": "^0.3.0",
+    "@graphiql/react": "^0.35.0",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {

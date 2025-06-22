@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.35.0-rc.9",
+  "version": "0.35.0",
   "sideEffects": [
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"
@@ -62,7 +62,7 @@
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
     "monaco-editor": "^0.52.2",
-    "monaco-graphql": "^1.7.1-rc.0",
+    "monaco-graphql": "^1.7.1",
     "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",
