@@ -211,7 +211,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
-    plugins
+    plugins,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -220,7 +220,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
-      'plugins'
+      'plugins',
     ),
   );
 

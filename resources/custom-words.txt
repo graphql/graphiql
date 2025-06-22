@@ -154,6 +154,7 @@ outlineable
 ovsx
 paas
 pabbati
+partialize
 picomatch
 pieas
 pnpm
