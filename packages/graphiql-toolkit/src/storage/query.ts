@@ -83,7 +83,7 @@ export class QueryStore {
   fetchAll() {
     const raw = this.storage.getItem(this.key);
     if (raw) {
-      return JSON.parse(raw)[this.key] as Array<QueryStoreItem>;
+      return JSON.parse(raw)[this.key] as QueryStoreItem[];
     }
     return [];
   }

@@ -1,5 +1,5 @@
-import { StorageAPI } from '../base';
 import { QueryStore } from '../query';
+import { createJSONStorage } from 'zustand/middleware';
 
 class StorageMock {
   shouldThrow: () => boolean;
@@ -40,7 +40,10 @@ class StorageMock {
 describe('QueryStore', () => {
   describe('with no max items', () => {
     it('can push multiple items', () => {
-      const store = new QueryStore('normal', new StorageAPI());
+      const store = new QueryStore(
+        'normal',
+        createJSONStorage(() => localStorage),
+      );
 
       for (let i = 0; i < 100; i++) {
         store.push({ query: `item${i}` });

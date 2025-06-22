@@ -108,7 +108,7 @@ function defaultGetDefaultFieldNames(type: GraphQLType) {
   }
 
   // Include all leaf-type fields.
-  const leafFieldNames: Array<string> = [];
+  const leafFieldNames: string[] = [];
   for (const fieldName of Object.keys(fields)) {
     if (isLeafType(fields[fieldName].type)) {
       leafFieldNames.push(fieldName);
