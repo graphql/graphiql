@@ -1,6 +1,6 @@
 # Upgrading `graphiql` from `4.x` to `5.0.0`
 
-You need to set up Monaco workers in your project:
+Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 
 - For **Vite** projects you must import:
 
@@ -26,7 +26,7 @@ You need to set up Monaco workers in your project:
   [`?worker` query](https://esm.sh/#web-worker) to load the module as a web
   worker:
 
-  ```js /?worker/
+  ```js
   import createJSONWorker from 'https://esm.sh/monaco-editor/esm/vs/language/json/json.worker.js?worker';
   import createGraphQLWorker from 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker';
   import createEditorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker';
@@ -73,8 +73,8 @@ You need to set up Monaco workers in your project:
 
 > [!NOTE]
 >
-> If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
-> and `initialHeaders` props instead. These props will only be used for the first tab.
+> If you used `query`, `variables` and `headers` in integration tests, you can use the new `initialQuery`,
+> `initialVariables` and `initialHeaders` props instead. These props will only be used for the first tab.
 > When opening more tabs, the query editor will start out empty.
 
 - Added new props
