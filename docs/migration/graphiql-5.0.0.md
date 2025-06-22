@@ -5,9 +5,9 @@ You need to set up Monaco workers in your project:
 - For **Vite** projects you must import:
 
   ```js
-  import "graphiql/setup-workers/vite"
+  import 'graphiql/setup-workers/vite';
   ```
-  
+
   > [!NOTE]
   >
   > See [Vite example](../../examples/graphiql-vite/src/App.jsx).
@@ -15,7 +15,7 @@ You need to set up Monaco workers in your project:
 - For Webpack projects such as **Next.js** you must import:
 
   ```js
-  import "graphiql/setup-workers/webpack"
+  import 'graphiql/setup-workers/webpack';
   ```
 
   > [!NOTE]
@@ -27,21 +27,21 @@ You need to set up Monaco workers in your project:
   worker:
 
   ```js /?worker/
-  import createJSONWorker from "https://esm.sh/monaco-editor/esm/vs/language/json/json.worker.js?worker"
-  import createGraphQLWorker from "https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker"
-  import createEditorWorker from "https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker"
+  import createJSONWorker from 'https://esm.sh/monaco-editor/esm/vs/language/json/json.worker.js?worker';
+  import createGraphQLWorker from 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker';
+  import createEditorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker';
 
   globalThis.MonacoEnvironment = {
     getWorker(_workerId, label) {
       switch (label) {
-        case "json":
-          return createJSONWorker()
-        case "graphql":
-          return createGraphQLWorker()
+        case 'json':
+          return createJSONWorker();
+        case 'graphql':
+          return createGraphQLWorker();
       }
-      return createEditorWorker()
-    }
-  }
+      return createEditorWorker();
+    },
+  };
   ```
 
   > [!NOTE]
@@ -70,11 +70,11 @@ You need to set up Monaco workers in your project:
   - `variables`
   - `headers`
   - `response`
-  > [!NOTE]
-  >
-  > If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
-  > and `initialHeaders` props instead. These props will only be used for the first tab.
-  > When opening more tabs, the query editor will start out empty.
+    > [!NOTE]
+    >
+    > If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
+    > and `initialHeaders` props instead. These props will only be used for the first tab.
+    > When opening more tabs, the query editor will start out empty.
 - Added new props
   - `initialQuery`
   - `initialVariables`
@@ -136,6 +136,7 @@ The `ToolbarMenu` component has changed.
 - The shortcut to focus on the Doc Explorer search input is now `Cmd/Ctrl+Alt+K`
   instead of the previous `Cmd/Ctrl+K`. This was changed because monaco-editor has
   a built-in `Cmd/Ctrl+K` command.
+
 ---
 
 ## @graphiql/plugin-history
