@@ -158,6 +158,7 @@ useEffect(() => {
         props.initialHeaders ?? storage!.getItem(STORAGE_KEY.headers);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
+        storage,
         defaultHeaders,
         defaultQuery,
         defaultTabs,

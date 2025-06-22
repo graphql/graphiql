@@ -1,6 +1,7 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { STORAGE_KEY } from '../constants';
+import type { Storage } from '../stores/storage';
 
 const storageStore = {
   getState: () => ({ storage: null }),
@@ -70,6 +71,7 @@ export type TabsState = {
 };
 
 export function getDefaultTabState({
+  storage,
   defaultQuery,
   defaultHeaders,
   headers,
@@ -84,6 +86,7 @@ export function getDefaultTabState({
   ],
   shouldPersistHeaders,
 }: {
+  storage: Storage;
   defaultQuery: string;
   defaultHeaders?: string;
   headers: string | null;
@@ -92,7 +95,6 @@ export function getDefaultTabState({
   variables: string | null;
   shouldPersistHeaders?: boolean;
 }) {
-  const { storage } = storageStore.getState();
   const storedState = storage.getItem(STORAGE_KEY.tabs);
   try {
     if (!storedState) {
