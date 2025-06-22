@@ -1,7 +1,7 @@
 'use no memo'; // can't figure why it isn't optimized
 
+import type { StateStorage } from 'zustand/middleware';
 import { STORAGE_KEY } from '../constants';
-import type { Storage } from '../stores/storage';
 
 const storageStore = {
   getState: () => ({ storage: null }),
@@ -86,7 +86,7 @@ export function getDefaultTabState({
   ],
   shouldPersistHeaders,
 }: {
-  storage: Storage;
+  storage: StateStorage;
   defaultQuery: string;
   defaultHeaders?: string;
   headers: string | null;

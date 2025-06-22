@@ -11,10 +11,12 @@ interface UseDragResizeArgs {
    * @default 1
    */
   defaultSizeRelation?: number;
+
   /**
    * The direction in which the two halves should be resizable.
    */
   direction: 'horizontal' | 'vertical';
+
   /**
    * Choose one of the two halves that should initially be hidden.
    */
@@ -33,12 +35,14 @@ interface UseDragResizeArgs {
    * @default 100
    */
   sizeThresholdFirst?: number;
+
   /**
    * The minimum width in pixels for the second half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
    * @default 100
    */
   sizeThresholdSecond?: number;
+
   /**
    * A key for which the state of resizing is persisted in storage (if storage
    * is available).
@@ -58,16 +62,7 @@ export function useDragResize({
   const storage = useGraphiQL(state => state.storage);
 
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
-    () => {
-      const storedValue = storageKey && storage.getItem(storageKey);
-      if (storedValue === HIDE_FIRST || initiallyHidden === 'first') {
-        return 'first';
-      }
-      if (storedValue === HIDE_SECOND || initiallyHidden === 'second') {
-        return 'second';
-      }
-      return null;
-    },
+    null,
   );
 
   const firstRef = useRef<HTMLDivElement>(null);
@@ -80,20 +75,30 @@ export function useDragResize({
    * Set initial flex values
    */
   useEffect(() => {
-    const storedValue =
-      (storageKey && storage.getItem(storageKey)) || defaultFlexRef.current;
+    async function init() {
+      const $storedValue = storageKey && (await storage.getItem(storageKey));
+      const initialHiddenElement =
+        $storedValue === HIDE_FIRST || initiallyHidden === 'first'
+          ? 'first'
+          : $storedValue === HIDE_SECOND || initiallyHidden === 'second'
+            ? 'second'
+            : null;
+      setHiddenElement(initialHiddenElement);
 
-    if (firstRef.current) {
-      firstRef.current.style.flex =
-        storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
-          ? defaultFlexRef.current
-          : storedValue;
+      if (firstRef.current) {
+        const storedValue = $storedValue || defaultFlexRef.current;
+        firstRef.current.style.flex =
+          storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
+            ? defaultFlexRef.current
+            : storedValue;
+      }
+      if (secondRef.current) {
+        secondRef.current.style.flex = '1';
+      }
     }
 
-    if (secondRef.current) {
-      secondRef.current.style.flex = '1';
-    }
-  }, [direction, storage, storageKey]);
+    void init();
+  }, [direction, storage, storageKey, initiallyHidden]);
 
   /**
    * Hide and show items when the state changes

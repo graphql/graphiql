@@ -1,4 +1,4 @@
-import type { PersistStorage } from 'zustand/middleware';
+import type { StateStorage } from 'zustand/middleware';
 
 export type QueryStoreItem = {
   query?: string;
@@ -14,9 +14,7 @@ export class QueryStore {
 
   constructor(
     private key: string,
-    private storage: PersistStorage<{
-      [key: string]: QueryStoreItem[];
-    }>,
+    private storage: StateStorage,
     private maxSize: number | null = null,
   ) {
     void this.fetchAll().then(items => {
@@ -87,7 +85,7 @@ export class QueryStore {
   async fetchAll() {
     const raw = await this.storage.getItem(this.key);
     if (raw) {
-      return raw.state[this.key];
+      return raw;
     }
     return [];
   }
@@ -98,16 +96,10 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
-    this.storage.setItem(this.key, {
-      // @ts-expect-error -- fixme
-      state: items,
-    });
+    this.storage.setItem(this.key, this.items);
   }
 
   save() {
-    this.storage.setItem(this.key, {
-      // @ts-expect-error -- fixme
-      state: this.items,
-    });
+    this.storage.setItem(this.key, this.items);
   }
 }
