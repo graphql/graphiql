@@ -48,6 +48,52 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 >
 > See [CDN example](../../examples/graphiql-cdn/index.html).
 
+## Allow to Override All Default GraphiQL Plugins
+
+Starting from GraphiQL 5, you can override all default plugins.
+
+### Removing All Default Plugins
+
+To remove all default plugins (currently **Doc Explorer** and **History**), set
+`referencePlugin={null}` and pass an empty array to the `plugins` prop:
+
+```jsx
+import { GraphiQL } from "graphiql"
+
+const myPlugins = []
+
+function App() {
+  return (
+    <GraphiQL
+      referencePlugin={null} // Removes Doc Explorer plugin
+      plugins={myPlugins} // Removes History plugin
+    />
+  )
+}
+```
+
+> [!NOTE]
+>
+> If you're using a custom Doc Explorer, pass it to the `referencePlugin` prop —
+> **not** the `plugins` array. It will be automatically included and always
+> rendered first.
+
+### Adding Plugins While Keeping Defaults
+
+If you're adding custom plugins (e.g., the **Explorer** plugin) and want to keep
+the **History** plugin, you must explicitly include it in the `plugins` array:
+
+```jsx
+import { GraphiQL, HISTORY_PLUGIN } from "graphiql"
+import { explorerPlugin } from "@graphiql/plugin-explorer"
+
+const myPlugins = [HISTORY_PLUGIN, explorerPlugin()]
+
+function App() {
+  return <GraphiQL plugins={myPlugins} />
+}
+```
+
 ---
 
 ## `graphiql`
@@ -82,7 +128,6 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
   - `initialVariables`
   - `initialHeaders`
 - feat: allow `children: ReactNode` for `<GraphiQL.Toolbar />` component
-- allow override all default GraphiQL plugins
 
 ---
 
