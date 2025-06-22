@@ -60,22 +60,16 @@ export function useDragResize({
   storageKey,
 }: UseDragResizeArgs) {
   const storage = useGraphiQL(state => state.storage);
-
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     null,
   );
-
   const firstRef = useRef<HTMLDivElement>(null);
   const dragBarRef = useRef<HTMLDivElement>(null);
   const secondRef = useRef<HTMLDivElement>(null);
-
   const defaultFlexRef = useRef(`${defaultSizeRelation}`);
 
-  /**
-   * Set initial flex values
-   */
   useEffect(() => {
-    async function init() {
+    async function initFlexValues() {
       const $storedValue = storageKey && (await storage.getItem(storageKey));
       const initialHiddenElement =
         $storedValue === HIDE_FIRST || initiallyHidden === 'first'
@@ -97,8 +91,8 @@ export function useDragResize({
       }
     }
 
-    void init();
-  }, [direction, storage, storageKey, initiallyHidden]);
+    void initFlexValues();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   /**
    * Hide and show items when the state changes
@@ -120,7 +114,7 @@ export function useDragResize({
       }
     }
 
-    function show(element: HTMLDivElement) {
+    async function show(element: HTMLDivElement) {
       element.style.left = '';
       element.style.position = '';
       element.style.opacity = '';
@@ -128,7 +122,7 @@ export function useDragResize({
       if (!storageKey) {
         return;
       }
-      const storedValue = storage.getItem(storageKey);
+      const storedValue = await storage.getItem(storageKey);
       if (
         firstRef.current &&
         storedValue !== HIDE_FIRST &&
@@ -144,7 +138,7 @@ export function useDragResize({
         if (id === hiddenElement) {
           hide(element);
         } else {
-          show(element);
+          void show(element);
         }
       }
     }
