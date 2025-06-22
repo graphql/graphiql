@@ -150,12 +150,15 @@ useEffect(() => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
     function getInitialState() {
+      if (storage === undefined) {
+        throw new TypeError('Unexpected `storage` prop is undefined.');
+      }
       // We only need to compute it lazily during the initial render.
-      const query = props.initialQuery ?? storage!.getItem(STORAGE_KEY.query);
+      const query = props.initialQuery ?? storage.getItem(STORAGE_KEY.query);
       const variables =
-        props.initialVariables ?? storage!.getItem(STORAGE_KEY.variables);
+        props.initialVariables ?? storage.getItem(STORAGE_KEY.variables);
       const headers =
-        props.initialHeaders ?? storage!.getItem(STORAGE_KEY.headers);
+        props.initialHeaders ?? storage.getItem(STORAGE_KEY.headers);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         storage,
@@ -168,11 +171,11 @@ useEffect(() => {
         variables,
       });
 
-      const isStored = storage!.getItem(STORAGE_KEY.persistHeaders) !== null;
+      const isStored = storage.getItem(STORAGE_KEY.persistHeaders) !== null;
 
       const $shouldPersistHeaders =
         shouldPersistHeaders !== false && isStored
-          ? storage!.getItem(STORAGE_KEY.persistHeaders) === 'true'
+          ? storage.getItem(STORAGE_KEY.persistHeaders) === 'true'
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>()(
