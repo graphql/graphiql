@@ -18,9 +18,9 @@ You need to set up Monaco workers in your project:
   import 'graphiql/setup-workers/webpack';
   ```
 
-  > [!NOTE]
-  >
-  > See [Next.js example](../../examples/graphiql-nextjs/src/app/page.tsx).
+> [!NOTE]
+>
+> See [Next.js example](../../examples/graphiql-nextjs/src/app/page.tsx).
 
 - For ESM-based CDN usages, you must use
   [`?worker` query](https://esm.sh/#web-worker) to load the module as a web
@@ -44,9 +44,9 @@ You need to set up Monaco workers in your project:
   };
   ```
 
-  > [!NOTE]
-  >
-  > See [CDN example](../../examples/graphiql-cdn/index.html).
+> [!NOTE]
+>
+> See [CDN example](../../examples/graphiql-cdn/index.html).
 
 ---
 
