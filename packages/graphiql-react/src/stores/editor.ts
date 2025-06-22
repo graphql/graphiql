@@ -429,11 +429,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       set({ shouldPersistHeaders: persist });
     },
     setOperationFacts({ documentAST, operationName, operations }) {
-      set({
-        documentAST,
-        operationName,
-        operations,
-      });
+      set({ documentAST, operationName, operations });
     },
     async copyQuery() {
       const { queryEditor, onCopyQuery } = get();
