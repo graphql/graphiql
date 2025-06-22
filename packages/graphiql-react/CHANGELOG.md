@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.35.0-rc.9
+
+### Minor Changes
+
+- [#3735](https://github.com/graphql/graphiql/pull/3735) [`0a08642`](https://github.com/graphql/graphiql/commit/0a0864268da4f340e30a1e9b8191d34e33ffbfa7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - Remove `query`, `variables`, `headers`, and `response` props from `<GraphiQL />` and `<GraphiQLProvider />`
+  - Add `initialQuery`, `initialVariables` and `initialHeaders` props
+  - Fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
+  - remove `useSynchronizeValue` hook
+
 ## 0.35.0-rc.8
 
 ### Minor Changes
