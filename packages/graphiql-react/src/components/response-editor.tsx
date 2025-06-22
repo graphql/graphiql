@@ -12,7 +12,7 @@ import {
   cn,
 } from '../utility';
 import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
-import { EditorProps } from '../types';
+import type { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
 
@@ -39,15 +39,9 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   ...props
 }) => {
   const { setEditor, run } = useGraphiQLActions();
-  const { fetchError, validationErrors, initialResponse, responseEditor } =
-    useGraphiQL(
-      pick(
-        'fetchError',
-        'validationErrors',
-        'initialResponse',
-        'responseEditor',
-      ),
-    );
+  const { fetchError, validationErrors, responseEditor } = useGraphiQL(
+    pick('fetchError', 'validationErrors', 'responseEditor'),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
@@ -59,11 +53,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const model = getOrCreateModel({
-      uri: RESPONSE_URI,
-      value: initialResponse,
-    });
-    // Build the editor
+    const model = getOrCreateModel({ uri: RESPONSE_URI, value: '' });
     const editor = createEditor(ref, {
       model,
       readOnly: true,

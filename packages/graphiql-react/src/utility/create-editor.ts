@@ -1,7 +1,7 @@
-import { KeyboardEventHandler, RefObject } from 'react';
+import type { KeyboardEventHandler, RefObject } from 'react';
 import type { Uri } from '../monaco-editor';
 import { editor as monacoEditor } from '../monaco-editor';
-import { MonacoEditor } from '../types';
+import type { MonacoEditor } from '../types';
 
 export const EDITOR_THEME = {
   dark: 'graphiql-DARK',

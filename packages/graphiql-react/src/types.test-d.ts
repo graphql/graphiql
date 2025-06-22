@@ -11,7 +11,7 @@ import type {
   SchemaActions,
   ThemeActions,
 } from './stores';
-import { AllSlices, AllActions } from './types';
+import type { AllSlices, AllActions } from './types';
 
 describe('Should not have conflicting types', () => {
   interface OverlapError<K extends PropertyKey> {

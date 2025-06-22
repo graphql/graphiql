@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { GraphQLNamedType } from 'graphql';
+import type { GraphQLNamedType } from 'graphql';
 import {
   ExampleSchema,
   ExampleEnum,
@@ -10,7 +10,7 @@ import {
 import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { unwrapType } from './test-utils';
-import { SlicesWithActions } from '@graphiql/react';
+import type { SlicesWithActions } from '@graphiql/react';
 
 vi.mock('@graphiql/react', async () => {
   const originalModule =

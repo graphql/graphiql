@@ -1,5 +1,58 @@
 # @graphiql/react
 
+## 0.35.0-rc.9
+
+### Minor Changes
+
+- [#3735](https://github.com/graphql/graphiql/pull/3735) [`0a08642`](https://github.com/graphql/graphiql/commit/0a0864268da4f340e30a1e9b8191d34e33ffbfa7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - Remove `query`, `variables`, `headers`, and `response` props from `<GraphiQL />` and `<GraphiQLProvider />`
+  - Add `initialQuery`, `initialVariables` and `initialHeaders` props
+  - Fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
+  - remove `useSynchronizeValue` hook
+
+## 0.35.0-rc.8
+
+### Minor Changes
+
+- [#4025](https://github.com/graphql/graphiql/pull/4025) [`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set "importsNotUsedAsValues": "error" in tsconfig
+
+- [#4026](https://github.com/graphql/graphiql/pull/4026) [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - deprecate `useExplorerContext`, `useHistoryContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks
+  - fix response editor overflow on `<GraphiQL.Footer />`
+  - export `GraphiQLProps` type
+  - allow `children: ReactNode` for `<GraphiQL.Toolbar />`
+  - change `ToolbarMenu` component:
+    - The `label` and `className` props were removed
+    - The `button` prop should now be a button element
+  - document `useGraphiQL` and `useGraphiQLActions` hooks in `@graphiql/react` README.md
+  - rename `useThemeStore` to `useTheme`
+
+## 0.35.0-rc.7
+
+### Patch Changes
+
+- [#4020](https://github.com/graphql/graphiql/pull/4020) [`3c0ad34`](https://github.com/graphql/graphiql/commit/3c0ad34a8f2f9d0f912db9597f608d7405c2bd83) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - run cypress tests in React strict mode
+  - fix `defaultQuery` with empty string does not result in an empty default query
+  - fix `useDidUpdate` in React strict mode
+
+## 0.35.0-rc.6
+
+### Minor Changes
+
+- [#4017](https://github.com/graphql/graphiql/pull/4017) [`cff3da5`](https://github.com/graphql/graphiql/commit/cff3da541184d36d1c2e5c919dd4231e9905ccbb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - extract graphiql sidebar to react component
+
+## 0.35.0-rc.5
+
+### Minor Changes
+
+- [#4014](https://github.com/graphql/graphiql/pull/4014) [`4b39f11`](https://github.com/graphql/graphiql/commit/4b39f1118d008c2fac6e2df9c94a3f3271c4eeb9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - extract storage key constants
+
+## 0.35.0-rc.4
+
+### Minor Changes
+
+- [#4011](https://github.com/graphql/graphiql/pull/4011) [`30bc3f9`](https://github.com/graphql/graphiql/commit/30bc3f9cae4dbb11649a0952dad092e192ad653c) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix execute query shortcut in query editor, run it even there are no operations in query editor
+
+  fix plugin store, save last opened plugin in storage
+
 ## 0.35.0-rc.3
 
 ### Minor Changes

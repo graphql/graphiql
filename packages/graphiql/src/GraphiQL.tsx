@@ -10,22 +10,16 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, useEffect, Children, useRef, Fragment } from 'react';
+import { useState, Children, useRef, Fragment } from 'react';
 import {
-  Button,
-  ButtonGroup,
   ChevronDownIcon,
   ChevronUpIcon,
-  Dialog,
   ExecuteButton,
   GraphiQLProvider,
   HeaderEditor,
-  KeyboardShortcutIcon,
   PlusIcon,
   QueryEditor,
-  ReloadIcon,
   ResponseEditor,
-  SettingsIcon,
   Spinner,
   Tab,
   Tabs,
@@ -38,8 +32,6 @@ import {
   VariableEditor,
   EditorProps,
   cn,
-  VisuallyHidden,
-  KEY_MAP,
   useGraphiQLActions,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
@@ -47,7 +39,7 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
-import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, ShortKeys } from './ui';
+import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
 
 /**
  * API docs for this live here:
@@ -87,13 +79,13 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalContent) {
     throw new TypeError(
-      '`toolbar.additionalContent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+      'The `toolbar.additionalContent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
   // @ts-expect-error -- Prop is removed
   if (props.toolbar?.additionalComponent) {
     throw new TypeError(
-      '`toolbar.additionalComponent` was removed. Use render props on `GraphiQL.Toolbar` component instead.',
+      'The `toolbar.additionalComponent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
     );
   }
   // @ts-expect-error -- Prop is removed
@@ -104,7 +96,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   }
   // @ts-expect-error -- Prop is removed
   if (props.readOnly) {
-    throw new TypeError('`readOnly` was removed.');
+    throw new TypeError('The `readOnly` prop has been removed.');
   }
   const interfaceProps: GraphiQLInterfaceProps = {
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
@@ -116,8 +108,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     responseTooltip,
     defaultEditorToolsVisibility,
     isHeadersEditorEnabled,
-    forcedTheme:
-      forcedTheme && THEMES.includes(forcedTheme) ? forcedTheme : undefined,
+    forcedTheme,
     confirmCloseTab,
     className,
   };
@@ -155,7 +146,11 @@ interface GraphiQLInterfaceProps
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
-    Pick<ResponseEditorProps, 'responseTooltip'> {
+    Pick<ResponseEditorProps, 'responseTooltip'>,
+    Pick<
+      ComponentPropsWithoutRef<typeof Sidebar>,
+      'forcedTheme' | 'showPersistHeadersSettings'
+    > {
   children?: ReactNode;
   /**
    * Set the default state for the editor tools.
@@ -173,17 +168,6 @@ interface GraphiQLInterfaceProps
    */
   isHeadersEditorEnabled?: boolean;
   /**
-   * Indicates if settings for persisting headers should appear in the
-   * settings modal.
-   */
-  showPersistHeadersSettings?: boolean;
-  /**
-   * `forcedTheme` allows enforcement of a specific theme for GraphiQL.
-   * This is useful when you want to make sure that GraphiQL is always
-   * rendered with a specific theme.
-   */
-  forcedTheme?: (typeof THEMES)[number];
-  /**
    * Additional class names which will be appended to the container element.
    */
   className?: string;
@@ -198,16 +182,11 @@ interface GraphiQLInterfaceProps
   confirmCloseTab?(index: number): Promise<boolean> | boolean;
 }
 
-const THEMES = ['light', 'dark', 'system'] as const;
-
 const TAB_CLASS_PREFIX = 'graphiql-session-tab-';
 
 type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const LABEL = {
-  refetchSchema: `Re-fetch GraphQL schema (${KEY_MAP.refetchSchema.key})`,
-  shortCutDialog: 'Open short keys dialog',
-  settingsDialogs: 'Open settings dialog',
   newTab: 'New tab',
 };
 
@@ -224,50 +203,25 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   responseTooltip,
   showPersistHeadersSettings,
 }) => {
-  const {
-    setShouldPersistHeaders,
-    addTab,
-    moveTab,
-    closeTab,
-    changeTab,
-    introspect,
-    setVisiblePlugin,
-    setTheme,
-  } = useGraphiQLActions();
+  const { addTab, moveTab, closeTab, changeTab, setVisiblePlugin } =
+    useGraphiQLActions();
   const {
     initialVariables,
     initialHeaders,
-    shouldPersistHeaders,
     tabs,
     activeTabIndex,
     isFetching,
-    isIntrospecting,
     visiblePlugin,
-    plugins,
-    theme,
   } = useGraphiQL(
     pick(
       'initialVariables',
       'initialHeaders',
-      'shouldPersistHeaders',
       'tabs',
       'activeTabIndex',
       'isFetching',
-      'isIntrospecting',
       'visiblePlugin',
-      'plugins',
-      'theme'
     ),
   );
-  const storageContext = useStorage();
-
-  useEffect(() => {
-    if (forcedTheme === 'system') {
-      setTheme(null);
-    } else if (forcedTheme === 'light' || forcedTheme === 'dark') {
-      setTheme(forcedTheme);
-    }
-  }, [forcedTheme, setTheme]);
 
   const PluginContent = plugins.find(plugin => plugin.title === visiblePlugin)?.content;
 
@@ -316,12 +270,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       ? 'headers'
       : 'variables';
   });
-  const [showDialog, setShowDialog] = useState<
-    'settings' | 'short-keys' | null
-  >(null);
-  const [clearStorageStatus, setClearStorageStatus] = useState<
-    'success' | 'error' | undefined
-  >();
 
   const { logo, toolbar, footer, children } = Children.toArray(
     $children,
@@ -360,46 +308,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
   }
 
-  function handleClearData() {
-    try {
-      storageContext.clear();
-      setClearStorageStatus('success');
-    } catch {
-      setClearStorageStatus('error');
-    }
-  }
-
-  const handlePersistHeaders: ButtonHandler = event => {
-    setShouldPersistHeaders(event.currentTarget.dataset.value === 'true');
-  };
-
-  const handleChangeTheme: ButtonHandler = event => {
-    const selectedTheme = event.currentTarget.dataset.theme as
-      | 'light'
-      | 'dark'
-      | undefined;
-    setTheme(selectedTheme || null);
-  };
-
-  const handleShowDialog: ButtonHandler = event => {
-    setShowDialog(
-      event.currentTarget.dataset.value as 'short-keys' | 'settings',
-    );
-  };
-
-  const handlePluginClick: ButtonHandler = event => {
-    const pluginIndex = Number(event.currentTarget.dataset.index!);
-    const plugin = plugins.find((_, index) => pluginIndex === index)!;
-    const isVisible = plugin.title === visiblePlugin;
-    if (isVisible) {
-      setVisiblePlugin(null);
-      pluginResize.setHiddenElement('first');
-    } else {
-      setVisiblePlugin(plugin);
-      pluginResize.setHiddenElement(null);
-    }
-  };
-
   const handleToolsTabClick: ButtonHandler = event => {
     if (editorToolsResize.hiddenElement === 'second') {
       editorToolsResize.setHiddenElement(null);
@@ -413,19 +321,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       editorToolsResize.hiddenElement === 'second' ? null : 'second',
     );
   };
-
-  function handleOpenShortKeysDialog(isOpen: boolean) {
-    if (!isOpen) {
-      setShowDialog(null);
-    }
-  }
-
-  function handleOpenSettingsDialog(isOpen: boolean) {
-    if (!isOpen) {
-      setShowDialog(null);
-      setClearStorageStatus(undefined);
-    }
-  }
 
   const handleTabClose: ButtonHandler = async event => {
     const tabButton = event.currentTarget.previousSibling as HTMLButtonElement;
@@ -444,189 +339,6 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     const index = Number(event.currentTarget.id.replace(TAB_CLASS_PREFIX, ''));
     changeTab(index);
   };
-
-  const sidebar = (
-    <div className="graphiql-sidebar">
-      {plugins.map((plugin, index) => {
-        const isVisible = plugin.title === visiblePlugin;
-        const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
-        return (
-          <Tooltip key={plugin.title} label={label}>
-            <UnStyledButton
-              type="button"
-              className={cn(isVisible && 'active')}
-              onClick={handlePluginClick}
-              data-index={index}
-              aria-label={label}
-            >
-              <plugin.icon aria-hidden="true" />
-            </UnStyledButton>
-          </Tooltip>
-        );
-      })}
-      <Tooltip label={LABEL.refetchSchema}>
-        <UnStyledButton
-          type="button"
-          disabled={isIntrospecting}
-          onClick={introspect}
-          aria-label={LABEL.refetchSchema}
-          style={{ marginTop: 'auto' }}
-        >
-          <ReloadIcon
-            className={cn(isIntrospecting && 'graphiql-spin')}
-            aria-hidden="true"
-          />
-        </UnStyledButton>
-      </Tooltip>
-      <Tooltip label={LABEL.shortCutDialog}>
-        <UnStyledButton
-          type="button"
-          data-value="short-keys"
-          onClick={handleShowDialog}
-          aria-label={LABEL.shortCutDialog}
-        >
-          <KeyboardShortcutIcon aria-hidden="true" />
-        </UnStyledButton>
-      </Tooltip>
-      <Tooltip label={LABEL.settingsDialogs}>
-        <UnStyledButton
-          type="button"
-          data-value="settings"
-          onClick={handleShowDialog}
-          aria-label={LABEL.settingsDialogs}
-        >
-          <SettingsIcon aria-hidden="true" />
-        </UnStyledButton>
-      </Tooltip>
-      <Dialog
-        open={showDialog === 'short-keys'}
-        onOpenChange={handleOpenShortKeysDialog}
-      >
-        <div className="graphiql-dialog-header">
-          <Dialog.Title className="graphiql-dialog-title">
-            Short Keys
-          </Dialog.Title>
-          <VisuallyHidden>
-            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
-            <Dialog.Description>
-              This modal provides a list of available keyboard shortcuts and
-              their functions.
-            </Dialog.Description>
-          </VisuallyHidden>
-          <Dialog.Close />
-        </div>
-        <div className="graphiql-dialog-section">
-          <ShortKeys />
-        </div>
-      </Dialog>
-      <Dialog
-        open={showDialog === 'settings'}
-        onOpenChange={handleOpenSettingsDialog}
-      >
-        <div className="graphiql-dialog-header">
-          <Dialog.Title className="graphiql-dialog-title">
-            Settings
-          </Dialog.Title>
-          <VisuallyHidden>
-            {/* Fixes Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent} */}
-            <Dialog.Description>
-              This modal lets you adjust header persistence, interface theme,
-              and clear local storage.
-            </Dialog.Description>
-          </VisuallyHidden>
-          <Dialog.Close />
-        </div>
-        {showPersistHeadersSettings ? (
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">
-                Persist headers
-              </div>
-              <div className="graphiql-dialog-section-caption">
-                Save headers upon reloading.{' '}
-                <span className="graphiql-warning-text">
-                  Only enable if you trust this device.
-                </span>
-              </div>
-            </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                id="enable-persist-headers"
-                className={cn(shouldPersistHeaders && 'active')}
-                data-value="true"
-                onClick={handlePersistHeaders}
-              >
-                On
-              </Button>
-              <Button
-                type="button"
-                id="disable-persist-headers"
-                className={cn(!shouldPersistHeaders && 'active')}
-                onClick={handlePersistHeaders}
-              >
-                Off
-              </Button>
-            </ButtonGroup>
-          </div>
-        ) : null}
-        {!forcedTheme && (
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">Theme</div>
-              <div className="graphiql-dialog-section-caption">
-                Adjust how the interface appears.
-              </div>
-            </div>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={cn(theme === null && 'active')}
-                onClick={handleChangeTheme}
-              >
-                System
-              </Button>
-              <Button
-                type="button"
-                className={cn(theme === 'light' && 'active')}
-                data-theme="light"
-                onClick={handleChangeTheme}
-              >
-                Light
-              </Button>
-              <Button
-                type="button"
-                className={cn(theme === 'dark' && 'active')}
-                data-theme="dark"
-                onClick={handleChangeTheme}
-              >
-                Dark
-              </Button>
-            </ButtonGroup>
-          </div>
-        )}
-        <div className="graphiql-dialog-section">
-          <div>
-            <div className="graphiql-dialog-section-title">Clear storage</div>
-            <div className="graphiql-dialog-section-caption">
-              Remove all locally stored data and start fresh.
-            </div>
-          </div>
-          <Button
-            type="button"
-            state={clearStorageStatus}
-            disabled={clearStorageStatus === 'success'}
-            onClick={handleClearData}
-          >
-            {{
-              success: 'Cleared data',
-              error: 'Failed',
-            }[clearStorageStatus!] || 'Clear data'}
-          </Button>
-        </div>
-      </Dialog>
-    </div>
-  );
 
   const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
@@ -722,7 +434,11 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   return (
     <Tooltip.Provider>
       <div className={cn('graphiql-container', className)}>
-        {sidebar}
+        <Sidebar
+          forcedTheme={forcedTheme}
+          showPersistHeadersSettings={showPersistHeadersSettings}
+          setHiddenElement={pluginResize.setHiddenElement}
+        />
         <div className="graphiql-main">
           <div
             ref={pluginResize.firstRef}

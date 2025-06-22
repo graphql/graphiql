@@ -15,6 +15,7 @@ interface Op {
   headersString?: string;
   response?: Record<string, any>;
 }
+
 declare namespace Cypress {
   type MockResult =
     | { data: any }
@@ -63,7 +64,7 @@ Cypress.Commands.add('clickPrettify', () => {
 });
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
-  let url = `/?query=${encodeURIComponent(query)}`;
+  let url = `?query=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
     url += `&variables=${encodeURIComponent(
       JSON.stringify(variables, null, 2) || variablesString,

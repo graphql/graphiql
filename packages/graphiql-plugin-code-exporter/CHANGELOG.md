@@ -1,5 +1,11 @@
 # @graphiql/plugin-code-exporter
 
+## 5.0.0-rc.2
+
+### Minor Changes
+
+- [#4025](https://github.com/graphql/graphiql/pull/4025) [`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set "importsNotUsedAsValues": "error" in tsconfig
+
 ## 5.0.0-rc.1
 
 ### Major Changes

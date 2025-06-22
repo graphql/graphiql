@@ -1,5 +1,53 @@
 # Change Log
 
+## 5.0.0-rc.6
+
+### Major Changes
+
+- [#3735](https://github.com/graphql/graphiql/pull/3735) [`0a08642`](https://github.com/graphql/graphiql/commit/0a0864268da4f340e30a1e9b8191d34e33ffbfa7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - Remove `query`, `variables`, `headers`, and `response` props from `<GraphiQL />` and `<GraphiQLProvider />`
+  - Add `initialQuery`, `initialVariables` and `initialHeaders` props
+  - Fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
+  - remove `useSynchronizeValue` hook
+
+### Patch Changes
+
+- Updated dependencies [[`0a08642`](https://github.com/graphql/graphiql/commit/0a0864268da4f340e30a1e9b8191d34e33ffbfa7)]:
+  - @graphiql/react@0.35.0-rc.9
+
+## 5.0.0-rc.5
+
+### Minor Changes
+
+- [#4025](https://github.com/graphql/graphiql/pull/4025) [`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - set "importsNotUsedAsValues": "error" in tsconfig
+
+- [#4026](https://github.com/graphql/graphiql/pull/4026) [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - deprecate `useExplorerContext`, `useHistoryContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks
+  - fix response editor overflow on `<GraphiQL.Footer />`
+  - export `GraphiQLProps` type
+  - allow `children: ReactNode` for `<GraphiQL.Toolbar />`
+  - change `ToolbarMenu` component:
+    - The `label` and `className` props were removed
+    - The `button` prop should now be a button element
+  - document `useGraphiQL` and `useGraphiQLActions` hooks in `@graphiql/react` README.md
+  - rename `useThemeStore` to `useTheme`
+
+### Patch Changes
+
+- Updated dependencies [[`6a50740`](https://github.com/graphql/graphiql/commit/6a507407c7c63bfc779ad383054ab3a8c003ef5b), [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b)]:
+  - @graphiql/plugin-doc-explorer@0.3.0-rc.4
+  - @graphiql/plugin-history@0.3.0-rc.3
+  - @graphiql/react@0.35.0-rc.8
+
+## 5.0.0-rc.4
+
+### Minor Changes
+
+- [#4017](https://github.com/graphql/graphiql/pull/4017) [`cff3da5`](https://github.com/graphql/graphiql/commit/cff3da541184d36d1c2e5c919dd4231e9905ccbb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - extract graphiql sidebar to react component
+
+### Patch Changes
+
+- Updated dependencies [[`cff3da5`](https://github.com/graphql/graphiql/commit/cff3da541184d36d1c2e5c919dd4231e9905ccbb)]:
+  - @graphiql/react@0.35.0-rc.6
+
 ## 5.0.0-rc.3
 
 ### Major Changes

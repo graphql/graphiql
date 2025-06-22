@@ -13,7 +13,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
-import { MonacoEditor, EditorProps, SchemaReference } from '../types';
+import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
   MONACO_GRAPHQL_API,
@@ -218,10 +218,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       storage.set(STORAGE_KEY.query, query);
 
       const operationFacts = getAndUpdateOperationFacts(editor);
-      if (operationFacts?.operationName !== undefined) {
-        storage.set(STORAGE_KEY.operationName, operationFacts.operationName);
-      }
-
       // Invoke callback props only after the operation facts have been updated
       onEdit?.(query, operationFacts?.documentAST);
       if (

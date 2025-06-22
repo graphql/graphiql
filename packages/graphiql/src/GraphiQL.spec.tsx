@@ -9,7 +9,7 @@
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component } from 'react';
 import { GraphiQL } from './GraphiQL';
-import { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
@@ -148,7 +148,7 @@ describe('GraphiQL', () => {
     it('should not throw error if schema missing and query provided', async () => {
       await act(async () => {
         expect(() =>
-          render(<GraphiQL fetcher={noOpFetcher} query="{}" />),
+          render(<GraphiQL fetcher={noOpFetcher} initialQuery="{}" />),
         ).not.toThrow();
       });
     });
@@ -262,7 +262,7 @@ describe('GraphiQL', () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
-          variables="{test: 'value'}"
+          initialVariables="🚀"
           defaultEditorToolsVisibility={false}
         />,
       );

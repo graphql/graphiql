@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "rc",
   "initialVersions": {
     "example-graphiql-webpack": "0.0.0",
@@ -33,12 +33,19 @@
     "fluffy-beers-build",
     "four-carrots-leave",
     "good-turtles-speak",
+    "gorgeous-lobsters-run",
     "honest-clouds-brush",
     "kind-timers-exist",
     "many-ducks-visit",
+    "nasty-cows-train",
     "nasty-pandas-taste",
+    "orange-spies-poke",
+    "pink-onions-complain",
     "shy-keys-rest",
     "soft-cars-notice",
+    "sweet-lamps-love",
+    "ten-peas-carry",
+    "tender-years-destroy",
     "twelve-lies-invent",
     "warm-shoes-boil"
   ]

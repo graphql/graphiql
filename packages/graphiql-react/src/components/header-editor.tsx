@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
-import { EditorProps } from '../types';
+import type { EditorProps } from '../types';
 import { HEADER_URI, KEY_BINDINGS, STORAGE_KEY } from '../constants';
 import {
   getOrCreateModel,
@@ -33,7 +33,6 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
   );
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
-    // Build the editor
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
     const disposables = [

@@ -2,17 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
-import { MonacoEditor } from '../types';
-import { type editor as monacoEditor } from '../monaco-editor';
+import type { editor as monacoEditor } from '../monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
-
-export function useSynchronizeValue(editor?: MonacoEditor, value?: string) {
-  useEffect(() => {
-    if (typeof value === 'string' && editor && editor.getValue() !== value) {
-      editor.setValue(value);
-    }
-  }, [editor, value]);
-}
 
 export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
@@ -173,14 +164,21 @@ export function useOptimisticState([
   return [state, setState];
 }
 
-export const useDidUpdate: typeof useEffect = (callback, dependencies) => {
+// https://github.com/mantinedev/mantine/blob/master/packages/@mantine/hooks/src/use-did-update/use-did-update.ts
+export const useDidUpdate: typeof useEffect = (fn, dependencies) => {
   const didMountRef = useRef(false);
 
+  // React Strict Mode intentionally mounts → unmounts → mounts the component during development.
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
+    return () => {
+      didMountRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (didMountRef.current) {
+      return fn();
     }
-    callback();
+    didMountRef.current = true;
   }, dependencies); // eslint-disable-line react-hooks/exhaustive-deps
 };

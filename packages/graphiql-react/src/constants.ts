@@ -2,7 +2,7 @@
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { parse, print } from 'graphql';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
-import { EditorSlice } from './stores';
+import type { EditorSlice } from './stores';
 
 export const isMacOs =
   typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
@@ -44,11 +44,12 @@ export const KEY_MAP = Object.freeze({
 
 export const STORAGE_KEY = {
   headers: 'headers',
+  visiblePlugin: 'visiblePlugin',
   query: 'query',
   variables: 'variables',
   tabs: 'tabState',
-  operationName: 'operationName',
   persistHeaders: 'shouldPersistHeaders',
+  theme: 'theme',
 } as const;
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
