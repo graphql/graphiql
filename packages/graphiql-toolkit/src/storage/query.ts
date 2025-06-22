@@ -85,7 +85,8 @@ export class QueryStore {
   async fetchAll() {
     const raw = await this.storage.getItem(this.key);
     if (raw) {
-      return raw;
+      // @ts-expect-error -- fixme: test what type is `raw`
+      return raw as QueryStoreItem[];
     }
     return [];
   }
@@ -96,10 +97,12 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
+    // @ts-expect-error -- fixme
     this.storage.setItem(this.key, this.items);
   }
 
   save() {
+    // @ts-expect-error -- fixme
     this.storage.setItem(this.key, this.items);
   }
 }
