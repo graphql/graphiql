@@ -6,6 +6,10 @@ import {
 } from './tabs';
 import { STORAGE_KEY } from '../constants';
 
+const storageStore = {
+  getState: () => ({ storage: null }),
+};
+
 describe('createTab', () => {
   it('creates with default title', () => {
     expect(createTab({})).toEqual(
