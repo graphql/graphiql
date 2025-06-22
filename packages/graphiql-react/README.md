@@ -81,28 +81,26 @@ Further details on how to use `@graphiql/react` can be found in the reference
 implementation of a GraphQL IDE - Graph*i*QL - in the
 [`graphiql` package](https://github.com/graphql/graphiql/blob/main/packages/graphiql/src/components/GraphiQL.tsx).
 
-## Available Stores
+## Core Hooks
 
 GraphiQL uses a set of state management stores, each responsible for a specific part of the IDE's
 behavior. These stores contain all logic related to state management and can be accessed via custom
 React hooks.
 
-### Core Hooks
-
-- **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
-- **`useTheme`**: Manages the current theme and provides a method to update it.
 - **`useGraphiQL`**: Access the current state.
 - **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
 
 The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
 
-| Store Slice | Responsibilities                                                                 |
-| ----------- | -------------------------------------------------------------------------------- |
-| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs |
-| `execution` | Handles the execution of GraphQL requests                                        |
-| `plugin`    | Manages plugins and the currently active plugin                                  |
-| `schema`    | Fetches, validates, and stores the GraphQL schema                                |
+| Store Slice | Responsibilities                                                                                          |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| `storage`   | Provides a storage API that can be used to persist state in the browser (by default using `localStorage`) |
+| `theme`     | Manages the current theme and provides a method to update it.                                             |
+| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs                          |
+| `execution` | Handles the execution of GraphQL requests                                                                 |
+| `schema`    | Fetches, validates, and stores the GraphQL schema                                                         |
+| `plugin`    | Manages plugins and the currently active plugin                                                           |
 
 ### Usage Example
 

@@ -138,7 +138,7 @@ function App() {
 > Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
 
 - `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks are deprecated.
-- Add new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#available-stores) for more details about them.
+- Add new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#core-hooks) for more details about them.
 - remove `useSynchronizeValue` hook
 - fix `defaultQuery` with empty string does not result in an empty default query
 - fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
