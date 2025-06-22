@@ -1,7 +1,5 @@
-/* eslint-disable unicorn/prefer-export-from */
 import { useGraphiQL, useGraphiQLActions } from './components';
 import { pick } from './utility';
-import { useStorage } from './stores';
 
 /**
  * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()` instead.
@@ -71,6 +69,8 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const storage = useStorage()` instead.
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
  */
-export const useStorageContext = useStorage;
+export function useStorageContext() {
+  return useGraphiQL(state => state.storage);
+}

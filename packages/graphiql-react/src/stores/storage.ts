@@ -2,6 +2,8 @@ import type { PersistStorage } from 'zustand/middleware';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, Theme } from '../types';
 
+export type Storage = PersistStorage<GraphiQLPersistedState>
+
 interface GraphiQLPersistedState {
   theme?: Theme;
   visiblePlugin?: string;
@@ -13,7 +15,7 @@ export interface StorageSlice {
    * @default createJSONStorage(() => localStorage)
    * @see https://zustand.docs.pmnd.rs/integrations/persisting-store-data#createjsonstorage
    */
-  storage: PersistStorage<GraphiQLPersistedState>;
+  storage: Storage;
 }
 
 export interface StorageProps {
