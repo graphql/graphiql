@@ -98,10 +98,16 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
-    this.storage.setItem(this.key, items);
+    this.storage.setItem(this.key, {
+      // @ts-expect-error -- fixme
+      state: items,
+    });
   }
 
   save() {
-    this.storage.setItem(this.key, this.items);
+    this.storage.setItem(this.key, {
+      // @ts-expect-error -- fixme
+      state: this.items,
+    });
   }
 }
