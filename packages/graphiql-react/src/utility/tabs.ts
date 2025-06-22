@@ -1,7 +1,6 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { STORAGE_KEY } from '../constants';
-import { storageStore } from '../stores';
 
 export interface TabDefinition {
   /**
@@ -29,7 +28,7 @@ export interface TabState extends TabDefinition {
 
   /**
    * A hash that is unique for a combination of the contents of the query
-   * editor, the variable editor and the header editor (i.e. all the editor
+   * editor, the variable editor and the header editor (i.e., all the editor
    * where the contents are persisted in storage).
    */
   hash: string;

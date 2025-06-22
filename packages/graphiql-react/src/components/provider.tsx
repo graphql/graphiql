@@ -248,6 +248,7 @@ useEffect(() => {
               theme: state.theme,
               visiblePlugin: state.visiblePlugin,
             }),
+            storage,
           },
         ),
       );
