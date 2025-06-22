@@ -5,7 +5,7 @@ import { QueryStore, QueryStoreItem } from './query';
 const MAX_QUERY_SIZE = 100000;
 
 export class HistoryStore {
-  queries: QueryStoreItem[];
+  queries: QueryStoreItem[] = [];
   history: QueryStore;
   favorite: QueryStore;
 
@@ -21,7 +21,11 @@ export class HistoryStore {
     // favorites are not automatically deleted, so there's no need for a max length
     this.favorite = new QueryStore('favorites', this.storage, null);
 
-    this.queries = [...this.history.fetchAll(), ...this.favorite.fetchAll()];
+    void Promise.all([this.history.fetchAll(), this.favorite.fetchAll()]).then(
+      ([history, favorite]) => {
+        this.queries = [...history, ...favorite];
+      },
+    );
   }
 
   private shouldSaveQuery(

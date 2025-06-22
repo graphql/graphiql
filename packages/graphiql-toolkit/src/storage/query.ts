@@ -10,14 +10,18 @@ export type QueryStoreItem = {
 };
 
 export class QueryStore {
-  items: QueryStoreItem[];
+  items: QueryStoreItem[] = [];
 
   constructor(
     private key: string,
-    private storage: PersistStorage<any>,
+    private storage: PersistStorage<{
+      [key: string]: QueryStoreItem[];
+    }>,
     private maxSize: number | null = null,
   ) {
-    this.items = this.fetchAll();
+    void this.fetchAll().then(items => {
+      this.items = items;
+    });
   }
 
   get length() {
@@ -80,10 +84,10 @@ export class QueryStore {
     return this.items.at(-1);
   }
 
-  fetchAll() {
-    const raw = this.storage.getItem(this.key);
+  async fetchAll() {
+    const raw = await this.storage.getItem(this.key);
     if (raw) {
-      return JSON.parse(raw)[this.key] as QueryStoreItem[];
+      return raw.state[this.key];
     }
     return [];
   }
@@ -94,24 +98,10 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
-
-    for (let attempts = 0; attempts < 5; attempts++) {
-      const response = this.storage.setItem(
-        this.key,
-        JSON.stringify({ [this.key]: items }),
-      );
-      if (!response?.error) {
-        this.items = items;
-      } else if (response.isQuotaError && this.maxSize) {
-        // Only try to delete last items on LRU stores
-        items.shift();
-      } else {
-        return; // We don't know what happened in this case, so just bailing out
-      }
-    }
+    this.storage.setItem(this.key, items);
   }
 
   save() {
-    this.storage.setItem(this.key, JSON.stringify({ [this.key]: this.items }));
+    this.storage.setItem(this.key, this.items);
   }
 }
