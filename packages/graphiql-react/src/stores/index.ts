@@ -32,5 +32,4 @@ export {
   type ThemeSlice,
   type ThemeActions,
   type ThemeProps,
-  type Theme,
 } from './theme';

@@ -1,13 +1,7 @@
 import type { StateCreator } from 'zustand';
 import type { EDITOR_THEME } from '../utility/create-editor';
 import { editor as monacoEditor } from '../monaco-editor';
-import type { SlicesWithActions } from '../types';
-
-/**
- * The value `null` semantically means that the user does not explicitly choose
- * any theme, so we use the system default.
- */
-export type Theme = 'light' | 'dark' | null;
+import type { SlicesWithActions, Theme } from '../types';
 
 type MonacoTheme =
   | monacoEditor.BuiltinTheme
