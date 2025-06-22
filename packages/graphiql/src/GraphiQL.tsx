@@ -28,7 +28,6 @@ import {
   useDragResize,
   useGraphiQL,
   pick,
-  useStorage,
   VariableEditor,
   EditorProps,
   cn,
