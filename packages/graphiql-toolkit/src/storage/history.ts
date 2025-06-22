@@ -1,6 +1,5 @@
 import { parse } from 'graphql';
-
-import { StorageAPI } from './base';
+import type { PersistStorage } from 'zustand/middleware';
 import { QueryStore, QueryStoreItem } from './query';
 
 const MAX_QUERY_SIZE = 100000;
@@ -11,7 +10,7 @@ export class HistoryStore {
   favorite: QueryStore;
 
   constructor(
-    private storage: StorageAPI,
+    private storage: PersistStorage<any>,
     private maxHistoryLength: number,
   ) {
     this.history = new QueryStore(
