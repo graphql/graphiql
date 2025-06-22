@@ -244,18 +244,23 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     direction: 'horizontal',
     storageKey: 'editorFlex',
   });
+  const [initiallyHiddenEditorTools] = useState<'second' | undefined>(() => {
+    if (
+      defaultEditorToolsVisibility === 'variables' ||
+      defaultEditorToolsVisibility === 'headers'
+    ) {
+      return;
+    }
+    if (typeof defaultEditorToolsVisibility === 'boolean') {
+      return defaultEditorToolsVisibility ? undefined : 'second';
+    }
+    return initialVariables || initialHeaders ? undefined : 'second';
+  });
+
   const editorToolsResize = useDragResize({
     defaultSizeRelation: 3,
     direction: 'vertical',
-    initiallyHidden: ((d: typeof defaultEditorToolsVisibility) => {
-      if (d === 'variables' || d === 'headers') {
-        return;
-      }
-      if (typeof d === 'boolean') {
-        return d ? undefined : 'second';
-      }
-      return initialVariables || initialHeaders ? undefined : 'second';
-    })(defaultEditorToolsVisibility),
+    initiallyHidden: initiallyHiddenEditorTools,
     sizeThresholdSecond: 60,
     storageKey: 'secondaryEditorFlex',
   });
