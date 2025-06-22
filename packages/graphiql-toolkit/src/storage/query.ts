@@ -1,4 +1,4 @@
-import { StorageAPI } from './base';
+import type { PersistStorage } from 'zustand/middleware';
 
 export type QueryStoreItem = {
   query?: string;
@@ -10,11 +10,11 @@ export type QueryStoreItem = {
 };
 
 export class QueryStore {
-  items: Array<QueryStoreItem>;
+  items: QueryStoreItem[];
 
   constructor(
     private key: string,
-    private storage: StorageAPI,
+    private storage: PersistStorage<any>,
     private maxSize: number | null = null,
   ) {
     this.items = this.fetchAll();
@@ -81,7 +81,7 @@ export class QueryStore {
   }
 
   fetchAll() {
-    const raw = this.storage.get(this.key);
+    const raw = this.storage.getItem(this.key);
     if (raw) {
       return JSON.parse(raw)[this.key] as Array<QueryStoreItem>;
     }
@@ -96,7 +96,7 @@ export class QueryStore {
     }
 
     for (let attempts = 0; attempts < 5; attempts++) {
-      const response = this.storage.set(
+      const response = this.storage.setItem(
         this.key,
         JSON.stringify({ [this.key]: items }),
       );
@@ -112,6 +112,6 @@ export class QueryStore {
   }
 
   save() {
-    this.storage.set(this.key, JSON.stringify({ [this.key]: this.items }));
+    this.storage.setItem(this.key, JSON.stringify({ [this.key]: this.items }));
   }
 }

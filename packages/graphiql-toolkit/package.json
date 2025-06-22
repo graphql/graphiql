@@ -33,7 +33,8 @@
     "graphql-ws": "^5.5.5",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
-    "tsup": "^8.2.4"
+    "tsup": "^8.2.4",
+    "zustand": "^5"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
