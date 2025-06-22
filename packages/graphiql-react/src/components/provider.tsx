@@ -251,10 +251,13 @@ useEffect(() => {
                 console.info('Hydration with storage finished');
               };
             },
-            partialize: state => ({
-              theme: state.theme,
-              visiblePlugin: state.visiblePlugin,
-            }),
+            partialize(state) {
+              console.log('partialize', state)
+              return {
+                theme: state.theme,
+                visiblePlugin: state.visiblePlugin,
+              };
+            },
             storage,
             // setItem: debounce(500, (...args) => {
             //   console.log('calling setItem')
