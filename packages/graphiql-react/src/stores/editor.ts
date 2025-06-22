@@ -7,7 +7,6 @@ import type {
 import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { print } from 'graphql';
-import { storageStore } from './storage';
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -424,27 +423,26 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
+      const { headerEditor, tabs, activeTabIndex, storage } = get();
       if (persist) {
-        storage.set(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
+        storage.setItem(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
         const serializedTabs = serializeTabState(
           { tabs, activeTabIndex },
           true,
         );
-        storage.set(STORAGE_KEY.tabs, serializedTabs);
+        storage.setItem(STORAGE_KEY.tabs, serializedTabs);
       } else {
-        storage.set(STORAGE_KEY.headers, '');
+        storage.setItem(STORAGE_KEY.headers, '');
         clearHeadersFromTabs();
       }
-      storage.set(STORAGE_KEY.persistHeaders, persist.toString());
+      storage.setItem(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
     },
     storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
+      const { storage } = get();
       const { shouldPersistHeaders } = get();
       const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY.tabs, value);
+        storage.setItem(STORAGE_KEY.tabs, value);
       });
       store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
     },

@@ -6,7 +6,6 @@ import {
   getDefaultTabState,
   clearHeadersFromTabs,
 } from './tabs';
-import { storageStore } from '../stores';
 import { STORAGE_KEY } from '../constants';
 
 describe('createTab', () => {
@@ -105,12 +104,6 @@ describe('fuzzyExtractionOperationTitle', () => {
 });
 
 describe('getDefaultTabState', () => {
-  beforeEach(() => {
-    act(() => {
-      storageStore.setState({ storage: new StorageAPI() });
-    });
-  });
-
   it('returns default tab', () => {
     expect(
       getDefaultTabState({

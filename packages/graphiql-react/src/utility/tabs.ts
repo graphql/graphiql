@@ -2,6 +2,10 @@
 
 import { STORAGE_KEY } from '../constants';
 
+const storageStore = {
+  getState: () => ({ storage: null }),
+};
+
 export interface TabDefinition {
   /**
    * The contents of the query editor of this tab.

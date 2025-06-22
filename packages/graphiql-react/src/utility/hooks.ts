@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import type { editor as monacoEditor } from '../monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
+
+const storageStore = {
+  getState: () => ({ storage: null }),
+};
 
 export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
