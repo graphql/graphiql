@@ -149,33 +149,36 @@ useEffect(() => {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    function getInitialState() {
+    async function getInitialState() {
       if (storage === undefined) {
         throw new TypeError('Unexpected `storage` prop is undefined.');
       }
       // We only need to compute it lazily during the initial render.
-      const query = props.initialQuery ?? storage.getItem(STORAGE_KEY.query);
+      const query =
+        props.initialQuery ?? (await storage.getItem(STORAGE_KEY.query));
       const variables =
-        props.initialVariables ?? storage.getItem(STORAGE_KEY.variables);
+        props.initialVariables ??
+        (await storage.getItem(STORAGE_KEY.variables));
       const headers =
-        props.initialHeaders ?? storage.getItem(STORAGE_KEY.headers);
+        props.initialHeaders ?? (await storage.getItem(STORAGE_KEY.headers));
 
       const { tabs, activeTabIndex } = getDefaultTabState({
-        storage,
         defaultHeaders,
         defaultQuery,
         defaultTabs,
         headers,
         query,
         shouldPersistHeaders,
+        storage,
         variables,
       });
 
-      const isStored = storage.getItem(STORAGE_KEY.persistHeaders) !== null;
+      const isStored =
+        (await storage.getItem(STORAGE_KEY.persistHeaders)) !== null;
 
       const $shouldPersistHeaders =
         shouldPersistHeaders !== false && isStored
-          ? storage.getItem(STORAGE_KEY.persistHeaders) === 'true'
+          ? (await storage.getItem(STORAGE_KEY.persistHeaders)) === 'true'
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>()(
@@ -253,6 +256,10 @@ useEffect(() => {
               visiblePlugin: state.visiblePlugin,
             }),
             storage,
+            // setItem: debounce(500, (...args) => {
+            //   console.log('calling setItem')
+            //   return storage.setItem(...args)
+            // }),
           },
         ),
       );
