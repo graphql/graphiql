@@ -70,11 +70,13 @@ You need to set up Monaco workers in your project:
   - `variables`
   - `headers`
   - `response`
-    > [!NOTE]
-    >
-    > If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
-    > and `initialHeaders` props instead. These props will only be used for the first tab.
-    > When opening more tabs, the query editor will start out empty.
+
+> [!NOTE]
+>
+> If you used `query`, `variables` and `headers` in testing, you can use the new `initialQuery`, `initialVariables`
+> and `initialHeaders` props instead. These props will only be used for the first tab.
+> When opening more tabs, the query editor will start out empty.
+
 - Added new props
   - `initialQuery`
   - `initialVariables`
