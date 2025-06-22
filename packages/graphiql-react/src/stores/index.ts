@@ -22,7 +22,11 @@ export {
   type SchemaActions,
   type SchemaProps,
 } from './schema';
-export { storageStore, useStorage } from './storage';
+export {
+  createStorageSlice,
+  type StorageSlice,
+  type StorageProps,
+} from './storage';
 export {
   createThemeSlice,
   type ThemeSlice,

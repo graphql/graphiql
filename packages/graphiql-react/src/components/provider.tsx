@@ -1,22 +1,23 @@
 /* eslint sort-keys: "error" */
-import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
+import type { FC, ReactNode, RefObject } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import {
   createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
   createThemeSlice,
+  createStorageSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
   ThemeProps,
+  StorageProps,
 } from '../stores';
-import { StorageStore, useStorage } from '../stores/storage';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
@@ -34,29 +35,58 @@ import {
 import { getDefaultTabState } from '../utility/tabs';
 import { EDITOR_THEME } from '../utility/create-editor';
 
-interface InnerGraphiQLProviderProps
+interface GraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
     SchemaProps,
-    ThemeProps {
+    ThemeProps,
+    StorageProps {
   children: ReactNode;
 }
-
-type GraphiQLProviderProps =
-  //
-  InnerGraphiQLProviderProps & ComponentPropsWithoutRef<typeof StorageStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  storage,
+  defaultHeaders,
+  defaultQuery = DEFAULT_QUERY,
+  defaultTabs,
+  externalFragments,
+  onEditOperationName,
+  onTabChange,
+  shouldPersistHeaders = false,
+  onCopyQuery,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
+
+  dangerouslyAssumeSchemaIsValid = false,
+  fetcher,
+  inputValueDeprecation = false,
+  introspectionQueryName = 'IntrospectionQuery',
+  onSchemaChange,
+  schema,
+  schemaDescription = false,
+
+  getDefaultFieldNames,
+  operationName = null,
+
+  onTogglePluginVisibility,
+  plugins = [],
+  referencePlugin,
+  visiblePlugin,
+
+  children,
+
+  defaultTheme = null,
+  editorTheme = EDITOR_THEME,
+
+  storage = createJSONStorage(() => localStorage),
+
   ...props
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  if (!props.fetcher) {
+  if (!fetcher) {
     throw new TypeError(
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -115,58 +145,17 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  return (
-    <StorageStore storage={storage}>
-      <InnerGraphiQLProvider {...props} />
-    </StorageStore>
-  );
-};
-
-const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
-  defaultHeaders,
-  defaultQuery = DEFAULT_QUERY,
-  defaultTabs,
-  externalFragments,
-  onEditOperationName,
-  onTabChange,
-  shouldPersistHeaders = false,
-  onCopyQuery,
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-
-  dangerouslyAssumeSchemaIsValid = false,
-  fetcher,
-  inputValueDeprecation = false,
-  introspectionQueryName = 'IntrospectionQuery',
-  onSchemaChange,
-  schema,
-  schemaDescription = false,
-
-  getDefaultFieldNames,
-  operationName = null,
-
-  onTogglePluginVisibility,
-  plugins = [],
-  referencePlugin,
-  visiblePlugin,
-
-  children,
-
-  defaultTheme = null,
-  editorTheme = EDITOR_THEME,
-
-  ...props
-}) => {
-  const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
-      const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
+      const query = props.initialQuery ?? storage!.getItem(STORAGE_KEY.query);
       const variables =
-        props.initialVariables ?? storage.get(STORAGE_KEY.variables);
-      const headers = props.initialHeaders ?? storage.get(STORAGE_KEY.headers);
+        props.initialVariables ?? storage!.getItem(STORAGE_KEY.variables);
+      const headers =
+        props.initialHeaders ?? storage!.getItem(STORAGE_KEY.headers);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
@@ -178,11 +167,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         variables,
       });
 
-      const isStored = storage.get(STORAGE_KEY.persistHeaders) !== null;
+      const isStored = storage!.getItem(STORAGE_KEY.persistHeaders) !== null;
 
       const $shouldPersistHeaders =
         shouldPersistHeaders !== false && isStored
-          ? storage.get(STORAGE_KEY.persistHeaders) === 'true'
+          ? storage!.getItem(STORAGE_KEY.persistHeaders) === 'true'
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>()(
@@ -220,12 +209,14 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
               schemaDescription,
             })(...args);
             const themeSlice = createThemeSlice({ editorTheme })(...args);
+            const storageSlice = createStorageSlice({ storage })(...args);
             return {
               ...editorSlice,
               ...executionSlice,
               ...pluginSlice,
               ...schemaSlice,
               ...themeSlice,
+              ...storageSlice,
               actions: {
                 ...editorSlice.actions,
                 ...executionSlice.actions,
@@ -361,7 +352,7 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
 
 function getExternalFragments(
-  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+  externalFragments: GraphiQLProviderProps['externalFragments'],
 ) {
   const map = new Map<string, FragmentDefinitionNode>();
   if (externalFragments) {

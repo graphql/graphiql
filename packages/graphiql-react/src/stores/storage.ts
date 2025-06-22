@@ -1,43 +1,23 @@
-import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
-import { createBoundedUseStore } from '../utility';
+import type { PersistStorage } from 'zustand/middleware';
+import type { StateCreator } from 'zustand';
+import type { SlicesWithActions } from '../types';
 
-interface StorageStoreType {
-  storage: StorageAPI;
-}
-
-interface StorageStoreProps {
-  children: ReactNode;
-
+export interface StorageSlice {
   /**
    * Provide a custom storage API.
-   * @default localStorage
-   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#storage-2|API docs}
-   * for details on the required interface.
+   * @default createJSONStorage(() => localStorage)
+   * @see https://zustand.docs.pmnd.rs/integrations/persisting-store-data#createjsonstorage
    */
-  storage?: Storage;
+  storage: PersistStorage<string>;
 }
 
-export const storageStore = createStore<StorageStoreType>(() => ({
-  storage: null!,
-}));
+export interface StorageProps {
+  storage?: StorageSlice['storage'];
+}
 
-export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
-  const isMounted = useStorageStore(state => Boolean(state.storage));
+type CreateStorageSlice = (
+  initial: StorageSlice,
+) => StateCreator<SlicesWithActions, [], [], StorageSlice>;
 
-  useEffect(() => {
-    storageStore.setState({ storage: new StorageAPI(storage) });
-  }, [storage]);
-
-  if (!isMounted) {
-    // Ensure storage was initialized
-    return null;
-  }
-
-  return children as ReactElement;
-};
-
-const useStorageStore = createBoundedUseStore(storageStore);
-
-export const useStorage = () => useStorageStore(state => state.storage);
+export const createStorageSlice: CreateStorageSlice = initial => _set =>
+  initial;
