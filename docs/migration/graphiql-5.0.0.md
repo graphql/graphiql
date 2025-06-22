@@ -145,7 +145,7 @@ function App() {
 - fix execute query shortcut in query editor, run it even there are no operations in query editor
 - fix plugin store, save last opened plugin in storage
 - remove `onClickReference` from variable editor
-- fix shortcut text per OS for default query and in run query in execute query button's tooltip
+- fix shortcut text per OS for a default query and in run query in execute query button's tooltip
 
 The `ToolbarMenu` component has changed.
 
