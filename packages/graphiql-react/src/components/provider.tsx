@@ -261,15 +261,10 @@ useEffect(() => {
               };
             },
             storage,
-            // setItem: debounce(500, (...args) => {
-            //   console.log('calling setItem')
-            //   return storage.setItem(...args)
-            // }),
           },
         ),
       );
       const { actions } = store.getState();
-      actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
 
       return store;

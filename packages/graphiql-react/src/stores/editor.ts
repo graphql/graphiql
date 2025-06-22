@@ -17,7 +17,7 @@ import {
   serializeTabState,
 } from '../utility/tabs';
 import type { SlicesWithActions, MonacoEditor } from '../types';
-import { debounce, formatJSONC } from '../utility';
+import { formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
@@ -198,8 +198,6 @@ export interface EditorActions {
    */
   setShouldPersistHeaders(persist: boolean): void;
 
-  storeTabs(tabsState: TabsState): void;
-
   setOperationFacts(facts: {
     documentAST?: DocumentNode;
     operationName?: string;
@@ -337,7 +335,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   const $actions: EditorActions = {
     addTab() {
-      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex, actions }) => {
+      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex }) => {
         // Make sure the current tab stores the latest values
         const updatedValues = synchronizeActiveTabValues({
           tabs,
@@ -347,7 +345,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
           activeTabIndex: updatedValues.tabs.length,
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
@@ -356,24 +353,19 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     changeTab(index) {
       set(({ actions, onTabChange, tabs }) => {
         actions.stop();
-        const updated = {
-          tabs,
-          activeTabIndex: index,
-        };
-        actions.storeTabs(updated);
+        const updated = { tabs, activeTabIndex: index };
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
       });
     },
     moveTab(newOrder) {
-      set(({ onTabChange, actions, tabs, activeTabIndex }) => {
+      set(({ onTabChange, tabs, activeTabIndex }) => {
         const activeTab = tabs[activeTabIndex]!;
         const updated = {
           tabs: newOrder,
           activeTabIndex: newOrder.indexOf(activeTab),
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
@@ -388,19 +380,17 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           tabs: tabs.filter((_tab, i) => index !== i),
           activeTabIndex: Math.max(activeTabIndex - 1, 0),
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
       });
     },
     updateActiveTabValues(partialTab) {
-      set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+      set(({ activeTabIndex, tabs, onTabChange }) => {
         const updated = setPropertiesInActiveTab(
           { tabs, activeTabIndex },
           partialTab,
         );
-        actions.storeTabs(updated);
         onTabChange?.(updated);
         return updated;
       });
@@ -433,18 +423,10 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         storage.setItem(STORAGE_KEY.tabs, serializedTabs);
       } else {
         storage.setItem(STORAGE_KEY.headers, '');
-        clearHeadersFromTabs();
+        clearHeadersFromTabs(storage);
       }
       storage.setItem(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
-    },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = get();
-      const { shouldPersistHeaders } = get();
-      const store = debounce(500, (value: string) => {
-        storage.setItem(STORAGE_KEY.tabs, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
     },
     setOperationFacts({ documentAST, operationName, operations }) {
       set({
