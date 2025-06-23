@@ -46,7 +46,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
-      responseEditor?.setValue(formatError({ message: fetchError }));
+      responseEditor?.setValue(fetchError);
     }
     if (validationErrors.length) {
       responseEditor?.setValue(formatError(validationErrors));
