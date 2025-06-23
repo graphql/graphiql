@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from './debounce';
 import type { editor as monacoEditor, IDisposable } from '../monaco-editor';
-import { useGraphiQL, useGraphiQLActions } from '../components';
+import { useGraphiQL } from '../components';
+import type { EditorActions } from '../stores';
 
 export function onChangeEditor({
   onEdit,
@@ -12,9 +13,7 @@ export function onChangeEditor({
 }: {
   onEdit?: (value: string) => void;
   tabProperty: 'variables' | 'headers';
-  updateActiveTabValues: ReturnType<
-    typeof useGraphiQLActions
-  >['updateActiveTabValues'];
+  updateActiveTabValues: EditorActions['updateActiveTabValues'];
   model: monacoEditor.ITextModel;
 }): IDisposable {
   const updateTab = debounce(100, (value: string) => {
