@@ -103,7 +103,7 @@ export const Sidebar: FC<SidebarProps> = ({
 
   function handleClearData() {
     try {
-      storage.clear();
+      storage.removeItem('graphiql:theme');
       setClearStorageStatus('success');
     } catch {
       setClearStorageStatus('error');
