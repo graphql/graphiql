@@ -221,7 +221,7 @@ useEffect(() => {
                     initialHeaders,
                     initialQuery,
                     initialVariables,
-                  })
+                  });
                 }
                 if (error) {
                   // eslint-disable-next-line no-console
