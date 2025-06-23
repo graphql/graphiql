@@ -74,3 +74,17 @@ export function useSchemaContext() {
 export function useStorageContext() {
   return useGraphiQL(state => state.storage);
 }
+
+/**
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
+ */
+export const useStorage = useStorageContext; // eslint-disable-line @typescript-eslint/no-deprecated
+
+/**
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
+ */
+export function useTheme() {
+  const { setTheme } = useGraphiQLActions();
+  const theme = useGraphiQL(state => state.theme);
+  return { setTheme, theme };
+}
