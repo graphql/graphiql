@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { KEY_BINDINGS, STORAGE_KEY, VARIABLE_URI } from '../constants';
+import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
-  useChangeHandler,
+  onChangeEditor,
   onEditorContainerKeyDown,
   cleanupDisposables,
   cn,
@@ -23,10 +23,10 @@ export const VariableEditor: FC<VariableEditorProps> = ({
   onEdit,
   ...props
 }) => {
-  const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
+  const { setEditor, run, prettifyEditors, mergeQuery, updateActiveTabValues } =
+    useGraphiQLActions();
   const initialVariables = useGraphiQL(state => state.initialVariables);
   const ref = useRef<HTMLDivElement>(null!);
-  useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
   useEffect(() => {
     const model = getOrCreateModel({
       uri: VARIABLE_URI,
@@ -35,6 +35,12 @@ export const VariableEditor: FC<VariableEditorProps> = ({
     const editor = createEditor(ref, { model });
     setEditor({ variableEditor: editor });
     const disposables = [
+      onChangeEditor({
+        onEdit,
+        tabProperty: 'variables',
+        updateActiveTabValues,
+        model,
+      }),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
