@@ -242,11 +242,11 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       }
     },
     sizeThresholdSecond: 200,
-    storageKey: 'docExplorerFlex',
+    storageKey: 'flex:plugin',
   });
   const editorResize = useDragResize({
     direction: 'horizontal',
-    storageKey: 'editorFlex',
+    storageKey: 'flex:response',
   });
   const [initiallyHiddenEditorTools] = useState<'second' | undefined>(() => {
     if (
@@ -266,7 +266,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     direction: 'vertical',
     initiallyHidden: initiallyHiddenEditorTools,
     sizeThresholdSecond: 60,
-    storageKey: 'secondaryEditorFlex',
+    storageKey: 'flex:editor-tools',
   });
 
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<

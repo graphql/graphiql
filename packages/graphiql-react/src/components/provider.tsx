@@ -153,7 +153,6 @@ useEffect(() => {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    // TODO: make `async` and `await storage.getItem`...
     function getInitialState() {
       if (storage === undefined) {
         throw new TypeError('Unexpected `storage` prop is undefined.');
@@ -172,13 +171,6 @@ useEffect(() => {
         variables,
       });
 
-      const isStored = storage.getItem(STORAGE_KEY.persistHeaders) !== null;
-
-      const $shouldPersistHeaders =
-        shouldPersistHeaders !== false && isStored
-          ? storage.getItem(STORAGE_KEY.persistHeaders) === 'true'
-          : shouldPersistHeaders;
-
       const store = create<SlicesWithActions>()(
         persist(
           (...args) => {
@@ -195,7 +187,7 @@ useEffect(() => {
               onEditOperationName,
               onPrettifyQuery,
               onTabChange,
-              shouldPersistHeaders: $shouldPersistHeaders,
+              shouldPersistHeaders,
               tabs,
             })(...args);
             const executionSlice = createExecutionSlice({
