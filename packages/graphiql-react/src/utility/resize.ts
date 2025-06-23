@@ -59,15 +59,15 @@ export function useDragResize({
   sizeThresholdSecond = 100,
   storageKey: key,
 }: UseDragResizeArgs) {
-  const storageKey = `graphiql:${key}`;
   const storage = useGraphiQL(state => state.storage);
+  const storageKey = `graphiql:${key}`;
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     null,
   );
   const firstRef = useRef<HTMLDivElement>(null);
   const dragBarRef = useRef<HTMLDivElement>(null);
   const secondRef = useRef<HTMLDivElement>(null);
-  const defaultFlexRef = useRef(`${defaultSizeRelation}`);
+  const defaultFlex = String(defaultSizeRelation);
 
   useEffect(() => {
     async function initFlexValues() {
@@ -81,10 +81,10 @@ export function useDragResize({
       setHiddenElement(initialHiddenElement);
 
       if (firstRef.current) {
-        const storedValue = $storedValue || defaultFlexRef.current;
+        const storedValue = $storedValue || defaultFlex;
         firstRef.current.style.flex =
           storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
-            ? defaultFlexRef.current
+            ? defaultFlex
             : storedValue;
       }
       if (secondRef.current) {
@@ -125,7 +125,7 @@ export function useDragResize({
         storedValue !== HIDE_FIRST &&
         storedValue !== HIDE_SECOND
       ) {
-        firstRef.current.style.flex = storedValue || defaultFlexRef.current;
+        firstRef.current.style.flex = storedValue || defaultFlex;
       }
     }
 
@@ -139,7 +139,7 @@ export function useDragResize({
         }
       }
     }
-  }, [hiddenElement, storage, storageKey]);
+  }, [defaultFlex, hiddenElement, storage, storageKey]);
 
   useEffect(() => {
     if (!dragBarRef.current || !firstRef.current || !secondRef.current) {
@@ -227,9 +227,9 @@ export function useDragResize({
 
     function reset() {
       if (firstRef.current) {
-        firstRef.current.style.flex = defaultFlexRef.current;
+        firstRef.current.style.flex = defaultFlex;
       }
-      store(defaultFlexRef.current);
+      store(defaultFlex);
       setHiddenElementWithCallback(null);
     }
 
@@ -240,6 +240,7 @@ export function useDragResize({
       dragBarContainer.removeEventListener('dblclick', reset);
     };
   }, [
+    defaultFlex,
     direction,
     onHiddenElementChange,
     sizeThresholdFirst,
