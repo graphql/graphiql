@@ -232,7 +232,7 @@ export const Sidebar: FC<SidebarProps> = ({
           </VisuallyHidden>
           <Dialog.Close />
         </div>
-        {showPersistHeadersSettings ? (
+        {showPersistHeadersSettings && (
           <div className="graphiql-dialog-section">
             <div>
               <div className="graphiql-dialog-section-title">
@@ -265,7 +265,7 @@ export const Sidebar: FC<SidebarProps> = ({
               </Button>
             </ButtonGroup>
           </div>
-        ) : null}
+        )}
         {!forcedTheme && (
           <div className="graphiql-dialog-section">
             <div>

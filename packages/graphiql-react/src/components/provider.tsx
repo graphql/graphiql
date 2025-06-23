@@ -258,6 +258,7 @@ useEffect(() => {
               );
               return {
                 activeTabIndex: state.activeTabIndex,
+                shouldPersistHeaders: state.shouldPersistHeaders,
                 tabs: state.shouldPersistHeaders
                   ? state.tabs
                   : state.tabs.map(tab => ({ ...tab, headers: null })),

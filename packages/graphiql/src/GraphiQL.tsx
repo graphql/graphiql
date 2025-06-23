@@ -67,10 +67,12 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   responseTooltip,
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled,
-  showPersistHeadersSettings,
   forcedTheme,
   confirmCloseTab,
   className,
+
+  shouldPersistHeaders,
+  showPersistHeadersSettings = Boolean(shouldPersistHeaders),
 
   children,
   ...props
@@ -98,9 +100,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     throw new TypeError('The `readOnly` prop has been removed.');
   }
   const interfaceProps: GraphiQLInterfaceProps = {
-    // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
-    showPersistHeadersSettings:
-      showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
+    showPersistHeadersSettings,
     onEditQuery,
     onEditVariables,
     onEditHeaders,
@@ -120,6 +120,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     <GraphiQLProvider
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
+      shouldPersistHeaders={shouldPersistHeaders}
       {...props}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
