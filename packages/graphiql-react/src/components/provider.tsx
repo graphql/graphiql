@@ -27,11 +27,7 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import {
-  DEFAULT_PRETTIFY_QUERY,
-  DEFAULT_QUERY,
-  STORAGE_KEY,
-} from '../constants';
+import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 import { EDITOR_THEME } from '../utility/create-editor';
 
