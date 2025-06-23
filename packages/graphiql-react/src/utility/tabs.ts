@@ -8,10 +8,12 @@ export interface TabDefinition {
    * The contents of the query editor of this tab.
    */
   query: string | null;
+
   /**
    * The contents of the variable editor of this tab.
    */
   variables?: string | null;
+
   /**
    * The contents of the headers editor of this tab.
    */
@@ -59,6 +61,7 @@ export type TabsState = {
    * A list of state objects for each tab.
    */
   tabs: TabState[];
+
   /**
    * The index of the currently active tab with regards to the `tabs` list of
    * this object.

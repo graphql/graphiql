@@ -251,10 +251,16 @@ useEffect(() => {
             },
             partialize(state) {
               // eslint-disable-next-line no-console
-              console.log('partialize', state);
+              console.log(
+                'partialize',
+                state.shouldPersistHeaders,
+                state.tabs.map(t => t.headers),
+              );
               return {
                 activeTabIndex: state.activeTabIndex,
-                tabs: state.tabs,
+                tabs: state.shouldPersistHeaders
+                  ? state.tabs
+                  : state.tabs.map(tab => ({ ...tab, headers: null })),
                 theme: state.theme,
                 visiblePlugin: state.visiblePlugin,
               };

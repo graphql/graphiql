@@ -151,6 +151,7 @@ interface GraphiQLInterfaceProps
       'forcedTheme' | 'showPersistHeadersSettings'
     > {
   children?: ReactNode;
+
   /**
    * Set the default state for the editor tools.
    * - `false` hides the editor tools
@@ -161,11 +162,13 @@ interface GraphiQLInterfaceProps
    * editors has contents.
    */
   defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
+
   /**
    * Toggle if the headers' editor should be shown inside the editor tools.
    * @default true
    */
   isHeadersEditorEnabled?: boolean;
+
   /**
    * Additional class names which will be appended to the container element.
    */
