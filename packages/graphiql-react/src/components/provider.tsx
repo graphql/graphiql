@@ -153,20 +153,14 @@ useEffect(() => {
       if (storage === undefined) {
         throw new TypeError('Unexpected `storage` prop is undefined.');
       }
-      // We only need to compute it lazily during the initial render.
-      const query = initialQuery;
-      const variables = initialVariables;
-      const headers = initialHeaders;
-
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
         defaultQuery,
         defaultTabs,
-        headers,
-        query,
-        variables,
+        headers: initialHeaders,
+        query: initialQuery,
+        variables: initialVariables,
       });
-
       const store = create<SlicesWithActions>()(
         persist(
           (...args) => {
@@ -175,10 +169,6 @@ useEffect(() => {
               defaultHeaders,
               defaultQuery,
               externalFragments: getExternalFragments(externalFragments),
-              initialHeaders: headers ?? defaultHeaders ?? '',
-              initialQuery:
-                query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-              initialVariables: variables ?? '',
               onCopyQuery,
               onEditOperationName,
               onPrettifyQuery,
@@ -227,6 +217,11 @@ useEffect(() => {
                   const theme =
                     state.theme === undefined ? defaultTheme : state.theme;
                   state.actions.setTheme(theme);
+                  state.actions.setInitialValues({
+                    initialHeaders,
+                    initialQuery,
+                    initialVariables,
+                  })
                 }
                 if (error) {
                   // eslint-disable-next-line no-console
@@ -238,12 +233,6 @@ useEffect(() => {
               };
             },
             partialize(state) {
-              // eslint-disable-next-line no-console
-              console.log(
-                'partialize',
-                state.shouldPersistHeaders,
-                state.tabs.map(t => t.headers),
-              );
               return {
                 activeTabIndex: state.activeTabIndex,
                 shouldPersistHeaders: state.shouldPersistHeaders,

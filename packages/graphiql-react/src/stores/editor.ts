@@ -215,6 +215,12 @@ export interface EditorActions {
    * Prettify query, variable and header editors.
    */
   prettifyEditors: () => Promise<void>;
+
+  setInitialValues: (values: {
+    initialQuery?: string;
+    initialVariables?: string;
+    initialHeaders?: string;
+  }) => void;
 }
 
 export interface EditorProps
@@ -270,9 +276,6 @@ type CreateEditorSlice = (
     | 'shouldPersistHeaders'
     | 'tabs'
     | 'activeTabIndex'
-    | 'initialQuery'
-    | 'initialVariables'
-    | 'initialHeaders'
     | 'onEditOperationName'
     | 'externalFragments'
     | 'onTabChange'
@@ -331,6 +334,16 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   }
 
   const $actions: EditorActions = {
+    setInitialValues({ initialHeaders, initialQuery, initialVariables }) {
+      set(({ tabs, activeTabIndex }) => {
+        const activeTab = tabs[activeTabIndex]!;
+        return {
+          initialHeaders: initialHeaders ?? activeTab.headers ?? '',
+          initialQuery: initialQuery ?? activeTab.query ?? '',
+          initialVariables: initialVariables ?? activeTab.variables ?? '',
+        };
+      });
+    },
     addTab() {
       set(({ defaultHeaders, onTabChange, tabs, activeTabIndex }) => {
         // Make sure the current tab stores the latest values
