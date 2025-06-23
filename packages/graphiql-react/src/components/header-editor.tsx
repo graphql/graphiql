@@ -5,7 +5,7 @@ import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
-  onChangeEditor,
+  debounce,
   onEditorContainerKeyDown,
   cleanupDisposables,
   cn,
@@ -28,12 +28,14 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
+    const updateTab = debounce(100, (headers: string) => {
+      updateActiveTabValues({ headers });
+    });
     const disposables = [
-      onChangeEditor({
-        onEdit,
-        tabProperty: 'headers',
-        updateActiveTabValues,
-        model,
+      model.onDidChangeContent(() => {
+        const newValue = model.getValue();
+        updateTab(newValue);
+        onEdit?.(newValue);
       }),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),

@@ -1,32 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { debounce } from './debounce';
-import type { editor as monacoEditor, IDisposable } from '../monaco-editor';
 import { useGraphiQL } from '../components';
-import type { EditorActions } from '../stores';
-
-export function onChangeEditor({
-  onEdit,
-  tabProperty,
-  updateActiveTabValues,
-  model,
-}: {
-  onEdit?: (value: string) => void;
-  tabProperty: 'variables' | 'headers';
-  updateActiveTabValues: EditorActions['updateActiveTabValues'];
-  model: monacoEditor.ITextModel;
-}): IDisposable {
-  const updateTab = debounce(100, (value: string) => {
-    updateActiveTabValues({ [tabProperty]: value });
-  });
-
-  const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
-    const newValue = model.getValue();
-    updateTab(newValue);
-    onEdit?.(newValue);
-  };
-  return model.onDidChangeContent(handleChange);
-}
 
 // https://react.dev/learn/you-might-not-need-an-effect
 export const useEditorState = (

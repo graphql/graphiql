@@ -5,7 +5,7 @@ import { KEY_BINDINGS, VARIABLE_URI } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
-  onChangeEditor,
+  debounce,
   onEditorContainerKeyDown,
   cleanupDisposables,
   cn,
@@ -34,12 +34,14 @@ export const VariableEditor: FC<VariableEditorProps> = ({
     });
     const editor = createEditor(ref, { model });
     setEditor({ variableEditor: editor });
+    const updateTab = debounce(100, (variables: string) => {
+      updateActiveTabValues({ variables });
+    });
     const disposables = [
-      onChangeEditor({
-        onEdit,
-        tabProperty: 'variables',
-        updateActiveTabValues,
-        model,
+      model.onDidChangeContent(() => {
+        const newValue = model.getValue();
+        updateTab(newValue);
+        onEdit?.(newValue);
       }),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
