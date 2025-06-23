@@ -47,7 +47,7 @@ interface UseDragResizeArgs {
    * A key for which the state of resizing is persisted in storage (if storage
    * is available).
    */
-  storageKey?: string;
+  storageKey: string;
 }
 
 export function useDragResize({
@@ -57,8 +57,9 @@ export function useDragResize({
   onHiddenElementChange,
   sizeThresholdFirst = 100,
   sizeThresholdSecond = 100,
-  storageKey,
+  storageKey: key,
 }: UseDragResizeArgs) {
+  const storageKey = `graphiql:${key}`;
   const storage = useGraphiQL(state => state.storage);
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     null,
@@ -118,10 +119,6 @@ export function useDragResize({
       element.style.left = '';
       element.style.position = '';
       element.style.opacity = '';
-
-      if (!storageKey) {
-        return;
-      }
       const storedValue = await storage.getItem(storageKey);
       if (
         firstRef.current &&
@@ -149,9 +146,7 @@ export function useDragResize({
       return;
     }
     const store = debounce(500, (value: string) => {
-      if (storageKey) {
-        storage.setItem(storageKey, value);
-      }
+      storage.setItem(storageKey, value);
     });
 
     function setHiddenElementWithCallback(element: ResizableElement | null) {
