@@ -16,10 +16,14 @@ export class QueryStore {
     private key: string,
     private storage: StateStorage,
     private maxSize: number | null = null,
-  ) {
-    void this.fetchAll().then(items => {
-      this.items = items;
-    });
+  ) {}
+
+  static async create(
+    ...args: ConstructorParameters<typeof QueryStore>
+  ): Promise<QueryStore> {
+    const store = new this(...args);
+    store.items = await store.fetchAll();
+    return store;
   }
 
   get length() {
@@ -83,12 +87,11 @@ export class QueryStore {
   }
 
   async fetchAll() {
-    const raw = await this.storage.getItem(this.key);
-    if (raw) {
-      // @ts-expect-error -- fixme: test what type is `raw`
-      return raw as QueryStoreItem[];
+    const items = await this.storage.getItem(this.key);
+    if (!items) {
+      return [];
     }
-    return [];
+    return items as unknown as QueryStoreItem[];
   }
 
   push(item: QueryStoreItem) {
@@ -97,12 +100,13 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
-    // @ts-expect-error -- fixme
-    this.storage.setItem(this.key, this.items);
+    try {
+      this.storage.setItem(this.key, JSON.stringify(this.items));
+      this.items = items;
+    } catch {}
   }
 
   save() {
-    // @ts-expect-error -- fixme
-    this.storage.setItem(this.key, this.items);
+    this.storage.setItem(this.key, JSON.stringify(this.items));
   }
 }

@@ -5,7 +5,7 @@ class StorageMock {
   shouldThrow: () => boolean;
   // @ts-expect-error
   count: number;
-  map = {};
+  map: Record<string, string> = {};
   // @ts-expect-error
   storage: Storage;
 
@@ -13,37 +13,26 @@ class StorageMock {
     this.shouldThrow = shouldThrow;
   }
 
-  set(key: string, value: string) {
+  setItem(key: string, value: string) {
     this.count++;
-
     if (this.shouldThrow()) {
-      return {
-        error: new Error('boom'),
-        isQuotaError: true,
-      };
+      throw new Error('boom');
     }
-    // @ts-expect-error
     this.map[key] = value;
-
-    return {
-      error: null,
-      isQuotaError: false,
-    };
   }
 
-  get(key: string) {
-    // @ts-expect-error
+  getItem(key: string) {
     return this.map[key] || null;
   }
 }
 
 describe('QueryStore', () => {
+  const storage = createJSONStorage(() => localStorage);
+
   describe('with no max items', () => {
-    it('can push multiple items', () => {
-      const store = new QueryStore(
-        'normal',
-        createJSONStorage(() => localStorage),
-      );
+    it('can push multiple items', async () => {
+      // @ts-expect-error -- fixme
+      const store = await QueryStore.create('normal', storage);
 
       for (let i = 0; i < 100; i++) {
         store.push({ query: `item${i}` });
@@ -52,10 +41,13 @@ describe('QueryStore', () => {
       expect(store.items.length).toBe(100);
     });
 
-    it('will fail silently on quota error', () => {
+    it('will fail silently on quota error', async () => {
       let i = 0;
-      // @ts-expect-error
-      const store = new QueryStore('normal', new StorageMock(() => i > 4));
+      const store = await QueryStore.create(
+        'normal',
+        // @ts-expect-error
+        new StorageMock(() => i > 4),
+      );
 
       for (; i < 10; i++) {
         store.push({ query: `item${i}` });
@@ -68,8 +60,9 @@ describe('QueryStore', () => {
   });
 
   describe('with max items', () => {
-    it('can push a limited number of items', () => {
-      const store = new QueryStore('limited', new StorageAPI(), 20);
+    it('can push a limited number of items', async () => {
+      // @ts-expect-error -- fixme
+      const store = await QueryStore.create('limited', storage, 20);
 
       for (let i = 0; i < 100; i++) {
         store.push({ query: `item${i}` });
@@ -81,10 +74,10 @@ describe('QueryStore', () => {
       expect(store.items[19].query).toBe('item99');
     });
 
-    it('tries to remove on quota error until it succeeds', () => {
+    it('tries to remove on quota error until it succeeds', async () => {
       let shouldThrow: () => boolean;
       let retryCounter = 0;
-      const store = new QueryStore(
+      const store = await QueryStore.create(
         'normal',
         // @ts-expect-error
         new StorageMock(() => {
@@ -114,7 +107,7 @@ describe('QueryStore', () => {
       expect(store.items[7].query).toBe('finalItem');
     });
 
-    it('tries to remove a maximum of 5 times', () => {
+    it('tries to remove a maximum of 5 times', async () => {
       let shouldThrow: () => boolean;
       let retryCounter = 0;
       const store = new QueryStore(
