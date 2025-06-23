@@ -278,15 +278,6 @@ useEffect(() => {
 
     storeRef.current = getInitialState();
   }
-  // TODO:
-  // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
-  // useEffect(() => {
-  //   const propValue = shouldPersistHeaders;
-  //   if (lastShouldPersistHeadersProp.current !== propValue) {
-  //     editorStore.getState().setShouldPersistHeaders(propValue);
-  //     lastShouldPersistHeadersProp.current = propValue;
-  //   }
-  // }, [shouldPersistHeaders]);
 
   // Execution sync
   useDidUpdate(() => {
