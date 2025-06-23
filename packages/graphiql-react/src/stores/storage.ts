@@ -1,6 +1,17 @@
 import type { StateCreator } from 'zustand';
-import type { StateStorage } from 'zustand/middleware';
-import type { SlicesWithActions } from '../types';
+import type { PersistStorage, StateStorage } from 'zustand/middleware';
+import type { SlicesWithActions, Theme } from '../types';
+import type { TabState } from '../utility/tabs';
+
+export type Storage = PersistStorage<GraphiQLPersistedState>;
+
+interface GraphiQLPersistedState {
+  activeTabIndex: number;
+  shouldPersistHeaders: boolean;
+  tabs: TabState[];
+  theme?: Theme;
+  visiblePlugin?: string;
+}
 
 export interface StorageSlice {
   /**
@@ -12,7 +23,7 @@ export interface StorageSlice {
 }
 
 export interface StorageProps {
-  storage?: StorageSlice['storage'];
+  storage?: Storage;
 }
 
 type CreateStorageSlice = (

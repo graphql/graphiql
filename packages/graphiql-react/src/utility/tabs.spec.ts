@@ -101,14 +101,7 @@ describe('fuzzyExtractionOperationTitle', () => {
 
 describe('getDefaultTabState', () => {
   it('returns default tab', () => {
-    expect(
-      getDefaultTabState({
-        defaultQuery: '# Default',
-        headers: null,
-        query: null,
-        variables: null,
-      }),
-    ).toEqual({
+    expect(getDefaultTabState({ defaultQuery: '# Default' })).toEqual({
       activeTabIndex: 0,
       tabs: [
         expect.objectContaining({
@@ -123,7 +116,6 @@ describe('getDefaultTabState', () => {
     expect(
       getDefaultTabState({
         defaultQuery: '# Default',
-        headers: null,
         defaultTabs: [
           {
             headers: null,
@@ -136,8 +128,6 @@ describe('getDefaultTabState', () => {
             variables: null,
           },
         ],
-        query: null,
-        variables: null,
       }),
     ).toEqual({
       activeTabIndex: 0,

@@ -505,6 +505,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   return {
     ...initial,
+    initialQuery: '',
+    initialVariables: '',
+    initialHeaders: '',
     actions: $actions,
   };
 };

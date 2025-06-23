@@ -192,6 +192,7 @@ useEffect(() => {
               schemaDescription,
             })(...args);
             const themeSlice = createThemeSlice({ editorTheme })(...args);
+            // @ts-expect-error -- fixme
             const storageSlice = createStorageSlice({ storage })(...args);
             return {
               ...editorSlice,
