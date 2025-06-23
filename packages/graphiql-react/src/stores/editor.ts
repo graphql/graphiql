@@ -13,12 +13,9 @@ import {
   TabDefinition,
   TabsState,
   TabState,
-  clearHeadersFromTabs,
-  serializeTabState,
 } from '../utility/tabs';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { formatJSONC } from '../utility';
-import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -412,21 +409,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         return { operationName };
       });
     },
-    setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex, storage } = get();
-      if (persist) {
-        storage.setItem(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(
-          { tabs, activeTabIndex },
-          true,
-        );
-        storage.setItem(STORAGE_KEY.tabs, serializedTabs);
-      } else {
-        storage.setItem(STORAGE_KEY.headers, '');
-        clearHeadersFromTabs(storage);
-      }
-      storage.setItem(STORAGE_KEY.persistHeaders, persist.toString());
-      set({ shouldPersistHeaders: persist });
+    setShouldPersistHeaders(shouldPersistHeaders) {
+      set({ shouldPersistHeaders });
     },
     setOperationFacts({ documentAST, operationName, operations }) {
       set({ documentAST, operationName, operations });

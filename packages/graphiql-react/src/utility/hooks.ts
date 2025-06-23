@@ -4,13 +4,8 @@ import { debounce } from './debounce';
 import type { editor as monacoEditor } from '../monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
 
-const storageStore = {
-  getState: () => ({ storage: null }),
-};
-
 export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
-  storageKey: string | null,
   tabProperty: 'variables' | 'headers',
 ) {
   const { updateActiveTabValues } = useGraphiQLActions();
@@ -22,21 +17,12 @@ export function useChangeHandler(
     if (!editor) {
       return;
     }
-    const { storage } = storageStore.getState();
-
-    const store = debounce(500, (value: string) => {
-      if (storageKey === null) {
-        return;
-      }
-      storage.setItem(storageKey, value);
-    });
     const updateTab = debounce(100, (value: string) => {
       updateActiveTabValues({ [tabProperty]: value });
     });
 
     const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
       const newValue = editor.getValue();
-      store(newValue);
       updateTab(newValue);
       callback?.(newValue);
     };
@@ -44,7 +30,7 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
+  }, [callback, editor, tabProperty, updateActiveTabValues]);
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect

@@ -1,8 +1,5 @@
 'use no memo'; // can't figure why it isn't optimized
 
-import type { StateStorage } from 'zustand/middleware';
-import { STORAGE_KEY } from '../constants';
-
 export interface TabDefinition {
   /**
    * The contents of the query editor of this tab.
@@ -143,19 +140,6 @@ export function getDefaultTabState({
   // }
 }
 
-export function serializeTabState(
-  tabState: TabsState,
-  shouldPersistHeaders = false,
-) {
-  return JSON.stringify(tabState, (key, value) =>
-    key === 'hash' ||
-    key === 'response' ||
-    (!shouldPersistHeaders && key === 'headers')
-      ? null
-      : value,
-  );
-}
-
 export function createTab({
   query = null,
   variables = null,
@@ -223,19 +207,6 @@ export function fuzzyExtractOperationName(str: string): string | null {
   const match = regex.exec(str);
 
   return match?.[2] ?? null;
-}
-
-export function clearHeadersFromTabs(storage: StateStorage) {
-  const persistedTabs = storage.getItem(STORAGE_KEY.tabs);
-  if (persistedTabs) {
-    const parsedTabs = JSON.parse(persistedTabs);
-    storage.setItem(
-      STORAGE_KEY.tabs,
-      JSON.stringify(parsedTabs, (key, value) =>
-        key === 'headers' ? null : value,
-      ),
-    );
-  }
 }
 
 const DEFAULT_TITLE = '<untitled>';
