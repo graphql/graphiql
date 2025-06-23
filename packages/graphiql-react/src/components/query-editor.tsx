@@ -203,9 +203,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
     const editor = createEditor(ref, { model });
     setEditor({ queryEditor: editor });
-
-    // We don't use the generic `useChangeHandler` hook here because we want to
-    // have additional logic that updates the operation facts that we save in `editorStore`
     const handleChange = debounce(100, () => {
       const query = model.getValue();
       const operationFacts = getAndUpdateOperationFacts(editor);

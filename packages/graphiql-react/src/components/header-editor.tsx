@@ -28,15 +28,13 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
-    const updateTab = debounce(100, (headers: string) => {
-      updateActiveTabValues({ headers });
+    const handleChange = debounce(100, () => {
+      const value = model.getValue();
+      updateActiveTabValues({ headers: value });
+      onEdit?.(value);
     });
     const disposables = [
-      model.onDidChangeContent(() => {
-        const newValue = model.getValue();
-        updateTab(newValue);
-        onEdit?.(newValue);
-      }),
+      model.onDidChangeContent(handleChange),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),

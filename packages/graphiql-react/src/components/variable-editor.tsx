@@ -34,15 +34,13 @@ export const VariableEditor: FC<VariableEditorProps> = ({
     });
     const editor = createEditor(ref, { model });
     setEditor({ variableEditor: editor });
-    const updateTab = debounce(100, (variables: string) => {
-      updateActiveTabValues({ variables });
+    const handleChange = debounce(100, () => {
+      const value = model.getValue();
+      updateActiveTabValues({ variables: value });
+      onEdit?.(value);
     });
     const disposables = [
-      model.onDidChangeContent(() => {
-        const newValue = model.getValue();
-        updateTab(newValue);
-        onEdit?.(newValue);
-      }),
+      model.onDidChangeContent(handleChange),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
