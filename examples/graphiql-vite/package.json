@@ -1,0 +1,20 @@
+{
+  "name": "example-graphiql-vite",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "graphiql": "^5.0.0",
+    "graphql": "^16.11.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.4"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
+  }
+}

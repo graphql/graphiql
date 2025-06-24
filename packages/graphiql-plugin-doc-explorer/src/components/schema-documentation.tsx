@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import type { GraphQLSchema } from 'graphql';
 import { MarkdownContent } from '@graphiql/react';
 import { ExplorerSection } from './section';
@@ -16,8 +16,8 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
   schema,
 }) => {
   const queryType = schema.getQueryType();
-  const mutationType = schema.getMutationType?.();
-  const subscriptionType = schema.getSubscriptionType?.();
+  const mutationType = schema.getMutationType();
+  const subscriptionType = schema.getSubscriptionType();
   const typeMap = schema.getTypeMap();
   const ignoreTypesInAllSchema = [
     queryType?.name,
@@ -57,24 +57,22 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
         )}
       </ExplorerSection>
       <ExplorerSection title="All Schema Types">
-        {typeMap && (
-          <div>
-            {Object.values(typeMap).map(type => {
-              if (
-                ignoreTypesInAllSchema.includes(type.name) ||
-                type.name.startsWith('__')
-              ) {
-                return null;
-              }
+        <div>
+          {Object.values(typeMap).map(type => {
+            if (
+              ignoreTypesInAllSchema.includes(type.name) ||
+              type.name.startsWith('__')
+            ) {
+              return null;
+            }
 
-              return (
-                <div key={type.name}>
-                  <TypeLink type={type} />
-                </div>
-              );
-            })}
-          </div>
-        )}
+            return (
+              <div key={type.name}>
+                <TypeLink type={type} />
+              </div>
+            );
+          })}
+        </div>
       </ExplorerSection>
     </>
   );

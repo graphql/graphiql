@@ -118,7 +118,7 @@ export class DiagnosticsAdapter {
   ) {
     const worker = await this._worker(resource);
 
-    // TODO: eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to handle an edge case bug that happens when typing before the schema is present
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to handle an edge case bug that happens when typing before the schema is present
     if (!worker) {
       return;
     }

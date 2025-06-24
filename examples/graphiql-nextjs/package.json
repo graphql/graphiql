@@ -1,0 +1,24 @@
+{
+  "name": "example-graphiql-nextjs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "types:check": "tsc --noEmit",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "graphiql": "^5.0.0-rc.0",
+    "next": "15.4.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

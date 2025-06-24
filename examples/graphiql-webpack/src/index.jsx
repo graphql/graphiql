@@ -8,6 +8,7 @@ import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { useStorage } from '@graphiql/react';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
+import 'graphiql/setup-workers/webpack';
 import './index.css';
 
 export const STARTING_URL = 'https://countries.trevorblades.com';

@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-doc-explorer",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "test": "vitest"
   },
@@ -41,7 +41,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/react": "^0.34.1",
+    "@graphiql/react": "^0.35.0",
     "@headlessui/react": "^2.2",
     "react-compiler-runtime": "19.1.0-rc.1",
     "zustand": "^5"

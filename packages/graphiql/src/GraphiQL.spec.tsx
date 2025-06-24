@@ -9,8 +9,9 @@
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component } from 'react';
 import { GraphiQL } from './GraphiQL';
-import { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher } from '@graphiql/toolkit';
 import { ToolbarButton } from '@graphiql/react';
+import '@graphiql/react/setup-workers/vite';
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -43,13 +44,15 @@ describe('GraphiQL', () => {
 
       // @ts-expect-error fetcher is a required prop to GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
+        'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
       );
       spy.mockRestore();
     });
 
-    it('should construct correctly with fetcher', async () => {
-      await act(() => {
+    it('should construct correctly with fetcher', () => {
+      // `return` fix error:
+      // Warning: An update to GraphiQLInterface inside a test was not wrapped in act(...).
+      return act(() => {
         expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
       });
     });
@@ -100,6 +103,7 @@ describe('GraphiQL', () => {
       function firstFetcher() {
         return Promise.reject('Schema Error');
       }
+
       function secondFetcher() {
         return Promise.resolve(simpleIntrospection);
       }
@@ -144,7 +148,7 @@ describe('GraphiQL', () => {
     it('should not throw error if schema missing and query provided', async () => {
       await act(async () => {
         expect(() =>
-          render(<GraphiQL fetcher={noOpFetcher} query="{}" />),
+          render(<GraphiQL fetcher={noOpFetcher} initialQuery="{}" />),
         ).not.toThrow();
       });
     });
@@ -156,9 +160,9 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         const mockEditor = container.querySelector<HTMLTextAreaElement>(
-          '.graphiql-query-editor .mockCodeMirror',
-        );
-        expect(mockEditor!.value).toContain('# Welcome to GraphiQL');
+          '.graphiql-query-editor .mockMonaco',
+        )!;
+        expect(mockEditor.value).toContain('# Welcome to GraphiQL');
       });
     });
 
@@ -168,9 +172,10 @@ describe('GraphiQL', () => {
       );
 
       await waitFor(() => {
-        expect(
-          container.querySelector('.graphiql-query-editor .mockCodeMirror'),
-        ).toHaveValue('GraphQL Party!!');
+        const mockEditor = container.querySelector(
+          '.graphiql-query-editor .mockMonaco',
+        )!;
+        expect(mockEditor).toHaveValue('GraphQL Party!!');
       });
     });
   }); // default query
@@ -257,7 +262,7 @@ describe('GraphiQL', () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
-          variables="{test: 'value'}"
+          initialVariables="🚀"
           defaultEditorToolsVisibility={false}
         />,
       );
@@ -281,12 +286,13 @@ describe('GraphiQL', () => {
       // Mock the container width
       const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        .mockReturnValue({ left: 0, right: 900 });
+        .mockReturnValue({ left: 0, right: 900 } as DOMRect);
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editors = container.querySelector('.graphiql-editors')!;
+      const editors =
+        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -319,7 +325,7 @@ describe('GraphiQL', () => {
       // Mock the container width
       const boundingClientRectSpy = vi
         .spyOn(Element.prototype, 'getBoundingClientRect')
-        .mockReturnValue({ left: 0, right: 1200 });
+        .mockReturnValue({ left: 0, right: 1200 } as DOMRect);
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -331,9 +337,7 @@ describe('GraphiQL', () => {
         );
       });
 
-      const dragBar = container.querySelectorAll(
-        '.graphiql-horizontal-drag-bar',
-      )[0];
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -349,9 +353,10 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 797 / (1200 - 797) = 1.977667493796526
-        expect(container.querySelector('.graphiql-plugin')!.style.flex).toBe(
-          '1.977667493796526',
-        );
+        expect(
+          container.querySelector<HTMLDivElement>('.graphiql-plugin')!.style
+            .flex,
+        ).toBe('1.977667493796526');
       });
 
       clientWidthSpy.mockRestore();
@@ -639,6 +644,40 @@ describe('GraphiQL', () => {
           ).toHaveLength(1);
         });
       });
+    });
+  });
+
+  it('should support multiple instances', async () => {
+    const { container, getAllByLabelText } = render(
+      <>
+        <GraphiQL fetcher={noOpFetcher} />
+        <GraphiQL fetcher={noOpFetcher} />
+      </>,
+    );
+    const [firstEl, secondEl] = container.querySelectorAll(
+      '.graphiql-container',
+    );
+    expect(firstEl).toBeInTheDocument();
+    expect(secondEl).toBeInTheDocument();
+    const [showDocExplorerButton] = getAllByLabelText(
+      'Show Documentation Explorer',
+    );
+    const [addTab] = getAllByLabelText('New tab');
+    fireEvent.click(showDocExplorerButton!);
+    fireEvent.click(addTab!);
+
+    await waitFor(() => {
+      // Plugin store
+      expect(
+        firstEl!.querySelector('.graphiql-doc-explorer'),
+      ).toBeInTheDocument();
+      expect(
+        secondEl!.querySelector('.graphiql-doc-explorer'),
+      ).not.toBeInTheDocument();
+
+      // Editor store
+      expect(firstEl!.querySelectorAll('.graphiql-tab').length).toBe(2);
+      expect(secondEl!.querySelectorAll('.graphiql-tab').length).toBe(1);
     });
   });
 });

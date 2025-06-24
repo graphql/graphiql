@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { GraphQLType } from 'graphql';
+import type { FC } from 'react';
+import type { GraphQLType } from 'graphql';
 import { useDocExplorerActions } from '../context';
 import { renderType } from './utils';
 import './type-link.css';
@@ -14,20 +14,16 @@ type TypeLinkProps = {
 export const TypeLink: FC<TypeLinkProps> = ({ type }) => {
   const { push } = useDocExplorerActions();
 
-  if (!type) {
-    return null;
-  }
-
-  return renderType(type, namedType => (
+  return renderType(type, def => (
     <a
       className="graphiql-doc-explorer-type-name"
       onClick={event => {
         event.preventDefault();
-        push({ name: namedType.name, def: namedType });
+        push({ name: def.name, def });
       }}
       href="#"
     >
-      {namedType.name}
+      {def.name}
     </a>
   ));
 };

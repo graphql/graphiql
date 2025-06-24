@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "4.0.6",
+  "version": "5.0.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -27,21 +27,21 @@
   },
   "scripts": {
     "types:check": "tsc --noEmit",
-    "dev": "vite build --watch",
-    "build": "vite build && UMD=true vite build",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "build": "vite build",
     "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts"
   },
   "dependencies": {
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.34.0",
+    "@graphiql/react": "^0.35.0-rc.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.34.1",
+    "@graphiql/react": "^0.35.0",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",

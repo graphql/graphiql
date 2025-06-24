@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { GraphQLNamedType } from 'graphql';
+import type { GraphQLNamedType } from 'graphql';
 import {
   ExampleSchema,
   ExampleEnum,
@@ -10,13 +10,24 @@ import {
 import { docExplorerStore } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
 import { unwrapType } from './test-utils';
-import { schemaStore } from '../../../../graphiql-react/dist/schema';
+import type { SlicesWithActions } from '@graphiql/react';
+
+vi.mock('@graphiql/react', async () => {
+  const originalModule =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  const useGraphiQL: (typeof originalModule)['useGraphiQL'] = cb =>
+    cb({ schema: ExampleSchema } as SlicesWithActions);
+
+  return {
+    ...originalModule,
+    useGraphiQL,
+  };
+});
 
 const TypeDocumentationWithContext: FC<{ type: GraphQLNamedType }> = ({
   type,
 }) => {
   useEffect(() => {
-    schemaStore.setState({ schema: ExampleSchema });
     docExplorerStore.setState({
       explorerNavStack: [
         {
@@ -75,8 +86,8 @@ describe('TypeDocumentation', () => {
     );
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Possible Types');
   });
 
@@ -86,8 +97,8 @@ describe('TypeDocumentation', () => {
     );
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Enum Values');
     const enums = container.querySelectorAll(
       '.graphiql-doc-explorer-enum-value',
@@ -105,8 +116,8 @@ describe('TypeDocumentation', () => {
 
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
-    );
-    title?.childNodes[0].remove();
+    )!;
+    title.childNodes[0]!.remove();
     expect(title).toHaveTextContent('Enum Values');
 
     let enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
@@ -118,8 +129,8 @@ describe('TypeDocumentation', () => {
 
     const deprecatedTitle = container.querySelectorAll(
       '.graphiql-doc-explorer-section-title',
-    )[1];
-    deprecatedTitle.childNodes[0].remove();
+    )[1]!;
+    deprecatedTitle.childNodes[0]!.remove();
     expect(deprecatedTitle).toHaveTextContent('Deprecated Enum Values');
 
     enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');

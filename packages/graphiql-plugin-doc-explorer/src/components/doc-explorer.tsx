@@ -1,6 +1,6 @@
 import { isType } from 'graphql';
-import { FC, ReactNode } from 'react';
-import { ChevronLeftIcon, Spinner, useSchemaStore } from '@graphiql/react';
+import type { FC, ReactNode } from 'react';
+import { ChevronLeftIcon, Spinner, useGraphiQL, pick } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';
@@ -9,7 +9,9 @@ import { TypeDocumentation } from './type-documentation';
 import './doc-explorer.css';
 
 export const DocExplorer: FC = () => {
-  const { fetchError, isFetching, schema, validationErrors } = useSchemaStore();
+  const { fetchError, isIntrospecting, schema, validationErrors } = useGraphiQL(
+    pick('fetchError', 'isIntrospecting', 'schema', 'validationErrors'),
+  );
   const explorerNavStack = useDocExplorer();
   const { pop } = useDocExplorerActions();
   const navItem = explorerNavStack.at(-1)!;
@@ -19,13 +21,13 @@ export const DocExplorer: FC = () => {
     content = (
       <div className="graphiql-doc-explorer-error">Error fetching schema</div>
     );
-  } else if (validationErrors.length > 0) {
+  } else if (validationErrors[0]) {
     content = (
       <div className="graphiql-doc-explorer-error">
         Schema is invalid: {validationErrors[0].message}
       </div>
     );
-  } else if (isFetching) {
+  } else if (isIntrospecting) {
     // Schema is undefined when it is being loaded via introspection.
     content = <Spinner />;
   } else if (!schema) {

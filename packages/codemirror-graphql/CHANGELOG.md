@@ -1,5 +1,17 @@
 # Change Log
 
+## 2.2.3
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
+
+## 2.2.3-rc.0
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
+
 ## 2.2.2
 
 ### Patch Changes

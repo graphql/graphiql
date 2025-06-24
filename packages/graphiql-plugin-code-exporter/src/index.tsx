@@ -1,10 +1,8 @@
 import { useOperationsEditorState, type GraphiQLPlugin } from '@graphiql/react';
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
 } from 'graphiql-code-exporter';
-
-import './graphiql-code-exporter.d.ts';
 import './index.css';
 
 type GraphiQLCodeExporterPluginProps = Omit<GraphiQLCodeExporterProps, 'query'>;

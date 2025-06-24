@@ -32,8 +32,11 @@ module.exports = {
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
     // symlinks
+    'packages/graphiql-react/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-history/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-history/__mocks__/monaco-editor.ts',
   ],
   overrides: [
     {
@@ -142,6 +145,15 @@ module.exports = {
             property: 'navigator',
             message: 'Use `navigator` instead',
           },
+          {
+            object: 'window',
+            property: 'getComputedStyle',
+            message: 'Use `getComputedStyle` instead',
+          },
+          {
+            object: 'self',
+            message: 'Use `globalThis` instead',
+          },
         ],
         'no-return-assign': 'error',
         'no-return-await': 'error',
@@ -171,7 +183,7 @@ module.exports = {
         'init-declarations': 'off',
         'no-catch-shadow': 'error',
         'no-label-var': 'error',
-        'no-restricted-globals': 'off',
+        'no-restricted-globals': ['error', 'stop'],
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': 'error',
         'no-undef-init': 'off',
@@ -362,6 +374,7 @@ module.exports = {
         'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/prefer-array-some': 'error',
+        // '@typescript-eslint/prefer-for-of': 'error', TODO
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
@@ -372,6 +385,13 @@ module.exports = {
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-require-imports': 'off',
         'import-x/no-named-as-default-member': 'off',
+      },
+    },
+    {
+      files: ['packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}'],
+      excludedFiles: ['packages/graphiql-toolkit/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-condition': 'error',
       },
     },
     {
@@ -388,6 +408,7 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
         '@typescript-eslint/no-unnecessary-type-conversion': 'error',
+        // '@typescript-eslint/await-thenable': 'error', // TODO
         // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-deprecated': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',
@@ -404,11 +425,10 @@ module.exports = {
         projectService: {
           allowDefaultProject: [
             'examples/monaco-graphql-react-vite/vite.config.ts',
-            'packages/graphiql/vite.config.mts',
-            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax,graphiql}/vitest.config.mts',
+            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',
-            'packages/graphiql/src/GraphiQL.spec.tsx',
+            'packages/graphiql/cypress.config.ts',
             'packages/vscode-graphql-syntax/tests/*.spec.ts',
             'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
             'packages/monaco-graphql/test/monaco-editor.test.ts',
@@ -565,6 +585,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'off',
         'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
+        '@typescript-eslint/no-unnecessary-condition': 'off',
       },
     },
   ],

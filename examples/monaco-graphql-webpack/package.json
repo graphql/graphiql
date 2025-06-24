@@ -14,8 +14,8 @@
     "graphql-language-service": "^5.4.0",
     "json-schema": "^0.4.0",
     "jsonc-parser": "^3.2.0",
-    "monaco-editor": "^0.39.0",
-    "monaco-graphql": "^1.7.0",
+    "monaco-editor": "^0.52.2",
+    "monaco-graphql": "^1.7.1",
     "prettier": "3.3.2"
   },
   "devDependencies": {

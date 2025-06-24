@@ -1,9 +1,13 @@
 {
   "name": "graphiql",
-  "version": "4.1.2",
-  "sideEffects": false,
+  "version": "5.0.0",
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
+    "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
@@ -22,33 +26,33 @@
   "files": [
     "dist",
     "!dist/e2e.*",
-    "graphiql.js",
-    "graphiql.js.map",
-    "graphiql.min.js",
-    "graphiql.min.js.map",
-    "graphiql.css",
-    "graphiql.min.css"
+    "!dist/workers/*",
+    "!dist/index.umd.*",
+    "!dist/cdn.*"
   ],
   "exports": {
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css",
     "./graphiql.css": "./dist/style.css",
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
+    }
   },
   "scripts": {
     "types:check": "tsc --noEmit",
     "build": "vite build && UMD=true vite build",
-    "cypress-open": "yarn dev 'cypress open --browser electron'",
+    "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "prepublishOnly": "cp dist/index.umd.js graphiql.js && cp dist/index.umd.js.map graphiql.js.map && cp dist/index.umd.js graphiql.min.js && cp dist/index.umd.js.map graphiql.min.js.map && cp dist/style.css graphiql.css && cp dist/style.css graphiql.min.css",
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.2.2",
-    "@graphiql/plugin-history": "^0.2.2",
-    "@graphiql/react": "^0.34.1",
+    "@graphiql/plugin-doc-explorer": "^0.3.0",
+    "@graphiql/plugin-history": "^0.3.0",
+    "@graphiql/react": "^0.35.0",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
@@ -62,6 +66,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/web-worker": "3.1.4",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
@@ -72,6 +77,11 @@
     "start-server-and-test": "^1.10.11",
     "typescript": "^4.6.3",
     "vite": "^6.3.4",
-    "vite-plugin-dts": "^4.5.3"
+    "vite-plugin-dts": "^4.5.3",
+    "vitest-canvas-mock": "0.3.3"
+  },
+  "browser": {
+    "//": "esm.sh polyfills `process`, we don't need it",
+    "process": false
   }
 }

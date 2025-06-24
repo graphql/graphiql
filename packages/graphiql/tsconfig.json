@@ -1,20 +1,5 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
-  "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx",
-    "target": "es2017",
-    "strictPropertyInitialization": false,
-    "types": ["@testing-library/jest-dom", "vitest/globals"]
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/*.spec.tsx"],
-  "references": [
-    {
-      "path": "../codemirror-graphql"
-    },
-    {
-      "path": "../graphql-language-service"
-    }
-  ]
+  "extends": "../graphiql-react/tsconfig.json",
+  // https://github.com/testing-library/jest-dom/issues/546#issuecomment-2558621842
+  "exclude": ["cypress", "cypress.config.ts"]
 }
