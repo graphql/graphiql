@@ -7,19 +7,15 @@ import type {
 import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { print } from 'graphql';
-import { storageStore } from './storage';
 import {
   createTab,
   setPropertiesInActiveTab,
   TabDefinition,
   TabsState,
   TabState,
-  clearHeadersFromTabs,
-  serializeTabState,
 } from '../utility/tabs';
 import type { SlicesWithActions, MonacoEditor } from '../types';
-import { debounce, formatJSONC } from '../utility';
-import { STORAGE_KEY } from '../constants';
+import { formatJSONC } from '../utility';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -199,8 +195,6 @@ export interface EditorActions {
    */
   setShouldPersistHeaders(persist: boolean): void;
 
-  storeTabs(tabsState: TabsState): void;
-
   setOperationFacts(facts: {
     documentAST?: DocumentNode;
     operationName?: string;
@@ -221,6 +215,12 @@ export interface EditorActions {
    * Prettify query, variable and header editors.
    */
   prettifyEditors: () => Promise<void>;
+
+  setInitialValues: (values: {
+    initialQuery?: string;
+    initialVariables?: string;
+    initialHeaders?: string;
+  }) => void;
 }
 
 export interface EditorProps
@@ -276,9 +276,6 @@ type CreateEditorSlice = (
     | 'shouldPersistHeaders'
     | 'tabs'
     | 'activeTabIndex'
-    | 'initialQuery'
-    | 'initialVariables'
-    | 'initialHeaders'
     | 'onEditOperationName'
     | 'externalFragments'
     | 'onTabChange'
@@ -337,8 +334,18 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   }
 
   const $actions: EditorActions = {
+    setInitialValues({ initialHeaders, initialQuery, initialVariables }) {
+      set(({ tabs, activeTabIndex }) => {
+        const activeTab = tabs[activeTabIndex]!;
+        return {
+          initialHeaders: initialHeaders ?? activeTab.headers ?? '',
+          initialQuery: initialQuery ?? activeTab.query ?? '',
+          initialVariables: initialVariables ?? activeTab.variables ?? '',
+        };
+      });
+    },
     addTab() {
-      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex, actions }) => {
+      set(({ defaultHeaders, onTabChange, tabs, activeTabIndex }) => {
         // Make sure the current tab stores the latest values
         const updatedValues = synchronizeActiveTabValues({
           tabs,
@@ -348,7 +355,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
           activeTabIndex: updatedValues.tabs.length,
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
@@ -357,24 +363,19 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     changeTab(index) {
       set(({ actions, onTabChange, tabs }) => {
         actions.stop();
-        const updated = {
-          tabs,
-          activeTabIndex: index,
-        };
-        actions.storeTabs(updated);
+        const updated = { tabs, activeTabIndex: index };
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
       });
     },
     moveTab(newOrder) {
-      set(({ onTabChange, actions, tabs, activeTabIndex }) => {
+      set(({ onTabChange, tabs, activeTabIndex }) => {
         const activeTab = tabs[activeTabIndex]!;
         const updated = {
           tabs: newOrder,
           activeTabIndex: newOrder.indexOf(activeTab),
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
@@ -389,19 +390,17 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           tabs: tabs.filter((_tab, i) => index !== i),
           activeTabIndex: Math.max(activeTabIndex - 1, 0),
         };
-        actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);
         onTabChange?.(updated);
         return updated;
       });
     },
     updateActiveTabValues(partialTab) {
-      set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+      set(({ activeTabIndex, tabs, onTabChange }) => {
         const updated = setPropertiesInActiveTab(
           { tabs, activeTabIndex },
           partialTab,
         );
-        actions.storeTabs(updated);
         onTabChange?.(updated);
         return updated;
       });
@@ -423,37 +422,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         return { operationName };
       });
     },
-    setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
-      if (persist) {
-        storage.set(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
-        const serializedTabs = serializeTabState(
-          { tabs, activeTabIndex },
-          true,
-        );
-        storage.set(STORAGE_KEY.tabs, serializedTabs);
-      } else {
-        storage.set(STORAGE_KEY.headers, '');
-        clearHeadersFromTabs();
-      }
-      storage.set(STORAGE_KEY.persistHeaders, persist.toString());
-      set({ shouldPersistHeaders: persist });
-    },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
-      const { shouldPersistHeaders } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY.tabs, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    setShouldPersistHeaders(shouldPersistHeaders) {
+      set({ shouldPersistHeaders });
     },
     setOperationFacts({ documentAST, operationName, operations }) {
-      set({
-        documentAST,
-        operationName,
-        operations,
-      });
+      set({ documentAST, operationName, operations });
     },
     async copyQuery() {
       const { queryEditor, onCopyQuery } = get();
@@ -532,6 +505,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
 
   return {
     ...initial,
+    initialQuery: '',
+    initialVariables: '',
+    initialHeaders: '',
     actions: $actions,
   };
 };

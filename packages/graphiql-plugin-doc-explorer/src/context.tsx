@@ -33,7 +33,7 @@ export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
   title: 'Documentation Explorer',
   icon: function Icon() {
     const visiblePlugin = useGraphiQL(state => state.visiblePlugin);
-    return visiblePlugin === DOC_EXPLORER_PLUGIN ? (
+    return visiblePlugin === DOC_EXPLORER_PLUGIN.title ? (
       <DocsFilledIcon />
     ) : (
       <DocsIcon />

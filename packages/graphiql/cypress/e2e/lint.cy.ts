@@ -1,22 +1,6 @@
 import { version as graphqlVersion } from 'graphql';
 
 describe('Linting', () => {
-  it('Does not mark valid fields', () => {
-    cy.visitWithOp({
-      query: /* GraphQL */ `
-        {
-          myAlias: id
-          test {
-            id
-          }
-        }
-      `,
-    })
-      .contains('myAlias')
-      .should('not.have.class', 'CodeMirror-lint-mark')
-      .and('not.have.class', 'CodeMirror-lint-mark-error');
-  });
-
   it('Marks invalid fields as error', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `

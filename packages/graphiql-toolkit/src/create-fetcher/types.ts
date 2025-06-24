@@ -38,12 +38,12 @@ export type FetcherOpts = {
 export type ExecutionResultPayload =
   | {
       data: IntrospectionQuery;
-      errors?: Array<any>;
+      errors?: any[];
     }
   // normal result payloads
-  | { data?: any; errors?: Array<any> }
+  | { data?: any; errors?: any[] }
   // for the initial Stream/Defer payload
-  | { data?: any; errors?: Array<any>; hasNext: boolean }
+  | { data?: any; errors?: any[]; hasNext: boolean }
   // for successive Stream/Defer payloads
   | {
       data?: any;

@@ -21,6 +21,7 @@ type ResponseTooltipType = ComponentType<{
    * A position in the editor.
    */
   position: Position;
+
   /**
    * Word that has been hovered over.
    */

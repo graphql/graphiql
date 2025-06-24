@@ -1,11 +1,5 @@
 @import 'auto-insertion.css';
-@import 'codemirror.css';
 @import 'editor.css';
-@import 'fold.css';
-@import 'hint.css';
-@import 'info.css';
-@import 'jump.css';
-@import 'lint.css';
 
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {
@@ -14,8 +8,6 @@
 }
 
 .graphiql-container,
-.CodeMirror-info,
-.CodeMirror-lint-tooltip,
 .graphiql-dialog,
 .graphiql-dialog-overlay,
 .graphiql-tooltip,
@@ -82,8 +74,6 @@
 
 @media (prefers-color-scheme: dark) {
   body:not(.graphiql-light) .graphiql-container,
-  body:not(.graphiql-light) .CodeMirror-info,
-  body:not(.graphiql-light) .CodeMirror-lint-tooltip,
   body:not(.graphiql-light) .graphiql-dialog,
   body:not(.graphiql-light) .graphiql-dialog-overlay,
   body:not(.graphiql-light) .graphiql-tooltip,
@@ -104,8 +94,6 @@
 }
 
 body.graphiql-dark .graphiql-container,
-body.graphiql-dark .CodeMirror-info,
-body.graphiql-dark .CodeMirror-lint-tooltip,
 body.graphiql-dark .graphiql-dialog,
 body.graphiql-dark .graphiql-dialog-overlay,
 body.graphiql-dark .graphiql-tooltip,
@@ -125,8 +113,6 @@ body.graphiql-dark [data-radix-popper-content-wrapper] {
 }
 
 .graphiql-container,
-.CodeMirror-info,
-.CodeMirror-lint-tooltip,
 .graphiql-dialog {
   &,
   &:is(button) {

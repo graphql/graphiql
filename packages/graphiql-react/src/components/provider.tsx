@@ -1,20 +1,23 @@
 /* eslint sort-keys: "error" */
-import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
+import type { FC, ReactNode, RefObject } from 'react';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import {
   createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  createThemeSlice,
+  createStorageSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
+  ThemeProps,
+  StorageProps,
 } from '../stores';
-import { StorageStore, useStorage } from '../stores/storage';
-import { ThemeStore } from '../stores/theme';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
@@ -24,39 +27,66 @@ import {
   isSchema,
   validateSchema,
 } from 'graphql';
-import {
-  DEFAULT_PRETTIFY_QUERY,
-  DEFAULT_QUERY,
-  STORAGE_KEY,
-} from '../constants';
+import { DEFAULT_PRETTIFY_QUERY, DEFAULT_QUERY } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
+import { EDITOR_THEME } from '../utility/create-editor';
 
-interface InnerGraphiQLProviderProps
+interface GraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
-    SchemaProps {
+    SchemaProps,
+    ThemeProps,
+    StorageProps {
   children: ReactNode;
 }
-
-type GraphiQLProviderProps =
-  //
-  InnerGraphiQLProviderProps &
-    ComponentPropsWithoutRef<typeof StorageStore> &
-    ComponentPropsWithoutRef<typeof ThemeStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  storage,
-  defaultTheme,
-  editorTheme,
+  defaultHeaders,
+  defaultQuery = DEFAULT_QUERY,
+  defaultTabs,
+  externalFragments,
+  onEditOperationName,
+  onTabChange,
+  shouldPersistHeaders = false,
+  onCopyQuery,
+  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
+
+  dangerouslyAssumeSchemaIsValid = false,
+  fetcher,
+  inputValueDeprecation = false,
+  introspectionQueryName = 'IntrospectionQuery',
+  onSchemaChange,
+  schema,
+  schemaDescription = false,
+
+  getDefaultFieldNames,
+  operationName = null,
+
+  onTogglePluginVisibility,
+  plugins = [],
+  referencePlugin,
+  visiblePlugin,
+
+  children,
+
+  defaultTheme = null,
+  editorTheme = EDITOR_THEME,
+
+  storage = createJSONStorage(() => localStorage),
+
+  initialQuery,
+  initialVariables,
+  initialHeaders,
+
   ...props
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  if (!props.fetcher) {
+  if (!fetcher) {
     throw new TypeError(
       'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
     );
@@ -115,153 +145,117 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  return (
-    <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <InnerGraphiQLProvider {...props} />
-      </ThemeStore>
-    </StorageStore>
-  );
-};
-
-const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
-  defaultHeaders,
-  defaultQuery = DEFAULT_QUERY,
-  defaultTabs,
-  externalFragments,
-  onEditOperationName,
-  onTabChange,
-  shouldPersistHeaders = false,
-  onCopyQuery,
-  onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
-
-  dangerouslyAssumeSchemaIsValid = false,
-  fetcher,
-  inputValueDeprecation = false,
-  introspectionQueryName = 'IntrospectionQuery',
-  onSchemaChange,
-  schema,
-  schemaDescription = false,
-
-  getDefaultFieldNames,
-  operationName = null,
-
-  onTogglePluginVisibility,
-  plugins = [],
-  referencePlugin,
-  visiblePlugin,
-  children,
-
-  ...props
-}) => {
-  const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
-    function getInitialVisiblePlugin() {
-      const storedValue = storage.get(STORAGE_KEY.visiblePlugin);
-      const pluginForStoredValue = plugins.find(
-        plugin => plugin.title === storedValue,
-      );
-      if (pluginForStoredValue) {
-        return pluginForStoredValue;
-      }
-      if (storedValue) {
-        storage.set(STORAGE_KEY.visiblePlugin, '');
-      }
-      return visiblePlugin;
-    }
-
     function getInitialState() {
-      // We only need to compute it lazily during the initial render.
-      const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
-      const variables =
-        props.initialVariables ?? storage.get(STORAGE_KEY.variables);
-      const headers = props.initialHeaders ?? storage.get(STORAGE_KEY.headers);
-
+      if (storage === undefined) {
+        throw new TypeError('Unexpected `storage` prop is undefined.');
+      }
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
         defaultQuery,
         defaultTabs,
-        headers,
-        query,
-        shouldPersistHeaders,
-        variables,
+        headers: initialHeaders,
+        query: initialQuery,
+        variables: initialVariables,
       });
-
-      const isStored = storage.get(STORAGE_KEY.persistHeaders) !== null;
-
-      const $shouldPersistHeaders =
-        shouldPersistHeaders !== false && isStored
-          ? storage.get(STORAGE_KEY.persistHeaders) === 'true'
-          : shouldPersistHeaders;
-
-      const store = create<SlicesWithActions>((...args) => {
-        const editorSlice = createEditorSlice({
-          activeTabIndex,
-          defaultHeaders,
-          defaultQuery,
-          externalFragments: getExternalFragments(externalFragments),
-          initialHeaders: headers ?? defaultHeaders ?? '',
-          initialQuery:
-            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialVariables: variables ?? '',
-          onCopyQuery,
-          onEditOperationName,
-          onPrettifyQuery,
-          onTabChange,
-          shouldPersistHeaders: $shouldPersistHeaders,
-          tabs,
-        })(...args);
-        const executionSlice = createExecutionSlice({
-          fetcher,
-          getDefaultFieldNames,
-          overrideOperationName: operationName,
-        })(...args);
-        const pluginSlice = createPluginSlice({
-          onTogglePluginVisibility,
-          referencePlugin,
-        })(...args);
-        const schemaSlice = createSchemaSlice({
-          inputValueDeprecation,
-          introspectionQueryName,
-          onSchemaChange,
-          schemaDescription,
-        })(...args);
-        return {
-          ...editorSlice,
-          ...executionSlice,
-          ...pluginSlice,
-          ...schemaSlice,
-          actions: {
-            ...editorSlice.actions,
-            ...executionSlice.actions,
-            ...pluginSlice.actions,
-            ...schemaSlice.actions,
+      const store = create<SlicesWithActions>()(
+        persist(
+          (...args) => {
+            const editorSlice = createEditorSlice({
+              activeTabIndex,
+              defaultHeaders,
+              defaultQuery,
+              externalFragments: getExternalFragments(externalFragments),
+              onCopyQuery,
+              onEditOperationName,
+              onPrettifyQuery,
+              onTabChange,
+              shouldPersistHeaders,
+              tabs,
+            })(...args);
+            const executionSlice = createExecutionSlice({
+              fetcher,
+              getDefaultFieldNames,
+              overrideOperationName: operationName,
+            })(...args);
+            const pluginSlice = createPluginSlice({
+              onTogglePluginVisibility,
+              referencePlugin,
+            })(...args);
+            const schemaSlice = createSchemaSlice({
+              inputValueDeprecation,
+              introspectionQueryName,
+              onSchemaChange,
+              schemaDescription,
+            })(...args);
+            const themeSlice = createThemeSlice({ editorTheme })(...args);
+            // @ts-expect-error -- fixme
+            const storageSlice = createStorageSlice({ storage })(...args);
+            return {
+              ...editorSlice,
+              ...executionSlice,
+              ...pluginSlice,
+              ...schemaSlice,
+              ...themeSlice,
+              ...storageSlice,
+              actions: {
+                ...editorSlice.actions,
+                ...executionSlice.actions,
+                ...pluginSlice.actions,
+                ...schemaSlice.actions,
+                ...themeSlice.actions,
+              },
+            };
           },
-        };
-      });
+          {
+            name: 'graphiql:theme',
+            onRehydrateStorage(_state) {
+              return (state, error) => {
+                if (state) {
+                  const theme =
+                    state.theme === undefined ? defaultTheme : state.theme;
+                  state.actions.setTheme(theme);
+                  state.actions.setInitialValues({
+                    initialHeaders,
+                    initialQuery,
+                    initialVariables,
+                  });
+                }
+                if (error) {
+                  // eslint-disable-next-line no-console
+                  console.error('An error happened during hydration', error);
+                  return;
+                }
+                // eslint-disable-next-line no-console
+                console.info('Hydration with storage finished');
+              };
+            },
+            partialize(state) {
+              return {
+                activeTabIndex: state.activeTabIndex,
+                shouldPersistHeaders: state.shouldPersistHeaders,
+                tabs: state.shouldPersistHeaders
+                  ? state.tabs
+                  : state.tabs.map(tab => ({ ...tab, headers: null })),
+                theme: state.theme,
+                visiblePlugin: state.visiblePlugin,
+              };
+            },
+            storage,
+          },
+        ),
+      );
       const { actions } = store.getState();
-      actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
-      const initialVisiblePlugin = getInitialVisiblePlugin();
-      actions.setVisiblePlugin(initialVisiblePlugin);
 
       return store;
     }
 
     storeRef.current = getInitialState();
   }
-  // TODO:
-  // const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
-  // useEffect(() => {
-  //   const propValue = shouldPersistHeaders;
-  //   if (lastShouldPersistHeadersProp.current !== propValue) {
-  //     editorStore.getState().setShouldPersistHeaders(propValue);
-  //     lastShouldPersistHeadersProp.current = propValue;
-  //   }
-  // }, [shouldPersistHeaders]);
 
   // Execution sync
   useDidUpdate(() => {
@@ -345,7 +339,7 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
 
 function getExternalFragments(
-  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+  externalFragments: GraphiQLProviderProps['externalFragments'],
 ) {
   const map = new Map<string, FragmentDefinitionNode>();
   if (externalFragments) {

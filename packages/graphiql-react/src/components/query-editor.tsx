@@ -2,7 +2,6 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { useStorage } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
@@ -14,12 +13,7 @@ import {
   cn,
 } from '../utility';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
-import {
-  KEY_BINDINGS,
-  MONACO_GRAPHQL_API,
-  QUERY_URI,
-  STORAGE_KEY,
-} from '../constants';
+import { KEY_BINDINGS, MONACO_GRAPHQL_API, QUERY_URI } from '../constants';
 import {
   type editor as monacoEditor,
   languages,
@@ -79,7 +73,6 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'externalFragments',
     ),
   );
-  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
     null!,
@@ -210,13 +203,8 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
     const editor = createEditor(ref, { model });
     setEditor({ queryEditor: editor });
-
-    // We don't use the generic `useChangeHandler` hook here because we want to
-    // have additional logic that updates the operation facts that we save in `editorStore`
     const handleChange = debounce(100, () => {
-      const query = editor.getValue();
-      storage.set(STORAGE_KEY.query, query);
-
+      const query = model.getValue();
       const operationFacts = getAndUpdateOperationFacts(editor);
       // Invoke callback props only after the operation facts have been updated
       onEdit?.(query, operationFacts?.documentAST);

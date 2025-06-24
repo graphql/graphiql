@@ -17,6 +17,5 @@ export {
   useOperationsEditorState,
   useVariablesEditorState,
   useHeadersEditorState,
-  useChangeHandler,
   useDidUpdate,
 } from './hooks';

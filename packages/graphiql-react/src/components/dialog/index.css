@@ -2,12 +2,6 @@
   position: fixed;
   inset: 0;
   background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
-  /**
-   * CodeMirror has a `z-index` set for the container of the scrollbar of the
-   * editor, so we have to add one here to make sure that the dialog is shown
-   * above the editor scrollbar (if they are visible).
-   */
-  z-index: 10;
 }
 
 .graphiql-dialog {

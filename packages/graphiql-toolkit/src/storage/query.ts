@@ -1,4 +1,4 @@
-import { StorageAPI } from './base';
+import type { StateStorage } from 'zustand/middleware';
 
 export type QueryStoreItem = {
   query?: string;
@@ -10,14 +10,20 @@ export type QueryStoreItem = {
 };
 
 export class QueryStore {
-  items: Array<QueryStoreItem>;
+  items: QueryStoreItem[] = [];
 
   constructor(
     private key: string,
-    private storage: StorageAPI,
+    private storage: StateStorage,
     private maxSize: number | null = null,
-  ) {
-    this.items = this.fetchAll();
+  ) {}
+
+  static async create(
+    ...args: ConstructorParameters<typeof QueryStore>
+  ): Promise<QueryStore> {
+    const store = new this(...args);
+    store.items = await store.fetchAll();
+    return store;
   }
 
   get length() {
@@ -80,12 +86,12 @@ export class QueryStore {
     return this.items.at(-1);
   }
 
-  fetchAll() {
-    const raw = this.storage.get(this.key);
-    if (raw) {
-      return JSON.parse(raw)[this.key] as Array<QueryStoreItem>;
+  async fetchAll() {
+    const items = await this.storage.getItem(this.key);
+    if (!items) {
+      return [];
     }
-    return [];
+    return items as unknown as QueryStoreItem[];
   }
 
   push(item: QueryStoreItem) {
@@ -94,24 +100,13 @@ export class QueryStore {
     if (this.maxSize && items.length > this.maxSize) {
       items.shift();
     }
-
-    for (let attempts = 0; attempts < 5; attempts++) {
-      const response = this.storage.set(
-        this.key,
-        JSON.stringify({ [this.key]: items }),
-      );
-      if (!response?.error) {
-        this.items = items;
-      } else if (response.isQuotaError && this.maxSize) {
-        // Only try to delete last items on LRU stores
-        items.shift();
-      } else {
-        return; // We don't know what happened in this case, so just bailing out
-      }
-    }
+    try {
+      this.storage.setItem(this.key, JSON.stringify(this.items));
+      this.items = items;
+    } catch {}
   }
 
   save() {
-    this.storage.set(this.key, JSON.stringify({ [this.key]: this.items }));
+    this.storage.setItem(this.key, JSON.stringify(this.items));
   }
 }

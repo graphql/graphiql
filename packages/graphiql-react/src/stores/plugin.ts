@@ -1,8 +1,6 @@
 import type { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions } from '../types';
-import { storageStore } from './storage';
-import { STORAGE_KEY } from '../constants';
 
 export interface GraphiQLPlugin {
   /**
@@ -34,7 +32,7 @@ export interface PluginSlice {
   /**
    * The plugin which is currently visible.
    */
-  visiblePlugin: GraphiQLPlugin | null;
+  visiblePlugin?: string;
 
   /**
    * The plugin which is used to display the reference documentation when selecting a type.
@@ -94,10 +92,9 @@ type CreatePluginSlice = (
 
 export const createPluginSlice: CreatePluginSlice = initial => set => ({
   plugins: [],
-  visiblePlugin: null,
   ...initial,
   actions: {
-    setVisiblePlugin(plugin = null) {
+    setVisiblePlugin(plugin) {
       set(current => {
         const {
           visiblePlugin: currentVisiblePlugin,
@@ -105,16 +102,14 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
           onTogglePluginVisibility,
         } = current;
         const byTitle = typeof plugin === 'string';
-        const newVisiblePlugin: PluginSlice['visiblePlugin'] =
-          (plugin && plugins.find(p => (byTitle ? p.title : p) === plugin)) ||
-          null;
-        if (newVisiblePlugin === currentVisiblePlugin) {
+        const newVisiblePlugin = plugins.find(
+          p => (byTitle ? p.title : p) === plugin,
+        );
+        if (newVisiblePlugin?.title === currentVisiblePlugin) {
           return current;
         }
-        onTogglePluginVisibility?.(newVisiblePlugin);
-        const { storage } = storageStore.getState();
-        storage.set(STORAGE_KEY.visiblePlugin, newVisiblePlugin?.title ?? '');
-        return { visiblePlugin: newVisiblePlugin };
+        onTogglePluginVisibility?.(newVisiblePlugin ?? null);
+        return { visiblePlugin: newVisiblePlugin?.title };
       });
     },
     setPlugins(plugins) {

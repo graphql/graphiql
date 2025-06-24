@@ -4,12 +4,7 @@ import {
   HistoryStore as ToolkitHistoryStore,
   QueryStoreItem,
 } from '@graphiql/toolkit';
-import {
-  useGraphiQL,
-  pick,
-  useStorage,
-  createBoundedUseStore,
-} from '@graphiql/react';
+import { useGraphiQL, pick, createBoundedUseStore } from '@graphiql/react';
 
 const historyStore = createStore<HistoryStoreType>((set, get) => ({
   historyStorage: null,
@@ -44,7 +39,7 @@ type HistoryStoreType = {
   actions: {
     /**
      * Add an operation to the history.
-     * @param operation The operation that was executed, consisting of the query,
+     * @param operation - The operation that was executed, consisting of the query,
      * variables, headers, and operation name.
      */
     addToHistory(operation: {
@@ -55,11 +50,11 @@ type HistoryStoreType = {
     }): void;
     /**
      * Change the custom label of an item from the history.
-     * @param args An object containing the label (`undefined` if it should be
+     * @param args - An object containing the label (`undefined` if it should be
      * unset) and properties that identify the history item that the label should
      * be applied to. (This can result in the label being applied to multiple
      * history items.)
-     * @param index Index to edit. Without it, will look for the first index matching the
+     * @param index - Index to edit. Without it, will look for the first index matching the
      * operation, which may lead to misleading results if multiple items have the same label
      */
     editLabel(
@@ -90,9 +85,9 @@ type HistoryStoreType = {
     }): void;
     /**
      * Delete an operation from the history.
-     * @param args The operation that was executed, consisting of the query,
+     * @param args - The operation that was executed, consisting of the query,
      * variables, headers, and operation name.
-     * @param clearFavorites This is only if you press the 'clear' button
+     * @param clearFavorites - This is only if you press the 'clear' button
      */
     deleteFromHistory(args: QueryStoreItem, clearFavorites?: boolean): void;
     /**
@@ -126,7 +121,7 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
     pick('isFetching', 'tabs', 'activeTabIndex'),
   );
   const activeTab = tabs[activeTabIndex]!;
-  const storage = useStorage();
+  const storage = useGraphiQL(state => state.storage);
 
   const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
     new ToolkitHistoryStore(storage, maxHistoryLength);

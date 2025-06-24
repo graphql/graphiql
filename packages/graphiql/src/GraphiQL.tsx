@@ -67,10 +67,12 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   responseTooltip,
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled,
-  showPersistHeadersSettings,
   forcedTheme,
   confirmCloseTab,
   className,
+
+  shouldPersistHeaders,
+  showPersistHeadersSettings = Boolean(shouldPersistHeaders),
 
   children,
   ...props
@@ -98,9 +100,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     throw new TypeError('The `readOnly` prop has been removed.');
   }
   const interfaceProps: GraphiQLInterfaceProps = {
-    // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
-    showPersistHeadersSettings:
-      showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
+    showPersistHeadersSettings,
     onEditQuery,
     onEditVariables,
     onEditHeaders,
@@ -120,6 +120,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     <GraphiQLProvider
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
+      shouldPersistHeaders={shouldPersistHeaders}
       {...props}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
@@ -151,6 +152,7 @@ interface GraphiQLInterfaceProps
       'forcedTheme' | 'showPersistHeadersSettings'
     > {
   children?: ReactNode;
+
   /**
    * Set the default state for the editor tools.
    * - `false` hides the editor tools
@@ -161,11 +163,13 @@ interface GraphiQLInterfaceProps
    * editors has contents.
    */
   defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
+
   /**
    * Toggle if the headers' editor should be shown inside the editor tools.
    * @default true
    */
   isHeadersEditorEnabled?: boolean;
+
   /**
    * Additional class names which will be appended to the container element.
    */
@@ -211,6 +215,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    plugins,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -219,10 +224,13 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'plugins',
     ),
   );
 
-  const PluginContent = visiblePlugin?.content;
+  const PluginContent = plugins.find(
+    plugin => plugin.title === visiblePlugin,
+  )?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -234,26 +242,31 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       }
     },
     sizeThresholdSecond: 200,
-    storageKey: 'docExplorerFlex',
+    storageKey: 'flex:plugin',
   });
   const editorResize = useDragResize({
     direction: 'horizontal',
-    storageKey: 'editorFlex',
+    storageKey: 'flex:response',
   });
+  const [initiallyHiddenEditorTools] = useState<'second' | undefined>(() => {
+    if (
+      defaultEditorToolsVisibility === 'variables' ||
+      defaultEditorToolsVisibility === 'headers'
+    ) {
+      return;
+    }
+    if (typeof defaultEditorToolsVisibility === 'boolean') {
+      return defaultEditorToolsVisibility ? undefined : 'second';
+    }
+    return initialVariables || initialHeaders ? undefined : 'second';
+  });
+
   const editorToolsResize = useDragResize({
     defaultSizeRelation: 3,
     direction: 'vertical',
-    initiallyHidden: ((d: typeof defaultEditorToolsVisibility) => {
-      if (d === 'variables' || d === 'headers') {
-        return;
-      }
-      if (typeof d === 'boolean') {
-        return d ? undefined : 'second';
-      }
-      return initialVariables || initialHeaders ? undefined : 'second';
-    })(defaultEditorToolsVisibility),
+    initiallyHidden: initiallyHiddenEditorTools,
     sizeThresholdSecond: 60,
-    storageKey: 'secondaryEditorFlex',
+    storageKey: 'flex:editor-tools',
   });
 
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<

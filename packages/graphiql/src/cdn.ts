@@ -6,7 +6,7 @@
  */
 import { version } from 'react';
 import * as GraphiQLReact from '@graphiql/react';
-import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
 import './setup-workers/vite';
@@ -32,10 +32,6 @@ export default Object.assign(GraphiQL, {
    * This function is needed in order to easily create a fetcher function.
    */
   createFetcher: createGraphiQLFetcher,
-  /**
-   * This function is needed in order to easily generate a custom storage namespace
-   */
-  createLocalStorage,
   /**
    * We also add the complete `graphiql-js` exports so that this instance of
    * `graphiql-js` can be reused from plugin CDN bundles.

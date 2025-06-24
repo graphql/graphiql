@@ -6,7 +6,7 @@ import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
-import { useStorage } from '@graphiql/react';
+import { useGraphiQL } from '@graphiql/react';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
 import 'graphiql/setup-workers/webpack';
 import './index.css';
@@ -91,8 +91,8 @@ function App() {
  * provider tree. `<GraphiQLStorageBound>` must be rendered as a child of `<GraphiQL>`.
  */
 function GraphiQLStorageBound({ setUrl }) {
-  const storage = useStorage();
-  const lastUrl = storage.get(LAST_URL_KEY) ?? STARTING_URL;
+  const storage = useGraphiQL(state => state.storage);
+  const lastUrl = storage.getItem(LAST_URL_KEY) ?? STARTING_URL;
 
   useEffect(() => {
     setUrl(lastUrl);

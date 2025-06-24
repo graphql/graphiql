@@ -1,48 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { storageStore } from '../stores';
-import { debounce } from './debounce';
-import type { editor as monacoEditor } from '../monaco-editor';
-import { useGraphiQL, useGraphiQLActions } from '../components';
-
-export function useChangeHandler(
-  callback: ((value: string) => void) | undefined,
-  storageKey: string | null,
-  tabProperty: 'variables' | 'headers',
-) {
-  const { updateActiveTabValues } = useGraphiQLActions();
-  const editor = useGraphiQL(
-    state =>
-      state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    const { storage } = storageStore.getState();
-
-    const store = debounce(500, (value: string) => {
-      if (storageKey === null) {
-        return;
-      }
-      storage.set(storageKey, value);
-    });
-    const updateTab = debounce(100, (value: string) => {
-      updateActiveTabValues({ [tabProperty]: value });
-    });
-
-    const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
-      const newValue = editor.getValue();
-      store(newValue);
-      updateTab(newValue);
-      callback?.(newValue);
-    };
-    const disposable = editor.getModel()!.onDidChangeContent(handleChange);
-    return () => {
-      disposable.dispose();
-    };
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
-}
+import { useGraphiQL } from '../components';
 
 // https://react.dev/learn/you-might-not-need-an-effect
 export const useEditorState = (

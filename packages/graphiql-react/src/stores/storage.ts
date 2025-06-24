@@ -1,43 +1,34 @@
-import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
-import { createBoundedUseStore } from '../utility';
+import type { StateCreator } from 'zustand';
+import type { PersistStorage, StateStorage } from 'zustand/middleware';
+import type { SlicesWithActions, Theme } from '../types';
+import type { TabState } from '../utility/tabs';
 
-interface StorageStoreType {
-  storage: StorageAPI;
+export type Storage = PersistStorage<GraphiQLPersistedState>;
+
+interface GraphiQLPersistedState {
+  activeTabIndex: number;
+  shouldPersistHeaders: boolean;
+  tabs: TabState[];
+  theme?: Theme;
+  visiblePlugin?: string;
 }
 
-interface StorageStoreProps {
-  children: ReactNode;
-
+export interface StorageSlice {
   /**
    * Provide a custom storage API.
-   * @default localStorage
-   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#storage-2|API docs}
-   * for details on the required interface.
+   * @default createJSONStorage(() => localStorage)
+   * @see https://zustand.docs.pmnd.rs/integrations/persisting-store-data#createjsonstorage
    */
+  storage: StateStorage;
+}
+
+export interface StorageProps {
   storage?: Storage;
 }
 
-export const storageStore = createStore<StorageStoreType>(() => ({
-  storage: null!,
-}));
+type CreateStorageSlice = (
+  initial: StorageSlice,
+) => StateCreator<SlicesWithActions, [], [], StorageSlice>;
 
-export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
-  const isMounted = useStorageStore(state => Boolean(state.storage));
-
-  useEffect(() => {
-    storageStore.setState({ storage: new StorageAPI(storage) });
-  }, [storage]);
-
-  if (!isMounted) {
-    // Ensure storage was initialized
-    return null;
-  }
-
-  return children as ReactElement;
-};
-
-const useStorageStore = createBoundedUseStore(storageStore);
-
-export const useStorage = () => useStorageStore(state => state.storage);
+export const createStorageSlice: CreateStorageSlice = initial => _set =>
+  initial;

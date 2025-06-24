@@ -42,16 +42,6 @@ export const KEY_MAP = Object.freeze({
   },
 });
 
-export const STORAGE_KEY = {
-  headers: 'headers',
-  visiblePlugin: 'visiblePlugin',
-  query: 'query',
-  variables: 'variables',
-  tabs: 'tabState',
-  persistHeaders: 'shouldPersistHeaders',
-  theme: 'theme',
-} as const;
-
 export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # GraphiQL is an in-browser tool for writing, validating, and testing

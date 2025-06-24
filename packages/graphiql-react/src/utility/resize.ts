@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useStorage } from '../stores';
+import { useGraphiQL } from '../components';
 import { debounce } from './debounce';
 
 type ResizableElement = 'first' | 'second';
@@ -11,10 +11,12 @@ interface UseDragResizeArgs {
    * @default 1
    */
   defaultSizeRelation?: number;
+
   /**
    * The direction in which the two halves should be resizable.
    */
   direction: 'horizontal' | 'vertical';
+
   /**
    * Choose one of the two halves that should initially be hidden.
    */
@@ -33,17 +35,19 @@ interface UseDragResizeArgs {
    * @default 100
    */
   sizeThresholdFirst?: number;
+
   /**
    * The minimum width in pixels for the second half. If it is resized to a
    * width smaller than this threshold, the half will be hidden.
    * @default 100
    */
   sizeThresholdSecond?: number;
+
   /**
    * A key for which the state of resizing is persisted in storage (if storage
    * is available).
    */
-  storageKey?: string;
+  storageKey: string;
 }
 
 export function useDragResize({
@@ -53,47 +57,43 @@ export function useDragResize({
   onHiddenElementChange,
   sizeThresholdFirst = 100,
   sizeThresholdSecond = 100,
-  storageKey,
+  storageKey: key,
 }: UseDragResizeArgs) {
-  const storage = useStorage();
-
+  const storage = useGraphiQL(state => state.storage);
+  const storageKey = `graphiql:${key}`;
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
-    () => {
-      const storedValue = storageKey && storage.get(storageKey);
-      if (storedValue === HIDE_FIRST || initiallyHidden === 'first') {
-        return 'first';
-      }
-      if (storedValue === HIDE_SECOND || initiallyHidden === 'second') {
-        return 'second';
-      }
-      return null;
-    },
+    null,
   );
-
   const firstRef = useRef<HTMLDivElement>(null);
   const dragBarRef = useRef<HTMLDivElement>(null);
   const secondRef = useRef<HTMLDivElement>(null);
+  const defaultFlex = String(defaultSizeRelation);
 
-  const defaultFlexRef = useRef(`${defaultSizeRelation}`);
-
-  /**
-   * Set initial flex values
-   */
   useEffect(() => {
-    const storedValue =
-      (storageKey && storage.get(storageKey)) || defaultFlexRef.current;
+    async function initFlexValues() {
+      const $storedValue = storageKey && (await storage.getItem(storageKey));
+      const initialHiddenElement =
+        $storedValue === HIDE_FIRST || initiallyHidden === 'first'
+          ? 'first'
+          : $storedValue === HIDE_SECOND || initiallyHidden === 'second'
+            ? 'second'
+            : null;
+      setHiddenElement(initialHiddenElement);
 
-    if (firstRef.current) {
-      firstRef.current.style.flex =
-        storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
-          ? defaultFlexRef.current
-          : storedValue;
+      if (firstRef.current) {
+        const storedValue = $storedValue || defaultFlex;
+        firstRef.current.style.flex =
+          storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
+            ? defaultFlex
+            : storedValue;
+      }
+      if (secondRef.current) {
+        secondRef.current.style.flex = '1';
+      }
     }
 
-    if (secondRef.current) {
-      secondRef.current.style.flex = '1';
-    }
-  }, [direction, storage, storageKey]);
+    void initFlexValues();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   /**
    * Hide and show items when the state changes
@@ -115,21 +115,17 @@ export function useDragResize({
       }
     }
 
-    function show(element: HTMLDivElement) {
+    async function show(element: HTMLDivElement) {
       element.style.left = '';
       element.style.position = '';
       element.style.opacity = '';
-
-      if (!storageKey) {
-        return;
-      }
-      const storedValue = storage.get(storageKey);
+      const storedValue = await storage.getItem(storageKey);
       if (
         firstRef.current &&
         storedValue !== HIDE_FIRST &&
         storedValue !== HIDE_SECOND
       ) {
-        firstRef.current.style.flex = storedValue || defaultFlexRef.current;
+        firstRef.current.style.flex = storedValue || defaultFlex;
       }
     }
 
@@ -139,20 +135,18 @@ export function useDragResize({
         if (id === hiddenElement) {
           hide(element);
         } else {
-          show(element);
+          void show(element);
         }
       }
     }
-  }, [hiddenElement, storage, storageKey]);
+  }, [defaultFlex, hiddenElement, storage, storageKey]);
 
   useEffect(() => {
     if (!dragBarRef.current || !firstRef.current || !secondRef.current) {
       return;
     }
     const store = debounce(500, (value: string) => {
-      if (storageKey) {
-        storage.set(storageKey, value);
-      }
+      storage.setItem(storageKey, value);
     });
 
     function setHiddenElementWithCallback(element: ResizableElement | null) {
@@ -233,9 +227,9 @@ export function useDragResize({
 
     function reset() {
       if (firstRef.current) {
-        firstRef.current.style.flex = defaultFlexRef.current;
+        firstRef.current.style.flex = defaultFlex;
       }
-      store(defaultFlexRef.current);
+      store(defaultFlex);
       setHiddenElementWithCallback(null);
     }
 
@@ -246,6 +240,7 @@ export function useDragResize({
       dragBarContainer.removeEventListener('dblclick', reset);
     };
   }, [
+    defaultFlex,
     direction,
     onHiddenElementChange,
     sizeThresholdFirst,

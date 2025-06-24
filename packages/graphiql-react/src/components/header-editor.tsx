@@ -1,13 +1,12 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { HEADER_URI, KEY_BINDINGS, STORAGE_KEY } from '../constants';
+import { HEADER_URI, KEY_BINDINGS } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
-  useChangeHandler,
+  debounce,
   onEditorContainerKeyDown,
-  pick,
   cleanupDisposables,
   cn,
 } from '../utility';
@@ -21,21 +20,21 @@ interface HeaderEditorProps extends EditorProps {
 }
 
 export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
-  const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
-  const { initialHeaders, shouldPersistHeaders } = useGraphiQL(
-    pick('initialHeaders', 'shouldPersistHeaders'),
-  );
+  const { setEditor, run, prettifyEditors, mergeQuery, updateActiveTabValues } =
+    useGraphiQLActions();
+  const initialHeaders = useGraphiQL(state => state.initialHeaders);
   const ref = useRef<HTMLDivElement>(null!);
-  useChangeHandler(
-    onEdit,
-    shouldPersistHeaders ? STORAGE_KEY.headers : null,
-    'headers',
-  );
   useEffect(() => {
     const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
+    const handleChange = debounce(100, () => {
+      const value = model.getValue();
+      updateActiveTabValues({ headers: value });
+      onEdit?.(value);
+    });
     const disposables = [
+      model.onDidChangeContent(handleChange),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),

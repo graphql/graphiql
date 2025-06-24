@@ -1,13 +1,8 @@
-import { act } from 'react';
-import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
   fuzzyExtractOperationName,
   getDefaultTabState,
-  clearHeadersFromTabs,
 } from './tabs';
-import { storageStore } from '../stores';
-import { STORAGE_KEY } from '../constants';
 
 describe('createTab', () => {
   it('creates with default title', () => {
@@ -105,21 +100,8 @@ describe('fuzzyExtractionOperationTitle', () => {
 });
 
 describe('getDefaultTabState', () => {
-  beforeEach(() => {
-    act(() => {
-      storageStore.setState({ storage: new StorageAPI() });
-    });
-  });
-
   it('returns default tab', () => {
-    expect(
-      getDefaultTabState({
-        defaultQuery: '# Default',
-        headers: null,
-        query: null,
-        variables: null,
-      }),
-    ).toEqual({
+    expect(getDefaultTabState({ defaultQuery: '# Default' })).toEqual({
       activeTabIndex: 0,
       tabs: [
         expect.objectContaining({
@@ -134,7 +116,6 @@ describe('getDefaultTabState', () => {
     expect(
       getDefaultTabState({
         defaultQuery: '# Default',
-        headers: null,
         defaultTabs: [
           {
             headers: null,
@@ -147,8 +128,6 @@ describe('getDefaultTabState', () => {
             variables: null,
           },
         ],
-        query: null,
-        variables: null,
       }),
     ).toEqual({
       activeTabIndex: 0,
@@ -164,27 +143,6 @@ describe('getDefaultTabState', () => {
           title: 'Image',
         }),
       ],
-    });
-  });
-});
-
-describe('clearHeadersFromTabs', () => {
-  it('preserves tab state except for headers', () => {
-    const { storage } = storageStore.getState();
-    const stateWithHeaders = {
-      operationName: 'test',
-      query: 'query test {\n  test {\n    id\n  }\n}',
-      test: {
-        a: 'test',
-      },
-      headers: '{ "authorization": "secret" }',
-    };
-    storage.set(STORAGE_KEY.tabs, JSON.stringify(stateWithHeaders));
-    clearHeadersFromTabs();
-
-    expect(JSON.parse(storage.get(STORAGE_KEY.tabs)!)).toEqual({
-      ...stateWithHeaders,
-      headers: null,
     });
   });
 });
