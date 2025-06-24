@@ -63,16 +63,7 @@ export const ExecuteButton: FC = () => {
     </DropdownMenu>
   ) : (
     <Tooltip label={label}>
-      <button
-        {...buttonProps}
-        onClick={() => {
-          if (isRunning) {
-            stop();
-          } else {
-            run();
-          }
-        }}
-      />
+      <button {...buttonProps} onClick={isRunning ? stop : run} />
     </Tooltip>
   );
 };

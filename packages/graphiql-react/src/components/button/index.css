@@ -1,5 +1,4 @@
-.graphiql-un-styled,
-button.graphiql-un-styled {
+.graphiql-un-styled {
   all: unset;
   border-radius: var(--border-radius-4);
   cursor: pointer;
