@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.35.1
+
+### Patch Changes
+
+- [#4037](https://github.com/graphql/graphiql/pull/4037) [`e548574`](https://github.com/graphql/graphiql/commit/e548574101313349ffa11e6b5a36d1f68be3679c) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix execute button becomes unstyled if there are several queries present
+
 ## 0.35.0
 
 ### Minor Changes
