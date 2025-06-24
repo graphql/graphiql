@@ -1,7 +1,3 @@
-.graphiql-execute-button-wrapper {
-  position: relative;
-}
-
 button.graphiql-execute-button {
   background-color: hsl(var(--color-primary));
   border: none;
