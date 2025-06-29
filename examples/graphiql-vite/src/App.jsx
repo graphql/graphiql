@@ -1,5 +1,4 @@
 import { GraphiQL } from 'graphiql';
-import 'graphiql/setup-workers/vite';
 import 'graphiql/style.css';
 
 async function fetcher(graphQLParams) {
