@@ -6,9 +6,9 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 
   1. Install `vite-plugin-monaco-editor` package:
 
-   ```bash
-   npm install vite-plugin-monaco-editor --save-dev
-   ```
+  ```sh
+  npm install vite-plugin-monaco-editor --save-dev
+  ```
 
   2. Import and configure the plugin in your `vite.config.mjs` file:
 
