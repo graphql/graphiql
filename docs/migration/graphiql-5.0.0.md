@@ -2,10 +2,38 @@
 
 Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 
-- For **Vite** projects you must import:
+- For **Vite** projects you must:
 
-  ```js
-  import 'graphiql/setup-workers/vite';
+  1. Install `vite-plugin-monaco-editor` package:
+
+   ```bash
+   npm install vite-plugin-monaco-editor --save-dev
+   ```
+
+  2. Import and configure the plugin in your `vite.config.mjs` file:
+
+  ```diff
+  // vite.config.mjs
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react'
+  +import $monacoEditorPlugin from 'vite-plugin-monaco-editor'
+
+  +const monacoEditorPlugin = $monacoEditorPlugin.default ?? $monacoEditorPlugin
+
+  export default defineConfig({
+    plugins: [
+      react(),
+  +   monacoEditorPlugin({
+  +     languageWorkers: ['editorWorkerService', 'json'],
+  +     customWorkers: [
+  +       {
+  +         label: 'graphql',
+  +         entry: 'monaco-graphql/esm/graphql.worker.js'
+  +       }
+  +     ]
+  +   })
+    ]
+  })
   ```
 
 > [!NOTE]
