@@ -6,7 +6,7 @@ If you have not signed the membership agreement (it's free), you will be
 prompted by the EasyCLA bot. For more details, please see the
 [GraphQL WG repo](https://github.com/graphql/graphql-wg/tree/main/membership).
 
-0. First, you will need the latest `git`, `yarn` 1.16, & `node` 12 or greater.
+0. First, you will need the latest `git`, `yarn` 4, & `node` 18 or greater.
    macOS, Windows and Linux should all be supported as build environments.
 
 > [!WARNING]
