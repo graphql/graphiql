@@ -22,7 +22,7 @@ import { MouseTargetFactory } from 'monaco-editor/esm/vs/editor/browser/controll
  * The suggested patch https://github.com/microsoft/monaco-editor/issues/4679#issuecomment-2406284453
  * no longer works in Mozilla Firefox
  */
-if (navigator.userAgent.startsWith('Mozilla')) {
+if (navigator.userAgent.includes('Firefox')) {
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
   // @ts-expect-error -- internal override of Monaco method
