@@ -9,12 +9,15 @@ export * from 'monaco-editor';
 import { MouseTargetFactory } from 'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js';
 
 /**
- * Fixes Uncaught Error: can't access property "offsetNode", hitResult is null
- * https://github.com/graphql/graphiql/issues/4041
+ * Patch for Firefox compatibility:
  *
- * Upstream issues:
- * https://github.com/microsoft/monaco-editor/issues/4679
- * https://github.com/microsoft/monaco-editor/issues/4527
+ * Fixes:
+ *    Uncaught Error: can't access property "offsetNode", hitResult is null
+ *
+ * Related issues:
+ * - https://github.com/graphql/graphiql/issues/4041
+ * - https://github.com/microsoft/monaco-editor/issues/4679
+ * - https://github.com/microsoft/monaco-editor/issues/4527
  *
  * The suggested patch https://github.com/microsoft/monaco-editor/issues/4679#issuecomment-2406284453
  * no longer works in Mozilla Firefox
@@ -22,7 +25,7 @@ import { MouseTargetFactory } from 'monaco-editor/esm/vs/editor/browser/controll
 if (navigator.userAgent.startsWith('Mozilla')) {
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
-  // @ts-expect-error -- ignore types
+  // @ts-expect-error -- internal override of Monaco method
   MouseTargetFactory._doHitTestWithCaretPositionFromPoint = (...args) => {
     const [ctx, coords] = args;
     const hitResult = ctx.viewDomNode.ownerDocument.caretPositionFromPoint(
@@ -30,10 +33,11 @@ if (navigator.userAgent.startsWith('Mozilla')) {
       coords.clientY,
     );
     if (hitResult) {
+      // Delegate to original function if hitResult is valid
       const result = originalFn(...args);
       return result;
     }
-    // We must return an object with `type: 0` to avoid following error:
+    // We must return an object with `type: 0` to avoid the following error:
     // Uncaught Error: can't access property "type", result is undefined
     return { type: 0 };
   };
