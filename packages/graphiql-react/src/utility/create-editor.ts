@@ -129,9 +129,9 @@ export function createEditor(
       verticalScrollbarSize: 10,
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
-    fontFamily: '"Fira Code"',
+    fontFamily: '"Consolas"',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
-    tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter ot its container
+    tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter or its container
     ...options,
   });
 }
