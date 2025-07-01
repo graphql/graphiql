@@ -130,6 +130,7 @@ export function createEditor(
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
+    fontLigatures: false,
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
     tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter ot its container
     ...options,
