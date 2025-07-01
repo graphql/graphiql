@@ -3,4 +3,4 @@
 'graphiql': patch
 ---
 
-Enable font ligatures fix incorrect caret position on Windows
+Enable font ligatures in monaco-editors fix incorrect caret position on Windows
