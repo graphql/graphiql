@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.0.2
+
+### Patch Changes
+
+- [#4046](https://github.com/graphql/graphiql/pull/4046) [`8b56462`](https://github.com/graphql/graphiql/commit/8b564625b2470652db3c27dc70b0f85d5bbc3a0f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Enable font ligatures in monaco-editors fix incorrect caret position on Windows
+
+- Updated dependencies [[`8b56462`](https://github.com/graphql/graphiql/commit/8b564625b2470652db3c27dc70b0f85d5bbc3a0f)]:
+  - @graphiql/react@0.35.3
+
 ## 5.0.1
 
 ### Patch Changes
