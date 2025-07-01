@@ -8,8 +8,8 @@
 }
 
 .monaco-editor {
-  font-feature-settings: 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero',
-    'onum';
+  /*font-feature-settings: 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero',*/
+  /*  'onum';*/
   /* otherwise editor couldn't be resized */
   position: absolute !important;
   /**
