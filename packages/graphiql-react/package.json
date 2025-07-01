@@ -2,6 +2,7 @@
   "name": "@graphiql/react",
   "version": "0.35.1",
   "sideEffects": [
+    "dist/monaco-editor.js",
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"
   ],
