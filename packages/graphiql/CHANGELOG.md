@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.0.1
+
+### Patch Changes
+
+- [#4044](https://github.com/graphql/graphiql/pull/4044) [`68b347c`](https://github.com/graphql/graphiql/commit/68b347c78faa80cc00397fc1705dbf114c1f374b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix `Fixes Uncaught Error: can't access property "offsetNode", hitResult is null` on Mozilla
+
+- Updated dependencies [[`68b347c`](https://github.com/graphql/graphiql/commit/68b347c78faa80cc00397fc1705dbf114c1f374b)]:
+  - @graphiql/react@0.35.2
+
 ## 5.0.0
 
 ### Major Changes
