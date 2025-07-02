@@ -73,8 +73,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         return;
       }
       const counter = requestCounter + 1;
-      set({ requestCounter: counter });
-
+      set({ requestCounter: counter, isIntrospecting: true, fetchError: null });
       try {
         let headers: Record<string, unknown> | undefined;
         try {
@@ -86,19 +85,6 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         }
 
         const fetcherOpts: FetcherOpts = headers ? { headers } : {};
-
-        function checkIntrospection(query: string, operationName?: string) {
-          const fetch = fetcherReturnToPromise(
-            fetcher({ query, operationName }, fetcherOpts),
-          );
-          if (!isPromise(fetch)) {
-            throw new TypeError(
-              'Fetcher did not return a Promise for introspection.',
-            );
-          }
-          return fetch;
-        }
-
         /**
          * Get an introspection query for settings given via props
          */
@@ -107,21 +93,22 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           introspectionQueryName,
           introspectionQuerySansSubscriptions,
         } = generateIntrospectionQuery(rest);
-        let fetcherResult: Promise<FetcherResult>;
 
-        try {
-          fetcherResult = checkIntrospection(
-            introspectionQuery,
-            introspectionQueryName,
+        function doIntrospection(query: string) {
+          const fetch = fetcherReturnToPromise(
+            fetcher(
+              { query, operationName: introspectionQueryName },
+              fetcherOpts,
+            ),
           );
-        } catch (error) {
-          set({
-            fetchError: formatError({ message: (error as Error).message }),
-          });
-          return;
+          if (!isPromise(fetch)) {
+            throw new TypeError(
+              'Fetcher did not return a Promise for introspection.',
+            );
+          }
+          return fetch;
         }
-        set({ isIntrospecting: true, fetchError: null });
-        let result = await fetcherResult;
+        let result = await doIntrospection(introspectionQuery);
 
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
@@ -172,8 +159,8 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           return;
         }
         set({
-          fetchError: formatError(error),
           isIntrospecting: false,
+          fetchError: formatError(error),
         });
       }
     },
