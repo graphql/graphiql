@@ -15,6 +15,7 @@ import {
 import type { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, SchemaReference } from '../types';
+import { tryParseJSONC } from '../utility';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -59,7 +60,9 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         onSchemaChange,
         headerEditor,
         fetcher,
-        ...rest
+        inputValueDeprecation,
+        introspectionQueryName,
+        schemaDescription,
       } = get();
 
       /**
@@ -71,67 +74,57 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         return;
       }
       const counter = requestCounter + 1;
-      set({ requestCounter: counter });
-
+      set({ requestCounter: counter, isIntrospecting: true, fetchError: null });
       try {
-        const currentHeaders = headerEditor?.getValue();
-        const parsedHeaders = parseHeaderString(currentHeaders);
-        if (!parsedHeaders.isValidJSON) {
-          set({ fetchError: 'Introspection failed as headers are invalid.' });
-          return;
+        let headers: Record<string, unknown> | undefined;
+        try {
+          headers = tryParseJSONC(headerEditor?.getValue());
+        } catch (error) {
+          throw new Error(
+            `Introspection failed. Request headers ${error instanceof Error ? error.message : error}`,
+          );
         }
 
-        const fetcherOpts: FetcherOpts = parsedHeaders.headers
-          ? { headers: parsedHeaders.headers }
-          : {};
-
+        const fetcherOpts: FetcherOpts = headers ? { headers } : {};
         /**
          * Get an introspection query for settings given via props
          */
-        const {
-          introspectionQuery,
-          introspectionQueryName,
-          introspectionQuerySansSubscriptions,
-        } = generateIntrospectionQuery(rest);
-        const fetch = fetcherReturnToPromise(
-          fetcher(
-            {
-              query: introspectionQuery,
-              operationName: introspectionQueryName,
-            },
-            fetcherOpts,
-          ),
-        );
+        const introspectionQuery = getIntrospectionQuery({
+          inputValueDeprecation,
+          schemaDescription,
+        });
 
-        if (!isPromise(fetch)) {
-          set({
-            fetchError: 'Fetcher did not return a Promise for introspection.',
-          });
-          return;
+        function doIntrospection(query: string) {
+          const fetch = fetcherReturnToPromise(
+            fetcher(
+              { query, operationName: introspectionQueryName },
+              fetcherOpts,
+            ),
+          );
+          if (!isPromise(fetch)) {
+            throw new TypeError(
+              'Fetcher did not return a Promise for introspection.',
+            );
+          }
+          return fetch;
         }
-        set({ isIntrospecting: true, fetchError: null });
-        let result = await fetch;
+
+        const normalizedQuery =
+          introspectionQueryName === 'IntrospectionQuery'
+            ? introspectionQuery
+            : introspectionQuery.replace(
+                'query IntrospectionQuery',
+                `query ${introspectionQueryName}`,
+              );
+        let result = await doIntrospection(normalizedQuery);
 
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
           // sans-subscriptions query for services which do not yet support it.
-          const fetch2 = fetcherReturnToPromise(
-            fetcher(
-              {
-                query: introspectionQuerySansSubscriptions,
-                operationName: introspectionQueryName,
-              },
-              fetcherOpts,
-            ),
+          result = await doIntrospection(
+            introspectionQuery.replace('subscriptionType { name }', ''),
           );
-          if (!isPromise(fetch2)) {
-            throw new Error(
-              'Fetcher did not return a Promise for introspection.',
-            );
-          }
-          result = await fetch2;
         }
-
         set({ isIntrospecting: false });
         let introspectionData: IntrospectionQuery | undefined;
         if (result.data && '__schema' in result.data) {
@@ -160,9 +153,12 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         if (counter !== get().requestCounter) {
           return;
         }
+        if (error instanceof Error) {
+          delete error.stack;
+        }
         set({
-          fetchError: formatError(error),
           isIntrospecting: false,
+          fetchError: formatError(error),
         });
       }
     },
@@ -233,7 +229,7 @@ export interface SchemaActions {
   setSchemaReference: Dispatch<SchemaReference>;
 }
 
-export interface SchemaProps extends IntrospectionArgs {
+export interface SchemaProps {
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies
    * to both schemas fetched via introspection and schemas explicitly passed
@@ -272,9 +268,7 @@ export interface SchemaProps extends IntrospectionArgs {
    *   run without a schema.
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
-}
 
-interface IntrospectionArgs {
   /**
    * Can be used to set the equally named option for introspecting a GraphQL
    * server.
@@ -296,46 +290,4 @@ interface IntrospectionArgs {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   schemaDescription?: boolean;
-}
-
-function generateIntrospectionQuery({
-  inputValueDeprecation,
-  introspectionQueryName,
-  schemaDescription,
-}: IntrospectionArgs) {
-  const query = getIntrospectionQuery({
-    inputValueDeprecation,
-    schemaDescription,
-  });
-  const introspectionQuery =
-    introspectionQueryName === 'IntrospectionQuery'
-      ? query
-      : query.replace(
-          'query IntrospectionQuery',
-          `query ${introspectionQueryName}`,
-        );
-  const introspectionQuerySansSubscriptions = query.replace(
-    'subscriptionType { name }',
-    '',
-  );
-
-  return {
-    introspectionQueryName,
-    introspectionQuery,
-    introspectionQuerySansSubscriptions,
-  };
-}
-
-function parseHeaderString(headersString?: string) {
-  let headers: Record<string, unknown> | null = null;
-  let isValidJSON = true;
-
-  try {
-    if (headersString) {
-      headers = JSON.parse(headersString);
-    }
-  } catch {
-    isValidJSON = false;
-  }
-  return { headers, isValidJSON };
 }

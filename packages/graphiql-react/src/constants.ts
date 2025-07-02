@@ -1,6 +1,9 @@
 /* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
-import { parse, print } from 'graphql';
+// @ts-expect-error -- wrong types
+import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
+import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
+import prettier from 'prettier/standalone';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
 
@@ -143,4 +146,12 @@ export const MONACO_GRAPHQL_API = initializeMode({
 });
 
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
-  print(parse(query));
+  prettier.format(query, {
+    parser: 'graphql',
+    plugins: [
+      // Fix: Couldn't find plugin for AST format "graphql"
+      { printers },
+      // @ts-expect-error -- Fix: Couldn't resolve parser "graphql"
+      { parsers },
+    ],
+  });
