@@ -25,6 +25,7 @@ import {
   type editor as monacoEditor,
   languages,
   Range,
+  Uri,
 } from '../monaco-editor';
 import * as monaco from '../monaco-editor';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
@@ -210,8 +211,14 @@ export const OperationEditor: FC<QueryEditorProps> = ({
   }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
-    const operationUri = `${URI_NAME.operation}${uriInstanceId}.graphql`;
-    const variablesUri = `${URI_NAME.variables}${uriInstanceId}.json`;
+    const operationUri = Uri.file(
+      `${URI_NAME.operation}${uriInstanceId}.graphql`,
+    ).toString();
+    const variablesUri = Uri.file(
+      `${URI_NAME.variables}${uriInstanceId}.json`,
+    ).toString();
+
+    console.log({ operationUri, variablesUri });
 
     monacoGraphQLApiRef.current = initializeMode({
       diagnosticSettings: {
@@ -228,7 +235,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     });
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
-      uriName: operationUri.replace('.graphql', ''),
+      uriName: operationUri.replace('file:///', '').replace('.graphql', ''),
       language: 'graphql',
       value: initialQuery,
     });
