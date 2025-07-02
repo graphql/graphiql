@@ -1,5 +1,6 @@
 import {
   FetcherOpts,
+  FetcherResult,
   fetcherReturnToPromise,
   formatError,
   formatResult,
@@ -86,6 +87,18 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
 
         const fetcherOpts: FetcherOpts = headers ? { headers } : {};
 
+        function checkIntrospection(query: string, operationName?: string) {
+          const fetch = fetcherReturnToPromise(
+            fetcher({ query, operationName }, fetcherOpts),
+          );
+          if (!isPromise(fetch)) {
+            throw new TypeError(
+              'Fetcher did not return a Promise for introspection.',
+            );
+          }
+          return fetch;
+        }
+
         /**
          * Get an introspection query for settings given via props
          */
@@ -94,23 +107,21 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           introspectionQueryName,
           introspectionQuerySansSubscriptions,
         } = generateIntrospectionQuery(rest);
-        const fetch = fetcherReturnToPromise(
-          fetcher(
-            {
-              query: introspectionQuery,
-              operationName: introspectionQueryName,
-            },
-            fetcherOpts,
-          ),
-        );
+        let fetcherResult: Promise<FetcherResult>;
 
-        if (!isPromise(fetch)) {
-          const message = 'Fetcher did not return a Promise for introspection.'
-          set({ fetchError: formatError({ message }) });
+        try {
+          fetcherResult = checkIntrospection(
+            introspectionQuery,
+            introspectionQueryName,
+          );
+        } catch (error) {
+          set({
+            fetchError: formatError({ message: (error as Error).message }),
+          });
           return;
         }
         set({ isIntrospecting: true, fetchError: null });
-        let result = await fetch;
+        let result = await fetcherResult;
 
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
