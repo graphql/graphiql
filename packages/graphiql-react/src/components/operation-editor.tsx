@@ -213,15 +213,13 @@ export const OperationEditor: FC<QueryEditorProps> = ({
   }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
-    const operationUri = Uri.file(
-      `${uriInstanceId}${URI_NAME.operation}`,
-    ).toString();
+    const operationUri = Uri.file(`${uriInstanceId}${URI_NAME.operation}`);
     const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
     /**
      * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
      * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
      */
-    validateVariablesJSON[operationUri] = [variablesUri.toString()];
+    validateVariablesJSON[operationUri.toString()] = [variablesUri.toString()];
 
     monacoGraphQLApiRef.current = initializeMode({
       diagnosticSettings: {
@@ -236,7 +234,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     });
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
-      uri: operationUri.replace('file:///', ''),
+      uri: operationUri.path.replace('/', ''),
       value: initialQuery,
     });
     const editor = createEditor(ref, { model });
@@ -356,6 +354,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     setSchemaReference,
     setVisiblePlugin,
     externalFragments,
+    uriInstanceId,
   ]);
 
   return (
