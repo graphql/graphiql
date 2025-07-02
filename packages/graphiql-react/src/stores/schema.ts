@@ -105,9 +105,8 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         );
 
         if (!isPromise(fetch)) {
-          set({
-            fetchError: 'Fetcher did not return a Promise for introspection.',
-          });
+          const message = 'Fetcher did not return a Promise for introspection.'
+          set({ fetchError: formatError({ message }) });
           return;
         }
         set({ isIntrospecting: true, fetchError: null });
