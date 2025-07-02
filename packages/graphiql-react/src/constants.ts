@@ -114,10 +114,13 @@ export const KEY_BINDINGS = {
   },
 } as const;
 
-export const OPERATION_URI = Uri.file('operation.graphql');
-export const VARIABLES_URI = Uri.file('variables.json');
-export const REQUEST_HEADERS_URI = Uri.file('request-headers.json');
-export const RESPONSE_URI = Uri.file('response.json');
+export const URI_NAME = {
+  operation: 'operation',
+  variables: 'variables',
+  request_headers: 'request-headers',
+  schema: 'schema',
+  response: 'response',
+} as const;
 
 // set these early on so that initial variables with comments don't flash an error
 export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
