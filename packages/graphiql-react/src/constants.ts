@@ -1,9 +1,9 @@
 /* eslint-disable no-bitwise */
 import { initializeMode } from 'monaco-graphql/esm/lite.js';
-import { parsers } from 'prettier/parser-graphql';
-import prettier from 'prettier/standalone';
 // @ts-expect-error -- wrong types
-import { printers } from 'prettier/plugins/graphql';
+import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
+import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
+import prettier from 'prettier/standalone';
 import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
 
