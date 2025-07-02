@@ -4,7 +4,8 @@ import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
 import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
 import prettier from 'prettier/standalone';
-import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
+import type { DiagnosticSettings } from 'monaco-graphql';
+import { KeyCode, KeyMod, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
 
 export const isMacOs =
@@ -115,10 +116,14 @@ export const KEY_BINDINGS = {
   },
 } as const;
 
-export const QUERY_URI = Uri.file('query.graphql');
-export const VARIABLE_URI = Uri.file('variable.json');
-export const HEADER_URI = Uri.file('header.json');
-export const RESPONSE_URI = Uri.file('response.json');
+export const URI_NAME = {
+  operation: 'operation.graphql',
+  schema: 'schema.graphql',
+
+  variables: 'variables.json',
+  requestHeaders: 'request-headers.json',
+  response: 'response.json',
+} as const;
 
 // set these early on so that initial variables with comments don't flash an error
 const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
@@ -131,18 +136,18 @@ const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
 // Set diagnostics options for JSON
 languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
-export const MONACO_GRAPHQL_API = initializeMode({
-  diagnosticSettings: {
-    validateVariablesJSON: {
-      [QUERY_URI.toString()]: [VARIABLE_URI.toString()],
-    },
-    jsonDiagnosticSettings: {
-      validate: true,
-      schemaValidation: 'error',
-      // Set these again, because we are entirely re-setting them here
-      ...JSON_DIAGNOSTIC_OPTIONS,
-    },
+export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
+  validateVariablesJSON: {},
+  jsonDiagnosticSettings: {
+    validate: true,
+    schemaValidation: 'error',
+    // Set these again, because we are entirely re-setting them here
+    ...JSON_DIAGNOSTIC_OPTIONS,
   },
+};
+
+export const MONACO_GRAPHQL_API = initializeMode({
+  diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
 });
 
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>

@@ -246,7 +246,7 @@ describe('GraphiQL', () => {
       });
     });
 
-    it('correctly displays headers editor when using defaultEditorToolsVisibility prop', async () => {
+    it('correctly displays request headers editor when using defaultEditorToolsVisibility prop', async () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}

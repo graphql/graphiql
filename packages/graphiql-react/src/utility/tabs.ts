@@ -5,15 +5,15 @@ import { storageStore } from '../stores';
 
 export interface TabDefinition {
   /**
-   * The contents of the query editor of this tab.
+   * The contents of the operation editor of this tab.
    */
   query: string | null;
   /**
-   * The contents of the variable editor of this tab.
+   * The contents of the variables editor of this tab.
    */
   variables?: string | null;
   /**
-   * The contents of the headers editor of this tab.
+   * The contents of the request headers editor of this tab.
    */
   headers?: string | null;
 }
@@ -29,7 +29,7 @@ export interface TabState extends TabDefinition {
 
   /**
    * A hash that is unique for a combination of the contents of the query
-   * editor, the variable editor and the header editor (i.e. all the editor
+   * editor, the variables editor and the request headers editor (i.e., all the editor
    * where the contents are persisted in storage).
    */
   hash: string;
@@ -40,7 +40,7 @@ export interface TabState extends TabDefinition {
   title: string;
 
   /**
-   * The operation name derived from the contents of the query editor of this
+   * The operation name derived from the contents of the operation editor of this
    * tab.
    */
   operationName: string | null;

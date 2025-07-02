@@ -2,12 +2,12 @@ export { ExecuteButton } from './execute-button';
 export { ToolbarButton } from './toolbar-button';
 export { ToolbarMenu } from './toolbar-menu';
 
-export { HeaderEditor } from './header-editor';
+export { RequestHeadersEditor as HeaderEditor } from './request-headers-editor';
 export { ImagePreview } from './image-preview';
 export { GraphiQLProvider, useGraphiQL, useGraphiQLActions } from './provider';
-export { QueryEditor } from './query-editor';
+export { OperationEditor as QueryEditor } from './operation-editor';
 export { ResponseEditor } from './response-editor';
-export { VariableEditor } from './variable-editor';
+export { VariablesEditor as VariableEditor } from './variables-editor';
 
 export { Button, UnStyledButton } from './button';
 export { ButtonGroup } from './button-group';

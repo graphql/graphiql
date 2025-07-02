@@ -16,20 +16,22 @@ import {
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
-  MONACO_GRAPHQL_API,
-  QUERY_URI,
+  URI_NAME,
   STORAGE_KEY,
+  MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+  MONACO_GRAPHQL_API,
 } from '../constants';
 import {
   type editor as monacoEditor,
   languages,
   Range,
+  Uri,
 } from '../monaco-editor';
 import * as monaco from '../monaco-editor';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
-interface QueryEditorProps extends EditorProps {
+interface OperationEditorProps extends EditorProps {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
@@ -38,14 +40,14 @@ interface QueryEditorProps extends EditorProps {
   onClickReference?(reference: SchemaReference): void;
 
   /**
-   * Invoked when the contents of the query editor change.
+   * Invoked when the contents of the operation editor change.
    * @param value - The new contents of the editor.
    * @param documentAST - The editor contents parsed into a GraphQL document.
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
-export const QueryEditor: FC<QueryEditorProps> = ({
+export const OperationEditor: FC<OperationEditorProps> = ({
   onClickReference,
   onEdit,
   ...props
@@ -69,6 +71,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     operations,
     operationName,
     externalFragments,
+    uriInstanceId,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -77,11 +80,12 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'operations',
       'operationName',
       'externalFragments',
+      'uriInstanceId',
     ),
   );
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
+  const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
   );
   useEffect(() => {
@@ -97,7 +101,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
           closeOnUnfocus: false,
           completeSingle: false,
           autocompleteOptions: {
-            // for the query editor, restrict to executable type definitions
+            // for the operation editor, restrict to executable type definitions
             mode: GraphQLDocumentMode.EXECUTABLE,
           },
         },
@@ -206,8 +210,22 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
+    const operationUri = Uri.file(`${uriInstanceId}${URI_NAME.operation}`);
+    const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
+    /**
+     * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
+     * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
+     */
+    const { validateVariablesJSON } = MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS;
+    validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
+    MONACO_GRAPHQL_API.setDiagnosticSettings(
+      MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+    );
     globalThis.__MONACO = monaco;
-    const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
+    const model = getOrCreateModel({
+      uri: operationUri.path.replace('/', ''),
+      value: initialQuery,
+    });
     const editor = createEditor(ref, { model });
     setEditor({ queryEditor: editor });
 
@@ -254,7 +272,9 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     if (!schema) {
       return;
     }
-    MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
+    MONACO_GRAPHQL_API.setSchemaConfig([
+      { uri: `${uriInstanceId}${URI_NAME.schema}`, schema },
+    ]);
     MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
       ...externalFragments.values(),
     ]);
@@ -322,6 +342,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     setSchemaReference,
     setVisiblePlugin,
     externalFragments,
+    uriInstanceId,
   ]);
 
   return (

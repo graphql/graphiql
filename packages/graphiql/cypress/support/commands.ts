@@ -46,7 +46,7 @@ declare namespace Cypress {
       text: string,
       severity: 'error' | 'warning',
       message: string,
-      uri?: 'query.graphql' | 'variable.json',
+      uri?: 'operation.graphql' | 'variables.json',
     ): Chainable<Element>;
   }
 }
@@ -151,13 +151,15 @@ Cypress.Commands.add('containQueryResult', expected => {
 
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
-  (text, severity, message, uri = 'query.graphql') => {
+  (text, severity, message, uri = 'operation.graphql') => {
     // Ensure error is visible in the DOM
     cy.get(`.squiggly-${severity}`, { timeout: 10_000 });
     cy.window().then(win => {
-      const { editor, Uri, MarkerSeverity } = win.__MONACO;
+      const { editor, MarkerSeverity } = win.__MONACO;
+      const models = editor.getModels();
+      const model = models.find(m => m.uri.path.endsWith(uri))!;
       const markers = editor.getModelMarkers({
-        resource: Uri.parse(uri),
+        resource: model.uri,
       });
       // Only "Property is not allowed." isn't added in model markers
       if (!message.endsWith(' is not allowed.')) {
