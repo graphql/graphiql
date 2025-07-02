@@ -1,4 +1,10 @@
-export * from 'monaco-graphql/esm/monaco-editor';
+/**
+ * Can't use `monaco-graphql/esm/monaco-editor` due error in esm.sh example:
+ * Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+ */
+
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+export * from 'monaco-editor';
 // @ts-expect-error -- no types
 import { MouseTargetFactory } from 'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js';
 
