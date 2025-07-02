@@ -132,7 +132,7 @@ function App() {
 
 - Migration from Codemirror to [Monaco Editor](https://github.com/microsoft/monaco-editor)
   - Replacing `codemirror-graphql` with [`monaco-graphql`](../../packages/monaco-graphql)
-  - Clicking on a reference in the query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux
+  - Clicking on a reference in the operation editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux
 - Support for comments in **Variables** and **Headers** editors
 - Added new examples: [**GraphiQL x Vite**](../../examples/graphiql-vite) and [**GraphiQL x Next.js**](../../examples/graphiql-nextjs)
 - Removed examples: **GraphiQL x Parcel** and **GraphiQL x Create React App**
@@ -149,7 +149,7 @@ function App() {
 >
 > If you used `query`, `variables` and `headers` in integration tests, you can use the new `initialQuery`,
 > `initialVariables` and `initialHeaders` props instead. These props will only be used for the first tab.
-> When opening more tabs, the query editor will start out empty.
+> When opening more tabs, the operation editor will start out empty.
 
 - Added new props
   - `initialQuery`
@@ -163,14 +163,14 @@ function App() {
 
 > [!IMPORTANT]
 >
-> Clicking on a reference in the Query editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
+> Clicking on a reference in the operation editor now works by holding `Cmd` on macOS or `Ctrl` on Windows/Linux.
 
 - `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks are deprecated.
 - Add new `useGraphiQL` and `useGraphiQLActions` hooks instead. See updated [README](../../packages/graphiql-react/README.md#available-stores) for more details about them.
 - remove `useSynchronizeValue` hook
 - fix `defaultQuery` with empty string does not result in an empty default query
-- fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
-- fix execute query shortcut in query editor, run it even there are no operations in query editor
+- fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the operation editor will start out empty
+- fix execute query shortcut in operation editor, run it even there are no operations in the operation editor
 - fix plugin store, save last opened plugin in storage
 - remove `onClickReference` from variable editor
 - fix shortcut text per OS for default query and in run query in execute query button's tooltip

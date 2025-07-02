@@ -62,7 +62,7 @@ describe('Linting', () => {
       '"42"',
       'error',
       'Expected comma or closing brace',
-      'variable.json',
+      'variables.json',
     );
   });
 
@@ -98,7 +98,7 @@ describe('Linting', () => {
       '42',
       'error',
       'Incorrect type. Expected one of string, null.',
-      'variable.json',
+      'variables.json',
     );
   });
 
@@ -116,7 +116,7 @@ describe('Linting', () => {
       'null',
       'error',
       'Incorrect type. Expected "string".',
-      'variable.json',
+      'variables.json',
     );
   });
 
@@ -134,7 +134,7 @@ describe('Linting', () => {
       '"42"',
       'error',
       'Incorrect type. Expected "object".',
-      'variable.json',
+      'variables.json',
     );
   });
 

@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { KEY_BINDINGS, STORAGE_KEY, VARIABLE_URI } from '../constants';
+import { KEY_BINDINGS, STORAGE_KEY, URI_NAME } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -9,9 +9,10 @@ import {
   onEditorContainerKeyDown,
   cleanupDisposables,
   cn,
+  pick,
 } from '../utility';
 
-interface VariableEditorProps extends EditorProps {
+interface VariablesEditorProps extends EditorProps {
   /**
    * Invoked when the contents of the variables' editor change.
    * @param value - The new contents of the editor.
@@ -19,17 +20,19 @@ interface VariableEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export const VariableEditor: FC<VariableEditorProps> = ({
+export const VariablesEditor: FC<VariablesEditorProps> = ({
   onEdit,
   ...props
 }) => {
   const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
-  const initialVariables = useGraphiQL(state => state.initialVariables);
+  const { initialVariables, uriInstanceId } = useGraphiQL(
+    pick('initialVariables', 'uriInstanceId'),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
   useEffect(() => {
     const model = getOrCreateModel({
-      uri: VARIABLE_URI,
+      uri: `${uriInstanceId}${URI_NAME.variables}`,
       value: initialVariables,
     });
     const editor = createEditor(ref, { model });

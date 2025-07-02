@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { HEADER_URI, KEY_BINDINGS, STORAGE_KEY } from '../constants';
+import { URI_NAME, KEY_BINDINGS, STORAGE_KEY } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -12,18 +12,21 @@ import {
   cn,
 } from '../utility';
 
-interface HeaderEditorProps extends EditorProps {
+interface RequestHeadersEditorProps extends EditorProps {
   /**
-   * Invoked when the contents of the headers editor change.
+   * Invoked when the contents of the request headers editor change.
    * @param value - The new contents of the editor.
    */
   onEdit?(value: string): void;
 }
 
-export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
+export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
+  onEdit,
+  ...props
+}) => {
   const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
-  const { initialHeaders, shouldPersistHeaders } = useGraphiQL(
-    pick('initialHeaders', 'shouldPersistHeaders'),
+  const { initialHeaders, shouldPersistHeaders, uriInstanceId } = useGraphiQL(
+    pick('initialHeaders', 'shouldPersistHeaders', 'uriInstanceId'),
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(
@@ -32,7 +35,10 @@ export const HeaderEditor: FC<HeaderEditorProps> = ({ onEdit, ...props }) => {
     'headers',
   );
   useEffect(() => {
-    const model = getOrCreateModel({ uri: HEADER_URI, value: initialHeaders });
+    const model = getOrCreateModel({
+      uri: `${uriInstanceId}${URI_NAME.requestHeaders}`,
+      value: initialHeaders,
+    });
     const editor = createEditor(ref, { model });
     setEditor({ headerEditor: editor });
     const disposables = [

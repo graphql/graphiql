@@ -17,8 +17,6 @@ describe('Errors', () => {
            * version is different!
            */
           message: 'Unexpected token \'B\', "Bad Gateway" is not valid JSON',
-          stack:
-            'SyntaxError: Unexpected token \'B\', "Bad Gateway" is not valid JSON',
         },
       ],
     });

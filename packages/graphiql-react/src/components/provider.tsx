@@ -1,6 +1,6 @@
 /* eslint sort-keys: "error" */
 import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
-import { createContext, useContext, useRef, useEffect } from 'react';
+import { createContext, useContext, useRef, useEffect, useId } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import {
@@ -157,7 +157,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 }) => {
   const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
-
+  const uriInstanceId = useId();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
     function getInitialVisiblePlugin() {
@@ -214,6 +214,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onTabChange,
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
+          /**
+           * Strip colons (React 18) and arrows (React 19) because it breaks monaco-editor
+           * variables autocomplete
+           */
+          uriInstanceId: uriInstanceId.replaceAll(/[:«»]/g, '') + '-',
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,

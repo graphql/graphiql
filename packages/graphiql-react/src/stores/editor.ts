@@ -23,12 +23,18 @@ import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
-   * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
+   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations, variables, headers, and responses.
+   *
+   * @see https://github.com/microsoft/monaco-editor#uris
+   */
+  uriInstanceId: string;
+  /**
+   * The Monaco Editor instance used in the request headers editor, used to edit HTTP headers.
    */
   headerEditor?: MonacoEditor;
 
   /**
-   * The Monaco Editor instance used in the query editor.
+   * The Monaco Editor instance used in the operation editor.
    */
   queryEditor?: MonacoEditor;
 
@@ -38,18 +44,18 @@ export interface EditorSlice extends TabsState {
   responseEditor?: MonacoEditor;
 
   /**
-   * The Monaco Editor instance used in the variable editor.
+   * The Monaco Editor instance used in the variables editor.
    */
   variableEditor?: MonacoEditor;
 
   /**
-   * The contents of the headers editor when initially rendering the provider
+   * The contents of the request headers editor when initially rendering the provider
    * component.
    */
   initialHeaders: string;
 
   /**
-   * The contents of the query editor when initially rendering the provider
+   * The contents of the operation editor when initially rendering the provider
    * component.
    */
   initialQuery: string;
@@ -67,16 +73,16 @@ export interface EditorSlice extends TabsState {
   externalFragments: Map<string, FragmentDefinitionNode>;
 
   /**
-   * If the contents of the headers editor are persisted in storage.
+   * If the contents of the request headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
 
   /**
-   * The initial content of the query editor when loading GraphiQL and there is
+   * The initial content of the operation editor when loading GraphiQL and there is
    * no saved query in storage and no `initialQuery` prop.
    *
    * This value is used only for the first tab. Additional tabs will open with
-   * an empty query editor.
+   * an empty operation editor.
    *
    * @default "# Welcome to GraphiQL..."
    */
@@ -84,7 +90,7 @@ export interface EditorSlice extends TabsState {
 
   /**
    * Invoked when the operation name changes. Possible triggers are:
-   * - Editing the contents of the query editor
+   * - Editing the contents of the operation editor
    * - Selecting an operation for execution in a document that contains multiple
    *   operation definitions
    * @param operationName - The operation name after it has been changed.
@@ -107,7 +113,7 @@ export interface EditorSlice extends TabsState {
   defaultHeaders?: string;
 
   /**
-   * Invoked when the current contents of the query editor are copied to the
+   * Invoked when the current contents of the operation editor are copied to the
    * clipboard.
    * @param query - The content that has been copied.
    */
@@ -115,16 +121,16 @@ export interface EditorSlice extends TabsState {
 
   /**
    * Invoked when the prettify callback is invoked.
-   * @param query - The current value of the query editor.
+   * @param query - The current value of the operation editor.
    * @default
-   * import { parse, print } from 'graphql'
+   * import prettier from 'prettier/standalone'
    *
-   * (query) => print(parse(query))
+   * prettier.format(query, { parser: 'graphql' })
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
 
-  // Operation facts that are derived from the query editor.
+  // Operation facts that are derived from the operation editor.
 
   /**
    * @remarks from graphiql 5
@@ -218,7 +224,7 @@ export interface EditorActions {
   mergeQuery: () => void;
 
   /**
-   * Prettify query, variable and header editors.
+   * Prettify query, variables and request headers editors.
    */
   prettifyEditors: () => Promise<void>;
 }
@@ -258,7 +264,7 @@ export interface EditorProps
   defaultTabs?: TabDefinition[];
 
   /**
-   * This prop toggles if the contents of the headers editor are persisted in
+   * This prop toggles if the contents of the request headers editor are persisted in
    * storage.
    * @default false
    */
@@ -286,6 +292,7 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'uriInstanceId'
   >,
 ) => StateCreator<
   SlicesWithActions,
@@ -529,7 +536,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
   };
-
   return {
     ...initial,
     actions: $actions,

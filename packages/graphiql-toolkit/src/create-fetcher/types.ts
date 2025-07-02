@@ -99,9 +99,9 @@ export interface CreateFetcherOptions {
    */
   legacyClient?: any;
   /**
-   * Headers you can provide statically.
+   * Request headers you can provide statically.
    *
-   * If you enable the headers editor and the user provides
+   * If you enable the request headers editor and the user provides
    * A header you set statically here, it will be overridden by their value.
    */
   headers?: Record<string, string>;

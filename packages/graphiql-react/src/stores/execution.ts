@@ -14,7 +14,7 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { formatJSONC, parseJSONC } from '../utility';
+import { tryParseJSONC } from '../utility';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { Range } from '../monaco-editor';
 
@@ -214,19 +214,14 @@ export const createExecutionSlice: CreateExecutionSlice =
             actions.updateActiveTabValues({ response: value });
           }
 
-          function setError(error: unknown, editor?: MonacoEditor): void {
+          function setError(error: Error, editor?: MonacoEditor): void {
             if (!editor) {
               return;
             }
-            let message;
-            const name = editor === variableEditor ? 'Variables' : 'Headers';
-            if (error instanceof TypeError) {
-              message = `${name} are not a JSON object.`;
-            } else {
-              message = `${name} are invalid JSON: ${error instanceof Error ? error.message : error}.`;
-            }
-            // Need to stringify since the response editor uses `json` language
-            setResponse(formatError({ message }));
+            const name =
+              editor === variableEditor ? 'Variables' : 'Request headers';
+            // Need to format since the response editor uses `json` language
+            setResponse(formatError({ message: `${name} ${error.message}` }));
           }
 
           const newQueryId = queryId + 1;
@@ -239,16 +234,16 @@ export const createExecutionSlice: CreateExecutionSlice =
 
           let variables: Record<string, unknown> | undefined;
           try {
-            variables = await tryParseJsonObject(variableEditor?.getValue());
+            variables = tryParseJSONC(variableEditor?.getValue());
           } catch (error) {
-            setError(error, variableEditor);
+            setError(error as Error, variableEditor);
             return;
           }
           let headers: Record<string, unknown> | undefined;
           try {
-            headers = await tryParseJsonObject(headerEditor?.getValue());
+            headers = tryParseJSONC(headerEditor?.getValue());
           } catch (error) {
-            setError(error, headerEditor);
+            setError(error as Error, headerEditor);
             return;
           }
           const fragmentDependencies = documentAST
@@ -337,23 +332,6 @@ export const createExecutionSlice: CreateExecutionSlice =
       },
     };
   };
-
-async function tryParseJsonObject(
-  json = '',
-): Promise<Record<string, unknown> | undefined> {
-  // `jsonc-parser` doesn't support trailing commas,
-  // so we need first to format with prettier, which will remove them
-  const formatted = await formatJSONC(json);
-  const parsed = parseJSONC(formatted);
-  if (!parsed) {
-    return;
-  }
-  const isObject = typeof parsed === 'object' && !Array.isArray(parsed);
-  if (!isObject) {
-    throw new TypeError();
-  }
-  return parsed;
-}
 
 interface IncrementalResult {
   data?: Record<string, unknown> | null;

@@ -156,7 +156,7 @@ interface GraphiQLInterfaceProps
    * - `false` hides the editor tools
    * - `true` shows the editor tools
    * - `'variables'` specifically shows the variables editor
-   * - `'headers'` specifically shows the headers editor
+   * - `'headers'` specifically shows the request headers editor
    * By default, the editor tools are initially shown when at least one of the
    * editors has contents.
    */
@@ -350,7 +350,7 @@ const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     <div className="graphiql-editors" ref={editorResize.firstRef}>
       <section
         className="graphiql-query-editor"
-        aria-label="Query Editor"
+        aria-label="Operation Editor"
         ref={editorToolsResize.firstRef}
       >
         <QueryEditor onClickReference={onClickReference} onEdit={onEditQuery} />

@@ -11,7 +11,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
-import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
+import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
@@ -39,9 +39,10 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   ...props
 }) => {
   const { setEditor, run } = useGraphiQLActions();
-  const { fetchError, validationErrors, responseEditor } = useGraphiQL(
-    pick('fetchError', 'validationErrors', 'responseEditor'),
-  );
+  const { fetchError, validationErrors, responseEditor, uriInstanceId } =
+    useGraphiQL(
+      pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
+    );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
@@ -53,7 +54,10 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const model = getOrCreateModel({ uri: RESPONSE_URI, value: '' });
+    const model = getOrCreateModel({
+      uri: `${uriInstanceId}${URI_NAME.response}`,
+      value: '',
+    });
     const editor = createEditor(ref, {
       model,
       readOnly: true,
