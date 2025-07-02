@@ -61,7 +61,9 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         onSchemaChange,
         headerEditor,
         fetcher,
-        ...rest
+        inputValueDeprecation,
+        introspectionQueryName,
+        schemaDescription,
       } = get();
 
       /**
@@ -88,16 +90,14 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         /**
          * Get an introspection query for settings given via props
          */
-        const {
-          introspectionQuery,
-          introspectionQueryName,
-          introspectionQuerySansSubscriptions,
-        } = generateIntrospectionQuery(rest);
-
-        function doIntrospection(query: string) {
+        const query = getIntrospectionQuery({
+          inputValueDeprecation,
+          schemaDescription,
+        });
+        function doIntrospection($query: string) {
           const fetch = fetcherReturnToPromise(
             fetcher(
-              { query, operationName: introspectionQueryName },
+              { query: $query, operationName: introspectionQueryName },
               fetcherOpts,
             ),
           );
@@ -108,12 +108,22 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           }
           return fetch;
         }
+        const introspectionQuery =
+          introspectionQueryName === 'IntrospectionQuery'
+            ? query
+            : query.replace(
+              'query IntrospectionQuery',
+              `query ${introspectionQueryName}`,
+            );
         let result = await doIntrospection(introspectionQuery);
 
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
           // sans-subscriptions query for services which do not yet support it.
-          result = await doIntrospection(introspectionQuerySansSubscriptions);
+          result = await doIntrospection(query.replace(
+            'subscriptionType { name }',
+            '',
+          ));
         }
         set({ isIntrospecting: false });
         let introspectionData: IntrospectionQuery | undefined;
@@ -282,32 +292,4 @@ interface IntrospectionArgs {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   schemaDescription?: boolean;
-}
-
-function generateIntrospectionQuery({
-  inputValueDeprecation,
-  introspectionQueryName,
-  schemaDescription,
-}: IntrospectionArgs) {
-  const query = getIntrospectionQuery({
-    inputValueDeprecation,
-    schemaDescription,
-  });
-  const introspectionQuery =
-    introspectionQueryName === 'IntrospectionQuery'
-      ? query
-      : query.replace(
-          'query IntrospectionQuery',
-          `query ${introspectionQueryName}`,
-        );
-  const introspectionQuerySansSubscriptions = query.replace(
-    'subscriptionType { name }',
-    '',
-  );
-
-  return {
-    introspectionQueryName,
-    introspectionQuery,
-    introspectionQuerySansSubscriptions,
-  };
 }
