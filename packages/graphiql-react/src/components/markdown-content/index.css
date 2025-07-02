@@ -1,8 +1,8 @@
 /**
  * We render markdown in the following places:
- * - In the hint tooltip when typing in the query editor (field description
+ * - In the hint tooltip when typing in the operation editor (field description
  *   and, optionally, deprecation reason).
- * - In the info tooltip when hovering over a field in the query editor
+ * - In the info tooltip when hovering over a field in the operation editor
  *   (field description and, optionally, deprecation reason).
  */
 
@@ -123,8 +123,8 @@
 
 /**
  * We show deprecations in the following places:
- * - In the hint tooltip when typing in the query editor.
- * - In the info tooltip when hovering over a field in the query editor.
+ * - In the hint tooltip when typing in the operation editor.
+ * - In the info tooltip when hovering over a field in the operation editor.
  */
 
 .CodeMirror-hint-information-deprecation,

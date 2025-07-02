@@ -125,7 +125,7 @@ export const URI_NAME = {
 } as const;
 
 // set these early on so that initial variables with comments don't flash an error
-const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
+export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
   // Fixes Comments are not permitted in JSON.(521)
   allowComments: true,
   // Fixes Trailing comma json(519)
@@ -143,9 +143,6 @@ export const MONACO_GRAPHQL_CONFIG: MonacoGraphQLInitializeConfig = {
     },
   },
 };
-
-// Set diagnostics options for JSON
-languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   prettier.format(query, {

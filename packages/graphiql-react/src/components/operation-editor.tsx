@@ -20,6 +20,7 @@ import {
   URI_NAME,
   STORAGE_KEY,
   MONACO_GRAPHQL_CONFIG,
+  JSON_DIAGNOSTIC_OPTIONS,
 } from '../constants';
 import {
   type editor as monacoEditor,
@@ -31,7 +32,7 @@ import * as monaco from '../monaco-editor';
 import { getContextAtPosition } from 'graphql-language-service/esm/parser';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
-interface QueryEditorProps extends EditorProps {
+interface OperationEditorProps extends EditorProps {
   /**
    * Invoked when a reference to the GraphQL schema (type or field) is clicked
    * as part of the editor or one of its tooltips.
@@ -40,14 +41,14 @@ interface QueryEditorProps extends EditorProps {
   onClickReference?(reference: SchemaReference): void;
 
   /**
-   * Invoked when the contents of the query editor change.
+   * Invoked when the contents of the operation editor change.
    * @param value - The new contents of the editor.
    * @param documentAST - The editor contents parsed into a GraphQL document.
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
-export const OperationEditor: FC<QueryEditorProps> = ({
+export const OperationEditor: FC<OperationEditorProps> = ({
   onClickReference,
   onEdit,
   ...props
@@ -85,7 +86,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
   );
   const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
-  const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
+  const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
   );
   const monacoGraphQLApiRef = useRef<ReturnType<typeof initializeMode>>(null!);
@@ -102,7 +103,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
           closeOnUnfocus: false,
           completeSingle: false,
           autocompleteOptions: {
-            // for the query editor, restrict to executable type definitions
+            // for the operation editor, restrict to executable type definitions
             mode: GraphQLDocumentMode.EXECUTABLE,
           },
         },
@@ -219,7 +220,8 @@ export const OperationEditor: FC<QueryEditorProps> = ({
      */
     const { validateVariablesJSON } = MONACO_GRAPHQL_CONFIG.diagnosticSettings!;
     validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
-
+    // Set diagnostics options for JSON
+    languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
     monacoGraphQLApiRef.current = initializeMode(MONACO_GRAPHQL_CONFIG);
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({

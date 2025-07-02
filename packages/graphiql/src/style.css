@@ -56,7 +56,7 @@
 /* The current session and tabs */
 .graphiql-container .graphiql-sessions {
   background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-  /* Adding the 8px of padding to the inner border radius of the query editor */
+  /* Adding the 8px of padding to the inner border radius of the operation editor */
   border-radius: calc(var(--border-radius-12) + var(--px-8));
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@ button.graphiql-tab-add {
   padding: 0 var(--px-8) var(--px-8);
 }
 
-/* All editors (query, variable, headers) */
+/* All editors (operation, variable, request headers) */
 .graphiql-container .graphiql-editors {
   background-color: hsl(var(--color-base));
   border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
@@ -123,7 +123,7 @@ button.graphiql-tab-add {
   flex-direction: column;
 }
 
-/* The query editor and the toolbar */
+/* The operation editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
   border-bottom: 1px solid
     hsla(var(--color-neutral), var(--alpha-background-heavy));
@@ -133,7 +133,7 @@ button.graphiql-tab-add {
   width: 100%;
 }
 
-/* The vertical toolbar next to the query editor */
+/* The vertical toolbar next to the operation editor */
 .graphiql-container .graphiql-toolbar {
   width: var(--toolbar-width);
   display: flex;
@@ -181,7 +181,7 @@ button.graphiql-tab-add {
   margin-left: auto;
 }
 
-/* An editor tool, e.g. variable or header editor */
+/* An editor tool, e.g. variables or request headers editor */
 .graphiql-container .graphiql-editor-tool {
   flex: 1;
   padding: var(--px-16);

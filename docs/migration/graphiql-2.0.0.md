@@ -229,10 +229,10 @@ override certain parts of the UI:
 
 - `GraphiQL.Logo`: Overrides the "logo" at the top right of the screen. By
   default, it contains the text "Graph*i*QL".
-- `GraphiQL.Toolbar`: Overrides the toolbar next to the query editor. By
+- `GraphiQL.Toolbar`: Overrides the toolbar next to the operation editor. By
   default, if contains buttons for prettifying the current editor contents,
   merging fragment definitions into the operation definition and copying the
-  contents of the query editor to the clipboard. Note that the default buttons
+  contents of the operation editor to the clipboard. Note that the default buttons
   will not be shown when passing this component as child to `GraphiQL`, instead
   it will show the children you pass to `GraphiQL.Toolbar`. The execute button
   will always be shown. If you want to keep the default buttons and add

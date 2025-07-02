@@ -12,7 +12,7 @@ import {
   pick,
 } from '../utility';
 
-interface VariableEditorProps extends EditorProps {
+interface VariablesEditorProps extends EditorProps {
   /**
    * Invoked when the contents of the variables' editor change.
    * @param value - The new contents of the editor.
@@ -20,7 +20,7 @@ interface VariableEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export const VariablesEditor: FC<VariableEditorProps> = ({
+export const VariablesEditor: FC<VariablesEditorProps> = ({
   onEdit,
   ...props
 }) => {

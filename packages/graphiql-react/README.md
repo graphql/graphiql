@@ -44,7 +44,7 @@ function MyGraphQLIDE() {
 ```
 
 Inside the provider you can now use any UI component provided by
-`@graphiql/react`. For example, you can render a query editor like this:
+`@graphiql/react`. For example, you can render an operation editor like this:
 
 ```jsx
 import { QueryEditor } from '@graphiql/react';
