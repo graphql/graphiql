@@ -1,6 +1,5 @@
 import {
   FetcherOpts,
-  FetcherResult,
   fetcherReturnToPromise,
   formatError,
   formatResult,
@@ -90,14 +89,15 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         /**
          * Get an introspection query for settings given via props
          */
-        const query = getIntrospectionQuery({
+        const introspectionQuery = getIntrospectionQuery({
           inputValueDeprecation,
           schemaDescription,
         });
-        function doIntrospection($query: string) {
+
+        function doIntrospection(query: string) {
           const fetch = fetcherReturnToPromise(
             fetcher(
-              { query: $query, operationName: introspectionQueryName },
+              { query, operationName: introspectionQueryName },
               fetcherOpts,
             ),
           );
@@ -108,22 +108,22 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           }
           return fetch;
         }
-        const introspectionQuery =
+
+        const normalizedQuery =
           introspectionQueryName === 'IntrospectionQuery'
-            ? query
-            : query.replace(
-              'query IntrospectionQuery',
-              `query ${introspectionQueryName}`,
-            );
-        let result = await doIntrospection(introspectionQuery);
+            ? introspectionQuery
+            : introspectionQuery.replace(
+                'query IntrospectionQuery',
+                `query ${introspectionQueryName}`,
+              );
+        let result = await doIntrospection(normalizedQuery);
 
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
           // sans-subscriptions query for services which do not yet support it.
-          result = await doIntrospection(query.replace(
-            'subscriptionType { name }',
-            '',
-          ));
+          result = await doIntrospection(
+            introspectionQuery.replace('subscriptionType { name }', ''),
+          );
         }
         set({ isIntrospecting: false });
         let introspectionData: IntrospectionQuery | undefined;
@@ -229,7 +229,7 @@ export interface SchemaActions {
   setSchemaReference: Dispatch<SchemaReference>;
 }
 
-export interface SchemaProps extends IntrospectionArgs {
+export interface SchemaProps {
   /**
    * This prop can be used to skip validating the GraphQL schema. This applies
    * to both schemas fetched via introspection and schemas explicitly passed
@@ -268,9 +268,7 @@ export interface SchemaProps extends IntrospectionArgs {
    *   run without a schema.
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
-}
 
-interface IntrospectionArgs {
   /**
    * Can be used to set the equally named option for introspecting a GraphQL
    * server.
