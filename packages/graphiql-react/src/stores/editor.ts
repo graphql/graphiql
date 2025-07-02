@@ -21,15 +21,13 @@ import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
 
-let uriInstanceId = 0;
-
 export interface EditorSlice extends TabsState {
   /**
-   * Unique ID of the GraphiQL instance, which will be appended to the URIs for operations, variables, headers, and responses.
+   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations, variables, headers, and responses.
    *
    * @see https://github.com/microsoft/monaco-editor#uris
    */
-  uriInstanceId: number;
+  uriInstanceId: string;
   /**
    * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
@@ -294,6 +292,7 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'uriInstanceId'
   >,
 ) => StateCreator<
   SlicesWithActions,
@@ -537,12 +536,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
   };
-
-  uriInstanceId += 1;
-
   return {
     ...initial,
-    uriInstanceId,
     actions: $actions,
   };
 };
