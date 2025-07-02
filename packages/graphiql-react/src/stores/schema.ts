@@ -80,7 +80,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           headers = tryParseJSONC(headerEditor?.getValue());
         } catch (error) {
           throw new Error(
-            `Introspection failed.\nHeaders ${error instanceof Error ? error.message : error}`,
+            `Introspection failed. Request headers ${error instanceof Error ? error.message : error}`,
           );
         }
 

@@ -218,7 +218,8 @@ export const createExecutionSlice: CreateExecutionSlice =
             if (!editor) {
               return;
             }
-            const name = editor === variableEditor ? 'Variables' : 'Headers';
+            const name =
+              editor === variableEditor ? 'Variables' : 'Request headers';
             // Need to format since the response editor uses `json` language
             setResponse(formatError({ message: `${name} ${error.message}` }));
           }
