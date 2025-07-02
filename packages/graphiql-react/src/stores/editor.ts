@@ -117,9 +117,9 @@ export interface EditorSlice extends TabsState {
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the query editor.
    * @default
-   * import { parse, print } from 'graphql'
+   * import prettier from 'prettier/standalone'
    *
-   * (query) => print(parse(query))
+   * prettier.format(query, { parser: 'graphql' })
    * @returns The formatted query.
    */
   onPrettifyQuery: (query: string) => MaybePromise<string>;
