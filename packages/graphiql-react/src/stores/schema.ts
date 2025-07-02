@@ -113,23 +113,8 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         if (typeof result !== 'object' || !('data' in result)) {
           // Try the stock introspection query first, falling back on the
           // sans-subscriptions query for services which do not yet support it.
-          const fetch2 = fetcherReturnToPromise(
-            fetcher(
-              {
-                query: introspectionQuerySansSubscriptions,
-                operationName: introspectionQueryName,
-              },
-              fetcherOpts,
-            ),
-          );
-          if (!isPromise(fetch2)) {
-            throw new Error(
-              'Fetcher did not return a Promise for introspection.',
-            );
-          }
-          result = await fetch2;
+          result = await doIntrospection(introspectionQuerySansSubscriptions);
         }
-
         set({ isIntrospecting: false });
         let introspectionData: IntrospectionQuery | undefined;
         if (result.data && '__schema' in result.data) {
