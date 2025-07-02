@@ -1,5 +1,4 @@
 /* eslint-disable no-bitwise */
-import { initializeMode } from 'monaco-graphql/esm/lite.js';
 // @ts-expect-error -- wrong types
 import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
 import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
@@ -115,13 +114,13 @@ export const KEY_BINDINGS = {
   },
 } as const;
 
-export const QUERY_URI = Uri.file('query.graphql');
-export const VARIABLE_URI = Uri.file('variable.json');
-export const HEADER_URI = Uri.file('header.json');
+export const OPERATION_URI = Uri.file('operation.graphql');
+export const VARIABLES_URI = Uri.file('variables.json');
+export const REQUEST_HEADERS_URI = Uri.file('request-headers.json');
 export const RESPONSE_URI = Uri.file('response.json');
 
 // set these early on so that initial variables with comments don't flash an error
-const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
+export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
   // Fixes Comments are not permitted in JSON.(521)
   allowComments: true,
   // Fixes Trailing comma json(519)
@@ -130,20 +129,6 @@ const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
 
 // Set diagnostics options for JSON
 languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
-
-export const MONACO_GRAPHQL_API = initializeMode({
-  diagnosticSettings: {
-    validateVariablesJSON: {
-      [QUERY_URI.toString()]: [VARIABLE_URI.toString()],
-    },
-    jsonDiagnosticSettings: {
-      validate: true,
-      schemaValidation: 'error',
-      // Set these again, because we are entirely re-setting them here
-      ...JSON_DIAGNOSTIC_OPTIONS,
-    },
-  },
-});
 
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   prettier.format(query, {

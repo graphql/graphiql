@@ -21,6 +21,8 @@ import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
 
+let uriInstanceId = 0;
+
 export interface EditorSlice extends TabsState {
   /**
    * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
@@ -530,8 +532,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     },
   };
 
+  uriInstanceId += 1
+
   return {
     ...initial,
+    uriInstanceId,
     actions: $actions,
   };
 };

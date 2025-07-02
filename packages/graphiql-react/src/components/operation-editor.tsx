@@ -2,6 +2,7 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
+import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { useStorage } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
@@ -16,8 +17,9 @@ import {
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
-  MONACO_GRAPHQL_API,
-  QUERY_URI,
+  JSON_DIAGNOSTIC_OPTIONS,
+  OPERATION_URI,
+  VARIABLES_URI,
   STORAGE_KEY,
 } from '../constants';
 import {
@@ -45,7 +47,7 @@ interface QueryEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
-export const QueryEditor: FC<QueryEditorProps> = ({
+export const OperationEditor: FC<QueryEditorProps> = ({
   onClickReference,
   onEdit,
   ...props
@@ -69,6 +71,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     operations,
     operationName,
     externalFragments,
+    uriInstanceId,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -77,6 +80,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
       'operations',
       'operationName',
       'externalFragments',
+      'uriInstanceId',
     ),
   );
   const storage = useStorage();
@@ -84,6 +88,7 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   const onClickReferenceRef = useRef<QueryEditorProps['onClickReference']>(
     null!,
   );
+  const monacoGraphQLApiRef = useRef<ReturnType<typeof initializeMode>>(null!);
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
@@ -206,8 +211,27 @@ export const QueryEditor: FC<QueryEditorProps> = ({
   }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
+    const operationUri = `${OPERATION_URI}${uriInstanceId}`;
+    const variablesUri = `${VARIABLES_URI}${uriInstanceId}`;
+
+    monacoGraphQLApiRef.current = initializeMode({
+      diagnosticSettings: {
+        validateVariablesJSON: {
+          [operationUri]: [variablesUri],
+        },
+        jsonDiagnosticSettings: {
+          validate: true,
+          schemaValidation: 'error',
+          // Set these again, because we are entirely re-setting them here
+          ...JSON_DIAGNOSTIC_OPTIONS,
+        },
+      },
+    });
     globalThis.__MONACO = monaco;
-    const model = getOrCreateModel({ uri: QUERY_URI, value: initialQuery });
+    const model = getOrCreateModel({
+      uri: operationUri,
+      value: initialQuery,
+    });
     const editor = createEditor(ref, { model });
     setEditor({ queryEditor: editor });
 
@@ -254,8 +278,11 @@ export const QueryEditor: FC<QueryEditorProps> = ({
     if (!schema) {
       return;
     }
-    MONACO_GRAPHQL_API.setSchemaConfig([{ uri: 'schema.graphql', schema }]);
-    MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
+    const monacoGraphQLApi = monacoGraphQLApiRef.current;
+    monacoGraphQLApi.setSchemaConfig([
+      { uri: `schema${uriInstanceId}.graphql`, schema },
+    ]);
+    monacoGraphQLApi.setExternalFragmentDefinitions([
       ...externalFragments.values(),
     ]);
     if (!referencePlugin) {

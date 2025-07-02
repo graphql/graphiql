@@ -39,9 +39,10 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   ...props
 }) => {
   const { setEditor, run } = useGraphiQLActions();
-  const { fetchError, validationErrors, responseEditor } = useGraphiQL(
-    pick('fetchError', 'validationErrors', 'responseEditor'),
-  );
+  const { fetchError, validationErrors, responseEditor, uriInstanceId } =
+    useGraphiQL(
+      pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
+    );
   const ref = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (fetchError) {
@@ -53,7 +54,11 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const model = getOrCreateModel({ uri: RESPONSE_URI, value: '' });
+    const responseUri = `${RESPONSE_URI}${uriInstanceId}`;
+    const model = getOrCreateModel({
+      uri: responseUri,
+      value: '',
+    });
     const editor = createEditor(ref, {
       model,
       readOnly: true,
