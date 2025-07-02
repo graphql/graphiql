@@ -213,8 +213,11 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onTabChange,
           shouldPersistHeaders: $shouldPersistHeaders,
           tabs,
-          // Strip colons because it breaks monaco-editor variables autocomplete
-          uriInstanceId: uriInstanceId.replaceAll(':', '') + '-',
+          /**
+           * Strip colons (React 18) and arrows (React 19) because it breaks monaco-editor
+           * variables autocomplete
+           */
+          uriInstanceId: uriInstanceId.replaceAll(/[:«»]/g, '') + '-',
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,
