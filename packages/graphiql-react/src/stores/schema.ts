@@ -79,9 +79,9 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         try {
           headers = tryParseJSONC(headerEditor?.getValue());
         } catch (error) {
-          const message = `Introspection failed as headers ${(error as Error).message}`;
-          set({ fetchError: formatError({ message }) });
-          return;
+          throw new Error(
+            `Introspection failed.\nHeaders ${error instanceof Error ? error.message : error}`,
+          );
         }
 
         const fetcherOpts: FetcherOpts = headers ? { headers } : {};
@@ -142,6 +142,9 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
          */
         if (counter !== get().requestCounter) {
           return;
+        }
+        if (error instanceof Error) {
+          delete error.stack;
         }
         set({
           isIntrospecting: false,
