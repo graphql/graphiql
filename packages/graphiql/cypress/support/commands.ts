@@ -153,7 +153,7 @@ Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message, uri = 'operation.graphql') => {
     // Ensure error is visible in the DOM
-    cy.get(`.squiggly-${severity}`, { timeout: 15_000 });
+    cy.get(`.squiggly-${severity}`, { timeout: 10_000 });
     cy.window().then(win => {
       const { editor, MarkerSeverity } = win.__MONACO;
       const models = editor.getModels();
