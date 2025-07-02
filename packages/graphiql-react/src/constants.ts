@@ -3,7 +3,7 @@
 import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
 import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
 import prettier from 'prettier/standalone';
-import { KeyCode, KeyMod, Uri, languages } from './monaco-editor';
+import { KeyCode, KeyMod, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
 
 export const isMacOs =

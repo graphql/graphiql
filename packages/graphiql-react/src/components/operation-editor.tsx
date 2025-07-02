@@ -47,6 +47,8 @@ interface QueryEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
+const validateVariablesJSON: Record<string, string[]> = Object.create(null);
+
 export const OperationEditor: FC<QueryEditorProps> = ({
   onClickReference,
   onEdit,
@@ -214,17 +216,16 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     const operationUri = Uri.file(
       `${uriInstanceId}${URI_NAME.operation}`,
     ).toString();
-    const variablesUri = Uri.file(
-      `${uriInstanceId}${URI_NAME.variables}`,
-    ).toString();
-
-    console.log({ operationUri, variablesUri });
+    const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
+    /**
+     * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
+     * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
+     */
+    validateVariablesJSON[operationUri] = [variablesUri.toString()];
 
     monacoGraphQLApiRef.current = initializeMode({
       diagnosticSettings: {
-        validateVariablesJSON: {
-          [operationUri]: [variablesUri],
-        },
+        validateVariablesJSON,
         jsonDiagnosticSettings: {
           validate: true,
           schemaValidation: 'error',
