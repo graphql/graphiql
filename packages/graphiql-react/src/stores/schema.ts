@@ -15,6 +15,7 @@ import {
 import type { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, SchemaReference } from '../types';
+import { tryParseJSONC } from '../utility';
 
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
@@ -81,9 +82,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           return;
         }
 
-        const fetcherOpts: FetcherOpts = parsedHeaders.headers
-          ? { headers: parsedHeaders.headers }
-          : {};
+        const fetcherOpts: FetcherOpts = headers ? { headers } : {};
 
         /**
          * Get an introspection query for settings given via props
@@ -324,18 +323,4 @@ function generateIntrospectionQuery({
     introspectionQuery,
     introspectionQuerySansSubscriptions,
   };
-}
-
-function parseHeaderString(headersString?: string) {
-  let headers: Record<string, unknown> | null = null;
-  let isValidJSON = true;
-
-  try {
-    if (headersString) {
-      headers = JSON.parse(headersString);
-    }
-  } catch {
-    isValidJSON = false;
-  }
-  return { headers, isValidJSON };
 }

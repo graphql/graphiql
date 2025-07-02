@@ -30,13 +30,39 @@ const formatter = new Intl.ListFormat('en', {
 export function parseJSONC(content: string) {
   const errors: ParseError[] = [];
 
-  const parsed = content.trim() && jsoncParse(content, errors);
+  const parsed: undefined | Record<string, unknown> = jsoncParse(
+    content,
+    errors,
+    {
+      allowTrailingComma: true,
+      allowEmptyContent: true,
+    },
+  );
 
   if (errors.length) {
     const output = formatter.format(
       errors.map(({ error }) => printParseErrorCode(error)),
     );
     throw new SyntaxError(output);
+  }
+  return parsed;
+}
+
+export function tryParseJSONC(json = '') {
+  let parsed: Record<string, unknown> | undefined;
+  try {
+    parsed = parseJSONC(json);
+  } catch (error) {
+    throw new Error(
+      `are invalid JSON: ${error instanceof Error ? error.message : error}.`,
+    );
+  }
+  if (!parsed) {
+    return;
+  }
+  const isObject = typeof parsed === 'object' && !Array.isArray(parsed);
+  if (!isObject) {
+    throw new TypeError('are not a JSON object.');
   }
   return parsed;
 }

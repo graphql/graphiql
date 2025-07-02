@@ -6,7 +6,7 @@ export {
   onEditorContainerKeyDown,
 } from './create-editor';
 export { debounce } from './debounce';
-export { formatJSONC, parseJSONC } from './jsonc';
+export { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
 export { markdown } from './markdown';
 export { pick } from './pick';
 export { useDragResize } from './resize';
