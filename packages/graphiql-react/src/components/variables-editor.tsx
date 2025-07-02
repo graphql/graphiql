@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { KEY_BINDINGS, STORAGE_KEY, VARIABLES_URI } from '../constants';
+import { KEY_BINDINGS, STORAGE_KEY, URI_NAME } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -30,10 +30,11 @@ export const VariablesEditor: FC<VariableEditorProps> = ({
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
-  const variableUri = `${VARIABLES_URI}${uriInstanceId}`;
+  const variableUri = `${URI_NAME.variables}${uriInstanceId}`;
   useEffect(() => {
     const model = getOrCreateModel({
-      uri: variableUri,
+      uriName: variableUri,
+      language: 'json',
       value: initialVariables,
     });
     const editor = createEditor(ref, { model });

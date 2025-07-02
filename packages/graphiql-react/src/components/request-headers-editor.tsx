@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { REQUEST_HEADERS_URI, KEY_BINDINGS, STORAGE_KEY } from '../constants';
+import { URI_NAME, KEY_BINDINGS, STORAGE_KEY } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -35,9 +35,10 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
     'headers',
   );
   useEffect(() => {
-    const requestHeadersUri = `${REQUEST_HEADERS_URI}${uriInstanceId}`;
+    const requestHeadersUri = `${URI_NAME.requestHeaders}${uriInstanceId}`;
     const model = getOrCreateModel({
-      uri: requestHeadersUri,
+      uriName: requestHeadersUri,
+      language: 'json',
       value: initialHeaders,
     });
     const editor = createEditor(ref, { model });

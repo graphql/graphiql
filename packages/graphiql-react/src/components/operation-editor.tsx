@@ -18,8 +18,7 @@ import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
   JSON_DIAGNOSTIC_OPTIONS,
-  OPERATION_URI,
-  VARIABLES_URI,
+  URI_NAME,
   STORAGE_KEY,
 } from '../constants';
 import {
@@ -211,8 +210,8 @@ export const OperationEditor: FC<QueryEditorProps> = ({
   }, [operationName, operations, run, setOperationName]);
 
   useEffect(() => {
-    const operationUri = `${OPERATION_URI}${uriInstanceId}`;
-    const variablesUri = `${VARIABLES_URI}${uriInstanceId}`;
+    const operationUri = `${URI_NAME.operation}${uriInstanceId}.graphql`;
+    const variablesUri = `${URI_NAME.variables}${uriInstanceId}.json`;
 
     monacoGraphQLApiRef.current = initializeMode({
       diagnosticSettings: {
@@ -229,7 +228,8 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     });
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
-      uri: operationUri,
+      uriName: operationUri.replace('.graphql', ''),
+      language: 'graphql',
       value: initialQuery,
     });
     const editor = createEditor(ref, { model });
@@ -280,7 +280,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     }
     const monacoGraphQLApi = monacoGraphQLApiRef.current;
     monacoGraphQLApi.setSchemaConfig([
-      { uri: `schema${uriInstanceId}.graphql`, schema },
+      { uri: `${URI_NAME.schema}${uriInstanceId}.graphql`, schema },
     ]);
     monacoGraphQLApi.setExternalFragmentDefinitions([
       ...externalFragments.values(),

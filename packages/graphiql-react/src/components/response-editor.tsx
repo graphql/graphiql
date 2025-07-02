@@ -11,7 +11,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
-import { KEY_BINDINGS, RESPONSE_URI } from '../constants';
+import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type { editor as monacoEditor, Position } from '../monaco-editor';
 import { Range, languages } from '../monaco-editor';
@@ -54,9 +54,10 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const responseUri = `${RESPONSE_URI}${uriInstanceId}`;
+    const responseUri = `${URI_NAME.response}${uriInstanceId}`;
     const model = getOrCreateModel({
-      uri: responseUri,
+      uriName: responseUri,
+      language: 'json',
       value: '',
     });
     const editor = createEditor(ref, {

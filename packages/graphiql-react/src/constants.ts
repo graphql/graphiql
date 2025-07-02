@@ -117,7 +117,7 @@ export const KEY_BINDINGS = {
 export const URI_NAME = {
   operation: 'operation',
   variables: 'variables',
-  request_headers: 'request-headers',
+  requestHeaders: 'request-headers',
   schema: 'schema',
   response: 'response',
 } as const;
