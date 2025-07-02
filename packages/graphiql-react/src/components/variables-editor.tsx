@@ -30,10 +30,9 @@ export const VariablesEditor: FC<VariablesEditorProps> = ({
   );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
-  const variableUri = `${uriInstanceId}${URI_NAME.variables}`;
   useEffect(() => {
     const model = getOrCreateModel({
-      uri: variableUri,
+      uri: `${uriInstanceId}${URI_NAME.variables}`,
       value: initialVariables,
     });
     const editor = createEditor(ref, { model });

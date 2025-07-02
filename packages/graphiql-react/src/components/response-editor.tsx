@@ -54,9 +54,8 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
-    const responseUri = `${uriInstanceId}${URI_NAME.response}`;
     const model = getOrCreateModel({
-      uri: responseUri,
+      uri: `${uriInstanceId}${URI_NAME.response}`,
       value: '',
     });
     const editor = createEditor(ref, {
