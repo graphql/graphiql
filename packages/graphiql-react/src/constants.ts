@@ -3,6 +3,7 @@
 import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
 import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
 import prettier from 'prettier/standalone';
+import type { MonacoGraphQLInitializeConfig } from 'monaco-graphql';
 import { KeyCode, KeyMod, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
 
@@ -124,11 +125,23 @@ export const URI_NAME = {
 } as const;
 
 // set these early on so that initial variables with comments don't flash an error
-export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
+const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
   // Fixes Comments are not permitted in JSON.(521)
   allowComments: true,
   // Fixes Trailing comma json(519)
   trailingCommas: 'ignore',
+};
+
+export const MONACO_GRAPHQL_CONFIG: MonacoGraphQLInitializeConfig = {
+  diagnosticSettings: {
+    validateVariablesJSON: {},
+    jsonDiagnosticSettings: {
+      validate: true,
+      schemaValidation: 'error',
+      // Set these again, because we are entirely re-setting them here
+      ...JSON_DIAGNOSTIC_OPTIONS,
+    },
+  },
 };
 
 // Set diagnostics options for JSON

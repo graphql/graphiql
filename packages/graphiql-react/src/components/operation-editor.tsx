@@ -17,9 +17,9 @@ import {
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
-  JSON_DIAGNOSTIC_OPTIONS,
   URI_NAME,
   STORAGE_KEY,
+  MONACO_GRAPHQL_CONFIG,
 } from '../constants';
 import {
   type editor as monacoEditor,
@@ -46,8 +46,6 @@ interface QueryEditorProps extends EditorProps {
    */
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
-
-const validateVariablesJSON: Record<string, string[]> = Object.create(null);
 
 export const OperationEditor: FC<QueryEditorProps> = ({
   onClickReference,
@@ -219,19 +217,10 @@ export const OperationEditor: FC<QueryEditorProps> = ({
      * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
      * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
      */
-    validateVariablesJSON[operationUri.toString()] = [variablesUri.toString()];
+    const { validateVariablesJSON } = MONACO_GRAPHQL_CONFIG.diagnosticSettings!;
+    validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
 
-    monacoGraphQLApiRef.current = initializeMode({
-      diagnosticSettings: {
-        validateVariablesJSON,
-        jsonDiagnosticSettings: {
-          validate: true,
-          schemaValidation: 'error',
-          // Set these again, because we are entirely re-setting them here
-          ...JSON_DIAGNOSTIC_OPTIONS,
-        },
-      },
-    });
+    monacoGraphQLApiRef.current = initializeMode(MONACO_GRAPHQL_CONFIG);
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
       uri: operationUri.path.replace('/', ''),
