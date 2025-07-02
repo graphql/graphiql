@@ -75,10 +75,12 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
       set({ requestCounter: counter });
 
       try {
-        const currentHeaders = headerEditor?.getValue();
-        const parsedHeaders = parseHeaderString(currentHeaders);
-        if (!parsedHeaders.isValidJSON) {
-          set({ fetchError: 'Introspection failed as headers are invalid.' });
+        let headers: Record<string, unknown> | undefined;
+        try {
+          headers = tryParseJSONC(headerEditor?.getValue());
+        } catch (error) {
+          const message = `Introspection failed as headers ${(error as Error).message}`;
+          set({ fetchError: formatError({ message }) });
           return;
         }
 
