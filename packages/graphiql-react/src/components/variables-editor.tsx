@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import type { EditorProps } from '../types';
-import { KEY_BINDINGS, STORAGE_KEY, VARIABLE_URI } from '../constants';
+import { KEY_BINDINGS, STORAGE_KEY, VARIABLES_URI } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
@@ -9,6 +9,7 @@ import {
   onEditorContainerKeyDown,
   cleanupDisposables,
   cn,
+  pick,
 } from '../utility';
 
 interface VariableEditorProps extends EditorProps {
@@ -19,17 +20,20 @@ interface VariableEditorProps extends EditorProps {
   onEdit?(value: string): void;
 }
 
-export const VariableEditor: FC<VariableEditorProps> = ({
+export const VariablesEditor: FC<VariableEditorProps> = ({
   onEdit,
   ...props
 }) => {
   const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
-  const initialVariables = useGraphiQL(state => state.initialVariables);
+  const { initialVariables, uriInstanceId } = useGraphiQL(
+    pick('initialVariables', 'uriInstanceId'),
+  );
   const ref = useRef<HTMLDivElement>(null!);
   useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
+  const variableUri = `${VARIABLES_URI}${uriInstanceId}`;
   useEffect(() => {
     const model = getOrCreateModel({
-      uri: VARIABLE_URI,
+      uri: variableUri,
       value: initialVariables,
     });
     const editor = createEditor(ref, { model });

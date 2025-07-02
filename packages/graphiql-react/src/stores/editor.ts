@@ -25,6 +25,12 @@ let uriInstanceId = 0;
 
 export interface EditorSlice extends TabsState {
   /**
+   * Unique ID of the GraphiQL instance, which will be appended to the URIs for operations, variables, headers, and responses.
+   *
+   * @see https://github.com/microsoft/monaco-editor#uris
+   */
+  uriInstanceId: number;
+  /**
    * The Monaco Editor instance used in the header editor, used to edit HTTP headers.
    */
   headerEditor?: MonacoEditor;
@@ -532,7 +538,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     },
   };
 
-  uriInstanceId += 1
+  uriInstanceId += 1;
 
   return {
     ...initial,

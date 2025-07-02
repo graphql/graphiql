@@ -18,8 +18,14 @@ export const onEditorContainerKeyDown: KeyboardEventHandler<
   }
 };
 
-export function getOrCreateModel({ uri: $uri, value }: { uri: string; value: string }) {
-  const uri = Uri.file($uri)
+export function getOrCreateModel({
+  uri: $uri,
+  value,
+}: {
+  uri: string;
+  value: string;
+}) {
+  const uri = Uri.file($uri);
   const model = monacoEditor.getModel(uri);
   const language = uri.path.split('.').at(-1)!;
   return model ?? monacoEditor.createModel(value, language, uri);
