@@ -296,7 +296,12 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
-  // Set diagnostics options for JSON
+  /**
+   * Set diagnostics options for JSON
+   *
+   * Setting it in initializing slice fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+   * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
+   */
   languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
   function setEditorValues({
