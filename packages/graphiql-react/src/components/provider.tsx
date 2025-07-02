@@ -27,9 +27,11 @@ import {
 import {
   DEFAULT_PRETTIFY_QUERY,
   DEFAULT_QUERY,
+  JSON_DIAGNOSTIC_OPTIONS,
   STORAGE_KEY,
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
+import { languages } from '../monaco-editor';
 
 interface InnerGraphiQLProviderProps
   extends EditorProps,
@@ -326,6 +328,16 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     return () => {
       window.removeEventListener('keydown', runIntrospection);
     };
+  }, []);
+
+  useEffect(() => {
+    /**
+     * Set diagnostics options for JSON
+     *
+     * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+     * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
+     */
+    languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
   }, []);
 
   return (

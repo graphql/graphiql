@@ -25,15 +25,16 @@ import { MouseTargetFactory } from 'monaco-editor/esm/vs/editor/browser/controll
 if (navigator.userAgent.includes('Firefox/')) {
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
-  // @ts-expect-error -- internal override of Monaco method
-  MouseTargetFactory._doHitTestWithCaretPositionFromPoint = (...args) => {
+  MouseTargetFactory._doHitTestWithCaretPositionFromPoint = (
+    ...args: any[]
+  ) => {
     const [ctx, coords] = args;
     const hitResult = ctx.viewDomNode.ownerDocument.caretPositionFromPoint(
       coords.clientX,
       coords.clientY,
     );
     if (hitResult) {
-      // Delegate to original function if hitResult is valid
+      // Delegate to the original function if hitResult is valid
       const result = originalFn(...args);
       return result;
     }
