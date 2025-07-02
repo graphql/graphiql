@@ -325,19 +325,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    /**
-     * Set diagnostics options for JSON
-     *
-     * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-     * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-     */
-    void import('monaco-editor/esm/vs/language/json/monaco.contribution.js')
-      .then(() => import('../monaco-editor'))
-      .then(({ languages }) => {
-        languages.json.jsonDefaults.setDiagnosticsOptions(
-          JSON_DIAGNOSTIC_OPTIONS,
-        );
-      });
+    void setupJSONLanguage();
   }, []);
 
   return (
@@ -346,6 +334,18 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     </GraphiQLContext.Provider>
   );
 };
+
+/**
+ * Set diagnostics options for JSON
+ *
+ * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+ * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
+ */
+async function setupJSONLanguage() {
+  await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+  const { languages } = await import('../monaco-editor');
+  languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
+}
 
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
