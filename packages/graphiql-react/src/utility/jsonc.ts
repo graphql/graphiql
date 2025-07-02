@@ -1,7 +1,7 @@
 import prettier from 'prettier/standalone';
 // @ts-expect-error -- wrong types
 import { printers } from 'prettier/plugins/estree';
-import { parsers as parsersBabel } from 'prettier/parser-babel';
+import { parsers } from 'prettier/parser-babel';
 import {
   parse as jsoncParse,
   ParseError,
@@ -15,7 +15,7 @@ export function formatJSONC(content: string) {
       // Fixes ConfigError: Couldn't find plugin for AST format "estree"
       { printers },
       // @ts-expect-error -- Fixes ConfigError: Couldn't resolve parser "jsonc"
-      { parsers: parsersBabel },
+      { parsers },
     ],
     // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}
     printWidth: 0,
@@ -38,7 +38,6 @@ export function parseJSONC(content: string) {
       allowEmptyContent: true,
     },
   );
-
   if (errors.length) {
     const output = formatter.format(
       errors.map(({ error }) => printParseErrorCode(error)),
