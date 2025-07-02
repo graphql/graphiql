@@ -19,16 +19,15 @@ export const onEditorContainerKeyDown: KeyboardEventHandler<
 };
 
 export function getOrCreateModel({
-  uriName,
+  uri: $uri,
   value,
-  language,
 }: {
-  uriName: string;
+  uri: string;
   value: string;
-  language: 'graphql' | 'json';
 }) {
-  const uri = Uri.file(`${uriName}.${language}`);
+  const uri = Uri.file($uri);
   const model = monacoEditor.getModel(uri);
+  const language = uri.path.split('.').at(-1)!;
   return model ?? monacoEditor.createModel(value, language, uri);
 }
 

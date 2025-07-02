@@ -115,11 +115,12 @@ export const KEY_BINDINGS = {
 } as const;
 
 export const URI_NAME = {
-  operation: 'operation',
-  variables: 'variables',
-  requestHeaders: 'request-headers',
-  schema: 'schema',
-  response: 'response',
+  operation: 'operation.graphql',
+  schema: 'schema.graphql',
+
+  variables: 'variables.json',
+  requestHeaders: 'request-headers.json',
+  response: 'response.json',
 } as const;
 
 // set these early on so that initial variables with comments don't flash an error

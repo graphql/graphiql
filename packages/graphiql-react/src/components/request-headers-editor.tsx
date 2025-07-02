@@ -35,10 +35,9 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
     'headers',
   );
   useEffect(() => {
-    const requestHeadersUri = `${URI_NAME.requestHeaders}${uriInstanceId}`;
+    const requestHeadersUri = `${uriInstanceId}${URI_NAME.requestHeaders}`;
     const model = getOrCreateModel({
-      uriName: requestHeadersUri,
-      language: 'json',
+      uri: requestHeadersUri,
       value: initialHeaders,
     });
     const editor = createEditor(ref, { model });

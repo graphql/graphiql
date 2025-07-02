@@ -212,10 +212,10 @@ export const OperationEditor: FC<QueryEditorProps> = ({
 
   useEffect(() => {
     const operationUri = Uri.file(
-      `${URI_NAME.operation}${uriInstanceId}.graphql`,
+      `${uriInstanceId}${URI_NAME.operation}`,
     ).toString();
     const variablesUri = Uri.file(
-      `${URI_NAME.variables}${uriInstanceId}.json`,
+      `${uriInstanceId}${URI_NAME.variables}`,
     ).toString();
 
     console.log({ operationUri, variablesUri });
@@ -235,8 +235,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     });
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
-      uriName: operationUri.replace('file:///', '').replace('.graphql', ''),
-      language: 'graphql',
+      uri: operationUri.replace('file:///', ''),
       value: initialQuery,
     });
     const editor = createEditor(ref, { model });
@@ -287,7 +286,7 @@ export const OperationEditor: FC<QueryEditorProps> = ({
     }
     const monacoGraphQLApi = monacoGraphQLApiRef.current;
     monacoGraphQLApi.setSchemaConfig([
-      { uri: `${URI_NAME.schema}${uriInstanceId}.graphql`, schema },
+      { uri: `${uriInstanceId}${URI_NAME.schema}`, schema },
     ]);
     monacoGraphQLApi.setExternalFragmentDefinitions([
       ...externalFragments.values(),
