@@ -1,5 +1,34 @@
 # @graphiql/react
 
+## 0.35.4
+
+### Patch Changes
+
+- [#4052](https://github.com/graphql/graphiql/pull/4052) [`9b54581`](https://github.com/graphql/graphiql/commit/9b54581e74a7e6c6354a810c2288869fb85f24eb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix multiple GraphiQL instances, suffix a unique id for operation, request headers, variables and response URI.
+
+  E.g., the first GraphiQL instance will have:
+
+  - `1-operation.graphql`
+  - `1-request-headers.json`
+  - `1-variables.json`
+  - `1-response.json`
+
+  The 2nd instance will have:
+
+  - `2-operation.graphql`
+  - `2-request-headers.json`
+  - `2-variables.json`
+  - `2-response.json`
+
+  etc.
+
+- [#4049](https://github.com/graphql/graphiql/pull/4049) [`2c0586d`](https://github.com/graphql/graphiql/commit/2c0586d1f3db8fe8dc604032010cc9840d10b72d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - use `allowTrailingComma` option in jsonc parser to make `tryParseJsonObject` sync
+
+  - parse introspection headers with jsonc parser
+  - use prettier format for operation editor since we already use prettier for jsonc editors
+
+- [#4050](https://github.com/graphql/graphiql/pull/4050) [`002f133`](https://github.com/graphql/graphiql/commit/002f1336db4bdafa01cff1964a1b56ba858699eb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix can't access property "jsonDefaults"
+
 ## 0.35.3
 
 ### Patch Changes
