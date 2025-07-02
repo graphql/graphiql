@@ -2,7 +2,6 @@ import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { initializeMode } from 'monaco-graphql/esm/lite.js';
 import { useStorage } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
@@ -19,8 +18,8 @@ import {
   KEY_BINDINGS,
   URI_NAME,
   STORAGE_KEY,
-  MONACO_GRAPHQL_CONFIG,
-  JSON_DIAGNOSTIC_OPTIONS,
+  MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+  MONACO_GRAPHQL_API,
 } from '../constants';
 import {
   type editor as monacoEditor,
@@ -89,7 +88,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
   );
-  const monacoGraphQLApiRef = useRef<ReturnType<typeof initializeMode>>(null!);
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
@@ -218,11 +216,11 @@ export const OperationEditor: FC<OperationEditorProps> = ({
      * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
      * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
      */
-    const { validateVariablesJSON } = MONACO_GRAPHQL_CONFIG.diagnosticSettings!;
+    const { validateVariablesJSON } = MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS;
     validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
-    // Set diagnostics options for JSON
-    languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
-    monacoGraphQLApiRef.current = initializeMode(MONACO_GRAPHQL_CONFIG);
+    MONACO_GRAPHQL_API.setDiagnosticSettings(
+      MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+    );
     globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
       uri: operationUri.path.replace('/', ''),
@@ -274,11 +272,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     if (!schema) {
       return;
     }
-    const monacoGraphQLApi = monacoGraphQLApiRef.current;
-    monacoGraphQLApi.setSchemaConfig([
+    MONACO_GRAPHQL_API.setSchemaConfig([
       { uri: `${uriInstanceId}${URI_NAME.schema}`, schema },
     ]);
-    monacoGraphQLApi.setExternalFragmentDefinitions([
+    MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
       ...externalFragments.values(),
     ]);
     if (!referencePlugin) {
