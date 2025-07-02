@@ -118,15 +118,12 @@ export const HEADER_URI = Uri.file('header.json');
 export const RESPONSE_URI = Uri.file('response.json');
 
 // set these early on so that initial variables with comments don't flash an error
-const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
+export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
   // Fixes Comments are not permitted in JSON.(521)
   allowComments: true,
   // Fixes Trailing comma json(519)
   trailingCommas: 'ignore',
 };
-
-// Set diagnostics options for JSON
-languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
 
 export const MONACO_GRAPHQL_API = initializeMode({
   diagnosticSettings: {

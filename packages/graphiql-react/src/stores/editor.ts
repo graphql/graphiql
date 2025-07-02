@@ -19,7 +19,8 @@ import {
 } from '../utility/tabs';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
-import { STORAGE_KEY } from '../constants';
+import { JSON_DIAGNOSTIC_OPTIONS, STORAGE_KEY } from '../constants';
+import { languages } from '../monaco-editor';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -295,6 +296,9 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
+  // Set diagnostics options for JSON
+  languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
+
   function setEditorValues({
     query,
     variables,
