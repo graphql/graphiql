@@ -19,8 +19,7 @@ import {
 } from '../utility/tabs';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
-import { JSON_DIAGNOSTIC_OPTIONS, STORAGE_KEY } from '../constants';
-import { languages } from '../monaco-editor';
+import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -296,14 +295,6 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
-  /**
-   * Set diagnostics options for JSON
-   *
-   * Setting it in initializing slice fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-   * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-   */
-  languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
-
   function setEditorValues({
     query,
     variables,
