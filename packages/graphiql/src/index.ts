@@ -8,6 +8,6 @@
  */
 import './style.css';
 
-export { GraphiQL, type GraphiQLProps } from './GraphiQL';
+export { GraphiQL, GraphiQLInterface, type GraphiQLProps } from './GraphiQL';
 
 export { HISTORY_PLUGIN } from '@graphiql/plugin-history';
