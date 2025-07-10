@@ -57,7 +57,6 @@ export const useEditorState = (
   const handleChange = useCallback(
     (value: string) => {
       editorInstance?.setValue(value);
-      //
       setEditorValue(value);
     },
     [editorInstance],
