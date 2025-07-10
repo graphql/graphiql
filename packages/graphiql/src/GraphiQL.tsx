@@ -189,7 +189,7 @@ const LABEL = {
   newTab: 'New tab',
 };
 
-const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
   isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
