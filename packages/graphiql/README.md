@@ -15,9 +15,9 @@
 [![](https://dcbadge.vercel.app/api/server/NP5vbPeUFp?style=flat)](https://discord.gg/NP5vbPeUFp)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
-[Try the live demo](https://graphql.github.io/swapi-graphql).
+[Try the live demo](https://graphql.org/swapi-graphql).
 
-[![](resources/graphiql.png)](https://graphql.github.io/swapi-graphql)
+[![](resources/graphiql.png)](https://graphql.org/swapi-graphql)
 
 ## Features
 
@@ -34,9 +34,9 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Live Demos
 
-- The [latest stable version](https://graphql.github.io/swapi-graphql)
+- The [latest stable version](https://graphql.org/swapi-graphql)
 - The current state of the `main` branch:
-  - An [installable PWA](https://graphiql-test.netlify.com/webpack/) with plugins ([source](../../examples//graphiql-webpack/))
+  - An [installable PWA](https://graphiql-test.netlify.com/webpack) with plugins ([source](../../examples//graphiql-webpack))
   - Using the [minified bundles](https://graphiql-test.netlify.com)
   - Using the [development bundles](https://graphiql-test.netlify.com/dev) (good
     for inspecting, debugging, etc)
