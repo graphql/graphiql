@@ -77,6 +77,7 @@ const umdConfig = defineConfig({
 
 const esmConfig = defineConfig({
   build: {
+    cssCodeSplit: true,
     minify: false,
     sourcemap: true,
     lib: {
