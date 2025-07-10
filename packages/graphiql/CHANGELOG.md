@@ -1,5 +1,18 @@
 # Change Log
 
+## 5.0.4
+
+### Patch Changes
+
+- [#4061](https://github.com/graphql/graphiql/pull/4061) [`8f14fff`](https://github.com/graphql/graphiql/commit/8f14fff26e0d804b5f4ecf307b7b29bb78664973) Thanks [@dimaMachina](https://github.com/dimaMachina)! - add `graphiql.css`, CSS file without importing fonts and monaco-editor styles
+
+- [#4059](https://github.com/graphql/graphiql/pull/4059) [`a4382bf`](https://github.com/graphql/graphiql/commit/a4382bfae28efd6e03153cf8aa81f55db43de6ed) Thanks [@dimaMachina](https://github.com/dimaMachina)! - export `GraphiQLInterface`
+
+- [#4063](https://github.com/graphql/graphiql/pull/4063) [`44b18e4`](https://github.com/graphql/graphiql/commit/44b18e4ed054d757568b5cfedc43614fd7ea3fc9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix `useOperationsEditorState` wasn't returned updated return value
+
+- Updated dependencies [[`44b18e4`](https://github.com/graphql/graphiql/commit/44b18e4ed054d757568b5cfedc43614fd7ea3fc9)]:
+  - @graphiql/react@0.35.5
+
 ## 5.0.3
 
 ### Patch Changes

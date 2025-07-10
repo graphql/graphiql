@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.35.5
+
+### Patch Changes
+
+- [#4063](https://github.com/graphql/graphiql/pull/4063) [`44b18e4`](https://github.com/graphql/graphiql/commit/44b18e4ed054d757568b5cfedc43614fd7ea3fc9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix `useOperationsEditorState` wasn't returned updated return value
+
 ## 0.35.4
 
 ### Patch Changes
