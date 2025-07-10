@@ -72,7 +72,7 @@ import {
   SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
-import glob from 'fast-glob';
+import { glob } from 'fast-glob';
 import { isProjectSDLOnly, unwrapProjectSchema } from './common';
 import { DefinitionQueryResponse } from 'graphql-language-service/src/interface';
 import { default as debounce } from 'debounce-promise';
@@ -138,10 +138,13 @@ export class MessageProcessor {
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
-
-    if (!existsSync(this._tmpDirBase)) {
-      void mkdirSync(this._tmpDirBase);
-    }
+    /**
+     * existsSync(this._tmpDirBase) with mkdirSync(this._tmpDirBase) provoke race condition, we use
+     * `{ recursive: true }` that way, if the directory already exists, it does not throw.
+     */
+    // if (!existsSync(this._tmpDirBase)) {
+    mkdirSync(this._tmpDirBase, { recursive: true });
+    // }
   }
   get connection(): Connection {
     return this._connection;
@@ -653,9 +656,9 @@ export class MessageProcessor {
 
   public async handleHoverRequest(
     params: TextDocumentPositionParams,
-  ): Promise<Hover> {
+  ): Promise<Hover | null> {
     if (!this._isInitialized) {
-      return { contents: [] };
+      return null;
     }
 
     this.validateDocumentAndPosition(params);
@@ -664,7 +667,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      return { contents: [] };
+      return null;
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -676,7 +679,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return { contents: [] };
+      return null;
     }
 
     const { query, range } = found;
@@ -910,12 +913,14 @@ export class MessageProcessor {
         project,
       });
       if (typeof locateResult === 'string') {
-        const [uri, startLine = '1', endLine = '1'] = locateResult.split(':');
+        const [uri, line = '1', character = '1'] = locateResult.split(':');
+        const startLine = Math.max(parseInt(line, 10) - 1, 0);
+        const startCharacter = Math.max(parseInt(character, 10) - 1, 0);
         return {
           uri,
           range: new Range(
-            new Position(parseInt(startLine, 10), 0),
-            new Position(parseInt(endLine, 10), 0),
+            new Position(startLine, startCharacter),
+            new Position(startLine, startCharacter),
           ),
         };
       }

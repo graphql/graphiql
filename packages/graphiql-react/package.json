@@ -1,88 +1,93 @@
 {
   "name": "@graphiql/react",
-  "version": "0.28.2",
+  "version": "0.35.5",
+  "sideEffects": [
+    "dist/monaco-editor.js",
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql-react"
   },
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/react"
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./types/index.d.ts"
-    },
-    "./font/roboto.css": "./font/roboto.css",
-    "./font/fira-code.css": "./font/fira-code.css",
-    "./dist/style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./font/*": "./font/*",
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
+    }
   },
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "keywords": [
     "react",
     "graphql",
     "sdk",
-    "codemirror"
+    "monaco-editor",
+    "monaco-graphql",
+    "monaco"
   ],
   "files": [
     "dist",
-    "font",
-    "src",
-    "types"
+    "font"
   ],
   "scripts": {
-    "prebuild": "rimraf dist types",
-    "dev": "concurrently 'tsc --emitDeclarationOnly --watch' 'vite build --watch'",
-    "build": "tsc --emitDeclarationOnly && vite build",
-    "test": "vitest"
+    "types:check": "tsc --noEmit",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "build": "vite build",
+    "test": "vitest --typecheck"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "react-compiler-runtime": "19.0.0-beta-37ed2a7-20241206",
-    "@graphiql/toolkit": "^0.11.0",
-    "@headlessui/react": "^1.7.15",
-    "@radix-ui/react-dialog": "^1.0.4",
-    "@radix-ui/react-dropdown-menu": "^2.0.5",
-    "@radix-ui/react-tooltip": "^1.0.6",
-    "@radix-ui/react-visually-hidden": "^1.0.3",
-    "@types/codemirror": "^5.60.8",
+    "@graphiql/toolkit": "^0.11.3",
+    "@radix-ui/react-dialog": "^1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1",
+    "@radix-ui/react-tooltip": "^1.2",
+    "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^1.2.1",
-    "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.2.0",
-    "copy-to-clipboard": "^3.2.0",
-    "framer-motion": "^6.5.1",
+    "framer-motion": "^12.12",
     "get-value": "^3.0.1",
-    "graphql-language-service": "^5.3.0",
+    "graphql-language-service": "^5.3.1",
+    "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
-    "set-value": "^4.1.0"
+    "monaco-editor": "^0.52.2",
+    "monaco-graphql": "^1.7.1",
+    "prettier": "^3.5.3",
+    "react-compiler-runtime": "19.1.0-rc.1",
+    "set-value": "^4.1.0",
+    "zustand": "^5"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "19.0.0-beta-37ed2a7-20241206",
-    "@types/react-dom": "^18.3.1",
     "@babel/helper-string-parser": "^7.19.4",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.1.0",
-    "@types/markdown-it": "^14.1.2",
     "@types/get-value": "^3.0.5",
+    "@types/markdown-it": "^14.1.2",
+    "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
     "graphql": "^16.9.0",
-    "postcss-nesting": "^10.1.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^4.6.3",
-    "vite": "^5.3.6",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "browser": {
+    "//": "Prevents esm.sh from injecting Node.js globals like `process`, which can break browser features (e.g., Mac `Cmd` key) when loading from CDN.",
+    "buffer": false,
+    "process": false
   }
 }

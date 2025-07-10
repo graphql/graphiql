@@ -39,29 +39,22 @@ import {
 
 import { offsetToPosition } from '../utils';
 
-const { INLINE_FRAGMENT } = Kind;
-
-const OUTLINEABLE_KINDS = {
-  Field: true,
-  OperationDefinition: true,
-  Document: true,
-  SelectionSet: true,
-  Name: true,
-  FragmentDefinition: true,
-  FragmentSpread: true,
-  InlineFragment: true,
-  ObjectTypeDefinition: true,
-  InputObjectTypeDefinition: true,
-  InterfaceTypeDefinition: true,
-  EnumTypeDefinition: true,
-  EnumValueDefinition: true,
-  InputValueDefinition: true,
-  FieldDefinition: true,
-};
-
-export type OutlineableKinds = keyof typeof OUTLINEABLE_KINDS;
-
-// type OutlineableNodes = FieldNode | OperationDefinitionNode | DocumentNode | SelectionSetNode | NameNode | FragmentDefinitionNode | FragmentSpreadNode |InlineFragmentNode | ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
+export type OutlineableKinds =
+  | 'Field'
+  | 'OperationDefinition'
+  | 'Document'
+  | 'SelectionSet'
+  | 'Name'
+  | 'FragmentDefinition'
+  | 'FragmentSpread'
+  | 'InlineFragment'
+  | 'ObjectTypeDefinition'
+  | 'InputObjectTypeDefinition'
+  | 'InterfaceTypeDefinition'
+  | 'EnumTypeDefinition'
+  | 'EnumValueDefinition'
+  | 'InputValueDefinition'
+  | 'FieldDefinition';
 
 type OutlineTreeResult =
   | {
@@ -137,7 +130,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     Document: (node: DocumentNode) => node.definitions,
     SelectionSet: (node: SelectionSetNode) =>
       concatMap<SelectionNode>(node.selections, (child: SelectionNode) => {
-        return child.kind === INLINE_FRAGMENT ? child.selectionSet : child;
+        return child.kind === Kind.INLINE_FRAGMENT ? child.selectionSet : child;
       }),
     Name: (node: NameNode) => node.value,
     FragmentDefinition: (node: FragmentDefinitionNode) => ({

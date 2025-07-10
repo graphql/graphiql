@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.13.2
+
+### Patch Changes
+
+- [#3883](https://github.com/graphql/graphiql/pull/3883) [`f8ac8cf`](https://github.com/graphql/graphiql/commit/f8ac8cf5f083d40258ae461144cca2c7b196d397) Thanks [@acao](https://github.com/acao)! - Bump vscode-graphql and LSP server for patch fixes
+
+- Updated dependencies [[`f8ac8cf`](https://github.com/graphql/graphiql/commit/f8ac8cf5f083d40258ae461144cca2c7b196d397)]:
+  - graphql-language-service-server@2.14.2
+
 ## 0.13.0
 
 ### Minor Changes
@@ -797,7 +806,7 @@
 
 All notable changes to the "vscode-graphql" extension will be manually documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Check [Keep a Changelog](http://keepachangelog.com) for recommendations on how to structure this file.
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 

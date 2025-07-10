@@ -111,8 +111,6 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     this.panel.webview.options = {
       enableScripts: true,
     };
-
-    // eslint-disable-next-line promise/prefer-await-to-then -- can't use async in constructor
     this.loadProvider().catch(err => {
       this.html = err.toString();
     });

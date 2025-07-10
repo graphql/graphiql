@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "name": "test-server",
+  "private": true,
+  "dependencies": {
+    "express": "^4.20.0",
+    "graphql": "^17.0.0-alpha.8",
+    "graphql-helix": "^1.13.0",
+    "graphql-ws": "^6.0.5",
+    "ws": "8.17.1"
+  }
+}

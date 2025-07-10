@@ -164,13 +164,14 @@
     "directory": "packages/vscode-graphql-syntax"
   },
   "devDependencies": {
-    "vscode-oniguruma": "^1.7.0",
-    "vscode-textmate": "^9.0.0",
+    "@vscode/vsce": "^2.22.1-2",
     "ovsx": "^0.3.0",
-    "@vscode/vsce": "^2.22.1-2"
+    "vscode-oniguruma": "^1.7.0",
+    "vscode-textmate": "^9.0.0"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",

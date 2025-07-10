@@ -77,7 +77,7 @@ same for .json, .toml, etc
 
 Multi-project can be used for both local files, URL defined schema, or both
 
-```ts
+```js
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -194,7 +194,7 @@ This plugin uses the
 
 1.  Clone the repository - https://github.com/graphql/graphiql
 1.  `yarn`
-1.  Run "VScode Extension" launcher in vscode
+1.  Run "VSCode Extension" launcher in vscode
 1.  This will open another VSCode instance with extension enabled
 1.  Open a project with a graphql config file - ":electric_plug: graphql" in
     VSCode status bar indicates that the extension is in use
@@ -207,8 +207,8 @@ This repository is managed by EasyCLA. Project participants must sign the free
 ([GraphQL Specification Membership agreement](https://preview-spec-membership.graphql.org))
 before making a contribution. You only need to do this one time, and it can be
 signed by
-[individual contributors](http://individual-spec-membership.graphql.org/) or
-their [employers](http://corporate-spec-membership.graphql.org/).
+[individual contributors](http://individual-spec-membership.graphql.org) or
+their [employers](http://corporate-spec-membership.graphql.org).
 
 To initiate the signature process please open a PR against this repo. The
 EasyCLA bot will block the merge if we still need a membership agreement from

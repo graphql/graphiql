@@ -15,7 +15,7 @@ const mockSuccess = {
   data: {
     longDescriptionType: {
       id: 'abc123',
-      image: '/images/logo.svg',
+      image: '/resources/logo.svg',
       hasArgs: '{"defaultValue":"test default value"}',
       test: {
         id: 'abc123',
@@ -51,8 +51,6 @@ describe('GraphiQL On Initialization', () => {
   it('Shows the expected error when the schema is invalid', () => {
     cy.intercept('/graphql', { fixture: 'bad-schema.json' });
     cy.visit('/');
-    cy.get('section.result-window').should(element => {
-      expect(element.get(0).innerText).to.contain('Names must');
-    });
+    cy.containQueryResult('Names must');
   });
 });

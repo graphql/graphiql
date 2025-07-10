@@ -44,7 +44,7 @@ function MyGraphQLIDE() {
 ```
 
 Inside the provider you can now use any UI component provided by
-`@graphiql/react`. For example, you can render a query editor like this:
+`@graphiql/react`. For example, you can render an operation editor like this:
 
 ```jsx
 import { QueryEditor } from '@graphiql/react';
@@ -61,7 +61,7 @@ function MyGraphQLIDE() {
 ```
 
 The package also ships the necessary CSS that all its UI components need. You
-can import them from `@graphiql/react/dist/style.css`.
+can import them from `@graphiql/react/style.css`.
 
 > **Note**: In order for these styles to apply, the UI components need to be
 > rendered inside an element that has a class name `graphiql-container`.
@@ -74,34 +74,54 @@ text. If you want to use the default fonts you can load them using these files:
 - `@graphiql/react/font/roboto.css`
 - `@graphiql/react/font/fira-code.css`.
 
-You can of course use any other method to load these fonts (for example loading
+You can, of course, use any other method to load these fonts (for example, loading
 them from Google Fonts).
 
 Further details on how to use `@graphiql/react` can be found in the reference
 implementation of a GraphQL IDE - Graph*i*QL - in the
 [`graphiql` package](https://github.com/graphql/graphiql/blob/main/packages/graphiql/src/components/GraphiQL.tsx).
 
-## Available contexts
+## Available Stores
 
-There are multiple contexts that own different parts of the state that make up a
-complete GraphQL IDE. For each context there is a provider component
-(`<name>ContextProvider`) that makes sure the context is initialized and managed
-properly. These components contains all the logic related to state management.
-In addition, for each context there is also a hook (`use<name>Context`) that
-allows you to consume its current value.
+GraphiQL uses a set of state management stores, each responsible for a specific part of the IDE's
+behavior. These stores contain all logic related to state management and can be accessed via custom
+React hooks.
 
-Here is a list of all contexts that come with `@graphiql/react`
+### Core Hooks
 
-- `StorageContext`: Provides a storage API that can be used to persist state in
-  the browser (by default using `localStorage`)
-- `EditorContext`: Manages all the editors and tabs
-- `SchemaContext`: Fetches, validates and stores the GraphQL schema
-- `ExecutionContext`: Executes GraphQL requests
-- `HistoryContext`: Persists executed requests in storage
-- `ExplorerContext`: Handles the state for the docs explorer
+- **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
+- **`useTheme`**: Manages the current theme and provides a method to update it.
+- **`useGraphiQL`**: Access the current state.
+- **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
 
-All context properties are documented using JSDoc comments. If you're using an
-IDE like VSCode for development these descriptions will show up in auto-complete
+The `useGraphiQLActions` hook **exposes all actions** across store slices.
+The `useGraphiQL` hook **provides access to the following store slices**:
+
+| Store Slice | Responsibilities                                                                 |
+| ----------- | -------------------------------------------------------------------------------- |
+| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs |
+| `execution` | Handles the execution of GraphQL requests                                        |
+| `plugin`    | Manages plugins and the currently active plugin                                  |
+| `schema`    | Fetches, validates, and stores the GraphQL schema                                |
+
+### Usage Example
+
+```js
+import { useGraphiQL, useGraphiQLActions, useTheme } from '@graphiql/react';
+
+// Get an action to fetch the schema
+const { introspect } = useGraphiQLActions();
+
+// Get the current theme and a method to change it
+const { theme, setTheme } = useTheme();
+
+// Or use a selector to access specific parts of the state
+const schema = useGraphiQL(state => state.schema);
+const currentTheme = useTheme(state => state.theme);
+```
+
+All store properties are documented using TSDoc comments. If you're using an
+IDE like VSCode for development, these descriptions will show up in auto-complete
 tooltips. All these descriptions can also be found in the
 [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql_react.html).
 
@@ -130,6 +150,6 @@ elements background.
 If you want to develop with `@graphiql/react` locally - in particular when
 working on the `graphiql` package - all you need to do is run `yarn dev` in the
 package folder in a separate terminal. This will build the package using Vite.
-When using it in combination with `yarn dev-graphiql` (running in the repo
+When using it in combination with `yarn dev:graphiql` (running in the repo
 root) this will give you auto-reloading when working on `graphiql` and
 `@graphiql/react` simultaneously.

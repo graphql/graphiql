@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-execution",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
   "publisher": "GraphQL",
@@ -82,6 +82,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
+    "types:check": "tsc --noEmit",
     "compile": "node esbuild.js",
     "build-bundles": "yarn run compile",
     "vsce:package": "yarn compile && vsce package --yarn",
@@ -109,13 +110,13 @@
     "cosmiconfig": "8.2.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
-    "graphql": "^16.8.1 || ^17.0.0-alpha.2",
+    "graphql": "^16.9.0 || ^17.0.0-alpha.2",
     "graphql-config": "5.0.3",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
+    "nullthrows": "1.1.1",
     "svelte": "^4.2.19",
     "svelte2tsx": "^0.6.16",
-    "ws": "8.17.1",
-    "nullthrows": "1.1.1"
+    "ws": "8.17.1"
   }
 }

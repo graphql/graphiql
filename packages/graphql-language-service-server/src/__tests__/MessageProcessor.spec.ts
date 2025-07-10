@@ -15,6 +15,11 @@ import {
   version,
 } from 'graphql';
 import fetchMock from 'fetch-mock';
+import * as graphql from 'graphql';
+
+import { createSchema } from '../../../graphiql/test/schema.js';
+
+const graphiqlSchema = createSchema(graphql);
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,11 +33,9 @@ jest.mock('@whatwg-node/fetch', () => {
   };
 });
 
-const mockSchema = (schema: GraphQLSchema) => {
+function mockSchema(schema: GraphQLSchema) {
   const introspectionResult = {
-    data: introspectionFromSchema(schema, {
-      descriptions: true,
-    }),
+    data: introspectionFromSchema(schema, { descriptions: true }),
   };
   return fetchMock.mock({
     matcher: '*',
@@ -43,12 +46,12 @@ const mockSchema = (schema: GraphQLSchema) => {
       body: introspectionResult,
     },
   });
-};
+}
 
-const defaultFiles = [
+const defaultFiles: MockFile[] = [
   ['query.graphql', 'query { bar ...B }'],
   ['fragments.graphql', 'fragment B on Foo { bar }'],
-] as MockFile[];
+];
 const schemaFile: MockFile = [
   'schema.graphql',
   'type Query { foo: Foo, test: Test }\n\ntype Foo { bar: String }\n\ntype Test { test: Foo }',
@@ -366,8 +369,7 @@ describe('MessageProcessor with config', () => {
 
   it('caches files and schema with a URL config', async () => {
     const offset = parseInt(version, 10) > 16 ? 25 : 0;
-
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [
@@ -409,9 +411,10 @@ describe('MessageProcessor with config', () => {
 
     // ensure that fragment definitions work
     const definitions = await project.lsp.handleDefinitionRequest({
-      textDocument: { uri: project.uri('query.graphql') }, // console.log(project.uri('query.graphql'))
+      textDocument: { uri: project.uri('query.graphql') },
       position: { character: 26, line: 0 },
     });
+
     expect(definitions[0].uri).toEqual(project.uri('fragments.graphql'));
     expect(serializeRange(definitions[0].range)).toEqual({
       start: {
@@ -436,7 +439,7 @@ describe('MessageProcessor with config', () => {
         character: 0,
       },
       end: {
-        line: 102 + offset,
+        line: 106 + offset,
         character: 1,
       },
     });
@@ -450,11 +453,11 @@ describe('MessageProcessor with config', () => {
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 104 + offset,
+        line: 108 + offset,
         character: 0,
       },
       end: {
-        line: 112 + offset,
+        line: 116 + offset,
         character: 1,
       },
     });
@@ -499,7 +502,7 @@ describe('MessageProcessor with config', () => {
   });
 
   it('caches multiple projects with files and schema with a URL config and a local schema', async () => {
-    mockSchema(require('../../../graphiql/test/schema'));
+    mockSchema(graphiqlSchema);
 
     const project = new MockProject({
       files: [

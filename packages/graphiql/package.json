@@ -1,97 +1,87 @@
 {
   "name": "graphiql",
-  "version": "3.8.3",
+  "version": "5.0.4",
+  "sideEffects": [
+    "dist/setup-workers/webpack.js",
+    "dist/setup-workers/vite.js"
+  ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
+    "Dimitri POSTOLOV <dmytropostolov@gmail.com> (https://dimaMachina.com)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphiql"
   },
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "esm",
-    "src",
-    "graphiql.js",
-    "graphiql.min.js",
-    "graphiql.min.js.map",
-    "graphiql.css",
-    "graphiql.min.css",
-    "graphiql.min.css.map"
+    "!dist/e2e.*",
+    "!dist/workers/*",
+    "!dist/index.umd.*",
+    "!dist/cdn.*"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    "./graphiql.css": "./dist/graphiql.css",
+    ".": "./dist/index.js",
+    "./setup-workers/*": {
+      "types": "./dist/setup-workers/*.d.ts",
+      "import": "./dist/setup-workers/*.js"
+    }
+  },
   "scripts": {
-    "analyze-bundle": "cross-env NODE_ENV=production ANALYZE=1 yarn webpack -p",
-    "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
-    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-webpack",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
-    "build-bundles-webpack": "cross-env yarn webpack --mode development --bail",
-    "build-cjs": "tsc",
-    "build-clean": "rimraf esm dist webpack *.html",
-    "build-esm": "tsc --project ./tsconfig.esm.json",
-    "check": "tsc --noEmit",
-    "cypress-open": "yarn e2e-server 'cypress open'",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
+    "types:check": "tsc --noEmit",
+    "build": "vite build && UMD=true vite build",
+    "cypress-open": "cypress open --browser electron",
+    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "webpack": "webpack-cli --config resources/webpack.config.js",
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/react": "^0.28.2"
+    "@graphiql/plugin-doc-explorer": "^0.3.0",
+    "@graphiql/plugin-history": "^0.3.0",
+    "@graphiql/react": "^0.35.5",
+    "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.11.0",
+    "@graphiql/toolkit": "^0.11.3",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "babel-loader": "^9.1.2",
-    "babel-plugin-macros": "^3.1.0",
+    "@testing-library/react": "^16.3.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/web-worker": "3.1.4",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
     "cross-env": "^7.0.2",
-    "css-loader": "^6.7.3",
-    "cssnano": "^5.1.15",
     "cypress": "^13.13.2",
-    "express": "^4.20.0",
-    "fork-ts-checker-webpack-plugin": "7.3.0",
-    "graphql": "^16.9.0",
-    "graphql-http": "^1.22.1",
-    "graphql-subscriptions": "^2.0.0",
-    "html-webpack-plugin": "^5.5.0",
-    "identity-obj-proxy": "^3.0.0",
-    "mini-css-extract-plugin": "^2.7.2",
-    "postcss": "8.4.31",
-    "postcss-import": "15.1.0",
-    "postcss-loader": "7.0.2",
-    "postcss-preset-env": "^8.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hot-loader": "^4.12.20",
-    "react-test-renderer": "^18.2.0",
-    "require-context.macro": "^1.2.2",
-    "rimraf": "^3.0.2",
-    "serve": "^11.3.0",
+    "graphql": "^16.11.0",
+    "lightningcss": "^1.29.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "start-server-and-test": "^1.10.11",
-    "style-loader": "^3.3.1",
-    "subscriptions-transport-ws": "0.11.0",
     "typescript": "^4.6.3",
-    "webpack": "5.76.0",
-    "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1",
-    "ws": "8.17.1"
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest-canvas-mock": "0.3.3"
+  },
+  "browser": {
+    "//": "esm.sh polyfills `process`, we don't need it",
+    "process": false
   }
 }

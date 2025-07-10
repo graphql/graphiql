@@ -19,16 +19,10 @@ import { Position } from 'graphql-language-service';
 // for backwards compatibility
 export const getModelLanguageId = (model: monaco.editor.ITextModel) => {
   if ('getModeId' in model) {
-    // for <0.30.0 support
-    // @ts-expect-error
+    // @ts-expect-error -- for <0.30.0 support
     return model.getModeId();
   }
   return model.getLanguageId();
-};
-
-export type MonacoCompletionItem = monaco.languages.CompletionItem & {
-  isDeprecated?: boolean;
-  deprecationReason?: string | null;
 };
 
 export function toMonacoRange(range: GraphQLRange): monaco.IRange {
@@ -44,67 +38,61 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return new Position(position.lineNumber - 1, position.column - 1);
 }
 
-export type GraphQLWorkerCompletionItem = GraphQLCompletionItem & {
+export type GraphQLWorkerCompletionItem = Omit<
+  GraphQLCompletionItem,
+  'documentation'
+> & {
   range?: monaco.IRange;
   command?: monaco.languages.CompletionItem['command'];
+  documentation?: monaco.languages.CompletionItem['documentation'];
 };
 
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range?: GraphQLRange,
 ): GraphQLWorkerCompletionItem {
-  const results: GraphQLWorkerCompletionItem = {
+  return {
     label: entry.label,
-    insertText: entry?.insertText,
+    insertText: entry.insertText,
     sortText: entry.sortText,
-    filterText: entry?.filterText,
-    documentation: entry.documentation,
+    filterText: entry.filterText,
+    ...(entry.documentation && {
+      documentation: {
+        value: entry.documentation,
+      },
+    }),
     detail: entry.detail,
-    range: range ? toMonacoRange(range) : undefined,
+    ...(range && { range: toMonacoRange(range) }),
     kind: entry.kind,
+    ...(entry.insertTextFormat && { insertTextFormat: entry.insertTextFormat }),
+    ...(entry.insertTextMode && { insertTextMode: entry.insertTextMode }),
+    ...(entry.command && {
+      command: { ...entry.command, id: entry.command.command },
+    }),
+    ...(entry.labelDetails && { labelDetails: entry.labelDetails }),
   };
-  if (entry.insertTextFormat) {
-    results.insertTextFormat = entry.insertTextFormat;
-  }
-  if (entry.insertTextMode) {
-    results.insertTextMode = entry.insertTextMode;
-  }
-
-  if (entry.command) {
-    results.command = { ...entry.command, id: entry.command.command };
-  }
-  if (entry.labelDetails) {
-    results.labelDetails = entry.labelDetails;
-  }
-
-  return results;
 }
 
 /**
- * Monaco and Vscode have slightly different ideas of marker severity.
+ * Monaco and VSCode have slightly different ideas of marker severity.
  * for example, vscode has Error = 1, whereas monaco has Error = 8. this takes care of that
- * @param severity {DiagnosticSeverity} optional vscode diagnostic severity to convert to monaco MarkerSeverity
- * @returns {monaco.MarkerSeverity} the matching marker severity level on monaco's terms
+ * @param severity - optional vscode diagnostic severity to convert to monaco MarkerSeverity
+ * @returns the matching marker severity level on monaco's terms
  */
-// export function toMonacoSeverity(severity?: Diagnostic['severity']): monaco.MarkerSeverity {
-//   switch (severity) {
-//     case 1: {
-//       return monaco.MarkerSeverity.Error
-//     }
-//     case 4: {
-//       return monaco.MarkerSeverity.Hint
-//     }
-//     case 3: {
-//       return monaco.MarkerSeverity.Info
-//     }
-//     case 2: {
-//       return monaco.MarkerSeverity.Warning
-//     }
-//     default: {
-//       return monaco.MarkerSeverity.Warning
-//     }
-//   }
-// }
+export function toMonacoSeverity(
+  severity?: Diagnostic['severity'],
+): monaco.MarkerSeverity {
+  // Can't use `monaco.MarkerSeverity` type due error:
+  // ReferenceError: window is not defined
+  const severityMap = {
+    1: 8, // MarkerSeverity.Error
+    2: 4, // MarkerSeverity.Warning
+    3: 2, // MarkerSeverity.Info
+    4: 1, // MarkerSeverity.Hint
+  };
+
+  return severity ? severityMap[severity] : severityMap[2];
+}
 
 export function toMarkerData(
   diagnostic: Diagnostic,
@@ -115,8 +103,7 @@ export function toMarkerData(
     startColumn: diagnostic.range.start.character + 1,
     endColumn: diagnostic.range.end.character,
     message: diagnostic.message,
-    severity: 5,
-    // severity: toMonacoSeverity(diagnostic.severity),
+    severity: toMonacoSeverity(diagnostic.severity),
     code: (diagnostic.code as string) || undefined,
   };
 }
@@ -166,5 +153,5 @@ export const getStringSchema = (schemaConfig: SchemaConfig) => {
       documentString: printSchema(schema),
     };
   }
-  throw new Error('no schema supplied');
+  throw new Error('No schema supplied');
 };

@@ -1,3 +1,4 @@
-'use no memo';
+// to make it works like Jest (auto-mocking)
+vi.mock('monaco-editor');
 
-import '@testing-library/jest-dom';
+export {};

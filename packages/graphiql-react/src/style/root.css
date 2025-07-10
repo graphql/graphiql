@@ -1,3 +1,12 @@
+@import 'auto-insertion.css';
+@import 'codemirror.css';
+@import 'editor.css';
+@import 'fold.css';
+@import 'hint.css';
+@import 'info.css';
+@import 'jump.css';
+@import 'lint.css';
+
 /* a very simple box-model reset, intentionally does not include pseudo elements */
 .graphiql-container * {
   box-sizing: border-box;
@@ -68,7 +77,7 @@
   /* Layout */
   --sidebar-width: 60px;
   --toolbar-width: 40px;
-  --session-header-height: 51px;
+  --session-header-height: 38.5px;
 }
 
 @media (prefers-color-scheme: dark) {

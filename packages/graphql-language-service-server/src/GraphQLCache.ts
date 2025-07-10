@@ -42,7 +42,7 @@ import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
-import glob from 'glob';
+import { glob } from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
 import {
@@ -119,7 +119,7 @@ export class GraphQLCache {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
-  _schemaMap: Map<Uri, GraphQLSchema>;
+  _schemaMap: LRUCache<Uri, GraphQLSchema>;
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;

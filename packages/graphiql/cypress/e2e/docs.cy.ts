@@ -117,7 +117,7 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     );
     cy.get('.graphiql-markdown-deprecation').should(
       'have.text',
-      'deprecated argument\n',
+      'Argument "deprecatedArg" is deprecated. Use "string" instead.\n',
     );
   });
 });
