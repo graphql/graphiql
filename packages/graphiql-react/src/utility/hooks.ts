@@ -51,10 +51,14 @@ export const useEditorState = (
   // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
   'use no memo';
   const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
-  const editorValue = editorInstance?.getValue() ?? '';
-
+  const [editorValue, setEditorValue] = useState(
+    () => editorInstance?.getValue() ?? '',
+  );
   const handleChange = useCallback(
-    (value: string) => editorInstance?.setValue(value),
+    (value: string) => {
+      editorInstance?.setValue(value);
+      setEditorValue(value);
+    },
     [editorInstance],
   );
   return useMemo(
