@@ -140,7 +140,7 @@ type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
-interface GraphiQLInterfaceProps
+export interface GraphiQLInterfaceProps
   extends EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
