@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "sideEffects": [
     "dist/setup-workers/webpack.js",
     "dist/setup-workers/vite.js"

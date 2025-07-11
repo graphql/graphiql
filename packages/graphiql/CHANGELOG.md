@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.0.5
+
+### Patch Changes
+
+- [#4065](https://github.com/graphql/graphiql/pull/4065) [`962225a`](https://github.com/graphql/graphiql/commit/962225ad74c8b69101f900c63243612560ddd501) Thanks [@benjie](https://github.com/benjie)! - Expose the `GraphiQLInterfaceProps` type.
+
 ## 5.0.4
 
 ### Patch Changes

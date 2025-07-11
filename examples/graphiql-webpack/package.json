@@ -13,7 +13,7 @@
     "@graphiql/plugin-explorer": "^5.0.0",
     "@graphiql/react": "^0.35.5",
     "@graphiql/toolkit": "^0.11.3",
-    "graphiql": "^5.0.4",
+    "graphiql": "^5.0.5",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.5.5",
     "react": "^19.1.0",
