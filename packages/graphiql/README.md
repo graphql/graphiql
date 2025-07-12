@@ -203,3 +203,48 @@ has to be loaded for the theme prop to work.
 You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
 [here](../graphiql-react/src/style/codemirror.css).
+
+### Usage with React Router and `ssr: true`
+
+You need to mark GraphiQL as [client module](https://reactrouter.com/api/framework-conventions/client-modules) by
+adding `.client` to the file name.
+
+```tsx
+// graphiql.client.tsx
+import type { FC } from 'react';
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+
+export const Route: FC = () => {
+  return <GraphiQL fetcher={fetcher} />;
+};
+```
+
+```tsx
+// route.tsx
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import type { LinksFunction, MetaFunction } from 'react-router';
+import graphiqlStyles from 'graphiql/style.css?url';
+import { Route as GraphiQL } from './graphiql.client';
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'API Explorer' }];
+};
+
+export const links: LinksFunction = () => {
+  return [{ rel: 'stylesheet', href: graphiqlStyles }];
+};
+
+const Route: FC = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  return mounted ? <GraphiQL /> : 'Loading...';
+};
+
+export default Route;
+```
