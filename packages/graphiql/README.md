@@ -212,7 +212,6 @@ by adding `.client` to the file name.
 
 ```tsx
 // graphiql.client.tsx
-import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
@@ -222,7 +221,7 @@ export const graphiql = <GraphiQL fetcher={fetcher} />;
 ```
 
 ```tsx
-// route.tsx
+// route.ts
 import type { FC } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import graphiqlStyles from 'graphiql/style.css?url';
