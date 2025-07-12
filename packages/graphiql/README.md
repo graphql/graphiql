@@ -204,7 +204,7 @@ You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
 [here](../graphiql-react/src/style/codemirror.css).
 
-### Usage with React Router and `ssr: true`
+## Usage with React Router and `ssr: true`
 
 When using GraphiQL with [React Router’s SSR mode](https://reactrouter.com/api/framework-conventions/react-router.config.ts#ssr),
 you need to mark the GraphiQL component as a [client module](https://reactrouter.com/api/framework-conventions/client-modules)
