@@ -5,7 +5,7 @@ import {
 } from 'jsonc-parser';
 
 export async function formatJSONC(content: string): Promise<string> {
-  // Import dynamically to avoid bundling Prettier
+  // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
   const prettier = await import('prettier/standalone');
   // @ts-expect-error -- wrong types
   const { printers } = await import('prettier/plugins/estree');
