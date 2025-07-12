@@ -206,8 +206,9 @@ You can also create your own theme in CSS. As a reference, the default
 
 ### Usage with React Router and `ssr: true`
 
-You need to mark GraphiQL as [client module](https://reactrouter.com/api/framework-conventions/client-modules) by
-adding `.client` to the file name.
+When using GraphiQL with [React Router’s SSR mode](https://reactrouter.com/api/framework-conventions/react-router.config.ts#ssr),
+you need to mark the GraphiQL component as a [client module](https://reactrouter.com/api/framework-conventions/client-modules)
+by adding `.client` to the file name.
 
 ```tsx
 // graphiql.client.tsx
@@ -240,9 +241,11 @@ export const links: LinksFunction = () => {
 
 const Route: FC = () => {
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
   return mounted ? <GraphiQL /> : 'Loading...';
 };
 
