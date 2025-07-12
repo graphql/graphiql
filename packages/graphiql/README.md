@@ -220,7 +220,7 @@ const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 export const graphiql = <GraphiQL fetcher={fetcher} />;
 ```
 
-```tsx
+```ts
 // route.ts
 import type { FC } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
