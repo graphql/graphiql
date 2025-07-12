@@ -237,13 +237,18 @@ export const links: LinksFunction = () => {
 };
 
 const Route: FC = () => {
-  return graphiql
+  return graphiql;
 };
 
 export default Route;
 ```
 
-## Usage with Custom Storage Namespace Name
+## Usage with a Custom Storage Namespace
+
+When multiple GraphiQL instances run on the same origin—such as in different apps or
+environments—they can conflict by reading from and writing to the same `localStorage` keys. To
+prevent this, you can provide a custom `storage` object that prefixes all keys with a unique
+namespace, isolating each instance’s state and avoiding collisions.
 
 ```tsx
 import type { FC } from 'react';
@@ -268,11 +273,6 @@ const storage: typeof localStorage = {
 };
 
 export const App: FC = () => {
-  return (
-    <GraphiQL
-      fetcher={fetcher}
-      storage={myStorage}
-    />
-  );
+  return <GraphiQL fetcher={fetcher} storage={myStorage} />;
 };
 ```
