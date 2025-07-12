@@ -586,6 +586,7 @@ module.exports = {
         'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
         '@typescript-eslint/no-unnecessary-condition': 'off',
+        '@typescript-eslint/no-deprecated': 'off',
       },
     },
   ],
