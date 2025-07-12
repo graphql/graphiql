@@ -218,18 +218,15 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
 
-export const Route: FC = () => {
-  return <GraphiQL fetcher={fetcher} />;
-};
+export const graphiql = <GraphiQL fetcher={fetcher} />;
 ```
 
 ```tsx
 // route.tsx
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import graphiqlStyles from 'graphiql/style.css?url';
-import { Route as GraphiQL } from './graphiql.client';
+import { graphiql } from './graphiql.client';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'API Explorer' }];
@@ -240,14 +237,42 @@ export const links: LinksFunction = () => {
 };
 
 const Route: FC = () => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted ? <GraphiQL /> : 'Loading...';
+  return graphiql
 };
 
 export default Route;
+```
+
+## Usage with Custom Storage Namespace Name
+
+```tsx
+import type { FC } from 'react';
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+
+const NAMESPACE = 'my-namespace';
+
+const storage: typeof localStorage = {
+  ...localStorage,
+  getItem(key) {
+    return localStorage.getItem(`${NAMESPACE}:${key}`);
+  },
+  setItem(key, value) {
+    return localStorage.setItem(`${NAMESPACE}:${key}`, value);
+  },
+  removeItem(key) {
+    return localStorage.removeItem(`${NAMESPACE}:${key}`);
+  },
+};
+
+export const App: FC = () => {
+  return (
+    <GraphiQL
+      fetcher={fetcher}
+      storage={myStorage}
+    />
+  );
+};
 ```
