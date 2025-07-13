@@ -1,6 +1,7 @@
 import type { KeyboardEventHandler, RefObject } from 'react';
-import { editor as monacoEditor, Uri } from '../monaco-editor';
+import type * as monaco from '../monaco-editor';
 import type { MonacoEditor } from '../types';
+import { monacoStore } from '../stores';
 
 export const EDITOR_THEME = {
   dark: 'graphiql-DARK',
@@ -25,10 +26,11 @@ export function getOrCreateModel({
   uri: string;
   value: string;
 }) {
-  const uri = Uri.file($uri);
-  const model = monacoEditor.getModel(uri);
+  const { monaco } = monacoStore.getState();
+  const uri = monaco.Uri.file($uri);
+  const model = monaco.editor.getModel(uri);
   const language = uri.path.split('.').at(-1)!;
-  return model ?? monacoEditor.createModel(value, language, uri);
+  return model ?? monaco.editor.createModel(value, language, uri);
 }
 
 const colors = {
@@ -53,7 +55,7 @@ const colors = {
 
 const getBaseColors = (
   theme: 'dark' | 'light',
-): monacoEditor.IStandaloneThemeData['colors'] => ({
+): monaco.editor.IStandaloneThemeData['colors'] => ({
   'editor.background': colors.transparent, // white with a 00 alpha value
   'scrollbar.shadow': colors.transparent, // Scrollbar shadow to indicate that the view is scrolled
   'textLink.foreground': colors.primary[theme], // Foreground color for links in text
@@ -84,7 +86,7 @@ const getBaseColors = (
   'menu.selectionForeground': colors.primary[theme], // hover text color
 });
 
-export const editorThemeDark: monacoEditor.IStandaloneThemeData = {
+export const editorThemeDark: monaco.editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   colors: getBaseColors('dark'),
@@ -96,7 +98,7 @@ export const editorThemeDark: monacoEditor.IStandaloneThemeData = {
   ],
 };
 
-export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
+export const editorThemeLight: monaco.editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   colors: getBaseColors('light'),
@@ -108,21 +110,17 @@ export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
   ],
 };
 
-// this should be called somewhere else, but fine here for now
-monacoEditor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-monacoEditor.defineTheme(EDITOR_THEME.light, editorThemeLight);
-
 export function createEditor(
   domElement: RefObject<HTMLDivElement>,
-  options: monacoEditor.IStandaloneEditorConstructionOptions,
+  options: monaco.editor.IStandaloneEditorConstructionOptions,
 ): MonacoEditor {
   const { model } = options;
   if (!model) {
     throw new Error('options.model is required');
   }
   const language = model.uri.path.split('.').at(-1)!;
-
-  return monacoEditor.create(domElement.current, {
+  const { monaco } = monacoStore.getState();
+  return monaco.editor.create(domElement.current, {
     language,
     automaticLayout: true,
     fontSize: 15,
