@@ -3,8 +3,9 @@ import { storageStore } from './storage';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 import { EDITOR_THEME } from '../utility/create-editor';
-import { editor as monacoEditor } from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY } from '../constants';
+import { monacoStore } from './monaco';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -13,7 +14,7 @@ import { STORAGE_KEY } from '../constants';
 export type Theme = 'light' | 'dark' | null;
 
 type MonacoTheme =
-  | monacoEditor.BuiltinTheme
+  | monaco.editor.BuiltinTheme
   | (typeof EDITOR_THEME)[keyof typeof EDITOR_THEME]
   | ({} & string);
 
@@ -87,7 +88,8 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
       document.body.classList.add(`graphiql-${theme}`);
     }
     const resolvedTheme = theme ?? getSystemTheme();
-    monacoEditor.setTheme(editorTheme[resolvedTheme]);
+    const { monaco } = monacoStore.getState();
+    monaco.editor.setTheme(editorTheme[resolvedTheme]);
   }, [theme, editorTheme]);
 
   return children as ReactElement;

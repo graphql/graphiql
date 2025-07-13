@@ -15,7 +15,7 @@ interface MonacoStoreType {
   monaco: typeof import('monaco-editor');
   monacoGraphQL: MonacoGraphQLAPI;
   actions: {
-    initialize: () => void;
+    initialize: () => Promise<void>;
   };
 }
 
@@ -59,41 +59,38 @@ async function patchFirefox() {
   };
 }
 
-export const monacoStore = createStore<MonacoStoreType>(set => ({
+export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
   monaco: null!,
   monacoGraphQL: null!,
   actions: {
-    initialize() {
-      set(async state => {
-        const isInitialized = Boolean(state.monaco);
-        if (isInitialized) {
-          return state;
-        }
-        const [monaco, { initializeMode }] = await Promise.all([
-          import('monaco-editor'),
-          import('monaco-graphql/esm/lite.js'),
-        ]);
-        monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-        monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
-        /**
-         * Set diagnostics options for JSON
-         *
-         * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-         * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-         */
-        monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
-          JSON_DIAGNOSTIC_OPTIONS,
-        );
-        if (navigator.userAgent.includes('Firefox/')) {
-          void patchFirefox();
-        }
+    async initialize() {
+      const isInitialized = Boolean(get().monaco);
+      if (isInitialized) {
+        return;
+      }
+      const [monaco, { initializeMode }] = await Promise.all([
+        import('monaco-editor'),
+        import('monaco-graphql/esm/lite'),
+      ]);
+      monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
+      monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
+      /**
+       * Set diagnostics options for JSON
+       *
+       * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+       * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
+       */
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+        JSON_DIAGNOSTIC_OPTIONS,
+      );
+      if (navigator.userAgent.includes('Firefox/')) {
+        void patchFirefox();
+      }
 
-        const monacoGraphQL = initializeMode({
-          diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-        });
-
-        return { monaco, monacoGraphQL };
+      const monacoGraphQL = initializeMode({
+        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
       });
+      set({ monaco, monacoGraphQL });
     },
   },
 }));

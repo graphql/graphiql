@@ -119,7 +119,7 @@ useEffect(() => {
   const { monaco, actions } = useMonaco();
 
   useEffect(() => {
-    actions.initialize();
+    void actions.initialize();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
