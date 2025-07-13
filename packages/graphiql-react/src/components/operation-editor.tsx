@@ -15,6 +15,8 @@ import {
   pick,
   cleanupDisposables,
   cn,
+  Uri,
+  Range,
 } from '../utility';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
@@ -207,12 +209,8 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   const { monacoGraphQL, monaco } = useMonaco();
 
   useEffect(() => {
-    const operationUri = monaco.Uri.file(
-      `${uriInstanceId}${URI_NAME.operation}`,
-    );
-    const variablesUri = monaco.Uri.file(
-      `${uriInstanceId}${URI_NAME.variables}`,
-    );
+    const operationUri = Uri.file(`${uriInstanceId}${URI_NAME.operation}`);
+    const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
     /**
      * Mutate the global `validateVariablesJSON` object to setup which operation editor is validated
      * by which variables editor. Since we can have multiple GraphiQL instances on the same page.
@@ -314,12 +312,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
           ) {
             currentSchemaReference = { kind, typeInfo };
             const { lineNumber, column } = position;
-            const range = new monaco.Range(
-              lineNumber,
-              column,
-              lineNumber,
-              column,
-            );
+            const range = new Range(lineNumber, column, lineNumber, column);
             return [{ uri: model.uri, range }];
           }
           currentSchemaReference = null;
@@ -334,12 +327,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
           setSchemaReference(currentSchemaReference);
           onClickReferenceRef.current?.(currentSchemaReference);
 
-          const range = new monaco.Range(
-            lineNumber,
-            column,
-            lineNumber,
-            column,
-          );
+          const range = new Range(lineNumber, column, lineNumber, column);
           return [{ uri: model.uri, range }];
         },
       }),

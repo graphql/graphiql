@@ -10,6 +10,7 @@ import {
   pick,
   cleanupDisposables,
   cn,
+  Range
 } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
@@ -114,7 +115,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       }, 500);
 
       return {
-        range: new monaco.Range(
+        range: new Range(
           position.lineNumber,
           wordAtPosition.startColumn,
           position.lineNumber,
