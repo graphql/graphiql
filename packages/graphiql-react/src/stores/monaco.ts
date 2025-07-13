@@ -74,6 +74,9 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         import('monaco-graphql/esm/monaco-editor'),
         import('monaco-graphql/esm/lite'),
       ]);
+      const monacoGraphQL = initializeMode({
+        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+      });
       /**
        * Set diagnostics options for JSON
        *
@@ -91,10 +94,6 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (navigator.userAgent.includes('Firefox/')) {
         void patchFirefox();
       }
-
-      const monacoGraphQL = initializeMode({
-        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-      });
       set({ monaco, monacoGraphQL });
     },
   },
