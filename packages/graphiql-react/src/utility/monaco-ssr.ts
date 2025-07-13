@@ -1,6 +1,6 @@
 /**
- * Reexports from Monaco Editor, because while importing them from `'monaco-editor'`
- * it throws an error on SSR: window is not defined
+ * Re‑export Monaco Editor enums.
+ * Importing directly from 'monaco-editor' causes a “window is not defined” error during SSR.
  */
 export { KeyCode } from 'monaco-editor/esm/vs/editor/common/standalone/standaloneEnums.js';
 export { KeyMod } from 'monaco-editor/esm/vs/editor/common/services/editorBaseApi.js';
