@@ -12,6 +12,7 @@ import {
   ExecutionProps,
   PluginProps,
   SchemaProps,
+  useMonaco,
 } from '../stores';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
@@ -27,11 +28,9 @@ import {
 import {
   DEFAULT_PRETTIFY_QUERY,
   DEFAULT_QUERY,
-  JSON_DIAGNOSTIC_OPTIONS,
   STORAGE_KEY,
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
-import { languages } from '../monaco-editor';
 
 interface InnerGraphiQLProviderProps
   extends EditorProps,
@@ -117,6 +116,17 @@ useEffect(() => {
 }, [response])`,
     );
   }
+  const { monaco, actions } = useMonaco();
+
+  useEffect(() => {
+    void actions.initialize();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!monaco) {
+    return null;
+  }
+
   return (
     <StorageStore storage={storage}>
       <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
@@ -328,16 +338,6 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
     return () => {
       window.removeEventListener('keydown', runIntrospection);
     };
-  }, []);
-
-  useEffect(() => {
-    /**
-     * Set diagnostics options for JSON
-     *
-     * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-     * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-     */
-    languages.json.jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
   }, []);
 
   return (
