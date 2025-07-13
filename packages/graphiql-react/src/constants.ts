@@ -165,7 +165,7 @@ export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
     });
   };
 
-export const MONACO_THEME_ID = {
+export const MONACO_THEME_NAME = {
   dark: 'graphiql-DARK',
   light: 'graphiql-LIGHT',
 } as const;

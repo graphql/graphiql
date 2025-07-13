@@ -4,7 +4,7 @@ import { createBoundedUseStore } from '../utility';
 import {
   JSON_DIAGNOSTIC_OPTIONS,
   MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-  MONACO_THEME_ID,
+  MONACO_THEME_NAME,
   MONACO_THEME_DATA,
 } from '../constants';
 
@@ -76,8 +76,11 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
         JSON_DIAGNOSTIC_OPTIONS,
       );
-      monaco.editor.defineTheme(MONACO_THEME_ID.dark, MONACO_THEME_DATA.dark);
-      monaco.editor.defineTheme(MONACO_THEME_ID.light, MONACO_THEME_DATA.light);
+      monaco.editor.defineTheme(MONACO_THEME_NAME.dark, MONACO_THEME_DATA.dark);
+      monaco.editor.defineTheme(
+        MONACO_THEME_NAME.light,
+        MONACO_THEME_DATA.light,
+      );
       if (navigator.userAgent.includes('Firefox/')) {
         void patchFirefox();
       }
