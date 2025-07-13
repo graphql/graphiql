@@ -91,6 +91,7 @@ React hooks.
 
 - **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
 - **`useTheme`**: Manages the current theme and provides a method to update it.
+- **`useMonaco`**: Access `monaco-editor` exports and the `monaco-graphql` instance. Designed for safe use in SSR environments.
 - **`useGraphiQL`**: Access the current state.
 - **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
 
