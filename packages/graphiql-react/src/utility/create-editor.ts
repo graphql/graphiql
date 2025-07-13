@@ -1,5 +1,5 @@
 import type { KeyboardEventHandler, RefObject } from 'react';
-import type * as monaco from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import type { MonacoEditor } from '../types';
 import { monacoStore } from '../stores';
 
