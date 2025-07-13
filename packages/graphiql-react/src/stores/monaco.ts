@@ -70,18 +70,15 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (isInitialized) {
         return;
       }
-      await import(
-        'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'
-      );
-      await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+      // await import(
+      //   'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'
+      // );
+      // await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
       const [monaco, { initializeMode }] = await Promise.all([
-        // @ts-expect-error - no types
-        import('monaco-editor/esm/vs/editor/edcore.main.js'),
+        // @@ts-expect-error - no types
+        import('monaco-editor'),
         import('monaco-graphql/esm/lite'),
       ]);
-      const monacoGraphQL = initializeMode({
-        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-      });
       /**
        * Set diagnostics options for JSON
        *
@@ -99,6 +96,9 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (navigator.userAgent.includes('Firefox/')) {
         void patchFirefox();
       }
+      const monacoGraphQL = initializeMode({
+        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+      });
       set({ monaco, monacoGraphQL });
     },
   },

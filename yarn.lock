@@ -2568,10 +2568,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/is-prop-valid@file:./emotion-is-prop-valid-shim::locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react":
+"@emotion/is-prop-valid@file:emotion-is-prop-valid-shim::locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react":
   version: 0.0.0
-  resolution: "@emotion/is-prop-valid@file:./emotion-is-prop-valid-shim#./emotion-is-prop-valid-shim::hash=a30511&locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react"
-  checksum: 10c0/e2a115610ca9ef0c5dd3e9c6cf0acb0ba914b0433ec9ebd9abb0916d1dadb31296da30af2139cf8d047f4054db88e9c4a5f2914e94c9f463d674dc5836fb93d0
+  resolution: "@emotion/is-prop-valid@file:emotion-is-prop-valid-shim#emotion-is-prop-valid-shim::hash=6f1ff9&locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react"
+  checksum: 10c0/aa3abcd3081b9261edd66ce973c659c023b6f89d59e484e09ff2d430238396cb88f7c2ee575173557429f7c6e0a1b0de090bc049d3b1bcc927b2fd3a12295693
   languageName: node
   linkType: hard
 
@@ -3311,7 +3311,7 @@ __metadata:
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
     "@babel/helper-string-parser": "npm:^7.19.4"
-    "@emotion/is-prop-valid": "file:./emotion-is-prop-valid-shim"
+    "@emotion/is-prop-valid": "file:emotion-is-prop-valid-shim"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@radix-ui/react-dialog": "npm:^1.1"
     "@radix-ui/react-dropdown-menu": "npm:^2.1"
