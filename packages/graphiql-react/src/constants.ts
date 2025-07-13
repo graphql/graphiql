@@ -1,5 +1,4 @@
 /* eslint-disable no-bitwise */
-import { initializeMode } from 'monaco-graphql/esm/lite.js';
 // @ts-expect-error -- wrong types
 import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
 import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
@@ -142,10 +141,6 @@ export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
     ...JSON_DIAGNOSTIC_OPTIONS,
   },
 };
-
-export const MONACO_GRAPHQL_API = initializeMode({
-  diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-});
 
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
   prettier.format(query, {
