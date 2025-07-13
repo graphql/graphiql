@@ -77,7 +77,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       const [monaco, { initializeMode }] = await Promise.all([
         // @@ts-expect-error - no types
         import('monaco-editor'),
-        import('monaco-graphql/esm/lite'),
+        import('monaco-graphql/esm/initializeMode.js'),
       ]);
       /**
        * Set diagnostics options for JSON
