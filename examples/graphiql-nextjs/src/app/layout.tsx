@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  description: 'An example of using GraphiQL with Next.js App Router',
-  // Empty object adds open graph and twitter meta tags
+  description: 'Example of using GraphiQL with the Next.js App Router',
+  // Empty object adds open graph and twitter meta-tags
   openGraph: {},
 };
 
