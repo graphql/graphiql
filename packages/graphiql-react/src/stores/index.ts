@@ -22,5 +22,6 @@ export {
   type SchemaActions,
   type SchemaProps,
 } from './schema';
+export { monacoStore, useMonaco } from './monaco';
 export { storageStore, useStorage } from './storage';
 export { themeStore, useTheme, type Theme } from './theme';
