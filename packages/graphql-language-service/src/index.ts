@@ -60,7 +60,7 @@ export {
   GraphQLDocumentMode,
   getDefinitionState,
   getFieldDef,
-  getContextAtPosition
+  getContextAtPosition,
 } from './parser';
 
 export type {
