@@ -8,7 +8,7 @@ export {
 export { debounce } from './debounce';
 export { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
 export { markdown } from './markdown';
-export { Uri, KeyMod, KeyCode } from './monaco-utils';
+export { Uri, KeyMod, KeyCode, Range } from './monaco-utils';
 export { pick } from './pick';
 export { useDragResize } from './resize';
 export { clsx as cn } from 'clsx';

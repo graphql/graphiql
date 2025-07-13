@@ -14,9 +14,8 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { tryParseJSONC } from '../utility';
+import { tryParseJSONC, Range } from '../utility';
 import type { SlicesWithActions, MonacoEditor } from '../types';
-import { monacoStore } from './monaco';
 
 export interface ExecutionSlice {
   /**
@@ -133,9 +132,8 @@ export const createExecutionSlice: CreateExecutionSlice =
       const decorations = insertions.map(({ index, string }) => {
         const start = model.getPositionAt(index + added);
         const end = model.getPositionAt(index + (added += string.length));
-        const { monaco } = monacoStore.getState();
         return {
-          range: new monaco.Range(
+          range: new Range(
             start.lineNumber,
             start.column,
             end.lineNumber,
