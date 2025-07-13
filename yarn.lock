@@ -2570,8 +2570,8 @@ __metadata:
 
 "@emotion/is-prop-valid@file:./emotion-is-prop-valid-shim::locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react":
   version: 0.0.0
-  resolution: "@emotion/is-prop-valid@file:./emotion-is-prop-valid-shim#./emotion-is-prop-valid-shim::hash=35af03&locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react"
-  checksum: 10c0/b1aa58123586b15a8901f139e3e866fcbd0517ec79fd460c022e942ab7d5631c15d2e6e6edf5c8204a563b83e28ca20b6eb761848da8323db719d2fa979fb6ba
+  resolution: "@emotion/is-prop-valid@file:./emotion-is-prop-valid-shim#./emotion-is-prop-valid-shim::hash=a30511&locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react"
+  checksum: 10c0/e2a115610ca9ef0c5dd3e9c6cf0acb0ba914b0433ec9ebd9abb0916d1dadb31296da30af2139cf8d047f4054db88e9c4a5f2914e94c9f463d674dc5836fb93d0
   languageName: node
   linkType: hard
 
