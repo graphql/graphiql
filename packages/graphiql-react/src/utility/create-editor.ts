@@ -2,6 +2,7 @@ import type { KeyboardEventHandler, RefObject } from 'react';
 import type * as monaco from 'monaco-editor';
 import type { MonacoEditor } from '../types';
 import { monacoStore } from '../stores';
+import { Uri } from '../utility'
 
 export const EDITOR_THEME = {
   dark: 'graphiql-DARK',
@@ -27,7 +28,7 @@ export function getOrCreateModel({
   value: string;
 }) {
   const { monaco } = monacoStore.getState();
-  const uri = monaco.Uri.file($uri);
+  const uri = Uri.file($uri);
   const model = monaco.editor.getModel(uri);
   const language = uri.path.split('.').at(-1)!;
   return model ?? monaco.editor.createModel(value, language, uri);
