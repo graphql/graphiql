@@ -17,8 +17,6 @@ async function fetcher(graphQLParams: Record<string, unknown>) {
   return response.json();
 }
 
-const Page: FC = () => {
+export const GraphiQLPage: FC = () => {
   return <GraphiQL fetcher={fetcher} />;
 };
-
-export default Page;
