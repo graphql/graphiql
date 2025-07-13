@@ -38,7 +38,7 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
   );
   useEffect(() => {
     if (!monaco) {
-      return
+      return;
     }
     const model = getOrCreateModel({
       uri: `${uriInstanceId}${URI_NAME.requestHeaders}`,

@@ -32,8 +32,6 @@ export function getOrCreateModel({
   return model ?? monaco.editor.createModel(value, language, uri);
 }
 
-
-
 export function createEditor(
   domElement: RefObject<HTMLDivElement>,
   options: monaco.editor.IStandaloneEditorConstructionOptions,
