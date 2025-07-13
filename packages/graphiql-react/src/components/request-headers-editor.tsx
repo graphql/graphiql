@@ -11,6 +11,7 @@ import {
   cleanupDisposables,
   cn,
 } from '../utility';
+import { useMonaco } from '../stores';
 
 interface RequestHeadersEditorProps extends EditorProps {
   /**
@@ -29,12 +30,16 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
     pick('initialHeaders', 'shouldPersistHeaders', 'uriInstanceId'),
   );
   const ref = useRef<HTMLDivElement>(null!);
+  const monaco = useMonaco(state => state.monaco);
   useChangeHandler(
     onEdit,
     shouldPersistHeaders ? STORAGE_KEY.headers : null,
     'headers',
   );
   useEffect(() => {
+    if (!monaco) {
+      return
+    }
     const model = getOrCreateModel({
       uri: `${uriInstanceId}${URI_NAME.requestHeaders}`,
       value: initialHeaders,
@@ -49,7 +54,7 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div

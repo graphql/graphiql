@@ -10,7 +10,7 @@ import {
   pick,
   cleanupDisposables,
   cn,
-  Range
+  Range,
 } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
@@ -45,7 +45,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
     );
   const ref = useRef<HTMLDivElement>(null!);
-  const { monaco } = useMonaco();
+  const monaco = useMonaco(state => state.monaco);
   useEffect(() => {
     if (fetchError) {
       responseEditor?.setValue(fetchError);
@@ -56,6 +56,9 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
+    if (!monaco) {
+      return;
+    }
     const model = getOrCreateModel({
       uri: `${uriInstanceId}${URI_NAME.response}`,
       value: '',
@@ -137,7 +140,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <section

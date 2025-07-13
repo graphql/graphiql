@@ -11,6 +11,7 @@ import {
   cn,
   pick,
 } from '../utility';
+import { useMonaco } from '../stores';
 
 interface VariablesEditorProps extends EditorProps {
   /**
@@ -29,8 +30,12 @@ export const VariablesEditor: FC<VariablesEditorProps> = ({
     pick('initialVariables', 'uriInstanceId'),
   );
   const ref = useRef<HTMLDivElement>(null!);
+  const monaco = useMonaco(state => state.monaco);
   useChangeHandler(onEdit, STORAGE_KEY.variables, 'variables');
   useEffect(() => {
+    if (!monaco) {
+      return;
+    }
     const model = getOrCreateModel({
       uri: `${uriInstanceId}${URI_NAME.variables}`,
       value: initialVariables,
@@ -45,7 +50,7 @@ export const VariablesEditor: FC<VariablesEditorProps> = ({
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <div

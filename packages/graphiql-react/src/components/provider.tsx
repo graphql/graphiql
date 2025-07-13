@@ -12,7 +12,7 @@ import {
   ExecutionProps,
   PluginProps,
   SchemaProps,
-  useMonaco,
+  monacoStore,
 } from '../stores';
 import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
@@ -116,16 +116,11 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  const { monaco, actions } = useMonaco();
 
   useEffect(() => {
+    const { actions } = monacoStore.getState();
     void actions.initialize();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!monaco) {
-    return null;
-  }
+  }, []);
 
   return (
     <StorageStore storage={storage}>

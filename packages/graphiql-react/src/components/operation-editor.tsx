@@ -209,6 +209,9 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   const { monacoGraphQL, monaco } = useMonaco();
 
   useEffect(() => {
+    if (!monaco || !monacoGraphQL) {
+      return;
+    }
     const operationUri = Uri.file(`${uriInstanceId}${URI_NAME.operation}`);
     const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
     /**
@@ -263,10 +266,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco, monacoGraphQL]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
-    if (!schema) {
+    if (!schema || !monaco || !monacoGraphQL) {
       return;
     }
     monacoGraphQL.setSchemaConfig([
@@ -340,6 +343,8 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     setVisiblePlugin,
     externalFragments,
     uriInstanceId,
+    monacoGraphQL,
+    monaco,
   ]);
 
   return (

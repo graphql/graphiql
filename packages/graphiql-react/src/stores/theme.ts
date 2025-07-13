@@ -5,7 +5,7 @@ import { createBoundedUseStore } from '../utility';
 import { EDITOR_THEME } from '../utility/create-editor';
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY } from '../constants';
-import { monacoStore } from './monaco';
+import { useMonaco } from './monaco';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -60,6 +60,8 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
   editorTheme = EDITOR_THEME,
 }) => {
   const theme = useTheme(state => state.theme);
+  const monaco = useMonaco(state => state.monaco);
+
   useEffect(() => {
     const { storage } = storageStore.getState();
 
@@ -83,14 +85,16 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
+    if (!monaco) {
+      return;
+    }
     document.body.classList.remove('graphiql-light', 'graphiql-dark');
     if (theme) {
       document.body.classList.add(`graphiql-${theme}`);
     }
     const resolvedTheme = theme ?? getSystemTheme();
-    const { monaco } = monacoStore.getState();
     monaco.editor.setTheme(editorTheme[resolvedTheme]);
-  }, [theme, editorTheme]);
+  }, [theme, editorTheme, monaco]);
 
   return children as ReactElement;
 };
