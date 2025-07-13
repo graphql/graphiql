@@ -72,8 +72,6 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         import('monaco-editor'),
         import('monaco-graphql/esm/lite'),
       ]);
-      monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-      monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
       /**
        * Set diagnostics options for JSON
        *
@@ -83,6 +81,8 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
         JSON_DIAGNOSTIC_OPTIONS,
       );
+      monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
+      monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
       if (navigator.userAgent.includes('Firefox/')) {
         void patchFirefox();
       }
