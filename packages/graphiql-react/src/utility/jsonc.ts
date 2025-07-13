@@ -1,14 +1,16 @@
-import prettier from 'prettier/standalone';
-// @ts-expect-error -- wrong types
-import { printers } from 'prettier/plugins/estree';
-import { parsers } from 'prettier/parser-babel';
 import {
   parse as jsoncParse,
   ParseError,
   printParseErrorCode,
 } from 'jsonc-parser';
 
-export function formatJSONC(content: string) {
+export async function formatJSONC(content: string): Promise<string> {
+  // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
+  const prettier = await import('prettier/standalone');
+  // @ts-expect-error -- wrong types
+  const { printers } = await import('prettier/plugins/estree');
+  const { parsers } = await import('prettier/parser-babel');
+
   return prettier.format(content, {
     parser: 'jsonc',
     plugins: [

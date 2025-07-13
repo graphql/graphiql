@@ -1,8 +1,4 @@
 /* eslint-disable no-bitwise */
-// @ts-expect-error -- wrong types
-import { printers } from 'prettier/plugins/graphql'; // eslint-disable-line import-x/no-duplicates
-import { parsers } from 'prettier/parser-graphql'; // eslint-disable-line import-x/no-duplicates
-import prettier from 'prettier/standalone';
 import type { DiagnosticSettings } from 'monaco-graphql';
 import { KeyCode, KeyMod, languages } from './monaco-editor';
 import type { EditorSlice } from './stores';
@@ -142,13 +138,21 @@ export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
   },
 };
 
-export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] = query =>
-  prettier.format(query, {
-    parser: 'graphql',
-    plugins: [
-      // Fix: Couldn't find plugin for AST format "graphql"
-      { printers },
-      // @ts-expect-error -- Fix: Couldn't resolve parser "graphql"
-      { parsers },
-    ],
-  });
+export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
+  async query => {
+    // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
+    // @ts-expect-error -- wrong types
+    const { printers } = await import('prettier/plugins/graphql');
+    const { parsers } = await import('prettier/parser-graphql');
+    const prettier = await import('prettier/standalone');
+
+    return prettier.format(query, {
+      parser: 'graphql',
+      plugins: [
+        // Fix: Couldn't find plugin for AST format "graphql"
+        { printers },
+        // @ts-expect-error -- Fix: Couldn't resolve parser "graphql"
+        { parsers },
+      ],
+    });
+  };
