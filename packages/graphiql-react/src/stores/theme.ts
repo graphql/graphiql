@@ -2,9 +2,8 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { storageStore } from './storage';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
-import { EDITOR_THEME } from '../utility/create-editor';
 import type * as monaco from 'monaco-editor';
-import { STORAGE_KEY } from '../constants';
+import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
 import { useMonaco } from './monaco';
 
 /**
@@ -15,7 +14,7 @@ export type Theme = 'light' | 'dark' | null;
 
 type MonacoTheme =
   | monaco.editor.BuiltinTheme
-  | (typeof EDITOR_THEME)[keyof typeof EDITOR_THEME]
+  | (typeof MONACO_THEME_NAME)[keyof typeof MONACO_THEME_NAME]
   | ({} & string);
 
 interface ThemeStoreType {
