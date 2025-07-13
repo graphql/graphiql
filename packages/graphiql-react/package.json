@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.35.5",
+  "version": "0.35.6",
   "sideEffects": [
     "dist/monaco-editor.js",
     "dist/setup-workers/webpack.js",

@@ -1,5 +1,21 @@
 # Change Log
 
+## 5.0.6
+
+### Patch Changes
+
+- [#4069](https://github.com/graphql/graphiql/pull/4069) [`142f3f2`](https://github.com/graphql/graphiql/commit/142f3f2529c668aa1a6ba2f7269cf4b7e2fd3e61) Thanks [@dimaMachina](https://github.com/dimaMachina)! - reduce bundle size, import `prettier` dynamically to avoid bundling Prettier
+
+  diff from vite example
+
+  ```diff
+  -dist/assets/index-BMgFrxsd.js             4,911.53 kB │ gzip: 1,339.77 kB
+  +dist/assets/index-BlpzusGL.js             4,221.28 kB │ gzip: 1,145.58 kB
+  ```
+
+- Updated dependencies [[`142f3f2`](https://github.com/graphql/graphiql/commit/142f3f2529c668aa1a6ba2f7269cf4b7e2fd3e61)]:
+  - @graphiql/react@0.35.6
+
 ## 5.0.5
 
 ### Patch Changes
