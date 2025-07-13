@@ -56,7 +56,7 @@ export const themeStore = createStore<ThemeStoreType>(set => ({
 export const ThemeStore: FC<ThemeStoreProps> = ({
   children,
   defaultTheme = null,
-  editorTheme = EDITOR_THEME,
+  editorTheme = MONACO_THEME_NAME,
 }) => {
   const theme = useTheme(state => state.theme);
   const monaco = useMonaco(state => state.monaco);
