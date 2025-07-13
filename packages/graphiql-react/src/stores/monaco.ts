@@ -11,40 +11,88 @@ import {
   MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
 } from '../constants';
 
-interface ThemeStoreType {
+interface MonacoStoreType {
   monaco: typeof import('monaco-editor');
   monacoGraphQL: MonacoGraphQLAPI;
   actions: {
-    initialize: () => Promise<void>;
+    initialize: () => void;
   };
 }
 
-export const monacoStore = createStore<ThemeStoreType>(set => ({
+/**
+ * Patch for Firefox compatibility:
+ *
+ * Fixes:
+ *    Uncaught Error: can't access property "offsetNode", hitResult is null
+ *
+ * Related issues:
+ * - https://github.com/graphql/graphiql/issues/4041
+ * - https://github.com/microsoft/monaco-editor/issues/4679
+ * - https://github.com/microsoft/monaco-editor/issues/4527
+ *
+ * The suggested patch https://github.com/microsoft/monaco-editor/issues/4679#issuecomment-2406284453
+ * no longer works in Mozilla Firefox
+ */
+async function patchFirefox() {
+  const { MouseTargetFactory } = await import(
+    // @ts-expect-error -- no types
+    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js'
+  );
+  const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
+
+  MouseTargetFactory._doHitTestWithCaretPositionFromPoint = (
+    ...args: any[]
+  ) => {
+    const [ctx, coords] = args;
+    const hitResult = ctx.viewDomNode.ownerDocument.caretPositionFromPoint(
+      coords.clientX,
+      coords.clientY,
+    );
+    if (hitResult) {
+      // Delegate to the original function if hitResult is valid
+      const result = originalFn(...args);
+      return result;
+    }
+    // We must return an object with `type: 0` to avoid the following error:
+    // Uncaught Error: can't access property "type", result is undefined
+    return { type: 0 };
+  };
+}
+
+export const monacoStore = createStore<MonacoStoreType>(set => ({
   monaco: null!,
   monacoGraphQL: null!,
   actions: {
-    async initialize() {
-      const monaco = await import('monaco-editor');
-      const { initializeMode } = await import('monaco-graphql/esm/lite.js');
-      monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-      monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
-      /**
-       * Set diagnostics options for JSON
-       *
-       * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-       * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-       */
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
-        JSON_DIAGNOSTIC_OPTIONS,
-      );
+    initialize() {
+      set(async state => {
+        const isInitialized = Boolean(state.monaco);
+        if (isInitialized) {
+          return state;
+        }
+        const [monaco, { initializeMode }] = await Promise.all([
+          import('monaco-editor'),
+          import('monaco-graphql/esm/lite.js'),
+        ]);
+        monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
+        monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
+        /**
+         * Set diagnostics options for JSON
+         *
+         * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+         * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
+         */
+        monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+          JSON_DIAGNOSTIC_OPTIONS,
+        );
+        if (navigator.userAgent.includes('Firefox/')) {
+          void patchFirefox();
+        }
 
-      const monacoGraphQL = initializeMode({
-        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-      });
+        const monacoGraphQL = initializeMode({
+          diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+        });
 
-      set({
-        monaco,
-        monacoGraphQL,
+        return { monaco, monacoGraphQL };
       });
     },
   },
