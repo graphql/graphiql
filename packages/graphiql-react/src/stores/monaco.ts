@@ -2,13 +2,10 @@ import { createStore } from 'zustand';
 import type { MonacoGraphQLAPI } from 'monaco-graphql';
 import { createBoundedUseStore } from '../utility';
 import {
-  EDITOR_THEME,
-  editorThemeDark,
-  editorThemeLight,
-} from '../utility/create-editor';
-import {
   JSON_DIAGNOSTIC_OPTIONS,
   MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+  MONACO_THEME_ID,
+  MONACO_THEME_DATA,
 } from '../constants';
 
 interface MonacoStoreType {
@@ -79,8 +76,8 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
         JSON_DIAGNOSTIC_OPTIONS,
       );
-      monaco.editor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-      monaco.editor.defineTheme(EDITOR_THEME.light, editorThemeLight);
+      monaco.editor.defineTheme(MONACO_THEME_ID.dark, MONACO_THEME_DATA.dark);
+      monaco.editor.defineTheme(MONACO_THEME_ID.light, MONACO_THEME_DATA.light);
       if (navigator.userAgent.includes('Firefox/')) {
         void patchFirefox();
       }
