@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
-import type { editor as monacoEditor } from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
 
 export function useChangeHandler(
@@ -31,7 +31,7 @@ export function useChangeHandler(
       updateActiveTabValues({ [tabProperty]: value });
     });
 
-    const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
+    const handleChange = (_event: monaco.editor.IModelContentChangedEvent) => {
       const newValue = editor.getValue();
       store(newValue);
       updateTab(newValue);

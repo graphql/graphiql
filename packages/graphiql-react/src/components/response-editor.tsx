@@ -13,7 +13,7 @@ import {
 } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
-import type * as monaco from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { useMonaco } from '../stores';
 
 type ResponseTooltipType = ComponentType<{

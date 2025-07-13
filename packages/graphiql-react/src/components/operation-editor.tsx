@@ -23,7 +23,7 @@ import {
   STORAGE_KEY,
   MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
 } from '../constants';
-import type * as monaco from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
 
 interface OperationEditorProps extends EditorProps {
