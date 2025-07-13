@@ -6,4 +6,4 @@
  * Upstream issue: https://github.com/motiondivision/motion/issues/3126
  */
 // eslint-disable-next-line no-console
-console.log('hello')
+console.log('hello');
