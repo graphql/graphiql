@@ -12,8 +12,8 @@ import {
 } from '../constants';
 
 interface MonacoStoreType {
-  monaco: typeof import('monaco-editor');
-  monacoGraphQL: MonacoGraphQLAPI;
+  monaco?: typeof import('monaco-editor');
+  monacoGraphQL?: MonacoGraphQLAPI;
   actions: {
     initialize: () => Promise<void>;
   };
@@ -60,8 +60,6 @@ async function patchFirefox() {
 }
 
 export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
-  monaco: null!,
-  monacoGraphQL: null!,
   actions: {
     async initialize() {
       const isInitialized = Boolean(get().monaco);
