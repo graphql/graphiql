@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import type { DiagnosticSettings } from 'monaco-graphql';
-import { KeyCode, KeyMod, languages } from './monaco-editor';
+import type * as monaco from 'monaco-editor';
+import { KeyCode, KeyMod } from './utility';
 import type { EditorSlice } from './stores';
 
 export const isMacOs =
@@ -121,12 +122,13 @@ export const URI_NAME = {
 } as const;
 
 // set these early on so that initial variables with comments don't flash an error
-export const JSON_DIAGNOSTIC_OPTIONS: languages.json.DiagnosticsOptions = {
-  // Fixes Comments are not permitted in JSON.(521)
-  allowComments: true,
-  // Fixes Trailing comma json(519)
-  trailingCommas: 'ignore',
-};
+export const JSON_DIAGNOSTIC_OPTIONS: monaco.languages.json.DiagnosticsOptions =
+  {
+    // Fixes Comments are not permitted in JSON.(521)
+    allowComments: true,
+    // Fixes Trailing comma json(519)
+    trailingCommas: 'ignore',
+  };
 
 export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
   validateVariablesJSON: {},
