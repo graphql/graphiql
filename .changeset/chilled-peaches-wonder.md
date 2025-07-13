@@ -5,6 +5,7 @@
 'graphiql': minor
 ---
 
+fix(graphiql): remove “Module '@emotion/is-prop-valid' not found” warning emitted by Framer-Motion when it’s loaded from an ESM‑CDN bundle
 feat(graphql-language-service): export `getContextAtPosition`
 feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
 
