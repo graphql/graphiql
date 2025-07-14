@@ -221,7 +221,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     const { validateVariablesJSON } = MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS;
     validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
     monacoGraphQL.setDiagnosticSettings(MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS);
-    globalThis.__MONACO = monaco;
     const model = getOrCreateModel({
       uri: operationUri.path.replace('/', ''),
       value: initialQuery,
