@@ -3346,6 +3346,9 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -14388,6 +14391,9 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
   languageName: unknown
   linkType: soft
 
