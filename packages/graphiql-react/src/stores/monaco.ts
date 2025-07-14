@@ -33,7 +33,7 @@ interface MonacoStoreType {
 async function patchFirefox() {
   const { MouseTargetFactory } = await import(
     // @ts-expect-error -- no types
-    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget'
+    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js'
   );
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
@@ -71,7 +71,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         return;
       }
       const [monaco, { initializeMode }] = await Promise.all([
-        import('monaco-graphql/esm/monaco-editor'),
+        import('monaco-graphql/esm/monaco-editor.js'),
         import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
