@@ -2568,13 +2568,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/is-prop-valid@file:emotion-is-prop-valid-shim::locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react":
-  version: 0.0.0
-  resolution: "@emotion/is-prop-valid@file:emotion-is-prop-valid-shim#emotion-is-prop-valid-shim::hash=6f1ff9&locator=%40graphiql%2Freact%40workspace%3Apackages%2Fgraphiql-react"
-  checksum: 10c0/aa3abcd3081b9261edd66ce973c659c023b6f89d59e484e09ff2d430238396cb88f7c2ee575173557429f7c6e0a1b0de090bc049d3b1bcc927b2fd3a12295693
-  languageName: node
-  linkType: hard
-
 "@esbuild/aix-ppc64@npm:0.23.1":
   version: 0.23.1
   resolution: "@esbuild/aix-ppc64@npm:0.23.1"
@@ -3311,7 +3304,6 @@ __metadata:
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
     "@babel/helper-string-parser": "npm:^7.19.4"
-    "@emotion/is-prop-valid": "file:emotion-is-prop-valid-shim"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@radix-ui/react-dialog": "npm:^1.1"
     "@radix-ui/react-dropdown-menu": "npm:^2.1"
@@ -3346,9 +3338,6 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
-  peerDependenciesMeta:
-    "@emotion/is-prop-valid":
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -14391,9 +14380,6 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
-  peerDependenciesMeta:
-    "@emotion/is-prop-valid":
-      optional: true
   languageName: unknown
   linkType: soft
 
