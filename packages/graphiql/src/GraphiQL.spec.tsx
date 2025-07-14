@@ -154,7 +154,7 @@ describe('GraphiQL', () => {
     });
   }); // schema
 
-  describe.skip('default query', () => {
+  describe('default query', () => {
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
