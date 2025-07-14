@@ -70,23 +70,18 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (isInitialized) {
         return;
       }
-      await import(
-        'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'
-      );
-      await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+      // await import(
+      //   'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'
+      // );
+      // await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
 
       const [monaco, { initializeMode }] = await Promise.all([
-        // @ts-expect-error -- no types
-        import('monaco-editor/esm/vs/editor/edcore.main.js'),
+        // @sts-expect-error -- no types
+        // import('monaco-editor/esm/vs/editor/edcore.main.js'),
+        import('monaco-graphql/esm/monaco-editor'),
         import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
-      /**
-       * Set diagnostics options for JSON
-       *
-       * Setting it on mount fix Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-       * @see https://github.com/graphql/graphiql/pull/4042#issuecomment-3017167375
-       */
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
         JSON_DIAGNOSTIC_OPTIONS,
       );
