@@ -60,8 +60,8 @@ async function patchFirefox() {
  * Dynamically load `monaco-editor` and `monaco-graphql` in `useEffect` after component renders.
  *
  * **Do not convert these to static `import` statements.**
- * In SSR (e.g., Next.js `app` router), static imports run on the server
- * where `window` is undefined and trigger a runtime crash.
+ * In SSR (e.g., Next.js), static imports run on the server
+ * where `window` is undefined and trigger an error.
  */
 export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
   actions: {
