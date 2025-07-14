@@ -33,7 +33,7 @@ interface MonacoStoreType {
 async function patchFirefox() {
   const { MouseTargetFactory } = await import(
     // @ts-expect-error -- no types
-    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js'
+    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget'
   );
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
@@ -71,9 +71,13 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         return;
       }
       const [monaco, { initializeMode }] = await Promise.all([
+        /**
+         * Can't use `monaco-graphql/esm/monaco-editor` due error in esm.sh example:
+         * Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
+         */
         // @ts-expect-error -- no types
         import('monaco-editor/esm/vs/editor/edcore.main'),
-        import('monaco-graphql/esm/lite.js'),
+        import('monaco-graphql/esm/lite'),
       ]);
       globalThis.__MONACO = monaco;
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
