@@ -71,12 +71,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         return;
       }
       const [monaco, { initializeMode }] = await Promise.all([
-        /**
-         * Can't use `monaco-graphql/esm/monaco-editor` due error in esm.sh example:
-         * Uncaught TypeError: Cannot read properties of undefined (reading 'jsonDefaults')
-         */
-        // @ts-expect-error -- no types
-        import('monaco-editor/esm/vs/editor/edcore.main'),
+        import('monaco-graphql/esm/monaco-editor'),
         import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
