@@ -33,8 +33,11 @@
       rel="stylesheet"
       href="https://esm.sh/@graphiql/plugin-explorer/dist/style.css"
     />
-    <!-- Note: the ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file. -->
-    <!-- `@emotion/is-prop-valid` is a shim to remove the console error `module "@emotion /is-prop-valid" not found`. Upstream issue: https://github.com/motiondivision/motion/issues/3126 -->
+    <!--
+     * Note:
+     * The ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file.
+     * `@emotion/is-prop-valid` is a shim to remove the console error ` module "@emotion /is-prop-valid" not found`. Upstream issue: https://github.com/motiondivision/motion/issues/3126
+    -->
     <script type="importmap">
       {
         "imports": {
