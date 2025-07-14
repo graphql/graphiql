@@ -72,7 +72,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       }
       const [monaco, { initializeMode }] = await Promise.all([
         // @ts-expect-error -- no types
-        import('monaco-editor/esm/vs/editor/edcore.main.js'),
+        import('monaco-editor/esm/vs/editor/edcore.main'),
         import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
