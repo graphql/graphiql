@@ -77,7 +77,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
          */
         // @ts-expect-error -- no types
         import('monaco-editor/esm/vs/editor/edcore.main'),
-        import('monaco-graphql/esm/lite'),
+        import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
