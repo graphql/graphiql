@@ -60,6 +60,11 @@
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
+  "peerDependenciesMeta": {
+    "@emotion/is-prop-valid": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@graphiql/toolkit": "^0.11.3",
     "@testing-library/dom": "^10.4.0",

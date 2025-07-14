@@ -71,13 +71,14 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
         return;
       }
       await import(
-        'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution'
+        'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'
       );
-      await import('monaco-editor/esm/vs/language/json/monaco.contribution');
+      await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+
       const [monaco, { initializeMode }] = await Promise.all([
         // @ts-expect-error -- no types
-        import('monaco-editor/esm/vs/editor/edcore.main'),
-        import('monaco-graphql/esm/lite'),
+        import('monaco-editor/esm/vs/editor/edcore.main.js'),
+        import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
