@@ -77,3 +77,15 @@ export const useStorage = () => useGraphiQL(state => state.storage);
  * @deprecated Use `const { storage } = useGraphiQL()` instead.
  */
 export const useStorageContext = useStorage; // eslint-disable-line @typescript-eslint/no-deprecated
+
+/**
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
+ */
+export function useTheme() {
+  const { setTheme } = useGraphiQLActions();
+  const theme = useGraphiQL(state => state.theme);
+  return {
+    setTheme,
+    theme,
+  };
+}
