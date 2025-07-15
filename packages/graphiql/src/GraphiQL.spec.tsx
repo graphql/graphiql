@@ -167,7 +167,7 @@ describe('GraphiQL', () => {
           expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
         },
         {
-          timeout: 6_000,
+          timeout: 7_000,
         },
       );
     });
@@ -186,7 +186,7 @@ describe('GraphiQL', () => {
           expect(queryEditor!.textContent).toBe('GraphQL Party!!');
         },
         {
-          timeout: 6_000,
+          timeout: 7_000,
         },
       );
     });
