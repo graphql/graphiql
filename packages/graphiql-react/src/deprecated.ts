@@ -69,12 +69,12 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const { storage } = useGraphiQL(state => state.storage)` instead.
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
  */
 export const useStorage = () => useGraphiQL(state => state.storage);
 
 /**
- * @deprecated Use `const { storage } = useGraphiQL(state => state.storage)` instead.
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
  */
 export const useStorageContext = useStorage; // eslint-disable-line @typescript-eslint/no-deprecated
 
