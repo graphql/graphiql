@@ -66,7 +66,7 @@ export const createThemeSlice: CreateThemeSlice = initial => set => ({
         return { theme };
       });
     },
-  }
+  },
 });
 
 export const ThemeStore: FC<ThemeStoreProps> = ({
@@ -74,8 +74,6 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
   defaultTheme = null,
   editorTheme = MONACO_THEME_NAME,
 }) => {
-  const theme = useTheme(state => state.theme);
-  const monaco = useMonaco(state => state.monaco);
   const storage = useGraphiQL(state => state.storage);
   useEffect(() => {
     function getInitialTheme() {

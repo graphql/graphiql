@@ -97,7 +97,7 @@ The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
 
 | Store Slice | Responsibilities                                                                                          |
-|-------------|-----------------------------------------------------------------------------------------------------------|
+| ----------- | --------------------------------------------------------------------------------------------------------- |
 | `storage`   | Provides a storage API that can be used to persist state in the browser (by default using `localStorage`) |
 | `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs                          |
 | `execution` | Handles the execution of GraphQL requests                                                                 |
@@ -110,15 +110,14 @@ The `useGraphiQL` hook **provides access to the following store slices**:
 ```js
 import { useGraphiQL, useGraphiQLActions, useTheme } from '@graphiql/react';
 
-// Get an action to fetch the schema
+// Get an action to fetch the schema and an action to change theme
 const { introspect } = useGraphiQLActions();
 
-// Get the current theme and a method to change it
-const { theme, setTheme } = useTheme();
-
-// Or use a selector to access specific parts of the state
-const schema = useGraphiQL(state => state.schema);
-const currentTheme = useTheme(state => state.theme);
+// Use a selector to access specific parts of the state like current schema and theme
+const { theme, schema } = useGraphiQL(state => ({
+  schema: state.schema,
+  theme: state.theme,
+}));
 ```
 
 All store properties are documented using TSDoc comments. If you're using an

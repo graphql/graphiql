@@ -13,7 +13,7 @@ import type {
   ExecutionActions,
   PluginActions,
   SchemaActions,
-  ThemeActions
+  ThemeActions,
 } from './stores';
 import type { RuleKind } from 'graphql-language-service';
 

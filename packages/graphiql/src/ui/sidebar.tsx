@@ -53,15 +53,14 @@ export const Sidebar: FC<SidebarProps> = ({
 }) => {
   const forcedTheme =
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
-
-  const { theme, setTheme } = useTheme();
-  const { setShouldPersistHeaders, introspect, setVisiblePlugin } =
+  const { setShouldPersistHeaders, introspect, setVisiblePlugin, setTheme } =
     useGraphiQLActions();
   const {
     shouldPersistHeaders,
     isIntrospecting,
     visiblePlugin,
     plugins,
+    theme,
     storage,
   } = useGraphiQL(
     pick(
@@ -69,6 +68,7 @@ export const Sidebar: FC<SidebarProps> = ({
       'isIntrospecting',
       'visiblePlugin',
       'plugins',
+      'theme',
       'storage',
     ),
   );
