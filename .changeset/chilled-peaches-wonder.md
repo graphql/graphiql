@@ -1,5 +1,5 @@
 ---
-'@graphiql/react': patch
+'@graphiql/react': minor
 'monaco-graphql': patch
 'graphql-language-service': minor
 'graphiql': minor
