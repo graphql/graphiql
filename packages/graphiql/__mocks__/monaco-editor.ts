@@ -78,4 +78,4 @@ process.on('unhandledRejection', reason => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/no-extraneous-dependencies
-export * from 'monaco-editor'
+export * from 'monaco-editor';
