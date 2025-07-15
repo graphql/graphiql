@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
 import { monacoStore } from './monaco';
-import { useGraphiQL } from '../components';
 import type { StateCreator } from 'zustand/index';
 import type { SlicesWithActions, Theme } from '../types';
 
@@ -71,29 +69,6 @@ export const createThemeSlice: CreateThemeSlice = initial => set => ({
     },
   },
 });
-
-const ThemeStore = () => {
-  const storage = useGraphiQL(state => state.storage);
-  useEffect(() => {
-    function getInitialTheme() {
-      const stored = storage.get(STORAGE_KEY.theme);
-      switch (stored) {
-        case 'light':
-          return 'light';
-        case 'dark':
-          return 'dark';
-        default:
-          if (typeof stored === 'string') {
-            // Remove the invalid stored value
-            storage.set(STORAGE_KEY.theme, '');
-          }
-          return defaultTheme;
-      }
-    }
-
-    themeStore.setState({ theme: getInitialTheme() });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-};
 
 /**
  * Get the resolved theme - dark or light

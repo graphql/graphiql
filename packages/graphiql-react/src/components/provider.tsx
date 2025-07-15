@@ -1,5 +1,5 @@
 /* eslint sort-keys: "error" */
-import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
+import type { FC, ReactNode, RefObject } from 'react';
 import { createContext, useContext, useRef, useEffect, useId } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
@@ -175,6 +175,22 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       return visiblePlugin;
     }
 
+    function getInitialTheme() {
+      const stored = storage.get(STORAGE_KEY.theme);
+      switch (stored) {
+        case 'light':
+          return 'light';
+        case 'dark':
+          return 'dark';
+        default:
+          if (typeof stored === 'string') {
+            // Remove the invalid stored value
+            storage.set(STORAGE_KEY.theme, '');
+          }
+          return defaultTheme;
+      }
+    }
+
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
@@ -258,8 +274,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
-      const initialVisiblePlugin = getInitialVisiblePlugin();
-      actions.setVisiblePlugin(initialVisiblePlugin);
+      actions.setVisiblePlugin(getInitialVisiblePlugin());
+      actions.setTheme(getInitialTheme());
 
       return store;
     }
@@ -358,7 +374,7 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
 
 function getExternalFragments(
-  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+  externalFragments: GraphiQLProviderProps['externalFragments'],
 ) {
   const map = new Map<string, FragmentDefinitionNode>();
   if (externalFragments) {
