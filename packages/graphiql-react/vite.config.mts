@@ -65,7 +65,7 @@ export const plugins: PluginOption[] = [
     async closeBundle() {
       const source = './src/setup-workers';
       const dest = './dist/setup-workers';
-      const types = 'export {};';
+      const types = 'export {};\n';
 
       await fs.mkdir(dest, { recursive: true });
       await Promise.all([
