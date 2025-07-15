@@ -19,5 +19,4 @@ When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
 ```
 
 When using GraphiQL with [React Router’s SSR mode](https://reactrouter.com/api/framework-conventions/react-router.config.ts#ssr),
-you no longer need to mark the GraphiQL component as a [client module](https://reactrouter.com/api/framework-conventions/client-modules)
-by adding `.client` to the file name.
+you no longer need to add `.client` to the file name to mark the GraphiQL component as a [client module](https://reactrouter.com/api/framework-conventions/client-modules).
