@@ -386,10 +386,10 @@ describe('GraphiQL', () => {
       <GraphiQL fetcher={noOpFetcher} />,
     );
 
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+    await waitFor(() => {
+      const el = container.querySelector('[aria-label="Open settings dialog"]');
+      expect(el).toBeTruthy();
+      fireEvent.click(el);
     });
 
     const element = await findByText('Persist headers');
