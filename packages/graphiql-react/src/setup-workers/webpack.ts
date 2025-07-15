@@ -2,7 +2,7 @@
  * Setup Monaco Editor workers for Webpack/Turbopack projects like Next.js.
  */
 globalThis.MonacoEnvironment = {
-  getWorker(_workerId: string, label: string) {
+  getWorker(_workerId, label) {
     // eslint-disable-next-line no-console
     console.info('setup-workers/webpack', { label });
     switch (label) {

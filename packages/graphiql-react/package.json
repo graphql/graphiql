@@ -2,9 +2,7 @@
   "name": "@graphiql/react",
   "version": "0.35.6",
   "sideEffects": [
-    "dist/monaco-editor.js",
-    "dist/setup-workers/webpack.js",
-    "dist/setup-workers/vite.js"
+    "dist/setup-workers/*"
   ],
   "repository": {
     "type": "git",

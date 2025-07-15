@@ -1,7 +1,7 @@
 /* eslint-disable import-x/default -- false positive */
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
 
 /**
  * Setup Monaco Editor workers for Vite.
@@ -13,7 +13,7 @@ import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
  * ```
  */
 globalThis.MonacoEnvironment = {
-  getWorker(_workerId: string, label: string) {
+  getWorker(_workerId, label) {
     // eslint-disable-next-line no-console
     console.info('setup-workers/vite', { label });
     switch (label) {
