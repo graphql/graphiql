@@ -23,6 +23,8 @@ export interface ThemeActions {
    * Set a new theme
    */
   setTheme: (newTheme: Theme) => void;
+
+  setMonacoTheme: () => void;
 }
 
 export interface ThemeProps {
@@ -49,23 +51,26 @@ type CreateThemeSlice = (
   }
 >;
 
-export const createThemeSlice: CreateThemeSlice = initial => set => ({
+export const createThemeSlice: CreateThemeSlice = initial => (set, get) => ({
   theme: null,
   ...initial,
   actions: {
     setTheme(theme) {
-      set(({ editorTheme, storage }) => {
-        storage.set(STORAGE_KEY.theme, theme ?? '');
+      const { storage, actions } = get();
+      storage.set(STORAGE_KEY.theme, theme ?? '');
 
-        document.body.classList.remove('graphiql-light', 'graphiql-dark');
-        if (theme) {
-          document.body.classList.add(`graphiql-${theme}`);
-        }
-        const resolvedTheme = theme ?? getSystemTheme();
-        const { monaco } = monacoStore.getState();
-        monaco!.editor.setTheme(editorTheme[resolvedTheme]);
-        return { theme };
-      });
+      document.body.classList.remove('graphiql-light', 'graphiql-dark');
+      if (theme) {
+        document.body.classList.add(`graphiql-${theme}`);
+      }
+      set({ theme });
+      actions.setMonacoTheme();
+    },
+    setMonacoTheme() {
+      const { theme, editorTheme } = get();
+      const resolvedTheme = theme ?? getSystemTheme();
+      const { monaco } = monacoStore.getState();
+      monaco?.editor.setTheme(editorTheme[resolvedTheme]);
     },
   },
 });

@@ -112,11 +112,6 @@ useEffect(() => {
     );
   }
 
-  useEffect(() => {
-    const { actions } = monacoStore.getState();
-    void actions.initialize();
-  }, []);
-
   return <InnerGraphiQLProvider {...props} />;
 };
 
@@ -350,6 +345,14 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     return () => {
       window.removeEventListener('keydown', runIntrospection);
     };
+  }, []);
+
+  useEffect(() => {
+    const { actions } = monacoStore.getState();
+    void actions.initialize().then(() => {
+      const { setMonacoTheme } = storeRef.current.getState().actions;
+      setMonacoTheme();
+    });
   }, []);
 
   return (

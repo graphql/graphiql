@@ -14,7 +14,6 @@ import {
   useDragResize,
   useGraphiQL,
   useGraphiQLActions,
-  useTheme,
   VisuallyHidden,
 } from '@graphiql/react';
 import { ShortKeys } from './short-keys';

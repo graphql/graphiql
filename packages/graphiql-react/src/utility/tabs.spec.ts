@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
