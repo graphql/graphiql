@@ -1,5 +1,4 @@
 import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { storageStore } from './storage';
 import { createStore } from 'zustand';
 import { createBoundedUseStore } from '../utility';
 import type * as monaco from 'monaco-editor';

@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import type * as monaco from 'monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
@@ -40,7 +39,14 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
+  }, [
+    callback,
+    editor,
+    storageKey,
+    tabProperty,
+    updateActiveTabValues,
+    storage,
+  ]);
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect

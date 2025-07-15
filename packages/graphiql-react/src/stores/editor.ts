@@ -7,7 +7,6 @@ import type {
 import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { print } from 'graphql';
-import { storageStore } from './storage';
 import {
   createTab,
   setPropertiesInActiveTab,

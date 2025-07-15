@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions } from '../types';
-import { storageStore } from './storage';
 import { STORAGE_KEY } from '../constants';
 
 export interface GraphiQLPlugin {

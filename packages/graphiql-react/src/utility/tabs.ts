@@ -1,7 +1,7 @@
 'use no memo'; // can't figure why it isn't optimized
 
 import { STORAGE_KEY } from '../constants';
-import { storageStore } from '../stores';
+import type { AllSlices } from '../types';
 
 export interface TabDefinition {
   /**
@@ -80,6 +80,7 @@ export function getDefaultTabState({
     },
   ],
   shouldPersistHeaders,
+  storage,
 }: {
   defaultQuery: string;
   defaultHeaders?: string;
@@ -88,8 +89,8 @@ export function getDefaultTabState({
   query: string | null;
   variables: string | null;
   shouldPersistHeaders?: boolean;
+  storage: AllSlices['storage'];
 }) {
-  const { storage } = storageStore.getState();
   const storedState = storage.get(STORAGE_KEY.tabs);
   try {
     if (!storedState) {
@@ -269,8 +270,7 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
-export function clearHeadersFromTabs() {
-  const { storage } = storageStore.getState();
+export function clearHeadersFromTabs(storage: AllSlices['storage']) {
   const persistedTabs = storage.get(STORAGE_KEY.tabs);
   if (persistedTabs) {
     const parsedTabs = JSON.parse(persistedTabs);
