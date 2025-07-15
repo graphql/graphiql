@@ -6,12 +6,14 @@ import type {
   ExecutionSlice,
   PluginSlice,
   SchemaSlice,
+  ThemeSlice,
   StorageSlice,
   //
   EditorActions,
   ExecutionActions,
   PluginActions,
   SchemaActions,
+  ThemeActions
 } from './stores';
 import type { RuleKind } from 'graphql-language-service';
 
@@ -28,13 +30,21 @@ export type AllSlices = EditorSlice &
   ExecutionSlice &
   PluginSlice &
   SchemaSlice &
+  ThemeSlice &
   StorageSlice;
 
 export type AllActions = EditorActions &
   ExecutionActions &
   PluginActions &
+  ThemeActions &
   SchemaActions;
 
 export interface SlicesWithActions extends AllSlices {
   actions: AllActions;
 }
+
+/**
+ * The value `null` semantically means that the user does not explicitly choose
+ * any theme, so we use the system default.
+ */
+export type Theme = 'light' | 'dark' | null;

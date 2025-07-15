@@ -28,4 +28,9 @@ export {
   type StorageSlice,
   type StorageProps,
 } from './storage';
-export { themeStore, useTheme, type Theme } from './theme';
+export {
+  createThemeSlice,
+  type ThemeSlice,
+  type ThemeActions,
+  type ThemeProps,
+} from './theme';
