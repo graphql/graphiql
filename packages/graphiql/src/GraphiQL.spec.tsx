@@ -292,11 +292,11 @@ describe('GraphiQL', () => {
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editors =
-        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
-
-      act(() => {
+      await waitFor(() => {
+        const dragBar = container.querySelector(
+          '.graphiql-horizontal-drag-bar',
+        )!;
+        expect(dragBar).toBeTruthy();
         fireEvent.mouseDown(dragBar, {
           button: 0,
           ctrlKey: false,
@@ -311,6 +311,8 @@ describe('GraphiQL', () => {
       });
 
       await waitFor(() => {
+        const editors =
+          container.querySelector<HTMLDivElement>('.graphiql-editors')!;
         // 700 / (900 - 700) = 3.5
         expect(editors.style.flex).toEqual('3.5');
       });
