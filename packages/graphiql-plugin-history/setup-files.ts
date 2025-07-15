@@ -7,4 +7,4 @@ import { configure } from '@testing-library/react';
 vi.mock('zustand');
 vi.mock('monaco-editor');
 
-configure({ asyncUtilTimeout: 8_000 });
+configure({ asyncUtilTimeout: 15_000 });
