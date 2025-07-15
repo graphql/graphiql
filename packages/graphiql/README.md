@@ -204,44 +204,6 @@ You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
 [here](../graphiql-react/src/style/codemirror.css).
 
-## Usage with React Router and `ssr: true`
-
-When using GraphiQL with [React Router’s SSR mode](https://reactrouter.com/api/framework-conventions/react-router.config.ts#ssr),
-you need to mark the GraphiQL component as a [client module](https://reactrouter.com/api/framework-conventions/client-modules)
-by adding `.client` to the file name.
-
-```tsx
-// graphiql.client.tsx
-import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
-
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
-
-export const graphiql = <GraphiQL fetcher={fetcher} />;
-```
-
-```ts
-// route.ts
-import type { FC } from 'react';
-import type { LinksFunction, MetaFunction } from 'react-router';
-import graphiqlStyles from 'graphiql/style.css?url';
-import { graphiql } from './graphiql.client';
-
-export const meta: MetaFunction = () => {
-  return [{ title: 'API Explorer' }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: graphiqlStyles }];
-};
-
-const Route: FC = () => {
-  return graphiql;
-};
-
-export default Route;
-```
-
 ## Usage with a Custom Storage Namespace
 
 When multiple GraphiQL instances run on the same origin—such as in different apps or

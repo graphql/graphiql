@@ -1,14 +1,9 @@
 'use client';
 
 import type { FC } from 'react';
-import dynamic from 'next/dynamic';
+import { GraphiQL } from 'graphiql';
 import 'graphiql/setup-workers/webpack';
 import 'graphiql/style.css';
-
-// dynamically import our GraphiQL component
-const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
-  ssr: false,
-});
 
 async function fetcher(graphQLParams: Record<string, unknown>) {
   const response = await fetch('https://graphql.earthdata.nasa.gov/api', {
@@ -22,8 +17,6 @@ async function fetcher(graphQLParams: Record<string, unknown>) {
   return response.json();
 }
 
-const Page: FC = () => {
+export const GraphiQLPage: FC = () => {
   return <GraphiQL fetcher={fetcher} />;
 };
-
-export default Page;

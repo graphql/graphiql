@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from 'react';
 import type { AllTypeInfo } from 'graphql-language-service/esm/types';
-import type { editor as monacoEditor } from './monaco-editor';
+import type * as monaco from 'monaco-editor';
 import type {
   EditorSlice,
   ExecutionSlice,
@@ -21,7 +21,7 @@ export interface SchemaReference {
   typeInfo: AllTypeInfo;
 }
 
-export type MonacoEditor = monacoEditor.IStandaloneCodeEditor;
+export type MonacoEditor = monaco.editor.IStandaloneCodeEditor;
 
 export type AllSlices = EditorSlice &
   ExecutionSlice &

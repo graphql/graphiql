@@ -1,12 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/no-extraneous-dependencies
-import {
-  editor as monacoEditor,
-  languages,
-  Emitter,
-  Uri,
-  KeyCode,
-  KeyMod,
-} from 'monaco-editor';
 import { defineWebWorkers } from '@vitest/web-worker/pure';
 /**
  * Fixes TypeError: Cannot read properties of null (reading 'webkitBackingStorePixelRatio')
@@ -86,34 +77,5 @@ process.on('unhandledRejection', reason => {
   throw reason;
 });
 
-const mockedTextAreas: Record<string, HTMLTextAreaElement> =
-  Object.create(null);
-
-export { languages, Emitter, Uri, KeyCode, KeyMod };
-
-export const editor: typeof monacoEditor = {
-  ...monacoEditor,
-  createModel(value, language, uri) {
-    if (uri?.path) {
-      const textarea = document.createElement('textarea');
-      textarea.value = value;
-      textarea.className = 'mockMonaco';
-      mockedTextAreas[uri.path] = textarea;
-    }
-    return monacoEditor.createModel(value, language, uri);
-  },
-  create(editorContainer, options) {
-    const { path } = options!.model!.uri;
-    const textAreaEl = mockedTextAreas[path]!;
-    editorContainer.append(textAreaEl);
-    return Object.assign(monacoEditor.create(editorContainer, options), {
-      getValue() {
-        const { value } = mockedTextAreas[path]!;
-        return value;
-      },
-      setValue(newValue: string) {
-        mockedTextAreas[path]!.value = newValue;
-      },
-    });
-  },
-};
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/no-extraneous-dependencies
+export * from 'monaco-editor';
