@@ -9,15 +9,16 @@ import {
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  createThemeSlice,
   createStorageSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
+  ThemeProps,
   StorageProps,
   monacoStore,
 } from '../stores';
-import { ThemeStore } from '../stores/theme';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
@@ -30,31 +31,26 @@ import {
 import {
   DEFAULT_PRETTIFY_QUERY,
   DEFAULT_QUERY,
+  MONACO_THEME_NAME,
   STORAGE_KEY,
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 
-interface InnerGraphiQLProviderProps
+interface GraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
     SchemaProps,
+    ThemeProps,
     StorageProps {
   children: ReactNode;
 }
-
-type GraphiQLProviderProps = InnerGraphiQLProviderProps &
-  ComponentPropsWithoutRef<typeof ThemeStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
-export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  defaultTheme,
-  editorTheme,
-  ...props
-}) => {
+export const GraphiQLProvider: FC<GraphiQLProviderProps> = props => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
   if (!props.fetcher) {
     throw new TypeError(
@@ -121,14 +117,10 @@ useEffect(() => {
     void actions.initialize();
   }, []);
 
-  return (
-    <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-      <InnerGraphiQLProvider {...props} />
-    </ThemeStore>
-  );
+  return <InnerGraphiQLProvider {...props} />;
 };
 
-const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
+const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
   defaultQuery = DEFAULT_QUERY,
   defaultTabs,
@@ -155,6 +147,9 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   referencePlugin,
   visiblePlugin,
   children,
+
+  defaultTheme = null,
+  editorTheme = MONACO_THEME_NAME,
 
   storage: $storage,
 
@@ -243,17 +238,20 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onSchemaChange,
           schemaDescription,
         })(...args);
+        const themeSlice = createThemeSlice({ editorTheme })(...args);
         return {
           ...storageSlice,
           ...editorSlice,
           ...executionSlice,
           ...pluginSlice,
           ...schemaSlice,
+          ...themeSlice,
           actions: {
             ...editorSlice.actions,
             ...executionSlice.actions,
             ...pluginSlice.actions,
             ...schemaSlice.actions,
+            ...themeSlice.actions,
           },
         };
       });

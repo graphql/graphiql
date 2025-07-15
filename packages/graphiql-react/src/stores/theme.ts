@@ -1,7 +1,7 @@
-import { FC, ReactElement, useEffect } from 'react';
+import { useEffect } from 'react';
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
-import { useMonaco } from './monaco';
+import { monacoStore } from './monaco';
 import { useGraphiQL } from '../components';
 import type { StateCreator } from 'zustand/index';
 import type { SlicesWithActions, Theme } from '../types';
@@ -40,7 +40,9 @@ export interface ThemeProps {
   editorTheme?: ThemeSlice['editorTheme'];
 }
 
-type CreateThemeSlice = (initial: ThemeSlice) => StateCreator<
+type CreateThemeSlice = (
+  initial: Pick<ThemeSlice, 'editorTheme'>,
+) => StateCreator<
   SlicesWithActions,
   [],
   [],
@@ -50,7 +52,7 @@ type CreateThemeSlice = (initial: ThemeSlice) => StateCreator<
 >;
 
 export const createThemeSlice: CreateThemeSlice = initial => set => ({
-  // theme: null,
+  theme: null,
   ...initial,
   actions: {
     setTheme(theme) {
@@ -62,18 +64,15 @@ export const createThemeSlice: CreateThemeSlice = initial => set => ({
           document.body.classList.add(`graphiql-${theme}`);
         }
         const resolvedTheme = theme ?? getSystemTheme();
-        monacoEditor.setTheme(editorTheme[resolvedTheme]);
+        const { monaco } = monacoStore.getState();
+        monaco!.editor.setTheme(editorTheme[resolvedTheme]);
         return { theme };
       });
     },
   },
 });
 
-export const ThemeStore: FC<ThemeStoreProps> = ({
-  children,
-  defaultTheme = null,
-  editorTheme = MONACO_THEME_NAME,
-}) => {
+const ThemeStore = () => {
   const storage = useGraphiQL(state => state.storage);
   useEffect(() => {
     function getInitialTheme() {
@@ -94,8 +93,6 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
 
     themeStore.setState({ theme: getInitialTheme() });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-
-  return children as ReactElement;
 };
 
 /**
