@@ -111,7 +111,7 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  const { monaco, actions } = useMonaco()
+  const { monaco, actions } = useMonaco();
 
   useEffect(() => {
     void actions.initialize();
@@ -119,7 +119,7 @@ useEffect(() => {
 
   // This check due hydration issues, it can be removed after setup zustand persist
   if (!monaco) {
-    return null
+    return null;
   }
 
   return <InnerGraphiQLProvider {...props} />;
