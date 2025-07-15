@@ -80,7 +80,6 @@ describe('QueryHistoryItem', () => {
   const mockedSetQueryEditor = queryEditor!.setValue as Mock;
   const mockedSetVariableEditor = variableEditor!.setValue as Mock;
   const mockedSetHeaderEditor = headerEditor!.setValue as Mock;
-  const timeout = 5_000;
 
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
@@ -92,30 +91,24 @@ describe('QueryHistoryItem', () => {
     const otherMockProps = { item: { operationName: mockOperationName } };
     const props = getMockProps(otherMockProps);
     const { container } = render(<QueryHistoryItemWithContext {...props} />);
-    await waitFor(
-      () => {
-        const el = container.querySelector<HTMLButtonElement>(
-          'button.graphiql-history-item-label',
-        );
-        expect(el?.textContent).toBe(mockOperationName);
-      },
-      { timeout },
-    );
+    await waitFor(() => {
+      const el = container.querySelector<HTMLButtonElement>(
+        'button.graphiql-history-item-label',
+      );
+      expect(el?.textContent).toBe(mockOperationName);
+    });
   });
 
   it('renders a string version of the query if label or operation name are not provided', async () => {
     const { container } = render(
       <QueryHistoryItemWithContext {...getMockProps()} />,
     );
-    await waitFor(
-      () => {
-        const el = container.querySelector<HTMLButtonElement>(
-          'button.graphiql-history-item-label',
-        );
-        expect(el?.textContent).toBe(formatQuery(mockQuery));
-      },
-      { timeout },
-    );
+    await waitFor(() => {
+      const el = container.querySelector<HTMLButtonElement>(
+        'button.graphiql-history-item-label',
+      );
+      expect(el?.textContent).toBe(formatQuery(mockQuery));
+    });
   });
 
   it('selects the item when history label button is clicked', async () => {
@@ -124,16 +117,13 @@ describe('QueryHistoryItem', () => {
     const { container } = render(
       <QueryHistoryItemWithContext {...mockProps} />,
     );
-    await waitFor(
-      () => {
-        const el = container.querySelector<HTMLButtonElement>(
-          'button.graphiql-history-item-label',
-        );
-        expect(el).toBeTruthy();
-        fireEvent.click(el!);
-      },
-      { timeout },
-    );
+    await waitFor(() => {
+      const el = container.querySelector<HTMLButtonElement>(
+        'button.graphiql-history-item-label',
+      );
+      expect(el).toBeTruthy();
+      fireEvent.click(el!);
+    });
     expect(mockedSetQueryEditor).toHaveBeenCalledTimes(1);
     expect(mockedSetQueryEditor).toHaveBeenCalledWith(mockProps.item.query);
     expect(mockedSetVariableEditor).toHaveBeenCalledTimes(1);
@@ -148,12 +138,9 @@ describe('QueryHistoryItem', () => {
     const { container, getByLabelText } = render(
       <QueryHistoryItemWithContext {...getMockProps()} />,
     );
-    await waitFor(
-      () => {
-        fireEvent.click(getByLabelText('Edit label'));
-      },
-      { timeout },
-    );
+    await waitFor(() => {
+      fireEvent.click(getByLabelText('Edit label'));
+    });
     expect(container.querySelectorAll('li.editable').length).toBe(1);
     expect(container.querySelectorAll('input').length).toBe(1);
     expect(
