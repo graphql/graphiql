@@ -194,6 +194,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         headers,
         query,
         shouldPersistHeaders,
+        storage,
         variables,
       });
 

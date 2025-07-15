@@ -440,7 +440,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         storage.set(STORAGE_KEY.tabs, serializedTabs);
       } else {
         storage.set(STORAGE_KEY.headers, '');
-        clearHeadersFromTabs();
+        clearHeadersFromTabs(storage);
       }
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
