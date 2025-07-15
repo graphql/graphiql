@@ -111,10 +111,10 @@ The `useGraphiQL` hook **provides access to the following store slices**:
 import { useGraphiQL, useGraphiQLActions, useTheme } from '@graphiql/react';
 
 // Get an action to fetch the schema and an action to change theme
-const { introspect } = useGraphiQLActions();
+const { introspect, setTheme } = useGraphiQLActions();
 
 // Use a selector to access specific parts of the state like current schema and theme
-const { theme, schema } = useGraphiQL(state => ({
+const { schema, theme } = useGraphiQL(state => ({
   schema: state.schema,
   theme: state.theme,
 }));

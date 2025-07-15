@@ -36,8 +36,8 @@ export type AllSlices = EditorSlice &
 export type AllActions = EditorActions &
   ExecutionActions &
   PluginActions &
-  ThemeActions &
-  SchemaActions;
+  SchemaActions &
+  ThemeActions;
 
 export interface SlicesWithActions extends AllSlices {
   actions: AllActions;
