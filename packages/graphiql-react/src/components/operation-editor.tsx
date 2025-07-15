@@ -5,7 +5,7 @@ import {
   getContextAtPosition,
 } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { useMonaco, useStorage } from '../stores';
+import { useMonaco } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
@@ -69,6 +69,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     operationName,
     externalFragments,
     uriInstanceId,
+    storage,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -78,9 +79,9 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'operationName',
       'externalFragments',
       'uriInstanceId',
+      'storage',
     ),
   );
-  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,

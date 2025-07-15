@@ -103,6 +103,7 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
           visiblePlugin: currentVisiblePlugin,
           plugins,
           onTogglePluginVisibility,
+          storage,
         } = current;
         const byTitle = typeof plugin === 'string';
         const newVisiblePlugin: PluginSlice['visiblePlugin'] =
@@ -112,7 +113,6 @@ export const createPluginSlice: CreatePluginSlice = initial => set => ({
           return current;
         }
         onTogglePluginVisibility?.(newVisiblePlugin);
-        const { storage } = storageStore.getState();
         storage.set(STORAGE_KEY.visiblePlugin, newVisiblePlugin?.title ?? '');
         return { visiblePlugin: newVisiblePlugin };
       });

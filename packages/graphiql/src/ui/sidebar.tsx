@@ -14,7 +14,6 @@ import {
   useDragResize,
   useGraphiQL,
   useGraphiQLActions,
-  useStorage,
   useTheme,
   VisuallyHidden,
 } from '@graphiql/react';
@@ -55,19 +54,24 @@ export const Sidebar: FC<SidebarProps> = ({
   const forcedTheme =
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
 
-  const storage = useStorage();
   const { theme, setTheme } = useTheme();
   const { setShouldPersistHeaders, introspect, setVisiblePlugin } =
     useGraphiQLActions();
-  const { shouldPersistHeaders, isIntrospecting, visiblePlugin, plugins } =
-    useGraphiQL(
-      pick(
-        'shouldPersistHeaders',
-        'isIntrospecting',
-        'visiblePlugin',
-        'plugins',
-      ),
-    );
+  const {
+    shouldPersistHeaders,
+    isIntrospecting,
+    visiblePlugin,
+    plugins,
+    storage,
+  } = useGraphiQL(
+    pick(
+      'shouldPersistHeaders',
+      'isIntrospecting',
+      'visiblePlugin',
+      'plugins',
+      'storage',
+    ),
+  );
 
   useEffect(() => {
     if (forcedTheme === 'system') {

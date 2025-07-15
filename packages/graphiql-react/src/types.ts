@@ -6,6 +6,7 @@ import type {
   ExecutionSlice,
   PluginSlice,
   SchemaSlice,
+  StorageSlice,
   //
   EditorActions,
   ExecutionActions,
@@ -26,7 +27,8 @@ export type MonacoEditor = monaco.editor.IStandaloneCodeEditor;
 export type AllSlices = EditorSlice &
   ExecutionSlice &
   PluginSlice &
-  SchemaSlice;
+  SchemaSlice &
+  StorageSlice;
 
 export type AllActions = EditorActions &
   ExecutionActions &

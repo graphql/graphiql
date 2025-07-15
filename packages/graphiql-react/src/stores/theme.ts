@@ -5,6 +5,7 @@ import { createBoundedUseStore } from '../utility';
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
 import { useMonaco } from './monaco';
+import { useGraphiQL } from '../components';
 
 /**
  * The value `null` semantically means that the user does not explicitly choose
@@ -60,10 +61,8 @@ export const ThemeStore: FC<ThemeStoreProps> = ({
 }) => {
   const theme = useTheme(state => state.theme);
   const monaco = useMonaco(state => state.monaco);
-
+  const storage = useGraphiQL(state => state.storage);
   useEffect(() => {
-    const { storage } = storageStore.getState();
-
     function getInitialTheme() {
       const stored = storage.get(STORAGE_KEY.theme);
       switch (stored) {

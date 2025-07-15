@@ -431,8 +431,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
+      const { headerEditor, tabs, activeTabIndex, storage } = get();
       if (persist) {
         storage.set(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
         const serializedTabs = serializeTabState(
@@ -448,8 +447,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       set({ shouldPersistHeaders: persist });
     },
     storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
-      const { shouldPersistHeaders } = get();
+      const { shouldPersistHeaders, storage } = get();
       const store = debounce(500, (value: string) => {
         storage.set(STORAGE_KEY.tabs, value);
       });

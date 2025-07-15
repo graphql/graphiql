@@ -3,18 +3,20 @@ import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
 import { createContext, useContext, useRef, useEffect, useId } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+import { StorageAPI } from '@graphiql/toolkit';
 import {
   createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  createStorageSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
+  StorageProps,
   monacoStore,
 } from '../stores';
-import { StorageStore, useStorage } from '../stores/storage';
 import { ThemeStore } from '../stores/theme';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
@@ -36,22 +38,19 @@ interface InnerGraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
-    SchemaProps {
+    SchemaProps,
+    StorageProps {
   children: ReactNode;
 }
 
-type GraphiQLProviderProps =
-  //
-  InnerGraphiQLProviderProps &
-    ComponentPropsWithoutRef<typeof StorageStore> &
-    ComponentPropsWithoutRef<typeof ThemeStore>;
+type GraphiQLProviderProps = InnerGraphiQLProviderProps &
+  ComponentPropsWithoutRef<typeof ThemeStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  storage,
   defaultTheme,
   editorTheme,
   ...props
@@ -123,11 +122,9 @@ useEffect(() => {
   }, []);
 
   return (
-    <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <InnerGraphiQLProvider {...props} />
-      </ThemeStore>
-    </StorageStore>
+    <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
+      <InnerGraphiQLProvider {...props} />
+    </ThemeStore>
   );
 };
 
@@ -159,13 +156,16 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   visiblePlugin,
   children,
 
+  storage: $storage,
+
   ...props
 }) => {
-  const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
   const uriInstanceId = useId();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
+    const storage = new StorageAPI($storage);
+
     function getInitialVisiblePlugin() {
       const storedValue = storage.get(STORAGE_KEY.visiblePlugin);
       const pluginForStoredValue = plugins.find(
@@ -205,6 +205,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>((...args) => {
+        const storageSlice = createStorageSlice({ storage })(...args);
         const editorSlice = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
@@ -242,6 +243,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           schemaDescription,
         })(...args);
         return {
+          ...storageSlice,
           ...editorSlice,
           ...executionSlice,
           ...pluginSlice,

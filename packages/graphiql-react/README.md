@@ -89,7 +89,6 @@ React hooks.
 
 ### Core Hooks
 
-- **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
 - **`useTheme`**: Manages the current theme and provides a method to update it.
 - **`useMonaco`**: Access `monaco-editor` exports and the `monaco-graphql` instance. Designed for safe use in SSR environments.
 - **`useGraphiQL`**: Access the current state.
@@ -98,12 +97,13 @@ React hooks.
 The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
 
-| Store Slice | Responsibilities                                                                 |
-| ----------- | -------------------------------------------------------------------------------- |
-| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs |
-| `execution` | Handles the execution of GraphQL requests                                        |
-| `plugin`    | Manages plugins and the currently active plugin                                  |
-| `schema`    | Fetches, validates, and stores the GraphQL schema                                |
+| Store Slice | Responsibilities                                                                                          |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| `storage`   | Provides a storage API that can be used to persist state in the browser (by default using `localStorage`) |
+| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs                          |
+| `execution` | Handles the execution of GraphQL requests                                                                 |
+| `plugin`    | Manages plugins and the currently active plugin                                                           |
+| `schema`    | Fetches, validates, and stores the GraphQL schema                                                         |
 
 ### Usage Example
 

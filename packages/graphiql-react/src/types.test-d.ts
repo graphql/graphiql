@@ -3,6 +3,7 @@ import type {
   ExecutionSlice,
   PluginSlice,
   SchemaSlice,
+  StorageSlice,
   //
   EditorActions,
   ExecutionActions,
@@ -34,7 +35,7 @@ describe('Should not have conflicting types', () => {
 
   it('AllSlices', () => {
     type Actual = MergeMany<
-      [EditorSlice, ExecutionSlice, PluginSlice, SchemaSlice]
+      [EditorSlice, ExecutionSlice, PluginSlice, SchemaSlice, StorageSlice]
     >;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expectTypeOf<Actual>().toEqualTypeOf<AllSlices>;

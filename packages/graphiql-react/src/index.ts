@@ -1,6 +1,6 @@
 import './style/root.css';
 
-export { useStorage, useTheme, type Theme } from './stores';
+export { useTheme, type Theme } from './stores';
 
 export * from './utility';
 export type { TabsState } from './utility/tabs';

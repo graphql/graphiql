@@ -11,16 +11,15 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
 ) {
   const { updateActiveTabValues } = useGraphiQLActions();
-  const editor = useGraphiQL(
-    state =>
+  const { editor, storage } = useGraphiQL(state => ({
+    editor:
       state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
+    storage: state.storage,
+  }));
   useEffect(() => {
     if (!editor) {
       return;
     }
-    const { storage } = storageStore.getState();
-
     const store = debounce(500, (value: string) => {
       if (storageKey === null) {
         return;
