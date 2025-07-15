@@ -397,25 +397,18 @@ describe('GraphiQL', () => {
   });
 
   it('does not allow the user to control persisting headers is false', async () => {
-    const { container, findByText } = render(
+    const { container, findByLabelText, findByTestId } = render(
       <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
     );
 
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+    await waitFor(async () => {
+      const el = await findByLabelText('Open settings dialog');
+      fireEvent.click(el);
+      const el2 = await findByTestId('graphiql-settings-dialog');
+      expect(el2).toBeTruthy();
+      const el3 = container.querySelector('[data-testid="persist-headers"]');
+      expect(el3).toBeNull();
     });
-
-    const callback = async () => {
-      try {
-        await findByText('Persist headers');
-      } catch {
-        // eslint-disable-next-line no-throw-literal
-        throw 'failed';
-      }
-    };
-    await expect(callback).rejects.toEqual('failed');
   });
 
   describe('Tabs', () => {
