@@ -69,7 +69,7 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const { storage } = useGraphiQL()` instead.
+ * @deprecated Use `const { storage } = useGraphiQL(state => state.storage)` instead.
  */
 export const useStorage = () => useGraphiQL(state => state.storage);
 
