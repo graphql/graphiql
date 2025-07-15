@@ -17,7 +17,7 @@ import {
   SchemaProps,
   ThemeProps,
   StorageProps,
-  monacoStore,
+  useMonaco,
 } from '../stores';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
@@ -110,6 +110,16 @@ useEffect(() => {
   responseEditor.setValue(response)
 }, [response])`,
     );
+  }
+  const { monaco, actions } = useMonaco()
+
+  useEffect(() => {
+    void actions.initialize();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This check due hydration issues, it can be removed after setup zustand persist
+  if (!monaco) {
+    return null
   }
 
   return <InnerGraphiQLProvider {...props} />;
@@ -345,14 +355,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     return () => {
       window.removeEventListener('keydown', runIntrospection);
     };
-  }, []);
-
-  useEffect(() => {
-    const { actions } = monacoStore.getState();
-    void actions.initialize().then(() => {
-      const { setMonacoTheme } = storeRef.current.getState().actions;
-      setMonacoTheme();
-    });
   }, []);
 
   return (

@@ -1,5 +1,6 @@
 import './style/root.css';
 
+export { useMonaco } from './stores';
 export * from './utility';
 export type { TabsState } from './utility/tabs';
 export * from './icons';
