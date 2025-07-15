@@ -331,14 +331,13 @@ describe('GraphiQL', () => {
         .spyOn(Element.prototype, 'getBoundingClientRect')
         .mockReturnValue({ left: 0, right: 1200 } as DOMRect);
 
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+      const { container, findByLabelText } = render(
+        <GraphiQL fetcher={noOpFetcher} />,
+      );
 
-      act(() => {
-        fireEvent.click(
-          container.querySelector(
-            '[aria-label="Show Documentation Explorer"]',
-          )!,
-        );
+      await waitFor(async () => {
+        const el = await findByLabelText('Show Documentation Explorer');
+        fireEvent.click(el);
       });
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
@@ -356,11 +355,9 @@ describe('GraphiQL', () => {
       });
 
       await waitFor(() => {
+        const el = container.querySelector<HTMLDivElement>('.graphiql-plugin')!;
         // 797 / (1200 - 797) = 1.977667493796526
-        expect(
-          container.querySelector<HTMLDivElement>('.graphiql-plugin')!.style
-            .flex,
-        ).toBe('1.977667493796526');
+        expect(el.style.flex).toBe('1.977667493796526');
       });
 
       clientWidthSpy.mockRestore();
