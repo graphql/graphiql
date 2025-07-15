@@ -102,6 +102,7 @@ const esmConfig = defineConfig({
         /^@graphiql\/react\//,
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },

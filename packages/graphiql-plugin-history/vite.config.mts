@@ -52,6 +52,7 @@ export default defineConfig({
         ...Object.keys(packageJSON.dependencies),
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },

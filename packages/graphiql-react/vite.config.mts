@@ -124,6 +124,7 @@ export default defineConfig({
         /zustand\//,
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },
