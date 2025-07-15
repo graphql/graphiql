@@ -1,7 +1,7 @@
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
 import { monacoStore } from './monaco';
-import type { StateCreator } from 'zustand/index';
+import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, Theme } from '../types';
 
 type MonacoTheme =
@@ -68,8 +68,8 @@ export const createThemeSlice: CreateThemeSlice = initial => (set, get) => ({
     },
     setMonacoTheme() {
       const { theme, editorTheme } = get();
-      const resolvedTheme = theme ?? getSystemTheme();
       const { monaco } = monacoStore.getState();
+      const resolvedTheme = theme ?? getSystemTheme();
       monaco?.editor.setTheme(editorTheme[resolvedTheme]);
     },
   },
