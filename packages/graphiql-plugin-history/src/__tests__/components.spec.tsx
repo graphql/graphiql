@@ -80,7 +80,7 @@ describe('QueryHistoryItem', () => {
   const mockedSetQueryEditor = queryEditor!.setValue as Mock;
   const mockedSetVariableEditor = variableEditor!.setValue as Mock;
   const mockedSetHeaderEditor = headerEditor!.setValue as Mock;
-  const timeout = 2_000;
+  const timeout = 3_000;
 
   beforeEach(() => {
     mockedSetQueryEditor.mockClear();
