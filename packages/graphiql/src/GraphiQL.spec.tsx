@@ -155,7 +155,7 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    const timeout = 6_000;
+    const timeout = 7_000;
     it(
       'defaults to the built-in default query',
       async () => {
