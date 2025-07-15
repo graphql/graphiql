@@ -155,41 +155,46 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    it('defaults to the built-in default query', async () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    const timeout = 6_000;
+    it(
+      'defaults to the built-in default query',
+      async () => {
+        const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(
-        () => {
-          const queryEditor = container.querySelector<HTMLDivElement>(
-            '.graphiql-editor .monaco-scrollable-element',
-          );
-          expect(queryEditor).toBeVisible();
-          expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-        },
-        {
-          timeout: 7_000,
-        },
-      );
-    });
+        await waitFor(
+          () => {
+            const queryEditor = container.querySelector<HTMLDivElement>(
+              '.graphiql-editor .monaco-scrollable-element',
+            );
+            expect(queryEditor).toBeVisible();
+            expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
+          },
+          { timeout },
+        );
+      },
+      timeout,
+    );
 
-    it('accepts a custom default query', async () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
-      );
+    it(
+      'accepts a custom default query',
+      async () => {
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
+        );
 
-      await waitFor(
-        () => {
-          const queryEditor = container.querySelector<HTMLDivElement>(
-            '.graphiql-editor .monaco-scrollable-element',
-          );
-          expect(queryEditor).toBeVisible();
-          expect(queryEditor!.textContent).toBe('GraphQL Party!!');
-        },
-        {
-          timeout: 7_000,
-        },
-      );
-    });
+        await waitFor(
+          () => {
+            const queryEditor = container.querySelector<HTMLDivElement>(
+              '.graphiql-editor .monaco-scrollable-element',
+            );
+            expect(queryEditor).toBeVisible();
+            expect(queryEditor!.textContent).toBe('GraphQL Party!!');
+          },
+          { timeout },
+        );
+      },
+      timeout,
+    );
   }); // default query
 
   // TODO: rewrite these plugin tests after plugin API has more structure
