@@ -658,11 +658,16 @@ describe('GraphiQL', () => {
         <GraphiQL fetcher={noOpFetcher} />
       </>,
     );
-    const [firstEl, secondEl] = container.querySelectorAll(
-      '.graphiql-container',
-    );
-    expect(firstEl).toBeInTheDocument();
-    expect(secondEl).toBeInTheDocument();
+    let firstEl: HTMLDivElement | undefined;
+    let secondEl: HTMLDivElement | undefined;
+    await waitFor(() => {
+      const result = container.querySelectorAll<HTMLDivElement>(
+        '.graphiql-container',
+      );
+      [firstEl, secondEl] = result;
+      expect(firstEl).toBeInTheDocument();
+      expect(secondEl).toBeInTheDocument();
+    });
     const [showDocExplorerButton] = getAllByLabelText(
       'Show Documentation Explorer',
     );
