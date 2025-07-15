@@ -6,7 +6,6 @@ import {
   getDefaultTabState,
   clearHeadersFromTabs,
 } from './tabs';
-import { storageStore } from '../stores';
 import { STORAGE_KEY } from '../constants';
 
 describe('createTab', () => {
@@ -105,12 +104,6 @@ describe('fuzzyExtractionOperationTitle', () => {
 });
 
 describe('getDefaultTabState', () => {
-  beforeEach(() => {
-    act(() => {
-      storageStore.setState({ storage: new StorageAPI() });
-    });
-  });
-
   it('returns default tab', () => {
     expect(
       getDefaultTabState({
@@ -118,6 +111,7 @@ describe('getDefaultTabState', () => {
         headers: null,
         query: null,
         variables: null,
+        storage: new StorageAPI(),
       }),
     ).toEqual({
       activeTabIndex: 0,
@@ -149,6 +143,7 @@ describe('getDefaultTabState', () => {
         ],
         query: null,
         variables: null,
+        storage: new StorageAPI(),
       }),
     ).toEqual({
       activeTabIndex: 0,
@@ -170,7 +165,7 @@ describe('getDefaultTabState', () => {
 
 describe('clearHeadersFromTabs', () => {
   it('preserves tab state except for headers', () => {
-    const { storage } = storageStore.getState();
+    const storage = new StorageAPI();
     const stateWithHeaders = {
       operationName: 'test',
       query: 'query test {\n  test {\n    id\n  }\n}',
@@ -180,7 +175,7 @@ describe('clearHeadersFromTabs', () => {
       headers: '{ "authorization": "secret" }',
     };
     storage.set(STORAGE_KEY.tabs, JSON.stringify(stateWithHeaders));
-    clearHeadersFromTabs();
+    clearHeadersFromTabs(storage);
 
     expect(JSON.parse(storage.get(STORAGE_KEY.tabs)!)).toEqual({
       ...stateWithHeaders,
