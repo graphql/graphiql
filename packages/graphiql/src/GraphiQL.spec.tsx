@@ -7,10 +7,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
-import { Component } from 'react';
+import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
 import type { Fetcher } from '@graphiql/toolkit';
-import { ToolbarButton } from '@graphiql/react';
+import {
+  ToolbarButton,
+  useGraphiQL,
+  useOperationsEditorState,
+  MonacoEditor,
+} from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
 // The smallest possible introspection result that builds a schema.
@@ -680,6 +685,52 @@ describe('GraphiQL', () => {
       // Editor store
       expect(firstEl!.querySelectorAll('.graphiql-tab').length).toBe(2);
       expect(secondEl!.querySelectorAll('.graphiql-tab').length).toBe(1);
+    });
+  });
+
+  it('`useOperationsEditorState` hook', async () => {
+    let hookResult: ReturnType<typeof useOperationsEditorState>;
+    let queryEditor: MonacoEditor;
+
+    const HookConsumer: FC = () => {
+      const $hookResult = useOperationsEditorState();
+      const $queryEditor = useGraphiQL(state => state.queryEditor);
+      useEffect(() => {
+        hookResult = $hookResult;
+        queryEditor = $queryEditor!;
+      }, [$hookResult, $queryEditor]);
+      return null;
+    };
+
+    const { container } = render(
+      <GraphiQL fetcher={noOpFetcher} initialQuery="query { hello }">
+        <HookConsumer />
+      </GraphiQL>,
+    );
+    let editor: HTMLDivElement = null!;
+
+    // Assert initial values
+    await waitFor(() => {
+      editor = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor .monaco-scrollable-element',
+      )!;
+      expect(editor.textContent).toBe('query { hello }');
+      expect(hookResult[0]).toBe('query { hello }');
+    });
+    // Assert value was changed after UI editing
+    await waitFor(() => {
+      const newValue = 'bar';
+      queryEditor.setValue(newValue);
+      expect(editor.textContent).toBe(newValue);
+      expect(hookResult[0]).toBe(newValue);
+    });
+
+    // Assert using hook handler
+    await waitFor(() => {
+      const newValue = 'foo';
+      hookResult[1](newValue);
+      expect(editor.textContent).toBe(newValue);
+      expect(hookResult[0]).toBe(newValue);
     });
   });
 });

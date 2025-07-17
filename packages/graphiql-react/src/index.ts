@@ -10,6 +10,7 @@ export type {
   EditorProps,
   SchemaReference,
   SlicesWithActions,
+  MonacoEditor,
   Theme,
 } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
