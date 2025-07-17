@@ -713,7 +713,7 @@ describe('GraphiQL', () => {
     await waitFor(() => {
       editor = container.querySelector<HTMLDivElement>(
         '.graphiql-editor .monaco-scrollable-element',
-      );
+      )!;
       expect(editor.textContent).toBe('query { hello }');
       expect(hookResult[0]).toBe('query { hello }');
     });

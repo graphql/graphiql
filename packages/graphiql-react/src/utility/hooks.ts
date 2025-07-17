@@ -48,8 +48,8 @@ export const useEditorState = (
   editor: 'query' | 'variable' | 'header',
 ): [string, (val: string) => void] => {
   const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
-  const model = editorInstance?.getModel();
   const [value, setValue] = useState('');
+  const model = editorInstance?.getModel();
 
   useEffect(() => {
     if (!model) {
