@@ -1,5 +1,5 @@
-import type { JSX } from "react";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import type { JSX } from 'react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 export default function Root(): JSX.Element {
   return (

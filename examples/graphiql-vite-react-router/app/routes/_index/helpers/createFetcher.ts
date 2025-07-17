@@ -1,12 +1,12 @@
-import type { GraphiQLProps } from "graphiql";
+import type { GraphiQLProps } from 'graphiql';
 
-export function createFetcher(apiUrl: string): GraphiQLProps["fetcher"] {
+export function createFetcher(apiUrl: string): GraphiQLProps['fetcher'] {
   return async function (graphQLParams, opts) {
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
         ...opts?.headers,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(graphQLParams),
     });
