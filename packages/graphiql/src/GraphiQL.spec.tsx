@@ -725,7 +725,7 @@ describe('GraphiQL', () => {
       expect(hookResult[0]).toBe(newValue);
     });
 
-    // Asser using hook handler
+    // Assert using hook handler
     await waitFor(() => {
       const newValue = 'foo';
       hookResult[1](newValue);
