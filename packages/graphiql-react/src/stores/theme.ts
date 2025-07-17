@@ -16,6 +16,8 @@ export interface ThemeSlice {
     dark: MonacoTheme;
     light: MonacoTheme;
   };
+
+  monacoTheme?: MonacoTheme
 }
 
 export interface ThemeActions {
@@ -64,7 +66,7 @@ export const createThemeSlice: CreateThemeSlice = initial => (set, get) => ({
       const resolvedTheme = theme ?? getSystemTheme();
       const monacoTheme = editorTheme[resolvedTheme];
       monaco?.editor.setTheme(monacoTheme);
-      set({ theme });
+      set({ theme, monacoTheme });
     },
   },
 });

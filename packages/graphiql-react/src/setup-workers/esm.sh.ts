@@ -4,7 +4,7 @@ import GraphQLWorker from 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?w
 import EditorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker.js?worker';
 
 globalThis.MonacoEnvironment = {
-  getWorker(_workerId, label) {
+  getWorker(_workerId: string, label: string) {
     // eslint-disable-next-line no-console
     console.info('setup-workers/esm.sh', { label });
     switch (label) {

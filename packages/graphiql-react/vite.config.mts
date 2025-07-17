@@ -68,12 +68,23 @@ export const plugins: PluginOption[] = [
       const types = 'export {};\n';
 
       await fs.mkdir(dest, { recursive: true });
+
+      const [esmSh, vite, webpack] = await Promise.all([
+        fs.readFile(path.join(source, 'esm.sh.ts')),
+        fs.readFile(path.join(source, 'vite.ts')),
+        fs.readFile(path.join(source, 'webpack.ts')),
+      ]);
+
+      function removeTypes(raw: Buffer) {
+        return raw.toString().replaceAll(': string', '');
+      }
+
       await Promise.all([
-        fs.cp(path.join(source, 'esm.sh.ts'), path.join(dest, 'esm.sh.js')),
+        fs.writeFile(path.join(dest, 'esm.sh.js'), removeTypes(esmSh)),
         fs.writeFile(path.join(dest, 'esm.sh.d.ts'), types),
-        fs.cp(path.join(source, 'vite.ts'), path.join(dest, 'vite.js')),
+        fs.writeFile(path.join(dest, 'vite.js'), removeTypes(vite)),
         fs.writeFile(path.join(dest, 'vite.d.ts'), types),
-        fs.cp(path.join(source, 'webpack.ts'), path.join(dest, 'webpack.js')),
+        fs.writeFile(path.join(dest, 'webpack.js'), removeTypes(webpack)),
         fs.writeFile(path.join(dest, 'webpack.d.ts'), types),
       ]);
 

@@ -70,6 +70,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     externalFragments,
     uriInstanceId,
     storage,
+    monacoTheme,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -80,6 +81,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'externalFragments',
       'uriInstanceId',
       'storage',
+      'monacoTheme',
     ),
   );
   const ref = useRef<HTMLDivElement>(null!);
@@ -226,7 +228,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       uri: operationUri.path.replace('/', ''),
       value: initialQuery,
     });
-    const editor = createEditor(ref, { model });
+    const editor = createEditor(ref, {
+      model,
+      theme: monacoTheme,
+    });
     setEditor({ queryEditor: editor });
 
     // We don't use the generic `useChangeHandler` hook here because we want to

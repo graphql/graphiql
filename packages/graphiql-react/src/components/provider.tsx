@@ -1,6 +1,13 @@
 /* eslint sort-keys: "error" */
 import type { FC, ReactNode, RefObject } from 'react';
-import { createContext, useContext, useRef, useEffect, useId } from 'react';
+import {
+  createContext,
+  useContext,
+  useRef,
+  useEffect,
+  useId,
+  useState,
+} from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import { StorageAPI } from '@graphiql/toolkit';
@@ -111,14 +118,16 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  const { monaco, actions } = useMonaco();
+  const { actions } = useMonaco();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     void actions.initialize();
+    setMounted(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // This check due hydration issues, it can be removed after setup zustand persist
-  if (!monaco) {
+  if (!mounted) {
     return null;
   }
 

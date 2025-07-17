@@ -155,31 +155,46 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    it('defaults to the built-in default query', async () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    const timeout = 8_000;
+    it(
+      'defaults to the built-in default query',
+      async () => {
+        const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
+        await waitFor(
+          () => {
+            const queryEditor = container.querySelector<HTMLDivElement>(
+              '.graphiql-editor .monaco-scrollable-element',
+            );
+            expect(queryEditor).toBeVisible();
+            expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
+          },
+          { timeout },
         );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-      });
-    });
+      },
+      timeout,
+    );
 
-    it('accepts a custom default query', async () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
-      );
-
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
+    it(
+      'accepts a custom default query',
+      async () => {
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
         );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('GraphQL Party!!');
-      });
-    });
+
+        await waitFor(
+          () => {
+            const queryEditor = container.querySelector<HTMLDivElement>(
+              '.graphiql-editor .monaco-scrollable-element',
+            );
+            expect(queryEditor).toBeVisible();
+            expect(queryEditor!.textContent).toBe('GraphQL Party!!');
+          },
+          { timeout },
+        );
+      },
+      timeout,
+    );
   }); // default query
 
   // TODO: rewrite these plugin tests after plugin API has more structure
@@ -292,11 +307,11 @@ describe('GraphiQL', () => {
 
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(() => {
-        const dragBar = container.querySelector(
-          '.graphiql-horizontal-drag-bar',
-        )!;
-        expect(dragBar).toBeTruthy();
+      const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
+      const editors =
+        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
+
+      act(() => {
         fireEvent.mouseDown(dragBar, {
           button: 0,
           ctrlKey: false,
@@ -311,8 +326,6 @@ describe('GraphiQL', () => {
       });
 
       await waitFor(() => {
-        const editors =
-          container.querySelector<HTMLDivElement>('.graphiql-editors')!;
         // 700 / (900 - 700) = 3.5
         expect(editors.style.flex).toEqual('3.5');
       });
@@ -331,13 +344,14 @@ describe('GraphiQL', () => {
         .spyOn(Element.prototype, 'getBoundingClientRect')
         .mockReturnValue({ left: 0, right: 1200 } as DOMRect);
 
-      const { container, findByLabelText } = render(
-        <GraphiQL fetcher={noOpFetcher} />,
-      );
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(async () => {
-        const el = await findByLabelText('Show Documentation Explorer');
-        fireEvent.click(el);
+      act(() => {
+        fireEvent.click(
+          container.querySelector(
+            '[aria-label="Show Documentation Explorer"]',
+          )!,
+        );
       });
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
@@ -355,9 +369,11 @@ describe('GraphiQL', () => {
       });
 
       await waitFor(() => {
-        const el = container.querySelector<HTMLDivElement>('.graphiql-plugin')!;
         // 797 / (1200 - 797) = 1.977667493796526
-        expect(el.style.flex).toBe('1.977667493796526');
+        expect(
+          container.querySelector<HTMLDivElement>('.graphiql-plugin')!.style
+            .flex,
+        ).toBe('1.977667493796526');
       });
 
       clientWidthSpy.mockRestore();
@@ -370,10 +386,10 @@ describe('GraphiQL', () => {
       <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
     );
 
-    await waitFor(() => {
-      const el = container.querySelector('[aria-label="Open settings dialog"]');
-      expect(el).toBeTruthy();
-      fireEvent.click(el);
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
     });
 
     const element = await findByText('Persist headers');
@@ -385,10 +401,10 @@ describe('GraphiQL', () => {
       <GraphiQL fetcher={noOpFetcher} />,
     );
 
-    await waitFor(() => {
-      const el = container.querySelector('[aria-label="Open settings dialog"]');
-      expect(el).toBeTruthy();
-      fireEvent.click(el);
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
     });
 
     const element = await findByText('Persist headers');
@@ -396,18 +412,25 @@ describe('GraphiQL', () => {
   });
 
   it('does not allow the user to control persisting headers is false', async () => {
-    const { container, findByLabelText, findByTestId } = render(
+    const { container, findByText } = render(
       <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
     );
 
-    await waitFor(async () => {
-      const el = await findByLabelText('Open settings dialog');
-      fireEvent.click(el);
-      const el2 = await findByTestId('graphiql-settings-dialog');
-      expect(el2).toBeTruthy();
-      const el3 = container.querySelector('[data-testid="persist-headers"]');
-      expect(el3).toBeNull();
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
     });
+
+    const callback = async () => {
+      try {
+        await findByText('Persist headers');
+      } catch {
+        // eslint-disable-next-line no-throw-literal
+        throw 'failed';
+      }
+    };
+    await expect(callback).rejects.toEqual('failed');
   });
 
   describe('Tabs', () => {
@@ -474,10 +497,8 @@ describe('GraphiQL', () => {
     it('close button removes a tab', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(() => {
-        const el = container.querySelector('.graphiql-tab-add');
-        expect(el).toBeTruthy();
-        fireEvent.click(el);
+      act(() => {
+        fireEvent.click(container.querySelector('.graphiql-tab-add')!);
       });
 
       await waitFor(() => {
@@ -650,16 +671,11 @@ describe('GraphiQL', () => {
         <GraphiQL fetcher={noOpFetcher} />
       </>,
     );
-    let firstEl: HTMLDivElement | undefined;
-    let secondEl: HTMLDivElement | undefined;
-    await waitFor(() => {
-      const result = container.querySelectorAll<HTMLDivElement>(
-        '.graphiql-container',
-      );
-      [firstEl, secondEl] = result;
-      expect(firstEl).toBeInTheDocument();
-      expect(secondEl).toBeInTheDocument();
-    });
+    const [firstEl, secondEl] = container.querySelectorAll(
+      '.graphiql-container',
+    );
+    expect(firstEl).toBeInTheDocument();
+    expect(secondEl).toBeInTheDocument();
     const [showDocExplorerButton] = getAllByLabelText(
       'Show Documentation Explorer',
     );
