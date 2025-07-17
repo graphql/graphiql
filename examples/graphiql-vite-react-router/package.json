@@ -6,10 +6,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "prebuild": "rimraf .cache build",
     "build": "react-router build",
     "dev": "react-router dev --port 4000",
-    "start": "react-router-serve build/server/index.js"
+    "start": "react-router-serve dist/server/index.js"
   },
   "dependencies": {
     "@graphiql/react": "0.35.6",
@@ -26,7 +25,6 @@
     "@react-router/dev": "7.6.3",
     "@types/node": "22.15.34",
     "@types/react": "19.1.8",
-    "rimraf": "6.0.1",
     "typescript": "5.8.3",
     "vite": "7.0.4"
   }
