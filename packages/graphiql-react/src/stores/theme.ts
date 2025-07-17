@@ -17,7 +17,7 @@ export interface ThemeSlice {
     light: MonacoTheme;
   };
 
-  monacoTheme?: MonacoTheme
+  monacoTheme?: MonacoTheme;
 }
 
 export interface ThemeActions {
