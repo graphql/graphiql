@@ -89,8 +89,6 @@ React hooks.
 
 ### Core Hooks
 
-- **`useStorage`**: Provides a storage API that can be used to persist state in the browser (by default using `localStorage`).
-- **`useTheme`**: Manages the current theme and provides a method to update it.
 - **`useMonaco`**: Access `monaco-editor` exports and the `monaco-graphql` instance. Designed for safe use in SSR environments.
 - **`useGraphiQL`**: Access the current state.
 - **`useGraphiQLActions`**: Trigger actions that mutate the state. This hook **never** rerenders.
@@ -98,27 +96,28 @@ React hooks.
 The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
 
-| Store Slice | Responsibilities                                                                 |
-| ----------- | -------------------------------------------------------------------------------- |
-| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs |
-| `execution` | Handles the execution of GraphQL requests                                        |
-| `plugin`    | Manages plugins and the currently active plugin                                  |
-| `schema`    | Fetches, validates, and stores the GraphQL schema                                |
+| Store Slice | Responsibilities                                                                                          |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| `storage`   | Provides a storage API that can be used to persist state in the browser (by default using `localStorage`) |
+| `editor`    | Manages **query**, **variables**, **headers**, and **response** editors and tabs                          |
+| `execution` | Handles the execution of GraphQL requests                                                                 |
+| `plugin`    | Manages plugins and the currently active plugin                                                           |
+| `schema`    | Fetches, validates, and stores the GraphQL schema                                                         |
+| `theme`     | Manages the current theme and provides a method to update it                                              |
 
 ### Usage Example
 
 ```js
 import { useGraphiQL, useGraphiQLActions, useTheme } from '@graphiql/react';
 
-// Get an action to fetch the schema
-const { introspect } = useGraphiQLActions();
+// Get an action to fetch the schema and an action to change theme
+const { introspect, setTheme } = useGraphiQLActions();
 
-// Get the current theme and a method to change it
-const { theme, setTheme } = useTheme();
-
-// Or use a selector to access specific parts of the state
-const schema = useGraphiQL(state => state.schema);
-const currentTheme = useTheme(state => state.theme);
+// Use a selector to access specific parts of the state like current schema and theme
+const { schema, theme } = useGraphiQL(state => ({
+  schema: state.schema,
+  theme: state.theme,
+}));
 ```
 
 All store properties are documented using TSDoc comments. If you're using an

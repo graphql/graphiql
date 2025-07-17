@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import type * as monaco from 'monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
@@ -10,16 +9,15 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
 ) {
   const { updateActiveTabValues } = useGraphiQLActions();
-  const editor = useGraphiQL(
-    state =>
+  const { editor, storage } = useGraphiQL(state => ({
+    editor:
       state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
+    storage: state.storage,
+  }));
   useEffect(() => {
     if (!editor) {
       return;
     }
-    const { storage } = storageStore.getState();
-
     const store = debounce(500, (value: string) => {
       if (storageKey === null) {
         return;
@@ -40,7 +38,14 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
+  }, [
+    callback,
+    editor,
+    storageKey,
+    tabProperty,
+    updateActiveTabValues,
+    storage,
+  ]);
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect

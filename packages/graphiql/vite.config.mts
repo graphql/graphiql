@@ -86,6 +86,7 @@ const esmConfig = defineConfig({
         'src/e2e.ts',
         'src/setup-workers/webpack.ts',
         'src/setup-workers/vite.ts',
+        'src/setup-workers/esm.sh.ts',
       ],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
@@ -102,6 +103,7 @@ const esmConfig = defineConfig({
         /^@graphiql\/react\//,
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },

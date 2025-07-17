@@ -1,7 +1,5 @@
-/* eslint-disable unicorn/prefer-export-from */
 import { useGraphiQL, useGraphiQLActions } from './components';
 import { pick } from './utility';
-import { useStorage } from './stores';
 
 /**
  * @deprecated Use `const { prettifyEditors } = useGraphiQLActions()` instead.
@@ -71,6 +69,23 @@ export function useSchemaContext() {
 }
 
 /**
- * @deprecated Use `const storage = useStorage()` instead.
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
  */
-export const useStorageContext = useStorage;
+export const useStorage = () => useGraphiQL(state => state.storage);
+
+/**
+ * @deprecated Use `const storage = useGraphiQL(state => state.storage)` instead.
+ */
+export const useStorageContext = useStorage; // eslint-disable-line @typescript-eslint/no-deprecated
+
+/**
+ * @deprecated Use `useGraphiQLActions` and `useGraphiQL` hooks instead.
+ */
+export function useTheme() {
+  const { setTheme } = useGraphiQLActions();
+  const theme = useGraphiQL(state => state.theme);
+  return {
+    setTheme,
+    theme,
+  };
+}

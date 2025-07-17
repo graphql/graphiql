@@ -2,8 +2,7 @@
   "name": "graphiql",
   "version": "5.0.6",
   "sideEffects": [
-    "dist/setup-workers/webpack.js",
-    "dist/setup-workers/vite.js"
+    "dist/setup-workers/*"
   ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [

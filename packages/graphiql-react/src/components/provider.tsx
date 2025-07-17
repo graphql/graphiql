@@ -1,21 +1,31 @@
 /* eslint sort-keys: "error" */
-import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
-import { createContext, useContext, useRef, useEffect, useId } from 'react';
+import type { FC, ReactNode, RefObject } from 'react';
+import {
+  createContext,
+  useContext,
+  useRef,
+  useEffect,
+  useId,
+  useState,
+} from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+import { StorageAPI } from '@graphiql/toolkit';
 import {
   createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
+  createThemeSlice,
+  createStorageSlice,
   EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
-  monacoStore,
+  ThemeProps,
+  StorageProps,
+  useMonaco,
 } from '../stores';
-import { StorageStore, useStorage } from '../stores/storage';
-import { ThemeStore } from '../stores/theme';
 import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
@@ -28,34 +38,26 @@ import {
 import {
   DEFAULT_PRETTIFY_QUERY,
   DEFAULT_QUERY,
+  MONACO_THEME_NAME,
   STORAGE_KEY,
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 
-interface InnerGraphiQLProviderProps
+interface GraphiQLProviderProps
   extends EditorProps,
     ExecutionProps,
     PluginProps,
-    SchemaProps {
+    SchemaProps,
+    ThemeProps,
+    StorageProps {
   children: ReactNode;
 }
-
-type GraphiQLProviderProps =
-  //
-  InnerGraphiQLProviderProps &
-    ComponentPropsWithoutRef<typeof StorageStore> &
-    ComponentPropsWithoutRef<typeof ThemeStore>;
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
 const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
-export const GraphiQLProvider: FC<GraphiQLProviderProps> = ({
-  storage,
-  defaultTheme,
-  editorTheme,
-  ...props
-}) => {
+export const GraphiQLProvider: FC<GraphiQLProviderProps> = props => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
   if (!props.fetcher) {
     throw new TypeError(
@@ -116,22 +118,23 @@ useEffect(() => {
 }, [response])`,
     );
   }
+  const { actions } = useMonaco();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const { actions } = monacoStore.getState();
     void actions.initialize();
-  }, []);
+    setMounted(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <StorageStore storage={storage}>
-      <ThemeStore defaultTheme={defaultTheme} editorTheme={editorTheme}>
-        <InnerGraphiQLProvider {...props} />
-      </ThemeStore>
-    </StorageStore>
-  );
+  // This check due hydration issues, it can be removed after setup zustand persist
+  if (!mounted) {
+    return null;
+  }
+
+  return <InnerGraphiQLProvider {...props} />;
 };
 
-const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
+const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   defaultHeaders,
   defaultQuery = DEFAULT_QUERY,
   defaultTabs,
@@ -159,13 +162,19 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
   visiblePlugin,
   children,
 
+  defaultTheme = null,
+  editorTheme = MONACO_THEME_NAME,
+
+  storage: $storage,
+
   ...props
 }) => {
-  const storage = useStorage();
   const storeRef = useRef<GraphiQLStore>(null!);
   const uriInstanceId = useId();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
+    const storage = new StorageAPI($storage);
+
     function getInitialVisiblePlugin() {
       const storedValue = storage.get(STORAGE_KEY.visiblePlugin);
       const pluginForStoredValue = plugins.find(
@@ -178,6 +187,22 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         storage.set(STORAGE_KEY.visiblePlugin, '');
       }
       return visiblePlugin;
+    }
+
+    function getInitialTheme() {
+      const stored = storage.get(STORAGE_KEY.theme);
+      switch (stored) {
+        case 'light':
+          return 'light';
+        case 'dark':
+          return 'dark';
+        default:
+          if (typeof stored === 'string') {
+            // Remove the invalid stored value
+            storage.set(STORAGE_KEY.theme, '');
+          }
+          return defaultTheme;
+      }
     }
 
     function getInitialState() {
@@ -194,6 +219,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
         headers,
         query,
         shouldPersistHeaders,
+        storage,
         variables,
       });
 
@@ -205,6 +231,7 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           : shouldPersistHeaders;
 
       const store = create<SlicesWithActions>((...args) => {
+        const storageSlice = createStorageSlice({ storage })(...args);
         const editorSlice = createEditorSlice({
           activeTabIndex,
           defaultHeaders,
@@ -241,24 +268,28 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
           onSchemaChange,
           schemaDescription,
         })(...args);
+        const themeSlice = createThemeSlice({ editorTheme })(...args);
         return {
+          ...storageSlice,
           ...editorSlice,
           ...executionSlice,
           ...pluginSlice,
           ...schemaSlice,
+          ...themeSlice,
           actions: {
             ...editorSlice.actions,
             ...executionSlice.actions,
             ...pluginSlice.actions,
             ...schemaSlice.actions,
+            ...themeSlice.actions,
           },
         };
       });
       const { actions } = store.getState();
       actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
-      const initialVisiblePlugin = getInitialVisiblePlugin();
-      actions.setVisiblePlugin(initialVisiblePlugin);
+      actions.setVisiblePlugin(getInitialVisiblePlugin());
+      actions.setTheme(getInitialTheme());
 
       return store;
     }
@@ -345,7 +376,10 @@ const InnerGraphiQLProvider: FC<InnerGraphiQLProviderProps> = ({
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
   if (!store) {
-    throw new Error('Missing `GraphiQLContext.Provider` in the tree.');
+    throw new Error(
+      `"useGraphiQL" hook must be used within a <GraphiQLProvider> component.
+It looks like you are trying to use the hook outside the GraphiQL provider tree.`,
+    );
   }
   return useStore(store.current, useShallow(selector));
 }
@@ -357,7 +391,7 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
 export const useGraphiQLActions = () => useGraphiQL(state => state.actions);
 
 function getExternalFragments(
-  externalFragments: InnerGraphiQLProviderProps['externalFragments'],
+  externalFragments: GraphiQLProviderProps['externalFragments'],
 ) {
   const map = new Map<string, FragmentDefinitionNode>();
   if (externalFragments) {

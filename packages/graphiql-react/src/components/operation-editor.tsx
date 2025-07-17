@@ -5,7 +5,7 @@ import {
   getContextAtPosition,
 } from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { useMonaco, useStorage } from '../stores';
+import { useMonaco } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
@@ -69,6 +69,8 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     operationName,
     externalFragments,
     uriInstanceId,
+    storage,
+    monacoTheme,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -78,9 +80,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'operationName',
       'externalFragments',
       'uriInstanceId',
+      'storage',
+      'monacoTheme',
     ),
   );
-  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
@@ -225,7 +228,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       uri: operationUri.path.replace('/', ''),
       value: initialQuery,
     });
-    const editor = createEditor(ref, { model });
+    const editor = createEditor(ref, {
+      model,
+      theme: monacoTheme,
+    });
     setEditor({ queryEditor: editor });
 
     // We don't use the generic `useChangeHandler` hook here because we want to

@@ -1,15 +1,12 @@
-import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { createStore } from 'zustand';
-import { createBoundedUseStore } from '../utility';
+import type { Storage, StorageAPI } from '@graphiql/toolkit';
+import type { StateCreator } from 'zustand';
+import type { SlicesWithActions } from '../types';
 
-interface StorageStoreType {
+export interface StorageSlice {
   storage: StorageAPI;
 }
 
-interface StorageStoreProps {
-  children: ReactNode;
-
+export interface StorageProps {
   /**
    * Provide a custom storage API.
    * @default localStorage
@@ -19,25 +16,8 @@ interface StorageStoreProps {
   storage?: Storage;
 }
 
-export const storageStore = createStore<StorageStoreType>(() => ({
-  storage: null!,
-}));
+type CreateStorageSlice = (
+  initial: StorageSlice,
+) => StateCreator<SlicesWithActions, [], [], StorageSlice>;
 
-export const StorageStore: FC<StorageStoreProps> = ({ storage, children }) => {
-  const isMounted = useStorageStore(state => Boolean(state.storage));
-
-  useEffect(() => {
-    storageStore.setState({ storage: new StorageAPI(storage) });
-  }, [storage]);
-
-  if (!isMounted) {
-    // Ensure storage was initialized
-    return null;
-  }
-
-  return children as ReactElement;
-};
-
-const useStorageStore = createBoundedUseStore(storageStore);
-
-export const useStorage = () => useStorageStore(state => state.storage);
+export const createStorageSlice: CreateStorageSlice = initial => () => initial;

@@ -4,12 +4,7 @@ import {
   HistoryStore as ToolkitHistoryStore,
   QueryStoreItem,
 } from '@graphiql/toolkit';
-import {
-  useGraphiQL,
-  pick,
-  useStorage,
-  createBoundedUseStore,
-} from '@graphiql/react';
+import { useGraphiQL, pick, createBoundedUseStore } from '@graphiql/react';
 
 const historyStore = createStore<HistoryStoreType>((set, get) => ({
   historyStorage: null,
@@ -122,12 +117,10 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
   maxHistoryLength = 20,
   children,
 }) => {
-  const { isFetching, tabs, activeTabIndex } = useGraphiQL(
-    pick('isFetching', 'tabs', 'activeTabIndex'),
+  const { isFetching, tabs, activeTabIndex, storage } = useGraphiQL(
+    pick('isFetching', 'tabs', 'activeTabIndex', 'storage'),
   );
   const activeTab = tabs[activeTabIndex]!;
-  const storage = useStorage();
-
   const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
     new ToolkitHistoryStore(storage, maxHistoryLength);
 

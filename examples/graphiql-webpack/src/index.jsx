@@ -6,7 +6,7 @@ import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
-import { useStorage } from '@graphiql/react';
+import { useGraphiQL } from '@graphiql/react';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
 import 'graphiql/setup-workers/webpack';
 import './index.css';
@@ -81,17 +81,17 @@ function App() {
       fetcher={fetcher}
       shouldPersistHeaders
     >
-      <GraphiQLStorageBound setUrl={setUrl} />
+      <GraphiQLContextBound setUrl={setUrl} />
     </GraphiQL>
   );
 }
 
 /**
- * `useStorage` is a context hook that's only available within the `<GraphiQL>`
- * provider tree. `<GraphiQLStorageBound>` must be rendered as a child of `<GraphiQL>`.
+ * `useGraphiQL` is a context hook that's only available within the `<GraphiQL>`
+ * provider tree. `<GraphiQLContextBound>` must be rendered as a child of `<GraphiQL>`.
  */
-function GraphiQLStorageBound({ setUrl }) {
-  const storage = useStorage();
+function GraphiQLContextBound({ setUrl }) {
+  const storage = useGraphiQL(state => state.storage);
   const lastUrl = storage.get(LAST_URL_KEY) ?? STARTING_URL;
 
   useEffect(() => {

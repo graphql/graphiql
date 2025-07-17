@@ -3235,7 +3235,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3244,14 +3243,15 @@ __metadata:
     babel-plugin-react-compiler: "npm:19.1.0-rc.1"
     graphql: "npm:^16.9.0"
     react: "npm:^19.1.0"
-    react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
+    "@graphiql/react": ^0.35.0-rc.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
+    react-compiler-runtime: 19.1.0-rc.1
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
@@ -3282,19 +3282,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     babel-plugin-react-compiler: "npm:19.1.0-rc.1"
     react: "npm:^19.1.0"
-    react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
+    "@graphiql/react": ^0.35.0-rc.0
     react: ^18 || ^19
+    react-compiler-runtime: 19.1.0-rc.1
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
@@ -3326,7 +3326,6 @@ __metadata:
     monaco-graphql: "npm:^1.7.1"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
-    react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
     set-value: "npm:^4.1.0"
     typescript: "npm:^4.6.3"
@@ -3337,6 +3336,7 @@ __metadata:
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
+    react-compiler-runtime: 19.1.0-rc.1
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
