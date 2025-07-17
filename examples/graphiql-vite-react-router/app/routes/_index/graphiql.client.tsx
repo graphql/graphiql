@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { copyToClipboard } from './helpers/copyToClipboard';
 import { createFetcher } from './helpers/createFetcher';
-import { encode } from './helpers/encode';
 import {
   ToolbarButton,
   useOperationsEditorState,
@@ -38,10 +37,13 @@ const Button: FC = () => {
   const [variables] = useVariablesEditorState();
 
   async function onShareExplorer(): Promise<void> {
-    const shareableURL = new URL('/explorer', window.location.origin);
-    if (operations) shareableURL.searchParams.set('query', encode(operations));
-    if (variables)
-      shareableURL.searchParams.set('variables', encode(variables));
+    const shareableURL = new URL('/explorer', location.origin);
+    if (operations) {
+      shareableURL.searchParams.set('query', encodeURIComponent(operations));
+    }
+    if (variables) {
+      shareableURL.searchParams.set('variables', encodeURIComponent(variables));
+    }
     await copyToClipboard(shareableURL.toString());
   }
 

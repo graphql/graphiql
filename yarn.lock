@@ -13118,6 +13118,7 @@ __metadata:
     "@types/node": "npm:22.15.34"
     "@types/react": "npm:19.1.8"
     graphiql: "npm:5.0.6"
+    isbot: "npm:^5"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-router: "npm:7.6.3"
@@ -16541,6 +16542,13 @@ __metadata:
   version: 2.0.5
   resolution: "isarray@npm:2.0.5"
   checksum: 10c0/4199f14a7a13da2177c66c31080008b7124331956f47bca57dd0b6ea9f11687aa25e565a2c7a2b519bc86988d10398e3049a1f5df13c9f6b7664154690ae79fd
+  languageName: node
+  linkType: hard
+
+"isbot@npm:^5":
+  version: 5.1.28
+  resolution: "isbot@npm:5.1.28"
+  checksum: 10c0/1e9417986613e4b493e57e20b813d7e0130c845657ff14a11d39e4bf326056065850bf52773767f2681c0b7b146ba833d4686db16017dfbadd85a206c8396d90
   languageName: node
   linkType: hard
 
