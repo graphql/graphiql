@@ -49,33 +49,31 @@ export const useEditorState = (
 ): [string, (val: string) => void] => {
   const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
   const model = editorInstance?.getModel();
-
-  const [editorValue, setEditorValue] = useState('');
-
-  function handleChange(value: string) {
-    model?.setValue(value);
-    setEditorValue(value);
-  }
+  const [value, setValue] = useState('');
 
   useEffect(() => {
     if (!model) {
       return;
     }
 
-    function onChangeContent() {
-      const newValue = model!.getValue();
-      setEditorValue(newValue);
+    function onChange() {
+      setValue(model!.getValue());
     }
 
-    const disposable = model.onDidChangeContent(onChangeContent);
-    // Set initial value
-    onChangeContent();
+    const disposable = model.onDidChangeContent(onChange);
+    // Initialize the value
+    onChange()
     return () => {
       disposable.dispose();
     };
   }, [model]);
 
-  return [editorValue, handleChange];
+  function handleChange(newValue: string) {
+    model!.setValue(value);
+    setValue(newValue);
+  }
+
+  return [value, handleChange];
 };
 
 /**
