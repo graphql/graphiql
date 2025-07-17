@@ -378,7 +378,7 @@ export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   if (!store) {
     throw new Error(
       `"useGraphiQL" hook must be used within a <GraphiQLProvider> component.
-It looks like you are trying to use the hook outside the GraphiQL provider tree.`
+It looks like you are trying to use the hook outside the GraphiQL provider tree.`,
     );
   }
   return useStore(store.current, useShallow(selector));

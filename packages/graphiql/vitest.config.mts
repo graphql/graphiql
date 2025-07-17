@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts', './setup-window.ts'],
+    // Since we increased `waitFor` timeout in setup-files.ts
     testTimeout: 9_000,
     alias: [
       {
