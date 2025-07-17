@@ -160,46 +160,31 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    const timeout = 8_000;
-    it(
-      'defaults to the built-in default query',
-      async () => {
-        const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    it('defaults to the built-in default query', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-        await waitFor(
-          () => {
-            const queryEditor = container.querySelector<HTMLDivElement>(
-              '.graphiql-editor .monaco-scrollable-element',
-            );
-            expect(queryEditor).toBeVisible();
-            expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-          },
-          { timeout },
+      await waitFor(() => {
+        const queryEditor = container.querySelector<HTMLDivElement>(
+          '.graphiql-editor .monaco-scrollable-element',
         );
-      },
-      timeout,
-    );
+        expect(queryEditor).toBeVisible();
+        expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
+      });
+    });
 
-    it(
-      'accepts a custom default query',
-      async () => {
-        const { container } = render(
-          <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
-        );
+    it('accepts a custom default query', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
+      );
 
-        await waitFor(
-          () => {
-            const queryEditor = container.querySelector<HTMLDivElement>(
-              '.graphiql-editor .monaco-scrollable-element',
-            );
-            expect(queryEditor).toBeVisible();
-            expect(queryEditor!.textContent).toBe('GraphQL Party!!');
-          },
-          { timeout },
+      await waitFor(() => {
+        const queryEditor = container.querySelector<HTMLDivElement>(
+          '.graphiql-editor .monaco-scrollable-element',
         );
-      },
-      timeout,
-    );
+        expect(queryEditor).toBeVisible();
+        expect(queryEditor!.textContent).toBe('GraphQL Party!!');
+      });
+    });
   }); // default query
 
   // TODO: rewrite these plugin tests after plugin API has more structure
@@ -703,7 +688,7 @@ describe('GraphiQL', () => {
     });
   });
 
-  it.only('useOperationsEditorState', async () => {
+  it('`useOperationsEditorState` hook', async () => {
     let hookResult: ReturnType<typeof useOperationsEditorState>;
     let queryEditor: MonacoEditor;
 
@@ -712,7 +697,7 @@ describe('GraphiQL', () => {
       const $queryEditor = useGraphiQL(state => state.queryEditor);
       useEffect(() => {
         hookResult = $hookResult;
-        queryEditor = $queryEditor;
+        queryEditor = $queryEditor!;
       }, [$hookResult, $queryEditor]);
       return null;
     };
@@ -725,16 +710,13 @@ describe('GraphiQL', () => {
     let editor: HTMLDivElement = null!;
 
     // Assert initial values
-    await waitFor(
-      () => {
-        editor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
-        );
-        expect(editor.textContent).toBe('query { hello }');
-        expect(hookResult[0]).toBe('query { hello }');
-      },
-      { timeout: 5_000 },
-    );
+    await waitFor(() => {
+      editor = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor .monaco-scrollable-element',
+      );
+      expect(editor.textContent).toBe('query { hello }');
+      expect(hookResult[0]).toBe('query { hello }');
+    });
     // Assert value was changed after UI editing
     await waitFor(() => {
       const newValue = 'bar';
@@ -747,8 +729,8 @@ describe('GraphiQL', () => {
     await waitFor(() => {
       const newValue = 'foo';
       hookResult[1](newValue);
-      expect(hookResult[0]).toBe(newValue);
       expect(editor.textContent).toBe(newValue);
+      expect(hookResult[0]).toBe(newValue);
     });
   });
 });

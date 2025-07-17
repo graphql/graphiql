@@ -62,15 +62,14 @@ export const useEditorState = (
 
     const disposable = model.onDidChangeContent(onChange);
     // Initialize the value
-    onChange()
+    onChange();
     return () => {
       disposable.dispose();
     };
   }, [model]);
 
   function handleChange(newValue: string) {
-    model!.setValue(value);
-    setValue(newValue);
+    model!.setValue(newValue);
   }
 
   return [value, handleChange];
