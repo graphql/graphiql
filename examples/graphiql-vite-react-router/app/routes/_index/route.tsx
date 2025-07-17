@@ -1,9 +1,8 @@
-import graphiqlStyles from 'graphiql/style.css?url';
+import type { FC } from 'react';
+import type { LinksFunction, MetaFunction } from 'react-router';
 import { App } from './graphiql.client';
-import { type LinksFunction, type MetaFunction } from 'react-router';
+import graphiqlStyles from 'graphiql/style.css?url';
 import explorerStyles from './styles/explorer.css?url';
-import { JSX } from 'react';
-import './helpers/setup-workers.client';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'API Explorer' }];
@@ -16,6 +15,8 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export default function Route(): JSX.Element {
+const Route: FC = () => {
   return App && <App />;
-}
+};
+
+export default Route;

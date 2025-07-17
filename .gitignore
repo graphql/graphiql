@@ -51,3 +51,5 @@ packages/graphiql/cypress/downloads/
 packages/graphiql/cypress/videos/
 packages/graphiql/typedoc/
 packages/graphiql/webpack/
+
+.react-router/
