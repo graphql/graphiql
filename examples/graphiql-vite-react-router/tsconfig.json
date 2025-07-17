@@ -31,5 +31,5 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
-  "include": [".react-router/types/**/*", "app/**/*.ts", "app/**/*.tsx"]
+  "include": [".react-router/types/**/*", "**/*.ts", "**/*.tsx"]
 }
