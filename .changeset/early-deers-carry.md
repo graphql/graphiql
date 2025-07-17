@@ -3,4 +3,4 @@
 'graphiql': patch
 ---
 
-fix broken `useEditorState` and add unit tests
+fix broken `useOperationsEditorState` and `useEditorState` hook and add unit tests
