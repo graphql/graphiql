@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./setup-files.ts'],
+    setupFiles: ['./setup-files.ts', '../graphiql/setup-window.ts'],
     testTimeout: 15_000,
     alias: [
       {
