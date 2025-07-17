@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "prebuild": "rimraf .cache build",
-    "build": "pnpm prebuild && react-router build",
+    "build": "react-router build",
     "dev": "react-router dev --port 4000",
     "start": "react-router-serve build/server/index.js"
   },
