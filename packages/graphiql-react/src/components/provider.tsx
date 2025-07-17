@@ -376,7 +376,10 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
   if (!store) {
-    throw new Error('Missing `GraphiQLContext.Provider` in the tree.');
+    throw new Error(
+      `"useGraphiQL" hook must be used within a <GraphiQLProvider> component.
+It looks like you are trying to use the hook outside the GraphiQL provider tree.`
+    );
   }
   return useStore(store.current, useShallow(selector));
 }

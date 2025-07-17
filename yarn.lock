@@ -3235,7 +3235,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3250,6 +3249,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
+    "@graphiql/react": ^0.35.0-rc.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
@@ -3282,7 +3282,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^0.35.0"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
@@ -3294,6 +3293,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
+    "@graphiql/react": ^0.35.0-rc.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
