@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -35,13 +35,13 @@
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.35.0-rc.0",
+    "@graphiql/react": "^0.36.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.35.0",
+    "@graphiql/react": "^0.36.0",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",

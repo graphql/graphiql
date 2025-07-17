@@ -1,5 +1,37 @@
 # Change Log
 
+## 5.1.0
+
+### Minor Changes
+
+- [#4071](https://github.com/graphql/graphiql/pull/4071) [`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(graphql-language-service): export `getContextAtPosition`
+  feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
+
+  When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
+
+  ```diff
+  -import dynamic from 'next/dynamic'
+  -const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  -  ssr: false
+  -})
+  +import { GraphiQL } from 'graphiql'
+  ```
+
+- [#4074](https://github.com/graphql/graphiql/pull/4074) [`fd3f9e6`](https://github.com/graphql/graphiql/commit/fd3f9e6a91be728a69a136ad8680f6e3c7241198) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Ensure `storage` and `theme` store values aren't shared between GraphiQL instances. Deprecate `useTheme` and `useStorage` hooks in favour of values from `useGraphiQL` and `useGraphiQLActions` hooks
+
+  feat(`@graphiql/plugin-history`/`@graphiql/plugin-doc-explorer`): move `@graphiql/react` to `peerDependencies`
+
+- [#4077](https://github.com/graphql/graphiql/pull/4077) [`3d41e11`](https://github.com/graphql/graphiql/commit/3d41e113fbf53930fd1b519b6d1330d0f4b23b7b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - add new example [Usage GraphiQL 5 with Vite, React Router and `ssr: true`](https://github.com/graphql/graphiql/tree/main/examples/example-graphiql-vite-react-router)
+
+### Patch Changes
+
+- [#4076](https://github.com/graphql/graphiql/pull/4076) [`416e3a0`](https://github.com/graphql/graphiql/commit/416e3a05e9473eb2abd444da61ecfb8614020d14) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix broken `useOperationsEditorState` and `useEditorState` hook and add unit tests
+
+- Updated dependencies [[`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd), [`fd3f9e6`](https://github.com/graphql/graphiql/commit/fd3f9e6a91be728a69a136ad8680f6e3c7241198), [`416e3a0`](https://github.com/graphql/graphiql/commit/416e3a05e9473eb2abd444da61ecfb8614020d14), [`3d41e11`](https://github.com/graphql/graphiql/commit/3d41e113fbf53930fd1b519b6d1330d0f4b23b7b)]:
+  - @graphiql/react@0.36.0
+  - @graphiql/plugin-history@0.4.0
+  - @graphiql/plugin-doc-explorer@0.4.0
+
 ## 5.0.6
 
 ### Patch Changes
