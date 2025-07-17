@@ -8,6 +8,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts'],
+    // Since we increased `waitFor` timeout in setup-files.ts
+    testTimeout: 8_000,
     alias: [
       {
         // Fixes Error: Failed to resolve entry for package "monaco-editor". The package may have incorrect main/module/exports specified in its package.json.
