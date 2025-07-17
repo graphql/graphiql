@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { storageStore } from '../stores';
 import { debounce } from './debounce';
 import type * as monaco from 'monaco-editor';
@@ -48,23 +47,35 @@ export function useChangeHandler(
 export const useEditorState = (
   editor: 'query' | 'variable' | 'header',
 ): [string, (val: string) => void] => {
-  // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
-  'use no memo';
   const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
-  const [editorValue, setEditorValue] = useState(
-    () => editorInstance?.getValue() ?? '',
-  );
-  const handleChange = useCallback(
-    (value: string) => {
-      editorInstance?.setValue(value);
-      setEditorValue(value);
-    },
-    [editorInstance],
-  );
-  return useMemo(
-    () => [editorValue, handleChange],
-    [editorValue, handleChange],
-  );
+  const model = editorInstance?.getModel();
+
+  const [editorValue, setEditorValue] = useState('');
+
+  function handleChange(value: string) {
+    model?.setValue(value);
+    setEditorValue(value);
+  }
+
+  useEffect(() => {
+    if (!model) {
+      return;
+    }
+
+    function onChangeContent() {
+      const newValue = model!.getValue();
+      setEditorValue(newValue);
+    }
+
+    const disposable = model.onDidChangeContent(onChangeContent);
+    // Set initial value
+    onChangeContent();
+    return () => {
+      disposable.dispose();
+    };
+  }, [model]);
+
+  return [editorValue, handleChange];
 };
 
 /**
