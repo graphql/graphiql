@@ -218,10 +218,7 @@ export const Sidebar: FC<SidebarProps> = ({
         open={showDialog === 'settings'}
         onOpenChange={handleOpenSettingsDialog}
       >
-        <div
-          className="graphiql-dialog-header"
-          data-testid="graphiql-settings-dialog"
-        >
+        <div className="graphiql-dialog-header">
           <Dialog.Title className="graphiql-dialog-title">
             Settings
           </Dialog.Title>
@@ -235,10 +232,7 @@ export const Sidebar: FC<SidebarProps> = ({
           <Dialog.Close />
         </div>
         {showPersistHeadersSettings ? (
-          <div
-            className="graphiql-dialog-section"
-            data-testid="persist-headers"
-          >
+          <div className="graphiql-dialog-section">
             <div>
               <div className="graphiql-dialog-section-title">
                 Persist headers
