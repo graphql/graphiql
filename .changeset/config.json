@@ -7,6 +7,7 @@
   "baseBranch": "main",
   "ignore": [
     "example-graphiql-vite",
+    "example-graphiql-vite-react-router",
     "example-graphiql-webpack",
     "example-monaco-graphql-nextjs",
     "example-monaco-graphql-react-vite",
