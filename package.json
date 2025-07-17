@@ -12,6 +12,7 @@
       "examples/monaco-graphql-nextjs",
       "examples/monaco-graphql-react-vite",
       "examples/graphiql-vite",
+      "examples/graphiql-vite-react-router",
       "examples/graphiql-webpack"
     ]
   },
