@@ -346,7 +346,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }, [
     schema,
     dangerouslyAssumeSchemaIsValid,
-    fetcher, // should refresh schema with new fetcher after a fetchError
+    fetcher, // should refresh schema with a new fetcher after a fetchError
   ]);
 
   /**
