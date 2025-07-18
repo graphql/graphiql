@@ -200,13 +200,15 @@ const getBaseColors = (
   'editorLink.activeForeground': colors.primary[theme], // Color of active links
   'editorHoverWidget.background': colors.bg[theme], // Background color of the editor hover
   'list.hoverBackground': colors.primaryBg[theme], // List/Tree background when hovering over items using the mouse
+  'list.highlightForeground': colors.primary[theme],
+  'list.focusHighlightForeground': colors.primary[theme],
   'menu.background': colors.bg[theme], // Background color of the context menu
 
   'editorSuggestWidget.background': colors.bg[theme], // Background color of the suggest widget
   'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget
   'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget
   'quickInput.background': colors.bg[theme],
-  'quickInputList.focusForeground': colors.primary[theme],
+  'quickInputList.focusForeground':  theme === 'dark' ? '#ffffff' : '#444444',
   'highlighted.label': colors.primary[theme],
   'quickInput.widget': colors.primary[theme],
   highlight: colors.primary[theme],

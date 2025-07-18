@@ -31,7 +31,7 @@ export function useMergeQuery() {
 export function useExecutionContext() {
   const { run, stop } = useGraphiQLActions();
   const values = useGraphiQL(state => ({
-    isFetching: state.isIntrospecting,
+    isFetching: state.isFetching,
     isSubscribed: Boolean(state.subscription),
     operationName: state.operationName,
   }));
@@ -59,9 +59,12 @@ export function usePluginContext() {
  */
 export function useSchemaContext() {
   const { introspect } = useGraphiQLActions();
-  const values = useGraphiQL(
-    pick('fetchError', 'isFetching', 'schema', 'validationErrors'),
-  );
+  const values = useGraphiQL(state => ({
+    isFetching: state.isIntrospecting,
+    fetchError: state.fetchError,
+    schema: state.schema,
+    validationErrors: state.validationErrors,
+  }));
   return {
     introspect,
     ...values,

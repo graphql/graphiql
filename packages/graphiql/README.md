@@ -54,8 +54,9 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Getting started
 
-> If you're looking to upgrade from `graphiql@1.x` to `graphiql@2`, check out
-> the [migration guide](../../docs/migration/graphiql-2.0.0.md)!
+- [Migration guide to GraphiQL 2](../../docs/migration/graphiql-2.0.0.md)
+- [Migration guide to GraphiQL 4](../../docs/migration/graphiql-4.0.0.md)
+- [Migration guide to GraphiQL 5](../../docs/migration/graphiql-5.0.0.md)
 
 ### CDN usage
 
