@@ -12,11 +12,6 @@ type MonacoTheme =
 export interface ThemeSlice {
   theme: Theme;
 
-  editorTheme: {
-    dark: MonacoTheme;
-    light: MonacoTheme;
-  };
-
   monacoTheme?: MonacoTheme;
 }
 
@@ -37,11 +32,14 @@ export interface ThemeProps {
    * Sets the color theme for the monaco editors.
    * @default { dark: 'graphiql-DARK', light: 'graphiql-LIGHT' }
    */
-  editorTheme?: ThemeSlice['editorTheme'];
+  editorTheme?: {
+    dark: MonacoTheme;
+    light: MonacoTheme;
+  };
 }
 
 type CreateThemeSlice = (
-  initial: Pick<ThemeSlice, 'editorTheme'>,
+  initial: Pick<ThemeProps, 'editorTheme'>,
 ) => StateCreator<
   SlicesWithActions,
   [],
@@ -51,25 +49,26 @@ type CreateThemeSlice = (
   }
 >;
 
-export const createThemeSlice: CreateThemeSlice = initial => (set, get) => ({
-  theme: null,
-  ...initial,
-  actions: {
-    setTheme(theme) {
-      const { storage, editorTheme } = get();
-      storage.set(STORAGE_KEY.theme, theme ?? '');
-      document.body.classList.remove('graphiql-light', 'graphiql-dark');
-      if (theme) {
-        document.body.classList.add(`graphiql-${theme}`);
-      }
-      const { monaco } = monacoStore.getState();
-      const resolvedTheme = theme ?? getSystemTheme();
-      const monacoTheme = editorTheme[resolvedTheme];
-      monaco?.editor.setTheme(monacoTheme);
-      set({ theme, monacoTheme });
+export const createThemeSlice: CreateThemeSlice =
+  ({ editorTheme }) =>
+  (set, get) => ({
+    theme: null,
+    actions: {
+      setTheme(theme) {
+        const { storage } = get();
+        storage.set(STORAGE_KEY.theme, theme ?? '');
+        document.body.classList.remove('graphiql-light', 'graphiql-dark');
+        if (theme) {
+          document.body.classList.add(`graphiql-${theme}`);
+        }
+        const { monaco } = monacoStore.getState();
+        const resolvedTheme = theme ?? getSystemTheme();
+        const monacoTheme = editorTheme![resolvedTheme];
+        monaco?.editor.setTheme(monacoTheme);
+        set({ theme, monacoTheme });
+      },
     },
-  },
-});
+  });
 
 /**
  * Get the resolved theme - dark or light

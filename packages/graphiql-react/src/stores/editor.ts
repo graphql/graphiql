@@ -22,7 +22,8 @@ import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
-   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations, variables, headers, and responses.
+   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations,
+   * variables, headers, and response editors.
    *
    * @see https://github.com/microsoft/monaco-editor#uris
    */

@@ -655,10 +655,24 @@ describe('GraphiQL', () => {
   });
 
   it('should support multiple instances', async () => {
+    const queryEditors: Record<0 | 1, MonacoEditor> = Object.create(null);
+
+    const HookConsumer: FC<{ id: 0 | 1 }> = ({ id }) => {
+      const $queryEditor = useGraphiQL(state => state.queryEditor);
+      useEffect(() => {
+        queryEditors[id] = $queryEditor!;
+      }, [$queryEditor, id]);
+      return null;
+    };
+
     const { container, getAllByLabelText } = render(
       <>
-        <GraphiQL fetcher={noOpFetcher} />
-        <GraphiQL fetcher={noOpFetcher} />
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer id={0} />
+        </GraphiQL>
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer id={1} />
+        </GraphiQL>
       </>,
     );
     const [firstEl, secondEl] = container.querySelectorAll(
@@ -685,6 +699,15 @@ describe('GraphiQL', () => {
       // Editor store
       expect(firstEl!.querySelectorAll('.graphiql-tab').length).toBe(2);
       expect(secondEl!.querySelectorAll('.graphiql-tab').length).toBe(1);
+
+      // Query
+      queryEditors[0].setValue('{__typename}');
+      queryEditors[1].setValue('bar');
+      const editors = container.querySelectorAll<HTMLDivElement>(
+        '.graphiql-query-editor .monaco-scrollable-element',
+      );
+      expect(editors[0]!.textContent).toBe('{__typename}');
+      expect(editors[1]!.textContent).toBe('bar');
     });
   });
 
