@@ -1,5 +1,16 @@
 # Change Log
 
+## 5.1.1
+
+### Patch Changes
+
+- [#4078](https://github.com/graphql/graphiql/pull/4078) [`6e5d5fc`](https://github.com/graphql/graphiql/commit/6e5d5fce9a7eb5770f40300fc153e0b9b10edfbf) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix color in the F1 popup should be graphiql primary color and add deprecated exports for `useEditorStore`, `useExecutionStore`, `usePluginStore` and `useSchemaStore`
+
+- Updated dependencies [[`6e5d5fc`](https://github.com/graphql/graphiql/commit/6e5d5fce9a7eb5770f40300fc153e0b9b10edfbf), [`293beed`](https://github.com/graphql/graphiql/commit/293beed772baa2be834cad5f19e1aee0628e15cc)]:
+  - @graphiql/react@0.37.0
+  - @graphiql/plugin-doc-explorer@0.4.1
+  - @graphiql/plugin-history@0.4.1
+
 ## 5.1.0
 
 ### Minor Changes

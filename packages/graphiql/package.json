@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "sideEffects": [
     "dist/setup-workers/*"
   ],
@@ -49,9 +49,9 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.4.0",
-    "@graphiql/plugin-history": "^0.4.0",
-    "@graphiql/react": "^0.36.0",
+    "@graphiql/plugin-doc-explorer": "^0.4.1",
+    "@graphiql/plugin-history": "^0.4.1",
+    "@graphiql/react": "^0.37.0",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {

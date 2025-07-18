@@ -1,5 +1,15 @@
 # @graphiql/react
 
+## 0.37.0
+
+### Minor Changes
+
+- [#4078](https://github.com/graphql/graphiql/pull/4078) [`6e5d5fc`](https://github.com/graphql/graphiql/commit/6e5d5fce9a7eb5770f40300fc153e0b9b10edfbf) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix color in the F1 popup should be graphiql primary color and add deprecated exports for `useEditorStore`, `useExecutionStore`, `usePluginStore` and `useSchemaStore`
+
+### Patch Changes
+
+- [#4079](https://github.com/graphql/graphiql/pull/4079) [`293beed`](https://github.com/graphql/graphiql/commit/293beed772baa2be834cad5f19e1aee0628e15cc) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove legacy codemirror CSS styles
+
 ## 0.36.0
 
 ### Minor Changes
