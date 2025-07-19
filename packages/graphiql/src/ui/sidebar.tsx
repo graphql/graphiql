@@ -4,6 +4,7 @@ import {
   ButtonGroup,
   cn,
   Dialog,
+  isMacOs,
   KEY_MAP,
   KeyboardShortcutIcon,
   pick,
@@ -86,6 +87,20 @@ export const Sidebar: FC<SidebarProps> = ({
   const [clearStorageStatus, setClearStorageStatus] = useState<
     'success' | 'error' | undefined
   >();
+
+  useEffect(() => {
+    function openSettings(event: KeyboardEvent) {
+      if ((isMacOs ? event.metaKey : event.ctrlKey) && event.key === ',') {
+        event.preventDefault(); // prevent default browser settings dialog
+        setShowDialog(prev => (prev === 'settings' ? null : 'settings'));
+      }
+    }
+
+    window.addEventListener('keydown', openSettings);
+    return () => {
+      window.removeEventListener('keydown', openSettings);
+    };
+  }, []);
 
   function handleOpenShortKeysDialog(isOpen: boolean) {
     if (!isOpen) {
