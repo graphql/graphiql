@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.37.0",
+  "version": "0.37.1",
   "sideEffects": [
     "dist/setup-workers/*"
   ],
