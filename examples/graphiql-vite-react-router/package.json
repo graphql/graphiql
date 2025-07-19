@@ -11,11 +11,11 @@
     "start": "react-router-serve dist/server/index.js"
   },
   "dependencies": {
-    "@graphiql/react": "0.37.0",
+    "@graphiql/react": "0.37.1",
     "@react-router/fs-routes": "7.6.3",
     "@react-router/node": "7.6.3",
     "@react-router/serve": "7.6.3",
-    "graphiql": "5.1.1",
+    "graphiql": "5.2.0",
     "isbot": "^5",
     "react": "19.1.0",
     "react-dom": "19.1.0",

@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.37.1
+
+### Patch Changes
+
+- [#4081](https://github.com/graphql/graphiql/pull/4081) [`4950dec`](https://github.com/graphql/graphiql/commit/4950decaddb816ef3e3d22d814d976d94405029e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: add loader for initial loading of operation editor
+  fix: adjust command palette `width`, `border` and remove `box-shadow`
+  feat: add short cut `Cmd/Ctrl + ,` for opening GraphiQL settings dialog
+
 ## 0.37.0
 
 ### Minor Changes
