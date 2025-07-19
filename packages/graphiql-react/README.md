@@ -97,7 +97,7 @@ The `useGraphiQLActions` hook **exposes all actions** across store slices.
 The `useGraphiQL` hook **provides access to the following store slices**:
 
 | Store Slice                              | Responsibilities                                                                                          |
-|------------------------------------------| --------------------------------------------------------------------------------------------------------- |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | [`storage`](./src/stores/storage.ts)     | Provides a storage API that can be used to persist state in the browser (by default using `localStorage`) |
 | [`editor`](./src/stores/editor.ts)       | Manages **query**, **variables**, **headers**, and **response** editors and tabs                          |
 | [`execution`](./src/stores/execution.ts) | Handles the execution of GraphQL requests                                                                 |

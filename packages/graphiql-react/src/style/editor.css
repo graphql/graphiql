@@ -23,12 +23,12 @@
   input:focus-visible {
     outline-color: hsl(var(--color-primary));
   }
-  
+
   /* Command pallet F1 styles */
   .overflow-guard {
     overflow: unset !important;
   }
-  
+
   .quick-input-widget {
     min-width: min(500px, 70vw) !important;
     box-shadow: none !important;
