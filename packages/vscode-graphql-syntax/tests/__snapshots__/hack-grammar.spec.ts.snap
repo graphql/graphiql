@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.hack grammar > should tokenize a simple hack file 1`] = `
+<?hh                 | 
+                     | 
+$query =             | 
+<<<                  | punctuation.section.embedded.begin.php punctuation.definition.string.php
+GRAPHQL              | punctuation.section.embedded.begin.php keyword.operator.heredoc.php
+                     | meta.embedded.block.graphql
+query                | meta.embedded.block.graphql keyword.operation.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql
+{                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql
+site                 | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                    | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                 | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                    | meta.embedded.block.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.block.graphql meta.selectionset.graphql
+}                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+GRAPHQL              | punctuation.section.embedded.end.php keyword.operator.heredoc.php
+;                    | 
+                     | 
+$query =             | 
+/** @lang GraphQL */ | meta.embedded.graphql punctuation.definition.comment.php
+                     | meta.embedded.graphql
+'                    | meta.embedded.graphql punctuation.definition.string.begin.php
+                     | meta.embedded.graphql source.graphql
+query                | meta.embedded.graphql source.graphql keyword.operation.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql
+{                    | meta.embedded.graphql source.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql
+site                 | meta.embedded.graphql source.graphql meta.selectionset.graphql variable.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql
+{                    | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql
+name                 | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql
+}                    | meta.embedded.graphql source.graphql meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                     | meta.embedded.graphql source.graphql meta.selectionset.graphql
+}                    | meta.embedded.graphql source.graphql meta.selectionset.graphql punctuation.operation.graphql
+'                    | meta.embedded.graphql punctuation.definition.string.end.php
+;                    | 
+                     | 
+`;
