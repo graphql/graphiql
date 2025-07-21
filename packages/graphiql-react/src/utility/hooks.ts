@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { storageStore } from '../stores';
+import { useEffect, useRef, useState } from 'react';
 import { debounce } from './debounce';
-import type { editor as monacoEditor } from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { useGraphiQL, useGraphiQLActions } from '../components';
 
 export function useChangeHandler(
@@ -11,16 +9,15 @@ export function useChangeHandler(
   tabProperty: 'variables' | 'headers',
 ) {
   const { updateActiveTabValues } = useGraphiQLActions();
-  const editor = useGraphiQL(
-    state =>
+  const { editor, storage } = useGraphiQL(state => ({
+    editor:
       state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
-  );
+    storage: state.storage,
+  }));
   useEffect(() => {
     if (!editor) {
       return;
     }
-    const { storage } = storageStore.getState();
-
     const store = debounce(500, (value: string) => {
       if (storageKey === null) {
         return;
@@ -31,7 +28,7 @@ export function useChangeHandler(
       updateActiveTabValues({ [tabProperty]: value });
     });
 
-    const handleChange = (_event: monacoEditor.IModelContentChangedEvent) => {
+    const handleChange = (_event: monaco.editor.IModelContentChangedEvent) => {
       const newValue = editor.getValue();
       store(newValue);
       updateTab(newValue);
@@ -41,30 +38,46 @@ export function useChangeHandler(
     return () => {
       disposable.dispose();
     };
-  }, [callback, editor, storageKey, tabProperty, updateActiveTabValues]);
+  }, [
+    callback,
+    editor,
+    storageKey,
+    tabProperty,
+    updateActiveTabValues,
+    storage,
+  ]);
 }
 
 // https://react.dev/learn/you-might-not-need-an-effect
 export const useEditorState = (
   editor: 'query' | 'variable' | 'header',
 ): [string, (val: string) => void] => {
-  // eslint-disable-next-line react-hooks/react-compiler -- TODO: check why query builder update only 1st field https://github.com/graphql/graphiql/issues/3836
-  'use no memo';
   const editorInstance = useGraphiQL(state => state[`${editor}Editor`]);
-  const [editorValue, setEditorValue] = useState(
-    () => editorInstance?.getValue() ?? '',
-  );
-  const handleChange = useCallback(
-    (value: string) => {
-      editorInstance?.setValue(value);
-      setEditorValue(value);
-    },
-    [editorInstance],
-  );
-  return useMemo(
-    () => [editorValue, handleChange],
-    [editorValue, handleChange],
-  );
+  const [value, setValue] = useState('');
+  const model = editorInstance?.getModel();
+
+  useEffect(() => {
+    if (!model) {
+      return;
+    }
+
+    function onChange() {
+      setValue(model!.getValue());
+    }
+
+    const disposable = model.onDidChangeContent(onChange);
+    // Initialize the value
+    onChange();
+    return () => {
+      disposable.dispose();
+    };
+  }, [model]);
+
+  function handleChange(newValue: string) {
+    model!.setValue(newValue);
+  }
+
+  return [value, handleChange];
 };
 
 /**

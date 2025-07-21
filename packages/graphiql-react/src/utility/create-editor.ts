@@ -1,11 +1,8 @@
 import type { KeyboardEventHandler, RefObject } from 'react';
-import { editor as monacoEditor, Uri } from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
 import type { MonacoEditor } from '../types';
-
-export const EDITOR_THEME = {
-  dark: 'graphiql-DARK',
-  light: 'graphiql-LIGHT',
-} as const;
+import { monacoStore } from '../stores';
+import { Uri } from '../utility';
 
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement
@@ -25,104 +22,30 @@ export function getOrCreateModel({
   uri: string;
   value: string;
 }) {
+  const { monaco } = monacoStore.getState();
+  if (!monaco) {
+    throw new Error('Monaco editor is not initialized');
+  }
   const uri = Uri.file($uri);
-  const model = monacoEditor.getModel(uri);
+  const model = monaco.editor.getModel(uri);
   const language = uri.path.split('.').at(-1)!;
-  return model ?? monacoEditor.createModel(value, language, uri);
+  return model ?? monaco.editor.createModel(value, language, uri);
 }
-
-const colors = {
-  transparent: '#ffffff00',
-  bg: {
-    dark: '#212a3b',
-    light: '#ffffffff',
-  },
-  primary: {
-    dark: '#ff5794',
-    light: '#d60590',
-  },
-  primaryBg: {
-    dark: '#ff579419',
-    light: '#d6059019',
-  },
-  secondary: {
-    dark: '#b7c2d711',
-    light: '#3b4b6811',
-  },
-};
-
-const getBaseColors = (
-  theme: 'dark' | 'light',
-): monacoEditor.IStandaloneThemeData['colors'] => ({
-  'editor.background': colors.transparent, // white with a 00 alpha value
-  'scrollbar.shadow': colors.transparent, // Scrollbar shadow to indicate that the view is scrolled
-  'textLink.foreground': colors.primary[theme], // Foreground color for links in text
-  'textLink.activeForeground': colors.primary[theme], // Foreground color for active links in text
-  'editorLink.activeForeground': colors.primary[theme], // Color of active links
-  'editorHoverWidget.background': colors.bg[theme], // Background color of the editor hover
-  'list.hoverBackground': colors.primaryBg[theme], // List/Tree background when hovering over items using the mouse
-  'menu.background': colors.bg[theme], // Background color of the context menu
-
-  'editorSuggestWidget.background': colors.bg[theme], // Background color of the suggest widget
-  'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget
-  'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget
-  'quickInput.background': colors.bg[theme],
-  'quickInputList.focusForeground': colors.primary[theme],
-  'highlighted.label': colors.primary[theme],
-  'quickInput.widget': colors.primary[theme],
-  highlight: colors.primary[theme],
-  'editorWidget.background': colors.bg[theme], // Background color of editor widgets, such as find/replace
-  'input.background': colors.secondary[theme], // Input box background
-  focusBorder: colors.primary[theme], // Overall border color for focused elements. This color is only used if not overridden by a component
-  'toolbar.hoverBackground': colors.primaryBg[theme],
-  'inputOption.hoverBackground': colors.primaryBg[theme],
-  'quickInputList.focusBackground': colors.primaryBg[theme],
-  'editorWidget.resizeBorder': colors.primary[theme],
-  'pickerGroup.foreground': colors.primary[theme], // Quick picker color for grouping labels
-
-  'menu.selectionBackground': colors.primaryBg[theme], // hover background
-  'menu.selectionForeground': colors.primary[theme], // hover text color
-});
-
-export const editorThemeDark: monacoEditor.IStandaloneThemeData = {
-  base: 'vs-dark',
-  inherit: true,
-  colors: getBaseColors('dark'),
-  rules: [
-    {
-      token: 'argument.identifier.gql',
-      foreground: '#908aff',
-    },
-  ],
-};
-
-export const editorThemeLight: monacoEditor.IStandaloneThemeData = {
-  base: 'vs',
-  inherit: true,
-  colors: getBaseColors('light'),
-  rules: [
-    {
-      token: 'argument.identifier.gql',
-      foreground: '#6c69ce',
-    },
-  ],
-};
-
-// this should be called somewhere else, but fine here for now
-monacoEditor.defineTheme(EDITOR_THEME.dark, editorThemeDark);
-monacoEditor.defineTheme(EDITOR_THEME.light, editorThemeLight);
 
 export function createEditor(
   domElement: RefObject<HTMLDivElement>,
-  options: monacoEditor.IStandaloneEditorConstructionOptions,
+  options: monaco.editor.IStandaloneEditorConstructionOptions,
 ): MonacoEditor {
   const { model } = options;
   if (!model) {
     throw new Error('options.model is required');
   }
   const language = model.uri.path.split('.').at(-1)!;
-
-  return monacoEditor.create(domElement.current, {
+  const { monaco } = monacoStore.getState();
+  if (!monaco) {
+    throw new Error('Monaco editor is not initialized');
+  }
+  return monaco.editor.create(domElement.current, {
     language,
     automaticLayout: true,
     fontSize: 15,

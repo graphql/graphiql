@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
@@ -60,29 +61,34 @@ export const plugins: PluginOption[] = [
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),
   {
-    // Vite transform workers source code,
-    // we must use original import paths `monaco-editor/esm/...` and `monaco-graphql/esm/...` in Next.js
-    name: 'ignore-setup-workers-file',
-    load(id) {
-      return id.endsWith('setup-workers/webpack.ts') ? '' : null;
-    },
-  },
-  {
     name: 'copy-original-setup-workers-file',
     async closeBundle() {
-      const dest = './dist/setup-workers/webpack.js';
+      const source = './src/setup-workers';
+      const dest = './dist/setup-workers';
+      const types = 'export {};\n';
 
-      console.info(`Build finished! Writing "${dest}"...`);
-      const content = await fs.readFile(
-        './src/setup-workers/webpack.ts',
-        'utf8',
-      );
-      await fs.writeFile(
-        dest,
-        // Strip TypeScript types
-        content.replaceAll(': string', ''),
-        'utf8',
-      );
+      await fs.mkdir(dest, { recursive: true });
+
+      const [esmSh, vite, webpack] = await Promise.all([
+        fs.readFile(path.join(source, 'esm.sh.ts')),
+        fs.readFile(path.join(source, 'vite.ts')),
+        fs.readFile(path.join(source, 'webpack.ts')),
+      ]);
+
+      function removeTypes(raw: Buffer) {
+        return raw.toString().replaceAll(': string', '');
+      }
+
+      await Promise.all([
+        fs.writeFile(path.join(dest, 'esm.sh.js'), removeTypes(esmSh)),
+        fs.writeFile(path.join(dest, 'esm.sh.d.ts'), types),
+        fs.writeFile(path.join(dest, 'vite.js'), removeTypes(vite)),
+        fs.writeFile(path.join(dest, 'vite.d.ts'), types),
+        fs.writeFile(path.join(dest, 'webpack.js'), removeTypes(webpack)),
+        fs.writeFile(path.join(dest, 'webpack.d.ts'), types),
+      ]);
+
+      console.info(`Build finished! Created "${dest}"...`);
     },
   },
 ];
@@ -96,11 +102,7 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: [
-        'src/index.ts',
-        'src/setup-workers/webpack.ts',
-        'src/setup-workers/vite.ts',
-      ],
+      entry: 'src/index.ts',
       fileName(_format, entryName) {
         const filePath = entryName.replace(/\.svg$/, '');
         return `${filePath}.js`;
@@ -124,6 +126,7 @@ export default defineConfig({
         /zustand\//,
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },

@@ -18,6 +18,7 @@ const RESTRICTED_IMPORTS = [
     name: 'monaco-editor',
     message:
       '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+    allowTypeImports: true,
   },
 ];
 
@@ -586,6 +587,7 @@ module.exports = {
         'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
         '@typescript-eslint/no-unnecessary-condition': 'off',
+        '@typescript-eslint/no-deprecated': 'off',
       },
     },
   ],

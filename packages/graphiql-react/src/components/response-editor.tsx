@@ -10,21 +10,22 @@ import {
   pick,
   cleanupDisposables,
   cn,
+  Range,
 } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
-import type { editor as monacoEditor, Position } from '../monaco-editor';
-import { Range, languages } from '../monaco-editor';
+import type * as monaco from 'monaco-editor';
+import { useMonaco } from '../stores';
 
 type ResponseTooltipType = ComponentType<{
   /**
    * A position in the editor.
    */
-  position: Position;
+  position: monaco.Position;
   /**
    * Word that has been hovered over.
    */
-  word: monacoEditor.IWordAtPosition;
+  word: monaco.editor.IWordAtPosition;
 }>;
 
 interface ResponseEditorProps extends EditorProps {
@@ -44,6 +45,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
     );
   const ref = useRef<HTMLDivElement>(null!);
+  const monaco = useMonaco(state => state.monaco);
   useEffect(() => {
     if (fetchError) {
       responseEditor?.setValue(fetchError);
@@ -54,6 +56,9 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [responseEditor, fetchError, validationErrors]);
 
   useEffect(() => {
+    if (!monaco) {
+      return;
+    }
     const model = getOrCreateModel({
       uri: `${uriInstanceId}${URI_NAME.response}`,
       value: '',
@@ -70,7 +75,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     let lastRoot: Root | undefined;
     let timerId: ReturnType<typeof setTimeout> | undefined;
 
-    const provideHover: languages.HoverProvider['provideHover'] = (
+    const provideHover: monaco.languages.HoverProvider['provideHover'] = (
       $model,
       position,
     ) => {
@@ -129,13 +134,13 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     };
     const languageId = model.getLanguageId();
     const disposables = [
-      languages.registerHoverProvider(languageId, { provideHover }),
+      monaco.languages.registerHoverProvider(languageId, { provideHover }),
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
       editor,
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
     <section

@@ -14,6 +14,7 @@ export {
   // https://github.com/graphql/graphiql/issues/4057
   GraphiQLInterface,
   type GraphiQLProps,
+  type GraphiQLInterfaceProps,
 } from './GraphiQL';
 
 export { HISTORY_PLUGIN } from '@graphiql/plugin-history';

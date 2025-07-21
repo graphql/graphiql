@@ -32,6 +32,7 @@ import {
   EditorProps,
   cn,
   useGraphiQLActions,
+  useMonaco,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -140,7 +141,7 @@ type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
-interface GraphiQLInterfaceProps
+export interface GraphiQLInterfaceProps
   extends EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
@@ -221,6 +222,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'visiblePlugin',
     ),
   );
+  const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
   const PluginContent = visiblePlugin?.content;
 
@@ -353,7 +355,15 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         aria-label="Operation Editor"
         ref={editorToolsResize.firstRef}
       >
-        <QueryEditor onClickReference={onClickReference} onEdit={onEditQuery} />
+        {hasMonaco ? (
+          <QueryEditor
+            onClickReference={onClickReference}
+            onEdit={onEditQuery}
+          />
+        ) : (
+          <Spinner />
+        )}
+
         <div
           className="graphiql-toolbar"
           role="toolbar"

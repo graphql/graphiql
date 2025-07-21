@@ -1,8 +1,11 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { DocumentNode } from 'graphql';
-import { getOperationFacts } from 'graphql-language-service';
+import {
+  getOperationFacts,
+  getContextAtPosition,
+} from 'graphql-language-service';
 import { FC, useEffect, useRef } from 'react';
-import { useStorage } from '../stores';
+import { useMonaco } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
   debounce,
@@ -12,6 +15,8 @@ import {
   pick,
   cleanupDisposables,
   cn,
+  Uri,
+  Range,
 } from '../utility';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
@@ -19,17 +24,9 @@ import {
   URI_NAME,
   STORAGE_KEY,
   MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-  MONACO_GRAPHQL_API,
 } from '../constants';
-import {
-  type editor as monacoEditor,
-  languages,
-  Range,
-  Uri,
-} from '../monaco-editor';
-import * as monaco from '../monaco-editor';
-import { getContextAtPosition } from 'graphql-language-service/esm/parser';
-import { toGraphQLPosition } from 'monaco-graphql/esm/utils';
+import type * as monaco from 'monaco-editor';
+import { toGraphQLPosition } from 'monaco-graphql/esm/utils.js';
 
 interface OperationEditorProps extends EditorProps {
   /**
@@ -72,6 +69,8 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     operationName,
     externalFragments,
     uriInstanceId,
+    storage,
+    monacoTheme,
   } = useGraphiQL(
     pick(
       'initialQuery',
@@ -81,9 +80,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'operationName',
       'externalFragments',
       'uriInstanceId',
+      'storage',
+      'monacoTheme',
     ),
   );
-  const storage = useStorage();
   const ref = useRef<HTMLDivElement>(null!);
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
@@ -179,7 +179,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       : null;
   }
 
-  const runAtCursorRef = useRef<monacoEditor.IActionDescriptor['run']>(null!);
+  const runAtCursorRef = useRef<monaco.editor.IActionDescriptor['run']>(null!);
 
   useEffect(() => {
     runAtCursorRef.current = editor => {
@@ -209,7 +209,12 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     };
   }, [operationName, operations, run, setOperationName]);
 
+  const { monacoGraphQL, monaco } = useMonaco();
+
   useEffect(() => {
+    if (!monaco || !monacoGraphQL) {
+      return;
+    }
     const operationUri = Uri.file(`${uriInstanceId}${URI_NAME.operation}`);
     const variablesUri = Uri.file(`${uriInstanceId}${URI_NAME.variables}`);
     /**
@@ -218,15 +223,15 @@ export const OperationEditor: FC<OperationEditorProps> = ({
      */
     const { validateVariablesJSON } = MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS;
     validateVariablesJSON![operationUri.toString()] = [variablesUri.toString()];
-    MONACO_GRAPHQL_API.setDiagnosticSettings(
-      MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-    );
-    globalThis.__MONACO = monaco;
+    monacoGraphQL.setDiagnosticSettings(MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS);
     const model = getOrCreateModel({
       uri: operationUri.path.replace('/', ''),
       value: initialQuery,
     });
-    const editor = createEditor(ref, { model });
+    const editor = createEditor(ref, {
+      model,
+      theme: monacoTheme,
+    });
     setEditor({ queryEditor: editor });
 
     // We don't use the generic `useChangeHandler` hook here because we want to
@@ -266,16 +271,16 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       model,
     ];
     return cleanupDisposables(disposables);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
+  }, [monaco, monacoGraphQL]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   useEffect(() => {
-    if (!schema) {
+    if (!schema || !monaco || !monacoGraphQL) {
       return;
     }
-    MONACO_GRAPHQL_API.setSchemaConfig([
+    monacoGraphQL.setSchemaConfig([
       { uri: `${uriInstanceId}${URI_NAME.schema}`, schema },
     ]);
-    MONACO_GRAPHQL_API.setExternalFragmentDefinitions([
+    monacoGraphQL.setExternalFragmentDefinitions([
       ...externalFragments.values(),
     ]);
     if (!referencePlugin) {
@@ -285,7 +290,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     let currentSchemaReference: SchemaReference | null = null;
 
     const disposables = [
-      languages.registerDefinitionProvider('graphql', {
+      monaco.languages.registerDefinitionProvider('graphql', {
         provideDefinition(model, position, _token) {
           const graphQLPosition = toGraphQLPosition(position);
           const context = getContextAtPosition(
@@ -321,7 +326,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
           currentSchemaReference = null;
         },
       }),
-      languages.registerReferenceProvider('graphql', {
+      monaco.languages.registerReferenceProvider('graphql', {
         provideReferences(model, { lineNumber, column }, _context, _token) {
           if (!currentSchemaReference) {
             return;
@@ -343,6 +348,8 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     setVisiblePlugin,
     externalFragments,
     uriInstanceId,
+    monacoGraphQL,
+    monaco,
   ]);
 
   return (

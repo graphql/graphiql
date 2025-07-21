@@ -54,8 +54,9 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Getting started
 
-> If you're looking to upgrade from `graphiql@1.x` to `graphiql@2`, check out
-> the [migration guide](../../docs/migration/graphiql-2.0.0.md)!
+- [Migration guide to GraphiQL 2](../../docs/migration/graphiql-2.0.0.md)
+- [Migration guide to GraphiQL 4](../../docs/migration/graphiql-4.0.0.md)
+- [Migration guide to GraphiQL 5](../../docs/migration/graphiql-5.0.0.md)
 
 ### CDN usage
 
@@ -203,3 +204,37 @@ has to be loaded for the theme prop to work.
 You can also create your own theme in CSS. As a reference, the default
 `graphiql` theme definition can be found
 [here](../graphiql-react/src/style/codemirror.css).
+
+## Usage with a Custom Storage Namespace
+
+When multiple GraphiQL instances run on the same origin—such as in different apps or
+environments—they can conflict by reading from and writing to the same `localStorage` keys. To
+prevent this, you can provide a custom `storage` object that prefixes all keys with a unique
+namespace, isolating each instance’s state and avoiding collisions.
+
+```tsx
+import type { FC } from 'react';
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+
+const NAMESPACE = 'my-namespace';
+
+const storage: typeof localStorage = {
+  ...localStorage,
+  getItem(key) {
+    return localStorage.getItem(`${NAMESPACE}:${key}`);
+  },
+  setItem(key, value) {
+    return localStorage.setItem(`${NAMESPACE}:${key}`, value);
+  },
+  removeItem(key) {
+    return localStorage.removeItem(`${NAMESPACE}:${key}`);
+  },
+};
+
+export const App: FC = () => {
+  return <GraphiQL fetcher={fetcher} storage={myStorage} />;
+};
+```

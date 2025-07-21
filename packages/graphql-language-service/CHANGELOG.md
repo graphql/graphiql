@@ -1,5 +1,22 @@
 # graphql-language-service
 
+## 5.5.0
+
+### Minor Changes
+
+- [#4071](https://github.com/graphql/graphiql/pull/4071) [`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(graphql-language-service): export `getContextAtPosition`
+  feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
+
+  When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
+
+  ```diff
+  -import dynamic from 'next/dynamic'
+  -const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  -  ssr: false
+  -})
+  +import { GraphiQL } from 'graphiql'
+  ```
+
 ## 5.4.0
 
 ### Minor Changes

@@ -3,7 +3,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'GraphiQL Next.js Example',
+  description: 'Example of using GraphiQL with the Next.js App Router',
+  // Empty object adds open graph and twitter meta-tags
+  openGraph: {},
 };
 
 const RootLayout: FC<Readonly<{ children: ReactNode }>> = ({ children }) => {

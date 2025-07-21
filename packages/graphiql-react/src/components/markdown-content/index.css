@@ -7,11 +7,7 @@
  */
 
 .graphiql-markdown-description,
-.graphiql-markdown-deprecation,
-.CodeMirror-hint-information-description,
-.CodeMirror-hint-information-deprecation-reason,
-.CodeMirror-info .info-description,
-.CodeMirror-info .info-deprecation {
+.graphiql-markdown-deprecation {
   & blockquote {
     margin-left: 0;
     margin-right: 0;
@@ -68,9 +64,7 @@
   }
 }
 
-.graphiql-markdown-description,
-.CodeMirror-hint-information-description,
-.CodeMirror-info .info-description {
+.graphiql-markdown-description {
   & a {
     color: hsl(var(--color-primary));
     text-decoration: none;
@@ -95,9 +89,7 @@
   }
 }
 
-.graphiql-markdown-deprecation,
-.CodeMirror-hint-information-deprecation-reason,
-.CodeMirror-info .info-deprecation {
+.graphiql-markdown-deprecation {
   & a {
     color: hsl(var(--color-warning));
     text-decoration: underline;
@@ -119,31 +111,4 @@
 
 .graphiql-markdown-preview > :not(:first-child) {
   display: none;
-}
-
-/**
- * We show deprecations in the following places:
- * - In the hint tooltip when typing in the operation editor.
- * - In the info tooltip when hovering over a field in the operation editor.
- */
-
-.CodeMirror-hint-information-deprecation,
-.CodeMirror-info .info-deprecation {
-  background-color: hsla(var(--color-warning), var(--alpha-background-light));
-  border: 1px solid hsl(var(--color-warning));
-  border-radius: var(--border-radius-4);
-  color: hsl(var(--color-warning));
-  margin-top: var(--px-12);
-  padding: var(--px-6) var(--px-8);
-}
-
-.CodeMirror-hint-information-deprecation-label,
-.CodeMirror-info .info-deprecation-label {
-  font-size: var(--font-size-hint);
-  font-weight: var(--font-weight-medium);
-}
-
-.CodeMirror-hint-information-deprecation-reason,
-.CodeMirror-info .info-deprecation-reason {
-  margin-top: var(--px-6);
 }

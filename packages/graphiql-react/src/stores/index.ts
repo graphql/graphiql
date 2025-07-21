@@ -22,5 +22,15 @@ export {
   type SchemaActions,
   type SchemaProps,
 } from './schema';
-export { storageStore, useStorage } from './storage';
-export { themeStore, useTheme, type Theme } from './theme';
+export { monacoStore, useMonaco } from './monaco';
+export {
+  createStorageSlice,
+  type StorageSlice,
+  type StorageProps,
+} from './storage';
+export {
+  createThemeSlice,
+  type ThemeSlice,
+  type ThemeActions,
+  type ThemeProps,
+} from './theme';

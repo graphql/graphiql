@@ -18,6 +18,9 @@ vi.mock('@graphiql/react', async () => {
         variableEditor: { setValue: mockedSetVariableEditor },
         headerEditor: { setValue: mockedSetHeaderEditor },
         tabs: [],
+        storage: {
+          get() {},
+        },
       };
     },
   };

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useStorage } from '../stores';
 import { debounce } from './debounce';
+import { useGraphiQL } from '../components';
 
 type ResizableElement = 'first' | 'second';
 
@@ -55,7 +55,7 @@ export function useDragResize({
   sizeThresholdSecond = 100,
   storageKey,
 }: UseDragResizeArgs) {
-  const storage = useStorage();
+  const storage = useGraphiQL(state => state.storage);
 
   const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     () => {

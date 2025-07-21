@@ -4,6 +4,7 @@ import {
   ButtonGroup,
   cn,
   Dialog,
+  isMacOs,
   KEY_MAP,
   KeyboardShortcutIcon,
   pick,
@@ -14,8 +15,6 @@ import {
   useDragResize,
   useGraphiQL,
   useGraphiQLActions,
-  useStorage,
-  useTheme,
   VisuallyHidden,
 } from '@graphiql/react';
 import { ShortKeys } from './short-keys';
@@ -54,20 +53,25 @@ export const Sidebar: FC<SidebarProps> = ({
 }) => {
   const forcedTheme =
     $forcedTheme && THEMES.includes($forcedTheme) ? $forcedTheme : undefined;
-
-  const storage = useStorage();
-  const { theme, setTheme } = useTheme();
-  const { setShouldPersistHeaders, introspect, setVisiblePlugin } =
+  const { setShouldPersistHeaders, introspect, setVisiblePlugin, setTheme } =
     useGraphiQLActions();
-  const { shouldPersistHeaders, isIntrospecting, visiblePlugin, plugins } =
-    useGraphiQL(
-      pick(
-        'shouldPersistHeaders',
-        'isIntrospecting',
-        'visiblePlugin',
-        'plugins',
-      ),
-    );
+  const {
+    shouldPersistHeaders,
+    isIntrospecting,
+    visiblePlugin,
+    plugins,
+    theme,
+    storage,
+  } = useGraphiQL(
+    pick(
+      'shouldPersistHeaders',
+      'isIntrospecting',
+      'visiblePlugin',
+      'plugins',
+      'theme',
+      'storage',
+    ),
+  );
 
   useEffect(() => {
     if (forcedTheme === 'system') {
@@ -83,6 +87,20 @@ export const Sidebar: FC<SidebarProps> = ({
   const [clearStorageStatus, setClearStorageStatus] = useState<
     'success' | 'error' | undefined
   >();
+
+  useEffect(() => {
+    function openSettings(event: KeyboardEvent) {
+      if ((isMacOs ? event.metaKey : event.ctrlKey) && event.key === ',') {
+        event.preventDefault(); // prevent default browser settings dialog
+        setShowDialog(prev => (prev === 'settings' ? null : 'settings'));
+      }
+    }
+
+    window.addEventListener('keydown', openSettings);
+    return () => {
+      window.removeEventListener('keydown', openSettings);
+    };
+  }, []);
 
   function handleOpenShortKeysDialog(isOpen: boolean) {
     if (!isOpen) {

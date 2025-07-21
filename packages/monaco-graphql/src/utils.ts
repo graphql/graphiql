@@ -15,6 +15,8 @@ import type {
 import type * as monaco from './monaco-editor';
 import { buildASTSchema, printSchema } from 'graphql';
 import { Position } from 'graphql-language-service';
+// Importing from 'monaco-editor' in a worker throws “ReferenceError: window is not defined”
+import { MarkerSeverity } from 'monaco-editor/esm/vs/editor/common/standalone/standaloneEnums.js';
 
 // for backwards compatibility
 export const getModelLanguageId = (model: monaco.editor.ITextModel) => {
@@ -82,13 +84,11 @@ export function toCompletion(
 export function toMonacoSeverity(
   severity?: Diagnostic['severity'],
 ): monaco.MarkerSeverity {
-  // Can't use `monaco.MarkerSeverity` type due error:
-  // ReferenceError: window is not defined
   const severityMap = {
-    1: 8, // MarkerSeverity.Error
-    2: 4, // MarkerSeverity.Warning
-    3: 2, // MarkerSeverity.Info
-    4: 1, // MarkerSeverity.Hint
+    1: MarkerSeverity.Error, // MarkerSeverity.Error
+    2: MarkerSeverity.Warning, // MarkerSeverity.Warning
+    3: MarkerSeverity.Info, // MarkerSeverity.Info
+    4: MarkerSeverity.Hint, // MarkerSeverity.Hint
   };
 
   return severity ? severityMap[severity] : severityMap[2];

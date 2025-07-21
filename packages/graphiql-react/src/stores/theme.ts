@@ -1,34 +1,28 @@
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { storageStore } from './storage';
-import { createStore } from 'zustand';
-import { createBoundedUseStore } from '../utility';
-import { EDITOR_THEME } from '../utility/create-editor';
-import { editor as monacoEditor } from '../monaco-editor';
-import { STORAGE_KEY } from '../constants';
-
-/**
- * The value `null` semantically means that the user does not explicitly choose
- * any theme, so we use the system default.
- */
-export type Theme = 'light' | 'dark' | null;
+import type * as monaco from 'monaco-editor';
+import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
+import { monacoStore } from './monaco';
+import type { StateCreator } from 'zustand';
+import type { SlicesWithActions, Theme } from '../types';
 
 type MonacoTheme =
-  | monacoEditor.BuiltinTheme
-  | (typeof EDITOR_THEME)[keyof typeof EDITOR_THEME]
+  | monaco.editor.BuiltinTheme
+  | (typeof MONACO_THEME_NAME)[keyof typeof MONACO_THEME_NAME]
   | ({} & string);
 
-interface ThemeStoreType {
+export interface ThemeSlice {
   theme: Theme;
 
+  monacoTheme?: MonacoTheme;
+}
+
+export interface ThemeActions {
   /**
    * Set a new theme
    */
   setTheme: (newTheme: Theme) => void;
 }
 
-interface ThemeStoreProps {
-  children: ReactNode;
-
+export interface ThemeProps {
   /**
    * @default null
    */
@@ -44,54 +38,37 @@ interface ThemeStoreProps {
   };
 }
 
-export const themeStore = createStore<ThemeStoreType>(set => ({
-  theme: null,
-  setTheme(theme) {
-    const { storage } = storageStore.getState();
-    storage.set(STORAGE_KEY.theme, theme ?? '');
-    set({ theme });
-  },
-}));
+type CreateThemeSlice = (
+  initial: Pick<ThemeProps, 'editorTheme'>,
+) => StateCreator<
+  SlicesWithActions,
+  [],
+  [],
+  ThemeSlice & {
+    actions: ThemeActions;
+  }
+>;
 
-export const ThemeStore: FC<ThemeStoreProps> = ({
-  children,
-  defaultTheme = null,
-  editorTheme = EDITOR_THEME,
-}) => {
-  const theme = useTheme(state => state.theme);
-  useEffect(() => {
-    const { storage } = storageStore.getState();
-
-    function getInitialTheme() {
-      const stored = storage.get(STORAGE_KEY.theme);
-      switch (stored) {
-        case 'light':
-          return 'light';
-        case 'dark':
-          return 'dark';
-        default:
-          if (typeof stored === 'string') {
-            // Remove the invalid stored value
-            storage.set(STORAGE_KEY.theme, '');
-          }
-          return defaultTheme;
-      }
-    }
-
-    themeStore.setState({ theme: getInitialTheme() });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
-
-  useEffect(() => {
-    document.body.classList.remove('graphiql-light', 'graphiql-dark');
-    if (theme) {
-      document.body.classList.add(`graphiql-${theme}`);
-    }
-    const resolvedTheme = theme ?? getSystemTheme();
-    monacoEditor.setTheme(editorTheme[resolvedTheme]);
-  }, [theme, editorTheme]);
-
-  return children as ReactElement;
-};
+export const createThemeSlice: CreateThemeSlice =
+  ({ editorTheme }) =>
+  (set, get) => ({
+    theme: null,
+    actions: {
+      setTheme(theme) {
+        const { storage } = get();
+        storage.set(STORAGE_KEY.theme, theme ?? '');
+        document.body.classList.remove('graphiql-light', 'graphiql-dark');
+        if (theme) {
+          document.body.classList.add(`graphiql-${theme}`);
+        }
+        const { monaco } = monacoStore.getState();
+        const resolvedTheme = theme ?? getSystemTheme();
+        const monacoTheme = editorTheme![resolvedTheme];
+        monaco?.editor.setTheme(monacoTheme);
+        set({ theme, monacoTheme });
+      },
+    },
+  });
 
 /**
  * Get the resolved theme - dark or light
@@ -103,5 +80,3 @@ function getSystemTheme() {
   const systemTheme = isDark ? 'dark' : 'light';
   return systemTheme;
 }
-
-export const useTheme = createBoundedUseStore(themeStore);

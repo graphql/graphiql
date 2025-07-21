@@ -1,5 +1,67 @@
 # @graphiql/react
 
+## 0.37.1
+
+### Patch Changes
+
+- [#4081](https://github.com/graphql/graphiql/pull/4081) [`4950dec`](https://github.com/graphql/graphiql/commit/4950decaddb816ef3e3d22d814d976d94405029e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: add loader for initial loading of operation editor
+  fix: adjust command palette `width`, `border` and remove `box-shadow`
+  feat: add short cut `Cmd/Ctrl + ,` for opening GraphiQL settings dialog
+
+## 0.37.0
+
+### Minor Changes
+
+- [#4078](https://github.com/graphql/graphiql/pull/4078) [`6e5d5fc`](https://github.com/graphql/graphiql/commit/6e5d5fce9a7eb5770f40300fc153e0b9b10edfbf) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix color in the F1 popup should be graphiql primary color and add deprecated exports for `useEditorStore`, `useExecutionStore`, `usePluginStore` and `useSchemaStore`
+
+### Patch Changes
+
+- [#4079](https://github.com/graphql/graphiql/pull/4079) [`293beed`](https://github.com/graphql/graphiql/commit/293beed772baa2be834cad5f19e1aee0628e15cc) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove legacy codemirror CSS styles
+
+## 0.36.0
+
+### Minor Changes
+
+- [#4071](https://github.com/graphql/graphiql/pull/4071) [`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(graphql-language-service): export `getContextAtPosition`
+  feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
+
+  When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
+
+  ```diff
+  -import dynamic from 'next/dynamic'
+  -const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  -  ssr: false
+  -})
+  +import { GraphiQL } from 'graphiql'
+  ```
+
+- [#4074](https://github.com/graphql/graphiql/pull/4074) [`fd3f9e6`](https://github.com/graphql/graphiql/commit/fd3f9e6a91be728a69a136ad8680f6e3c7241198) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Ensure `storage` and `theme` store values aren't shared between GraphiQL instances. Deprecate `useTheme` and `useStorage` hooks in favour of values from `useGraphiQL` and `useGraphiQLActions` hooks
+
+  feat(`@graphiql/plugin-history`/`@graphiql/plugin-doc-explorer`): move `@graphiql/react` to `peerDependencies`
+
+- [#4077](https://github.com/graphql/graphiql/pull/4077) [`3d41e11`](https://github.com/graphql/graphiql/commit/3d41e113fbf53930fd1b519b6d1330d0f4b23b7b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - add new example [Usage GraphiQL 5 with Vite, React Router and `ssr: true`](https://github.com/graphql/graphiql/tree/main/examples/example-graphiql-vite-react-router)
+
+### Patch Changes
+
+- [#4076](https://github.com/graphql/graphiql/pull/4076) [`416e3a0`](https://github.com/graphql/graphiql/commit/416e3a05e9473eb2abd444da61ecfb8614020d14) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix broken `useOperationsEditorState` and `useEditorState` hook and add unit tests
+
+- Updated dependencies [[`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd)]:
+  - monaco-graphql@1.7.2
+  - graphql-language-service@5.5.0
+
+## 0.35.6
+
+### Patch Changes
+
+- [#4069](https://github.com/graphql/graphiql/pull/4069) [`142f3f2`](https://github.com/graphql/graphiql/commit/142f3f2529c668aa1a6ba2f7269cf4b7e2fd3e61) Thanks [@dimaMachina](https://github.com/dimaMachina)! - reduce bundle size, import `prettier` dynamically to avoid bundling Prettier
+
+  diff from vite example
+
+  ```diff
+  -dist/assets/index-BMgFrxsd.js             4,911.53 kB │ gzip: 1,339.77 kB
+  +dist/assets/index-BlpzusGL.js             4,221.28 kB │ gzip: 1,145.58 kB
+  ```
+
 ## 0.35.5
 
 ### Patch Changes

@@ -7,7 +7,6 @@ import type {
 import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
 import { print } from 'graphql';
-import { storageStore } from './storage';
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -23,7 +22,8 @@ import { STORAGE_KEY } from '../constants';
 
 export interface EditorSlice extends TabsState {
   /**
-   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations, variables, headers, and responses.
+   * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations,
+   * variables, headers, and response editors.
    *
    * @see https://github.com/microsoft/monaco-editor#uris
    */
@@ -431,8 +431,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     setShouldPersistHeaders(persist) {
-      const { headerEditor, tabs, activeTabIndex } = get();
-      const { storage } = storageStore.getState();
+      const { headerEditor, tabs, activeTabIndex, storage } = get();
       if (persist) {
         storage.set(STORAGE_KEY.headers, headerEditor?.getValue() ?? '');
         const serializedTabs = serializeTabState(
@@ -442,14 +441,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         storage.set(STORAGE_KEY.tabs, serializedTabs);
       } else {
         storage.set(STORAGE_KEY.headers, '');
-        clearHeadersFromTabs();
+        clearHeadersFromTabs(storage);
       }
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
     },
     storeTabs({ tabs, activeTabIndex }) {
-      const { storage } = storageStore.getState();
-      const { shouldPersistHeaders } = get();
+      const { shouldPersistHeaders, storage } = get();
       const store = debounce(500, (value: string) => {
         storage.set(STORAGE_KEY.tabs, value);
       });

@@ -7,10 +7,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
-import { Component } from 'react';
+import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
 import type { Fetcher } from '@graphiql/toolkit';
-import { ToolbarButton } from '@graphiql/react';
+import {
+  ToolbarButton,
+  useGraphiQL,
+  useOperationsEditorState,
+  MonacoEditor,
+} from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
 // The smallest possible introspection result that builds a schema.
@@ -159,10 +164,11 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
-        const mockEditor = container.querySelector<HTMLTextAreaElement>(
-          '.graphiql-query-editor .mockMonaco',
-        )!;
-        expect(mockEditor.value).toContain('# Welcome to GraphiQL');
+        const queryEditor = container.querySelector<HTMLDivElement>(
+          '.graphiql-editor .monaco-scrollable-element',
+        );
+        expect(queryEditor).toBeVisible();
+        expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
       });
     });
 
@@ -172,10 +178,11 @@ describe('GraphiQL', () => {
       );
 
       await waitFor(() => {
-        const mockEditor = container.querySelector(
-          '.graphiql-query-editor .mockMonaco',
-        )!;
-        expect(mockEditor).toHaveValue('GraphQL Party!!');
+        const queryEditor = container.querySelector<HTMLDivElement>(
+          '.graphiql-editor .monaco-scrollable-element',
+        );
+        expect(queryEditor).toBeVisible();
+        expect(queryEditor!.textContent).toBe('GraphQL Party!!');
       });
     });
   }); // default query
@@ -648,10 +655,24 @@ describe('GraphiQL', () => {
   });
 
   it('should support multiple instances', async () => {
+    const queryEditors: Record<0 | 1, MonacoEditor> = Object.create(null);
+
+    const HookConsumer: FC<{ id: 0 | 1 }> = ({ id }) => {
+      const $queryEditor = useGraphiQL(state => state.queryEditor);
+      useEffect(() => {
+        queryEditors[id] = $queryEditor!;
+      }, [$queryEditor, id]);
+      return null;
+    };
+
     const { container, getAllByLabelText } = render(
       <>
-        <GraphiQL fetcher={noOpFetcher} />
-        <GraphiQL fetcher={noOpFetcher} />
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer id={0} />
+        </GraphiQL>
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer id={1} />
+        </GraphiQL>
       </>,
     );
     const [firstEl, secondEl] = container.querySelectorAll(
@@ -678,6 +699,61 @@ describe('GraphiQL', () => {
       // Editor store
       expect(firstEl!.querySelectorAll('.graphiql-tab').length).toBe(2);
       expect(secondEl!.querySelectorAll('.graphiql-tab').length).toBe(1);
+
+      // Query
+      queryEditors[0].setValue('{__typename}');
+      queryEditors[1].setValue('bar');
+      const editors = container.querySelectorAll<HTMLDivElement>(
+        '.graphiql-query-editor .monaco-scrollable-element',
+      );
+      expect(editors[0]!.textContent).toBe('{__typename}');
+      expect(editors[1]!.textContent).toBe('bar');
+    });
+  });
+
+  it('`useOperationsEditorState` hook', async () => {
+    let hookResult: ReturnType<typeof useOperationsEditorState>;
+    let queryEditor: MonacoEditor;
+
+    const HookConsumer: FC = () => {
+      const $hookResult = useOperationsEditorState();
+      const $queryEditor = useGraphiQL(state => state.queryEditor);
+      useEffect(() => {
+        hookResult = $hookResult;
+        queryEditor = $queryEditor!;
+      }, [$hookResult, $queryEditor]);
+      return null;
+    };
+
+    const { container } = render(
+      <GraphiQL fetcher={noOpFetcher} initialQuery="query { hello }">
+        <HookConsumer />
+      </GraphiQL>,
+    );
+    let editor: HTMLDivElement = null!;
+
+    // Assert initial values
+    await waitFor(() => {
+      editor = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor .monaco-scrollable-element',
+      )!;
+      expect(editor.textContent).toBe('query { hello }');
+      expect(hookResult[0]).toBe('query { hello }');
+    });
+    // Assert value was changed after UI editing
+    await waitFor(() => {
+      const newValue = 'bar';
+      queryEditor.setValue(newValue);
+      expect(editor.textContent).toBe(newValue);
+      expect(hookResult[0]).toBe(newValue);
+    });
+
+    // Assert using hook handler
+    await waitFor(() => {
+      const newValue = 'foo';
+      hookResult[1](newValue);
+      expect(editor.textContent).toBe(newValue);
+      expect(hookResult[0]).toBe(newValue);
     });
   });
 });

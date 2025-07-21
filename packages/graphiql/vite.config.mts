@@ -1,4 +1,4 @@
-import { sep } from 'node:path';
+import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
@@ -15,7 +15,7 @@ const reactCompilerConfig: Partial<ReactCompilerConfig> = {
     ) {
       return false;
     }
-    return filename.includes(`packages${sep}graphiql${sep}src`);
+    return filename.includes(`packages${path.sep}graphiql${path.sep}src`);
   },
 };
 
@@ -86,6 +86,7 @@ const esmConfig = defineConfig({
         'src/e2e.ts',
         'src/setup-workers/webpack.ts',
         'src/setup-workers/vite.ts',
+        'src/setup-workers/esm.sh.ts',
       ],
       fileName: (_format, filePath) => `${filePath}.js`,
       formats: ['es'],
@@ -102,6 +103,7 @@ const esmConfig = defineConfig({
         /^@graphiql\/react\//,
       ],
       output: {
+        // Separate chunks for all modules
         preserveModules: true,
       },
     },
