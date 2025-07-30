@@ -101,3 +101,7 @@ const queryWithLeadingAboveComment =
       }
     }
   `;
+
+// The comment below is its own standalone test:
+// comment with tag in it: gql `Hello` should be ignored
+const abc = "Hello";
