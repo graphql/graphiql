@@ -301,14 +301,25 @@ describe('getVariablesJSONSchema', () => {
             description: 'nesting a whole object!\n\nChildInputType!',
           },
           exampleList: {
-            type: ['array', 'null'],
-            items: {
-              description: 'ChildInputType',
-              oneOf: [
-                { $ref: '#/definitions/ChildInputType' },
-                { type: 'null' },
-              ],
-            },
+            anyOf: [
+              {
+                description: 'ChildInputType',
+                oneOf: [
+                  { $ref: '#/definitions/ChildInputType' },
+                  { type: 'null' },
+                ],
+              },
+              {
+                type: ['array', 'null'],
+                items: {
+                  description: 'ChildInputType',
+                  oneOf: [
+                    { $ref: '#/definitions/ChildInputType' },
+                    { type: 'null' },
+                  ],
+                },
+              },
+            ],
             description: 'list type with default\n\n[ChildInputType]',
             default: [
               {
@@ -318,12 +329,20 @@ describe('getVariablesJSONSchema', () => {
             ],
           },
           exampleScalarList: {
-            type: 'array',
             description: '[String]!',
-            items: {
-              type: ['string', 'null'],
-              description: 'String',
-            },
+            anyOf: [
+              {
+                type: ['string', 'null'],
+                description: 'String',
+              },
+              {
+                type: 'array',
+                items: {
+                  type: ['string', 'null'],
+                  description: 'String',
+                },
+              },
+            ],
             default: ['something'],
           },
         },
@@ -414,15 +433,27 @@ describe('getVariablesJSONSchema', () => {
             $ref: '#/definitions/ChildInputType',
           },
           exampleList: {
-            type: ['array', 'null'],
-            items: {
-              description: 'ChildInputType',
-              markdownDescription: '```graphql\nChildInputType\n```',
-              oneOf: [
-                { $ref: '#/definitions/ChildInputType' },
-                { type: 'null' },
-              ],
-            },
+            anyOf: [
+              {
+                description: 'ChildInputType',
+                markdownDescription: '```graphql\nChildInputType\n```',
+                oneOf: [
+                  { $ref: '#/definitions/ChildInputType' },
+                  { type: 'null' },
+                ],
+              },
+              {
+                type: ['array', 'null'],
+                items: {
+                  description: 'ChildInputType',
+                  markdownDescription: '```graphql\nChildInputType\n```',
+                  oneOf: [
+                    { $ref: '#/definitions/ChildInputType' },
+                    { type: 'null' },
+                  ],
+                },
+              },
+            ],
             description: 'list type with default\n\n[ChildInputType]',
             markdownDescription: `list type with default\n\n${mdTicks(
               '[ChildInputType]',
@@ -435,14 +466,23 @@ describe('getVariablesJSONSchema', () => {
             ],
           },
           exampleScalarList: {
-            type: 'array',
             description: '[String]!',
             markdownDescription: mdTicks('[String]!'),
-            items: {
-              type: ['string', 'null'],
-              description: 'String',
-              markdownDescription: mdTicks('String'),
-            },
+            anyOf: [
+              {
+                type: ['string', 'null'],
+                description: 'String',
+                markdownDescription: mdTicks('String'),
+              },
+              {
+                type: 'array',
+                items: {
+                  type: ['string', 'null'],
+                  description: 'String',
+                  markdownDescription: mdTicks('String'),
+                },
+              },
+            ],
             default: ['something'],
           },
         },
