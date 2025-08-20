@@ -351,8 +351,10 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           tabs,
           activeTabIndex,
         });
+        const headers =
+          defaultHeaders || tabs.find(tab => tab.headers)?.headers;
         const updated = {
-          tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
+          tabs: [...updatedValues.tabs, createTab({ headers })],
           activeTabIndex: updatedValues.tabs.length,
         };
         actions.storeTabs(updated);
