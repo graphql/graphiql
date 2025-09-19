@@ -52,6 +52,12 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 - [`Parcel`](../../examples/graphiql-parcel) - An example using
   [Parcel](https://parceljs.org)
 
+## Desktop app
+
+[GraphiQL.app](https://github.com/skevy/graphiql-app) is an Electron-based wrapper around GraphiQL which you can install as a Desktop app.
+
+Note: the maintainance of this app is outside this project.
+
 ## Getting started
 
 - [Migration guide to GraphiQL 2](../../docs/migration/graphiql-2.0.0.md)
