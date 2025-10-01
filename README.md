@@ -1,4 +1,3 @@
-
 <!-- @format -->
 
 # GraphQL IDE Monorepo
@@ -54,7 +53,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 [Try the live demo](https://graphql.org/swapi-graphql). We also have
-[a demo using our latest netlify build](http://graphiql-test.netlify.com) for
+[a demo using our latest netlify build](http://graphiql-test.netlify.app) for
 the `main` branch.
 
 The GraphiQL IDE, implemented in React, currently using
