@@ -110,6 +110,7 @@ describe('getDefaultTabState', () => {
         headers: null,
         query: null,
         variables: null,
+        extensions: null,
         storage: new StorageAPI(),
       }),
     ).toEqual({
@@ -142,6 +143,7 @@ describe('getDefaultTabState', () => {
         ],
         query: null,
         variables: null,
+        extensions: null,
         storage: new StorageAPI(),
       }),
     ).toEqual({
