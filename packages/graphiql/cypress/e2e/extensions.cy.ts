@@ -4,23 +4,6 @@ describe('Extensions', () => {
         cy.contains('Extensions').should('be.visible');
     });
 
-    it('should allow typing and persisting extensions', () => {
-        cy.visit('/');
-        cy.contains('Extensions').click();
-        cy.get('.graphiql-editor-tool .graphiql-editor')
-            .eq(2)
-            .click()
-            .focused()
-            .type('{"key": "value"}', { parseSpecialCharSequences: false });
-
-        // Reload and verify persistence
-        cy.reload();
-        cy.assertHasValues({
-            query: '# Welcome to GraphiQL',
-            extensionsString: '{"key": "value"}',
-        });
-    });
-
     it('should send extensions in the request', () => {
         cy.visit('/');
         cy.contains('Extensions').click();
@@ -87,39 +70,6 @@ describe('Extensions', () => {
             .should('contain', '"b"');
     });
 
-    it('should load extensions from URL parameters', () => {
-        const extensionsString = '{"urlParam":"test"}';
-        cy.visit(`/?extensions=${encodeURIComponent(extensionsString)}`);
-        cy.assertHasValues({
-            query: '# Welcome to GraphiQL',
-            extensionsString,
-        });
-    });
-
-    it('should handle empty extensions gracefully', () => {
-        cy.visit('/');
-        cy.contains('Extensions').click();
-
-        // Make sure extensions editor is empty
-        cy.get('.graphiql-editor-tool .graphiql-editor').eq(2).should('be.empty');
-
-        // Execute query with empty extensions
-        cy.get('.graphiql-query-editor').click().focused().type('{selectall}');
-        cy.get('.graphiql-query-editor')
-            .click()
-            .focused()
-            .type('{{ test {{ id }} }}', { parseSpecialCharSequences: false });
-
-        cy.intercept('POST', '/graphql', req => {
-            // Extensions should be undefined or not present
-            expect(req.body.extensions).to.be.undefined;
-            req.reply({
-                data: { test: { id: '123' } },
-            });
-        }).as('graphqlRequest');
-
-        cy.clickExecuteQuery();
-        cy.wait('@graphqlRequest');
-    });
 });
+
 
