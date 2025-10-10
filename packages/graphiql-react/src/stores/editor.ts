@@ -49,6 +49,11 @@ export interface EditorSlice extends TabsState {
   variableEditor?: MonacoEditor;
 
   /**
+   * The Monaco Editor instance used in the extensions editor.
+   */
+  extensionsEditor?: MonacoEditor;
+
+  /**
    * The contents of the request headers editor when initially rendering the provider
    * component.
    */
@@ -65,6 +70,12 @@ export interface EditorSlice extends TabsState {
    * component.
    */
   initialVariables: string;
+
+  /**
+   * The contents of the extensions editor when initially rendering the provider
+   * component.
+   */
+  initialExtensions: string;
 
   /**
    * A map of fragment definitions using the fragment name as a key which are
@@ -191,7 +202,11 @@ export interface EditorActions {
   setEditor(
     state: Pick<
       EditorSlice,
-      'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
+      | 'headerEditor'
+      | 'queryEditor'
+      | 'responseEditor'
+      | 'variableEditor'
+      | 'extensionsEditor'
     >,
   ): void;
 
@@ -274,6 +289,7 @@ export interface EditorProps
   initialQuery?: EditorSlice['initialQuery'];
   initialVariables?: EditorSlice['initialVariables'];
   initialHeaders?: EditorSlice['initialHeaders'];
+  initialExtensions?: EditorSlice['initialExtensions'];
 }
 
 type CreateEditorSlice = (
@@ -285,6 +301,7 @@ type CreateEditorSlice = (
     | 'initialQuery'
     | 'initialVariables'
     | 'initialHeaders'
+    | 'initialExtensions'
     | 'onEditOperationName'
     | 'externalFragments'
     | 'onTabChange'
@@ -306,23 +323,27 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     query,
     variables,
     headers,
+    extensions,
     response,
   }: {
     query: string | null;
     variables?: string | null;
     headers?: string | null;
+    extensions?: string | null;
     response: string | null;
   }) {
     const {
       queryEditor,
       variableEditor,
       headerEditor,
+      extensionsEditor,
       responseEditor,
       defaultHeaders,
     } = get();
     queryEditor?.setValue(query ?? '');
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? defaultHeaders ?? '');
+    extensionsEditor?.setValue(extensions ?? '');
     responseEditor?.setValue(response ?? '');
   }
 
@@ -331,6 +352,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       queryEditor,
       variableEditor,
       headerEditor,
+      extensionsEditor,
       responseEditor,
       operationName,
     } = get();
@@ -338,6 +360,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       query: queryEditor?.getValue() ?? null,
       variables: variableEditor?.getValue() ?? null,
       headers: headerEditor?.getValue() ?? null,
+      extensions: extensionsEditor?.getValue() ?? null,
       response: responseEditor?.getValue() ?? null,
       operationName: operationName ?? null,
     });
@@ -476,8 +499,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
     },
     async prettifyEditors() {
-      const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
-        get();
+      const {
+        queryEditor,
+        headerEditor,
+        variableEditor,
+        extensionsEditor,
+        onPrettifyQuery,
+      } = get();
 
       if (variableEditor) {
         try {
@@ -506,6 +534,22 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           // eslint-disable-next-line no-console
           console.warn(
             'Parsing headers JSON failed, skip prettification.',
+            error,
+          );
+        }
+      }
+
+      if (extensionsEditor) {
+        try {
+          const content = extensionsEditor.getValue();
+          const formatted = await formatJSONC(content);
+          if (formatted !== content) {
+            extensionsEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'Parsing extensions JSON failed, skip prettification.',
             error,
           );
         }
