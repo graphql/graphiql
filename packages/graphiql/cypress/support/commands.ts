@@ -13,6 +13,7 @@ interface Op {
   variables?: Record<string, any>;
   variablesString?: string;
   headersString?: string;
+  extensionsString?: string;
   response?: Record<string, any>;
 }
 
@@ -63,19 +64,22 @@ Cypress.Commands.add('clickPrettify', () => {
   cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
 });
 
-Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
+Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString, extensionsString }) => {
   let url = `?query=${encodeURIComponent(query)}`;
   if (variables || variablesString) {
     url += `&variables=${encodeURIComponent(
       JSON.stringify(variables, null, 2) || variablesString,
     )}`;
   }
+  if (extensionsString) {
+    url += `&extensions=${encodeURIComponent(extensionsString)}`;
+  }
   cy.visit(url);
 });
 
 Cypress.Commands.add(
   'assertHasValues',
-  ({ query, variables, variablesString, headersString, response }: Op) => {
+  ({ query, variables, variablesString, headersString, extensionsString, response }: Op) => {
     cy.get(
       '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
     ).should(element => {
@@ -116,6 +120,18 @@ Cypress.Commands.add(
         .should(element => {
           const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
           const expected = headersString;
+          expect(actual).to.equal(expected);
+        });
+    }
+    if (extensionsString !== undefined) {
+      cy.contains('Extensions').click();
+      cy.get(
+        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
+      )
+        .eq(2)
+        .should(element => {
+          const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
+          const expected = extensionsString;
           expect(actual).to.equal(expected);
         });
     }
