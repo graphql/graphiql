@@ -2,6 +2,7 @@ export { ExecuteButton } from './execute-button';
 export { ToolbarButton } from './toolbar-button';
 export { ToolbarMenu } from './toolbar-menu';
 
+export { ExtensionsEditor } from './extensions-editor';
 export { RequestHeadersEditor as HeaderEditor } from './request-headers-editor';
 export { ImagePreview } from './image-preview';
 export { GraphiQLProvider, useGraphiQL, useGraphiQLActions } from './provider';
