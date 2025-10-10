@@ -40,12 +40,13 @@ type HistoryStoreType = {
     /**
      * Add an operation to the history.
      * @param operation The operation that was executed, consisting of the query,
-     * variables, headers, and operation name.
+     * variables, headers, extensions, and operation name.
      */
     addToHistory(operation: {
       query?: string;
       variables?: string;
       headers?: string;
+      extensions?: string;
       operationName?: string;
     }): void;
     /**
@@ -62,6 +63,7 @@ type HistoryStoreType = {
         query?: string;
         variables?: string;
         headers?: string;
+        extensions?: string;
         operationName?: string;
         label?: string;
         favorite?: boolean;
@@ -79,6 +81,7 @@ type HistoryStoreType = {
       query?: string;
       variables?: string;
       headers?: string;
+      extensions?: string;
       operationName?: string;
       label?: string;
       favorite?: boolean;
@@ -137,6 +140,7 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
       query: activeTab.query ?? undefined,
       variables: activeTab.variables ?? undefined,
       headers: activeTab.headers ?? undefined,
+      extensions: activeTab.extensions ?? undefined,
       operationName: activeTab.operationName ?? undefined,
     });
   }, [isFetching, activeTab]);

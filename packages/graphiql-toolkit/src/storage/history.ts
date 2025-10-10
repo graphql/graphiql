@@ -29,6 +29,7 @@ export class HistoryStore {
     query?: string,
     variables?: string,
     headers?: string,
+    extensions?: string,
     lastQuerySaved?: QueryStoreItem,
   ) {
     if (!query) {
@@ -55,7 +56,15 @@ export class HistoryStore {
         if (
           JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)
         ) {
-          return false;
+          if (
+            JSON.stringify(extensions) ===
+            JSON.stringify(lastQuerySaved.extensions)
+          ) {
+            return false;
+          }
+          if (extensions && !lastQuerySaved.extensions) {
+            return false;
+          }
         }
         if (headers && !lastQuerySaved.headers) {
           return false;
@@ -72,6 +81,7 @@ export class HistoryStore {
     query,
     variables,
     headers,
+    extensions,
     operationName,
   }: QueryStoreItem) => {
     if (
@@ -79,6 +89,7 @@ export class HistoryStore {
         query,
         variables,
         headers,
+        extensions,
         this.history.fetchRecent(),
       )
     ) {
@@ -88,6 +99,7 @@ export class HistoryStore {
       query,
       variables,
       headers,
+      extensions,
       operationName,
     });
     const historyQueries = this.history.items;
@@ -99,6 +111,7 @@ export class HistoryStore {
     query,
     variables,
     headers,
+    extensions,
     operationName,
     label,
     favorite,
@@ -107,6 +120,7 @@ export class HistoryStore {
       query,
       variables,
       headers,
+      extensions,
       operationName,
       label,
     };
@@ -127,6 +141,7 @@ export class HistoryStore {
       query,
       variables,
       headers,
+      extensions,
       operationName,
       label,
       favorite,
@@ -137,6 +152,7 @@ export class HistoryStore {
       query,
       variables,
       headers,
+      extensions,
       operationName,
       label,
     };
@@ -149,7 +165,7 @@ export class HistoryStore {
   }
 
   deleteHistory = (
-    { query, variables, headers, operationName, favorite }: QueryStoreItem,
+    { query, variables, headers, extensions, operationName, favorite }: QueryStoreItem,
     clearFavorites = false,
   ) => {
     function deleteFromStore(store: QueryStore) {
@@ -158,6 +174,7 @@ export class HistoryStore {
           x.query === query &&
           x.variables === variables &&
           x.headers === headers &&
+          x.extensions === extensions &&
           x.operationName === operationName,
       );
       if (found) {
