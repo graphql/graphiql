@@ -436,12 +436,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         return updated;
       });
     },
-    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor }) {
+    setEditor({ headerEditor, queryEditor, responseEditor, variableEditor, extensionsEditor }) {
       const entries = Object.entries({
         headerEditor,
         queryEditor,
         responseEditor,
         variableEditor,
+        extensionsEditor,
       }).filter(([_key, value]) => value);
       const newState = Object.fromEntries(entries);
       set(newState);
