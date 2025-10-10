@@ -4,6 +4,7 @@ export type QueryStoreItem = {
   query?: string;
   variables?: string;
   headers?: string;
+  extensions?: string;
   operationName?: string;
   label?: string;
   favorite?: boolean;
@@ -30,6 +31,7 @@ export class QueryStore {
         x.query === item.query &&
         x.variables === item.variables &&
         x.headers === item.headers &&
+        x.extensions === item.extensions &&
         x.operationName === item.operationName,
     );
   }
@@ -41,6 +43,7 @@ export class QueryStore {
         found.query === item.query &&
         found.variables === item.variables &&
         found.headers === item.headers &&
+        found.extensions === item.extensions &&
         found.operationName === item.operationName
       ) {
         this.items.splice(index, 1, item);
@@ -54,6 +57,7 @@ export class QueryStore {
         x.query === item.query &&
         x.variables === item.variables &&
         x.headers === item.headers &&
+        x.extensions === item.extensions &&
         x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
@@ -68,6 +72,7 @@ export class QueryStore {
         x.query === item.query &&
         x.variables === item.variables &&
         x.headers === item.headers &&
+        x.extensions === item.extensions &&
         x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
