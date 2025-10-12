@@ -143,6 +143,18 @@
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
+      },
+      {
+        "injectTo": [
+          "source.hack",
+          "text.html.markdown",
+          "text.html.derivative"
+        ],
+        "scopeName": "inline.graphql.hack",
+        "path": "./grammars/graphql.hack.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
       }
     ]
   },
