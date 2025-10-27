@@ -42,7 +42,7 @@ async function fetchLatestVersion(packageName) {
  * @example
  *
  *   fetchLatestVersion('https://esm.sh/left-pad/lib/index.js')
- *   => ['https://esm.sh/left-pad/lib/index.js', 'sha-384-deadbeef123']
+ *   => ['https://esm.sh/left-pad/lib/index.js', 'sha384-deadbeef123']
  */
 async function fetchIntegrityHash(url) {
   const response = await fetch(url, { redirect: 'follow' });
