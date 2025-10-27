@@ -5,6 +5,8 @@ on:
     # Run every Monday at 10:00 UTC
     - cron: '0 10 * * 1'
   workflow_dispatch: # Allow manual triggering
+  release:
+    types: [released]
 
 permissions:
   contents: write
