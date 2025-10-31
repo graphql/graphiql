@@ -1,7 +1,7 @@
 /* eslint-disable import-x/no-unresolved */
-import JsonWorker from 'https://esm.sh/monaco-editor@0.54.0/esm/vs/language/json/json.worker.js?worker';
+import JsonWorker from 'https://esm.sh/monaco-editor@0.52.2/esm/vs/language/json/json.worker.js?worker';
 import GraphQLWorker from 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker';
-import EditorWorker from 'https://esm.sh/monaco-editor@0.54.0/esm/vs/editor/editor.worker.js?worker';
+import EditorWorker from 'https://esm.sh/monaco-editor@0.52.2/esm/vs/editor/editor.worker.js?worker';
 
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
