@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.2.1
+
+### Patch Changes
+
+- [#4124](https://github.com/graphql/graphiql/pull/4124) [`d77abe6`](https://github.com/graphql/graphiql/commit/d77abe647e700ef8949a16c3bccda648d5c6adae) Thanks [@dimaMachina](https://github.com/dimaMachina)! - pin `monaco-editor` to `0.52.2`
+
+- Updated dependencies [[`d77abe6`](https://github.com/graphql/graphiql/commit/d77abe647e700ef8949a16c3bccda648d5c6adae)]:
+  - @graphiql/react@0.37.2
+
 ## 5.2.0
 
 ### Minor Changes
