@@ -16,6 +16,10 @@ export interface TabDefinition {
    * The contents of the request headers editor of this tab.
    */
   headers?: string | null;
+  /**
+   * The contents of the extensions editor of this tab.
+   */
+  extensions?: string | null;
 }
 
 /**
@@ -29,7 +33,7 @@ export interface TabState extends TabDefinition {
 
   /**
    * A hash that is unique for a combination of the contents of the query
-   * editor, the variables editor and the request headers editor (i.e., all the editor
+   * editor, the variables editor, the request headers editor, and the extensions editor (i.e., all the editor
    * where the contents are persisted in storage).
    */
   hash: string;
@@ -72,11 +76,13 @@ export function getDefaultTabState({
   headers,
   query,
   variables,
+  extensions,
   defaultTabs = [
     {
       query: query ?? defaultQuery,
       variables,
       headers: headers ?? defaultHeaders,
+      extensions,
     },
   ],
   shouldPersistHeaders,
@@ -88,6 +94,7 @@ export function getDefaultTabState({
   defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
+  extensions: string | null;
   shouldPersistHeaders?: boolean;
   storage: AllSlices['storage'];
 }) {
@@ -105,6 +112,7 @@ export function getDefaultTabState({
         query,
         variables,
         headers: headersForHash,
+        extensions,
       });
       let matchingTabIndex = -1;
 
@@ -114,6 +122,7 @@ export function getDefaultTabState({
           query: tab.query,
           variables: tab.variables,
           headers: tab.headers,
+          extensions: tab.extensions,
         });
         if (tab.hash === expectedHash) {
           matchingTabIndex = index;
@@ -131,6 +140,7 @@ export function getDefaultTabState({
           query,
           variables,
           headers,
+          extensions,
           operationName,
           response: null,
         });
@@ -171,6 +181,7 @@ function isTabState(obj: any): obj is TabState {
     hasStringOrNullKey(obj, 'query') &&
     hasStringOrNullKey(obj, 'variables') &&
     hasStringOrNullKey(obj, 'headers') &&
+    hasStringOrNullKey(obj, 'extensions') &&
     hasStringOrNullKey(obj, 'operationName') &&
     hasStringOrNullKey(obj, 'response')
   );
@@ -205,15 +216,17 @@ export function createTab({
   query = null,
   variables = null,
   headers = null,
+  extensions = null,
 }: Partial<TabDefinition> = {}): TabState {
   const operationName = query ? fuzzyExtractOperationName(query) : null;
   return {
     id: guid(),
-    hash: hashFromTabContents({ query, variables, headers }),
+    hash: hashFromTabContents({ query, variables, headers, extensions }),
     title: operationName || DEFAULT_TITLE,
     query,
     variables,
     headers,
+    extensions,
     operationName,
     response: null,
   };
@@ -258,8 +271,14 @@ function hashFromTabContents(args: {
   query: string | null;
   variables?: string | null;
   headers?: string | null;
+  extensions?: string | null;
 }): string {
-  return [args.query ?? '', args.variables ?? '', args.headers ?? ''].join('|');
+  return [
+    args.query ?? '',
+    args.variables ?? '',
+    args.headers ?? '',
+    args.extensions ?? '',
+  ].join('|');
 }
 
 export function fuzzyExtractOperationName(str: string): string | null {

@@ -6,12 +6,18 @@ import { useGraphiQL, useGraphiQLActions } from '../components';
 export function useChangeHandler(
   callback: ((value: string) => void) | undefined,
   storageKey: string | null,
-  tabProperty: 'variables' | 'headers',
+  tabProperty: 'variables' | 'headers' | 'extensions',
 ) {
   const { updateActiveTabValues } = useGraphiQLActions();
   const { editor, storage } = useGraphiQL(state => ({
     editor:
-      state[tabProperty === 'variables' ? 'variableEditor' : 'headerEditor'],
+      state[
+      tabProperty === 'variables'
+        ? 'variableEditor'
+        : tabProperty === 'extensions'
+          ? 'extensionsEditor'
+          : 'headerEditor'
+      ],
     storage: state.storage,
   }));
   useEffect(() => {

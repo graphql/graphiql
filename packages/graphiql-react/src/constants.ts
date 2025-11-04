@@ -47,6 +47,7 @@ export const STORAGE_KEY = {
   visiblePlugin: 'visiblePlugin',
   query: 'query',
   variables: 'variables',
+  extensions: 'extensions',
   tabs: 'tabState',
   persistHeaders: 'shouldPersistHeaders',
   theme: 'theme',
@@ -118,6 +119,7 @@ export const URI_NAME = {
 
   variables: 'variables.json',
   requestHeaders: 'request-headers.json',
+  extensions: 'extensions.json',
   response: 'response.json',
 } as const;
 
