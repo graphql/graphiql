@@ -1,6 +1,6 @@
 <!-- @format -->
 
-# GraphQL IDE Monorepo
+# GraphQL IDE Monorepo - updated
 
 > **Security Notice:** All versions of `graphiql` < `1.4.7` are vulnerable to an
 > XSS attack in cases where the GraphQL server to which the GraphiQL web app
