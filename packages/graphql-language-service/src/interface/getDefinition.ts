@@ -25,7 +25,7 @@ import {
 
 import { Definition, FragmentInfo, Uri, ObjectTypeInfo } from '../types';
 
-import { locToRange, offsetToPosition, Range, Position } from '../utils';
+import { locToRange, locStartToPosition, Range, Position } from '../utils';
 // import { getTypeInfo } from './getAutocompleteSuggestions';
 
 export type DefinitionQueryResult = {
@@ -56,7 +56,7 @@ function getRange(text: string, node: ASTNode): Range {
 function getPosition(text: string, node: ASTNode): Position {
   const location = node.loc!;
   assert(location, 'Expected ASTNode to have a location.');
-  return offsetToPosition(text, location.start);
+  return locStartToPosition(text, location);
 }
 
 export async function getDefinitionQueryResultForNamedType(
