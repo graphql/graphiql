@@ -211,11 +211,14 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       const variables =
         props.initialVariables ?? storage.get(STORAGE_KEY.variables);
       const headers = props.initialHeaders ?? storage.get(STORAGE_KEY.headers);
+      const extensions =
+        props.initialExtensions ?? storage.get(STORAGE_KEY.extensions);
 
       const { tabs, activeTabIndex } = getDefaultTabState({
         defaultHeaders,
         defaultQuery,
         defaultTabs,
+        extensions,
         headers,
         query,
         shouldPersistHeaders,
@@ -241,6 +244,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           initialQuery:
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
           initialVariables: variables ?? '',
+          initialExtensions: extensions ?? '',
           onCopyQuery,
           onEditOperationName,
           onPrettifyQuery,
