@@ -26,6 +26,6 @@
     "@types/node": "22.15.34",
     "@types/react": "19.1.8",
     "typescript": "5.8.3",
-    "vite": "7.0.4"
+    "vite": "6.4.1"
   }
 }
