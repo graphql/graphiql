@@ -154,6 +154,7 @@
   "devDependencies": {
     "@vscode/vsce": "^2.22.1-2",
     "ovsx": "^0.3.0",
+    "vitest": "^2.1.9",
     "vscode-oniguruma": "^1.7.0",
     "vscode-textmate": "^9.0.0"
   },

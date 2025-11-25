@@ -25702,6 +25702,7 @@ __metadata:
   dependencies:
     "@vscode/vsce": "npm:^2.22.1-2"
     ovsx: "npm:^0.3.0"
+    vitest: "npm:^2.1.9"
     vscode-oniguruma: "npm:^1.7.0"
     vscode-textmate: "npm:^9.0.0"
   languageName: unknown
