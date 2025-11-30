@@ -19377,7 +19377,7 @@ __metadata:
     vscode-languageserver-types: "npm:^3.17.1"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
-    monaco-editor: ">= 0.20.0 < 0.52.2"
+    monaco-editor: ">= 0.20.0 < 0.53"
     prettier: ^2.8.0 || ^3.0.0
   languageName: unknown
   linkType: soft
