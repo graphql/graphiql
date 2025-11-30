@@ -50,7 +50,7 @@
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vite": "^6.3.4",
+    "vite": "^6.4.1",
     "vite-plugin-dts": "^4.5.3"
   }
 }
