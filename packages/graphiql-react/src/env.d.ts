@@ -24,6 +24,6 @@ declare module 'monaco-editor/esm/vs/editor/common/core/range.js' {
 declare module 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker&deps=monaco-editor@0.52.2' {
   type WorkerCtor = typeof import('*?worker').default; // reuse type from vite/client
 
-  const workerConstructor: WorkerCtor
-  export default workerConstructor
+  const workerConstructor: WorkerCtor;
+  export default workerConstructor;
 }
