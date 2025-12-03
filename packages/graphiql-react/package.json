@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.37.2",
+  "version": "0.37.3",
   "sideEffects": [
     "dist/setup-workers/*"
   ],
@@ -62,7 +62,7 @@
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
     "monaco-editor": "0.52.2",
-    "monaco-graphql": "^1.7.2",
+    "monaco-graphql": "^1.7.3",
     "prettier": "^3.5.3",
     "set-value": "^4.1.0",
     "zustand": "^5"
