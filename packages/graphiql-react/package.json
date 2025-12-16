@@ -46,7 +46,6 @@
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "react": "^18 || ^19",
-    "react-compiler-runtime": "19.1.0-rc.1",
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
@@ -64,6 +63,7 @@
     "monaco-editor": "0.52.2",
     "monaco-graphql": "^1.7.3",
     "prettier": "^3.5.3",
+    "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",
     "zustand": "^5"
   },
