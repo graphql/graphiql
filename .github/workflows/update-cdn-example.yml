@@ -1,0 +1,55 @@
+name: Update CDN Example Dependencies
+
+on:
+  schedule:
+    # Run every Monday at 10:00 UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch: # Allow manual triggering
+  release:
+    types: [released]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    name: Check and Update CDN Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Generate index.html
+        id: generate
+        run: |
+          node .github/scripts/update-cdn-versions.mjs > examples/graphiql-cdn/index.html
+
+      - name: Check for Changes
+        id: check-changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(cdn-example): update dependencies to latest versions'
+          title: 'chore(cdn-example): update dependencies to latest versions'
+          body: |
+            This PR automatically updates the CDN example dependencies to their latest versions.
+
+            🤖 This PR was automatically generated automatically, beep boop
+          branch: automated/update-cdn-example-dependencies
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
