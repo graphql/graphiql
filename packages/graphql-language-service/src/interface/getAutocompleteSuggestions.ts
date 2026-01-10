@@ -148,6 +148,7 @@ export function getAutocompleteSuggestions(
     schema,
     contextToken,
     options,
+    1,
   );
   if (!context) {
     return [];
