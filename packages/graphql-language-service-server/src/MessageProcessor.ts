@@ -213,7 +213,7 @@ export class MessageProcessor {
     // TODO: eventually we will instantiate an instance of this per workspace,
     // so rootDir should become that workspace's rootDir
     this._settings = { ...settings, ...vscodeSettings };
-    const rootDir = this._settings?.load?.rootDir.length
+    const rootDir = this._settings?.load?.rootDir?.length
       ? this._settings?.load?.rootDir
       : this._rootPath;
     if (settings?.dotEnvPath) {
