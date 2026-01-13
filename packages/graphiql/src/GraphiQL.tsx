@@ -15,6 +15,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   ExecuteButton,
+  ExtensionsEditor,
   GraphiQLProvider,
   HeaderEditor,
   PlusIcon,
@@ -65,6 +66,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   onEditQuery,
   onEditVariables,
   onEditHeaders,
+  onEditExtensions,
   responseTooltip,
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled,
@@ -105,6 +107,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     onEditQuery,
     onEditVariables,
     onEditHeaders,
+    onEditExtensions,
     responseTooltip,
     defaultEditorToolsVisibility,
     isHeadersEditorEnabled,
@@ -139,18 +142,20 @@ type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
 type QueryEditorProps = ComponentPropsWithoutRef<typeof QueryEditor>;
 type VariableEditorProps = ComponentPropsWithoutRef<typeof VariableEditor>;
 type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
+type ExtensionsEditorProps = ComponentPropsWithoutRef<typeof ExtensionsEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
 export interface GraphiQLInterfaceProps
   extends EditorProps,
-    AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
-    AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
-    AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
-    Pick<ResponseEditorProps, 'responseTooltip'>,
-    Pick<
-      ComponentPropsWithoutRef<typeof Sidebar>,
-      'forcedTheme' | 'showPersistHeadersSettings'
-    > {
+  AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
+  AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
+  AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
+  AddSuffix<Pick<ExtensionsEditorProps, 'onEdit'>, 'Extensions'>,
+  Pick<ResponseEditorProps, 'responseTooltip'>,
+  Pick<
+    ComponentPropsWithoutRef<typeof Sidebar>,
+    'forcedTheme' | 'showPersistHeadersSettings'
+  > {
   children?: ReactNode;
   /**
    * Set the default state for the editor tools.
@@ -158,10 +163,11 @@ export interface GraphiQLInterfaceProps
    * - `true` shows the editor tools
    * - `'variables'` specifically shows the variables editor
    * - `'headers'` specifically shows the request headers editor
+   * - `'extensions'` specifically shows the extensions editor
    * By default, the editor tools are initially shown when at least one of the
    * editors has contents.
    */
-  defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
+  defaultEditorToolsVisibility?: boolean | 'variables' | 'headers' | 'extensions';
   /**
    * Toggle if the headers' editor should be shown inside the editor tools.
    * @default true
@@ -200,6 +206,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   onEditQuery,
   onEditVariables,
   onEditHeaders,
+  onEditExtensions,
   responseTooltip,
   showPersistHeadersSettings,
 }) => {
@@ -259,11 +266,12 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   });
 
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
-    'variables' | 'headers'
+    'variables' | 'headers' | 'extensions'
   >(() => {
     if (
       defaultEditorToolsVisibility === 'variables' ||
-      defaultEditorToolsVisibility === 'headers'
+      defaultEditorToolsVisibility === 'headers' ||
+      defaultEditorToolsVisibility === 'extensions'
     ) {
       return defaultEditorToolsVisibility;
     }
@@ -401,6 +409,18 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             Headers
           </UnStyledButton>
         )}
+        <UnStyledButton
+          type="button"
+          className={cn(
+            activeSecondaryEditor === 'extensions' &&
+            editorToolsResize.hiddenElement !== 'second' &&
+            'active',
+          )}
+          onClick={handleToolsTabClick}
+          data-name="extensions"
+        >
+          Extensions
+        </UnStyledButton>
 
         <Tooltip label={editorToolsText}>
           <UnStyledButton
@@ -420,7 +440,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <section
         className="graphiql-editor-tool"
         aria-label={
-          activeSecondaryEditor === 'variables' ? 'Variables' : 'Headers'
+          activeSecondaryEditor === 'variables'
+            ? 'Variables'
+            : activeSecondaryEditor === 'extensions'
+              ? 'Extensions'
+              : 'Headers'
         }
         ref={editorToolsResize.secondRef}
       >
@@ -434,6 +458,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             onEdit={onEditHeaders}
           />
         )}
+        <ExtensionsEditor
+          className={activeSecondaryEditor === 'extensions' ? '' : 'hidden'}
+          onEdit={onEditExtensions}
+        />
       </section>
     </div>
   );
