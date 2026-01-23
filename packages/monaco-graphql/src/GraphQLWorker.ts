@@ -22,10 +22,12 @@ export class GraphQLWorker {
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
 
-  constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
+  constructor(ctx: monaco.worker.IWorkerContext, createData?: ICreateData) {
     this._ctx = ctx;
-    this._languageService = new LanguageService(createData.languageConfig);
-    this._formattingOptions = createData.formattingOptions;
+    // monaco-editor 0.53+ では createData が渡されない可能性があるため、
+    // デフォルト値で初期化し、後から doUpdateSchemas で設定する
+    this._languageService = new LanguageService(createData?.languageConfig ?? {});
+    this._formattingOptions = createData?.formattingOptions;
   }
 
   public async doValidation(uri: string) {

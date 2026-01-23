@@ -8,14 +8,15 @@
 import type * as monaco from './monaco-editor';
 import { ICreateData } from './typings';
 
-// @ts-expect-error
+// @ts-expect-error - monaco-editor 内部モジュール
 import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import { GraphQLWorker } from './GraphQLWorker';
 
-globalThis.onmessage = () => {
-  initialize(
-    (ctx: monaco.worker.IWorkerContext, createData: ICreateData) =>
-      new GraphQLWorker(ctx, createData),
-  );
-};
+// monaco-editor 0.53+ の新しい Worker 初期化パターン
+// initialize() は self.onmessage を設定し、最初のメッセージで
+// コールバックを呼び出す（m.data が createData として渡される）
+initialize(
+  (ctx: monaco.worker.IWorkerContext, createData?: ICreateData) =>
+    new GraphQLWorker(ctx, createData),
+);

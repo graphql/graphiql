@@ -7032,6 +7032,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10c0/4c4855f10de7c6c135e0d32ce462419d8abbbc33713b31d294596c0cc34ae1fa6112a2f9da729c8f7a20707782b0d69da3b1f8df6645b0366d08825ca1522e0c
+  languageName: node
+  linkType: hard
+
 "@types/unist@npm:*, @types/unist@npm:^3.0.0":
   version: 3.0.2
   resolution: "@types/unist@npm:3.0.2"
@@ -11671,6 +11678,18 @@ __metadata:
   dependencies:
     domelementtype: "npm:^2.2.0"
   checksum: 10c0/c3de81c50d8e017dcfc404914ca29d30b4c646536ab52f133134ddc64b9e9987d9f11602c5beb08b435ec95cf5543f2d300daa56e9841e4c73c3f4f69f269c19
+  languageName: node
+  linkType: hard
+
+"dompurify@npm:3.2.7":
+  version: 3.2.7
+  resolution: "dompurify@npm:3.2.7"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10c0/d41bb31a72f1acdf9b84c56723c549924b05d92a39a15bd8c40bec9007ff80d5fccf844bc53ee12af5b69044f9a7ce24a1e71c267a4f49cf38711379ed8c1363
   languageName: node
   linkType: hard
 
@@ -18383,6 +18402,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"marked@npm:14.0.0":
+  version: 14.0.0
+  resolution: "marked@npm:14.0.0"
+  bin:
+    marked: bin/marked.js
+  checksum: 10c0/57a47cb110f7b1a10f398b0a7236f9183aad2dcd5345ee73f2732b6387e585d04cef472bc655d2f84c542296be9728e179aebe3ed7f2f8666b8a0a9dae592876
+  languageName: node
+  linkType: hard
+
 "marked@npm:^1.1.1":
   version: 1.2.7
   resolution: "marked@npm:1.2.7"
@@ -19364,6 +19392,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"monaco-editor@npm:0.55.1":
+  version: 0.55.1
+  resolution: "monaco-editor@npm:0.55.1"
+  dependencies:
+    dompurify: "npm:3.2.7"
+    marked: "npm:14.0.0"
+  checksum: 10c0/c1a0cf887657b42c8996518bc5ee96bbd39c977f862d2a2b2018427c45f14b0dd25d1452278202056f6b1ead97981282ccacd7d7ad918d8f0ef084159f974a25
+  languageName: node
+  linkType: hard
+
 "monaco-graphql@npm:^1.7.3, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
@@ -19371,13 +19409,13 @@ __metadata:
     execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.5.0"
-    monaco-editor: "npm:0.52.2"
+    monaco-editor: "npm:0.55.1"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
     vscode-languageserver-types: "npm:^3.17.1"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
-    monaco-editor: ">= 0.20.0 < 0.53"
+    monaco-editor: ">= 0.53.0"
     prettier: ^2.8.0 || ^3.0.0
   languageName: unknown
   linkType: soft

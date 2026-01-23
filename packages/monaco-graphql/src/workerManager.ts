@@ -67,28 +67,49 @@ export class WorkerManager {
           externalFragmentDefinitions,
           completionSettings,
         } = this._defaults;
-        this._worker = editor.createWebWorker<GraphQLWorker>({
-          // module that exports the create() method and returns a `GraphQLWorker` instance
-          moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
 
-          label: languageId,
-          // passed in to the create() method
-          createData: {
-            languageId,
-            formattingOptions,
-            // only string-based config can be passed from the main process
-            languageConfig: {
-              schemas: schemas?.map(getStringSchema),
-              externalFragmentDefinitions,
-              // TODO: make this overridable
-              // MonacoAPI possibly another configuration object for this I think?
-              // all of this could be organized better
-              fillLeafsOnComplete:
-                completionSettings.__experimental__fillLeafsOnComplete,
-            },
-          } as ICreateData,
+        // monaco-editor 0.53+ では worker パラメータが必須
+        // MonacoEnvironment.getWorker() から Worker インスタンスを取得
+        const workerInstance = globalThis.MonacoEnvironment?.getWorker?.(
+          'monaco-graphql/esm/graphql.worker.js',
+          languageId,
+        );
+
+        if (!workerInstance) {
+          throw new Error(
+            'MonacoEnvironment.getWorker() must be configured to return a GraphQL worker instance. ' +
+              'Please set up MonacoEnvironment.getWorker() to handle the "graphql" label.',
+          );
+        }
+
+        this._worker = editor.createWebWorker<GraphQLWorker>({
+          worker:
+            workerInstance instanceof Promise
+              ? workerInstance
+              : Promise.resolve(workerInstance),
         });
-        this._client = this._worker.getProxy();
+
+        // Worker の初期化データを送信
+        const createData: ICreateData = {
+          languageId,
+          formattingOptions,
+          languageConfig: {
+            schemas: schemas?.map(getStringSchema),
+            externalFragmentDefinitions,
+            fillLeafsOnComplete:
+              completionSettings.__experimental__fillLeafsOnComplete,
+          },
+          diagnosticSettings: this._defaults.diagnosticSettings,
+        };
+
+        // Proxy を取得して初期化
+        this._client = this._worker.getProxy().then(async proxy => {
+          // スキーマ設定を Worker に送信
+          if (createData.languageConfig.schemas) {
+            await proxy.doUpdateSchemas(createData.languageConfig.schemas);
+          }
+          return proxy;
+        });
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('error loading worker', error);

@@ -148,13 +148,23 @@ export class DiagnosticsAdapter {
         schema: jsonSchema,
         fileMatch: variablesUris,
       };
+
+      // monaco-editor 0.53+ では languages.json が deprecated
+      // side effect import 後にランタイムでアクセス可能になる
+      const jsonMode = languages.json as unknown as {
+        jsonDefaults: {
+          diagnosticsOptions: { schemas?: Array<{ uri: string }> };
+          setDiagnosticsOptions: (options: unknown) => void;
+        };
+      };
+
       const currentSchemas =
-        languages.json.jsonDefaults.diagnosticsOptions.schemas?.filter(
-          s => s.uri !== schemaUri,
+        jsonMode.jsonDefaults.diagnosticsOptions.schemas?.filter(
+          (s: { uri: string }) => s.uri !== schemaUri,
         ) || [];
 
       // TODO: export from api somehow?
-      languages.json.jsonDefaults.setDiagnosticsOptions({
+      jsonMode.jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
         ...this.defaults.diagnosticSettings.jsonDiagnosticSettings,

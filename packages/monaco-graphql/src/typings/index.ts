@@ -1,4 +1,3 @@
-import type * as monaco from '../monaco-editor';
 import {
   IntrospectionQuery,
   DocumentNode,
@@ -182,6 +181,26 @@ export interface ModeConfiguration {
   readonly selectionRanges?: boolean;
 }
 
+/**
+ * JSON diagnostics options type from monaco-editor
+ * monaco-editor 0.53+ では languages.json が deprecated なため、
+ * 独自に型を定義
+ */
+export type JSONDiagnosticsOptions = {
+  validate?: boolean;
+  allowComments?: boolean;
+  schemas?: Array<{
+    uri: string;
+    fileMatch?: string[];
+    schema?: unknown;
+  }>;
+  enableSchemaRequest?: boolean;
+  schemaValidation?: 'error' | 'warning' | 'ignore';
+  schemaRequest?: 'error' | 'warning' | 'ignore';
+  trailingCommas?: 'error' | 'warning' | 'ignore';
+  comments?: 'error' | 'warning' | 'ignore';
+};
+
 export type DiagnosticSettings = {
   /**
    * whilst editing operations, alongside graphql validation,
@@ -200,9 +219,9 @@ export type DiagnosticSettings = {
    *
    * - `allowComments: true` enables jsonc editing
    * - `validateSchema: 'warning'`
-   * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
+   * - `trailingCommas` is `error` by default, and can be `warning` or `ignore`
    */
-  jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
+  jsonDiagnosticSettings?: JSONDiagnosticsOptions;
 };
 
 export type CompletionSettings = AutocompleteSuggestionOptions & {
