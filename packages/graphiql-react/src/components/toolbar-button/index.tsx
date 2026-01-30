@@ -11,16 +11,17 @@ import './index.css';
 
 interface ToolbarButtonProps extends ComponentPropsWithoutRef<'button'> {
   label: string;
+  onClick: (args?: any) => (any | Promise<any>);
 }
 
 export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
   ({ label, onClick, ...props }, ref) => {
     const [error, setError] = useState<Error | null>(null);
-    const handleClick: MouseEventHandler<HTMLButtonElement> = event => {
+    const handleClick: MouseEventHandler<HTMLButtonElement> = async event => {
       try {
         // Optional chaining inside try-catch isn't supported yet by react-compiler
         if (onClick) {
-          onClick(event);
+          await onClick(event);
         }
         setError(null);
       } catch (err) {
