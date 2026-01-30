@@ -11,7 +11,7 @@ import './index.css';
 
 interface ToolbarButtonProps extends ComponentPropsWithoutRef<'button'> {
   label: string;
-  onClick: (args?: any) => any | Promise<any>;
+  onClick?: (args?: any) => any | Promise<any>;
 }
 
 export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
