@@ -181,7 +181,11 @@ export function getRange(location: SourceLocation, queryText: string): IRange {
 
   let stream = null;
 
-  for (let i = 0; i <= location.line; i++) {
+  for (
+    let i = 0;
+    location.line === 0 ? i <= location.line : i < location.line;
+    i++
+  ) {
     stream = new CharacterStream(lines[i]);
     while (!stream.eol()) {
       const style = parser.token(stream, state);
