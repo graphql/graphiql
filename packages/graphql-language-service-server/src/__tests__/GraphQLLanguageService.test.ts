@@ -207,7 +207,7 @@ describe('GraphQLLanguageService', () => {
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
-  
+
   it('runs definition service on fragment spread', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'fragment TestFragment on Human { name }\nquery { ...TestFragment }',
@@ -236,21 +236,22 @@ describe('GraphQLLanguageService', () => {
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
-  
+
   it('can get range on first line', async () => {
     const range = await getRange(
-      { line: 0, column: 15},
-        `query myHero($id: ID) {
+      { line: 0, column: 15 },
+      `query myHero($id: ID) {
           hero(id: $id) {
             name
             id
           }
         }
-    `);
-    
+    `,
+    );
+
     expect(range).toMatchObject({
-       end: { character: 23, line: -1 }, 
-       start: { character: 22, line: -1 }
+      end: { character: 23, line: -1 },
+      start: { character: 22, line: -1 },
     });
   });
 

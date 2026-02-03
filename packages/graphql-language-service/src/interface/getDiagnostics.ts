@@ -181,6 +181,7 @@ export function getRange(location: SourceLocation, queryText: string): IRange {
 
   let stream = null;
 
+  // LSP may count from 1, but monaco counts from 0
   for (
     let i = 0;
     location.line === 0 ? i <= location.line : i < location.line;
