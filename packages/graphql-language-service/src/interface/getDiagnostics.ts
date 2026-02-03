@@ -183,7 +183,7 @@ export function getRange(location: SourceLocation, queryText: string): IRange {
 
   for (
     let i = 0;
-    location.line === 0 ? i <= location.line : i < location.line;
+    i < location.line;
     i++
   ) {
     stream = new CharacterStream(lines[i]);
