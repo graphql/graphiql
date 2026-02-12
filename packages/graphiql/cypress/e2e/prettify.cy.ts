@@ -73,7 +73,6 @@ describeOrSkip('GraphiQL Prettify', () => {
   it('No crash on bad variablesString', () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: brokenVariables });
 
-    cy.wrap
     cy.clickPrettify();
 
     cy.assertHasValues({
