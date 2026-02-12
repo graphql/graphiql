@@ -60,7 +60,7 @@ Cypress.Commands.add('clickExecuteQuery', () => {
 });
 
 Cypress.Commands.add('clickPrettify', () => {
-  cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
+  cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click().then((res) => res);
 });
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
