@@ -34,7 +34,7 @@ declare namespace Cypress {
 
     visitWithOp(op: Op): Chainable<Element>;
 
-    clickPrettify(): Promise<Element>;
+    clickPrettify(): Chainable<Element>;
 
     assertHasValues(op: Op): Chainable<Element>;
 
@@ -60,7 +60,7 @@ Cypress.Commands.add('clickExecuteQuery', () => {
 });
 
 Cypress.Commands.add('clickPrettify', () => {
-  cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
+  cy.wrap(cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click({ }));
 });
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
