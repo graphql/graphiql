@@ -26,18 +26,18 @@ const brokenQuery = 'longDescriptionType {id}}';
 const brokenVariables = '"a": 1}';
 
 describeOrSkip('GraphiQL Prettify', () => {
-  it('should work while click on prettify button', () => {
+  it('should work while click on prettify button', async () => {
     const rawQuery = '{  test\n\nid  }';
     const resultQuery = '{ test id }';
     cy.visit(`?query=${rawQuery}&onPrettifyQuery=true`);
-    cy.clickPrettify();
+    await cy.clickPrettify();
     cy.assertHasValues({ query: resultQuery });
   });
 
-  it('Regular prettification', () => {
+  it('Regular prettification', async () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: uglyVariables });
 
-    cy.clickPrettify();
+    await cy.clickPrettify();
 
     cy.assertHasValues({
       query: prettifiedQuery,
@@ -45,13 +45,13 @@ describeOrSkip('GraphiQL Prettify', () => {
     });
   });
 
-  it('Noop prettification', () => {
+  it('Noop prettification', async () => {
     cy.visitWithOp({
       query: prettifiedQuery,
       variablesString: prettifiedVariables,
     });
 
-    cy.clickPrettify();
+    await cy.clickPrettify();
 
     cy.assertHasValues({
       query: prettifiedQuery,
@@ -59,10 +59,10 @@ describeOrSkip('GraphiQL Prettify', () => {
     });
   });
 
-  it('No crash on bad query', () => {
+  it('No crash on bad query', async () => {
     cy.visitWithOp({ query: brokenQuery, variablesString: uglyVariables });
 
-    cy.clickPrettify();
+    await cy.clickPrettify();
 
     cy.assertHasValues({
       query: brokenQuery,
@@ -70,10 +70,10 @@ describeOrSkip('GraphiQL Prettify', () => {
     });
   });
 
-  it('No crash on bad variablesString', () => {
+  it('No crash on bad variablesString', async () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: brokenVariables });
 
-    cy.clickPrettify();
+    await cy.clickPrettify();
 
     cy.assertHasValues({
       query: prettifiedQuery,
