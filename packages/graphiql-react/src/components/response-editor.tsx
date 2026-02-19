@@ -37,6 +37,7 @@ interface ResponseEditorProps extends EditorProps {
 
 export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
+  editorOverrides,
   ...props
 }) => {
   const { setEditor, run } = useGraphiQLActions();
@@ -69,6 +70,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       lineNumbers: 'off',
       wordWrap: 'on', // Toggle word wrap on resizing editors
       contextmenu: false, // Disable the right-click context menu
+      ...editorOverrides,
     });
     setEditor({ responseEditor: editor });
 
