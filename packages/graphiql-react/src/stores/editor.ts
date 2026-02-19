@@ -515,19 +515,21 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         }
       }
 
-      if (!queryEditor) {
-        return;
-      }
-      try {
-        const content = queryEditor.getValue();
-        const formatted = await onPrettifyQuery(content);
-        if (formatted !== content) {
-          queryEditor.setValue(formatted);
+      if (queryEditor) {
+        try {
+          const content = queryEditor.getValue();
+          const formatted = await onPrettifyQuery(content);
+          if (formatted !== content) {
+            queryEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'THROW Parsing query failed, skip prettification.',
+            error,
+          );
+          errors.push(error);
         }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.warn('THROW Parsing query failed, skip prettification.', error);
-        errors.push(error);
       }
 
       if (errors.length) {
