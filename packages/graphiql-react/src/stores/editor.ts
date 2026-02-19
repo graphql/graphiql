@@ -478,7 +478,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     async prettifyEditors() {
       const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
         get();
-        
+
       const errors: any[] = [];
 
       if (variableEditor) {
@@ -529,15 +529,16 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         console.warn('THROW Parsing query failed, skip prettification.', error);
         errors.push(error);
       }
-      
+
       if (errors.length) {
         if (errors.length > 1) {
-          const msg = errors.map((err) => err?.message || 'Error prettifying').join(', ');
+          const msg = errors
+            .map(err => err?.message || 'Error prettifying')
+            .join(', ');
           throw new Error(msg);
         }
         throw errors[0];
       }
-    
     },
     mergeQuery() {
       const { queryEditor, documentAST, schema } = get();
