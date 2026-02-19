@@ -524,10 +524,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           }
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.warn(
-            'Parsing query failed, skip prettification.',
-            error,
-          );
+          console.warn('Parsing query failed, skip prettification.', error);
           errors.push(error);
         }
       }
