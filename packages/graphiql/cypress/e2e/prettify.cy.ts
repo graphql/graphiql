@@ -29,22 +29,19 @@ describeOrSkip('GraphiQL Prettify', () => {
   it('should work while click on prettify button', () => {
     const rawQuery = '{  test\n\nid  }';
     const resultQuery = '{ test id }';
-    
     cy.visit(`?query=${rawQuery}&onPrettifyQuery=true`);
-    
-    cy.clickPrettify().then(() => {
-      cy.assertHasValues({ query: resultQuery });
-    });
+    cy.clickPrettify();
+    cy.assertHasValues({ query: resultQuery });
   });
 
   it('Regular prettification', () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: uglyVariables });
 
-    cy.clickPrettify().then(() => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.clickPrettify();
+
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
@@ -54,33 +51,33 @@ describeOrSkip('GraphiQL Prettify', () => {
       variablesString: prettifiedVariables,
     });
 
-    cy.clickPrettify().then(() => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.clickPrettify();
+
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
   it('No crash on bad query', () => {
     cy.visitWithOp({ query: brokenQuery, variablesString: uglyVariables });
 
-    cy.clickPrettify().then(() => {
-      cy.assertHasValues({
-        query: brokenQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.clickPrettify();
+
+    cy.assertHasValues({
+      query: brokenQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
   it('No crash on bad variablesString', () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: brokenVariables });
 
-    cy.clickPrettify().then(() => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: brokenVariables,
-      });
+    cy.clickPrettify();
+
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: brokenVariables,
     });
   });
 });
