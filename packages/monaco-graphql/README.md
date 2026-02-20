@@ -515,8 +515,9 @@ then, in your application:
 
 ```ts
 // Vite query suffixes https://vite.dev/guide/features.html#import-with-query-suffixes
+// eslint-disable-next-line import-x/default
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
 import GraphQLWorker from './my-graphql.worker?worker';
 
 globalThis.MonacoEnvironment = {
@@ -582,7 +583,7 @@ const entryPoints = {
 
 // add to editor file
 globalThis.MonacoEnvironment = {
-  getWorker(_workerId: any, label: any) {
+  getWorker(_workerId: string, label: string) {
     const options: WorkerOptions = {
       type: 'module',
       name: label,
