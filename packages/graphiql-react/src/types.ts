@@ -19,8 +19,8 @@ import type { RuleKind } from 'graphql-language-service';
 
 export type EditorProps = ComponentPropsWithoutRef<'div'> & {
   /**
-   * for customizing editor options - i.e. here's
-   * some options that may be useful to some users
+   * for customizing editor options. Here are
+   * some options that may be useful to some users:
    * - suggest: { showWords: false }
    * - hover: { above: false }
    * - scrollbar: { alwaysConsumeMouseWheel: false }
