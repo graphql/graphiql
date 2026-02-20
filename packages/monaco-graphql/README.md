@@ -521,8 +521,12 @@ import GraphQLWorker from './my-graphql.worker?worker';
 
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphql') return new GraphQLWorker();
-    if (label === 'json') return new JsonWorker();
+    if (label === 'graphql') {
+      return new GraphQLWorker();
+    }
+    if (label === 'json') {
+      return new JsonWorker();
+    }
     return new EditorWorker();
   },
 };
@@ -555,8 +559,12 @@ or, if you have webpack configured for it:
 ```ts
 globalThis.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
-    if (label === 'graphql') return 'my-graphql.worker.js';
-    if (label === 'json') return 'json.worker.js';
+    if (label === 'graphql') {
+      return 'my-graphql.worker.js';
+    }
+    if (label === 'json') {
+      return 'json.worker.js';
+    }
     return 'editor.worker.js';
   },
 };
