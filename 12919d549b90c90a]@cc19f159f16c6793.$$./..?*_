@@ -1,0 +1,1226 @@
+[#2 Install Log]
+     OS Version = 10.0.18363
+     Service Pack = 0.0
+     Suite = 0x0100
+     ProductType = 1
+     Architecture = amd64
+
+###.gitignore
+
+[## -1]
+
+>>>  [Sysprep Specialize - {55488378-f380-11e1-821f-27bb64443400}]
+>>>  Section start 2020/04/08 04:00:11.681
+     set: BIOS Release Date: 07/18/2012
+     set: BIOS Vendor: LENOVO
+     set: BIOS Version: 9HKT53AUS
+     set: System Family: To be filled by O.E.M.
+     set: System Manufacturer: LENOVO
+     set: System Product Name: 5049CZ2
+     set: System SKU: To be filled by O.E.M.
+     set: System Version: ThinkCentre M81
+     set: No device state migrated.
+     set: Installing primitive driver package gameflt.inf_amd64_1b1c9965dc1c6f0f (oem11.inf).
+     set: Installed primitive driver package gameflt.inf_amd64_1b1c9965dc1c6f0f (oem11.inf). Reboot required = false
+<<<  Section end 2020/04/08 04:00:47.039
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup Update Driver Package Signatures]
+>>>  Section start 2020/04/08 04:00:11.837
+     set: oem2.inf/ekbdflt.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem5.inf/heci.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem1.inf/mesrle.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem13.inf/xvdd.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem0.inf/bcmwl6.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem15.inf/c0296217.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem12.inf/eamonm.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem4.inf/edevmon.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem8.inf/eelam.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem14.inf/ehdrv.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem3.inf/epfw.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem6.inf/epfwwfp.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem11.inf/gameflt.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem7.inf/prnms001.inf -> Signed by 'Microsoft Windows' (SignerScore = 0x0D000003).
+     set: oem9.inf/prnms006.inf -> Signed by 'Microsoft Windows Hardware Compatibility Publisher' (SignerScore = 0x0D000005).
+     set: oem10.inf/prnms009.inf -> Signed by 'Microsoft Windows' (SignerScore = 0x0D000003).
+<<<  Section end 2020/04/08 04:00:12.087
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup Plug and Play Device Install]
+>>>  Section start 2020/04/08 04:00:12.087
+     set: ACPI\PNP0103\3&11583659&0 -> Configured [machine.inf:*PNP0103,NO_DRV_HPET] (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C01\1 -> Configured [machine.inf:*PNP0C01,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C01\A -> Configured [machine.inf:*PNP0C01,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: SCSI\DISK&VEN_&PROD_KINGSTON_SA400S3\4&65741A7&0&000000 -> Configured [disk.inf:GenDisk,disk_install.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\ROOT_HUB20\4&174080&0 -> Configured [usbport.inf:USB\ROOT_HUB20,ROOTHUB.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: HID\VID_258A&PID_0001&MI_00\8&25A66F09&0&0000 -> Configured [keyboard.inf:HID_DEVICE_SYSTEM_KEYBOARD,HID_Keyboard_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C3A&SUBSYS_307717AA&REV_04\3&11583659&0&B0 -> Configured [oem5.inf:PCI\VEN_8086&DEV_1C3A,HECI_DDI_x64] and started (ConfigFlags = 0x00000000).
+     set: ROOT\VOLMGR\0000 -> Configured [volmgr.inf:ROOT\VOLMGR,Volmgr] and started (ConfigFlags = 0x00040000).
+     set: USB\VID_258A&PID_0001\6&39D39D6C&0&4 -> Configured [usb.inf:USB\COMPOSITE,Composite.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C04\4&3F4C591&0 -> Configured [machine.inf:*PNP0C04,NO_DRV_X] (ConfigFlags = 0x00000000).
+     set: HID\VID_1BCF&PID_0005\7&39342DAE&0&0000 -> Configured [msmouse.inf:HID_DEVICE_SYSTEM_MOUSE,HID_Mouse_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_0100&SUBSYS_307717AA&REV_09\3&11583659&0&00 -> Configured [machine.inf:PCI\VEN_8086&DEV_0100,NO_DRV] and started (ConfigFlags = 0x00000000).
+     set: STORAGE\VOLUME\{6739590A-793C-11EA-A57B-806E6F6E6963}#0000000000100000 -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\VID_258A&PID_0001&MI_00\7&2F3F8FED&0&0000 -> Configured [input.inf:USB\Class_03&SubClass_01,HID_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\BASICDISPLAY\0000 -> Configured [basicdisplay.inf:ROOT\BasicDisplay,MSBDD_Fallback] and started (ConfigFlags = 0x00000000).
+     set: ACPI\INT3F0D\3&11583659&0 -> Configured [machine.inf:*PNP0C02,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C10&SUBSYS_307717AA&REV_B4\3&11583659&0&E0 -> Configured [pci.inf:PCI\CC_0604&DT_4,PCI_BRIDGE] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C14\1 -> Configured [wmiacpi.inf:*PNP0C14,WMIMAP_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C14\5 -> Configured [wmiacpi.inf:*PNP0C14,WMIMAP_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C18&SUBSYS_307717AA&REV_B4\3&11583659&0&E4 -> Configured [pci.inf:PCI\CC_0604&DT_4,PCI_BRIDGE] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C22&SUBSYS_307717AA&REV_04\3&11583659&0&FB -> Configured [machine.inf:PCI\VEN_8086&DEV_1C22,NO_DRV] (ConfigFlags = 0x00000000).
+     set: USB\VID_1BCF&PID_0005\6&39D39D6C&0&6 -> Configured [input.inf:USB\Class_03&SubClass_01,HID_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\ROOT_HUB30\5&32DD6466&0&0 -> Configured [usbhub3.inf:USB\ROOT_HUB30,Generic.Install.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\VID\0000 -> Configured [wvid.inf:ROOT\VID,Vid_Device_Client.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0100\4&3F4C591&0 -> Configured [machine.inf:*PNP0100,NO_DRV_X] (ConfigFlags = 0x00000000).
+     set: ROOT\COMPOSITEBUS\0000 -> Configured [compositebus.inf:ROOT\CompositeBus,CompositeBus_Device.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\VDRVROOT\0000 -> Configured [vdrvroot.inf:ROOT\vdrvroot,VDRVROOT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\SPACEPORT\0000 -> Configured [spaceport.inf:Root\Spaceport,Spaceport_Install] and started (ConfigFlags = 0x00040000).
+     set: PCI\VEN_1912&DEV_0015&SUBSYS_300017AA&REV_02\4&2C8F2D4D&0&00E4 -> Configured [usbxhci.inf:PCI\CC_0C0330,Generic.Install.NT] and started (ConfigFlags = 0x00000000).
+     set: STORAGE\VOLUME\_??_USBSTOR#DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00#E312E7001A105E&0#{53F56307-B6BF-11D0-94F2-00A0C91EFB8B} -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0501\1 -> Configured [msports.inf:*PNP0501,ComPort.NT] and started (ConfigFlags = 0x00000400).
+     set: ROOT\KDNIC\0000 -> Configured [kdnic.inf:root\kdnic,KdNic.ndi] and started (ConfigFlags = 0x00000000).
+     set: STORAGE\VOLUME\{6739590A-793C-11EA-A57B-806E6F6E6963}#0000000021200000 -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\VID_258A&PID_0001&MI_01\7&2F3F8FED&0&0001 -> Configured [input.inf:USB\Class_03,HID_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: HID\VID_258A&PID_0001&MI_01&COL03\8&1CF3147&0&0002 -> Configured [input.inf:HID_DEVICE_UPR:FF00-FFFF,HID_Raw_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: DISPLAY\ACI23F1\1&8713BCA&0&UID0 -> Configured [monitor.inf:*PNP09FF,PnPMonitor.Install] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C02&SUBSYS_307717AA&REV_04\3&11583659&0&FA -> Configured [mshdc.inf:PCI\CC_010601,msahci_Inst] and started (ConfigFlags = 0x00000000).
+     set: SCSI\CDROM&VEN_PLDS&PROD_DVDROM_DH16D6SH\4&65741A7&0&010000 -> Configured [cdrom.inf:GenCdRom,cdrom_install] and started (ConfigFlags = 0x00000000).
+     set: HID\VID_258A&PID_0001&MI_01&COL02\8&1CF3147&0&0001 -> Configured [hidserv.inf:HID_DEVICE_UP:000C_U:0001,HIDSystemConsumerDevice] and started (ConfigFlags = 0x00000000).
+!    set: PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493].
+     set: HID\VID_258A&PID_0001&MI_01&COL01\8&1CF3147&0&0000 -> Configured [input.inf:HID_DEVICE_UP:0001_U:0080,HID_Raw_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\UMBUS\0000 -> Configured [umbus.inf:root\umbus,UmBusRoot_Device.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0800\4&3F4C591&0 -> Configured [machine.inf:*PNP0800,NO_DRV_X] (ConfigFlags = 0x00000000).
+     set: ROOT\ACPI_HAL\0000 -> Configured [hal.inf:acpiapic,ACPI_AMD64_HAL] and started (ConfigFlags = 0x00040000).
+     set: ACPI\PNP0A08\0 -> Configured [pci.inf:*PNP0A08,PCI_ROOT] and started (ConfigFlags = 0x00000000).
+     set: STORAGE\VOLUME\{6739590A-793C-11EA-A57B-806E6F6E6963}#0000000028600000 -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI_HAL\PNP0C08\0 -> Configured [acpi.inf:*PNP0C08,ACPI_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C2D&SUBSYS_307717AA&REV_04\3&11583659&0&D0 -> Configured [usbport.inf:PCI\VEN_8086&DEV_1C2D,EHCI.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\BASICRENDER\0000 -> Configured [basicrender.inf:ROOT\BasicRender,BasicRender] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C31\1 -> Configured [tpm.inf:ACPI\PNP0C31,TpmInstall] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0200\4&3F4C591&0 -> Configured [machine.inf:*PNP0200,NO_DRV_X] (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C01\1C7 -> Configured [machine.inf:*PNP0C01,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0B00\4&3F4C591&0 -> Configured [machine.inf:*PNP0B00,NO_DRV_X] and started (ConfigFlags = 0x00000000).
+     set: ACPI\FIXEDBUTTON\2&DABA3FF&0 -> Configured [machine.inf:ACPI\FixedButton,NO_DRV] and started (ConfigFlags = 0x00000000).
+     set: HDAUDIO\FUNC_01&VEN_10EC&DEV_0662&SUBSYS_17AA3077&REV_1001\4&279A67DE&0&0001 -> Configured [hdaudio.inf:HDAUDIO\FUNC_01,HdAudModel] and started (ConfigFlags = 0x00000000).
+!    set: PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493].
+     set: ACPI\PNP0C02\10 -> Configured [machine.inf:*PNP0C02,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_244E&SUBSYS_307717AA&REV_A4\3&11583659&0&F0 -> Configured [pci.inf:PCI\CC_0604,PCI_BRIDGE] and started (ConfigFlags = 0x00000000).
+     set: ACPI\GENUINEINTEL_-_INTEL64_FAMILY_6_MODEL_42_-_________INTEL(R)_CORE(TM)_I3-2120_CPU_@_3.30GHZ\_1 -> Configured [cpu.inf:ACPI\GenuineIntel_-_Intel64,IntelPPM_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\GENUINEINTEL_-_INTEL64_FAMILY_6_MODEL_42_-_________INTEL(R)_CORE(TM)_I3-2120_CPU_@_3.30GHZ\_2 -> Configured [cpu.inf:ACPI\GenuineIntel_-_Intel64,IntelPPM_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\GENUINEINTEL_-_INTEL64_FAMILY_6_MODEL_42_-_________INTEL(R)_CORE(TM)_I3-2120_CPU_@_3.30GHZ\_3 -> Configured [cpu.inf:ACPI\GenuineIntel_-_Intel64,IntelPPM_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\GENUINEINTEL_-_INTEL64_FAMILY_6_MODEL_42_-_________INTEL(R)_CORE(TM)_I3-2120_CPU_@_3.30GHZ\_4 -> Configured [cpu.inf:ACPI\GenuineIntel_-_Intel64,IntelPPM_Inst.NT] and started (ConfigFlags = 0x00000000).
+     set: STORAGE\VOLUME\{6739590A-793C-11EA-A57B-806E6F6E6963}#0000000027600000 -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\VID_8087&PID_0024\5&23F24DD2&0&1 -> Configured [usb.inf:USB\Class_09,StandardHub.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: USB\ROOT_HUB20\4&36A58D41&0 -> Configured [usbport.inf:USB\ROOT_HUB20,ROOTHUB.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C26&SUBSYS_307717AA&REV_04\3&11583659&0&E8 -> Configured [usbport.inf:PCI\VEN_8086&DEV_1C26,EHCI.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C0C\AA -> Configured [machine.inf:*PNP0C0C,NO_DRV] and started (ConfigFlags = 0x00000000).
+     set: USB\VID_8087&PID_0024\5&338CBBE7&0&1 -> Configured [usb.inf:USB\Class_09,StandardHub.Dev.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C4C&SUBSYS_307717AA&REV_04\3&11583659&0&F8 -> Configured [machine.inf:PCI\VEN_8086&DEV_1C4C,MSISADRV] and started (ConfigFlags = 0x00000000).
+     set: USB\VID_125F&PID_0000\E312E7001A105E -> Configured [usbstor.inf:USB\Class_08&SubClass_06&Prot_50,USBSTOR_BULK.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_1002&DEV_AA68&SUBSYS_AA681462&REV_00\4&183B18BF&0&0108 -> Configured [hdaudbus.inf:PCI\CC_0403,HDAudio_Device.NT] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_0101&SUBSYS_307717AA&REV_09\3&11583659&0&08 -> Configured [pci.inf:PCI\CC_0604&DT_4,PCI_BRIDGE] and started (ConfigFlags = 0x00000000).
+     set: USBSTOR\DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00\E312E7001A105E&0 -> Configured [disk.inf:GenDisk,disk_install.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\NDISVIRTUALBUS\0000 -> Configured [ndisvirtualbus.inf:ROOT\NdisVirtualBus,NdisVirtualBus_Device.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C02\111 -> Configured [machine.inf:*PNP0C02,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0C02\E11 -> Configured [machine.inf:*PNP0C02,NO_DRV_MBRES] (ConfigFlags = 0x00000000).
+     set: ROOT\MSSMBIOS\0000 -> Configured [mssmbios.inf:ROOT\mssmbios,MSSMBIOS_DRV] and started (ConfigFlags = 0x00000000).
+!    set: HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205CE66F&0&0001 -> Setting CONFIGFLAG_REINSTALL on unstarted device with problem CM_PROB_REINSTALL (18) [0xC0000493].
+     set: STORAGE\VOLUME\{6739590A-793C-11EA-A57B-806E6F6E6963}#0000006F8A300000 -> Configured [volume.inf:STORAGE\Volume,volume_install.NT] and started (ConfigFlags = 0x00000000).
+     set: ACPI\PNP0000\4&3F4C591&0 -> Configured [machine.inf:*PNP0000,NO_DRV_PIC] (ConfigFlags = 0x00000000).
+     set: ROOT\SYSTEM\0000 -> Configured [swenum.inf:ROOT\SWENUM,SWENUM] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C20&SUBSYS_307717AA&REV_04\3&11583659&0&D8 -> Configured [hdaudbus.inf:PCI\CC_0403,HDAudio_Device.NT] and started (ConfigFlags = 0x00000000).
+     set: ROOT\RDPBUS\0000 -> Configured [rdpbus.inf:ROOT\RDPBUS,RDPBUS] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_8086&DEV_1C3D&SUBSYS_307717AA&REV_04\3&11583659&0&B3 -> Configured [oem1.inf:PCI\VEN_8086&DEV_1C3D&CC_0700,ComPort.NT] and started (ConfigFlags = 0x00000400).
+     set: Waiting for system services to start... 04:00:12.165
+     set: Completed waiting for system services to start. 04:00:13.915
+     set: DeviceInstall service already running. 04:00:13.915
+     set: Waiting for pending device installs... 04:00:13.915
+     set: Completed pending device installs. 04:00:46.836
+     set: PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8 -> Configured [net1ic64.inf:PCI\VEN_8086&DEV_1502,E1502.10.0.1] and started (ConfigFlags = 0x00000000).
+     set: SWD\RADIO\{3DB5895D-CC28-44B3-AD3D-6F01A782B8D2} -> Configured [c_swdevice.inf:SWD\GenericRaw,SoftwareDevice] and started (ConfigFlags = 0x00000000).
+     set: DISPLAY\ACI23F1\5&318CD56&0&UID258 -> Configured [monitor.inf:*PNP09FF,PnPMonitor.Install] and started (ConfigFlags = 0x00000000).
+     set: SWD\WPDBUSENUM\_??_USBSTOR#DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00#E312E7001A105E&0#{53F56307-B6BF-11D0-94F2-00A0C91EFB8B} -> Installed [wpdfs.inf] and started (ConfigFlags = 0x00000000).
+     set: PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008 -> Installed [oem15.inf] and started (ConfigFlags = 0x00000000).
+     set: SWD\MMDEVAPI\MICROSOFTGSWAVETABLESYNTH -> Configured [c_swdevice.inf:SWD\GenericRaw,SoftwareDevice] and started (ConfigFlags = 0x00000000).
+     set: HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205CE66F&0&0001 -> Configured [hdaudss.inf:HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&REV_1002,HdAudModel_CustomConnTypeA] and started (ConfigFlags = 0x00000000).
+     set: Devices pre-configured: 81 (68 internal, 13 external)
+     set: Devices pre-installed: 0
+     set: Devices need install: 5 (5 internal, 0 external)
+     set: Devices configured: 5 (4 internal, 1 external)
+     set: Devices installed: 2 (1 internal, 1 external)
+     set: Devices non-present: 0
+<<<  Section end 2020/04/08 04:00:46.836
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - ACPI\PNP0501\1]
+>>>  Section start 2020/04/08 04:00:13.931
+     dvi: {Build Driver List} 04:00:14.103
+     dvi:      Searching for hardware ID(s):
+     dvi:           acpi\ven_pnp&dev_0501
+     dvi:           acpi\pnp0501
+     dvi:           *pnp0501
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - *PNP0501
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\msports.inf_amd64_35bae695206b079f\msports.inf
+     dvi:           DevDesc      - Komunikační port
+     dvi:           Section      - ComPort.NT
+     dvi:           Rank         - 0x00ff1002
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 06/21/2006
+     dvi:           Version      - 10.0.18362.1
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - *PNP0501
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\msports.inf_amd64_35bae695206b079f\msports.inf
+     dvi:           DevDesc      - Komunikační port
+     dvi:           Section      - ComPort.NT
+     dvi:           Rank         - 0x00ff0002
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 06/21/2006
+     dvi:           Version      - 10.0.18362.1
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:14.134
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:14.134
+     dvi:      Using exported function 'PortsClassInstaller' in module 'C:\WINDOWS\system32\MsPorts.Dll'.
+     dvi:      Class installer == MsPorts.Dll,PortsClassInstaller
+     dvi:      Class installer: Enter 04:00:14.150
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:14.165
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device remains: {4d36e978-e325-11ce-bfc1-08002be10318}.
+     dvi:                Selected Driver:
+     dvi:                     Description - Komunikační port
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\msports.inf_amd64_35bae695206b079f\msports.inf
+     dvi:                     Section     - ComPort
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:14.228
+     dvi: Waiting for previous device install to complete. 04:00:14.228
+     dvi: {Core Device Install} 04:00:15.025
+     dvi:      {Install Device - ACPI\PNP0501\1} 04:00:15.025
+     dvi:           Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:           Parent device: PCI\VEN_8086&DEV_1C4C&SUBSYS_307717AA&REV_04\3&11583659&0&F8
+     dvi:           {Configure Device - ACPI\PNP0501\1} 04:00:15.040
+     dvi:                Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:                Parent device: PCI\VEN_8086&DEV_1C4C&SUBSYS_307717AA&REV_04\3&11583659&0&F8
+!    dvi:                Device class {4d36e978-e325-11ce-bfc1-08002be10318} is not configurable.
+     dvi:           {Configure Device - exit(0x00000032)} 04:00:15.040
+     dvi:           {DIF_ALLOW_INSTALL} 04:00:15.040
+     dvi:                Class installer: Enter 04:00:15.040
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:15.040
+     dvi:                Default installer: Exit
+     dvi:           {DIF_ALLOW_INSTALL - exit(0xe000020e)} 04:00:15.040
+     dvi:           {DIF_INSTALLDEVICEFILES} 04:00:15.040
+     dvi:                Class installer: Enter 04:00:15.040
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:15.040
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLDEVICEFILES - exit(0x00000000)} 04:00:15.040
+     flq:           File 'C:\WINDOWS\system32\DRIVERS\serial.sys' pruned from copy.
+     flq:           File 'C:\WINDOWS\system32\DRIVERS\serenum.sys' pruned from copy.
+     dvi:           {DIF_REGISTER_COINSTALLERS} 04:00:15.056
+     dvi:                Reset Device: Resetting device configuration. 04:00:15.056
+     dvi:                Reset Device: Resetting device configuration completed. 04:00:15.056
+     dvi:                Class installer: Enter 04:00:15.056
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:15.056
+     inf:                     {Install from INF Section - ComPort.NT.CoInstallers} 04:00:15.056
+     inf:                          Flags         - 0x001001ee
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:15.056
+     dvi:                Default installer: Exit
+     dvi:           {DIF_REGISTER_COINSTALLERS - exit(0x00000000)} 04:00:15.056
+     dvi:           {DIF_INSTALLINTERFACES} 04:00:15.056
+     dvi:                Class installer: Enter 04:00:15.056
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:15.056
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLINTERFACES - exit(0x00000000)} 04:00:15.056
+     dvi:           {DIF_INSTALLDEVICE} 04:00:15.056
+     dvi:                Class installer: Enter 04:00:15.056
+     inf:                     {Install from INF Section - ComPort.NT} 04:00:15.071
+     inf:                          Flags         - 0x00000004
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:15.071
+     dvi:                     {Install DEVICE}
+     inf:                          {Install from INF Section - ComPort.NT} 04:00:15.071
+     inf:                               Flags         - 0x001005ee
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:15.071
+     inf:                          {Install from INF Section - ComPort.NT.Hw} 04:00:15.071
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:15.071
+     dvi:                          {Writing Device Properties}
+     dvi:                               Strong Name=msports.inf:10809047de66d223:ComPort:10.0.18362.1:*pnp0501
+     dvi:                          {Writing Device Properties - Complete}
+     inf:                          AddService=Serial,0x00000002,Serial_Service_Inst,Serial_EventLog_Inst  (msports.inf line 275)
+     dvi:                          Add Service: Modified existing service 'Serial'.
+     inf:                          {Install from INF Section - Serial_Service_Inst} 04:00:15.087
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:15.087
+     inf:                          {Install from INF Section - Serial_EventLog_Inst} 04:00:15.087
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:15.087
+     inf:                          AddService=Serenum,,Serenum_Service_Inst  (msports.inf line 276)
+     dvi:                          Add Service: Modified existing service 'Serenum'.
+     inf:                          {Install from INF Section - Serenum_Service_Inst} 04:00:15.087
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:15.087
+     dvi:                     {Install DEVICE exit (0x00000000)}
+     dvi:                     Install Device: Configuring device class. 04:00:15.103
+     dvi:                     Install Device: Configuring device class completed. 04:00:15.103
+     dvi:                     Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:                     Install Device: Removing device 'ACPI\PNP0501\1' and sub-tree. 04:00:15.103
+     dvi:                     Install Device: Removing device sub-tree completed. 04:00:15.118
+     dvi:                     Install Device: Restarting device. 04:00:15.118
+     dvi:                     Install Device: Restarting device completed. 04:00:15.493
+     dvi:                Class installer: Exit
+     dvi:           {DIF_INSTALLDEVICE - exit(0x00000000)} 04:00:15.493
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL} 04:00:15.493
+     dvi:                Class installer: Enter 04:00:15.493
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:15.493
+     dvi:                Default installer: Exit
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL - exit(0xe000020e)} 04:00:15.493
+     dvi:      {Install Device - exit(0x00000000)} 04:00:15.509
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:15.509
+     dvi: {DIF_DESTROYPRIVATEDATA} 04:00:15.634
+     dvi:      Class installer: Enter 04:00:15.634
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:15.634
+     dvi:      Default installer: Exit
+     dvi: {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:15.650
+<<<  Section end 2020/04/08 04:00:15.696
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8]
+>>>  Section start 2020/04/08 04:00:13.931
+     dvi: {Build Driver List} 04:00:14.025
+     dvi:      Searching for hardware ID(s):
+     dvi:           pci\ven_8086&dev_1502&subsys_307717aa&rev_04
+     dvi:           pci\ven_8086&dev_1502&subsys_307717aa
+     dvi:           pci\ven_8086&dev_1502&cc_020000
+     dvi:           pci\ven_8086&dev_1502&cc_0200
+     dvi:      Searching for compatible ID(s):
+     dvi:           pci\ven_8086&dev_1502&rev_04
+     dvi:           pci\ven_8086&dev_1502
+     dvi:           pci\ven_8086&cc_020000
+     dvi:           pci\ven_8086&cc_0200
+     dvi:           pci\ven_8086
+     dvi:           pci\cc_020000
+     dvi:           pci\cc_0200
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - PCI\VEN_8086&DEV_1502
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\net1ic64.inf_amd64_5f033e913d34d111\net1ic64.inf
+     dvi:           DevDesc      - Intel(R) 82579LM Gigabit Network Connection
+     dvi:           Section      - E1502.10.0.1
+     dvi:           Rank         - 0x00ff2001
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 06/12/2018
+     dvi:           Version      - 12.17.10.8
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:14.071
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:14.071
+     dvi:      Default installer: Enter 04:00:14.087
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device changed to: {4d36e972-e325-11ce-bfc1-08002be10318}.
+     dvi:                Selected Driver:
+     dvi:                     Description - Intel(R) 82579LM Gigabit Network Connection
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\net1ic64.inf_amd64_5f033e913d34d111\net1ic64.inf
+     dvi:                     Section     - E1502.10.0.1
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:14.150
+     dvi: Waiting for previous device install to complete. 04:00:14.150
+     dvi: {Core Device Install} 04:00:14.728
+     dvi:      {Install Device - PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8} 04:00:14.728
+     dvi:           Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:           Parent device: ACPI\PNP0A08\0
+     dvi:           {Configure Device - PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8} 04:00:14.743
+     dvi:                Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:                Parent device: ACPI\PNP0A08\0
+     sto:                {Configure Driver Package: C:\WINDOWS\System32\DriverStore\FileRepository\net1ic64.inf_amd64_5f033e913d34d111\net1ic64.inf}
+     sto:                     Source Filter  = pci\ven_8086&dev_1502
+     inf:                     Class GUID     = {4d36e972-e325-11ce-bfc1-08002be10318}
+     inf:                     Class Options  = Configurable
+     inf:                     {Configure Driver: Intel(R) 82579LM Gigabit Network Connection}
+     inf:                          Section Name = E1502.10.0.1
+     inf:                          {Add Service: e1i65x64}
+     inf:                               Start Type    = 3
+     inf:                               Service Type  = 1
+     inf:                               Error Control = 1
+     inf:                               Image Path    = \SystemRoot\System32\drivers\e1i65x64.sys
+     inf:                               Display Name  = Intel(R) PRO/1000 PCI Express Network Connection Driver I
+     inf:                               Group         = NDIS
+     inf:                               Created new service 'e1i65x64'.
+     inf:                          {Add Service: exit(0x00000000)}
+     inf:                          Hardware Id  = PCI\VEN_8086&DEV_1502
+     inf:                          {Configure Driver Configuration: E1502.10.0.1}
+     inf:                               Service Name  = e1i65x64
+     inf:                               Included INFs = pci.inf
+     inf:                               Config Flags  = 0x00000000
+     inf:                          {Configure Driver Configuration: exit(0x00000000)}
+     inf:                     {Configure Driver: exit(0x00000000)}
+!    inf:                     Needed section [NO_DRV] not found. Code = 1315, Line = 98
+!    inf:                     Needed section [NO_DRV] not found. Code = 1315, Line = 98
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\net1ic64.inf_amd64_5f033e913d34d111\e1i65x64.sys' to 'C:\WINDOWS\System32\drivers\e1i65x64.sys'.
+     dvi:                     Existing files modified, may need to restart related services.
+     sto:                {Configure Driver Package: exit(0x00000bc3)}
+     dvi:                Restart required for any devices using this driver.
+     dvi:                Install Device: Configuring device (net1ic64.inf:pci\ven_8086&dev_1502,E1502.10.0.1). 04:00:14.884
+     dvi:                Install Device: Configuring device completed. 04:00:14.962
+     dvi:                Device Status: 0x01802000, Problem: 0x0 (0x00000000)
+     dvi:                {Restarting Devices} 04:00:14.962
+     dvi:                     Start: PCI\VEN_8086&DEV_1502&SUBSYS_307717AA&REV_04\3&11583659&0&C8
+!    dvi:                     Device pending start: Device has problem: 0x38 (CM_PROB_NEED_CLASS_CONFIG), problem status: 0x00000000.
+     dvi:                {Restarting Devices exit} 04:00:15.025
+     dvi:           {Configure Device - exit(0x00000000)} 04:00:15.025
+     dvi:           Device Status: 0x01802400, Problem: 0x38
+     dvi:      {Install Device - exit(0x00000000)} 04:00:15.025
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:15.025
+     dvi: Waiting for device post-install to complete. 04:00:15.025
+     dvi: Device post-install completed. 04:00:15.493
+     dvi: Device Status: 0x0180200A, Problem: 0x0 (0x00000000)
+<<<  Section end 2020/04/08 04:00:15.509
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183b18bf&0&0008]
+>>>  Section start 2020/04/08 04:00:13.931
+     dvi: {Build Driver List} 04:00:14.165
+     dvi:      Searching for hardware ID(s):
+     dvi:           pci\ven_1002&dev_68f9&subsys_21811462&rev_00
+     dvi:           pci\ven_1002&dev_68f9&subsys_21811462
+     dvi:           pci\ven_1002&dev_68f9&cc_030000
+     dvi:           pci\ven_1002&dev_68f9&cc_0300
+     dvi:      Searching for compatible ID(s):
+     dvi:           pci\ven_1002&dev_68f9&rev_00
+     dvi:           pci\ven_1002&dev_68f9
+     dvi:           pci\ven_1002&cc_030000
+     dvi:           pci\ven_1002&cc_0300
+     dvi:           pci\ven_1002
+     dvi:           pci\cc_030000&dt_1
+     dvi:           pci\cc_030000
+     dvi:           pci\cc_0300&dt_1
+     dvi:           pci\cc_0300
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - PCI\CC_0300
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\display.inf_amd64_ec86a3713fa47689\display.inf
+     dvi:           DevDesc      - Základní grafický adaptér Microsoft
+     dvi:           Section      - MSBDA
+     dvi:           Rank         - 0x00fb2008
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 06/21/2006
+     dvi:           Version      - 10.0.18362.1
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - PCI\VEN_1002&DEV_68F9
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\c0296217.inf
+     dvi:           DevDesc      - AMD Radeon HD 5450
+     dvi:           Section      - ati2mtag_EvergreenC
+     dvi:           Rank         - 0x00d12001
+     dvi:           Signer Score - WHQL
+     dvi:           DrvDate      - 11/04/2015
+     dvi:           Version      - 15.201.1151.1008
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:14.243
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:14.243
+     dvi:      Default installer: Enter 04:00:14.243
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device changed to: {4d36e968-e325-11ce-bfc1-08002be10318}.
+     dvi:                Selected Driver:
+     dvi:                     Description - AMD Radeon HD 5450
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\c0296217.inf_amd64_5c110cd680d977f2\c0296217.inf
+     dvi:                     Section     - ati2mtag_EvergreenC
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:14.243
+     dvi: Waiting for previous device install to complete. 04:00:14.243
+     dvi: {Core Device Install} 04:00:15.509
+     dvi:      {Install Device - PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008} 04:00:15.525
+     dvi:           Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:           Parent device: PCI\VEN_8086&DEV_0101&SUBSYS_307717AA&REV_09\3&11583659&0&08
+     dvi:           {Configure Device - PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008} 04:00:15.650
+     dvi:                Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:                Parent device: PCI\VEN_8086&DEV_0101&SUBSYS_307717AA&REV_09\3&11583659&0&08
+     dvi:           {Configure Device - exit(0x00000032)} 04:00:15.650
+     dvi:           {DIF_ALLOW_INSTALL} 04:00:15.650
+     dvi:                Default installer: Enter 04:00:15.650
+     dvi:                Default installer: Exit
+     dvi:           {DIF_ALLOW_INSTALL - exit(0xe000020e)} 04:00:15.650
+     dvi:           {DIF_INSTALLDEVICEFILES} 04:00:15.665
+     dvi:                Default installer: Enter 04:00:15.665
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLDEVICEFILES - exit(0x00000000)} 04:00:15.712
+     flq:           DeleteFile: 'C:\WINDOWS\system32\ativvaxx.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\ativvaxx.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcaldd64.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcaldd64.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalrt64.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalrt64.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalcl64.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalcl64.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcaldd.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcaldd.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalrt.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalrt.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalcl.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\amdcalcl.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\Ati2evxx.exe'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\Ati2evxx.exe'
+!    flq:           DeleteFile: FAILED
+     flq:           DeleteFile: 'C:\WINDOWS\system32\Ati2evxx.dll'
+     flq:           DeleteFile: 'C:\WINDOWS\system32\Ati2evxx.dll'
+!    flq:           DeleteFile: FAILED
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atikmdag.sys' to 'C:\WINDOWS\system32\DRIVERS\atikmdag.sys'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ati2erec.dll' to 'C:\WINDOWS\system32\DRIVERS\ati2erec.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumd64.dll' to 'C:\WINDOWS\system32\atiumd64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumd6a.dll' to 'C:\WINDOWS\system32\atiumd6a.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atitmm64.dll' to 'C:\WINDOWS\system32\atitmm64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdpcom64.dll' to 'C:\WINDOWS\system32\amdpcom64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atimpc64.dll' to 'C:\WINDOWS\system32\atimpc64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiadlxx.dll' to 'C:\WINDOWS\system32\atiadlxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumd6a.cap' to 'C:\WINDOWS\system32\atiumd6a.cap'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atimuixx.dll' to 'C:\WINDOWS\system32\atimuixx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiapfxx.exe' to 'C:\WINDOWS\system32\atiapfxx.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvsva.dat' to 'C:\WINDOWS\system32\ativvsva.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvsvl.dat' to 'C:\WINDOWS\system32\ativvsvl.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_cik.dat' to 'C:\WINDOWS\system32\ativvaxy_cik.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_cik_nd.dat' to 'C:\WINDOWS\system32\ativvaxy_cik_nd.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativce02.dat' to 'C:\WINDOWS\system32\ativce02.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdmmcl6.dll' to 'C:\WINDOWS\system32\amdmmcl6.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiesrxx.exe' to 'C:\WINDOWS\system32\atiesrxx.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atieclxx.exe' to 'C:\WINDOWS\system32\atieclxx.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atidemgy.dll' to 'C:\WINDOWS\system32\atidemgy.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atio6axx.dll' to 'C:\WINDOWS\system32\atio6axx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticalrt64.dll' to 'C:\WINDOWS\system32\aticalrt64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticalcl64.dll' to 'C:\WINDOWS\system32\aticalcl64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticaldd64.dll' to 'C:\WINDOWS\system32\aticaldd64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiapfxx.blb' to 'C:\WINDOWS\system32\atiapfxx.blb'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdhdl64.dll' to 'C:\WINDOWS\system32\amdhdl64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\hsa-thunk64.dll' to 'C:\WINDOWS\system32\hsa-thunk64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdmantle64.dll' to 'C:\WINDOWS\system32\amdmantle64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\mantle64.dll' to 'C:\WINDOWS\system32\mantle64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\mantleaxl64.dll' to 'C:\WINDOWS\system32\mantleaxl64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativce03.dat' to 'C:\WINDOWS\system32\ativce03.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_vi.dat' to 'C:\WINDOWS\system32\ativvaxy_vi.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_vi_nd.dat' to 'C:\WINDOWS\system32\ativvaxy_vi_nd.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_cz_nd.dat' to 'C:\WINDOWS\system32\ativvaxy_cz_nd.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amde31a.dat' to 'C:\WINDOWS\system32\amde31a.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\detoured64.dll' to 'C:\WINDOWS\system32\detoured.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdgfxinfo64.dll' to 'C:\WINDOWS\system32\amdgfxinfo64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atieah64.exe' to 'C:\WINDOWS\system32\atieah64.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_FJ.dat' to 'C:\WINDOWS\system32\ativvaxy_FJ.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvaxy_FJ_nd.dat' to 'C:\WINDOWS\system32\ativvaxy_FJ_nd.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl12cl64.dll' to 'C:\WINDOWS\system32\amdocl12cl64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdicdxx.dat' to 'C:\WINDOWS\system32\amdicdxx.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiicdxx.dat' to 'C:\WINDOWS\system32\atiicdxx.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdlvr64.dll' to 'C:\WINDOWS\system32\amdlvr64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdmiracast.dll' to 'C:\WINDOWS\system32\amdmiracast.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atidxx64.dll' to 'C:\WINDOWS\system32\atidxx64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumdag.dll' to 'C:\WINDOWS\SysWOW64\atiumdag.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumdva.dll' to 'C:\WINDOWS\SysWOW64\atiumdva.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdpcom32.dll' to 'C:\WINDOWS\SysWOW64\amdpcom32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atimpc32.dll' to 'C:\WINDOWS\SysWOW64\atimpc32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiadlxy.dll' to 'C:\WINDOWS\SysWOW64\atiadlxy.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiadlxy.dll' to 'C:\WINDOWS\SysWOW64\atiadlxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiumdva.cap' to 'C:\WINDOWS\SysWOW64\atiumdva.cap'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvsva.dat' to 'C:\WINDOWS\SysWOW64\ativvsva.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ativvsvl.dat' to 'C:\WINDOWS\SysWOW64\ativvsvl.dat'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdmmcl.dll' to 'C:\WINDOWS\SysWOW64\amdmmcl.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atioglxx.dll' to 'C:\WINDOWS\SysWOW64\atioglxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atidxx32.dll' to 'C:\WINDOWS\SysWOW64\atidxx32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticalrt.dll' to 'C:\WINDOWS\SysWOW64\aticalrt.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticalcl.dll' to 'C:\WINDOWS\SysWOW64\aticalcl.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticaldd.dll' to 'C:\WINDOWS\SysWOW64\aticaldd.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiapfxx.blb' to 'C:\WINDOWS\SysWOW64\atiapfxx.blb'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdhdl32.dll' to 'C:\WINDOWS\SysWOW64\amdhdl32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\hsa-thunk.dll' to 'C:\WINDOWS\SysWOW64\hsa-thunk.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdmantle32.dll' to 'C:\WINDOWS\SysWOW64\amdmantle32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\mantle32.dll' to 'C:\WINDOWS\SysWOW64\mantle32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\mantleaxl32.dll' to 'C:\WINDOWS\SysWOW64\mantleaxl32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\detoured32.dll' to 'C:\WINDOWS\SysWOW64\detoured.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdgfxinfo32.dll' to 'C:\WINDOWS\SysWOW64\amdgfxinfo32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atieah32.exe' to 'C:\WINDOWS\SysWOW64\atieah32.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl12cl.dll' to 'C:\WINDOWS\SysWOW64\amdocl12cl.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdlvr32.dll' to 'C:\WINDOWS\SysWOW64\amdlvr32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ATIODCLI.exe' to 'C:\WINDOWS\system32\ATIODCLI.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ATIODE.exe' to 'C:\WINDOWS\system32\ATIODE.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atikmpag.sys' to 'C:\WINDOWS\system32\DRIVERS\atikmpag.sys'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiu9p64.dll' to 'C:\WINDOWS\system32\atiu9p64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiuxp64.dll' to 'C:\WINDOWS\system32\atiuxp64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atig6txx.dll' to 'C:\WINDOWS\system32\atig6txx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiglpxx.dll' to 'C:\WINDOWS\system32\atiglpxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticfx64.dll' to 'C:\WINDOWS\system32\aticfx64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdxc64.dll' to 'C:\WINDOWS\system32\amdxc64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\aticfx32.dll' to 'C:\WINDOWS\SysWOW64\aticfx32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdxc32.dll' to 'C:\WINDOWS\SysWOW64\amdxc32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\ccc2_install.exe' to 'C:\Program Files\AMD\CCC2\Install\ccc2_install.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\AMD_OpenCL64.dll' to 'C:\WINDOWS\system32\OpenCL.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl64.dll' to 'C:\WINDOWS\system32\amdocl64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl_as64.exe' to 'C:\WINDOWS\system32\amdocl_as64.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl_ld64.exe' to 'C:\WINDOWS\system32\amdocl_ld64.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\clinfo.exe' to 'C:\WINDOWS\system32\clinfo.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\AMD_OpenCL32.dll' to 'C:\WINDOWS\SysWOW64\OpenCL.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl.dll' to 'C:\WINDOWS\SysWOW64\amdocl.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl_as32.exe' to 'C:\WINDOWS\SysWOW64\amdocl_as32.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdocl_ld32.exe' to 'C:\WINDOWS\SysWOW64\amdocl_ld32.exe'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdkmpfd.stz' to 'C:\Program Files\AMD\amdkmpfd\amdkmpfd.stz'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdkmpfd.itz' to 'C:\Program Files\AMD\amdkmpfd\amdkmpfd.itz'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\amdkmpfd.ctz' to 'C:\Program Files\AMD\amdkmpfd\amdkmpfd.ctz'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atig6pxx.dll' to 'C:\WINDOWS\system32\atig6pxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiu9pag.dll' to 'C:\WINDOWS\SysWOW64\atiu9pag.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiuxpag.dll' to 'C:\WINDOWS\SysWOW64\atiuxpag.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atigktxx.dll' to 'C:\WINDOWS\SysWOW64\atigktxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\atiglpxx.dll' to 'C:\WINDOWS\SysWOW64\atiglpxx.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\AMDhwDecoder_32.dll' to 'C:\Program Files\Common Files\ATI Technologies\Multimedia\AMDhwDecoder_32.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\AMDhwDecoder_64.dll' to 'C:\Program Files\Common Files\ATI Technologies\Multimedia\AMDhwDecoder_64.dll'.
+     flq:           Copying 'C:\WINDOWS\System32\DriverStore\FileRepository\c0296217.inf_amd64_5c110cd680d977f2\.\B296168\coinst_15.20.dll' to 'C:\WINDOWS\system32\coinst_15.20.dll'.
+     dvi:           {DIF_REGISTER_COINSTALLERS} 04:00:37.165
+     dvi:                Reset Device: Resetting device configuration. 04:00:37.165
+     dvi:                Reset Device: Resetting device configuration completed. 04:00:37.165
+     dvi:                Default installer: Enter 04:00:37.165
+     inf:                     {Install from INF Section - ati2mtag_EvergreenC.CoInstallers} 04:00:37.165
+     inf:                          Flags         - 0x001001ee
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:37.165
+     dvi:                Default installer: Exit
+     dvi:           {DIF_REGISTER_COINSTALLERS - exit(0x00000000)} 04:00:37.165
+     dvi:           {DIF_INSTALLINTERFACES} 04:00:37.165
+     dvi:                Using exported function 'CoInstallerEntry' in module 'C:\WINDOWS\system32\coinst_15.20.dll'.
+     dvi:                CoInstaller 1 == coinst_15.20.dll,CoInstallerEntry
+     dvi:                CoInstaller 1: Enter 04:00:37.196
+     dvi:                CoInstaller 1: Exit
+     dvi:                Default installer: Enter 04:00:37.196
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLINTERFACES - exit(0x00000000)} 04:00:37.196
+     dvi:           {DIF_INSTALLDEVICE} 04:00:37.196
+     dvi:                CoInstaller 1: Enter 04:00:37.196
+     dvi:                CoInstaller 1: Exit
+     dvi:                Default installer: Enter 04:00:37.211
+     dvi:                     {Install DEVICE}
+     inf:                          {Install from INF Section - ati2mtag_EvergreenC} 04:00:37.211
+     inf:                               Flags         - 0x001005ee
+     inf:                               Processing REGISTERDLLS section [TMM.RegisterDlls]. Module: '%11%\atitmm64.dll', flags: 0x0001, timeout: 300s, Arguments: '(null)'.
+!    inf:                               Failed to load the OLE Control 'C:\WINDOWS\system32\atitmm64.dll'.
+!    inf:                               Failed to register OLE server 'C:\WINDOWS\system32\atitmm64.dll'.
+     inf:                               Processing REGISTERDLLS section [MFTDECRegister]. Module: '%16427%\ATI Technologies\Multimedia\AMDhwDecoder_32.dll', flags: 0x0001, timeout: 300s, Arguments: '(null)'.
+     inf:                               Processing REGISTERDLLS section [MFTDECRegister]. Module: '%16427%\ATI Technologies\Multimedia\AMDhwDecoder_64.dll', flags: 0x0001, timeout: 300s, Arguments: '(null)'.
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.414
+     inf:                          {Install from INF Section - ati2mtag_EvergreenC.Hw} 04:00:38.414
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.414
+     dvi:                          {Writing Device Properties}
+     dvi:                               Strong Name=oem15.inf:cb0ae4144029587a:ati2mtag_EvergreenC:15.201.1151.1008:pci\ven_1002&dev_68f9
+     dvi:                          {Writing Device Properties - Complete}
+     inf:                          DelService="Ati External Event Utility"  (c0296217.inf line 2614)
+     dvi:                          Delete Services: Service 'Ati External Event Utility' does not exist.
+     inf:                          AddService=amdkmdap,0x00000002,Proxy_Service_Inst,R300_EventLog_Inst  (c0296217.inf line 2612)
+     dvi:                          Add Service: Created service 'amdkmdap'.
+     inf:                          {Install from INF Section - Proxy_Service_Inst} 04:00:38.430
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.430
+     inf:                          {Install from INF Section - R300_EventLog_Inst} 04:00:38.430
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.430
+     inf:                          AddService=amdkmdag,0x00000000,AMD_Service_Inst_Evergreen,R300_EventLog_Inst  (c0296217.inf line 2613)
+     dvi:                          Add Service: Created service 'amdkmdag'.
+     inf:                          {Install from INF Section - AMD_Service_Inst_Evergreen} 04:00:38.430
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.446
+     inf:                          {Install from INF Section - R300_EventLog_Inst} 04:00:38.446
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.446
+     inf:                          AddService="AMD External Events Utility",0x00000000,Ati2evxx_Generic_Service_Inst,Ati2evxx_EventLog_Inst,APPLICATION,ATIeRecord  (c0296217.inf line 2615)
+     dvi:                          Add Service: Created service 'AMD External Events Utility'.
+     inf:                          {Install from INF Section - Ati2evxx_Generic_Service_Inst} 04:00:38.446
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.446
+     inf:                          {Install from INF Section - Ati2evxx_EventLog_Inst} 04:00:38.446
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:38.446
+     dvi:                     {Install DEVICE exit (0x00000000)}
+     sto:                     {Configure Driver Package: c:\windows\system32\driverstore\filerepository\c0296217.inf_amd64_5c110cd680d977f2\c0296217.inf}
+     sto:                          Source Filter  = ati2mtag_EvergreenC
+     sto:                          Target Filter  = PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008
+     inf:                          Class GUID     = {4d36e968-e325-11ce-bfc1-08002be10318}
+     inf:                          Class Options  = Configurable
+     inf:                          {Configure Driver: AMD Radeon HD 6350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6250}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6290}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6230}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon R5 220}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 7350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD8350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 7350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6350 Graphics}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 6350A Graphics}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 7350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 8350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon R5 220}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6350 Graphics}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5470}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5490}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5530}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6230}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 7350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 8350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon R5 220}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5470}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5530}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5490}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon R5 220}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6250}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6230}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6290}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5470}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5490}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 5470}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6350}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6230}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6250}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: ATI Radeon HD 6290}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                          {Configure Driver: exit(0x00000000)}
+     inf:                          {Configure Driver: AMD Radeon HD 5450}
+     inf:                               Section Name = ati2mtag_EvergreenC
+     inf:                               {Configure Device: PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008}
+     inf:                               {Configure Device: exit(0x00000000)}
+     inf:                          {Configure Driver: exit(0x00000000)}
+     sto:                     {Configure Driver Package: exit(0x00000000)}
+     dvi:                     Install Device: Configuring device class. 04:00:38.633
+     dvi:                     Install Device: Configuring device class completed. 04:00:38.633
+     dvi:                     Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:                     {Restarting Devices} 04:00:38.633
+     dvi:                          Start: PCI\VEN_1002&DEV_68F9&SUBSYS_21811462&REV_00\4&183B18BF&0&0008
+     dvi:                     {Restarting Devices exit} 04:00:39.133
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLDEVICE - exit(0x00000000)} 04:00:39.133
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL} 04:00:39.133
+     dvi:                CoInstaller 1: Enter 04:00:39.133
+     dvi:                CoInstaller 1: Exit
+     dvi:                Default installer: Enter 04:00:46.524
+     dvi:                Default installer: Exit
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL - exit(0xe000020e)} 04:00:46.539
+     dvi:      {Install Device - exit(0x00000000)} 04:00:46.539
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:46.539
+     dvi: {DIF_DESTROYPRIVATEDATA} 04:00:46.602
+     dvi:      CoInstaller 1: Enter 04:00:46.602
+     dvi:      CoInstaller 1: Exit
+     dvi:      Default installer: Enter 04:00:46.602
+     dvi:      Default installer: Exit
+     dvi: {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:46.602
+<<<  Section end 2020/04/08 04:00:46.602
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - SWD\WPDBUSENUM\_??_USBSTOR#Disk&Ven_VZP&Prod_Flash_Drive&Rev_0.00#e312e7001a105e&0#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}]
+>>>  Section start 2020/04/08 04:00:13.931
+     dvi: {Build Driver List} 04:00:13.962
+     dvi:      Searching for compatible ID(s):
+     dvi:           wpdbusenum\fs
+     dvi:           swd\generic
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - wpdbusenum\fs
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\wpdfs.inf_amd64_e4ff8019ae5ba00c\wpdfs.inf
+     dvi:           DevDesc      - Ovladač svazku souborového systému WPD
+     dvi:           Section      - Basic_Install
+     dvi:           Rank         - 0x00ff2000
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 06/21/2006
+     dvi:           Version      - 10.0.18362.1
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:14.056
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:14.056
+     dvi:      Using exported function 'WpdClassInstaller' in module 'C:\WINDOWS\system32\wpd_ci.dll'.
+     dvi:      Class installer == wpd_ci.dll,WpdClassInstaller
+     dvi:      Class installer: Enter 04:00:14.087
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:14.087
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device changed to: {eec5ad98-8080-425f-922a-dabf3de3f69a}.
+     dvi:                {DIF_DESTROYPRIVATEDATA} 04:00:14.087
+     dvi:                     Class installer: Enter 04:00:14.087
+     dvi:                     Class installer: Exit
+     dvi:                     Default installer: Enter 04:00:14.087
+     dvi:                     Default installer: Exit
+     dvi:                {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:14.087
+     dvi:                Selected Driver:
+     dvi:                     Description - Ovladač svazku souborového systému WPD
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\wpdfs.inf_amd64_e4ff8019ae5ba00c\wpdfs.inf
+     dvi:                     Section     - Basic_Install
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:14.087
+     dvi: {Core Device Install} 04:00:14.087
+     dvi:      {Install Device - SWD\WPDBUSENUM\_??_USBSTOR#DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00#E312E7001A105E&0#{53F56307-B6BF-11D0-94F2-00A0C91EFB8B}} 04:00:14.087
+     dvi:           Device Status: 0x01802400, Problem: 0x1 (0xc0000493)
+     dvi:           Parent device: STORAGE\Volume\_??_USBSTOR#Disk&Ven_VZP&Prod_Flash_Drive&Rev_0.00#e312e7001a105e&0#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}
+     dvi:           {Configure Device - SWD\WPDBUSENUM\_??_USBSTOR#DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00#E312E7001A105E&0#{53F56307-B6BF-11D0-94F2-00A0C91EFB8B}} 04:00:14.103
+     dvi:                Device Status: 0x01802400, Problem: 0x1 (0xc0000493)
+     dvi:                Parent device: STORAGE\Volume\_??_USBSTOR#Disk&Ven_VZP&Prod_Flash_Drive&Rev_0.00#e312e7001a105e&0#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}
+!    dvi:                Device class {eec5ad98-8080-425f-922a-dabf3de3f69a} is not configurable.
+     dvi:           {Configure Device - exit(0x00000032)} 04:00:14.103
+     dvi:           {DIF_ALLOW_INSTALL} 04:00:14.103
+     dvi:                Using exported function 'WpdClassInstaller' in module 'C:\WINDOWS\system32\wpd_ci.dll'.
+     dvi:                Class installer == wpd_ci.dll,WpdClassInstaller
+     dvi:                Using exported function 'CoDeviceInstall' in module 'C:\WINDOWS\system32\WUDFCoinstaller.dll'.
+     dvi:                CoInstaller 1 == WUDFCoinstaller.dll
+     dvi:                CoInstaller 1: Enter 04:00:14.118
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.118
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:14.134
+     dvi:                Default installer: Exit
+     dvi:           {DIF_ALLOW_INSTALL - exit(0xe000020e)} 04:00:14.134
+     dvi:           {DIF_INSTALLDEVICEFILES} 04:00:14.134
+     dvi:                CoInstaller 1: Enter 04:00:14.134
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.196
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:14.196
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLDEVICEFILES - exit(0x00000000)} 04:00:14.196
+     flq:           Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\wpdfs.inf_amd64_e4ff8019ae5ba00c\WpdFs.dll' to 'C:\WINDOWS\system32\DRIVERS\UMDF\WpdFs.dll'.
+     dvi:           {DIF_REGISTER_COINSTALLERS} 04:00:14.196
+     dvi:                Reset Device: Resetting device configuration. 04:00:14.196
+     dvi:                Reset Device: Resetting device configuration completed. 04:00:14.196
+     dvi:                CoInstaller 1: Enter 04:00:14.196
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.212
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:14.212
+     inf:                     {Install from INF Section - Basic_Install.CoInstallers} 04:00:14.212
+     inf:                          Flags         - 0x001001ee
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:14.212
+     dvi:                     {DIF_DESTROYPRIVATEDATA} 04:00:14.212
+     dvi:                          CoInstaller 1: Enter 04:00:14.212
+     dvi:                          CoInstaller 1: Exit
+     dvi:                          Class installer: Enter 04:00:14.212
+     dvi:                          Class installer: Exit
+     dvi:                          Default installer: Enter 04:00:14.212
+     dvi:                          Default installer: Exit
+     dvi:                     {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:14.212
+     dvi:                Default installer: Exit
+     dvi:           {DIF_REGISTER_COINSTALLERS - exit(0x00000000)} 04:00:14.212
+     dvi:           {DIF_INSTALLINTERFACES} 04:00:14.212
+     dvi:                Using exported function 'CoDeviceInstall' in module 'C:\WINDOWS\system32\WUDFCoInstaller.dll'.
+     dvi:                CoInstaller 1 == WUDFCoInstaller.dll
+     dvi:                CoInstaller 1: Enter 04:00:14.212
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.212
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:14.212
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLINTERFACES - exit(0x00000000)} 04:00:14.212
+     dvi:           {DIF_INSTALLDEVICE} 04:00:14.212
+     dvi:                CoInstaller 1: Enter 04:00:14.212
+     inf:                     {Install from INF Section - WpdFs_Install} 04:00:14.290
+     inf:                          Flags         - 0x00000004
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:14.290
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.321
+     dvi:                     {Install DEVICE}
+     inf:                          {Install from INF Section - Basic_Install} 04:00:14.321
+     inf:                               Flags         - 0x001005ee
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:14.321
+     inf:                          {Install from INF Section - Basic_Install.Hw} 04:00:14.321
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:14.321
+     dvi:                          {Writing Device Properties}
+     dvi:                               Strong Name=wpdfs.inf:0c0663c081fd6f5b:Basic_Install:10.0.18362.1:wpdbusenum\fs
+     dvi:                          {Writing Device Properties - Complete}
+     inf:                          AddService=WUDFWpdFs,0x000001fa,WUDFWpdFs_ServiceInstall  (wpdfs.inf line 38)
+     dvi:                          Add Service: Created service 'WUDFWpdFs'.
+     inf:                          {Install from INF Section - WUDFWpdFs_ServiceInstall} 04:00:14.337
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:14.337
+     dvi:                     {Install DEVICE exit (0x00000000)}
+     dvi:                     Install Device: Configuring device class. 04:00:14.337
+     dvi:                     Install Device: Configuring device class completed. 04:00:14.337
+     dvi:                     Device Status: 0x01802400, Problem: 0x1 (0xc0000493)
+     dvi:                     Install Device: Starting device 'SWD\WPDBUSENUM\_??_USBSTOR#DISK&VEN_VZP&PROD_FLASH_DRIVE&REV_0.00#E312E7001A105E&0#{53F56307-B6BF-11D0-94F2-00A0C91EFB8B}'. 04:00:14.337
+     dvi:                     Install Device: Starting device completed. 04:00:14.462
+     dvi:                Class installer: Exit
+     dvi:                CoInstaller 1: Enter (Post Processing) 04:00:14.462
+     dvi:                CoInstaller 1: Exit (Post Processing)
+     dvi:           {DIF_INSTALLDEVICE - exit(0x00000000)} 04:00:14.478
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL} 04:00:14.478
+     dvi:                CoInstaller 1: Enter 04:00:14.478
+     dvi:                CoInstaller 1: Exit
+     dvi:                Class installer: Enter 04:00:14.478
+     dvi:                Class installer: Exit
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL - exit(0x00000000)} 04:00:14.712
+     dvi:      {Install Device - exit(0x00000000)} 04:00:14.728
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:14.728
+     dvi: {DIF_DESTROYPRIVATEDATA} 04:00:14.790
+     dvi:      CoInstaller 1: Enter 04:00:14.790
+     dvi:      CoInstaller 1: Exit
+     dvi:      Class installer: Enter 04:00:14.790
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:14.790
+     dvi:      Default installer: Exit
+     dvi: {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:14.790
+<<<  Section end 2020/04/08 04:00:14.821
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - PCI\VEN_8086&DEV_1C3D&SUBSYS_307717AA&REV_04\3&11583659&0&B3]
+>>>  Section start 2020/04/08 04:00:14.821
+     dvi: {Build Driver List} 04:00:14.837
+     dvi:      Searching for hardware ID(s):
+     dvi:           pci\ven_8086&dev_1c3d&subsys_307717aa&rev_04
+     dvi:           pci\ven_8086&dev_1c3d&subsys_307717aa
+     dvi:           pci\ven_8086&dev_1c3d&cc_070002
+     dvi:           pci\ven_8086&dev_1c3d&cc_0700
+     dvi:      Searching for compatible ID(s):
+     dvi:           pci\ven_8086&dev_1c3d&rev_04
+     dvi:           pci\ven_8086&dev_1c3d
+     dvi:           pci\ven_8086&cc_070002
+     dvi:           pci\ven_8086&cc_0700
+     dvi:           pci\ven_8086
+     dvi:           pci\cc_070002
+     dvi:           pci\cc_0700
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - PCI\VEN_8086&DEV_1C3D&CC_0700
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\mesrle.inf_amd64_a9b3ac182aa35243\mesrle.inf
+     dvi:           DevDesc      - Intel(R) Active Management Technology - SOL
+     dvi:           Section      - ComPort.NT
+     dvi:           Rank         - 0x00ff0003
+     dvi:           Signer Score - WHQL
+     dvi:           DrvDate      - 01/19/2012
+     dvi:           Version      - 7.1.21.1154
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:14.931
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:14.931
+     dvi:      Using exported function 'PortsClassInstaller' in module 'C:\WINDOWS\system32\MsPorts.Dll'.
+     dvi:      Class installer == MsPorts.Dll,PortsClassInstaller
+     dvi:      Class installer: Enter 04:00:14.931
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:14.931
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device remains: {4d36e978-e325-11ce-bfc1-08002be10318}.
+     dvi:                Selected Driver:
+     dvi:                     Description - Intel(R) Active Management Technology - SOL
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\mesrle.inf_amd64_a9b3ac182aa35243\mesrle.inf
+     dvi:                     Section     - ComPort
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:14.931
+     dvi: Waiting for previous device install to complete. 04:00:14.931
+     dvi: {Core Device Install} 04:00:46.539
+     dvi:      {Install Device - PCI\VEN_8086&DEV_1C3D&SUBSYS_307717AA&REV_04\3&11583659&0&B3} 04:00:46.539
+     dvi:           Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:           Parent device: ACPI\PNP0A08\0
+     dvi:           {Configure Device - PCI\VEN_8086&DEV_1C3D&SUBSYS_307717AA&REV_04\3&11583659&0&B3} 04:00:46.539
+     dvi:                Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:                Parent device: ACPI\PNP0A08\0
+!    dvi:                Device class {4d36e978-e325-11ce-bfc1-08002be10318} is not configurable.
+     dvi:           {Configure Device - exit(0x00000032)} 04:00:46.539
+     dvi:           {DIF_ALLOW_INSTALL} 04:00:46.539
+     dvi:                Class installer: Enter 04:00:46.539
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:46.539
+     dvi:                Default installer: Exit
+     dvi:           {DIF_ALLOW_INSTALL - exit(0xe000020e)} 04:00:46.539
+     dvi:           {DIF_INSTALLDEVICEFILES} 04:00:46.539
+     dvi:                Class installer: Enter 04:00:46.539
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:46.539
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLDEVICEFILES - exit(0x00000000)} 04:00:46.539
+     dvi:           {DIF_REGISTER_COINSTALLERS} 04:00:46.539
+     dvi:                Reset Device: Resetting device configuration. 04:00:46.539
+     dvi:                Reset Device: Resetting device configuration completed. 04:00:46.539
+     dvi:                Class installer: Enter 04:00:46.539
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:46.539
+     inf:                     {Install from INF Section - ComPort.NT.CoInstallers} 04:00:46.539
+     inf:                          Flags         - 0x001001ee
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:46.539
+     dvi:                Default installer: Exit
+     dvi:           {DIF_REGISTER_COINSTALLERS - exit(0x00000000)} 04:00:46.539
+     dvi:           {DIF_INSTALLINTERFACES} 04:00:46.555
+     dvi:                Class installer: Enter 04:00:46.555
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:46.555
+     dvi:                Default installer: Exit
+     dvi:           {DIF_INSTALLINTERFACES - exit(0x00000000)} 04:00:46.555
+     dvi:           {DIF_INSTALLDEVICE} 04:00:46.555
+     dvi:                Class installer: Enter 04:00:46.555
+     inf:                     {Install from INF Section - ComPort.NT} 04:00:46.555
+     inf:                          Flags         - 0x00000004
+     inf:                     {Install from INF Section - exit(0x00000000)} 04:00:46.555
+     dvi:                     {Install DEVICE}
+     inf:                          {Install from INF Section - ComPort.NT} 04:00:46.555
+     inf:                               Flags         - 0x001005ee
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:46.555
+     inf:                          {Install from INF Section - ComPort.NT.Hw} 04:00:46.555
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:46.555
+     dvi:                          {Writing Device Properties}
+     dvi:                               Strong Name=oem1.inf:5f63e534294fb1c7:ComPort:7.1.21.1154:pci\ven_8086&dev_1c3d&cc_0700
+     dvi:                          {Writing Device Properties - Complete}
+     inf:                          AddService=Serial,0x00000002,Serial_Service_Inst,Serial_EventLog_Inst  (mesrle.inf line 80)
+     dvi:                          Add Service: Modified existing service 'Serial'.
+     inf:                          {Install from INF Section - Serial_Service_Inst} 04:00:46.555
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:46.555
+     inf:                          {Install from INF Section - Serial_EventLog_Inst} 04:00:46.555
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:46.555
+     inf:                          AddService=Serenum,,Serenum_Service_Inst  (mesrle.inf line 81)
+     dvi:                          Add Service: Modified existing service 'Serenum'.
+     inf:                          {Install from INF Section - Serenum_Service_Inst} 04:00:46.570
+     inf:                               Flags         - 0x00100004
+     inf:                          {Install from INF Section - exit(0x00000000)} 04:00:46.570
+     dvi:                     {Install DEVICE exit (0x00000000)}
+     dvi:                     Install Device: Configuring device class. 04:00:46.570
+     dvi:                     Install Device: Configuring device class completed. 04:00:46.570
+     dvi:                     Device Status: 0x0180200a, Problem: 0x0 (0x00000000)
+     dvi:                     Install Device: Removing device 'PCI\VEN_8086&DEV_1C3D&SUBSYS_307717AA&REV_04\3&11583659&0&B3' and sub-tree. 04:00:46.570
+     dvi:                     Install Device: Removing device sub-tree completed. 04:00:46.570
+     dvi:                     Install Device: Restarting device. 04:00:46.570
+     dvi:                     Install Device: Restarting device completed. 04:00:46.649
+     dvi:                Class installer: Exit
+     dvi:           {DIF_INSTALLDEVICE - exit(0x00000000)} 04:00:46.649
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL} 04:00:46.649
+     dvi:                Class installer: Enter 04:00:46.649
+     dvi:                Class installer: Exit
+     dvi:                Default installer: Enter 04:00:46.649
+     dvi:                Default installer: Exit
+     dvi:           {DIF_NEWDEVICEWIZARD_FINISHINSTALL - exit(0xe000020e)} 04:00:46.649
+     dvi:      {Install Device - exit(0x00000000)} 04:00:46.649
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:46.649
+     dvi: {DIF_DESTROYPRIVATEDATA} 04:00:46.711
+     dvi:      Class installer: Enter 04:00:46.711
+     dvi:      Class installer: Exit
+     dvi:      Default installer: Enter 04:00:46.711
+     dvi:      Default installer: Exit
+     dvi: {DIF_DESTROYPRIVATEDATA - exit(0xe000020e)} 04:00:46.711
+<<<  Section end 2020/04/08 04:00:46.711
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Setup online Device Install (Hardware initiated) - HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205ce66f&0&0001]
+>>>  Section start 2020/04/08 04:00:15.509
+     dvi: {Build Driver List} 04:00:15.540
+     dvi:      Searching for hardware ID(s):
+     dvi:           hdaudio\func_01&ven_1002&dev_aa01&subsys_00aa0100&rev_1002
+     dvi:           hdaudio\func_01&ven_1002&dev_aa01&subsys_00aa0100
+     dvi:      Searching for compatible ID(s):
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ctlr_dev_aa68&ven_1002&dev_aa01&rev_1002
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ven_1002&dev_aa01&rev_1002
+     dvi:           hdaudio\func_01&ven_1002&dev_aa01&rev_1002
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ctlr_dev_aa68&ven_1002&dev_aa01
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ven_1002&dev_aa01
+     dvi:           hdaudio\func_01&ven_1002&dev_aa01
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ctlr_dev_aa68&ven_1002
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ven_1002
+     dvi:           hdaudio\func_01&ven_1002
+     dvi:           hdaudio\func_01&ctlr_ven_1002&ctlr_dev_aa68
+     dvi:           hdaudio\func_01&ctlr_ven_1002
+     dvi:           hdaudio\func_01&gf&ven_1002&dev_aa01&subsys_00aa0100&rev_1002
+     dvi:           hdaudio\func_01
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - HDAUDIO\FUNC_01
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\hdaudio.inf_amd64_70f0a91d91ec72f6\hdaudio.inf
+     dvi:           DevDesc      - Zvukové zařízení High Definition Audio
+     dvi:           Section      - HdAudModel
+     dvi:           Rank         - 0x00ff300c
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 09/04/2019
+     dvi:           Version      - 10.0.18362.356
+     dvi:      Created Driver Node:
+     dvi:           HardwareID   - HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&REV_1002
+     dvi:           InfName      - C:\WINDOWS\System32\DriverStore\FileRepository\hdaudss.inf_amd64_f9dbffb057406d57\hdaudss.inf
+     dvi:           DevDesc      - Zvukové zařízení High Definition Audio
+     dvi:           Section      - HdAudModel_CustomConnTypeA
+     dvi:           Rank         - 0x00ff3002
+     dvi:           Signer Score - INBOX
+     dvi:           DrvDate      - 08/24/2001
+     dvi:           Version      - 10.0.18362.1
+     dvi: {Build Driver List - exit(0x00000000)} 04:00:15.571
+     dvi: {DIF_SELECTBESTCOMPATDRV} 04:00:15.571
+     dvi:      Default installer: Enter 04:00:15.571
+     dvi:           {Select Best Driver}
+     dvi:                Class GUID of device changed to: {4d36e96c-e325-11ce-bfc1-08002be10318}.
+     dvi:                Selected Driver:
+     dvi:                     Description - Zvukové zařízení High Definition Audio
+     dvi:                     InfFile     - c:\windows\system32\driverstore\filerepository\hdaudss.inf_amd64_f9dbffb057406d57\hdaudss.inf
+     dvi:                     Section     - HdAudModel_CustomConnTypeA
+     dvi:           {Select Best Driver - exit(0x00000000)}
+     dvi:      Default installer: Exit
+     dvi: {DIF_SELECTBESTCOMPATDRV - exit(0x00000000)} 04:00:15.587
+     dvi: Waiting for previous device install to complete. 04:00:15.587
+     dvi: {Core Device Install} 04:00:46.649
+     dvi:      {Install Device - HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205CE66F&0&0001} 04:00:46.649
+     dvi:           Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:           Parent device: PCI\VEN_1002&DEV_AA68&SUBSYS_AA681462&REV_00\4&183b18bf&0&0108
+     dvi:           {Configure Device - HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205CE66F&0&0001} 04:00:46.649
+     dvi:                Device Status: 0x01802400, Problem: 0x12 (0xc0000493)
+     dvi:                Parent device: PCI\VEN_1002&DEV_AA68&SUBSYS_AA681462&REV_00\4&183b18bf&0&0108
+     sto:                {Configure Driver Package: C:\WINDOWS\System32\DriverStore\FileRepository\hdaudss.inf_amd64_f9dbffb057406d57\hdaudss.inf}
+     sto:                     Source Filter  = hdaudio\func_01&ven_1002&dev_aa01&rev_1002
+     inf:                     Class GUID     = {4d36e96c-e325-11ce-bfc1-08002be10318}
+     inf:                     Class Options  = Configurable
+     inf:                     {Configure Driver: High Definition Audio Device}
+     inf:                          Section Name = HdAudModel_CustomConnTypeA
+     inf:                          {Add Service: HdAudAddService}
+     inf:                               Start Type    = 3
+     inf:                               Service Type  = 1
+     inf:                               Error Control = 1
+     inf:                               Image Path    = \SystemRoot\System32\drivers\HdAudio.sys
+     inf:                               Display Name  = Ovladač funkce Microsoft 1.1 UAA pro službu zvuku High Definition Audio
+     inf:                               Updated service 'HdAudAddService'.
+     inf:                          {Add Service: exit(0x00000000)}
+     inf:                          Compatible Id = HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&REV_1002
+     inf:                          {Configure Driver Configuration: HdAudModel_CustomConnTypeA}
+     inf:                               Service Name  = HdAudAddService
+     inf:                               Included INFs = ks.inf
+     inf:                                               wdmaudio.inf
+     inf:                                               hdaudio.inf
+     inf:                               Include Scope = Services
+     inf:                               Config Flags  = 0x00000000
+     inf:                          {Configure Driver Configuration: exit(0x00000000)}
+     inf:                     {Configure Driver: exit(0x00000000)}
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\wdmaudio.inf_amd64_0445ce9840c7f1ef\drmk.sys' to 'C:\WINDOWS\System32\drivers\drmk.sys'.
+     cpy:                     Existing file 'C:\WINDOWS\System32\drivers\drmk.sys' remains unchanged.
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\wdmaudio.inf_amd64_0445ce9840c7f1ef\portcls.sys' to 'C:\WINDOWS\System32\drivers\portcls.sys'.
+     cpy:                     Existing file 'C:\WINDOWS\System32\drivers\portcls.sys' remains unchanged.
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\wdmaudio.inf_amd64_0445ce9840c7f1ef\WMALFXGFXDSP.dll' to 'C:\WINDOWS\System32\WMALFXGFXDSP.dll'.
+     cpy:                     Existing file 'C:\WINDOWS\System32\WMALFXGFXDSP.dll' remains unchanged.
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\wdmaudio.inf_amd64_0445ce9840c7f1ef\SysFxUI.dll' to 'C:\WINDOWS\System32\SysFxUI.dll'.
+     cpy:                     Existing file 'C:\WINDOWS\System32\SysFxUI.dll' remains unchanged.
+     flq:                     Hardlinking 'C:\WINDOWS\System32\DriverStore\FileRepository\hdaudio.inf_amd64_70f0a91d91ec72f6\HdAudio.sys' to 'C:\WINDOWS\System32\drivers\HdAudio.sys'.
+     cpy:                     Existing file 'C:\WINDOWS\System32\drivers\HdAudio.sys' remains unchanged.
+     sto:                {Configure Driver Package: exit(0x00000000)}
+     dvi:                Install Device: Configuring device (hdaudss.inf:hdaudio\func_01&ven_1002&dev_aa01&rev_1002,HdAudModel_CustomConnTypeA). 04:00:46.789
+     dvi:                Install Device: Configuring device completed. 04:00:46.805
+     dvi:                Device Status: 0x01802000, Problem: 0x0 (0x00000000)
+     dvi:                Install Device: Starting device 'HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100&REV_1002\5&205CE66F&0&0001'. 04:00:46.805
+     dvi:                Install Device: Starting device completed. 04:00:46.820
+     dvi:           {Configure Device - exit(0x00000000)} 04:00:46.820
+     dvi:      {Install Device - exit(0x00000000)} 04:00:46.820
+     dvi: {Core Device Install - exit(0x00000000)} 04:00:46.820
+<<<  Section end 2020/04/08 04:00:46.820
+<<<  [Exit status: SUCCESS]
+
+
+>>>  [Device Install (DiInstallDriver) - C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf]
+>>>  Section start 2020/04/08 04:00:46.977
+      cmd: C:\WINDOWS\system32\oobe\setup.exe
+     ndv: Flags: 0x00000000
+     ndv: INF path: C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf
+     inf: {SetupCopyOEMInf: C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf} 04:00:46.977
+     inf:      Copy style: 0x00000000
+     inf:      Driver Store Path: C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf
+     inf:      Published Inf Path: C:\WINDOWS\INF\oem11.inf
+     inf: {SetupCopyOEMInf exit (0x00000000)} 04:00:46.977
+     dvi: {Plug and Play Service: Driver Install for C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf}
+     pol:      {Driver package policy check} 04:00:46.992
+     pol:      {Driver package policy check - exit(0x00000000)} 04:00:46.992
+     sto:      {Configure Driver Package: C:\WINDOWS\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.inf}
+     inf:           Class GUID     = {d546500a-2aeb-45f6-9482-f4b1799c3177}
+     inf:           Class Options  = Configurable
+     inf:           {Configure Driver: Game mini-filter driver}
+     inf:                Section Name = DefaultInstall.NTamd64
+     inf:                Driver Type  = Primitive
+     sto:                Finding all driver package versions
+     sto:                     gameflt.inf_amd64_1b1c9965dc1c6f0f [oem11.inf] - 10/28/2019,10.0.18363.1 (Active)
+     sto:                Selected driver package 'gameflt.inf_amd64_1b1c9965dc1c6f0f'.
+     inf:                {Add Service: gameflt}
+     inf:                     Start Type    = 3
+     inf:                     Service Type  = 2
+     inf:                     Error Control = 1
+     inf:                     Image Path    = \SystemRoot\System32\DriverStore\FileRepository\gameflt.inf_amd64_1b1c9965dc1c6f0f\gameflt.sys
+     inf:                     Display Name  = gameflt
+     inf:                     Description   = Game mini-filter driver
+     inf:                     Group         = FSFilter Activity Monitor
+     inf:                     Dependencies  = FltMgr
+     inf:                     Created new service 'gameflt'.
+     inf:                {Add Service: exit(0x00000000)}
+     inf:           {Configure Driver: exit(0x00000000)}
+     sto:      {Configure Driver Package: exit(0x00000000)}
+     ump: {Plug and Play Service: Driver Install exit(00000000)}
+<<<  Section end 2020/04/08 04:00:47.008
+<<<  [Exit status: SUCCESS]
+
+
+!!2
