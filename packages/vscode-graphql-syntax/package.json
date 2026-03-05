@@ -63,6 +63,7 @@
           "source.vue",
           "source.svelte",
           "source.astro",
+          "text.html.vue",
           "text.html.markdown",
           "text.html.derivative"
         ],
