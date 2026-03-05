@@ -17,7 +17,16 @@ import type {
 } from './stores';
 import type { RuleKind } from 'graphql-language-service';
 
-export type EditorProps = ComponentPropsWithoutRef<'div'>;
+export type EditorProps = ComponentPropsWithoutRef<'div'> & {
+  /**
+   * for customizing editor options. Here are
+   * some options that may be useful to some users:
+   * - suggest: { showWords: false }
+   * - hover: { above: false }
+   * - scrollbar: { alwaysConsumeMouseWheel: false }
+   */
+  editorOverrides?: monaco.editor.IStandaloneEditorConstructionOptions;
+};
 
 export interface SchemaReference {
   kind: RuleKind;
