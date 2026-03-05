@@ -3535,7 +3535,7 @@ __metadata:
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.5.0"
     jsonc-parser: "npm:^3.3.1"
-    markdown-it: "npm:^14.1.0"
+    markdown-it: "npm:^14.1.1"
     monaco-editor: "npm:0.52.2"
     monaco-graphql: "npm:^1.7.3"
     prettier: "npm:^3.5.3"
