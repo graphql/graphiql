@@ -191,6 +191,7 @@ export const createExecutionSlice: CreateExecutionSlice =
             queryEditor,
             responseEditor,
             variableEditor,
+            extensionsEditor,
             actions,
             operationName,
             documentAST,
@@ -218,7 +219,11 @@ export const createExecutionSlice: CreateExecutionSlice =
               return;
             }
             const name =
-              editor === variableEditor ? 'Variables' : 'Request headers';
+              editor === variableEditor
+                ? 'Variables'
+                : editor === extensionsEditor
+                  ? 'Extensions'
+                  : 'Request headers';
             // Need to format since the response editor uses `json` language
             setResponse(formatError({ message: `${name} ${error.message}` }));
           }
@@ -243,6 +248,13 @@ export const createExecutionSlice: CreateExecutionSlice =
             headers = tryParseJSONC(headerEditor?.getValue());
           } catch (error) {
             setError(error as Error, headerEditor);
+            return;
+          }
+          let extensions: Record<string, unknown> | undefined;
+          try {
+            extensions = tryParseJSONC(extensionsEditor?.getValue());
+          } catch (error) {
+            setError(error as Error, extensionsEditor);
             return;
           }
           const fragmentDependencies = documentAST
@@ -287,7 +299,7 @@ export const createExecutionSlice: CreateExecutionSlice =
             };
             const opName = overrideOperationName ?? operationName;
             const fetch = fetcher(
-              { query, variables, operationName: opName },
+              { query, variables, extensions, operationName: opName },
               { headers, documentAST },
             );
 
