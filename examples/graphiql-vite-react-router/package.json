@@ -13,7 +13,7 @@
   "dependencies": {
     "@graphiql/react": "0.37.3",
     "@react-router/fs-routes": "7.6.3",
-    "@react-router/node": "7.6.3",
+    "@react-router/node": "7.9.4",
     "@react-router/serve": "7.6.3",
     "graphiql": "5.2.2",
     "isbot": "^5",
