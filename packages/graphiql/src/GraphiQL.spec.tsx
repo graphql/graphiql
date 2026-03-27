@@ -159,6 +159,26 @@ describe('GraphiQL', () => {
         ).not.toThrow();
       });
     });
+
+    it('should not introspect when IntrospectionQuery is provided as schema prop', async () => {
+      let fetcherCalled = false;
+
+      function trackingFetcher() {
+        fetcherCalled = true;
+        return Promise.resolve(simpleIntrospection);
+      }
+
+      await act(async () => {
+        render(
+          <GraphiQL
+            fetcher={trackingFetcher}
+            schema={simpleIntrospection.data}
+          />,
+        );
+      });
+
+      expect(fetcherCalled).toBe(false);
+    });
   }); // schema
 
   describe('default query', () => {
