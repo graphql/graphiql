@@ -45,9 +45,7 @@ import {
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 
-function isIntrospectionData(
-  value: unknown,
-): value is IntrospectionQuery {
+function isIntrospectionData(value: unknown): value is IntrospectionQuery {
   return typeof value === 'object' && value !== null && '__schema' in value;
 }
 
