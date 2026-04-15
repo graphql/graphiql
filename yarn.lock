@@ -9132,16 +9132,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-devops-node-api@npm:^11.0.1":
-  version: 11.1.1
-  resolution: "azure-devops-node-api@npm:11.1.1"
-  dependencies:
-    tunnel: "npm:0.0.6"
-    typed-rest-client: "npm:^1.8.4"
-  checksum: 10c0/09232809e58416829f361d33cf02798900decd43e0395966c36449c856d686a2918e2c56ba9a72fb3c18e785df4eb7b88a063e28e6675858e757819d61d7809b
-  languageName: node
-  linkType: hard
-
 "azure-devops-node-api@npm:^12.5.0":
   version: 12.5.0
   resolution: "azure-devops-node-api@npm:12.5.0"
@@ -14010,7 +14000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.13.2, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.6":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.6":
   version: 1.15.6
   resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
@@ -20202,22 +20192,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ovsx@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "ovsx@npm:0.3.0"
-  dependencies:
-    commander: "npm:^6.1.0"
-    follow-redirects: "npm:^1.13.2"
-    is-ci: "npm:^2.0.0"
-    leven: "npm:^3.1.0"
-    tmp: "npm:^0.2.1"
-    vsce: "npm:^2.6.3"
-  bin:
-    ovsx: lib/ovsx
-  checksum: 10c0/abdb100a6e250a0bf9a5a1eff8515123d576dc3646499024b184b4adaf99baa541ab31a5df4abaf5005584ff3aadc00c5d37ed82288920febe3090e34609734c
-  languageName: node
-  linkType: hard
-
 "own-keys@npm:^1.0.1":
   version: 1.0.1
   resolution: "own-keys@npm:1.0.1"
@@ -25635,36 +25609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vsce@npm:^2.6.3":
-  version: 2.15.0
-  resolution: "vsce@npm:2.15.0"
-  dependencies:
-    azure-devops-node-api: "npm:^11.0.1"
-    chalk: "npm:^2.4.2"
-    cheerio: "npm:^1.0.0-rc.9"
-    commander: "npm:^6.1.0"
-    glob: "npm:^7.0.6"
-    hosted-git-info: "npm:^4.0.2"
-    keytar: "npm:^7.7.0"
-    leven: "npm:^3.1.0"
-    markdown-it: "npm:^12.3.2"
-    mime: "npm:^1.3.4"
-    minimatch: "npm:^3.0.3"
-    parse-semver: "npm:^1.1.1"
-    read: "npm:^1.0.7"
-    semver: "npm:^5.1.0"
-    tmp: "npm:^0.2.1"
-    typed-rest-client: "npm:^1.8.4"
-    url-join: "npm:^4.0.1"
-    xml2js: "npm:^0.4.23"
-    yauzl: "npm:^2.3.1"
-    yazl: "npm:^2.2.2"
-  bin:
-    vsce: vsce
-  checksum: 10c0/6eb7f3affcd8de74324345bc0894bc7c93eba2976719da774c7812067e84fb4e9b0ee67c4f9849c873fb4de1cb659a4767ce765166b010d440187ebbdd2c0d67
-  languageName: node
-  linkType: hard
-
 "vscode-graphql-execution@workspace:packages/vscode-graphql-execution":
   version: 0.0.0-use.local
   resolution: "vscode-graphql-execution@workspace:packages/vscode-graphql-execution"
@@ -25701,7 +25645,7 @@ __metadata:
   resolution: "vscode-graphql-syntax@workspace:packages/vscode-graphql-syntax"
   dependencies:
     "@vscode/vsce": "npm:^2.22.1-2"
-    ovsx: "npm:^0.3.0"
+    ovsx: "npm:0.8.3"
     vscode-oniguruma: "npm:^1.7.0"
     vscode-textmate: "npm:^9.0.0"
   languageName: unknown
@@ -26889,16 +26833,6 @@ __metadata:
   version: 3.0.0
   resolution: "xml-name-validator@npm:3.0.0"
   checksum: 10c0/da310f6a7a52f8eb0fce3d04ffa1f97387ca68f47e8620ae3a259909c4e832f7003313b918e53840a6bf57fb38d5ae3c5f79f31f911b2818a7439f7898f8fbf1
-  languageName: node
-  linkType: hard
-
-"xml2js@npm:^0.4.23":
-  version: 0.4.23
-  resolution: "xml2js@npm:0.4.23"
-  dependencies:
-    sax: "npm:>=0.6.0"
-    xmlbuilder: "npm:~11.0.0"
-  checksum: 10c0/a3f41c9afc46d5bd0bea4070e5108777b605fd5ce2ebb978a68fd4c75513978ad5939f8135664ffea6f1adb342f391b1ba1584ed7955123b036e9ab8a1d26566
   languageName: node
   linkType: hard
 
