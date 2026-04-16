@@ -11,13 +11,18 @@ concurrency:
   #cancel-in-progress: true
 
 permissions: {}
+
 jobs:
   release:
-    permissions:
-      contents: write # for changesets/action to git push
-    environment: deploy
     name: Release
     runs-on: ubuntu-latest
+
+    environment: deploy
+
+    permissions:
+      # To create a release, and to push branches:
+      contents: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
