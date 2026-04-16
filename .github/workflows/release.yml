@@ -23,6 +23,15 @@ jobs:
       # To create a release, and to push branches:
       contents: write
 
+      # To create/maintain the Changesets pull request
+      pull-requests: write
+
+      # PRs are backed by issues; this helps with stuff like reading labels/etc
+      issues: read
+
+      # To enable trusted publishing
+      id-token: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
