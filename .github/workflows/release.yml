@@ -2,7 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [main, graphiql-5]
+    branches:
+      - main
+      - graphiql-5
+
 permissions: {}
 jobs:
   release:
