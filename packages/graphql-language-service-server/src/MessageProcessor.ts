@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-// do not change to node:fs import, or it will break mock-fs
 import { existsSync, mkdirSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';

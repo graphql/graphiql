@@ -244,8 +244,9 @@ describe('MessageProcessor with config', () => {
         { uri: project.uri('schema.graphql'), type: FileChangeType.Changed },
       ],
     });
-    const typeCache =
-      project.lsp._graphQLCache._typeDefinitionsCache.get(`${project.rootDir}-default`);
+    const typeCache = project.lsp._graphQLCache._typeDefinitionsCache.get(
+      `${project.rootDir}-default`,
+    );
     expect(typeCache?.get('Test')?.definition.name.value).toEqual('Test');
 
     // test in-file schema defs! important!
@@ -318,10 +319,9 @@ describe('MessageProcessor with config', () => {
     });
 
     // TODO: this interface should maybe not be tested here but in unit tests
-    const fragCache =
-      project.lsp._graphQLCache._fragmentDefinitionsCache.get(
-        `${project.rootDir}-default`,
-      );
+    const fragCache = project.lsp._graphQLCache._fragmentDefinitionsCache.get(
+      `${project.rootDir}-default`,
+    );
     expect(fragCache?.get('A')?.definition.name.value).toEqual('A');
     expect(fragCache?.get('B')?.definition.name.value).toEqual('B');
     const queryFieldDefRequest = await project.lsp.handleDefinitionRequest({
