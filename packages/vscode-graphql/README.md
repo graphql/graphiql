@@ -147,7 +147,7 @@ You can search a folder for any of the matching config file names listed above:
 
 ```json
 "graphql-config.load.rootDir": "./config"
-"graphql-config.envfilePath": "./config/.dev.env"
+"graphql-config.dotEnvPath": "./config/.dev.env"
 ```
 
 Or a specific filepath:
