@@ -1,4 +1,6 @@
-import mockfs from 'mock-fs';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { tmpdir } from 'node:os';
 import { MessageProcessor } from '../../MessageProcessor';
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 import { URI } from 'vscode-uri';
@@ -14,54 +16,51 @@ export class MockLogger implements VSCodeLogger {
   log = jest.fn();
 }
 
-// when using mockfs with cosmic-config, a dynamic inline
-// require of parse-json creates the necessity for loading in the actual
-// modules to the mocked filesystem
-const modules = [
-  'parse-json',
-  'error-ex',
-  'is-arrayish',
-  'json-parse-even-better-errors',
-  'lines-and-columns',
-  '@babel/code-frame',
-  // these i think are just required by jest when you console log from a test
-  'jest-message-util',
-  'stack-utils',
-  'pretty-format',
-  'ansi-regex',
-  'js-tokens',
-  'escape-string-regexp',
-  'jest-worker',
-  'jiti',
-  'cosmiconfig',
-  'minimatch',
-  'tslib',
-];
-const defaultMocks = modules.reduce((acc, module) => {
-  acc[`node_modules/${module}`] = mockfs.load(`node_modules/${module}`);
-  return acc;
-}, {});
-
 type File = [filename: string, text: string];
 type Files = File[];
+
+// Track live instances so a process exit handler can clean up any that
+// `dispose()` didn't reach (e.g. if a test throws mid-setup).
+const liveInstances = new Set<MockProject>();
+let exitHandlerRegistered = false;
+function registerExitHandler() {
+  if (exitHandlerRegistered) {
+    return;
+  }
+  exitHandlerRegistered = true;
+  process.on('exit', () => {
+    for (const inst of liveInstances) {
+      try {
+        inst.dispose();
+      } catch {
+        // best-effort cleanup on exit
+      }
+    }
+  });
+}
 
 export class MockProject {
   private root: string;
   private fileCache: Map<string, string>;
   private messageProcessor: MessageProcessor;
+
   constructor({
     files = [],
-    root = '/tmp/test',
+    root,
     settings,
   }: {
     files: Files;
     root?: string;
     settings?: Record<string, any>;
   }) {
-    this.root = root;
+    registerExitHandler();
+    // Unique tmpdir per instance. `gls-test-` prefix makes leaked dirs
+    // identifiable across test runs.
+    this.root = root ?? fs.mkdtempSync(path.join(tmpdir(), 'gls-test-'));
     this.fileCache = new Map(files);
+    liveInstances.add(this);
 
-    this.mockFiles();
+    this.writeFiles();
     this.messageProcessor = new MessageProcessor({
       connection: {
         get workspace() {
@@ -74,7 +73,7 @@ export class MockProject {
       },
       logger: new MockLogger(),
       loadConfigOptions: {
-        rootDir: root,
+        rootDir: this.root,
       },
     });
   }
@@ -98,30 +97,37 @@ export class MockProject {
       },
     });
   }
-  private mockFiles() {
-    const mockFiles = {
-      ...defaultMocks,
-      // without this, the generated schema file may not be cleaned up by previous tests
-      '/tmp/graphql-language-service': mockfs.directory(),
-    };
+
+  /**
+   * Synchronously writes every cached file to disk. Creates parent dirs as needed.
+   * Called on construction and after every cache mutation so the on-disk state
+   * always matches `fileCache`.
+   */
+  private writeFiles() {
     for (const [filename, text] of this.fileCache) {
-      mockFiles[this.filePath(filename)] = text;
+      const dest = this.filePath(filename);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.writeFileSync(dest, text);
     }
-    mockfs(mockFiles);
   }
+
   public filePath(filename: string) {
     return `${this.root}/${filename}`;
   }
+
   public uri(filename: string) {
     return URI.file(this.filePath(filename)).toString();
   }
+
   changeFile(filename: string, text: string) {
     this.fileCache.set(filename, text);
-    this.mockFiles();
+    const dest = this.filePath(filename);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, text);
   }
+
   async addFile(filename: string, text: string, watched = false) {
-    this.fileCache.set(filename, text);
-    this.mockFiles();
+    this.changeFile(filename, text);
     if (watched) {
       await this.lsp.handleWatchedFilesChangedNotification({
         changes: [
@@ -145,6 +151,7 @@ export class MockProject {
       },
     });
   }
+
   async changeWatchedFile(filename: string, text: string) {
     this.changeFile(filename, text);
     await this.lsp.handleWatchedFilesChangedNotification({
@@ -156,6 +163,7 @@ export class MockProject {
       ],
     });
   }
+
   async saveOpenFile(filename: string, text: string) {
     this.changeFile(filename, text);
     await this.lsp.handleDidOpenOrSaveNotification({
@@ -166,6 +174,7 @@ export class MockProject {
       },
     });
   }
+
   async addWatchedFile(filename: string, text: string) {
     this.changeFile(filename, text);
     await this.lsp.handleDidChangeNotification({
@@ -181,10 +190,14 @@ export class MockProject {
       },
     });
   }
+
   async deleteFile(filename: string) {
-    mockfs.restore();
     this.fileCache.delete(filename);
-    this.mockFiles();
+    try {
+      fs.rmSync(this.filePath(filename), { force: true });
+    } catch {
+      // ignore — file may already be gone
+    }
     await this.lsp.handleWatchedFilesChangedNotification({
       changes: [
         {
@@ -194,6 +207,25 @@ export class MockProject {
       ],
     });
   }
+
+  /**
+   * Remove this project's tmpdir and forget it. Idempotent.
+   * Callers should invoke in afterEach (or equivalent) for every instance.
+   */
+  public dispose() {
+    if (!liveInstances.has(this)) {
+      return;
+    }
+    liveInstances.delete(this);
+    fs.rmSync(this.root, { recursive: true, force: true });
+  }
+
+  /** Public accessor for the tmpdir path — tests need this to build assertions
+   * that reference graphql-config's project key (which derives from rootDir). */
+  public get rootDir() {
+    return this.root;
+  }
+
   get lsp() {
     return this.messageProcessor;
   }
