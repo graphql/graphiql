@@ -41,13 +41,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           cache: yarn
-      - name: Cache node modules
-        uses: actions/cache@v4
-        id: cache-modules
-        with:
-          path: node_modules
-          key: node_modules-${{hashFiles('yarn.lock')}}
-          restore-keys: node_modules-
+
       - run: yarn install --frozen-lockfile --immutable
 
       - name: Create Release Pull Request or Publish to npm
