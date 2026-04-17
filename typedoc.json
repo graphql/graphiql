@@ -17,11 +17,7 @@
     "packages/monaco-graphql"
   ],
   "out": "packages/graphiql/typedoc",
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.*",
-    "**/*-test.*"
-  ],
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "**/*-test.*"],
   "skipErrorChecking": true,
   "excludePrivate": true,
   "excludeInternal": true,
