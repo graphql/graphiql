@@ -449,6 +449,8 @@ module.exports = {
 
             'packages/vscode-graphql-syntax/tests/__utilities__/serializer.ts',
             'packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts',
+
+            'resources/patch-monaco-editor-type.mts',
           ],
           maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 100,
         },
