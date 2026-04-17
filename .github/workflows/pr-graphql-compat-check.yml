@@ -35,6 +35,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
+          node-version-file: '.node-version'
           cache: yarn
       - name: Cache node modules
         uses: actions/cache@v4

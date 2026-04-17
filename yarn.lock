@@ -6867,15 +6867,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.15.34":
-  version: 22.15.34
-  resolution: "@types/node@npm:22.15.34"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/fb6a6b36daaa1b484aaba3d33b4d1e7b37ea993e29f20b7a676affa76ed6ff6acd2ded4d5003469bc8dbc815b3d224533b4560896037ef6d5b5d552721ab7d57
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^12.7.1":
   version: 12.20.7
   resolution: "@types/node@npm:12.20.7"
@@ -6883,10 +6874,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.18.4":
-  version: 16.18.4
-  resolution: "@types/node@npm:16.18.4"
-  checksum: 10c0/ab6d44e3715b3cdf32d6bf3f0c77001dcaf85d79a7de294a978bd9c8f433e0a93558b12f2407f8bb5f436408c5ea25f060b51b4995e6fb093a8c5a22420bd1c4
+"@types/node@npm:^24":
+  version: 24.12.2
+  resolution: "@types/node@npm:24.12.2"
+  dependencies:
+    undici-types: "npm:~7.16.0"
+  checksum: 10c0/710050c42f89075c4479e4e1e4c2532486b0c41b1e2a8a13ad88641c88b88cdaea87414e19224f30028719737bd70e327edcaa184d50e86b9418941edd7eb02b
   languageName: node
   linkType: hard
 
@@ -13169,7 +13162,7 @@ __metadata:
     "@react-router/fs-routes": "npm:7.6.3"
     "@react-router/node": "npm:7.6.3"
     "@react-router/serve": "npm:7.6.3"
-    "@types/node": "npm:22.15.34"
+    "@types/node": "npm:^24"
     "@types/react": "npm:19.1.8"
     graphiql: "npm:5.2.2"
     isbot: "npm:^5"
@@ -13236,7 +13229,7 @@ __metadata:
   resolution: "example-monaco-graphql-nextjs@workspace:examples/monaco-graphql-nextjs"
   dependencies:
     "@graphiql/toolkit": "npm:^0.11.3"
-    "@types/node": "npm:^16.18.4"
+    "@types/node": "npm:^24"
     "@types/react": "npm:^19.1.2"
     graphql: "npm:^16.9.0"
     jsonc-parser: "npm:^3.2.0"
@@ -14903,7 +14896,7 @@ __metadata:
     "@types/express": "npm:^4.17.11"
     "@types/fetch-mock": "npm:^7.3.2"
     "@types/jest": "npm:^29.5.2"
-    "@types/node": "npm:^16.18.4"
+    "@types/node": "npm:^24"
     "@types/ws": "npm:8.2.2"
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
@@ -24934,6 +24927,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10c0/3033e2f2b5c9f1504bdc5934646cb54e37ecaca0f9249c983f7b1fc2e87c6d18399ebb05dc7fd5419e02b2e915f734d872a65da2e3eeed1813951c427d33cc9a
+  languageName: node
+  linkType: hard
+
 "undici@npm:^5.8.0":
   version: 5.29.0
   resolution: "undici@npm:5.29.0"
@@ -25729,7 +25729,7 @@ __metadata:
     "@types/capitalize": "npm:2.0.0"
     "@types/dotenv": "npm:8.2.0"
     "@types/mocha": "npm:5.2.7"
-    "@types/node": "npm:^16.18.4"
+    "@types/node": "npm:^24"
     "@types/vscode": "npm:1.62.0"
     "@types/ws": "npm:8.2.2"
     "@urql/core": "npm:2.6.1"
