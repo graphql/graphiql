@@ -1,18 +1,18 @@
 {
-  "name": "GraphQL Official LSP Documentation",
-  "theme": "default",
-  "mode": "modules",
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "GraphiQL API Documentation",
+  "entryPointStrategy": "packages",
+  "entryPoints": ["packages/*"],
   "out": "packages/graphiql/typedoc",
-  "inputFiles": [
-    "**/node_modules/vscode*/**",
-    "**/node_modules/@types/node/**"
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.*",
+    "**/*-test.*"
   ],
-  "exclude": "**/__tests__/**,*.spec.*,**/*-test.*,**/esm/**,**/dist/**,**/node_modules/**,packages/graphiql-2-rfc-*/**",
   "excludePrivate": true,
-  "excludeNotExported": true,
-  "external-modulemap": ".*/packages/([\\w\\-_]+)/",
-  "ignoreCompilerErrors": true,
-  "includeDeclarations": true,
-  "preserveConstEnums": true,
-  "readme": "./README.md"
+  "excludeInternal": true,
+  "readme": "./README.md",
+  "packageOptions": {
+    "entryPoints": ["src/index.ts", "src/index.tsx"]
+  }
 }
