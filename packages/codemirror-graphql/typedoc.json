@@ -1,0 +1,3 @@
+{
+  "entryPoints": ["src/hint.ts", "src/info.ts", "src/jump.ts", "src/lint.ts", "src/mode.ts"]
+}

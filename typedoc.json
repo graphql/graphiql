@@ -2,13 +2,27 @@
   "$schema": "https://typedoc.org/schema.json",
   "name": "GraphiQL API Documentation",
   "entryPointStrategy": "packages",
-  "entryPoints": ["packages/*"],
+  "entryPoints": [
+    "packages/cm6-graphql",
+    "packages/codemirror-graphql",
+    "packages/graphiql",
+    "packages/graphiql-plugin-code-exporter",
+    "packages/graphiql-plugin-doc-explorer",
+    "packages/graphiql-plugin-explorer",
+    "packages/graphiql-plugin-history",
+    "packages/graphiql-react",
+    "packages/graphiql-toolkit",
+    "packages/graphql-language-service",
+    "packages/graphql-language-service-server",
+    "packages/monaco-graphql"
+  ],
   "out": "packages/graphiql/typedoc",
   "exclude": [
     "**/__tests__/**",
     "**/*.spec.*",
     "**/*-test.*"
   ],
+  "skipErrorChecking": true,
   "excludePrivate": true,
   "excludeInternal": true,
   "readme": "./README.md",
