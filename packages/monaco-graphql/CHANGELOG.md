@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.7.3
+
+### Patch Changes
+
+- [#4133](https://github.com/graphql/graphiql/pull/4133) [`1bc6568`](https://github.com/graphql/graphiql/commit/1bc6568da947394c216342ae75fb509fdbf03390) Thanks [@dimaMachina](https://github.com/dimaMachina)! - to fix esm.sh example we should pin `monaco-editor` peer dependency to versions `≥ 0.20.0 and < 0.53`, since `monaco-editor@^0.53.0` isn't supported yet with `monaco-graphql`
+
 ## 1.7.2
 
 ### Patch Changes
