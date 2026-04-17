@@ -138,6 +138,7 @@ multipass
 nauroze
 newhope
 nextjs
+nodenext
 nishchit
 nocheck
 nocursor

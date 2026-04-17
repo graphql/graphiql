@@ -1,17 +1,15 @@
-/* eslint-disable */
-const semver = require('semver');
-const { execa } = import('execa');
-const cp = require('child_process');
-const { basename } = require('path');
+import cp from 'node:child_process';
+import { basename } from 'node:path';
+import applyReleasePlan from '@changesets/apply-release-plan';
+import assembleReleasePlan from '@changesets/assemble-release-plan';
+import { read as readConfig } from '@changesets/config';
+import readChangesets from '@changesets/read';
+import { getPackages } from '@manypkg/get-packages';
+import semver from 'semver';
 
-const { read: readConfig } = require('@changesets/config');
-const readChangesets = require('@changesets/read').default;
-const assembleReleasePlan =
-  require('@changesets/assemble-release-plan').default;
-const applyReleasePlan = require('@changesets/apply-release-plan').default;
-const { getPackages } = require('@manypkg/get-packages');
+type ReleaseType = 'major' | 'minor' | 'patch';
 
-function getNewVersion(version, type) {
+function getNewVersion(version: string, type: ReleaseType): string | null {
   const gitHash = cp
     .spawnSync('git', ['rev-parse', '--short', 'HEAD'])
     .stdout.toString()
@@ -20,34 +18,11 @@ function getNewVersion(version, type) {
   return semver.inc(version, `pre${type}`, true, 'canary-' + gitHash);
 }
 
-const execOpts = { stderr: 'inherit', stdout: 'inherit' };
+// TODO: canary --pre releases for vscode ? See git history for a sketch that
+// used `execa` to run `yarn workspace vscode-graphql release --pre` then
+// committed + pushed the bumped package.json.
 
-const git = async (...commands) => execa('git', commands, execOpts);
-
-// TODO: canary --pre releases for vscode ?
-//
-// async function preReleaseVSCode(version) {
-//   try {
-//     await execa(
-//       'yarn',
-//       ['workspace', `vscode-graphql`, 'run', 'release', '--pre'],
-//       execOpts,
-//     );
-//   } catch (err) {
-//     console.error('vscode-graphql pre-release failed on publish:', err);
-//     process.exit(1);
-//   }
-//   try {
-//     await git('add', `packages/vscode-graphql/package.json`);
-//     await git('commit', `-m`, `pre-release \`vscode-graphql@${version}\``);
-//     await git('push');
-//   } catch (err) {
-//     console.error('vscode-graphql pre-release failed on git command:', err);
-//     process.exit(1);
-//   }
-// }
-
-function getRelevantChangesets(baseBranch) {
+function getRelevantChangesets(baseBranch: string): string[] {
   const comparePoint = cp
     .spawnSync('git', ['merge-base', `origin/${baseBranch}`, 'HEAD'])
     .stdout.toString()
@@ -58,14 +33,12 @@ function getRelevantChangesets(baseBranch) {
     .trim()
     .split('\n');
 
-  const items = listModifiedFiles
+  return listModifiedFiles
     .filter(f => f.startsWith('.changeset'))
     .map(f => basename(f, '.md'));
-
-  return items;
 }
 
-async function updateVersions() {
+async function updateVersions(): Promise<void> {
   const cwd = process.cwd();
   const packages = await getPackages(cwd);
   const config = await readConfig(cwd, packages);
@@ -74,64 +47,59 @@ async function updateVersions() {
     modifiedChangesets.includes(change.id),
   );
 
-  let vscodeRelease = false;
-
   if (changesets.length === 0) {
     console.warn(
-      `Unable to find any relevant package for canary publishing. Please make sure changesets exists!`,
+      'Unable to find any relevant package for canary publishing. Please make sure changesets exists!',
     );
     process.exit(1);
-  } else {
-    const releasePlan = assembleReleasePlan(
-      changesets,
-      packages,
-      config,
-      [],
-      false,
+  }
+
+  const releasePlan = assembleReleasePlan(
+    changesets,
+    packages,
+    config,
+    undefined,
+    false,
+  );
+
+  if (releasePlan.releases.length === 0) {
+    console.warn(
+      'Unable to find any relevant package for canary releasing. Please make sure changesets exists!',
     );
+    process.exit(1);
+  }
 
-    if (releasePlan.releases.length === 0) {
-      console.warn(
-        `Unable to find any relevant package for canary releasing. Please make sure changesets exists!`,
-      );
-      process.exit(1);
-    } else {
-      for (const release of releasePlan.releases) {
-        if (
-          release.name.includes('vscode-graphql') &&
-          release.changesets?.type !== 'none'
-        ) {
-          // vsce pre-release only accept x.y.z versions
-          release.newVersion = vscodeRelease = semver.patch(release.oldVersion);
-        }
-        if (release.type !== 'none') {
-          release.newVersion = getNewVersion(release.oldVersion, release.type);
-        }
+  for (const release of releasePlan.releases) {
+    if (
+      release.name.includes('vscode-graphql') &&
+      // `release.changesets` is typed as `string[]` in current @changesets/types,
+      // so `.type` is always `undefined`. This predicate is preserved from the
+      // original JS for behavioral parity; the inner assignment is therefore
+      // overwritten by the second `if` whenever `release.type !== 'none'`.
+      (release.changesets as unknown as { type?: string })?.type !== 'none'
+    ) {
+      // vsce pre-release only accepts x.y.z versions
+      release.newVersion = String(semver.patch(release.oldVersion));
+    }
+    if (release.type !== 'none') {
+      const newVersion = getNewVersion(release.oldVersion, release.type);
+      if (newVersion) {
+        release.newVersion = newVersion;
       }
-
-      await applyReleasePlan(
-        releasePlan,
-        packages,
-        {
-          ...config,
-          commit: false,
-        },
-        false,
-        true,
-      );
-      // TODO: get this working
-      // if(vscodeRelease) {
-      //   await preReleaseVSCode(vscodeRelease)
-      // }
     }
   }
+
+  await applyReleasePlan(releasePlan, packages, {
+    ...config,
+    commit: false,
+  });
 }
 
 updateVersions()
   .then(() => {
-    console.info(`Done!`);
+    console.info('Done!');
   })
-  .catch(err => {
+  .catch((err: unknown) => {
     console.error(err);
     process.exit(1);
   });

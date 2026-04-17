@@ -1,30 +1,33 @@
-const { readFile, writeFile } = require('node:fs/promises');
-const path = require('node:path');
+import { readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 
-async function setResolution() {
+interface PackageJson {
+  resolutions?: Record<string, string>;
+  [key: string]: unknown;
+}
+
+async function setResolution(): Promise<void> {
   const [, , tag] = process.argv;
   if (!tag) {
     throw new Error('no tag provided');
   }
 
-  const [package, version] = tag.split('@');
-  if (!package || !version) {
+  const [pkg, version] = tag.split('@');
+  if (!pkg || !version) {
     throw new Error(`Invalid tag ${tag}`);
   }
   const pkgPath = path.resolve(path.join(process.cwd(), 'package.json'));
-  const pkg = JSON.parse((await readFile(pkgPath, 'utf-8')).toString());
+  const pkgJson: PackageJson = JSON.parse(await readFile(pkgPath, 'utf8'));
 
-  if (pkg.resolutions) {
-    pkg.resolutions[package] = version;
+  if (pkgJson.resolutions) {
+    pkgJson.resolutions[pkg] = version;
   } else {
-    pkg.resolutions = { [package]: version };
+    pkgJson.resolutions = { [pkg]: version };
   }
-  await writeFile(pkgPath, JSON.stringify(pkg, null, 2), 'utf-8');
+  await writeFile(pkgPath, JSON.stringify(pkgJson, null, 2), 'utf8');
 }
 
-setResolution()
-  .then()
-  .catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
+setResolution().catch((err: unknown) => {
+  console.error(err);
+  process.exit(1);
+});
