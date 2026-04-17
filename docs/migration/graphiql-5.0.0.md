@@ -40,7 +40,7 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 >
 > See [Vite example](../../examples/graphiql-vite/src/App.jsx).
 
-- For Webpack projects such as **Next.js** you must import:
+- For Webpack (and Turbopack) projects such as **Next.js** you must import:
 
   ```js
   import 'graphiql/setup-workers/webpack';
