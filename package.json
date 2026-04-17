@@ -120,7 +120,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
     "turbo": "^2.5.2",
-    "typedoc": "^0.26.11",
+    "typedoc": "^0.28.19",
     "typescript": "^5.8.0",
     "vitest": "^2.1.9",
     "wgutils": "^1.2.5",
