@@ -66,7 +66,12 @@ import {
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
-import type { LoadConfigOptions, LocateCommand } from './types';
+import type {
+  GraphQLConfigSettings,
+  LoadConfigOptions,
+  LocateCommand,
+  VSCodeGraphQLSettings,
+} from './types';
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   SupportedExtensionsEnum,
@@ -103,7 +108,7 @@ export class MessageProcessor {
   private _tmpDirBase: string;
   private _loadConfigOptions: LoadConfigOptions;
   private _rootPath: string = process.cwd();
-  private _settings: any;
+  private _settings!: VSCodeGraphQLSettings & GraphQLConfigSettings;
   private _providedConfig?: GraphQLConfig;
 
   constructor({
@@ -224,7 +229,7 @@ export class MessageProcessor {
     this._rootPath = rootDir;
     this._loadConfigOptions = {
       ...Object.keys(this._settings?.load ?? {}).reduce((agg, key) => {
-        const value = this._settings?.load[key];
+        const value = (this._settings?.load as Record<string, unknown>)[key];
         if (value === undefined || value === null) {
           delete agg[key];
         }
