@@ -31,7 +31,7 @@ jobs:
           path: node_modules
           key: node_modules-${{hashFiles('yarn.lock')}}
           restore-keys: node_modules-
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
