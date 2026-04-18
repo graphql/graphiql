@@ -34,7 +34,7 @@ import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { NoopLogger } from '../Logger';
 import { pathToFileURL } from 'node:url';
-import mockfs from 'mock-fs';
+import * as fs from 'node:fs';
 import { join } from 'node:path';
 
 jest.mock('node:fs', () => ({
@@ -179,19 +179,22 @@ describe('MessageProcessor', () => {
       await messageProcessor._isGraphQLConfigFile('graphql.js');
     expect(falseResult).toEqual(false);
 
-    mockfs({ [`${__dirname}/package.json`]: '{"graphql": {}}' });
-    const pkgResult = await messageProcessor._isGraphQLConfigFile(
-      `file://${__dirname}/package.json`,
-    );
-    mockfs.restore();
-    expect(pkgResult).toEqual(true);
+    const pkgJsonPath = `${__dirname}/package.json`;
+    try {
+      fs.writeFileSync(pkgJsonPath, '{"graphql": {}}');
+      const pkgResult = await messageProcessor._isGraphQLConfigFile(
+        `file://${pkgJsonPath}`,
+      );
+      expect(pkgResult).toEqual(true);
 
-    mockfs({ [`${__dirname}/package.json`]: '{ }' });
-    const pkgFalseResult = await messageProcessor._isGraphQLConfigFile(
-      `file://${__dirname}/package.json`,
-    );
-    mockfs.restore();
-    expect(pkgFalseResult).toEqual(false);
+      fs.writeFileSync(pkgJsonPath, '{ }');
+      const pkgFalseResult = await messageProcessor._isGraphQLConfigFile(
+        `file://${pkgJsonPath}`,
+      );
+      expect(pkgFalseResult).toEqual(false);
+    } finally {
+      fs.rmSync(pkgJsonPath, { force: true });
+    }
   });
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;

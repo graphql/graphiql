@@ -6833,15 +6833,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mock-fs@npm:^4.13.4":
-  version: 4.13.4
-  resolution: "@types/mock-fs@npm:4.13.4"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10c0/687c8e36d91031529924fd89011b7a87167ea33a1b92a9d845f0feb1a5157f168412c62ee308e57b9a71fd938197b4c71ca1784eb44e8a7cbdd816011ffd7f65
-  languageName: node
-  linkType: hard
-
 "@types/ms@npm:*":
   version: 0.7.31
   resolution: "@types/ms@npm:0.7.31"
@@ -15039,7 +15030,6 @@ __metadata:
     "@graphql-tools/code-file-loader": "npm:8.0.3"
     "@types/glob": "npm:^8.1.0"
     "@types/mkdirp": "npm:^1.0.1"
-    "@types/mock-fs": "npm:^4.13.4"
     "@whatwg-node/fetch": "npm:^0.9.0"
     cosmiconfig-toml-loader: "npm:^1.0.0"
     cross-env: "npm:^7.0.2"
@@ -15052,7 +15042,6 @@ __metadata:
     graphql-language-service: "npm:^5.3.1"
     lru-cache: "npm:^10.2.0"
     mkdirp: "npm:^1.0.4"
-    mock-fs: "npm:^5.2.0"
     node-abort-controller: "npm:^3.0.1"
     nullthrows: "npm:^1.0.0"
     source-map-js: "npm:1.0.2"
@@ -19401,13 +19390,6 @@ __metadata:
     _mocha: bin/_mocha
     mocha: bin/mocha.js
   checksum: 10c0/45728af7cd5a640bd964e4c1d1c9e5318499e9ba3494493a4bd05b3f03ca55bc51397323e160baab29407a56e7a7223cbb23f03e95a69317b44660099521038f
-  languageName: node
-  linkType: hard
-
-"mock-fs@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "mock-fs@npm:5.2.0"
-  checksum: 10c0/e917e71295ee9d805c7d9ab0214a66658db0212f35731ba0c75dc1ccbb9964e6787a6d725561f05fcf569c64cf4a1176f5ce438f98b009227520f646f8abf174
   languageName: node
   linkType: hard
 
