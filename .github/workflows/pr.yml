@@ -3,52 +3,21 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  install:
-    name: Install
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
-        with:
-          access_token: ${{ github.token }}
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: yarn
-      - name: Cache node modules
-        id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn install --frozen-lockfile --immutable
-
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
-
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn build
       - uses: actions/cache@v4
         with:
@@ -58,52 +27,37 @@ jobs:
   cspell:
     name: CSpell
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn lint-cspell
 
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn pretty-check
 
   jest:
     name: Jest Unit & Integration Tests
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn test --coverage
       - uses: codecov/codecov-action@v4
         with:
@@ -121,12 +75,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -142,12 +92,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -163,12 +109,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -181,12 +123,11 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
-      - id: cache-modules
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -227,12 +168,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - uses: actions/cache@v4
         with:
           key: build-${{ github.sha }}
@@ -279,20 +216,13 @@ jobs:
   license-check:
     name: Check Licenses
     runs-on: ubuntu-latest
-    needs: [install]
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
-      - run: yarn install --frozen-lockfile --immutable
+          cache: yarn
+      - run: yarn install --immutable
       - name: License Check
         run: yarn license-check
 

@@ -3,52 +3,22 @@ name: Main Tests
 on:
   push:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  install:
-    name: Install
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
-        with:
-          access_token: ${{ github.token }}
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: yarn
-      - name: Cache node modules
-        id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn install --frozen-lockfile --immutable
-
   jest:
     name: Jest Unit Tests
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn test --coverage
       - uses: codecov/codecov-action@v4
         with:
