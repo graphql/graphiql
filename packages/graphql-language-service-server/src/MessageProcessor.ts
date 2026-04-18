@@ -219,7 +219,7 @@ export class MessageProcessor {
     // so rootDir should become that workspace's rootDir
     this._settings = { ...settings, ...vscodeSettings };
     const rootDir = this._settings?.load?.rootDir?.length
-      ? this._settings?.load?.rootDir
+      ? this._settings.load.rootDir
       : this._rootPath;
     if (settings?.dotEnvPath) {
       require('dotenv').config({
