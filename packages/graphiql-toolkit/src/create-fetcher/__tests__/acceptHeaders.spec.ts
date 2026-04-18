@@ -1,7 +1,6 @@
 import { createSimpleFetcher, createMultipartFetcher } from '../lib';
 
-const SPEC_ACCEPT =
-  'application/graphql-response+json, application/json;q=0.9';
+const SPEC_ACCEPT = 'application/graphql-response+json, application/json;q=0.9';
 const MULTIPART_ACCEPT = `${SPEC_ACCEPT}, multipart/mixed`;
 
 function mockFetch() {
@@ -47,8 +46,9 @@ describe('createMultipartFetcher', () => {
   it('sends spec-compliant accept header with multipart support', async () => {
     const fetch = mockFetch();
     const fetcher = createMultipartFetcher({ url: 'http://localhost' }, fetch);
-    const gen = fetcher({ query: '{ __typename }' }, {});
-    await gen.next();
+    const result = fetcher({ query: '{ __typename }' }, {});
+    // @ts-expect-error -- result is an async generator at runtime
+    await result.next();
 
     expect(fetch.mock.calls[0][1].headers.accept).toBe(MULTIPART_ACCEPT);
   });
@@ -59,8 +59,9 @@ describe('createMultipartFetcher', () => {
       { url: 'http://localhost', headers: { accept: 'text/plain' } },
       fetch,
     );
-    const gen = fetcher({ query: '{ __typename }' }, {});
-    await gen.next();
+    const result = fetcher({ query: '{ __typename }' }, {});
+    // @ts-expect-error -- result is an async generator at runtime
+    await result.next();
 
     expect(fetch.mock.calls[0][1].headers.accept).toBe('text/plain');
   });
