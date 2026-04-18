@@ -62,6 +62,8 @@ export const createSimpleFetcher =
       body: JSON.stringify(graphQLParams),
       headers: {
         'content-type': 'application/json',
+        accept:
+          'application/graphql-response+json, application/json;q=0.9',
         ...options.headers,
         ...fetcherOpts?.headers,
       },
@@ -146,7 +148,8 @@ export const createMultipartFetcher = (
       body: JSON.stringify(graphQLParams),
       headers: {
         'content-type': 'application/json',
-        accept: 'application/json, multipart/mixed',
+        accept:
+          'application/graphql-response+json, application/json;q=0.9, multipart/mixed',
         ...options.headers,
         // allow user-defined headers to override
         // the static provided headers
