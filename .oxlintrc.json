@@ -560,7 +560,12 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-restricted-imports': [
           'error',
-          ...RESTRICTED_IMPORTS.filter(({ name }) => name !== 'monaco-editor'),
+          { name: 'graphql/type', message: 'use `graphql`' },
+          { name: 'graphql/language', message: 'use `graphql`' },
+          { name: 'graphql/type/introspection', message: 'use `graphql`' },
+          { name: 'graphql/type/definition', message: 'use `graphql`' },
+          { name: 'graphql/type/directives', message: 'use `graphql`' },
+          { name: 'graphql/version', message: 'use `graphql`' },
           {
             name: 'monaco-editor',
             message:
