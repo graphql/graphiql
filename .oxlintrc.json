@@ -141,6 +141,49 @@
       }
     ],
     "operator-assignment": "error",
+    "eslint-js/prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true
+      }
+    ],
+    "eslint-js/object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidExplicitReturnArrows": true
+      }
+    ],
+    "eslint-js/one-var": [
+      "error",
+      "never"
+    ],
+    "eslint-js/operator-assignment": "error",
+    "eslint-js/logical-assignment-operators": [
+      "error",
+      "always",
+      {
+        "enforceForIfStatements": true
+      }
+    ],
+    "eslint-js/no-octal-escape": "error",
+    "eslint-js/no-return-await": "error",
+    "eslint-js/spaced-comment": [
+      "error",
+      "always",
+      {
+        "markers": [
+          "/"
+        ]
+      }
+    ],
+    "eslint-js/quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
     "unicorn/prefer-dom-node-remove": "error",
     "typescript/no-restricted-imports": [
       "error",
