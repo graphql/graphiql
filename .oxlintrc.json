@@ -200,7 +200,17 @@
     "unicorn/no-length-as-slice-end": "error",
     "unicorn/prefer-string-replace-all": "error",
     "unicorn/prefer-array-some": "error",
-    "unicorn/prefer-dom-node-text-content": "error"
+    "unicorn/prefer-dom-node-text-content": "error",
+    "jest/no-standalone-expect": "off",
+    "jest/valid-expect": "off",
+    "jest/require-to-throw-message": "off",
+    "vitest/require-mock-type-parameters": "off",
+    "typescript/no-unnecessary-parameter-property-assignment": "off",
+    "unicorn/prefer-string-starts-ends-with": "off",
+    "unicorn/no-new-array": "off",
+    "promise/valid-params": "off",
+    "import/default": "off",
+    "import/no-named-as-default-member": "off"
   },
   "overrides": [
     {
