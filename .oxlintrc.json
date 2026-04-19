@@ -41,8 +41,7 @@
     "packages/graphiql-plugin-history/__mocks__/monaco-editor.ts"
   ],
   "rules": {
-"sonarjs/no-inverted-boolean-check": "error",
-    "no-console": "error",
+"no-console": "error",
     "no-constant-binary-expression": "error",
     "no-empty": [
       "error",
@@ -120,9 +119,6 @@
     "radix": "error",
     "yoda": "error",
     "unicorn/prefer-string-slice": "error",
-    "sonarjs/no-identical-functions": "error",
-    "sonarjs/no-unused-collection": "error",
-    "sonarjs/no-extra-arguments": "error",
     "unicorn/no-useless-undefined": "error",
     "no-var": "error",
     "no-catch-shadow": "error",
@@ -221,7 +217,6 @@
       }
     ],
     "symbol-description": "error",
-    "sonarjs/no-ignored-return": "error",
     "unicorn/no-array-push-push": "error",
     "import/no-extraneous-dependencies": "error",
     "import/no-duplicates": "error",
@@ -286,8 +281,6 @@
     "unicorn/prefer-optional-catch-binding": "error",
     "unicorn/prefer-array-flat-map": "error",
     "typescript/no-unused-expressions": "error",
-    "sonarjs/no-small-switch": "error",
-    "sonarjs/no-duplicated-branches": "error",
     "sonarjs/prefer-promise-shorthand": "error",
     "sonarjs/no-dead-store": "error",
     "sonarjs/void-use": "error",
