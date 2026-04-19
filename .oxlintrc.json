@@ -258,9 +258,9 @@
 
     "sonarjs/no-ignored-return": "error",
     "unicorn/no-array-push-push": "error",
-    "import-x/no-extraneous-dependencies": "error",
-    "import-x/no-duplicates": "error",
-    "import-x/no-named-as-default": "error",
+    "import/no-extraneous-dependencies": "error",
+    "import/no-duplicates": "error",
+    "import/no-named-as-default": "error",
     "prefer-object-spread": "error",
     "react/no-unused-state": "error",
     "react/jsx-curly-brace-presence": "error",
@@ -313,7 +313,7 @@
     "sonarjs/no-dead-store": "error",
     "sonarjs/void-use": "error",
     "unicorn/prefer-node-protocol": "error",
-    "import-x/no-unresolved": [
+    "import/no-unresolved": [
       "error",
       {
         "ignore": [
@@ -338,7 +338,7 @@
     "unicorn/prefer-dom-node-text-content": "error",
     "quotes": ["error", "single", { "avoidEscape": true }],
     "typescript/no-require-imports": "off",
-    "import-x/no-named-as-default-member": "off"
+    "import/no-named-as-default-member": "off"
   },
   "overrides": [
     {
@@ -432,7 +432,7 @@
     "no-console": "off",
     "no-new": "off",
     "no-alert": "off",
-    "import-x/no-unresolved": "off"
+    "import/no-unresolved": "off"
       }
     },
     {
@@ -445,7 +445,7 @@
     "setup-files.ts"
       ],
       "rules": {
-    "import-x/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off"
       }
     },
     {
@@ -454,7 +454,7 @@
     "packages/vscode-graphql-execution/**"
       ],
       "rules": {
-    "import-x/no-unresolved": ["error", { "ignore": ["^node:", "vscode"] }]
+    "import/no-unresolved": ["error", { "ignore": ["^node:", "vscode"] }]
       }
     },
     {
@@ -527,9 +527,9 @@
     {
       "files": ["**/*.{md,mdx}/*.{js,jsx,ts,tsx}"],
       "rules": {
-    "import-x/no-extraneous-dependencies": "off",
+    "import/no-extraneous-dependencies": "off",
     "typescript/no-unused-vars": "off",
-    "import-x/no-unresolved": "off",
+    "import/no-unresolved": "off",
     "no-console": "off",
     "no-undef": "off",
     "react/jsx-no-undef": "off",
