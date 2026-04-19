@@ -256,7 +256,7 @@
     ],
     "promise/no-multiple-resolved": "error",
     "unicorn/no-zero-fractions": "error",
-    "sonarjs/no-redundant-jump": "error",
+    "no-useless-return": "error",
     "unicorn/prefer-logical-operator-over-ternary": "error",
     "logical-assignment-operators": [
       "error",
