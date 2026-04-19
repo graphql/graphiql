@@ -41,13 +41,7 @@
     "packages/graphiql-plugin-history/__mocks__/monaco-editor.ts"
   ],
   "rules": {
-    "@shopify/prefer-early-return": [
-      "error",
-      {
-        "maximumStatements": 2
-      }
-    ],
-    "sonarjs/no-inverted-boolean-check": "error",
+"sonarjs/no-inverted-boolean-check": "error",
     "no-console": "error",
     "no-constant-binary-expression": "error",
     "no-empty": [
