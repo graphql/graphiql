@@ -1,5 +1,11 @@
 {
   "plugins": ["typescript", "react", "import", "unicorn", "promise", "jest", "vitest"],
+  "env": {
+    "atomtest": true,
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
   "ignorePatterns": [
     "react-app-env.d.ts",
     "next-env.d.ts",
@@ -20,12 +26,6 @@
         "react": {
           "version": "detect"
         }
-      },
-      "env": {
-        "atomtest": true,
-        "es6": true,
-        "node": true,
-        "browser": true
       },
       "plugins": ["promise", "sonarjs", "unicorn", "@shopify"],
       "globals": {
