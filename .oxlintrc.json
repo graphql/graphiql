@@ -282,7 +282,7 @@
     "unicorn/prefer-array-flat-map": "error",
     "typescript/no-unused-expressions": "error",
     "unicorn/no-useless-promise-resolve-reject": "error",
-    "sonarjs/no-dead-store": "error",
+    "no-useless-assignment": "error",
     "no-void": "error",
     "unicorn/prefer-node-protocol": "error",
     "import/no-unresolved": [
@@ -591,7 +591,7 @@
         "no-undef": "off",
         "react/jsx-no-undef": "off",
         "react-hooks/rules-of-hooks": "off",
-        "sonarjs/no-dead-store": "off",
+        "no-useless-assignment": "off",
         "typescript/no-restricted-imports": "off",
         "typescript/no-unnecessary-condition": "off",
         "typescript/no-deprecated": "off"
