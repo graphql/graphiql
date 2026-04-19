@@ -246,7 +246,7 @@
     ],
     "promise/no-multiple-resolved": "error",
     "unicorn/no-zero-fractions": "error",
-    "no-useless-return": "error",
+    "no-useless-return": "off",
     "unicorn/prefer-logical-operator-over-ternary": "error",
     "unicorn/prefer-regexp-test": "error",
     "unicorn/throw-new-error": "error",
@@ -259,8 +259,8 @@
     "unicorn/prefer-array-flat-map": "error",
     "typescript/no-unused-expressions": "error",
     "unicorn/no-useless-promise-resolve-reject": "error",
-    "no-useless-assignment": "error",
-    "no-void": "error",
+    "no-useless-assignment": "off",
+    "no-void": "off",
     "unicorn/prefer-node-protocol": "error",
     "no-extra-boolean-cast": [
       "error",
@@ -332,7 +332,7 @@
         "jest/expect-expect": [
           "error",
           {
-            "assertFunctionNames": ["expect*"]
+            "assertFunctionNames": ["expect*", "run"]
           }
         ]
       }
@@ -406,9 +406,19 @@
         "typescript/no-deprecated": "error",
         "react-hooks-js/rules-of-hooks": "off",
         "react-hooks-js/exhaustive-deps": "off",
-        "react-hooks-js/react-compiler/refs": "off",
-        "react-hooks-js/react-compiler/set-state-in-effect": "off",
-        "react-hooks-js/react-compiler/react-compiler": "error"
+        "react-hooks-js/static-components": "error",
+        "react-hooks-js/use-memo": "error",
+        "react-hooks-js/component-hook-factories": "error",
+        "react-hooks-js/preserve-manual-memoization": "error",
+        "react-hooks-js/immutability": "error",
+        "react-hooks-js/globals": "error",
+        "react-hooks-js/refs": "off",
+        "react-hooks-js/set-state-in-effect": "off",
+        "react-hooks-js/error-boundaries": "error",
+        "react-hooks-js/purity": "error",
+        "react-hooks-js/set-state-in-render": "error",
+        "react-hooks-js/config": "error",
+        "react-hooks-js/gating": "error"
       }
     },
     {
