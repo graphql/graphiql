@@ -27,19 +27,6 @@
       "version": "18"
     }
   },
-  "ignorePatterns": [
-    "react-app-env.d.ts",
-    "next-env.d.ts",
-    "changesets/**/*.md",
-    "**/CHANGELOG.md",
-    "functions/*",
-    "packages/vscode-graphql-syntax/tests/__fixtures__/*",
-    "packages/graphiql-react/__mocks__/monaco-editor.ts",
-    "packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts",
-    "packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts",
-    "packages/graphiql-plugin-history/__mocks__/zustand.ts",
-    "packages/graphiql-plugin-history/__mocks__/monaco-editor.ts"
-  ],
   "rules": {
 "no-console": "error",
     "no-constant-binary-expression": "error",
