@@ -31,7 +31,7 @@
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.0.0",
     "graphql": "^16.9.0",
-    "typescript": "^4.6.3"
+    "typescript": "^5.8.0"
   },
   "peerDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
