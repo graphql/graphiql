@@ -281,7 +281,7 @@
     "unicorn/prefer-optional-catch-binding": "error",
     "unicorn/prefer-array-flat-map": "error",
     "typescript/no-unused-expressions": "error",
-    "sonarjs/prefer-promise-shorthand": "error",
+    "unicorn/no-useless-promise-resolve-reject": "error",
     "sonarjs/no-dead-store": "error",
     "no-void": "error",
     "unicorn/prefer-node-protocol": "error",
