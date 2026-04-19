@@ -156,7 +156,6 @@
     ],
     "symbol-description": "error",
     "unicorn/no-array-push-push": "error",
-    "import/no-extraneous-dependencies": "error",
     "import/no-duplicates": "error",
     "import/no-named-as-default": "error",
     "prefer-object-spread": "error",
@@ -213,17 +212,6 @@
     "no-useless-assignment": "error",
     "no-void": "error",
     "unicorn/prefer-node-protocol": "error",
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": [
-          "^node:",
-          "\\.svg\\?react$",
-          "vitest/config",
-          "./vite.config.mjs"
-        ]
-      }
-    ],
     "no-extra-boolean-cast": [
       "error",
       {
@@ -346,38 +334,7 @@
       "rules": {
         "no-console": "off",
         "no-new": "off",
-        "no-alert": "off",
-        "import/no-unresolved": "off"
-      }
-    },
-    {
-      "files": [
-        "**/__tests__/**",
-        "webpack.config.js",
-        "**/tests/**",
-        "test.config.js",
-        "vitest.config.mts",
-        "setup-files.ts"
-      ],
-      "rules": {
-        "import/no-extraneous-dependencies": "off"
-      }
-    },
-    {
-      "files": [
-        "packages/vscode-graphql/**",
-        "packages/vscode-graphql-execution/**"
-      ],
-      "rules": {
-        "import/no-unresolved": [
-          "error",
-          {
-            "ignore": [
-              "^node:",
-              "vscode"
-            ]
-          }
-        ]
+        "no-alert": "off"
       }
     },
     {
@@ -505,9 +462,7 @@
         "**/*.{md,mdx}/*.{js,jsx,ts,tsx}"
       ],
       "rules": {
-        "import/no-extraneous-dependencies": "off",
         "typescript/no-unused-vars": "off",
-        "import/no-unresolved": "off",
         "no-console": "off",
         "no-undef": "off",
         "react/jsx-no-undef": "off",
