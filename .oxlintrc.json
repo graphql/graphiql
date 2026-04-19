@@ -1,5 +1,4 @@
 {
-  "root": true,
   "reportUnusedDisableDirectives": true,
   "ignorePatterns": [
     "react-app-env.d.ts",
