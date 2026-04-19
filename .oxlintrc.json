@@ -78,38 +78,9 @@
     "no-new-func": "error",
     "no-new-wrappers": "error",
     "no-new": "error",
-    "no-octal-escape": "error",
     "no-param-reassign": "error",
     "no-proto": "error",
-    "no-restricted-properties": [
-      "error",
-      {
-        "object": "window",
-        "property": "localStorage",
-        "message": "Use `localStorage` instead"
-      },
-      {
-        "object": "window",
-        "property": "location",
-        "message": "Use `location` instead"
-      },
-      {
-        "object": "window",
-        "property": "navigator",
-        "message": "Use `navigator` instead"
-      },
-      {
-        "object": "window",
-        "property": "getComputedStyle",
-        "message": "Use `getComputedStyle` instead"
-      },
-      {
-        "object": "self",
-        "message": "Use `globalThis` instead"
-      }
-    ],
     "no-return-assign": "error",
-    "no-return-await": "error",
     "no-script-url": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
@@ -121,7 +92,6 @@
     "unicorn/prefer-string-slice": "error",
     "unicorn/no-useless-undefined": "error",
     "no-var": "error",
-    "no-catch-shadow": "error",
     "no-label-var": "error",
     "no-restricted-globals": [
       "error",
@@ -137,37 +107,11 @@
     ],
     "unicorn/no-useless-switch-case": "error",
     "handle-callback-err": "error",
-    "no-mixed-requires": "error",
     "no-new-require": "error",
     "no-path-concat": "error",
     "no-bitwise": "error",
     "unicorn/no-negated-condition": "error",
-    "no-new-object": "error",
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]",
-        "message": "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead."
-      },
-      {
-        "selector": "MemberExpression > .property[type=Identifier][name=keyCode]",
-        "message": "Use `.key` instead of `.keyCode`"
-      }
-    ],
-    "one-var": [
-      "error",
-      "never"
-    ],
     "operator-assignment": "error",
-    "spaced-comment": [
-      "error",
-      "always",
-      {
-        "markers": [
-          "/"
-        ]
-      }
-    ],
     "unicorn/prefer-dom-node-remove": "error",
     "typescript/no-restricted-imports": [
       "error",
@@ -203,12 +147,6 @@
     ],
     "no-useless-computed-key": "error",
     "no-useless-rename": "error",
-    "prefer-arrow-callback": [
-      "error",
-      {
-        "allowNamedFunctions": true
-      }
-    ],
     "object-shorthand": [
       "error",
       "always",
@@ -258,13 +196,6 @@
     "unicorn/no-zero-fractions": "error",
     "no-useless-return": "error",
     "unicorn/prefer-logical-operator-over-ternary": "error",
-    "logical-assignment-operators": [
-      "error",
-      "always",
-      {
-        "enforceForIfStatements": true
-      }
-    ],
     "unicorn/prefer-regexp-test": "error",
     "unicorn/prefer-export-from": [
       "error",
@@ -306,14 +237,7 @@
     "unicorn/prefer-string-replace-all": "error",
     "unicorn/prefer-array-some": "error",
     "unicorn/prefer-switch": "error",
-    "unicorn/prefer-dom-node-text-content": "error",
-    "quotes": [
-      "error",
-      "single",
-      {
-        "avoidEscape": true
-      }
-    ]
+    "unicorn/prefer-dom-node-text-content": "error"
   },
   "overrides": [
     {
