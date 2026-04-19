@@ -16,7 +16,6 @@
     {
       "files": ["*.md", "*.mdx"],
       "options": {
-        "printWidth": 80,
         "proseWrap": "preserve"
       }
     }
