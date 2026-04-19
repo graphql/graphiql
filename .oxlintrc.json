@@ -340,7 +340,6 @@
             ]
           }
         ],
-        "react-hooks/react-compiler": "error",
         "typescript/no-deprecated": "error"
       }
     },
