@@ -14,6 +14,11 @@
     "Map": true,
     "Set": true
   },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "ignorePatterns": [
     "react-app-env.d.ts",
     "next-env.d.ts",
@@ -30,11 +35,6 @@
   "overrides": [
     {
       "files": ["**/*.{js,jsx,ts,tsx,mts,cts}"],
-      "settings": {
-        "react": {
-          "version": "detect"
-        }
-      },
       "plugins": ["promise", "sonarjs", "unicorn", "@shopify"],
       "rules": {
         "@shopify/prefer-early-return": ["error", { "maximumStatements": 2 }],
