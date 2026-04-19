@@ -137,11 +137,11 @@
     "no-label-var": "error",
     "no-restricted-globals": ["error", "stop"],
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "error",
+    "typescript/no-shadow": "error",
     "no-undef-init": "off",
     "no-undefined": "off",
 
-    "@typescript-eslint/no-unused-vars": [
+    "typescript/no-unused-vars": [
       "error",
       {
         "varsIgnorePattern": "^(React|_)",
@@ -227,7 +227,7 @@
     "wrap-regex": "off",
     "unicorn/prefer-dom-node-remove": "error",
     "arrow-body-style": "off",
-    "@typescript-eslint/no-restricted-imports": [
+    "typescript/no-restricted-imports": [
       "error",
       { "name": "graphql/type", "message": "use `graphql`" },
       { "name": "graphql/language", "message": "use `graphql`" },
@@ -306,7 +306,7 @@
     "unicorn/prefer-optional-catch-binding": "error",
     "unicorn/prefer-array-flat-map": "error",
     "no-unused-expressions": "off",
-    "@typescript-eslint/no-unused-expressions": "error",
+    "typescript/no-unused-expressions": "error",
     "sonarjs/no-small-switch": "error",
     "sonarjs/no-duplicated-branches": "error",
     "sonarjs/prefer-promise-shorthand": "error",
@@ -337,7 +337,7 @@
     "unicorn/prefer-switch": "error",
     "unicorn/prefer-dom-node-text-content": "error",
     "quotes": ["error", "single", { "avoidEscape": true }],
-    "@typescript-eslint/no-require-imports": "off",
+    "typescript/no-require-imports": "off",
     "import-x/no-named-as-default-member": "off"
   },
   "overrides": [
@@ -345,30 +345,30 @@
       "files": ["packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}"],
       "excludedFiles": ["packages/graphiql-toolkit/**/*.{ts,tsx}"],
       "rules": {
-    "@typescript-eslint/no-unnecessary-condition": "error"
+    "typescript/no-unnecessary-condition": "error"
       }
     },
     {
       "files": ["**/*.{ts,tsx,mts,cts}"],
       "excludedFiles": ["**/*.{md,mdx}/*.{ts,tsx}"],
       "rules": {
-    "@typescript-eslint/prefer-optional-chain": "error",
-    "@typescript-eslint/no-unnecessary-type-assertion": "error",
-    "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/non-nullable-type-assertion-style": "error",
-    "@typescript-eslint/consistent-type-assertions": "error",
-    "@typescript-eslint/no-duplicate-type-constituents": "error",
-    "@typescript-eslint/no-unnecessary-type-conversion": "error",
-    "@typescript-eslint/no-deprecated": "off",
-    "@typescript-eslint/no-unsafe-function-type": "off",
+    "typescript/prefer-optional-chain": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/non-nullable-type-assertion-style": "error",
+    "typescript/consistent-type-assertions": "error",
+    "typescript/no-duplicate-type-constituents": "error",
+    "typescript/no-unnecessary-type-conversion": "error",
+    "typescript/no-deprecated": "off",
+    "typescript/no-unsafe-function-type": "off",
 
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/triple-slash-reference": "off",
-    "@typescript-eslint/no-namespace": "off"
+    "typescript/no-explicit-any": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/ban-ts-comment": "off",
+    "typescript/ban-types": "off",
+    "typescript/no-empty-function": "off",
+    "typescript/triple-slash-reference": "off",
+    "typescript/no-namespace": "off"
       },
       "parserOptions": {
     "projectService": {
@@ -467,7 +467,7 @@
     {
       "files": ["packages/{graphiql-react,graphiql}/**/*.{ts,tsx}"],
       "rules": {
-    "@typescript-eslint/no-restricted-imports": [
+    "typescript/no-restricted-imports": [
       "error",
       { "name": "graphql/type", "message": "use `graphql`" },
       { "name": "graphql/language", "message": "use `graphql`" },
@@ -487,13 +487,13 @@
       }
     ],
     "react-hooks/react-compiler": "error",
-    "@typescript-eslint/no-deprecated": "error"
+    "typescript/no-deprecated": "error"
       }
     },
     {
       "files": ["packages/monaco-graphql/**"],
       "rules": {
-    "@typescript-eslint/no-restricted-imports": [
+    "typescript/no-restricted-imports": [
       "error",
       { "name": "graphql/type", "message": "use `graphql`" },
       { "name": "graphql/language", "message": "use `graphql`" },
@@ -528,16 +528,16 @@
       "files": ["**/*.{md,mdx}/*.{js,jsx,ts,tsx}"],
       "rules": {
     "import-x/no-extraneous-dependencies": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "typescript/no-unused-vars": "off",
     "import-x/no-unresolved": "off",
     "no-console": "off",
     "no-undef": "off",
     "react/jsx-no-undef": "off",
     "react-hooks/rules-of-hooks": "off",
     "sonarjs/no-dead-store": "off",
-    "@typescript-eslint/no-restricted-imports": "off",
-    "@typescript-eslint/no-unnecessary-condition": "off",
-    "@typescript-eslint/no-deprecated": "off"
+    "typescript/no-restricted-imports": "off",
+    "typescript/no-unnecessary-condition": "off",
+    "typescript/no-deprecated": "off"
       }
     }
   ]
