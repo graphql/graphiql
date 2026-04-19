@@ -31,7 +31,7 @@ jobs:
           path: |
             ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
 
   build:
     name: Build
@@ -292,7 +292,7 @@ jobs:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
       - name: License Check
         run: yarn license-check
 
