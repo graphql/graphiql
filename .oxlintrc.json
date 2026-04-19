@@ -218,10 +218,10 @@
   "overrides": [
     {
       "files": [
-        "packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}"
-      ],
-      "excludedFiles": [
-        "packages/graphiql-toolkit/**/*.{ts,tsx}"
+        "packages/graphiql/**/*.{ts,tsx,mts,cts}",
+        "packages/graphiql-react/**/*.{ts,tsx,mts,cts}",
+        "packages/graphiql-plugin-*/**/*.{ts,tsx,mts,cts}",
+        "packages/monaco-graphql/**/*.{ts,tsx,mts,cts}"
       ],
       "rules": {
         "typescript/no-unnecessary-condition": "error"
@@ -230,9 +230,6 @@
     {
       "files": [
         "**/*.{ts,tsx,mts,cts}"
-      ],
-      "excludedFiles": [
-        "**/*.{md,mdx}/*.{ts,tsx}"
       ],
       "rules": {
         "typescript/prefer-optional-chain": "error",
@@ -300,11 +297,12 @@
     },
     {
       "files": [
-        "packages/**"
-      ],
-      "excludedFiles": [
-        "packages/graphiql/**",
-        "packages/graphiql-react/**"
+        "packages/codemirror-graphql/**",
+        "packages/cm6-graphql/**",
+        "packages/graphiql-toolkit/**",
+        "packages/graphiql-plugin-*/**",
+        "packages/graphql-language-service*/**",
+        "packages/monaco-graphql/**"
       ],
       "rules": {
         "promise/prefer-await-to-then": "error"
