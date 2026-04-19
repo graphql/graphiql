@@ -71,6 +71,33 @@
     "no-new": "error",
     "no-param-reassign": "error",
     "no-proto": "error",
+    "eslint-js/no-restricted-properties": [
+      "error",
+      {
+        "object": "window",
+        "property": "localStorage",
+        "message": "Use `localStorage` instead"
+      },
+      {
+        "object": "window",
+        "property": "location",
+        "message": "Use `location` instead"
+      },
+      {
+        "object": "window",
+        "property": "navigator",
+        "message": "Use `navigator` instead"
+      },
+      {
+        "object": "window",
+        "property": "getComputedStyle",
+        "message": "Use `getComputedStyle` instead"
+      },
+      {
+        "object": "self",
+        "message": "Use `globalThis` instead"
+      }
+    ],
     "no-return-assign": "error",
     "no-script-url": "error",
     "no-self-compare": "error",
