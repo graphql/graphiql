@@ -46,7 +46,7 @@ jobs:
       - name: Force GraphQL ${{ matrix.release }} solution
         run: yarn repo:resolve graphql@${{ matrix.release }}
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
 
       - name: Unit Tests
         run: yarn test:ci
