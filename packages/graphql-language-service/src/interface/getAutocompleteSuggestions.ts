@@ -542,7 +542,7 @@ function getSuggestionsForFieldNames(
 
           suggestion.insertText = getFieldInsertText(field);
 
-          // eslint-disable-next-line logical-assignment-operators
+          // oxlint-disable-next-line eslint-js/logical-assignment-operators
           if (!suggestion.insertText) {
             suggestion.insertText = getInsertText(
               field.name,
