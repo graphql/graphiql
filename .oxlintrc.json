@@ -1,5 +1,4 @@
 {
-  "reportUnusedDisableDirectives": true,
   "ignorePatterns": [
     "react-app-env.d.ts",
     "next-env.d.ts",
