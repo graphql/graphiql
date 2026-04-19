@@ -5,7 +5,6 @@
 
 To read about the purpose of this subcommittee, please see [the README](../../README.md).
 
-
 - **Date & Time**: [April 14, 2026, 4:00 – 5:00 PM UTC](https://www.timeanddate.com/worldclock/converter.html?iso=20260414T160000&p1=224&p2=24&p3=179&p4=136&p5=37&p6=239&p7=101&p8=152)
   - View the [calendar][], or subscribe ([Google Calendar][], [ical file][]).
   - _Please Note:_ The date or time may change. Please check this agenda the
@@ -25,7 +24,6 @@ To read about the purpose of this subcommittee, please see [the README](../../RE
 <!-- prettier-ignore -->
 | Name                       | GitHub               | Organization       | Location                 |
 | :------------------------- | :------------------- | :----------------- | :----------------------- |
-
 
 ## Agenda
 

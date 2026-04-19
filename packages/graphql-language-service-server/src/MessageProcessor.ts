@@ -855,7 +855,7 @@ export class MessageProcessor {
                 URI.parse(res.path).toString(),
               );
               const vOffset = isEmbedded
-                ? cachedDoc?.contents[0].range?.start.line ?? 0
+                ? (cachedDoc?.contents[0].range?.start.line ?? 0)
                 : parentRange.start.line;
 
               defRange.setStart(
