@@ -7,12 +7,12 @@
     "browser": true
   },
   "globals": {
-    "atom": false,
-    "document": false,
-    "window": false,
-    "monaco": true,
-    "Map": true,
-    "Set": true
+    "atom": "readonly",
+    "document": "readonly",
+    "window": "readonly",
+    "monaco": "writable",
+    "Map": "writable",
+    "Set": "writable"
   },
   "settings": {
     "react": {
