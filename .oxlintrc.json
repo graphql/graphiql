@@ -12,24 +12,24 @@
     "packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts",
     "packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts",
     "packages/graphiql-plugin-history/__mocks__/zustand.ts",
-    "packages/graphiql-plugin-history/__mocks__/monaco-editor.ts",
+    "packages/graphiql-plugin-history/__mocks__/monaco-editor.ts"
   ],
   "overrides": [
     {
       "files": ["**/*.{js,jsx,ts,tsx,mts,cts}"],
       "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 6
       },
       "settings": {
         "react": {
-          "version": "detect",
-        },
+          "version": "detect"
+        }
       },
       "env": {
         "atomtest": true,
         "es6": true,
         "node": true,
-        "browser": true,
+        "browser": true
       },
       "extends": [
         "eslint:recommended",
@@ -39,7 +39,7 @@
         "plugin:react/recommended",
         "plugin:react-hooks/recommended-legacy",
         "plugin:react/jsx-runtime",
-        "prettier",
+        "prettier"
       ],
       "plugins": ["promise", "sonarjs", "unicorn", "@shopify"],
       "globals": {
@@ -48,7 +48,7 @@
         "window": false,
         "monaco": true,
         "Map": true,
-        "Set": true,
+        "Set": true
       },
       "rules": {
         "@shopify/prefer-early-return": ["error", { "maximumStatements": 2 }],
@@ -105,27 +105,27 @@
           {
             "object": "window",
             "property": "localStorage",
-            "message": "Use `localStorage` instead",
+            "message": "Use `localStorage` instead"
           },
           {
             "object": "window",
             "property": "location",
-            "message": "Use `location` instead",
+            "message": "Use `location` instead"
           },
           {
             "object": "window",
             "property": "navigator",
-            "message": "Use `navigator` instead",
+            "message": "Use `navigator` instead"
           },
           {
             "object": "window",
             "property": "getComputedStyle",
-            "message": "Use `getComputedStyle` instead",
+            "message": "Use `getComputedStyle` instead"
           },
           {
             "object": "self",
-            "message": "Use `globalThis` instead",
-          },
+            "message": "Use `globalThis` instead"
+          }
         ],
         "no-return-assign": "error",
         "no-return-await": "error",
@@ -163,8 +163,8 @@
           "error",
           {
             "varsIgnorePattern": "^(React|_)",
-            "argsIgnorePattern": "^_",
-          },
+            "argsIgnorePattern": "^_"
+          }
         ],
 
         "no-use-before-define": "off",
@@ -221,13 +221,13 @@
             "selector":
               "CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]",
             "message":
-              "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
+              "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead."
           },
           {
             "selector":
               "MemberExpression > .property[type=Identifier][name=keyCode]",
-            "message": "Use `.key` instead of `.keyCode`",
-          },
+            "message": "Use `.key` instead of `.keyCode`"
+          }
         ],
         "no-ternary": "off",
         "no-underscore-dangle": "off",
@@ -257,8 +257,8 @@
             "name": "monaco-editor",
             "message":
               "`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages",
-            "allowTypeImports": true,
-          },
+            "allowTypeImports": true
+          }
         ],
         "no-useless-computed-key": "error",
         "no-useless-constructor": "off",
@@ -267,7 +267,7 @@
         "object-shorthand": [
           "error",
           "always",
-          { "avoidExplicitReturnArrows": true },
+          { "avoidExplicitReturnArrows": true }
         ],
         "prefer-numeric-literals": "off",
         "prefer-template": "off",
@@ -294,7 +294,7 @@
         "react/jsx-no-useless-fragment": "error",
         "react/jsx-filename-extension": [
           "error",
-          { "extensions": [".tsx", ".jsx"], "allow": "as-needed" },
+          { "extensions": [".tsx", ".jsx"], "allow": "as-needed" }
         ],
 
         "unicorn/no-typeof-undefined": "error",
@@ -302,7 +302,7 @@
         "unicorn/consistent-destructuring": "error",
         "prefer-destructuring": [
           "error",
-          { "VariableDeclarator": { "object": true } },
+          { "VariableDeclarator": { "object": true } }
         ],
         "promise/no-multiple-resolved": "error",
         "unicorn/no-zero-fractions": "error",
@@ -311,7 +311,7 @@
         "logical-assignment-operators": [
           "error",
           "always",
-          { "enforceForIfStatements": true },
+          { "enforceForIfStatements": true }
         ],
         "unicorn/prefer-regexp-test": "error",
         "unicorn/prefer-export-from": ["error", { "ignoreUsedVariables": true }],
@@ -338,13 +338,13 @@
               "^node:",
               "\\.svg\\?react$",
               "vitest/config",
-              "./vite.config.mjs",
-            ],
-          },
+              "./vite.config.mjs"
+            ]
+          }
         ],
         "no-extra-boolean-cast": [
           "error",
-          { "enforceForInnerExpressions": true },
+          { "enforceForInnerExpressions": true }
         ],
         "unicorn/no-length-as-slice-end": "error",
         "unicorn/prefer-string-replace-all": "error",
@@ -356,15 +356,15 @@
         "unicorn/prefer-dom-node-text-content": "error",
         "quotes": ["error", "single", { "avoidEscape": true }],
         "@typescript-eslint/no-require-imports": "off",
-        "import-x/no-named-as-default-member": "off",
-      },
+        "import-x/no-named-as-default-member": "off"
+      }
     },
     {
       "files": ["packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}"],
       "excludedFiles": ["packages/graphiql-toolkit/**/*.{ts,tsx}"],
       "rules": {
-        "@typescript-eslint/no-unnecessary-condition": "error",
-      },
+        "@typescript-eslint/no-unnecessary-condition": "error"
+      }
     },
     {
       "files": ["**/*.{ts,tsx,mts,cts}"],
@@ -386,7 +386,7 @@
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/triple-slash-reference": "off",
-        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/no-namespace": "off"
       },
       "parserOptions": {
         "projectService": {
@@ -414,35 +414,35 @@
             "packages/graphql-language-service-server/src/__tests__/__utils__/MockProject.ts",
 
             "packages/vscode-graphql-syntax/tests/__utilities__/serializer.ts",
-            "packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts",
+            "packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts"
           ],
-          "maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING": 100,
-        },
-      },
+          "maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING": 100
+        }
+      }
     },
     {
       "files": ["**/cypress/**"],
       "extends": "plugin:cypress/recommended",
       "rules": {
-        "unicorn/prefer-dom-node-text-content": "off",
-      },
+        "unicorn/prefer-dom-node-text-content": "off"
+      }
     },
     {
       "files": [
         "**/__{tests,mocks}__/*.{js,jsx,ts,tsx}",
-        "**/*.spec.{ts,js.jsx.tsx}",
+        "**/*.spec.{ts,js.jsx.tsx}"
       ],
       "extends": ["plugin:jest/recommended"],
       "rules": {
         "jest/no-conditional-expect": "off",
-        "jest/expect-expect": ["error", { "assertFunctionNames": ["expect*"] }],
-      },
+        "jest/expect-expect": ["error", { "assertFunctionNames": ["expect*"] }]
+      }
     },
     {
       "files": ["resources/**", "**/resources/**", "scripts/**"],
       "rules": {
-        "no-console": "off",
-      },
+        "no-console": "off"
+      }
     },
     {
       "files": ["examples/**"],
@@ -450,8 +450,8 @@
         "no-console": "off",
         "no-new": "off",
         "no-alert": "off",
-        "import-x/no-unresolved": "off",
-      },
+        "import-x/no-unresolved": "off"
+      }
     },
     {
       "files": [
@@ -460,27 +460,27 @@
         "**/tests/**",
         "test.config.js",
         "vitest.config.mts",
-        "setup-files.ts",
+        "setup-files.ts"
       ],
       "rules": {
-        "import-x/no-extraneous-dependencies": "off",
-      },
+        "import-x/no-extraneous-dependencies": "off"
+      }
     },
     {
       "files": [
         "packages/vscode-graphql/**",
-        "packages/vscode-graphql-execution/**",
+        "packages/vscode-graphql-execution/**"
       ],
       "rules": {
-        "import-x/no-unresolved": ["error", { "ignore": ["^node:", "vscode"] }],
-      },
+        "import-x/no-unresolved": ["error", { "ignore": ["^node:", "vscode"] }]
+      }
     },
     {
       "files": ["packages/**"],
       "excludedFiles": ["packages/graphiql/**", "packages/graphiql-react/**"],
       "rules": {
-        "promise/prefer-await-to-then": "error",
-      },
+        "promise/prefer-await-to-then": "error"
+      }
     },
     {
       "files": ["packages/{graphiql-react,graphiql}/**/*.{ts,tsx}"],
@@ -497,16 +497,16 @@
             "name": "monaco-editor",
             "message":
               "`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages",
-            "allowTypeImports": true,
+            "allowTypeImports": true
           },
           {
             "name": "react",
-            "importNames": ["memo", "useCallback", "useMemo"],
-          },
+            "importNames": ["memo", "useCallback", "useMemo"]
+          }
         ],
         "react-hooks/react-compiler": "error",
-        "@typescript-eslint/no-deprecated": "error",
-      },
+        "@typescript-eslint/no-deprecated": "error"
+      }
     },
     {
       "files": ["packages/monaco-graphql/**"],
@@ -522,10 +522,10 @@
           {
             "name": "monaco-editor",
             "message":
-              "`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages",
-          },
-        ],
-      },
+              "`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages"
+          }
+        ]
+      }
     },
     {
       "files": ["**/*.{md,mdx}"],
@@ -533,14 +533,14 @@
       "plugins": ["mdx"],
       "processor": "mdx/remark",
       "settings": {
-        "mdx/code-blocks": true,
-      },
+        "mdx/code-blocks": true
+      }
     },
     {
       "files": ["**/*.d.ts"],
       "rules": {
-        "no-var": "off",
-      },
+        "no-var": "off"
+      }
     },
     {
       "files": ["**/*.{md,mdx}/*.{js,jsx,ts,tsx}"],
@@ -555,8 +555,8 @@
         "sonarjs/no-dead-store": "off",
         "@typescript-eslint/no-restricted-imports": "off",
         "@typescript-eslint/no-unnecessary-condition": "off",
-        "@typescript-eslint/no-deprecated": "off",
-      },
-    },
+        "@typescript-eslint/no-deprecated": "off"
+      }
+    }
   ]
 }
