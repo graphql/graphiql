@@ -15,9 +15,6 @@
   "overrides": [
     {
       "files": ["**/*.{js,jsx,ts,tsx,mts,cts}"],
-      "parserOptions": {
-        "ecmaVersion": 6
-      },
       "settings": {
         "react": {
           "version": "detect"
