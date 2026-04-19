@@ -17,7 +17,7 @@
     "**/CHANGELOG.md",
     "**/package.json",
     "**/esbuild.js",
-    ".eslintrc.js",
+    ".oxlintrc.json",
     ".vscode/extensions.json",
     "packages/monaco-graphql/test/monaco-editor.test.ts",
     "working-group"

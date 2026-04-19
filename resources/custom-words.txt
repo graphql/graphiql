@@ -152,6 +152,8 @@ orta
 outdir
 outlineable
 ovsx
+oxlint
+oxlintrc
 paas
 pabbati
 picomatch
