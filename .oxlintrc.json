@@ -129,6 +129,17 @@
     "no-path-concat": "error",
     "no-bitwise": "error",
     "unicorn/no-negated-condition": "error",
+    "eslint-js/no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]",
+        "message": "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead."
+      },
+      {
+        "selector": "MemberExpression > .property[type=Identifier][name=keyCode]",
+        "message": "Use `.key` instead of `.keyCode`"
+      }
+    ],
     "operator-assignment": "error",
     "unicorn/prefer-dom-node-remove": "error",
     "typescript/no-restricted-imports": [
