@@ -72,8 +72,8 @@ jobs:
           key: modules-${{ github.sha }}
       - run: yarn lint-cspell
 
-  prettier:
-    name: Prettier
+  format:
+    name: Format
     runs-on: ubuntu-latest
     needs: [install]
     steps:
@@ -87,7 +87,7 @@ jobs:
           path: |
             **/node_modules
           key: modules-${{ github.sha }}
-      - run: yarn pretty-check
+      - run: yarn format-check
 
   jest:
     name: Jest Unit & Integration Tests

@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "avoid",
+  "proseWrap": "never",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts",
+    "packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql",
+    "packages/graphiql-react/src/env.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["*.md", "*.mdx"],
+      "options": {
+        "printWidth": 80,
+        "proseWrap": "preserve"
+      }
+    }
+  ]
+}
