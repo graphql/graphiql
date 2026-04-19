@@ -155,7 +155,6 @@
       }
     ],
     "symbol-description": "error",
-    "unicorn/no-array-push-push": "error",
     "import/no-duplicates": "error",
     "import/no-named-as-default": "error",
     "prefer-object-spread": "error",
@@ -179,7 +178,6 @@
     ],
     "unicorn/no-typeof-undefined": "error",
     "unicorn/prefer-at": "error",
-    "unicorn/consistent-destructuring": "error",
     "prefer-destructuring": [
       "error",
       {
@@ -193,12 +191,6 @@
     "no-useless-return": "error",
     "unicorn/prefer-logical-operator-over-ternary": "error",
     "unicorn/prefer-regexp-test": "error",
-    "unicorn/prefer-export-from": [
-      "error",
-      {
-        "ignoreUsedVariables": true
-      }
-    ],
     "unicorn/throw-new-error": "error",
     "unicorn/prefer-includes": "error",
     "unicorn/no-array-for-each": "error",
@@ -221,7 +213,6 @@
     "unicorn/no-length-as-slice-end": "error",
     "unicorn/prefer-string-replace-all": "error",
     "unicorn/prefer-array-some": "error",
-    "unicorn/prefer-switch": "error",
     "unicorn/prefer-dom-node-text-content": "error"
   },
   "overrides": [
