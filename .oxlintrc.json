@@ -283,7 +283,7 @@
     "typescript/no-unused-expressions": "error",
     "sonarjs/prefer-promise-shorthand": "error",
     "sonarjs/no-dead-store": "error",
-    "sonarjs/void-use": "error",
+    "no-void": "error",
     "unicorn/prefer-node-protocol": "error",
     "import/no-unresolved": [
       "error",
