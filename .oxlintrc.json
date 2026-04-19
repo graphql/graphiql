@@ -399,37 +399,10 @@
     },
     {
       "files": [
-        "**/*.{md,mdx}"
-      ],
-      "plugins": [
-        "mdx"
-      ],
-      "settings": {
-        "mdx/code-blocks": true
-      }
-    },
-    {
-      "files": [
         "**/*.d.ts"
       ],
       "rules": {
         "no-var": "off"
-      }
-    },
-    {
-      "files": [
-        "**/*.{md,mdx}/*.{js,jsx,ts,tsx}"
-      ],
-      "rules": {
-        "typescript/no-unused-vars": "off",
-        "no-console": "off",
-        "no-undef": "off",
-        "react/jsx-no-undef": "off",
-        "react-hooks/rules-of-hooks": "off",
-        "no-useless-assignment": "off",
-        "typescript/no-restricted-imports": "off",
-        "typescript/no-unnecessary-condition": "off",
-        "typescript/no-deprecated": "off"
       }
     }
   ]
