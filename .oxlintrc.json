@@ -8,6 +8,10 @@
     "jest",
     "vitest"
   ],
+  "jsPlugins": [
+    { "name": "eslint-js", "specifier": "oxlint-plugin-eslint" },
+    { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" }
+  ],
   "env": {
     "atomtest": true,
     "es6": true,
