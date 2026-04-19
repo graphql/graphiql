@@ -32,7 +32,7 @@
     }
   },
   "rules": {
-"no-console": "error",
+    "no-console": "error",
     "no-constant-binary-expression": "error",
     "no-empty": [
       "error",
@@ -43,10 +43,7 @@
     "accessor-pairs": "error",
     "curly": "error",
     "dot-notation": "error",
-    "eqeqeq": [
-      "error",
-      "smart"
-    ],
+    "eqeqeq": ["error", "smart"],
     "no-alert": "error",
     "no-await-in-loop": "error",
     "no-caller": "error",
@@ -111,10 +108,7 @@
     "unicorn/no-useless-undefined": "error",
     "no-var": "error",
     "no-label-var": "error",
-    "no-restricted-globals": [
-      "error",
-      "stop"
-    ],
+    "no-restricted-globals": ["error", "stop"],
     "typescript/no-shadow": "error",
     "typescript/no-unused-vars": [
       "error",
@@ -154,10 +148,7 @@
         "avoidExplicitReturnArrows": true
       }
     ],
-    "eslint-js/one-var": [
-      "error",
-      "never"
-    ],
+    "eslint-js/one-var": ["error", "never"],
     "eslint-js/operator-assignment": "error",
     "eslint-js/logical-assignment-operators": [
       "error",
@@ -172,9 +163,7 @@
       "error",
       "always",
       {
-        "markers": [
-          "/"
-        ]
+        "markers": ["/"]
       }
     ],
     "eslint-js/quotes": [
@@ -241,10 +230,7 @@
     "react/jsx-filename-extension": [
       "error",
       {
-        "extensions": [
-          ".tsx",
-          ".jsx"
-        ],
+        "extensions": [".tsx", ".jsx"],
         "allow": "as-needed"
       }
     ],
@@ -310,9 +296,7 @@
       }
     },
     {
-      "files": [
-        "**/*.{ts,tsx,mts,cts}"
-      ],
+      "files": ["**/*.{ts,tsx,mts,cts}"],
       "rules": {
         "typescript/prefer-optional-chain": "error",
         "typescript/no-unnecessary-type-assertion": "error",
@@ -333,9 +317,7 @@
       }
     },
     {
-      "files": [
-        "**/cypress/**"
-      ],
+      "files": ["**/cypress/**"],
       "rules": {
         "unicorn/prefer-dom-node-text-content": "off"
       }
@@ -350,27 +332,19 @@
         "jest/expect-expect": [
           "error",
           {
-            "assertFunctionNames": [
-              "expect*"
-            ]
+            "assertFunctionNames": ["expect*"]
           }
         ]
       }
     },
     {
-      "files": [
-        "resources/**",
-        "**/resources/**",
-        "scripts/**"
-      ],
+      "files": ["resources/**", "**/resources/**", "scripts/**"],
       "rules": {
         "no-console": "off"
       }
     },
     {
-      "files": [
-        "examples/**"
-      ],
+      "files": ["examples/**"],
       "rules": {
         "no-console": "off",
         "no-new": "off",
@@ -391,9 +365,7 @@
       }
     },
     {
-      "files": [
-        "packages/{graphiql-react,graphiql}/**/*.{ts,tsx}"
-      ],
+      "files": ["packages/{graphiql-react,graphiql}/**/*.{ts,tsx}"],
       "rules": {
         "typescript/no-restricted-imports": [
           "error",
@@ -428,11 +400,7 @@
           },
           {
             "name": "react",
-            "importNames": [
-              "memo",
-              "useCallback",
-              "useMemo"
-            ]
+            "importNames": ["memo", "useCallback", "useMemo"]
           }
         ],
         "typescript/no-deprecated": "error",
@@ -444,9 +412,7 @@
       }
     },
     {
-      "files": [
-        "packages/monaco-graphql/**"
-      ],
+      "files": ["packages/monaco-graphql/**"],
       "rules": {
         "typescript/no-restricted-imports": [
           "error",
@@ -482,9 +448,7 @@
       }
     },
     {
-      "files": [
-        "**/*.d.ts"
-      ],
+      "files": ["**/*.d.ts"],
       "rules": {
         "no-var": "off"
       }
