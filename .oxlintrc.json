@@ -54,7 +54,7 @@
     "dot-notation": "error",
     "eqeqeq": [
       "error",
-      "allow-null"
+      "smart"
     ],
     "no-alert": "error",
     "no-await-in-loop": "error",
