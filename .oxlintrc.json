@@ -1,4 +1,5 @@
 {
+  "plugins": ["typescript", "react", "import", "unicorn", "promise", "jest", "vitest"],
   "ignorePatterns": [
     "react-app-env.d.ts",
     "next-env.d.ts",
