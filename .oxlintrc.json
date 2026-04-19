@@ -8,7 +8,6 @@
     '**/CHANGELOG.md',
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
-    // symlinks
     'packages/graphiql-react/__mocks__/monaco-editor.ts',
     'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
     'packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts',
@@ -17,7 +16,6 @@
   ],
   overrides: [
     {
-      // Rules for all code files
       files: ['**/*.{js,jsx,ts,tsx,mts,cts}'],
       parserOptions: {
         ecmaVersion: 6,
@@ -27,7 +25,6 @@
           version: 'detect',
         },
       },
-      // https://github.com/sindresorhus/globals/blob/master/globals.json
       env: {
         atomtest: true,
         es6: true,
@@ -55,9 +52,8 @@
       },
       rules: {
         '@shopify/prefer-early-return': ['error', { maximumStatements: 2 }],
-        '@shopify/prefer-class-properties': 'off', // enable after https://github.com/Shopify/web-configs/issues/387 will be fixed
+        '@shopify/prefer-class-properties': 'off',
         'sonarjs/no-inverted-boolean-check': 'error',
-        // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
         'no-console': 'error',
         'no-constant-binary-expression': 'error',
         'no-empty': ['error', { allowEmptyCatch: true }],
@@ -65,7 +61,6 @@
         'no-template-curly-in-string': 'off',
         'valid-jsdoc': 'off',
 
-        // Best Practices (http://eslint.org/docs/rules/#best-practices)
         'accessor-pairs': 'error',
         'array-callback-return': 'off',
         'block-scoped-var': 'off',
@@ -88,7 +83,7 @@
         'no-extend-native': 'error',
         'no-extra-bind': 'error',
         'no-extra-label': 'error',
-        'no-floating-decimal': 'off', // prettier --list-different
+        'no-floating-decimal': 'off',
         'no-implicit-coercion': 'error',
         'no-implicit-globals': 'off',
         'no-implied-eval': 'error',
@@ -153,10 +148,8 @@
         'sonarjs/no-extra-arguments': 'error',
         'unicorn/no-useless-undefined': 'error',
         'no-var': 'error',
-        // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
         strict: 'off',
 
-        // Variables (http://eslint.org/docs/rules/#variables)
         'init-declarations': 'off',
         'no-catch-shadow': 'error',
         'no-label-var': 'error',
@@ -169,7 +162,7 @@
         '@typescript-eslint/no-unused-vars': [
           'error',
           {
-            varsIgnorePattern: '^(React|_)', // allow underscores in destructuring
+            varsIgnorePattern: '^(React|_)',
             argsIgnorePattern: '^_',
           },
         ],
@@ -177,7 +170,6 @@
         'no-use-before-define': 'off',
 
         'unicorn/no-useless-switch-case': 'error',
-        // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
         'callback-return': 'off',
         'global-require': 'off',
         'handle-callback-err': 'error',
@@ -189,7 +181,6 @@
         'no-restricted-modules': 'off',
         'no-sync': 'off',
 
-        // Stylistic Issues (http://eslint.org/docs/rules/#stylistic-issues)
         camelcase: 'off',
         'capitalized-comments': 'off',
         'consistent-this': 'off',
@@ -201,7 +192,7 @@
         'id-match': 'off',
         indent: 'off',
         'line-comment-position': 'off',
-        'linebreak-style': 'off', // prettier --list-different
+        'linebreak-style': 'off',
         'lines-around-comment': 'off',
         'lines-around-directive': 'off',
         'max-depth': 'off',
@@ -227,14 +218,12 @@
         'no-restricted-syntax': [
           'error',
           {
-            // ❌ useMemo(…, [])
             selector:
               'CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]',
             message:
               "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead.",
           },
           {
-            // ❌ event.keyCode
             selector:
               'MemberExpression > .property[type=Identifier][name=keyCode]',
             message: 'Use `.key` instead of `.keyCode`',
@@ -255,7 +244,6 @@
         'spaced-comment': ['error', 'always', { markers: ['/'] }],
         'wrap-regex': 'off',
         'unicorn/prefer-dom-node-remove': 'error',
-        // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
         'arrow-body-style': 'off',
         '@typescript-eslint/no-restricted-imports': [
           'error',
@@ -292,7 +280,6 @@
         'import-x/no-duplicates': 'error',
         'import-x/no-named-as-default': 'error',
         'prefer-object-spread': 'error',
-        // React rules
         'react/no-unused-state': 'error',
         'react/jsx-curly-brace-presence': 'error',
         'react/jsx-boolean-value': 'error',
@@ -362,15 +349,12 @@
         'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
         'unicorn/prefer-array-some': 'error',
-        // '@typescript-eslint/prefer-for-of': 'error', TODO
-        'unicorn/no-hex-escape': 'off', // TODO: enable
-        // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
+        'unicorn/no-hex-escape': 'off',
         'unicorn/prefer-keyboard-event-key': 'off',
 
         'unicorn/prefer-switch': 'error',
         'unicorn/prefer-dom-node-text-content': 'error',
-        quotes: ['error', 'single', { avoidEscape: true }], // Matches Prettier, but also replaces backticks with single quotes
-        // TODO: Fix all errors for the following rules included in recommended config
+        quotes: ['error', 'single', { avoidEscape: true }],
         '@typescript-eslint/no-require-imports': 'off',
         'import-x/no-named-as-default-member': 'off',
       },
@@ -383,12 +367,9 @@
       },
     },
     {
-      // Rules that requires type information
       files: ['**/*.{ts,tsx,mts,cts}'],
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
-      // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
-        // '@typescript-eslint/no-redundant-type-constituents': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
@@ -396,8 +377,6 @@
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
         '@typescript-eslint/no-unnecessary-type-conversion': 'error',
-        // '@typescript-eslint/await-thenable': 'error', // TODO
-        // TODO: Fix all errors for the following rules included in recommended config
         '@typescript-eslint/no-deprecated': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',
 
@@ -441,19 +420,14 @@
         },
       },
     },
-    // Cypress plugin, global, etc., only for cypress directory
-    // https://github.com/cypress-io/eslint-plugin-cypress
-    // cypress clashes with jest expect()
     {
       files: ['**/cypress/**'],
       extends: 'plugin:cypress/recommended',
       rules: {
-        // Because innerText doesn't return hidden elements and returns new line (\n) characters
         'unicorn/prefer-dom-node-text-content': 'off',
       },
     },
     {
-      // Rules for unit tests
       files: [
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
@@ -465,14 +439,12 @@
       },
     },
     {
-      // Resources are typically our helper scripts; make life easier there
       files: ['resources/**', '**/resources/**', 'scripts/**'],
       rules: {
         'no-console': 'off',
       },
     },
     {
-      // Disable rules for examples folder
       files: ['examples/**'],
       rules: {
         'no-console': 'off',
@@ -482,7 +454,6 @@
       },
     },
     {
-      // Rule for ignoring imported dependencies from tests files
       files: [
         '**/__tests__/**',
         'webpack.config.js',
@@ -496,7 +467,6 @@
       },
     },
     {
-      // Rule for allowing import `vscode` package
       files: [
         'packages/vscode-graphql/**',
         'packages/vscode-graphql-execution/**',
@@ -506,7 +476,6 @@
       },
     },
     {
-      // Rule to prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
       files: ['packages/**'],
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
@@ -540,7 +509,6 @@
       },
     },
     {
-      // Monaco-GraphQL rules
       files: ['packages/monaco-graphql/**'],
       rules: {
         '@typescript-eslint/no-restricted-imports': [
@@ -560,7 +528,6 @@
       },
     },
     {
-      // Parsing Markdown/MDX
       files: ['**/*.{md,mdx}'],
       parser: 'eslint-mdx',
       plugins: ['mdx'],
@@ -576,8 +543,6 @@
       },
     },
     {
-      // ❗ALWAYS LAST
-      // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
       rules: {
         'import-x/no-extraneous-dependencies': 'off',
