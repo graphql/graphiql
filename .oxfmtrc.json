@@ -9,7 +9,8 @@
   "ignorePatterns": [
     "packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts",
     "packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql",
-    "packages/graphiql-react/src/env.d.ts"
+    "packages/graphiql-react/src/env.d.ts",
+    "**/CHANGELOG.md"
   ],
   "overrides": [
     {
