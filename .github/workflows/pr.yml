@@ -128,12 +128,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - id: cache-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: modules-${{ github.sha }}
+          cache: yarn
+      - run: yarn install --immutable
       - run: yarn check:tsgo
 
   e2e:
