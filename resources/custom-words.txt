@@ -1,3 +1,7 @@
+Здорово
+أهلاً
+سلام
+हेलो
 //   short for "developer experience":
 //   short for "maintainers":
 //   short for "platform as a service":
@@ -13,7 +17,6 @@
 // other languages
 // packages and tools
 // phonetic notation
-ˈɡrafək
 acao
 acmerc
 aivazis
@@ -89,6 +92,7 @@ GraphiQL
 graphqlconfig
 graphqlrc
 graphqls
+ˈɡrafək
 harshith
 headlessui
 heyenbrock
@@ -96,9 +100,9 @@ hola
 htmling
 hurrell
 hyohyeon
-importmap
 ical
 imolorhe
+importmap
 inno
 intellij
 invalidchar
@@ -113,13 +117,12 @@ leebyron
 Leko
 LekoArts
 lezer
+lightningcss
 linenumber
 linenumbers
 linkify
 listbox
-lightningcss
 listvalues
-lightningcss
 lostplan
 maint
 manypkg
@@ -131,6 +134,7 @@ meros
 middlewares
 mockfs
 modulemap
+multipass
 nauroze
 newhope
 nextjs
@@ -152,6 +156,7 @@ orta
 outdir
 outlineable
 ovsx
+oxfmt
 paas
 pabbati
 picomatch
@@ -198,6 +203,7 @@ stonexer
 streamable
 subword
 suchanek
+svgo
 svgr
 tanay
 tanaypratap
@@ -208,16 +214,16 @@ thomasheyenbrock
 timsuchanek
 tokenizes
 tsup
+turbopack
 typeahead
 typeaheads
 typedoc
 typeof
-turbopack
+uncurried
 unfocus
 unnormalized
 unparsable
 unsubscribable
-uncurried
 urigo
 urql
 usememo
@@ -233,9 +239,5 @@ wgutils
 wincent
 wonka
 yoshiakis
-zustand
 zdravo
-Здорово
-أهلاً
-سلام
-हेलो
+zustand
