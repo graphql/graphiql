@@ -301,18 +301,19 @@ describe('parseDocument', () => {
     export function Example(arg: string) {}`;
 
     const contents = await parseDocument(text, 'test.ts');
-    // please let me keep this whitespace prettier!
-    // note: if this test suddenly starts failing, it's because some auto-formatting configuration ignored
-    // our `.prettierignore` file, as the whitespace below Test query is expected
-    expect(contents[0].query).toEqual(/* GraphQL */ `
-      query Test {
-        test {
-          value
-          ...FragmentsComment
-        }
-      }
-    
-    `);
+    expect(contents[0].query).toEqual(
+      [
+        '',
+        '      query Test {',
+        '        test {',
+        '          value',
+        '          ...FragmentsComment',
+        '        }',
+        '      }',
+        '    ',
+        '    ',
+      ].join('\n'),
+    );
   });
 
   it('parseDocument ignores non gql tagged templates', async () => {
