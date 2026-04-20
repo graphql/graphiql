@@ -88,6 +88,7 @@ jobs:
             **/node_modules
           key: modules-${{ github.sha }}
       - run: yarn format-check
+      - run: yarn svgo-check
 
   jest:
     name: Jest Unit & Integration Tests
