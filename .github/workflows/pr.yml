@@ -36,8 +36,8 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint-cspell
 
-  prettier:
-    name: Prettier
+  format:
+    name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,8 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - run: yarn pretty-check
+      - run: yarn format-check
+      - run: yarn svgo-check
 
   jest:
     name: Jest Unit & Integration Tests

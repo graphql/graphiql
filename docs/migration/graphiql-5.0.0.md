@@ -3,7 +3,6 @@
 Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 
 - For **Vite** projects you must:
-
   1. Install `vite-plugin-monaco-editor` package:
 
   ```sh

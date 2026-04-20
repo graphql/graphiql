@@ -215,8 +215,10 @@ export type CompletionSettings = AutocompleteSuggestionOptions & {
 /**
  * Configuration to initialize the editor with
  */
-export interface MonacoGraphQLInitializeConfig
-  extends Pick<GraphQLLanguageConfig, 'schemas'> {
+export interface MonacoGraphQLInitializeConfig extends Pick<
+  GraphQLLanguageConfig,
+  'schemas'
+> {
   /**
    * custom (experimental) settings for autocompletion behavior
    */

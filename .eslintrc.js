@@ -112,7 +112,7 @@ module.exports = {
         'no-extend-native': 'error',
         'no-extra-bind': 'error',
         'no-extra-label': 'error',
-        'no-floating-decimal': 'off', // prettier --list-different
+        'no-floating-decimal': 'off', // handled by formatter
         'no-implicit-coercion': 'error',
         'no-implicit-globals': 'off',
         'no-implied-eval': 'error',
@@ -225,7 +225,7 @@ module.exports = {
         'id-match': 'off',
         indent: 'off',
         'line-comment-position': 'off',
-        'linebreak-style': 'off', // prettier --list-different
+        'linebreak-style': 'off', // handled by formatter
         'lines-around-comment': 'off',
         'lines-around-directive': 'off',
         'max-depth': 'off',
