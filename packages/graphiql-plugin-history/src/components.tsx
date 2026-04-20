@@ -113,8 +113,8 @@ type QueryHistoryItemProps = {
 export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   const { editLabel, toggleFavorite, deleteFromHistory, setActive } =
     useHistoryActions();
-  const { headerEditor, queryEditor, variableEditor } = useGraphiQL(
-    pick('headerEditor', 'queryEditor', 'variableEditor'),
+  const { headerEditor, queryEditor, variableEditor, extensionsEditor } = useGraphiQL(
+    pick('headerEditor', 'queryEditor', 'variableEditor', 'extensionsEditor'),
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -147,10 +147,11 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   };
 
   const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> = () => {
-    const { query, variables, headers } = props.item;
+    const { query, variables, headers, extensions } = props.item;
     queryEditor?.setValue(query ?? '');
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? '');
+    extensionsEditor?.setValue(extensions ?? '');
     setActive(props.item);
   };
 
