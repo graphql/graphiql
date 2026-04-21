@@ -1,5 +1,6 @@
 {
   "npm.packageManager": "yarn",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "files.insertFinalNewline": true,
   "editor.trimAutoWhitespace": false,
