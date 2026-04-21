@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import pkgJson from '../package.json' with { type: 'json' }
+import pkgJson from '../package.json' with { type: 'json' };
 
 async function setResolution(): Promise<void> {
   const tag = process.argv[2];
