@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
-    "build": "node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
+    "build": "node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest"
   },
   "peerDependencies": {
