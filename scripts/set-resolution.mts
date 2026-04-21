@@ -17,7 +17,7 @@ async function setResolution(): Promise<void> {
   } else {
     pkgJson.resolutions = { [pkg]: version };
   }
-  await writeFile(pkgPath, JSON.stringify(pkgJson, null, 2), 'utf8');
+  await writeFile('../package.json', JSON.stringify(pkgJson, null, 2), 'utf8');
 }
 
 setResolution().catch((err: unknown) => {
