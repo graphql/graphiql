@@ -1,13 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-
-interface PackageJson {
-  resolutions?: Record<string, string>;
-  [key: string]: unknown;
-}
+import pkgJson from '../package.json' with { type: 'json' }
 
 async function setResolution(): Promise<void> {
-  const [, , tag] = process.argv;
+  const tag = process.argv[2];
   if (!tag) {
     throw new Error('no tag provided');
   }
@@ -16,8 +12,6 @@ async function setResolution(): Promise<void> {
   if (!pkg || !version) {
     throw new Error(`Invalid tag ${tag}`);
   }
-  const pkgPath = path.resolve(path.join(process.cwd(), 'package.json'));
-  const pkgJson: PackageJson = JSON.parse(await readFile(pkgPath, 'utf8'));
 
   if (pkgJson.resolutions) {
     pkgJson.resolutions[pkg] = version;

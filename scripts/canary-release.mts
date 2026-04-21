@@ -18,10 +18,6 @@ function getNewVersion(version: string, type: ReleaseType): string | null {
   return semver.inc(version, `pre${type}`, true, 'canary-' + gitHash);
 }
 
-// TODO: canary --pre releases for vscode ? See git history for a sketch that
-// used `execa` to run `yarn workspace vscode-graphql release --pre` then
-// committed + pushed the bumped package.json.
-
 function getRelevantChangesets(baseBranch: string): string[] {
   const comparePoint = cp
     .spawnSync('git', ['merge-base', `origin/${baseBranch}`, 'HEAD'])
