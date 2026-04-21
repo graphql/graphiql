@@ -18,7 +18,7 @@
   },
   "packageManager": "yarn@4.9.1",
   "scripts": {
-    "types:check": "turbo run types:check",
+    "types:check": "turbo run types:check && tsc --noEmit -p scripts/tsconfig.json",
     "dev:graphiql": "turbo run dev --filter=graphiql...",
     "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
     "dev:example-vite": "turbo run dev --filter=example-graphiql-vite...",
