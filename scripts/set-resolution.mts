@@ -12,13 +12,21 @@ async function setResolution(): Promise<void> {
     throw new Error(`Invalid tag ${tag}`);
   }
 
-  await writeFile('../package.json', JSON.stringify({
-    ...pkgJson,
-    resolutions: {
-      ...pkgJson.resolutions,
-      [pkg]: version,
-    }
-  }, null, 2), 'utf8');
+  await writeFile(
+    '../package.json',
+    JSON.stringify(
+      {
+        ...pkgJson,
+        resolutions: {
+          ...pkgJson.resolutions,
+          [pkg]: version,
+        },
+      },
+      null,
+      2,
+    ),
+    'utf8',
+  );
 }
 
 setResolution().catch((err: unknown) => {
