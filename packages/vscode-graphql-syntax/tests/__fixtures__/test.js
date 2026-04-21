@@ -37,7 +37,7 @@ const graphql = graphql(`
   }
 `);
 
-const after1 = "after";
+const after1 = 'after';
 
 const graphql = graphql(
   `
@@ -48,11 +48,11 @@ const graphql = graphql(
   [var1, var2],
 );
 
-const after2 = "after";
+const after2 = 'after';
 
-const query = /* GraphQL */ "query { id } ";
-const query = graphql("query($id: ID!) { id } ");
-const query = graphql("query($id: ID!) { test }");
+const query = /* GraphQL */ 'query { id } ';
+const query = graphql('query($id: ID!) { id } ');
+const query = graphql('query($id: ID!) { test }');
 
 const queryWithInlineComment = `#graphql
  query {
@@ -62,9 +62,9 @@ const queryWithInlineComment = `#graphql
     }
 `;
 
-const queryWithInlineComment = "#graphql query { id } ";
+const queryWithInlineComment = '#graphql query { id } ';
 
-const queryWithInlineComment = "#graphql query { id } ";
+const queryWithInlineComment = '#graphql query { id } ';
 
 const queryWithInlineComment = `#graphql
  query {
@@ -104,4 +104,4 @@ const queryWithLeadingAboveComment =
 
 // The comment below is its own standalone test:
 // comment with tag in it: gql `Hello` should be ignored
-const abc = "Hello";
+const abc = 'Hello';
