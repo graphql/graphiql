@@ -60,7 +60,6 @@
     "repo:resolve": "node scripts/set-resolution.mts",
     "t": "yarn test",
     "test": "turbo run test --filter='./packages/*'",
-    "test:ci": "yarn test",
     "tsc": "tsc --build && node resources/patch-monaco-editor-type.mts",
     "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack",
     "gen-agenda": "wgutils agenda gen"
