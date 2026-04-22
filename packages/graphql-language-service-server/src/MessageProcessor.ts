@@ -13,13 +13,12 @@ import { URI } from 'vscode-uri';
 import {
   CachedContent,
   Uri,
-  GraphQLConfig,
-  GraphQLProjectConfig,
   FileChangeTypeKind,
   Range,
   Position,
   IPosition,
 } from 'graphql-language-service';
+import type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
 

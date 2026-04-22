@@ -1,5 +1,5 @@
 import { DocumentNode, visit } from 'graphql';
-import { meros } from 'meros';
+import { meros } from 'meros/browser';
 import type {
   Client,
   ClientOptions,
