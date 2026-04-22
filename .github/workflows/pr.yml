@@ -118,6 +118,20 @@ jobs:
           path: ${{ env.BUILD-CACHE-LIST }}
       - run: yarn types:check
 
+  types-check-tsgo:
+    name: Types Check (tsgo)
+    runs-on: ubuntu-latest
+    needs: [build]
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn check:tsgo
+
   e2e:
     name: Cypress
     runs-on: ubuntu-latest
