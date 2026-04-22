@@ -2,7 +2,8 @@
   "name": "@graphiql/react",
   "version": "0.37.3",
   "sideEffects": [
-    "dist/setup-workers/*"
+    "dist/setup-workers/*",
+    "*.css"
   ],
   "repository": {
     "type": "git",
