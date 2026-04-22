@@ -49,7 +49,7 @@ jobs:
       - run: yarn install --immutable
 
       - name: Unit Tests
-        run: yarn test:ci
+        run: yarn test
 
       - name: Cypress
         run: yarn e2e
