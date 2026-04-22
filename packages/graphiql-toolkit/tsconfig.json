@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "ESNext",
+    "module": "nodenext",
     "declaration": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "lib": ["es2022", "dom"],
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "types": ["vitest/globals"]
   },
   "include": ["src", "tsup.config.ts"]

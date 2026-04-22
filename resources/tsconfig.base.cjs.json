@@ -2,14 +2,13 @@
   "compilerOptions": {
     "composite": true,
     "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "downlevelIteration": true,
     "removeComments": true,
     "strict": true,
     "jsx": "react",
@@ -21,8 +20,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "es2017", "es2018", "es2021", "esnext"],
-    "types": ["node", "jest"],
-    "baseUrl": "."
+    "types": ["node", "jest"]
   },
   "exclude": [
     "**/__tests__/**",
