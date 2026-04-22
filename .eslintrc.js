@@ -477,6 +477,7 @@ module.exports = {
       rules: {
         'jest/no-conditional-expect': 'off',
         'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/no-disabled-tests': 'warn',
       },
     },
     {
