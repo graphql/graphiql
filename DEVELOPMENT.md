@@ -100,7 +100,7 @@ VITE v6.3.4  ready in 1015 ms
 ## Developing Monaco GraphQL
 
 1. First run `yarn`.
-2. Run `yarn tsc --watch` to watch `monaco-graphql` and
+2. Run `yarn build:watch` to watch `monaco-graphql` and
    `graphql-language-service` in one screen session/terminal tab/etc
 3. In another session, run `yarn start-monaco` from anywhere in the repository
    aside from an individual workspace.
