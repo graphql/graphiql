@@ -22,14 +22,6 @@ module.exports = {
     require.resolve('@babel/preset-typescript'),
   ],
   env: {
-    test: {
-      presets: [
-        [require.resolve('@babel/preset-env'), envConfig],
-        [require.resolve('@babel/preset-react'), { runtime: 'automatic' }],
-        require.resolve('@babel/preset-typescript'),
-      ],
-      plugins: [require.resolve('babel-plugin-macros')],
-    },
     development: {
       compact: false,
     },
