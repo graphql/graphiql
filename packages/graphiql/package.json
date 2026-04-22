@@ -2,7 +2,8 @@
   "name": "graphiql",
   "version": "5.2.2",
   "sideEffects": [
-    "dist/setup-workers/*"
+    "dist/setup-workers/*",
+    "*.css"
   ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
