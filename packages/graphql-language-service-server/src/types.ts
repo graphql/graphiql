@@ -120,3 +120,45 @@ export interface ServerOptions {
    */
   debug?: true;
 }
+
+export interface VSCodeGraphQLSettings {
+  /**
+   * Enable debug logs and node debugger for client
+   */
+  debug?: boolean | null;
+  /**
+   * Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Enabled by default when one or more schema entry is not a local file with SDL in it. Disable if you want to use SDL with a generated schema.
+   */
+  cacheSchemaFileForLookup?: boolean;
+  /**
+   * Disables outlining and other expensive operations for files larger than this threshold (in bytes). Defaults to 1000000 (one million).
+   */
+  largeFileThreshold?: number;
+  /**
+   * Fail the request on invalid certificate
+   */
+  rejectUnauthorized?: boolean;
+  /**
+   * Schema cache ttl in milliseconds - the interval before requesting a fresh schema when caching the local schema file is enabled. Defaults to 30000 (30 seconds).
+   */
+  schemaCacheTTL?: number;
+}
+
+export interface VSCodeGraphQLConfigLoadSettings {
+  /**
+   * Base dir for graphql config loadConfig(), to look for config files or package.json
+   */
+  rootDir?: string;
+  /**
+   * exact filePath for a `graphql-config` file `loadConfig()`
+   */
+  filePath?: string;
+  /**
+   * optional <configName>.config.{js,ts,toml,yaml,json} & <configName>rc* instead of default `graphql`
+   */
+  configName?: string;
+  /**
+   * legacy mode for graphql config v2 config
+   */
+  legacy?: boolean;
+}
