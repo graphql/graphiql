@@ -1,5 +1,5 @@
 {
   "extends": "../graphiql-react/tsconfig.json",
   // https://github.com/testing-library/jest-dom/issues/546#issuecomment-2558621842
-  "exclude": ["cypress", "cypress.config.ts"]
+  "exclude": ["cypress", "cypress.config.ts", "typedoc"]
 }

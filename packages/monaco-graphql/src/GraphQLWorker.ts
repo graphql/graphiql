@@ -132,7 +132,6 @@ export class GraphQLWorker {
 
     return prettierStandalone.format(document, {
       parser: 'graphql',
-      // @ts-expect-error -- should be fixed by pnpm migration
       plugins: [prettierGraphqlParser],
       ...this._formattingOptions?.prettierConfig,
     });

@@ -62,8 +62,10 @@ export interface PluginActions {
   setPlugins(plugins: GraphiQLPlugin[]): void;
 }
 
-export interface PluginProps
-  extends Pick<PluginSlice, 'referencePlugin' | 'onTogglePluginVisibility'> {
+export interface PluginProps extends Pick<
+  PluginSlice,
+  'referencePlugin' | 'onTogglePluginVisibility'
+> {
   /**
    * This prop accepts a list of plugins that will be shown in addition to the
    * built-in ones (the doc explorer and the history).

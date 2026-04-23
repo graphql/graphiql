@@ -27,23 +27,23 @@ const query = graphql<SomeGeneric>`
 
 const query = graphql<Generic>('query { id }');
 
-const query = graphql(
-  'query { id }'
-);
+const query = graphql('query { id }');
 
-const query = graphql<Generic>(
-  'query { id }'
-);
+const query = graphql<Generic>('query { id }');
 
 const query = graphql(`
-  query { id }
+  query {
+    id
+  }
 `);
 
 const query = graphql(
   `
-    query { id }
+    query {
+      id
+    }
   `,
-  [var1, var2]
+  [var1, var2],
 );
 
 const queryWithInlineComment = `#graphql

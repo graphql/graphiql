@@ -13,13 +13,12 @@ import { URI } from 'vscode-uri';
 import {
   CachedContent,
   Uri,
-  GraphQLConfig,
-  GraphQLProjectConfig,
   FileChangeTypeKind,
   Range,
   Position,
   IPosition,
 } from 'graphql-language-service';
+import type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
 
@@ -855,7 +854,7 @@ export class MessageProcessor {
                 URI.parse(res.path).toString(),
               );
               const vOffset = isEmbedded
-                ? cachedDoc?.contents[0].range?.start.line ?? 0
+                ? (cachedDoc?.contents[0].range?.start.line ?? 0)
                 : parentRange.start.line;
 
               defRange.setStart(

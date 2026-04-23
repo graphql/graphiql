@@ -2,7 +2,8 @@
   "name": "@graphiql/react",
   "version": "0.37.3",
   "sideEffects": [
-    "dist/setup-workers/*"
+    "dist/setup-workers/*",
+    "*.css"
   ],
   "repository": {
     "type": "git",
@@ -41,7 +42,7 @@
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
-    "test": "vitest --typecheck"
+    "test": "vitest run --typecheck"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -78,7 +79,7 @@
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "typescript": "^4.6.3",
+    "typescript": "^5.8.0",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3",
     "vite-plugin-svgr": "^4.3.0"

@@ -22,7 +22,6 @@ export async function formatJSONC(content: string): Promise<string> {
     plugins: [
       // Fix: Couldn't find plugin for AST format "estree"
       { printers },
-      // @ts-expect-error -- Fix Couldn't resolve parser "jsonc"
       { parsers },
     ],
     // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}

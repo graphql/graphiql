@@ -1,5 +1,4 @@
 'use no memo'; // can't figure why it isn't optimized
-
 import { STORAGE_KEY } from '../constants';
 import type { AllSlices } from '../types';
 
