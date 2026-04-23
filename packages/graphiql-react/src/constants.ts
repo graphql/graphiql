@@ -159,7 +159,6 @@ export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
       plugins: [
         // Fix: Couldn't find plugin for AST format "graphql"
         { printers },
-        // @ts-expect-error -- Fix: Couldn't resolve parser "graphql"
         { parsers },
       ],
     });

@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import packageJSON from './package.json';
+import packageJSON from './package.json' with { type: 'json' };
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({

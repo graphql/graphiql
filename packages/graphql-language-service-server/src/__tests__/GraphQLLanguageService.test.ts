@@ -7,6 +7,7 @@
  *
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { join } from 'node:path';
 
 import { GraphQLConfig } from 'graphql-config';

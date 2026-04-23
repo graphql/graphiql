@@ -12,9 +12,6 @@
       "path": "../packages/codemirror-graphql"
     },
     {
-      "path": "../packages/cm6-graphql"
-    },
-    {
       "path": "../packages/graphql-language-service"
     },
     {

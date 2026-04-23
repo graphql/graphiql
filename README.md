@@ -248,6 +248,7 @@ our discord channels!):
 - [@saihaj](https://github.com/saihaj)
 - [@jonathanawesome](https://github.com/jonathanawesome)
 - [@cshaver](https://github.com/cshaver)
+- [@trevor-scheer](https://github.com/trevor-scheer)
 
 > Thank you graphql community for all the help & support! I did it all for you,
 > and I couldn't have done it without you ❤️ - @acao

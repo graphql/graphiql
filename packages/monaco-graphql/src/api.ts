@@ -19,7 +19,8 @@ import type {
 } from './typings';
 
 export interface MonacoGraphQLAPIOptions
-  extends Pick<
+  extends
+    Pick<
       // Optional fields
       MonacoGraphQLInitializeConfig,
       'schemas'

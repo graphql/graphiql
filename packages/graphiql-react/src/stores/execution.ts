@@ -81,8 +81,10 @@ export interface ExecutionActions {
   stop(): void;
 }
 
-export interface ExecutionProps
-  extends Pick<ExecutionSlice, 'getDefaultFieldNames' | 'fetcher'> {
+export interface ExecutionProps extends Pick<
+  ExecutionSlice,
+  'getDefaultFieldNames' | 'fetcher'
+> {
   /**
    * This prop sets the operation name that is passed with a GraphQL request.
    */

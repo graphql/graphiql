@@ -165,14 +165,13 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
   },
 });
 
-export interface SchemaSlice
-  extends Pick<
-    SchemaProps,
-    | 'inputValueDeprecation'
-    | 'introspectionQueryName'
-    | 'schemaDescription'
-    | 'onSchemaChange'
-  > {
+export interface SchemaSlice extends Pick<
+  SchemaProps,
+  | 'inputValueDeprecation'
+  | 'introspectionQueryName'
+  | 'schemaDescription'
+  | 'onSchemaChange'
+> {
   /**
    * Stores an error raised during introspecting or building the GraphQL schema
    * from the introspection result.
