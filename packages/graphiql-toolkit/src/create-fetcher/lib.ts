@@ -62,8 +62,7 @@ export const createSimpleFetcher =
       body: JSON.stringify(graphQLParams),
       headers: {
         'content-type': 'application/json',
-        accept:
-          'application/graphql-response+json, application/json;q=0.9',
+        accept: 'application/graphql-response+json, application/json;q=0.9',
         ...options.headers,
         ...fetcherOpts?.headers,
       },
