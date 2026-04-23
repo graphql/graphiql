@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { tmpdir } from 'node:os';
@@ -10,10 +11,10 @@ import { FileChangeTypeKind } from 'graphql-language-service';
 export type MockFile = [filename: string, text: string];
 
 export class MockLogger implements VSCodeLogger {
-  error = jest.fn();
-  warn = jest.fn();
-  info = jest.fn();
-  log = jest.fn();
+  error = vi.fn();
+  warn = vi.fn();
+  info = vi.fn();
+  log = vi.fn();
 }
 
 type File = [filename: string, text: string];

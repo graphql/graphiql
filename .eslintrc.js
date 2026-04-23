@@ -28,6 +28,7 @@ module.exports = {
   ignorePatterns: [
     'react-app-env.d.ts',
     'next-env.d.ts',
+    '**/vitest.config.*',
     'changesets/**/*.md',
     '**/CHANGELOG.md',
     'functions/*',
@@ -460,7 +461,7 @@ module.exports = {
     },
     // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
-    // cypress clashes with jest expect()
+    // cypress clashes with vitest expect()
     {
       files: ['**/cypress/**'],
       extends: 'plugin:cypress/recommended',
@@ -475,10 +476,16 @@ module.exports = {
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
-      extends: ['plugin:jest/recommended'],
+      plugins: ['vitest'],
       rules: {
-        'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/no-identical-title': 'error',
+        'vitest/no-commented-out-tests': 'error',
+        'vitest/valid-title': 'error',
+        'vitest/valid-expect': 'error',
+        'vitest/valid-describe-callback': 'error',
+        'vitest/no-import-node-test': 'error',
+        'vitest/no-disabled-tests': 'warn',
       },
     },
     {

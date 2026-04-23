@@ -49,24 +49,6 @@ jobs:
       - run: yarn format-check
       - run: yarn svgo-check
 
-  jest:
-    name: Jest Unit & Integration Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn test --coverage
-      - uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
-          fail_ci_if_error: true
-          verbose: true
-
   vitest:
     name: Vitest Unit Tests
     runs-on: ubuntu-latest
@@ -82,7 +64,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
-      - run: yarn vitest
+      - run: yarn test
 
   eslint:
     name: ESLint
@@ -174,7 +156,7 @@ jobs:
     name: Canary
     runs-on: ubuntu-latest
     # ensure the basic checks pass before running the canary
-    needs: [build, jest, eslint, vitest, e2e]
+    needs: [build, eslint, vitest, e2e]
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v4

@@ -16,7 +16,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "noUncheckedIndexedAccess": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals"]
   },
   "exclude": ["src/setup-workers"]
 }

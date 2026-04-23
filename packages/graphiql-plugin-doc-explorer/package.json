@@ -35,7 +35,7 @@
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "peerDependencies": {
     "@graphiql/react": "^0.37.0",

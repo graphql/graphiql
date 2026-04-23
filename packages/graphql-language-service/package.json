@@ -55,6 +55,6 @@
   "scripts": {
     "types:check": "tsc --noEmit",
     "benchmark": "ts-node benchmark/index.ts",
-    "test": "vitest"
+    "test": "vitest run"
   }
 }
