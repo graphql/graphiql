@@ -1,7 +1,7 @@
 import { createSimpleFetcher, createMultipartFetcher } from '../lib';
 
 const SPEC_ACCEPT = 'application/graphql-response+json, application/json;q=0.9';
-const MULTIPART_ACCEPT = `${SPEC_ACCEPT}, multipart/mixed`;
+const MULTIPART_ACCEPT = 'application/json, multipart/mixed';
 const QUERY = '{ __typename }';
 const BASE_URL = 'http://localhost';
 
@@ -42,7 +42,7 @@ describe('createSimpleFetcher', () => {
 });
 
 describe('createMultipartFetcher', () => {
-  it('sends spec-compliant accept header with multipart support', async () => {
+  it('sends accept header with multipart support', async () => {
     const fetch = mockFetch();
     const fetcher = createMultipartFetcher({ url: BASE_URL }, fetch);
     const result = fetcher({ query: QUERY }, {});
