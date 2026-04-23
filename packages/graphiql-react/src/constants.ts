@@ -151,7 +151,6 @@ export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
     ] = await Promise.all([
       import('prettier/standalone'),
       import('prettier/plugins/graphql'),
-      // @ts-expect-error -- moduleResolution:node can't resolve prettier subpath exports
       import('prettier/parser-graphql'),
     ]);
 

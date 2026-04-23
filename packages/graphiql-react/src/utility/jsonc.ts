@@ -14,7 +14,6 @@ export async function formatJSONC(content: string): Promise<string> {
   ] = await Promise.all([
     import('prettier/standalone'),
     import('prettier/plugins/estree'),
-    // @ts-expect-error -- moduleResolution:node can't resolve prettier subpath exports
     import('prettier/parser-babel'),
   ]);
 
