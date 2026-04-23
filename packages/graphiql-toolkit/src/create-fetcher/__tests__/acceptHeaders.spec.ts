@@ -2,6 +2,8 @@ import { createSimpleFetcher, createMultipartFetcher } from '../lib';
 
 const SPEC_ACCEPT = 'application/graphql-response+json, application/json;q=0.9';
 const MULTIPART_ACCEPT = `${SPEC_ACCEPT}, multipart/mixed`;
+const QUERY = '{ __typename }';
+const BASE_URL = 'http://localhost';
 
 function mockFetch() {
   return vi.fn().mockResolvedValue({
@@ -13,8 +15,8 @@ function mockFetch() {
 describe('createSimpleFetcher', () => {
   it('sends spec-compliant accept header', async () => {
     const fetch = mockFetch();
-    const fetcher = createSimpleFetcher({ url: 'http://localhost' }, fetch);
-    await fetcher({ query: '{ __typename }' }, {});
+    const fetcher = createSimpleFetcher({ url: BASE_URL }, fetch);
+    await fetcher({ query: QUERY }, {});
 
     expect(fetch.mock.calls[0][1].headers.accept).toBe(SPEC_ACCEPT);
   });
@@ -22,21 +24,18 @@ describe('createSimpleFetcher', () => {
   it('allows options.headers to override accept', async () => {
     const fetch = mockFetch();
     const fetcher = createSimpleFetcher(
-      { url: 'http://localhost', headers: { accept: 'text/plain' } },
+      { url: BASE_URL, headers: { accept: 'text/plain' } },
       fetch,
     );
-    await fetcher({ query: '{ __typename }' }, {});
+    await fetcher({ query: QUERY }, {});
 
     expect(fetch.mock.calls[0][1].headers.accept).toBe('text/plain');
   });
 
   it('allows per-request fetcherOpts headers to override accept', async () => {
     const fetch = mockFetch();
-    const fetcher = createSimpleFetcher({ url: 'http://localhost' }, fetch);
-    await fetcher(
-      { query: '{ __typename }' },
-      { headers: { accept: 'text/plain' } },
-    );
+    const fetcher = createSimpleFetcher({ url: BASE_URL }, fetch);
+    await fetcher({ query: QUERY }, { headers: { accept: 'text/plain' } });
 
     expect(fetch.mock.calls[0][1].headers.accept).toBe('text/plain');
   });
@@ -45,8 +44,8 @@ describe('createSimpleFetcher', () => {
 describe('createMultipartFetcher', () => {
   it('sends spec-compliant accept header with multipart support', async () => {
     const fetch = mockFetch();
-    const fetcher = createMultipartFetcher({ url: 'http://localhost' }, fetch);
-    const result = fetcher({ query: '{ __typename }' }, {});
+    const fetcher = createMultipartFetcher({ url: BASE_URL }, fetch);
+    const result = fetcher({ query: QUERY }, {});
     // @ts-expect-error -- result is an async generator at runtime
     await result.next();
 
@@ -56,10 +55,10 @@ describe('createMultipartFetcher', () => {
   it('allows options.headers to override accept', async () => {
     const fetch = mockFetch();
     const fetcher = createMultipartFetcher(
-      { url: 'http://localhost', headers: { accept: 'text/plain' } },
+      { url: BASE_URL, headers: { accept: 'text/plain' } },
       fetch,
     );
-    const result = fetcher({ query: '{ __typename }' }, {});
+    const result = fetcher({ query: QUERY }, {});
     // @ts-expect-error -- result is an async generator at runtime
     await result.next();
 
