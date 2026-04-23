@@ -64,7 +64,8 @@
           "source.svelte",
           "source.astro",
           "text.html.markdown",
-          "text.html.derivative"
+          "text.html.derivative",
+          "text.html.vue"
         ],
         "scopeName": "inline.graphql",
         "path": "./grammars/graphql.js.json",
