@@ -128,7 +128,6 @@ export class GraphQLWorker {
       return null;
     }
     const prettierStandalone = await import('prettier/standalone');
-    // @ts-expect-error -- moduleResolution:node can't resolve prettier subpath exports
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
     return prettierStandalone.format(document, {
