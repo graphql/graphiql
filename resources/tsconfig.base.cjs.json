@@ -20,8 +20,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "es2017", "es2018", "es2021", "esnext"],
-    "types": ["node"],
-    "baseUrl": "."
+    "types": ["node"]
   },
   "exclude": [
     "**/__tests__/**",
