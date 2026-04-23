@@ -1,3 +1,7 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "oxc.oxc-vscode"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "oxc.oxc-vscode",
+    "typescriptteam.native-preview"
+  ]
 }

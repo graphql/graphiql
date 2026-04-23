@@ -1,16 +1,10 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "node",
     "target": "ESNext",
-    "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./esm",
-    "lib": ["dom", "ESNext"],
-    "paths": {
-      "*": ["*"]
-    }
+    "lib": ["dom", "ESNext"]
   },
   "references": [
     {
