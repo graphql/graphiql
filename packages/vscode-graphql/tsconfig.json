@@ -1,8 +1,7 @@
 {
-  "extends": "../../resources/tsconfig.base.esm.json",
+  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "target": "ES2018",
-    "module": "CommonJS",
     "composite": true,
     "rootDir": "./src",
     "outDir": "./dist"

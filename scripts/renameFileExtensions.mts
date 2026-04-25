@@ -1,19 +1,19 @@
-const copy = require('copy');
-const path = require('node:path');
-const fs = require('node:fs');
-const mkdirp = require('mkdirp');
-const crypto = require('node:crypto');
-const rimraf = require('rimraf');
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import copy from 'copy';
+import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 
 const [, , src, dest, destExtension] = process.argv;
 if (!src || !dest || !destExtension) {
   console.error(
-    "\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.js './dist/**/*.js' './dest-dir' .new.extension.js",
+    "\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.mts './dist/**/*.js' './dest-dir' .new.extension.js",
   );
   process.exit(1);
 }
 
-const coveragePath = path.join(__dirname, '../coverage');
+const coveragePath = path.join(import.meta.dirname, '../coverage');
 
 const tempRenamePath = path.join(
   coveragePath,
@@ -32,22 +32,19 @@ if (tempPath) {
     if (error) {
       throw error;
     }
-    for (const file of files) {
+    for (const file of files ?? []) {
       if (file.dest) {
         const srcExt = path.parse(file.dest).ext;
         const destinationPath = path.resolve(
           file.dest
-            .replace(srcExt, destExtension) // rewrite extension
-            .replace(tempRenamePath, dest), // and destination path
+            .replace(srcExt, destExtension)
+            .replace(tempRenamePath, dest),
         );
 
         mkdirp.sync(path.dirname(destinationPath));
-        // move the files and rename them... by renaming them :)
         fs.renameSync(file.dest, destinationPath);
       }
     }
-    // should cleanup temp directory after renaming
-    // every file to the destination path
     rimraf.sync(tempRenamePath);
   });
 } else {

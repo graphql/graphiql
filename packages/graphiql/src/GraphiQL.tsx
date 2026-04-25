@@ -48,7 +48,8 @@ import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
  */
 export interface GraphiQLProps
   // `children` prop should be optional
-  extends GraphiQLInterfaceProps,
+  extends
+    GraphiQLInterfaceProps,
     Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,
     Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> {}
 
@@ -142,7 +143,8 @@ type HeaderEditorProps = ComponentPropsWithoutRef<typeof HeaderEditor>;
 type ResponseEditorProps = ComponentPropsWithoutRef<typeof ResponseEditor>;
 
 export interface GraphiQLInterfaceProps
-  extends EditorProps,
+  extends
+    EditorProps,
     AddSuffix<Pick<QueryEditorProps, 'onEdit'>, 'Query'>,
     AddSuffix<Pick<VariableEditorProps, 'onEdit'>, 'Variables'>,
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,

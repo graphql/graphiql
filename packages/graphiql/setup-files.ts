@@ -1,6 +1,6 @@
 'use no memo';
 
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { configure } from '@testing-library/react';
 
 // to make it works like Jest (auto-mocking)

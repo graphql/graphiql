@@ -1,8 +1,7 @@
 declare namespace globalThis {
   import type * as monaco from 'monaco-editor';
   var MonacoEnvironment: monaco.Environment;
-  // Needs for cypress
-  var __MONACO = monaco;
+  var __MONACO: typeof monaco;
 }
 
 declare module 'monaco-editor/esm/vs/editor/common/standalone/standaloneEnums.js' {
@@ -19,4 +18,11 @@ declare module 'monaco-editor/esm/vs/base/common/uri.js' {
 
 declare module 'monaco-editor/esm/vs/editor/common/core/range.js' {
   export { Range } from 'monaco-graphql/esm/monaco-editor';
+}
+
+declare module 'https://esm.sh/monaco-graphql/esm/graphql.worker.js?worker&deps=monaco-editor@0.52.2' {
+  type WorkerCtor = typeof import('*?worker').default; // reuse type from vite/client
+
+  const workerConstructor: WorkerCtor;
+  export default workerConstructor;
 }

@@ -21,9 +21,9 @@
 
 ## Overview
 
-GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an
-official project under the GraphQL Foundation. The code uses the permissive MIT
-license.
+GraphiQL (pronounced like "graphical") is the reference implementation of this
+monorepo, GraphQL IDE, an official project under the GraphQL Foundation. The
+code uses the permissive MIT license.
 
 Whether you want a simple GraphiQL IDE instance for your server, or a more
 advanced web or desktop GraphQL IDE experience for your framework or plugin, or
@@ -248,6 +248,7 @@ our discord channels!):
 - [@saihaj](https://github.com/saihaj)
 - [@jonathanawesome](https://github.com/jonathanawesome)
 - [@cshaver](https://github.com/cshaver)
+- [@trevor-scheer](https://github.com/trevor-scheer)
 
 > Thank you graphql community for all the help & support! I did it all for you,
 > and I couldn't have done it without you ❤️ - @acao

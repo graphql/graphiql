@@ -317,7 +317,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect(editors.style.flex).toEqual('3.5');
+        expect(editors.style.flexGrow).toEqual('3.5');
       });
 
       clientWidthSpy.mockRestore();
@@ -362,7 +362,7 @@ describe('GraphiQL', () => {
         // 797 / (1200 - 797) = 1.977667493796526
         expect(
           container.querySelector<HTMLDivElement>('.graphiql-plugin')!.style
-            .flex,
+            .flexGrow,
         ).toBe('1.977667493796526');
       });
 
