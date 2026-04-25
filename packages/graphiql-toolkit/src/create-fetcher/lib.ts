@@ -1,11 +1,12 @@
 import { DocumentNode, visit } from 'graphql';
-import { meros } from 'meros';
-import {
+import { meros } from 'meros/browser';
+import type {
   Client,
   ClientOptions,
   ExecutionResult,
   createClient as createClientType,
 } from 'graphql-ws';
+
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,
@@ -61,6 +62,7 @@ export const createSimpleFetcher =
       body: JSON.stringify(graphQLParams),
       headers: {
         'content-type': 'application/json',
+        accept: 'application/graphql-response+json, application/json;q=0.9',
         ...options.headers,
         ...fetcherOpts?.headers,
       },

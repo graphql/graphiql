@@ -91,7 +91,7 @@ function renderType(into: string[], t: GraphQLInputType | GraphQLInputField) {
 function renderDefinitionDescription(
   t: GraphQLInputType | GraphQLInputField,
   useMarkdown?: boolean,
-  description?: string | undefined | null,
+  description?: string | null,
 ) {
   const into: string[] = [];
 
@@ -359,6 +359,7 @@ export function getVariablesJSONSchema(
     type: 'object',
     properties: {},
     required: [],
+    additionalProperties: false,
   };
 
   const runtimeOptions: JSONSchemaRunningOptions = {

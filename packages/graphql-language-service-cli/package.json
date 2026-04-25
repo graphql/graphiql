@@ -4,11 +4,11 @@
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphql-language-service-cli"
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-cli#readme",
@@ -24,6 +24,10 @@
     "dist",
     "src"
   ],
+  "scripts": {
+    "types:check": "tsc --noEmit",
+    "test": "vitest run"
+  },
   "keywords": [
     "graphql",
     "graphql-language-service",
@@ -32,7 +36,7 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",

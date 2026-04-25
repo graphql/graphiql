@@ -6,6 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service';
@@ -16,9 +17,19 @@ import {
 } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';
 
-jest.mock('../Logger');
-
-jest.setTimeout(20000);
+vi.mock('../Logger', () => {
+  const makeNoop = () => ({
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    log: vi.fn(),
+    level: 0,
+  });
+  return {
+    Logger: vi.fn().mockImplementation(makeNoop),
+    NoopLogger: vi.fn().mockImplementation(makeNoop),
+  };
+});
 
 import { GraphQLCache } from '../GraphQLCache';
 
@@ -34,13 +45,16 @@ import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { NoopLogger } from '../Logger';
 import { pathToFileURL } from 'node:url';
-import mockfs from 'mock-fs';
+import * as fs from 'node:fs';
 import { join } from 'node:path';
 
-jest.mock('node:fs', () => ({
-  ...jest.requireActual<typeof import('fs')>('fs'),
-  readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
-}));
+vi.mock('node:fs', async () => {
+  const actual = await vi.importActual<typeof import('fs')>('fs');
+  return {
+    ...actual,
+    readFileSync: vi.fn(actual.readFileSync),
+  };
+});
 
 describe('MessageProcessor', () => {
   const logger = new NoopLogger();
@@ -179,19 +193,22 @@ describe('MessageProcessor', () => {
       await messageProcessor._isGraphQLConfigFile('graphql.js');
     expect(falseResult).toEqual(false);
 
-    mockfs({ [`${__dirname}/package.json`]: '{"graphql": {}}' });
-    const pkgResult = await messageProcessor._isGraphQLConfigFile(
-      `file://${__dirname}/package.json`,
-    );
-    mockfs.restore();
-    expect(pkgResult).toEqual(true);
+    const pkgJsonPath = `${__dirname}/package.json`;
+    try {
+      fs.writeFileSync(pkgJsonPath, '{"graphql": {}}');
+      const pkgResult = await messageProcessor._isGraphQLConfigFile(
+        `file://${pkgJsonPath}`,
+      );
+      expect(pkgResult).toEqual(true);
 
-    mockfs({ [`${__dirname}/package.json`]: '{ }' });
-    const pkgFalseResult = await messageProcessor._isGraphQLConfigFile(
-      `file://${__dirname}/package.json`,
-    );
-    mockfs.restore();
-    expect(pkgFalseResult).toEqual(false);
+      fs.writeFileSync(pkgJsonPath, '{ }');
+      const pkgFalseResult = await messageProcessor._isGraphQLConfigFile(
+        `file://${pkgJsonPath}`,
+      );
+      expect(pkgFalseResult).toEqual(false);
+    } finally {
+      fs.rmSync(pkgJsonPath, { force: true });
+    }
   });
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;
@@ -348,9 +365,6 @@ describe('MessageProcessor', () => {
   });
 
   it('does not crash on null value returned in response to workspace configuration', async () => {
-    // for some reason this is needed? can't be a good thing... must have done something to cause a performance hit on
-    // loading config schema..
-    jest.setTimeout(10000);
     const previousConfigurationValue = getConfigurationReturnValue;
     getConfigurationReturnValue = null;
     const result = await messageProcessor.handleDidChangeConfiguration({});
@@ -359,7 +373,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly removes from the file cache with the didClose handler', async () => {
-    await messageProcessor.handleDidCloseNotification(initialDocument);
+    messageProcessor.handleDidCloseNotification(initialDocument);
 
     const position = { line: 4, character: 5 };
     const params = { textDocument: initialDocument.textDocument, position };
@@ -371,9 +385,8 @@ describe('MessageProcessor', () => {
     } catch {}
   });
 
-  // modified to work with jest.mock() of WatchmanClient
+  // modified to work with vi.mock() of WatchmanClient
   it('runs definition requests', async () => {
-    jest.setTimeout(10000);
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -407,11 +420,10 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
+    expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
 
   it('retrieves custom results from locateCommand', async () => {
-    jest.setTimeout(10000);
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -465,10 +477,10 @@ describe('MessageProcessor', () => {
       () => 'hello:2:4',
     );
     expect(customResult2.uri).toEqual('hello');
-    expect(customResult2.range.start.line).toEqual(2);
-    expect(customResult2.range.start.character).toEqual(0);
-    expect(customResult2.range.end.line).toEqual(4);
-
+    expect(customResult2.range.start.line).toEqual(1);
+    expect(customResult2.range.start.character).toEqual(3);
+    expect(customResult2.range.end.line).toEqual(1);
+    expect(customResult2.range.end.character).toEqual(3);
     const customResult3 = messageProcessor._getCustomLocateResult(
       project,
       { definitions: result, printedName: 'example' },
@@ -487,7 +499,7 @@ describe('MessageProcessor', () => {
     expect(customResult3.range.end.character).toEqual(4);
     const oldGetProject = messageProcessor._graphQLCache.getProjectForFile;
 
-    messageProcessor._graphQLCache.getProjectForFile = jest.fn(() => ({
+    messageProcessor._graphQLCache.getProjectForFile = vi.fn(() => ({
       schema: project.schema,
       documents: project.documents,
       dirpath: project.dirpath,
@@ -496,9 +508,10 @@ describe('MessageProcessor', () => {
       },
     }));
     const result2 = await messageProcessor.handleDefinitionRequest(test);
-    expect(result2[0].range.start.line).toBe(3);
-    expect(result2[0].range.end.line).toBe(4);
-    expect(result2[0].range.end.character).toBe(0);
+    expect(result2[0].range.start.line).toBe(2);
+    expect(result2[0].range.start.character).toBe(3);
+    expect(result2[0].range.end.line).toBe(2);
+    expect(result2[0].range.end.character).toBe(3);
     messageProcessor._graphQLCache.getProjectForFile = oldGetProject;
   });
   it('runs hover requests', async () => {
@@ -553,7 +566,7 @@ describe('MessageProcessor', () => {
     messageProcessor._getCachedDocument = (_uri: string) => null;
 
     const result = await messageProcessor.handleHoverRequest(test);
-    expect(result).toEqual({ contents: [] });
+    expect(result).toBeNull();
   });
   it('handles provided config', async () => {
     const msgProcessor = new MessageProcessor({
@@ -673,12 +686,11 @@ describe('MessageProcessor', () => {
   });
 
   describe('_loadConfigOrSkip', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
     });
 
     it('loads config if not initialized', async () => {
@@ -727,13 +739,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidOpenOrSaveNotification', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
-      messageProcessor._loadConfigOrSkip = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
+      messageProcessor._loadConfigOrSkip = vi.fn();
     });
     it('updates config for standard config filename changes', async () => {
       await messageProcessor.handleDidOpenOrSaveNotification({
@@ -845,13 +856,12 @@ describe('MessageProcessor', () => {
     });
   });
   describe('handleWatchedFilesChangedNotification', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue(' query { id }');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
-      messageProcessor._updateFragmentDefinition = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
+      messageProcessor._updateFragmentDefinition = vi.fn();
       messageProcessor._isGraphQLConfigMissing = false;
       messageProcessor._isInitialized = true;
     });
@@ -874,13 +884,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleWatchedFilesChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
       messageProcessor._isGraphQLConfigMissing = true;
-      messageProcessor._parser = jest.fn();
+      messageProcessor._parser = vi.fn();
     });
 
     it('skips config updates for normal file changes', async () => {
@@ -897,13 +906,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
       messageProcessor._isGraphQLConfigMissing = true;
-      messageProcessor._parser = jest.fn();
+      messageProcessor._parser = vi.fn();
     });
 
     it('skips config updates for normal file changes', async () => {

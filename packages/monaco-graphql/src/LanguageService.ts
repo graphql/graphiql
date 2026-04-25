@@ -44,8 +44,8 @@ export class LanguageService {
   private _schemas: SchemaConfig[] = [];
   private _schemaCache: SchemaCache = schemaCache;
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
-  private _parseOptions: ParseOptions | undefined = undefined;
-  private _customValidationRules: ValidationRule[] | undefined = undefined;
+  private _parseOptions?: ParseOptions;
+  private _customValidationRules?: ValidationRule[];
   private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
     null;
   private _externalFragmentDefinitionsString: string | null = null;
@@ -108,11 +108,11 @@ export class LanguageService {
    * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
-    if (!this._schemas?.length) {
+    if (!this._schemas.length) {
       return;
     }
     if (this._schemas.length === 1) {
-      return this._schemaCache.get(this._schemas[0].uri);
+      return this._schemaCache.get(this._schemas[0]!.uri);
     }
     const schema = this._schemas.find(schemaConfig => {
       if (!schemaConfig.fileMatch) {
@@ -157,8 +157,7 @@ export class LanguageService {
   }
 
   /**
-   * override `schemas` config entirely
-   * @param schema {schemaString}
+   * Override `schemas` config entirely.
    */
   public async updateSchemas(schemas: SchemaConfig[]): Promise<void> {
     this._schemas = schemas;
@@ -166,8 +165,7 @@ export class LanguageService {
   }
 
   /**
-   * overwrite an existing schema config by Uri string
-   * @param schema {schemaString}
+   * Overwrite an existing schema config by Uri string.
    */
   public updateSchema(schema: SchemaConfig): void {
     const schemaIndex = this._schemas.findIndex(c => c.uri === schema.uri);
@@ -184,8 +182,7 @@ export class LanguageService {
   }
 
   /**
-   * add a schema to the config
-   * @param schema {schemaString}
+   * Add a schema to the config.
    */
   public addSchema(schema: SchemaConfig): void {
     this._schemas.push(schema);
@@ -213,7 +210,7 @@ export class LanguageService {
     position: IPosition,
   ) => {
     const schema = this.getSchemaForFile(uri);
-    if (!documentText || documentText.length < 1 || !schema?.schema) {
+    if (!documentText || !schema?.schema) {
       return [];
     }
     return getAutocompleteSuggestions(
@@ -227,10 +224,6 @@ export class LanguageService {
   };
   /**
    * get diagnostics using graphql validation
-   * @param uri
-   * @param documentText
-   * @param customRules
-   * @returns
    */
   public getDiagnostics = (
     uri: string,
@@ -257,7 +250,7 @@ export class LanguageService {
     options?: HoverConfig,
   ) => {
     const schema = this.getSchemaForFile(uri);
-    if (schema && documentText?.length > 3) {
+    if (schema && documentText.length > 3) {
       return getHoverInformation(
         schema.schema,
         documentText,
@@ -280,9 +273,12 @@ export class LanguageService {
     if (schema && documentText.length > 3) {
       try {
         const documentAST = this.parse(documentText);
-        const operationFacts = getOperationASTFacts(documentAST, schema.schema);
-        if (operationFacts?.variableToType) {
-          return getVariablesJSONSchema(operationFacts.variableToType, {
+        const { variableToType } = getOperationASTFacts(
+          documentAST,
+          schema.schema,
+        );
+        if (variableToType) {
+          return getVariablesJSONSchema(variableToType, {
             ...options,
             scalarSchemas: schema.customScalarSchemas,
           });

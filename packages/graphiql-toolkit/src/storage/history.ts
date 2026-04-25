@@ -6,7 +6,7 @@ import { QueryStore, QueryStoreItem } from './query';
 const MAX_QUERY_SIZE = 100000;
 
 export class HistoryStore {
-  queries: Array<QueryStoreItem>;
+  queries: QueryStoreItem[];
   history: QueryStore;
   favorite: QueryStore;
 

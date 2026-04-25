@@ -50,7 +50,7 @@ export const astroParser: SourceParser = async (text, uri, logger) => {
       `Could not parse the astro file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseAstroResult.errors) {
-      logger.info(String(error));
+      logger.info(error);
     }
     return null;
   }

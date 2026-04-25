@@ -1,5 +1,17 @@
 # cm6-graphql
 
+## 0.2.1
+
+### Patch Changes
+
+- [#3920](https://github.com/graphql/graphiql/pull/3920) [`c6fddac`](https://github.com/graphql/graphiql/commit/c6fddac4b0e639be846dd8a23ebfd3e334410178) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unneeded rollup/esbuild dev dependencies
+
+## 0.2.0
+
+### Minor Changes
+
+- [#3762](https://github.com/graphql/graphiql/pull/3762) [`76b3cc8`](https://github.com/graphql/graphiql/commit/76b3cc872dedd667504f58c9313a86bada7688d6) Thanks [@mavenskylab](https://github.com/mavenskylab)! - The cm6-graphql package currently specifies exact versions for its peer dependencies on @codemirror packages. This is causing conflicts when projects use newer versions of these packages, leading to multiple instances being installed.
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,56 @@
 # graphql-language-service-server
 
+## 2.14.8
+
+### Patch Changes
+
+- [#3975](https://github.com/graphql/graphiql/pull/3975) [`4375aa7`](https://github.com/graphql/graphiql/commit/4375aa7a16e875949840be6cb6e216d0abdd835b) Thanks [@benjie](https://github.com/benjie)! - fix `GraphQLCache._schemaMap` type, should be `LRUCache`
+
+## 2.14.7
+
+### Patch Changes
+
+- [#3964](https://github.com/graphql/graphiql/pull/3964) [`12cd5d7`](https://github.com/graphql/graphiql/commit/12cd5d7c8e89ed8ddfcc33267043f2107c770641) Thanks [@pleb](https://github.com/pleb)! - fix vs code extension setting graphql-config.dotEnvPath incorrect registration path
+
+## 2.14.6
+
+### Patch Changes
+
+- [#3954](https://github.com/graphql/graphiql/pull/3954) [`8ec7a77`](https://github.com/graphql/graphiql/commit/8ec7a77e77078f7cb3826263518c8df6ab16bc24) Thanks [@dimaMachina](https://github.com/dimaMachina)! - [lsp] Fix parsing of relay style locations in locateCommand results
+
+## 2.14.5
+
+### Patch Changes
+
+- [#3933](https://github.com/graphql/graphiql/pull/3933) [`38fdcdb`](https://github.com/graphql/graphiql/commit/38fdcdbc4bab5451638f56eae5a19062632afe93) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unnecessary string conversion in `logger.info(String(error))`
+
+## 2.14.4
+
+### Patch Changes
+
+- [#3913](https://github.com/graphql/graphiql/pull/3913) [`3b5c309`](https://github.com/graphql/graphiql/commit/3b5c309e71b381311a6e928db089f4fa48530b35) Thanks [@joshbode](https://github.com/joshbode)! - return `null` instead of an empty `contents` array when hover results are empty
+
+## 2.14.3
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+- Updated dependencies [[`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe)]:
+  - graphql-language-service@5.3.1
+
+## 2.14.2
+
+### Patch Changes
+
+- [#3883](https://github.com/graphql/graphiql/pull/3883) [`f8ac8cf`](https://github.com/graphql/graphiql/commit/f8ac8cf5f083d40258ae461144cca2c7b196d397) Thanks [@acao](https://github.com/acao)! - Bump vscode-graphql and LSP server for patch fixes
+
+## 2.14.1
+
+### Patch Changes
+
+- [#3861](https://github.com/graphql/graphiql/pull/3861) [`c5325dd`](https://github.com/graphql/graphiql/commit/c5325ddc30bfe4528c6a238be72ef6db6ae72795) Thanks [@motemen](https://github.com/motemen)! - fix parsing non-graphql documents
+
 ## 2.14.0
 
 ### Minor Changes

@@ -21,8 +21,3 @@ export const mockVariables2 = JSON.stringify({ string: 'string2' });
 
 export const mockHeaders1 = JSON.stringify({ foo: 'bar' });
 export const mockHeaders2 = JSON.stringify({ foo: 'baz' });
-
-export const mockOperationName1 = 'Test';
-export const mockOperationName2 = 'Test2';
-
-export const mockHistoryLabel1 = 'Test';

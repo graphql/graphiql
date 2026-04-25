@@ -1,4 +1,4 @@
-import { ComponentProps, FC, SVGProps } from 'react';
+import type { ComponentProps, FC, SVGProps } from 'react';
 
 import _ArgumentIcon from './argument.svg?react';
 import _ChevronDownIcon from './chevron-down.svg?react';
@@ -76,9 +76,9 @@ function generateIcon(
       .trimStart()
       .toLowerCase() + ' icon';
 
-  function IconComponent(props: ComponentProps<'svg'>) {
+  const IconComponent: FC<ComponentProps<'svg'>> = props => {
     return <RawComponent title={title} {...props} />;
-  }
+  };
 
   IconComponent.displayName = RawComponent.name;
   return IconComponent;

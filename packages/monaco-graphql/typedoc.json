@@ -1,0 +1,3 @@
+{
+  "entryPoints": ["src/monaco.contribution.ts"]
+}

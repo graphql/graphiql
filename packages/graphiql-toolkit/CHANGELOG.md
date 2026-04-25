@@ -1,5 +1,23 @@
 # @graphiql/toolkit
 
+## 0.11.3
+
+### Patch Changes
+
+- [#3970](https://github.com/graphql/graphiql/pull/3970) [`7054591`](https://github.com/graphql/graphiql/commit/70545912d1b3bb9e0c45e766a5c89896a9c4dfb7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - revert https://github.com/graphql/graphiql/pull/3946 to have support multiple embedded graphiql instances on the same page
+
+## 0.11.2
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+## 0.11.1
+
+### Patch Changes
+
+- [#3811](https://github.com/graphql/graphiql/pull/3811) [`5f2c3a4`](https://github.com/graphql/graphiql/commit/5f2c3a45906c332e07200b0008d0e5bf329a8ffa) Thanks [@acao](https://github.com/acao)! - Fix type export to prevent build time bugs
+
 ## 0.11.0
 
 ### Minor Changes

@@ -75,7 +75,7 @@ const MonacoGraphQLAPI = initializeMode({
   ],
 });
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -119,7 +119,7 @@ monaco.languages.graphql.setSchemaConfig([
   },
 ]);
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -156,7 +156,7 @@ import { initializeMode } from 'monaco-graphql/initializeMode';
 
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphql') {
       return new GraphQLWorker();
@@ -478,36 +478,47 @@ you'll want to create your own `my-graphql.worker.ts` file, and add your custom
 config such as `schemaLoader` to `createData`:
 
 ```ts
-import type { worker as WorkerNamespace } from 'monaco-editor';
-// @ts-expect-error - ignore missing types
-import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
-
+// my-graphql.worker.ts
+import type * as monaco from 'monaco-editor';
+import type { ICreateData } from 'monaco-graphql';
+// @ts-expect-error -- ignore missing types
+import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
+import { GraphQLError, ValidationRule } from 'graphql';
 
-import { myValidationRules } from './custom';
-
-self.onmessage = () => {
-  worker.initialize(
-    (
-      ctx: WorkerNamespace.IWorkerContext,
-      createData: monaco.languages.graphql.ICreateData,
-    ) => {
-      createData.languageConfig.customValidationRules = myValidationRules;
-      return new GraphQLWorker(ctx, createData);
+const RequireOperationNameRule: ValidationRule = context => {
+  return {
+    OperationDefinition(node) {
+      if (node.name) {
+        return;
+      }
+      context.reportError(
+        new GraphQLError('Oops, all operations must be named.', {
+          nodes: [node],
+        }),
+      );
     },
-  );
+  };
+};
+
+globalThis.onmessage = () => {
+  initialize((ctx: monaco.worker.IWorkerContext, createData: ICreateData) => {
+    createData.languageConfig.customValidationRules = [
+      RequireOperationNameRule,
+    ];
+    return new GraphQLWorker(ctx, createData);
+  });
 };
 ```
 
 then, in your application:
 
 ```ts
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
+// Vite query suffixes https://vite.dev/guide/features.html#import-with-query-suffixes
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import GraphQLWorker from './my-graphql.worker?worker';
 
-// specify the path to your language worker
-import GraphQLWorker from 'worker-loader!./my-graphql.worker';
-
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
   },
@@ -517,7 +528,7 @@ window.MonacoEnvironment = {
 or, if you have webpack configured for it:
 
 ```ts
-window.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
     return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
   },

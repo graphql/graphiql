@@ -18,6 +18,7 @@ const RESTRICTED_IMPORTS = [
     name: 'monaco-editor',
     message:
       '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+    allowTypeImports: true,
   },
 ];
 
@@ -27,10 +28,17 @@ module.exports = {
   ignorePatterns: [
     'react-app-env.d.ts',
     'next-env.d.ts',
+    '**/vitest.config.*',
     'changesets/**/*.md',
     '**/CHANGELOG.md',
     'functions/*',
     'packages/vscode-graphql-syntax/tests/__fixtures__/*',
+    // symlinks
+    'packages/graphiql-react/__mocks__/monaco-editor.ts',
+    'packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts',
+    'packages/graphiql-plugin-history/__mocks__/zustand.ts',
+    'packages/graphiql-plugin-history/__mocks__/monaco-editor.ts',
   ],
   overrides: [
     {
@@ -57,11 +65,11 @@ module.exports = {
         'plugin:import-x/recommended',
         'plugin:import-x/typescript',
         'plugin:react/recommended',
-        'plugin:react-hooks/recommended',
+        'plugin:react-hooks/recommended-legacy',
         'plugin:react/jsx-runtime',
         'prettier',
       ],
-      plugins: ['promise', 'sonarjs', 'unicorn', 'sonar', '@shopify'],
+      plugins: ['promise', 'sonarjs', 'unicorn', '@shopify'],
       globals: {
         atom: false,
         document: false,
@@ -105,7 +113,7 @@ module.exports = {
         'no-extend-native': 'error',
         'no-extra-bind': 'error',
         'no-extra-label': 'error',
-        'no-floating-decimal': 'off', // prettier --list-different
+        'no-floating-decimal': 'off', // handled by formatter
         'no-implicit-coercion': 'error',
         'no-implicit-globals': 'off',
         'no-implied-eval': 'error',
@@ -128,6 +136,25 @@ module.exports = {
             object: 'window',
             property: 'localStorage',
             message: 'Use `localStorage` instead',
+          },
+          {
+            object: 'window',
+            property: 'location',
+            message: 'Use `location` instead',
+          },
+          {
+            object: 'window',
+            property: 'navigator',
+            message: 'Use `navigator` instead',
+          },
+          {
+            object: 'window',
+            property: 'getComputedStyle',
+            message: 'Use `getComputedStyle` instead',
+          },
+          {
+            object: 'self',
+            message: 'Use `globalThis` instead',
           },
         ],
         'no-return-assign': 'error',
@@ -158,7 +185,7 @@ module.exports = {
         'init-declarations': 'off',
         'no-catch-shadow': 'error',
         'no-label-var': 'error',
-        'no-restricted-globals': 'off',
+        'no-restricted-globals': ['error', 'stop'],
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': 'error',
         'no-undef-init': 'off',
@@ -167,9 +194,8 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': [
           'error',
           {
-            varsIgnorePattern: '^React$',
+            varsIgnorePattern: '^(React|_)', // allow underscores in destructuring
             argsIgnorePattern: '^_',
-            ignoreRestSiblings: true,
           },
         ],
 
@@ -200,7 +226,7 @@ module.exports = {
         'id-match': 'off',
         indent: 'off',
         'line-comment-position': 'off',
-        'linebreak-style': 'off', // prettier --list-different
+        'linebreak-style': 'off', // handled by formatter
         'lines-around-comment': 'off',
         'lines-around-directive': 'off',
         'max-depth': 'off',
@@ -328,12 +354,20 @@ module.exports = {
         '@typescript-eslint/no-unused-expressions': 'error',
         'sonarjs/no-small-switch': 'error',
         'sonarjs/no-duplicated-branches': 'error',
-        'sonar/prefer-promise-shorthand': 'error',
-        'sonar/no-dead-store': 'error',
+        'sonarjs/prefer-promise-shorthand': 'error',
+        'sonarjs/no-dead-store': 'error',
+        'sonarjs/void-use': 'error',
         'unicorn/prefer-node-protocol': 'error',
         'import-x/no-unresolved': [
           'error',
-          { ignore: ['^node:', '\\.svg\\?react$', 'vitest/config'] },
+          {
+            ignore: [
+              '^node:',
+              '\\.svg\\?react$',
+              'vitest/config',
+              './vite.config.mjs',
+            ],
+          },
         ],
         'no-extra-boolean-cast': [
           'error',
@@ -341,6 +375,8 @@ module.exports = {
         ],
         'unicorn/no-length-as-slice-end': 'error',
         'unicorn/prefer-string-replace-all': 'error',
+        'unicorn/prefer-array-some': 'error',
+        // '@typescript-eslint/prefer-for-of': 'error', TODO
         'unicorn/no-hex-escape': 'off', // TODO: enable
         // doesn't catch a lot of cases; we use ESLint builtin `no-restricted-syntax` to forbid `.keyCode`
         'unicorn/prefer-keyboard-event-key': 'off',
@@ -349,7 +385,15 @@ module.exports = {
         'unicorn/prefer-dom-node-text-content': 'error',
         quotes: ['error', 'single', { avoidEscape: true }], // Matches Prettier, but also replaces backticks with single quotes
         // TODO: Fix all errors for the following rules included in recommended config
-        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
+        'import-x/no-named-as-default-member': 'off',
+      },
+    },
+    {
+      files: ['packages/{monaco-graphql,graphiql*}/**/*.{ts,tsx,mts,cts}'],
+      excludedFiles: ['packages/graphiql-toolkit/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unnecessary-condition': 'error',
       },
     },
     {
@@ -358,13 +402,19 @@ module.exports = {
       excludedFiles: ['**/*.{md,mdx}/*.{ts,tsx}'],
       // extends: ['plugin:@typescript-eslint/recommended-type-checked'],
       rules: {
+        // '@typescript-eslint/no-redundant-type-constituents': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/non-nullable-type-assertion-style': 'error',
         '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/no-duplicate-type-constituents': 'error',
+        '@typescript-eslint/no-unnecessary-type-conversion': 'error',
+        // '@typescript-eslint/await-thenable': 'error', // TODO
         // TODO: Fix all errors for the following rules included in recommended config
+        '@typescript-eslint/no-deprecated': 'off',
+        '@typescript-eslint/no-unsafe-function-type': 'off',
+
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
@@ -374,17 +424,44 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
       },
       parserOptions: {
-        project: [
-          'packages/*/tsconfig.json',
-          'examples/*/tsconfig.json',
-          'packages/graphiql/cypress/tsconfig.json',
-          'tsconfig.eslint.json',
-        ],
+        projectService: {
+          allowDefaultProject: [
+            'examples/monaco-graphql-react-vite/vite.config.ts',
+            'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax}/vitest.config.mts',
+
+            'packages/cm6-graphql/__tests__/test.spec.ts',
+            'packages/graphiql/cypress.config.ts',
+            'packages/vscode-graphql-syntax/tests/*.spec.ts',
+            'packages/graphql-language-service-cli/src/__tests__/*.test.ts',
+            'packages/monaco-graphql/test/monaco-editor.test.ts',
+
+            'packages/codemirror-graphql/setup-files.ts',
+            'packages/codemirror-graphql/src/__tests__/testSchema.ts',
+            'packages/codemirror-graphql/src/__tests__/*.test.ts',
+            'packages/codemirror-graphql/src/{variables,utils,results}/__tests__/*.test.ts',
+
+            'packages/graphql-language-service/benchmark/index.ts',
+            'packages/graphql-language-service/src/{utils,parser,interface}/__tests__/*.test.ts',
+            'packages/graphql-language-service/src/parser/__tests__/OnlineParserUtils.ts',
+
+            'packages/graphql-language-service-server/src/__tests__/*.{spec,test}.ts',
+            'packages/graphql-language-service-server/src/__tests__/__utils__/utils.ts',
+            'packages/graphql-language-service-server/src/__tests__/__utils__/MockProject.ts',
+
+            'packages/graphiql-react/src/setup-workers/*.ts',
+
+            'packages/vscode-graphql-syntax/tests/__utilities__/serializer.ts',
+            'packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts',
+
+            'resources/patch-monaco-editor-type.mts',
+          ],
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 100,
+        },
       },
     },
     // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
-    // cypress clashes with jest expect()
+    // cypress clashes with vitest expect()
     {
       files: ['**/cypress/**'],
       extends: 'plugin:cypress/recommended',
@@ -399,10 +476,16 @@ module.exports = {
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
-      extends: ['plugin:jest/recommended'],
+      plugins: ['vitest'],
       rules: {
-        'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/no-identical-title': 'error',
+        'vitest/no-commented-out-tests': 'error',
+        'vitest/valid-title': 'error',
+        'vitest/valid-expect': 'error',
+        'vitest/valid-describe-callback': 'error',
+        'vitest/no-import-node-test': 'error',
+        'vitest/no-disabled-tests': 'warn',
       },
     },
     {
@@ -424,7 +507,14 @@ module.exports = {
     },
     {
       // Rule for ignoring imported dependencies from tests files
-      files: ['**/__tests__/**', 'webpack.config.js', '**/tests/**'],
+      files: [
+        '**/__tests__/**',
+        'webpack.config.js',
+        '**/tests/**',
+        'test.config.js',
+        'vitest.config.mts',
+        'setup-files.ts',
+      ],
       rules: {
         'import-x/no-extraneous-dependencies': 'off',
       },
@@ -440,11 +530,26 @@ module.exports = {
       },
     },
     {
-      // Rule prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
+      // Rule to prefer await to then without React packages because it's ugly to have `async IIFE` inside `useEffect`
       files: ['packages/**'],
       excludedFiles: ['packages/graphiql/**', 'packages/graphiql-react/**'],
       rules: {
         'promise/prefer-await-to-then': 'error',
+      },
+    },
+    {
+      files: ['packages/{graphiql-react,graphiql}/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          ...RESTRICTED_IMPORTS,
+          {
+            name: 'react',
+            importNames: ['memo', 'useCallback', 'useMemo'],
+          },
+        ],
+        'react-hooks/react-compiler': 'error',
+        '@typescript-eslint/no-deprecated': 'error',
       },
     },
     {
@@ -473,6 +578,12 @@ module.exports = {
       },
     },
     {
+      files: ['**/*.d.ts'],
+      rules: {
+        'no-var': 'off',
+      },
+    },
+    {
       // ❗ALWAYS LAST
       // Rules for codeblocks inside Markdown/MDX
       files: ['**/*.{md,mdx}/*.{js,jsx,ts,tsx}'],
@@ -484,8 +595,10 @@ module.exports = {
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         'react-hooks/rules-of-hooks': 'off',
-        'sonar/no-dead-store': 'off',
+        'sonarjs/no-dead-store': 'off',
         '@typescript-eslint/no-restricted-imports': 'off',
+        '@typescript-eslint/no-unnecessary-condition': 'off',
+        '@typescript-eslint/no-deprecated': 'off',
       },
     },
   ],
