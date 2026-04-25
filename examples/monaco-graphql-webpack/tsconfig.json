@@ -7,7 +7,7 @@
     "composite": true,
     "baseUrl": ".",
     "strictPropertyInitialization": false,
-    "types": ["node", "jest"],
+    "types": ["node"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
     "lib": ["dom", "ESNext"],
     "moduleResolution": "node"

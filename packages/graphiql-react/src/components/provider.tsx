@@ -44,7 +44,8 @@ import {
 import { getDefaultTabState } from '../utility/tabs';
 
 interface GraphiQLProviderProps
-  extends EditorProps,
+  extends
+    EditorProps,
     ExecutionProps,
     PluginProps,
     SchemaProps,

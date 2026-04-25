@@ -28,6 +28,7 @@ module.exports = {
   ignorePatterns: [
     'react-app-env.d.ts',
     'next-env.d.ts',
+    '**/vitest.config.*',
     'changesets/**/*.md',
     '**/CHANGELOG.md',
     'functions/*',
@@ -112,7 +113,7 @@ module.exports = {
         'no-extend-native': 'error',
         'no-extra-bind': 'error',
         'no-extra-label': 'error',
-        'no-floating-decimal': 'off', // prettier --list-different
+        'no-floating-decimal': 'off', // handled by formatter
         'no-implicit-coercion': 'error',
         'no-implicit-globals': 'off',
         'no-implied-eval': 'error',
@@ -225,7 +226,7 @@ module.exports = {
         'id-match': 'off',
         indent: 'off',
         'line-comment-position': 'off',
-        'linebreak-style': 'off', // prettier --list-different
+        'linebreak-style': 'off', // handled by formatter
         'lines-around-comment': 'off',
         'lines-around-directive': 'off',
         'max-depth': 'off',
@@ -447,8 +448,12 @@ module.exports = {
             'packages/graphql-language-service-server/src/__tests__/__utils__/utils.ts',
             'packages/graphql-language-service-server/src/__tests__/__utils__/MockProject.ts',
 
+            'packages/graphiql-react/src/setup-workers/*.ts',
+
             'packages/vscode-graphql-syntax/tests/__utilities__/serializer.ts',
             'packages/vscode-graphql-syntax/tests/__utilities__/utilities.ts',
+
+            'resources/patch-monaco-editor-type.mts',
           ],
           maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 100,
         },
@@ -456,7 +461,7 @@ module.exports = {
     },
     // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
-    // cypress clashes with jest expect()
+    // cypress clashes with vitest expect()
     {
       files: ['**/cypress/**'],
       extends: 'plugin:cypress/recommended',
@@ -471,10 +476,16 @@ module.exports = {
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
-      extends: ['plugin:jest/recommended'],
+      plugins: ['vitest'],
       rules: {
-        'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
+        'vitest/no-identical-title': 'error',
+        'vitest/no-commented-out-tests': 'error',
+        'vitest/valid-title': 'error',
+        'vitest/valid-expect': 'error',
+        'vitest/valid-describe-callback': 'error',
+        'vitest/no-import-node-test': 'error',
+        'vitest/no-disabled-tests': 'warn',
       },
     },
     {
