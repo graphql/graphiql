@@ -511,6 +511,7 @@ module.exports = {
         '**/__tests__/**',
         'webpack.config.js',
         '**/tests/**',
+        '**/test/**',
         'test.config.js',
         'vitest.config.mts',
         'setup-files.ts',
