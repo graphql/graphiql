@@ -7,6 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+import { describe, expect, it } from 'vitest';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { parse } from 'graphql';

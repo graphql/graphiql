@@ -12,6 +12,7 @@ import 'codemirror/addon/lint/lint';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { GraphQLError, OperationDefinitionNode, version } from 'graphql';
+import { describe, expect, it } from 'vitest';
 import '../lint';
 import '../mode';
 import { TestSchema } from './testSchema';

@@ -5,6 +5,7 @@
  * @see https://zustand.docs.pmnd.rs/guides/testing#vitest
  */
 
+import { afterEach } from 'vitest';
 import { act } from '@testing-library/react';
 // eslint-disable-next-line import-x/no-extraneous-dependencies
 import {

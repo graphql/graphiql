@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { defineWebWorkers } from '@vitest/web-worker/pure';
 /**
  * Fixes TypeError: Cannot read properties of null (reading 'webkitBackingStorePixelRatio')

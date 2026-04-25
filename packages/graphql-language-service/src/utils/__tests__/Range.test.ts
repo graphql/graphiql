@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
