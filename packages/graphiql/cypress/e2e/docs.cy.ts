@@ -98,7 +98,6 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
 
 let describeOrSkip = describe.skip;
 
-// TODO: disable when defer/stream is merged to graphql
 if (!version.includes('15.5')) {
   describeOrSkip = describe;
 }
@@ -118,7 +117,7 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     );
     cy.get('.graphiql-markdown-deprecation').should(
       'have.text',
-      'deprecated argument\n',
+      'Argument "deprecatedArg" is deprecated. Use "string" instead.\n',
     );
   });
 });

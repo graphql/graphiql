@@ -1,5 +1,51 @@
 # cm6-graphql
 
+## 0.2.1
+
+### Patch Changes
+
+- [#3920](https://github.com/graphql/graphiql/pull/3920) [`c6fddac`](https://github.com/graphql/graphiql/commit/c6fddac4b0e639be846dd8a23ebfd3e334410178) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unneeded rollup/esbuild dev dependencies
+
+## 0.2.0
+
+### Minor Changes
+
+- [#3762](https://github.com/graphql/graphiql/pull/3762) [`76b3cc8`](https://github.com/graphql/graphiql/commit/76b3cc872dedd667504f58c9313a86bada7688d6) Thanks [@mavenskylab](https://github.com/mavenskylab)! - The cm6-graphql package currently specifies exact versions for its peer dependencies on @codemirror packages. This is causing conflicts when projects use newer versions of these packages, leading to multiple instances being installed.
+
+## 0.1.1
+
+### Patch Changes
+
+- [#3751](https://github.com/graphql/graphiql/pull/3751) [`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893) Thanks [@dimaMachina](https://github.com/dimaMachina)! - replace deprecated `navigator.platform` with `navigator.userAgent`
+
+  fix placeholder `⌘ K` in doc explorer search input for non mac devices, replace by `Ctrl K`
+
+## 0.1.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - graphql-language-service@5.3.0
+
+## 0.0.15
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service@5.2.1
+
 ## 0.0.14
 
 ### Patch Changes

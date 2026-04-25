@@ -37,14 +37,3 @@ type Example {
   GRAPHQL;
 ?>
 ```
-
-```ruby
- it "Should delimit queries" do
-    query3 = <<~'GRAPHQL'
-    {
-        datasets(q: { idEq: 3 }) { id, daylight }
-    }
-    GRAPHQL
-end
-
-```

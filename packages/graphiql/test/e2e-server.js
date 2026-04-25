@@ -6,47 +6,73 @@
  */
 
 /* eslint-disable no-console */
-const express = require('express');
-const path = require('node:path');
-const { createHandler } = require('graphql-http/lib/use/express');
-const { GraphQLError } = require('graphql');
-const schema = require('./schema');
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import express from 'express';
+import { useServer } from 'graphql-ws/use/ws';
+import { WebSocketServer } from 'ws';
+import {
+  getGraphQLParameters,
+  processRequest,
+  sendResult,
+} from 'graphql-helix'; // update when `graphql-http` is upgraded to support multipart requests for incremental delivery https://github.com/graphql/graphiql/pull/3682#discussion_r1715545279
+import * as graphql from 'graphql';
+
+import { createSchema } from './schema.js';
+import { createExecute } from './execute.js';
+
+const schema = createSchema(graphql);
+const customExecute = createExecute(graphql);
+
 const app = express();
-const { schema: badSchema } = require('./bad-schema');
-const WebSocketsServer = require('./afterDevServer');
+
+async function handler(req, res) {
+  const request = {
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    query: req.query,
+  };
+
+  const { operationName, query, variables } = getGraphQLParameters(request);
+
+  const result = await processRequest({
+    operationName,
+    query,
+    variables,
+    request,
+    schema,
+    execute: customExecute,
+  });
+
+  sendResult(result, res);
+}
 
 // Server
-app.post('/graphql', createHandler({ schema }));
+app.use(express.json());
 
-app.get(
-  '/graphql',
-  createHandler({
-    schema,
-  }),
-);
+app.post('/graphql', handler);
+app.get('/graphql', handler);
 
-app.post('/bad/graphql', (_req, res, next) => {
-  res.json({ data: badSchema });
-  next();
-});
+// On CI we test the UMD build
+if (process.env.CI === 'true') {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20
+  app.use(express.static(path.join(__dirname, '..')));
+} else {
+  app.get('/', (req, res) => {
+    res.redirect('http://localhost:5173');
+  });
+}
 
-app.post('/http-error/graphql', (_req, res, next) => {
-  res.status(502).send('Bad Gateway');
-  next();
-});
+// messy but it allows close
+const server = createServer(app);
 
-app.post('/graphql-error/graphql', (_req, res, next) => {
-  res.json({ errors: [new GraphQLError('Something unexpected happened...')] });
-  next();
-});
-
-app.use(express.static(path.resolve(__dirname, '../')));
-app.use('index.html', express.static(path.resolve(__dirname, '../dev.html')));
-
-app.listen(process.env.PORT || 0, function () {
+server.listen(process.env.PORT || 3100, function () {
   const { port } = this.address();
 
-  console.log(`Started on http://localhost:${port}/`);
+  console.log(`Started on http://localhost:${port}`);
   console.log('PID', process.pid);
 
   process.once('SIGINT', () => {
@@ -57,4 +83,10 @@ app.listen(process.env.PORT || 0, function () {
   });
 });
 
-WebSocketsServer();
+const wsServer = new WebSocketServer({
+  path: '/subscriptions',
+  port: 8081,
+});
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+useServer({ schema }, wsServer);

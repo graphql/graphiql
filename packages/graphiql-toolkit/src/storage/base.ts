@@ -64,13 +64,13 @@ export class StorageAPI {
       this.storage = null;
     } else {
       this.storage = {
-        getItem: window.localStorage.getItem.bind(window.localStorage),
-        setItem: window.localStorage.setItem.bind(window.localStorage),
-        removeItem: window.localStorage.removeItem.bind(window.localStorage),
+        getItem: localStorage.getItem.bind(localStorage),
+        setItem: localStorage.setItem.bind(localStorage),
+        removeItem: localStorage.removeItem.bind(localStorage),
 
         get length() {
           let keys = 0;
-          for (const key in window.localStorage) {
+          for (const key in localStorage) {
             if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
               keys += 1;
             }
@@ -80,9 +80,9 @@ export class StorageAPI {
 
         clear() {
           // We only want to clear the namespaced items
-          for (const key in window.localStorage) {
+          for (const key in localStorage) {
             if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
-              window.localStorage.removeItem(key);
+              localStorage.removeItem(key);
             }
           }
         },

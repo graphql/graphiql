@@ -42,7 +42,7 @@ declare module 'graphiql-explorer' {
       string2: string;
       variable: string;
       atom: string;
-    } | null;
+    };
     arrowOpen?: ReactNode;
     arrowClosed?: ReactNode;
     checkboxChecked?: ReactNode;
@@ -51,8 +51,8 @@ declare module 'graphiql-explorer' {
       explorerActionsStyle?: CSSProperties;
       buttonStyle?: CSSProperties;
       actionButtonStyle?: CSSProperties;
-    } | null;
-    showAttribution: boolean;
+    };
+    showAttribution?: boolean;
     hideActions?: boolean;
     externalFragments?: FragmentDefinitionNode[];
   };

@@ -97,11 +97,11 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
           ? state.prevState.kind === 'Field'
             ? info.fieldDef
             : state.prevState.kind === 'Directive'
-            ? info.directiveDef
-            : state.prevState.kind === 'AliasedField'
-            ? state.prevState.name &&
-              getFieldDef(schema, info.parentType, state.prevState.name)
-            : null
+              ? info.directiveDef
+              : state.prevState.kind === 'AliasedField'
+                ? state.prevState.name &&
+                  getFieldDef(schema, info.parentType, state.prevState.name)
+                : null
           : null;
         info.argDefs = parentDef ? (parentDef.args as GraphQLArgument[]) : null;
         break;
@@ -147,6 +147,8 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
             ? info.objectFieldDefs[state.name]
             : null;
         info.inputType = objectField?.type;
+        // @ts-expect-error
+        info.fieldDef = objectField;
         break;
       case 'NamedType':
         info.type = state.name ? schema.getType(state.name) : null;

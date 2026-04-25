@@ -18,13 +18,13 @@ import { NoopLogger } from './Logger';
 // Check the uri to determine the file type (JavaScript/GraphQL).
 // If .js file, either return the parsed query/range or null if GraphQL queries
 // are not found.
-export function parseDocument(
+export async function parseDocument(
   text: string,
   uri: string,
   fileExtensions: ReadonlyArray<SupportedExtensionsEnum> = DEFAULT_SUPPORTED_EXTENSIONS,
   graphQLFileExtensions: string[] = DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
   logger: Logger | NoopLogger = new NoopLogger(),
-): CachedContent[] {
+): Promise<CachedContent[]> {
   // Check if the text content includes a GraphQL query.
   // If the text doesn't include GraphQL queries, do not proceed.
   const ext = extname(
@@ -35,7 +35,7 @@ export function parseDocument(
   }
 
   if (fileExtensions.includes(ext)) {
-    const templates = findGraphQLTags(text, ext, uri, logger);
+    const templates = await findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
   if (graphQLFileExtensions.includes(ext)) {

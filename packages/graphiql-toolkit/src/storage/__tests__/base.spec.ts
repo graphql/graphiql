@@ -70,7 +70,7 @@ describe('StorageAPI', () => {
   });
 
   it('returns any error while setting a value', () => {
-    // @ts-ignore
+    // @ts-expect-error
     const throwingStorage = new StorageAPI({
       setItem() {
         throw new DOMException('Terrible Error');
@@ -79,12 +79,12 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result.error!.message).toEqual('Error: Terrible Error');
     expect(result.isQuotaError).toBe(false);
   });
 
   it('returns isQuotaError to true if isQuotaError is thrown', () => {
-    // @ts-ignore
+    // @ts-expect-error
     const throwingStorage = new StorageAPI({
       setItem() {
         throw new DOMException('Terrible Error', 'QuotaExceededError');
@@ -93,7 +93,7 @@ describe('StorageAPI', () => {
     });
     const result = throwingStorage.set('key', 'value');
 
-    expect(result.error.message).toEqual('Terrible Error');
+    expect(result.error!.message).toEqual('QuotaExceededError: Terrible Error');
     expect(result.isQuotaError).toBe(true);
   });
 });

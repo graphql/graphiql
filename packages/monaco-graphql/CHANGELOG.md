@@ -1,5 +1,120 @@
 # Change Log
 
+## 1.7.3
+
+### Patch Changes
+
+- [#4133](https://github.com/graphql/graphiql/pull/4133) [`1bc6568`](https://github.com/graphql/graphiql/commit/1bc6568da947394c216342ae75fb509fdbf03390) Thanks [@dimaMachina](https://github.com/dimaMachina)! - to fix esm.sh example we should pin `monaco-editor` peer dependency to versions `≥ 0.20.0 and < 0.53`, since `monaco-editor@^0.53.0` isn't supported yet with `monaco-graphql`
+
+## 1.7.2
+
+### Patch Changes
+
+- [#4071](https://github.com/graphql/graphiql/pull/4071) [`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(graphql-language-service): export `getContextAtPosition`
+  feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
+
+  When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
+
+  ```diff
+  -import dynamic from 'next/dynamic'
+  -const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  -  ssr: false
+  -})
+  +import { GraphiQL } from 'graphiql'
+  ```
+
+- Updated dependencies [[`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd)]:
+  - graphql-language-service@5.5.0
+
+## 1.7.1
+
+### Patch Changes
+
+- [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
+
+  - `BaseSchemaConfig`
+  - `IDisposable`
+  - `JSONDiagnosticOptions`
+  - `IEvent`
+  - `FilePointer`
+
+## 1.7.1-rc.0
+
+### Patch Changes
+
+- [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
+
+  - `BaseSchemaConfig`
+  - `IDisposable`
+  - `JSONDiagnosticOptions`
+  - `IEvent`
+  - `FilePointer`
+
+## 1.7.0
+
+### Minor Changes
+
+- [#3996](https://github.com/graphql/graphiql/pull/3996) [`662c143`](https://github.com/graphql/graphiql/commit/662c1434932de12f1d213992c2b3bc85d5d38370) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support monaco-editor 0.52
+  - remove unnecessary conditions
+  - render Markdown in completion popup descriptions
+
+## 1.6.2
+
+### Patch Changes
+
+- [#3983](https://github.com/graphql/graphiql/pull/3983) [`403dfc2`](https://github.com/graphql/graphiql/commit/403dfc21c61c9c07fce00607c1416a449bc0d57f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused `MonacoCompletionItem` type
+
+  fix `types` field in `package.json`, should be first, before `import` or `require` fields
+
+  fixed `monaco-graphql` severity, it was hardcoded to `5` which is not valid value of monaco severity
+
+- Updated dependencies [[`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7)]:
+  - graphql-language-service@5.4.0
+
+## 1.6.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+- Updated dependencies [[`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe)]:
+  - graphql-language-service@5.3.1
+
+## 1.6.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - graphql-language-service@5.3.0
+
+## 1.5.3
+
+### Patch Changes
+
+- [#3637](https://github.com/graphql/graphiql/pull/3637) [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update eslint plugins and fix errors
+
+- Updated dependencies [[`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d)]:
+  - graphql-language-service@5.2.2
+
+## 1.5.2
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service@5.2.1
+
 ## 1.5.1
 
 ### Patch Changes

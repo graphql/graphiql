@@ -26,7 +26,14 @@ export const completion = graphqlLanguage.data.of({
     }
     const val = ctx.state.doc.toString();
     const pos = offsetToPos(ctx.state.doc, ctx.pos);
-    const results = getAutocompleteSuggestions(schema, val, pos);
+    const results = getAutocompleteSuggestions(
+      schema,
+      val,
+      pos,
+      undefined,
+      undefined,
+      opts?.autocompleteOptions,
+    );
 
     if (results.length === 0) {
       return null;

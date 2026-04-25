@@ -6,7 +6,11 @@ const logger = console;
 const isWatchMode = arg === '--watch';
 
 build({
-  entryPoints: ['src/extension.ts', 'src/server/index.ts'],
+  entryPoints: [
+    'src/extension.ts',
+    'src/serverIpc/index.ts',
+    'src/serverStdio/index.ts',
+  ],
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
@@ -14,9 +18,6 @@ build({
   format: 'cjs',
   sourcemap: true,
   external: [
-    // Avoid bundling @astrojs/compiler since esbuild can't handle WASM correctly
-    '@astrojs/compiler',
-    'astrojs-compiler-sync',
     // Avoid bundling @vue/compiler-sfc's dynamic dependencies
     'squirrelly',
     'teacup',
@@ -46,6 +47,7 @@ build({
     'twing',
     'dot',
     'bracket-template',
+    'handlebars',
     'vscode',
     'velocityjs',
     'dustjs-linkedin',

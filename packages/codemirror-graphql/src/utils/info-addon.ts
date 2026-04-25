@@ -10,13 +10,19 @@
 import CodeMirror from 'codemirror';
 import { GraphQLInfoOptions } from '../info';
 
+// CodeMirror's option system accepts the option value as the declared shape,
+// a boolean to enable/disable with defaults, or a function used as the render
+// helper. The handler below handles all three cases, so the parameter types
+// are widened accordingly.
+type GraphQLInfoOptionValue = GraphQLInfoOptions | boolean | (() => string);
+
 CodeMirror.defineOption(
   'info',
   false,
   (
     cm: CodeMirror.Editor,
-    options: GraphQLInfoOptions,
-    old?: GraphQLInfoOptions,
+    options: GraphQLInfoOptionValue,
+    old?: GraphQLInfoOptionValue,
   ) => {
     if (old && old !== CodeMirror.Init) {
       const oldOnMouseOver = cm.state.info.onMouseOver;
@@ -33,14 +39,14 @@ CodeMirror.defineOption(
   },
 );
 
-function createState(options: GraphQLInfoOptions) {
+function createState(options: GraphQLInfoOptionValue) {
   return {
     options:
       options instanceof Function
         ? { render: options }
         : options === true
-        ? {}
-        : options,
+          ? {}
+          : options,
   };
 }
 
@@ -119,17 +125,19 @@ function showPopup(cm: CodeMirror.Editor, box: DOMRect, info: HTMLDivElement) {
   document.body.append(popup);
 
   const popupBox = popup.getBoundingClientRect();
-  const popupStyle = window.getComputedStyle(popup);
+  const { marginLeft, marginRight, marginBottom, marginTop } =
+    getComputedStyle(popup);
+
   const popupWidth =
     popupBox.right -
     popupBox.left +
-    parseFloat(popupStyle.marginLeft) +
-    parseFloat(popupStyle.marginRight);
+    parseFloat(marginLeft) +
+    parseFloat(marginRight);
   const popupHeight =
     popupBox.bottom -
     popupBox.top +
-    parseFloat(popupStyle.marginTop) +
-    parseFloat(popupStyle.marginBottom);
+    parseFloat(marginTop) +
+    parseFloat(marginBottom);
 
   let topPos = box.bottom;
   if (

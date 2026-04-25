@@ -1,11 +1,23 @@
 # GraphiQL CDN Example
 
-This example uses the CDN bundles to show a simple graphiql example, with explorer plugin.
+This is a simple example of using **GraphiQL** directly from a CDN, including the [GraphiQL Explorer plugin](../../packages/graphiql-plugin-explorer/README.md).
 
-It uses the latest version published on npm, via unpkg
+It loads the latest GraphiQL version from [esm.sh](https://esm.sh), an ESM-based CDN that serves npm packages as ES modules.
 
-### Setup
+## Setup
 
-none required, just open the index.html!
+No installation or build step is required — just open the `index.html` file in your browser:
 
-`open index.html` in osx `firefox index.html` or `chromium index.html` in linux
+- macOS:
+
+  ```sh
+  open index.html
+  ```
+
+- Linux:
+
+  ```sh
+  firefox index.html
+  # or
+  chromium index.html
+  ```

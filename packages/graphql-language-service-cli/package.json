@@ -1,14 +1,14 @@
 {
   "name": "graphql-language-service-cli",
-  "version": "3.3.33",
+  "version": "3.5.0",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (https://leebyron.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql",
+    "url": "https://github.com/graphql/graphiql",
     "directory": "packages/graphql-language-service-cli"
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-cli#readme",
@@ -24,6 +24,10 @@
     "dist",
     "src"
   ],
+  "scripts": {
+    "types:check": "tsc --noEmit",
+    "test": "vitest run"
+  },
   "keywords": [
     "graphql",
     "graphql-language-service",
@@ -32,16 +36,16 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "@types/yargs": "16.0.5",
-    "graphql-language-service": "^5.2.0",
-    "graphql-language-service-server": "^2.12.0",
+    "graphql-language-service": "^5.3.0",
+    "graphql-language-service-server": "^2.14.0",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "graphql": "^16.8.1"
+    "graphql": "^16.9.0"
   }
 }

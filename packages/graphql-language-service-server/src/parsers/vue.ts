@@ -1,4 +1,4 @@
-import { parse, compileScript, SFCScriptBlock } from '@vue/compiler-sfc';
+import { parse, compileScript, SFCScriptBlock } from 'vue/compiler-sfc';
 import { RangeMapper, SourceParser } from './types';
 import { Position, Range } from 'graphql-language-service';
 import { BlockStatement, Statement } from '@babel/types';
@@ -8,8 +8,8 @@ type ParseVueSFCResult =
   | {
       type: 'ok';
       scriptOffset: number;
-      scriptSetupAst?: import('@babel/types').Statement[];
-      scriptAst?: import('@babel/types').Statement[];
+      scriptSetupAst?: Statement[];
+      scriptAst?: Statement[];
     };
 
 export function parseVueSFC(source: string): ParseVueSFCResult {
@@ -40,8 +40,8 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
   return {
     type: 'ok',
     scriptOffset: scriptBlock.loc.start.line - 1,
-    scriptSetupAst: scriptBlock?.scriptSetupAst as Statement[],
-    scriptAst: scriptBlock?.scriptAst as BlockStatement[],
+    scriptSetupAst: scriptBlock.scriptSetupAst,
+    scriptAst: scriptBlock.scriptAst as BlockStatement[],
   };
 }
 
@@ -49,11 +49,11 @@ export const vueParser: SourceParser = (text, uri, logger) => {
   const asts = [];
   const parseVueSFCResult = parseVueSFC(text);
   if (parseVueSFCResult.type === 'error') {
-    logger.error(
+    logger.info(
       `Could not parse the vue file at ${uri} to extract the graphql tags:`,
     );
     for (const error of parseVueSFCResult.errors) {
-      logger.error(String(error));
+      logger.info(String(error));
     }
     return null;
   }

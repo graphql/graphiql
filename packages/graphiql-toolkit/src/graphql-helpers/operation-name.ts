@@ -5,7 +5,7 @@ import { OperationDefinitionNode } from 'graphql';
  * operations, determine what the next selected operation should be.
  */
 export function getSelectedOperationName(
-  prevOperations?: OperationDefinitionNode[] | undefined,
+  prevOperations?: OperationDefinitionNode[],
   prevSelectedOperationName?: string,
   operations?: OperationDefinitionNode[],
 ) {

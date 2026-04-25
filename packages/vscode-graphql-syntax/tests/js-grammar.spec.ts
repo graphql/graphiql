@@ -23,4 +23,8 @@ describe('inline.graphql grammar', () => {
     const result = await tokenizeFile('__fixtures__/test.svelte', scope);
     expect(result).toMatchSnapshot();
   });
+  it('should tokenize a simple astro file', async () => {
+    const result = await tokenizeFile('__fixtures__/test.astro', scope);
+    expect(result).toMatchSnapshot();
+  });
 });

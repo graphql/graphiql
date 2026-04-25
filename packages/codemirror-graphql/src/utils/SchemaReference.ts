@@ -100,7 +100,6 @@ export function getEnumValueReference(typeInfo: TypeInfo): EnumValueReference {
   return {
     kind: 'EnumValue',
     value: typeInfo.enumValue || undefined,
-    // $FlowFixMe
     type: typeInfo.inputType
       ? (getNamedType(typeInfo.inputType) as GraphQLEnumType)
       : undefined,

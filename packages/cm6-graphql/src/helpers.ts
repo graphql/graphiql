@@ -38,6 +38,6 @@ export class Position implements IPosition {
   }
 }
 
-const isMac = () => /mac/i.test(navigator.platform);
+const isMac = () => navigator.userAgent.includes('Mac');
 export const isMetaKeyPressed = (e: MouseEvent) =>
   isMac() ? e.metaKey : e.ctrlKey;

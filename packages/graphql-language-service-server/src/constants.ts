@@ -1,4 +1,5 @@
 import type { ParserOptions, ParserPlugin } from '@babel/parser';
+
 // Attempt to be as inclusive as possible of source text.
 export const PARSER_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
@@ -58,6 +59,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.cts',
   '.mts',
 ] as const;
+
 export type SupportedExtensions = typeof DEFAULT_SUPPORTED_EXTENSIONS;
 export type SupportedExtensionsEnum =
   (typeof DEFAULT_SUPPORTED_EXTENSIONS)[number];

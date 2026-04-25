@@ -1,5 +1,95 @@
 # Change Log
 
+## 2.2.4
+
+### Patch Changes
+
+- Updated dependencies [[`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd)]:
+  - graphql-language-service@5.5.0
+
+## 2.2.3
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
+
+## 2.2.3-rc.0
+
+### Patch Changes
+
+- [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - prefer `getComputedStyle` over `window.getComputedStyle`
+
+## 2.2.2
+
+### Patch Changes
+
+- Updated dependencies [[`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7)]:
+  - graphql-language-service@5.4.0
+
+## 2.2.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
+- Updated dependencies [[`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe)]:
+  - graphql-language-service@5.3.1
+
+## 2.2.0
+
+### Minor Changes
+
+- [#3825](https://github.com/graphql/graphiql/pull/3825) [`7cdcabf`](https://github.com/graphql/graphiql/commit/7cdcabf9d401683e90c995476b187c6f8ea70f63) Thanks [@dimaMachina](https://github.com/dimaMachina)! - migrate `graphiql` from `jest` to `vitest`
+
+## 2.1.1
+
+### Patch Changes
+
+- [#3751](https://github.com/graphql/graphiql/pull/3751) [`b8538d8`](https://github.com/graphql/graphiql/commit/b8538d87421edb086b32d4eb2e30a3f7d9d9e893) Thanks [@dimaMachina](https://github.com/dimaMachina)! - replace deprecated `navigator.platform` with `navigator.userAgent`
+
+  fix placeholder `⌘ K` in doc explorer search input for non mac devices, replace by `Ctrl K`
+
+## 2.1.0
+
+### Minor Changes
+
+- [#3682](https://github.com/graphql/graphiql/pull/3682) [`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931) Thanks [@yaacovCR](https://github.com/yaacovCR)! - Support v17 of `graphql-js` from `17.0.0-alpha.2` forward.
+
+  Includes support for the latest incremental delivery response format. For further details, see https://github.com/graphql/defer-stream-wg/discussions/69.
+
+### Patch Changes
+
+- Updated dependencies [[`6c9f0df`](https://github.com/graphql/graphiql/commit/6c9f0df83ea4afe7fa59f84d83d59fba73dc3931)]:
+  - graphql-language-service@5.3.0
+
+## 2.0.13
+
+### Patch Changes
+
+- [#3637](https://github.com/graphql/graphiql/pull/3637) [`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - update eslint plugins and fix errors
+
+- Updated dependencies [[`fdec377`](https://github.com/graphql/graphiql/commit/fdec377f28ac0d918a219b78dfa2d8f0996ff84d)]:
+  - graphql-language-service@5.2.2
+
+## 2.0.12
+
+### Patch Changes
+
+- [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
+
+  - restores completion for object and input type fields when the document context is not detectable or parseable
+  - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
+  - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
+
+- Updated dependencies [[`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d)]:
+  - graphql-language-service@5.2.1
+
+## 2.0.11
+
+### Patch Changes
+
+- [#3567](https://github.com/graphql/graphiql/pull/3567) [`fc7de5a7`](https://github.com/graphql/graphiql/commit/fc7de5a75f4b23dd62dd630b705895b5fa5d0a03) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - tooltip a tag's click listener calls event.preventDefault() to stop navigating away from page
+
 ## 2.0.10
 
 ### Patch Changes

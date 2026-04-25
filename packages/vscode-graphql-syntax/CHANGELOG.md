@@ -1,5 +1,29 @@
 # vscode-graphql-syntax
 
+## 1.3.8
+
+### Patch Changes
+
+- [#3792](https://github.com/graphql/graphiql/pull/3792) [`40da77b`](https://github.com/graphql/graphiql/commit/40da77b32b35d33b5ebf883b60a6020de8d3be6c) Thanks [@idosela](https://github.com/idosela)! - Add syntax highlighting support for the repeatable keyword on a directive definition.
+
+## 1.3.7
+
+### Patch Changes
+
+- [#3773](https://github.com/graphql/graphiql/pull/3773) [`31edfab`](https://github.com/graphql/graphiql/commit/31edfab441304d8eb3358acebc475c51e5646e8b) Thanks [@yaacovCR](https://github.com/yaacovCR)! - use latest stable version of graphql 16.9.0 for bundled libraries & tests
+
+## 1.3.6
+
+### Patch Changes
+
+- [#3592](https://github.com/graphql/graphiql/pull/3592) [`5e521080`](https://github.com/graphql/graphiql/commit/5e52108038d8d5e97f8d21a9c22bb9048fa377f0) Thanks [@acao](https://github.com/acao)! - Remove ruby support for code highlighting, users should use `ruby-lsp` for graphql highlighting instead!
+
+## 1.3.5
+
+### Patch Changes
+
+- [#3545](https://github.com/graphql/graphiql/pull/3545) [`e9fc21ab`](https://github.com/graphql/graphiql/commit/e9fc21ab5f403a3e26cec555b29e5fb9db436838) Thanks [@kitten](https://github.com/kitten)! - Fix TextMate grammar to support string literals that don’t immediately follow a function call's left-parenthesis (`(`).
+
 ## 1.3.4
 
 ### Patch Changes
