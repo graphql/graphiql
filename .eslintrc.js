@@ -430,6 +430,7 @@ module.exports = {
             'packages/{codemirror-graphql,graphiql-toolkit,graphql-language-service-cli,graphql-language-service,monaco-graphql,vscode-graphql-syntax}/vitest.config.mts',
 
             'packages/cm6-graphql/__tests__/test.spec.ts',
+            'packages/monaco-graphql/__tests__/monaco-editor.test.ts',
             'packages/graphiql/cypress.config.ts',
             'packages/vscode-graphql-syntax/tests/*.spec.ts',
             'packages/graphql-language-service-cli/src/__tests__/*.test.ts',

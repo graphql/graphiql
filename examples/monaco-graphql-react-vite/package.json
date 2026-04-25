@@ -3,18 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@graphiql/toolkit": "^0.11.3",
-    "graphql": "^16.11.0",
-    "graphql-language-service": "^5.5.0",
-    "jsonc-parser": "^3.2.0",
-    "monaco-editor": "^0.52.2",
-    "monaco-graphql": "^1.7.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@graphiql/toolkit": "^0.11",
+    "graphql": "^16",
+    "graphql-language-service": "^5",
+    "jsonc-parser": "^3",
+    "monaco-editor": "^0.52",
+    "monaco-graphql": "^1",
+    "react": "^19",
+    "react-dom": "^19"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^6.3.4"
+    "@vitejs/plugin-react": "^4",
+    "vite": "^6"
   },
   "scripts": {
     "dev": "vite",
