@@ -33,7 +33,7 @@ async function fetchLatestVersion(packageName) {
     throw new Error(`Failed to fetch ${packageName}: ${response.statusText}`);
   }
   const { version } = await response.json();
-  return [packageName, version]
+  return [packageName, version];
 }
 
 /**
@@ -54,35 +54,42 @@ async function fetchIntegrityHash(url) {
   return [url, `sha384-${hash}`];
 }
 
-async function main () {
-  const versions = Object.fromEntries(await Promise.all(PACKAGES.map(fetchLatestVersion)));
-  const cdnUrl = packageName => `https://esm.sh/${packageName}@${versions[packageName]}`;
+async function main() {
+  const versions = Object.fromEntries(
+    await Promise.all(PACKAGES.map(fetchLatestVersion)),
+  );
+  const cdnUrl = packageName =>
+    `https://esm.sh/${packageName}@${versions[packageName]}`;
 
   // JS
   const imports = {
-    'react': cdnUrl('react'),
+    react: cdnUrl('react'),
     'react/': `${cdnUrl('react-dom')}/`,
     'react-dom': cdnUrl('react-dom'),
     'react-dom/': `${cdnUrl('react-dom')}/`,
-    'graphiql': `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
+    graphiql: `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
     'graphiql/': `${cdnUrl('graphiql')}/`,
     '@graphiql/plugin-explorer': `${cdnUrl('@graphiql/plugin-explorer')}?standalone&external=react,@graphiql/react,graphql`,
     '@graphiql/react': `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
     '@graphiql/toolkit': `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
-    'graphql': cdnUrl('graphql'),
-    '@emotion/is-prop-valid': "data:text/javascript,"
+    graphql: cdnUrl('graphql'),
+    '@emotion/is-prop-valid': 'data:text/javascript,',
   };
 
-  const integrity = Object.fromEntries(await Promise.all([
-    cdnUrl('react'),
-    cdnUrl('react-dom'),
-    cdnUrl('graphiql'),
-    `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
-    cdnUrl('@graphiql/plugin-explorer'),
-    `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
-    `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
-    cdnUrl('graphql'),
-  ].map(fetchIntegrityHash)));
+  const integrity = Object.fromEntries(
+    await Promise.all(
+      [
+        cdnUrl('react'),
+        cdnUrl('react-dom'),
+        cdnUrl('graphiql'),
+        `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
+        cdnUrl('@graphiql/plugin-explorer'),
+        `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
+        `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
+        cdnUrl('graphql'),
+      ].map(fetchIntegrityHash),
+    ),
+  );
 
   let importMap = JSON.stringify({ imports, integrity }, null, 2);
 
@@ -90,14 +97,23 @@ async function main () {
   const graphiqlCss = `${cdnUrl('graphiql')}/dist/style.css`;
   const graphiqlCssHash = (await fetchIntegrityHash(graphiqlCss))[1];
   const graphiqlPluginExplorer = `${cdnUrl('@graphiql/plugin-explorer')}/dist/style.css`;
-  const graphiqlPluginExplorerHash = (await fetchIntegrityHash(graphiqlPluginExplorer))[1];
+  const graphiqlPluginExplorerHash = (
+    await fetchIntegrityHash(graphiqlPluginExplorer)
+  )[1];
 
   // Generate index.html
-  const templatePath = path.join(import.meta.dirname, '../../resources/index.html.template');
+  const templatePath = path.join(
+    import.meta.dirname,
+    '../../resources/index.html.template',
+  );
   const template = fs.readFileSync(templatePath, 'utf8');
 
   // Indent import map to be correctly formatted in index.html
-  const indent = lines => lines.split('\n').map(line => `      ${line}`).join('\n');
+  const indent = lines =>
+    lines
+      .split('\n')
+      .map(line => `      ${line}`)
+      .join('\n');
   importMap = indent(importMap);
 
   const output = template
