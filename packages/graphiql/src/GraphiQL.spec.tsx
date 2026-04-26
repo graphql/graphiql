@@ -1,5 +1,7 @@
 'use no memo';
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *

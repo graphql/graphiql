@@ -5,7 +5,6 @@ import { plugins } from './vite.config.mjs';
 export default defineConfig({
   plugins,
   test: {
-    globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts', '../graphiql/setup-window.ts'],
     alias: [

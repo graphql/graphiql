@@ -1,3 +1,4 @@
+import { expectTypeOf } from 'vitest';
 import type {
   EditorSlice,
   ExecutionSlice,

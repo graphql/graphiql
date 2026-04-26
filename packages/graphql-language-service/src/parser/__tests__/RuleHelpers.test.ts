@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { opt, list, butNot, t, p } from '../RuleHelpers';
 
 describe('opt', () => {
