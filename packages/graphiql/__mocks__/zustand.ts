@@ -7,7 +7,6 @@
 
 import { afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-// eslint-disable-next-line import-x/no-extraneous-dependencies
 import {
   create as originalCreate,
   createStore as originalCreateStore,
