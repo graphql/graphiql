@@ -16,14 +16,22 @@ import {
   createSimpleFetcher as _createSimpleFetcher,
   createWebsocketsFetcherFromClient as _createWebsocketsFetcherFromClient,
   createLegacyWebsocketsFetcher as _createLegacyWebsocketsFetcher,
+  getSubscriptionFetcher as _getSubscriptionFetcher,
+  isSubscriptionWithName as _isSubscriptionWithName,
 } from '../lib';
 import { createClient as _createClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const serverURL = 'http://localhost:3000/graphql';
 const wssURL = 'ws://localhost:3000/graphql';
+const sseURL = 'http://localhost:3000/graphql/stream';
 
 const exampleIntrospectionDocument = parse(getIntrospectionQuery());
+const exampleSubscriptionDocument = parse(/* GraphQL */ `
+  subscription Example {
+    example
+  }
+`);
 
 const createWebsocketsFetcherFromUrl = _createWebsocketsFetcherFromUrl as Mock<
   typeof _createWebsocketsFetcherFromUrl
@@ -41,6 +49,12 @@ const createWebsocketsFetcherFromClient =
   >;
 const createLegacyWebsocketsFetcher = _createLegacyWebsocketsFetcher as Mock<
   typeof _createLegacyWebsocketsFetcher
+>;
+const getSubscriptionFetcher = _getSubscriptionFetcher as Mock<
+  typeof _getSubscriptionFetcher
+>;
+const isSubscriptionWithName = _isSubscriptionWithName as Mock<
+  typeof _isSubscriptionWithName
 >;
 
 describe('createGraphiQLFetcher', () => {
@@ -137,5 +151,32 @@ describe('createGraphiQLFetcher', () => {
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createWebsocketsFetcherFromClient.mock.calls).toEqual([]);
     expect(createLegacyWebsocketsFetcher.mock.calls).toEqual([]);
+  });
+
+  it('uses the subscription fetcher for subscription operations', async () => {
+    const subscriptionFetcher = vi.fn(() => ({ data: { example: true } }));
+    isSubscriptionWithName.mockReturnValue(true);
+    getSubscriptionFetcher.mockResolvedValue(subscriptionFetcher);
+
+    const args = {
+      url: serverURL,
+      sseUrl: sseURL,
+      enableIncrementalDelivery: true,
+    };
+    const graphQLParams = {
+      query: 'subscription Example { example }',
+      operationName: 'Example',
+    };
+    const fetcherOpts = {
+      documentAST: exampleSubscriptionDocument,
+      headers: { authorization: 'Bearer token' },
+    };
+
+    const fetcher = createGraphiQLFetcher(args);
+    const result = await fetcher(graphQLParams, fetcherOpts);
+
+    expect(getSubscriptionFetcher.mock.calls).toEqual([[args, fetcherOpts]]);
+    expect(subscriptionFetcher.mock.calls).toEqual([[graphQLParams]]);
+    expect(result).toEqual({ data: { example: true } });
   });
 });

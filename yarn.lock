@@ -4785,6 +4785,7 @@ __metadata:
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": "npm:^3.1.0"
     graphql: "npm:^16.9.0"
+    graphql-sse: "npm:^2.6.0"
     graphql-ws: "npm:^5.5.5"
     isomorphic-fetch: "npm:^3.0.0"
     meros: "npm:^1.1.4"
@@ -4792,8 +4793,11 @@ __metadata:
     tsup: "npm:^8.2.4"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql-sse: ">= 2.0.0"
     graphql-ws: ">= 4.5.0"
   peerDependenciesMeta:
+    graphql-sse:
+      optional: true
     graphql-ws:
       optional: true
   languageName: unknown
@@ -16591,6 +16595,15 @@ __metadata:
     graphql: ./dist/temp-bin.js
   languageName: unknown
   linkType: soft
+
+"graphql-sse@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "graphql-sse@npm:2.6.0"
+  peerDependencies:
+    graphql: ">=0.11 <=16"
+  checksum: 10c0/e05f0b5c8539d61e5ce34af8e0bb418c02bf922d6a7f9232a9abd53c77df5654684ca14f674ac771645c8fba9c37ce666c5d06f46eef54ea07e63653468065b0
+  languageName: node
+  linkType: hard
 
 "graphql-tag@npm:2.12.6":
   version: 2.12.6

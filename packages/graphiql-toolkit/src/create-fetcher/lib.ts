@@ -18,10 +18,17 @@ import type {
   FetcherOpts,
   ExecutionResultPayload,
   CreateFetcherOptions,
+  GraphQLSSEClient,
+  GraphQLSSEClientOptions,
+  SubscriptionClient,
 } from './types';
 
 const errorHasCode = (err: unknown): err is { code: string } => {
   return typeof err === 'object' && err !== null && 'code' in err;
+};
+
+type GraphQLSSEModule = {
+  createClient: (options: GraphQLSSEClientOptions) => GraphQLSSEClient;
 };
 
 /**
@@ -85,7 +92,10 @@ export async function createWebsocketsFetcherFromUrl(
     wsClient = createClient({ url, connectionParams });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
-    if (errorHasCode(err) && err.code === 'MODULE_NOT_FOUND') {
+    if (
+      errorHasCode(err) &&
+      (err.code === 'MODULE_NOT_FOUND' || err.code === 'ERR_MODULE_NOT_FOUND')
+    ) {
       throw new Error(
         "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
       );
@@ -96,29 +106,75 @@ export async function createWebsocketsFetcherFromUrl(
 }
 
 /**
- * Create ws/s fetcher using provided wsClient implementation
+ * Create a fetcher using any subscription client that accepts GraphQL params
+ * and pushes execution results into a sink.
  */
-export const createWebsocketsFetcherFromClient =
-  (wsClient: Client): Fetcher =>
+export const createSubscriptionFetcherFromClient =
+  (
+    subscriptionClient: SubscriptionClient,
+    normalizeError: (err: any) => any = err => err,
+  ): Fetcher =>
   (graphQLParams: FetcherParams) =>
-    makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
-      wsClient.subscribe(graphQLParams, {
+    makeAsyncIterableIteratorFromSink<ExecutionResult>(sink => {
+      const dispose = subscriptionClient.subscribe(graphQLParams, {
         ...sink,
         error(err) {
-          if (err instanceof CloseEvent) {
-            sink.error(
-              new Error(
-                `Socket closed with event ${err.code} ${
-                  err.reason || ''
-                }`.trim(),
-              ),
-            );
-          } else {
-            sink.error(err);
-          }
+          sink.error(normalizeError(err));
         },
-      }),
-    );
+      });
+      return typeof dispose === 'function' ? dispose : () => {};
+    });
+
+/**
+ * Create ws/s fetcher using provided wsClient implementation
+ */
+export const createWebsocketsFetcherFromClient = (wsClient: Client): Fetcher =>
+  createSubscriptionFetcherFromClient(wsClient, err => {
+    if (typeof CloseEvent !== 'undefined' && err instanceof CloseEvent) {
+      return new Error(
+        `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
+      );
+    }
+    return err;
+  });
+
+export async function createSseFetcherFromUrl(
+  url: string,
+  headers?: FetcherOpts['headers'],
+  sseClientOptions?: CreateFetcherOptions['sseClientOptions'],
+): Promise<Fetcher | void> {
+  try {
+    const { createClient } =
+      process.env.USE_IMPORT === 'false'
+        ? (require('graphql-sse') as GraphQLSSEModule)
+        : ((await import('graphql-sse')) as GraphQLSSEModule);
+
+    const sseClient = createClient({
+      ...sseClientOptions,
+      url,
+      headers: headers || {},
+    });
+    return createSseFetcherFromClient(sseClient);
+  } catch (err) {
+    if (
+      errorHasCode(err) &&
+      (err.code === 'MODULE_NOT_FOUND' || err.code === 'ERR_MODULE_NOT_FOUND')
+    ) {
+      throw new Error(
+        "You need to install the 'graphql-sse' package to use GraphQL over SSE when passing an 'sseUrl'",
+      );
+    }
+    // eslint-disable-next-line no-console
+    console.error(`Error creating SSE client for ${url}`, err);
+  }
+}
+
+/**
+ * Create GraphQL over SSE fetcher using provided sseClient implementation
+ */
+export const createSseFetcherFromClient = (
+  sseClient: GraphQLSSEClient,
+): Fetcher => createSubscriptionFetcherFromClient(sseClient);
 
 /**
  * Allow legacy websockets protocol client, but no definitions for it,
@@ -197,4 +253,27 @@ export async function getWsFetcher(
   if (legacyWebsocketsClient) {
     return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
   }
+}
+
+/**
+ * If `sseClient` or `sseUrl` are provided, they take precedence over websocket clients.
+ */
+export async function getSubscriptionFetcher(
+  options: CreateFetcherOptions,
+  fetcherOpts?: FetcherOpts,
+): Promise<Fetcher | void> {
+  if (options.sseClient) {
+    return createSseFetcherFromClient(options.sseClient);
+  }
+  if (options.sseUrl) {
+    return createSseFetcherFromUrl(
+      options.sseUrl,
+      {
+        ...options.headers,
+        ...fetcherOpts?.headers,
+      },
+      options.sseClientOptions,
+    );
+  }
+  return getWsFetcher(options, fetcherOpts);
 }

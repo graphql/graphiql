@@ -14,5 +14,5 @@ that are useful when working with these packages.
 
 - **[`createFetcher`](./docs/create-fetcher.md)** : a utility for creating a
   `fetcher` prop implementation for HTTP GET, POST including multipart,
-  websockets fetcher
+  GraphQL over SSE and websockets subscriptions
 - more to come!
