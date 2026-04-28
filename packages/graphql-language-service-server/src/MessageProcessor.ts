@@ -1063,7 +1063,7 @@ export class MessageProcessor {
           version = schemaDocument.version++;
         }
         const schemaText = await readFile(uri, 'utf-8');
-        await this._cacheSchemaText(schemaUri, schemaText, version);
+        await this._cacheSchemaText(schemaUri, schemaText, version, project);
       }
     } catch (err) {
       this._logger.error(String(err));
@@ -1249,7 +1249,7 @@ export class MessageProcessor {
             return;
           }
 
-          await this._updateObjectTypeDefinition(uri, contents);
+          await this._updateObjectTypeDefinition(uri, contents, project);
           await this._updateFragmentDefinition(uri, contents);
           await this._invalidateCache({ version: 1, uri }, uri, contents);
         }),
