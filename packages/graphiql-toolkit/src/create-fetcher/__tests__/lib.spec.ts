@@ -3,6 +3,7 @@ import { parse } from 'graphql';
 import {
   isSubscriptionWithName,
   createSubscriptionFetcherFromClient,
+  createSseFetcherFromClient,
   createSseFetcherFromUrl,
   createWebsocketsFetcherFromUrl,
   getSubscriptionFetcher,
@@ -102,6 +103,29 @@ describe('createSubscriptionFetcherFromClient', () => {
     });
     expect(unsubscribe).toHaveBeenCalled();
   });
+
+  it('runs additional owner cleanup after disposing the subscription', async () => {
+    const unsubscribe = vi.fn();
+    const disposeClient = vi.fn();
+    const client = {
+      subscribe: vi.fn(() => unsubscribe),
+    };
+    const fetcher = createSubscriptionFetcherFromClient(
+      client,
+      undefined,
+      disposeClient,
+    );
+
+    const result = fetcher({
+      query: 'subscription Example { example }',
+      operationName: 'Example',
+    }) as AsyncIterableIterator<unknown>;
+
+    await result.return?.();
+
+    expect(unsubscribe).toHaveBeenCalled();
+    expect(disposeClient).toHaveBeenCalled();
+  });
 });
 
 describe('createSseFetcherFromUrl', () => {
@@ -122,6 +146,48 @@ describe('createSseFetcherFromUrl', () => {
       url: sseURL,
       headers: { authorization: 'Bearer token' },
     });
+  });
+
+  it('disposes internally created SSE clients when the subscription closes', async () => {
+    const unsubscribe = vi.fn();
+    const disposeClient = vi.fn();
+    createSseClient.mockReturnValue({
+      subscribe: vi.fn(() => unsubscribe),
+      iterate: vi.fn(),
+      dispose: disposeClient,
+    });
+    const fetcher = await createSseFetcherFromUrl(sseURL);
+
+    const result = fetcher?.({
+      query: 'subscription Example { example }',
+      operationName: 'Example',
+    }) as AsyncIterableIterator<unknown>;
+
+    await result.return?.();
+
+    expect(unsubscribe).toHaveBeenCalled();
+    expect(disposeClient).toHaveBeenCalled();
+  });
+});
+
+describe('createSseFetcherFromClient', () => {
+  it('does not dispose caller-owned SSE clients', async () => {
+    const unsubscribe = vi.fn();
+    const disposeClient = vi.fn();
+    const fetcher = createSseFetcherFromClient({
+      subscribe: vi.fn(() => unsubscribe),
+      dispose: disposeClient,
+    });
+
+    const result = fetcher({
+      query: 'subscription Example { example }',
+      operationName: 'Example',
+    }) as AsyncIterableIterator<unknown>;
+
+    await result.return?.();
+
+    expect(unsubscribe).toHaveBeenCalled();
+    expect(disposeClient).not.toHaveBeenCalled();
   });
 });
 

@@ -82,7 +82,9 @@ export type SubscriptionClient = {
   subscribe: (payload: any, sink: SubscriptionSink) => void | (() => void);
 };
 
-export type GraphQLSSEClient = SubscriptionClient;
+export type GraphQLSSEClient = SubscriptionClient & {
+  dispose?: () => void;
+};
 
 export type GraphQLSSEClientOptions = {
   url: string;

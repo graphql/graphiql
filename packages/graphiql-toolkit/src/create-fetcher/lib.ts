@@ -113,6 +113,7 @@ export const createSubscriptionFetcherFromClient =
   (
     subscriptionClient: SubscriptionClient,
     normalizeError: (err: any) => any = err => err,
+    onDispose?: () => void,
   ): Fetcher =>
   (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink => {
@@ -122,7 +123,15 @@ export const createSubscriptionFetcherFromClient =
           sink.error(normalizeError(err));
         },
       });
-      return typeof dispose === 'function' ? dispose : () => {};
+      return () => {
+        try {
+          if (typeof dispose === 'function') {
+            dispose();
+          }
+        } finally {
+          onDispose?.();
+        }
+      };
     });
 
 /**
@@ -154,7 +163,7 @@ export async function createSseFetcherFromUrl(
       url,
       headers: headers || {},
     });
-    return createSseFetcherFromClient(sseClient);
+    return createSseFetcherFromClient(sseClient, () => sseClient.dispose?.());
   } catch (err) {
     if (
       errorHasCode(err) &&
@@ -174,7 +183,9 @@ export async function createSseFetcherFromUrl(
  */
 export const createSseFetcherFromClient = (
   sseClient: GraphQLSSEClient,
-): Fetcher => createSubscriptionFetcherFromClient(sseClient);
+  onDispose?: () => void,
+): Fetcher =>
+  createSubscriptionFetcherFromClient(sseClient, undefined, onDispose);
 
 /**
  * Allow legacy websockets protocol client, but no definitions for it,
