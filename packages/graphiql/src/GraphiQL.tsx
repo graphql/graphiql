@@ -30,9 +30,11 @@ import {
   pick,
   VariableEditor,
   EditorProps,
+  UrlDetails,
   cn,
   useGraphiQLActions,
   useMonaco,
+  Button,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -40,6 +42,8 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
+import { FETCHER_OPTIONS_SYMBOL } from '@graphiql/toolkit';
+import { Kind, parse } from 'graphql';
 
 /**
  * API docs for this live here:
@@ -214,6 +218,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    fetcher,
+    queryEditor,
+    variableEditor,
+    headerEditor,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -222,6 +230,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'fetcher',
+      'queryEditor',
+      'variableEditor',
+      'headerEditor',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
@@ -343,6 +355,57 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     changeTab(index);
   };
 
+  const getFetcherUrl = () => {
+    const fetcherUrl = fetcherOpts?.url;
+
+    if (fetcherUrl?.startsWith('/')) {
+      return location.origin + fetcherUrl;
+    }
+
+    return fetcherUrl;
+  };
+
+  const handleCurlClick: ButtonHandler = () => {
+    const url = getFetcherUrl();
+    const query = queryEditor?.getValue();
+    const variables = safeParse<Record<string, unknown>>(
+      variableEditor?.getValue(),
+    );
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...safeParse<Record<string, string>>(headerEditor?.getValue()),
+    };
+
+    const headersString = Object.keys(headers)
+      .map(key => {
+        const value = headers[key];
+        return `-H '${key}: ${value}'`;
+      })
+      .join(' ');
+
+    let operationName: string | undefined;
+
+    if (query) {
+      const definition = parse(query).definitions.find(
+        def => def.kind === Kind.OPERATION_DEFINITION,
+      );
+
+      operationName = definition?.name?.value;
+    }
+
+    const data = JSON.stringify({
+      query,
+      variables,
+      operationName,
+    });
+
+    navigator.clipboard.writeText(
+      `curl '${url}' ${headersString} --data-binary '${data}'`,
+    );
+  };
+
   const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
@@ -441,6 +504,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 
   const tabContainerRef = useRef<HTMLUListElement>(null!);
+  const fetcherOpts = fetcher[FETCHER_OPTIONS_SYMBOL];
+  const fetcherUrl = getFetcherUrl();
 
   return (
     <Tooltip.Provider>
@@ -468,61 +533,69 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               ref={pluginResize.dragBarRef}
             />
           )}
-          <div ref={pluginResize.secondRef} className="graphiql-sessions">
-            <div className="graphiql-session-header">
-              <Tabs
-                ref={tabContainerRef}
-                values={tabs}
-                onReorder={moveTab}
-                aria-label="Select active operation"
-                className="no-scrollbar"
-              >
-                {tabs.map((tab, index, arr) => (
-                  <Tab
-                    key={tab.id}
-                    // Prevent overscroll over container
-                    dragConstraints={tabContainerRef}
-                    value={tab}
-                    isActive={index === activeTabIndex}
-                  >
-                    <Tab.Button
-                      aria-controls="graphiql-session"
-                      id={`graphiql-session-tab-${index}`}
-                      title={tab.title}
-                      onClick={handleTabClick}
-                    >
-                      {tab.title}
-                    </Tab.Button>
-                    {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
-                  </Tab>
-                ))}
-              </Tabs>
-              <Tooltip label={LABEL.newTab}>
-                <UnStyledButton
-                  type="button"
-                  className="graphiql-tab-add"
-                  onClick={addTab}
-                  aria-label={LABEL.newTab}
+          <div className="graphiql-main-container">
+            {fetcherUrl && (
+              <div className="graphiql-main-header">
+                <UrlDetails url={fetcherUrl} method="POST" />
+                <Button onClick={handleCurlClick}>Copy cURL</Button>
+              </div>
+            )}
+            <div ref={pluginResize.secondRef} className="graphiql-sessions">
+              <div className="graphiql-session-header">
+                <Tabs
+                  ref={tabContainerRef}
+                  values={tabs}
+                  onReorder={moveTab}
+                  aria-label="Select active operation"
+                  className="no-scrollbar"
                 >
-                  <PlusIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
-              {logo}
-            </div>
-            <div
-              role="tabpanel"
-              id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
-            >
-              {editors}
+                  {tabs.map((tab, index, arr) => (
+                    <Tab
+                      key={tab.id}
+                      // Prevent overscroll over container
+                      dragConstraints={tabContainerRef}
+                      value={tab}
+                      isActive={index === activeTabIndex}
+                    >
+                      <Tab.Button
+                        aria-controls="graphiql-session"
+                        id={`graphiql-session-tab-${index}`}
+                        title={tab.title}
+                        onClick={handleTabClick}
+                      >
+                        {tab.title}
+                      </Tab.Button>
+                      {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
+                    </Tab>
+                  ))}
+                </Tabs>
+                <Tooltip label={LABEL.newTab}>
+                  <UnStyledButton
+                    type="button"
+                    className="graphiql-tab-add"
+                    onClick={addTab}
+                    aria-label={LABEL.newTab}
+                  >
+                    <PlusIcon aria-hidden="true" />
+                  </UnStyledButton>
+                </Tooltip>
+                {logo}
+              </div>
               <div
-                className="graphiql-horizontal-drag-bar"
-                ref={editorResize.dragBarRef}
-              />
-              <div className="graphiql-response" ref={editorResize.secondRef}>
-                {isFetching && <Spinner />}
-                <ResponseEditor responseTooltip={responseTooltip} />
-                {footer}
+                role="tabpanel"
+                id="graphiql-session" // used by aria-controls="graphiql-session"
+                aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+              >
+                {editors}
+                <div
+                  className="graphiql-horizontal-drag-bar"
+                  ref={editorResize.dragBarRef}
+                />
+                <div className="graphiql-response" ref={editorResize.secondRef}>
+                  {isFetching && <Spinner />}
+                  <ResponseEditor responseTooltip={responseTooltip} />
+                  {footer}
+                </div>
               </div>
             </div>
           </div>
@@ -541,6 +614,14 @@ function getChildComponentType(child: ReactNode) {
     typeof child.type === 'function'
   ) {
     return child.type;
+  }
+}
+
+function safeParse<T>(raw: string | undefined): T | undefined {
+  try {
+    return raw && JSON.parse(raw);
+  } catch {
+    return;
   }
 }
 

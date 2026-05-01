@@ -8,6 +8,7 @@ export { GraphiQLProvider, useGraphiQL, useGraphiQLActions } from './provider';
 export { OperationEditor as QueryEditor } from './operation-editor';
 export { ResponseEditor } from './response-editor';
 export { VariablesEditor as VariableEditor } from './variables-editor';
+export { UrlDetails } from './url-details';
 
 export { Button, UnStyledButton } from './button';
 export { ButtonGroup } from './button-group';
