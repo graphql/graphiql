@@ -143,12 +143,7 @@ export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
 export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
   async query => {
     // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
-    const [
-      prettier,
-      // @ts-expect-error – no types
-      { printers },
-      { parsers },
-    ] = await Promise.all([
+    const [prettier, { printers }, { parsers }] = await Promise.all([
       import('prettier/standalone'),
       import('prettier/plugins/graphql'),
       import('prettier/parser-graphql'),
