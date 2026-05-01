@@ -49,6 +49,18 @@ jobs:
       - run: yarn format-check
       - run: yarn svgo-check
 
+  dedupe-check:
+    name: Yarn Dedupe Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn dedupe --check
+
   vitest:
     name: Vitest Unit Tests
     runs-on: ubuntu-latest
