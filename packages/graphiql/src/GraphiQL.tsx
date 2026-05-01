@@ -374,7 +374,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      Accept: 'application/graphql-response+json,application/json;q=0.9',
       ...safeParse<Record<string, string>>(headerEditor?.getValue()),
     };
 
