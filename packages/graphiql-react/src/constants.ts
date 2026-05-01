@@ -145,7 +145,6 @@ export const DEFAULT_PRETTIFY_QUERY: EditorSlice['onPrettifyQuery'] =
     // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
     const [
       prettier,
-      // @ts-expect-error – no types
       { printers },
       { parsers },
     ] = await Promise.all([
