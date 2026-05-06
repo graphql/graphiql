@@ -78,8 +78,8 @@ jobs:
           path: ${{ env.BUILD-CACHE-LIST }}
       - run: yarn test
 
-  eslint:
-    name: ESLint
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -93,7 +93,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
-      - run: yarn eslint
+      - run: yarn oxlint
 
   types-check:
     name: Types Check
@@ -168,7 +168,7 @@ jobs:
     name: Canary
     runs-on: ubuntu-latest
     # ensure the basic checks pass before running the canary
-    needs: [build, eslint, vitest, e2e]
+    needs: [build, lint, vitest, e2e]
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v4
