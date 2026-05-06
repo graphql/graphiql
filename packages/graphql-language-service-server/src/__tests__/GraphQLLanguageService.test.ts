@@ -13,7 +13,7 @@ import { join } from 'node:path';
 import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
-import { Position } from 'graphql-language-service';
+import { getRange, Position } from 'graphql-language-service';
 import { NoopLogger } from '../Logger';
 import { GraphQLEnumType } from 'graphql';
 
@@ -208,6 +208,7 @@ describe('GraphQLLanguageService', () => {
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
   });
+
   it('runs definition service on fragment spread', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'fragment TestFragment on Human { name }\nquery { ...TestFragment }',
@@ -235,6 +236,24 @@ describe('GraphQLLanguageService', () => {
       './queries/definitionQuery.graphql',
     );
     expect(definitionQueryResult?.definitions.length).toEqual(1);
+  });
+
+  it('can get range on first line', async () => {
+    const range = await getRange(
+      { line: 0, column: 15 },
+      `query myHero($id: ID) {
+          hero(id: $id) {
+            name
+            id
+          }
+        }
+    `,
+    );
+
+    expect(range).toMatchObject({
+      end: { character: 23, line: -1 },
+      start: { character: 22, line: -1 },
+    });
   });
 
   it('runs hover service as expected', async () => {

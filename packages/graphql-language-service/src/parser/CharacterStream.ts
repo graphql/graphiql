@@ -46,7 +46,12 @@ export default class CharacterStream implements CharacterStreamInterface {
     return isMatched;
   }
 
-  public eol = (): boolean => this._sourceText.length === this._pos;
+  public eol = (): boolean => {
+    if (!this._sourceText) {
+      return true;
+    }
+    return this._sourceText.length === this._pos;
+  };
 
   public sol = (): boolean => this._pos === 0;
 
