@@ -275,7 +275,11 @@
     "jest/no-standalone-expect": "off",
     "jest/valid-expect": "off",
     "jest/require-to-throw-message": "off",
+    "vitest/no-conditional-expect": "off",
+    "vitest/no-standalone-expect": "off",
     "vitest/require-mock-type-parameters": "off",
+    "vitest/require-to-throw-message": "off",
+    "vitest/valid-expect": "off",
     "typescript/no-unnecessary-parameter-property-assignment": "off",
     "unicorn/prefer-string-starts-ends-with": "off",
     "unicorn/no-new-array": "off",
@@ -338,7 +342,12 @@
       }
     },
     {
-      "files": ["resources/**", "**/resources/**", "scripts/**"],
+      "files": [
+        "resources/**",
+        "**/resources/**",
+        "scripts/**",
+        ".github/scripts/**"
+      ],
       "rules": {
         "no-console": "off"
       }
@@ -406,19 +415,7 @@
         "typescript/no-deprecated": "error",
         "react-hooks-js/rules-of-hooks": "off",
         "react-hooks-js/exhaustive-deps": "off",
-        "react-hooks-js/static-components": "error",
-        "react-hooks-js/use-memo": "error",
-        "react-hooks-js/component-hook-factories": "error",
-        "react-hooks-js/preserve-manual-memoization": "error",
-        "react-hooks-js/immutability": "error",
-        "react-hooks-js/globals": "error",
-        "react-hooks-js/refs": "off",
-        "react-hooks-js/set-state-in-effect": "off",
-        "react-hooks-js/error-boundaries": "error",
-        "react-hooks-js/purity": "error",
-        "react-hooks-js/set-state-in-render": "error",
-        "react-hooks-js/config": "error",
-        "react-hooks-js/gating": "error"
+        "react-hooks-js/react-compiler": "error"
       }
     },
     {
