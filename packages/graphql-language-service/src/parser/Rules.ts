@@ -232,21 +232,13 @@ export const ParseRules: { [name: string]: ParseRule } = {
     name('atom'),
     opt('Implements'),
     list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
+    opt('FieldDefs'),
   ],
   Implements: [word('implements'), list('NamedType', p('&'))],
   DirectiveLocation: [name('string-2')],
   // GraphQL schema language
-  SchemaDef: [
-    word('schema'),
-    list('Directive'),
-    p('{'),
-    list('OperationTypeDef'),
-    p('}'),
-  ],
-
+  SchemaDef: [word('schema'), list('Directive'), 'OperationTypeDefs'],
+  OperationTypeDefs: [p('{'), list('OperationTypeDef'), p('}')],
   OperationTypeDef: [name('keyword'), p(':'), name('atom')],
   ScalarDef: [word('scalar'), name('atom'), list('Directive')],
   ObjectTypeDef: [
@@ -254,10 +246,9 @@ export const ParseRules: { [name: string]: ParseRule } = {
     name('atom'),
     opt('Implements'),
     list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
+    opt('FieldDefs'),
   ],
+  FieldDefs: [p('{'), list('FieldDef'), p('}')],
 
   FieldDef: [
     name('property'),
@@ -280,29 +271,27 @@ export const ParseRules: { [name: string]: ParseRule } = {
     word('union'),
     name('atom'),
     list('Directive'),
-    p('='),
-    list('UnionMember', p('|')),
+    opt('UnionMembers'),
   ],
+  UnionMembers: [p('='), list('UnionMember', p('|'))],
 
   UnionMember: ['NamedType'],
   EnumDef: [
     word('enum'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('EnumValueDef'),
-    p('}'),
+    opt('EnumValueDefs'),
   ],
+  EnumValueDefs: [p('{'), list('EnumValueDef'), p('}')],
 
   EnumValueDef: [name('string-2'), list('Directive')],
   InputDef: [
     word('input'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('InputValueDef'),
-    p('}'),
+    opt('InputValueDefs'),
   ],
+  InputValueDefs: [p('{'), list('InputValueDef'), p('}')],
   ExtendDef: [word('extend'), 'ExtensionDefinition'],
   ExtensionDefinition(token: Token): RuleKind | void {
     switch (token.value) {
@@ -322,7 +311,11 @@ export const ParseRules: { [name: string]: ParseRule } = {
         return Kind.INPUT_OBJECT_TYPE_EXTENSION;
     }
   },
-  [Kind.SCHEMA_EXTENSION]: ['SchemaDef'],
+  [Kind.SCHEMA_EXTENSION]: [
+    word('schema'),
+    list('Directive'),
+    opt('OperationTypeDefs'),
+  ],
   [Kind.SCALAR_TYPE_EXTENSION]: ['ScalarDef'],
   [Kind.OBJECT_TYPE_EXTENSION]: ['ObjectTypeDef'],
   [Kind.INTERFACE_TYPE_EXTENSION]: ['InterfaceDef'],
