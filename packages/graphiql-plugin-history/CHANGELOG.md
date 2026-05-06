@@ -1,5 +1,16 @@
 # @graphiql/plugin-history
 
+## 0.4.2
+
+### Patch Changes
+
+- [#4140](https://github.com/graphql/graphiql/pull/4140) [`40359eb`](https://github.com/graphql/graphiql/commit/40359ebbf3acf0a9968d4cb83c57167be1b1b38a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove `react-compiler-runtime` peer dependency
+
+- [#4211](https://github.com/graphql/graphiql/pull/4211) [`e7b30c1`](https://github.com/graphql/graphiql/commit/e7b30c1ca5d2eeab63f59894515ea25df86331f8) Thanks [@davidjb](https://github.com/davidjb)! - Add \*.css to sideEffects to allow import of CSS in Webpack Javascript
+
+- Updated dependencies [[`463df14`](https://github.com/graphql/graphiql/commit/463df145abfe92511c485fcf05c1b4c51377f82e)]:
+  - @graphiql/toolkit@0.12.0
+
 ## 0.4.1
 
 ### Patch Changes
@@ -27,7 +38,6 @@
 ### Minor Changes
 
 - [#3990](https://github.com/graphql/graphiql/pull/3990) [`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - allow multiple independent instances of GraphiQL on the same page
-
   - store `onClickReference` in query editor in React `ref`
   - remove `onClickReference` from variable editor
   - fix shortcut text per OS for run query in execute query button's tooltip and in default query
@@ -41,7 +51,6 @@
   fix plugin store, save last opened plugin in storage
 
 - [#4026](https://github.com/graphql/graphiql/pull/4026) [`7fb5ac3`](https://github.com/graphql/graphiql/commit/7fb5ac38b8ec27f0234adc06aacf42e71f6a259b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - deprecate `useExplorerContext`, `useHistoryContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useStorageContext` hooks
-
   - fix response editor overflow on `<GraphiQL.Footer />`
   - export `GraphiQLProps` type
   - allow `children: ReactNode` for `<GraphiQL.Toolbar />`
@@ -64,7 +73,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -158,7 +166,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -246,7 +253,6 @@
 ### Patch Changes
 
 - [#3911](https://github.com/graphql/graphiql/pull/3911) [`e7c436b`](https://github.com/graphql/graphiql/commit/e7c436b329a68981bdbd2b662be94875a546a1d6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - export `cn` from `@graphiql/react`
-
   - remove following exports from `@graphiql/react` and move them in `@graphiql/plugin-history` package:
     - `History`
     - `HistoryContext`

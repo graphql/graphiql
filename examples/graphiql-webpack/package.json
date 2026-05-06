@@ -9,11 +9,11 @@
     "start": "NODE_ENV=development webpack-cli serve"
   },
   "dependencies": {
-    "@graphiql/plugin-code-exporter": "^5",
-    "@graphiql/plugin-explorer": "^5",
-    "@graphiql/react": "^0.37",
-    "@graphiql/toolkit": "^0.11",
-    "graphiql": "^5",
+    "@graphiql/plugin-code-exporter": "^5.1.2",
+    "@graphiql/plugin-explorer": "^5.1.2",
+    "@graphiql/react": "^0.37.4",
+    "@graphiql/toolkit": "^0.12.0",
+    "graphiql": "^5.2.3",
     "graphql": "^16",
     "graphql-ws": "^5",
     "react": "^19",

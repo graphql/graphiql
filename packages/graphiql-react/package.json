@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.37.3",
+  "version": "0.37.4",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -50,7 +50,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.11.3",
+    "@graphiql/toolkit": "^0.12.0",
     "@radix-ui/react-dialog": "^1.1",
     "@radix-ui/react-dropdown-menu": "^2.1",
     "@radix-ui/react-tooltip": "^1.2",
@@ -58,11 +58,11 @@
     "clsx": "^1.2.1",
     "framer-motion": "^12.12",
     "get-value": "^3.0.1",
-    "graphql-language-service": "^5.5.0",
+    "graphql-language-service": "^5.5.1",
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.1.0",
     "monaco-editor": "0.52.2",
-    "monaco-graphql": "^1.7.3",
+    "monaco-graphql": "^1.7.4",
     "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",

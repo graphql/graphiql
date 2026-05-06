@@ -1,5 +1,11 @@
 # @graphiql/plugin-explorer
 
+## 5.1.2
+
+### Patch Changes
+
+- [#4211](https://github.com/graphql/graphiql/pull/4211) [`e7b30c1`](https://github.com/graphql/graphiql/commit/e7b30c1ca5d2eeab63f59894515ea25df86331f8) Thanks [@davidjb](https://github.com/davidjb)! - Add \*.css to sideEffects to allow import of CSS in Webpack Javascript
+
 ## 5.1.1
 
 ### Patch Changes
@@ -23,7 +29,6 @@
 ### Major Changes
 
 - [#3990](https://github.com/graphql/graphiql/pull/3990) [`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - allow multiple independent instances of GraphiQL on the same page
-
   - store `onClickReference` in query editor in React `ref`
   - remove `onClickReference` from variable editor
   - fix shortcut text per OS for run query in execute query button's tooltip and in default query
@@ -37,7 +42,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -89,7 +93,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -175,7 +178,6 @@
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - drop commonjs build files
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support react 19, drop support react 16 and react 17
-
   - replace deprecated `ReactDOM.unmountComponentAtNode()` and `ReactDOM.render()` with `root.unmount()` and `createRoot(container).render()`
   - update `@radix-ui` and `@headlessui/react` dependencies
 
@@ -442,12 +444,12 @@
   now, instead of something like this:
 
   ```jsx
-  import { useExplorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
+  import { useExplorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { useExporterPlugin } from "@graphiql/plugin-code-exporter";
 
   const App = () => {
-    const [query, setQuery] = React.useState('');
+    const [query, setQuery] = React.useState("");
     const explorerPlugin = useExplorerPlugin({
       query,
       onEdit: setQuery,
@@ -476,17 +478,17 @@
   you can just do this:
 
   ```jsx
-  import { explorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-  import { createGraphiQLFetcher } from '@graphiql/toolkit';
+  import { explorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { codeExporterPlugin } from "@graphiql/plugin-code-exporter";
+  import { createGraphiQLFetcher } from "@graphiql/toolkit";
 
   // only invoke these inside the component lifecycle
   // if there are dynamic values, and then use useMemo() (see below)
   const explorer = explorerPlugin();
   const exporter = codeExporterPlugin({ snippets });
 
-  const fetcher = createGraphiQLFetcher({ url: '/graphql' });
+  const fetcher = createGraphiQLFetcher({ url: "/graphql" });
 
   const App = () => {
     return <GraphiQL plugins={[explorer, exporter]} fetcher={fetcher} />;
@@ -496,13 +498,13 @@
   or this, for more complex state-driven needs:
 
   ```jsx
-  import { useMemo } from 'react';
-  import { explorerPlugin } from '@graphiql/plugin-explorer';
-  import { snippets } from './snippets';
-  import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+  import { useMemo } from "react";
+  import { explorerPlugin } from "@graphiql/plugin-explorer";
+  import { snippets } from "./snippets";
+  import { codeExporterPlugin } from "@graphiql/plugin-code-exporter";
 
   const explorer = explorerPlugin();
-  const fetcher = createGraphiQLFetcher({ url: '/graphql' });
+  const fetcher = createGraphiQLFetcher({ url: "/graphql" });
 
   const App = () => {
     const { snippets } = useMyUserSuppliedState();

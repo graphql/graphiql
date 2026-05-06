@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.7.4
+
+### Patch Changes
+
+- [#4225](https://github.com/graphql/graphiql/pull/4225) [`4bb7909`](https://github.com/graphql/graphiql/commit/4bb7909d0e5b00c68d4a3e8d215cb8411ef8e1da) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix hover crashing on the first line of a query
+
+  `GraphQLWorker.doHover` was passing 0-indexed positions to `getRange`, which expects a 1-indexed `SourceLocation` (per the GraphQL spec). On the first line this caused `Expected Parser stream to be available` to be logged and hover to return `null`. On other lines it returned the range of the previous line's last token rather than the token under the cursor. Use `getTokenAtPosition` to compute the actual token range instead.
+
+- Updated dependencies [[`914a547`](https://github.com/graphql/graphiql/commit/914a547637366b4bea91c5b2e3cfdbf2438f38cb), [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870)]:
+  - graphql-language-service@5.5.1
+
 ## 1.7.3
 
 ### Patch Changes
@@ -31,7 +42,6 @@
 ### Patch Changes
 
 - [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
-
   - `BaseSchemaConfig`
   - `IDisposable`
   - `JSONDiagnosticOptions`
@@ -43,7 +53,6 @@
 ### Patch Changes
 
 - [#4005](https://github.com/graphql/graphiql/pull/4005) [`1e3ec84`](https://github.com/graphql/graphiql/commit/1e3ec8455706e62e6cae306df58d3343ec6b612d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unused types
-
   - `BaseSchemaConfig`
   - `IDisposable`
   - `JSONDiagnosticOptions`
@@ -107,7 +116,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
@@ -136,7 +144,6 @@
 ### Patch Changes
 
 - [#3384](https://github.com/graphql/graphiql/pull/3384) [`31ded5e0`](https://github.com/graphql/graphiql/commit/31ded5e02ffb3334c22235fdb4285e926be0a98d) Thanks [@acao](https://github.com/acao)! - import only `editor.api` & basic features, add `monaco-graphql/lite`
-
   - switch from exporting `edcore.js` to `editor.api.js` as recommended, and minimal features to get the editor working
     - `edcore` imports `editor.all` which contains many monaco-editor features we don't use
   - dynamic import of `json` language mode only if the user supplies configuration for json validation
@@ -426,7 +433,6 @@
   see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql) to learn how to configure and use the new interface.
 
   #### 🚨 BREAKING CHANGES!! 🚨
-
   - `monaco-graphql` 🚨 **no longer loads schemas using `fetch` introspection** 🚨, you must specify the schema in one of many ways statically or dynamically. specifying just a schema `uri` no longer works. see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql)
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
@@ -436,14 +442,12 @@
   #### New Features
 
   this introduces many improvements:
-
   - json language support, by mapping from each graphql model uri to a set of json variable model uris
     - we generate a json schema definition for the json variables on the fly
     - it updates alongside editor validation as you type
   - less redundant schema loading - schema is loaded in main process instead of in the webworker
   - web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
   - the editor now supports multiple graphql models, configurable against multiple schema configurations
-
   * You can now use `initializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
 
 ### Patch Changes
