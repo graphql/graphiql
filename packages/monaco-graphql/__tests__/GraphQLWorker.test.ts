@@ -8,7 +8,7 @@ const schema = buildSchema(`
 `);
 
 function createWorker(document: string) {
-  const uri = 'inmemory://model/1';
+  const uri = 'monaco://model/1';
   const ctx = {
     getMirrorModels: () => [
       {
