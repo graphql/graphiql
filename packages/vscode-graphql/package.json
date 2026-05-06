@@ -149,14 +149,14 @@
           ],
           "description": "legacy mode for graphql config v2 config",
           "default": null
+        },
+        "graphql-config.dotEnvPath": {
+          "type": [
+            "string"
+          ],
+          "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
+          "default": null
         }
-      },
-      "graphql-config.dotEnvPath": {
-        "type": [
-          "string"
-        ],
-        "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
-        "default": null
       }
     },
     "commands": [
@@ -171,13 +171,14 @@
     ]
   },
   "scripts": {
+    "types:check": "tsc --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
     "build-bundles": "npm run compile -- --sourcemap",
-    "vsce:package": "vsce package --yarn",
+    "vsce:package": "vsce package --yarn --no-dependencies",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish --yarn",
-    "open-vsx:publish": "ovsx publish $(ls -1 *.vsix | sort -V | tail -n 1) --pat $OVSX_PAT",
+    "vsce:publish": "vsce publish --yarn --no-dependencies",
+    "open-vsx:publish": "ovsx publish --no-dependencies --pat $OVSX_PAT",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
@@ -188,9 +189,9 @@
     "ovsx": "0.8.3"
   },
   "dependencies": {
-    "graphql": "^16.8.1 || ^17.0.0-alpha.2",
+    "graphql": "^16.9.0 || ^17.0.0-alpha.2",
     "graphql-language-service-server": "^2.14.2",
-    "vscode-languageclient": "8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.0",
+    "vscode-languageclient": "8.0.2"
   }
 }

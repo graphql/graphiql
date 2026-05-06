@@ -4,8 +4,7 @@ on:
     # only on merge to main.
     # it's rare that this workflow would
     # show us an error, but when it does it's important!
-    branches:
-      - main
+    branches: [main]
     # don't run this regression suite if we don't need to
     paths-ignore:
       - '**.md'
@@ -36,6 +35,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
+          node-version-file: '.node-version'
           cache: yarn
       - name: Cache node modules
         uses: actions/cache@v4
@@ -46,10 +46,10 @@ jobs:
       - name: Force GraphQL ${{ matrix.release }} solution
         run: yarn repo:resolve graphql@${{ matrix.release }}
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
 
       - name: Unit Tests
-        run: yarn test:ci
+        run: yarn test
 
       - name: Cypress
         run: yarn e2e

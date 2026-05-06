@@ -1,5 +1,3 @@
-[![GraphQLConf 2024 Banner: September 10-12, San Francisco. Hosted by the GraphQL Foundation](https://github.com/user-attachments/assets/bdb8cd5d-5186-4ece-b06b-b00a499b7868)](https://graphql.org/conf/2024/?utm_source=github&utm_medium=graphiql&utm_campaign=readme)
-
 <!-- @format -->
 
 # GraphQL IDE Monorepo
@@ -23,9 +21,9 @@
 
 ## Overview
 
-GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an
-official project under the GraphQL Foundation. The code uses the permissive MIT
-license.
+GraphiQL (pronounced like "graphical") is the reference implementation of this
+monorepo, GraphQL IDE, an official project under the GraphQL Foundation. The
+code uses the permissive MIT license.
 
 Whether you want a simple GraphiQL IDE instance for your server, or a more
 advanced web or desktop GraphQL IDE experience for your framework or plugin, or
@@ -54,8 +52,8 @@ The purpose of this monorepo is to give the GraphQL Community:
 ![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.png)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
-[Try the live demo](https://graphql.github.io/swapi-graphql). We also have
-[a demo using our latest netlify build](http://graphiql-test.netlify.com) for
+[Try the live demo](https://graphql.org/swapi-graphql). We also have
+[a demo using our latest netlify build](http://graphiql-test.netlify.app) for
 the `main` branch.
 
 The GraphiQL IDE, implemented in React, currently using
@@ -190,8 +188,8 @@ This repository is managed by EasyCLA. Project participants must sign the free
 [GraphQL Specification Membership agreement](https://preview-spec-membership.graphql.org)
 before making a contribution. You only need to do this one time, and it can be
 signed by
-[individual contributors](http://individual-spec-membership.graphql.org/) or
-their [employers](http://corporate-spec-membership.graphql.org/).
+[individual contributors](http://individual-spec-membership.graphql.org) or
+their [employers](http://corporate-spec-membership.graphql.org).
 
 To initiate the signature process please open a PR against this repo. The
 EasyCLA bot will block the merge if we still need a membership agreement from
@@ -250,6 +248,7 @@ our discord channels!):
 - [@saihaj](https://github.com/saihaj)
 - [@jonathanawesome](https://github.com/jonathanawesome)
 - [@cshaver](https://github.com/cshaver)
+- [@trevor-scheer](https://github.com/trevor-scheer)
 
 > Thank you graphql community for all the help & support! I did it all for you,
 > and I couldn't have done it without you ❤️ - @acao

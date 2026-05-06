@@ -1,5 +1,34 @@
 # graphql-language-service
 
+## 5.5.0
+
+### Minor Changes
+
+- [#4071](https://github.com/graphql/graphiql/pull/4071) [`3a0a755`](https://github.com/graphql/graphiql/commit/3a0a75569c6b318f5dc27d62000bcc9b0536c6fd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat(graphql-language-service): export `getContextAtPosition`
+  feat(graphiql): dynamically import `monaco-editor` and `monaco-graphql`
+
+  When using GraphiQL in Next.js app, you no longer need to use `next/dynamic`:
+
+  ```diff
+  -import dynamic from 'next/dynamic'
+  -const GraphiQL = dynamic(() => import('graphiql').then(mod => mod.GraphiQL), {
+  -  ssr: false
+  -})
+  +import { GraphiQL } from 'graphiql'
+  ```
+
+## 5.4.0
+
+### Minor Changes
+
+- [#3982](https://github.com/graphql/graphiql/pull/3982) [`9498dee`](https://github.com/graphql/graphiql/commit/9498deea7636fd82602f230b6b21c743ca5705a7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: set `additionalProperties: false` to report unused variables
+
+## 5.3.1
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
 ## 5.3.0
 
 ### Minor Changes

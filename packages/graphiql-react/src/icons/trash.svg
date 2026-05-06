@@ -1,17 +1,3 @@
-<svg
-  width="1em"
-  height="5em"
-  xmlns="http://www.w3.org/2000/svg"
-  fill-rule="evenodd"
-  aria-hidden="true"
-  viewBox="0 0 23 23"
-  style="height: 1.5em"
-  clip-rule="evenodd"
->
-  <path
-    d="M19 24h-14c-1.104 0-2-.896-2-2v-17h-1v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2h-1v17c0 1.104-.896 2-2 2zm0-19h-14v16.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-16.5zm-7 7.586l3.293-3.293 1.414 1.414-3.293 3.293 3.293 3.293-1.414 1.414-3.293-3.293-3.293 3.293-1.414-1.414 3.293-3.293-3.293-3.293 1.414-1.414 3.293 3.293zm2-10.586h-4v1h4v-1z"
-    fill="currentColor"
-    stroke-width=".25"
-    stroke="currentColor"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="5em" fill-rule="evenodd" aria-hidden="true" clip-rule="evenodd" style="height:1.5em" viewBox="0 0 23 23">
+  <path fill="currentColor" stroke="currentColor" stroke-width=".25" d="M19 24H5a2 2 0 0 1-2-2V5H2V3h6V1.5C8 .673 8.673 0 9.5 0h5c.825 0 1.5.671 1.5 1.5V3h6v2h-1v17a2 2 0 0 1-2 2zm0-19H5v16.5a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5zm-7 7.586 3.293-3.293 1.414 1.414L13.414 14l3.293 3.293-1.414 1.414L12 15.414l-3.293 3.293-1.414-1.414L10.586 14l-3.293-3.293 1.414-1.414zM14 2h-4v1h4z"/>
 </svg>

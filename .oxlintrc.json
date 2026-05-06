@@ -1,0 +1,410 @@
+{
+  "plugins": ["typescript", "react", "import", "unicorn", "promise", "vitest"],
+  "jsPlugins": [
+    { "name": "eslint-js", "specifier": "oxlint-plugin-eslint" },
+    { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" }
+  ],
+  "env": {
+    "atomtest": true,
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "globals": {
+    "atom": "readonly",
+    "document": "readonly",
+    "window": "readonly",
+    "monaco": "writable",
+    "Map": "writable",
+    "Set": "writable"
+  },
+  "settings": {
+    "react": {
+      "version": "18"
+    }
+  },
+  "rules": {
+    "no-console": "error",
+    "no-constant-binary-expression": "error",
+    "no-empty": [
+      "error",
+      {
+        "allowEmptyCatch": true
+      }
+    ],
+    "accessor-pairs": "error",
+    "curly": "error",
+    "dot-notation": "error",
+    "eqeqeq": ["error", "smart"],
+    "no-alert": "error",
+    "no-caller": "error",
+    "no-div-regex": "error",
+    "no-else-return": [
+      "error",
+      {
+        "allowElseIf": false
+      }
+    ],
+    "no-eval": "error",
+    "no-extend-native": "error",
+    "no-extra-bind": "error",
+    "no-extra-label": "error",
+    "no-implicit-coercion": "error",
+    "no-implied-eval": "error",
+    "no-iterator": "error",
+    "no-labels": "error",
+    "no-lone-blocks": "error",
+    "no-new-func": "error",
+    "no-new-wrappers": "error",
+    "no-new": "error",
+    "no-param-reassign": "error",
+    "no-proto": "error",
+    "eslint-js/no-restricted-properties": [
+      "error",
+      {
+        "object": "window",
+        "property": "localStorage",
+        "message": "Use `localStorage` instead"
+      },
+      {
+        "object": "window",
+        "property": "location",
+        "message": "Use `location` instead"
+      },
+      {
+        "object": "window",
+        "property": "navigator",
+        "message": "Use `navigator` instead"
+      },
+      {
+        "object": "window",
+        "property": "getComputedStyle",
+        "message": "Use `getComputedStyle` instead"
+      },
+      {
+        "object": "self",
+        "message": "Use `globalThis` instead"
+      }
+    ],
+    "no-return-assign": "error",
+    "no-script-url": "error",
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-throw-literal": "error",
+    "no-useless-call": "error",
+    "no-useless-concat": "error",
+    "radix": "error",
+    "yoda": "error",
+    "unicorn/prefer-string-slice": "error",
+    "unicorn/no-useless-undefined": "error",
+    "no-var": "error",
+    "no-label-var": "error",
+    "no-restricted-globals": ["error", "stop"],
+    "typescript/no-shadow": "error",
+    "typescript/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^(React|_)",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "unicorn/no-useless-switch-case": "error",
+    "handle-callback-err": "error",
+    "no-new-require": "error",
+    "no-path-concat": "error",
+    "no-bitwise": "error",
+    "eslint-js/no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.name=useMemo][arguments.1.type=ArrayExpression][arguments.1.elements.length=0]",
+        "message": "`useMemo` with an empty dependency array can't provide a stable reference, use `useRef` instead."
+      },
+      {
+        "selector": "MemberExpression > .property[type=Identifier][name=keyCode]",
+        "message": "Use `.key` instead of `.keyCode`"
+      }
+    ],
+    "eslint-js/prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true
+      }
+    ],
+    "eslint-js/object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidExplicitReturnArrows": true
+      }
+    ],
+    "eslint-js/one-var": ["error", "never"],
+    "eslint-js/operator-assignment": "error",
+    "eslint-js/logical-assignment-operators": [
+      "error",
+      "always",
+      {
+        "enforceForIfStatements": true
+      }
+    ],
+    "eslint-js/no-octal-escape": "error",
+    "eslint-js/no-return-await": "error",
+    "unicorn/prefer-dom-node-remove": "error",
+    "typescript/no-restricted-imports": [
+      "error",
+      {
+        "name": "graphql/type",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "graphql/language",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "graphql/type/introspection",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "graphql/type/definition",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "graphql/type/directives",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "graphql/version",
+        "message": "use `graphql`"
+      },
+      {
+        "name": "monaco-editor",
+        "message": "`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages",
+        "allowTypeImports": true
+      }
+    ],
+    "no-useless-computed-key": "error",
+    "no-useless-rename": "error",
+    "symbol-description": "error",
+    "import/no-duplicates": "error",
+    "import/no-named-as-default": "error",
+    "prefer-object-spread": "error",
+    "react/jsx-curly-brace-presence": "error",
+    "react/jsx-boolean-value": "error",
+    "react/jsx-handler-names": "error",
+    "react/jsx-pascal-case": "error",
+    "react/self-closing-comp": "error",
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".tsx", ".jsx"],
+        "allow": "as-needed"
+      }
+    ],
+    "unicorn/no-typeof-undefined": "error",
+    "unicorn/prefer-at": "error",
+    "promise/no-multiple-resolved": "error",
+    "no-useless-return": "off",
+    "unicorn/prefer-logical-operator-over-ternary": "error",
+    "unicorn/prefer-regexp-test": "error",
+    "unicorn/throw-new-error": "error",
+    "unicorn/prefer-includes": "error",
+    "unicorn/prefer-dom-node-append": "error",
+    "no-lonely-if": "error",
+    "unicorn/no-lonely-if": "error",
+    "unicorn/prefer-optional-catch-binding": "error",
+    "unicorn/prefer-array-flat-map": "error",
+    "typescript/no-unused-expressions": "error",
+    "unicorn/no-useless-promise-resolve-reject": "error",
+    "no-useless-assignment": "off",
+    "no-void": "off",
+    "unicorn/prefer-node-protocol": "error",
+    "no-extra-boolean-cast": [
+      "error",
+      {
+        "enforceForInnerExpressions": true
+      }
+    ],
+    "unicorn/no-length-as-slice-end": "error",
+    "unicorn/prefer-string-replace-all": "error",
+    "unicorn/prefer-array-some": "error",
+    "unicorn/prefer-dom-node-text-content": "error",
+    "vitest/require-mock-type-parameters": "off",
+    "typescript/no-unnecessary-parameter-property-assignment": "off",
+    "unicorn/prefer-string-starts-ends-with": "off",
+    "unicorn/no-new-array": "off",
+    "promise/valid-params": "off",
+    "import/default": "off",
+    "import/no-named-as-default-member": "off",
+    // TODO: ratchet to error (~156 violations — circular imports across the monorepo)
+    "import/no-cycle": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx,mts,cts}"],
+      "rules": {
+        "typescript/prefer-optional-chain": "error",
+        "typescript/no-unnecessary-type-assertion": "error",
+        "typescript/no-floating-promises": "error",
+        "typescript/non-nullable-type-assertion-style": "error",
+        "typescript/consistent-type-assertions": "error",
+        "typescript/no-duplicate-type-constituents": "error",
+        "typescript/no-unnecessary-type-conversion": "error",
+        "typescript/no-deprecated": "error",
+        // TODO: ratchet to error (requires --type-aware; ~141 violations)
+        "typescript/no-unnecessary-condition": "off",
+        "typescript/no-unsafe-function-type": "off",
+        // TODO: ratchet to warn then error (~125 violations)
+        "typescript/no-explicit-any": "off",
+        "typescript/no-non-null-assertion": "off",
+        // TODO: ratchet to warn then error (~102 violations)
+        "typescript/ban-ts-comment": "off",
+        "typescript/ban-types": "off",
+        "typescript/no-empty-function": "off",
+        "typescript/triple-slash-reference": "off",
+        "typescript/no-namespace": "off"
+      }
+    },
+    {
+      "files": ["**/cypress/**"],
+      "rules": {
+        "unicorn/prefer-dom-node-text-content": "off",
+        "vitest/no-standalone-expect": "off",
+        "vitest/valid-expect": "off"
+      }
+    },
+    {
+      "files": [
+        "**/__{tests,mocks}__/*.{js,jsx,ts,tsx}",
+        "**/*.spec.{ts,js,jsx,tsx}"
+      ],
+      "rules": {
+        "vitest/no-conditional-expect": "off",
+        "vitest/require-to-throw-message": "off",
+        "vitest/expect-expect": [
+          "error",
+          {
+            "assertFunctionNames": ["expect*", "run"]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "resources/**",
+        "**/resources/**",
+        "scripts/**",
+        ".github/scripts/**"
+      ],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["examples/**"],
+      "rules": {
+        "no-console": "off",
+        "no-new": "off",
+        "no-alert": "off"
+      }
+    },
+    {
+      "files": [
+        "packages/codemirror-graphql/**",
+        "packages/cm6-graphql/**",
+        "packages/graphiql-toolkit/**",
+        "packages/graphiql-plugin-*/**",
+        "packages/graphql-language-service*/**",
+        "packages/monaco-graphql/**"
+      ],
+      "rules": {
+        "promise/prefer-await-to-then": "error"
+      }
+    },
+    {
+      "files": ["packages/{graphiql-react,graphiql}/**/*.{ts,tsx}"],
+      "rules": {
+        "typescript/no-restricted-imports": [
+          "error",
+          {
+            "name": "graphql/type",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/language",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/introspection",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/definition",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/directives",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/version",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "monaco-editor",
+            "message": "`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages",
+            "allowTypeImports": true
+          },
+          {
+            "name": "react",
+            "importNames": ["memo", "useCallback", "useMemo"]
+          }
+        ],
+        "react-hooks-js/rules-of-hooks": "off",
+        "react-hooks-js/exhaustive-deps": "off",
+        "react-hooks-js/react-compiler": "error"
+      }
+    },
+    {
+      "files": ["packages/monaco-graphql/**"],
+      "rules": {
+        "typescript/no-restricted-imports": [
+          "error",
+          {
+            "name": "graphql/type",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/language",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/introspection",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/definition",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/type/directives",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "graphql/version",
+            "message": "use `graphql`"
+          },
+          {
+            "name": "monaco-editor",
+            "message": "`monaco-editor` imports all languages; use locale `monaco-editor.ts` instead to import only `json` and `graphql` languages"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/*.d.ts"],
+      "rules": {
+        "no-var": "off"
+      }
+    }
+  ]
+}

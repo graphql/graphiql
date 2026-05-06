@@ -1,13 +1,4 @@
-// import { version } from 'graphql';
-
-let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe;
-// TODO: add support to graphql-http for IncrementalDelivery first
-// if (parseInt(version, 10) < 17) {
-
-describeOrSkip = describe.skip;
-// }
-
-describeOrSkip('IncrementalDelivery support via fetcher', () => {
+describe('IncrementalDelivery support via fetcher', () => {
   describe('When operation contains @stream', () => {
     const testStreamQuery = /* GraphQL */ `
       query StreamQuery($delay: Int) {
@@ -20,36 +11,16 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
     const mockStreamSuccess = {
       data: {
         streamable: [
-          {
-            text: 'Hi',
-          },
-          {
-            text: '你好',
-          },
-          {
-            text: 'Hola',
-          },
-          {
-            text: 'أهلاً',
-          },
-          {
-            text: 'Bonjour',
-          },
-          {
-            text: 'سلام',
-          },
-          {
-            text: '안녕',
-          },
-          {
-            text: 'Ciao',
-          },
-          {
-            text: 'हेलो',
-          },
-          {
-            text: 'Здорово',
-          },
+          { text: 'Hi' },
+          { text: '你好' },
+          { text: 'Hola' },
+          { text: 'أهلاً' },
+          { text: 'Bonjour' },
+          { text: 'سلام' },
+          { text: '안녕' },
+          { text: 'Ciao' },
+          { text: 'हेलो' },
+          { text: 'Здорово' },
         ],
       },
     };
@@ -106,7 +77,7 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
       This tests that;
       1. user ({name}) => { name }
       2. user ({age}) => { name, age }
-      3. user.friends.0 ({name}) => { name, age, friends: [{name}] } <- can sometimes happen before 4, due the the promise race
+      3. user.friends.0 ({name}) => { name, age, friends: [{name}] } <- can sometimes happen before 4, due to the promise race
       4. user.friends.0 ({age}) => { name, age, friends: [{name, age}] }
 
       This shows us that we can deep merge defers, deep merge streams, and also deep merge defers inside streams
@@ -142,22 +113,10 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
           person: {
             name: 'Mark',
             friends: [
-              {
-                name: 'James',
-                age: 1000,
-              },
-              {
-                name: 'Mary',
-                age: 1000,
-              },
-              {
-                name: 'John',
-                age: 1000,
-              },
-              {
-                name: 'Patrica',
-                age: 1000,
-              },
+              { name: 'James', age: 1000 },
+              { name: 'Mary', age: 1000 },
+              { name: 'John', age: 1000 },
+              { name: 'Patrica', age: 1000 },
             ],
             age: 1000,
           },

@@ -65,7 +65,7 @@ same for .json, .toml, etc
 | Parameter                                 | Default                                           | Description                                                                                                                                                                                                                                                                                         |
 | ----------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `graphql-config.load.baseDir`             | workspace root or process.cwd()                   | the path where graphql config looks for config files                                                                                                                                                                                                                                                |
-| `graphql-config.load.filePath`            | `null`                                            | exact filepath of the config file.                                                                                                                                                                                                                                                                  |
+| `graphql-config.load.filepath`            | `null`                                            | exact filepath of the config file.                                                                                                                                                                                                                                                                  |
 | `graphql-config.load.configName`          | `graphql`                                         | config name prefix instead of `graphql`                                                                                                                                                                                                                                                             |
 | `graphql-config.load.legacy`              | `true`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
 | `graphql-config.dotEnvPath`               | `null`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
@@ -77,7 +77,7 @@ same for .json, .toml, etc
 
 Multi-project can be used for both local files, URL defined schema, or both
 
-```ts
+```js
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -147,7 +147,7 @@ You can search a folder for any of the matching config file names listed above:
 
 ```json
 "graphql-config.load.rootDir": "./config"
-"graphql-config.envFilePath": "./config/.dev.env"
+"graphql-config.dotEnvPath": "./config/.dev.env"
 ```
 
 Or a specific filepath:
@@ -194,7 +194,7 @@ This plugin uses the
 
 1.  Clone the repository - https://github.com/graphql/graphiql
 1.  `yarn`
-1.  Run "VScode Extension" launcher in vscode
+1.  Run "VSCode Extension" launcher in vscode
 1.  This will open another VSCode instance with extension enabled
 1.  Open a project with a graphql config file - ":electric_plug: graphql" in
     VSCode status bar indicates that the extension is in use
@@ -207,8 +207,8 @@ This repository is managed by EasyCLA. Project participants must sign the free
 ([GraphQL Specification Membership agreement](https://preview-spec-membership.graphql.org))
 before making a contribution. You only need to do this one time, and it can be
 signed by
-[individual contributors](http://individual-spec-membership.graphql.org/) or
-their [employers](http://corporate-spec-membership.graphql.org/).
+[individual contributors](http://individual-spec-membership.graphql.org) or
+their [employers](http://corporate-spec-membership.graphql.org).
 
 To initiate the signature process please open a PR against this repo. The
 EasyCLA bot will block the merge if we still need a membership agreement from

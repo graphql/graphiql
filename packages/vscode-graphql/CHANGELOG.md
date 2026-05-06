@@ -806,7 +806,7 @@
 
 All notable changes to the "vscode-graphql" extension will be manually documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Check [Keep a Changelog](http://keepachangelog.com) for recommendations on how to structure this file.
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 

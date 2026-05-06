@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { Token } from './utilities';
 
 function formatTokens(tokens: Token[]): string {

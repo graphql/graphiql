@@ -1,3 +1,4 @@
+import { describe, it, expect, afterEach } from 'vitest';
 import startServer from '../startServer';
 
 describe('startServer', () => {
@@ -15,7 +16,7 @@ describe('startServer', () => {
     expect(true).toBe(true);
   });
   // TODO: this one fails to exit properly in tests
-  // eslint-disable-next-line jest/no-disabled-tests
+  // eslint-disable-next-line vitest/no-disabled-tests
   it.skip('should start the server with stream', async () => {
     c = await startServer({
       method: 'stream',

@@ -60,26 +60,31 @@ export class WorkerManager {
     this._lastUsedTime = Date.now();
     if (!this._client && !this._worker) {
       try {
+        const {
+          languageId,
+          formattingOptions,
+          schemas,
+          externalFragmentDefinitions,
+          completionSettings,
+        } = this._defaults;
         this._worker = editor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
           moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
 
-          label: this._defaults.languageId,
+          label: languageId,
           // passed in to the create() method
           createData: {
-            languageId: this._defaults.languageId,
-            formattingOptions: this._defaults.formattingOptions,
-            // only string based config can be passed from the main process
+            languageId,
+            formattingOptions,
+            // only string-based config can be passed from the main process
             languageConfig: {
-              schemas: this._defaults.schemas?.map(getStringSchema),
-              externalFragmentDefinitions:
-                this._defaults.externalFragmentDefinitions,
+              schemas: schemas?.map(getStringSchema),
+              externalFragmentDefinitions,
               // TODO: make this overridable
               // MonacoAPI possibly another configuration object for this I think?
               // all of this could be organized better
               fillLeafsOnComplete:
-                this._defaults.completionSettings
-                  .__experimental__fillLeafsOnComplete,
+                completionSettings.__experimental__fillLeafsOnComplete,
             },
           } as ICreateData,
         });

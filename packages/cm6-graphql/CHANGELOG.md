@@ -1,5 +1,11 @@
 # cm6-graphql
 
+## 0.2.1
+
+### Patch Changes
+
+- [#3920](https://github.com/graphql/graphiql/pull/3920) [`c6fddac`](https://github.com/graphql/graphiql/commit/c6fddac4b0e639be846dd8a23ebfd3e334410178) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove unneeded rollup/esbuild dev dependencies
+
 ## 0.2.0
 
 ### Minor Changes

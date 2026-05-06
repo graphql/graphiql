@@ -3,22 +3,21 @@ import {
   HandlerOptions as RawHandlerOptions,
   OperationContext,
 } from 'graphql-http';
-
 import type {
   Handler as NetlifyHandler,
   HandlerEvent as NetlifyHandlerEvent,
   HandlerContext as NetlifyHandlerContext,
 } from '@netlify/functions';
-
-import schema from '../packages/graphiql/test/schema';
-import { customExecute } from '../packages/graphiql/test/execute';
+import * as graphql from 'graphql';
+import { createSchema } from '../packages/graphiql/test/schema.js';
+import { createExecute } from '../packages/graphiql/test/execute.js';
 
 /**
  * Handler options when using the netlify adapter
  *
  * @category Server/@netlify/functions
  */
-export type HandlerOptions<Context extends OperationContext = undefined> =
+type HandlerOptions<Context extends OperationContext = undefined> =
   RawHandlerOptions<NetlifyHandlerEvent, NetlifyHandlerContext, Context>;
 
 /**
@@ -52,9 +51,15 @@ export function createHandler<Context extends OperationContext = undefined>(
         'Internal error occurred during request handling. Please check your implementation.',
         err,
       );
-      return { statusCode: 500 };
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ errors: [{ message: err.message }] }),
+      };
     }
   };
 }
 
-export const handler = createHandler({ schema, execute: customExecute });
+export const handler = createHandler({
+  schema: createSchema(graphql),
+  execute: createExecute(graphql),
+});

@@ -1,15 +1,14 @@
-import '@testing-library/jest-dom';
+'use no memo';
 
-// @ts-expect-error
-document.createRange = function () {
-  return {
-    setEnd() {},
-    setStart() {},
-    getClientRects() {
-      return { top: 0, bottom: 0, left: 0, right: 0 };
-    },
-    getBoundingClientRect() {
-      return { right: 0 };
-    },
-  };
-};
+import { vi, afterEach } from 'vitest';
+import '@testing-library/jest-dom/vitest';
+import { cleanup, configure } from '@testing-library/react';
+
+afterEach(cleanup);
+
+// to make it works like Jest (auto-mocking)
+vi.mock('zustand');
+vi.mock('monaco-editor');
+
+// Since we load `monaco-editor` dynamically, we need to allow more time for tests that assert editor values
+configure({ asyncUtilTimeout: 9_000 });

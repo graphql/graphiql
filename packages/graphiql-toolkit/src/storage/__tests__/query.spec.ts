@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { StorageAPI } from '../base';
 import { QueryStore } from '../query';
 

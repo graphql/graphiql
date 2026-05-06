@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.3.2
+
+### Patch Changes
+
+- [#3896](https://github.com/graphql/graphiql/pull/3896) [`1adc40c`](https://github.com/graphql/graphiql/commit/1adc40cc56dbf79296bb857156e6adce1c44dcbe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - bump eslint, eslint-plugins and fix new warnings
+
 ## 0.3.1
 
 ### Patch Changes

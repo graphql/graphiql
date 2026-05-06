@@ -1,5 +1,0 @@
-/* Underline the clickable token */
-.CodeMirror-jump-token {
-  text-decoration: underline dotted;
-  cursor: pointer;
-}
