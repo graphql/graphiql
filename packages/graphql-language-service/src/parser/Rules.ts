@@ -248,10 +248,9 @@ export const ParseRules: { [name: string]: ParseRule } = {
     name('atom'),
     opt('Implements'),
     list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
+    opt('FieldDefs'),
   ],
+  FieldDefs: [p('{'), list('FieldDef'), p('}')],
 
   FieldDef: [
     name('property'),

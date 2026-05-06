@@ -124,7 +124,7 @@ describe('onlineParser', () => {
 
       t.keyword('type', { kind: 'ObjectTypeDef' });
       t.name('A');
-      t.punctuation('{');
+      t.punctuation('{', { kind: 'FieldDefs' });
       t.property('field', { kind: 'FieldDef' });
       t.punctuation(':');
       t.name('String', { kind: 'NamedType' });
@@ -973,13 +973,35 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
         t.name('AnotherType', { kind: 'NamedType' });
         t.punctuation('!', { kind: 'FieldDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          type SomeType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1120,7 +1142,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1140,7 +1162,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(/\(/, { kind: 'ArgumentsDef' });
@@ -1169,7 +1191,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1190,7 +1212,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1213,7 +1235,7 @@ describe('onlineParser', () => {
           it(`with a directive having arguments of type ${fill.type}`, () => {
             t.keyword('type', { kind: 'ObjectTypeDef' });
             t.name('SomeType');
-            t.punctuation('{');
+            t.punctuation('{', { kind: 'FieldDefs' });
 
             t.property('someField', { kind: 'FieldDef' });
             t.punctuation(':');
@@ -1246,7 +1268,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1267,7 +1289,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1275,6 +1297,29 @@ describe('onlineParser', () => {
         expectDirective({ t }, { name: 'someDirective' });
         expectDirective({ t }, { name: 'anotherDirective' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          extend type SomeType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
