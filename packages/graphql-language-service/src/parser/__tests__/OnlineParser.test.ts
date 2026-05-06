@@ -1074,13 +1074,35 @@ describe('onlineParser', () => {
         `);
         t.keyword('interface', { kind: 'InterfaceDef' });
         t.name('SomeInterface');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
         t.name('SomeType', { kind: 'NamedType' });
         t.punctuation('!', { kind: 'FieldDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          interface SomeInterface @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1131,6 +1153,52 @@ describe('onlineParser', () => {
           });
         },
       );
+    });
+
+    describe('parses extend interface def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend interface SomeInterface {
+            someField: SomeType
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        t.punctuation('{', { kind: 'FieldDefs' });
+
+        t.property('someField', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('SomeType', { kind: 'NamedType' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          extend interface SomeInterface @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
     });
 
     describe('parses field defs', () => {
