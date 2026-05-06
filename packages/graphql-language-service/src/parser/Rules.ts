@@ -289,10 +289,9 @@ export const ParseRules: { [name: string]: ParseRule } = {
     word('input'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('InputValueDef'),
-    p('}'),
+    opt('InputValueDefs'),
   ],
+  InputValueDefs: [p('{'), list('InputValueDef'), p('}')],
   ExtendDef: [word('extend'), 'ExtensionDefinition'],
   ExtensionDefinition(token: Token): RuleKind | void {
     switch (token.value) {

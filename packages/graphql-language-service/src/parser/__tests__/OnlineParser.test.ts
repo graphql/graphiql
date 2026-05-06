@@ -1404,7 +1404,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputValueDefs' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1424,7 +1424,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputValueDefs' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1432,6 +1432,74 @@ describe('onlineParser', () => {
         expectDirective({ t }, { name: 'someDirective' });
         expectDirective({ t }, { name: 'anotherDirective' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          input SomeInputType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend input def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend input SomeInputType {
+            someField: AnotherType
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        t.punctuation('{', { kind: 'InputValueDefs' });
+
+        t.attribute('someField', { kind: 'InputValueDef' });
+        t.punctuation(':');
+        t.name('AnotherType', { kind: 'NamedType' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          extend input SomeInputType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
