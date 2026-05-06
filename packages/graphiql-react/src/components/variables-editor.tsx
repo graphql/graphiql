@@ -23,6 +23,7 @@ interface VariablesEditorProps extends EditorProps {
 
 export const VariablesEditor: FC<VariablesEditorProps> = ({
   onEdit,
+  editorOverrides,
   ...props
 }) => {
   const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
@@ -40,7 +41,7 @@ export const VariablesEditor: FC<VariablesEditorProps> = ({
       uri: `${uriInstanceId}${URI_NAME.variables}`,
       value: initialVariables,
     });
-    const editor = createEditor(ref, { model });
+    const editor = createEditor(ref, { model, ...editorOverrides });
     setEditor({ variableEditor: editor });
     const disposables = [
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
