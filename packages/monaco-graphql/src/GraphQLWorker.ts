@@ -7,11 +7,7 @@
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from './monaco-editor';
-import {
-  getTokenAtPosition,
-  Position,
-  Range,
-} from 'graphql-language-service';
+import { getTokenAtPosition, Position, Range } from 'graphql-language-service';
 import { LanguageService } from './LanguageService';
 import {
   toGraphQLPosition,
