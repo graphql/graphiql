@@ -151,14 +151,9 @@ describe('GraphiQL', () => {
     });
 
     it('should not introspect when IntrospectionQuery is provided as schema prop', async () => {
-      let fetcherCalled = false;
+      const trackingFetcher = vi.fn().mockResolvedValue(simpleIntrospection);
 
-      function trackingFetcher() {
-        fetcherCalled = true;
-        return Promise.resolve(simpleIntrospection);
-      }
-
-      await act(async () => {
+      await act(() => {
         render(
           <GraphiQL
             fetcher={trackingFetcher}
@@ -167,7 +162,7 @@ describe('GraphiQL', () => {
         );
       });
 
-      expect(fetcherCalled).toBe(false);
+      expect(trackingFetcher).not.toHaveBeenCalled();
     });
   }); // schema
 

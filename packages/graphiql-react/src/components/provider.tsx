@@ -329,12 +329,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
    * Synchronize prop changes with state
    */
   useEffect(() => {
-    const newSchema = isSchema(schema)
-      ? schema
-      : isIntrospectionData(schema)
-        ? buildClientSchema(schema)
-        : schema == null
-          ? schema
+    const newSchema =
+      isSchema(schema) || schema == null
+        ? schema
+        : isIntrospectionData(schema)
+          ? buildClientSchema(schema)
           : undefined;
 
     const validationErrors =
