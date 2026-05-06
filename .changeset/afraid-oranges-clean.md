@@ -2,8 +2,16 @@
 'graphql-language-service': patch
 ---
 
-fix: Correctly parse schema extensions with no root operations
+Align schema-language parser bodies with the GraphQL spec.
 
-Previously, the parser gave schema extensions the same treatment as schema definitions. The requirements are slightly different, however, since a schema extension does not require a list of root operations according to the spec: https://spec.graphql.org/draft/#sec-Schema-Extension.
+The online parser previously required a body in several places where
+the spec marks it as optional, causing valid schema documents to fail
+to tokenize cleanly when a definition or extension omitted its body.
+The following are now parsed correctly:
 
-The rule for parsing a schema extension is now distinct from that for a schema definition, allowing the root operations list to be omitted.
+- `extend schema` with no root operation type definitions
+- `type` / `extend type` with no fields body
+- `interface` / `extend interface` with no fields body
+- `union` / `extend union` with no member list
+- `enum` / `extend enum` with no values body
+- `input` / `extend input` with no fields body
