@@ -1508,9 +1508,9 @@ describe('onlineParser', () => {
 
         t.keyword('union', { kind: 'UnionDef' });
         t.name('SomeUnionType');
-        t.punctuation('=');
+        t.punctuation('=', { kind: 'UnionMembers' });
         t.name('SomeType', { kind: 'NamedType' });
-        t.punctuation('|', { kind: 'UnionDef' });
+        t.punctuation('|', { kind: 'UnionMembers' });
         t.name('AnotherType', { kind: 'NamedType' });
 
         t.eol();
@@ -1524,10 +1524,73 @@ describe('onlineParser', () => {
         t.keyword('union', { kind: 'UnionDef' });
         t.name('SomeUnionType');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('=', { kind: 'UnionDef' });
+        t.punctuation('=', { kind: 'UnionMembers' });
         t.name('SomeType', { kind: 'NamedType' });
-        t.punctuation('|', { kind: 'UnionDef' });
+        t.punctuation('|', { kind: 'UnionMembers' });
         t.name('AnotherType', { kind: 'NamedType' });
+
+        t.eol();
+      });
+
+      it('with no members, only a directive', () => {
+        const { t } = getUtils(`
+          union SomeUnionType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend union def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(
+          'extend union SomeUnionType = SomeType | AnotherType',
+        );
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        t.punctuation('=', { kind: 'UnionMembers' });
+        t.name('SomeType', { kind: 'NamedType' });
+        t.punctuation('|', { kind: 'UnionMembers' });
+        t.name('AnotherType', { kind: 'NamedType' });
+
+        t.eol();
+      });
+
+      it('with no members, only a directive', () => {
+        const { t } = getUtils(`
+          extend union SomeUnionType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
 
         t.eol();
       });
