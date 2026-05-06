@@ -1,13 +1,5 @@
 {
-  "plugins": [
-    "typescript",
-    "react",
-    "import",
-    "unicorn",
-    "promise",
-    "jest",
-    "vitest"
-  ],
+  "plugins": ["typescript", "react", "import", "unicorn", "promise", "vitest"],
   "jsPlugins": [
     { "name": "eslint-js", "specifier": "oxlint-plugin-eslint" },
     { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" }
@@ -272,14 +264,7 @@
     "unicorn/prefer-string-replace-all": "error",
     "unicorn/prefer-array-some": "error",
     "unicorn/prefer-dom-node-text-content": "error",
-    "jest/no-standalone-expect": "off",
-    "jest/valid-expect": "off",
-    "jest/require-to-throw-message": "off",
-    "vitest/no-conditional-expect": "off",
-    "vitest/no-standalone-expect": "off",
     "vitest/require-mock-type-parameters": "off",
-    "vitest/require-to-throw-message": "off",
-    "vitest/valid-expect": "off",
     "typescript/no-unnecessary-parameter-property-assignment": "off",
     "unicorn/prefer-string-starts-ends-with": "off",
     "unicorn/no-new-array": "off",
@@ -323,17 +308,20 @@
     {
       "files": ["**/cypress/**"],
       "rules": {
-        "unicorn/prefer-dom-node-text-content": "off"
+        "unicorn/prefer-dom-node-text-content": "off",
+        "vitest/no-standalone-expect": "off",
+        "vitest/valid-expect": "off"
       }
     },
     {
       "files": [
         "**/__{tests,mocks}__/*.{js,jsx,ts,tsx}",
-        "**/*.spec.{ts,js.jsx.tsx}"
+        "**/*.spec.{ts,js,jsx,tsx}"
       ],
       "rules": {
-        "jest/no-conditional-expect": "off",
-        "jest/expect-expect": [
+        "vitest/no-conditional-expect": "off",
+        "vitest/require-to-throw-message": "off",
+        "vitest/expect-expect": [
           "error",
           {
             "assertFunctionNames": ["expect*", "run"]
