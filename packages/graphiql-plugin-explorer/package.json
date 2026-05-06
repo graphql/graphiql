@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "sideEffects": [
     "*.css"
   ],
@@ -43,7 +43,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.37.0",
+    "@graphiql/react": "^0.37.4",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",

@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "sideEffects": [
     "*.css"
   ],
@@ -42,7 +42,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.11.3",
+    "@graphiql/toolkit": "^0.12.0",
     "react-compiler-runtime": "19.1.0-rc.1",
     "zustand": "^5"
   },
