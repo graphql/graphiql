@@ -280,10 +280,9 @@ export const ParseRules: { [name: string]: ParseRule } = {
     word('enum'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('EnumValueDef'),
-    p('}'),
+    opt('EnumValueDefs'),
   ],
+  EnumValueDefs: [p('{'), list('EnumValueDef'), p('}')],
 
   EnumValueDef: [name('string-2'), list('Directive')],
   InputDef: [

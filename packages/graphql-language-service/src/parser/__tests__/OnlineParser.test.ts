@@ -1449,7 +1449,7 @@ describe('onlineParser', () => {
 
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'EnumValueDefs' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
@@ -1470,11 +1470,77 @@ describe('onlineParser', () => {
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('{', { kind: 'EnumDef' });
+        t.punctuation('{', { kind: 'EnumValueDefs' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no values body, only a directive', () => {
+        const { t } = getUtils(`
+          enum SomeEnum @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend enum def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend enum SomeEnum {
+            SOME_ENUM_VALUE
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        t.punctuation('{', { kind: 'EnumValueDefs' });
+
+        t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no values body, only a directive', () => {
+        const { t } = getUtils(`
+          extend enum SomeEnum @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
