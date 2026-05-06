@@ -37,7 +37,6 @@
     "dot-notation": "error",
     "eqeqeq": ["error", "smart"],
     "no-alert": "error",
-    "no-await-in-loop": "error",
     "no-caller": "error",
     "no-div-regex": "error",
     "no-else-return": [
@@ -114,7 +113,6 @@
     "no-new-require": "error",
     "no-path-concat": "error",
     "no-bitwise": "error",
-    "unicorn/no-negated-condition": "error",
     "eslint-js/no-restricted-syntax": [
       "error",
       {
@@ -126,7 +124,6 @@
         "message": "Use `.key` instead of `.keyCode`"
       }
     ],
-    "operator-assignment": "error",
     "eslint-js/prefer-arrow-callback": [
       "error",
       {
@@ -151,20 +148,6 @@
     ],
     "eslint-js/no-octal-escape": "error",
     "eslint-js/no-return-await": "error",
-    "eslint-js/spaced-comment": [
-      "error",
-      "always",
-      {
-        "markers": ["/"]
-      }
-    ],
-    "eslint-js/quotes": [
-      "error",
-      "single",
-      {
-        "avoidEscape": true
-      }
-    ],
     "unicorn/prefer-dom-node-remove": "error",
     "typescript/no-restricted-imports": [
       "error",
@@ -200,13 +183,6 @@
     ],
     "no-useless-computed-key": "error",
     "no-useless-rename": "error",
-    "object-shorthand": [
-      "error",
-      "always",
-      {
-        "avoidExplicitReturnArrows": true
-      }
-    ],
     "symbol-description": "error",
     "import/no-duplicates": "error",
     "import/no-named-as-default": "error",
@@ -215,8 +191,6 @@
     "react/jsx-boolean-value": "error",
     "react/jsx-handler-names": "error",
     "react/jsx-pascal-case": "error",
-    "react/no-did-mount-set-state": "error",
-    "react/prefer-es6-class": "error",
     "react/self-closing-comp": "error",
     "react/jsx-no-useless-fragment": "error",
     "react/jsx-filename-extension": [
@@ -228,22 +202,12 @@
     ],
     "unicorn/no-typeof-undefined": "error",
     "unicorn/prefer-at": "error",
-    "prefer-destructuring": [
-      "error",
-      {
-        "VariableDeclarator": {
-          "object": true
-        }
-      }
-    ],
     "promise/no-multiple-resolved": "error",
-    "unicorn/no-zero-fractions": "error",
     "no-useless-return": "off",
     "unicorn/prefer-logical-operator-over-ternary": "error",
     "unicorn/prefer-regexp-test": "error",
     "unicorn/throw-new-error": "error",
     "unicorn/prefer-includes": "error",
-    "unicorn/no-array-for-each": "error",
     "unicorn/prefer-dom-node-append": "error",
     "no-lonely-if": "error",
     "unicorn/no-lonely-if": "error",
