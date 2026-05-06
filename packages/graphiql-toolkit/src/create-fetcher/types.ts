@@ -72,6 +72,26 @@ export type Fetcher = (
   opts?: FetcherOpts,
 ) => FetcherReturnType;
 
+export type SubscriptionSink = {
+  next: (value: ExecutionResult) => void;
+  error: (error: any) => void;
+  complete: () => void;
+};
+
+export type SubscriptionClient = {
+  subscribe: (payload: any, sink: SubscriptionSink) => void | (() => void);
+};
+
+export type GraphQLSSEClient = SubscriptionClient & {
+  dispose?: () => void;
+};
+
+export type GraphQLSSEClientOptions = {
+  url: string;
+  headers?: HeadersInit | (() => MaybePromise<HeadersInit>);
+  [option: string]: unknown;
+};
+
 /**
  * Options for creating a simple, spec-compliant GraphiQL fetcher
  */
@@ -84,6 +104,19 @@ export interface CreateFetcherOptions {
    * url for websocket subscription requests
    */
   subscriptionUrl?: string;
+  /**
+   * url for GraphQL over SSE subscription requests
+   */
+  sseUrl?: string;
+  /**
+   * `sseClient` implementation that matches `graphql-sse` signature,
+   * whether via `createClient()` itself or another client.
+   */
+  sseClient?: GraphQLSSEClient;
+  /**
+   * Additional `graphql-sse` client options used when you provide `sseUrl`.
+   */
+  sseClientOptions?: Omit<GraphQLSSEClientOptions, 'headers' | 'url'>;
   /**
    * `wsClient` implementation that matches `ws-graphql` signature,
    * whether via `createClient()` itself or another client.

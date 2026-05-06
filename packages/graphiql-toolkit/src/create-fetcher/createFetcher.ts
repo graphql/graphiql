@@ -4,13 +4,13 @@ import {
   createMultipartFetcher,
   createSimpleFetcher,
   isSubscriptionWithName,
-  getWsFetcher,
+  getSubscriptionFetcher,
 } from './lib';
 
 /**
  * build a GraphiQL fetcher that is:
  * - backwards compatible
- * - optionally supports graphql-ws or `
+ * - optionally supports GraphQL over SSE, graphql-ws, or legacy websockets
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   const httpFetch =
@@ -41,18 +41,23 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         )
       : false;
     if (isSubscription) {
-      const wsFetcher = await getWsFetcher(options, fetcherOpts);
+      const subscriptionFetcher = await getSubscriptionFetcher(
+        options,
+        fetcherOpts,
+      );
 
-      if (!wsFetcher) {
+      if (!subscriptionFetcher) {
         throw new Error(
-          `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
-            options.subscriptionUrl
-              ? `Provided URL ${options.subscriptionUrl} failed`
-              : 'Please provide subscriptionUrl, wsClient or legacyClient option first.'
+          `Your GraphiQL createFetcher is not properly configured for subscriptions yet. ${
+            options.sseUrl
+              ? `Provided SSE URL ${options.sseUrl} failed`
+              : options.subscriptionUrl
+                ? `Provided websocket URL ${options.subscriptionUrl} failed`
+                : 'Please provide sseUrl, sseClient, subscriptionUrl, wsClient or legacyClient option first.'
           }`,
         );
       }
-      return wsFetcher(graphQLParams);
+      return subscriptionFetcher(graphQLParams);
     }
     return httpFetcher(graphQLParams, fetcherOpts);
   };

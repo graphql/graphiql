@@ -2,10 +2,11 @@
 
 A utility for generating a full-featured `fetcher` for GraphiQL including
 `@stream`, `@defer` `IncrementalDelivery`and `multipart` and subscriptions using
-`graphql-ws` or the legacy websockets protocol.
+GraphQL over SSE, `graphql-ws` or the legacy websockets protocol.
 
-Under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws)
-client and [`meros`](https://www.npmjs.com/package/meros) which act as client
+Under the hood, it uses [`graphql-sse`](https://www.npmjs.com/package/graphql-sse),
+[`graphql-ws`](https://www.npmjs.com/package/graphql-ws) and
+[`meros`](https://www.npmjs.com/package/meros) which act as client
 reference implementations of the
 [GraphQL over HTTP Working Group Spec](https://github.com/graphql/graphql-over-http)
 specification, and the most popular transport spec proposals.
@@ -44,6 +45,54 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 const root = createRoot(document.getElementById('graphiql'));
 root.render(<App />);
 ```
+
+### Adding GraphQL over SSE subscriptions
+
+First you'll need to install `graphql-sse` as a peer dependency:
+
+```bash
+npm install graphql-sse
+```
+
+When loading GraphiQL from an ESM CDN with an import map, make sure the optional
+`graphql-sse` peer dependency is also mapped if you use `sseUrl`:
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "@graphiql/toolkit": "https://esm.sh/@graphiql/toolkit",
+      "graphql": "https://esm.sh/graphql",
+      "graphql-sse": "https://esm.sh/graphql-sse?external=graphql"
+    }
+  }
+</script>
+```
+
+Just by providing the `sseUrl`, you can generate a `graphql-sse` client. This
+client supports HTTP/Multipart Incremental Delivery for `@defer` and `@stream`,
+_and_ subscriptions over Server-Sent Events.
+
+```jsx
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const url = 'https://my-schema.com/graphql';
+
+const sseUrl = 'https://my-schema.com/graphql/stream';
+
+const fetcher = createGraphiQLFetcher({ url, sseUrl });
+
+export const App = () => <GraphiQL fetcher={fetcher} />;
+
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
+```
+
+You can further customize the `graphql-sse` implementation by creating a custom
+client instance and providing it as the `sseClient` parameter.
 
 ### Adding `graphql-ws` websockets subscriptions
 
@@ -90,6 +139,24 @@ This generates a `graphql-ws` client using the provided url. Note that a server
 must be compatible with the new `graphql-ws` subscriptions spec for this to
 work.
 
+### `sseUrl`
+
+This generates a `graphql-sse` client using the provided url. Note that a server
+must be compatible with the GraphQL over SSE protocol for this to work. When
+`sseUrl` or `sseClient` is provided, GraphiQL uses SSE for subscriptions instead
+of websockets.
+
+### `sseClient`
+
+Provide your own GraphQL over SSE subscriptions client. Using this option
+bypasses `sseUrl`. In theory, this could be any client using any transport, as
+long as it matches the `graphql-sse` client signature.
+
+### `sseClientOptions`
+
+Provide additional options used when creating a `graphql-sse` client from
+`sseUrl`, for example `singleConnection`.
+
 ### `wsClient`
 
 Provide your own subscriptions client. Using this option bypasses
@@ -128,6 +195,35 @@ Specify headers that will be passed to all requests.
 Pass a custom fetch implementation such as `isomorphic-fetch`.
 
 ## Customization Examples
+
+### Custom `sseClient` Example using `graphql-sse`
+
+This example passes a `graphql-sse` client to the `sseClient` option:
+
+```jsx
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
+import { GraphiQL } from 'graphiql';
+import { createClient } from 'graphql-sse';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const url = 'https://my-schema.com/graphql';
+
+const sseUrl = 'https://my-schema.com/graphql/stream';
+
+const fetcher = createGraphiQLFetcher({
+  url,
+  sseClient: createClient({
+    url: sseUrl,
+    singleConnection: true,
+  }),
+});
+
+export const App = () => <GraphiQL fetcher={fetcher} />;
+
+const root = createRoot(document.getElementById('graphiql'));
+root.render(<App />);
+```
 
 ### Custom `wsClient` Example using `graphql-ws`
 
