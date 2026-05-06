@@ -1,8 +1,7 @@
 declare namespace globalThis {
   import type * as monaco from 'monaco-editor';
   var MonacoEnvironment: monaco.Environment;
-  // Needs for cypress
-  var __MONACO = monaco;
+  var __MONACO: typeof monaco;
 }
 
 declare module 'monaco-editor/esm/vs/editor/common/standalone/standaloneEnums.js' {

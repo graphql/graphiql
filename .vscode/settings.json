@@ -1,9 +1,11 @@
 {
   "npm.packageManager": "yarn",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "files.insertFinalNewline": true,
   "editor.trimAutoWhitespace": false,
   "json.schemaDownload.trustedDomains": {
     "https://unpkg.com": true
-  }
+  },
+  "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview"
 }

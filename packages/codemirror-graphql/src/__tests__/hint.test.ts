@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import {
@@ -20,6 +19,7 @@ import {
   __Schema,
   __Type,
 } from 'graphql';
+import { describe, expect, it } from 'vitest';
 import '../hint';
 import type { GraphQLHintOptions, IHint, IHints } from '../hint';
 import '../mode';

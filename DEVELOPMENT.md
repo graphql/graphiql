@@ -72,7 +72,7 @@ breaking their implementations.
 
 - `yarn test graphiql` will run all tests for graphiql. You can also run tests
   from a workspace, but most tooling is at the root.
-- `yarn test --watch` will run `jest` with `--watch`
+- `yarn test -- --watch` will run vitest in watch mode
 - `yarn e2e` at the root will run the end-to-end suite
 - `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor
   example with GitHub API from the root. This is the fastest way to test changes
@@ -100,7 +100,7 @@ VITE v6.3.4  ready in 1015 ms
 ## Developing Monaco GraphQL
 
 1. First run `yarn`.
-2. Run `yarn tsc --watch` to watch `monaco-graphql` and
+2. Run `yarn build:watch` to watch `monaco-graphql` and
    `graphql-language-service` in one screen session/terminal tab/etc
 3. In another session, run `yarn start-monaco` from anywhere in the repository
    aside from an individual workspace.

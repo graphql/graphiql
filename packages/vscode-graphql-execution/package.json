@@ -111,7 +111,7 @@
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
     "graphql": "^16.9.0 || ^17.0.0-alpha.2",
-    "graphql-config": "5.0.3",
+    "graphql-config": "^5.1.6",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "nullthrows": "1.1.1",

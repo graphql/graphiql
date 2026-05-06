@@ -6,6 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service';
@@ -16,9 +17,19 @@ import {
 } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';
 
-jest.mock('../Logger');
-
-jest.setTimeout(20000);
+vi.mock('../Logger', () => {
+  const makeNoop = () => ({
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    log: vi.fn(),
+    level: 0,
+  });
+  return {
+    Logger: vi.fn().mockImplementation(makeNoop),
+    NoopLogger: vi.fn().mockImplementation(makeNoop),
+  };
+});
 
 import { GraphQLCache } from '../GraphQLCache';
 
@@ -37,10 +48,13 @@ import { pathToFileURL } from 'node:url';
 import * as fs from 'node:fs';
 import { join } from 'node:path';
 
-jest.mock('node:fs', () => ({
-  ...jest.requireActual<typeof import('fs')>('fs'),
-  readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
-}));
+vi.mock('node:fs', async () => {
+  const actual = await vi.importActual<typeof import('fs')>('fs');
+  return {
+    ...actual,
+    readFileSync: vi.fn(actual.readFileSync),
+  };
+});
 
 describe('MessageProcessor', () => {
   const logger = new NoopLogger();
@@ -351,9 +365,6 @@ describe('MessageProcessor', () => {
   });
 
   it('does not crash on null value returned in response to workspace configuration', async () => {
-    // for some reason this is needed? can't be a good thing... must have done something to cause a performance hit on
-    // loading config schema..
-    jest.setTimeout(10000);
     const previousConfigurationValue = getConfigurationReturnValue;
     getConfigurationReturnValue = null;
     const result = await messageProcessor.handleDidChangeConfiguration({});
@@ -374,9 +385,8 @@ describe('MessageProcessor', () => {
     } catch {}
   });
 
-  // modified to work with jest.mock() of WatchmanClient
+  // modified to work with vi.mock() of WatchmanClient
   it('runs definition requests', async () => {
-    jest.setTimeout(10000);
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -414,7 +424,6 @@ describe('MessageProcessor', () => {
   });
 
   it('retrieves custom results from locateCommand', async () => {
-    jest.setTimeout(10000);
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -490,7 +499,7 @@ describe('MessageProcessor', () => {
     expect(customResult3.range.end.character).toEqual(4);
     const oldGetProject = messageProcessor._graphQLCache.getProjectForFile;
 
-    messageProcessor._graphQLCache.getProjectForFile = jest.fn(() => ({
+    messageProcessor._graphQLCache.getProjectForFile = vi.fn(() => ({
       schema: project.schema,
       documents: project.documents,
       dirpath: project.dirpath,
@@ -677,12 +686,11 @@ describe('MessageProcessor', () => {
   });
 
   describe('_loadConfigOrSkip', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
     });
 
     it('loads config if not initialized', async () => {
@@ -731,13 +739,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidOpenOrSaveNotification', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
-      messageProcessor._loadConfigOrSkip = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
+      messageProcessor._loadConfigOrSkip = vi.fn();
     });
     it('updates config for standard config filename changes', async () => {
       await messageProcessor.handleDidOpenOrSaveNotification({
@@ -849,13 +856,12 @@ describe('MessageProcessor', () => {
     });
   });
   describe('handleWatchedFilesChangedNotification', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue(' query { id }');
-      messageProcessor._initializeGraphQLCaches = jest.fn();
-      messageProcessor._updateFragmentDefinition = jest.fn();
+      messageProcessor._initializeGraphQLCaches = vi.fn();
+      messageProcessor._updateFragmentDefinition = vi.fn();
       messageProcessor._isGraphQLConfigMissing = false;
       messageProcessor._isInitialized = true;
     });
@@ -878,13 +884,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleWatchedFilesChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
       messageProcessor._isGraphQLConfigMissing = true;
-      messageProcessor._parser = jest.fn();
+      messageProcessor._parser = vi.fn();
     });
 
     it('skips config updates for normal file changes', async () => {
@@ -901,13 +906,12 @@ describe('MessageProcessor', () => {
   });
 
   describe('handleDidChangedNotification without graphql config', () => {
-    const mockReadFileSync: jest.Mock =
-      jest.requireMock('node:fs').readFileSync;
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
       messageProcessor._isGraphQLConfigMissing = true;
-      messageProcessor._parser = jest.fn();
+      messageProcessor._parser = vi.fn();
     });
 
     it('skips config updates for normal file changes', async () => {

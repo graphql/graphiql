@@ -1,7 +1,9 @@
 {
   "name": "@graphiql/plugin-code-exporter",
   "version": "5.1.1",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -47,7 +49,7 @@
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "typescript": "^4.6.3",
+    "typescript": "^5.8.0",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.0.1"
   }

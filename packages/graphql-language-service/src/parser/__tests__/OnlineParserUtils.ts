@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import OnlineParser from '../onlineParser';
 import CharacterStream from '../CharacterStream';
 import { RuleKind } from '../types';

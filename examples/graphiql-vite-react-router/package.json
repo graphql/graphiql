@@ -11,21 +11,21 @@
     "start": "react-router-serve dist/server/index.js"
   },
   "dependencies": {
-    "@graphiql/react": "0.37.3",
-    "@react-router/fs-routes": "7.6.3",
-    "@react-router/node": "7.6.3",
-    "@react-router/serve": "7.6.3",
-    "graphiql": "5.2.2",
+    "@graphiql/react": "^0.37",
+    "@react-router/fs-routes": "^7",
+    "@react-router/node": "^7",
+    "@react-router/serve": "^7",
+    "graphiql": "^5",
     "isbot": "^5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-router": "7.6.3"
+    "react": "^19",
+    "react-dom": "^19",
+    "react-router": "^7"
   },
   "devDependencies": {
-    "@react-router/dev": "7.6.3",
+    "@react-router/dev": "^7",
     "@types/node": "^24",
-    "@types/react": "19.1.8",
-    "typescript": "5.8.3",
-    "vite": "7.0.4"
+    "@types/react": "^19",
+    "typescript": "^5",
+    "vite": "^7"
   }
 }

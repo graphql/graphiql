@@ -4,8 +4,7 @@
     "composite": true,
     "rootDir": "./src",
     "outDir": "./dist",
-    "target": "ES2018",
-    "types": ["vitest/globals"]
+    "target": "ES2018"
   },
   "references": [
     {

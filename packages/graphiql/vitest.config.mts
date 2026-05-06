@@ -5,7 +5,6 @@ import { plugins } from './vite.config.mjs';
 export default defineConfig({
   plugins,
   test: {
-    globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts', './setup-window.ts'],
     // Since we increased `waitFor` timeout in setup-files.ts

@@ -9,14 +9,13 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "noUncheckedIndexedAccess": true,
-    "importsNotUsedAsValues": "error",
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
-  }
+    "noUncheckedIndexedAccess": true
+  },
+  "exclude": ["src/setup-workers"]
 }
