@@ -4,7 +4,7 @@ import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
-import packageJSON from './package.json';
+import packageJSON from './package.json' with { type: 'json' };
 
 const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,

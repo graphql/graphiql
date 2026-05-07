@@ -1,4 +1,4 @@
-import { Mock } from 'vitest';
+import { type Mock, describe, it, expect, vi, afterEach } from 'vitest';
 import { parse } from 'graphql';
 import {
   isSubscriptionWithName,

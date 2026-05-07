@@ -200,7 +200,7 @@ newString                                                     | meta.selectionse
 )                                                             | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
 }                                                             | meta.selectionset.graphql punctuation.operation.graphql
                                                               | 
-subscription                                                  | entity.name.function.graphql
+subscription                                                  | keyword.operation.graphql
                                                               | 
 subscriptionName                                              | entity.name.function.graphql
                                                               | meta.selectionset.graphql

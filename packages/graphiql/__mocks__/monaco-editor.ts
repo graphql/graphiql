@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { defineWebWorkers } from '@vitest/web-worker/pure';
 /**
  * Fixes TypeError: Cannot read properties of null (reading 'webkitBackingStorePixelRatio')
@@ -56,5 +57,5 @@ process.on('unhandledRejection', reason => {
   throw reason;
 });
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/no-extraneous-dependencies
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export * from 'monaco-editor';

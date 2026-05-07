@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
@@ -30,14 +31,35 @@ describe('getHoverInformation', () => {
     return getHoverInformation(schema, query, point);
   }
 
-  it('provides leaf field information', () => {
-    const actual = testHover(
-      'query { thing { testField } }',
-      new Position(0, 20),
-    );
-    expect(actual).toEqual(
-      'TestType.testField: String\n\nThis is field documentation for TestType.testField',
-    );
+  describe('provides leaf field information', () => {
+    it('when in middle of token', () => {
+      const actual = testHover(
+        'query { thing { testField } }',
+        new Position(0, 20),
+      );
+      expect(actual).toEqual(
+        'TestType.testField: String\n\nThis is field documentation for TestType.testField',
+      );
+    });
+
+    it('when at start of token', () => {
+      const actual = testHover(
+        'query { thing { testField } }',
+        new Position(0, 16),
+      );
+      expect(actual).toEqual(
+        'TestType.testField: String\n\nThis is field documentation for TestType.testField',
+      );
+    });
+    it('when at end of token', () => {
+      const actual = testHover(
+        'query { thing { testField } }',
+        new Position(0, 24),
+      );
+      expect(actual).toEqual(
+        'TestType.testField: String\n\nThis is field documentation for TestType.testField',
+      );
+    });
   });
 
   it('provides aliased field information', () => {

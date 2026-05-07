@@ -23,25 +23,18 @@
     ]
   },
   "dependencies": {
-    "@codemirror/autocomplete": "6.0.0",
-    "@codemirror/commands": "6.0.0",
-    "@codemirror/language": "6.0.0",
-    "@codemirror/state": "6.1.0",
-    "@codemirror/theme-one-dark": "6.0.0",
-    "@codemirror/view": "6.1.2",
-    "cm6-graphql": "0.0.1",
-    "graphql": "^16.9.0"
+    "@codemirror/autocomplete": "^6",
+    "@codemirror/commands": "^6",
+    "@codemirror/language": "^6",
+    "@codemirror/state": "^6",
+    "@codemirror/theme-one-dark": "^6",
+    "@codemirror/view": "^6",
+    "cm6-graphql": "^0.0",
+    "graphql": "^16"
   },
   "devDependencies": {
-    "parcel": "^2.6.2",
-    "worker-loader": "^2.0.0",
-    "typescript": "^4.6.3"
-  },
-  "resolutions": {
-    "**/@codemirror/autocomplete": "6.0.0",
-    "**/@codemirror/commands": "6.0.0",
-    "**/@codemirror/view": "6.1.2",
-    "**/@codemirror/state": "6.1.0",
-    "**/@codemirror/language": "6.0.0"
+    "parcel": "^2",
+    "worker-loader": "^2",
+    "typescript": "^4"
   }
 }

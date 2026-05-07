@@ -22,7 +22,7 @@
     },
     "graphql-operation-def": {
       "patterns": [
-        { "include": "#graphql-query-mutation" },
+        { "include": "#graphql-query-mutation-subscription" },
         { "include": "#graphql-name" },
         { "include": "#graphql-variable-definitions" },
         { "include": "#graphql-directive" },
@@ -55,8 +55,8 @@
         { "include": "#literal-quasi-embedded" }
       ]
     },
-    "graphql-query-mutation": {
-      "match": "\\s*\\b(query|mutation)\\b",
+    "graphql-query-mutation-subscription": {
+      "match": "\\s*\\b(query|mutation|subscription)\\b",
       "captures": {
         "1": { "name": "keyword.operation.graphql" }
       }

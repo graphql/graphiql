@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 /**
  * Fixes TypeError: mainWindow.matchMedia is not a function
  * @see https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom

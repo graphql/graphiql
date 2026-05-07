@@ -33,5 +33,5 @@ export function initializeMode(
 }
 
 function getMode(): Promise<typeof GraphQLMode> {
-  return import('./graphqlMode');
+  return import('./graphqlMode.js');
 }
