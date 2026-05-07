@@ -30,6 +30,7 @@ import {
   pick,
   VariableEditor,
   EditorProps,
+  UrlDetails,
   cn,
   useGraphiQLActions,
   useMonaco,
@@ -214,6 +215,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    url: fetcherUrl,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -222,6 +224,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'url',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
@@ -468,61 +471,68 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               ref={pluginResize.dragBarRef}
             />
           )}
-          <div ref={pluginResize.secondRef} className="graphiql-sessions">
-            <div className="graphiql-session-header">
-              <Tabs
-                ref={tabContainerRef}
-                values={tabs}
-                onReorder={moveTab}
-                aria-label="Select active operation"
-                className="no-scrollbar"
-              >
-                {tabs.map((tab, index, arr) => (
-                  <Tab
-                    key={tab.id}
-                    // Prevent overscroll over container
-                    dragConstraints={tabContainerRef}
-                    value={tab}
-                    isActive={index === activeTabIndex}
-                  >
-                    <Tab.Button
-                      aria-controls="graphiql-session"
-                      id={`graphiql-session-tab-${index}`}
-                      title={tab.title}
-                      onClick={handleTabClick}
-                    >
-                      {tab.title}
-                    </Tab.Button>
-                    {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
-                  </Tab>
-                ))}
-              </Tabs>
-              <Tooltip label={LABEL.newTab}>
-                <UnStyledButton
-                  type="button"
-                  className="graphiql-tab-add"
-                  onClick={addTab}
-                  aria-label={LABEL.newTab}
+          <div className="graphiql-main-container">
+            {fetcherUrl && (
+              <div className="graphiql-main-header">
+                <UrlDetails url={fetcherUrl} method="POST" />
+              </div>
+            )}
+            <div ref={pluginResize.secondRef} className="graphiql-sessions">
+              <div className="graphiql-session-header">
+                <Tabs
+                  ref={tabContainerRef}
+                  values={tabs}
+                  onReorder={moveTab}
+                  aria-label="Select active operation"
+                  className="no-scrollbar"
                 >
-                  <PlusIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
-              {logo}
-            </div>
-            <div
-              role="tabpanel"
-              id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
-            >
-              {editors}
+                  {tabs.map((tab, index, arr) => (
+                    <Tab
+                      key={tab.id}
+                      // Prevent overscroll over container
+                      dragConstraints={tabContainerRef}
+                      value={tab}
+                      isActive={index === activeTabIndex}
+                    >
+                      <Tab.Button
+                        aria-controls="graphiql-session"
+                        id={`graphiql-session-tab-${index}`}
+                        title={tab.title}
+                        onClick={handleTabClick}
+                      >
+                        {tab.title}
+                      </Tab.Button>
+                      {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
+                    </Tab>
+                  ))}
+                </Tabs>
+                <Tooltip label={LABEL.newTab}>
+                  <UnStyledButton
+                    type="button"
+                    className="graphiql-tab-add"
+                    onClick={addTab}
+                    aria-label={LABEL.newTab}
+                  >
+                    <PlusIcon aria-hidden="true" />
+                  </UnStyledButton>
+                </Tooltip>
+                {logo}
+              </div>
               <div
-                className="graphiql-horizontal-drag-bar"
-                ref={editorResize.dragBarRef}
-              />
-              <div className="graphiql-response" ref={editorResize.secondRef}>
-                {isFetching && <Spinner />}
-                <ResponseEditor responseTooltip={responseTooltip} />
-                {footer}
+                role="tabpanel"
+                id="graphiql-session" // used by aria-controls="graphiql-session"
+                aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+              >
+                {editors}
+                <div
+                  className="graphiql-horizontal-drag-bar"
+                  ref={editorResize.dragBarRef}
+                />
+                <div className="graphiql-response" ref={editorResize.secondRef}>
+                  {isFetching && <Spinner />}
+                  <ResponseEditor responseTooltip={responseTooltip} />
+                  {footer}
+                </div>
               </div>
             </div>
           </div>
