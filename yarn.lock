@@ -3033,6 +3033,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
+    "@graphiql/react": "npm:^0.37.0"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3080,6 +3081,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
+    "@graphiql/react": "npm:^0.37.0"
     "@graphiql/toolkit": "npm:^0.11.3"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
