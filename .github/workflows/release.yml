@@ -15,9 +15,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-
-    environment: deploy
-
     permissions:
       # To create a release, and to push branches:
       contents: write
