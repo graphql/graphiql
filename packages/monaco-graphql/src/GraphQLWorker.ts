@@ -7,7 +7,7 @@
 
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 import type * as monaco from './monaco-editor';
-import { getRange } from 'graphql-language-service';
+import { getTokenAtPosition, Position, Range } from 'graphql-language-service';
 import { LanguageService } from './LanguageService';
 import {
   toGraphQLPosition,
@@ -84,13 +84,15 @@ export class GraphQLWorker {
         document,
         graphQLPosition,
       );
-      const location = {
-        column: graphQLPosition.character,
-        line: graphQLPosition.line,
-      };
+      const token = getTokenAtPosition(document, graphQLPosition);
       return {
         content: hover,
-        range: toMonacoRange(getRange(location, document)),
+        range: toMonacoRange(
+          new Range(
+            new Position(graphQLPosition.line, token.start),
+            new Position(graphQLPosition.line, token.end),
+          ),
+        ),
       };
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -132,7 +134,6 @@ export class GraphQLWorker {
 
     return prettierStandalone.format(document, {
       parser: 'graphql',
-      // @ts-expect-error -- should be fixed by pnpm migration
       plugins: [prettierGraphqlParser],
       ...this._formattingOptions?.prettierConfig,
     });

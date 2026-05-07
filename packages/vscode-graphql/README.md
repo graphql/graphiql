@@ -65,7 +65,7 @@ same for .json, .toml, etc
 | Parameter                                 | Default                                           | Description                                                                                                                                                                                                                                                                                         |
 | ----------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `graphql-config.load.baseDir`             | workspace root or process.cwd()                   | the path where graphql config looks for config files                                                                                                                                                                                                                                                |
-| `graphql-config.load.filePath`            | `null`                                            | exact filepath of the config file.                                                                                                                                                                                                                                                                  |
+| `graphql-config.load.filepath`            | `null`                                            | exact filepath of the config file.                                                                                                                                                                                                                                                                  |
 | `graphql-config.load.configName`          | `graphql`                                         | config name prefix instead of `graphql`                                                                                                                                                                                                                                                             |
 | `graphql-config.load.legacy`              | `true`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
 | `graphql-config.dotEnvPath`               | `null`                                            | backwards compatibility with `graphql-config@2`                                                                                                                                                                                                                                                     |
@@ -147,7 +147,7 @@ You can search a folder for any of the matching config file names listed above:
 
 ```json
 "graphql-config.load.rootDir": "./config"
-"graphql-config.envFilePath": "./config/.dev.env"
+"graphql-config.dotEnvPath": "./config/.dev.env"
 ```
 
 Or a specific filepath:

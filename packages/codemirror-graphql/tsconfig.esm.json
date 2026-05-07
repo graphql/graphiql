@@ -5,8 +5,7 @@
     "outDir": "./esm",
     "composite": true,
     "jsx": "react",
-    "strictPropertyInitialization": false,
-    "baseUrl": "."
+    "strictPropertyInitialization": false
   },
   "include": ["src"],
   "exclude": [

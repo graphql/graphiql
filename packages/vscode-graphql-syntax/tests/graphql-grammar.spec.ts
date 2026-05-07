@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { tokenizeFile } from './__utilities__/utilities';
 
 describe('source.graphql grammar', () => {

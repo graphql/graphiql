@@ -121,12 +121,11 @@ export const HistoryStore: FC<HistoryStoreProps> = ({
     pick('isFetching', 'tabs', 'activeTabIndex', 'storage'),
   );
   const activeTab = tabs[activeTabIndex]!;
-  const historyStorage = // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
-    new ToolkitHistoryStore(storage, maxHistoryLength);
+  const historyStorage = new ToolkitHistoryStore(storage, maxHistoryLength);
 
   useEffect(() => {
     historyStore.setState({ historyStorage });
-  }, [historyStorage]);
+  }, [historyStorage]); // eslint-disable-line react-hooks/exhaustive-deps -- false positive, code is optimized by React Compiler
 
   useEffect(() => {
     if (!isFetching) {

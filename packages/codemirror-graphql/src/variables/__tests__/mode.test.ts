@@ -9,6 +9,7 @@
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
+import { describe, expect, it } from 'vitest';
 import '../mode';
 
 describe('graphql-variables-mode', () => {

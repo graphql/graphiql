@@ -30,6 +30,8 @@ import type { SlicesWithActions } from '../types';
 import { useDidUpdate } from '../utility';
 import {
   FragmentDefinitionNode,
+  IntrospectionQuery,
+  buildClientSchema,
   parse,
   visit,
   isSchema,
@@ -43,8 +45,13 @@ import {
 } from '../constants';
 import { getDefaultTabState } from '../utility/tabs';
 
+function isIntrospectionData(value: unknown): value is IntrospectionQuery {
+  return typeof value === 'object' && value !== null && '__schema' in value;
+}
+
 interface GraphiQLProviderProps
-  extends EditorProps,
+  extends
+    EditorProps,
     ExecutionProps,
     PluginProps,
     SchemaProps,
@@ -322,7 +329,12 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
    * Synchronize prop changes with state
    */
   useEffect(() => {
-    const newSchema = isSchema(schema) || schema == null ? schema : undefined;
+    const newSchema =
+      isSchema(schema) || schema == null
+        ? schema
+        : isIntrospectionData(schema)
+          ? buildClientSchema(schema)
+          : undefined;
 
     const validationErrors =
       !newSchema || dangerouslyAssumeSchemaIsValid
@@ -336,7 +348,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
        */
       requestCounter: requestCounter + 1,
       schema: newSchema,
-      shouldIntrospect: !isSchema(schema) && schema !== null,
+      shouldIntrospect: !newSchema && schema !== null,
       validationErrors,
     }));
 

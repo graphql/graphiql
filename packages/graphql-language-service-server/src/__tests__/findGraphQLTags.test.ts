@@ -7,10 +7,23 @@
  *
  */
 
+import { describe, it, expect, vi } from 'vitest';
 import { Position, Range } from 'graphql-language-service';
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
-jest.mock('../Logger');
+vi.mock('../Logger', () => {
+  const makeNoop = () => ({
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    log: vi.fn(),
+    level: 0,
+  });
+  return {
+    Logger: vi.fn().mockImplementation(makeNoop),
+    NoopLogger: vi.fn().mockImplementation(makeNoop),
+  };
+});
 
 import { NoopLogger } from '../Logger';
 import { SupportedExtensionsEnum } from '../constants';
@@ -398,7 +411,7 @@ query {id}`);
   it('no crash in Svelte files without <script>', async () => {
     const text = '';
 
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
@@ -420,7 +433,7 @@ query {id}`);
   it('no crash in Svelte files with empty <script>', async () => {
     const text = '<script></script>';
 
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
@@ -442,7 +455,7 @@ query {id}`);
   it('no crash in Svelte files with empty <script> (typescript)', async () => {
     const text = '<script lang="ts"></script>';
 
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(process.stderr, 'write')
       .mockImplementation(() => true);
 
