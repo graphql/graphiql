@@ -217,10 +217,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
-    fetcher,
-    queryEditor,
-    variableEditor,
-    headerEditor,
+    url: fetcherUrl,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -229,10 +226,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
-      'fetcher',
-      'queryEditor',
-      'variableEditor',
-      'headerEditor',
+      'url',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
@@ -354,16 +348,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     changeTab(index);
   };
 
-  const getFetcherUrl = () => {
-    const fetcherUrl = fetcher[FETCHER_OPTIONS_SYMBOL]?.url;
-
-    if (fetcherUrl?.startsWith('/')) {
-      return location.origin + fetcherUrl;
-    }
-
-    return fetcherUrl;
-  };
-
   const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
@@ -462,7 +446,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 
   const tabContainerRef = useRef<HTMLUListElement>(null!);
-  const fetcherUrl = getFetcherUrl();
 
   return (
     <Tooltip.Provider>
