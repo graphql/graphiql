@@ -223,6 +223,7 @@ graphql                                | entity.name.function.tagged-template.js
 \`                                      | punctuation.definition.string.template.begin.js
                                        | meta.embedded.block.graphql
 query                                  | meta.embedded.block.graphql keyword.operation.graphql
+                                       | meta.embedded.block.graphql
 (                                      | meta.embedded.block.graphql meta.brace.round.graphql
 $id                                    | meta.embedded.block.graphql meta.variables.graphql variable.parameter.graphql
 :                                      | meta.embedded.block.graphql meta.variables.graphql punctuation.colon.graphql
@@ -239,7 +240,7 @@ test                                   | meta.embedded.block.graphql meta.select
                                        | meta.embedded.block.graphql
 \`                                      | punctuation.definition.string.template.end.js
 ,                                      | 
-  [var1, var2]                         | 
+  [var1, var2],                        | 
 )                                      | 
 ;                                      | 
                                        | 
@@ -285,7 +286,6 @@ id                                     | meta.embedded.block.graphql meta.select
 const query =                          | 
 graphql                                | entity.name.function.tagged-template.js
 (                                      | 
-                                       | 
 '                                      | punctuation.definition.string.template.begin.js
 query                                  | meta.embedded.block.graphql keyword.operation.graphql
 (                                      | meta.embedded.block.graphql meta.brace.round.graphql
@@ -608,7 +608,6 @@ id                              | meta.embedded.block.graphql meta.selectionset.
 const query =                   | 
 graphql                         | entity.name.function.tagged-template.js
 (                               | 
-                                | 
 '                               | punctuation.definition.string.template.begin.js
 query                           | meta.embedded.block.graphql keyword.operation.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
@@ -624,7 +623,6 @@ id                              | meta.embedded.block.graphql meta.selectionset.
 const query =                   | 
 graphql                         | entity.name.function.tagged-template.js
 <Generic>(                      | 
-                                | 
 '                               | punctuation.definition.string.template.begin.js
 query                           | meta.embedded.block.graphql keyword.operation.graphql
                                 | meta.embedded.block.graphql meta.selectionset.graphql
@@ -669,7 +667,7 @@ id                              | meta.embedded.block.graphql meta.selectionset.
                                 | meta.embedded.block.graphql
 \`                               | punctuation.definition.string.template.end.js
 ,                               | 
-  [var1, var2]                  | 
+  [var1, var2],                 | 
 )                               | 
 ;                               | 
                                 | 

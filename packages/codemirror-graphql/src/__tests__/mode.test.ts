@@ -11,6 +11,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { describe, expect, it } from 'vitest';
 import '../mode';
 
 describe('graphql-mode', () => {

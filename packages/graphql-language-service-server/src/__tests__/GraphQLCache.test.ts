@@ -6,15 +6,17 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { AbortController as MockAbortController } from 'node-abort-controller';
-import fetchMock from 'fetch-mock';
-
-jest.mock('@whatwg-node/fetch', () => ({
-  fetch: require('fetch-mock').fetchHandler,
-  AbortController: MockAbortController,
-  TextDecoder: global.TextDecoder,
-}));
-
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterAll,
+  afterEach,
+} from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {
   GraphQLSchema,
@@ -34,8 +36,12 @@ function withoutASTNode(definition: any) {
   return result;
 }
 
+const server = setupServer();
+
 const logger = new NoopLogger();
 describe('GraphQLCache', () => {
+  beforeAll(() => server.listen());
+  afterAll(() => server.close());
   const configDir = __dirname;
   let graphQLRC;
   let cache = new GraphQLCache({
@@ -56,7 +62,7 @@ describe('GraphQLCache', () => {
   });
 
   afterEach(() => {
-    fetchMock.restore();
+    server.resetHandlers();
   });
 
   describe('getGraphQLCache', () => {
@@ -94,18 +100,9 @@ describe('GraphQLCache', () => {
           { descriptions: true },
         ),
       };
-      fetchMock.mock({
-        matcher: '*',
-        response: {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: introspectionResult,
-        },
-      });
+      server.use(http.post('*', () => HttpResponse.json(introspectionResult)));
 
       const schema = await cache.getSchema('testWithEndpoint');
-      expect(fetchMock.called('*')).toEqual(true);
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
 

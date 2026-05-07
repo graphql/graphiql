@@ -90,7 +90,7 @@ Cypress.Commands.add(
       )
         .eq(0)
         .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
+          const actual = normalizeMonacoWhitespace(element.get(0).textContent);
           const expected = JSON.stringify(variables, null, 2);
           expect(actual).to.equal(expected);
         });
@@ -114,7 +114,7 @@ Cypress.Commands.add(
       )
         .eq(1)
         .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
+          const actual = normalizeMonacoWhitespace(element.get(0).textContent);
           const expected = headersString;
           expect(actual).to.equal(expected);
         });
@@ -144,7 +144,7 @@ function normalizeMonacoWhitespace(str: string): string {
 
 Cypress.Commands.add('containQueryResult', expected => {
   cy.get('section.result-window').should(element => {
-    const actual = normalizeMonacoWhitespace(element.get(0).textContent!);
+    const actual = normalizeMonacoWhitespace(element.get(0).textContent);
     expect(actual).to.contain(expected);
   });
 });

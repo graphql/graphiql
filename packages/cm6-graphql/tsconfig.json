@@ -3,10 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "target": "es6",
-    "module": "es2020",
+    "module": "nodenext",
     "newLine": "lf",
     "declaration": true,
-    "moduleResolution": "node",
     "outDir": "dist"
   },
   "include": ["src", "__tests__"],

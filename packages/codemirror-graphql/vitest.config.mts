@@ -5,7 +5,6 @@ const require = createRequire(import.meta.url);
 
 export default defineConfig({
   test: {
-    globals: true,
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts'],
     alias: {

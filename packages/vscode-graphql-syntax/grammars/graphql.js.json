@@ -1,6 +1,6 @@
 {
   "scopeName": "inline.graphql",
-  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro) -source.graphql -inline.graphql -string -comment",
+  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro | text.html.vue) -source.graphql -inline.graphql -string -comment",
   "patterns": [
     {
       "begin": "\\s*+(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*\\(",
@@ -39,10 +39,18 @@
         },
         {
           "patterns": [
-            { "include": "source.js" },
-            { "include": "source.ts" },
-            { "include": "source.js.jsx" },
-            { "include": "source.tsx" }
+            {
+              "include": "source.js"
+            },
+            {
+              "include": "source.ts"
+            },
+            {
+              "include": "source.js.jsx"
+            },
+            {
+              "include": "source.tsx"
+            }
           ]
         }
       ]
