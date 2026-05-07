@@ -364,47 +364,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     return fetcherUrl;
   };
 
-  const handleCurlClick: ButtonHandler = () => {
-    const url = getFetcherUrl();
-    const query = queryEditor?.getValue();
-    const variables = safeParse<Record<string, unknown>>(
-      variableEditor?.getValue(),
-    );
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      Accept: 'application/graphql-response+json,application/json;q=0.9',
-      ...safeParse<Record<string, string>>(headerEditor?.getValue()),
-    };
-
-    const headersString = Object.keys(headers)
-      .map(key => {
-        const value = headers[key];
-        return `-H '${key}: ${value}'`;
-      })
-      .join(' ');
-
-    let operationName: string | undefined;
-
-    if (query) {
-      const definition = parse(query).definitions.find(
-        def => def.kind === Kind.OPERATION_DEFINITION,
-      );
-
-      operationName = definition?.name?.value;
-    }
-
-    const data = JSON.stringify({
-      query,
-      variables,
-      operationName,
-    });
-
-    navigator.clipboard.writeText(
-      `curl '${url}' ${headersString} --data-binary '${data}'`,
-    );
-  };
-
   const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
@@ -612,14 +571,6 @@ function getChildComponentType(child: ReactNode) {
     typeof child.type === 'function'
   ) {
     return child.type;
-  }
-}
-
-function safeParse<T>(raw: string | undefined): T | undefined {
-  try {
-    return raw && JSON.parse(raw);
-  } catch {
-    return;
   }
 }
 
