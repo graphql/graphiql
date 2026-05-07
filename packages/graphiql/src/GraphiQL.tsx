@@ -41,8 +41,6 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
-import { FETCHER_OPTIONS_SYMBOL } from '@graphiql/toolkit';
-import { Kind, parse } from 'graphql';
 
 /**
  * API docs for this live here:
