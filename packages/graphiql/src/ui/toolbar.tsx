@@ -6,7 +6,9 @@ import {
   PrettifyIcon,
   TerminalIcon,
   ToolbarButton,
+  useGraphiQL,
   useGraphiQLActions,
+  pick,
 } from '@graphiql/react';
 
 const DefaultToolbarRenderProps: FC<{
@@ -30,6 +32,7 @@ export const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps | ReactNode;
 }> = ({ children = DefaultToolbarRenderProps }) => {
   const isRenderProp = typeof children === 'function';
+  const { url } = useGraphiQL(pick('url'));
   const {
     copyQuery,
     prettifyEditors,
@@ -69,7 +72,11 @@ export const GraphiQLToolbar: FC<{
   );
 
   const copyAsCurl = (
-    <ToolbarButton label="Copy as cURL" onClick={copyAsCurlAction}>
+    <ToolbarButton
+      label="Copy as cURL"
+      disabled={!url}
+      onClick={copyAsCurlAction}
+    >
       <TerminalIcon className="graphiql-toolbar-icon" aria-hidden="true" />
     </ToolbarButton>
   );
