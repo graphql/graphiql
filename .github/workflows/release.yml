@@ -7,7 +7,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  #cancel-in-progress: true
+  # Don't cancel a publish partway through!
+  cancel-in-progress: false
 
 permissions: {}
 
