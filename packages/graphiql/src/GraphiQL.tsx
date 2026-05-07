@@ -34,7 +34,6 @@ import {
   cn,
   useGraphiQLActions,
   useMonaco,
-  Button,
 } from '@graphiql/react';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
@@ -537,7 +536,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             {fetcherUrl && (
               <div className="graphiql-main-header">
                 <UrlDetails url={fetcherUrl} method="POST" />
-                <Button onClick={handleCurlClick}>Copy cURL</Button>
               </div>
             )}
             <div ref={pluginResize.secondRef} className="graphiql-sessions">
