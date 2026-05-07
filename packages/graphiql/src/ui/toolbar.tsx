@@ -4,6 +4,7 @@ import {
   KEY_MAP,
   MergeIcon,
   PrettifyIcon,
+  TerminalIcon,
   ToolbarButton,
   useGraphiQLActions,
 } from '@graphiql/react';
@@ -11,12 +12,14 @@ import {
 const DefaultToolbarRenderProps: FC<{
   prettify: ReactNode;
   copy: ReactNode;
+  copyAsCurl: ReactNode;
   merge: ReactNode;
-}> = ({ prettify, copy, merge }) => (
+}> = ({ prettify, copy, copyAsCurl, merge }) => (
   <>
     {prettify}
     {merge}
     {copy}
+    {copyAsCurl}
   </>
 );
 
@@ -27,7 +30,12 @@ export const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps | ReactNode;
 }> = ({ children = DefaultToolbarRenderProps }) => {
   const isRenderProp = typeof children === 'function';
-  const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQLActions();
+  const {
+    copyQuery,
+    prettifyEditors,
+    mergeQuery,
+    copyAsCurl: copyAsCurlAction,
+  } = useGraphiQLActions();
 
   if (!isRenderProp) {
     return children as ReactElement;
@@ -60,5 +68,11 @@ export const GraphiQLToolbar: FC<{
     </ToolbarButton>
   );
 
-  return children({ prettify, copy, merge });
+  const copyAsCurl = (
+    <ToolbarButton label="Copy as cURL" onClick={copyAsCurlAction}>
+      <TerminalIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+    </ToolbarButton>
+  );
+
+  return children({ prettify, copy, copyAsCurl, merge });
 };
