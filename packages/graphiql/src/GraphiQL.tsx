@@ -355,7 +355,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   };
 
   const getFetcherUrl = () => {
-    const fetcherUrl = fetcherOpts?.url;
+    const fetcherUrl = fetcher[FETCHER_OPTIONS_SYMBOL]?.url;
 
     if (fetcherUrl?.startsWith('/')) {
       return location.origin + fetcherUrl;
@@ -462,7 +462,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 
   const tabContainerRef = useRef<HTMLUListElement>(null!);
-  const fetcherOpts = fetcher[FETCHER_OPTIONS_SYMBOL];
   const fetcherUrl = getFetcherUrl();
 
   return (
