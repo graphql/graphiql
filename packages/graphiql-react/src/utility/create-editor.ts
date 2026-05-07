@@ -63,6 +63,7 @@ export function createEditor(
     // See: https://github.com/graphql/graphiql/issues/4040
     fontLigatures: true,
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
+    roundedSelection: false, // prevent multiline text selection from highlighting +1 characters after beginning/end of selection
     tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter or its container
     ...options,
   });
