@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import * as oniguruma from 'vscode-oniguruma';
 import * as tm from 'vscode-textmate';
-import packageJson from '../../package.json' assert { type: 'json' };
+import packageJson from '../../package.json' with { type: 'json' };
 
 export type Token = {
   text: string;

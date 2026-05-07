@@ -229,15 +229,14 @@ export interface EditorActions {
   prettifyEditors: () => Promise<void>;
 }
 
-export interface EditorProps
-  extends Pick<
-    EditorSlice,
-    | 'onTabChange'
-    | 'onEditOperationName'
-    | 'defaultHeaders'
-    | 'defaultQuery'
-    | 'onCopyQuery'
-  > {
+export interface EditorProps extends Pick<
+  EditorSlice,
+  | 'onTabChange'
+  | 'onEditOperationName'
+  | 'defaultHeaders'
+  | 'defaultQuery'
+  | 'onCopyQuery'
+> {
   /**
    * With this prop you can pass so-called "external" fragments that will be
    * included in the query document (depending on usage). You can either pass

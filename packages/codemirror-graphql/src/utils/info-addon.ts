@@ -10,13 +10,19 @@
 import CodeMirror from 'codemirror';
 import { GraphQLInfoOptions } from '../info';
 
+// CodeMirror's option system accepts the option value as the declared shape,
+// a boolean to enable/disable with defaults, or a function used as the render
+// helper. The handler below handles all three cases, so the parameter types
+// are widened accordingly.
+type GraphQLInfoOptionValue = GraphQLInfoOptions | boolean | (() => string);
+
 CodeMirror.defineOption(
   'info',
   false,
   (
     cm: CodeMirror.Editor,
-    options: GraphQLInfoOptions,
-    old?: GraphQLInfoOptions,
+    options: GraphQLInfoOptionValue,
+    old?: GraphQLInfoOptionValue,
   ) => {
     if (old && old !== CodeMirror.Init) {
       const oldOnMouseOver = cm.state.info.onMouseOver;
@@ -33,7 +39,7 @@ CodeMirror.defineOption(
   },
 );
 
-function createState(options: GraphQLInfoOptions) {
+function createState(options: GraphQLInfoOptionValue) {
   return {
     options:
       options instanceof Function

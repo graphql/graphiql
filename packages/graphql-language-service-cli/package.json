@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "types:check": "tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "keywords": [
     "graphql",

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';

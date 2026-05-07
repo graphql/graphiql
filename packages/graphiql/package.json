@@ -2,7 +2,8 @@
   "name": "graphiql",
   "version": "5.2.2",
   "sideEffects": [
-    "dist/setup-workers/*"
+    "dist/setup-workers/*",
+    "*.css"
   ],
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
@@ -46,7 +47,7 @@
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@graphiql/plugin-doc-explorer": "^0.4.1",
@@ -74,7 +75,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "start-server-and-test": "^1.10.11",
-    "typescript": "^4.6.3",
+    "typescript": "^5.8.0",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3",
     "vitest-canvas-mock": "0.3.3"

@@ -40,6 +40,7 @@ build({
     'twing',
     'dot',
     'bracket-template',
+    'handlebars',
     'vscode',
     'velocityjs',
     'dustjs-linkedin',

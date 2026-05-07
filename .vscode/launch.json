@@ -21,17 +21,10 @@
     },
     {
       "type": "node",
-      "name": "jest watch",
+      "name": "test watch current file",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-      "args": [
-        "--config",
-        "jest.config.js",
-        "--color",
-        "--runInBand",
-        "--watch",
-        "${relativeFile}"
-      ],
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["watch", "--dir", "packages", "${relativeFile}"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
