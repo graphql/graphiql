@@ -14,6 +14,7 @@ permissions: {}
 
 jobs:
   release:
+    environment: deploy
     name: Release
     runs-on: ubuntu-latest
     permissions:
