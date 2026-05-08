@@ -8,7 +8,8 @@
   "sortPackageJson": false,
   "ignorePatterns": [
     "packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql",
-    "**/CHANGELOG.md"
+    "**/CHANGELOG.md",
+    "working-group/agendas/**"
   ],
   "overrides": [
     {
