@@ -1,5 +1,20 @@
 # Change Log
 
+## 5.2.3
+
+### Patch Changes
+
+- [#4181](https://github.com/graphql/graphiql/pull/4181) [`f1a210e`](https://github.com/graphql/graphiql/commit/f1a210ea1989825afa5e9a5cbabdd68e9300aa82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix schema prop to skip introspection when IntrospectionQuery data is provided
+
+  Previously, passing an `IntrospectionQuery` result as the `schema` prop would still trigger a network introspection request. The `shouldIntrospect` check only recognized `GraphQLSchema` instances (via `isSchema`), not raw introspection data. Now, when an `IntrospectionQuery` is passed, a schema is built from it directly using `buildClientSchema` and introspection is skipped.
+
+- [#4211](https://github.com/graphql/graphiql/pull/4211) [`e7b30c1`](https://github.com/graphql/graphiql/commit/e7b30c1ca5d2eeab63f59894515ea25df86331f8) Thanks [@davidjb](https://github.com/davidjb)! - Add \*.css to sideEffects to allow import of CSS in Webpack Javascript
+
+- Updated dependencies [[`f1a210e`](https://github.com/graphql/graphiql/commit/f1a210ea1989825afa5e9a5cbabdd68e9300aa82), [`6f5d5d2`](https://github.com/graphql/graphiql/commit/6f5d5d25a9c6b3eb1b977bd41b1d9a37b1dceed3), [`40359eb`](https://github.com/graphql/graphiql/commit/40359ebbf3acf0a9968d4cb83c57167be1b1b38a), [`e7b30c1`](https://github.com/graphql/graphiql/commit/e7b30c1ca5d2eeab63f59894515ea25df86331f8)]:
+  - @graphiql/react@0.37.4
+  - @graphiql/plugin-doc-explorer@0.4.2
+  - @graphiql/plugin-history@0.4.2
+
 ## 5.2.2
 
 ### Patch Changes
@@ -116,14 +131,12 @@
 - [#4052](https://github.com/graphql/graphiql/pull/4052) [`9b54581`](https://github.com/graphql/graphiql/commit/9b54581e74a7e6c6354a810c2288869fb85f24eb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix multiple GraphiQL instances, suffix a unique id for operation, request headers, variables and response URI.
 
   E.g., the first GraphiQL instance will have:
-
   - `1-operation.graphql`
   - `1-request-headers.json`
   - `1-variables.json`
   - `1-response.json`
 
   The 2nd instance will have:
-
   - `2-operation.graphql`
   - `2-request-headers.json`
   - `2-variables.json`
@@ -132,7 +145,6 @@
   etc.
 
 - [#4049](https://github.com/graphql/graphiql/pull/4049) [`2c0586d`](https://github.com/graphql/graphiql/commit/2c0586d1f3db8fe8dc604032010cc9840d10b72d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - use `allowTrailingComma` option in jsonc parser to make `tryParseJsonObject` sync
-
   - parse introspection headers with jsonc parser
   - use prettier format for operation editor since we already use prettier for jsonc editors
 
@@ -164,7 +176,6 @@
 ### Major Changes
 
 - [#3990](https://github.com/graphql/graphiql/pull/3990) [`27e7eb6`](https://github.com/graphql/graphiql/commit/27e7eb60247437d992c1fcdcc6870cb7892d4b92) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - allow multiple independent instances of GraphiQL on the same page
-
   - store `onClickReference` in query editor in React `ref`
   - remove `onClickReference` from variable editor
   - fix shortcut text per OS for run query in execute query button's tooltip and in default query
@@ -183,7 +194,6 @@
   document `keyMap` prop was removed in migration guide
 
 - [#3735](https://github.com/graphql/graphiql/pull/3735) [`0a08642`](https://github.com/graphql/graphiql/commit/0a0864268da4f340e30a1e9b8191d34e33ffbfa7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - Remove `query`, `variables`, `headers`, and `response` props from `<GraphiQL />` and `<GraphiQLProvider />`
-
   - Add `initialQuery`, `initialVariables` and `initialHeaders` props
   - Fix `defaultQuery`, when is set will only be used for the first tab. When opening more tabs, the query editor will start out empty
   - remove `useSynchronizeValue` hook
@@ -217,7 +227,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -236,7 +245,6 @@
   - prefer `getComputedStyle` over `window.getComputedStyle`
 
 - [#4008](https://github.com/graphql/graphiql/pull/4008) [`e0dafa4`](https://github.com/graphql/graphiql/commit/e0dafa4cf86edffc8344c11f2c0a5280d873585a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - add f1 command as first item in shortcut table
-
   - set color of `quickInputList.focusForeground` in command palette to be primary color
 
 - [#3950](https://github.com/graphql/graphiql/pull/3950) [`2455907`](https://github.com/graphql/graphiql/commit/245590708cea52ff6f1bcce8664781f7e56029cb) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - remove `useQueryEditor`, `useVariableEditor`, `useHeaderEditor`, `useResponseEditor` hooks
@@ -369,7 +377,6 @@
 ### Patch Changes
 
 - [#3949](https://github.com/graphql/graphiql/pull/3949) [`0844dc1`](https://github.com/graphql/graphiql/commit/0844dc1ca89a5d8fce0dc23658cca6987ff8443e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - replace `onCopyQuery` hook with `copyQuery` function
-
   - replace `onMergeQuery` hook with `mergeQuery` function
   - replace `onPrettifyEditors` hook with `prettifyEditors` function
   - remove `fetcher` prop from `SchemaContextProvider` and `schemaStore` and add `fetcher` to `executionStore`
@@ -486,7 +493,6 @@
 ### Patch Changes
 
 - [#3916](https://github.com/graphql/graphiql/pull/3916) [`98d13a3`](https://github.com/graphql/graphiql/commit/98d13a3e515eb70aaf5a5ba669c680d5959fef67) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - remove the following exports from `@graphiql/react` and move them in `@graphiql/plugin-doc-explorer` package:
-
   - Argument
   - DefaultValue
   - DeprecationReason
@@ -519,7 +525,6 @@
 ### Patch Changes
 
 - [#3911](https://github.com/graphql/graphiql/pull/3911) [`e7c436b`](https://github.com/graphql/graphiql/commit/e7c436b329a68981bdbd2b662be94875a546a1d6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - export `cn` from `@graphiql/react`
-
   - remove following exports from `@graphiql/react` and move them in `@graphiql/plugin-history` package:
     - `History`
     - `HistoryContext`
@@ -558,17 +563,16 @@
   ### Before
 
   ```jsx
-  import GraphiQL from 'graphiql';
+  import GraphiQL from "graphiql";
   ```
 
   ### After
 
   ```jsx
-  import { GraphiQL } from 'graphiql';
+  import { GraphiQL } from "graphiql";
   ```
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - support react 19, drop support react 16 and react 17
-
   - replace deprecated `ReactDOM.unmountComponentAtNode()` and `ReactDOM.render()` with `root.unmount()` and `createRoot(container).render()`
   - update `@radix-ui` and `@headlessui/react` dependencies
 
@@ -595,7 +599,6 @@
   ```
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - new looks of tabs
-
   - fix `disableTabs` when `Add tab` button is still shown
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Remove `toolbar.additionalContent` and `toolbar.additionalComponent` props in favor of `GraphiQL.Toolbar` render props.
@@ -697,7 +700,6 @@
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - rollback `position: absolute` style for `.graphiql-logo` because tabs will behind logo
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - prefer `location` over `window.location`
-
   - prefer `navigator` over `window.navigator`
 
 - [#3904](https://github.com/graphql/graphiql/pull/3904) [`d1395f9`](https://github.com/graphql/graphiql/commit/d1395f987b3f9c70b69ec5ad7283c63594dd7602) Thanks [@dimaMachina](https://github.com/dimaMachina)! - use `right: var(--px-16)` instead of `right: 0` for `.graphiql-logo`
@@ -848,13 +850,13 @@
   ### Before
 
   ```jsx
-  import GraphiQL from 'graphiql';
+  import GraphiQL from "graphiql";
   ```
 
   ### After
 
   ```jsx
-  import { GraphiQL } from 'graphiql';
+  import { GraphiQL } from "graphiql";
   ```
 
 - [#3687](https://github.com/graphql/graphiql/pull/3687) [`09e7004`](https://github.com/graphql/graphiql/commit/09e700403beb6c7290d165df33a2455ac2196971) Thanks [@dimaMachina](https://github.com/dimaMachina)! - remove `disableTabs` option
@@ -882,7 +884,6 @@
   ```
 
 - [#3644](https://github.com/graphql/graphiql/pull/3644) [`3c1a345`](https://github.com/graphql/graphiql/commit/3c1a345acd9bf07b45bc230009cb57c51c425673) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - new looks of tabs
-
   - fix `disableTabs` when `Add tab` button is still shown
 
 ### Patch Changes
@@ -899,7 +900,6 @@
 ### Minor Changes
 
 - [#3826](https://github.com/graphql/graphiql/pull/3826) [`cb29e9f`](https://github.com/graphql/graphiql/commit/cb29e9fbe1362778bc327513fc884c4ec419775e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - - remove react compiler custom patch
-
   - update `react-compiler-runtime` to use `19.1.0-rc.1` version
 
 - [#3826](https://github.com/graphql/graphiql/pull/3826) [`cb29e9f`](https://github.com/graphql/graphiql/commit/cb29e9fbe1362778bc327513fc884c4ec419775e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - migrate `graphiql` to `vite` and `react compiler`
@@ -1149,7 +1149,6 @@
 - [#3371](https://github.com/graphql/graphiql/pull/3371) [`2348641c`](https://github.com/graphql/graphiql/commit/2348641c07748691c478ac5f67032b7e9081f9cb) Thanks [@acao](https://github.com/acao)! - Solves #2825, an old bug where new tabs were created on every refresh
 
   the bug occurred when:
-
   1. `shouldPersistHeaders` is not set to true
   2. `headers` or `defaultHeaders` are provided as props
   3. the user refreshes the browser
@@ -1489,7 +1488,7 @@
   - `GraphiQL.MenuItem`: You can use the `ToolbarMenu.Item` component from `@graphiql/react` instead.
   - `GraphiQL.Group`: Grouping multiple buttons side-by-side is not provided out-of-the box anymore in the new GraphiQL UI. If you want to implement a similar feature in the new vertical toolbar you can do so by adding your own styles for your custom toolbar elements. Example:
     ```jsx
-    import { GraphiQL } from 'graphiql';
+    import { GraphiQL } from "graphiql";
     function CustomGraphiQL() {
       return (
         <GraphiQL>
@@ -1882,7 +1881,6 @@
 - [#2257](https://github.com/graphql/graphiql/pull/2257) [`6cc95851`](https://github.com/graphql/graphiql/commit/6cc9585119f33ba80f960da310f7ef2747b7bc38) Thanks [@acao](https://github.com/acao)! - _security fix:_ replace the vulnerable `dset` dependency with `set-value`
 
   `dset` is vulnerable to prototype pollution attacks. this is only possible if you are doing all of the following:
-
   1. running graphiql with an experimental graphql-js release tag that supports @stream and @defer
   2. executing a properly @streamed or @deferred query ala IncrementalDelivery spec, with multipart chunks
   3. consuming a malicious schema that contains field names like proto, prototype, or constructor that return malicious data designed to exploit a prototype pollution attack
@@ -1948,7 +1946,7 @@
   **Usage example:**
 
   ```tsx
-  <GraphiQL onSchemaChange={schema => console.log(schema)} />
+  <GraphiQL onSchemaChange={(schema) => console.log(schema)} />
   ```
 
 ## 1.5.20
@@ -2222,7 +2220,6 @@
 ### Minor Changes
 
 - 1c119386: `@defer`, `@stream`, and `graphql-ws` support in a `createGraphiQLFetcher` utility (#1770)
-
   - support for `@defer` and `@stream` in `GraphiQL` itself on fetcher execution and when handling stream payloads
   - introduce `@graphiql/toolkit` for types and utilities used to compose `GraphiQL` and other related libraries
   - introduce `@graphiql/create-fetcher` to accept simplified parameters to generate a `fetcher` that covers the most commonly used `graphql-over-http` transport spec proposals. using `meros` for multipart http, and `graphql-ws` for websockets subscriptions.

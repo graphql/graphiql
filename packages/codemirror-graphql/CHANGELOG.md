@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`914a547`](https://github.com/graphql/graphiql/commit/914a547637366b4bea91c5b2e3cfdbf2438f38cb), [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870)]:
+  - graphql-language-service@5.5.1
+
 ## 2.2.4
 
 ### Patch Changes
@@ -76,7 +83,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown

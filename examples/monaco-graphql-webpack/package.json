@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "graphql": "^16",
-    "graphql-language-service": "^5",
+    "graphql-language-service": "^5.5.1",
     "json-schema": "^0.4",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
-    "monaco-graphql": "^1",
+    "monaco-graphql": "^1.7.4",
     "prettier": "^3"
   },
   "devDependencies": {

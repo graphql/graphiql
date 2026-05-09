@@ -10,11 +10,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.11",
+    "@graphiql/toolkit": "^0.12.0",
     "graphql": "^16",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
-    "monaco-graphql": "^1",
+    "monaco-graphql": "^1.7.4",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19"

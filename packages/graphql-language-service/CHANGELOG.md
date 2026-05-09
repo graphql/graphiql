@@ -1,5 +1,13 @@
 # graphql-language-service
 
+## 5.5.1
+
+### Patch Changes
+
+- [#3882](https://github.com/graphql/graphiql/pull/3882) [`914a547`](https://github.com/graphql/graphiql/commit/914a547637366b4bea91c5b2e3cfdbf2438f38cb) Thanks [@bensengupta](https://github.com/bensengupta)! - Fix off-by-one when hovering over token
+
+- [#4222](https://github.com/graphql/graphiql/pull/4222) [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Unpin and update graphql-config dependency
+
 ## 5.5.0
 
 ### Minor Changes
@@ -48,7 +56,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
@@ -264,7 +271,6 @@
   see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql) to learn how to configure and use the new interface.
 
   #### 🚨 BREAKING CHANGES!! 🚨
-
   - `monaco-graphql` 🚨 **no longer loads schemas using `fetch` introspection** 🚨, you must specify the schema in one of many ways statically or dynamically. specifying just a schema `uri` no longer works. see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql)
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
@@ -274,14 +280,12 @@
   #### New Features
 
   this introduces many improvements:
-
   - json language support, by mapping from each graphql model uri to a set of json variable model uris
     - we generate a json schema definition for the json variables on the fly
     - it updates alongside editor validation as you type
   - less redundant schema loading - schema is loaded in main process instead of in the webworker
   - web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
   - the editor now supports multiple graphql models, configurable against multiple schema configurations
-
   * You can now use `initializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
 
 ### Patch Changes

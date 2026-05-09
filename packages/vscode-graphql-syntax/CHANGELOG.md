@@ -1,5 +1,17 @@
 # vscode-graphql-syntax
 
+## 1.3.9
+
+### Patch Changes
+
+- [#4183](https://github.com/graphql/graphiql/pull/4183) [`2ef9389`](https://github.com/graphql/graphiql/commit/2ef9389311c6308f637a2493251c00bdb57b1421) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix VS Code extension publishing scripts
+
+- [#4143](https://github.com/graphql/graphiql/pull/4143) [`7979bf5`](https://github.com/graphql/graphiql/commit/7979bf5418ed702cc086a4857a583e625d09bf7e) Thanks [@Netail](https://github.com/Netail)! - Add syntax highlighting support for subscription operations.
+
+- [#4144](https://github.com/graphql/graphiql/pull/4144) [`f7e2a56`](https://github.com/graphql/graphiql/commit/f7e2a562a2e11a248a38525db0322aac691a94c1) Thanks [@jsmnbom](https://github.com/jsmnbom)! - Add `text.html.vue` as inline injection target.
+
+  [This PR](https://github.com/vuejs/language-tools/pull/5856) broke tooling by changing the vue grammar scope from `source.vue` to `text.html.vue`. This adds `text.html.vue` as an additional injection target for GraphQL syntax highlighting so that it works in both cases.
+
 ## 1.3.8
 
 ### Patch Changes
@@ -59,7 +71,6 @@
 ### Patch Changes
 
 - [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
-
   - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
   - make textmate injectors more performant and specific, eliminate redundant config
 
