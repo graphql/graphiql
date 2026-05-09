@@ -41,7 +41,7 @@
     "e2e": "yarn workspace graphiql e2e",
     "oxlint": "oxlint --max-warnings=0 --ignore-path .eslintignore",
     "fix": "yarn lint-fix && yarn format && yarn svgo",
-    "license-check": "jsgl --local packages/*",
+    "license-check": "jsgl --local .",
     "lint": "yarn oxlint && yarn format-check && yarn lint-cspell",
     "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
     "lint-fix": "yarn oxlint --fix",

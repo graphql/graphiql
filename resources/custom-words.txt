@@ -111,6 +111,7 @@ jeong
 jiti
 jonathanawesome
 jsdelivr
+jsgl
 kumar
 languageservice
 leebyron
@@ -132,6 +133,7 @@ medellín
 menlo
 meros
 middlewares
+minipass
 mockfs
 modulemap
 multipass
@@ -202,6 +204,7 @@ snyk
 socker
 sonarjs
 sorare
+spawndamnit
 squirrelly
 stonexer
 streamable
