@@ -153,6 +153,7 @@ nullthrows
 nulltype
 nvim
 objectvalues
+oklch
 onig
 ooops
 orche
@@ -182,6 +183,7 @@ randomthing
 ravikoti
 resi
 resizer
+retheming
 rikki
 roadmap
 roboto
