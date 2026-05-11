@@ -17,6 +17,7 @@ import { DeprecationReason } from './deprecation-reason';
 import { FieldLink } from './field-link';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
+import { VirtualList } from './virtual-list';
 import './type-documentation.css';
 
 type TypeDocumentationProps = {
@@ -88,17 +89,21 @@ const Fields: FC<{ type: GraphQLNamedType }> = ({ type }) => {
     <>
       {fields.length > 0 ? (
         <ExplorerSection title="Fields">
-          {fields.map(field => (
-            <Field key={field.name} field={field} />
-          ))}
+          <VirtualList
+            items={fields}
+            estimateSize={() => 64}
+            renderItem={field => <Field field={field} />}
+          />
         </ExplorerSection>
       ) : null}
       {deprecatedFields.length > 0 ? (
         showDeprecated || fields.length === 0 ? (
           <ExplorerSection title="Deprecated Fields">
-            {deprecatedFields.map(field => (
-              <Field key={field.name} field={field} />
-            ))}
+            <VirtualList
+              items={deprecatedFields}
+              estimateSize={() => 64}
+              renderItem={field => <Field field={field} />}
+            />
           </ExplorerSection>
         ) : (
           <Button type="button" onClick={handleShowDeprecated}>
@@ -175,17 +180,21 @@ const EnumValues: FC<{ type: GraphQLNamedType }> = ({ type }) => {
     <>
       {values.length > 0 && (
         <ExplorerSection title="Enum Values">
-          {values.map(value => (
-            <EnumValue key={value.name} value={value} />
-          ))}
+          <VirtualList
+            items={values}
+            estimateSize={() => 40}
+            renderItem={value => <EnumValue value={value} />}
+          />
         </ExplorerSection>
       )}
       {deprecatedValues.length > 0 &&
         (showDeprecated || !values.length ? (
           <ExplorerSection title="Deprecated Enum Values">
-            {deprecatedValues.map(value => (
-              <EnumValue key={value.name} value={value} />
-            ))}
+            <VirtualList
+              items={deprecatedValues}
+              estimateSize={() => 40}
+              renderItem={value => <EnumValue value={value} />}
+            />
           </ExplorerSection>
         ) : (
           <Button type="button" onClick={handleShowDeprecated}>
@@ -219,15 +228,16 @@ const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   if (!schema || !isAbstractType(type)) {
     return null;
   }
+  const possibleTypes = schema.getPossibleTypes(type);
   return (
     <ExplorerSection
       title={isInterfaceType(type) ? 'Implementations' : 'Possible Types'}
     >
-      {schema.getPossibleTypes(type).map(possibleType => (
-        <div key={possibleType.name}>
-          <TypeLink type={possibleType} />
-        </div>
-      ))}
+      <VirtualList
+        items={possibleTypes}
+        estimateSize={() => 36}
+        renderItem={possibleType => <TypeLink type={possibleType} />}
+      />
     </ExplorerSection>
   );
 };
