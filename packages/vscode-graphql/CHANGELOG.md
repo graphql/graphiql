@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.13.3
+
+### Patch Changes
+
+- [#4183](https://github.com/graphql/graphiql/pull/4183) [`2ef9389`](https://github.com/graphql/graphiql/commit/2ef9389311c6308f637a2493251c00bdb57b1421) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix VS Code extension publishing scripts
+
+- Updated dependencies [[`ca83879`](https://github.com/graphql/graphiql/commit/ca838797123c9ec0a3d9fc8fe9a30f10a4b1df3f), [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870)]:
+  - graphql-language-service-server@2.14.9
+
 ## 0.13.2
 
 ### Patch Changes
@@ -60,7 +69,6 @@
   note that `schemaCacheTTL` can only be set in extension settings or graphql config at the top level - it will be ignored if configured per-project in the graphql config
 
   **Code Improvements**
-
   - Fixes flaky tests, and `schemaCacheTTL` setting not being passed to the cache
   - Adds a test to validate network schema changes are reflected in the cache
 
@@ -83,7 +91,6 @@
   This fixes multiple cacheing bugs, upon addomg some in-depth integration test coverage for the LSP server. It also solves several bugs regarding loading config types, and properly restarts the server and invalidates schema when there are config changes.
 
   ### Bugfix Summary
-
   - configurable polling updates for network and other code first schema configuration, set to a 30s interval by default. powered by `schemaCacheTTL` which can be configured in the IDE settings (vscode, nvim) or in the graphql config file. (1)
   - jump to definition in embedded files offset bug, for both fragments and code files with SDL strings
   - cache invalidation for fragments (fragment lookup/autcoomplete data is more accurate, but incomplete/invalid fragments still do not autocomplete or validate, and remember fragment options always filter/validate by the `on` type!)
@@ -91,11 +98,9 @@
   - schema definition lookups & autocomplete crossing over into the wrong project
 
   **Notes**
-
   1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
 
   ### Known Bugs Fixed
-
   - #3318
   - #2357
   - #3469
@@ -104,7 +109,6 @@
   - many more!
 
   ### Test Improvements
-
   - new, high level integration spec suite for the LSP with a matching test utility
   - more unit test coverage
   - **total increased test coverage of about 25% in the LSP server codebase.**
@@ -120,7 +124,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
@@ -137,7 +140,7 @@
 
   ```ts
   // import it
-  import { locateCommand } from './graphql/tooling/lsp/locate.js';
+  import { locateCommand } from "./graphql/tooling/lsp/locate.js";
   export default {
     languageService: {
       locateCommand,
@@ -145,12 +148,12 @@
 
     projects: {
       a: {
-        schema: 'https://localhost:8000/graphql',
-        documents: './a/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "https://localhost:8000/graphql",
+        documents: "./a/**/*.{ts,tsx,jsx,js,graphql}",
       },
       b: {
-        schema: './schema/ascode.ts',
-        documents: './b/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "./schema/ascode.ts",
+        documents: "./b/**/*.{ts,tsx,jsx,js,graphql}",
       },
     },
   };
@@ -159,7 +162,7 @@
   ```ts
   // or define it inline
 
-  import { type LocateCommand } from 'graphql-language-service-server';
+  import { type LocateCommand } from "graphql-language-service-server";
 
   // relay LSP style
   const locateCommand = (projectName: string, typePath: string) => {
@@ -185,8 +188,8 @@
     languageService: {
       locateCommand,
     },
-    schema: 'https://localhost:8000/graphql',
-    documents: './**/*.{ts,tsx,jsx,js,graphql}',
+    schema: "https://localhost:8000/graphql",
+    documents: "./**/*.{ts,tsx,jsx,js,graphql}",
   };
   ```
 
@@ -226,7 +229,6 @@
 ### Patch Changes
 
 - [#3514](https://github.com/graphql/graphiql/pull/3514) [`36c7f25c`](https://github.com/graphql/graphiql/commit/36c7f25c9388827d3a6a279eb090d61dc2600b56) Thanks [@acao](https://github.com/acao)! - fix svelte parsing, re-load config only on config changes
-
   - fix esbuild bundling of `typescript` for `svelte2tsx`!
   - confirm with manual testing of the vsix extension bundle ✅
   - ensure that the server only attemps to parse opened/saved files when the server is activated or the file is a config file
@@ -266,7 +268,6 @@
 ### Patch Changes
 
 - [#3490](https://github.com/graphql/graphiql/pull/3490) [`334224b4`](https://github.com/graphql/graphiql/commit/334224b4502fda9fd77684da63cac00b8a7c1ee7) Thanks [@acao](https://github.com/acao)! - - add ruby syntax support
-
   - add graphql syntax support in markdown codeblocks for js, ts, jsx, tsx, svelte, vue, ruby, rescript, reason, ocaml, php and python
   - make textmate injectors more performant and specific, eliminate redundant config
 
@@ -677,7 +678,6 @@
 ### Patch Changes
 
 - [#2470](https://github.com/graphql/graphiql/pull/2470) [`d0017a93`](https://github.com/graphql/graphiql/commit/d0017a93b818cf3119e51c2b6c4a19004f98e29b) Thanks [@acao](https://github.com/acao)! - Aims to resolve #2421
-
   - graphql config errors only log to output channel, no longer crash the LSP
   - more performant LSP request no-ops for failing/missing config
 
@@ -778,7 +778,6 @@
 ### Patch Changes
 
 - [#391](https://github.com/graphql/vscode-graphql/pull/391) [`6be5593`](https://github.com/graphql/vscode-graphql/commit/6be5593a45a4629f3438f59223ecb04949cb48d2) Thanks [@acao](https://github.com/acao)! - LSP upgrades:
-
   - bugfix for `insertText` & completion on invalid list types
   - add support for template strings and tags with replacement expressions, so strings like these should work now:
 

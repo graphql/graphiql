@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -50,9 +50,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.4.1",
-    "@graphiql/plugin-history": "^0.4.1",
-    "@graphiql/react": "^0.37.3",
+    "@graphiql/plugin-doc-explorer": "^0.4.2",
+    "@graphiql/plugin-history": "^0.4.2",
+    "@graphiql/react": "^0.37.4",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
@@ -61,7 +61,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.11.3",
+    "@graphiql/toolkit": "^0.12.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
