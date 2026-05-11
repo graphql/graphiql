@@ -6,6 +6,7 @@ import {
   isSubscriptionWithName,
   getWsFetcher,
 } from './lib';
+import { FETCHER_OPTIONS_SYMBOL } from './constants';
 
 /**
  * build a GraphiQL fetcher that is:
@@ -27,7 +28,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
 
-  return async (graphQLParams, fetcherOpts) => {
+  const fetcher: Fetcher = async (graphQLParams, fetcherOpts) => {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
       return (options.schemaFetcher || simpleFetcher)(
         graphQLParams,
@@ -56,4 +57,6 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     }
     return httpFetcher(graphQLParams, fetcherOpts);
   };
+
+  return Object.assign(fetcher, { [FETCHER_OPTIONS_SYMBOL]: options });
 }

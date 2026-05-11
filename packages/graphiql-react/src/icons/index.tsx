@@ -29,6 +29,7 @@ import _SettingsIcon from './settings.svg?react';
 import _StarFilledIcon from './star-filled.svg?react';
 import _StarIcon from './star.svg?react';
 import _StopIcon from './stop.svg?react';
+import _TerminalIcon from './terminal.svg?react';
 import _TrashIcon from './trash.svg?react';
 import _TypeIcon from './type.svg?react';
 
@@ -61,6 +62,7 @@ export const SettingsIcon = generateIcon(_SettingsIcon);
 export const StarFilledIcon = generateIcon(_StarFilledIcon);
 export const StarIcon = generateIcon(_StarIcon);
 export const StopIcon = generateIcon(_StopIcon);
+export const TerminalIcon = generateIcon(_TerminalIcon);
 export const TrashIcon = generateIcon(_TrashIcon);
 export const TypeIcon = generateIcon(_TypeIcon);
 

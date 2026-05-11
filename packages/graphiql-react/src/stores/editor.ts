@@ -6,7 +6,7 @@ import type {
 } from 'graphql';
 import type { OperationFacts } from 'graphql-language-service';
 import { MaybePromise, mergeAst } from '@graphiql/toolkit';
-import { print } from 'graphql';
+import { Kind, parse, print } from 'graphql';
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -120,6 +120,12 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
+   * Invoked when the current operation is copied as a cURL command.
+   * @param command - The cURL command that has been copied.
+   */
+  onCopyAsCurl?: (command: string) => void;
+
+  /**
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the operation editor.
    * @default
@@ -146,6 +152,11 @@ export interface EditorSlice extends TabsState {
    * @remarks from graphiql 5
    */
   operations?: OperationFacts['operations'];
+
+  /**
+   * The GraphQL server url
+   */
+  url?: string;
 }
 
 export interface EditorActions {
@@ -219,6 +230,11 @@ export interface EditorActions {
   copyQuery: () => Promise<void>;
 
   /**
+   * Copy an operation as a cURL command to clipboard.
+   */
+  copyAsCurl: () => Promise<void>;
+
+  /**
    * Merge fragments definitions into operation definition.
    */
   mergeQuery: () => void;
@@ -236,6 +252,7 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
+  | 'onCopyAsCurl'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -291,7 +308,9 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'onCopyAsCurl'
     | 'uriInstanceId'
+    | 'url'
   >,
 ) => StateCreator<
   SlicesWithActions,
@@ -532,9 +551,62 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
+    async copyAsCurl() {
+      const { queryEditor, headerEditor, variableEditor, onCopyAsCurl, url } =
+        get();
+
+      const query = queryEditor?.getValue();
+      const variables = safeJsonParse<Record<string, unknown>>(
+        variableEditor?.getValue(),
+      );
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Accept: 'application/graphql-response+json,application/json;q=0.9',
+        ...safeJsonParse<Record<string, string>>(headerEditor?.getValue()),
+      };
+      const headersString = Object.keys(headers)
+        .map(key => {
+          const value = headers[key];
+          return `-H '${key}: ${value}'`;
+        })
+        .join(' ');
+
+      let operationName: string | undefined;
+
+      if (query) {
+        const definition = parse(query).definitions.find(
+          def => def.kind === Kind.OPERATION_DEFINITION,
+        );
+
+        operationName = definition?.name?.value;
+      }
+
+      const data = JSON.stringify({
+        query,
+        variables,
+        operationName,
+      });
+
+      const command = `curl '${url}' ${headersString} --data-binary '${data}'`;
+
+      onCopyAsCurl?.(command);
+
+      try {
+        await navigator.clipboard.writeText(command);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to copy cURL!', error);
+      }
+    },
   };
   return {
     ...initial,
     actions: $actions,
   };
 };
+
+function safeJsonParse<T>(raw: string | undefined): T | undefined {
+  try {
+    return raw && JSON.parse(raw);
+  } catch {}
+}

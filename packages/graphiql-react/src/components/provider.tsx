@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
-import { StorageAPI } from '@graphiql/toolkit';
+import { StorageAPI, FETCHER_OPTIONS_SYMBOL } from '@graphiql/toolkit';
 import {
   createEditorSlice,
   createExecutionSlice,
@@ -150,6 +150,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTabChange,
   shouldPersistHeaders = false,
   onCopyQuery,
+  onCopyAsCurl,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
   dangerouslyAssumeSchemaIsValid = false,
@@ -212,6 +213,16 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       }
     }
 
+    function getFetcherUrl() {
+      const url = fetcher[FETCHER_OPTIONS_SYMBOL]?.url;
+
+      if (url?.startsWith('/')) {
+        return location.origin + url;
+      }
+
+      return url;
+    }
+
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
@@ -249,6 +260,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
           initialVariables: variables ?? '',
           onCopyQuery,
+          onCopyAsCurl,
           onEditOperationName,
           onPrettifyQuery,
           onTabChange,
@@ -259,6 +271,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
            * variables autocomplete
            */
           uriInstanceId: uriInstanceId.replaceAll(/[:«»]/g, '') + '-',
+          url: getFetcherUrl(),
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,

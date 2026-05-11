@@ -1,5 +1,6 @@
 import type { DocumentNode, IntrospectionQuery } from 'graphql';
 import type { Client, ClientOptions, ExecutionResult } from 'graphql-ws';
+import type { FETCHER_OPTIONS_SYMBOL } from './constants';
 
 export type Observable<T> = {
   subscribe(opts: {
@@ -67,10 +68,10 @@ export type SyncFetcherResult = SyncExecutionResult;
 
 export type FetcherReturnType = MaybePromise<SyncExecutionResult>;
 
-export type Fetcher = (
-  graphQLParams: FetcherParams,
-  opts?: FetcherOpts,
-) => FetcherReturnType;
+export interface Fetcher {
+  (graphQLParams: FetcherParams, opts?: FetcherOpts): FetcherReturnType;
+  [FETCHER_OPTIONS_SYMBOL]?: CreateFetcherOptions;
+}
 
 /**
  * Options for creating a simple, spec-compliant GraphiQL fetcher

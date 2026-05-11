@@ -37,11 +37,30 @@
   width: var(--px-20);
 }
 
-/* The main content, i.e. everything except the sidebar */
+/* The main content, i.e. everything except the sidebar and url details */
 .graphiql-container .graphiql-main {
   display: flex;
   flex: 1;
   min-width: 0;
+}
+
+/* The main content including url details */
+.graphiql-container .graphiql-main-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.graphiql-container .graphiql-main-header {
+  display: flex;
+  gap: var(--px-8);
+  margin: var(--px-16) var(--px-16) 0 0;
+}
+
+.graphiql-container .graphiql-main-header .url-details {
+  flex: 1;
 }
 
 /* The current session and tabs */
