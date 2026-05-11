@@ -1,3 +1,9 @@
+.graphiql-doc-explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 /* The header of the doc explorer */
 .graphiql-doc-explorer-header {
   display: flex;
@@ -87,6 +93,13 @@ a.graphiql-doc-explorer-back {
 }
 
 /* The contents of the currently active page in the doc explorer */
+.graphiql-doc-explorer-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .graphiql-doc-explorer-content > * {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   margin-top: var(--px-20);

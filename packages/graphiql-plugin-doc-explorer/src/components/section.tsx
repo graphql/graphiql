@@ -41,7 +41,7 @@ export const ExplorerSection: FC<ExplorerSectionProps> = ({
 }) => {
   const Icon = TYPE_TO_ICON[title];
   return (
-    <div>
+    <div className="graphiql-doc-explorer-section">
       <div className="graphiql-doc-explorer-section-title">
         <Icon />
         {title}
