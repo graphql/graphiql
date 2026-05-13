@@ -55,3 +55,6 @@ packages/graphiql/webpack/
 .react-router/
 
 storybook-static/
+
+packages/graphiql-react/.lostpixel/current/
+packages/graphiql-react/.lostpixel/difference/

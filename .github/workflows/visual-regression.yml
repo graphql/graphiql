@@ -1,0 +1,26 @@
+name: Visual Regression
+on:
+  pull_request:
+    branches: [graphiql-6]
+permissions:
+  contents: read
+jobs:
+  lost-pixel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn build
+      - run: yarn workspace @graphiql/react build-storybook
+      - uses: lost-pixel/lost-pixel@v3.22.0
+        env:
+          LOST_PIXEL_CONFIG_DIR: packages/graphiql-react
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lost-pixel-difference
+          path: packages/graphiql-react/.lostpixel/difference/

@@ -124,6 +124,7 @@ linenumbers
 linkify
 listbox
 listvalues
+lostpixel
 lostplan
 maint
 manypkg

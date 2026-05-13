@@ -44,7 +44,9 @@
     "build": "vite build",
     "build-storybook": "storybook build",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest run --typecheck"
+    "test": "vitest run --typecheck",
+    "test:vr": "lost-pixel",
+    "test:vr:update": "lost-pixel update"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -80,6 +82,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "graphql": "^16.9.0",
+    "lost-pixel": "^3.22.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "storybook": "^10.3.6",
