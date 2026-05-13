@@ -3291,7 +3291,7 @@ __metadata:
     "@radix-ui/react-dropdown-menu": "npm:^2.1"
     "@radix-ui/react-tooltip": "npm:^1.2"
     "@radix-ui/react-visually-hidden": "npm:^1.2"
-    "@storybook/react-vite": "npm:^10"
+    "@storybook/react-vite": "npm:^10.3.6"
     "@types/get-value": "npm:^3.0.5"
     "@types/markdown-it": "npm:^14.1.2"
     "@types/react-dom": "npm:^19.1.2"
@@ -3312,7 +3312,7 @@ __metadata:
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
     set-value: "npm:^4.1.0"
-    storybook: "npm:^10"
+    storybook: "npm:^10.3.6"
     typescript: "npm:^5.8.0"
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
@@ -6117,7 +6117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react-vite@npm:^10":
+"@storybook/react-vite@npm:^10.3.6":
   version: 10.3.6
   resolution: "@storybook/react-vite@npm:10.3.6"
   dependencies:
@@ -20336,7 +20336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^10":
+"storybook@npm:^10.3.6":
   version: 10.3.6
   resolution: "storybook@npm:10.3.6"
   dependencies:
