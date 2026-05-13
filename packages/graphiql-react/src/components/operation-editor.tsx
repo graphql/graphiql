@@ -15,9 +15,8 @@ import {
   pick,
   cleanupDisposables,
   cn,
-  Uri,
-  Range,
 } from '../utility';
+import { Uri, Range } from '../utility/monaco-ssr';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,

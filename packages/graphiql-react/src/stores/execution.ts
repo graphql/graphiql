@@ -14,7 +14,8 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { tryParseJSONC, Range } from '../utility';
+import { tryParseJSONC } from '../utility';
+import { Range } from '../utility/monaco-ssr';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 
 export interface ExecutionSlice {

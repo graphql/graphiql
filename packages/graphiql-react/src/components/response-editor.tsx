@@ -10,8 +10,8 @@ import {
   pick,
   cleanupDisposables,
   cn,
-  Range,
 } from '../utility';
+import { Range } from '../utility/monaco-ssr';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';

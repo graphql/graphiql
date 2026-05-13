@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 import type { DiagnosticSettings } from 'monaco-graphql';
 import type * as monaco from 'monaco-editor';
-import { KeyCode, KeyMod } from './utility';
+import { KeyCode, KeyMod } from './utility/monaco-ssr';
 import type { EditorSlice } from './stores';
 
 export const isMacOs =
