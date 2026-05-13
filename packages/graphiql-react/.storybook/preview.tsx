@@ -4,6 +4,10 @@ import '../src/style/root.css';
 const preview: Preview = {
   parameters: {
     backgrounds: { disable: true },
+    a11y: {
+      config: { rules: [] },
+      options: { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
+    },
   },
   globalTypes: {
     theme: {

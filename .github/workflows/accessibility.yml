@@ -1,0 +1,25 @@
+name: Accessibility
+
+on:
+  pull_request:
+    branches: [graphiql-6]
+
+permissions:
+  contents: read
+
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn build
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          yarn workspace @graphiql/react storybook --port 6006 --ci --no-open &
+          npx wait-on http://localhost:6006 -t 60000
+          yarn workspace @graphiql/react test:a11y

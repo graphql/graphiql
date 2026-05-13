@@ -45,6 +45,7 @@ browserslistrc
 calar
 chainable
 changesets
+circlehollow
 clsx
 codebases
 codegen
@@ -57,6 +58,7 @@ combobox
 cshaver
 dedenting
 delivr
+deps
 devx
 dhanani
 dima
@@ -242,6 +244,7 @@ vitejs
 vitest
 vizag
 vsix
+wcag
 webp
 websockets
 wgutils

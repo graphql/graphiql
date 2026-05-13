@@ -44,7 +44,9 @@
     "build": "vite build",
     "build-storybook": "storybook build",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest run --typecheck"
+    "test": "vitest run --typecheck",
+    "test:a11y": "test-storybook --config-dir .storybook",
+    "test:a11y:update": "A11Y_UPDATE_BASELINE=1 test-storybook --config-dir .storybook"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
@@ -72,12 +74,15 @@
   },
   "devDependencies": {
     "@babel/helper-string-parser": "^7.19.4",
+    "@storybook/addon-a11y": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",
+    "@storybook/test-runner": "^0.24.3",
     "@types/get-value": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
     "@vitejs/plugin-react": "^4.4.1",
+    "axe-playwright": "^2",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",
