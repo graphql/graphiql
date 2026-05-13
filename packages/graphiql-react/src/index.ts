@@ -2,6 +2,7 @@ import './style/root.css';
 
 export { useMonaco } from './stores';
 export * from './utility';
+export { Uri, KeyMod, KeyCode, Range } from './utility/monaco-ssr';
 export type { TabsState } from './utility/tabs';
 export * from './icons';
 export * from './components';
