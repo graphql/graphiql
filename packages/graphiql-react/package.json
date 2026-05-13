@@ -42,6 +42,8 @@
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
+    "build-storybook": "storybook build",
+    "storybook": "storybook dev -p 6006",
     "test": "vitest run --typecheck"
   },
   "peerDependencies": {
@@ -70,6 +72,7 @@
   },
   "devDependencies": {
     "@babel/helper-string-parser": "^7.19.4",
+    "@storybook/react-vite": "^10",
     "@types/get-value": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react-dom": "^19.1.2",
@@ -79,6 +82,7 @@
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "storybook": "^10",
     "typescript": "^5.8.0",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3",
