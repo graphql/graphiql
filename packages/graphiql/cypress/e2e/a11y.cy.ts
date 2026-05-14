@@ -46,12 +46,11 @@ function checkOrCapture(checkpoint: string) {
       } else {
         const baselineEntries: ViolationSummary[] =
           (baseline as Baseline)[checkpoint] ?? [];
-        const baselineKeys = new Set(
-          baselineEntries.map(v => `${v.id}:${v.nodeCount}`),
-        );
-        const newViolations = violations.filter(
-          v => !baselineKeys.has(`${v.id}:${v.nodes.length}`),
-        );
+        // Compare by violation id only — node counts drift between local
+        // (Electron on macOS) and CI (headless Chromium on Linux) for the
+        // same underlying issues, so they're not a reliable key.
+        const baselineKeys = new Set(baselineEntries.map(v => v.id));
+        const newViolations = violations.filter(v => !baselineKeys.has(v.id));
         if (newViolations.length > 0) {
           const summary = newViolations
             .map(v => `${v.id} (${v.impact}): ${v.help}`)
