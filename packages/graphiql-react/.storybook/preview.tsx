@@ -4,6 +4,7 @@ import '../src/style/root.css';
 const preview: Preview = {
   parameters: {
     backgrounds: { disable: true },
+    a11y: { test: 'error' },
   },
   globalTypes: {
     theme: {
