@@ -2,6 +2,11 @@
   "name": "cm6-graphql",
   "version": "0.2.1",
   "description": "GraphQL language support for CodeMirror 6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/cm6-graphql"
+  },
   "scripts": {
     "types:check": "tsc --noEmit",
     "build": "cm-buildhelper src/index.ts",
