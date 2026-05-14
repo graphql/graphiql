@@ -45,7 +45,7 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -103,7 +103,7 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable
 
       - uses: actions/download-artifact@v4
         with:
