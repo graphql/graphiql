@@ -189,6 +189,7 @@ roadmap
 roboto
 rodionov
 rohit
+ruleset
 runmode
 runtimes
 saihaj
@@ -242,6 +243,7 @@ vitejs
 vitest
 vizag
 vsix
+wcag
 webp
 websockets
 wgutils
