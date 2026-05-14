@@ -168,7 +168,6 @@ jobs:
     name: Preview Release
     runs-on: ubuntu-latest
     needs: [build, lint, vitest, e2e]
-    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
