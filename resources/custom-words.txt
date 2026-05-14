@@ -208,6 +208,8 @@ spawndamnit
 squirrelly
 stonexer
 streamable
+subpath
+subpaths
 subword
 suchanek
 svgo
