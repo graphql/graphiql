@@ -22,7 +22,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
 
   cspell:
     name: CSpell
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
       - run: yarn test
 
   lint:
@@ -92,7 +92,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
       - run: yarn oxlint
 
   types-check:
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
       - run: yarn types:check
 
   types-check-tsgo:
@@ -140,7 +140,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
       - uses: actions/cache@v5
         with:
           path: |
@@ -182,7 +182,7 @@ jobs:
       - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          path: ${{ env.BUILD_CACHE_LIST }}
       - name: Setup NPM credentials
         run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
         env:
@@ -236,7 +236,7 @@ jobs:
         run: yarn license-check
 
 env:
-  BUILD-CACHE-LIST: |
+  BUILD_CACHE_LIST: |
     packages/**/dist/**/*
     packages/**/cjs/**/*
     packages/**/esm/**/*
