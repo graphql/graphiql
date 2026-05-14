@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { debounce } from './debounce';
-import { useGraphiQL } from '../components';
+import { useGraphiQL } from '../components/provider';
 
 type ResizableElement = 'first' | 'second';
 
