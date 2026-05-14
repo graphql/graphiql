@@ -48,7 +48,6 @@ export function VirtualList<T>({
                 left: 0,
                 width: '100%',
                 transform: `translateY(${virtualRow.start}px)`,
-                paddingBottom: 'var(--px-16)',
               }}
             >
               {renderItem(items[virtualRow.index]!, virtualRow.index)}
