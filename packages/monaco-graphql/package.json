@@ -51,6 +51,12 @@
       "import": "./esm/initializeMode.js",
       "require": "./dist/initializeMode.js",
       "default": "./dist/initializeMode.js"
+    },
+    "./monaco-editor": {
+      "types": "./esm/monaco-editor.d.ts",
+      "import": "./esm/monaco-editor.js",
+      "require": "./dist/monaco-editor.js",
+      "default": "./dist/monaco-editor.js"
     }
   },
   "repository": {
