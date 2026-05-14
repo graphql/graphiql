@@ -1,5 +1,5 @@
-import { editor, Uri, languages } from 'monaco-graphql/esm/monaco-editor';
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { editor, Uri, languages } from 'monaco-graphql/monaco-editor';
+import { initializeMode } from 'monaco-graphql/initializeMode';
 import { parse, print } from 'graphql';
 
 type ModelType = 'operations' | 'variables' | 'response' | 'ts';

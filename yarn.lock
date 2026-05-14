@@ -11402,7 +11402,7 @@ __metadata:
     next: "npm:^15"
     react: "npm:^19"
     react-dom: "npm:^19"
-    typescript: "npm:^4"
+    typescript: "npm:^5"
   languageName: unknown
   linkType: soft
 
@@ -11450,7 +11450,7 @@ __metadata:
     monaco-graphql: "npm:^1.7.4"
     prettier: "npm:^3"
     style-loader: "npm:^3"
-    typescript: "npm:^4"
+    typescript: "npm:^5"
     webpack: "npm:^5"
     webpack-bundle-analyzer: "npm:^3"
     webpack-cli: "npm:^5"
@@ -21025,7 +21025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4, typescript@npm:^4.2.3":
+"typescript@npm:^4.2.3":
   version: 4.9.5
   resolution: "typescript@npm:4.9.5"
   bin:
@@ -21055,7 +21055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^4.2.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^4.2.3#optional!builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"
   bin:

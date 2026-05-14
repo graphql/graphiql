@@ -35,7 +35,7 @@
     "html-webpack-plugin": "^5",
     "monaco-editor-webpack-plugin": "^7",
     "style-loader": "^3",
-    "typescript": "^4",
+    "typescript": "^5",
     "webpack": "^5",
     "webpack-bundle-analyzer": "^3",
     "webpack-cli": "^5",
