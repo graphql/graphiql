@@ -85,11 +85,7 @@
     "types:check": "tsc --noEmit",
     "compile": "node esbuild.js",
     "build-bundles": "yarn run compile",
-    "vsce:package": "yarn compile && vsce package --yarn --no-dependencies",
-    "vsce:prepublish": "yarn run vsce:package",
-    "vsce:publish": "vsce publish --yarn --no-dependencies",
-    "open-vsx:publish": "ovsx publish --no-dependencies --pat $OVSX_PAT",
-    "release": "yarn run compile && yarn run vsce:publish && yarn run open-vsx:publish"
+    "vsce:package": "yarn compile && vsce package --yarn --no-dependencies"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",

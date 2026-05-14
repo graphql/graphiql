@@ -176,10 +176,7 @@
     "compile": "node esbuild",
     "build-bundles": "npm run compile -- --sourcemap",
     "vsce:package": "vsce package --yarn --no-dependencies",
-    "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish --yarn --no-dependencies",
-    "open-vsx:publish": "ovsx publish --no-dependencies --pat $OVSX_PAT",
-    "release": "npm run vsce:publish && npm run open-vsx:publish"
+    "env:source": "export $(cat .envrc | xargs)"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
