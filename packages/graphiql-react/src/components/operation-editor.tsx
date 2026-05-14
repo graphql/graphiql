@@ -8,14 +8,11 @@ import { FC, useEffect, useRef } from 'react';
 import { useMonaco } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
-  debounce,
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
-  pick,
-  cleanupDisposables,
-  cn,
-} from '../utility';
+} from '../utility/create-editor';
+import { debounce, pick, cleanupDisposables, cn } from '../utility';
 import { Uri, Range } from '../utility/monaco-ssr';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {

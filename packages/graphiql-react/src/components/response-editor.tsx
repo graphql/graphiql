@@ -7,11 +7,9 @@ import {
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
-  pick,
-  cleanupDisposables,
-  cn,
-} from '../utility';
+} from '../utility/create-editor';
 import { Range } from '../utility/monaco-ssr';
+import { pick, cleanupDisposables, cn } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';

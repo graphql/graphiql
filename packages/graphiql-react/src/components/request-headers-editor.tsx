@@ -5,12 +5,9 @@ import { URI_NAME, KEY_BINDINGS, STORAGE_KEY } from '../constants';
 import {
   getOrCreateModel,
   createEditor,
-  useChangeHandler,
   onEditorContainerKeyDown,
-  pick,
-  cleanupDisposables,
-  cn,
-} from '../utility';
+} from '../utility/create-editor';
+import { useChangeHandler, pick, cleanupDisposables, cn } from '../utility';
 import { useMonaco } from '../stores';
 
 interface RequestHeadersEditorProps extends EditorProps {

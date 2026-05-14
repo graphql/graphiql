@@ -11,14 +11,13 @@ import {
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import { StorageAPI } from '@graphiql/toolkit';
+import { createEditorSlice, type EditorProps } from '../stores/editor';
 import {
-  createEditorSlice,
   createExecutionSlice,
   createPluginSlice,
   createSchemaSlice,
   createThemeSlice,
   createStorageSlice,
-  EditorProps,
   ExecutionProps,
   PluginProps,
   SchemaProps,
