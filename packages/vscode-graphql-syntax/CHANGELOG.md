@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.10
+
+### Patch Changes
+
+- [#4255](https://github.com/graphql/graphiql/pull/4255) [`42d6049`](https://github.com/graphql/graphiql/commit/42d60499f012bab5087f6c9637b40949a8448b68) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Burning patch version due to previous release failure.
+
 ## 1.3.9
 
 ### Patch Changes

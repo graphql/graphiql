@@ -30,6 +30,10 @@ jobs:
       # To enable trusted publishing
       id-token: write
 
+    outputs:
+      vscode-published: ${{ steps.vscode.outputs.published }}
+      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -50,8 +54,65 @@ jobs:
           version: yarn ci:version
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: yarn release
+
+      - name: Note VSCode extension release
+        id: vscode
+        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"vscode-graphql') }}
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
+      - name: Build VSCode extension .vsix files
+        if: ${{ steps.vscode.outputs.published == 'true' }}
         env:
-          # for vscode marketplace, see https://github.com/microsoft/vscode-vsce/blob/194d59b975523696362ead891dc0f3ddd277b3bd/README.md#linux
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: node scripts/release-vscode.mts build
+
+      - name: Attach VSCode .vsix files to GitHub Releases
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: node scripts/release-vscode.mts attach
+
+      - name: Upload VSCode extension .vsix artifacts
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extensions
+          path: packages/vscode-graphql*/*.vsix
+          if-no-files-found: error
+
+  publish-vscode-extensions:
+    name: Publish to ${{ matrix.registry }}
+    needs: release
+    if: ${{ needs.release.outputs.vscode-published == 'true' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - registry: VSCode Marketplace
+            command: publish-vsce
+          - registry: Open VSX Registry
+            command: publish-ovsx
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: vscode-extensions
+          path: vsix
+
+      - name: Publish
+        env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          # for ovsx, see https://github.com/eclipse/openvsx/blob/master/cli/README.md#publish-extensions
           OVSX_PAT: ${{ secrets.OPEN_VSX_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ needs.release.outputs.published-packages }}
+        run: node scripts/release-vscode.mts ${{ matrix.command }}

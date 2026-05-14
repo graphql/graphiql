@@ -167,6 +167,7 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
+    // First test to boot Monaco's editor worker; cold start needs extra time under Vitest 4's forks pool.
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -177,7 +178,7 @@ describe('GraphiQL', () => {
         expect(queryEditor).toBeVisible();
         expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
       });
-    });
+    }, 20000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
