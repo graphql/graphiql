@@ -421,7 +421,8 @@ describe('GraphiQL', () => {
 
     const callback = async () => {
       try {
-        await findByText('Persist headers');
+        // Expecting non-existence; short-circuit instead of waiting the default.
+        await findByText('Persist headers', undefined, { timeout: 1000 });
       } catch {
         // eslint-disable-next-line no-throw-literal
         throw 'failed';
