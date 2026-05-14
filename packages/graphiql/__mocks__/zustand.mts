@@ -10,9 +10,7 @@ import { act } from '@testing-library/react';
 import type { StateCreator } from 'zustand';
 import type * as ZustandExports from 'zustand';
 
-// vitest@4 redirects every `import ... from 'zustand'` (including the ones in
-// this mock file) back to this mock, so we have to grab the real module
-// dynamically. Top-level await is fine — vitest evaluates mocks as ESM.
+// A static `import ... from 'zustand'` resolves back to this mock and recurses.
 const {
   create: originalCreate,
   createStore: originalCreateStore,

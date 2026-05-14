@@ -421,8 +421,7 @@ describe('GraphiQL', () => {
 
     const callback = async () => {
       try {
-        // Short timeout — we expect this *not* to be found. The default 9s
-        // `asyncUtilTimeout` would race with the test's own timeout.
+        // Expecting non-existence; short-circuit instead of waiting the default.
         await findByText('Persist headers', undefined, { timeout: 1000 });
       } catch {
         // eslint-disable-next-line no-throw-literal

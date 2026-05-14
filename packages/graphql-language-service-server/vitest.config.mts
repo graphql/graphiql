@@ -10,8 +10,6 @@ export default defineConfig({
     testTimeout: 5000,
     clearMocks: true,
     pool: 'threads',
-    // vitest@4 flattened `poolOptions.threads.singleThread`. Disabling file
-    // parallelism keeps the previous serial execution.
     fileParallelism: false,
     include: ['src/**/*.{test,spec}.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/esm/**'],
