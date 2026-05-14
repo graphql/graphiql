@@ -10,11 +10,9 @@ export default defineConfig({
     testTimeout: 5000,
     clearMocks: true,
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
+    // vitest@4 flattened `poolOptions.threads.singleThread`. Disabling file
+    // parallelism keeps the previous serial execution.
+    fileParallelism: false,
     include: ['src/**/*.{test,spec}.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/esm/**'],
     // Required for the source alias below; tells vite to bundle this

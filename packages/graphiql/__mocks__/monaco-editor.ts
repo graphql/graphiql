@@ -25,12 +25,16 @@ if (!navigator.clipboard) {
  */
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (!window.ResizeObserver) {
+  // vitest@4 forbids calling `vi.fn().mockReturnValue(...)` with `new` — the
+  // monaco editor constructs a ResizeObserver, so it must be a real class.
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
   Object.defineProperty(window, 'ResizeObserver', {
     writable: false,
-    value: vi.fn().mockReturnValue({
-      observe() {},
-      disconnect() {},
-    }),
+    value: ResizeObserverMock,
   });
 }
 
