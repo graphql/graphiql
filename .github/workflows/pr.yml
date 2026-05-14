@@ -12,14 +12,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -28,8 +28,8 @@ jobs:
     name: CSpell
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
@@ -40,8 +40,8 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
@@ -53,8 +53,8 @@ jobs:
     name: Yarn Dedupe Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
@@ -66,13 +66,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -83,13 +83,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -100,13 +100,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -118,8 +118,8 @@ jobs:
     needs: [build]
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
@@ -131,17 +131,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/.cache/Cypress
@@ -151,13 +151,13 @@ jobs:
         with:
           install: false
           command: yarn e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots
           path: packages/graphiql/cypress/screenshots
           if-no-files-found: ignore
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-videos
@@ -171,15 +171,15 @@ jobs:
     needs: [build, lint, vitest, e2e]
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
@@ -226,8 +226,8 @@ jobs:
     name: Check Licenses
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
