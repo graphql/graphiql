@@ -108,7 +108,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: vscode-extensions
-          path: vsix
+          # `upload-artifact` strips the path prefix up to the first wildcard
+          # segment, so the artifact contains `vscode-graphql*/*.vsix` rather
+          # than `packages/vscode-graphql*/*.vsix`. Restore the `packages/`
+          # prefix here so the layout lines up with `vsixPath('vsix', …)` in
+          # the script.
+          path: vsix/packages
 
       - name: Publish
         env:
