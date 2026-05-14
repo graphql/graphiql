@@ -1,7 +1,5 @@
 .graphiql-doc-explorer-search {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
-  position: relative;
-  z-index: 2;
 
   &:not([data-state='idle']) {
     border: var(--popover-border);
