@@ -13,6 +13,8 @@ type SchemaDocumentationProps = {
   schema: GraphQLSchema;
 };
 
+const UNVIRTUALIZED_MAX_LENGTH = 1000;
+
 export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
   schema,
 }) => {
@@ -63,11 +65,21 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
         )}
       </ExplorerSection>
       <ExplorerSection title="All Schema Types">
-        <VirtualList
-          items={allTypes}
-          estimateSize={() => 36}
-          renderItem={type => <TypeLink type={type} />}
-        />
+        {allTypes.length > UNVIRTUALIZED_MAX_LENGTH ? (
+          <VirtualList
+            items={allTypes}
+            estimateSize={() => 23}
+            renderItem={type => <TypeLink type={type} />}
+          />
+        ) : (
+          <div>
+            {allTypes.map(type => (
+              <div key={type.name}>
+                <TypeLink type={type} />
+              </div>
+            ))}
+          </div>
+        )}
       </ExplorerSection>
     </>
   );
