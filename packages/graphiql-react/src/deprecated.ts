@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
 
-import { useGraphiQL, useGraphiQLActions } from './components';
+import { useGraphiQL, useGraphiQLActions } from './components/provider';
 import { pick } from './utility';
 import type { MonacoEditor } from './types';
 

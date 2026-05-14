@@ -64,7 +64,7 @@ async function main() {
   // JS
   const imports = {
     react: cdnUrl('react'),
-    'react/': `${cdnUrl('react-dom')}/`,
+    'react/': `${cdnUrl('react')}/`,
     'react-dom': cdnUrl('react-dom'),
     'react-dom/': `${cdnUrl('react-dom')}/`,
     graphiql: `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,

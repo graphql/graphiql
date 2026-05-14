@@ -16,5 +16,15 @@ export default defineConfig({
         ),
       },
     ],
+    // `GraphiQLProvider` kicks off Monaco dynamic imports that may settle
+    // after these quick tests tear down; ignore those teardown errors.
+    onUnhandledError(error) {
+      if (
+        error.name === 'EnvironmentTeardownError' &&
+        /monaco-editor|monaco-graphql/.test(error.message)
+      ) {
+        return false;
+      }
+    },
   },
 });
