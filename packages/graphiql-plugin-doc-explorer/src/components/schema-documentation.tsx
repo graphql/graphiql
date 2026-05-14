@@ -64,7 +64,7 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
           </div>
         )}
       </ExplorerSection>
-      <ExplorerSection title="All Schema Types">
+      <ExplorerSection className="all-types" title="All Schema Types">
         {allTypes.length > UNVIRTUALIZED_MAX_LENGTH ? (
           <VirtualList
             items={allTypes}

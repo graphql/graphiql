@@ -33,15 +33,23 @@ type ExplorerSectionProps = {
     | 'Deprecated Enum Values'
     | 'Directives'
     | 'All Schema Types';
+  /**
+   * Optionally pass a classname for an ExplorerSection instance
+   */
+  className?: string;
 };
 
 export const ExplorerSection: FC<ExplorerSectionProps> = ({
   title,
   children,
+  className = '',
 }) => {
   const Icon = TYPE_TO_ICON[title];
+  const additionalClassName = className
+    ? ` ${className} graphiql-doc-explorer-section--${className}`
+    : '';
   return (
-    <div className="graphiql-doc-explorer-section">
+    <div className={`graphiql-doc-explorer-section${additionalClassName}`}>
       <div className="graphiql-doc-explorer-section-title">
         <Icon />
         {title}
