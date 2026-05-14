@@ -7,13 +7,12 @@ import {
   type GraphQLFieldConfigMap,
 } from 'graphql';
 import { SchemaDocumentation } from '../schema-documentation';
+import { VirtualList } from '../virtual-list';
 
 vi.mock('../virtual-list', () => ({
   VirtualList: vi.fn(() => <div data-testid="mock-virtual-list" />),
 }));
 
-// Imported after the mock so we get the mocked reference.
-const { VirtualList } = await import('../virtual-list');
 const VirtualListMock = vi.mocked(VirtualList);
 
 function makeSchemaWithNTypes(typeCount: number): GraphQLSchema {
