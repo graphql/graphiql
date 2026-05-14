@@ -98,6 +98,7 @@ a.graphiql-doc-explorer-back {
   flex: 1;
   flex-direction: column;
   min-height: 0;
+  overflow: auto;
 }
 
 .graphiql-doc-explorer-content > * {
