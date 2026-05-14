@@ -28,7 +28,8 @@
   min-height: 0;
 }
 
-.graphiql-doc-explorer-section:last-child > .graphiql-doc-explorer-section-content {
+.graphiql-doc-explorer-section:last-child
+  > .graphiql-doc-explorer-section-content {
   display: flex;
   flex: 1;
   flex-direction: column;
