@@ -167,17 +167,23 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
+    // First test to boot Monaco's editor worker; cold start needs extra time under
+    // Vitest 4's forks pool. Both the it() testTimeout and the waitFor()
+    // asyncUtilTimeout (configured at 9s in setup-files.ts) must be bumped.
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
-        );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-      });
-    });
+      await waitFor(
+        () => {
+          const queryEditor = container.querySelector<HTMLDivElement>(
+            '.graphiql-editor .monaco-scrollable-element',
+          );
+          expect(queryEditor).toBeVisible();
+          expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
+        },
+        { timeout: 15_000 },
+      );
+    }, 20000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
@@ -421,7 +427,8 @@ describe('GraphiQL', () => {
 
     const callback = async () => {
       try {
-        await findByText('Persist headers');
+        // Expecting non-existence; short-circuit instead of waiting the default.
+        await findByText('Persist headers', undefined, { timeout: 1000 });
       } catch {
         // eslint-disable-next-line no-throw-literal
         throw 'failed';

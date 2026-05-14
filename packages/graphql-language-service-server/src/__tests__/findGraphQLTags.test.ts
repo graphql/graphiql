@@ -12,16 +12,16 @@ import { Position, Range } from 'graphql-language-service';
 import { findGraphQLTags as baseFindGraphQLTags } from '../findGraphQLTags';
 
 vi.mock('../Logger', () => {
-  const makeNoop = () => ({
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    log: vi.fn(),
-    level: 0,
-  });
+  class NoopLogger {
+    error = vi.fn();
+    warn = vi.fn();
+    info = vi.fn();
+    log = vi.fn();
+    level = 0;
+  }
   return {
-    Logger: vi.fn().mockImplementation(makeNoop),
-    NoopLogger: vi.fn().mockImplementation(makeNoop),
+    Logger: NoopLogger,
+    NoopLogger,
   };
 });
 

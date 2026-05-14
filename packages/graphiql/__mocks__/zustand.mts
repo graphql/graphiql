@@ -5,23 +5,24 @@
  * @see https://zustand.docs.pmnd.rs/guides/testing#vitest
  */
 
-import { afterEach } from 'vitest';
+import { afterEach, vi } from 'vitest';
 import { act } from '@testing-library/react';
-import {
-  create as originalCreate,
-  createStore as originalCreateStore,
-  useStore,
-  StateCreator,
-} from 'zustand';
+import type { StateCreator } from 'zustand';
+import type * as ZustandExports from 'zustand';
 
-// Originally zustand docs suggest to use `export * from 'zustand'`, but I had issues with it.
-// It conflicts with locale export of `create` and `createStore` functions
-export { useStore };
+// A static `import ... from 'zustand'` resolves back to this mock and recurses.
+const {
+  create: originalCreate,
+  createStore: originalCreateStore,
+  useStore: originalUseStore,
+} = await vi.importActual<typeof ZustandExports>('zustand');
+
+export const useStore = originalUseStore;
 
 // a variable to hold reset functions for all stores declared in the app
 export const storeResetFns = new Set<() => void>();
 
-const createUncurried = <T>(stateCreator: StateCreator<T>) => {
+const createUncurried = <T,>(stateCreator: StateCreator<T>) => {
   const store = originalCreate(stateCreator);
   const initialState = store.getInitialState();
   storeResetFns.add(() => {
@@ -31,7 +32,7 @@ const createUncurried = <T>(stateCreator: StateCreator<T>) => {
 };
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
-export const create = (<T>(stateCreator: StateCreator<T>) => {
+export const create = (<T,>(stateCreator: StateCreator<T>) => {
   console.log('zustand create mock');
 
   // to support a curried version of create
@@ -51,7 +52,7 @@ function createStoreUncurried<T>(stateCreator: StateCreator<T>) {
 }
 
 // When creating a store, we get its initial state, create a reset function and add it in the set
-export const createStore = (<T>(stateCreator: StateCreator<T>) => {
+export const createStore = (<T,>(stateCreator: StateCreator<T>) => {
   console.log('zustand createStore mock');
 
   // to support a curried version of createStore
