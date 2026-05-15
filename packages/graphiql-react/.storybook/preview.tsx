@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { Preview } from '@storybook/react-vite';
 import '../src/style/root.css';
 
@@ -48,17 +49,20 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, ctx) => (
-      <div
-        className="graphiql-container"
-        data-theme={ctx.globals.theme}
-        data-density={ctx.globals.density}
-        data-font-size={ctx.globals.fontSize}
-        style={{ padding: 24 }}
-      >
-        <Story />
-      </div>
-    ),
+    (Story, ctx) => {
+      useEffect(() => {
+        const root = document.documentElement;
+        root.setAttribute('data-theme', ctx.globals.theme);
+        root.setAttribute('data-density', ctx.globals.density);
+        root.setAttribute('data-font-size', ctx.globals.fontSize);
+      }, [ctx.globals.theme, ctx.globals.density, ctx.globals.fontSize]);
+
+      return (
+        <div className="graphiql-container" style={{ padding: 24 }}>
+          <Story />
+        </div>
+      );
+    },
   ],
 };
 
