@@ -68,6 +68,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "concurrently": "^7.0.0",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
     "graphql": "^16.11.0",

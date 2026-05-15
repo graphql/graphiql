@@ -12970,6 +12970,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.4.1"
     "@vitest/web-worker": "npm:^4.1.6"
     babel-plugin-react-compiler: "npm:19.1.0-rc.1"
+    concurrently: "npm:^7.0.0"
     cross-env: "npm:^7.0.2"
     cypress: "npm:^13.13.2"
     graphql: "npm:^16.11.0"
