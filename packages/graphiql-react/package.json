@@ -75,6 +75,8 @@
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-vitest": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/get-value": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react-dom": "^19.1.2",
