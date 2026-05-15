@@ -55,10 +55,22 @@ const preview: Preview = {
         root.setAttribute('data-theme', ctx.globals.theme);
         root.setAttribute('data-density', ctx.globals.density);
         root.setAttribute('data-font-size', ctx.globals.fontSize);
+        document.body.style.background = 'oklch(var(--bg-canvas))';
+        document.body.style.color = 'oklch(var(--fg-default))';
+        document.body.style.margin = '0';
       }, [ctx.globals.theme, ctx.globals.density, ctx.globals.fontSize]);
 
       return (
-        <div className="graphiql-container" style={{ padding: 24 }}>
+        <div
+          className="graphiql-container"
+          style={{
+            padding: 24,
+            background: 'oklch(var(--bg-canvas))',
+            color: 'oklch(var(--fg-default))',
+            minHeight: '100vh',
+            boxSizing: 'border-box',
+          }}
+        >
           <Story />
         </div>
       );
