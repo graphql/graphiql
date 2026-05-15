@@ -20,3 +20,5 @@ export { Tooltip } from './tooltip';
 export { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 export { KeycapHint } from './keycap-hint';
 export type { KeycapHintProps } from './keycap-hint';
+export { PanelHeader } from './panel-header';
+export type { PanelHeaderProps } from './panel-header';
