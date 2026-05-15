@@ -1,10 +1,10 @@
 .graphiql-tooltip {
-  background: hsl(var(--color-base));
-  border: var(--popover-border);
-  border-radius: var(--border-radius-4);
-  box-shadow: var(--popover-box-shadow);
-  color: hsl(var(--color-neutral));
-  font-size: inherit;
-  padding: var(--px-4) var(--px-6);
+  background: oklch(var(--bg-elevated));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  color: oklch(var(--fg-default));
   font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  padding: var(--px-6) var(--px-8);
 }
