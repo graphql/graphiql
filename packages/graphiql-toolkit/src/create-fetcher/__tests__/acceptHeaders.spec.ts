@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { createSimpleFetcher, createMultipartFetcher } from '../lib';
 
 const SPEC_ACCEPT = 'application/graphql-response+json, application/json;q=0.9';

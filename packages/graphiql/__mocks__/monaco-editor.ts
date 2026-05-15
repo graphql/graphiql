@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { defineWebWorkers } from '@vitest/web-worker/pure';
 /**
  * Fixes TypeError: Cannot read properties of null (reading 'webkitBackingStorePixelRatio')
@@ -24,12 +25,14 @@ if (!navigator.clipboard) {
  */
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (!window.ResizeObserver) {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
   Object.defineProperty(window, 'ResizeObserver', {
     writable: false,
-    value: vi.fn().mockReturnValue({
-      observe() {},
-      disconnect() {},
-    }),
+    value: ResizeObserverMock,
   });
 }
 
@@ -56,5 +59,5 @@ process.on('unhandledRejection', reason => {
   throw reason;
 });
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/no-extraneous-dependencies
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export * from 'monaco-editor';

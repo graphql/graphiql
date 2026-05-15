@@ -9,8 +9,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "lib": ["es2022", "dom"],
-    "moduleResolution": "nodenext",
-    "types": ["vitest/globals"]
+    "moduleResolution": "nodenext"
   },
   "include": ["src", "tsup.config.ts"]
 }

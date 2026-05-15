@@ -1,5 +1,7 @@
 'use no memo';
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -10,6 +12,7 @@ import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
 import type { Fetcher } from '@graphiql/toolkit';
+import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
   useGraphiQL,
@@ -18,22 +21,11 @@ import {
 } from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
-// The smallest possible introspection result that builds a schema.
-const simpleIntrospection = {
-  data: {
-    __schema: {
-      queryType: { name: 'Q' },
-      types: [
-        {
-          kind: 'OBJECT',
-          name: 'Q',
-          interfaces: [],
-          fields: [{ name: 'q', args: [], type: { name: 'Q' } }],
-        },
-      ],
-    },
-  },
-};
+const simpleSchema = buildSchema('type Query { q: Query }');
+const simpleIntrospectionData = introspectionFromSchema(simpleSchema);
+// Fetcher return type expects `data: Record<string, unknown>`, so we
+// spread into a plain object to satisfy both the Fetcher and schema prop types.
+const simpleIntrospection = { data: { ...simpleIntrospectionData } };
 
 beforeEach(() => {
   localStorage.clear();
@@ -157,20 +149,41 @@ describe('GraphiQL', () => {
         ).not.toThrow();
       });
     });
+
+    it('should not introspect when IntrospectionQuery is provided as schema prop', async () => {
+      const trackingFetcher = vi.fn().mockResolvedValue(simpleIntrospection);
+
+      await act(() => {
+        render(
+          <GraphiQL
+            fetcher={trackingFetcher}
+            schema={simpleIntrospectionData}
+          />,
+        );
+      });
+
+      expect(trackingFetcher).not.toHaveBeenCalled();
+    });
   }); // schema
 
   describe('default query', () => {
+    // First test to boot Monaco's editor worker; cold start needs extra time under
+    // Vitest 4's forks pool. Both the it() testTimeout and the waitFor()
+    // asyncUtilTimeout (configured at 9s in setup-files.ts) must be bumped.
     it('defaults to the built-in default query', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
-        );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-      });
-    });
+      await waitFor(
+        () => {
+          const queryEditor = container.querySelector<HTMLDivElement>(
+            '.graphiql-editor .monaco-scrollable-element',
+          );
+          expect(queryEditor).toBeVisible();
+          expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
+        },
+        { timeout: 15_000 },
+      );
+    }, 20000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
@@ -414,7 +427,8 @@ describe('GraphiQL', () => {
 
     const callback = async () => {
       try {
-        await findByText('Persist headers');
+        // Expecting non-existence; short-circuit instead of waiting the default.
+        await findByText('Persist headers', undefined, { timeout: 1000 });
       } catch {
         // eslint-disable-next-line no-throw-literal
         throw 'failed';

@@ -2,7 +2,15 @@
   "packageAllowlist": [
     // MIT, just lacking SPDX in manifest
     "valid-url",
-    "argparse"
+    "argparse",
+    "spawn-command",
+    "spawndamnit",
+    // BlueOak-1.0.0 — permissive, not in jsgl's default greenLicenses
+    "glob",
+    "minimatch",
+    "minipass",
+    "path-scurry",
+    "lru-cache"
   ],
   "dev": false
 }

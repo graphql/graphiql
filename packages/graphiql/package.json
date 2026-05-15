@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -50,9 +50,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.4.1",
-    "@graphiql/plugin-history": "^0.4.1",
-    "@graphiql/react": "^0.37.3",
+    "@graphiql/plugin-doc-explorer": "^0.4.2",
+    "@graphiql/plugin-history": "^0.4.2",
+    "@graphiql/react": "^0.37.4",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
@@ -61,12 +61,12 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.11.3",
+    "@graphiql/toolkit": "^0.12.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.4.1",
-    "@vitest/web-worker": "3.1.4",
+    "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
@@ -78,7 +78,7 @@
     "typescript": "^5.8.0",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3",
-    "vitest-canvas-mock": "0.3.3"
+    "vitest-canvas-mock": "^1.1.4"
   },
   "browser": {
     "//": "esm.sh polyfills `process`, we don't need it",

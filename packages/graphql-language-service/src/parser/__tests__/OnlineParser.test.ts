@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 /* eslint-disable vitest/expect-expect */
 import OnlineParser from '../onlineParser';
 import {

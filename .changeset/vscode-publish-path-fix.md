@@ -4,4 +4,4 @@
 'vscode-graphql': patch
 ---
 
-Fix VS Code extension publishing scripts
+Burning patch version due to previous release failure.

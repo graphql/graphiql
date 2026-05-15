@@ -6,6 +6,7 @@
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
+import { describe, expect, it } from 'vitest';
 import jsonParse, { ParseTokenOutput } from '../jsonParse';
 
 describe('jsonParse', () => {

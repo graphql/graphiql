@@ -8,6 +8,7 @@
  */
 
 import { parse } from 'graphql';
+import { describe, expect, it } from 'vitest';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForNamedType,

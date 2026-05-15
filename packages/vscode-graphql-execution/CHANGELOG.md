@@ -1,5 +1,19 @@
 # vscode-graphql-execution
 
+## 0.3.4
+
+### Patch Changes
+
+- [#4255](https://github.com/graphql/graphiql/pull/4255) [`42d6049`](https://github.com/graphql/graphiql/commit/42d60499f012bab5087f6c9637b40949a8448b68) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Burning patch version due to previous release failure.
+
+## 0.3.3
+
+### Patch Changes
+
+- [#4183](https://github.com/graphql/graphiql/pull/4183) [`2ef9389`](https://github.com/graphql/graphiql/commit/2ef9389311c6308f637a2493251c00bdb57b1421) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix VS Code extension publishing scripts
+
+- [#4222](https://github.com/graphql/graphiql/pull/4222) [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Unpin and update graphql-config dependency
+
 ## 0.3.2
 
 ### Patch Changes

@@ -7,3 +7,13 @@ CHANGELOG.md
 **/CHANGELOG.md
 packages/vscode-graphql-syntax/tests/__fixtures__/
 packages/graphql-language-service-server/src/__tests__/parseDocument.test.ts
+react-app-env.d.ts
+next-env.d.ts
+**/vitest.config.*
+functions/*
+**/*.d.ts
+packages/graphiql-react/__mocks__/monaco-editor.ts
+packages/graphiql-plugin-doc-explorer/__mocks__/zustand.ts
+packages/graphiql-plugin-doc-explorer/__mocks__/monaco-editor.ts
+packages/graphiql-plugin-history/__mocks__/zustand.ts
+packages/graphiql-plugin-history/__mocks__/monaco-editor.ts
