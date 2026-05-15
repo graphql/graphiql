@@ -78,6 +78,11 @@
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-popover:
+    0 4px 12px oklch(0% 0 0 / 0.3),
+    0 1px 3px oklch(0% 0 0 / 0.15);
 }
 
 [data-theme='light'] {
@@ -114,6 +119,11 @@
   --btn-primary: 51% 0.15 145;
   --btn-primary-border: 45% 0.17 145;
 
+  /* Shadows — lighter to read on light surfaces */
+  --shadow-popover:
+    0 4px 12px oklch(0% 0 0 / 0.08),
+    0 1px 3px oklch(0% 0 0 / 0.04);
+
   /* Typography, spacing, dimensions, and radii are inherited from :root. */
 }
 
@@ -148,5 +158,8 @@
     --accent-pink: 58% 0.22 17;
     --btn-primary: 51% 0.15 145;
     --btn-primary-border: 45% 0.17 145;
+    --shadow-popover:
+      0 4px 12px oklch(0% 0 0 / 0.08),
+      0 1px 3px oklch(0% 0 0 / 0.04);
   }
 }
