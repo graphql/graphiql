@@ -3329,6 +3329,8 @@ __metadata:
     "@storybook/addon-a11y": "npm:^10.3.6"
     "@storybook/addon-vitest": "npm:^10.3.6"
     "@storybook/react-vite": "npm:^10.3.6"
+    "@testing-library/jest-dom": "npm:^6.6.3"
+    "@testing-library/react": "npm:^16.3.0"
     "@types/get-value": "npm:^3.0.5"
     "@types/markdown-it": "npm:^14.1.2"
     "@types/react-dom": "npm:^19.1.2"

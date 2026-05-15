@@ -18,3 +18,5 @@ export { Spinner } from './spinner';
 export { Tabs, Tab } from './tabs';
 export { Tooltip } from './tooltip';
 export { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
+export { KeycapHint } from './keycap-hint';
+export type { KeycapHintProps } from './keycap-hint';
