@@ -20,3 +20,8 @@ export { Tooltip } from './tooltip';
 export { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 export { KeycapHint } from './keycap-hint';
 export type { KeycapHintProps } from './keycap-hint';
+export { SegmentedControl } from './segmented-control';
+export type {
+  SegmentedControlProps,
+  SegmentedControlOption,
+} from './segmented-control';
