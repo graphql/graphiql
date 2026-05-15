@@ -1,0 +1,42 @@
+.graphiql-segmented-control {
+  display: inline-flex;
+  padding: 1px;
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-muted));
+  border-radius: var(--radius-md);
+  gap: 1px;
+}
+
+.graphiql-segmented-control-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 3px var(--px-8);
+  border: 0;
+  background: transparent;
+  color: oklch(var(--fg-subtle));
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: var(--letter-spacing-ui);
+}
+
+.graphiql-segmented-control-option:hover:not(.active):not(:disabled) {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-segmented-control-option.active {
+  background: oklch(var(--bg-overlay));
+  color: oklch(var(--fg-strong));
+}
+
+.graphiql-segmented-control-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.graphiql-segmented-control-icon {
+  display: inline-flex;
+}
