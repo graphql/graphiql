@@ -34,7 +34,7 @@
     "!babel.config.js"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest run"
   },

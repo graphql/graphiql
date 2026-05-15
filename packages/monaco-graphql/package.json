@@ -68,7 +68,7 @@
     "esm"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
   "dependencies": {

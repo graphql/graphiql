@@ -41,7 +41,7 @@
     }
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "vite build && UMD=true vite build",
     "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",

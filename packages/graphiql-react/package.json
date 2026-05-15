@@ -39,7 +39,7 @@
     "font"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "test": "vitest run --typecheck"

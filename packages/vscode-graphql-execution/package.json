@@ -82,7 +82,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "compile": "node esbuild.js",
     "build-bundles": "yarn run compile",
     "vsce:package": "yarn compile && vsce package --yarn --no-dependencies"
