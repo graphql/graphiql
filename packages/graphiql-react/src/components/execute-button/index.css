@@ -1,26 +1,28 @@
 button.graphiql-execute-button {
-  background-color: hsl(var(--color-primary));
-  border: none;
-  border-radius: var(--border-radius-8);
+  background-color: oklch(var(--btn-primary));
+  border: 1px solid oklch(var(--btn-primary-border));
+  border-radius: var(--radius-md);
   cursor: pointer;
   height: var(--toolbar-width);
   padding: 0;
   width: var(--toolbar-width);
 
   &:hover {
-    background-color: hsla(var(--color-primary), 0.9);
+    background-color: oklch(var(--btn-primary-border));
   }
 
   &:active {
-    background-color: hsla(var(--color-primary), 0.8);
+    background-color: oklch(var(--btn-primary));
+    opacity: 0.85;
   }
 
-  &:focus {
-    outline: hsla(var(--color-primary), 0.8) auto 1px;
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: 1px;
   }
 
   & > svg {
-    color: white;
+    color: #fff;
     display: block;
     height: var(--px-16);
     margin: auto;

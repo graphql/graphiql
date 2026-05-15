@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef } from 'react';
-import { cn } from '../../utility';
+import { clsx as cn } from 'clsx';
 import './index.css';
 
 type UnStyledButtonProps = ComponentPropsWithoutRef<'button'>;
@@ -18,6 +18,7 @@ UnStyledButton.displayName = 'UnStyledButton';
 
 interface ButtonProps extends UnStyledButtonProps {
   state?: 'success' | 'error';
+  variant?: 'default' | 'primary';
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -27,6 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       className={cn(
         'graphiql-button',
+        props.variant === 'primary' && 'graphiql-button-primary',
         {
           success: 'graphiql-button-success',
           error: 'graphiql-button-error',
