@@ -3099,7 +3099,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^0.37.4, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:^0.37.4, @graphiql/react@npm:^0.37.5, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
@@ -3123,7 +3123,7 @@ __metadata:
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.1.0"
     monaco-editor: "npm:0.52.2"
-    monaco-graphql: "npm:^1.7.4"
+    monaco-graphql: "npm:^1.8.0"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
@@ -11321,7 +11321,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-graphiql-vite-react-router@workspace:examples/graphiql-vite-react-router"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.5"
     "@react-router/dev": "npm:^7"
     "@react-router/fs-routes": "npm:^7"
     "@react-router/node": "npm:^7"
@@ -11362,7 +11362,7 @@ __metadata:
     "@babel/preset-react": "npm:^7"
     "@graphiql/plugin-code-exporter": "npm:^5.1.2"
     "@graphiql/plugin-explorer": "npm:^5.1.2"
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.5"
     "@graphiql/toolkit": "npm:^0.12.0"
     ajv-formats: "npm:^3"
     babel-loader: "npm:^9"
@@ -11398,7 +11398,7 @@ __metadata:
     graphql: "npm:^16"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
-    monaco-graphql: "npm:^1.7.4"
+    monaco-graphql: "npm:^1.8.0"
     next: "npm:^15"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -11416,7 +11416,7 @@ __metadata:
     graphql-language-service: "npm:^5.5.1"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
-    monaco-graphql: "npm:^1.7.4"
+    monaco-graphql: "npm:^1.8.0"
     react: "npm:^19"
     react-dom: "npm:^19"
     vite: "npm:^6"
@@ -11447,7 +11447,7 @@ __metadata:
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
     monaco-editor-webpack-plugin: "npm:^7"
-    monaco-graphql: "npm:^1.7.4"
+    monaco-graphql: "npm:^1.8.0"
     prettier: "npm:^3"
     style-loader: "npm:^3"
     typescript: "npm:^5"
@@ -16098,7 +16098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-graphql@npm:^1.7.4, monaco-graphql@workspace:packages/monaco-graphql":
+"monaco-graphql@npm:^1.8.0, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:

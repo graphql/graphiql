@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.37.5
+
+### Patch Changes
+
+- [#4232](https://github.com/graphql/graphiql/pull/4232) [`3934e4a`](https://github.com/graphql/graphiql/commit/3934e4af14d133b6e53bfa47f50b9da83ad98109) Thanks [@simmerer](https://github.com/simmerer)! - Bugfix for multiline selection highlight styling: disabling Monaco's `roundedSelection` option prevents selection highlight from appearing to extend beyond actual text selection. See issue [#4094](https://github.com/graphql/graphiql/issues/4094).
+
+- Updated dependencies [[`227f5ba`](https://github.com/graphql/graphiql/commit/227f5bab19ea743359165ea299d940091e19f414)]:
+  - monaco-graphql@1.8.0
+
 ## 0.37.4
 
 ### Patch Changes
