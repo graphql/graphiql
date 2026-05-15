@@ -12,7 +12,9 @@ describe('KeycapHint', () => {
   });
 
   it('exposes the shortcut as an accessible name', () => {
-    render(<KeycapHint keys={['⌘', 'Enter']} ariaLabel="Run query (Cmd+Enter)" />);
+    render(
+      <KeycapHint keys={['⌘', 'Enter']} ariaLabel="Run query (Cmd+Enter)" />,
+    );
     expect(screen.getByLabelText(/Run query/i)).toBeInTheDocument();
   });
 
