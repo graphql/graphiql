@@ -50,7 +50,7 @@ body:
         * LSP Server Version:
         * OS:
         * LSP Client:
-        * LSP Install Source: 
+        * LSP Install Source:
     validations:
       required: false
 
