@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { KeycapHint } from './';
 
 const meta: Meta<typeof KeycapHint> = {
@@ -11,11 +11,15 @@ export default meta;
 type Story = StoryObj<typeof KeycapHint>;
 
 export const Single: Story = {
-  args: { keys: ['K'], ariaLabel: 'Focus shortcut: K' },
+  render: () => <KeycapHint keys={['K']} ariaLabel="Focus shortcut: K" />,
 };
+
 export const ChordWithModifier: Story = {
-  args: { keys: ['⌘', 'K'], ariaLabel: 'Open command palette' },
+  render: () => (
+    <KeycapHint keys={['⌘', 'K']} ariaLabel="Open command palette" />
+  ),
 };
+
 export const RunShortcut: Story = {
-  args: { keys: ['⌘', '⏎'], ariaLabel: 'Run query' },
+  render: () => <KeycapHint keys={['⌘', '⏎']} ariaLabel="Run query" />,
 };
