@@ -27,3 +27,5 @@ export type {
   SegmentedControlProps,
   SegmentedControlOption,
 } from './segmented-control';
+export { MethodPill } from './method-pill';
+export type { MethodPillProps, Operation } from './method-pill';
