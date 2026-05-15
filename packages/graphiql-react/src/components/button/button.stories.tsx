@@ -5,27 +5,28 @@ const meta: Meta<typeof Button> = {
   title: 'Primitives/Button',
   component: Button,
   tags: ['autodocs'],
-  args: { children: 'Button' },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof Button>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  render: () => <Button>Button</Button>,
+};
 
 export const Primary: Story = {
-  args: { variant: 'primary', children: 'Run' },
+  render: () => <Button variant="primary">Run</Button>,
 };
 
 export const Success: Story = {
-  args: { state: 'success', children: 'Copied!' },
+  render: () => <Button state="success">Copied!</Button>,
 };
 
 export const Error: Story = {
-  args: { state: 'error', children: 'Failed' },
+  render: () => <Button state="error">Failed</Button>,
 };
 
 export const Disabled: Story = {
-  args: { disabled: true },
+  render: () => <Button disabled>Button</Button>,
 };

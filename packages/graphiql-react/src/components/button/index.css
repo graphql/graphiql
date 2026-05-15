@@ -54,9 +54,13 @@ button.graphiql-button {
   }
 
   &.graphiql-button-success {
-    background-color: oklch(var(--accent-green) / 0.15);
+    background-color: oklch(var(--accent-green));
+    border-color: oklch(var(--accent-green));
+    color: #fff;
   }
   &.graphiql-button-error {
-    background-color: oklch(var(--accent-red) / 0.15);
+    background-color: oklch(var(--accent-red));
+    border-color: oklch(var(--accent-red));
+    color: #fff;
   }
 }
