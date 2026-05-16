@@ -220,13 +220,12 @@ button.graphiql-tab-add {
     hsla(var(--color-neutral), var(--alpha-background-heavy));
 }
 
-/* The plugin container */
+/* The plugin container — sizing controlled by useDragResize; chrome handled by <SidePanel> */
 .graphiql-container .graphiql-plugin {
-  border-left: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  display: flex;
   flex: 1;
-  overflow-y: auto;
-  padding: var(--px-16);
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Generic drag bar for horizontal resizing */

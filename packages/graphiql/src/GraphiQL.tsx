@@ -20,6 +20,7 @@ import {
   PlusIcon,
   QueryEditor,
   ResponseEditor,
+  SidePanel,
   Spinner,
   StatusBar,
   Tab,
@@ -227,8 +228,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
-
-  const PluginContent = visiblePlugin?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -455,16 +454,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             setHiddenElement={pluginResize.setHiddenElement}
           />
           <div className="graphiql-main">
-            <div
-              ref={pluginResize.firstRef}
-              className="graphiql-plugin"
-              style={{
-                // Make sure the container shrinks when containing long
-                // non-breaking texts
-                minWidth: '200px',
-              }}
-            >
-              {PluginContent && <PluginContent />}
+            <div ref={pluginResize.firstRef} className="graphiql-plugin">
+              <SidePanel />
             </div>
             {visiblePlugin && (
               <div
