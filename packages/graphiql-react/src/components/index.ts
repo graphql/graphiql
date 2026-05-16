@@ -33,4 +33,5 @@ export { TopBar, TopBarView } from './top-bar';
 export type { TopBarProps, TopBarViewProps } from './top-bar';
 export { StatusBar, StatusBarView } from './status-bar';
 export type { StatusBarProps, StatusBarViewProps } from './status-bar';
-export { SidePanel } from './side-panel';
+export { SidePanel, SidePanelView } from './side-panel';
+export type { SidePanelViewProps } from './side-panel';
