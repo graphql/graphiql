@@ -1,6 +1,12 @@
 import { isType } from 'graphql';
 import type { FC, ReactNode } from 'react';
-import { ChevronLeftIcon, Spinner, useGraphiQL, pick } from '@graphiql/react';
+import {
+  ChevronLeftIcon,
+  PanelHeader,
+  Spinner,
+  useGraphiQL,
+  pick,
+} from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { FieldDocumentation } from './field-documentation';
 import { SchemaDocumentation } from './schema-documentation';
@@ -51,30 +57,36 @@ export const DocExplorer: FC = () => {
     prevName = explorerNavStack.at(-2)!.name;
   }
 
+  const headerTitle = (
+    <div className="graphiql-doc-explorer-header-content">
+      {prevName && (
+        <a
+          href="#"
+          className="graphiql-doc-explorer-back"
+          onClick={event => {
+            event.preventDefault();
+            pop();
+          }}
+          aria-label={`Go back to ${prevName}`}
+        >
+          <ChevronLeftIcon />
+          {prevName}
+        </a>
+      )}
+      <div className="graphiql-doc-explorer-title">{navItem.name}</div>
+    </div>
+  );
+
   return (
     <section
       className="graphiql-doc-explorer"
       aria-label="Documentation Explorer"
     >
       <div className="graphiql-doc-explorer-header">
-        <div className="graphiql-doc-explorer-header-content">
-          {prevName && (
-            <a
-              href="#"
-              className="graphiql-doc-explorer-back"
-              onClick={event => {
-                event.preventDefault();
-                pop();
-              }}
-              aria-label={`Go back to ${prevName}`}
-            >
-              <ChevronLeftIcon />
-              {prevName}
-            </a>
-          )}
-          <div className="graphiql-doc-explorer-title">{navItem.name}</div>
-        </div>
-        <Search key={navItem.name} />
+        <PanelHeader
+          title={headerTitle}
+          actions={<Search key={navItem.name} />}
+        />
       </div>
       <div className="graphiql-doc-explorer-content">{content}</div>
     </section>
