@@ -12,6 +12,7 @@ import {
   Button,
   Tooltip,
   UnStyledButton,
+  PanelHeader,
 } from '@graphiql/react';
 import { useHistory, useHistoryActions } from './context';
 
@@ -64,24 +65,28 @@ export const History: FC = () => {
   const hasFavorites = Boolean(favorites.length);
   const hasItems = Boolean(items.length);
 
+  const clearButton =
+    clearStatus || hasItems ? (
+      <Button
+        type="button"
+        state={clearStatus || undefined}
+        disabled={!items.length}
+        onClick={handleClearStatus}
+      >
+        {{
+          success: 'Cleared',
+          error: 'Failed to Clear',
+        }[clearStatus!] || 'Clear'}
+      </Button>
+    ) : undefined;
+
   return (
     <section aria-label="History" className="graphiql-history">
-      <div className="graphiql-history-header">
-        History
-        {(clearStatus || hasItems) && (
-          <Button
-            type="button"
-            state={clearStatus || undefined}
-            disabled={!items.length}
-            onClick={handleClearStatus}
-          >
-            {{
-              success: 'Cleared',
-              error: 'Failed to Clear',
-            }[clearStatus!] || 'Clear'}
-          </Button>
-        )}
-      </div>
+      <PanelHeader
+        title="History"
+        subtitle="Last 20 runs"
+        actions={clearButton}
+      />
 
       {hasFavorites && (
         <ul className="graphiql-history-items">
@@ -166,6 +171,10 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
     toggleFavorite(props.item);
   };
 
+  const variablesSnippet = props.item.variables
+    ? formatVariables(props.item.variables)
+    : null;
+
   return (
     <li className={cn('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
@@ -193,54 +202,71 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
         </>
       ) : (
         <>
-          <Tooltip label="Set active">
-            <UnStyledButton
-              type="button"
-              className="graphiql-history-item-label"
-              onClick={handleHistoryItemClick}
-              aria-label="Set active"
+          <div className="graphiql-history-item-inner">
+            <div className="graphiql-history-item-row">
+              <span
+                className="graphiql-history-item-status"
+                aria-hidden="true"
+              />
+              <Tooltip label="Set active">
+                <UnStyledButton
+                  type="button"
+                  className="graphiql-history-item-label"
+                  onClick={handleHistoryItemClick}
+                  aria-label="Set active"
+                >
+                  {displayName}
+                </UnStyledButton>
+              </Tooltip>
+            </div>
+            {variablesSnippet && (
+              <div className="graphiql-history-item-meta">
+                <span className="graphiql-history-item-variables">
+                  {variablesSnippet}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="graphiql-history-item-actions">
+            <Tooltip label="Edit label">
+              <UnStyledButton
+                type="button"
+                className="graphiql-history-item-action"
+                onClick={handleEditLabel}
+                aria-label="Edit label"
+              >
+                <PenIcon aria-hidden="true" />
+              </UnStyledButton>
+            </Tooltip>
+            <Tooltip
+              label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}
             >
-              {displayName}
-            </UnStyledButton>
-          </Tooltip>
-          <Tooltip label="Edit label">
-            <UnStyledButton
-              type="button"
-              className="graphiql-history-item-action"
-              onClick={handleEditLabel}
-              aria-label="Edit label"
-            >
-              <PenIcon aria-hidden="true" />
-            </UnStyledButton>
-          </Tooltip>
-          <Tooltip
-            label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}
-          >
-            <UnStyledButton
-              type="button"
-              className="graphiql-history-item-action"
-              onClick={handleToggleFavorite}
-              aria-label={
-                props.item.favorite ? 'Remove favorite' : 'Add favorite'
-              }
-            >
-              {props.item.favorite ? (
-                <StarFilledIcon aria-hidden="true" />
-              ) : (
-                <StarIcon aria-hidden="true" />
-              )}
-            </UnStyledButton>
-          </Tooltip>
-          <Tooltip label="Delete from history">
-            <UnStyledButton
-              type="button"
-              className="graphiql-history-item-action"
-              onClick={handleDeleteItemFromHistory}
-              aria-label="Delete from history"
-            >
-              <TrashIcon aria-hidden="true" />
-            </UnStyledButton>
-          </Tooltip>
+              <UnStyledButton
+                type="button"
+                className="graphiql-history-item-action"
+                onClick={handleToggleFavorite}
+                aria-label={
+                  props.item.favorite ? 'Remove favorite' : 'Add favorite'
+                }
+              >
+                {props.item.favorite ? (
+                  <StarFilledIcon aria-hidden="true" />
+                ) : (
+                  <StarIcon aria-hidden="true" />
+                )}
+              </UnStyledButton>
+            </Tooltip>
+            <Tooltip label="Delete from history">
+              <UnStyledButton
+                type="button"
+                className="graphiql-history-item-action"
+                onClick={handleDeleteItemFromHistory}
+                aria-label="Delete from history"
+              >
+                <TrashIcon aria-hidden="true" />
+              </UnStyledButton>
+            </Tooltip>
+          </div>
         </>
       )}
     </li>
@@ -255,4 +281,18 @@ export function formatQuery(query?: string) {
     .replaceAll('{', ' { ')
     .replaceAll('}', ' } ')
     .replaceAll(/[\s]{2,}/g, ' ');
+}
+
+export function formatVariables(variables: string) {
+  try {
+    const parsed = JSON.parse(variables) as Record<string, unknown>;
+    const entries = Object.entries(parsed);
+    if (!entries.length) return null;
+    return entries
+      .slice(0, 3)
+      .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+      .join(', ');
+  } catch {
+    return variables.slice(0, 60);
+  }
 }
