@@ -35,6 +35,8 @@
     "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
+    "build-storybook": "storybook build",
+    "storybook": "storybook dev -p 6007",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -50,6 +52,9 @@
   },
   "devDependencies": {
     "@graphiql/react": "^0.37.4",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -58,6 +63,7 @@
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "storybook": "^10.3.6",
     "vite": "^6.3.4",
     "vite-plugin-dts": "^4.5.3"
   }
