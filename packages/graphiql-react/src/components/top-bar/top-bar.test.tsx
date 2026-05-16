@@ -7,7 +7,7 @@ import { TopBarView } from './';
 
 const DEFAULTS = {
   isFetching: false,
-  onRun: () => {},
+  onRun() {},
 };
 
 describe('TopBarView', () => {
