@@ -41,7 +41,12 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
-import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
+import {
+  ActivityBar,
+  GraphiQLLogo,
+  GraphiQLToolbar,
+  GraphiQLFooter,
+} from './ui';
 
 /**
  * API docs for this live here:
@@ -152,7 +157,7 @@ export interface GraphiQLInterfaceProps
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
     Pick<ResponseEditorProps, 'responseTooltip'>,
     Pick<
-      ComponentPropsWithoutRef<typeof Sidebar>,
+      ComponentPropsWithoutRef<typeof ActivityBar>,
       'forcedTheme' | 'showPersistHeadersSettings'
     > {
   children?: ReactNode;
@@ -449,7 +454,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <div className={cn('graphiql-container', className)}>
         <TopBar />
         <div className="graphiql-body">
-          <Sidebar
+          <ActivityBar
             forcedTheme={forcedTheme}
             showPersistHeadersSettings={showPersistHeadersSettings}
             setHiddenElement={pluginResize.setHiddenElement}

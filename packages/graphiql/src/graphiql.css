@@ -17,36 +17,7 @@
   overflow: hidden;
 }
 
-/* The sidebar */
-.graphiql-container .graphiql-sidebar {
-  display: flex;
-  flex-direction: column;
-  padding: var(--px-8);
-  width: var(--sidebar-width);
-  gap: var(--px-8);
-  overflow-y: auto;
-}
-
-.graphiql-container .graphiql-sidebar > button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  height: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  width: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  flex-shrink: 0;
-}
-
-.graphiql-container .graphiql-sidebar button.active {
-  color: hsl(var(--color-neutral));
-}
-
-.graphiql-container .graphiql-sidebar button > svg {
-  height: var(--px-20);
-  width: var(--px-20);
-}
-
-/* The main content, i.e. everything except the sidebar */
+/* The main content, i.e. everything except the activity rail */
 .graphiql-container .graphiql-main {
   display: flex;
   flex: 1;
