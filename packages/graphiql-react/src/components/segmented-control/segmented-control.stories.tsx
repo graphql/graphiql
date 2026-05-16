@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { SegmentedControl } from './';
+import { PrettifyIcon, DocsIcon, MergeIcon } from '../../icons';
 
 const meta: Meta = {
   title: 'Primitives/SegmentedControl',
@@ -57,6 +58,36 @@ export const WithDisabledOption: StoryObj = {
           { value: 'list', label: 'List' },
           { value: 'grid', label: 'Grid' },
           { value: 'map', label: 'Map', disabled: true },
+        ]}
+      />
+    );
+  },
+};
+
+export const Icons: StoryObj = {
+  render() {
+    const [v, setV] = useState('pretty');
+    return (
+      <SegmentedControl
+        value={v}
+        onChange={setV}
+        ariaLabel="Response view"
+        options={[
+          {
+            value: 'pretty',
+            label: 'Pretty',
+            icon: <PrettifyIcon aria-hidden="true" />,
+          },
+          {
+            value: 'docs',
+            label: 'Docs',
+            icon: <DocsIcon aria-hidden="true" />,
+          },
+          {
+            value: 'merged',
+            label: 'Merged',
+            icon: <MergeIcon aria-hidden="true" />,
+          },
         ]}
       />
     );

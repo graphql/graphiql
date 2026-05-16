@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react';
+'use no memo';
+
+import { useId, type ReactNode } from 'react';
 import './index.css';
 
 export type SegmentedControlOption<T extends string = string> = {
@@ -21,27 +23,36 @@ export function SegmentedControl<T extends string>({
   options,
   ariaLabel,
 }: SegmentedControlProps<T>) {
+  const name = useId();
   return (
-    <div
-      className="graphiql-segmented-control"
-      role="group"
-      aria-label={ariaLabel}
-    >
+    <fieldset className="graphiql-segmented-control">
+      {ariaLabel && (
+        <legend className="graphiql-segmented-control-legend">
+          {ariaLabel}
+        </legend>
+      )}
       {options.map(opt => (
-        <button
+        <label
           key={opt.value}
-          type="button"
-          className={`graphiql-segmented-control-option${opt.value === value ? ' active' : ''}`}
-          onClick={() => onChange(opt.value)}
-          disabled={opt.disabled}
-          aria-pressed={opt.value === value}
+          className="graphiql-segmented-control-option"
+          data-checked={opt.value === value || undefined}
+          data-disabled={opt.disabled || undefined}
         >
+          <input
+            className="graphiql-segmented-control-input"
+            type="radio"
+            name={name}
+            value={opt.value}
+            checked={opt.value === value}
+            disabled={opt.disabled}
+            onChange={() => onChange(opt.value)}
+          />
           {opt.icon && (
             <span className="graphiql-segmented-control-icon">{opt.icon}</span>
           )}
           <span>{opt.label}</span>
-        </button>
+        </label>
       ))}
-    </div>
+    </fieldset>
   );
 }
