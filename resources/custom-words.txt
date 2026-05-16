@@ -251,6 +251,7 @@ websockets
 wgutils
 wincent
 wonka
+wordmark
 yoshiakis
 zdravo
 zustand

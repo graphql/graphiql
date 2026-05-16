@@ -12,10 +12,7 @@ export type TopBarProps = {
   version?: string;
 };
 
-export const TopBar: FC<TopBarProps> = ({
-  endpointUrl,
-  version,
-}) => {
+export const TopBar: FC<TopBarProps> = ({ endpointUrl, version }) => {
   const { run } = useGraphiQLActions();
   const isFetching = useGraphiQL(state => state.isFetching);
 
