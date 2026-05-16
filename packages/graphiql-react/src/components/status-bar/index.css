@@ -7,7 +7,7 @@
   padding: 0 var(--px-12);
   background: oklch(var(--bg-elevated));
   border-top: 1px solid oklch(var(--border-default));
-  color: oklch(var(--fg-disabled));
+  color: oklch(var(--fg-subtle));
   font-family: var(--font-family-mono);
   font-size: var(--font-size-eyebrow);
 }
