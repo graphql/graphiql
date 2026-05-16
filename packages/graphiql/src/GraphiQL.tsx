@@ -21,6 +21,7 @@ import {
   QueryEditor,
   ResponseEditor,
   Spinner,
+  StatusBar,
   Tab,
   Tabs,
   Tooltip,
@@ -531,6 +532,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             </div>
           </div>
         </div>
+        <StatusBar />
       </div>
       {children}
     </Tooltip.Provider>

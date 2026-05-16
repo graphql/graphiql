@@ -1,0 +1,33 @@
+.graphiql-status-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--px-14);
+  height: var(--status-bar-height);
+  flex-shrink: 0;
+  padding: 0 var(--px-12);
+  background: oklch(var(--bg-elevated));
+  border-top: 1px solid oklch(var(--border-default));
+  color: oklch(var(--fg-disabled));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+}
+
+.graphiql-status-bar-spacer {
+  flex: 1;
+}
+
+.graphiql-status-bar-conn {
+  font-weight: 500;
+}
+
+.graphiql-status-bar-conn.connected {
+  color: oklch(var(--accent-green));
+}
+
+.graphiql-status-bar-conn.disconnected {
+  color: oklch(var(--accent-red));
+}
+
+.graphiql-status-bar-plugins {
+  color: oklch(var(--accent-purple));
+}

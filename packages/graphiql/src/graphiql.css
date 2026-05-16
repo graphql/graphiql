@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-/* Sidebar + main content row (below the top bar) */
+/* Sidebar + main content row (below the top bar and above the status bar) */
 .graphiql-container .graphiql-body {
   display: flex;
   flex: 1;
@@ -201,7 +201,7 @@ button.graphiql-tab-add {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  /* Add some padding so it doesn’t touch the tabs */
+  /* Add some padding so it doesn't touch the tabs */
   padding-top: var(--px-16);
   display: flex;
   width: 100%;
