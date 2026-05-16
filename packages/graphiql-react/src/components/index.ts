@@ -29,5 +29,5 @@ export type {
 } from './segmented-control';
 export { MethodPill } from './method-pill';
 export type { MethodPillProps, Operation } from './method-pill';
-export { TopBar } from './top-bar';
-export type { TopBarProps } from './top-bar';
+export { TopBar, TopBarView } from './top-bar';
+export type { TopBarProps, TopBarViewProps } from './top-bar';

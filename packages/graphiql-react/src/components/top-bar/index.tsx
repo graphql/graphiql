@@ -17,6 +17,29 @@ export const TopBar: FC<TopBarProps> = ({ endpointUrl, version }) => {
   const isFetching = useGraphiQL(state => state.isFetching);
 
   return (
+    <TopBarView
+      endpointUrl={endpointUrl}
+      version={version}
+      isFetching={isFetching}
+      onRun={run}
+    />
+  );
+};
+
+export type TopBarViewProps = {
+  endpointUrl?: string;
+  version?: string;
+  isFetching: boolean;
+  onRun: () => void;
+};
+
+export const TopBarView: FC<TopBarViewProps> = ({
+  endpointUrl,
+  version,
+  isFetching,
+  onRun,
+}) => {
+  return (
     <header className="graphiql-top-bar" role="banner">
       <div className="graphiql-top-bar-brand">
         <span className="graphiql-top-bar-logo" aria-hidden="true" />
@@ -27,7 +50,6 @@ export const TopBar: FC<TopBarProps> = ({ endpointUrl, version }) => {
       <div className="graphiql-top-bar-divider" aria-hidden="true" />
 
       <div className="graphiql-top-bar-endpoint">
-        {/* Method/URL will be filled in once transport lands. */}
         <span className="graphiql-top-bar-endpoint-method">POST</span>
         <span className="graphiql-top-bar-endpoint-url">
           {endpointUrl ?? '/graphql'}
@@ -42,7 +64,7 @@ export const TopBar: FC<TopBarProps> = ({ endpointUrl, version }) => {
       <button
         type="button"
         className="graphiql-top-bar-run"
-        onClick={() => run()}
+        onClick={onRun}
         disabled={isFetching}
         aria-label="Run query"
       >
