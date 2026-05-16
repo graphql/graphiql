@@ -56,6 +56,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     copyQuery,
     prettifyEditors,
     mergeQuery,
+    saveQuery,
   } = useGraphiQLActions();
   const {
     initialQuery,
@@ -263,6 +264,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       editor.addAction({ ...KEY_BINDINGS.copyQuery, run: copyQuery }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
+      editor.addAction({ ...KEY_BINDINGS.saveQuery, run: saveQuery }),
       editor,
       model,
     ];

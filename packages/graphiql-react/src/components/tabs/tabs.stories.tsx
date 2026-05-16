@@ -95,3 +95,42 @@ export const ActiveState: Story = {
     );
   },
 };
+
+export const DirtyState: Story = {
+  render: function DirtyStateStory() {
+    const [tabs] = useState([
+      { id: 'a', label: 'GetUser' },
+      { id: 'b', label: 'ListPosts' },
+    ]);
+    const [active, setActive] = useState('a');
+
+    return (
+      <div>
+        <Tabs values={tabs} onReorder={() => {}} className="no-scrollbar">
+          {tabs.map((tab, i) => (
+            <Tab
+              key={tab.id}
+              value={tab}
+              isActive={active === tab.id}
+              isDirty={i === 0}
+            >
+              <Tab.Button onClick={() => setActive(tab.id)}>
+                {tab.label}
+              </Tab.Button>
+              <Tab.Close />
+            </Tab>
+          ))}
+        </Tabs>
+        <div
+          style={{
+            padding: '12px',
+            color: 'oklch(var(--fg-subtle))',
+            fontSize: '11px',
+          }}
+        >
+          First tab has unsaved edits (dirty dot visible).
+        </div>
+      </div>
+    );
+  },
+};

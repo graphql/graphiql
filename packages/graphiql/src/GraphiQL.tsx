@@ -14,18 +14,21 @@ import { useState, Children, useRef, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  CopyIcon,
   ExecuteButton,
   GraphiQLProvider,
   HeaderEditor,
   PlusIcon,
+  PrettifyIcon,
   QueryEditor,
   ResponseEditor,
+  SaveIcon,
   Spinner,
-  StatusBar,
   Tab,
   Tabs,
   Tooltip,
   TopBar,
+  StatusBar,
   UnStyledButton,
   useDragResize,
   useGraphiQL,
@@ -192,6 +195,9 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const LABEL = {
   newTab: 'New tab',
+  prettify: 'Prettify query',
+  copy: 'Copy query',
+  save: 'Save query',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
@@ -207,8 +213,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   responseTooltip,
   showPersistHeadersSettings,
 }) => {
-  const { addTab, moveTab, closeTab, changeTab, setVisiblePlugin } =
-    useGraphiQLActions();
+  const {
+    addTab,
+    moveTab,
+    closeTab,
+    changeTab,
+    setVisiblePlugin,
+    saveQuery,
+    copyQuery,
+    prettifyEditors,
+  } = useGraphiQLActions();
   const {
     initialVariables,
     initialHeaders,
@@ -481,13 +495,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                   aria-label="Select active operation"
                   className="no-scrollbar"
                 >
-                  {tabs.map((tab, index, arr) => (
+                  {tabs.map((tab, index) => (
                     <Tab
                       key={tab.id}
                       // Prevent overscroll over container
                       dragConstraints={tabContainerRef}
                       value={tab}
                       isActive={index === activeTabIndex}
+                      isDirty={tab.query !== tab.lastSavedQuery}
                     >
                       <Tab.Button
                         aria-controls="graphiql-session"
@@ -497,7 +512,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       >
                         {tab.title}
                       </Tab.Button>
-                      {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
+                      {tabs.length > 1 && (
+                        <Tab.Close onClick={handleTabClose} />
+                      )}
                     </Tab>
                   ))}
                 </Tabs>
@@ -511,6 +528,38 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                     <PlusIcon aria-hidden="true" />
                   </UnStyledButton>
                 </Tooltip>
+                <div className="graphiql-tab-strip-actions">
+                  <Tooltip label={LABEL.prettify}>
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-strip-action"
+                      onClick={prettifyEditors}
+                      aria-label={LABEL.prettify}
+                    >
+                      <PrettifyIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                  <Tooltip label={LABEL.copy}>
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-strip-action"
+                      onClick={copyQuery}
+                      aria-label={LABEL.copy}
+                    >
+                      <CopyIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                  <Tooltip label={LABEL.save}>
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-strip-action"
+                      onClick={saveQuery}
+                      aria-label={LABEL.save}
+                    >
+                      <SaveIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                </div>
                 {logo}
               </div>
               <div
