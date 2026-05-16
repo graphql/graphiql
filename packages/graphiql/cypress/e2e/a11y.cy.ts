@@ -88,7 +88,7 @@ describe('a11y baseline', () => {
 
   it('with docs panel open has no new violations', () => {
     // First sidebar button is the docs explorer toggle (confirmed in docs.cy.ts)
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
     cy.get('.graphiql-doc-explorer').should('be.visible');
     cy.injectAxe();
     checkOrCapture('docs-open');

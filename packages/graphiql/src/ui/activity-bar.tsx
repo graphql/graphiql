@@ -85,7 +85,9 @@ export const ActivityBar: FC<ActivityBarProps> = ({
   }
 
   function handleOpenShortKeysDialog(isOpen: boolean) {
-    if (!isOpen) setShowDialog(null);
+    if (!isOpen) {
+      setShowDialog(null);
+    }
   }
 
   function handleClearData() {
