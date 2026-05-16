@@ -3,6 +3,7 @@ import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import { ImagePreview } from './image-preview';
+import { ResponseHeader } from './response-header';
 import {
   getOrCreateModel,
   createEditor,
@@ -14,6 +15,7 @@ import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';
 import { useMonaco } from '../stores';
+import type { ResponseView } from '../stores';
 
 type ResponseTooltipType = ComponentType<{
   /**
@@ -37,12 +39,36 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const { setEditor, run } = useGraphiQLActions();
-  const { fetchError, validationErrors, responseEditor, uriInstanceId } =
-    useGraphiQL(
-      pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
-    );
+  const { setEditor, run, setResponseView } = useGraphiQLActions();
+  const {
+    fetchError,
+    validationErrors,
+    responseEditor,
+    uriInstanceId,
+    lastResponse,
+    responseView,
+  } = useGraphiQL(
+    pick(
+      'fetchError',
+      'validationErrors',
+      'responseEditor',
+      'uriInstanceId',
+      'lastResponse',
+      'responseView',
+    ),
+  );
   const ref = useRef<HTMLDivElement>(null!);
+
+  async function handleCopy() {
+    const value = responseEditor?.getValue();
+    if (value) {
+      await navigator.clipboard.writeText(value);
+    }
+  }
+
+  function handleViewChange(view: ResponseView) {
+    setResponseView(view);
+  }
   const monaco = useMonaco(state => state.monaco);
   useEffect(() => {
     if (fetchError) {
@@ -141,15 +167,33 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
   return (
-    <section
-      ref={ref}
-      aria-label="Result Window"
-      aria-live="polite"
-      aria-atomic="true"
-      tabIndex={0}
-      onKeyDown={onEditorContainerKeyDown}
-      {...props}
-      className={cn('result-window', props.className)}
-    />
+    <div {...props} className={cn('graphiql-response-pane', props.className)}>
+      <ResponseHeader
+        status={lastResponse?.status}
+        timeMs={lastResponse?.timeMs}
+        sizeBytes={lastResponse?.sizeBytes}
+        view={responseView}
+        onViewChange={handleViewChange}
+        onCopy={handleCopy}
+      />
+      {responseView === 'json' ? (
+        <section
+          ref={ref}
+          aria-label="Result Window"
+          aria-live="polite"
+          aria-atomic="true"
+          tabIndex={0}
+          onKeyDown={onEditorContainerKeyDown}
+          className="result-window"
+        />
+      ) : (
+        <div className="graphiql-response-empty-state" role="status">
+          <span>
+            {responseView === 'tree' ? 'Tree' : 'Table'} view is not yet
+            available.
+          </span>
+        </div>
+      )}
+    </div>
   );
 };

@@ -15,5 +15,6 @@ export type {
   Theme,
 } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
+export type { ResponseView, LastResponse } from './stores';
 export { KEY_MAP, formatShortcutForOS, isMacOs } from './constants';
 export * from './deprecated';
