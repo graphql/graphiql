@@ -2,10 +2,19 @@
 .graphiql-container {
   background-color: hsl(var(--color-base));
   display: flex;
+  flex-direction: column;
   height: 100%;
   margin: 0;
   overflow: hidden;
   width: 100%;
+}
+
+/* Sidebar + main content row (below the top bar) */
+.graphiql-container .graphiql-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* The sidebar */

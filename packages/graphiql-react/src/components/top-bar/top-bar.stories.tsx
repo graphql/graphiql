@@ -1,0 +1,38 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { GraphiQLProvider } from '../provider';
+import { TopBar } from './';
+
+const noOpFetcher = () => Promise.resolve({ data: {} });
+
+const meta: Meta<typeof TopBar> = {
+  title: 'Layout/TopBar',
+  component: TopBar,
+  tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <GraphiQLProvider fetcher={noOpFetcher}>
+        <Story />
+      </GraphiQLProvider>
+    ),
+  ],
+};
+export default meta;
+
+type Story = StoryObj<typeof TopBar>;
+
+export const Default: Story = {
+  args: {
+    endpointUrl: 'https://api.example.com/graphql',
+    version: 'v6.0.0-alpha.1',
+  },
+};
+
+export const NoVersion: Story = {
+  args: {
+    endpointUrl: '/graphql',
+  },
+};
+
+export const Minimal: Story = {
+  args: {},
+};
