@@ -19,12 +19,12 @@ describe('SegmentedControl', () => {
         ]}
       />,
     );
-    expect(screen.getByRole('button', { name: 'Alpha' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Beta' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Gamma' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Alpha' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Beta' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Gamma' })).toBeInTheDocument();
   });
 
-  it('marks the selected option with aria-pressed', () => {
+  it('marks the selected option as checked', () => {
     render(
       <SegmentedControl
         value="a"
@@ -35,12 +35,8 @@ describe('SegmentedControl', () => {
         ]}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: 'Alpha', pressed: true }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Beta', pressed: false }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Alpha' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Beta' })).not.toBeChecked();
   });
 
   it('calls onChange when a non-selected option is clicked', async () => {
@@ -59,10 +55,8 @@ describe('SegmentedControl', () => {
       );
     }
     render(<Wrapper />);
-    await user.click(screen.getByRole('button', { name: 'Beta' }));
-    expect(
-      screen.getByRole('button', { name: 'Beta', pressed: true }),
-    ).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: 'Beta' }));
+    expect(screen.getByRole('radio', { name: 'Beta' })).toBeChecked();
   });
 
   it('does not call onChange for a disabled option', async () => {
@@ -78,7 +72,28 @@ describe('SegmentedControl', () => {
         ]}
       />,
     );
-    await user.click(screen.getByRole('button', { name: 'Beta' }));
+    await user.click(screen.getByRole('radio', { name: 'Beta' }));
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('moves selection with ArrowRight keyboard navigation', async () => {
+    const user = userEvent.setup();
+    function Wrapper() {
+      const [v, setV] = useState('a');
+      return (
+        <SegmentedControl
+          value={v}
+          onChange={setV}
+          options={[
+            { value: 'a', label: 'Alpha' },
+            { value: 'b', label: 'Beta' },
+          ]}
+        />
+      );
+    }
+    render(<Wrapper />);
+    screen.getByRole('radio', { name: 'Alpha' }).focus();
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('radio', { name: 'Beta' })).toBeChecked();
   });
 });
