@@ -22,3 +22,8 @@ export { KeycapHint } from './keycap-hint';
 export type { KeycapHintProps } from './keycap-hint';
 export { PanelHeader } from './panel-header';
 export type { PanelHeaderProps } from './panel-header';
+export { SegmentedControl } from './segmented-control';
+export type {
+  SegmentedControlProps,
+  SegmentedControlOption,
+} from './segmented-control';
