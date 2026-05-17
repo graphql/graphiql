@@ -17,18 +17,24 @@
   background-color: oklch(var(--fg-default) / 0.08);
   border-radius: var(--border-radius-4);
   display: flex;
-  padding: var(--px-8) var(--px-12);
+  flex: 1;
+  gap: var(--px-8);
+  padding: var(--px-4) var(--px-8);
 }
 
 .graphiql-doc-explorer-search [role='combobox'] {
   border: none;
   background-color: transparent;
-  margin-left: var(--px-4);
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 
   &:focus {
     outline: none;
   }
+}
+
+.graphiql-doc-explorer-search:focus-within .graphiql-keycap-hint {
+  display: none;
 }
 
 .graphiql-doc-explorer-search [role='listbox'] {

@@ -31,19 +31,13 @@
 .graphiql-doc-explorer-search {
   position: absolute;
   right: var(--px-14);
-  top: var(--px-10);
+  top: var(--px-4);
+  bottom: var(--px-4);
+  display: flex;
+  min-width: 11rem;
 
   &:focus-within {
     left: var(--px-14);
-  }
-
-  &:not(:focus-within) [role='combobox'] {
-    height: 24px;
-    width: 6.5ch;
-  }
-
-  & [role='combobox']:focus {
-    width: 100%;
   }
 }
 
