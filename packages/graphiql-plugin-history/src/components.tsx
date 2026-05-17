@@ -84,7 +84,7 @@ export const History: FC = () => {
     <section aria-label="History" className="graphiql-history">
       <PanelHeader
         title="History"
-        subtitle="Last 20 runs"
+        subtitle="Last 20 runs. ⌥-click a row to diff."
         actions={clearButton}
       />
 
