@@ -12,6 +12,7 @@
 > [`packages/graphiql`](packages/graphiql)
 
 [![Build Status](https://github.com/graphql/graphiql/workflows/Node.JS%20CI/badge.svg)](https://github.com/graphql/graphiql/actions?query=workflow%3A%22Node.JS+CI%22)
+[![pkg.pr.new](https://pkg.pr.new/badge/graphql/graphiql)](https://pkg.pr.new/~/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/625400653321076807.svg)](https://discord.gg/NP5vbPeUFp)
 [![Code Coverage](https://img.shields.io/codecov/c/github/graphql/graphiql)](https://codecov.io/gh/graphql/graphiql)
 ![GitHub top language](https://img.shields.io/github/languages/top/graphql/graphiql)

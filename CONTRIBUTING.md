@@ -59,6 +59,19 @@ BREAKING CHANGE: break `foo()` api
 
 notice the non breaking spaces between header and footer.
 
+## Trying canary builds from a PR
+
+Every PR publishes per-commit preview builds of all packages via
+[pkg.pr.new](https://pkg.pr.new). To grab the install commands:
+
+1. Open the PR's **Checks** tab.
+2. Open the **PR / Canary Builds** check in a new tab.
+3. Expand the final `npx pkg-pr-new publish` step. The log lists an
+   `npm i …` command per package, pinned to that commit's SHA.
+
+Paste the command for the package you want into your own project to install
+the canary build.
+
 ## Releasing
 
 Please see [the RELEASING.md document](./RELEASING.md).
