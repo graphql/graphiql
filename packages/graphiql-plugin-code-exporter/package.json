@@ -29,7 +29,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts"

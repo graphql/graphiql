@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "types:check": "tsc --noEmit"
+    "types:check": "tsgo --noEmit"
   },
   "main": "dist/index.js",
   "module": "esm/index.js",

@@ -5,7 +5,6 @@
     "outDir": "./",
     "composite": true,
     "jsx": "react",
-    "target": "es5",
     "strictPropertyInitialization": false
   },
   "include": ["src"],

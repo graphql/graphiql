@@ -19,7 +19,7 @@
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.mts",
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run"

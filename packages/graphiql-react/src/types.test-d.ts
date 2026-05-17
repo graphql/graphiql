@@ -1,4 +1,4 @@
-import { expectTypeOf } from 'vitest';
+import { describe, it, expectTypeOf } from 'vitest';
 import type {
   EditorSlice,
   ExecutionSlice,

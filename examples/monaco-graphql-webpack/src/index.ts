@@ -1,8 +1,8 @@
 /* global netlify */
 
-import { editor, KeyMod, KeyCode } from 'monaco-graphql/esm/monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/monaco-editor';
 import * as JSONC from 'jsonc-parser';
-import { initializeMode } from 'monaco-graphql/esm/initializeMode';
+import { initializeMode } from 'monaco-graphql/initializeMode';
 
 import { createEditors } from './editors';
 import { schemaFetcher, schemaOptions } from './schema';
