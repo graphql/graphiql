@@ -5,7 +5,6 @@ import { useGraphiQL } from '../provider';
 import './index.css';
 
 export type StatusBarProps = {
-  cursorPosition?: { line: number; column: number };
   encoding?: string;
 };
 
@@ -19,7 +18,6 @@ export const StatusBarView: FC<StatusBarViewProps> = ({
   isConnected,
   typeCount,
   pluginCount,
-  cursorPosition,
   encoding = 'UTF-8',
 }) => (
   <footer className="graphiql-status-bar" role="contentinfo">
@@ -38,11 +36,6 @@ export const StatusBarView: FC<StatusBarViewProps> = ({
       </span>
     )}
     <span className="graphiql-status-bar-spacer" />
-    {cursorPosition && (
-      <span>
-        Ln {cursorPosition.line}, Col {cursorPosition.column}
-      </span>
-    )}
     <span>{encoding}</span>
     <span>GraphQL</span>
   </footer>

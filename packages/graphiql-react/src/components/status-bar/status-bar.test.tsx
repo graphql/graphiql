@@ -57,21 +57,6 @@ describe('StatusBarView', () => {
     expect(screen.queryByText(/plugin/)).toBeNull();
   });
 
-  it('shows cursor position when provided', () => {
-    render(
-      <StatusBarView
-        {...DISCONNECTED_DEFAULTS}
-        cursorPosition={{ line: 4, column: 12 }}
-      />,
-    );
-    expect(screen.getByText('Ln 4, Col 12')).toBeInTheDocument();
-  });
-
-  it('does not show cursor position when omitted', () => {
-    render(<StatusBarView {...DISCONNECTED_DEFAULTS} />);
-    expect(screen.queryByText(/Ln/)).toBeNull();
-  });
-
   it('shows default encoding', () => {
     render(<StatusBarView {...DISCONNECTED_DEFAULTS} />);
     expect(screen.getByText('UTF-8')).toBeInTheDocument();

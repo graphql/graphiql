@@ -86,21 +86,11 @@ export const WithPlugins: Story = {
   },
 };
 
-export const WithCursorPosition: Story = {
-  args: {
-    isConnected: true,
-    typeCount,
-    pluginCount: 2,
-    cursorPosition: { line: 12, column: 5 },
-  },
-};
-
-export const CustomMetadata: Story = {
+export const CustomEncoding: Story = {
   args: {
     isConnected: false,
     typeCount: 0,
     pluginCount: 0,
     encoding: 'UTF-16',
-    cursorPosition: { line: 1, column: 1 },
   },
 };
