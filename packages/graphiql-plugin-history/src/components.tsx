@@ -287,7 +287,9 @@ export function formatVariables(variables: string) {
   try {
     const parsed = JSON.parse(variables) as Record<string, unknown>;
     const entries = Object.entries(parsed);
-    if (!entries.length) return null;
+    if (!entries.length) {
+      return null;
+    }
     return entries
       .slice(0, 3)
       .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)

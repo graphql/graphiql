@@ -100,10 +100,10 @@ export const ItemWithVariables: Story = {
 };
 
 // ---------------------------------------------------------------------------
-// Favorited item
+// Favorite item
 // ---------------------------------------------------------------------------
 
-export const ItemFavorited: Story = {
+export const ItemFavorite: Story = {
   render: () =>
     withHistoryContext(
       <ul className="graphiql-history-items" style={{ padding: 0, margin: 0 }}>
@@ -170,8 +170,11 @@ export const FewRows: Story = {
         />
         <HistoryItem
           item={{
-            query: 'mutation CreatePost($input: PostInput!) { createPost(input: $input) { id } }',
-            variables: JSON.stringify({ input: { title: 'Hello', body: 'World' } }),
+            query:
+              'mutation CreatePost($input: PostInput!) { createPost(input: $input) { id } }',
+            variables: JSON.stringify({
+              input: { title: 'Hello', body: 'World' },
+            }),
             operationName: 'CreatePost',
             favorite: false,
           }}
@@ -209,7 +212,10 @@ export const Mixed: Story = {
   render: () =>
     withHistoryContext(
       <>
-        <ul className="graphiql-history-items" style={{ padding: 0, margin: 0 }}>
+        <ul
+          className="graphiql-history-items"
+          style={{ padding: 0, margin: 0 }}
+        >
           <HistoryItem
             item={{
               query: 'query Me { viewer { login avatarUrl } }',
@@ -227,10 +233,14 @@ export const Mixed: Story = {
           />
         </ul>
         <div className="graphiql-history-item-spacer" />
-        <ul className="graphiql-history-items" style={{ padding: 0, margin: 0 }}>
+        <ul
+          className="graphiql-history-items"
+          style={{ padding: 0, margin: 0 }}
+        >
           <HistoryItem
             item={{
-              query: 'query GetUser($id: ID!) { user(id: $id) { id name email } }',
+              query:
+                'query GetUser($id: ID!) { user(id: $id) { id name email } }',
               variables: JSON.stringify({ id: '123', role: 'admin' }),
               operationName: 'GetUser',
               favorite: false,
