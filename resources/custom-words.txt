@@ -211,6 +211,7 @@ sonarjs
 sorare
 spawndamnit
 squirrelly
+starships
 stonexer
 streamable
 subword
