@@ -31,6 +31,10 @@ export const KEY_MAP = Object.freeze({
     key: 'Shift-Ctrl-C',
     keybindings: [KeyMod.Shift | KeyMod.WinCtrl | KeyCode.KeyC],
   },
+  saveQuery: {
+    key: 'Ctrl-S',
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyS],
+  },
   refetchSchema: {
     key: 'Shift-Ctrl-R',
   },
@@ -109,6 +113,12 @@ export const KEY_BINDINGS = {
     label: 'Copy Query',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
+  },
+  saveQuery: {
+    id: 'graphql-save',
+    label: 'Save Query',
+    contextMenuGroupId: 'graphql',
+    keybindings: KEY_MAP.saveQuery.keybindings,
   },
 } as const;
 

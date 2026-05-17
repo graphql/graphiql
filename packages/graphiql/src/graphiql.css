@@ -59,6 +59,32 @@ button.graphiql-tab-add {
   }
 }
 
+/* Right-side tab strip action buttons (prettify, copy, save) */
+.graphiql-tab-strip-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 0;
+}
+
+button.graphiql-tab-strip-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--px-4);
+  color: oklch(var(--fg-subtle));
+
+  & > svg {
+    display: block;
+    height: 13px;
+    width: 13px;
+  }
+
+  &:hover {
+    color: oklch(var(--fg-default));
+  }
+}
+
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
   margin-left: auto;

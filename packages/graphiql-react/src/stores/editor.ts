@@ -214,6 +214,12 @@ export interface EditorActions {
   }): void;
 
   /**
+   * Save the current query. Updates `lastSavedQuery` on the active tab so the
+   * dirty-state dot clears. Triggered by the Save toolbar button or ⌘S.
+   */
+  saveQuery(): void;
+
+  /**
    * Copy a query to clipboard.
    */
   copyQuery: () => Promise<void>;
@@ -457,6 +463,21 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         documentAST,
         operationName,
         operations,
+      });
+    },
+    saveQuery() {
+      const { queryEditor } = get();
+      const query = queryEditor?.getValue() ?? null;
+      set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+        const updated = {
+          tabs: tabs.map((tab, i) =>
+            i === activeTabIndex ? { ...tab, lastSavedQuery: query } : tab,
+          ),
+          activeTabIndex,
+        };
+        actions.storeTabs(updated);
+        onTabChange?.(updated);
+        return updated;
       });
     },
     async copyQuery() {

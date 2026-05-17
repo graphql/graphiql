@@ -91,12 +91,30 @@
     line-height: 0;
 
     & > svg {
-      height: var(--px-8);
-      width: var(--px-8);
+      height: 10px;
+      width: 10px;
     }
 
     &:hover {
       color: oklch(var(--fg-default));
     }
+  }
+
+  /* Dirty-state dot — 5×5 blue dot at top-right of the tab */
+  .graphiql-tab-dirty {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: oklch(var(--accent-blue));
+    pointer-events: none;
+  }
+
+  /* Shift dirty dot left when the close button is visible to avoid overlap */
+  &:hover .graphiql-tab-dirty,
+  &.graphiql-tab-active .graphiql-tab-dirty {
+    right: 20px;
   }
 }
