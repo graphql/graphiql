@@ -150,16 +150,12 @@ jobs:
           path: packages/graphiql/cypress/videos
           if-no-files-found: ignore
 
-  canary:
-    name: Canary
+  pkg-pr-new:
+    name: Canary Builds
     runs-on: ubuntu-latest
-    # ensure the basic checks pass before running the canary
     needs: [build, lint, vitest, e2e]
-    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -169,44 +165,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
-      - name: Setup NPM credentials
-        run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release Canary
-        id: canary
-        uses: 'kamilkisiela/release-canary@master'
-        with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-script: 'yarn release:canary'
-          changesets: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish a message
-        if: steps.canary.outputs.released == 'true'
-        uses: 'dotansimha/pr-comment@master'
-        with:
-          commentKey: canary
-          message: |
-            The latest changes of this PR are available as canary in npm (based on the declared `changesets`):
-
-            ```
-            ${{ steps.canary.outputs.changesetsPublishedPackages}}
-            ```
-          bot-token: ${{ secrets.GITHUB_TOKEN }}
-          bot: 'github-actions[bot]'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish an empty message
-        if: steps.canary.outputs.released == 'false'
-        uses: 'dotansimha/pr-comment@master'
-        with:
-          commentKey: canary
-          message: |
-            The latest changes of this PR are not available as canary, since there are no linked `changesets` for this PR.
-          bot-token: ${{ secrets.GITHUB_TOKEN }}
-          bot: 'github-actions[bot]'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: npx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:
     name: Check Licenses
