@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
-import { editor, KeyMod, KeyCode } from 'monaco-graphql/esm/monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-graphql/monaco-editor';
 
 // to get typescript mode working
 import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';

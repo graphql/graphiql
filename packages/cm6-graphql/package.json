@@ -8,7 +8,7 @@
     "directory": "packages/cm6-graphql"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "cm-buildhelper src/index.ts",
     "prepare": "yarn build",
     "test": "vitest run"

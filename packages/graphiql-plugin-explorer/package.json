@@ -28,7 +28,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts"
