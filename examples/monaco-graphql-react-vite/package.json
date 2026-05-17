@@ -8,7 +8,7 @@
     "graphql-language-service": "^5.5.1",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
-    "monaco-graphql": "^1.7.4",
+    "monaco-graphql": "^1.8.0",
     "react": "^19",
     "react-dom": "^19"
   },

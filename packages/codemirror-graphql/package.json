@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -34,7 +34,7 @@
     "!babel.config.js"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest run"
   },

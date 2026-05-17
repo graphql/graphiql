@@ -1,7 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -51,6 +51,12 @@
       "import": "./esm/initializeMode.js",
       "require": "./dist/initializeMode.js",
       "default": "./dist/initializeMode.js"
+    },
+    "./monaco-editor": {
+      "types": "./esm/monaco-editor.d.ts",
+      "import": "./esm/monaco-editor.js",
+      "require": "./dist/monaco-editor.js",
+      "default": "./dist/monaco-editor.js"
     }
   },
   "repository": {
@@ -62,7 +68,7 @@
     "esm"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
