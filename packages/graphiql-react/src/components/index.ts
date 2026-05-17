@@ -29,10 +29,7 @@ export type {
 } from './segmented-control';
 export { MethodPill } from './method-pill';
 export type { MethodPillProps, Operation } from './method-pill';
-<<<<<<< HEAD
 export { TopBar, TopBarView } from './top-bar';
 export type { TopBarProps, TopBarViewProps } from './top-bar';
-=======
 export { StatusBar, StatusBarView } from './status-bar';
 export type { StatusBarProps, StatusBarViewProps } from './status-bar';
->>>>>>> 03408f29 (Add `StatusBar` layout component)
