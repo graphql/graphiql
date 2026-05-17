@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-/* Sidebar + main content row (below the top bar and above the status bar) */
+/* Activity rail + main content row (below the top bar and above the status bar) */
 .graphiql-container .graphiql-body {
   display: flex;
   flex: 1;
