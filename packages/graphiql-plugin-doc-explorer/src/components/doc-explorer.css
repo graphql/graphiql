@@ -89,6 +89,10 @@ a.graphiql-doc-explorer-back {
 }
 
 /* The contents of the currently active page in the doc explorer */
+.graphiql-doc-explorer-content {
+  padding: 0 var(--px-14) var(--px-14);
+}
+
 .graphiql-doc-explorer-content > * {
   color: oklch(var(--fg-muted));
   margin-top: var(--px-20);

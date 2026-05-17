@@ -2,13 +2,12 @@
   color: oklch(var(--fg-muted));
 
   &:not([data-state='idle']) {
-    border: 1px solid oklch(var(--border-default));
-    border-radius: var(--border-radius-4);
-    box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
     color: oklch(var(--fg-default));
 
     & .graphiql-doc-explorer-search-input {
       background: oklch(var(--bg-canvas));
+      border: 1px solid oklch(var(--border-default));
+      box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
     }
   }
 }
@@ -34,20 +33,24 @@
 
 .graphiql-doc-explorer-search [role='listbox'] {
   background-color: oklch(var(--bg-canvas));
-  border: none;
-  border-bottom-left-radius: var(--border-radius-4);
-  border-bottom-right-radius: var(--border-radius-4);
-  border-top: 1px solid oklch(var(--border-strong));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
   max-height: 400px;
   overflow-y: auto;
   margin: 0;
   font-size: var(--font-size-body);
   padding: var(--px-4);
   /**
-   * This makes sure that the logic for auto-scrolling the search results when
-   * using keyboard navigation works properly (we use `offsetTop` there).
+   * Float below the input as a separate popup so the dropdown does not
+   * appear glued to the panel header. `offsetTop` from the listbox is used
+   * for keyboard auto-scroll, which still works under absolute positioning.
    */
-  position: relative;
+  position: absolute;
+  top: calc(100% + var(--px-4));
+  left: 0;
+  right: 0;
+  z-index: 5;
 }
 
 .graphiql-doc-explorer-search [role='option'] {
