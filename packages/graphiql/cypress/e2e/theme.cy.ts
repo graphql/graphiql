@@ -12,7 +12,7 @@ describe('Theme', () => {
 
     it('Defaults to light theme when `forcedTheme` value is invalid', () => {
       cy.visit('?forcedTheme=invalid');
-      cy.get('[data-value=settings]').click();
+      cy.get('.graphiql-activity-rail-settings').click();
       cy.get('.graphiql-dialog-section-title')
         .eq(1)
         .should('have.text', 'Theme'); // Check for the presence of the theme dialog

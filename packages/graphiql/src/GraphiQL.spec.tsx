@@ -390,9 +390,7 @@ describe('GraphiQL', () => {
     );
 
     act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
     });
 
     const element = await findByText('Persist headers');
@@ -405,9 +403,7 @@ describe('GraphiQL', () => {
     );
 
     act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
     });
 
     const element = await findByText('Persist headers');
@@ -420,9 +416,7 @@ describe('GraphiQL', () => {
     );
 
     act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
     });
 
     const callback = async () => {

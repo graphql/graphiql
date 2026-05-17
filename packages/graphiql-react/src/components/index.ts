@@ -33,3 +33,5 @@ export { TopBar, TopBarView } from './top-bar';
 export type { TopBarProps, TopBarViewProps } from './top-bar';
 export { StatusBar, StatusBarView } from './status-bar';
 export type { StatusBarProps, StatusBarViewProps } from './status-bar';
+export { ActivityRail } from './activity-rail';
+export type { ActivityRailProps } from './activity-rail';
