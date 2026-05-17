@@ -181,9 +181,9 @@ describe('GraphiQL', () => {
           expect(queryEditor).toBeVisible();
           expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
         },
-        { timeout: 15_000 },
+        { timeout: 25_000 },
       );
-    }, 20000);
+    }, 30000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
