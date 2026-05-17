@@ -41,7 +41,7 @@
     }
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "vite build && UMD=true vite build",
     "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
@@ -70,6 +70,7 @@
     "@vitest/web-worker": "^4.1.6",
     "axe-core": "^4",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "concurrently": "^7.0.0",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
     "cypress-axe": "^1",

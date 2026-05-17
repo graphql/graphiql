@@ -10,7 +10,7 @@
     "types": ["node"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
     "lib": ["dom", "ESNext"],
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],

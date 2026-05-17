@@ -53,7 +53,7 @@
     "typescript": "^5.8.0"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "benchmark": "ts-node benchmark/index.ts",
     "test": "vitest run"
   }

@@ -214,6 +214,8 @@ squirrelly
 starships
 stonexer
 streamable
+subpath
+subpaths
 subword
 suchanek
 svgo
