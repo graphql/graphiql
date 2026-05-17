@@ -6,21 +6,21 @@ beforeEach(() => {
 
 describe('GraphiQL DocExplorer - button', () => {
   beforeEach(() => {
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
   });
   it('Toggles doc pane on', () => {
     cy.get('.graphiql-doc-explorer').should('be.visible');
   });
 
   it('Toggles doc pane back off', () => {
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
     cy.get('.graphiql-doc-explorer').should('not.exist');
   });
 });
 
 describe('GraphiQL DocExplorer - search', () => {
   beforeEach(() => {
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
     cy.dataCy('doc-explorer-input').type('test');
     cy.dataCy('doc-explorer-option').should('have.length', 7);
   });
@@ -71,7 +71,7 @@ describe('GraphiQL DocExplorer - search', () => {
 describe('GraphQL DocExplorer - deprecated fields', () => {
   it('should show deprecated fields details when expanding', () => {
     // Open doc explorer
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
 
     // Select query type
     cy.get('.graphiql-doc-explorer-type-name').first().click();
@@ -105,7 +105,7 @@ if (!version.includes('15.5')) {
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
     // Open doc explorer
-    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-activity-rail-item').eq(0).click();
 
     // Select query type
     cy.get('.graphiql-doc-explorer-type-name').first().click();

@@ -23,6 +23,7 @@ import {
   QueryEditor,
   ResponseEditor,
   SaveIcon,
+  SidePanel,
   Spinner,
   Tab,
   Tabs,
@@ -44,7 +45,12 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
-import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
+import {
+  ActivityBar,
+  GraphiQLLogo,
+  GraphiQLToolbar,
+  GraphiQLFooter,
+} from './ui';
 
 /**
  * API docs for this live here:
@@ -155,7 +161,7 @@ export interface GraphiQLInterfaceProps
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
     Pick<ResponseEditorProps, 'responseTooltip'>,
     Pick<
-      ComponentPropsWithoutRef<typeof Sidebar>,
+      ComponentPropsWithoutRef<typeof ActivityBar>,
       'forcedTheme' | 'showPersistHeadersSettings'
     > {
   children?: ReactNode;
@@ -241,8 +247,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
-
-  const PluginContent = visiblePlugin?.content;
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -463,22 +467,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <div className={cn('graphiql-container', className)}>
         <TopBar />
         <div className="graphiql-body">
-          <Sidebar
+          <ActivityBar
             forcedTheme={forcedTheme}
             showPersistHeadersSettings={showPersistHeadersSettings}
             setHiddenElement={pluginResize.setHiddenElement}
           />
           <div className="graphiql-main">
-            <div
-              ref={pluginResize.firstRef}
-              className="graphiql-plugin"
-              style={{
-                // Make sure the container shrinks when containing long
-                // non-breaking texts
-                minWidth: '200px',
-              }}
-            >
-              {PluginContent && <PluginContent />}
+            <div ref={pluginResize.firstRef} className="graphiql-plugin">
+              <SidePanel />
             </div>
             {visiblePlugin && (
               <div
