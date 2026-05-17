@@ -1,3 +1,5 @@
+// React Compiler can stale-cache the references returned by zustand hooks;
+// opt this file out so `useGraphiQL` / `useGraphiQLActions` stay live.
 'use no memo';
 
 import type { FC } from 'react';
