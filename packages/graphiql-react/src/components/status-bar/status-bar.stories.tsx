@@ -101,7 +101,6 @@ export const CustomMetadata: Story = {
     typeCount: 0,
     pluginCount: 0,
     encoding: 'UTF-16',
-    indent: 'Tabs: 4',
     cursorPosition: { line: 1, column: 1 },
   },
 };

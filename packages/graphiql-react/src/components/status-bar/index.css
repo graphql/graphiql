@@ -17,15 +17,24 @@
 }
 
 .graphiql-status-bar-conn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
   font-weight: 500;
 }
 
-.graphiql-status-bar-conn.connected {
-  color: oklch(var(--accent-green));
+.graphiql-status-bar-conn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
 }
 
-.graphiql-status-bar-conn.disconnected {
-  color: oklch(var(--accent-red));
+.graphiql-status-bar-conn.connected .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-green));
+}
+
+.graphiql-status-bar-conn.disconnected .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-red));
 }
 
 .graphiql-status-bar-plugins {

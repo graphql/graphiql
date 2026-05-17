@@ -7,7 +7,6 @@ import './index.css';
 export type StatusBarProps = {
   cursorPosition?: { line: number; column: number };
   encoding?: string;
-  indent?: string;
 };
 
 export type StatusBarViewProps = StatusBarProps & {
@@ -22,12 +21,12 @@ export const StatusBarView: FC<StatusBarViewProps> = ({
   pluginCount,
   cursorPosition,
   encoding = 'UTF-8',
-  indent = 'Spaces: 2',
 }) => (
   <footer className="graphiql-status-bar" role="contentinfo">
     <span
       className={`graphiql-status-bar-conn${isConnected ? ' connected' : ' disconnected'}`}
     >
+      <span className="graphiql-status-bar-conn-dot" aria-hidden="true" />
       {isConnected ? 'Connected' : 'Disconnected'}
     </span>
     {isConnected && (
@@ -45,7 +44,6 @@ export const StatusBarView: FC<StatusBarViewProps> = ({
       </span>
     )}
     <span>{encoding}</span>
-    <span>{indent}</span>
     <span>GraphQL</span>
   </footer>
 );

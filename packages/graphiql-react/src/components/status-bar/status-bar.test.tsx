@@ -72,22 +72,23 @@ describe('StatusBarView', () => {
     expect(screen.queryByText(/Ln/)).toBeNull();
   });
 
-  it('shows default encoding and indent', () => {
+  it('shows default encoding', () => {
     render(<StatusBarView {...DISCONNECTED_DEFAULTS} />);
     expect(screen.getByText('UTF-8')).toBeInTheDocument();
-    expect(screen.getByText('Spaces: 2')).toBeInTheDocument();
   });
 
-  it('shows custom encoding and indent', () => {
-    render(
-      <StatusBarView
-        {...DISCONNECTED_DEFAULTS}
-        encoding="UTF-16"
-        indent="Tabs: 4"
-      />,
-    );
+  it('shows custom encoding', () => {
+    render(<StatusBarView {...DISCONNECTED_DEFAULTS} encoding="UTF-16" />);
     expect(screen.getByText('UTF-16')).toBeInTheDocument();
-    expect(screen.getByText('Tabs: 4')).toBeInTheDocument();
+  });
+
+  it('renders a status dot inside the connection label', () => {
+    const { container } = render(<StatusBarView {...CONNECTED_DEFAULTS} />);
+    expect(
+      container.querySelector(
+        '.graphiql-status-bar-conn.connected .graphiql-status-bar-conn-dot',
+      ),
+    ).not.toBeNull();
   });
 
   it('always shows the GraphQL language label', () => {
