@@ -35,3 +35,5 @@ export { StatusBar, StatusBarView } from './status-bar';
 export type { StatusBarProps, StatusBarViewProps } from './status-bar';
 export { SidePanel, SidePanelView } from './side-panel';
 export type { SidePanelViewProps } from './side-panel';
+export { ActivityRail } from './activity-rail';
+export type { ActivityRailProps } from './activity-rail';
