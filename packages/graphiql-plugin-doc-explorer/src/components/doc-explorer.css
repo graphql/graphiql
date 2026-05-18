@@ -18,8 +18,13 @@
   margin-top: var(--px-16);
 }
 
-/* TypeCard and FieldsList are direct children too but handle their own padding */
-.graphiql-doc-explorer-content .graphiql-doc-explorer-type-card,
+/* TypeCard keeps its own horizontal padding */
+.graphiql-doc-explorer-content .graphiql-doc-explorer-type-card {
+  padding: var(--px-10) var(--px-16);
+  margin-top: 0;
+}
+
+/* FieldsList rows span full width, so zero out container padding */
 .graphiql-doc-explorer-content .graphiql-doc-explorer-fields-list {
   padding-left: 0;
   padding-right: 0;
