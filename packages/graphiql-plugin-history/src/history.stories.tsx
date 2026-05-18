@@ -50,7 +50,7 @@ export const Header: Story = {
     <div style={{ width: 320, background: 'oklch(var(--bg-elevated))' }}>
       <PanelHeader
         title="History"
-        subtitle="Last 20 runs. ⌥-click a row to diff."
+        subtitle="Last 20 runs."
         actions={
           <Button type="button" disabled>
             Clear
