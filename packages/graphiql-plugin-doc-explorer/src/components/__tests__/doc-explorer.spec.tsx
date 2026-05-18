@@ -1,5 +1,5 @@
 import { type Mock, describe, it, expect, vi, beforeEach } from 'vitest';
-import { useGraphiQL as $useGraphiQL } from '@graphiql/react';
+import { useGraphiQL as $useGraphiQL, Tooltip } from '@graphiql/react';
 import { render } from '@testing-library/react';
 import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { FC, useEffect } from 'react';
@@ -54,9 +54,11 @@ const withErrorSchemaContext = {
 
 const DocExplorerWithContext: FC = () => {
   return (
-    <DocExplorerStore>
-      <DocExplorer />
-    </DocExplorerStore>
+    <Tooltip.Provider>
+      <DocExplorerStore>
+        <DocExplorer />
+      </DocExplorerStore>
+    </Tooltip.Provider>
   );
 };
 
@@ -124,20 +126,27 @@ describe('DocExplorer', () => {
       cb({ ...defaultSchemaContext, schema: initialSchema }),
     );
     const { container, rerender } = render(
-      <DocExplorerStore>
-        <SetInitialStack />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <SetInitialStack />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
 
     // First proper render of doc explorer
     rerender(
-      <DocExplorerStore>
-        <DocExplorer />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <DocExplorer />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
 
-    const title = container.querySelector('.graphiql-doc-explorer-title')!;
-    expect(title.textContent).toEqual('field');
+    // The current page is shown as the last breadcrumb segment
+    const breadcrumb = container.querySelector(
+      '.graphiql-doc-explorer-breadcrumb-current',
+    )!;
+    expect(breadcrumb.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with _same_ field name
     useGraphiQL.mockImplementation(cb =>
@@ -147,13 +156,17 @@ describe('DocExplorer', () => {
       }),
     );
     rerender(
-      <DocExplorerStore>
-        <DocExplorer />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <DocExplorer />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
-    const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
+    const breadcrumb2 = container.querySelector(
+      '.graphiql-doc-explorer-breadcrumb-current',
+    )!;
     // Because `Query.field` still exists in the new schema, we can still render it
-    expect(title2.textContent).toEqual('field');
+    expect(breadcrumb2.textContent).toEqual('field');
   });
   it('trims nav stack when necessary', () => {
     const initialSchema = makeSchema();
@@ -179,20 +192,26 @@ describe('DocExplorer', () => {
       cb({ ...defaultSchemaContext, schema: initialSchema }),
     );
     const { container, rerender } = render(
-      <DocExplorerStore>
-        <SetInitialStack />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <SetInitialStack />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
 
     // First proper render of doc explorer
     rerender(
-      <DocExplorerStore>
-        <DocExplorer />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <DocExplorer />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
 
-    const title = container.querySelector('.graphiql-doc-explorer-title')!;
-    expect(title.textContent).toEqual('field');
+    const breadcrumb = container.querySelector(
+      '.graphiql-doc-explorer-breadcrumb-current',
+    )!;
+    expect(breadcrumb.textContent).toEqual('field');
 
     // Second render of doc explorer, this time with a new schema, with a different field name
     useGraphiQL.mockImplementation(cb =>
@@ -202,12 +221,16 @@ describe('DocExplorer', () => {
       }),
     );
     rerender(
-      <DocExplorerStore>
-        <DocExplorer />
-      </DocExplorerStore>,
+      <Tooltip.Provider>
+        <DocExplorerStore>
+          <DocExplorer />
+        </DocExplorerStore>
+      </Tooltip.Provider>,
     );
-    const title2 = container.querySelector('.graphiql-doc-explorer-title')!;
+    const breadcrumb2 = container.querySelector(
+      '.graphiql-doc-explorer-breadcrumb-current',
+    )!;
     // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`
-    expect(title2.textContent).toEqual('Query');
+    expect(breadcrumb2.textContent).toEqual('Query');
   });
 });

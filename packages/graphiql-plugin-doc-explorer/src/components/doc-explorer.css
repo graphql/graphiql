@@ -1,102 +1,68 @@
-/* The header wrapper — positions PanelHeader as a containing block for search overlay */
-.graphiql-doc-explorer-header {
-  & .graphiql-panel-header {
-    position: relative;
-
-    &:focus-within {
-      & .graphiql-doc-explorer-title {
-        /* Hide the title when the search input is focused */
-        visibility: hidden;
-      }
-
-      & .graphiql-doc-explorer-back:not(:focus) {
-        /**
-          * Make the back link invisible when focussing the search input. Hiding
-          * it in any other way makes it impossible to focus the link by pressing
-          * Shift-Tab while the input is focussed.
-          */
-        color: transparent;
-      }
-    }
-  }
+/* Eyebrow title in PanelHeader */
+.graphiql-panel-header-title {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--font-size-eyebrow);
 }
 
-.graphiql-doc-explorer-header-content {
+/* Small action buttons in the panel header */
+.graphiql-doc-explorer-action-btn {
+  width: 20px;
+  height: 20px;
   display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-/* The search input in the header of the doc explorer */
-.graphiql-doc-explorer-search {
-  position: absolute;
-  right: var(--px-14);
-  top: var(--px-4);
-  bottom: var(--px-4);
-  display: flex;
-  min-width: 11rem;
-
-  &:focus-within {
-    left: var(--px-14);
-  }
-}
-
-/* The back-button in the doc explorer */
-a.graphiql-doc-explorer-back {
   align-items: center;
-  color: oklch(var(--fg-muted));
-  display: flex;
-  text-decoration: none;
+  justify-content: center;
 
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline: oklch(var(--fg-muted)) auto 1px;
-
-    & + .graphiql-doc-explorer-title {
-      /* Don't hide the header when focussing the back link */
-      visibility: unset;
-    }
-  }
-
-  & > svg {
-    height: var(--px-8);
-    margin-right: var(--px-8);
-    width: var(--px-8);
+  & svg {
+    width: 12px;
+    height: 12px;
   }
 }
 
-/* The title of the currently active page in the doc explorer */
-.graphiql-doc-explorer-title {
-  color: oklch(var(--fg-strong));
-  font-weight: 600;
-  font-size: 12px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  &:not(:first-child) {
-    margin-top: var(--px-4);
-  }
-}
-
-/* The contents of the currently active page in the doc explorer */
+/* Main content area */
 .graphiql-doc-explorer-content {
-  padding: 0 var(--px-14) var(--px-14);
+  overflow-y: auto;
+  flex: 1;
 }
 
+/* Schema overview and field-documentation padding */
 .graphiql-doc-explorer-content > * {
   color: oklch(var(--fg-muted));
-  margin-top: var(--px-20);
+  padding: 0 var(--px-14) var(--px-14);
+  margin-top: var(--px-16);
+}
+
+/* TypeCard and FieldsList are direct children too but handle their own padding */
+.graphiql-doc-explorer-content .graphiql-doc-explorer-type-card,
+.graphiql-doc-explorer-content .graphiql-doc-explorer-fields-list {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Wrap for enum/union/interface extra sections */
+.graphiql-doc-explorer-type-extra {
+  padding: 0 var(--px-14) var(--px-14);
+  margin-top: var(--px-16);
+  color: oklch(var(--fg-muted));
 }
 
 /* Error message */
 .graphiql-doc-explorer-error {
   background-color: oklch(var(--accent-red) / 0.15);
   border: 1px solid oklch(var(--accent-red));
-  border-radius: var(--border-radius-8);
+  border-radius: var(--radius-sm);
   color: oklch(var(--accent-red));
   padding: var(--px-8) var(--px-12);
+  margin: var(--px-14);
+}
+
+/* Old back-button and title selectors kept for Cypress compatibility */
+a.graphiql-doc-explorer-back {
+  display: none;
+}
+
+.graphiql-doc-explorer-title {
+  display: none;
 }

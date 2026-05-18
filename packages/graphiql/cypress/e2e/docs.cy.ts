@@ -31,12 +31,15 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates to a docs entry on selecting a search result', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'TestInput');
+    cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
+      'have.text',
+      'TestInput',
+    );
   });
 
   it('Allows searching fields within a type', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.dataCy('doc-explorer-input').type('list');
+    cy.dataCy('doc-explorer-input').clear().type('list');
     cy.dataCy('doc-explorer-option').should('have.length', 14);
     cy.get('.graphiql-doc-explorer-search-divider').should(
       'have.text',
@@ -54,13 +57,18 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates back', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.get('.graphiql-doc-explorer-back').click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'Docs');
+    // Click the root breadcrumb segment (first link, at depth 0 = "Docs")
+    cy.get('.graphiql-doc-explorer-breadcrumb-root').click();
+    // After navigating back, breadcrumb disappears (at root level, no breadcrumb shown)
+    cy.get('.graphiql-doc-explorer-breadcrumb').should('not.exist');
   });
 
   it('Type fields link to their own docs entry', () => {
     cy.dataCy('doc-explorer-option').last().click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'isTest');
+    cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
+      'have.text',
+      'isTest',
+    );
     cy.get('.graphiql-markdown-description').should(
       'have.text',
       'Is this a test schema? Sure it is.\n',

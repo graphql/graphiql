@@ -9,12 +9,16 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  GraphQLUnionType,
 } from 'graphql';
 import { Tooltip } from '@graphiql/react';
 import { DocExplorerStore } from '../context';
 import { TypeDocumentation } from '../components/type-documentation';
 import { FieldDocumentation } from '../components/field-documentation';
 import { SchemaDocumentation } from '../components/schema-documentation';
+import { TypeCard } from '../components/type-card';
+import { FieldsList } from '../components/fields-list';
+import { Breadcrumb } from '../components/breadcrumb';
 import { TypeLink } from '../components/type-link';
 import { FieldLink } from '../components/field-link';
 import { Argument } from '../components/argument';
@@ -87,6 +91,12 @@ const HumanType = new GraphQLObjectType({
   }),
 });
 
+const SearchResultUnion = new GraphQLUnionType({
+  name: 'SearchResult',
+  description: 'A result from a global search',
+  types: [HumanType],
+});
+
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   description: 'The root query type for the Star Wars API',
@@ -116,6 +126,10 @@ const QueryType = new GraphQLObjectType({
       type: GraphQLBoolean,
       deprecationReason: 'Use `hero` with status field instead',
     },
+    search: {
+      type: SearchResultUnion,
+      description: 'Search across all types',
+    },
   },
 });
 
@@ -137,7 +151,13 @@ const StarWarsSchema = new GraphQLSchema({
   description: 'The Star Wars GraphQL API',
   query: QueryType,
   mutation: MutationType,
-  types: [HumanType, CharacterInterface, EpisodeEnum, ReviewInputType],
+  types: [
+    HumanType,
+    CharacterInterface,
+    EpisodeEnum,
+    ReviewInputType,
+    SearchResultUnion,
+  ],
 });
 
 function withDocExplorerStore(Story: React.FC) {
@@ -167,24 +187,51 @@ export const SchemaOverview: Story = {
   },
 };
 
-export const TypeDetail: Story = {
-  name: 'Type detail (Human)',
-  render: function TypeDetailStory() {
-    return <TypeDocumentation type={HumanType} />;
+export const TypeDetailObject: Story = {
+  name: 'Type detail — Object',
+  render: function TypeDetailObjectStory() {
+    return (
+      <>
+        <TypeCard type={HumanType} />
+        <FieldsList type={HumanType} />
+      </>
+    );
   },
 };
 
-export const EnumTypeDetail: Story = {
-  name: 'Type detail (Enum)',
-  render: function EnumTypeDetailStory() {
-    return <TypeDocumentation type={EpisodeEnum} />;
+export const TypeDetailInterface: Story = {
+  name: 'Type detail — Interface',
+  render: function TypeDetailInterfaceStory() {
+    return (
+      <>
+        <TypeCard type={CharacterInterface} />
+        <FieldsList type={CharacterInterface} />
+      </>
+    );
   },
 };
 
-export const InputTypeDetail: Story = {
-  name: 'Type detail (Input)',
-  render: function InputTypeDetailStory() {
-    return <TypeDocumentation type={ReviewInputType} />;
+export const TypeDetailInput: Story = {
+  name: 'Type detail — Input',
+  render: function TypeDetailInputStory() {
+    return (
+      <>
+        <TypeCard type={ReviewInputType} />
+        <FieldsList type={ReviewInputType} />
+      </>
+    );
+  },
+};
+
+export const TypeDetailEnum: Story = {
+  name: 'Type detail — Enum',
+  render: function TypeDetailEnumStory() {
+    return (
+      <>
+        <TypeCard type={EpisodeEnum} />
+        <TypeDocumentation type={EpisodeEnum} hideHeader />
+      </>
+    );
   },
 };
 
@@ -193,6 +240,18 @@ export const FieldDetail: Story = {
   render: function FieldDetailStory() {
     const heroField = QueryType.getFields()['hero']!;
     return <FieldDocumentation field={heroField} />;
+  },
+};
+
+export const BreadcrumbNav: Story = {
+  name: 'Breadcrumb navigation',
+  render: function BreadcrumbNavStory() {
+    const navStack: Parameters<typeof Breadcrumb>[0]['navStack'] = [
+      { name: 'Docs' },
+      { name: 'Query', def: QueryType },
+      { name: 'Human', def: HumanType },
+    ];
+    return <Breadcrumb navStack={navStack} onNavigateTo={() => {}} />;
   },
 };
 
