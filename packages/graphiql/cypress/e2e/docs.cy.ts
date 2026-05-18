@@ -87,20 +87,21 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
     // Show deprecated fields
     cy.contains('Show Deprecated Fields').click();
 
-    // Assert that title is shown
-    cy.get('.graphiql-doc-explorer-section-title').contains(
-      'Deprecated Fields',
-    );
+    // Click into the deprecated field to view its documentation
+    cy.contains(
+      'button.graphiql-doc-explorer-field-row--deprecated',
+      'deprecatedField',
+    ).click();
 
-    // Assert that the deprecated field is shown correctly
-    cy.get('.graphiql-doc-explorer-field-name')
-      .contains('deprecatedField')
-      .closest('.graphiql-doc-explorer-item')
-      .should('contain.text', 'This field is an example of a deprecated field')
-      .and(
-        'contain.html',
-        '<p>No longer in use, try <code>test</code> instead.</p>',
-      );
+    // Assert description and deprecation reason are shown
+    cy.get('.graphiql-markdown-description').should(
+      'contain.text',
+      'This field is an example of a deprecated field',
+    );
+    cy.get('.graphiql-markdown-deprecation').should(
+      'contain.html',
+      '<p>No longer in use, try <code>test</code> instead.</p>',
+    );
   });
 });
 
@@ -118,7 +119,7 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     // Select query type
     cy.get('.graphiql-doc-explorer-type-name').first().click();
 
-    cy.get('.graphiql-doc-explorer-field-name').contains('hasArgs').click();
+    cy.contains('button.graphiql-doc-explorer-field-row', 'hasArgs').click();
     cy.contains('Show Deprecated Arguments').click();
     cy.get('.graphiql-doc-explorer-section-title').contains(
       'Deprecated Arguments',

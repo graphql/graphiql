@@ -75,7 +75,7 @@ export const DocExplorer: FC = () => {
           onNavigateTo={navigateToIndex}
         />
       )}
-      {isTypeOrFieldView && <SearchRow key={navItem.name} />}
+      <SearchRow key={navItem.name} />
       <div className="graphiql-doc-explorer-content">{content}</div>
     </section>
   );
