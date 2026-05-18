@@ -18,14 +18,16 @@
   margin-top: var(--px-16);
 }
 
-/* TypeCard keeps its own horizontal padding */
-.graphiql-doc-explorer-content .graphiql-doc-explorer-type-card {
+/* TypeCard and FieldCard keep their own horizontal padding */
+.graphiql-doc-explorer-content .graphiql-doc-explorer-type-card,
+.graphiql-doc-explorer-content .graphiql-doc-explorer-field-card {
   padding: var(--px-10) var(--px-16);
   margin-top: 0;
 }
 
-/* FieldsList rows span full width, so zero out container padding */
-.graphiql-doc-explorer-content .graphiql-doc-explorer-fields-list {
+/* FieldsList and ArgumentsList rows span full width, so zero out container padding */
+.graphiql-doc-explorer-content .graphiql-doc-explorer-fields-list,
+.graphiql-doc-explorer-content .graphiql-doc-explorer-arguments-list {
   padding-left: 0;
   padding-right: 0;
   padding-top: 0;

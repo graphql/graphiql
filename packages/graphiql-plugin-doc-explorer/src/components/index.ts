@@ -1,9 +1,11 @@
 export { Argument } from './argument';
+export { ArgumentsList } from './arguments-list';
 export { Breadcrumb } from './breadcrumb';
 export { DefaultValue } from './default-value';
 export { DeprecationReason } from './deprecation-reason';
 export { Directive } from './directive';
 export { DocExplorer } from './doc-explorer';
+export { FieldCard } from './field-card';
 export { FieldDocumentation } from './field-documentation';
 export { FieldLink } from './field-link';
 export { FieldsList } from './fields-list';

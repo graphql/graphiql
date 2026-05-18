@@ -121,8 +121,8 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     cy.dataCy('doc-explorer-option').first().children().first().click();
 
     cy.contains('Show Deprecated Arguments').click();
-    cy.get('.graphiql-doc-explorer-section-title').contains(
-      'Deprecated Arguments',
+    cy.get('.graphiql-doc-explorer-arguments-list-header').contains(
+      'DEPRECATED ARGUMENTS',
     );
     cy.get('.graphiql-markdown-deprecation').should(
       'have.text',
