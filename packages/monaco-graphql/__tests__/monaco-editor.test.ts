@@ -66,5 +66,5 @@ describe('monaco-editor', () => {
         "workers/standalone.js",
       ]
     `);
-  }, 90_000);
+  }, 60_000);
 });
