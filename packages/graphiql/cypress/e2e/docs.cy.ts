@@ -116,10 +116,10 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     // Open doc explorer
     cy.get('.graphiql-activity-rail-item').eq(0).click();
 
-    // Select query type
-    cy.get('.graphiql-doc-explorer-type-name').first().click();
+    // Use search to navigate directly to hasArgs
+    cy.dataCy('doc-explorer-input').type('hasArgs');
+    cy.dataCy('doc-explorer-option').first().children().first().click();
 
-    cy.contains('button.graphiql-doc-explorer-field-row', 'hasArgs').click();
     cy.contains('Show Deprecated Arguments').click();
     cy.get('.graphiql-doc-explorer-section-title').contains(
       'Deprecated Arguments',
