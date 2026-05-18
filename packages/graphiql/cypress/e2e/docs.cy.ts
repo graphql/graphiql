@@ -69,9 +69,9 @@ describe('GraphiQL DocExplorer - search', () => {
       'have.text',
       'isTest',
     );
-    cy.get('.graphiql-markdown-description').should(
+    cy.get('.graphiql-doc-explorer-field-card-description').should(
       'have.text',
-      'Is this a test schema? Sure it is.\n',
+      'Is this a test schema? Sure it is.',
     );
   });
 });
@@ -94,7 +94,7 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
     ).click();
 
     // Assert description and deprecation reason are shown
-    cy.get('.graphiql-markdown-description').should(
+    cy.get('.graphiql-doc-explorer-field-card-description').should(
       'contain.text',
       'This field is an example of a deprecated field',
     );
