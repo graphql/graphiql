@@ -45,7 +45,9 @@ describe('monaco-editor', () => {
     // TypeScript, CSS, or HTML language services. A consumer who only wants
     // GraphQL + JSON should not be forced to ship them.
     for (const file of files) {
-      expect(file).not.toMatch(/typescript|tsMode|tsWorker|ts\.worker|cssMode|css\.worker|htmlMode|html\.worker/i);
+      expect(file).not.toMatch(
+        /typescript|tsMode|tsWorker|ts\.worker|cssMode|css\.worker|htmlMode|html\.worker/i,
+      );
     }
 
     expect(files).toMatchInlineSnapshot(`
