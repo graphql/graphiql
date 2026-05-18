@@ -94,7 +94,7 @@ export const SearchRow: FC = () => {
           <ComboboxInput
             autoComplete="off"
             onChange={event => setSearchValue(event.target.value)}
-            placeholder="Filter fields…"
+            placeholder="Search schema"
             ref={inputRef}
             value={searchValue}
             data-cy="doc-explorer-input"

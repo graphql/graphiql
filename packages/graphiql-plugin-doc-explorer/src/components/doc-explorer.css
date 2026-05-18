@@ -5,20 +5,6 @@
   font-size: var(--font-size-eyebrow);
 }
 
-/* Small action buttons in the panel header */
-.graphiql-doc-explorer-action-btn {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  & svg {
-    width: 12px;
-    height: 12px;
-  }
-}
-
 /* Main content area */
 .graphiql-doc-explorer-content {
   overflow-y: auto;

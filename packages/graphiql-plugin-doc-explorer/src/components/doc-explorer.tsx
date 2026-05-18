@@ -8,15 +8,7 @@ import {
   isUnionType,
 } from 'graphql';
 import type { FC, ReactNode } from 'react';
-import {
-  MagnifyingGlassIcon,
-  PanelHeader,
-  SettingsIcon,
-  Spinner,
-  ToolbarButton,
-  useGraphiQL,
-  pick,
-} from '@graphiql/react';
+import { PanelHeader, Spinner, useGraphiQL, pick } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { Breadcrumb } from './breadcrumb';
 import { FieldDocumentation } from './field-documentation';
@@ -76,25 +68,7 @@ export const DocExplorer: FC = () => {
       className="graphiql-doc-explorer"
       aria-label="Documentation Explorer"
     >
-      <PanelHeader
-        title="Schema Explorer"
-        actions={
-          <>
-            <ToolbarButton
-              label="Filter fields"
-              className="graphiql-doc-explorer-action-btn"
-            >
-              <SettingsIcon />
-            </ToolbarButton>
-            <ToolbarButton
-              label="Search schema"
-              className="graphiql-doc-explorer-action-btn"
-            >
-              <MagnifyingGlassIcon />
-            </ToolbarButton>
-          </>
-        }
-      />
+      <PanelHeader title="Schema Explorer" />
       {isTypeOrFieldView && (
         <Breadcrumb
           navStack={explorerNavStack}
