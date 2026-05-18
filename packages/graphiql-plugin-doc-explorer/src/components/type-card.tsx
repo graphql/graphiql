@@ -46,7 +46,9 @@ export const TypeCard: FC<TypeCardProps> = ({ type }) => {
     <div className="graphiql-doc-explorer-type-card">
       <div className="graphiql-doc-explorer-type-card-header">
         <span className="graphiql-doc-explorer-type-badge">{kind}</span>
-        <span className="graphiql-doc-explorer-type-card-name">{type.name}</span>
+        <span className="graphiql-doc-explorer-type-card-name">
+          {type.name}
+        </span>
       </div>
       {type.description && (
         <p className="graphiql-doc-explorer-type-card-description">
@@ -59,7 +61,10 @@ export const TypeCard: FC<TypeCardProps> = ({ type }) => {
             implements
           </span>
           {interfaces.map((iface, i) => (
-            <span key={iface.name} className="graphiql-doc-explorer-type-card-implements-item">
+            <span
+              key={iface.name}
+              className="graphiql-doc-explorer-type-card-implements-item"
+            >
               {i > 0 && (
                 <span
                   className="graphiql-doc-explorer-type-card-implements-dot"

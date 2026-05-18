@@ -41,7 +41,8 @@ export const FieldsList: FC<FieldsListProps> = ({ type, activeFieldName }) => {
     }
   }
 
-  const totalCount = fields.length + (showDeprecated ? deprecatedFields.length : 0);
+  const totalCount =
+    fields.length + (showDeprecated ? deprecatedFields.length : 0);
 
   return (
     <div className="graphiql-doc-explorer-fields-list">
@@ -116,7 +117,9 @@ const FieldRow: FC<FieldRowProps> = ({ field, isActive, deprecated }) => {
       aria-current={isActive ? 'true' : undefined}
     >
       <div className="graphiql-doc-explorer-field-row-sig">
-        <span className="graphiql-doc-explorer-field-row-name">{field.name}</span>
+        <span className="graphiql-doc-explorer-field-row-name">
+          {field.name}
+        </span>
         <span className="graphiql-doc-explorer-field-row-colon">:</span>
         <span className="graphiql-doc-explorer-field-row-type">
           {renderType(field.type, namedType => (

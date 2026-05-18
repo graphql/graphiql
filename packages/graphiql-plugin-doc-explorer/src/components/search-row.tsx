@@ -151,10 +151,7 @@ export const SearchRow: FC = () => {
                 data-cy="doc-explorer-option"
               >
                 <SearchType type={result.type} />.
-                <SearchField
-                  field={result.field}
-                  argument={result.argument}
-                />
+                <SearchField field={result.field} argument={result.argument} />
               </ComboboxOption>
             ))}
           </ComboboxOptions>

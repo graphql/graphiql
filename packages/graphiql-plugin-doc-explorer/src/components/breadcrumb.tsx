@@ -27,7 +27,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ navStack, onNavigateTo }) => {
               : 'graphiql-doc-explorer-breadcrumb-intermediate';
 
         return (
-          <span key={index} className="graphiql-doc-explorer-breadcrumb-segment">
+          <span
+            key={index}
+            className="graphiql-doc-explorer-breadcrumb-segment"
+          >
             {index > 0 && (
               <span
                 className="graphiql-doc-explorer-breadcrumb-sep"
