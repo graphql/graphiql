@@ -1,3 +1,89 @@
-.graphiql-doc-explorer-root-type {
+.graphiql-doc-explorer-schema-overview {
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-8) 0;
+}
+
+/* Eyebrow section headers — matches FieldsList header style */
+.graphiql-doc-explorer-schema-section-header {
+  padding: var(--px-6) var(--px-16) var(--px-4);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-doc-explorer-schema-section-header--types {
+  margin-top: var(--px-12);
+}
+
+.graphiql-doc-explorer-schema-type-count {
+  color: oklch(var(--fg-dim));
+  font-weight: 500;
+}
+
+/* Root type rows */
+.graphiql-doc-explorer-schema-root-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 5px var(--px-16);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+
+  &:hover {
+    background: oklch(var(--fg-default) / 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: -2px;
+  }
+}
+
+.graphiql-doc-explorer-schema-root-label {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-doc-explorer-schema-root-colon {
   color: oklch(var(--fg-muted));
+}
+
+/* Type name in root rows — orange like TypeLink */
+.graphiql-doc-explorer-schema-root-row .graphiql-doc-explorer-type-name {
+  color: oklch(var(--accent-orange));
+}
+
+/* All-types rows */
+.graphiql-doc-explorer-schema-type-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  padding: 4px var(--px-16);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    background: oklch(var(--fg-default) / 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: -2px;
+  }
+}
+
+.graphiql-doc-explorer-schema-type-name {
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  color: oklch(var(--fg-default));
 }

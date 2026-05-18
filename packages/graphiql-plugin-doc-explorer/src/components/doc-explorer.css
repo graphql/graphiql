@@ -14,7 +14,7 @@
 /* Schema overview and field-documentation padding */
 .graphiql-doc-explorer-content > * {
   color: oklch(var(--fg-muted));
-  padding: 0 var(--px-14) var(--px-14);
+  padding: 0 var(--px-16) var(--px-16);
   margin-top: var(--px-16);
 }
 
@@ -29,7 +29,7 @@
 
 /* Wrap for enum/union/interface extra sections */
 .graphiql-doc-explorer-type-extra {
-  padding: 0 var(--px-14) var(--px-14);
+  padding: 0 var(--px-16) var(--px-16);
   margin-top: var(--px-16);
   color: oklch(var(--fg-muted));
 }
@@ -41,7 +41,7 @@
   border-radius: var(--radius-sm);
   color: oklch(var(--accent-red));
   padding: var(--px-8) var(--px-12);
-  margin: var(--px-14);
+  margin: var(--px-16);
 }
 
 /* Old back-button and title selectors kept for Cypress compatibility */

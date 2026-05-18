@@ -90,8 +90,8 @@ describe('DocExplorer', () => {
     const error = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(error).toHaveLength(0);
     expect(
-      container.querySelector('.graphiql-markdown-description'),
-    ).toHaveTextContent('GraphQL Schema for testing');
+      container.querySelector('.graphiql-doc-explorer-schema-overview'),
+    ).toBeInTheDocument();
   });
   it('renders correctly with schema error', () => {
     useGraphiQL.mockImplementation(cb => cb(withErrorSchemaContext));

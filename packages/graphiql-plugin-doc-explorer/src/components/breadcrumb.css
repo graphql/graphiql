@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0;
-  padding: var(--px-6) var(--px-14) 0;
+  padding: var(--px-6) var(--px-16) 0;
   font-family: var(--font-family-mono);
   font-size: 11.5px;
   line-height: 1.4;

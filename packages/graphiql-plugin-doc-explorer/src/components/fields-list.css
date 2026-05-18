@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   gap: var(--px-6);
-  padding: var(--px-6) var(--px-14) var(--px-4);
+  padding: var(--px-6) var(--px-16) var(--px-4);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -126,5 +126,5 @@
 }
 
 .graphiql-doc-explorer-fields-list-show-deprecated {
-  margin: var(--px-8) var(--px-14);
+  margin: var(--px-8) var(--px-16);
 }

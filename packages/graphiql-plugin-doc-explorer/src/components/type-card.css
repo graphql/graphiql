@@ -1,5 +1,5 @@
 .graphiql-doc-explorer-type-card {
-  padding: var(--px-8) var(--px-14) var(--px-8);
+  padding: var(--px-10) var(--px-16) var(--px-10);
   border-top: 1px solid oklch(var(--border-default));
 }
 
