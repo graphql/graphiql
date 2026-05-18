@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { KeycapHint } from './';
+import { KeycapHint, MODIFIER } from './';
 
 const meta: Meta<typeof KeycapHint> = {
   title: 'Primitives/KeycapHint',
@@ -16,10 +16,12 @@ export const Single: Story = {
 
 export const ChordWithModifier: Story = {
   render: () => (
-    <KeycapHint keys={['⌘', 'K']} ariaLabel="Open command palette" />
+    <KeycapHint keys={[MODIFIER.Meta, 'K']} ariaLabel="Open command palette" />
   ),
 };
 
 export const RunShortcut: Story = {
-  render: () => <KeycapHint keys={['⌘', '⏎']} ariaLabel="Run query" />,
+  render: () => (
+    <KeycapHint keys={[MODIFIER.Meta, MODIFIER.Enter]} ariaLabel="Run query" />
+  ),
 };
