@@ -247,7 +247,7 @@ export const BreadcrumbNav: Story = {
   name: 'Breadcrumb navigation',
   render: function BreadcrumbNavStory() {
     const navStack: Parameters<typeof Breadcrumb>[0]['navStack'] = [
-      { name: 'Docs' },
+      { name: 'Root' },
       { name: 'Query', def: QueryType },
       { name: 'Human', def: HumanType },
     ];

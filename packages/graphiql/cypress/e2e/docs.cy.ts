@@ -57,7 +57,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates back', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    // Click the root breadcrumb segment (first link, at depth 0 = "Docs")
+    // Click the root breadcrumb segment (first link, at depth 0 = "Root")
     cy.get('.graphiql-doc-explorer-breadcrumb-root').click();
     // After navigating back, breadcrumb disappears (at root level, no breadcrumb shown)
     cy.get('.graphiql-doc-explorer-breadcrumb').should('not.exist');
