@@ -1,28 +1,23 @@
 import { describe, it, expect } from 'vitest';
 import { build, type UserConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
-const EXAMPLE_ROOT = path.resolve(
+const FIXTURE_ROOT = path.resolve(
   import.meta.dirname,
-  '../../../examples/monaco-graphql-react-vite',
+  '../__fixtures__/bundle-test',
 );
 
 describe('monaco-editor', () => {
-  it('should include in bundle only graphql/json/typescript languages', async () => {
+  it('should not bundle Monaco language modules beyond graphql and json', async () => {
     const result = await build({
-      root: EXAMPLE_ROOT,
+      root: FIXTURE_ROOT,
       logLevel: 'warn',
       build: {
         write: false,
         minify: false,
-        // esnext avoids Babel down-transpilation passes, saving time on CI.
         target: 'esnext',
-        // Skip gzip-size computation; irrelevant for a file-list assertion.
         reportCompressedSize: false,
         rollupOptions: {
-          // Treeshake is expensive for a 1000+ module bundle and irrelevant
-          // for verifying which output files exist.
           treeshake: false,
           output: {
             entryFileNames: '[name].js',
@@ -31,7 +26,6 @@ describe('monaco-editor', () => {
           },
         },
       },
-      plugins: [react()],
       worker: {
         format: 'es',
         rollupOptions: {
@@ -44,11 +38,15 @@ describe('monaco-editor', () => {
       },
     } satisfies UserConfig);
 
-    // `result` is an array: [main build output, ...worker build outputs].
-    // The main build output already includes the worker assets as emitted
-    // files, so we only need to inspect result[0].
     const mainOutput = Array.isArray(result) ? result[0] : result;
     const files = mainOutput.output.map(chunk => chunk.fileName).sort();
+
+    // Explicit negative assertion: importing monaco-graphql must not pull in
+    // TypeScript, CSS, or HTML language services. A consumer who only wants
+    // GraphQL + JSON should not be forced to ship them.
+    for (const file of files) {
+      expect(file).not.toMatch(/typescript|tsMode|tsWorker|ts\.worker|cssMode|css\.worker|htmlMode|html\.worker/i);
+    }
 
     expect(files).toMatchInlineSnapshot(`
       [
@@ -56,10 +54,7 @@ describe('monaco-editor', () => {
         "assets/graphql.js",
         "assets/graphqlMode.js",
         "assets/index.css",
-        "assets/index.js",
         "assets/jsonMode.js",
-        "assets/tsMode.js",
-        "assets/typescript.js",
         "index.html",
         "index.js",
         "workers/editor.worker.js",
@@ -67,8 +62,7 @@ describe('monaco-editor', () => {
         "workers/graphql.worker.js",
         "workers/json.worker.js",
         "workers/standalone.js",
-        "workers/ts.worker.js",
       ]
     `);
-  }, 90_000);
+  }, 30_000);
 });
