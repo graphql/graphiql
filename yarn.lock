@@ -17112,7 +17112,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:
-    execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.5.1"
     monaco-editor: "npm:0.52.2"
