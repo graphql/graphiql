@@ -228,6 +228,7 @@ therox
 thomasheyenbrock
 timsuchanek
 tokenizes
+treeshake
 tsup
 turbopack
 typeahead

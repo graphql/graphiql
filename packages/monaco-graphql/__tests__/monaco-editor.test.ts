@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { build, type UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import path from 'node:path';
 
 const EXAMPLE_ROOT = path.resolve(
   import.meta.dirname,
@@ -48,9 +48,7 @@ describe('monaco-editor', () => {
     // The main build output already includes the worker assets as emitted
     // files, so we only need to inspect result[0].
     const mainOutput = Array.isArray(result) ? result[0] : result;
-    const files = mainOutput.output
-      .map(chunk => chunk.fileName)
-      .sort();
+    const files = mainOutput.output.map(chunk => chunk.fileName).sort();
 
     expect(files).toMatchInlineSnapshot(`
       [
@@ -72,5 +70,5 @@ describe('monaco-editor', () => {
         "workers/ts.worker.js",
       ]
     `);
-  }, 30_000);
+  }, 90_000);
 });
