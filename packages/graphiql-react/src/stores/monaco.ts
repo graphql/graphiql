@@ -70,8 +70,18 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (isInitialized) {
         return;
       }
-      const [monaco, { initializeMode }] = await Promise.all([
-        import('monaco-graphql/esm/monaco-editor.js'),
+      // Import monaco-editor's `graphql` and `json` contributions directly
+      // rather than via `monaco-graphql/esm/monaco-editor.js`. That re-export
+      // module trips up esm.sh's standalone bundler into emitting two monaco
+      // instances (one bundled, one lazily fetched), which produces
+      // "Cannot set tokens provider for unknown language json" at runtime on
+      // CDN setups. See https://github.com/graphql/graphiql/issues/4303.
+      const [, , monaco, { initializeMode }] = await Promise.all([
+        import('monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'),
+        import('monaco-editor/esm/vs/language/json/monaco.contribution.js'),
+        import('monaco-editor/esm/vs/editor/edcore.main.js') as Promise<
+          typeof import('monaco-editor')
+        >,
         import('monaco-graphql/esm/lite.js'),
       ]);
       globalThis.__MONACO = monaco;
