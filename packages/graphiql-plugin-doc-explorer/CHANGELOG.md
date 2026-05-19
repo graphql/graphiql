@@ -1,5 +1,12 @@
 # @graphiql/plugin-doc-explorer
 
+## 0.4.3-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [[`5f44a27`](https://github.com/graphql/graphiql/commit/5f44a27ae0ff370b4f9eaffe8f92975091bfeb89)]:
+  - @graphiql/react@0.37.6-alpha.0
+
 ## 0.4.2
 
 ### Patch Changes

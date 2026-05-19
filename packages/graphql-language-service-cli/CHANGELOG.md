@@ -1,5 +1,12 @@
 # graphql-language-service-cli
 
+## 3.5.1-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [[`e46fc55`](https://github.com/graphql/graphiql/commit/e46fc55ad40c4c0bae4d7a32bdc5168701f1932f)]:
+  - graphql-language-service-server@2.14.10-alpha.0
+
 ## 3.5.0
 
 ### Minor Changes
@@ -31,7 +38,6 @@
   note that `schemaCacheTTL` can only be set in extension settings or graphql config at the top level - it will be ignored if configured per-project in the graphql config
 
   **Code Improvements**
-
   - Fixes flaky tests, and `schemaCacheTTL` setting not being passed to the cache
   - Adds a test to validate network schema changes are reflected in the cache
 
@@ -57,7 +63,6 @@
   This fixes multiple cacheing bugs, upon addomg some in-depth integration test coverage for the LSP server. It also solves several bugs regarding loading config types, and properly restarts the server and invalidates schema when there are config changes.
 
   ### Bugfix Summary
-
   - configurable polling updates for network and other code first schema configuration, set to a 30s interval by default. powered by `schemaCacheTTL` which can be configured in the IDE settings (vscode, nvim) or in the graphql config file. (1)
   - jump to definition in embedded files offset bug, for both fragments and code files with SDL strings
   - cache invalidation for fragments (fragment lookup/autcoomplete data is more accurate, but incomplete/invalid fragments still do not autocomplete or validate, and remember fragment options always filter/validate by the `on` type!)
@@ -65,11 +70,9 @@
   - schema definition lookups & autocomplete crossing over into the wrong project
 
   **Notes**
-
   1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
 
   ### Known Bugs Fixed
-
   - #3318
   - #2357
   - #3469
@@ -78,7 +81,6 @@
   - many more!
 
   ### Test Improvements
-
   - new, high level integration spec suite for the LSP with a matching test utility
   - more unit test coverage
   - **total increased test coverage of about 25% in the LSP server codebase.**
@@ -94,7 +96,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
@@ -111,7 +112,7 @@
 
   ```ts
   // import it
-  import { locateCommand } from './graphql/tooling/lsp/locate.js';
+  import { locateCommand } from "./graphql/tooling/lsp/locate.js";
   export default {
     languageService: {
       locateCommand,
@@ -119,12 +120,12 @@
 
     projects: {
       a: {
-        schema: 'https://localhost:8000/graphql',
-        documents: './a/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "https://localhost:8000/graphql",
+        documents: "./a/**/*.{ts,tsx,jsx,js,graphql}",
       },
       b: {
-        schema: './schema/ascode.ts',
-        documents: './b/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "./schema/ascode.ts",
+        documents: "./b/**/*.{ts,tsx,jsx,js,graphql}",
       },
     },
   };
@@ -133,7 +134,7 @@
   ```ts
   // or define it inline
 
-  import { type LocateCommand } from 'graphql-language-service-server';
+  import { type LocateCommand } from "graphql-language-service-server";
 
   // relay LSP style
   const locateCommand = (projectName: string, typePath: string) => {
@@ -159,8 +160,8 @@
     languageService: {
       locateCommand,
     },
-    schema: 'https://localhost:8000/graphql',
-    documents: './**/*.{ts,tsx,jsx,js,graphql}',
+    schema: "https://localhost:8000/graphql",
+    documents: "./**/*.{ts,tsx,jsx,js,graphql}",
   };
   ```
 
