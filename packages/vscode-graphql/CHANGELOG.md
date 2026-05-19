@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.13.6-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [[`e46fc55`](https://github.com/graphql/graphiql/commit/e46fc55ad40c4c0bae4d7a32bdc5168701f1932f)]:
+  - graphql-language-service-server@2.14.10-alpha.0
+
 ## 0.13.5
 
 ### Patch Changes

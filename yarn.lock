@@ -3008,11 +3008,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/plugin-code-exporter@npm:^5.1.2, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
+"@graphiql/plugin-code-exporter@npm:^5.1.3-alpha.0, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-code-exporter: "npm:^3.0.3"
     graphql: "npm:^16.9.0"
@@ -3022,18 +3022,18 @@ __metadata:
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.0.1"
   peerDependencies:
-    "@graphiql/react": ^0.37.0
+    "@graphiql/react": ^0.37.6-alpha.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-doc-explorer@npm:^0.4.2, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
+"@graphiql/plugin-doc-explorer@npm:^0.4.3-alpha.0, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3048,18 +3048,18 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^0.37.0
+    "@graphiql/react": ^0.37.6-alpha.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-explorer@npm:^5.1.2, @graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer":
+"@graphiql/plugin-explorer@npm:^5.1.3-alpha.0, @graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-explorer: "npm:^0.9.0"
     graphql: "npm:^16.9.0"
@@ -3070,18 +3070,18 @@ __metadata:
     vite-plugin-dts: "npm:^4.0.1"
     vite-plugin-svgr: "npm:^4.3.0"
   peerDependencies:
-    "@graphiql/react": ^0.37.0
+    "@graphiql/react": ^0.37.6-alpha.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-history@npm:^0.4.2, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
+"@graphiql/plugin-history@npm:^0.4.3-alpha.0, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@graphiql/toolkit": "npm:^0.12.0"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
@@ -3093,13 +3093,13 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^0.37.0
+    "@graphiql/react": ^0.37.6-alpha.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^0.37.4, @graphiql/react@npm:^0.37.5, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:^0.37.6-alpha.0, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
@@ -11321,14 +11321,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-graphiql-vite-react-router@workspace:examples/graphiql-vite-react-router"
   dependencies:
-    "@graphiql/react": "npm:^0.37.5"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@react-router/dev": "npm:^7"
     "@react-router/fs-routes": "npm:^7"
     "@react-router/node": "npm:^7"
     "@react-router/serve": "npm:^7"
     "@types/node": "npm:^24"
     "@types/react": "npm:^19"
-    graphiql: "npm:^5.2.3"
+    graphiql: "npm:^5.2.4-alpha.0"
     isbot: "npm:^5"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -11343,7 +11343,7 @@ __metadata:
   resolution: "example-graphiql-vite@workspace:examples/graphiql-vite"
   dependencies:
     "@vitejs/plugin-react": "npm:^4"
-    graphiql: "npm:^5.2.3"
+    graphiql: "npm:^5.2.4-alpha.0"
     graphql: "npm:^16"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -11360,9 +11360,9 @@ __metadata:
     "@babel/plugin-syntax-dynamic-import": "npm:^7"
     "@babel/preset-env": "npm:^7"
     "@babel/preset-react": "npm:^7"
-    "@graphiql/plugin-code-exporter": "npm:^5.1.2"
-    "@graphiql/plugin-explorer": "npm:^5.1.2"
-    "@graphiql/react": "npm:^0.37.5"
+    "@graphiql/plugin-code-exporter": "npm:^5.1.3-alpha.0"
+    "@graphiql/plugin-explorer": "npm:^5.1.3-alpha.0"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@graphiql/toolkit": "npm:^0.12.0"
     ajv-formats: "npm:^3"
     babel-loader: "npm:^9"
@@ -11370,7 +11370,7 @@ __metadata:
     cross-env: "npm:^7"
     css-loader: "npm:^6"
     file-loader: "npm:^6"
-    graphiql: "npm:^5.2.3"
+    graphiql: "npm:^5.2.4-alpha.0"
     graphql: "npm:^16"
     graphql-ws: "npm:^5"
     html-webpack-plugin: "npm:^5"
@@ -12950,13 +12950,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphiql@npm:^5.2.3, graphiql@workspace:packages/graphiql":
+"graphiql@npm:^5.2.4-alpha.0, graphiql@workspace:packages/graphiql":
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
-    "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
-    "@graphiql/plugin-history": "npm:^0.4.2"
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/plugin-doc-explorer": "npm:^0.4.3-alpha.0"
+    "@graphiql/plugin-history": "npm:^0.4.3-alpha.0"
+    "@graphiql/react": "npm:^0.37.6-alpha.0"
     "@graphiql/toolkit": "npm:^0.12.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -13035,7 +13035,7 @@ __metadata:
     "@types/yargs": "npm:16.0.5"
     graphql: "npm:^16.9.0"
     graphql-language-service: "npm:^5.3.0"
-    graphql-language-service-server: "npm:^2.14.0"
+    graphql-language-service-server: "npm:^2.14.10-alpha.0"
     yargs: "npm:^16.2.0"
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
@@ -13044,7 +13044,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-language-service-server@npm:^2.14.0, graphql-language-service-server@npm:^2.14.9, graphql-language-service-server@workspace:packages/graphql-language-service-server":
+"graphql-language-service-server@npm:^2.14.10-alpha.0, graphql-language-service-server@workspace:packages/graphql-language-service-server":
   version: 0.0.0-use.local
   resolution: "graphql-language-service-server@workspace:packages/graphql-language-service-server"
   dependencies:
@@ -21681,7 +21681,7 @@ __metadata:
     "@vscode/vsce": "npm:^2.22.1-2"
     esbuild: "npm:0.18.10"
     graphql: "npm:^16.9.0 || ^17.0.0-alpha.2"
-    graphql-language-service-server: "npm:^2.14.9"
+    graphql-language-service-server: "npm:^2.14.10-alpha.0"
     ovsx: "npm:0.8.3"
     typescript: "npm:^5.8.0"
     vscode-languageclient: "npm:8.0.2"

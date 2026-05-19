@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.14.10-alpha.0
+
+### Patch Changes
+
+- [#4308](https://github.com/graphql/graphiql/pull/4308) [`e46fc55`](https://github.com/graphql/graphiql/commit/e46fc55ad40c4c0bae4d7a32bdc5168701f1932f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Point the package's `types` field at `dist/index.d.ts`, matching the CJS build output. The previous `typings: esm/index.d.ts` referenced the ESM build's output, which is emitted by a separate tsgo invocation that doesn't coordinate with the CJS project reference graph dependents rely on. `tsc` tolerated the misaligned path by falling back to `dist/index.d.ts` next to `main`; `tsgo` resolves project references more strictly and surfaced the misalignment as a "Could not find a declaration file" error during cold builds.
+
 ## 2.14.9
 
 ### Patch Changes
