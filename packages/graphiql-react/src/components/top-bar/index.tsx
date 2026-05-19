@@ -4,7 +4,7 @@
 
 import type { FC } from 'react';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
-import { KeycapHint } from '../keycap-hint';
+import { KeycapHint, MODIFIER } from '../keycap-hint';
 import './index.css';
 
 export type TopBarProps = {
@@ -60,7 +60,10 @@ export const TopBarView: FC<TopBarViewProps> = ({
 
       <button type="button" className="graphiql-top-bar-cmd">
         <span>Jump to schema</span>
-        <KeycapHint keys={['⌘', 'K']} ariaLabel="Open command palette" />
+        <KeycapHint
+          keys={[MODIFIER.Meta, 'K']}
+          ariaLabel="Open command palette"
+        />
       </button>
 
       <button
@@ -71,7 +74,10 @@ export const TopBarView: FC<TopBarViewProps> = ({
         aria-label="Run query"
       >
         Run
-        <KeycapHint keys={['⌘', '⏎']} ariaLabel="Run query shortcut" />
+        <KeycapHint
+          keys={[MODIFIER.Meta, MODIFIER.Enter]}
+          ariaLabel="Run query shortcut"
+        />
       </button>
     </header>
   );
