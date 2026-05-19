@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.4.3-alpha.0",
+  "version": "0.4.3-alpha.1",
   "sideEffects": [
     "*.css"
   ],
@@ -47,7 +47,7 @@
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.37.6-alpha.0",
+    "@graphiql/react": "^0.37.6-alpha.2",
     "@testing-library/react": "^16.1.0",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.1",

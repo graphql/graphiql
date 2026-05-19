@@ -28,6 +28,7 @@
   "changesets": [
     "fix-cdn-monaco-instance",
     "fix-language-service-server-types",
-    "revert-css-side-effect"
+    "revert-css-side-effect",
+    "revert-react-compiler-runtime-peer"
   ]
 }
