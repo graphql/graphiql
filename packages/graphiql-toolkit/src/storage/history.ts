@@ -44,23 +44,24 @@ export class HistoryStore {
     } catch {
       return null;
     }
-    if (lastQuerySaved) {
-      if (JSON.stringify(query) === JSON.stringify(lastQuerySaved.query)) {
+    if (!lastQuerySaved) {
+      return document;
+    }
+    if (JSON.stringify(query) === JSON.stringify(lastQuerySaved.query)) {
+      if (
+        JSON.stringify(variables) === JSON.stringify(lastQuerySaved.variables)
+      ) {
         if (
-          JSON.stringify(variables) === JSON.stringify(lastQuerySaved.variables)
+          JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)
         ) {
-          if (
-            JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)
-          ) {
-            return null;
-          }
-          if (headers && !lastQuerySaved.headers) {
-            return null;
-          }
-        }
-        if (variables && !lastQuerySaved.variables) {
           return null;
         }
+        if (headers && !lastQuerySaved.headers) {
+          return null;
+        }
+      }
+      if (variables && !lastQuerySaved.variables) {
+        return null;
       }
     }
     return document;
