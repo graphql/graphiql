@@ -99,6 +99,34 @@ describe('history', () => {
     cy.get('.graphiql-history-item').should('have.length', 0);
   });
 
+  it('alt-clicking a row opens a diff overlay, Apply dismisses it', () => {
+    cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}`);
+    cy.clickExecuteQuery();
+    cy.visit(`?query=${mockQuery2}&headers=${mockHeaders1}`);
+    cy.get('button[aria-label="Show History"]').click();
+    cy.get('.graphiql-history-item').should('have.length', 1);
+
+    cy.get('.graphiql-history-item-label').first().click({ altKey: true });
+    cy.get('.graphiql-diff-editor').should('be.visible');
+    cy.get('.graphiql-diff-editor').contains('Compare with');
+
+    cy.get('.graphiql-diff-editor').contains('button', 'Apply').click();
+    cy.get('.graphiql-diff-editor').should('not.exist');
+  });
+
+  it('alt-clicking a row opens a diff overlay, Cancel dismisses it', () => {
+    cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}`);
+    cy.clickExecuteQuery();
+    cy.visit(`?query=${mockQuery2}&headers=${mockHeaders1}`);
+    cy.get('button[aria-label="Show History"]').click();
+
+    cy.get('.graphiql-history-item-label').first().click({ altKey: true });
+    cy.get('.graphiql-diff-editor').should('be.visible');
+
+    cy.get('.graphiql-diff-editor').contains('button', 'Cancel').click();
+    cy.get('.graphiql-diff-editor').should('not.exist');
+  });
+
   it('should add/remove item to favorite', () => {
     cy.visit(`?query=${mockQuery1}&headers=${mockHeaders1}`);
     cy.clickExecuteQuery();
