@@ -21,3 +21,7 @@ export const Mutation: Story = {
 export const Subscription: Story = {
   render: () => <MethodPill operation="subscription" />,
 };
+
+export const Invalid: Story = {
+  render: () => <MethodPill operation="invalid" />,
+};
