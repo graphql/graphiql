@@ -91,6 +91,55 @@ function getSchemaUrl(): string {
   return '/.netlify/functions/graphql';
 }
 
+interface GenerateOptions {
+  operationDataList: { query: string }[];
+}
+
+function indentQuery(arg: GenerateOptions, indent: number) {
+  const spaces = ' '.repeat(indent);
+  return (
+    spaces + arg.operationDataList[0]!.query.replaceAll('\n', '\n' + spaces)
+  );
+}
+
+const codeExporter = GraphiQL.codeExporterPlugin({
+  snippets: [
+    {
+      name: 'fetch',
+      language: 'JavaScript',
+      codeMirrorMode: 'jsx',
+      options: [],
+      generate: (arg: GenerateOptions) =>
+        [
+          `const response = await fetch('${getSchemaUrl()}', {`,
+          "  method: 'POST',",
+          "  headers: { 'Content-Type': 'application/json' },",
+          '  body: JSON.stringify({',
+          '    query: `',
+          indentQuery(arg, 6),
+          '    `,',
+          '  }),',
+          '});',
+          'const { data } = await response.json();',
+        ].join('\n'),
+    },
+    {
+      name: 'curl',
+      language: 'Shell',
+      codeMirrorMode: 'shell',
+      options: [],
+      generate: (arg: GenerateOptions) =>
+        [
+          `curl '${getSchemaUrl()}' \\`,
+          `  -H 'Content-Type: application/json' \\`,
+          `  --data-binary '${JSON.stringify({
+            query: arg.operationDataList[0]!.query,
+          })}'`,
+        ].join('\n'),
+    },
+  ],
+});
+
 // Render <GraphiQL /> into the body.
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
@@ -125,6 +174,7 @@ const props: ComponentProps<typeof GraphiQL> = {
   onTabChange,
   forcedTheme: parameters.forcedTheme,
   defaultTheme: parameters.defaultTheme,
+  plugins: [GraphiQL.HISTORY_PLUGIN, codeExporter],
 };
 
 function App() {

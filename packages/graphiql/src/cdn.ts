@@ -4,10 +4,13 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import 'regenerator-runtime/runtime';
 import { version } from 'react';
 import * as GraphiQLReact from '@graphiql/react';
 import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
+import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import { GraphiQL } from './GraphiQL';
 import './setup-workers/vite';
 
@@ -47,4 +50,6 @@ export default Object.assign(GraphiQL, {
    * doing this we can reuse them from plugin CDN bundles.
    */
   React: GraphiQLReact,
+  codeExporterPlugin,
+  HISTORY_PLUGIN,
 });

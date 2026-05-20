@@ -13961,6 +13961,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
+    "@graphiql/plugin-code-exporter": "npm:^5.1.2"
     "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
     "@graphiql/plugin-history": "npm:^0.4.2"
     "@graphiql/react": "npm:^0.37.4"
@@ -13981,6 +13982,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
+    regenerator-runtime: "npm:^0.14.0"
     start-server-and-test: "npm:^1.10.11"
     typescript: "npm:^5.8.0"
     vite: "npm:^6.3.4"
