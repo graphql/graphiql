@@ -1,8 +1,8 @@
 import type { FC } from 'react';
-import type { OperationTypeNode } from 'graphql';
+import type { Operation } from '@graphiql/toolkit';
 import './index.css';
 
-export type Operation = `${OperationTypeNode}`;
+export type { Operation };
 
 const LABELS: Record<Operation, string> = {
   query: 'QRY',
