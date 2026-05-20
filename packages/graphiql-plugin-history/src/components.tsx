@@ -8,6 +8,7 @@ import {
   StarIcon,
   TrashIcon,
   useGraphiQL,
+  useGraphiQLActions,
   pick,
   Button,
   MethodPill,
@@ -50,7 +51,7 @@ export const History: FC = () => {
     <section aria-label="History" className="graphiql-history">
       <PanelHeader
         title="History"
-        subtitle="Last 20 runs."
+        subtitle="Last 20 runs. ⌥-click a row to diff."
         actions={clearButton}
       />
 
@@ -87,6 +88,7 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   const { headerEditor, queryEditor, variableEditor } = useGraphiQL(
     pick('headerEditor', 'queryEditor', 'variableEditor'),
   );
+  const { setDiffOverlay } = useGraphiQLActions();
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);
@@ -117,12 +119,23 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
     setIsEditable(true);
   };
 
-  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> = () => {
-    const { query, variables, headers } = props.item;
-    queryEditor?.setValue(query ?? '');
-    variableEditor?.setValue(variables ?? '');
-    headerEditor?.setValue(headers ?? '');
-    setActive(props.item);
+  const applyItem = (item: QueryStoreItem) => {
+    queryEditor?.setValue(item.query ?? '');
+    variableEditor?.setValue(item.variables ?? '');
+    headerEditor?.setValue(item.headers ?? '');
+    setActive(item);
+  };
+
+  const handleHistoryItemClick: MouseEventHandler<HTMLButtonElement> = e => {
+    if (e.altKey) {
+      setDiffOverlay({
+        modifiedQuery: props.item.query ?? '',
+        label: displayName ?? '',
+        onApply: () => applyItem(props.item),
+      });
+      return;
+    }
+    applyItem(props.item);
   };
 
   const handleDeleteItemFromHistory: MouseEventHandler<
