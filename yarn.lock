@@ -6095,6 +6095,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/darwin-64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/darwin-64@npm:2.9.14"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/darwin-arm64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/darwin-arm64@npm:2.9.14"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@turbo/linux-64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/linux-64@npm:2.9.14"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/linux-arm64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/linux-arm64@npm:2.9.14"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@turbo/windows-64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/windows-64@npm:2.9.14"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/windows-arm64@npm:2.9.14":
+  version: 2.9.14
+  resolution: "@turbo/windows-arm64@npm:2.9.14"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@types/argparse@npm:1.0.38":
   version: 1.0.38
   resolution: "@types/argparse@npm:1.0.38"
@@ -12941,7 +12983,7 @@ __metadata:
     postinstall-postinstall: "npm:^2.1.0"
     rimraf: "npm:^3.0.2"
     svgo: "npm:^4.0.1"
-    turbo: "npm:^2.5.2"
+    turbo: "npm:^2.9.14"
     typedoc: "npm:^0.28.19"
     typescript: "npm:^5.8.0"
     vitest: "npm:^4.1.6"
@@ -20790,74 +20832,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-darwin-64@npm:2.5.2"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-darwin-arm64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-darwin-arm64@npm:2.5.2"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo-linux-64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-linux-64@npm:2.5.2"
-  conditions: os=linux & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-linux-arm64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-linux-arm64@npm:2.5.2"
-  conditions: os=linux & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo-windows-64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-windows-64@npm:2.5.2"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-windows-arm64@npm:2.5.2":
-  version: 2.5.2
-  resolution: "turbo-windows-arm64@npm:2.5.2"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "turbo@npm:2.5.2"
+"turbo@npm:^2.9.14":
+  version: 2.9.14
+  resolution: "turbo@npm:2.9.14"
   dependencies:
-    turbo-darwin-64: "npm:2.5.2"
-    turbo-darwin-arm64: "npm:2.5.2"
-    turbo-linux-64: "npm:2.5.2"
-    turbo-linux-arm64: "npm:2.5.2"
-    turbo-windows-64: "npm:2.5.2"
-    turbo-windows-arm64: "npm:2.5.2"
+    "@turbo/darwin-64": "npm:2.9.14"
+    "@turbo/darwin-arm64": "npm:2.9.14"
+    "@turbo/linux-64": "npm:2.9.14"
+    "@turbo/linux-arm64": "npm:2.9.14"
+    "@turbo/windows-64": "npm:2.9.14"
+    "@turbo/windows-arm64": "npm:2.9.14"
   dependenciesMeta:
-    turbo-darwin-64:
+    "@turbo/darwin-64":
       optional: true
-    turbo-darwin-arm64:
+    "@turbo/darwin-arm64":
       optional: true
-    turbo-linux-64:
+    "@turbo/linux-64":
       optional: true
-    turbo-linux-arm64:
+    "@turbo/linux-arm64":
       optional: true
-    turbo-windows-64:
+    "@turbo/windows-64":
       optional: true
-    turbo-windows-arm64:
+    "@turbo/windows-arm64":
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10c0/3eed6eba8bace18ed767785c83cd572985214e79d267f3eb631b2c147e941203746b241869fe629776704d3e69c37da90c5356c3b9506e08c468c9cab52f120c
+  checksum: 10c0/77a20c05ef588a9bac02500108af644ac1129b23f6f8db53054c9c7af98ed6a71e019172a0dd6d03920c6068c1a93ea80e6b2fb857bf70ba09616381bf07ea47
   languageName: node
   linkType: hard
 
