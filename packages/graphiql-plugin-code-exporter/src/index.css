@@ -40,7 +40,7 @@
     }
     & > div:last-of-type {
       & > div:first-of-type {
-        color: hsla(var(--color-neutral), var(--alpha-secondary)) !important;
+        color: oklch(var(--fg-muted)) !important;
         font-variant: unset !important;
         text-transform: unset !important;
         font-weight: unset !important;
@@ -51,7 +51,7 @@
   & button.toolbar-button {
     height: var(--toolbar-width) !important;
     width: var(--toolbar-width) !important;
-    border-radius: var(--border-radius-4) !important;
+    border-radius: var(--radius-sm) !important;
     cursor: pointer;
     display: inline-flex;
     font-size: unset !important;
@@ -63,7 +63,7 @@
     align-items: center;
     background-color: unset !important;
     & svg {
-      fill: hsla(var(--color-neutral), var(--alpha-tertiary));
+      fill: oklch(var(--fg-subtle));
     }
   }
   & > div:last-of-type {
@@ -81,21 +81,23 @@
     position: relative;
     cursor: pointer;
     text-decoration: none;
-    padding: var(--px-8) var(--px-12);
-    color: hsl(var(--color-neutral)) !important;
-    border-radius: var(--border-radius-4) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--px-6);
+    padding: var(--px-6) var(--px-12);
+    background-color: oklch(var(--bg-subtle)) !important;
+    border: 1px solid oklch(var(--border-default));
+    color: oklch(var(--fg-default)) !important;
+    border-radius: var(--radius-sm) !important;
     &:hover {
-      background-color: hsla(
-        var(--color-neutral),
-        var(--alpha-background-light)
-      ) !important;
+      background-color: oklch(var(--bg-overlay)) !important;
     }
   }
   & .toolbar-menu-items {
-    background-color: hsl(var(--color-base)) !important;
-    border: var(--popover-border);
-    border-radius: var(--border-radius-8);
-    box-shadow: var(--popover-box-shadow) !important;
+    background-color: oklch(var(--bg-elevated)) !important;
+    border: 1px solid oklch(var(--border-default));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-popover) !important;
     padding: var(--px-4);
     max-width: 250px;
     font-size: inherit;
@@ -116,24 +118,63 @@
       color: inherit;
       font: inherit;
       text-decoration: initial;
-      border-radius: var(--border-radius-4);
+      border-radius: var(--radius-sm);
       margin: var(--px-4);
       overflow: hidden;
       padding: var(--px-6) var(--px-8);
       text-overflow: ellipsis;
       white-space: nowrap;
       &:hover {
-        color: inherit;
-        background-color: hsla(
-          var(--color-neutral),
-          var(--alpha-background-light)
-        );
+        color: oklch(var(--fg-strong));
+        background-color: oklch(var(--bg-overlay));
       }
     }
   }
+  /*
+   * `graphiql-code-exporter` renders its snippet preview with CodeMirror v5,
+   * but we only need a read-only display. The styles below replace the bits
+   * of `codemirror.css` we actually need (layout for `.CodeMirror-lines` and
+   * `pre.CodeMirror-line`) and hide the bits we don't (scroll shims,
+   * cursors, gutters, line measurement DOM).
+   */
   & .CodeMirror {
-    box-shadow: var(--popover-box-shadow);
-    border-radius: var(--border-radius-12);
+    display: block;
+    position: relative;
+    overflow: auto;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-inline-code);
+    line-height: var(--line-height);
+    color: oklch(var(--fg-default));
+    background-color: oklch(var(--bg-subtle));
+    border: 1px solid oklch(var(--border-default));
+    border-radius: var(--radius-md);
     padding: var(--px-16);
+    min-height: 200px;
+    & .CodeMirror-scroll {
+      overflow: visible;
+    }
+    & .CodeMirror-sizer {
+      margin-left: 0 !important;
+      min-width: 0 !important;
+    }
+    & .CodeMirror-lines {
+      padding: 0;
+    }
+    & pre.CodeMirror-line {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: inherit;
+    }
+    & .CodeMirror-vscrollbar,
+    & .CodeMirror-hscrollbar,
+    & .CodeMirror-scrollbar-filler,
+    & .CodeMirror-gutter-filler,
+    & .CodeMirror-gutters,
+    & .CodeMirror-cursors,
+    & .CodeMirror-measure {
+      display: none !important;
+    }
   }
 }
