@@ -1,0 +1,54 @@
+{
+  "name": "@graphiql/cdn",
+  "version": "0.0.0",
+  "description": "Pre-bundled CDN distribution of GraphiQL: load GraphiQL in a browser from a static CDN with no build step.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-cdn"
+  },
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphiql-cdn#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/cdn"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/graphiql.js",
+  "module": "dist/graphiql.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/graphiql.js"
+    }
+  },
+  "scripts": {
+    "types:check": "tsgo --noEmit",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2 || ^17.0.0",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "dependencies": {
+    "@graphiql/plugin-explorer": "^5.1.1",
+    "@graphiql/react": "^0.37.0",
+    "@graphiql/toolkit": "^0.12.0",
+    "graphiql": "^5.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4",
+    "lightningcss": "^1.30.1",
+    "react": "^19",
+    "react-dom": "^19",
+    "terser": "^5",
+    "vite": "^6",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
