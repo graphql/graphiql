@@ -20,6 +20,20 @@ import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
 
+/**
+ * A read-only diff to render in place of the operation editor. While set, the
+ * editor area shows a side-by-side comparison of the current query (left)
+ * against `modifiedQuery` (right). Cleared by `setDiffOverlay(null)`.
+ */
+export interface DiffOverlay {
+  /** Query content rendered on the right (modified) side of the diff. */
+  modifiedQuery: string;
+  /** Display label shown in the diff header strip. */
+  label: string;
+  /** Invoked when the user clicks Apply. The overlay is cleared automatically afterwards. */
+  onApply: () => void;
+}
+
 export interface EditorSlice extends TabsState {
   /**
    * Unique ID of the GraphiQL instance, which will be suffixed to the URIs for operations,
@@ -47,6 +61,12 @@ export interface EditorSlice extends TabsState {
    * The Monaco Editor instance used in the variables editor.
    */
   variableEditor?: MonacoEditor;
+
+  /**
+   * When set, the editor area renders a Monaco diff editor in place of the
+   * regular operation editor. Used by the history plugin to preview a row.
+   */
+  diffOverlay: DiffOverlay | null;
 
   /**
    * The contents of the request headers editor when initially rendering the provider
@@ -194,6 +214,12 @@ export interface EditorActions {
       'headerEditor' | 'queryEditor' | 'responseEditor' | 'variableEditor'
     >,
   ): void;
+
+  /**
+   * Set or clear the diff overlay rendered in the operation editor area.
+   * Pass `null` to dismiss.
+   */
+  setDiffOverlay(overlay: DiffOverlay | null): void;
 
   /**
    * Changes the operation name and invokes the `onEditOperationName` callback.
@@ -428,6 +454,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       const newState = Object.fromEntries(entries);
       set(newState);
     },
+    setDiffOverlay(diffOverlay) {
+      set({ diffOverlay });
+    },
     setOperationName(operationName) {
       set(({ onEditOperationName, actions }) => {
         actions.updateActiveTabValues({ operationName });
@@ -556,6 +585,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   };
   return {
     ...initial,
+    diffOverlay: null,
     actions: $actions,
   };
 };
