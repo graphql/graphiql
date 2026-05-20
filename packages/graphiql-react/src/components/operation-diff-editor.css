@@ -1,0 +1,36 @@
+.graphiql-diff-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.graphiql-diff-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--px-8) var(--px-12);
+  border-bottom: 1px solid oklch(var(--border-default));
+  background: oklch(var(--bg-elevated));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-diff-editor-label strong {
+  margin-left: var(--px-4);
+  color: oklch(var(--fg-strong));
+  font-family: var(--font-family-mono);
+  font-weight: 500;
+}
+
+.graphiql-diff-editor-actions {
+  display: flex;
+  gap: var(--px-8);
+}
+
+.graphiql-diff-editor-monaco {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}

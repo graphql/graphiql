@@ -6,6 +6,7 @@ export { RequestHeadersEditor as HeaderEditor } from './request-headers-editor';
 export { ImagePreview } from './image-preview';
 export { GraphiQLProvider, useGraphiQL, useGraphiQLActions } from './provider';
 export { OperationEditor as QueryEditor } from './operation-editor';
+export { OperationDiffEditor } from './operation-diff-editor';
 export { ResponseEditor } from './response-editor';
 export { VariablesEditor as VariableEditor } from './variables-editor';
 
