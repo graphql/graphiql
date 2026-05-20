@@ -1,0 +1,45 @@
+.graphiql-doc-explorer-field-card {
+  border-top: 1px solid oklch(var(--border-default));
+}
+
+.graphiql-doc-explorer-field-card-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--px-6);
+  margin-bottom: var(--px-4);
+}
+
+.graphiql-doc-explorer-field-card-name {
+  font-family: var(--font-family-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: oklch(var(--accent-green-light));
+}
+
+.graphiql-doc-explorer-field-card-colon {
+  font-family: var(--font-family-mono);
+  font-size: 14px;
+  color: oklch(var(--fg-muted));
+}
+
+.graphiql-doc-explorer-field-card-type {
+  font-family: var(--font-family-mono);
+  font-size: 14px;
+  color: oklch(var(--accent-orange));
+
+  & .graphiql-doc-explorer-type-name {
+    color: oklch(var(--accent-orange));
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.graphiql-doc-explorer-field-card-description {
+  margin: 0 0 var(--px-6);
+  font-size: 12px;
+  color: oklch(var(--fg-muted));
+  line-height: 17px;
+}

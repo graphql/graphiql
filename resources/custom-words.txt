@@ -70,6 +70,7 @@ dotan
 dotansimha
 edcore
 envrc
+EAEEF
 esbuild
 estree
 execa
@@ -228,6 +229,7 @@ therox
 thomasheyenbrock
 timsuchanek
 tokenizes
+treeshake
 tsup
 turbopack
 typeahead

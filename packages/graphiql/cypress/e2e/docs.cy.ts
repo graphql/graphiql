@@ -31,12 +31,15 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates to a docs entry on selecting a search result', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'TestInput');
+    cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
+      'have.text',
+      'TestInput',
+    );
   });
 
   it('Allows searching fields within a type', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.dataCy('doc-explorer-input').type('list');
+    cy.dataCy('doc-explorer-input').clear().type('list');
     cy.dataCy('doc-explorer-option').should('have.length', 14);
     cy.get('.graphiql-doc-explorer-search-divider').should(
       'have.text',
@@ -54,16 +57,21 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates back', () => {
     cy.dataCy('doc-explorer-option').eq(4).children().click();
-    cy.get('.graphiql-doc-explorer-back').click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'Docs');
+    // Click the root breadcrumb segment (first link, at depth 0 = "Root")
+    cy.get('.graphiql-doc-explorer-breadcrumb-root').click();
+    // After navigating back, breadcrumb disappears (at root level, no breadcrumb shown)
+    cy.get('.graphiql-doc-explorer-breadcrumb').should('not.exist');
   });
 
   it('Type fields link to their own docs entry', () => {
     cy.dataCy('doc-explorer-option').last().click();
-    cy.get('.graphiql-doc-explorer-title').should('have.text', 'isTest');
-    cy.get('.graphiql-markdown-description').should(
+    cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
       'have.text',
-      'Is this a test schema? Sure it is.\n',
+      'isTest',
+    );
+    cy.get('.graphiql-doc-explorer-field-card-description').should(
+      'have.text',
+      'Is this a test schema? Sure it is.',
     );
   });
 });
@@ -79,20 +87,21 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
     // Show deprecated fields
     cy.contains('Show Deprecated Fields').click();
 
-    // Assert that title is shown
-    cy.get('.graphiql-doc-explorer-section-title').contains(
-      'Deprecated Fields',
-    );
+    // Click into the deprecated field to view its documentation
+    cy.contains(
+      'button.graphiql-doc-explorer-field-row--deprecated',
+      'deprecatedField',
+    ).click();
 
-    // Assert that the deprecated field is shown correctly
-    cy.get('.graphiql-doc-explorer-field-name')
-      .contains('deprecatedField')
-      .closest('.graphiql-doc-explorer-item')
-      .should('contain.text', 'This field is an example of a deprecated field')
-      .and(
-        'contain.html',
-        '<p>No longer in use, try <code>test</code> instead.</p>',
-      );
+    // Assert description and deprecation reason are shown
+    cy.get('.graphiql-doc-explorer-field-card-description').should(
+      'contain.text',
+      'This field is an example of a deprecated field',
+    );
+    cy.get('.graphiql-markdown-deprecation').should(
+      'contain.html',
+      '<p>No longer in use, try <code>test</code> instead.</p>',
+    );
   });
 });
 
@@ -107,13 +116,13 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     // Open doc explorer
     cy.get('.graphiql-activity-rail-item').eq(0).click();
 
-    // Select query type
-    cy.get('.graphiql-doc-explorer-type-name').first().click();
+    // Use search to navigate directly to hasArgs
+    cy.dataCy('doc-explorer-input').type('hasArgs');
+    cy.dataCy('doc-explorer-option').first().children().first().click();
 
-    cy.get('.graphiql-doc-explorer-field-name').contains('hasArgs').click();
     cy.contains('Show Deprecated Arguments').click();
-    cy.get('.graphiql-doc-explorer-section-title').contains(
-      'Deprecated Arguments',
+    cy.get('.graphiql-doc-explorer-arguments-list-header').contains(
+      'DEPRECATED ARGUMENTS',
     );
     cy.get('.graphiql-markdown-deprecation').should(
       'have.text',

@@ -174,60 +174,110 @@ export const MONACO_THEME_NAME = {
   light: 'graphiql-LIGHT',
 } as const;
 
-const colors = {
-  transparent: '#ffffff00',
-  bg: {
-    dark: '#212a3b',
-    light: '#ffffffff',
+// v6 design token hex values, keyed for Monaco theme rules (no # prefix).
+const TOKEN_COLORS = {
+  dark: {
+    // Foreground
+    fgDefault: 'C9D1D9', // --fg-default
+    fgMuted: '8B949E', // --fg-muted
+    fgDisabled: '6E7681', // --fg-disabled
+    // Accents
+    accentBlue: '79C0FF', // --accent-blue
+    accentGreenLight: '7EE787', // --accent-green-light
+    accentOrange: 'FFA657', // --accent-orange
+    accentPurple: 'D2A8FF', // --accent-purple
+    accentPink: 'FF7B72', // --accent-pink
+    // UI
+    bgCanvas: '0D1117', // --bg-canvas
+    bgOverlay: '21262D', // --bg-overlay
+    accentGreen: '3FB950', // --accent-green (focus/primary)
+    accentGreenBg: '3FB95019',
   },
-  primary: {
-    dark: '#ff5794',
-    light: '#d60590',
+  light: {
+    // Foreground
+    fgDefault: '1F2328', // --fg-default
+    fgMuted: '636E7B', // --fg-muted (~40% oklch)
+    fgDisabled: '9AA3AD', // --fg-disabled (~65% oklch)
+    // Accents — tuned for AA contrast on white
+    accentBlue: '0969DA', // --accent-blue light
+    accentGreenLight: '1A7F37', // --accent-green-light light
+    accentOrange: 'BC4C00', // --accent-orange light
+    accentPurple: '8250DF', // --accent-purple light
+    accentPink: 'CF222E', // --accent-pink light
+    // UI
+    bgCanvas: 'FFFFFF', // --bg-canvas
+    bgOverlay: 'EAEEF2', // --bg-overlay
+    accentGreen: '1A7F37', // --accent-green (focus/primary)
+    accentGreenBg: '1A7F3719',
   },
-  primaryBg: {
-    dark: '#ff579419',
-    light: '#d6059019',
-  },
-  secondary: {
-    dark: '#b7c2d711',
-    light: '#3b4b6811',
-  },
-};
+} as const;
 
 const getBaseColors = (
   theme: 'dark' | 'light',
-): monaco.editor.IStandaloneThemeData['colors'] => ({
-  'editor.background': colors.transparent, // white with a 00 alpha value
-  'scrollbar.shadow': colors.transparent, // Scrollbar shadow to indicate that the view is scrolled
-  'textLink.foreground': colors.primary[theme], // Foreground color for links in text
-  'textLink.activeForeground': colors.primary[theme], // Foreground color for active links in text
-  'editorLink.activeForeground': colors.primary[theme], // Color of active links
-  'editorHoverWidget.background': colors.bg[theme], // Background color of the editor hover
-  'list.hoverBackground': colors.primaryBg[theme], // List/Tree background when hovering over items using the mouse
-  'list.highlightForeground': colors.primary[theme],
-  'list.focusHighlightForeground': colors.primary[theme],
-  'menu.background': colors.bg[theme], // Background color of the context menu
+): monaco.editor.IStandaloneThemeData['colors'] => {
+  const t = TOKEN_COLORS[theme];
+  return {
+    'editor.background': '#ffffff00', // transparent — editor inherits container bg
+    'scrollbar.shadow': '#ffffff00',
+    'textLink.foreground': `#${t.accentGreen}`,
+    'textLink.activeForeground': `#${t.accentGreen}`,
+    'editorLink.activeForeground': `#${t.accentGreen}`,
+    'editorHoverWidget.background': `#${t.bgCanvas}`,
+    'list.hoverBackground': `#${t.accentGreenBg}`,
+    'list.highlightForeground': `#${t.accentGreen}`,
+    'list.focusHighlightForeground': `#${t.accentGreen}`,
+    'menu.background': `#${t.bgCanvas}`,
+    'editorSuggestWidget.background': `#${t.bgCanvas}`,
+    'editorSuggestWidget.selectedBackground': `#${t.accentGreenBg}`,
+    'editorSuggestWidget.selectedForeground': `#${t.accentGreen}`,
+    'quickInput.background': `#${t.bgCanvas}`,
+    'quickInputList.focusForeground': theme === 'dark' ? '#ffffff' : '#444444',
+    'editorWidget.background': `#${t.bgCanvas}`,
+    'input.background': `#${t.bgOverlay}`,
+    focusBorder: `#${t.accentGreen}`,
+    'toolbar.hoverBackground': `#${t.accentGreenBg}`,
+    'inputOption.hoverBackground': `#${t.accentGreenBg}`,
+    'quickInputList.focusBackground': `#${t.accentGreenBg}`,
+    'editorWidget.resizeBorder': `#${t.accentGreen}`,
+    'pickerGroup.foreground': `#${t.accentGreen}`,
+    'menu.selectionBackground': `#${t.accentGreenBg}`,
+    'menu.selectionForeground': `#${t.accentGreen}`,
+  };
+};
 
-  'editorSuggestWidget.background': colors.bg[theme], // Background color of the suggest widget
-  'editorSuggestWidget.selectedBackground': colors.primaryBg[theme], // Background color of the selected entry in the suggest widget
-  'editorSuggestWidget.selectedForeground': colors.primary[theme], // Foreground color of the selected entry in the suggest widget
-  'quickInput.background': colors.bg[theme],
-  'quickInputList.focusForeground': theme === 'dark' ? '#ffffff' : '#444444',
-  'highlighted.label': colors.primary[theme],
-  'quickInput.widget': colors.primary[theme],
-  highlight: colors.primary[theme],
-  'editorWidget.background': colors.bg[theme], // Background color of editor widgets, such as find/replace
-  'input.background': colors.secondary[theme], // Input box background
-  focusBorder: colors.primary[theme], // Overall border color for focused elements. This color is only used if not overridden by a component
-  'toolbar.hoverBackground': colors.primaryBg[theme],
-  'inputOption.hoverBackground': colors.primaryBg[theme],
-  'quickInputList.focusBackground': colors.primaryBg[theme],
-  'editorWidget.resizeBorder': colors.primary[theme],
-  'pickerGroup.foreground': colors.primary[theme], // Quick picker color for grouping labels
-
-  'menu.selectionBackground': colors.primaryBg[theme], // hover background
-  'menu.selectionForeground': colors.primary[theme], // hover text color
-});
+const getTokenRules = (
+  theme: 'dark' | 'light',
+): monaco.editor.ITokenThemeRule[] => {
+  const t = TOKEN_COLORS[theme];
+  return [
+    // keywords: query, mutation, subscription, fragment, on, type, scalar, …
+    { token: 'keyword.gql', foreground: t.accentPink },
+    // field / argument names (lowercase identifiers)
+    { token: 'key.identifier.gql', foreground: t.fgDefault },
+    // $variable input variables
+    { token: 'argument.identifier.gql', foreground: t.accentBlue },
+    // TypeName (uppercase identifiers)
+    { token: 'type.identifier.gql', foreground: t.accentOrange },
+    // @directives
+    { token: 'annotation.gql', foreground: t.accentPurple },
+    // string literals
+    { token: 'string.gql', foreground: t.accentBlue },
+    { token: 'string.quote.gql', foreground: t.accentBlue },
+    { token: 'string.escape.gql', foreground: t.accentBlue },
+    // numbers
+    { token: 'number.gql', foreground: t.accentBlue },
+    { token: 'number.float.gql', foreground: t.accentBlue },
+    // operators and delimiters use muted foreground
+    { token: 'operator.gql', foreground: t.fgMuted },
+    { token: 'delimiter.gql', foreground: t.fgMuted },
+    // comments
+    { token: 'comment.gql', foreground: t.fgDisabled, fontStyle: 'italic' },
+    // definition names (identifiers following 'fragment'/'query'/etc.)
+    // are caught by key.identifier.gql above, but named fragments benefit
+    // from the green-light accent to mirror the design's "name" slot.
+    { token: 'identifier.gql', foreground: t.accentGreenLight },
+  ];
+};
 
 export const MONACO_THEME_DATA: Record<
   'dark' | 'light',
@@ -237,22 +287,12 @@ export const MONACO_THEME_DATA: Record<
     base: 'vs-dark',
     inherit: true,
     colors: getBaseColors('dark'),
-    rules: [
-      {
-        token: 'argument.identifier.gql',
-        foreground: '#908aff',
-      },
-    ],
+    rules: getTokenRules('dark'),
   },
   light: {
     base: 'vs',
     inherit: true,
     colors: getBaseColors('light'),
-    rules: [
-      {
-        token: 'argument.identifier.gql',
-        foreground: '#6c69ce',
-      },
-    ],
+    rules: getTokenRules('light'),
   },
 };
