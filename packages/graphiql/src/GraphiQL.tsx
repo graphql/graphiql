@@ -21,6 +21,7 @@ import {
   PlusIcon,
   PrettifyIcon,
   QueryEditor,
+  OperationDiffEditor,
   ResponseEditor,
   SaveIcon,
   SidePanel,
@@ -236,6 +237,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    diffOverlay,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -244,6 +246,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'diffOverlay',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
@@ -378,10 +381,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsResize.firstRef}
       >
         {hasMonaco ? (
-          <QueryEditor
-            onClickReference={onClickReference}
-            onEdit={onEditQuery}
-          />
+          <>
+            <QueryEditor
+              onClickReference={onClickReference}
+              onEdit={onEditQuery}
+              className={cn(diffOverlay && 'hidden')}
+            />
+            {diffOverlay && <OperationDiffEditor />}
+          </>
         ) : (
           <Spinner />
         )}
