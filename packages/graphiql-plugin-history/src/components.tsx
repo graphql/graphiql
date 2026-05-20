@@ -170,10 +170,9 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
         <>
           <div className="graphiql-history-item-inner">
             <div className="graphiql-history-item-row">
-              <MethodPill
-                operation={props.item.operation ?? 'invalid'}
-                aria-hidden
-              />
+              {props.item.operation && (
+                <MethodPill operation={props.item.operation} aria-hidden />
+              )}
               <Tooltip label="Set active">
                 <UnStyledButton
                   type="button"

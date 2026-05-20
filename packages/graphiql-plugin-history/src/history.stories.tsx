@@ -142,24 +142,6 @@ export const ItemWithLabel: Story = {
 };
 
 // ---------------------------------------------------------------------------
-// Invalid (legacy) item — no operation field, renders ERR pill
-// ---------------------------------------------------------------------------
-
-export const ItemInvalid: Story = {
-  render: () =>
-    withHistoryContext(
-      <ul className="graphiql-history-items" style={{ padding: 0, margin: 0 }}>
-        <HistoryItem
-          item={{
-            query: 'query Legacy { something }',
-            favorite: false,
-          }}
-        />
-      </ul>,
-    ),
-};
-
-// ---------------------------------------------------------------------------
 // Empty state (full History component)
 // ---------------------------------------------------------------------------
 
@@ -287,12 +269,6 @@ export const Mixed: Story = {
             item={{
               query: '{ __typename }',
               operation: 'query',
-              favorite: false,
-            }}
-          />
-          <HistoryItem
-            item={{
-              query: 'query Legacy { unknown }',
               favorite: false,
             }}
           />

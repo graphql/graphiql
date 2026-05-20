@@ -30,8 +30,3 @@
   color: oklch(98% 0 0);
   background: oklch(45% 0.18 295);
 }
-
-.graphiql-method-pill-invalid {
-  color: oklch(98% 0 0);
-  background: oklch(50% 0.18 25);
-}

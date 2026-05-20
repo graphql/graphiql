@@ -2,13 +2,12 @@ import type { FC } from 'react';
 import type { OperationTypeNode } from 'graphql';
 import './index.css';
 
-export type Operation = `${OperationTypeNode}` | 'invalid';
+export type Operation = `${OperationTypeNode}`;
 
 const LABELS: Record<Operation, string> = {
   query: 'QRY',
   mutation: 'MUT',
   subscription: 'SUB',
-  invalid: 'ERR',
 };
 
 export type MethodPillProps = {

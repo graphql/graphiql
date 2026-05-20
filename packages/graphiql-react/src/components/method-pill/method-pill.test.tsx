@@ -19,9 +19,4 @@ describe('MethodPill', () => {
     render(<MethodPill operation="subscription" />);
     expect(screen.getByText('SUB')).toBeInTheDocument();
   });
-
-  it('renders ERR for invalid operations', () => {
-    render(<MethodPill operation="invalid" />);
-    expect(screen.getByText('ERR')).toBeInTheDocument();
-  });
 });
