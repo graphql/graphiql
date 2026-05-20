@@ -10,22 +10,12 @@ import {
   useGraphiQL,
   pick,
   Button,
+  MethodPill,
   Tooltip,
   UnStyledButton,
   PanelHeader,
 } from '@graphiql/react';
 import { useHistory, useHistoryActions } from './context';
-
-// Fix error from react-compiler
-// Support value blocks (conditional, logical, optional chaining, etc.) within a try/catch statement
-function handleDelete(
-  items: QueryStoreItem[],
-  deleteFromHistory: ReturnType<typeof useHistoryActions>['deleteFromHistory'],
-) {
-  for (const item of items) {
-    deleteFromHistory(item, true);
-  }
-}
 
 export const History: FC = () => {
   const all = useHistory();
@@ -42,43 +32,19 @@ export const History: FC = () => {
     items = items.filter(item => !item.favorite);
   }
 
-  const [clearStatus, setClearStatus] = useState<'success' | 'error' | null>(
-    null,
-  );
-  useEffect(() => {
-    if (clearStatus) {
-      // reset the button after a couple seconds
-      setTimeout(() => {
-        setClearStatus(null);
-      }, 2000);
-    }
-  }, [clearStatus]);
-
-  const handleClearStatus = () => {
-    try {
-      handleDelete(items, deleteFromHistory);
-      setClearStatus('success');
-    } catch {
-      setClearStatus('error');
+  const handleClear = () => {
+    for (const item of items) {
+      deleteFromHistory(item, true);
     }
   };
   const hasFavorites = Boolean(favorites.length);
   const hasItems = Boolean(items.length);
 
-  const clearButton =
-    clearStatus || hasItems ? (
-      <Button
-        type="button"
-        state={clearStatus || undefined}
-        disabled={!items.length}
-        onClick={handleClearStatus}
-      >
-        {{
-          success: 'Cleared',
-          error: 'Failed to Clear',
-        }[clearStatus!] || 'Clear'}
-      </Button>
-    ) : undefined;
+  const clearButton = hasItems ? (
+    <Button type="button" onClick={handleClear}>
+      Clear
+    </Button>
+  ) : undefined;
 
   return (
     <section aria-label="History" className="graphiql-history">
@@ -204,9 +170,9 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
         <>
           <div className="graphiql-history-item-inner">
             <div className="graphiql-history-item-row">
-              <span
-                className="graphiql-history-item-status"
-                aria-hidden="true"
+              <MethodPill
+                operation={props.item.operation ?? 'invalid'}
+                aria-hidden
               />
               <Tooltip label="Set active">
                 <UnStyledButton
