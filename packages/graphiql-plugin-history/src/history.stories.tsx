@@ -72,6 +72,7 @@ export const ItemQueryOnly: Story = {
         <HistoryItem
           item={{
             query: 'query GetUser { user { id name email } }',
+            operation: 'query',
             favorite: false,
           }}
         />
@@ -92,6 +93,7 @@ export const ItemWithVariables: Story = {
             query: 'query GetUser($id: ID!) { user(id: $id) { id name } }',
             variables: JSON.stringify({ id: '123', role: 'admin' }),
             operationName: 'GetUser',
+            operation: 'query',
             favorite: false,
           }}
         />
@@ -111,6 +113,7 @@ export const ItemFavorite: Story = {
           item={{
             query: 'query Me { viewer { login avatarUrl } }',
             operationName: 'Me',
+            operation: 'query',
             favorite: true,
           }}
         />
@@ -129,6 +132,7 @@ export const ItemWithLabel: Story = {
         <HistoryItem
           item={{
             query: 'query { repositories { totalCount } }',
+            operation: 'query',
             label: 'Repo count check',
             favorite: false,
           }}
@@ -157,6 +161,7 @@ export const FewRows: Story = {
           item={{
             query: 'query Me { viewer { login } }',
             operationName: 'Me',
+            operation: 'query',
             favorite: false,
           }}
         />
@@ -165,6 +170,7 @@ export const FewRows: Story = {
             query: 'query GetUser($id: ID!) { user(id: $id) { id name } }',
             variables: JSON.stringify({ id: '42' }),
             operationName: 'GetUser',
+            operation: 'query',
             favorite: false,
           }}
         />
@@ -176,6 +182,7 @@ export const FewRows: Story = {
               input: { title: 'Hello', body: 'World' },
             }),
             operationName: 'CreatePost',
+            operation: 'mutation',
             favorite: false,
           }}
         />
@@ -190,6 +197,7 @@ export const FewRows: Story = {
 const manyItems = Array.from({ length: 10 }, (_, i) => ({
   query: `query Query${i + 1} { node(id: "${i + 1}") { id ... on User { name } } }`,
   operationName: `Query${i + 1}`,
+  operation: 'query' as const,
   favorite: false,
 }));
 
@@ -220,6 +228,7 @@ export const Mixed: Story = {
             item={{
               query: 'query Me { viewer { login avatarUrl } }',
               operationName: 'Me',
+              operation: 'query',
               favorite: true,
               label: 'My profile',
             }}
@@ -228,6 +237,7 @@ export const Mixed: Story = {
             item={{
               query: 'subscription OnComment { commentAdded { id body } }',
               operationName: 'OnComment',
+              operation: 'subscription',
               favorite: true,
             }}
           />
@@ -243,6 +253,7 @@ export const Mixed: Story = {
                 'query GetUser($id: ID!) { user(id: $id) { id name email } }',
               variables: JSON.stringify({ id: '123', role: 'admin' }),
               operationName: 'GetUser',
+              operation: 'query',
               favorite: false,
             }}
           />
@@ -250,12 +261,14 @@ export const Mixed: Story = {
             item={{
               query: 'mutation DeleteUser($id: ID!) { deleteUser(id: $id) }',
               operationName: 'DeleteUser',
+              operation: 'mutation',
               favorite: false,
             }}
           />
           <HistoryItem
             item={{
               query: '{ __typename }',
+              operation: 'query',
               favorite: false,
             }}
           />

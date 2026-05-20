@@ -1,7 +1,8 @@
 import type { FC } from 'react';
+import type { Operation } from '@graphiql/toolkit';
 import './index.css';
 
-export type Operation = 'query' | 'mutation' | 'subscription';
+export type { Operation };
 
 const LABELS: Record<Operation, string> = {
   query: 'QRY',

@@ -77,18 +77,6 @@
   min-width: 0;
 }
 
-.graphiql-history-item-status {
-  flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: oklch(var(--accent-green));
-}
-
-.graphiql-history-item-status.error {
-  background-color: oklch(var(--accent-red));
-}
-
 .graphiql-history-item-label {
   flex: 1;
   min-width: 0;
