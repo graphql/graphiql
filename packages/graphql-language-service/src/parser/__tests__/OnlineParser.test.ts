@@ -57,12 +57,77 @@ describe('onlineParser', () => {
       `);
 
       t.keyword('schema', { kind: 'SchemaDef' });
-      t.punctuation('{');
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
 
       t.keyword('query', { kind: 'OperationTypeDef' });
       t.punctuation(':');
       t.name('SomeType');
 
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+
+    it('parses schema extension bare', () => {
+      const { t } = getUtils(`
+        extend schema
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with operation defs', () => {
+      const { t } = getUtils(`
+        extend schema {
+          query: SomeType
+        }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      t.punctuation('{', { kind: 'OperationTypeDefs' });
+
+      t.keyword('query', { kind: 'OperationTypeDef' });
+      t.punctuation(':');
+      t.name('SomeType');
+
+      t.punctuation('}', { kind: 'Document' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.eol();
+    });
+
+    it('parses schema extension with directive applications without root operation definitions, followed by a type definition', () => {
+      const { t } = getUtils(`
+        extend schema @someDirective
+        
+        type A { field: String }
+      `);
+
+      t.keyword('extend', { kind: 'ExtendDef' });
+      t.keyword('schema', { kind: 'SchemaExtension' });
+      expectDirective({ t }, { name: 'someDirective' });
+
+      t.keyword('type', { kind: 'ObjectTypeDef' });
+      t.name('A');
+      t.punctuation('{', { kind: 'FieldDefs' });
+      t.property('field', { kind: 'FieldDef' });
+      t.punctuation(':');
+      t.name('String', { kind: 'NamedType' });
       t.punctuation('}', { kind: 'Document' });
 
       t.eol();
@@ -908,13 +973,35 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
         t.name('AnotherType', { kind: 'NamedType' });
         t.punctuation('!', { kind: 'FieldDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          type SomeType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -987,13 +1074,35 @@ describe('onlineParser', () => {
         `);
         t.keyword('interface', { kind: 'InterfaceDef' });
         t.name('SomeInterface');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
         t.name('SomeType', { kind: 'NamedType' });
         t.punctuation('!', { kind: 'FieldDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          interface SomeInterface @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1046,6 +1155,52 @@ describe('onlineParser', () => {
       );
     });
 
+    describe('parses extend interface def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend interface SomeInterface {
+            someField: SomeType
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        t.punctuation('{', { kind: 'FieldDefs' });
+
+        t.property('someField', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('SomeType', { kind: 'NamedType' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          extend interface SomeInterface @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
     describe('parses field defs', () => {
       it('correctly', () => {
         const { t } = getUtils(`
@@ -1055,7 +1210,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1075,7 +1230,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(/\(/, { kind: 'ArgumentsDef' });
@@ -1104,7 +1259,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1125,7 +1280,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1148,7 +1303,7 @@ describe('onlineParser', () => {
           it(`with a directive having arguments of type ${fill.type}`, () => {
             t.keyword('type', { kind: 'ObjectTypeDef' });
             t.name('SomeType');
-            t.punctuation('{');
+            t.punctuation('{', { kind: 'FieldDefs' });
 
             t.property('someField', { kind: 'FieldDef' });
             t.punctuation(':');
@@ -1181,7 +1336,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1202,7 +1357,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldDefs' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1210,6 +1365,29 @@ describe('onlineParser', () => {
         expectDirective({ t }, { name: 'someDirective' });
         expectDirective({ t }, { name: 'anotherDirective' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, followed by another definition', () => {
+        const { t } = getUtils(`
+          extend type SomeType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1226,7 +1404,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputValueDefs' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1246,7 +1424,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputValueDefs' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1254,6 +1432,74 @@ describe('onlineParser', () => {
         expectDirective({ t }, { name: 'someDirective' });
         expectDirective({ t }, { name: 'anotherDirective' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          input SomeInputType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend input def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend input SomeInputType {
+            someField: AnotherType
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        t.punctuation('{', { kind: 'InputValueDefs' });
+
+        t.attribute('someField', { kind: 'InputValueDef' });
+        t.punctuation(':');
+        t.name('AnotherType', { kind: 'NamedType' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no fields body, only a directive', () => {
+        const { t } = getUtils(`
+          extend input SomeInputType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInputType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1271,7 +1517,7 @@ describe('onlineParser', () => {
 
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'EnumValueDefs' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
@@ -1292,11 +1538,77 @@ describe('onlineParser', () => {
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('{', { kind: 'EnumDef' });
+        t.punctuation('{', { kind: 'EnumValueDefs' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
 
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no values body, only a directive', () => {
+        const { t } = getUtils(`
+          enum SomeEnum @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend enum def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(`
+          extend enum SomeEnum {
+            SOME_ENUM_VALUE
+          }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        t.punctuation('{', { kind: 'EnumValueDefs' });
+
+        t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
+
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+
+      it('with no values body, only a directive', () => {
+        const { t } = getUtils(`
+          extend enum SomeEnum @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
         t.punctuation('}', { kind: 'Document' });
 
         t.eol();
@@ -1330,9 +1642,9 @@ describe('onlineParser', () => {
 
         t.keyword('union', { kind: 'UnionDef' });
         t.name('SomeUnionType');
-        t.punctuation('=');
+        t.punctuation('=', { kind: 'UnionMembers' });
         t.name('SomeType', { kind: 'NamedType' });
-        t.punctuation('|', { kind: 'UnionDef' });
+        t.punctuation('|', { kind: 'UnionMembers' });
         t.name('AnotherType', { kind: 'NamedType' });
 
         t.eol();
@@ -1346,10 +1658,73 @@ describe('onlineParser', () => {
         t.keyword('union', { kind: 'UnionDef' });
         t.name('SomeUnionType');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('=', { kind: 'UnionDef' });
+        t.punctuation('=', { kind: 'UnionMembers' });
         t.name('SomeType', { kind: 'NamedType' });
-        t.punctuation('|', { kind: 'UnionDef' });
+        t.punctuation('|', { kind: 'UnionMembers' });
         t.name('AnotherType', { kind: 'NamedType' });
+
+        t.eol();
+      });
+
+      it('with no members, only a directive', () => {
+        const { t } = getUtils(`
+          union SomeUnionType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
+
+        t.eol();
+      });
+    });
+
+    describe('parses extend union def', () => {
+      it('correctly', () => {
+        const { t } = getUtils(
+          'extend union SomeUnionType = SomeType | AnotherType',
+        );
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        t.punctuation('=', { kind: 'UnionMembers' });
+        t.name('SomeType', { kind: 'NamedType' });
+        t.punctuation('|', { kind: 'UnionMembers' });
+        t.name('AnotherType', { kind: 'NamedType' });
+
+        t.eol();
+      });
+
+      it('with no members, only a directive', () => {
+        const { t } = getUtils(`
+          extend union SomeUnionType @someDirective
+
+          type AnotherType { field: String }
+        `);
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('union', { kind: 'UnionDef' });
+        t.name('SomeUnionType');
+        expectDirective({ t }, { name: 'someDirective' });
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('AnotherType');
+        t.punctuation('{', { kind: 'FieldDefs' });
+        t.property('field', { kind: 'FieldDef' });
+        t.punctuation(':');
+        t.name('String', { kind: 'NamedType' });
+        t.punctuation('}', { kind: 'Document' });
 
         t.eol();
       });
