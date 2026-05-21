@@ -33,6 +33,7 @@ import {
   UnStyledButton,
   useDragResize,
   useGraphiQL,
+  useGraphiQLSettings,
   pick,
   VariableEditor,
   EditorProps,
@@ -247,6 +248,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  useGraphiQLSettings(containerRef);
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -464,7 +468,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   return (
     <Tooltip.Provider>
-      <div className={cn('graphiql-container', className)}>
+      <div ref={containerRef} className={cn('graphiql-container', className)}>
         <TopBar />
         <div className="graphiql-body">
           <ActivityBar
