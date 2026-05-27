@@ -52,6 +52,13 @@
   flex: 1;
 }
 
+/* ToolbarButton defaults to --toolbar-width (40px); shrink it so the hover
+   background fits inside the 32px header bar. */
+.graphiql-response-header .graphiql-toolbar-button {
+  height: 28px;
+  width: 28px;
+}
+
 .graphiql-response-pane {
   display: flex;
   flex-direction: column;
