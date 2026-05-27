@@ -18,6 +18,7 @@ import {
   createSchemaSlice,
   createThemeSlice,
   createStorageSlice,
+  isResponseView,
   ExecutionProps,
   PluginProps,
   SchemaProps,
@@ -211,6 +212,17 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       }
     }
 
+    function getInitialResponseView() {
+      const stored = storage.get(STORAGE_KEY.responseView);
+      if (isResponseView(stored)) {
+        return stored;
+      }
+      if (typeof stored === 'string') {
+        storage.set(STORAGE_KEY.responseView, '');
+      }
+      return 'json';
+    }
+
     function getInitialState() {
       // We only need to compute it lazily during the initial render.
       const query = props.initialQuery ?? storage.get(STORAGE_KEY.query);
@@ -296,6 +308,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       actions.setPlugins(plugins);
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
+      actions.setResponseView(getInitialResponseView());
 
       return store;
     }

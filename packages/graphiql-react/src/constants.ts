@@ -54,6 +54,7 @@ export const STORAGE_KEY = {
   tabs: 'tabState',
   persistHeaders: 'shouldPersistHeaders',
   theme: 'theme',
+  responseView: 'responseView',
 } as const;
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL

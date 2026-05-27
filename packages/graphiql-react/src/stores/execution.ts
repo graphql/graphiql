@@ -16,7 +16,27 @@ import getValue from 'get-value';
 import type { StateCreator } from 'zustand';
 import { tryParseJSONC } from '../utility';
 import { Range } from '../utility/monaco-ssr';
+import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions, MonacoEditor } from '../types';
+
+export type ResponseView = 'json' | 'tree' | 'table';
+
+const RESPONSE_VIEWS: readonly ResponseView[] = ['json', 'tree', 'table'];
+
+export function isResponseView(value: unknown): value is ResponseView {
+  return (
+    typeof value === 'string' && RESPONSE_VIEWS.includes(value as ResponseView)
+  );
+}
+
+export interface LastResponse {
+  /** HTTP-equivalent status code. 200 for a successful response, 0 if none. */
+  status: number;
+  /** Elapsed time in milliseconds. */
+  timeMs: number;
+  /** Approximate serialized size of the response body in bytes. */
+  sizeBytes: number;
+}
 
 export interface ExecutionSlice {
   /**
@@ -26,6 +46,19 @@ export interface ExecutionSlice {
    * @default false
    */
   isFetching: boolean;
+
+  /**
+   * Metadata captured from the most recent completed fetch: status, elapsed
+   * time, and approximate response size. `null` before any request runs.
+   * @default null
+   */
+  lastResponse: LastResponse | null;
+
+  /**
+   * Which view is active in the response pane.
+   * @default 'json'
+   */
+  responseView: ResponseView;
 
   /**
    * Represents an active GraphQL subscription.
@@ -80,6 +113,11 @@ export interface ExecutionActions {
    * Stop the GraphQL request that is currently in-flight.
    */
   stop(): void;
+
+  /**
+   * Change which view is shown in the response pane.
+   */
+  setResponseView(view: ResponseView): void;
 }
 
 export interface ExecutionProps extends Pick<
@@ -178,9 +216,16 @@ export const createExecutionSlice: CreateExecutionSlice =
     return {
       ...initial,
       isFetching: false,
+      lastResponse: null,
+      responseView: 'json' as ResponseView,
       subscription: null,
       queryId: 0,
       actions: {
+        setResponseView(view: ResponseView) {
+          const { storage } = get();
+          storage.set(STORAGE_KEY.responseView, view);
+          set({ responseView: view });
+        },
         stop() {
           set(({ subscription }) => {
             subscription?.unsubscribe();
@@ -258,6 +303,7 @@ export const createExecutionSlice: CreateExecutionSlice =
 
           setResponse('');
           set({ isFetching: true });
+          const fetchStartMs = Date.now();
           try {
             const fullResponse: ExecutionResult = {};
             const handleResponse = (result: ExecutionResult) => {
@@ -281,11 +327,33 @@ export const createExecutionSlice: CreateExecutionSlice =
                   mergeIncrementalResult(fullResponse, part);
                 }
 
-                set({ isFetching: false });
-                setResponse(formatResult(fullResponse));
+                const formatted = formatResult(fullResponse);
+                set({
+                  isFetching: false,
+                  lastResponse: {
+                    status: fullResponse.errors?.length ? 200 : 200,
+                    timeMs: Date.now() - fetchStartMs,
+                    sizeBytes: new TextEncoder().encode(formatted).length,
+                  },
+                });
+                setResponse(formatted);
               } else {
-                set({ isFetching: false });
-                setResponse(formatResult(result));
+                const formatted = formatResult(result);
+                const hasErrors =
+                  typeof result === 'object' &&
+                  result !== null &&
+                  'errors' in result &&
+                  Array.isArray((result as ExecutionResult).errors) &&
+                  (result as ExecutionResult).errors!.length > 0;
+                set({
+                  isFetching: false,
+                  lastResponse: {
+                    status: hasErrors ? 200 : 200,
+                    timeMs: Date.now() - fetchStartMs,
+                    sizeBytes: new TextEncoder().encode(formatted).length,
+                  },
+                });
+                setResponse(formatted);
               }
             };
             const opName = overrideOperationName ?? operationName;
@@ -304,9 +372,17 @@ export const createExecutionSlice: CreateExecutionSlice =
                   handleResponse(result);
                 },
                 error(error: Error) {
-                  set({ isFetching: false });
-                  setResponse(formatError(error));
-                  set({ subscription: null });
+                  const errorText = formatError(error);
+                  set({
+                    isFetching: false,
+                    lastResponse: {
+                      status: 0,
+                      timeMs: Date.now() - fetchStartMs,
+                      sizeBytes: new TextEncoder().encode(errorText).length,
+                    },
+                    subscription: null,
+                  });
+                  setResponse(errorText);
                 },
                 complete() {
                   set({ isFetching: false, subscription: null });
@@ -326,9 +402,17 @@ export const createExecutionSlice: CreateExecutionSlice =
               handleResponse(value);
             }
           } catch (error) {
-            set({ isFetching: false });
-            setResponse(formatError(error));
-            set({ subscription: null });
+            const errorText = formatError(error);
+            set({
+              isFetching: false,
+              lastResponse: {
+                status: 0,
+                timeMs: Date.now() - fetchStartMs,
+                sizeBytes: new TextEncoder().encode(errorText).length,
+              },
+              subscription: null,
+            });
+            setResponse(errorText);
           }
         },
       },

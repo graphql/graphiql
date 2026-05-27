@@ -1,0 +1,82 @@
+.graphiql-response-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  height: 32px;
+  padding: 0 var(--px-14);
+  border-bottom: 1px solid oklch(var(--border-default));
+  background: oklch(var(--bg-elevated));
+  flex-shrink: 0;
+}
+
+.graphiql-response-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-family: var(--font-family-mono);
+  font-size: 11.5px;
+  line-height: 1;
+}
+
+.graphiql-response-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graphiql-response-status--ok .graphiql-response-status-dot {
+  background: oklch(var(--accent-green));
+}
+
+.graphiql-response-status--error .graphiql-response-status-dot {
+  background: oklch(var(--accent-red));
+}
+
+.graphiql-response-status--ok .graphiql-response-status-code {
+  color: oklch(var(--accent-green));
+}
+
+.graphiql-response-status--error .graphiql-response-status-code {
+  color: oklch(var(--accent-red));
+}
+
+.graphiql-response-meta {
+  font-family: var(--font-family-mono);
+  font-size: 11.5px;
+  color: oklch(var(--fg-muted));
+  line-height: 1;
+}
+
+.graphiql-response-header-spacer {
+  flex: 1;
+}
+
+/* ToolbarButton defaults to --toolbar-width (40px); shrink it so the hover
+   background fits inside the 32px header bar. */
+.graphiql-response-header .graphiql-toolbar-button {
+  height: 28px;
+  width: 28px;
+}
+
+.graphiql-response-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.graphiql-response-pane .result-window {
+  flex: 1;
+  min-height: 0;
+}
+
+.graphiql-response-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+}
