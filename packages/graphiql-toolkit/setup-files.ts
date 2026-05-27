@@ -1,7 +1,3 @@
-import { vi, afterEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
-
 // Node 24 + jsdom defines `window` but not `localStorage`. Polyfill with a
 // minimal in-memory implementation so StorageAPI can construct without error.
 if (typeof localStorage === 'undefined') {
@@ -23,8 +19,3 @@ if (typeof localStorage === 'undefined') {
     key: (index: number) => [...store.keys()][index] ?? null,
   };
 }
-
-afterEach(cleanup);
-
-// to make it works like Jest (auto-mocking)
-vi.mock('monaco-editor');
