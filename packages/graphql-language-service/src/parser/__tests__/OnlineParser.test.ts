@@ -908,7 +908,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -987,7 +987,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('interface', { kind: 'InterfaceDef' });
         t.name('SomeInterface');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1055,7 +1055,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1075,7 +1075,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(/\(/, { kind: 'ArgumentsDef' });
@@ -1104,7 +1104,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1125,7 +1125,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1148,7 +1148,7 @@ describe('onlineParser', () => {
           it(`with a directive having arguments of type ${fill.type}`, () => {
             t.keyword('type', { kind: 'ObjectTypeDef' });
             t.name('SomeType');
-            t.punctuation('{');
+            t.punctuation('{', { kind: 'FieldsDef' });
 
             t.property('someField', { kind: 'FieldDef' });
             t.punctuation(':');
@@ -1181,7 +1181,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1202,7 +1202,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1226,7 +1226,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputFieldsDef' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1246,7 +1246,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputFieldsDef' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1271,7 +1271,7 @@ describe('onlineParser', () => {
 
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'EnumValuesDef' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
@@ -1292,7 +1292,7 @@ describe('onlineParser', () => {
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('{', { kind: 'EnumDef' });
+        t.punctuation('{', { kind: 'EnumValuesDef' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });

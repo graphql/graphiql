@@ -232,9 +232,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     name('atom'),
     opt('Implements'),
     list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
+    opt('FieldsDef'),
   ],
   Implements: [word('implements'), list('NamedType', p('&'))],
   DirectiveLocation: [name('string-2')],
@@ -254,10 +252,13 @@ export const ParseRules: { [name: string]: ParseRule } = {
     name('atom'),
     opt('Implements'),
     list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
+    opt('FieldsDef'),
   ],
+
+  // The fields block is optional per spec (e.g. `type Foo @directive` or a
+  // type extension that only adds directives/interfaces). When present it must
+  // contain at least one field, but the online parser tolerates an empty body.
+  FieldsDef: [p('{'), list('FieldDef'), p('}')],
 
   FieldDef: [
     name('property'),
@@ -289,20 +290,21 @@ export const ParseRules: { [name: string]: ParseRule } = {
     word('enum'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('EnumValueDef'),
-    p('}'),
+    opt('EnumValuesDef'),
   ],
 
+  // Optional per spec, see `FieldsDef`.
+  EnumValuesDef: [p('{'), list('EnumValueDef'), p('}')],
   EnumValueDef: [name('string-2'), list('Directive')],
   InputDef: [
     word('input'),
     name('atom'),
     list('Directive'),
-    p('{'),
-    list('InputValueDef'),
-    p('}'),
+    opt('InputFieldsDef'),
   ],
+
+  // Optional per spec, see `FieldsDef`.
+  InputFieldsDef: [p('{'), list('InputValueDef'), p('}')],
   ExtendDef: [word('extend'), 'ExtensionDefinition'],
   ExtensionDefinition(token: Token): RuleKind | void {
     switch (token.value) {
