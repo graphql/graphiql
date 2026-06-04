@@ -13094,6 +13094,7 @@ __metadata:
     "@babel/parser": "npm:^7.23.6"
     "@babel/types": "npm:^7.23.5"
     "@graphql-tools/code-file-loader": "npm:8.0.3"
+    "@types/debounce-promise": "npm:^3.1.9"
     "@types/glob": "npm:^8.1.0"
     "@types/mkdirp": "npm:^1.0.1"
     cosmiconfig-toml-loader: "npm:^1.0.0"
