@@ -53,7 +53,7 @@ import type { GraphQLCache } from './GraphQLCache';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
-import type { Logger } from 'vscode-languageserver';
+import type { Logger } from 'vscode-jsonrpc';
 import {
   Hover,
   SymbolInformation,
