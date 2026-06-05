@@ -39,3 +39,5 @@ export { ActivityRail } from './activity-rail';
 export type { ActivityRailProps } from './activity-rail';
 export { ResponseHeader } from './response-header';
 export type { ResponseHeaderProps } from './response-header';
+export { ResponseTreeView } from './response-tree-view';
+export type { ResponseTreeViewProps } from './response-tree-view';
