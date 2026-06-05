@@ -129,8 +129,7 @@ export const simpleHttpTransport =
 
 /**
  * create a simple HTTP/S fetcher using a fetch implementation where
- * multipart is not needed. Projects `simpleHttpTransport` down to the parsed
- * body, preserving the `Fetcher` contract.
+ * multipart is not needed
  *
  * @param options {CreateFetcherOptions}
  * @param httpFetch {typeof fetch}
@@ -139,11 +138,17 @@ export const simpleHttpTransport =
 export const createSimpleFetcher =
   (options: CreateFetcherOptions, httpFetch: typeof fetch): Fetcher =>
   async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) => {
-    const { body } = await simpleHttpTransport(options, httpFetch)(
-      graphQLParams,
-      fetcherOpts,
-    );
-    return body as ExecutionResult;
+    const data = await httpFetch(options.url, {
+      method: 'POST',
+      body: JSON.stringify(graphQLParams),
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/graphql-response+json, application/json;q=0.9',
+        ...options.headers,
+        ...fetcherOpts?.headers,
+      },
+    });
+    return data.json();
   };
 
 export async function createWebsocketsFetcherFromUrl(
@@ -269,19 +274,45 @@ export const multipartHttpTransport =
 
 /**
  * Create a fetcher with the `IncrementalDelivery` HTTP/S spec for
- * `@stream` and `@defer` support using `fetch-multipart-graphql`. Projects
- * `multipartHttpTransport` down to the body of each chunk.
+ * `@stream` and `@defer` support using `fetch-multipart-graphql`
  */
 export const createMultipartFetcher = (
   options: CreateFetcherOptions,
   httpFetch: typeof fetch,
 ): Fetcher =>
   async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
-    for await (const response of multipartHttpTransport(options, httpFetch)(
-      graphQLParams,
-      fetcherOpts,
-    )) {
-      yield response.body as ExecutionResult;
+    const response = await httpFetch(options.url, {
+      method: 'POST',
+      body: JSON.stringify(graphQLParams),
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/json, multipart/mixed',
+        ...options.headers,
+        // allow user-defined headers to override
+        // the static provided headers
+        ...fetcherOpts?.headers,
+      },
+    }).then(r =>
+      meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(r, {
+        multiple: true,
+      }),
+    );
+
+    // Follows the same as createSimpleFetcher above, in that we simply return it as json.
+    if (!isAsyncIterable(response)) {
+      return yield response.json();
+    }
+
+    for await (const chunk of response) {
+      if (chunk.some(part => !part.json)) {
+        const message = chunk.map(
+          part => `Headers::\n${part.headers}\n\nBody::\n${part.body}`,
+        );
+        throw new Error(
+          `Expected multipart chunks to be of json type. got:\n${message}`,
+        );
+      }
+      yield chunk.map(part => part.body);
     }
   };
 
