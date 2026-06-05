@@ -73,3 +73,21 @@ export const TreeView: Story = {
     );
   },
 };
+
+export const UpgradeBanner: Story = {
+  name: 'Upgrade banner (fetcher path)',
+  render() {
+    const [view, setView] = useState<ResponseView>('json');
+    return (
+      <ResponseHeader
+        upgradeNotice={{
+          href: 'https://github.com/graphql/graphiql/blob/main/docs/migration/graphiql-6.0.0.md',
+          onDismiss() {},
+        }}
+        view={view}
+        onViewChange={setView}
+        onCopy={() => {}}
+      />
+    );
+  },
+};
