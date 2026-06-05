@@ -98,7 +98,8 @@
   flex-shrink: 0;
 }
 
-.graphiql-transport-upgrade-banner-link {
+.graphiql-transport-upgrade-banner-link,
+.graphiql-transport-upgrade-banner-link:visited {
   color: oklch(var(--fg-default));
   text-decoration: underline;
   text-underline-offset: 2px;
