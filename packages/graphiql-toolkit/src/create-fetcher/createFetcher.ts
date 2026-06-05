@@ -11,6 +11,10 @@ import {
  * build a GraphiQL fetcher that is:
  * - backwards compatible
  * - optionally supports graphql-ws or `
+ *
+ * @deprecated Use `createTransport` from `@graphiql/toolkit` instead. The new
+ * API surfaces real response metadata (status, headers, timing, size) that the
+ * `Fetcher` contract cannot expose. See `docs/migration/graphiql-6.0.0.md`.
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   const httpFetch =
