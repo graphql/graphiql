@@ -219,8 +219,10 @@ export const createLegacyWebsocketsFetcher =
  * `@defer`, yielding a `TransportResponse` per chunk. HTTP metadata is read once
  * from the raw response and attached to every chunk (they share one response).
  */
-export const multipartHttpTransport =
-  (options: CreateFetcherOptions, httpFetch: typeof fetch) =>
+export const multipartHttpTransport = (
+  options: CreateFetcherOptions,
+  httpFetch: typeof fetch,
+) =>
   async function* (
     graphQLParams: FetcherParams,
     fetcherOpts?: FetcherOpts,

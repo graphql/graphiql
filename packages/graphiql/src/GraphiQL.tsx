@@ -61,7 +61,7 @@ import {
  *
  * Note: the XOR between `fetcher` and `transport` is preserved here explicitly.
  * `Omit` flattens discriminated unions, so it has to be re-applied at this
- * level so passing both props is a compile error at the `<GraphiQL>` callsite.
+ * level so passing both props is a compile error at the `<GraphiQL>` call site.
  */
 export type GraphiQLProps = GraphiQLInterfaceProps &
   Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &

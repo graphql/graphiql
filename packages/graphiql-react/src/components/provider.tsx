@@ -315,9 +315,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
       actions.setResponseView(getInitialResponseView());
-      if (
-        storage.get(STORAGE_KEY.transportUpgradeBannerDismissed) === 'true'
-      ) {
+      if (storage.get(STORAGE_KEY.transportUpgradeBannerDismissed) === 'true') {
         store.setState({ transportUpgradeBannerDismissed: true });
       }
 

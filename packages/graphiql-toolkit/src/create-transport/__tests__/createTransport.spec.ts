@@ -30,7 +30,9 @@ function mockResponse(
   return {
     status: init.status ?? 200,
     statusText: init.statusText ?? 'OK',
-    headers: new Headers(init.headers ?? { 'content-type': 'application/json' }),
+    headers: new Headers(
+      init.headers ?? { 'content-type': 'application/json' },
+    ),
     json: () => Promise.resolve(body),
   };
 }
@@ -81,10 +83,17 @@ describe('createTransport — query / mutation', () => {
       enableIncrementalDelivery: false,
       fetch: mockFetchWith(
         { data: {} },
-        { headers: { 'content-type': 'application/json', 'content-length': '42' } },
+        {
+          headers: {
+            'content-type': 'application/json',
+            'content-length': '42',
+          },
+        },
       ),
     });
-    const response = (await transport.send({ query: QUERY })) as TransportResponse;
+    const response = (await transport.send({
+      query: QUERY,
+    })) as TransportResponse;
     expect(response.size.response).toBe(42);
   });
 
@@ -94,7 +103,9 @@ describe('createTransport — query / mutation', () => {
       enableIncrementalDelivery: false,
       fetch: mockFetchWith({ data: null, errors: [{ message: 'boom' }] }),
     });
-    const response = (await transport.send({ query: QUERY })) as TransportResponse;
+    const response = (await transport.send({
+      query: QUERY,
+    })) as TransportResponse;
     expect(response.ok).toBe(false);
   });
 });

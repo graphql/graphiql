@@ -28,8 +28,7 @@ function selectedOperationIsSubscription(
     return false;
   }
   const operations = document.definitions.filter(
-    (def): def is OperationDefinitionNode =>
-      def.kind === 'OperationDefinition',
+    (def): def is OperationDefinitionNode => def.kind === 'OperationDefinition',
   );
   const operation = operationName
     ? operations.find(op => op.name?.value === operationName)
@@ -117,7 +116,7 @@ async function* subscribe(
 ): AsyncGenerator<TransportResponse> {
   if (!subscriptionClient) {
     throw new Error(
-      'createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`\'s `createClient({ url })` or `graphql-sse`\'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.',
+      "createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`'s `createClient({ url })` or `graphql-sse`'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.",
     );
   }
   const wsFetcher = createWebsocketsFetcherFromClient(subscriptionClient);

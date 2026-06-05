@@ -474,10 +474,7 @@ export const createExecutionSlice: CreateExecutionSlice =
                     const errorText = formatError(error);
                     set({
                       isFetching: false,
-                      lastResponse: buildErrorResponse(
-                        errorText,
-                        fetchStartMs,
-                      ),
+                      lastResponse: buildErrorResponse(errorText, fetchStartMs),
                       subscription: null,
                     });
                     setResponse(errorText);

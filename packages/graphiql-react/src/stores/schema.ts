@@ -101,7 +101,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         // adapter just for introspection: take the first yielded `TransportResponse`
         // and return its `body` (the `ExecutionResult`).
         const introspectionFetcher: Fetcher = transport
-          ? (async params => {
+          ? ((async params => {
               const sendResult = transport.send({
                 query: params.query,
                 operationName: params.operationName,
@@ -124,7 +124,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
               }
               const result = Array.isArray(body) ? body[0] : body;
               return result as Awaited<ReturnType<Fetcher>>;
-            }) as Fetcher
+            }) as Fetcher)
           : fetcher!;
 
         function doIntrospection(query: string) {

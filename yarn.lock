@@ -13977,6 +13977,7 @@ __metadata:
     cypress: "npm:^13.13.2"
     cypress-axe: "npm:^1"
     graphql: "npm:^16.11.0"
+    graphql-ws: "npm:^5.5.5"
     lightningcss: "npm:^1.29.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
