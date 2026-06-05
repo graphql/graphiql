@@ -1,14 +1,18 @@
 import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
+import { createTransport } from '@graphiql/toolkit';
 import { ToolbarButton, useGraphiQL } from '@graphiql/react';
-import { createFetcher } from './create-fetcher';
 import 'graphiql/setup-workers/esm.sh';
+
+const transport = createTransport({
+  url: 'https://graphql.earthdata.nasa.gov/api',
+});
 
 export const graphiql = (
   <GraphiQL
     dangerouslyAssumeSchemaIsValid
     defaultEditorToolsVisibility="variables"
-    transport={createFetcher('https://graphql.earthdata.nasa.gov/api')}
+    transport={transport}
     isHeadersEditorEnabled={false}
   >
     <GraphiQL.Logo>API Explorer</GraphiQL.Logo>
