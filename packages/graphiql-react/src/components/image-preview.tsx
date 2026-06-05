@@ -64,8 +64,13 @@ export const ImagePreview = Object.assign(ImagePreview_, {
   },
 });
 
-function pathToURL(path: string) {
-  const value = path.slice(1).trim();
+export function pathToURL(path: string) {
+  // `path` is the word under the cursor from Monaco's `getWordAtPosition`. For a
+  // full URL such as `https://example.com/img.png`, Monaco splits on the `:`, so
+  // the word is the protocol-relative `//example.com/img.png`. Resolving that
+  // against the current origin keeps the original host. Do not strip the leading
+  // character: doing so turns `//host/path` into the host-relative `/host/path`.
+  const value = path.trim();
   try {
     return new URL(value, location.protocol + '//' + location.host);
   } catch {}
