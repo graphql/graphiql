@@ -1372,5 +1372,80 @@ describe('onlineParser', () => {
         t.eol();
       });
     });
+
+    // The fields/values block is optional per spec. A definition without a body
+    // must not break parsing of the definitions that follow it.
+    describe('parses type system definitions without a body', () => {
+      it('object type definition followed by another definition', () => {
+        const { t } = getUtils('type SomeType\nscalar SomeScalar');
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('interface definition followed by another definition', () => {
+        const { t } = getUtils('interface SomeInterface\nscalar SomeScalar');
+
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('enum definition followed by another definition', () => {
+        const { t } = getUtils('enum SomeEnum\nscalar SomeScalar');
+
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('input object definition followed by another definition', () => {
+        const { t } = getUtils('input SomeInput\nscalar SomeScalar');
+
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInput');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('definition with only a directive and no body', () => {
+        const { t } = getUtils('type SomeType @onType\nscalar SomeScalar');
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'onType' });
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('type extension with only a directive and no body', () => {
+        const { t } = getUtils(
+          'extend type SomeType @onType\nscalar SomeScalar',
+        );
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'onType' });
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+    });
   });
 });
