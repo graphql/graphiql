@@ -36,12 +36,12 @@ describe('GraphiQL', () => {
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
-    it('should throw error without fetcher', () => {
+    it('should throw error without fetcher or transport', () => {
       const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // @ts-expect-error fetcher is a required prop to GraphiQL
+      // @ts-expect-error -- one of fetcher | transport is required on GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+        'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
       );
       spy.mockRestore();
     });

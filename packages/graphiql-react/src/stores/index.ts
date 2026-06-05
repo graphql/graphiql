@@ -11,7 +11,6 @@ export {
   type ExecutionActions,
   type ExecutionProps,
   type ResponseView,
-  type LastResponse,
 } from './execution';
 export {
   createPluginSlice,

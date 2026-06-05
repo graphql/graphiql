@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GraphiQLProvider } from '../provider';
 import { TopBar } from './';
 
-const noOpFetcher = () => Promise.resolve({ data: {} });
+const noOpTransport = {
+  send: async () => ({
+    ok: true,
+    body: { data: {} },
+    timing: { totalMs: 0 },
+    size: {},
+  }),
+};
 
 const meta: Meta<typeof TopBar> = {
   title: 'Layout/TopBar',
@@ -10,7 +17,7 @@ const meta: Meta<typeof TopBar> = {
   tags: ['autodocs'],
   decorators: [
     Story => (
-      <GraphiQLProvider fetcher={noOpFetcher}>
+      <GraphiQLProvider transport={noOpTransport}>
         <Story />
       </GraphiQLProvider>
     ),

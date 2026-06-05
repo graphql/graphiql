@@ -80,3 +80,50 @@
   font-family: var(--font-family);
   font-size: var(--font-size-small);
 }
+
+.graphiql-transport-upgrade-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-size: 11.5px;
+  line-height: 1;
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-transport-upgrade-banner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(var(--accent-yellow));
+  flex-shrink: 0;
+}
+
+.graphiql-transport-upgrade-banner-link {
+  color: oklch(var(--accent-yellow));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.graphiql-transport-upgrade-banner-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.graphiql-transport-upgrade-banner-dismiss {
+  background: transparent;
+  border: 0;
+  padding: 2px;
+  cursor: pointer;
+  color: oklch(var(--fg-muted));
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--px-2);
+}
+
+.graphiql-transport-upgrade-banner-dismiss:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-transport-upgrade-banner-dismiss > svg {
+  width: 12px;
+  height: 12px;
+}

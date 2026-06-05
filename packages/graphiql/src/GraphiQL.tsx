@@ -41,6 +41,7 @@ import {
   useGraphiQLActions,
   useMonaco,
 } from '@graphiql/react';
+import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
   DocExplorerStore,
@@ -57,13 +58,21 @@ import {
  * API docs for this live here:
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
+ *
+ * Note: the XOR between `fetcher` and `transport` is preserved here explicitly.
+ * `Omit` flattens discriminated unions, so it has to be re-applied at this
+ * level so passing both props is a compile error at the `<GraphiQL>` callsite.
  */
-export interface GraphiQLProps
-  // `children` prop should be optional
-  extends
-    GraphiQLInterfaceProps,
-    Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,
-    Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> {}
+export type GraphiQLProps = GraphiQLInterfaceProps &
+  Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
+  Omit<
+    ComponentPropsWithoutRef<typeof GraphiQLProvider>,
+    'children' | 'fetcher' | 'transport'
+  > &
+  (
+    | { fetcher: Fetcher; transport?: never }
+    | { transport: Transport; fetcher?: never }
+  );
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
