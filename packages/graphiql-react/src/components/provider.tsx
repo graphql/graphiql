@@ -49,16 +49,14 @@ function isIntrospectionData(value: unknown): value is IntrospectionQuery {
   return typeof value === 'object' && value !== null && '__schema' in value;
 }
 
-interface GraphiQLProviderProps
-  extends
-    EditorProps,
-    ExecutionProps,
-    PluginProps,
-    SchemaProps,
-    ThemeProps,
-    StorageProps {
-  children: ReactNode;
-}
+type GraphiQLProviderProps = EditorProps &
+  ExecutionProps &
+  PluginProps &
+  SchemaProps &
+  ThemeProps &
+  StorageProps & {
+    children: ReactNode;
+  };
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
@@ -66,9 +64,15 @@ const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = props => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  if (!props.fetcher) {
+  if (!props.fetcher && !props.transport) {
     throw new TypeError(
-      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+      'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
+    );
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
+  if (props.fetcher && props.transport) {
+    throw new TypeError(
+      'The `fetcher` and `transport` props are mutually exclusive. Pass one or the other, not both.',
     );
   }
   // @ts-expect-error -- runtime check
@@ -154,6 +158,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   dangerouslyAssumeSchemaIsValid = false,
   fetcher,
+  transport,
   inputValueDeprecation = false,
   introspectionQueryName = 'IntrospectionQuery',
   onSchemaChange,
@@ -273,6 +278,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,
+          transport,
           getDefaultFieldNames,
           overrideOperationName: operationName,
         })(...args);
@@ -309,6 +315,9 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
       actions.setResponseView(getInitialResponseView());
+      if (storage.get(STORAGE_KEY.transportUpgradeBannerDismissed) === 'true') {
+        store.setState({ transportUpgradeBannerDismissed: true });
+      }
 
       return store;
     }
@@ -327,8 +336,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   // Execution sync
   useDidUpdate(() => {
-    storeRef.current.setState({ fetcher });
-  }, [fetcher]);
+    storeRef.current.setState({ fetcher, transport });
+  }, [fetcher, transport]);
 
   // Plugin sync
   useDidUpdate(() => {
@@ -371,6 +380,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     schema,
     dangerouslyAssumeSchemaIsValid,
     fetcher, // should refresh schema with a new fetcher after a fetchError
+    transport, // ...or transport
   ]);
 
   /**

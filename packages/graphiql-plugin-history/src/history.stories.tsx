@@ -17,7 +17,16 @@ import './style.css';
 function withHistoryContext(children: ReactNode) {
   return (
     <Tooltip.Provider>
-      <GraphiQLProvider fetcher={() => Promise.resolve({ data: {} })}>
+      <GraphiQLProvider
+        transport={{
+          send: async () => ({
+            ok: true,
+            body: { data: {} },
+            timing: { totalMs: 0 },
+            size: {},
+          }),
+        }}
+      >
         <HistoryStore>
           <div style={{ width: 320, background: 'oklch(var(--bg-elevated))' }}>
             {children}

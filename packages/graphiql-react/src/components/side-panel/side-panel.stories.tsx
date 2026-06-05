@@ -4,7 +4,14 @@ import { GraphiQLProvider, useGraphiQLActions } from '../provider';
 import { DocsIcon, HistoryIcon } from '../../icons';
 import { SidePanel } from './';
 
-const mockFetcher = () => ({ data: null });
+const mockTransport = {
+  send: async () => ({
+    ok: true,
+    body: { data: null },
+    timing: { totalMs: 0 },
+    size: {},
+  }),
+};
 
 const DOCS_PLUGIN = {
   title: 'Documentation Explorer',
@@ -45,7 +52,7 @@ const meta: Meta<typeof SidePanel> = {
   decorators: [
     Story => (
       <GraphiQLProvider
-        fetcher={mockFetcher}
+        transport={mockTransport}
         plugins={[DOCS_PLUGIN, HISTORY_PLUGIN]}
       >
         <Story />

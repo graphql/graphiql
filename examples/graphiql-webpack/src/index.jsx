@@ -5,7 +5,7 @@ import { GraphiQL } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { useGraphiQL } from '@graphiql/react';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
 import 'graphiql/setup-workers/webpack';
@@ -65,8 +65,8 @@ function App() {
       codeExporterPlugin({ snippets: getSnippets({ serverUrl: currentUrl }) }),
     [currentUrl],
   );
-  const fetcher = useMemo(
-    () => createGraphiQLFetcher({ url: currentUrl }),
+  const transport = useMemo(
+    () => createTransport({ url: currentUrl }),
     [currentUrl],
   );
   const serverSelect = useMemo(
@@ -78,7 +78,7 @@ function App() {
     <GraphiQL
       style={style}
       plugins={[serverSelect, explorer, exporter]}
-      fetcher={fetcher}
+      transport={transport}
       shouldPersistHeaders
     >
       <GraphiQLContextBound setUrl={setUrl} />

@@ -55,6 +55,7 @@ export const STORAGE_KEY = {
   persistHeaders: 'shouldPersistHeaders',
   theme: 'theme',
   responseView: 'responseView',
+  transportUpgradeBannerDismissed: 'transportUpgradeBannerDismissed',
 } as const;
 
 export const DEFAULT_QUERY = `# Welcome to GraphiQL

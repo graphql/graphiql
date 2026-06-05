@@ -87,3 +87,24 @@ describe('setResponseView', () => {
     expect(storage.get(STORAGE_KEY.responseView)).toBe('json');
   });
 });
+
+describe('dismissTransportUpgradeBanner', () => {
+  it('defaults to not-dismissed', () => {
+    const { store } = makeStore();
+    expect(store.getState().transportUpgradeBannerDismissed).toBe(false);
+  });
+
+  it('flips state to true on call', () => {
+    const { store } = makeStore();
+    store.getState().actions.dismissTransportUpgradeBanner();
+    expect(store.getState().transportUpgradeBannerDismissed).toBe(true);
+  });
+
+  it('persists the dismissal to storage', () => {
+    const { store, storage } = makeStore();
+    store.getState().actions.dismissTransportUpgradeBanner();
+    expect(storage.get(STORAGE_KEY.transportUpgradeBannerDismissed)).toBe(
+      'true',
+    );
+  });
+});

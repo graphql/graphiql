@@ -39,7 +39,8 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const { setEditor, run, setResponseView } = useGraphiQLActions();
+  const { setEditor, run, setResponseView, dismissTransportUpgradeBanner } =
+    useGraphiQLActions();
   const {
     fetchError,
     validationErrors,
@@ -47,6 +48,8 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     uriInstanceId,
     lastResponse,
     responseView,
+    transport,
+    transportUpgradeBannerDismissed,
   } = useGraphiQL(
     pick(
       'fetchError',
@@ -55,6 +58,8 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       'uriInstanceId',
       'lastResponse',
       'responseView',
+      'transport',
+      'transportUpgradeBannerDismissed',
     ),
   );
   const ref = useRef<HTMLDivElement>(null!);
@@ -166,16 +171,30 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     return cleanupDisposables(disposables);
   }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
+  const isFetcherPath = !transport;
+  const showUpgradeBanner = isFetcherPath && !transportUpgradeBannerDismissed;
+  const showHeader = !isFetcherPath || showUpgradeBanner;
+
   return (
     <div {...props} className={cn('graphiql-response-pane', props.className)}>
-      <ResponseHeader
-        status={lastResponse?.status}
-        timeMs={lastResponse?.timeMs}
-        sizeBytes={lastResponse?.sizeBytes}
-        view={responseView}
-        onViewChange={handleViewChange}
-        onCopy={handleCopy}
-      />
+      {showHeader && (
+        <ResponseHeader
+          status={lastResponse?.status}
+          timeMs={lastResponse?.timing.totalMs}
+          sizeBytes={lastResponse?.size.response}
+          upgradeNotice={
+            showUpgradeBanner
+              ? {
+                  href: 'https://github.com/graphql/graphiql/blob/main/docs/migration/graphiql-6.0.0.md',
+                  onDismiss: dismissTransportUpgradeBanner,
+                }
+              : undefined
+          }
+          view={responseView}
+          onViewChange={handleViewChange}
+          onCopy={handleCopy}
+        />
+      )}
       {responseView === 'json' ? (
         <section
           ref={ref}

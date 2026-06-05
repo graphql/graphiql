@@ -21,12 +21,12 @@ npm install react react-dom graphql
 
 ```jsx
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import 'graphiql/style.css';
 import '@graphiql/plugin-explorer/style.css';
 
-const fetcher = createGraphiQLFetcher({
+const transport = createTransport({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
@@ -34,7 +34,7 @@ const fetcher = createGraphiQLFetcher({
 const explorer = explorerPlugin();
 
 function GraphiQLWithExplorer() {
-  return <GraphiQL fetcher={fetcher} plugins={[explorer]} />;
+  return <GraphiQL transport={transport} plugins={[explorer]} />;
 }
 ```
 
