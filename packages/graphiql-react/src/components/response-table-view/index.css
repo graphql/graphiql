@@ -1,0 +1,64 @@
+.graphiql-response-table-wrapper {
+  flex: 1;
+  overflow: auto;
+  padding: var(--px-14);
+}
+
+.graphiql-response-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-response-table-caption {
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: oklch(var(--fg-muted));
+  padding-bottom: var(--px-8);
+  caption-side: top;
+}
+
+.graphiql-response-table th {
+  text-align: left;
+  padding: var(--px-6) var(--px-12);
+  border-bottom: 2px solid oklch(var(--border-default));
+  color: oklch(var(--fg-strong));
+  font-weight: 600;
+  white-space: nowrap;
+  background: oklch(var(--bg-elevated));
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.graphiql-response-table td {
+  padding: var(--px-6) var(--px-12);
+  border-bottom: 1px solid oklch(var(--border-subtle));
+  vertical-align: top;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphiql-response-table tbody tr:nth-child(even) {
+  background: oklch(var(--bg-canvas));
+}
+
+.graphiql-response-table tbody tr:hover {
+  background: oklch(var(--bg-elevated));
+}
+
+.graphiql-response-table-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+}

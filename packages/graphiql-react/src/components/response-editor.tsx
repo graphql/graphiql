@@ -4,6 +4,7 @@ import { createRoot, Root } from 'react-dom/client';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import { ImagePreview } from './image-preview';
 import { ResponseHeader } from './response-header';
+import { ResponseTableView } from './response-table-view';
 import {
   getOrCreateModel,
   createEditor,
@@ -205,12 +206,11 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
           onKeyDown={onEditorContainerKeyDown}
           className="result-window"
         />
+      ) : responseView === 'table' ? (
+        <ResponseTableView data={lastResponse?.body} />
       ) : (
         <div className="graphiql-response-empty-state" role="status">
-          <span>
-            {responseView === 'tree' ? 'Tree' : 'Table'} view is not yet
-            available.
-          </span>
+          <span>Tree view is not yet available.</span>
         </div>
       )}
     </div>
