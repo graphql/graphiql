@@ -103,7 +103,7 @@
     "patch-package": "^7.0.2",
     "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.2",
-    "turbo": "^2.5.2",
+    "turbo": "^2.9.14",
     "typedoc": "^0.28.19",
     "typescript": "^5.8.0",
     "vitest": "^4.1.6",

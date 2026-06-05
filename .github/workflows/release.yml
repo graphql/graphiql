@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - release/*
       - graphiql-6
 
 concurrency:
@@ -43,7 +44,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.node-version'
+          node-version-file: ".node-version"
           cache: yarn
 
       - run: yarn install --immutable
@@ -101,7 +102,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.node-version'
+          node-version-file: ".node-version"
           cache: yarn
 
       - run: yarn install --immutable

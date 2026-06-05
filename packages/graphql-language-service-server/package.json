@@ -47,6 +47,7 @@
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
     "cosmiconfig-toml-loader": "^1.0.0",
+    "debounce-promise": "^3.1.2",
     "dotenv": "10.0.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
@@ -67,9 +68,9 @@
     "vue": "^3.2.0"
   },
   "devDependencies": {
+    "@types/debounce-promise": "^3.1.9",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
-    "debounce-promise": "^3.1.2",
     "graphql": "^16.9.0",
     "msw": "^2.13.4"
   }
