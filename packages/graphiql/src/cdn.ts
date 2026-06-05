@@ -6,7 +6,11 @@
  */
 import { version } from 'react';
 import * as GraphiQLReact from '@graphiql/react';
-import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
+import {
+  createGraphiQLFetcher,
+  createTransport,
+  createLocalStorage,
+} from '@graphiql/toolkit';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
 import './setup-workers/vite';
@@ -29,7 +33,11 @@ if (majorVersion < 16) {
  */
 export default Object.assign(GraphiQL, {
   /**
-   * This function is needed in order to easily create a fetcher function.
+   * This function is needed in order to easily create a transport function.
+   */
+  createTransport,
+  /**
+   * @deprecated Use `GraphiQL.createTransport` instead.
    */
   createFetcher: createGraphiQLFetcher,
   /**

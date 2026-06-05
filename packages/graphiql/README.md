@@ -92,29 +92,29 @@ The package exports a bunch of React components:
 - The `GraphiQL` component is a combination of both the above components
 
 There is a single prop that is required for the `GraphiQL` component called
-fetcher. A fetcher is a function that performs a request to a GraphQL API. It
-may return a `Promise` for queries or mutations, but also an `Observable` or an
-`AsyncIterable` in order to handle subscriptions or multipart responses.
+`transport`. A transport is a function that performs a request to a GraphQL API.
+It may return a `Promise` for queries or mutations, but also an `Observable` or
+an `AsyncIterable` in order to handle subscriptions or multipart responses.
 
-An easy way to get create such a function is the
-[`createGraphiQLFetcher`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
+An easy way to create such a function is the
+[`createTransport`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
 method exported from the `@graphiql/toolkit` package. If you want to implement
-your own fetcher function, you can use the `Fetcher` type from
+your own transport function, you can use the `Transport` type from
 `@graphiql/toolkit` to make sure the signature matches what GraphiQL expects.
 
 The following is everything you need to render GraphiQL in your React
 application:
 
 ```jsx
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { createRoot } from 'react-dom/client';
 import 'graphiql/style.css';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const root = createRoot(document.getElementById('root'));
-root.render(<GraphiQL fetcher={fetcher} />);
+root.render(<GraphiQL transport={transport} />);
 ```
 
 ## Customize
@@ -215,9 +215,9 @@ namespace, isolating each instance’s state and avoiding collisions.
 ```tsx
 import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const NAMESPACE = 'my-namespace';
 
@@ -235,6 +235,6 @@ const storage: typeof localStorage = {
 };
 
 export const App: FC = () => {
-  return <GraphiQL fetcher={fetcher} storage={myStorage} />;
+  return <GraphiQL transport={transport} storage={myStorage} />;
 };
 ```

@@ -99,7 +99,7 @@ const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const graphqlVersion = GraphiQL.GraphQL.version;
 
 const props: ComponentProps<typeof GraphiQL> = {
-  fetcher: GraphiQL.createFetcher({
+  transport: GraphiQL.createTransport({
     url: getSchemaUrl(),
     subscriptionUrl: 'ws://localhost:8081/subscriptions',
   }),

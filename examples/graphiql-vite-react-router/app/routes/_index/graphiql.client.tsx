@@ -8,7 +8,7 @@ export const graphiql = (
   <GraphiQL
     dangerouslyAssumeSchemaIsValid
     defaultEditorToolsVisibility="variables"
-    fetcher={createFetcher('https://graphql.earthdata.nasa.gov/api')}
+    transport={createFetcher('https://graphql.earthdata.nasa.gov/api')}
     isHeadersEditorEnabled={false}
   >
     <GraphiQL.Logo>API Explorer</GraphiQL.Logo>
