@@ -11,7 +11,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
-import type { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
@@ -42,6 +42,33 @@ describe('GraphiQL', () => {
       // @ts-expect-error -- one of fetcher | transport is required on GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
         'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
+      );
+      spy.mockRestore();
+    });
+
+    it('is a type error to pass both `fetcher` and `transport`', () => {
+      // The assertion that matters here is the `@ts-expect-error` directive:
+      // if the XOR on `GraphiQLProps` regresses and both props become valid,
+      // tsc reports the directive as unused and this test fails to compile.
+      // The runtime guard in `GraphiQLProvider` belt-and-suspenders the type
+      // check.
+      const transport: Transport = {
+        send: async () => ({
+          ok: true,
+          body: { data: {} },
+          timing: { totalMs: 0 },
+          size: {},
+        }),
+      };
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(() =>
+        render(
+          // @ts-expect-error -- `fetcher` and `transport` are mutually exclusive
+          <GraphiQL fetcher={noOpFetcher} transport={transport} />,
+        ),
+      ).toThrow(
+        'The `fetcher` and `transport` props are mutually exclusive. Pass one or the other, not both.',
       );
       spy.mockRestore();
     });

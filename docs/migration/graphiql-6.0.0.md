@@ -149,7 +149,7 @@ Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-c
 
 ## What's deprecated, not removed
 
-The following are deprecated in `graphiql@6` but continue to work. No removal date is set.
+The following are deprecated in `graphiql@6`. They continue to work and might be removed in a future major version.
 
 | Deprecated                                       | Replacement       |
 | ------------------------------------------------ | ----------------- |
@@ -157,4 +157,4 @@ The following are deprecated in `graphiql@6` but continue to work. No removal da
 | `fetcher` prop on `<GraphiQL>`                   | `transport` prop  |
 | `Fetcher` type from `@graphiql/toolkit`          | `Transport`       |
 
-Existing code keeps compiling and running. Migrate when you want the response pane to show real wire data.
+Existing code keeps compiling and running today. Migrate when you want the response pane to show real wire data, or before a future major version drops the deprecated path.
