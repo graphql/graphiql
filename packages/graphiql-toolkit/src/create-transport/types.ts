@@ -1,5 +1,5 @@
 import type { ExecutionResult } from 'graphql';
-import type { Client, ClientOptions } from 'graphql-ws';
+import type { Client } from 'graphql-ws';
 
 export type TransportRequest = {
   query: string;
@@ -70,28 +70,19 @@ export type CreateTransportOptions = {
    */
   headers?: Record<string, string>;
   /**
-   * URL for subscription requests. Used to create a `graphql-ws` client when no
-   * `wsClient`/`legacyClient` is provided.
+   * A pre-built subscription client whose `.subscribe(payload, sink)` matches
+   * the `graphql-ws` `Client` shape. `graphql-sse`'s `createClient()` is
+   * signature-compatible, so SSE subscriptions work without any SSE-specific
+   * code in the toolkit.
+   *
+   * Construct the client yourself and pass it in; the toolkit does not build
+   * one for you. If a subscription is sent without this option configured,
+   * `send()` throws.
    */
-  subscriptionUrl?: string;
-  /**
-   * A pre-built client with a `graphql-ws`-compatible `subscribe()` signature.
-   * `graphql-sse`'s `createClient()` satisfies this, so passing it here routes
-   * subscriptions over SSE without any SSE-specific code in the toolkit.
-   */
-  wsClient?: Client;
-  /**
-   * A legacy `subscriptions-transport-ws`-style client.
-   */
-  legacyClient?: { request: (params: unknown) => unknown };
-  /**
-   * Connection params forwarded to the `graphql-ws` client created from
-   * `subscriptionUrl`.
-   */
-  wsConnectionParams?: ClientOptions['connectionParams'];
+  subscriptionClient?: Client;
   /**
    * Use `multipart/mixed` incremental delivery for `@defer`/`@stream`.
-   * Defaults to true, matching `createGraphiQLFetcher`.
+   * Defaults to true.
    */
   enableIncrementalDelivery?: boolean;
   /**

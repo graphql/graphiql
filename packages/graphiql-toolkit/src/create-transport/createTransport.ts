@@ -1,12 +1,15 @@
 import { parse } from 'graphql';
 import type { OperationDefinitionNode } from 'graphql';
-import { isAsyncIterable } from '@n1ru4l/push-pull-async-iterable-iterator';
+import type { Client } from 'graphql-ws';
 import {
-  getWsFetcher,
+  createWebsocketsFetcherFromClient,
   multipartHttpTransport,
   simpleHttpTransport,
 } from '../create-fetcher/lib';
-import type { CreateFetcherOptions, FetcherParams } from '../create-fetcher/types';
+import type {
+  CreateFetcherOptions,
+  FetcherParams,
+} from '../create-fetcher/types';
 import type {
   CreateTransportOptions,
   Transport,
@@ -62,15 +65,12 @@ function toSubscriptionResponse(
  * Create a `Transport`: the wire-level primitive that owns the request and
  * surfaces structured response metadata.
  *
- * `createGraphiQLFetcher` is a body-only projection of the same underlying HTTP
- * helpers, so anything routed through this toolkit shares one source of truth
- * for status, headers, timing and size.
- *
  * - Queries / mutations: `send()` returns `Promise<TransportResponse>` when
  *   incremental delivery is off, or an `AsyncIterable<TransportResponse>`
  *   (one chunk per payload) when it is on.
  * - Subscriptions: `send()` returns an `AsyncIterable<TransportResponse>`,
- *   one event at a time.
+ *   one event at a time. A `subscriptionClient` must be configured; the
+ *   toolkit does not construct one for you.
  */
 export function createTransport(opts: CreateTransportOptions): Transport {
   const httpFetch =
@@ -84,10 +84,6 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   const fetcherOptions: CreateFetcherOptions = {
     url: opts.url,
     headers: opts.headers,
-    subscriptionUrl: opts.subscriptionUrl,
-    wsClient: opts.wsClient,
-    legacyClient: opts.legacyClient,
-    wsConnectionParams: opts.wsConnectionParams,
   };
 
   const simple = simpleHttpTransport(fetcherOptions, httpFetch);
@@ -104,7 +100,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     const fetcherOpts = req.headers ? { headers: req.headers } : undefined;
 
     if (selectedOperationIsSubscription(req.query, req.operationName)) {
-      return subscribe(fetcherOptions, params, fetcherOpts);
+      return subscribe(opts.subscriptionClient, params);
     }
     if (incrementalDelivery) {
       return multipart(params, fetcherOpts);
@@ -116,20 +112,16 @@ export function createTransport(opts: CreateTransportOptions): Transport {
 }
 
 async function* subscribe(
-  fetcherOptions: CreateFetcherOptions,
+  subscriptionClient: Client | undefined,
   params: FetcherParams,
-  fetcherOpts?: { headers?: Record<string, string> },
 ): AsyncGenerator<TransportResponse> {
-  const wsFetcher = await getWsFetcher(fetcherOptions, fetcherOpts);
-  if (!wsFetcher) {
+  if (!subscriptionClient) {
     throw new Error(
-      'createTransport is not configured for subscriptions. Provide `subscriptionUrl`, `wsClient`, or `legacyClient`.',
+      'createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`\'s `createClient({ url })` or `graphql-sse`\'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.',
     );
   }
-  const result = wsFetcher(params);
-  const iterable = (
-    isAsyncIterable(result) ? result : await result
-  ) as AsyncIterable<unknown>;
+  const wsFetcher = createWebsocketsFetcherFromClient(subscriptionClient);
+  const iterable = wsFetcher(params) as AsyncIterable<unknown>;
   const startMs = performance.now();
   for await (const event of iterable) {
     yield toSubscriptionResponse(event, startMs);

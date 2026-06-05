@@ -2,14 +2,21 @@ import { type Mock, describe, it, expect, vi, afterEach } from 'vitest';
 import 'isomorphic-fetch';
 
 import { createTransport } from '../createTransport';
-import { createSimpleFetcher, getWsFetcher } from '../../create-fetcher/lib';
+import {
+  createSimpleFetcher,
+  createWebsocketsFetcherFromClient,
+} from '../../create-fetcher/lib';
+import type { Client } from 'graphql-ws';
 import type { TransportResponse } from '../types';
 
-// Keep the real HTTP transport helpers; only stub the ws fetcher so no real
-// socket is required.
+// Keep the real HTTP transport helpers; only stub the client-to-fetcher adapter
+// so no real socket is required.
 vi.mock('../../create-fetcher/lib', async () => {
   const actual = await vi.importActual('../../create-fetcher/lib');
-  return { ...actual, getWsFetcher: vi.fn() };
+  return {
+    ...actual,
+    createWebsocketsFetcherFromClient: vi.fn(),
+  };
 });
 
 const URL = 'http://localhost:3000/graphql';
@@ -98,14 +105,19 @@ describe('createTransport — subscription', () => {
   });
 
   it('returns an AsyncIterable<TransportResponse> with no HTTP envelope', async () => {
-    (getWsFetcher as Mock).mockResolvedValue(() =>
+    (createWebsocketsFetcherFromClient as Mock).mockReturnValue(() =>
       (async function* () {
         yield { data: { tick: 1 } };
         yield { data: { tick: 2 } };
       })(),
     );
 
-    const transport = createTransport({ url: URL, subscriptionUrl: 'ws://x' });
+    const transport = createTransport({
+      url: URL,
+      // Truthy placeholder; the real client never gets called since the
+      // adapter above is mocked.
+      subscriptionClient: {} as Client,
+    });
     const result = transport.send({ query: SUBSCRIPTION });
 
     expect(
@@ -127,8 +139,7 @@ describe('createTransport — subscription', () => {
     expect(events[0].size.response).toBeGreaterThan(0);
   });
 
-  it('throws when no subscription transport is configured', async () => {
-    (getWsFetcher as Mock).mockResolvedValue(undefined);
+  it('throws when no subscriptionClient is provided', async () => {
     const transport = createTransport({ url: URL });
     const result = transport.send({ query: SUBSCRIPTION });
     await expect(async () => {
@@ -139,8 +150,8 @@ describe('createTransport — subscription', () => {
   });
 });
 
-describe('createSimpleFetcher (backward-compatible projection)', () => {
-  it('still returns only the parsed body, not the TransportResponse', async () => {
+describe('createSimpleFetcher (backward-compatible)', () => {
+  it('returns the parsed body, unaffected by the new Transport API', async () => {
     const fetcher = createSimpleFetcher(
       { url: URL },
       mockFetchWith({ data: { __typename: 'Query' } }),

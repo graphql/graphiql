@@ -8,7 +8,7 @@ This covers the one notable change in `graphiql@6`: a new `Transport` API that r
 
 ## `createGraphiQLFetcher` → `createTransport`
 
-The options object is the same, so for most setups this is a find-and-replace.
+The HTTP options object carries over. Subscriptions are different: `createTransport` does not build a subscription client for you. You construct your own `graphql-ws` (or `graphql-sse`) client and pass it as `subscriptionClient`. There is no `subscriptionUrl`, `wsClient`, `legacyClient`, or `wsConnectionParams` option.
 
 **Before:**
 
@@ -21,18 +21,21 @@ const fetcher = createGraphiQLFetcher({
 });
 ```
 
-**After:**
+**After (WebSocket subscriptions):**
 
 ```ts
+import { createClient } from 'graphql-ws';
 import { createTransport } from '@graphiql/toolkit';
 
 const transport = createTransport({
   url: 'https://my.endpoint/graphql',
-  subscriptionUrl: 'wss://my.endpoint/graphql',
+  subscriptionClient: createClient({ url: 'wss://my.endpoint/graphql' }),
 });
 ```
 
-`wsClient` and `legacyClient` work the same way. If you run subscriptions over SSE rather than WebSockets, a `graphql-sse` client slots in as `wsClient` and no SSE-specific code is needed in the toolkit:
+**After (SSE subscriptions):**
+
+`graphql-sse`'s `createClient()` is signature-compatible with `graphql-ws`, so the same option drives either protocol:
 
 ```ts
 import { createClient } from 'graphql-sse';
@@ -40,9 +43,13 @@ import { createTransport } from '@graphiql/toolkit';
 
 const transport = createTransport({
   url: 'https://my.endpoint/graphql',
-  wsClient: createClient({ url: 'https://my.endpoint/graphql/stream' }),
+  subscriptionClient: createClient({
+    url: 'https://my.endpoint/graphql/stream',
+  }),
 });
 ```
+
+If you only run queries and mutations, leave `subscriptionClient` off. A subscription dispatched without it throws with a pointer back to this page.
 
 ## `<GraphiQL fetcher={...}>` → `<GraphiQL transport={...}>`
 

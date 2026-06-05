@@ -101,7 +101,9 @@ const graphqlVersion = GraphiQL.GraphQL.version;
 const props: ComponentProps<typeof GraphiQL> = {
   transport: GraphiQL.createTransport({
     url: getSchemaUrl(),
-    subscriptionUrl: 'ws://localhost:8081/subscriptions',
+    subscriptionClient: GraphiQL.createWsClient({
+      url: 'ws://localhost:8081/subscriptions',
+    }),
   }),
 
   initialQuery: parameters.query,
