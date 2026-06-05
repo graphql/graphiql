@@ -908,7 +908,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -987,7 +987,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('interface', { kind: 'InterfaceDef' });
         t.name('SomeInterface');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1055,7 +1055,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1075,7 +1075,7 @@ describe('onlineParser', () => {
         `);
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(/\(/, { kind: 'ArgumentsDef' });
@@ -1104,7 +1104,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1125,7 +1125,7 @@ describe('onlineParser', () => {
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1148,7 +1148,7 @@ describe('onlineParser', () => {
           it(`with a directive having arguments of type ${fill.type}`, () => {
             t.keyword('type', { kind: 'ObjectTypeDef' });
             t.name('SomeType');
-            t.punctuation('{');
+            t.punctuation('{', { kind: 'FieldsDef' });
 
             t.property('someField', { kind: 'FieldDef' });
             t.punctuation(':');
@@ -1181,7 +1181,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1202,7 +1202,7 @@ describe('onlineParser', () => {
         t.keyword('extend', { kind: 'ExtendDef' });
         t.keyword('type', { kind: 'ObjectTypeDef' });
         t.name('SomeType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'FieldsDef' });
 
         t.property('someField', { kind: 'FieldDef' });
         t.punctuation(':');
@@ -1226,7 +1226,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputFieldsDef' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1246,7 +1246,7 @@ describe('onlineParser', () => {
 
         t.keyword('input', { kind: 'InputDef' });
         t.name('SomeInputType');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'InputFieldsDef' });
 
         t.attribute('someField', { kind: 'InputValueDef' });
         t.punctuation(':');
@@ -1271,7 +1271,7 @@ describe('onlineParser', () => {
 
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
-        t.punctuation('{');
+        t.punctuation('{', { kind: 'EnumValuesDef' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
@@ -1292,7 +1292,7 @@ describe('onlineParser', () => {
         t.keyword('enum', { kind: 'EnumDef' });
         t.name('SomeEnum');
         expectDirective({ t }, { name: 'someDirective' });
-        t.punctuation('{', { kind: 'EnumDef' });
+        t.punctuation('{', { kind: 'EnumValuesDef' });
 
         t.value('Enum', 'SOME_ENUM_VALUE', { kind: 'EnumValueDef' });
         t.value('Enum', 'ANOTHER_ENUM_VALUE', { kind: 'EnumValueDef' });
@@ -1368,6 +1368,81 @@ describe('onlineParser', () => {
         t.value('Enum', 'FIELD_DEFINITION', { kind: 'DirectiveLocation' });
         t.punctuation('|', { kind: 'DirectiveDef' });
         t.value('Enum', 'ENUM_VALUE', { kind: 'DirectiveLocation' });
+
+        t.eol();
+      });
+    });
+
+    // The fields/values block is optional per spec. A definition without a body
+    // must not break parsing of the definitions that follow it.
+    describe('parses type system definitions without a body', () => {
+      it('object type definition followed by another definition', () => {
+        const { t } = getUtils('type SomeType\nscalar SomeScalar');
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('interface definition followed by another definition', () => {
+        const { t } = getUtils('interface SomeInterface\nscalar SomeScalar');
+
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('SomeInterface');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('enum definition followed by another definition', () => {
+        const { t } = getUtils('enum SomeEnum\nscalar SomeScalar');
+
+        t.keyword('enum', { kind: 'EnumDef' });
+        t.name('SomeEnum');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('input object definition followed by another definition', () => {
+        const { t } = getUtils('input SomeInput\nscalar SomeScalar');
+
+        t.keyword('input', { kind: 'InputDef' });
+        t.name('SomeInput');
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('definition with only a directive and no body', () => {
+        const { t } = getUtils('type SomeType @onType\nscalar SomeScalar');
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'onType' });
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
+
+        t.eol();
+      });
+
+      it('type extension with only a directive and no body', () => {
+        const { t } = getUtils(
+          'extend type SomeType @onType\nscalar SomeScalar',
+        );
+
+        t.keyword('extend', { kind: 'ExtendDef' });
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        expectDirective({ t }, { name: 'onType' });
+        t.keyword('scalar', { kind: 'ScalarDef' });
+        t.name('SomeScalar');
 
         t.eol();
       });

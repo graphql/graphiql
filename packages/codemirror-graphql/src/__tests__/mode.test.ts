@@ -91,6 +91,24 @@ describe('graphql-mode', () => {
     });
   });
 
+  it('parses type system definitions without a body without invalidchar', () => {
+    const schema = `
+      type EmptyType @onType
+      interface EmptyInterface @onInterface
+      enum EmptyEnum @onEnum
+      input EmptyInput @onInputObject
+
+      extend type Foo @onType
+      extend interface Bar @onInterface
+      extend enum Site @onEnum
+      extend input InputType @onInputObject
+    `;
+
+    CodeMirror.runMode(schema, 'graphql', (_token, style) => {
+      expect(style).not.toBe('invalidchar');
+    });
+  });
+
   it('parses anonymous operations without invalidchar', () => {
     CodeMirror.runMode('{ id }', 'graphql', (_token, style) => {
       expect(style).not.toBe('invalidchar');
