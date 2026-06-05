@@ -99,7 +99,7 @@
 }
 
 .graphiql-transport-upgrade-banner-link {
-  color: oklch(var(--accent-yellow));
+  color: oklch(var(--fg-default));
   text-decoration: underline;
   text-underline-offset: 2px;
 }
