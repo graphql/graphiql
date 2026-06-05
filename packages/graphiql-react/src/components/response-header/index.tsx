@@ -57,6 +57,7 @@ export const ResponseHeader: FC<ResponseHeaderProps> = ({
   onCopy,
 }) => {
   const isError = status !== undefined && (status === 0 || status >= 400);
+  const handleDismiss = upgradeNotice?.onDismiss;
 
   return (
     <header className="graphiql-response-header">
@@ -81,7 +82,7 @@ export const ResponseHeader: FC<ResponseHeaderProps> = ({
             type="button"
             className="graphiql-transport-upgrade-banner-dismiss"
             aria-label="Dismiss banner"
-            onClick={upgradeNotice.onDismiss}
+            onClick={handleDismiss}
           >
             <CloseIcon aria-hidden="true" />
           </button>
