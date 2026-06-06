@@ -45,12 +45,7 @@ describe('ResponseTreeView', () => {
   });
 
   it('renders an array with child count summary when collapsed', () => {
-    render(
-      <ResponseTreeView
-        data={[1, 2, 3]}
-        initiallyExpandedDepth={0}
-      />,
-    );
+    render(<ResponseTreeView data={[1, 2, 3]} initiallyExpandedDepth={0} />);
     expect(screen.getByText('Array [3]')).toBeInTheDocument();
   });
 
@@ -127,24 +122,19 @@ describe('ResponseTreeView', () => {
 
   it('renders empty object with no rows', () => {
     render(<ResponseTreeView data={{}} />);
-    expect(document.querySelector('.graphiql-response-tree')).toBeInTheDocument();
+    expect(
+      document.querySelector('.graphiql-response-tree'),
+    ).toBeInTheDocument();
     expect(document.querySelector('.graphiql-tree-row')).toBeNull();
   });
 
   it('renders empty array', () => {
-    render(
-      <ResponseTreeView data={[]} initiallyExpandedDepth={0} />,
-    );
+    render(<ResponseTreeView data={[]} initiallyExpandedDepth={0} />);
     expect(screen.getByText('Array [0]')).toBeInTheDocument();
   });
 
   it('renders array items with numeric keys when expanded', () => {
-    render(
-      <ResponseTreeView
-        data={['a', 'b']}
-        initiallyExpandedDepth={1}
-      />,
-    );
+    render(<ResponseTreeView data={['a', 'b']} initiallyExpandedDepth={1} />);
     expect(screen.getByText('0')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
   });

@@ -53,7 +53,7 @@ type RootValueProps = {
 // Renders a value that has no key label (used when the root body is not an object).
 const RootValue: FC<RootValueProps> = ({ value, initiallyExpandedDepth }) => {
   const expandable = value !== null && typeof value === 'object';
-  const [open, setOpen] = useState(0 < initiallyExpandedDepth);
+  const [open, setOpen] = useState(initiallyExpandedDepth > 0);
 
   if (!expandable) {
     const valueClass = `graphiql-tree-value graphiql-tree-${scalarClass(value)}`;
