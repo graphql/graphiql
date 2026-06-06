@@ -11,7 +11,7 @@
     "start": "react-router-serve dist/server/index.js"
   },
   "dependencies": {
-    "@graphiql/react": "^0.37.5",
+    "@graphiql/react": "^0.37.6",
     "@react-router/fs-routes": "^7",
     "@react-router/node": "^7",
     "@react-router/serve": "^7",
