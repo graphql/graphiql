@@ -56,9 +56,7 @@ export const ResponseTableView: FC<ResponseTableViewProps> = ({ data }) => {
   }
 
   const { key, rows } = match;
-  const cols = Array.from(
-    new Set(rows.flatMap(row => Object.keys(row ?? {}))),
-  );
+  const cols = Array.from(new Set(rows.flatMap(row => Object.keys(row ?? {}))));
 
   return (
     <div className="graphiql-response-table-wrapper">
