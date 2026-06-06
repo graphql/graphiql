@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.37.6
+
+### Patch Changes
+
+- [#4332](https://github.com/graphql/graphiql/pull/4332) [`61d138f`](https://github.com/graphql/graphiql/commit/61d138f8d13e79cb06d3fa44cd2f50ba8f223707) Thanks [@vishwakt](https://github.com/vishwakt)! - Fix image previews in the response viewer fetching from the wrong host. Monaco splits the hovered word on `:`, so a full URL like `https://example.com/img.png` reaches the preview as the protocol-relative `//example.com/img.png`. The preview stripped the leading character, turning that into the host-relative `/example.com/img.png` and fetching it from the current origin. The original host is now preserved.
+
+- Updated dependencies [[`a526a10`](https://github.com/graphql/graphiql/commit/a526a10ac186dd242fda152dddbef3072fc10ee8)]:
+  - graphql-language-service@5.5.2
+
 ## 0.37.5
 
 ### Patch Changes

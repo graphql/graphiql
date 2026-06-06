@@ -1,5 +1,16 @@
 # graphql-language-service-server
 
+## 2.14.10
+
+### Patch Changes
+
+- [#4328](https://github.com/graphql/graphiql/pull/4328) [`d6b71ce`](https://github.com/graphql/graphiql/commit/d6b71ce37514eb5820b8be261ddc5fb75fe9e2ce) Thanks [@vishwakt](https://github.com/vishwakt)! - Move `debounce-promise` from `devDependencies` to `dependencies`. It is imported at runtime in `MessageProcessor.ts`, so it must be a regular dependency. Previously the package only resolved it via hoisting, which fails under strict installs (e.g. `pnpm` v11), causing `graphql-lsp` to crash with `Cannot find module 'debounce-promise'`.
+
+- [#4331](https://github.com/graphql/graphiql/pull/4331) [`e1077b9`](https://github.com/graphql/graphiql/commit/e1077b950293b461dc096e2dc7d46ab7dbe13f5d) Thanks [@vishwakt](https://github.com/vishwakt)! - Import `Logger` from `vscode-jsonrpc` instead of `vscode-languageserver`. `Logger` is defined in `vscode-jsonrpc` (a direct dependency) and only reached `vscode-languageserver` through a transitive re-export, which `tsgo` failed to resolve on CI (`Module '"vscode-languageserver"' has no exported member 'Logger'`). Importing from the package that owns the type avoids relying on that fragile re-export chain.
+
+- Updated dependencies [[`a526a10`](https://github.com/graphql/graphiql/commit/a526a10ac186dd242fda152dddbef3072fc10ee8)]:
+  - graphql-language-service@5.5.2
+
 ## 2.14.9
 
 ### Patch Changes
