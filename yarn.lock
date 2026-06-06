@@ -8610,11 +8610,11 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "brace-expansion@npm:5.0.5"
+  version: 5.0.6
+  resolution: "brace-expansion@npm:5.0.6"
   dependencies:
     balanced-match: "npm:^4.0.2"
-  checksum: 10c0/4d238e14ed4f5cc9c07285550a41cef23121ca08ba99fa9eb5b55b580dcb6bf868b8210aa10526bdc9f8dc97f33ca2a7259039c4cc131a93042beddb424c48e3
+  checksum: 10c0/8c919869b90f61d533b341d3340be5ee4413232ea89b8246cbc2f38eb014f1d8182785c98a006eaf6111d02dc9eeffefdc240d5ac158625b2ed084dccd4bbf9b
   languageName: node
   linkType: hard
 
@@ -13094,6 +13094,7 @@ __metadata:
     "@babel/parser": "npm:^7.23.6"
     "@babel/types": "npm:^7.23.5"
     "@graphql-tools/code-file-loader": "npm:8.0.3"
+    "@types/debounce-promise": "npm:^3.1.9"
     "@types/glob": "npm:^8.1.0"
     "@types/mkdirp": "npm:^1.0.1"
     cosmiconfig-toml-loader: "npm:^1.0.0"
@@ -20444,7 +20445,7 @@ __metadata:
     graphql: "npm:^17.0.0-alpha.8"
     graphql-helix: "npm:^1.13.0"
     graphql-ws: "npm:^6.0.5"
-    ws: "npm:8.17.1"
+    ws: "npm:8.20.1"
   languageName: unknown
   linkType: soft
 
@@ -22666,21 +22667,6 @@ __metadata:
     signal-exit: "npm:^3.0.2"
     typedarray-to-buffer: "npm:^3.1.5"
   checksum: 10c0/7fb67affd811c7a1221bed0c905c26e28f0041e138fb19ccf02db57a0ef93ea69220959af3906b920f9b0411d1914474cdd90b93a96e5cd9e8368d9777caac0e
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.17.1":
-  version: 8.17.1
-  resolution: "ws@npm:8.17.1"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10c0/f4a49064afae4500be772abdc2211c8518f39e1c959640457dcee15d4488628620625c783902a52af2dd02f68558da2868fd06e6fd0e67ebcd09e6881b1b5bfe
   languageName: node
   linkType: hard
 
