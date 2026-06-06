@@ -21,6 +21,7 @@ acao
 acmerc
 aivazis
 akshat
+alderaan
 alexey
 alok
 amfoss
@@ -52,6 +53,7 @@ codegen
 codemirror
 codesandbox
 codespaces
+corellia
 codicon
 colmena
 combobox
@@ -97,6 +99,7 @@ graphqls
 ˈɡrafək
 harshith
 headlessui
+homeworld
 heyenbrock
 hola
 htmling
@@ -118,6 +121,7 @@ keycap
 kumar
 languageservice
 leebyron
+leia
 Leko
 LekoArts
 lezer
@@ -206,6 +210,7 @@ sfc's
 sgrove
 simha
 singleline
+skywalker
 snyk
 socker
 sonarjs
@@ -223,6 +228,7 @@ svgo
 svgr
 tanay
 tanaypratap
+tatooine
 testid
 testonly
 therox

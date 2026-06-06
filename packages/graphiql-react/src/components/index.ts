@@ -41,3 +41,5 @@ export { ResponseHeader } from './response-header';
 export type { ResponseHeaderProps } from './response-header';
 export { ResponseTableView } from './response-table-view';
 export type { ResponseTableViewProps } from './response-table-view';
+export { ResponseTreeView } from './response-tree-view';
+export type { ResponseTreeViewProps } from './response-tree-view';

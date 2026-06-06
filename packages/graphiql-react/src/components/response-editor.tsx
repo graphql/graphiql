@@ -5,6 +5,7 @@ import { useGraphiQL, useGraphiQLActions } from './provider';
 import { ImagePreview } from './image-preview';
 import { ResponseHeader } from './response-header';
 import { ResponseTableView } from './response-table-view';
+import { ResponseTreeView } from './response-tree-view';
 import {
   getOrCreateModel,
   createEditor,
@@ -196,22 +197,26 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
           onCopy={handleCopy}
         />
       )}
-      {responseView === 'json' ? (
-        <section
-          ref={ref}
-          aria-label="Result Window"
-          aria-live="polite"
-          aria-atomic="true"
-          tabIndex={0}
-          onKeyDown={onEditorContainerKeyDown}
-          className="result-window"
-        />
-      ) : responseView === 'table' ? (
+      <section
+        ref={ref}
+        aria-label="Result Window"
+        aria-live="polite"
+        aria-atomic="true"
+        tabIndex={0}
+        onKeyDown={onEditorContainerKeyDown}
+        className="result-window"
+        hidden={responseView !== 'json'}
+      />
+      {responseView === 'tree' &&
+        (lastResponse ? (
+          <ResponseTreeView data={lastResponse.body} />
+        ) : (
+          <div className="graphiql-response-empty-state" role="status">
+            <span>Run a query to see the tree view.</span>
+          </div>
+        ))}
+      {responseView === 'table' && (
         <ResponseTableView data={lastResponse?.body} />
-      ) : (
-        <div className="graphiql-response-empty-state" role="status">
-          <span>Tree view is not yet available.</span>
-        </div>
       )}
     </div>
   );
