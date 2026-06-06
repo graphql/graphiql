@@ -33,6 +33,7 @@ export const WithMetadata: Story = {
     return (
       <ResponseHeader
         status={200}
+        statusText="OK"
         timeMs={143}
         sizeBytes={2812}
         view={view}

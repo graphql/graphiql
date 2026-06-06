@@ -41,6 +41,10 @@
   color: oklch(var(--accent-red));
 }
 
+.graphiql-response-status-text {
+  color: oklch(var(--fg-muted));
+}
+
 .graphiql-response-meta {
   font-family: var(--font-family-mono);
   font-size: 11.5px;
