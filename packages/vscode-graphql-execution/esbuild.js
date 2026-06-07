@@ -5,30 +5,12 @@ const logger = console;
 
 const isWatchMode = arg === '--watch';
 
-// `@urql/core` (pinned at 2.6.1) deep-imports `graphql` ESM files by explicit
-// `.mjs` path (e.g. `graphql/error/GraphQLError.mjs`). `graphql` 17's `exports`
-// map only exposes `.js` deep paths, so esbuild can't resolve the `.mjs` ones.
-// Redirect them to the `.js` sibling, which the `exports` map allows. Newer
-// `@urql/core` imports `graphql` top-level, so remove this shim once it's
-// upgraded past 2.6.1.
-const graphqlMjsResolver = {
-  name: 'graphql-mjs-resolver',
-  setup(buildApi) {
-    buildApi.onResolve({ filter: /^graphql\/.*\.mjs$/ }, args => ({
-      path: require.resolve(args.path.replace(/\.mjs$/, '.js'), {
-        paths: [args.resolveDir],
-      }),
-    }));
-  },
-};
-
 build({
   entryPoints: ['src/extension.ts'],
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
   outdir: 'out/',
-  plugins: [graphqlMjsResolver],
   external: [
     'squirrelly',
     'teacup',

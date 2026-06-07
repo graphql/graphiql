@@ -100,7 +100,7 @@
   },
   "dependencies": {
     "@graphql-tools/code-file-loader": "8.0.3",
-    "@urql/core": "2.6.1",
+    "@urql/core": "^6.0.1",
     "@whatwg-node/fetch": "0.2.8",
     "capitalize": "2.0.4",
     "cosmiconfig": "8.2.0",
@@ -108,7 +108,6 @@
     "dotenv": "10.0.0",
     "graphql": "^16.9.0 || ^17.0.0-rc.0",
     "graphql-config": "^5.1.6",
-    "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
