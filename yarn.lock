@@ -12989,6 +12989,9 @@ __metadata:
     vitest: "npm:^4.1.6"
     wgutils: "npm:^1.2.5"
     wsrun: "npm:^5.2.4"
+  dependenciesMeta:
+    cypress:
+      built: true
   languageName: unknown
   linkType: soft
 

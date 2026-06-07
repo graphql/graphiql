@@ -17,6 +17,11 @@
     ]
   },
   "packageManager": "yarn@4.16.0",
+  "dependenciesMeta": {
+    "cypress": {
+      "built": true
+    }
+  },
   "scripts": {
     "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
     "dev:graphiql": "turbo run dev --filter=graphiql...",
