@@ -13071,15 +13071,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-http@npm:^1.22.4":
-  version: 1.22.4
-  resolution: "graphql-http@npm:1.22.4"
-  peerDependencies:
-    graphql: ">=0.11 <=16"
-  checksum: 10c0/039e55545fda36ba9bae566ae5d528c4dd9d5972ce3799413741f57309107849930343449b024874041cdcbb7242c0562a19c48d83fccabbf0c7d9f0d3d5a43a
-  languageName: node
-  linkType: hard
-
 "graphql-language-service-cli@workspace:packages/graphql-language-service-cli":
   version: 0.0.0-use.local
   resolution: "graphql-language-service-cli@workspace:packages/graphql-language-service-cli"
@@ -13215,10 +13206,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.9.0 || ^17.0.0-alpha.2, graphql@npm:^17.0.0-alpha.8":
+"graphql@npm:^16.9.0 || ^17.0.0-alpha.2":
   version: 17.0.0-alpha.8
   resolution: "graphql@npm:17.0.0-alpha.8"
   checksum: 10c0/e33ddf6afa36b6640e290412f1f307a0b2b9b3895ed7e273e4a4920f78fb8aa3118db359fa4da3f1c8c3493ea86db29b837b9436250ea9afa05f67b608bd6a8f
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^17.0.0-rc.0":
+  version: 17.0.0-rc.0
+  resolution: "graphql@npm:17.0.0-rc.0"
+  checksum: 10c0/06139f3df45496226d013d4f1a43a2aedb1e20b6a20c4a5b3cf099e5f5708275218ccf6ffdc47be9e35dda2c1ab70b6110aedb87900e3ddf47930acca54517b3
   languageName: node
   linkType: hard
 
@@ -16366,8 +16364,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "netlify-function@workspace:functions"
   dependencies:
-    graphql: "npm:^16.11.0"
-    graphql-http: "npm:^1.22.4"
+    graphql: "npm:^17.0.0-rc.0"
+    graphql-helix: "npm:^1.13.0"
   languageName: unknown
   linkType: soft
 
@@ -20437,7 +20435,7 @@ __metadata:
   resolution: "test-server@workspace:packages/graphiql/test"
   dependencies:
     express: "npm:^4.20.0"
-    graphql: "npm:^17.0.0-alpha.8"
+    graphql: "npm:^17.0.0-rc.0"
     graphql-helix: "npm:^1.13.0"
     graphql-ws: "npm:^6.0.5"
     ws: "npm:8.20.1"
