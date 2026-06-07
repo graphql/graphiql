@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.3.6
+
+### Patch Changes
+
+- [#4306](https://github.com/graphql/graphiql/pull/4306) [`7aefde8`](https://github.com/graphql/graphiql/commit/7aefde86dbd23948939853ca9f9d2f066bc35b8f) Thanks [@dependabot](https://github.com/apps/dependabot)! - Bump `ws` to 8.20.1 to address [GHSA-58qx-3vcg-4xpx](https://github.com/advisories/GHSA-58qx-3vcg-4xpx) (uninitialized memory disclosure in `websocket.close()`).
+
 ## 0.3.5
 
 ### Patch Changes
