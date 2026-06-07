@@ -5,6 +5,9 @@ import {
   type DocumentNode,
   type FieldNode,
   type GraphQLScalarType,
+  type ListValueNode,
+  type ObjectFieldNode,
+  type ObjectValueNode,
   type SelectionSetNode,
   type ValueNode,
 } from 'graphql';
@@ -141,6 +144,98 @@ export function getFieldArgValues(
   }
 
   return {};
+}
+
+// ---------------------------------------------------------------------------
+// List and input-object value helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Converts a plain JavaScript value to a GraphQL `ValueNode`. Handles strings,
+ * numbers, booleans, arrays, and plain objects (for input types). Primitives
+ * that don't match a known type fall back to a `StringValue`.
+ */
+export function jsValueToValueNode(value: unknown): ValueNode {
+  if (Array.isArray(value)) {
+    const node: ListValueNode = {
+      kind: Kind.LIST,
+      values: value.map(jsValueToValueNode),
+    };
+    return node;
+  }
+  if (value !== null && typeof value === 'object') {
+    const fields: ObjectFieldNode[] = Object.entries(value as Record<string, unknown>).map(
+      ([k, v]) => ({
+        kind: Kind.OBJECT_FIELD as const,
+        name: { kind: Kind.NAME as const, value: k },
+        value: jsValueToValueNode(v),
+      }),
+    );
+    const node: ObjectValueNode = { kind: Kind.OBJECT, fields };
+    return node;
+  }
+  if (typeof value === 'boolean') {
+    return { kind: Kind.BOOLEAN, value };
+  }
+  if (typeof value === 'number') {
+    if (Number.isInteger(value)) {
+      return { kind: Kind.INT, value: String(value) };
+    }
+    return { kind: Kind.FLOAT, value: String(value) };
+  }
+  // Fallthrough: treat as string
+  return { kind: Kind.STRING, value: String(value ?? '') };
+}
+
+/**
+ * Sets a list-valued argument on the field at `path`. Each element of `items`
+ * is converted to a `ValueNode` via `jsValueToValueNode`, so items may be
+ * scalars, plain objects (for input types), or nested arrays.
+ *
+ * Pass `undefined` to remove the argument entirely.
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`.
+ */
+export function setListArgValue(
+  doc: DocumentNode,
+  path: string[],
+  argName: string,
+  items: unknown[] | undefined,
+): DocumentNode {
+  if (items === undefined) {
+    return setFieldArgument(doc, path, argName, undefined);
+  }
+  const listNode: ListValueNode = {
+    kind: Kind.LIST,
+    values: items.map(jsValueToValueNode),
+  };
+  return setFieldArgument(doc, path, argName, listNode);
+}
+
+/**
+ * Sets an input-object-valued argument on the field at `path`. The `obj`
+ * record's values are converted to `ValueNode`s via `jsValueToValueNode`.
+ *
+ * Pass `undefined` to remove the argument entirely.
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`.
+ */
+export function setInputObjectArgValue(
+  doc: DocumentNode,
+  path: string[],
+  argName: string,
+  obj: Record<string, unknown> | undefined,
+): DocumentNode {
+  if (obj === undefined) {
+    return setFieldArgument(doc, path, argName, undefined);
+  }
+  const fields: ObjectFieldNode[] = Object.entries(obj).map(([k, v]) => ({
+    kind: Kind.OBJECT_FIELD as const,
+    name: { kind: Kind.NAME as const, value: k },
+    value: jsValueToValueNode(v),
+  }));
+  const objectNode: ObjectValueNode = { kind: Kind.OBJECT, fields };
+  return setFieldArgument(doc, path, argName, objectNode);
 }
 
 function valueNodeToString(node: ValueNode): string {

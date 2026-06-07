@@ -3,6 +3,7 @@ import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLFloat,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -364,6 +365,114 @@ export const FieldRowMixedArgsChecked: Story = {
         onToggle={() => undefined}
         onExpand={() => undefined}
         onSetArg={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// ArgInput — list and input object stories
+// ---------------------------------------------------------------------------
+
+const TagInput = new GraphQLInputObjectType({
+  name: 'TagInput',
+  fields: {
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    value: { type: GraphQLString },
+  },
+});
+
+const DeepInput = new GraphQLInputObjectType({
+  name: 'DeepInput',
+  fields: {
+    label: { type: GraphQLString },
+    tag: { type: TagInput },
+  },
+});
+
+const listStringArg = {
+  name: 'tags',
+  type: new GraphQLList(GraphQLString),
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+
+const listInputObjectArg = {
+  name: 'tags',
+  type: new GraphQLList(TagInput),
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+
+const inputObjectArg = {
+  name: 'input',
+  type: TagInput,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+
+const deepInputObjectArg = {
+  name: 'config',
+  type: DeepInput,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+
+export const ArgInputListOfScalars: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <ArgInput
+        arg={listStringArg}
+        value={JSON.stringify(['alpha', 'beta'])}
+        onChange={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const ArgInputListOfInputObjects: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <ArgInput
+        arg={listInputObjectArg}
+        value={JSON.stringify([{ name: 'hero', value: '1' }, { name: 'jedi' }])}
+        onChange={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const ArgInputInputObject: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <ArgInput
+        arg={inputObjectArg}
+        value={JSON.stringify({ name: 'alpha', value: 'test' })}
+        onChange={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const ArgInputDeeplyNestedInputObject: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <ArgInput
+        arg={deepInputObjectArg}
+        value={JSON.stringify({ label: 'outer', tag: { name: 'inner', value: 'deep' } })}
+        onChange={() => undefined}
       />
     </div>
   ),
