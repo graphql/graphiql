@@ -47,6 +47,9 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
+import { queryBuilderPlugin } from '@graphiql/plugin-query-builder';
+
+const QUERY_BUILDER_PLUGIN = queryBuilderPlugin();
 import {
   ActivityBar,
   GraphiQLLogo,
@@ -82,7 +85,7 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN],
+  plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN],
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,

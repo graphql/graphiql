@@ -9,8 +9,10 @@ import {
 } from 'graphql';
 import { type FC, useMemo } from 'react';
 import {
+  addInlineFragment,
   demoteVariable,
   promoteArgToVariable,
+  removeInlineFragment,
   scalarToValueNode,
   setFieldArgument,
   suggestVarName,
@@ -146,6 +148,14 @@ export const QueryBuilder: FC = () => {
     applyDoc(demoteVariable(doc, varName));
   }
 
+  function handleAddInlineFragment(path: string[], typeName: string) {
+    applyDoc(addInlineFragment(doc, path, typeName));
+  }
+
+  function handleRemoveInlineFragment(path: string[], typeName: string) {
+    applyDoc(removeInlineFragment(doc, path, typeName));
+  }
+
   if (!schema) {
     return (
       <div className="graphiql-query-builder">
@@ -169,10 +179,13 @@ export const QueryBuilder: FC = () => {
             type={rootType}
             path={[]}
             doc={doc}
+            schema={schema ?? undefined}
             onToggle={handleToggle}
             onSetArg={handleSetArg}
             onPromoteArg={handlePromoteArg}
             onDemoteArg={handleDemoteArg}
+            onAddInlineFragment={handleAddInlineFragment}
+            onRemoveInlineFragment={handleRemoveInlineFragment}
           />
         </section>
       ))}

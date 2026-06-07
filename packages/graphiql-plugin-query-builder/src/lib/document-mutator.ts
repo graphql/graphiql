@@ -9,6 +9,7 @@ import {
   type FragmentDefinitionNode,
   type FragmentSpreadNode,
   type GraphQLScalarType,
+  type InlineFragmentNode,
   type ListValueNode,
   type ObjectFieldNode,
   type ObjectValueNode,
@@ -599,6 +600,249 @@ function replaceFieldSelectionSet(
   const newSelections = [...selectionSet.selections];
   newSelections[fieldIndex] = updatedField;
   return { ...selectionSet, selections: newSelections };
+}
+
+// ---------------------------------------------------------------------------
+// Inline-fragment helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns `true` when the field at `path` in the first operation of `doc`
+ * already contains an `... on TypeName` inline fragment with the given
+ * `typeName`.
+ */
+export function isInlineFragmentPresent(
+  doc: DocumentNode,
+  path: string[],
+  typeName: string,
+): boolean {
+  const selectionSet = findFieldSelectionSet(doc, path);
+  if (!selectionSet) return false;
+  return selectionSet.selections.some(
+    (s): s is InlineFragmentNode =>
+      s.kind === Kind.INLINE_FRAGMENT &&
+      s.typeCondition?.name.value === typeName,
+  );
+}
+
+/**
+ * Adds an `... on TypeName { __typename }` inline fragment to the field at
+ * `path` in the first operation of `doc`. If the fragment is already present
+ * this is a no-op.
+ *
+ * Creates the field's selection set when the field currently has none.
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`.
+ */
+export function addInlineFragment(
+  doc: DocumentNode,
+  path: string[],
+  typeName: string,
+): DocumentNode {
+  if (path.length === 0) return doc;
+
+  const operationIndex = doc.definitions.findIndex(
+    d => d.kind === Kind.OPERATION_DEFINITION,
+  );
+  if (operationIndex === -1) return doc;
+
+  const operation = doc.definitions[operationIndex]!;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+
+  const newSelectionSet = addInlineFragmentInSelectionSet(
+    operation.selectionSet,
+    path,
+    typeName,
+  );
+  if (newSelectionSet === operation.selectionSet) return doc;
+
+  const newOperation = { ...operation, selectionSet: newSelectionSet };
+  const newDefinitions = [...doc.definitions];
+  newDefinitions[operationIndex] = newOperation;
+  return { ...doc, definitions: newDefinitions };
+}
+
+/**
+ * Removes the `... on TypeName` inline fragment from the field at `path` in
+ * the first operation of `doc`. If no such fragment exists this is a no-op.
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`.
+ */
+export function removeInlineFragment(
+  doc: DocumentNode,
+  path: string[],
+  typeName: string,
+): DocumentNode {
+  if (path.length === 0) return doc;
+
+  const operationIndex = doc.definitions.findIndex(
+    d => d.kind === Kind.OPERATION_DEFINITION,
+  );
+  if (operationIndex === -1) return doc;
+
+  const operation = doc.definitions[operationIndex]!;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+
+  const newSelectionSet = removeInlineFragmentInSelectionSet(
+    operation.selectionSet,
+    path,
+    typeName,
+  );
+  if (newSelectionSet === operation.selectionSet) return doc;
+
+  const newOperation = { ...operation, selectionSet: newSelectionSet };
+  const newDefinitions = [...doc.definitions];
+  newDefinitions[operationIndex] = newOperation;
+  return { ...doc, definitions: newDefinitions };
+}
+
+function addInlineFragmentInSelectionSet(
+  selectionSet: SelectionSetNode,
+  path: string[],
+  typeName: string,
+): SelectionSetNode {
+  const [segment, ...rest] = path as [string, ...string[]];
+
+  const fieldIndex = selectionSet.selections.findIndex(
+    (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
+  );
+
+  if (rest.length === 0) {
+    // Target field found — work on it.
+    let field: FieldNode;
+    let fieldExisted = true;
+    if (fieldIndex === -1) {
+      // Field not present — can't add fragment to it.
+      return selectionSet;
+    }
+    field = selectionSet.selections[fieldIndex] as FieldNode;
+
+    const currentSet: SelectionSetNode = field.selectionSet ?? {
+      kind: Kind.SELECTION_SET,
+      selections: [],
+    };
+
+    // No-op if already present.
+    const alreadyPresent = currentSet.selections.some(
+      (s): s is InlineFragmentNode =>
+        s.kind === Kind.INLINE_FRAGMENT &&
+        s.typeCondition?.name.value === typeName,
+    );
+    if (alreadyPresent) return selectionSet;
+
+    const fragment: InlineFragmentNode = {
+      kind: Kind.INLINE_FRAGMENT,
+      typeCondition: {
+        kind: Kind.NAMED_TYPE,
+        name: { kind: Kind.NAME, value: typeName },
+      },
+      directives: [],
+      selectionSet: {
+        kind: Kind.SELECTION_SET,
+        selections: [
+          {
+            kind: Kind.FIELD,
+            name: { kind: Kind.NAME, value: '__typename' },
+            arguments: [],
+            directives: [],
+          },
+        ],
+      },
+    };
+
+    const newSet: SelectionSetNode = {
+      ...currentSet,
+      selections: [...currentSet.selections, fragment],
+    };
+
+    const updatedField: FieldNode = { ...field, selectionSet: newSet };
+    const newSelections = [...selectionSet.selections];
+    newSelections[fieldIndex] = updatedField;
+    return { ...selectionSet, selections: newSelections };
+  }
+
+  // Recurse into the child field.
+  if (fieldIndex === -1) return selectionSet;
+  const field = selectionSet.selections[fieldIndex] as FieldNode;
+  if (!field.selectionSet) return selectionSet;
+
+  const newChildSet = addInlineFragmentInSelectionSet(field.selectionSet, rest, typeName);
+  if (newChildSet === field.selectionSet) return selectionSet;
+
+  const updatedField: FieldNode = { ...field, selectionSet: newChildSet };
+  const newSelections = [...selectionSet.selections];
+  newSelections[fieldIndex] = updatedField;
+  return { ...selectionSet, selections: newSelections };
+}
+
+function removeInlineFragmentInSelectionSet(
+  selectionSet: SelectionSetNode,
+  path: string[],
+  typeName: string,
+): SelectionSetNode {
+  const [segment, ...rest] = path as [string, ...string[]];
+
+  const fieldIndex = selectionSet.selections.findIndex(
+    (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
+  );
+  if (fieldIndex === -1) return selectionSet;
+
+  const field = selectionSet.selections[fieldIndex] as FieldNode;
+
+  if (rest.length === 0) {
+    if (!field.selectionSet) return selectionSet;
+
+    const newInnerSelections = field.selectionSet.selections.filter(
+      s =>
+        !(
+          s.kind === Kind.INLINE_FRAGMENT &&
+          s.typeCondition?.name.value === typeName
+        ),
+    );
+    if (newInnerSelections.length === field.selectionSet.selections.length) {
+      return selectionSet; // nothing removed
+    }
+    const newInnerSet: SelectionSetNode = {
+      ...field.selectionSet,
+      selections: newInnerSelections,
+    };
+    const updatedField: FieldNode = { ...field, selectionSet: newInnerSet };
+    const newSelections = [...selectionSet.selections];
+    newSelections[fieldIndex] = updatedField;
+    return { ...selectionSet, selections: newSelections };
+  }
+
+  if (!field.selectionSet) return selectionSet;
+  const newChildSet = removeInlineFragmentInSelectionSet(field.selectionSet, rest, typeName);
+  if (newChildSet === field.selectionSet) return selectionSet;
+
+  const updatedField: FieldNode = { ...field, selectionSet: newChildSet };
+  const newSelections = [...selectionSet.selections];
+  newSelections[fieldIndex] = updatedField;
+  return { ...selectionSet, selections: newSelections };
+}
+
+function findFieldSelectionSet(
+  doc: DocumentNode,
+  path: string[],
+): SelectionSetNode | undefined {
+  const operation = doc.definitions.find(
+    d => d.kind === Kind.OPERATION_DEFINITION,
+  );
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return undefined;
+
+  let selectionSet: SelectionSetNode = operation.selectionSet;
+
+  for (const segment of path) {
+    const field = selectionSet.selections.find(
+      (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
+    );
+    if (!field) return undefined;
+    if (!field.selectionSet) return undefined;
+    selectionSet = field.selectionSet;
+  }
+
+  return selectionSet;
 }
 
 function valueNodeToString(node: ValueNode): string {

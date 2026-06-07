@@ -5,11 +5,13 @@ import {
   GraphQLFloat,
   GraphQLInputObjectType,
   GraphQLInt,
+  GraphQLInterfaceType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  GraphQLUnionType,
   parse,
 } from 'graphql';
 import { Tooltip, GraphiQLProvider } from '@graphiql/react';
@@ -555,4 +557,91 @@ export const FragmentSectionWithFragments: Story = {
       <FragmentSection doc={docWithFragments} onCreateFragment={() => undefined} />
     </div>
   ),
+};
+
+// ---------------------------------------------------------------------------
+// Union and interface field stories
+// ---------------------------------------------------------------------------
+
+const HumanType = new GraphQLObjectType({
+  name: 'Human',
+  fields: {
+    name: { type: GraphQLString },
+    homePlanet: { type: GraphQLString },
+  },
+  interfaces: [],
+});
+
+const DroidType = new GraphQLObjectType({
+  name: 'Droid',
+  fields: {
+    name: { type: GraphQLString },
+    primaryFunction: { type: GraphQLString },
+  },
+  interfaces: [],
+});
+
+const SearchResultUnion = new GraphQLUnionType({
+  name: 'SearchResult',
+  types: [HumanType, DroidType],
+});
+
+const CharacterInterface = new GraphQLInterfaceType({
+  name: 'Character',
+  fields: {
+    name: { type: GraphQLString },
+    appearsIn: { type: new GraphQLList(EpisodeEnum) },
+  },
+});
+
+const HumanWithInterface = new GraphQLObjectType({
+  name: 'HumanCharacter',
+  fields: {
+    name: { type: GraphQLString },
+    homePlanet: { type: GraphQLString },
+    appearsIn: { type: new GraphQLList(EpisodeEnum) },
+  },
+  interfaces: [CharacterInterface],
+});
+
+const DroidWithInterface = new GraphQLObjectType({
+  name: 'DroidCharacter',
+  fields: {
+    name: { type: GraphQLString },
+    primaryFunction: { type: GraphQLString },
+    appearsIn: { type: new GraphQLList(EpisodeEnum) },
+  },
+  interfaces: [CharacterInterface],
+});
+
+const UnionSchema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      search: { type: SearchResultUnion },
+      hero: { type: HeroType },
+    },
+  }),
+  types: [SearchResultUnion, HumanType, DroidType],
+});
+
+const InterfaceSchema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      character: { type: CharacterInterface },
+      hero: { type: HeroType },
+    },
+  }),
+  types: [CharacterInterface, HumanWithInterface, DroidWithInterface],
+});
+
+/** QueryBuilder with a union field — type-condition selectors appear when the field is expanded. */
+export const WithUnionField: Story = {
+  render: () => withProvider(UnionSchema, <QueryBuilder />),
+};
+
+/** QueryBuilder with an interface field — type-condition selectors for each implementing type. */
+export const WithInterfaceField: Story = {
+  render: () => withProvider(InterfaceSchema, <QueryBuilder />),
 };

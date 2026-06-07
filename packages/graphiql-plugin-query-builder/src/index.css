@@ -86,3 +86,45 @@
   color: var(--color-neutral);
   margin-left: 4px;
 }
+
+/* Type-condition selector (union / interface fields) */
+
+.graphiql-qb-type-condition {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--px-16);
+}
+
+.graphiql-qb-inline-fragment {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-inline-fragment-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: var(--border-radius-4);
+  cursor: default;
+}
+
+.graphiql-qb-inline-fragment-header:hover {
+  background-color: var(--color-base);
+}
+
+.graphiql-qb-inline-fragment-label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+}
+
+.graphiql-qb-spread {
+  color: var(--color-neutral);
+}
+
+.graphiql-qb-type-name {
+  color: var(--color-primary);
+  font-weight: 600;
+}

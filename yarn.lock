@@ -3310,7 +3310,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder":
+"@graphiql/plugin-query-builder@npm:^0.1.0-alpha.0, @graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder"
   dependencies:
@@ -14042,6 +14042,7 @@ __metadata:
   dependencies:
     "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
     "@graphiql/plugin-history": "npm:^0.4.2"
+    "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"
     "@graphiql/react": "npm:^0.37.4"
     "@graphiql/toolkit": "npm:^0.12.0"
     "@testing-library/dom": "npm:^10.4.0"
