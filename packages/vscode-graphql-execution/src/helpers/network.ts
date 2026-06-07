@@ -1,5 +1,4 @@
 import { visit, OperationTypeNode, GraphQLError } from 'graphql';
-import { gql } from 'graphql-tag';
 import { fetch } from '@whatwg-node/fetch';
 import { Agent } from 'node:https';
 import * as ws from 'ws';
@@ -12,8 +11,10 @@ import { GraphQLProjectConfig } from 'graphql-config';
 import { createClient as createWSClient, OperationResult } from 'graphql-ws';
 import {
   CombinedError,
+  cacheExchange,
   createClient,
-  defaultExchanges,
+  fetchExchange,
+  gql,
   subscriptionExchange,
 } from '@urql/core';
 
@@ -48,7 +49,7 @@ export class NetworkHelper {
     // it is similar to passing the nodejs env variable flag, except configured on a per-request basis here
     const agent = new Agent({ rejectUnauthorized });
 
-    const exchanges = [...defaultExchanges];
+    const exchanges = [cacheExchange, fetchExchange];
     if (operation === 'subscription') {
       const wsEndpointURL = endpoint.url.replace(/^http/, 'ws');
       const wsClient = createWSClient({
@@ -56,11 +57,16 @@ export class NetworkHelper {
         connectionAckWaitTimeout: 3000,
         webSocketImpl: ws,
       });
-      exchanges.push(
+      exchanges.splice(
+        1,
+        0,
         subscriptionExchange({
           forwardSubscription: op => ({
             subscribe: sink => ({
-              unsubscribe: wsClient.subscribe(op, sink),
+              unsubscribe: wsClient.subscribe(
+                { ...op, query: op.query || '' },
+                sink,
+              ),
             }),
           }),
         }),
