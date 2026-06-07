@@ -5,7 +5,7 @@ import {
   type GraphQLObjectType,
 } from 'graphql';
 import { type FC, useState } from 'react';
-import { isFieldSelected } from '../lib/document-mutator';
+import { getFieldArgValues, isFieldSelected } from '../lib/document-mutator';
 import { FieldRow } from './field-row';
 
 type FieldTreeProps = {
@@ -13,9 +13,10 @@ type FieldTreeProps = {
   path: string[];
   doc: DocumentNode;
   onToggle: (path: string[]) => void;
+  onSetArg: (path: string[], argName: string, value: string) => void;
 };
 
-export const FieldTree: FC<FieldTreeProps> = ({ type, path, doc, onToggle }) => {
+export const FieldTree: FC<FieldTreeProps> = ({ type, path, doc, onToggle, onSetArg }) => {
   const fields = Object.values(type.getFields());
 
   return (
@@ -36,6 +37,7 @@ export const FieldTree: FC<FieldTreeProps> = ({ type, path, doc, onToggle }) => 
             selected={selected}
             objectType={isObject ? (namedType as GraphQLObjectType) : undefined}
             onToggle={onToggle}
+            onSetArg={onSetArg}
           />
         );
       })}
@@ -51,6 +53,7 @@ type FieldTreeNodeProps = {
   selected: boolean;
   objectType: GraphQLObjectType | undefined;
   onToggle: (path: string[]) => void;
+  onSetArg: (path: string[], argName: string, value: string) => void;
 };
 
 const FieldTreeNode: FC<FieldTreeNodeProps> = ({
@@ -61,8 +64,11 @@ const FieldTreeNode: FC<FieldTreeNodeProps> = ({
   selected,
   objectType,
   onToggle,
+  onSetArg,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const fullPath = [...path, field.name];
+  const argValues = getFieldArgValues(doc, fullPath);
 
   function handleExpand() {
     setExpanded(prev => !prev);
@@ -76,15 +82,18 @@ const FieldTreeNode: FC<FieldTreeNodeProps> = ({
         selected={selected}
         hasChildren={isObject}
         expanded={expanded}
+        argValues={argValues}
         onToggle={onToggle}
         onExpand={handleExpand}
+        onSetArg={onSetArg}
       />
       {isObject && expanded && objectType && (
         <FieldTree
           type={objectType}
-          path={[...path, field.name]}
+          path={fullPath}
           doc={doc}
           onToggle={onToggle}
+          onSetArg={onSetArg}
         />
       )}
     </div>

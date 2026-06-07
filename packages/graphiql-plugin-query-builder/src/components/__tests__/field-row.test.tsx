@@ -1,12 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+  GraphQLEnumType,
+  GraphQLInt,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
 import { describe, expect, it, vi } from 'vitest';
 import { FieldRow } from '../field-row';
+
+const EpisodeEnum = new GraphQLEnumType({
+  name: 'Episode',
+  values: { NEWHOPE: { value: 4 }, JEDI: { value: 6 } },
+});
 
 const parentType = new GraphQLObjectType({
   name: 'Hero',
@@ -19,8 +26,22 @@ const parentType = new GraphQLObjectType({
   },
 });
 
+const fieldWithArgs = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    hero: {
+      type: GraphQLString,
+      args: {
+        id: { type: GraphQLInt },
+        episode: { type: EpisodeEnum },
+      },
+    },
+  },
+});
+
 const nameField = parentType.getFields()['name']!;
 const friendsField = parentType.getFields()['friends']!;
+const heroField = fieldWithArgs.getFields()['hero']!;
 
 describe('FieldRow', () => {
   it('renders the field name', () => {
@@ -165,5 +186,74 @@ describe('FieldRow', () => {
     );
     const row = container.querySelector('.graphiql-qb-field-row') as HTMLElement;
     expect(row.style.paddingLeft).toBe('24px'); // 2 * 12px
+  });
+});
+
+describe('FieldRow — arg inputs', () => {
+  it('does not render arg inputs when field is not selected', () => {
+    render(
+      <FieldRow
+        field={heroField}
+        path={[]}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />,
+    );
+    expect(screen.queryByRole('spinbutton')).toBeNull();
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('renders arg inputs when the field is selected', () => {
+    render(
+      <FieldRow
+        field={heroField}
+        path={[]}
+        selected={true}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />,
+    );
+    expect(screen.getByRole('spinbutton', { name: 'id' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'episode' })).toBeInTheDocument();
+  });
+
+  it('pre-fills arg inputs from argValues', () => {
+    render(
+      <FieldRow
+        field={heroField}
+        path={[]}
+        selected={true}
+        hasChildren={false}
+        expanded={false}
+        argValues={{ id: '7', episode: 'JEDI' }}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />,
+    );
+    expect(screen.getByRole('spinbutton')).toHaveValue(7);
+    expect(screen.getByRole('combobox')).toHaveValue('JEDI');
+  });
+
+  it('calls onSetArg when an arg input changes', async () => {
+    const onSetArg = vi.fn();
+    render(
+      <FieldRow
+        field={heroField}
+        path={[]}
+        selected={true}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+        onSetArg={onSetArg}
+      />,
+    );
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'episode' }), 'NEWHOPE');
+    expect(onSetArg).toHaveBeenCalledWith(['hero'], 'episode', 'NEWHOPE');
   });
 });

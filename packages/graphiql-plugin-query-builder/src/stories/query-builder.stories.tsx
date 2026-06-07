@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   GraphQLBoolean,
   GraphQLEnumType,
+  GraphQLFloat,
+  GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -12,6 +14,7 @@ import {
 import { Tooltip, GraphiQLProvider } from '@graphiql/react';
 import type { ReactNode } from 'react';
 import { QueryBuilder } from '../components/query-builder';
+import { ArgInput } from '../components/arg-input';
 import { FieldRow } from '../components/field-row';
 import { FieldTree } from '../components/field-tree';
 import '../index.css';
@@ -216,6 +219,7 @@ export const FieldTreeRootOnly: Story = {
         path={[]}
         doc={emptyDoc}
         onToggle={() => undefined}
+        onSetArg={() => undefined}
       />
     </div>
   ),
@@ -235,6 +239,131 @@ export const FieldTreeWithSelections: Story = {
         path={[]}
         doc={preSelectedDoc}
         onToggle={() => undefined}
+        onSetArg={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// ArgInput — individual input controls
+// ---------------------------------------------------------------------------
+
+const scalarIntArg = { name: 'first', type: GraphQLInt, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+const scalarFloatArg = { name: 'scale', type: GraphQLFloat, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+const scalarStringArg = { name: 'query', type: GraphQLString, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+const scalarBoolArg = { name: 'active', type: GraphQLBoolean, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+const enumArg = { name: 'episode', type: EpisodeEnum, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+
+export const ArgInputInt: Story = {
+  render: () => (
+    <div style={{ padding: 16 }}>
+      <ArgInput arg={scalarIntArg} value="10" onChange={() => undefined} />
+    </div>
+  ),
+};
+
+export const ArgInputFloat: Story = {
+  render: () => (
+    <div style={{ padding: 16 }}>
+      <ArgInput arg={scalarFloatArg} value="1.5" onChange={() => undefined} />
+    </div>
+  ),
+};
+
+export const ArgInputString: Story = {
+  render: () => (
+    <div style={{ padding: 16 }}>
+      <ArgInput arg={scalarStringArg} value="Luke" onChange={() => undefined} />
+    </div>
+  ),
+};
+
+export const ArgInputBoolean: Story = {
+  render: () => (
+    <div style={{ padding: 16 }}>
+      <ArgInput arg={scalarBoolArg} value="true" onChange={() => undefined} />
+    </div>
+  ),
+};
+
+export const ArgInputEnum: Story = {
+  render: () => (
+    <div style={{ padding: 16 }}>
+      <ArgInput arg={enumArg} value="JEDI" onChange={() => undefined} />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FieldRow — field with scalar args, checked (args visible)
+// ---------------------------------------------------------------------------
+
+const QueryTypeWithArgs = new GraphQLObjectType({
+  name: 'QueryWithArgs',
+  fields: {
+    hero: {
+      type: HeroType,
+      args: {
+        id: { type: GraphQLString },
+        episode: { type: EpisodeEnum },
+        first: { type: GraphQLInt },
+      },
+    },
+  },
+});
+
+const heroFieldWithArgs = QueryTypeWithArgs.getFields()['hero']!;
+
+export const FieldRowScalarArgsChecked: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 400 }}>
+      <FieldRow
+        field={heroFieldWithArgs}
+        path={[]}
+        selected={true}
+        hasChildren={true}
+        expanded={false}
+        argValues={{ id: 'abc', first: '5' }}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+        onSetArg={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const FieldRowEnumArgChecked: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 400 }}>
+      <FieldRow
+        field={heroFieldWithArgs}
+        path={[]}
+        selected={true}
+        hasChildren={true}
+        expanded={false}
+        argValues={{ episode: 'JEDI' }}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+        onSetArg={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const FieldRowMixedArgsChecked: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 400 }}>
+      <FieldRow
+        field={heroFieldWithArgs}
+        path={[]}
+        selected={true}
+        hasChildren={true}
+        expanded={false}
+        argValues={{ id: 'abc', episode: 'NEWHOPE', first: '10' }}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+        onSetArg={() => undefined}
       />
     </div>
   ),

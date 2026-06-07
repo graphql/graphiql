@@ -1,7 +1,7 @@
 import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
-import { parse, print } from 'graphql';
+import { getNamedType, isEnumType, isScalarType, parse, print } from 'graphql';
 import { type FC, useMemo } from 'react';
-import { toggleFieldSelection } from '../lib/document-mutator';
+import { scalarToValueNode, setFieldArgument, toggleFieldSelection } from '../lib/document-mutator';
 import { FieldTree } from './field-tree';
 import './../index.css';
 
@@ -33,16 +33,52 @@ export const QueryBuilder: FC = () => {
 
   const doc = useMemo(() => parseOrEmpty(queryText), [queryText]);
 
-  function handleToggle(path: string[]) {
-    const next = toggleFieldSelection(doc, path);
+  function applyDoc(next: ReturnType<typeof parse>) {
     const printed = print(next);
-    // Drive the Monaco editor directly so the editor model stays in sync.
     if (queryEditor) {
       queryEditor.setValue(printed);
     } else {
-      // Fallback: update tab state directly (editor may not be mounted yet).
       updateActiveTabValues({ query: printed });
     }
+  }
+
+  function handleToggle(path: string[]) {
+    applyDoc(toggleFieldSelection(doc, path));
+  }
+
+  function handleSetArg(path: string[], argName: string, rawValue: string) {
+    if (!schema) return;
+    // Resolve the field in the schema so we can look up the arg's type.
+    const [rootName, ...rest] = path;
+    const rootType =
+      schema.getQueryType() ?? schema.getMutationType() ?? schema.getSubscriptionType();
+    if (!rootType || !rootName) return;
+
+    // Walk the schema from the root to find the target field's argument type.
+    let currentType = rootType;
+    let targetField: ReturnType<typeof currentType.getFields>[string] | undefined;
+    const fieldNames = rest.length === 0 ? [rootName] : [rootName, ...rest];
+    for (const name of fieldNames) {
+      const fields = currentType.getFields();
+      const f = fields[name];
+      if (!f) return;
+      targetField = f;
+      const named = getNamedType(f.type);
+      if (named && 'getFields' in named) {
+        currentType = named as typeof currentType;
+      }
+    }
+
+    if (!targetField) return;
+    const arg = targetField.args.find(a => a.name === argName);
+    if (!arg) return;
+
+    const namedArgType = getNamedType(arg.type);
+    if (!namedArgType || (!isScalarType(namedArgType) && !isEnumType(namedArgType))) return;
+
+    const valueNode = scalarToValueNode(namedArgType, rawValue);
+    const next = setFieldArgument(doc, path, argName, valueNode);
+    applyDoc(next);
   }
 
   if (!schema) {
@@ -69,6 +105,7 @@ export const QueryBuilder: FC = () => {
             path={[]}
             doc={doc}
             onToggle={handleToggle}
+            onSetArg={handleSetArg}
           />
         </section>
       ))}
