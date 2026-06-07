@@ -1,0 +1,7 @@
+.graphiql-query-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  padding: var(--px-16);
+}
