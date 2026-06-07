@@ -1,0 +1,241 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  parse,
+} from 'graphql';
+import { Tooltip, GraphiQLProvider } from '@graphiql/react';
+import type { ReactNode } from 'react';
+import { QueryBuilder } from '../components/query-builder';
+import { FieldRow } from '../components/field-row';
+import { FieldTree } from '../components/field-tree';
+import '../index.css';
+
+// ---------------------------------------------------------------------------
+// Demo schema — Star Wars flavoured, scalar leaves + one nested object type
+// ---------------------------------------------------------------------------
+
+const EpisodeEnum = new GraphQLEnumType({
+  name: 'Episode',
+  values: {
+    NEWHOPE: { value: 4 },
+    EMPIRE: { value: 5 },
+    JEDI: { value: 6 },
+  },
+});
+
+const FriendType = new GraphQLObjectType({
+  name: 'Friend',
+  fields: {
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
+  },
+});
+
+const HeroType = new GraphQLObjectType({
+  name: 'Hero',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
+    appearsIn: { type: new GraphQLList(EpisodeEnum) },
+    isAlive: { type: GraphQLBoolean },
+    friends: { type: new GraphQLList(FriendType) },
+  }),
+});
+
+const QueryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    hero: { type: HeroType },
+    version: { type: GraphQLString },
+    uptime: { type: GraphQLBoolean },
+  },
+});
+
+const MutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    createHero: { type: HeroType },
+    deleteHero: { type: GraphQLBoolean },
+  },
+});
+
+const DemoSchema = new GraphQLSchema({
+  query: QueryType,
+  mutation: MutationType,
+});
+
+// ---------------------------------------------------------------------------
+// Shared decorator
+// ---------------------------------------------------------------------------
+
+// Minimal fetcher that immediately resolves with empty data.
+const mockFetcher = async () => ({ data: null });
+
+function withProvider(schema: GraphQLSchema | null, children: ReactNode) {
+  return (
+    <Tooltip.Provider>
+      <GraphiQLProvider
+        fetcher={mockFetcher}
+        schema={schema}
+        dangerouslyAssumeSchemaIsValid
+      >
+        <div style={{ width: 320, background: 'oklch(var(--bg-elevated))', minHeight: 400 }}>
+          {children}
+        </div>
+      </GraphiQLProvider>
+    </Tooltip.Provider>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Meta
+// ---------------------------------------------------------------------------
+
+const meta: Meta = {
+  title: 'Plugins/QueryBuilder',
+  tags: ['autodocs'],
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+// ---------------------------------------------------------------------------
+// QueryBuilder — with schema
+// ---------------------------------------------------------------------------
+
+export const WithSchema: Story = {
+  render: () => withProvider(DemoSchema, <QueryBuilder />),
+};
+
+// ---------------------------------------------------------------------------
+// QueryBuilder — no schema loaded
+// ---------------------------------------------------------------------------
+
+export const NoSchema: Story = {
+  render: () => withProvider(null, <QueryBuilder />),
+};
+
+// ---------------------------------------------------------------------------
+// FieldRow — scalar field, unchecked
+// ---------------------------------------------------------------------------
+
+const scalarField = HeroType.getFields()['name']!;
+
+export const FieldRowScalarUnchecked: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldRow
+        field={scalarField}
+        path={['hero']}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FieldRow — scalar field, checked
+// ---------------------------------------------------------------------------
+
+export const FieldRowScalarChecked: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldRow
+        field={scalarField}
+        path={['hero']}
+        selected={true}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FieldRow — object field with expand button
+// ---------------------------------------------------------------------------
+
+const objectField = QueryType.getFields()['hero']!;
+
+export const FieldRowObjectCollapsed: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldRow
+        field={objectField}
+        path={[]}
+        selected={false}
+        hasChildren={true}
+        expanded={false}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />
+    </div>
+  ),
+};
+
+export const FieldRowObjectExpanded: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldRow
+        field={objectField}
+        path={[]}
+        selected={false}
+        hasChildren={true}
+        expanded={true}
+        onToggle={() => undefined}
+        onExpand={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FieldTree — root type only (no children expanded)
+// ---------------------------------------------------------------------------
+
+const emptyDoc = parse('{ __typename }');
+
+export const FieldTreeRootOnly: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldTree
+        type={QueryType}
+        path={[]}
+        doc={emptyDoc}
+        onToggle={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FieldTree — with pre-selected fields
+// ---------------------------------------------------------------------------
+
+const preSelectedDoc = parse('{ hero { name } version }');
+
+export const FieldTreeWithSelections: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FieldTree
+        type={QueryType}
+        path={[]}
+        doc={preSelectedDoc}
+        onToggle={() => undefined}
+      />
+    </div>
+  ),
+};

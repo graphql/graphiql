@@ -5,3 +5,84 @@
   overflow: auto;
   padding: var(--px-16);
 }
+
+.graphiql-qb-empty {
+  color: var(--color-neutral);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-qb-root-section {
+  margin-bottom: var(--px-16);
+}
+
+.graphiql-qb-root-name {
+  font-size: var(--font-size-h4);
+  font-weight: 600;
+  margin-bottom: var(--px-8);
+  color: var(--color-primary);
+}
+
+.graphiql-qb-field-tree {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-field-node {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: var(--border-radius-4);
+  cursor: default;
+}
+
+.graphiql-qb-field-row:hover {
+  background-color: var(--color-base);
+}
+
+.graphiql-qb-field-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.graphiql-qb-expand-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 10px;
+  color: var(--color-neutral);
+  line-height: 1;
+}
+
+.graphiql-qb-expand-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  border-radius: 2px;
+}
+
+.graphiql-qb-expand-placeholder {
+  display: inline-block;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.graphiql-qb-field-name {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+}
+
+.graphiql-qb-field-type {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-hint);
+  color: var(--color-neutral);
+  margin-left: 4px;
+}
