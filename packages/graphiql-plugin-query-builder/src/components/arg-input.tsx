@@ -15,6 +15,14 @@ type ArgInputProps = {
   arg: GraphQLArgument | GraphQLInputField;
   value: string;
   onChange: (v: string) => void;
+  /** When set, a "use as variable" toggle is rendered for scalar/enum args. */
+  isVariable?: boolean;
+  /** The variable name currently bound to this arg (only meaningful when `isVariable` is true). */
+  variableName?: string;
+  /** Called when the user clicks "use as variable". */
+  onPromote?: (argName: string, suggestedName: string) => void;
+  /** Called when the user clicks the active variable badge to demote back to a literal. */
+  onDemote?: (varName: string) => void;
 };
 
 /**
@@ -22,9 +30,32 @@ type ArgInputProps = {
  * field. Handles scalars, enums, lists (repeat add/remove UI), and input
  * objects (recursive nested fields via a collapsible disclosure). Returns null
  * for any types not yet supported.
+ *
+ * When `onPromote` is supplied, scalar and enum inputs show a "use as variable"
+ * toggle button. Clicking it calls `onPromote`; when `isVariable` is true the
+ * button shows the bound variable name and clicking it calls `onDemote`.
  */
-export const ArgInput: FC<ArgInputProps> = ({ arg, value, onChange }) => {
-  return <ArgInputByType type={arg.type} name={arg.name} value={value} onChange={onChange} />;
+export const ArgInput: FC<ArgInputProps> = ({
+  arg,
+  value,
+  onChange,
+  isVariable = false,
+  variableName,
+  onPromote,
+  onDemote,
+}) => {
+  return (
+    <ArgInputByType
+      type={arg.type}
+      name={arg.name}
+      value={value}
+      onChange={onChange}
+      isVariable={isVariable}
+      variableName={variableName}
+      onPromote={onPromote}
+      onDemote={onDemote}
+    />
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -36,12 +67,36 @@ type TypedInputProps = {
   name: string;
   value: string;
   onChange: (v: string) => void;
+  isVariable?: boolean;
+  variableName?: string;
+  onPromote?: (argName: string, suggestedName: string) => void;
+  onDemote?: (varName: string) => void;
 };
 
-const ArgInputByType: FC<TypedInputProps> = ({ type, name, value, onChange }) => {
+const ArgInputByType: FC<TypedInputProps> = ({
+  type,
+  name,
+  value,
+  onChange,
+  isVariable = false,
+  variableName,
+  onPromote,
+  onDemote,
+}) => {
   // Strip NonNull wrapper transparently
   if (isNonNullType(type)) {
-    return <ArgInputByType type={type.ofType} name={name} value={value} onChange={onChange} />;
+    return (
+      <ArgInputByType
+        type={type.ofType}
+        name={name}
+        value={value}
+        onChange={onChange}
+        isVariable={isVariable}
+        variableName={variableName}
+        onPromote={onPromote}
+        onDemote={onDemote}
+      />
+    );
   }
 
   if (isListType(type)) {
@@ -68,46 +123,91 @@ const ArgInputByType: FC<TypedInputProps> = ({ type, name, value, onChange }) =>
     );
   }
 
+  // For scalar and enum types, optionally render the variable toggle.
+  const toggleBtn = onPromote ? (
+    <button
+      type="button"
+      className="graphiql-qb-var-toggle"
+      aria-pressed={isVariable}
+      onClick={() => {
+        if (isVariable && onDemote && variableName) {
+          onDemote(variableName);
+        } else {
+          onPromote(name, name);
+        }
+      }}
+    >
+      {isVariable && variableName ? `$${variableName}` : 'Use as variable'}
+    </button>
+  ) : null;
+
   if (isEnumType(named)) {
     return (
-      <select
-        aria-label={name}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        className="graphiql-qb-arg-select"
-      >
-        <option value="">—</option>
-        {named.getValues().map(v => (
-          <option key={v.name} value={v.name}>
-            {v.name}
-          </option>
-        ))}
-      </select>
+      <span className="graphiql-qb-arg-with-toggle">
+        {isVariable ? (
+          <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+            ${variableName ?? name}
+          </span>
+        ) : (
+          <select
+            aria-label={name}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            className="graphiql-qb-arg-select"
+          >
+            <option value="">—</option>
+            {named.getValues().map(v => (
+              <option key={v.name} value={v.name}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+        )}
+        {toggleBtn}
+      </span>
     );
   }
 
   if (isScalarType(named)) {
     if (named.name === 'Boolean') {
       return (
-        <input
-          type="checkbox"
-          aria-label={name}
-          checked={value === 'true'}
-          onChange={e => onChange(e.target.checked ? 'true' : 'false')}
-          className="graphiql-qb-arg-checkbox"
-        />
+        <span className="graphiql-qb-arg-with-toggle">
+          {isVariable ? (
+            <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+              ${variableName ?? name}
+            </span>
+          ) : (
+            <input
+              type="checkbox"
+              aria-label={name}
+              checked={value === 'true'}
+              onChange={e => onChange(e.target.checked ? 'true' : 'false')}
+              className="graphiql-qb-arg-checkbox"
+            />
+          )}
+          {toggleBtn}
+        </span>
       );
     }
     const inputType =
       named.name === 'Int' || named.name === 'Float' ? 'number' : 'text';
     return (
-      <input
-        type={inputType}
-        aria-label={name}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        className="graphiql-qb-arg-input"
-      />
+      <span className="graphiql-qb-arg-with-toggle">
+        {isVariable ? (
+          <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+            ${variableName ?? name}
+          </span>
+        ) : (
+          <input
+            type={inputType}
+            aria-label={name}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            className="graphiql-qb-arg-input"
+          />
+        )}
+        {toggleBtn}
+      </span>
     );
   }
 

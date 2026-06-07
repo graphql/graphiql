@@ -9,9 +9,17 @@ type FieldRowProps = {
   hasChildren: boolean;
   expanded: boolean;
   argValues?: Record<string, string>;
+  /**
+   * Map of arg name → variable name for args that have been promoted to
+   * variables. When an arg name is present here, its input shows as a variable
+   * badge instead of the literal input control.
+   */
+  argVariables?: Record<string, string>;
   onToggle: (path: string[]) => void;
   onExpand: (path: string[]) => void;
   onSetArg?: (path: string[], argName: string, value: string) => void;
+  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onDemoteArg?: (path: string[], varName: string) => void;
 };
 
 export const FieldRow: FC<FieldRowProps> = ({
@@ -21,9 +29,12 @@ export const FieldRow: FC<FieldRowProps> = ({
   hasChildren,
   expanded,
   argValues = {},
+  argVariables = {},
   onToggle,
   onExpand,
   onSetArg,
+  onPromoteArg,
+  onDemoteArg,
 }) => {
   const fullPath = [...path, field.name];
   const indent = path.length * 12;
@@ -61,16 +72,32 @@ export const FieldRow: FC<FieldRowProps> = ({
       </div>
       {selected && hasArgs && (
         <div className="graphiql-qb-field-args">
-          {field.args.map(arg => (
-            <div key={arg.name} className="graphiql-qb-arg-row">
-              <span className="graphiql-qb-arg-name">{arg.name}:</span>
-              <ArgInput
-                arg={arg}
-                value={argValues[arg.name] ?? ''}
-                onChange={v => onSetArg?.(fullPath, arg.name, v)}
-              />
-            </div>
-          ))}
+          {field.args.map(arg => {
+            const varName = argVariables[arg.name];
+            const isVariable = varName !== undefined;
+            return (
+              <div key={arg.name} className="graphiql-qb-arg-row">
+                <span className="graphiql-qb-arg-name">{arg.name}:</span>
+                <ArgInput
+                  arg={arg}
+                  value={argValues[arg.name] ?? ''}
+                  onChange={v => onSetArg?.(fullPath, arg.name, v)}
+                  isVariable={isVariable}
+                  variableName={varName}
+                  onPromote={
+                    onPromoteArg
+                      ? (argName, suggested) => onPromoteArg(fullPath, argName, suggested)
+                      : undefined
+                  }
+                  onDemote={
+                    onDemoteArg
+                      ? (vName) => onDemoteArg(fullPath, vName)
+                      : undefined
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -18,6 +18,7 @@ import { QueryBuilder } from '../components/query-builder';
 import { ArgInput } from '../components/arg-input';
 import { FieldRow } from '../components/field-row';
 import { FieldTree } from '../components/field-tree';
+import { FragmentSection } from '../components/fragment-section';
 import '../index.css';
 
 // ---------------------------------------------------------------------------
@@ -474,6 +475,84 @@ export const ArgInputDeeplyNestedInputObject: Story = {
         value={JSON.stringify({ label: 'outer', tag: { name: 'inner', value: 'deep' } })}
         onChange={() => undefined}
       />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// ArgInput — variable toggle stories
+// ---------------------------------------------------------------------------
+
+const intArgForVar = {
+  name: 'first',
+  type: GraphQLInt,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+
+/** Scalar arg with the "use as variable" toggle available, not yet promoted. */
+export const ArgInputVarToggleOff: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <label style={{ display: 'block', marginBottom: 4 }}>first:</label>
+      <ArgInput
+        arg={intArgForVar}
+        value="10"
+        onChange={() => undefined}
+        isVariable={false}
+        onPromote={() => undefined}
+        onDemote={() => undefined}
+      />
+    </div>
+  ),
+};
+
+/** Scalar arg promoted to a variable — shows the $name badge and active toggle. */
+export const ArgInputVarToggleOn: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <label style={{ display: 'block', marginBottom: 4 }}>first:</label>
+      <ArgInput
+        arg={intArgForVar}
+        value=""
+        onChange={() => undefined}
+        isVariable
+        variableName="first"
+        onPromote={() => undefined}
+        onDemote={() => undefined}
+      />
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// FragmentSection stories
+// ---------------------------------------------------------------------------
+
+const docNoFragments = parse('{ hero { name } }');
+const docWithFragments = parse(`
+  { hero { ...HeroFields } droid { ...DroidFields } }
+  fragment HeroFields on Hero { name appearsIn }
+  fragment DroidFields on Droid { primaryFunction }
+`);
+
+/** Fragment panel with no fragments defined. */
+export const FragmentSectionEmpty: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FragmentSection doc={docNoFragments} onCreateFragment={() => undefined} />
+    </div>
+  ),
+};
+
+/** Fragment panel listing two existing named fragments. */
+export const FragmentSectionWithFragments: Story = {
+  render: () => (
+    <div style={{ padding: 16, width: 320 }}>
+      <FragmentSection doc={docWithFragments} onCreateFragment={() => undefined} />
     </div>
   ),
 };

@@ -1,7 +1,22 @@
 import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
-import { getNamedType, isEnumType, isScalarType, parse, print } from 'graphql';
+import {
+  type FieldNode,
+  getNamedType,
+  isEnumType,
+  isScalarType,
+  parse,
+  print,
+} from 'graphql';
 import { type FC, useMemo } from 'react';
-import { scalarToValueNode, setFieldArgument, toggleFieldSelection } from '../lib/document-mutator';
+import {
+  demoteVariable,
+  promoteArgToVariable,
+  scalarToValueNode,
+  setFieldArgument,
+  suggestVarName,
+  toggleFieldSelection,
+} from '../lib/document-mutator';
+import { FragmentSection } from './fragment-section';
 import { FieldTree } from './field-tree';
 import './../index.css';
 
@@ -19,6 +34,40 @@ function parseOrEmpty(text: string | null | undefined) {
   } catch {
     return parse('{ __typename }');
   }
+}
+
+/**
+ * Extract the raw default value string for an arg at a path from the document.
+ * Returns an empty string when the arg is not found or has no value.
+ */
+function extractRawArgValue(
+  doc: ReturnType<typeof parse>,
+  path: string[],
+  argName: string,
+): string {
+  const op = doc.definitions.find(d => d.kind === 'OperationDefinition');
+  if (!op || op.kind !== 'OperationDefinition') return '';
+
+  let ss = op.selectionSet;
+  for (let i = 0; i < path.length; i++) {
+    const seg = path[i]!;
+    const f = ss.selections.find(
+      (s): s is FieldNode => s.kind === 'Field' && s.name.value === seg,
+    );
+    if (!f) return '';
+    if (i === path.length - 1) {
+      const argNode = (f.arguments ?? []).find(a => a.name.value === argName);
+      if (!argNode) return '';
+      const v = argNode.value;
+      if (v.kind === 'StringValue') return `"${v.value}"`;
+      if (v.kind === 'IntValue' || v.kind === 'FloatValue') return v.value;
+      if (v.kind === 'BooleanValue') return String(v.value);
+      if (v.kind === 'EnumValue') return v.value;
+      return '';
+    }
+    ss = f.selectionSet ?? ss;
+  }
+  return '';
 }
 
 export const QueryBuilder: FC = () => {
@@ -46,39 +95,55 @@ export const QueryBuilder: FC = () => {
     applyDoc(toggleFieldSelection(doc, path));
   }
 
-  function handleSetArg(path: string[], argName: string, rawValue: string) {
-    if (!schema) return;
-    // Resolve the field in the schema so we can look up the arg's type.
+  /** Shared schema-walk helper — returns the arg on the field at `path`, or undefined. */
+  function resolveSchemaArg(path: string[], argName: string) {
+    if (!schema) return undefined;
     const [rootName, ...rest] = path;
     const rootType =
       schema.getQueryType() ?? schema.getMutationType() ?? schema.getSubscriptionType();
-    if (!rootType || !rootName) return;
+    if (!rootType || !rootName) return undefined;
 
-    // Walk the schema from the root to find the target field's argument type.
     let currentType = rootType;
     let targetField: ReturnType<typeof currentType.getFields>[string] | undefined;
     const fieldNames = rest.length === 0 ? [rootName] : [rootName, ...rest];
     for (const name of fieldNames) {
       const fields = currentType.getFields();
       const f = fields[name];
-      if (!f) return;
+      if (!f) return undefined;
       targetField = f;
       const named = getNamedType(f.type);
       if (named && 'getFields' in named) {
         currentType = named as typeof currentType;
       }
     }
+    return targetField?.args.find(a => a.name === argName);
+  }
 
-    if (!targetField) return;
-    const arg = targetField.args.find(a => a.name === argName);
-    if (!arg) return;
+  function handleSetArg(path: string[], argName: string, rawValue: string) {
+    const schemaArg = resolveSchemaArg(path, argName);
+    if (!schemaArg) return;
 
-    const namedArgType = getNamedType(arg.type);
+    const namedArgType = getNamedType(schemaArg.type);
     if (!namedArgType || (!isScalarType(namedArgType) && !isEnumType(namedArgType))) return;
 
     const valueNode = scalarToValueNode(namedArgType, rawValue);
-    const next = setFieldArgument(doc, path, argName, valueNode);
-    applyDoc(next);
+    applyDoc(setFieldArgument(doc, path, argName, valueNode));
+  }
+
+  function handlePromoteArg(path: string[], argName: string, suggestedName: string) {
+    const schemaArg = resolveSchemaArg(path, argName);
+    if (!schemaArg) return;
+
+    const namedType = getNamedType(schemaArg.type);
+    if (!namedType) return;
+
+    const varName = suggestVarName(doc, suggestedName);
+    const rawDefault = extractRawArgValue(doc, path, argName);
+    applyDoc(promoteArgToVariable(doc, path, argName, varName, namedType.name, rawDefault));
+  }
+
+  function handleDemoteArg(_path: string[], varName: string) {
+    applyDoc(demoteVariable(doc, varName));
   }
 
   if (!schema) {
@@ -106,9 +171,12 @@ export const QueryBuilder: FC = () => {
             doc={doc}
             onToggle={handleToggle}
             onSetArg={handleSetArg}
+            onPromoteArg={handlePromoteArg}
+            onDemoteArg={handleDemoteArg}
           />
         </section>
       ))}
+      <FragmentSection doc={doc} />
     </div>
   );
 };

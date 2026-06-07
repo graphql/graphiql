@@ -5,7 +5,7 @@ import {
   type GraphQLObjectType,
 } from 'graphql';
 import { type FC, useState } from 'react';
-import { getFieldArgValues, isFieldSelected } from '../lib/document-mutator';
+import { getFieldArgValues, getFieldArgVariables, isFieldSelected } from '../lib/document-mutator';
 import { FieldRow } from './field-row';
 
 type FieldTreeProps = {
@@ -14,9 +14,19 @@ type FieldTreeProps = {
   doc: DocumentNode;
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: string) => void;
+  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onDemoteArg?: (path: string[], varName: string) => void;
 };
 
-export const FieldTree: FC<FieldTreeProps> = ({ type, path, doc, onToggle, onSetArg }) => {
+export const FieldTree: FC<FieldTreeProps> = ({
+  type,
+  path,
+  doc,
+  onToggle,
+  onSetArg,
+  onPromoteArg,
+  onDemoteArg,
+}) => {
   const fields = Object.values(type.getFields());
 
   return (
@@ -38,6 +48,8 @@ export const FieldTree: FC<FieldTreeProps> = ({ type, path, doc, onToggle, onSet
             objectType={isObject ? (namedType as GraphQLObjectType) : undefined}
             onToggle={onToggle}
             onSetArg={onSetArg}
+            onPromoteArg={onPromoteArg}
+            onDemoteArg={onDemoteArg}
           />
         );
       })}
@@ -54,6 +66,8 @@ type FieldTreeNodeProps = {
   objectType: GraphQLObjectType | undefined;
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: string) => void;
+  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onDemoteArg?: (path: string[], varName: string) => void;
 };
 
 const FieldTreeNode: FC<FieldTreeNodeProps> = ({
@@ -65,10 +79,13 @@ const FieldTreeNode: FC<FieldTreeNodeProps> = ({
   objectType,
   onToggle,
   onSetArg,
+  onPromoteArg,
+  onDemoteArg,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const fullPath = [...path, field.name];
   const argValues = getFieldArgValues(doc, fullPath);
+  const argVariables = getFieldArgVariables(doc, fullPath);
 
   function handleExpand() {
     setExpanded(prev => !prev);
@@ -83,9 +100,12 @@ const FieldTreeNode: FC<FieldTreeNodeProps> = ({
         hasChildren={isObject}
         expanded={expanded}
         argValues={argValues}
+        argVariables={argVariables}
         onToggle={onToggle}
         onExpand={handleExpand}
         onSetArg={onSetArg}
+        onPromoteArg={onPromoteArg}
+        onDemoteArg={onDemoteArg}
       />
       {isObject && expanded && objectType && (
         <FieldTree
@@ -94,6 +114,8 @@ const FieldTreeNode: FC<FieldTreeNodeProps> = ({
           doc={doc}
           onToggle={onToggle}
           onSetArg={onSetArg}
+          onPromoteArg={onPromoteArg}
+          onDemoteArg={onDemoteArg}
         />
       )}
     </div>
