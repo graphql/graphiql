@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 10
   cacheKey: 10c0
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -13000,6 +13000,9 @@ __metadata:
     vitest: "npm:^4.1.6"
     wgutils: "npm:^1.2.5"
     wsrun: "npm:^5.2.4"
+  dependenciesMeta:
+    cypress:
+      built: true
   languageName: unknown
   linkType: soft
 
