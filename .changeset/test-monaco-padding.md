@@ -1,0 +1,5 @@
+---
+'monaco-graphql': patch
+---
+
+test
