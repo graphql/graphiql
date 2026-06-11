@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.3.7
+
+### Patch Changes
+
+- [#4342](https://github.com/graphql/graphiql/pull/4342) [`b4c7ae5`](https://github.com/graphql/graphiql/commit/b4c7ae5249d0bccd11009b8878cb04291c72fd1f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Upgrade `@urql/core` to v6 and remove the esbuild shim that redirected `graphql` `.mjs` imports.
+
 ## 0.3.6
 
 ### Patch Changes
