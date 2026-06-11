@@ -42,6 +42,7 @@ interface OperationEditorProps extends EditorProps {
 export const OperationEditor: FC<OperationEditorProps> = ({
   onClickReference,
   onEdit,
+  editorOverrides,
   ...props
 }) => {
   const {
@@ -226,6 +227,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     const editor = createEditor(ref, {
       model,
       theme: monacoTheme,
+      ...editorOverrides,
     });
     setEditor({ queryEditor: editor });
 
