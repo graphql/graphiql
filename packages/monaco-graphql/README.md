@@ -515,27 +515,25 @@ then, in your application:
 
 ```ts
 // Vite query suffixes https://vite.dev/guide/features.html#import-with-query-suffixes
+// eslint-disable-next-line import-x/default
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import GraphQLWorker from './my-graphql.worker?worker';
 
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
+    if (label === 'graphql') {
+      return new GraphQLWorker();
+    }
+    if (label === 'json') {
+      return new JsonWorker();
+    }
+    return new EditorWorker();
   },
 };
 ```
 
-or, if you have webpack configured for it:
-
-```ts
-globalThis.MonacoEnvironment = {
-  getWorkerUrl(_workerId: string, label: string) {
-    return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
-  },
-};
-```
-
-with vite you just need:
+with vite, an alternative way is using a plugin like this:
 
 ```ts
 import { defineConfig } from 'vite';
@@ -547,12 +545,61 @@ export default defineConfig({
       customWorker: [
         {
           label: 'graphql',
+          // adjust if needed to be the path from node_modules
+          // i.e. ../src/my-graphql.worker.js
           entry: 'my-graphql.worker.js',
         },
       ],
     }),
   ],
 });
+```
+
+or, if you have webpack configured for it:
+
+```ts
+globalThis.MonacoEnvironment = {
+  getWorkerUrl(_workerId: string, label: string) {
+    if (label === 'graphql') {
+      return 'my-graphql.worker.js';
+    }
+    if (label === 'json') {
+      return 'json.worker.js';
+    }
+    return 'editor.worker.js';
+  },
+};
+```
+
+or, if you have esbuild configured for it:
+
+```ts
+// add entry points to the esbuild script
+const entryPoints = {
+  'my-graphql.worker': '../src/my-graphql.worker.ts',
+  'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+  'json.worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
+};
+
+// add to editor file
+globalThis.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    const options: WorkerOptions = {
+      type: 'module',
+      name: label,
+    };
+    if (label === 'graphql') {
+      const url = new URL('./my-graphql.worker.js', import.meta.url);
+      return worker;
+    }
+    if (label === 'json') {
+      const url = new URL('./json.worker.js', import.meta.url);
+      return new Worker(url, options);
+    }
+    const url = new URL('./editor.worker.js', import.meta.url);
+    return new Worker(url, options);
+  },
+};
 ```
 
 ## Monaco Editor Tips
