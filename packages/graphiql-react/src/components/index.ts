@@ -45,3 +45,5 @@ export { ResponseTreeView } from './response-tree-view';
 export type { ResponseTreeViewProps } from './response-tree-view';
 export { VarHeadersStrip } from './var-headers-strip';
 export type { VarHeadersStripProps, VarTab } from './var-headers-strip';
+export { SettingsDialog } from './settings-dialog';
+export type { SettingsDialogProps } from './settings-dialog';

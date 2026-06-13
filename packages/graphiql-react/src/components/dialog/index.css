@@ -33,7 +33,7 @@
 .graphiql-dialog-close > svg {
   color: oklch(var(--fg-muted));
   display: block;
-  height: var(--px-12);
+  height: var(--icon-size-md);
   padding: var(--px-12);
-  width: var(--px-12);
+  width: var(--icon-size-md);
 }

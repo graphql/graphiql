@@ -125,6 +125,6 @@
 }
 
 .graphiql-transport-upgrade-banner-dismiss > svg {
-  width: 12px;
-  height: 12px;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
 }

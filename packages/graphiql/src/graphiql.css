@@ -54,8 +54,8 @@ button.graphiql-tab-add {
   & > svg {
     color: hsla(var(--color-neutral), var(--alpha-secondary));
     display: block;
-    height: var(--px-16);
-    width: var(--px-16);
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
   }
 }
 
@@ -76,8 +76,8 @@ button.graphiql-tab-strip-action {
 
   & > svg {
     display: block;
-    height: 13px;
-    width: 13px;
+    height: var(--icon-size-md);
+    width: var(--icon-size-md);
   }
 
   &:hover {

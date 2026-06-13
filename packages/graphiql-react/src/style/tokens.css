@@ -49,11 +49,6 @@
   /* Typography */
   --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-size-body: 13px;
-  --font-size-small: 11px;
-  --font-size-mono: 12px;
-  --font-size-eyebrow: 10.5px;
-  --line-height-body: 18px;
   --letter-spacing-ui: -0.005em;
 
   /* Spacing scale */
@@ -67,12 +62,8 @@
   --px-24: 24px;
   --px-32: 32px;
 
-  /* Layout dimensions */
-  --top-bar-height: 40px;
-  --status-bar-height: 24px;
-  --rail-width: 48px;
+  /* Layout dimensions (fixed; density-controlled dimensions live below) */
   --side-panel-width: 340px;
-  --tab-strip-height: 32px;
 
   /* Radii */
   --radius-sm: 4px;
@@ -123,6 +114,98 @@
     0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
 
   /* Typography, spacing, dimensions, and radii are inherited from :root. */
+}
+
+/* -------------------------------------------------------------------------
+ * Density presets
+ *
+ * `comfortable` is the default; the combined selector makes it the fallback
+ * when the attribute is absent.
+ * ---------------------------------------------------------------------- */
+
+:root,
+[data-density='comfortable'] {
+  --row-padding-y: 5px;
+  --row-padding-x: 14px;
+  --button-padding-y: 4px;
+  --button-padding-x: 10px;
+  --top-bar-height: 40px;
+  --status-bar-height: 24px;
+  --rail-width: 48px;
+  --tab-strip-height: 32px;
+}
+
+[data-density='compact'] {
+  --row-padding-y: 2px;
+  --row-padding-x: 10px;
+  --button-padding-y: 2px;
+  --button-padding-x: 7px;
+  --top-bar-height: 34px;
+  --status-bar-height: 20px;
+  --rail-width: 42px;
+  --tab-strip-height: 26px;
+}
+
+[data-density='spacious'] {
+  --row-padding-y: 9px;
+  --row-padding-x: 19px;
+  --button-padding-y: 7px;
+  --button-padding-x: 14px;
+  --top-bar-height: 48px;
+  --status-bar-height: 30px;
+  --rail-width: 56px;
+  --tab-strip-height: 40px;
+}
+
+/* -------------------------------------------------------------------------
+ * Font-size presets
+ *
+ * `default` doubles as the fallback via the combined selector.
+ * ---------------------------------------------------------------------- */
+
+:root,
+[data-font-size='default'] {
+  --font-size-body: 13px;
+  --font-size-small: 11px;
+  --font-size-mono: 12px;
+  --font-size-eyebrow: 10.5px;
+  --line-height-body: 18px;
+  --icon-size-sm: 10px;
+  --icon-size-md: 12px;
+  --icon-size-lg: 16px;
+}
+
+[data-font-size='compact'] {
+  --font-size-body: 12px;
+  --font-size-small: 11px;
+  --font-size-mono: 11.5px;
+  --font-size-eyebrow: 10px;
+  --line-height-body: 16px;
+  --icon-size-sm: 9px;
+  --icon-size-md: 11px;
+  --icon-size-lg: 15px;
+}
+
+[data-font-size='large'] {
+  --font-size-body: 14px;
+  --font-size-small: 12px;
+  --font-size-mono: 13px;
+  --font-size-eyebrow: 11.5px;
+  --line-height-body: 20px;
+  --icon-size-sm: 11px;
+  --icon-size-md: 13px;
+  --icon-size-lg: 18px;
+}
+
+[data-font-size='xl'] {
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+  --font-size-mono: 14px;
+  --font-size-eyebrow: 13px;
+  --line-height-body: 22px;
+  --icon-size-sm: 12px;
+  --icon-size-md: 15px;
+  --icon-size-lg: 20px;
 }
 
 /*

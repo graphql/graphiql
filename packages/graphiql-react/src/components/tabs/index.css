@@ -91,8 +91,8 @@
     line-height: 0;
 
     & > svg {
-      height: 10px;
-      width: 10px;
+      height: var(--icon-size-sm);
+      width: var(--icon-size-sm);
     }
 
     &:hover {
