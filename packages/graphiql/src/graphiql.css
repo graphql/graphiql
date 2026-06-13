@@ -180,8 +180,10 @@ button.graphiql-tab-strip-action {
 
 /* An editor tool, e.g. variables or request headers editor */
 .graphiql-container .graphiql-editor-tool {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  padding: var(--px-16);
+  min-height: 0;
 }
 
 /**

@@ -10,14 +10,13 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, Children, useRef, Fragment } from 'react';
+import { Children, useRef, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
   ExecuteButton,
   GraphiQLProvider,
-  HeaderEditor,
   PlusIcon,
   PrettifyIcon,
   QueryEditor,
@@ -31,15 +30,17 @@ import {
   TopBar,
   StatusBar,
   UnStyledButton,
+  VarHeadersStrip,
   useDragResize,
   useGraphiQL,
   useGraphiQLSettings,
   pick,
-  VariableEditor,
   EditorProps,
   cn,
   useGraphiQLActions,
   useMonaco,
+  VariableEditor,
+  HeaderEditor,
 } from '@graphiql/react';
 import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
@@ -218,8 +219,8 @@ const LABEL = {
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
-  isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
+  isHeadersEditorEnabled = true,
   children: $children,
   confirmCloseTab,
   className,
@@ -293,20 +294,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     storageKey: 'secondaryEditorFlex',
   });
 
-  const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
-    'variables' | 'headers'
-  >(() => {
-    if (
-      defaultEditorToolsVisibility === 'variables' ||
-      defaultEditorToolsVisibility === 'headers'
-    ) {
-      return defaultEditorToolsVisibility;
-    }
-    return !initialVariables && initialHeaders && isHeadersEditorEnabled
-      ? 'headers'
-      : 'variables';
-  });
-
   const { logo, toolbar, footer, children } = Children.toArray(
     $children,
   ).reduce<{
@@ -343,14 +330,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       pluginResize.setHiddenElement(null);
     }
   }
-
-  const handleToolsTabClick: ButtonHandler = event => {
-    if (editorToolsResize.hiddenElement === 'second') {
-      editorToolsResize.setHiddenElement(null);
-    }
-    const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
-    setActiveSecondaryEditor(tabName);
-  };
 
   const toggleEditorTools: ButtonHandler = () => {
     editorToolsResize.setHiddenElement(
@@ -410,33 +389,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       </section>
 
       <div ref={editorToolsResize.dragBarRef} className="graphiql-editor-tools">
-        <UnStyledButton
-          type="button"
-          className={cn(
-            activeSecondaryEditor === 'variables' &&
-              editorToolsResize.hiddenElement !== 'second' &&
-              'active',
-          )}
-          onClick={handleToolsTabClick}
-          data-name="variables"
-        >
-          Variables
-        </UnStyledButton>
-        {isHeadersEditorEnabled && (
-          <UnStyledButton
-            type="button"
-            className={cn(
-              activeSecondaryEditor === 'headers' &&
-                editorToolsResize.hiddenElement !== 'second' &&
-                'active',
-            )}
-            onClick={handleToolsTabClick}
-            data-name="headers"
-          >
-            Headers
-          </UnStyledButton>
-        )}
-
         <Tooltip label={editorToolsText}>
           <UnStyledButton
             type="button"
@@ -454,21 +406,22 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
       <section
         className="graphiql-editor-tool"
-        aria-label={
-          activeSecondaryEditor === 'variables' ? 'Variables' : 'Headers'
-        }
+        aria-label="Variables and Headers"
         ref={editorToolsResize.secondRef}
       >
-        <VariableEditor
-          className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
-          onEdit={onEditVariables}
+        <VarHeadersStrip
+          defaultTab={((d: typeof defaultEditorToolsVisibility) => {
+            if (d === 'variables' || d === 'headers') {
+              return d;
+            }
+            return !initialVariables && initialHeaders && isHeadersEditorEnabled
+              ? 'headers'
+              : 'variables';
+          })(defaultEditorToolsVisibility)}
+          headersEditorEnabled={isHeadersEditorEnabled}
+          onEditVariables={onEditVariables}
+          onEditHeaders={onEditHeaders}
         />
-        {isHeadersEditorEnabled && (
-          <HeaderEditor
-            className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
-            onEdit={onEditHeaders}
-          />
-        )}
       </section>
     </div>
   );
