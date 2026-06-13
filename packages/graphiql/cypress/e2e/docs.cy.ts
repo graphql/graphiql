@@ -116,9 +116,12 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
     // Open doc explorer
     cy.get('.graphiql-activity-rail-item').eq(0).click();
 
-    // Use search to navigate directly to hasArgs
-    cy.dataCy('doc-explorer-input').type('hasArgs');
-    cy.dataCy('doc-explorer-option').first().children().first().click();
+    // Select query type
+    cy.get('.graphiql-doc-explorer-type-name').first().click();
+
+    // Navigate into the field that has a deprecated argument. Match the field
+    // name node specifically; other fields' descriptions also mention "hasArgs".
+    cy.contains('.graphiql-doc-explorer-field-row-name', /^hasArgs$/).click();
 
     cy.contains('Show Deprecated Arguments').click();
     cy.get('.graphiql-doc-explorer-arguments-list-header').contains(
