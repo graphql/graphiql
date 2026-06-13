@@ -1,3 +1,9 @@
+.graphiql-doc-explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 /* The header of the doc explorer */
 .graphiql-doc-explorer-header {
   display: flex;
@@ -31,6 +37,7 @@
   position: absolute;
   right: 0;
   top: 0;
+  z-index: 2;
 
   &:focus-within {
     left: 0;
@@ -87,6 +94,14 @@ a.graphiql-doc-explorer-back {
 }
 
 /* The contents of the currently active page in the doc explorer */
+.graphiql-doc-explorer-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+}
+
 .graphiql-doc-explorer-content > * {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
   margin-top: var(--px-20);

@@ -219,11 +219,12 @@ const PossibleTypes: FC<{ type: GraphQLNamedType }> = ({ type }) => {
   if (!schema || !isAbstractType(type)) {
     return null;
   }
+  const possibleTypes = schema.getPossibleTypes(type);
   return (
     <ExplorerSection
       title={isInterfaceType(type) ? 'Implementations' : 'Possible Types'}
     >
-      {schema.getPossibleTypes(type).map(possibleType => (
+      {possibleTypes.map(possibleType => (
         <div key={possibleType.name}>
           <TypeLink type={possibleType} />
         </div>

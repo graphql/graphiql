@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2",
+    "@tanstack/react-virtual": "^3.13.24",
     "react-compiler-runtime": "19.1.0-rc.1",
     "zustand": "^5"
   },
