@@ -287,9 +287,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(
-          container.querySelector('[aria-label="Variables"]'),
-        ).toBeVisible();
+        // The editor tools section should be visible and the Variables radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const variablesRadio = container.querySelector(
+          'input[type="radio"][value="variables"]',
+        );
+        expect(variablesRadio).toBeChecked();
       });
     });
 
@@ -301,7 +307,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(container.querySelector('[aria-label="Headers"]')).toBeVisible();
+        // The editor tools section should be visible and the Headers radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const headersRadio = container.querySelector(
+          'input[type="radio"][value="headers"]',
+        );
+        expect(headersRadio).toBeChecked();
       });
     });
 

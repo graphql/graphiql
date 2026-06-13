@@ -43,3 +43,5 @@ export { ResponseTableView } from './response-table-view';
 export type { ResponseTableViewProps } from './response-table-view';
 export { ResponseTreeView } from './response-tree-view';
 export type { ResponseTreeViewProps } from './response-tree-view';
+export { VarHeadersStrip } from './var-headers-strip';
+export type { VarHeadersStripProps, VarTab } from './var-headers-strip';

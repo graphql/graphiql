@@ -1,0 +1,39 @@
+.graphiql-var-headers-strip {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.graphiql-var-headers-strip-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--px-8) var(--px-8) 0;
+  gap: var(--px-8);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.graphiql-var-hint {
+  margin-left: auto;
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+.graphiql-var-hint[aria-live] {
+  /* keep accessible without layout shift */
+  min-width: 0;
+}
+
+.graphiql-var-headers-strip-content {
+  flex: 1;
+  min-height: 0;
+  padding: var(--px-16);
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-var-headers-strip-content .graphiql-editor {
+  flex: 1;
+}
