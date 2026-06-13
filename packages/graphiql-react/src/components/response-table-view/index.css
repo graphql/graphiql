@@ -4,6 +4,10 @@
   padding: var(--px-14);
 }
 
+.graphiql-response-table:not(:last-child) {
+  margin-bottom: var(--px-24);
+}
+
 .graphiql-response-table {
   width: 100%;
   border-collapse: collapse;

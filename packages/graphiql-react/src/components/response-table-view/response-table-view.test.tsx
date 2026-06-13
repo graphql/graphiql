@@ -131,26 +131,45 @@ describe('ResponseTableView', () => {
       ).toBeInTheDocument();
     });
 
-    it('picks the first list-of-objects field when multiple list fields exist', () => {
+    it('renders a table for each sibling list field', () => {
       const data = {
         data: { users: USERS, products: PRODUCTS },
       };
       render(<ResponseTableView data={data} />);
+      expect(screen.getAllByRole('table')).toHaveLength(2);
       // 'id', 'name', 'role' are users columns; products has 'sku', 'price'
       expect(
         screen.getByRole('columnheader', { name: 'id' }),
       ).toBeInTheDocument();
       expect(
-        screen.queryByRole('columnheader', { name: 'sku' }),
-      ).not.toBeInTheDocument();
+        screen.getByRole('columnheader', { name: 'sku' }),
+      ).toBeInTheDocument();
     });
 
-    it('finds a nested list field', () => {
+    it('captions sibling lists with their full paths, including aliases', () => {
+      const data = {
+        data: {
+          test: {
+            person: {
+              friends: [{ age: 1 }],
+              a: [{ age: 2 }],
+            },
+          },
+        },
+      };
+      render(<ResponseTableView data={data} />);
+      expect(screen.getAllByRole('table')).toHaveLength(2);
+      expect(screen.getByText('test.person.friends')).toBeInTheDocument();
+      expect(screen.getByText('test.person.a')).toBeInTheDocument();
+    });
+
+    it('finds a nested list field and captions it with its path', () => {
       const data = { data: { page: { items: USERS } } };
       render(<ResponseTableView data={data} />);
       expect(
         screen.getByRole('columnheader', { name: 'name' }),
       ).toBeInTheDocument();
+      expect(screen.getByText('page.items')).toBeInTheDocument();
     });
   });
 

@@ -99,6 +99,24 @@ export const NestedList: Story = {
   },
 };
 
+export const SiblingLists: Story = {
+  name: 'Multiple sibling lists (one table each)',
+  args: {
+    data: {
+      data: {
+        test: {
+          person: {
+            name: 'Alice',
+            age: 30,
+            friends: [{ age: 28 }, { age: 34 }],
+            a: [{ age: 41 }],
+          },
+        },
+      },
+    },
+  },
+};
+
 export const PrimitiveArray: Story = {
   name: 'Primitive array (no table possible)',
   args: {
