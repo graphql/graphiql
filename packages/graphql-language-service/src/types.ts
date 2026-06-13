@@ -217,7 +217,7 @@ export type OutlineTree = {
   representativeName?: string;
   kind: string;
   startPosition: IPosition;
-  endPosition?: IPosition;
+  endPosition: IPosition;
   children: OutlineTree[];
 };
 
