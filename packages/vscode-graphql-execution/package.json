@@ -95,7 +95,7 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "@vscode/vsce": "^2.22.1-2",
-    "esbuild": "0.18.10",
+    "esbuild": "0.28.1",
     "ovsx": "0.8.3"
   },
   "dependencies": {
