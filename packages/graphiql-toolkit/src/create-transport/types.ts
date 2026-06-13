@@ -49,12 +49,31 @@ export type TransportResponse = {
   size: { request?: number; response?: number };
 };
 
+export type HttpMethod = 'GET' | 'POST';
+
 /**
  * Wire-level transport. `send()` returns a single Promise for queries and
  * mutations, or an AsyncIterable for subscriptions and incremental delivery
  * (each event/chunk is wrapped in its own `TransportResponse`).
  */
 export type Transport = {
+  /**
+   * The endpoint URL this transport sends requests to.
+   */
+  url: string;
+  /**
+   * Currently active HTTP method.
+   */
+  method: HttpMethod;
+  /**
+   * HTTP methods this transport is configured to use. Defaults to `['POST']`.
+   */
+  supportedMethods: HttpMethod[];
+  /**
+   * Present only when `supportedMethods` has more than one entry. Switches the
+   * active HTTP method used by subsequent `send()` calls.
+   */
+  setMethod?: (method: HttpMethod) => void;
   send(
     request: TransportRequest,
   ): Promise<TransportResponse> | AsyncIterable<TransportResponse>;
@@ -89,4 +108,15 @@ export type CreateTransportOptions = {
    * Custom fetch implementation. Defaults to the global fetch.
    */
   fetch?: typeof fetch;
+  /**
+   * Initial HTTP method to use for queries. Defaults to `'POST'`.
+   * When set to `'GET'`, queries are encoded into the URL per the
+   * GraphQL over HTTP spec; mutations always use POST regardless.
+   */
+  method?: HttpMethod;
+  /**
+   * HTTP methods this transport should advertise as supported.
+   * Defaults to `['POST']`. Pass `['GET', 'POST']` to allow switching.
+   */
+  supportedMethods?: HttpMethod[];
 };

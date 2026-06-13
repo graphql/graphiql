@@ -12,6 +12,7 @@ import type {
 } from '../create-fetcher/types';
 import type {
   CreateTransportOptions,
+  HttpMethod,
   Transport,
   TransportRequest,
   TransportResponse,
@@ -36,6 +37,27 @@ function selectedOperationIsSubscription(
       ? operations[0]
       : undefined;
   return operation?.operation === 'subscription';
+}
+
+function selectedOperationIsMutation(
+  query: string,
+  operationName?: string | null,
+): boolean {
+  let document;
+  try {
+    document = parse(query);
+  } catch {
+    return false;
+  }
+  const operations = document.definitions.filter(
+    (def): def is OperationDefinitionNode => def.kind === 'OperationDefinition',
+  );
+  const operation = operationName
+    ? operations.find(op => op.name?.value === operationName)
+    : operations.length === 1
+      ? operations[0]
+      : undefined;
+  return operation?.operation === 'mutation';
 }
 
 const byteLength = (value: string): number =>
@@ -72,11 +94,12 @@ function toSubscriptionResponse(
  *   toolkit does not construct one for you.
  */
 export function createTransport(opts: CreateTransportOptions): Transport {
-  const httpFetch =
+  const httpFetchOrFalse =
     opts.fetch || (typeof window !== 'undefined' && window.fetch);
-  if (!httpFetch) {
+  if (!httpFetchOrFalse) {
     throw new Error('No valid fetch implementation available');
   }
+  const httpFetch: typeof fetch = httpFetchOrFalse;
 
   const incrementalDelivery = opts.enableIncrementalDelivery !== false;
 
@@ -85,8 +108,19 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     headers: opts.headers,
   };
 
-  const simple = simpleHttpTransport(fetcherOptions, httpFetch);
-  const multipart = multipartHttpTransport(fetcherOptions, httpFetch);
+  const supportedMethods: HttpMethod[] = opts.supportedMethods ?? ['POST'];
+
+  if (opts.method !== undefined && !supportedMethods.includes(opts.method)) {
+    throw new Error(
+      `"${opts.method}" is not in supportedMethods (${supportedMethods.join(', ')}). ` +
+        `Either add it to supportedMethods or omit the method option.`,
+    );
+  }
+
+  // Default to POST when available; otherwise fall back to whichever single
+  // method was configured (e.g. GET-only).
+  let activeMethod: HttpMethod =
+    opts.method ?? (supportedMethods.includes('POST') ? 'POST' : supportedMethods[0]);
 
   function send(
     req: TransportRequest,
@@ -101,13 +135,53 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     if (selectedOperationIsSubscription(req.query, req.operationName)) {
       return subscribe(opts.subscriptionClient, params);
     }
-    if (incrementalDelivery) {
-      return multipart(params, fetcherOpts);
+
+    // The GraphQL over HTTP spec forbids executing mutations over GET.
+    // https://graphql.github.io/graphql-over-http/rfcs/GraphQLOverHTTP.html#sec-GET
+    // When GET is the active method and the operation is a mutation, use POST
+    // if it is available. If POST is not supported (GET-only transport), throw —
+    // a spec-compliant server would reject the request with 405 anyway.
+    let method: HttpMethod = activeMethod;
+    if (
+      activeMethod === 'GET' &&
+      selectedOperationIsMutation(req.query, req.operationName)
+    ) {
+      if (!supportedMethods.includes('POST')) {
+        throw new Error(
+          'Cannot execute a mutation over GET. ' +
+            'This transport is configured as GET-only (supportedMethods: [\'GET\']). ' +
+            'Add POST to supportedMethods or switch to a POST-capable transport.',
+        );
+      }
+      method = 'POST';
     }
-    return simple(params, fetcherOpts);
+
+    if (incrementalDelivery) {
+      return multipartHttpTransport(fetcherOptions, httpFetch, method)(params, fetcherOpts);
+    }
+    return simpleHttpTransport(fetcherOptions, httpFetch, method)(params, fetcherOpts);
   }
 
-  return { send };
+  const transport: Transport = {
+    url: opts.url,
+    method: activeMethod,
+    supportedMethods,
+    send,
+  };
+
+  if (supportedMethods.length > 1) {
+    transport.setMethod = (method: HttpMethod) => {
+      if (!supportedMethods.includes(method)) {
+        throw new Error(
+          `"${method}" is not supported by this transport (supportedMethods: ${supportedMethods.join(', ')}).`,
+        );
+      }
+      activeMethod = method;
+      transport.method = method;
+    };
+  }
+
+  return transport;
 }
 
 async function* subscribe(
