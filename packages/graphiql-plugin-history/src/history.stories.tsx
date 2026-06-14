@@ -19,6 +19,9 @@ function withHistoryContext(children: ReactNode) {
     <Tooltip.Provider>
       <GraphiQLProvider
         transport={{
+          url: 'https://example.com/graphql',
+          method: 'POST' as const,
+          supportedMethods: ['POST' as const],
           send: async () => ({
             ok: true,
             body: { data: {} },
