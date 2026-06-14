@@ -1,5 +1,16 @@
 import './style/root.css';
 
+export {
+  useGraphiQLPluginContext,
+  type GraphiQLPluginContext,
+  type PluginTransportContext,
+} from './transport-hooks.context';
+export type {
+  OnBeforeSendCallback,
+  OnResponseCallback,
+  CleanupFn,
+} from './transport-hooks';
+
 export { useMonaco } from './stores';
 export * from './utility';
 export { Uri, KeyMod, KeyCode, Range } from './utility/monaco-ssr';

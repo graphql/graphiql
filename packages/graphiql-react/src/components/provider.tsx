@@ -8,6 +8,8 @@ import {
   useId,
   useState,
 } from 'react';
+import { TransportHookRegistry } from '../transport-hooks';
+import { TransportHookContext } from '../transport-hooks.context';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import { StorageAPI } from '@graphiql/toolkit';
@@ -182,6 +184,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   ...props
 }) => {
   const storeRef = useRef<GraphiQLStore>(null!);
+  // The hook registry for the transport path. Absent in fetcher mode. Created
+  // once from the initial `transport` prop, mirroring the store's lazy init.
+  const [registry] = useState<TransportHookRegistry | null>(() =>
+    transport ? new TransportHookRegistry() : null,
+  );
   const uriInstanceId = useId();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
@@ -278,7 +285,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,
-          transport,
+          transport:
+            transport && registry ? registry.wrap(transport) : transport,
           getDefaultFieldNames,
           overrideOperationName: operationName,
         })(...args);
@@ -334,9 +342,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   //   }
   // }, [shouldPersistHeaders]);
 
-  // Execution sync
+  // Execution sync — rewrap transport with the hook registry on change
   useDidUpdate(() => {
-    storeRef.current.setState({ fetcher, transport });
+    const wrappedTransport =
+      transport && registry ? registry.wrap(transport) : transport;
+    storeRef.current.setState({ fetcher, transport: wrappedTransport });
   }, [fetcher, transport]);
 
   // Plugin sync
@@ -401,9 +411,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }, []);
 
   return (
-    <GraphiQLContext.Provider value={storeRef}>
-      {children}
-    </GraphiQLContext.Provider>
+    <TransportHookContext.Provider value={registry}>
+      <GraphiQLContext.Provider value={storeRef}>
+        {children}
+      </GraphiQLContext.Provider>
+    </TransportHookContext.Provider>
   );
 };
 
