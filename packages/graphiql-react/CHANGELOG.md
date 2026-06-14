@@ -1,5 +1,76 @@
 # @graphiql/react
 
+## 0.38.0-alpha.0
+
+### Minor Changes
+
+- [#4290](https://github.com/graphql/graphiql/pull/4290) [`bbe02de`](https://github.com/graphql/graphiql/commit/bbe02de17c9cbb01ba4dfc23be3b9ed82e9b7055) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Replace the left-side plugin sidebar with `ActivityRail`. Plugins render as a flat list in registration order with a 2px blue left border on the active plugin. Settings gear at the bottom opens the settings dialog.
+
+  The previous `graphiql-sidebar` DOM structure and CSS class names are removed. Custom CSS overrides targeting `.graphiql-sidebar` or its children will need updating. Only CSS variable names are part of the public API.
+
+- [#4302](https://github.com/graphql/graphiql/pull/4302) [`dabeb6d`](https://github.com/graphql/graphiql/commit/dabeb6dccba58d4b61c042b6a596f870cf0ce3fb) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - `KeycapHint` now takes semantic modifier names via the new `MODIFIER` constant. `MODIFIER.Meta` renders as `⌘` on macOS and `Ctrl` elsewhere; `Ctrl`/`Alt`/`Shift` render as Mac glyphs (`⌃`/`⌥`/`⇧`) on macOS and as plain text on other platforms. `Enter` renders as `⏎` on every platform.
+
+- [#4277](https://github.com/graphql/graphiql/pull/4277) [`d4f0268`](https://github.com/graphql/graphiql/commit/d4f026853b89b9755f28d8f4059fcba419aa6d5a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `KeycapHint` primitive for displaying inline keyboard shortcuts (e.g. `⌘K`, `⌘⏎`). Used in the new top bar; available for general consumer use.
+
+- [#4285](https://github.com/graphql/graphiql/pull/4285) [`c25bfd5`](https://github.com/graphql/graphiql/commit/c25bfd5b51ad98f36cbdb81a7486380f8dd1ab6a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `MethodPill` primitive: a small colored pill labeling an operation as QRY (query), MUT (mutation), or SUB (subscription).
+
+- [#4297](https://github.com/graphql/graphiql/pull/4297) [`76a5169`](https://github.com/graphql/graphiql/commit/76a516903250e43096269971fc5ef708bcacce00) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Replace the Monaco editor theme with v6-aligned token colors. Both `graphiql-DARK` and `graphiql-LIGHT` now cover all GraphQL token types (keywords, type names, field identifiers, variables, annotations, strings, numbers, comments) using the v6 design's accent palette. UI chrome colors (suggest widget, hover widget, quick input) are updated to match.
+
+- [#4242](https://github.com/graphql/graphiql/pull/4242) [`72e8970`](https://github.com/graphql/graphiql/commit/72e897082bbec4b67a26bf958c6205fefb64aa77) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Introduce the v6 OKLCH design-token system with both dark and light theme palettes. Tokens (`--bg-canvas`, `--fg-default`, `--accent-blue`, etc.) are stored as OKLCH triplets so opacity can be combined at the call site. Themes are keyed off `data-theme` (`dark` is the default; `light` activates explicitly or via `prefers-color-scheme: light` when no override is set). Existing v5 variables are unchanged; component styles continue to use them until they are migrated.
+
+- [#4284](https://github.com/graphql/graphiql/pull/4284) [`1ce71e4`](https://github.com/graphql/graphiql/commit/1ce71e407dd3b457d6fecc9e7ad0b3ad246c693b) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `PanelHeader` primitive for side panels. Renders a title, optional subtitle, and optional action-icon row.
+
+- [#4351](https://github.com/graphql/graphiql/pull/4351) [`3b18277`](https://github.com/graphql/graphiql/commit/3b182772c5922be5cfeb0862bdc4aafb654fbdac) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Plugins now have access to `transport.onBeforeSend` and `transport.onResponse` hooks via `useGraphiQLPluginContext()`. Use `onBeforeSend` to inspect or transform outgoing requests; use `onResponse` to observe each response. Both return a cleanup function. The `transport` field on the context is `undefined` when the host uses the legacy `fetcher` prop; plugins should guard with optional chaining.
+
+- [#4350](https://github.com/graphql/graphiql/pull/4350) [`a540401`](https://github.com/graphql/graphiql/commit/a5404018b527b644e46cdf5022ffcae4a541af5f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - The response pane header now shows real status, time, and size values from the active transport's response, replacing the previous placeholders.
+
+- [#4321](https://github.com/graphql/graphiql/pull/4321) [`03535ab`](https://github.com/graphql/graphiql/commit/03535abc736d4479ac558320c477ff3b2e05b3f5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a response pane header showing status, elapsed time, response size, a JSON / Tree / Table view toggle, and a copy button. The selected view is persisted in storage and restored on reload. Tree and Table views render a placeholder until their implementations land.
+
+- [#4336](https://github.com/graphql/graphiql/pull/4336) [`a565cac`](https://github.com/graphql/graphiql/commit/a565cac06241a24c182774ff6e1e88586737fd33) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `ResponseTableView` for the response pane's Table view. Renders each list field in a GraphQL response as its own table, captioned with its path (e.g. `test.person.friends`); sibling and aliased lists each get a table. Nested objects and arrays show as shorthand summaries, and non-list responses show an empty state.
+
+- [#4335](https://github.com/graphql/graphiql/pull/4335) [`0bd32a1`](https://github.com/graphql/graphiql/commit/0bd32a18c06fcca853cfd155538ccf50f6a3fc90) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `ResponseTreeView` component for the response pane's Tree view. Renders GraphQL response JSON as a collapsible tree with type-colored values. Top-level nodes expand by default; deeper levels are collapsed. Selecting "Tree" in the response pane view toggle now shows the tree instead of a placeholder.
+
+- [#4292](https://github.com/graphql/graphiql/pull/4292) [`f5968fe`](https://github.com/graphql/graphiql/commit/f5968fed097799df7105fb6e414603020f11bd18) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle the editor tabs to the v6 design. Tabs now show a dirty-state dot when unsaved changes are present and a hover-only close affordance per tab. Adds a `lastSavedQuery` field to the tab store; the dirty state is computed from the diff against that snapshot. Adds a `saveQuery` action (keybind `Ctrl-S` / `Cmd-S`) that updates the snapshot. Adds prettify, copy, and save buttons to the right side of the tab strip.
+
+- [#4282](https://github.com/graphql/graphiql/pull/4282) [`a0fe11a`](https://github.com/graphql/graphiql/commit/a0fe11aeb40861b586b4cfa5678b8ebe1bea4a19) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `SegmentedControl` primitive for selecting one option from a small set inline. Used by the new top-bar response view toggle and several settings controls.
+
+- [#4338](https://github.com/graphql/graphiql/pull/4338) [`480afc1`](https://github.com/graphql/graphiql/commit/480afc1933663bcd8982cbc2ab5a585f4e4461d0) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `SettingsDialog` with theme, density, font-size, and persist-headers controls backed by `useGraphiQLSettings`. Density and font-size presets fill in concrete token values for the `[data-density]` and `[data-font-size]` blocks in `tokens.css`. Monaco editor font size, the status bar, and UI icon sizes follow the active font-size preset. The `forcedTheme` and `showPersistHeadersSettings` props continue to work, with `forcedTheme` hiding the theme control.
+
+- [#4291](https://github.com/graphql/graphiql/pull/4291) [`4fa53a8`](https://github.com/graphql/graphiql/commit/4fa53a8d2f111d9a894c59a7b7c79de8c9089136) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `SidePanel` component that hosts the active plugin's content next to the activity rail. Default width 340px, resizable.
+
+- [#4289](https://github.com/graphql/graphiql/pull/4289) [`3f79ce9`](https://github.com/graphql/graphiql/commit/3f79ce94bab865be1bceae2e2596414e3766fc6d) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `StatusBar` layout component: a 24px-tall footer at the bottom of the app showing connection status, schema type count, active plugin count, cursor position, and document metadata (encoding, indent, language label).
+
+- [#4288](https://github.com/graphql/graphiql/pull/4288) [`82e5460`](https://github.com/graphql/graphiql/commit/82e54602731305d955da5dbf911073f9430fac99) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a new `TopBar` layout component with brand, endpoint URL display, command palette button, and primary Run button. Endpoint method/URL are placeholders until the transport API lands. `TopBar` is now mounted at the top of the GraphiQL layout.
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level, that lets the response pane surface those values directly from the underlying `Response`. Subscriptions require an explicit `subscriptionClient` (any client whose `.subscribe(payload, sink)` matches the `graphql-ws` `Client` shape, including `graphql-sse`'s `createClient()`); the toolkit no longer constructs one. The CDN bundle exposes `GraphiQL.createTransport` and `GraphiQL.createWsClient` so script-tag consumers can adopt without a bundler.
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and the `<GraphiQL fetcher={...}>` prop are deprecated but continue to work unchanged. Existing code keeps compiling. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values.
+
+- [#4322](https://github.com/graphql/graphiql/pull/4322) [`fdbd07d`](https://github.com/graphql/graphiql/commit/fdbd07d0c11426ef2095ba6637fb80272dd01a86) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `useGraphiQLSettings()` hook for managing theme / density / font-size preferences with `localStorage` persistence. Settings apply automatically to the GraphiQL container via `data-*` attributes.
+
+- [#4337](https://github.com/graphql/graphiql/pull/4337) [`b77270a`](https://github.com/graphql/graphiql/commit/b77270a74e0ed07cd3c5e614da71f1f631d9c4f6) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Promote the variables/headers footer into a tab strip below the editor (Variables / Headers). A right-aligned hint shows the variable count and JSON validity when the Variables tab is active.
+
+### Patch Changes
+
+- [#4276](https://github.com/graphql/graphiql/pull/4276) [`bd773d3`](https://github.com/graphql/graphiql/commit/bd773d3a245cd3a6a9e1595f7d2d686e2201c786) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `Button` and `ToolbarButton` to the v6 OKLCH design tokens. Adds a `primary` variant to `Button` for the Run-button style. Storybook stories added for each variant. Props and behavior unchanged.
+
+- [#4279](https://github.com/graphql/graphiql/pull/4279) [`1bcf3be`](https://github.com/graphql/graphiql/commit/1bcf3be69a883f4eda09713b0db81e738a27e310) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `Dialog` to the v6 design: `--bg-elevated` surface, refined border, larger radius. Behavior and API unchanged.
+
+- [#4280](https://github.com/graphql/graphiql/pull/4280) [`7dd2111`](https://github.com/graphql/graphiql/commit/7dd211143e2e8c575363dfb8339a37c1452579dd) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `DropdownMenu` to the v6 design. Behavior and API unchanged.
+
+- [#4283](https://github.com/graphql/graphiql/pull/4283) [`05ecaf0`](https://github.com/graphql/graphiql/commit/05ecaf0aae89a027a415f6ab070ba0be204c473a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `Spinner` to the v6 design. Default stroke uses the muted foreground token.
+
+- [#4281](https://github.com/graphql/graphiql/pull/4281) [`5fb2d64`](https://github.com/graphql/graphiql/commit/5fb2d6487bc3e8cc3c468daf08ef56812e28b0e3) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `Tabs` primitive to the v6 design. Active state uses a top accent border bleeding into the strip's bottom border.
+
+- [#4278](https://github.com/graphql/graphiql/pull/4278) [`34695e8`](https://github.com/graphql/graphiql/commit/34695e832ddcbb23c80a6060fe28cf0127d1d61a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle `Tooltip` to the v6 design: `--bg-elevated` surface, simplified border and shadow.
+
+- [#4287](https://github.com/graphql/graphiql/pull/4287) [`e54b9c9`](https://github.com/graphql/graphiql/commit/e54b9c94ab0b61d47731554362c6641a12aa0112) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Rewrite `SegmentedControl` on top of native radio inputs. Public props are unchanged. Keyboard navigation (arrow keys, Home / End) and screen-reader semantics now come from the browser; the group is a single tab stop instead of one per option.
+
+- [#4293](https://github.com/graphql/graphiql/pull/4293) [`6627635`](https://github.com/graphql/graphiql/commit/66276352a63da0a6c9924fcd488296d08e6f3a1b) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - `setTheme` now mirrors the chosen theme onto `document.documentElement` as a `data-theme` attribute. The v6 OKLCH token cascade in `tokens.css` is gated on `[data-theme='light']` / `[data-theme='dark']` selectors and was previously never matched, so v6 components fell back to the OS `prefers-color-scheme` regardless of the GraphiQL theme toggle. The existing `body.graphiql-light` / `body.graphiql-dark` classes are preserved for backwards compatibility with custom CSS.
+
+- Updated dependencies [[`eb46e2f`](https://github.com/graphql/graphiql/commit/eb46e2fe17413d9f9a52c7d7780b5cbaf799050e), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82), [`2138336`](https://github.com/graphql/graphiql/commit/2138336fd269d2eeb74476b2d8e7f6998e175e9b)]:
+  - @graphiql/toolkit@0.13.0-alpha.0
+
 ## 0.37.6
 
 ### Patch Changes
