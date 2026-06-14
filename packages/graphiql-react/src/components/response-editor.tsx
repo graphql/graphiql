@@ -182,7 +182,12 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       {showHeader && (
         <ResponseHeader
           status={lastResponse?.status}
-          timeMs={lastResponse?.timing.totalMs}
+          statusText={lastResponse?.statusText}
+          timeMs={
+            lastResponse?.timing.totalMs !== undefined
+              ? Math.round(lastResponse.timing.totalMs)
+              : undefined
+          }
           sizeBytes={lastResponse?.size.response}
           upgradeNotice={
             showUpgradeBanner

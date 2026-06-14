@@ -10,6 +10,8 @@ import './index.css';
 export type ResponseHeaderProps = {
   /** HTTP-equivalent status code from the last response. */
   status?: number;
+  /** HTTP status text accompanying the status code (e.g. "OK", "Not Found"). */
+  statusText?: string;
   /** Elapsed time for the last request in milliseconds. */
   timeMs?: number;
   /** Approximate response body size in bytes. */
@@ -49,6 +51,7 @@ const VIEW_OPTIONS: { value: ResponseView; label: string }[] = [
 
 export const ResponseHeader: FC<ResponseHeaderProps> = ({
   status,
+  statusText,
   timeMs,
   sizeBytes,
   upgradeNotice,
@@ -100,6 +103,11 @@ export const ResponseHeader: FC<ResponseHeaderProps> = ({
               <span className="graphiql-response-status-code">
                 {status === 0 ? 'Error' : status}
               </span>
+              {statusText && status !== 0 && (
+                <span className="graphiql-response-status-text">
+                  {statusText}
+                </span>
+              )}
             </span>
           )}
           {timeMs !== undefined && (
