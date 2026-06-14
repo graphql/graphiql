@@ -55,8 +55,8 @@
 }
 
 .graphiql-activity-rail-item svg {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
 }
 
 .graphiql-activity-rail-spacer {
@@ -92,6 +92,6 @@
 }
 
 .graphiql-activity-rail-settings svg {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
 }

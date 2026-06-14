@@ -24,8 +24,8 @@ button.graphiql-execute-button {
   & > svg {
     color: #fff;
     display: block;
-    height: var(--px-16);
+    height: var(--icon-size-lg);
     margin: auto;
-    width: var(--px-16);
+    width: var(--icon-size-lg);
   }
 }

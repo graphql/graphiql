@@ -425,51 +425,47 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
-  it('allows the user to control persisting headers if it is true', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
-    );
+  describe('Settings dialog', () => {
+    async function openSettings(container: HTMLElement) {
+      await act(async () => {
+        fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+      return document.querySelector('[role="dialog"]')!;
+    }
 
-    act(() => {
-      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+    it('shows the persist-headers control when shouldPersistHeaders is true', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
+      );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('allows the user to control persisting headers if it is not passed in', async () => {
-    const { container, findByText } = render(
-      <GraphiQL fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+    it('shows the persist-headers control by default', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('does not allow the user to control persisting headers is false', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+    it('hides the persist-headers control when shouldPersistHeaders is false', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
+      );
+      const dialog = await openSettings(container);
+      // "Density" confirms the dialog is open before asserting absence.
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Persist headers');
     });
 
-    const callback = async () => {
-      try {
-        // Expecting non-existence; short-circuit instead of waiting the default.
-        await findByText('Persist headers', undefined, { timeout: 1000 });
-      } catch {
-        // eslint-disable-next-line no-throw-literal
-        throw 'failed';
-      }
-    };
-    await expect(callback).rejects.toEqual('failed');
+    it('hides the theme control when forcedTheme is set', async () => {
+      const { container } = render(
+        <GraphiQL forcedTheme="dark" fetcher={noOpFetcher} />,
+      );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Theme');
+    });
   });
 
   describe('Tabs', () => {
