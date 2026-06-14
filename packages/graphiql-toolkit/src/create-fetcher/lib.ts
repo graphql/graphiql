@@ -100,18 +100,58 @@ export const isSubscriptionWithName = (
 };
 
 /**
+ * Build a URL with GraphQL parameters encoded into the query string per the
+ * GraphQL over HTTP spec. `variables` and `extensions`, when present, are
+ * JSON-stringified. No request body is sent with GET requests.
+ */
+function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
+  const params = new URLSearchParams();
+  params.set('query', graphQLParams.query);
+  if (graphQLParams.operationName != null) {
+    params.set('operationName', graphQLParams.operationName);
+  }
+  if (graphQLParams.variables != null) {
+    params.set('variables', JSON.stringify(graphQLParams.variables));
+  }
+  const sep = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${sep}${params.toString()}`;
+}
+
+/**
  * Perform a simple HTTP/S request and return the full `TransportResponse`
  * (parsed body plus wire metadata). This is the primitive that
  * `createSimpleFetcher` projects down to the body, and that `createTransport`
  * exposes whole.
+ *
+ * Pass `method: 'GET'` to encode the GraphQL params into the URL and send no
+ * body. The default is `'POST'`. Note that this primitive does not enforce the
+ * spec rule that mutations must not use GET — that policy lives in
+ * `createTransport`, which composes this primitive in a spec-compliant way.
  */
 export const simpleHttpTransport =
-  (options: CreateFetcherOptions, httpFetch: typeof fetch) =>
+  (
+    options: CreateFetcherOptions,
+    httpFetch: typeof fetch,
+    method: 'GET' | 'POST' = 'POST',
+  ) =>
   async (
     graphQLParams: FetcherParams,
     fetcherOpts?: FetcherOpts,
   ): Promise<TransportResponse> => {
     const startMs = performance.now();
+    if (method === 'GET') {
+      const url = buildGetUrl(options.url, graphQLParams);
+      const response = await httpFetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/graphql-response+json, application/json;q=0.9',
+          ...options.headers,
+          ...fetcherOpts?.headers,
+        },
+      });
+      const body = await response.json();
+      return toTransportResponse(body, response, startMs);
+    }
     const requestBody = JSON.stringify(graphQLParams);
     const response = await httpFetch(options.url, {
       method: 'POST',
@@ -218,29 +258,48 @@ export const createLegacyWebsocketsFetcher =
  * Perform an `IncrementalDelivery` (`multipart/mixed`) request for `@stream` /
  * `@defer`, yielding a `TransportResponse` per chunk. HTTP metadata is read once
  * from the raw response and attached to every chunk (they share one response).
+ *
+ * Pass `method: 'GET'` to encode GraphQL params into the URL. Same escape-hatch
+ * caveat as `simpleHttpTransport` — mutation enforcement lives in `createTransport`.
  */
 export const multipartHttpTransport = (
   options: CreateFetcherOptions,
   httpFetch: typeof fetch,
+  method: 'GET' | 'POST' = 'POST',
 ) =>
   async function* (
     graphQLParams: FetcherParams,
     fetcherOpts?: FetcherOpts,
   ): AsyncGenerator<TransportResponse> {
     const startMs = performance.now();
-    const requestBody = JSON.stringify(graphQLParams);
-    const rawResponse = await httpFetch(options.url, {
-      method: 'POST',
-      body: requestBody,
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json, multipart/mixed',
-        ...options.headers,
-        // allow user-defined headers to override
-        // the static provided headers
-        ...fetcherOpts?.headers,
-      },
-    });
+    let rawResponse: Response;
+    let requestBody: string | undefined;
+
+    if (method === 'GET') {
+      const url = buildGetUrl(options.url, graphQLParams);
+      rawResponse = await httpFetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json, multipart/mixed',
+          ...options.headers,
+          ...fetcherOpts?.headers,
+        },
+      });
+    } else {
+      requestBody = JSON.stringify(graphQLParams);
+      rawResponse = await httpFetch(options.url, {
+        method: 'POST',
+        body: requestBody,
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json, multipart/mixed',
+          ...options.headers,
+          // allow user-defined headers to override
+          // the static provided headers
+          ...fetcherOpts?.headers,
+        },
+      });
+    }
     const response = await meros<
       Extract<ExecutionResultPayload, { hasNext: boolean }>
     >(rawResponse, { multiple: true });

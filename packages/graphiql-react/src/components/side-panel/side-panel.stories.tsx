@@ -5,6 +5,9 @@ import { DocsIcon, HistoryIcon } from '../../icons';
 import { SidePanel } from './';
 
 const mockTransport = {
+  url: 'https://example.com/graphql',
+  method: 'POST' as const,
+  supportedMethods: ['POST' as const],
   send: async () => ({
     ok: true,
     body: { data: null },

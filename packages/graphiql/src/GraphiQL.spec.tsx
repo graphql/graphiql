@@ -53,6 +53,9 @@ describe('GraphiQL', () => {
       // The runtime guard in `GraphiQLProvider` belt-and-suspenders the type
       // check.
       const transport: Transport = {
+        url: 'https://example.com/graphql',
+        method: 'POST',
+        supportedMethods: ['POST'],
         send: async () => ({
           ok: true,
           body: { data: {} },

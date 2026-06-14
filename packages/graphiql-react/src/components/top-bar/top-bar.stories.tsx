@@ -3,6 +3,9 @@ import { GraphiQLProvider } from '../provider';
 import { TopBar } from './';
 
 const noOpTransport = {
+  url: 'https://example.com/graphql',
+  method: 'POST' as const,
+  supportedMethods: ['POST' as const],
   send: async () => ({
     ok: true,
     body: { data: {} },

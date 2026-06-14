@@ -1,4 +1,12 @@
-import { type Mock, describe, it, expect, vi, afterEach } from 'vitest';
+import {
+  type Mock,
+  describe,
+  it,
+  expect,
+  vi,
+  afterEach,
+  beforeEach,
+} from 'vitest';
 import 'isomorphic-fetch';
 
 import { createTransport } from '../createTransport';
@@ -169,5 +177,237 @@ describe('createSimpleFetcher (backward-compatible)', () => {
     );
     const result = await fetcher({ query: QUERY }, {});
     expect(result).toEqual({ data: { __typename: 'Query' } });
+  });
+});
+
+const MUTATION = 'mutation DoThing { doThing }';
+const QUERY_WITH_VARS = 'query Q($id: ID!) { node(id: $id) { __typename } }';
+
+describe('createTransport — GET method', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: { __typename: 'Query' } }));
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('defaults to POST-only: no setMethod, requests go out as POST', () => {
+    const transport = createTransport({
+      url: URL,
+      fetch: mockFetch as typeof fetch,
+    });
+    expect(transport.method).toBe('POST');
+    expect(transport.supportedMethods).toEqual(['POST']);
+    expect(transport.setMethod).toBeUndefined();
+  });
+
+  it("GET-only: active method is GET when supportedMethods is ['GET']", () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET'],
+      fetch: mockFetch as typeof fetch,
+    });
+    expect(transport.method).toBe('GET');
+    expect(transport.supportedMethods).toEqual(['GET']);
+    expect(transport.setMethod).toBeUndefined();
+  });
+
+  it('GET-only: a query goes out as GET with params in the URL', async () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY });
+
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
+    expect(fetchInit.method).toBe('GET');
+    expect(fetchInit.body).toBeUndefined();
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('query')).toBe(QUERY);
+  });
+
+  it('GET-only: a mutation throws a clear error', () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    expect(() => transport.send({ query: MUTATION })).toThrow(/mutation.*GET/i);
+  });
+
+  it('GET query encodes params in the URL with no request body', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY });
+
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
+    expect(fetchInit.method).toBe('GET');
+    expect(fetchInit.body).toBeUndefined();
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('query')).toBe(QUERY);
+  });
+
+  it('GET query encodes variables as a JSON string in the URL', async () => {
+    const variables = { id: '123' };
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY_WITH_VARS, variables });
+
+    const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('variables')).toBe(
+      JSON.stringify(variables),
+    );
+  });
+
+  it('GET query encodes operationName in the URL', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY_WITH_VARS, operationName: 'Q' });
+
+    const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('operationName')).toBe('Q');
+  });
+
+  it('GET query omits variables and operationName when absent', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY });
+
+    const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.has('variables')).toBe(false);
+    expect(parsed.searchParams.has('operationName')).toBe(false);
+  });
+
+  it('mutation is sent as POST even when GET is selected (both supported)', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: MUTATION });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.method).toBe('POST');
+    expect(typeof fetchInit.body).toBe('string');
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      query: MUTATION,
+    });
+  });
+
+  it('both methods: active method defaults to POST when no method opt is passed', () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET', 'POST'],
+      fetch: mockFetch as typeof fetch,
+    });
+    expect(transport.method).toBe('POST');
+    expect(transport.setMethod).toBeDefined();
+  });
+
+  it('setMethod switches the active method', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'POST',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    expect(transport.method).toBe('POST');
+    transport.setMethod?.('GET');
+    expect(transport.method).toBe('GET');
+
+    await transport.send({ query: QUERY });
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.method).toBe('GET');
+  });
+
+  it('setMethod throws when asked to switch to an unsupported method', () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET', 'POST'],
+      fetch: mockFetch as typeof fetch,
+    });
+    // TypeScript would catch this at compile time; this verifies the runtime guard.
+    expect(() => transport.setMethod?.('GET' as never)).not.toThrow();
+    // Simulating a value that isn't in supportedMethods by bypassing types.
+    expect(() =>
+      (transport.setMethod as (m: string) => void)?.('DELETE'),
+    ).toThrow(/not supported/i);
+  });
+
+  it('throws at construction when method is not in supportedMethods', () => {
+    expect(() =>
+      createTransport({
+        url: URL,
+        method: 'GET',
+        supportedMethods: ['POST'],
+        fetch: mockFetch as typeof fetch,
+      }),
+    ).toThrow(/not in supportedMethods/i);
+  });
+
+  it('POST keeps content-type and accept headers', async () => {
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect((fetchInit.headers as Record<string, string>)['content-type']).toBe(
+      'application/json',
+    );
+    expect((fetchInit.headers as Record<string, string>).accept).toMatch(
+      'application/graphql-response+json',
+    );
   });
 });
