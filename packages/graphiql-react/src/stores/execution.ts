@@ -6,6 +6,8 @@ import {
   GetDefaultFieldNamesFn,
   isAsyncIterable,
   isObservable,
+  Transport,
+  TransportResponse,
   Unsubscribable,
 } from '@graphiql/toolkit';
 import { ExecutionResult, GraphQLError, print } from 'graphql';
@@ -14,8 +16,58 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { tryParseJSONC, Range } from '../utility';
+import { tryParseJSONC } from '../utility';
+import { Range } from '../utility/monaco-ssr';
+import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions, MonacoEditor } from '../types';
+
+export type ResponseView = 'json' | 'tree' | 'table';
+
+const RESPONSE_VIEWS: readonly ResponseView[] = ['json', 'tree', 'table'];
+
+const byteLength = (value: string): number =>
+  typeof TextEncoder === 'undefined'
+    ? value.length
+    : new TextEncoder().encode(value).length;
+
+/**
+ * Build a `TransportResponse` for the `Fetcher` path, where HTTP status and
+ * headers are unobservable (the contract does not carry them). We populate
+ * what we can measure from the JS side: timing and the formatted-body size.
+ */
+function buildFetcherFallbackResponse(
+  body: ExecutionResult,
+  startMs: number,
+  formattedBody: string,
+): TransportResponse {
+  const errors = (body as { errors?: unknown } | null)?.errors;
+  return {
+    ok: !Array.isArray(errors) || errors.length === 0,
+    body,
+    timing: { totalMs: Date.now() - startMs },
+    size: { response: byteLength(formattedBody) },
+  };
+}
+
+function buildErrorResponse(
+  errorText: string,
+  startMs: number,
+): TransportResponse {
+  return {
+    ok: false,
+    body: {
+      errors: [{ message: errorText }],
+    } as unknown as ExecutionResult,
+    timing: { totalMs: Date.now() - startMs },
+    size: { response: byteLength(errorText) },
+  };
+}
+
+export function isResponseView(value: unknown): value is ResponseView {
+  return (
+    typeof value === 'string' && RESPONSE_VIEWS.includes(value as ResponseView)
+  );
+}
 
 export interface ExecutionSlice {
   /**
@@ -25,6 +77,32 @@ export interface ExecutionSlice {
    * @default false
    */
   isFetching: boolean;
+
+  /**
+   * The full `TransportResponse` envelope from the most recent completed
+   * request. With a `Transport`, this carries the real HTTP wire metadata
+   * (status, headers, timing, size). With a `Fetcher`, only `timing` and
+   * `size.response` can be populated; status/headers are unavailable
+   * because the `Fetcher` contract does not carry them.
+   * `null` before any request runs.
+   *
+   * @default null
+   */
+  lastResponse: TransportResponse | null;
+
+  /**
+   * Which view is active in the response pane.
+   * @default 'json'
+   */
+  responseView: ResponseView;
+
+  /**
+   * Whether the user has dismissed the upgrade-to-`transport` banner in the
+   * response pane. Persisted to storage; honored by the response pane to
+   * decide whether to render any header at all in the `fetcher` path.
+   * @default false
+   */
+  transportUpgradeBannerDismissed: boolean;
 
   /**
    * Represents an active GraphQL subscription.
@@ -61,12 +139,18 @@ export interface ExecutionSlice {
    * `Observable` or `AsyncIterable` that returns the GraphQL response in
    * parsed JSON format.
    *
-   * We suggest using the `createGraphiQLFetcher` utility from `@graphiql/toolkit`
-   * to create these fetcher functions.
-   *
-   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
+   * @deprecated Pass a `transport` instead. The `Fetcher` contract cannot
+   * surface HTTP wire metadata (status, headers, timing, size). See
+   * `docs/migration/graphiql-6.0.0.md`.
    */
-  fetcher: Fetcher;
+  fetcher?: Fetcher;
+
+  /**
+   * A `Transport` performs the GraphQL request and returns a `TransportResponse`
+   * carrying the parsed body plus the real HTTP wire metadata (status, headers,
+   * timing, size). Mutually exclusive with `fetcher`.
+   */
+  transport?: Transport;
 }
 
 export interface ExecutionActions {
@@ -79,22 +163,51 @@ export interface ExecutionActions {
    * Stop the GraphQL request that is currently in-flight.
    */
   stop(): void;
+
+  /**
+   * Change which view is shown in the response pane.
+   */
+  setResponseView(view: ResponseView): void;
+
+  /**
+   * Mark the upgrade-to-`transport` banner as dismissed and persist the choice.
+   */
+  dismissTransportUpgradeBanner(): void;
 }
 
-export interface ExecutionProps extends Pick<
-  ExecutionSlice,
-  'getDefaultFieldNames' | 'fetcher'
-> {
+type BaseExecutionProps = {
   /**
    * This prop sets the operation name that is passed with a GraphQL request.
    */
   operationName?: string;
-}
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+};
+
+/**
+ * Pass exactly one of `fetcher` or `transport`. The two are mutually exclusive
+ * at the type level; passing both is a compile error.
+ *
+ * Prefer `transport`: it lets GraphiQL surface real HTTP wire metadata
+ * (status, headers, timing, size) in the response pane. `fetcher` is
+ * deprecated, but continues to work for existing code.
+ */
+export type ExecutionProps = BaseExecutionProps &
+  (
+    | {
+        /**
+         * @deprecated Use `transport` instead. See
+         * `docs/migration/graphiql-6.0.0.md`.
+         */
+        fetcher: Fetcher;
+        transport?: never;
+      }
+    | { transport: Transport; fetcher?: never }
+  );
 
 type CreateExecutionSlice = (
   initial: Pick<
     ExecutionSlice,
-    'overrideOperationName' | 'getDefaultFieldNames' | 'fetcher'
+    'overrideOperationName' | 'getDefaultFieldNames' | 'fetcher' | 'transport'
   >,
 ) => StateCreator<
   SlicesWithActions,
@@ -177,9 +290,22 @@ export const createExecutionSlice: CreateExecutionSlice =
     return {
       ...initial,
       isFetching: false,
+      lastResponse: null,
+      responseView: 'json' as ResponseView,
+      transportUpgradeBannerDismissed: false,
       subscription: null,
       queryId: 0,
       actions: {
+        setResponseView(view: ResponseView) {
+          const { storage } = get();
+          storage.set(STORAGE_KEY.responseView, view);
+          set({ responseView: view });
+        },
+        dismissTransportUpgradeBanner() {
+          const { storage } = get();
+          storage.set(STORAGE_KEY.transportUpgradeBannerDismissed, 'true');
+          set({ transportUpgradeBannerDismissed: true });
+        },
         stop() {
           set(({ subscription }) => {
             subscription?.unsubscribe();
@@ -200,6 +326,7 @@ export const createExecutionSlice: CreateExecutionSlice =
             overrideOperationName,
             queryId,
             fetcher,
+            transport,
           } = get();
           if (!queryEditor || !responseEditor) {
             return;
@@ -257,9 +384,13 @@ export const createExecutionSlice: CreateExecutionSlice =
 
           setResponse('');
           set({ isFetching: true });
+          const fetchStartMs = Date.now();
           try {
             const fullResponse: ExecutionResult = {};
-            const handleResponse = (result: ExecutionResult) => {
+            const handleResponse = (
+              result: ExecutionResult,
+              envelope?: TransportResponse,
+            ) => {
               // A different query was dispatched in the meantime, so don't
               // show the results of this one.
               if (newQueryId !== get().queryId) {
@@ -275,59 +406,109 @@ export const createExecutionSlice: CreateExecutionSlice =
                 maybeMultipart = [result];
               }
 
+              let formattedBody: string;
+              let mergedBody: ExecutionResult;
               if (maybeMultipart) {
                 for (const part of maybeMultipart) {
                   mergeIncrementalResult(fullResponse, part);
                 }
-
-                set({ isFetching: false });
-                setResponse(formatResult(fullResponse));
+                mergedBody = fullResponse;
+                formattedBody = formatResult(fullResponse);
               } else {
-                set({ isFetching: false });
-                setResponse(formatResult(result));
+                mergedBody = result;
+                formattedBody = formatResult(result);
               }
+
+              set({
+                isFetching: false,
+                lastResponse:
+                  envelope ??
+                  buildFetcherFallbackResponse(
+                    mergedBody,
+                    fetchStartMs,
+                    formattedBody,
+                  ),
+              });
+              setResponse(formattedBody);
             };
             const opName = overrideOperationName ?? operationName;
-            const fetch = fetcher(
-              { query, variables, operationName: opName },
-              { headers, documentAST },
-            );
 
-            const value = await fetch;
-            if (isObservable(value)) {
-              // If the fetcher returned an Observable, then subscribe to it, calling
-              // the callback on each next value and handling both errors and the
-              // completion of the Observable.
-              const newSubscription = value.subscribe({
-                next(result) {
-                  handleResponse(result);
-                },
-                error(error: Error) {
-                  set({ isFetching: false });
-                  setResponse(formatError(error));
-                  set({ subscription: null });
-                },
-                complete() {
-                  set({ isFetching: false, subscription: null });
-                },
+            if (transport) {
+              const result = transport.send({
+                query,
+                variables,
+                operationName: opName,
+                headers: headers as Record<string, string> | undefined,
               });
-              set({ subscription: newSubscription });
-            } else if (isAsyncIterable(value)) {
-              const newSubscription = {
-                unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
-              };
-              set({ subscription: newSubscription });
-              for await (const result of value) {
-                handleResponse(result);
+
+              if (isAsyncIterable(result)) {
+                const iter = result as AsyncIterable<TransportResponse>;
+                const newSubscription = {
+                  unsubscribe: () => iter[Symbol.asyncIterator]().return?.(),
+                };
+                set({ subscription: newSubscription });
+                for await (const tr of iter) {
+                  handleResponse(tr.body as ExecutionResult, tr);
+                }
+                set({ isFetching: false, subscription: null });
+              } else {
+                const tr = await result;
+                handleResponse(tr.body as ExecutionResult, tr);
               }
-              set({ isFetching: false, subscription: null });
+            } else if (fetcher) {
+              const fetch = fetcher(
+                { query, variables, operationName: opName },
+                { headers, documentAST },
+              );
+
+              const value = await fetch;
+              if (isObservable(value)) {
+                // If the fetcher returned an Observable, then subscribe to it, calling
+                // the callback on each next value and handling both errors and the
+                // completion of the Observable.
+                const newSubscription = value.subscribe({
+                  next(result) {
+                    handleResponse(result);
+                  },
+                  error(error: Error) {
+                    const errorText = formatError(error);
+                    set({
+                      isFetching: false,
+                      lastResponse: buildErrorResponse(errorText, fetchStartMs),
+                      subscription: null,
+                    });
+                    setResponse(errorText);
+                  },
+                  complete() {
+                    set({ isFetching: false, subscription: null });
+                  },
+                });
+                set({ subscription: newSubscription });
+              } else if (isAsyncIterable(value)) {
+                const newSubscription = {
+                  unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+                };
+                set({ subscription: newSubscription });
+                for await (const result of value) {
+                  handleResponse(result);
+                }
+                set({ isFetching: false, subscription: null });
+              } else {
+                handleResponse(value);
+              }
             } else {
-              handleResponse(value);
+              throw new Error(
+                'No fetcher or transport configured on `GraphiQLProvider`.',
+              );
             }
           } catch (error) {
-            set({ isFetching: false });
-            setResponse(formatError(error));
-            set({ subscription: null });
+            const errorText = formatError(error);
+            set({
+              isFetching: false,
+              lastResponse: buildErrorResponse(errorText, fetchStartMs),
+              subscription: null,
+            });
+            setResponse(errorText);
           }
         },
       },

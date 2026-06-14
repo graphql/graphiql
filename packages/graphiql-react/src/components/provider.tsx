@@ -8,6 +8,8 @@ import {
   useId,
   useState,
 } from 'react';
+import { TransportHookRegistry } from '../transport-hooks';
+import { TransportHookContext } from '../transport-hooks.context';
 import { create, useStore, UseBoundStore, StoreApi } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import { StorageAPI } from '@graphiql/toolkit';
@@ -18,6 +20,7 @@ import {
   createSchemaSlice,
   createThemeSlice,
   createStorageSlice,
+  isResponseView,
   ExecutionProps,
   PluginProps,
   SchemaProps,
@@ -48,16 +51,14 @@ function isIntrospectionData(value: unknown): value is IntrospectionQuery {
   return typeof value === 'object' && value !== null && '__schema' in value;
 }
 
-interface GraphiQLProviderProps
-  extends
-    EditorProps,
-    ExecutionProps,
-    PluginProps,
-    SchemaProps,
-    ThemeProps,
-    StorageProps {
-  children: ReactNode;
-}
+type GraphiQLProviderProps = EditorProps &
+  ExecutionProps &
+  PluginProps &
+  SchemaProps &
+  ThemeProps &
+  StorageProps & {
+    children: ReactNode;
+  };
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
 
@@ -65,9 +66,15 @@ const GraphiQLContext = createContext<RefObject<GraphiQLStore> | null>(null);
 
 export const GraphiQLProvider: FC<GraphiQLProviderProps> = props => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
-  if (!props.fetcher) {
+  if (!props.fetcher && !props.transport) {
     throw new TypeError(
-      'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+      'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
+    );
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime check
+  if (props.fetcher && props.transport) {
+    throw new TypeError(
+      'The `fetcher` and `transport` props are mutually exclusive. Pass one or the other, not both.',
     );
   }
   // @ts-expect-error -- runtime check
@@ -153,6 +160,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
 
   dangerouslyAssumeSchemaIsValid = false,
   fetcher,
+  transport,
   inputValueDeprecation = false,
   introspectionQueryName = 'IntrospectionQuery',
   onSchemaChange,
@@ -176,6 +184,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   ...props
 }) => {
   const storeRef = useRef<GraphiQLStore>(null!);
+  // The hook registry for the transport path. Absent in fetcher mode. Created
+  // once from the initial `transport` prop, mirroring the store's lazy init.
+  const [registry] = useState<TransportHookRegistry | null>(() =>
+    transport ? new TransportHookRegistry() : null,
+  );
   const uriInstanceId = useId();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
   if (storeRef.current === null) {
@@ -209,6 +222,17 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           }
           return defaultTheme;
       }
+    }
+
+    function getInitialResponseView() {
+      const stored = storage.get(STORAGE_KEY.responseView);
+      if (isResponseView(stored)) {
+        return stored;
+      }
+      if (typeof stored === 'string') {
+        storage.set(STORAGE_KEY.responseView, '');
+      }
+      return 'json';
     }
 
     function getInitialState() {
@@ -261,6 +285,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         })(...args);
         const executionSlice = createExecutionSlice({
           fetcher,
+          transport:
+            transport && registry ? registry.wrap(transport) : transport,
           getDefaultFieldNames,
           overrideOperationName: operationName,
         })(...args);
@@ -296,6 +322,10 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
       actions.setPlugins(plugins);
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
+      actions.setResponseView(getInitialResponseView());
+      if (storage.get(STORAGE_KEY.transportUpgradeBannerDismissed) === 'true') {
+        store.setState({ transportUpgradeBannerDismissed: true });
+      }
 
       return store;
     }
@@ -312,10 +342,12 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   //   }
   // }, [shouldPersistHeaders]);
 
-  // Execution sync
+  // Execution sync — rewrap transport with the hook registry on change
   useDidUpdate(() => {
-    storeRef.current.setState({ fetcher });
-  }, [fetcher]);
+    const wrappedTransport =
+      transport && registry ? registry.wrap(transport) : transport;
+    storeRef.current.setState({ fetcher, transport: wrappedTransport });
+  }, [fetcher, transport]);
 
   // Plugin sync
   useDidUpdate(() => {
@@ -358,6 +390,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     schema,
     dangerouslyAssumeSchemaIsValid,
     fetcher, // should refresh schema with a new fetcher after a fetchError
+    transport, // ...or transport
   ]);
 
   /**
@@ -378,9 +411,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   }, []);
 
   return (
-    <GraphiQLContext.Provider value={storeRef}>
-      {children}
-    </GraphiQLContext.Provider>
+    <TransportHookContext.Provider value={registry}>
+      <GraphiQLContext.Provider value={storeRef}>
+        {children}
+      </GraphiQLContext.Provider>
+    </TransportHookContext.Provider>
   );
 };
 

@@ -22,21 +22,21 @@ All the state for your GraphQL IDE lives in multiple contexts. The easiest way
 to get started is by using the `GraphiQLProvider` component that renders all the
 individual providers.
 
-There is one required prop called `fetcher`. This is a function that performs
-GraphQL request against a given endpoint. You can easily create a fetcher using
-the method `createGraphiQLFetcher` from the `@graphiql/toolkit` package.
+There is one required prop called `transport`. This is a function that performs
+GraphQL requests against a given endpoint. You can easily create a transport using
+the method `createTransport` from the `@graphiql/toolkit` package.
 
 ```jsx
 import { GraphiQLProvider } from '@graphiql/react';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({
+const transport = createTransport({
   url: 'https://my.graphql.api/graphql',
 });
 
 function MyGraphQLIDE() {
   return (
-    <GraphiQLProvider fetcher={fetcher}>
+    <GraphiQLProvider transport={transport}>
       <div className="graphiql-container">Hello GraphQL</div>
     </GraphiQLProvider>
   );
@@ -51,7 +51,7 @@ import { QueryEditor } from '@graphiql/react';
 
 function MyGraphQLIDE() {
   return (
-    <GraphiQLProvider fetcher={fetcher}>
+    <GraphiQLProvider transport={transport}>
       <div className="graphiql-container">
         <QueryEditor />
       </div>

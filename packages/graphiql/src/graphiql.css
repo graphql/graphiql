@@ -2,42 +2,22 @@
 .graphiql-container {
   background-color: hsl(var(--color-base));
   display: flex;
+  flex-direction: column;
   height: 100%;
   margin: 0;
   overflow: hidden;
   width: 100%;
 }
 
-/* The sidebar */
-.graphiql-container .graphiql-sidebar {
+/* Activity rail + main content row (below the top bar and above the status bar) */
+.graphiql-container .graphiql-body {
   display: flex;
-  flex-direction: column;
-  padding: var(--px-8);
-  width: var(--sidebar-width);
-  gap: var(--px-8);
-  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.graphiql-container .graphiql-sidebar > button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  height: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  width: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  flex-shrink: 0;
-}
-
-.graphiql-container .graphiql-sidebar button.active {
-  color: hsl(var(--color-neutral));
-}
-
-.graphiql-container .graphiql-sidebar button > svg {
-  height: var(--px-20);
-  width: var(--px-20);
-}
-
-/* The main content, i.e. everything except the sidebar */
+/* The main content, i.e. everything except the activity rail */
 .graphiql-container .graphiql-main {
   display: flex;
   flex: 1;
@@ -74,8 +54,34 @@ button.graphiql-tab-add {
   & > svg {
     color: hsla(var(--color-neutral), var(--alpha-secondary));
     display: block;
-    height: var(--px-16);
-    width: var(--px-16);
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
+  }
+}
+
+/* Right-side tab strip action buttons (prettify, copy, save) */
+.graphiql-tab-strip-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 0;
+}
+
+button.graphiql-tab-strip-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--px-4);
+  color: oklch(var(--fg-subtle));
+
+  & > svg {
+    display: block;
+    height: var(--icon-size-md);
+    width: var(--icon-size-md);
+  }
+
+  &:hover {
+    color: oklch(var(--fg-default));
   }
 }
 
@@ -174,8 +180,10 @@ button.graphiql-tab-add {
 
 /* An editor tool, e.g. variables or request headers editor */
 .graphiql-container .graphiql-editor-tool {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  padding: var(--px-16);
+  min-height: 0;
 }
 
 /**
@@ -192,7 +200,7 @@ button.graphiql-tab-add {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  /* Add some padding so it doesn’t touch the tabs */
+  /* Add some padding so it doesn't touch the tabs */
   padding-top: var(--px-16);
   display: flex;
   width: 100%;
@@ -211,13 +219,12 @@ button.graphiql-tab-add {
     hsla(var(--color-neutral), var(--alpha-background-heavy));
 }
 
-/* The plugin container */
+/* The plugin container — sizing controlled by useDragResize; chrome handled by <SidePanel> */
 .graphiql-container .graphiql-plugin {
-  border-left: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  display: flex;
   flex: 1;
-  overflow-y: auto;
-  padding: var(--px-16);
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Generic drag bar for horizontal resizing */

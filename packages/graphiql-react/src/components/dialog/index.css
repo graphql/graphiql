@@ -1,7 +1,7 @@
 .graphiql-dialog-overlay {
   position: fixed;
   inset: 0;
-  background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
+  background-color: oklch(0% 0 0 / 0.5);
   /**
    * CodeMirror has a `z-index` set for the container of the scrollbar of the
    * editor, so we have to add one here to make sure that the dialog is shown
@@ -11,10 +11,12 @@
 }
 
 .graphiql-dialog {
-  background-color: hsl(var(--color-base));
-  border: var(--popover-border);
-  border-radius: var(--border-radius-12);
-  box-shadow: var(--popover-box-shadow);
+  background: oklch(var(--bg-elevated));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
   margin: 0;
   max-height: 80vh;
   max-width: 80vw;
@@ -29,9 +31,9 @@
 }
 
 .graphiql-dialog-close > svg {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   display: block;
-  height: var(--px-12);
+  height: var(--icon-size-md);
   padding: var(--px-12);
-  width: var(--px-12);
+  width: var(--icon-size-md);
 }

@@ -4,7 +4,7 @@ import {
   useState,
   ComponentPropsWithoutRef,
 } from 'react';
-import { cn } from '../../utility';
+import { clsx as cn } from 'clsx';
 import { Tooltip } from '../tooltip';
 import { UnStyledButton } from '../button';
 import './index.css';

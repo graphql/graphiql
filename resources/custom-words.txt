@@ -21,6 +21,7 @@ acao
 acmerc
 aivazis
 akshat
+alderaan
 alexey
 alok
 amfoss
@@ -32,6 +33,7 @@ arthurgeron
 asiandrummer
 astro
 astrojs
+autodocs
 aumy
 Autopurge
 behaviour
@@ -51,6 +53,7 @@ codegen
 codemirror
 codesandbox
 codespaces
+corellia
 codicon
 colmena
 combobox
@@ -69,6 +72,7 @@ dotan
 dotansimha
 edcore
 envrc
+EAEEF
 esbuild
 estree
 execa
@@ -95,6 +99,7 @@ graphqls
 ˈɡrafək
 harshith
 headlessui
+homeworld
 heyenbrock
 hola
 htmling
@@ -112,9 +117,11 @@ jiti
 jonathanawesome
 jsdelivr
 jsgl
+keycap
 kumar
 languageservice
 leebyron
+leia
 Leko
 LekoArts
 lezer
@@ -153,6 +160,7 @@ nullthrows
 nulltype
 nvim
 objectvalues
+oklch
 onig
 ooops
 orche
@@ -182,11 +190,13 @@ randomthing
 ravikoti
 resi
 resizer
+retheming
 rikki
 roadmap
 roboto
 rodionov
 rohit
+ruleset
 runmode
 runtimes
 saihaj
@@ -200,12 +210,14 @@ sfc's
 sgrove
 simha
 singleline
+skywalker
 snyk
 socker
 sonarjs
 sorare
 spawndamnit
 squirrelly
+starships
 stonexer
 streamable
 subpath
@@ -216,12 +228,14 @@ svgo
 svgr
 tanay
 tanaypratap
+tatooine
 testid
 testonly
 therox
 thomasheyenbrock
 timsuchanek
 tokenizes
+treeshake
 tsup
 turbopack
 typeahead
@@ -242,11 +256,13 @@ vitejs
 vitest
 vizag
 vsix
+wcag
 webp
 websockets
 wgutils
 wincent
 wonka
+wordmark
 yoshiakis
 zdravo
 zustand

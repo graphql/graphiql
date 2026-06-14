@@ -12,7 +12,8 @@ import {
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
-import { debounce, pick, cleanupDisposables, cn, Uri, Range } from '../utility';
+import { debounce, pick, cleanupDisposables, cn } from '../utility';
+import { Uri, Range } from '../utility/monaco-ssr';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,
@@ -55,6 +56,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     copyQuery,
     prettifyEditors,
     mergeQuery,
+    saveQuery,
   } = useGraphiQLActions();
   const {
     initialQuery,
@@ -262,6 +264,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       editor.addAction({ ...KEY_BINDINGS.copyQuery, run: copyQuery }),
       editor.addAction({ ...KEY_BINDINGS.prettify, run: prettifyEditors }),
       editor.addAction({ ...KEY_BINDINGS.mergeFragments, run: mergeQuery }),
+      editor.addAction({ ...KEY_BINDINGS.saveQuery, run: saveQuery }),
       editor,
       model,
     ];

@@ -5,6 +5,7 @@ import {
   fuzzyExtractOperationName,
   getDefaultTabState,
   clearHeadersFromTabs,
+  serializeTabState,
 } from './tabs';
 import { STORAGE_KEY } from '../constants';
 
@@ -27,6 +28,25 @@ describe('createTab', () => {
         title: 'Foo',
       }),
     );
+  });
+
+  it('initializes lastSavedQuery to null', () => {
+    expect(createTab({ query: 'query Foo {}' })).toEqual(
+      expect.objectContaining({ lastSavedQuery: null }),
+    );
+  });
+});
+
+describe('serializeTabState', () => {
+  it('nullifies lastSavedQuery in serialized output (not persisted)', () => {
+    const tab = {
+      ...createTab({ query: 'query Foo {}' }),
+      lastSavedQuery: 'query Foo {}',
+    };
+    const state = { tabs: [tab], activeTabIndex: 0 };
+    const parsed = JSON.parse(serializeTabState(state));
+    // lastSavedQuery is serialized as null so the field is reset on reload
+    expect(parsed.tabs[0].lastSavedQuery).toBeNull();
   });
 });
 

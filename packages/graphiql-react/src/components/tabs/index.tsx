@@ -7,10 +7,11 @@ import './index.css';
 
 interface TabProps extends ComponentPropsWithoutRef<typeof Reorder.Item> {
   isActive?: boolean;
+  isDirty?: boolean;
 }
 
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(
-  ({ isActive, value, children, className, ...props }, ref) => (
+  ({ isActive, isDirty, value, children, className, ...props }, ref) => (
     <Reorder.Item
       {...props}
       ref={ref}
@@ -25,6 +26,13 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
       )}
     >
       {children}
+      {isDirty && (
+        <span
+          className="graphiql-tab-dirty"
+          aria-label="Unsaved changes"
+          role="status"
+        />
+      )}
     </Reorder.Item>
   ),
 );
