@@ -13,7 +13,6 @@ import {
 } from '../utility/create-editor';
 import { Range } from '../utility/monaco-ssr';
 import { pick, cleanupDisposables, cn } from '../utility';
-import { TraceFooter } from './trace-footer';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';
@@ -177,11 +176,6 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   const isFetcherPath = !transport;
   const showUpgradeBanner = isFetcherPath && !transportUpgradeBannerDismissed;
   const showHeader = !isFetcherPath || showUpgradeBanner;
-  const resolverTraces = lastResponse?.timing.resolverTraces;
-  const showTraceFooter =
-    resolverTraces !== undefined &&
-    resolverTraces.length > 0 &&
-    lastResponse?.timing.totalMs !== undefined;
 
   return (
     <div {...props} className={cn('graphiql-response-pane', props.className)}>
@@ -228,12 +222,6 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
         ))}
       {responseView === 'table' && (
         <ResponseTableView data={lastResponse?.body} />
-      )}
-      {showTraceFooter && (
-        <TraceFooter
-          traces={resolverTraces!}
-          totalMs={lastResponse!.timing.totalMs!}
-        />
       )}
     </div>
   );
