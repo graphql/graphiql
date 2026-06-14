@@ -4,6 +4,9 @@ import { VarHeadersStrip } from './';
 import { GraphiQLProvider } from '../provider';
 
 const noOpTransport = {
+  url: 'https://example.com/graphql',
+  method: 'POST' as const,
+  supportedMethods: ['POST' as const],
   send: async () => ({
     ok: true,
     body: { data: {} },

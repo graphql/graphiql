@@ -1,4 +1,12 @@
-import { type Mock, describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import {
+  type Mock,
+  describe,
+  it,
+  expect,
+  vi,
+  afterEach,
+  beforeEach,
+} from 'vitest';
 import 'isomorphic-fetch';
 
 import { createTransport } from '../createTransport';
@@ -173,8 +181,7 @@ describe('createSimpleFetcher (backward-compatible)', () => {
 });
 
 const MUTATION = 'mutation DoThing { doThing }';
-const QUERY_WITH_VARS =
-  'query Q($id: ID!) { node(id: $id) { __typename } }';
+const QUERY_WITH_VARS = 'query Q($id: ID!) { node(id: $id) { __typename } }';
 
 describe('createTransport — GET method', () => {
   let mockFetch: ReturnType<typeof vi.fn>;
@@ -190,13 +197,16 @@ describe('createTransport — GET method', () => {
   });
 
   it('defaults to POST-only: no setMethod, requests go out as POST', () => {
-    const transport = createTransport({ url: URL, fetch: mockFetch as typeof fetch });
+    const transport = createTransport({
+      url: URL,
+      fetch: mockFetch as typeof fetch,
+    });
     expect(transport.method).toBe('POST');
     expect(transport.supportedMethods).toEqual(['POST']);
     expect(transport.setMethod).toBeUndefined();
   });
 
-  it('GET-only: active method is GET when supportedMethods is [\'GET\']', () => {
+  it("GET-only: active method is GET when supportedMethods is ['GET']", () => {
     const transport = createTransport({
       url: URL,
       supportedMethods: ['GET'],
@@ -217,7 +227,10 @@ describe('createTransport — GET method', () => {
 
     await transport.send({ query: QUERY });
 
-    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
     expect(fetchInit.method).toBe('GET');
     expect(fetchInit.body).toBeUndefined();
     const parsed = new globalThis.URL(fetchedUrl);
@@ -246,7 +259,10 @@ describe('createTransport — GET method', () => {
 
     await transport.send({ query: QUERY });
 
-    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
     expect(fetchInit.method).toBe('GET');
     expect(fetchInit.body).toBeUndefined();
     const parsed = new globalThis.URL(fetchedUrl);
@@ -267,7 +283,9 @@ describe('createTransport — GET method', () => {
 
     const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
     const parsed = new globalThis.URL(fetchedUrl);
-    expect(parsed.searchParams.get('variables')).toBe(JSON.stringify(variables));
+    expect(parsed.searchParams.get('variables')).toBe(
+      JSON.stringify(variables),
+    );
   });
 
   it('GET query encodes operationName in the URL', async () => {
@@ -317,7 +335,9 @@ describe('createTransport — GET method', () => {
     const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(fetchInit.method).toBe('POST');
     expect(typeof fetchInit.body).toBe('string');
-    expect(JSON.parse(fetchInit.body as string)).toMatchObject({ query: MUTATION });
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      query: MUTATION,
+    });
   });
 
   it('both methods: active method defaults to POST when no method opt is passed', () => {

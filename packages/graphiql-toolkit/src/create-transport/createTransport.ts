@@ -120,7 +120,8 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   // Default to POST when available; otherwise fall back to whichever single
   // method was configured (e.g. GET-only).
   let activeMethod: HttpMethod =
-    opts.method ?? (supportedMethods.includes('POST') ? 'POST' : supportedMethods[0]);
+    opts.method ??
+    (supportedMethods.includes('POST') ? 'POST' : supportedMethods[0]);
 
   function send(
     req: TransportRequest,
@@ -149,7 +150,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
       if (!supportedMethods.includes('POST')) {
         throw new Error(
           'Cannot execute a mutation over GET. ' +
-            'This transport is configured as GET-only (supportedMethods: [\'GET\']). ' +
+            "This transport is configured as GET-only (supportedMethods: ['GET']). " +
             'Add POST to supportedMethods or switch to a POST-capable transport.',
         );
       }
@@ -157,9 +158,17 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     }
 
     if (incrementalDelivery) {
-      return multipartHttpTransport(fetcherOptions, httpFetch, method)(params, fetcherOpts);
+      return multipartHttpTransport(
+        fetcherOptions,
+        httpFetch,
+        method,
+      )(params, fetcherOpts);
     }
-    return simpleHttpTransport(fetcherOptions, httpFetch, method)(params, fetcherOpts);
+    return simpleHttpTransport(
+      fetcherOptions,
+      httpFetch,
+      method,
+    )(params, fetcherOpts);
   }
 
   const transport: Transport = {

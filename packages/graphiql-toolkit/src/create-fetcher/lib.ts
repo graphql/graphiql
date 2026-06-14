@@ -129,7 +129,11 @@ function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
  * `createTransport`, which composes this primitive in a spec-compliant way.
  */
 export const simpleHttpTransport =
-  (options: CreateFetcherOptions, httpFetch: typeof fetch, method: 'GET' | 'POST' = 'POST') =>
+  (
+    options: CreateFetcherOptions,
+    httpFetch: typeof fetch,
+    method: 'GET' | 'POST' = 'POST',
+  ) =>
   async (
     graphQLParams: FetcherParams,
     fetcherOpts?: FetcherOpts,
