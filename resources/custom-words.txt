@@ -19,6 +19,7 @@
 // phonetic notation
 acao
 acmerc
+affordance
 aivazis
 akshat
 alderaan
@@ -173,6 +174,7 @@ oxlint
 oxlintrc
 paas
 pabbati
+parseable
 picomatch
 pieas
 pnpm
@@ -188,6 +190,7 @@ quasis
 ractive
 randomthing
 ravikoti
+reparsed
 resi
 resizer
 retheming
@@ -242,10 +245,12 @@ typeahead
 typeaheads
 typedoc
 typeof
+unchecking
 uncurried
 unfocus
 unnormalized
 unparsable
+unparseable
 unsubscribable
 urigo
 urql
