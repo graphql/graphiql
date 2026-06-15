@@ -3,11 +3,21 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import type { Transport } from '@graphiql/toolkit';
 import {
   TransportHookContext,
   useGraphiQLPluginContext,
 } from './transport-hooks.context';
 import { TransportHookRegistry } from './transport-hooks';
+
+function makeTransport(send: Transport['send']): Transport {
+  return {
+    url: 'https://example.test/graphql',
+    method: 'POST',
+    supportedMethods: ['POST'],
+    send,
+  };
+}
 
 function wrapWith(registry: TransportHookRegistry | null) {
   return function Wrapper({ children }: { children: ReactNode }) {
@@ -48,14 +58,14 @@ describe('useGraphiQLPluginContext', () => {
     result.current.transport!.onBeforeSend(cb);
 
     // Drive the registry directly to verify the callback is registered
-    const transport = registry.wrap({
-      send: async () => ({
+    const transport = registry.wrap(
+      makeTransport(async () => ({
         ok: true,
         body: {},
         timing: { totalMs: 0 },
         size: {},
-      }),
-    });
+      })),
+    );
     const iter = transport.send({ query: '{ test }' }) as AsyncIterable<any>;
     for await (const _ of iter) {
       /* consume */
@@ -75,14 +85,14 @@ describe('useGraphiQLPluginContext', () => {
     const cleanup = result.current.transport!.onBeforeSend(cb);
     cleanup();
 
-    const transport = registry.wrap({
-      send: async () => ({
+    const transport = registry.wrap(
+      makeTransport(async () => ({
         ok: true,
         body: {},
         timing: { totalMs: 0 },
         size: {},
-      }),
-    });
+      })),
+    );
     const iter = transport.send({ query: '{ test }' }) as AsyncIterable<any>;
     for await (const _ of iter) {
       /* consume */

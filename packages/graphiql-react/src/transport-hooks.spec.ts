@@ -1,8 +1,21 @@
 'use no memo';
 
 import { describe, it, expect, vi } from 'vitest';
-import type { TransportRequest, TransportResponse } from '@graphiql/toolkit';
+import type {
+  Transport,
+  TransportRequest,
+  TransportResponse,
+} from '@graphiql/toolkit';
 import { TransportHookRegistry } from './transport-hooks';
+
+function makeTransport(send: Transport['send']): Transport {
+  return {
+    url: 'https://example.test/graphql',
+    method: 'POST',
+    supportedMethods: ['POST'],
+    send,
+  };
+}
 
 function makeResponse(
   overrides?: Partial<TransportResponse>,
@@ -38,9 +51,9 @@ describe('TransportHookRegistry', () => {
       const cb = vi.fn((req: TransportRequest) => req);
       registry.onBeforeSend(cb);
 
-      const transport = registry.wrap({
-        send: async () => makeResponse(),
-      });
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
 
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
@@ -56,12 +69,12 @@ describe('TransportHookRegistry', () => {
       }));
 
       let capturedRequest: TransportRequest | undefined;
-      const transport = registry.wrap({
-        async send(req: TransportRequest) {
+      const transport = registry.wrap(
+        makeTransport(async (req: TransportRequest) => {
           capturedRequest = req;
           return makeResponse();
-        },
-      });
+        }),
+      );
 
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
@@ -77,12 +90,12 @@ describe('TransportHookRegistry', () => {
       });
 
       let capturedRequest: TransportRequest | undefined;
-      const transport = registry.wrap({
-        async send(req: TransportRequest) {
+      const transport = registry.wrap(
+        makeTransport(async (req: TransportRequest) => {
           capturedRequest = req;
           return makeResponse();
-        },
-      });
+        }),
+      );
 
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
@@ -102,7 +115,9 @@ describe('TransportHookRegistry', () => {
         return req;
       });
 
-      const transport = registry.wrap({ send: async () => makeResponse() });
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
       );
@@ -117,7 +132,9 @@ describe('TransportHookRegistry', () => {
 
       remove();
 
-      const transport = registry.wrap({ send: async () => makeResponse() });
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
       );
@@ -141,7 +158,7 @@ describe('TransportHookRegistry', () => {
       registry.onResponse(cb);
 
       const response = makeResponse();
-      const transport = registry.wrap({ send: async () => response });
+      const transport = registry.wrap(makeTransport(async () => response));
 
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
@@ -156,7 +173,9 @@ describe('TransportHookRegistry', () => {
       const remove = registry.onResponse(cb);
       remove();
 
-      const transport = registry.wrap({ send: async () => makeResponse() });
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
       await collect(
         transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
       );
@@ -178,9 +197,9 @@ describe('TransportHookRegistry', () => {
       const cb = vi.fn((req: TransportRequest) => req);
       registry.onBeforeSend(cb);
 
-      const transport = registry.wrap({
-        send: () => makeIterable([makeResponse()]),
-      });
+      const transport = registry.wrap(
+        makeTransport(() => makeIterable([makeResponse()])),
+      );
 
       const iter = transport.send(
         makeRequest(),
@@ -199,9 +218,9 @@ describe('TransportHookRegistry', () => {
 
       const r1 = makeResponse({ ok: true });
       const r2 = makeResponse({ ok: false });
-      const transport = registry.wrap({
-        send: () => makeIterable([r1, r2]),
-      });
+      const transport = registry.wrap(
+        makeTransport(() => makeIterable([r1, r2])),
+      );
 
       const iter = transport.send(
         makeRequest(),
