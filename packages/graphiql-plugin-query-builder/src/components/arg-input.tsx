@@ -9,7 +9,7 @@ import {
   type GraphQLInputField,
   type GraphQLType,
 } from 'graphql';
-import type { FC } from 'react';
+import { type FC, useState } from 'react';
 import type { ArgValue } from '../lib/document-mutator';
 
 type ArgInputProps = {
@@ -325,6 +325,10 @@ const InputObjectArgInput: FC<InputObjectArgInputProps> = ({
   value,
   onChange,
 }) => {
+  // Render nested fields only once expanded. Input object types can be
+  // self-referential (e.g. an input with a field of its own type), so rendering
+  // every level eagerly would recurse forever.
+  const [open, setOpen] = useState(false);
   const fields = inputType.getFields();
 
   const onChangeField = (fieldName: string, fieldValue: ArgValue) => {
@@ -338,21 +342,25 @@ const InputObjectArgInput: FC<InputObjectArgInputProps> = ({
   };
 
   return (
-    <details className="graphiql-qb-input-object">
+    <details
+      className="graphiql-qb-input-object"
+      onToggle={e => setOpen(e.currentTarget.open)}
+    >
       <summary>{name}</summary>
-      {Object.entries(fields).map(([fieldName, field]) => {
-        const fieldVal: ArgValue = value[fieldName] ?? '';
-        return (
-          <div key={fieldName} className="graphiql-qb-input-field">
-            <ArgInputByType
-              type={field.type}
-              name={fieldName}
-              value={fieldVal}
-              onChange={v => onChangeField(fieldName, v)}
-            />
-          </div>
-        );
-      })}
+      {open &&
+        Object.entries(fields).map(([fieldName, field]) => {
+          const fieldVal: ArgValue = value[fieldName] ?? '';
+          return (
+            <div key={fieldName} className="graphiql-qb-input-field">
+              <ArgInputByType
+                type={field.type}
+                name={fieldName}
+                value={fieldVal}
+                onChange={v => onChangeField(fieldName, v)}
+              />
+            </div>
+          );
+        })}
     </details>
   );
 };

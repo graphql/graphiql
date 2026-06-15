@@ -124,8 +124,8 @@ describe('QueryBuilder integration — list and input-object args', () => {
     const user = userEvent.setup();
     render(<QueryBuilder />);
 
-    // The filter disclosure (details/summary) is already visible since filter
-    // is rendered as a collapsed InputObjectArgInput.
+    // Input-object fields render lazily; expand the filter disclosure first.
+    await user.click(screen.getByText('filter'));
     const limitInput = screen.getByRole('spinbutton', { name: 'limit' });
     await user.type(limitInput, '5');
 
@@ -140,6 +140,8 @@ describe('QueryBuilder integration — list and input-object args', () => {
     const user = userEvent.setup();
     render(<QueryBuilder />);
 
+    // Input-object fields render lazily; expand the filter disclosure first.
+    await user.click(screen.getByText('filter'));
     const nameInput = screen.getByRole('textbox', { name: 'name' });
     await user.type(nameInput, 'x');
 

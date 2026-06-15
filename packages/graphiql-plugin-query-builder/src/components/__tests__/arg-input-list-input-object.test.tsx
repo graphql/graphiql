@@ -133,9 +133,10 @@ describe('ArgInput — input object', () => {
     expect(details).toBeInTheDocument();
   });
 
-  it('renders each field of the input object', () => {
+  it('renders each field of the input object once expanded', async () => {
     const arg = makeArg('input', TagInput);
     render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
+    await userEvent.click(screen.getByText('input'));
     // TagInput has fields: name, value
     expect(screen.getByRole('textbox', { name: 'name' })).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'value' })).toBeInTheDocument();
@@ -145,6 +146,7 @@ describe('ArgInput — input object', () => {
     const arg = makeArg('input', TagInput);
     const onChange = vi.fn();
     render(<ArgInput arg={arg} value={{}} onChange={onChange} />);
+    await userEvent.click(screen.getByText('input'));
     await userEvent.type(screen.getByRole('textbox', { name: 'name' }), 'x');
     expect(onChange).toHaveBeenCalled();
     // Each call should pass the whole input object as an ArgValue object
@@ -154,7 +156,7 @@ describe('ArgInput — input object', () => {
     expect(firstVal['name']).toBe('x');
   });
 
-  it('reflects existing field values', () => {
+  it('reflects existing field values', async () => {
     const arg = makeArg('input', TagInput);
     render(
       <ArgInput
@@ -163,6 +165,7 @@ describe('ArgInput — input object', () => {
         onChange={() => {}}
       />,
     );
+    await userEvent.click(screen.getByText('input'));
     expect(screen.getByRole('textbox', { name: 'name' })).toHaveValue('hello');
     expect(screen.getByRole('textbox', { name: 'value' })).toHaveValue('world');
   });
@@ -173,13 +176,17 @@ describe('ArgInput — input object', () => {
 // ---------------------------------------------------------------------------
 
 describe('ArgInput — list of input objects', () => {
-  it('renders inputs for each item in a list of input objects', () => {
+  it('renders inputs for each item in a list of input objects', async () => {
     const arg = makeArg('tags', new GraphQLList(TagInput));
     const value: ArgValue[] = [
       { name: 'a', value: '1' },
       { name: 'b', value: '2' },
     ];
     render(<ArgInput arg={arg} value={value} onChange={() => {}} />);
+    // Each item is a collapsed input-object disclosure; expand both.
+    for (const summary of screen.getAllByText('tags')) {
+      await userEvent.click(summary);
+    }
     const nameInputs = screen.getAllByRole('textbox', { name: 'name' });
     expect(nameInputs).toHaveLength(2);
   });
@@ -193,5 +200,40 @@ describe('ArgInput — list of input objects', () => {
     const result = onChange.mock.calls[0][0] as ArgValue[];
     expect(Array.isArray(result)).toBe(true);
     expect(result).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ArgInput — self-referential input object
+// ---------------------------------------------------------------------------
+
+const RecursiveInput: GraphQLInputObjectType = new GraphQLInputObjectType({
+  name: 'RecursiveInput',
+  fields: () => ({
+    label: { type: GraphQLString },
+    child: { type: RecursiveInput },
+  }),
+});
+
+describe('ArgInput — self-referential input object', () => {
+  it('does not render nested fields until expanded, so recursion is bounded', () => {
+    const arg = makeArg('node', RecursiveInput);
+    // Eagerly rendering every level of a self-referential input would recurse
+    // forever; this render must complete and show only the collapsed summary.
+    render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
+
+    expect(screen.getByText('node')).toBeInTheDocument();
+    expect(screen.queryByLabelText('label')).not.toBeInTheDocument();
+  });
+
+  it('reveals one level of fields when expanded', async () => {
+    const arg = makeArg('node', RecursiveInput);
+    render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
+
+    await userEvent.click(screen.getByText('node'));
+
+    expect(screen.getByLabelText('label')).toBeInTheDocument();
+    // The nested self-reference renders its own collapsed summary, not its fields.
+    expect(screen.getByText('child')).toBeInTheDocument();
   });
 });
