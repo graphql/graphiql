@@ -15,7 +15,10 @@ export default defineConfig({
   resolve: {
     alias: {
       // Point @graphiql/react to our stub so tests don't need a built dist.
-      '@graphiql/react': path.resolve(__dirname, 'src/__mocks__/@graphiql/react.ts'),
+      '@graphiql/react': path.resolve(
+        __dirname,
+        'src/__mocks__/@graphiql/react.ts',
+      ),
     },
   },
   test: {

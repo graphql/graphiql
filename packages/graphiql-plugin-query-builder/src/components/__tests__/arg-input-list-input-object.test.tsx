@@ -43,12 +43,16 @@ describe('ArgInput — list of scalars', () => {
   it('renders an "Add item" button for a list arg', () => {
     const arg = makeArg('tags', new GraphQLList(GraphQLString));
     render(<ArgInput arg={arg} value={[]} onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /add item/i }),
+    ).toBeInTheDocument();
   });
 
   it('renders one input per existing item', () => {
     const arg = makeArg('ids', new GraphQLList(GraphQLString));
-    render(<ArgInput arg={arg} value={['alpha', 'beta']} onChange={() => {}} />);
+    render(
+      <ArgInput arg={arg} value={['alpha', 'beta']} onChange={() => {}} />,
+    );
     const inputs = screen.getAllByRole('textbox');
     expect(inputs).toHaveLength(2);
   });
@@ -80,7 +84,9 @@ describe('ArgInput — list of scalars', () => {
     const arg = makeArg('tags', new GraphQLList(GraphQLString));
     const onChange = vi.fn();
     render(<ArgInput arg={arg} value={['a', 'b']} onChange={onChange} />);
-    const removeButtons = screen.getAllByRole('button', { name: /remove item/i });
+    const removeButtons = screen.getAllByRole('button', {
+      name: /remove item/i,
+    });
     await userEvent.click(removeButtons[0]!);
     expect(onChange).toHaveBeenCalled();
     const result = onChange.mock.calls[0][0] as ArgValue[];
@@ -90,9 +96,14 @@ describe('ArgInput — list of scalars', () => {
   });
 
   it('renders a list wrapped in NonNull', () => {
-    const arg = makeArg('ids', new GraphQLNonNull(new GraphQLList(GraphQLString)));
+    const arg = makeArg(
+      'ids',
+      new GraphQLNonNull(new GraphQLList(GraphQLString)),
+    );
     render(<ArgInput arg={arg} value={[]} onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /add item/i }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -164,7 +175,10 @@ describe('ArgInput — input object', () => {
 describe('ArgInput — list of input objects', () => {
   it('renders inputs for each item in a list of input objects', () => {
     const arg = makeArg('tags', new GraphQLList(TagInput));
-    const value: ArgValue[] = [{ name: 'a', value: '1' }, { name: 'b', value: '2' }];
+    const value: ArgValue[] = [
+      { name: 'a', value: '1' },
+      { name: 'b', value: '2' },
+    ];
     render(<ArgInput arg={arg} value={value} onChange={() => {}} />);
     const nameInputs = screen.getAllByRole('textbox', { name: 'name' });
     expect(nameInputs).toHaveLength(2);

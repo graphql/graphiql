@@ -1,4 +1,11 @@
-import { GraphQLEnumType, GraphQLFloat, GraphQLInt, GraphQLString, parse, print } from 'graphql';
+import {
+  GraphQLEnumType,
+  GraphQLFloat,
+  GraphQLInt,
+  GraphQLString,
+  parse,
+  print,
+} from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { scalarToValueNode, setFieldArgument } from '../document-mutator';
 
@@ -46,28 +53,40 @@ describe('scalarToValueNode', () => {
 describe('setFieldArgument', () => {
   it('adds an Int arg to a field that has no args', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, ['hero'], 'id', { kind: 'IntValue', value: '1' });
+    const result = setFieldArgument(d, ['hero'], 'id', {
+      kind: 'IntValue',
+      value: '1',
+    });
     const printed = print(result);
     expect(printed).toMatch(/hero\(id: 1\)/);
   });
 
   it('adds a String arg (printed with quotes)', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, ['hero'], 'name', { kind: 'StringValue', value: 'Luke' });
+    const result = setFieldArgument(d, ['hero'], 'name', {
+      kind: 'StringValue',
+      value: 'Luke',
+    });
     const printed = print(result);
     expect(printed).toMatch(/hero\(name: "Luke"\)/);
   });
 
   it('adds an Enum arg (printed without quotes)', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, ['hero'], 'episode', { kind: 'EnumValue', value: 'JEDI' });
+    const result = setFieldArgument(d, ['hero'], 'episode', {
+      kind: 'EnumValue',
+      value: 'JEDI',
+    });
     const printed = print(result);
     expect(printed).toMatch(/hero\(episode: JEDI\)/);
   });
 
   it('updates an existing arg', () => {
     const d = doc('{ hero(id: 1) }');
-    const result = setFieldArgument(d, ['hero'], 'id', { kind: 'IntValue', value: '2' });
+    const result = setFieldArgument(d, ['hero'], 'id', {
+      kind: 'IntValue',
+      value: '2',
+    });
     const printed = print(result);
     expect(printed).toMatch(/hero\(id: 2\)/);
     expect(printed).not.toMatch(/id: 1/);
@@ -83,20 +102,29 @@ describe('setFieldArgument', () => {
 
   it('works on a nested field', () => {
     const d = doc('{ hero { friends } }');
-    const result = setFieldArgument(d, ['hero', 'friends'], 'first', { kind: 'IntValue', value: '5' });
+    const result = setFieldArgument(d, ['hero', 'friends'], 'first', {
+      kind: 'IntValue',
+      value: '5',
+    });
     const printed = print(result);
     expect(printed).toMatch(/friends\(first: 5\)/);
   });
 
   it('does nothing when the field path does not exist', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, ['droid'], 'id', { kind: 'IntValue', value: '1' });
+    const result = setFieldArgument(d, ['droid'], 'id', {
+      kind: 'IntValue',
+      value: '1',
+    });
     expect(print(result)).toBe(print(d));
   });
 
   it('preserves existing sibling args when adding a new one', () => {
     const d = doc('{ hero(id: 1) }');
-    const result = setFieldArgument(d, ['hero'], 'episode', { kind: 'EnumValue', value: 'JEDI' });
+    const result = setFieldArgument(d, ['hero'], 'episode', {
+      kind: 'EnumValue',
+      value: 'JEDI',
+    });
     const printed = print(result);
     expect(printed).toMatch(/id: 1/);
     expect(printed).toMatch(/episode: JEDI/);

@@ -81,7 +81,9 @@ describe('QueryBuilder integration — list and input-object args', () => {
   it('shows arg inputs for a selected field (items is in doc)', () => {
     render(<QueryBuilder />);
     // ids is a list arg → should show an "Add item" button
-    expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /add item/i }),
+    ).toBeInTheDocument();
     // filter is an input object → should show a disclosure
     const details = document.querySelector('details.graphiql-qb-input-object');
     expect(details).toBeInTheDocument();
@@ -102,7 +104,9 @@ describe('QueryBuilder integration — list and input-object args', () => {
 
     // The list of Int should have rendered one spinbutton labeled 'ids'
     const intInputs = screen.getAllByRole('spinbutton');
-    const idsInput = intInputs.find(el => el.getAttribute('aria-label') === 'ids');
+    const idsInput = intInputs.find(
+      el => el.getAttribute('aria-label') === 'ids',
+    );
     expect(idsInput).toBeTruthy();
 
     // Type a value

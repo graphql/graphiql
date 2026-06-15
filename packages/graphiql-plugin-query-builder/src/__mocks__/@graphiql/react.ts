@@ -30,4 +30,5 @@ export const useGraphiQLActions = () => ({
   updateActiveTabValues: __state.updateActiveTabValues,
 });
 
-export const GraphiQLProvider = ({ children }: { children: ReactNode }) => children;
+export const GraphiQLProvider = ({ children }: { children: ReactNode }) =>
+  children;

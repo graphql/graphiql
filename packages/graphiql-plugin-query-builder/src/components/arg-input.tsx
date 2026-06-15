@@ -151,7 +151,10 @@ const ArgInputByType: FC<TypedInputProps> = ({
     return (
       <span className="graphiql-qb-arg-with-toggle">
         {isVariable ? (
-          <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+          <span
+            className="graphiql-qb-var-badge"
+            aria-label={`${name} bound to $${variableName ?? name}`}
+          >
             ${variableName ?? name}
           </span>
         ) : (
@@ -179,7 +182,10 @@ const ArgInputByType: FC<TypedInputProps> = ({
       return (
         <span className="graphiql-qb-arg-with-toggle">
           {isVariable ? (
-            <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+            <span
+              className="graphiql-qb-var-badge"
+              aria-label={`${name} bound to $${variableName ?? name}`}
+            >
               ${variableName ?? name}
             </span>
           ) : (
@@ -200,7 +206,10 @@ const ArgInputByType: FC<TypedInputProps> = ({
     return (
       <span className="graphiql-qb-arg-with-toggle">
         {isVariable ? (
-          <span className="graphiql-qb-var-badge" aria-label={`${name} bound to $${variableName ?? name}`}>
+          <span
+            className="graphiql-qb-var-badge"
+            aria-label={`${name} bound to $${variableName ?? name}`}
+          >
             ${variableName ?? name}
           </span>
         ) : (
@@ -231,7 +240,12 @@ type ListArgInputProps = {
   onChange: (v: ArgValue) => void;
 };
 
-const ListArgInput: FC<ListArgInputProps> = ({ itemType, name, value, onChange }) => {
+const ListArgInput: FC<ListArgInputProps> = ({
+  itemType,
+  name,
+  value,
+  onChange,
+}) => {
   const updateAt = (index: number, newVal: ArgValue) => {
     const next = [...value];
     next[index] = newVal;
@@ -279,10 +293,16 @@ const ListArgInput: FC<ListArgInputProps> = ({ itemType, name, value, onChange }
 };
 
 function defaultValueForType(type: GraphQLType): ArgValue {
-  if (isNonNullType(type)) {return defaultValueForType(type.ofType);}
-  if (isListType(type)) {return [];}
+  if (isNonNullType(type)) {
+    return defaultValueForType(type.ofType);
+  }
+  if (isListType(type)) {
+    return [];
+  }
   const named = getNamedType(type);
-  if (isInputObjectType(named)) {return {};}
+  if (isInputObjectType(named)) {
+    return {};
+  }
   return '';
 }
 
@@ -291,13 +311,20 @@ function defaultValueForType(type: GraphQLType): ArgValue {
 // ---------------------------------------------------------------------------
 
 type InputObjectArgInputProps = {
-  inputType: ReturnType<typeof getNamedType> & { getFields: () => Record<string, GraphQLInputField> };
+  inputType: ReturnType<typeof getNamedType> & {
+    getFields: () => Record<string, GraphQLInputField>;
+  };
   name: string;
   value: { [field: string]: ArgValue };
   onChange: (v: ArgValue) => void;
 };
 
-const InputObjectArgInput: FC<InputObjectArgInputProps> = ({ inputType, name, value, onChange }) => {
+const InputObjectArgInput: FC<InputObjectArgInputProps> = ({
+  inputType,
+  name,
+  value,
+  onChange,
+}) => {
   const fields = inputType.getFields();
 
   const onChangeField = (fieldName: string, fieldValue: ArgValue) => {

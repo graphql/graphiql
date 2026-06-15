@@ -24,7 +24,11 @@ type FieldTreeProps = {
   schema?: GraphQLSchema;
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: ArgValue) => void;
-  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onPromoteArg?: (
+    path: string[],
+    argName: string,
+    suggestedName: string,
+  ) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
   onRemoveInlineFragment?: (path: string[], typeName: string) => void;
@@ -90,7 +94,11 @@ type FieldTreeNodeProps = {
   objectType: GraphQLObjectType | undefined;
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: ArgValue) => void;
-  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onPromoteArg?: (
+    path: string[],
+    argName: string,
+    suggestedName: string,
+  ) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
   onRemoveInlineFragment?: (path: string[], typeName: string) => void;
@@ -178,7 +186,11 @@ type TypeConditionSelectorProps = {
   field: ReturnType<GraphQLObjectType['getFields']>[string];
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: ArgValue) => void;
-  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onPromoteArg?: (
+    path: string[],
+    argName: string,
+    suggestedName: string,
+  ) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
   onRemoveInlineFragment?: (path: string[], typeName: string) => void;
@@ -204,9 +216,17 @@ const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
   const possibleTypes = schema.getPossibleTypes(namedType);
 
   return (
-    <div className="graphiql-qb-type-condition" role="group" aria-label={`Inline fragments for ${field.name}`}>
+    <div
+      className="graphiql-qb-type-condition"
+      role="group"
+      aria-label={`Inline fragments for ${field.name}`}
+    >
       {possibleTypes.map(concreteType => {
-        const isSelected = isInlineFragmentPresent(doc, fieldPath, concreteType.name);
+        const isSelected = isInlineFragmentPresent(
+          doc,
+          fieldPath,
+          concreteType.name,
+        );
 
         return (
           <TypeConditionEntry
@@ -239,7 +259,11 @@ type TypeConditionEntryProps = {
   schema: GraphQLSchema;
   onToggle: (path: string[]) => void;
   onSetArg: (path: string[], argName: string, value: ArgValue) => void;
-  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onPromoteArg?: (
+    path: string[],
+    argName: string,
+    suggestedName: string,
+  ) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
   onRemoveInlineFragment?: (path: string[], typeName: string) => void;

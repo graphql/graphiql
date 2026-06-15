@@ -69,6 +69,8 @@ describe('FragmentSection', () => {
 
   it('has an accessible section label', () => {
     render(<FragmentSection doc={doc('{ hero { name } }')} />);
-    expect(screen.getByRole('region', { name: /fragments/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: /fragments/i }),
+    ).toBeInTheDocument();
   });
 });

@@ -87,14 +87,21 @@ describe('setListArgValue', () => {
 describe('setInputObjectArgValue', () => {
   it('sets a simple input object arg', () => {
     const d = doc('{ createTag }');
-    const result = setInputObjectArgValue(d, ['createTag'], 'input', { name: 'alpha' });
+    const result = setInputObjectArgValue(d, ['createTag'], 'input', {
+      name: 'alpha',
+    });
     const printed = print(result);
-    expect(printed).toMatch(/input: \{name: "alpha"\}|input: \{ name: "alpha" \}/);
+    expect(printed).toMatch(
+      /input: \{name: "alpha"\}|input: \{ name: "alpha" \}/,
+    );
   });
 
   it('sets an input object with multiple fields', () => {
     const d = doc('{ createTag }');
-    const result = setInputObjectArgValue(d, ['createTag'], 'input', { name: 'foo', value: 'bar' });
+    const result = setInputObjectArgValue(d, ['createTag'], 'input', {
+      name: 'foo',
+      value: 'bar',
+    });
     const printed = print(result);
     expect(printed).toMatch(/name: "foo"/);
     expect(printed).toMatch(/value: "bar"/);
@@ -102,7 +109,9 @@ describe('setInputObjectArgValue', () => {
 
   it('handles boolean field values', () => {
     const d = doc('{ create }');
-    const result = setInputObjectArgValue(d, ['create'], 'opts', { enabled: true });
+    const result = setInputObjectArgValue(d, ['create'], 'opts', {
+      enabled: true,
+    });
     const printed = print(result);
     expect(printed).toMatch(/enabled: true/);
   });
@@ -116,7 +125,9 @@ describe('setInputObjectArgValue', () => {
 
   it('replaces an existing input object arg', () => {
     const d = doc('{ createTag(input: {name: "old"}) }');
-    const result = setInputObjectArgValue(d, ['createTag'], 'input', { name: 'new' });
+    const result = setInputObjectArgValue(d, ['createTag'], 'input', {
+      name: 'new',
+    });
     const printed = print(result);
     expect(printed).toMatch(/name: "new"/);
     expect(printed).not.toMatch(/old/);
@@ -139,7 +150,10 @@ describe('setInputObjectArgValue', () => {
 
   it('produces a parseable document', () => {
     const d = doc('{ createTag }');
-    const result = setInputObjectArgValue(d, ['createTag'], 'input', { name: 'alpha', value: '1' });
+    const result = setInputObjectArgValue(d, ['createTag'], 'input', {
+      name: 'alpha',
+      value: '1',
+    });
     expect(() => parse(print(result))).not.toThrow();
   });
 
@@ -151,9 +165,13 @@ describe('setInputObjectArgValue', () => {
 
   it('works on a nested field path', () => {
     const d = doc('{ hero { update } }');
-    const result = setInputObjectArgValue(d, ['hero', 'update'], 'input', { name: 'Luke' });
+    const result = setInputObjectArgValue(d, ['hero', 'update'], 'input', {
+      name: 'Luke',
+    });
     const printed = print(result);
-    expect(printed).toMatch(/update\(input: \{name: "Luke"\}\)|update\(input: \{ name: "Luke" \}\)/);
+    expect(printed).toMatch(
+      /update\(input: \{name: "Luke"\}\)|update\(input: \{ name: "Luke" \}\)/,
+    );
   });
 });
 
@@ -179,7 +197,9 @@ describe('list of input objects (mixed case)', () => {
 
   it('handles a list with a single input object', () => {
     const d = doc('{ createTags }');
-    const result = setListArgValue(d, ['createTags'], 'tags', [{ name: 'solo' }]);
+    const result = setListArgValue(d, ['createTags'], 'tags', [
+      { name: 'solo' },
+    ]);
     const printed = print(result);
     expect(printed).toMatch(/name: "solo"/);
     expect(() => parse(printed)).not.toThrow();

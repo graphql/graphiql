@@ -82,9 +82,15 @@ describe('argValueToValueNode — enums', () => {
 
 describe('argValueToValueNode — list of Int', () => {
   it('produces IntValues, not StringValues', () => {
-    const node = argValueToValueNode(new GraphQLList(GraphQLInt), ['1', '2', '3']);
+    const node = argValueToValueNode(new GraphQLList(GraphQLInt), [
+      '1',
+      '2',
+      '3',
+    ]);
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
+    if (node?.kind !== Kind.LIST) {
+      throw new Error('expected LIST');
+    }
     expect(node.values).toHaveLength(3);
     expect(node.values[0]).toEqual({ kind: Kind.INT, value: '1' });
     expect(node.values[1]).toEqual({ kind: Kind.INT, value: '2' });
@@ -99,9 +105,14 @@ describe('argValueToValueNode — list of Int', () => {
 
 describe('argValueToValueNode — list of enum', () => {
   it('produces EnumValues, not StringValues', () => {
-    const node = argValueToValueNode(new GraphQLList(EpisodeEnum), ['NEWHOPE', 'JEDI']);
+    const node = argValueToValueNode(new GraphQLList(EpisodeEnum), [
+      'NEWHOPE',
+      'JEDI',
+    ]);
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
+    if (node?.kind !== Kind.LIST) {
+      throw new Error('expected LIST');
+    }
     expect(node.values[0]).toEqual({ kind: Kind.ENUM, value: 'NEWHOPE' });
     expect(node.values[1]).toEqual({ kind: Kind.ENUM, value: 'JEDI' });
   });
@@ -109,10 +120,18 @@ describe('argValueToValueNode — list of enum', () => {
 
 describe('argValueToValueNode — input object', () => {
   it('converts an input object to ObjectValue with typed fields', () => {
-    const node = argValueToValueNode(TagInput, { name: 'hero', count: '5', episode: 'JEDI' });
+    const node = argValueToValueNode(TagInput, {
+      name: 'hero',
+      count: '5',
+      episode: 'JEDI',
+    });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
-    const byName = Object.fromEntries(node.fields.map(f => [f.name.value, f.value]));
+    if (node?.kind !== Kind.OBJECT) {
+      throw new Error('expected OBJECT');
+    }
+    const byName = Object.fromEntries(
+      node.fields.map(f => [f.name.value, f.value]),
+    );
     expect(byName['name']).toEqual({ kind: Kind.STRING, value: 'hero' });
     expect(byName['count']).toEqual({ kind: Kind.INT, value: '5' });
     expect(byName['episode']).toEqual({ kind: Kind.ENUM, value: 'JEDI' });
@@ -121,7 +140,9 @@ describe('argValueToValueNode — input object', () => {
   it('omits empty-string leaves (matching "remove arg" convention)', () => {
     const node = argValueToValueNode(TagInput, { name: 'hero', count: '' });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
+    if (node?.kind !== Kind.OBJECT) {
+      throw new Error('expected OBJECT');
+    }
     const names = node.fields.map(f => f.name.value);
     expect(names).toContain('name');
     expect(names).not.toContain('count');
@@ -130,7 +151,9 @@ describe('argValueToValueNode — input object', () => {
   it('omits undefined fields', () => {
     const node = argValueToValueNode(TagInput, { name: 'x' });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
+    if (node?.kind !== Kind.OBJECT) {
+      throw new Error('expected OBJECT');
+    }
     expect(node.fields).toHaveLength(1);
     expect(node.fields[0]!.name.value).toBe('name');
   });
@@ -138,12 +161,14 @@ describe('argValueToValueNode — input object', () => {
 
 describe('argValueToValueNode — list of input objects', () => {
   it('converts a list of input objects correctly', () => {
-    const node = argValueToValueNode(
-      new GraphQLList(TagInput),
-      [{ name: 'a', count: '1' }, { name: 'b' }],
-    );
+    const node = argValueToValueNode(new GraphQLList(TagInput), [
+      { name: 'a', count: '1' },
+      { name: 'b' },
+    ]);
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
+    if (node?.kind !== Kind.LIST) {
+      throw new Error('expected LIST');
+    }
     expect(node.values).toHaveLength(2);
     expect(node.values[0]!.kind).toBe(Kind.OBJECT);
     expect(node.values[1]!.kind).toBe(Kind.OBJECT);
@@ -157,13 +182,21 @@ describe('argValueToValueNode — nested input object', () => {
       tag: { name: 'inner', count: '3', episode: 'EMPIRE' },
     });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
+    if (node?.kind !== Kind.OBJECT) {
+      throw new Error('expected OBJECT');
+    }
     const tagField = node.fields.find(f => f.name.value === 'tag');
     expect(tagField?.value.kind).toBe(Kind.OBJECT);
-    if (tagField?.value.kind !== Kind.OBJECT) {throw new Error('expected nested OBJECT');}
-    const countField = tagField.value.fields.find(f => f.name.value === 'count');
+    if (tagField?.value.kind !== Kind.OBJECT) {
+      throw new Error('expected nested OBJECT');
+    }
+    const countField = tagField.value.fields.find(
+      f => f.name.value === 'count',
+    );
     expect(countField?.value).toEqual({ kind: Kind.INT, value: '3' });
-    const episodeField = tagField.value.fields.find(f => f.name.value === 'episode');
+    const episodeField = tagField.value.fields.find(
+      f => f.name.value === 'episode',
+    );
     expect(episodeField?.value).toEqual({ kind: Kind.ENUM, value: 'EMPIRE' });
   });
 });
@@ -194,8 +227,12 @@ describe('valueNodeToArgValue', () => {
   });
 
   it('converts a BooleanValue to "true"/"false"', () => {
-    expect(valueNodeToArgValue({ kind: Kind.BOOLEAN, value: true })).toBe('true');
-    expect(valueNodeToArgValue({ kind: Kind.BOOLEAN, value: false })).toBe('false');
+    expect(valueNodeToArgValue({ kind: Kind.BOOLEAN, value: true })).toBe(
+      'true',
+    );
+    expect(valueNodeToArgValue({ kind: Kind.BOOLEAN, value: false })).toBe(
+      'false',
+    );
   });
 
   it('converts a ListValue to an array', () => {
@@ -243,20 +280,32 @@ describe('argValueToValueNode round-trip', () => {
     const original = `{ hero(name: "Luke") }`;
     const d = parse(original, { noLocation: true });
     // Simulate reading the arg value from AST and writing it back
-    const argNode = (d.definitions[0] as any).selectionSet.selections[0].arguments[0].value;
+    const argNode = (d.definitions[0] as any).selectionSet.selections[0]
+      .arguments[0].value;
     const read: ArgValue = valueNodeToArgValue(argNode);
     // read should be "Luke" (unquoted)
     expect(read).toBe('Luke');
-    const written = setFieldArgument(d, ['hero'], 'name', argValueToValueNode(GraphQLString, read as string));
+    const written = setFieldArgument(
+      d,
+      ['hero'],
+      'name',
+      argValueToValueNode(GraphQLString, read as string),
+    );
     expect(print(written)).toBe(print(d));
   });
 
   it('Int arg: read→write produces identical query', () => {
     const d = parse('{ hero(count: 7) }', { noLocation: true });
-    const argNode = (d.definitions[0] as any).selectionSet.selections[0].arguments[0].value;
+    const argNode = (d.definitions[0] as any).selectionSet.selections[0]
+      .arguments[0].value;
     const read = valueNodeToArgValue(argNode);
     expect(read).toBe('7');
-    const written = setFieldArgument(d, ['hero'], 'count', argValueToValueNode(GraphQLInt, read as string));
+    const written = setFieldArgument(
+      d,
+      ['hero'],
+      'count',
+      argValueToValueNode(GraphQLInt, read as string),
+    );
     expect(print(written)).toBe(print(d));
   });
 

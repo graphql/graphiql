@@ -92,7 +92,13 @@ function withProvider(schema: GraphQLSchema | null, children: ReactNode) {
         schema={schema}
         dangerouslyAssumeSchemaIsValid
       >
-        <div style={{ width: 320, background: 'oklch(var(--bg-elevated))', minHeight: 400 }}>
+        <div
+          style={{
+            width: 320,
+            background: 'oklch(var(--bg-elevated))',
+            minHeight: 400,
+          }}
+        >
           {children}
         </div>
       </GraphiQLProvider>
@@ -253,11 +259,51 @@ export const FieldTreeWithSelections: Story = {
 // ArgInput — individual input controls
 // ---------------------------------------------------------------------------
 
-const scalarIntArg = { name: 'first', type: GraphQLInt, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
-const scalarFloatArg = { name: 'scale', type: GraphQLFloat, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
-const scalarStringArg = { name: 'query', type: GraphQLString, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
-const scalarBoolArg = { name: 'active', type: GraphQLBoolean, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
-const enumArg = { name: 'episode', type: EpisodeEnum, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+const scalarIntArg = {
+  name: 'first',
+  type: GraphQLInt,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+const scalarFloatArg = {
+  name: 'scale',
+  type: GraphQLFloat,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+const scalarStringArg = {
+  name: 'query',
+  type: GraphQLString,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+const scalarBoolArg = {
+  name: 'active',
+  type: GraphQLBoolean,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
+const enumArg = {
+  name: 'episode',
+  type: EpisodeEnum,
+  description: null,
+  defaultValue: undefined,
+  deprecationReason: null,
+  extensions: {},
+  astNode: undefined,
+} as Parameters<typeof ArgInput>[0]['arg'];
 
 export const ArgInputInt: Story = {
   render: () => (
@@ -474,7 +520,10 @@ export const ArgInputDeeplyNestedInputObject: Story = {
     <div style={{ padding: 16, width: 320 }}>
       <ArgInput
         arg={deepInputObjectArg}
-        value={JSON.stringify({ label: 'outer', tag: { name: 'inner', value: 'deep' } })}
+        value={JSON.stringify({
+          label: 'outer',
+          tag: { name: 'inner', value: 'deep' },
+        })}
         onChange={() => {}}
       />
     </div>

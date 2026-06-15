@@ -20,7 +20,10 @@ type FragmentSectionProps = {
  * affordance to extract a new one from the current field selection. Inline
  * fragments for union/interface spreads are handled separately.
  */
-export const FragmentSection: FC<FragmentSectionProps> = ({ doc, onCreateFragment }) => {
+export const FragmentSection: FC<FragmentSectionProps> = ({
+  doc,
+  onCreateFragment,
+}) => {
   const fragments = listFragments(doc);
 
   return (

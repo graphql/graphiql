@@ -19,7 +19,11 @@ type FieldRowProps = {
   onToggle: (path: string[]) => void;
   onExpand: (path: string[]) => void;
   onSetArg?: (path: string[], argName: string, value: ArgValue) => void;
-  onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
+  onPromoteArg?: (
+    path: string[],
+    argName: string,
+    suggestedName: string,
+  ) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
 };
 
@@ -87,12 +91,13 @@ export const FieldRow: FC<FieldRowProps> = ({
                   variableName={varName}
                   onPromote={
                     onPromoteArg
-                      ? (argName, suggested) => onPromoteArg(fullPath, argName, suggested)
+                      ? (argName, suggested) =>
+                          onPromoteArg(fullPath, argName, suggested)
                       : undefined
                   }
                   onDemote={
                     onDemoteArg
-                      ? (vName) => onDemoteArg(fullPath, vName)
+                      ? vName => onDemoteArg(fullPath, vName)
                       : undefined
                   }
                 />

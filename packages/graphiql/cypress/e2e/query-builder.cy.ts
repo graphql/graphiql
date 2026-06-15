@@ -45,12 +45,12 @@ describe('Query Builder – selecting a scalar field', () => {
     cy.get('[aria-label="Toggle id"]').click();
 
     // The query editor should now contain the field name
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        const text = element.get(0).innerText;
-        expect(text).to.include('id');
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      const text = element.get(0).innerText;
+      expect(text).to.include('id');
+    });
   });
 
   it('removes the field from the editor when its checkbox is unchecked', () => {
@@ -58,23 +58,23 @@ describe('Query Builder – selecting a scalar field', () => {
 
     cy.get('[aria-label="Toggle id"]').click();
     // Confirm it was added
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        expect(element.get(0).innerText).to.include('id');
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      expect(element.get(0).innerText).to.include('id');
+    });
 
     // Uncheck
     cy.get('[aria-label="Toggle id"]').click();
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        // After unchecking, "id" should no longer appear as a selected field
-        // (the editor may still contain "__typename" from the fallback parse,
-        // but the explicit "id" selection should be gone)
-        const text = element.get(0).innerText;
-        expect(text).to.not.include('\nid');
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      // After unchecking, "id" should no longer appear as a selected field
+      // (the editor may still contain "__typename" from the fallback parse,
+      // but the explicit "id" selection should be gone)
+      const text = element.get(0).innerText;
+      expect(text).to.not.include('\nid');
+    });
   });
 });
 
@@ -89,13 +89,13 @@ describe('Query Builder – scalar argument', () => {
     cy.get('[aria-label="string"]').should('be.visible').type('hello');
 
     // Editor should reflect the arg value
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        const text = element.get(0).innerText;
-        expect(text).to.include('hasArgs');
-        expect(text).to.include('string: "hello"');
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      const text = element.get(0).innerText;
+      expect(text).to.include('hasArgs');
+      expect(text).to.include('string: "hello"');
+    });
   });
 });
 
@@ -115,17 +115,20 @@ describe('Query Builder – list argument (Int[])', () => {
     cy.get('[aria-label="Add item"]').first().click();
 
     // An integer input should appear for the new list item
-    cy.get('.graphiql-qb-list-arg input[type="number"]').first().clear().type('42');
+    cy.get('.graphiql-qb-list-arg input[type="number"]')
+      .first()
+      .clear()
+      .type('42');
 
     // The query editor must contain the list arg with an unquoted integer value
-    cy.get('.graphiql-query-editor .view-lines.monaco-mouse-cursor-text').should(
-      element => {
-        const text = element.get(0).innerText;
-        expect(text).to.include('hasArgs');
-        // Must be [42], not ["42"]
-        expect(text).to.include('listInt: [42]');
-        expect(text).to.not.include('listInt: ["42"]');
-      },
-    );
+    cy.get(
+      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
+    ).should(element => {
+      const text = element.get(0).innerText;
+      expect(text).to.include('hasArgs');
+      // Must be [42], not ["42"]
+      expect(text).to.include('listInt: [42]');
+      expect(text).to.not.include('listInt: ["42"]');
+    });
   });
 });

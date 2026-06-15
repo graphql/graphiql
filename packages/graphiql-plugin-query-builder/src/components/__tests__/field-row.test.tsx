@@ -21,7 +21,10 @@ const parentType = new GraphQLObjectType({
     id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: GraphQLString },
     friends: {
-      type: new GraphQLObjectType({ name: 'Friend', fields: { id: { type: GraphQLString } } }),
+      type: new GraphQLObjectType({
+        name: 'Friend',
+        fields: { id: { type: GraphQLString } },
+      }),
     },
   },
 });
@@ -119,7 +122,9 @@ describe('FieldRow', () => {
         onExpand={() => {}}
       />,
     );
-    await userEvent.click(screen.getByRole('checkbox', { name: /Toggle name/i }));
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: /Toggle name/i }),
+    );
     expect(onToggle).toHaveBeenCalledOnce();
     expect(onToggle).toHaveBeenCalledWith(['hero', 'name']);
   });
@@ -153,7 +158,9 @@ describe('FieldRow', () => {
         onExpand={onExpand}
       />,
     );
-    await userEvent.click(screen.getByRole('button', { name: /Expand friends/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Expand friends/i }),
+    );
     expect(onExpand).toHaveBeenCalledOnce();
   });
 
@@ -184,7 +191,9 @@ describe('FieldRow', () => {
         onExpand={() => {}}
       />,
     );
-    const row = container.querySelector('.graphiql-qb-field-row') as HTMLElement;
+    const row = container.querySelector(
+      '.graphiql-qb-field-row',
+    ) as HTMLElement;
     expect(row.style.paddingLeft).toBe('24px'); // 2 * 12px
   });
 });
@@ -219,7 +228,9 @@ describe('FieldRow — arg inputs', () => {
       />,
     );
     expect(screen.getByRole('spinbutton', { name: 'id' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'episode' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: 'episode' }),
+    ).toBeInTheDocument();
   });
 
   it('pre-fills arg inputs from argValues', () => {
@@ -253,7 +264,10 @@ describe('FieldRow — arg inputs', () => {
         onSetArg={onSetArg}
       />,
     );
-    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'episode' }), 'NEWHOPE');
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: 'episode' }),
+      'NEWHOPE',
+    );
     expect(onSetArg).toHaveBeenCalledWith(['hero'], 'episode', 'NEWHOPE');
   });
 });

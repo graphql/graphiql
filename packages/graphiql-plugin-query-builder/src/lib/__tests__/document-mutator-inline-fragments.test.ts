@@ -31,8 +31,12 @@ describe('isInlineFragmentPresent', () => {
   });
 
   it('returns true for a deeply nested inline fragment', () => {
-    const d = doc('{ hero { companions { ... on Droid { primaryFunction } } } }');
-    expect(isInlineFragmentPresent(d, ['hero', 'companions'], 'Droid')).toBe(true);
+    const d = doc(
+      '{ hero { companions { ... on Droid { primaryFunction } } } }',
+    );
+    expect(isInlineFragmentPresent(d, ['hero', 'companions'], 'Droid')).toBe(
+      true,
+    );
   });
 });
 
@@ -80,7 +84,9 @@ describe('addInlineFragment', () => {
   it('adds at a nested path', () => {
     const d = doc('{ hero { companions { __typename } } }');
     const result = addInlineFragment(d, ['hero', 'companions'], 'Droid');
-    expect(isInlineFragmentPresent(result, ['hero', 'companions'], 'Droid')).toBe(true);
+    expect(
+      isInlineFragmentPresent(result, ['hero', 'companions'], 'Droid'),
+    ).toBe(true);
   });
 
   it('is a no-op when the path does not resolve to a field', () => {
@@ -109,7 +115,9 @@ describe('removeInlineFragment', () => {
   });
 
   it('leaves sibling inline fragments intact', () => {
-    const d = doc('{ search { ... on Human { name } ... on Droid { primaryFunction } } }');
+    const d = doc(
+      '{ search { ... on Human { name } ... on Droid { primaryFunction } } }',
+    );
     const result = removeInlineFragment(d, ['search'], 'Human');
     expect(isInlineFragmentPresent(result, ['search'], 'Human')).toBe(false);
     expect(isInlineFragmentPresent(result, ['search'], 'Droid')).toBe(true);
@@ -128,9 +136,13 @@ describe('removeInlineFragment', () => {
   });
 
   it('removes at a nested path', () => {
-    const d = doc('{ hero { companions { ... on Droid { primaryFunction } } } }');
+    const d = doc(
+      '{ hero { companions { ... on Droid { primaryFunction } } } }',
+    );
     const result = removeInlineFragment(d, ['hero', 'companions'], 'Droid');
-    expect(isInlineFragmentPresent(result, ['hero', 'companions'], 'Droid')).toBe(false);
+    expect(
+      isInlineFragmentPresent(result, ['hero', 'companions'], 'Droid'),
+    ).toBe(false);
   });
 
   it('is a no-op when the path does not resolve to a field', () => {

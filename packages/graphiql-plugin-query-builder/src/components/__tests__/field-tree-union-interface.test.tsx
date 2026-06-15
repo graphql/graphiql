@@ -17,13 +17,19 @@ import { FieldTree } from '../field-tree';
 
 const HumanType = new GraphQLObjectType({
   name: 'Human',
-  fields: { name: { type: GraphQLString }, homePlanet: { type: GraphQLString } },
+  fields: {
+    name: { type: GraphQLString },
+    homePlanet: { type: GraphQLString },
+  },
   interfaces: [],
 });
 
 const DroidType = new GraphQLObjectType({
   name: 'Droid',
-  fields: { name: { type: GraphQLString }, primaryFunction: { type: GraphQLString } },
+  fields: {
+    name: { type: GraphQLString },
+    primaryFunction: { type: GraphQLString },
+  },
   interfaces: [],
 });
 
@@ -140,8 +146,12 @@ describe('FieldTree — union field', () => {
 
     await user.click(screen.getByRole('button', { name: /expand search/i }));
 
-    expect(screen.getByLabelText(/toggle \.\.\. on Human/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/toggle \.\.\. on Droid/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/toggle \.\.\. on Human/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/toggle \.\.\. on Droid/i),
+    ).toBeInTheDocument();
   });
 
   it('calls onAddInlineFragment when a type-condition checkbox is checked', async () => {
@@ -232,8 +242,12 @@ describe('FieldTree — interface field', () => {
 
     await user.click(screen.getByRole('button', { name: /expand character/i }));
 
-    expect(screen.getByLabelText(/toggle \.\.\. on HumanCharacter/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/toggle \.\.\. on DroidCharacter/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/toggle \.\.\. on HumanCharacter/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/toggle \.\.\. on DroidCharacter/i),
+    ).toBeInTheDocument();
   });
 
   it('expanding a concrete type under an interface shows its fields', async () => {
@@ -251,7 +265,9 @@ describe('FieldTree — interface field', () => {
     );
 
     await user.click(screen.getByRole('button', { name: /expand character/i }));
-    await user.click(screen.getByRole('button', { name: /expand \.\.\. on HumanCharacter/i }));
+    await user.click(
+      screen.getByRole('button', { name: /expand \.\.\. on HumanCharacter/i }),
+    );
 
     expect(screen.getByText('homePlanet')).toBeInTheDocument();
   });

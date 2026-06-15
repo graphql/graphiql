@@ -17,33 +17,83 @@ const EpisodeEnum = new GraphQLEnumType({
 });
 
 function intArg(name = 'count') {
-  return { name, type: GraphQLInt, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: GraphQLInt,
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 function floatArg(name = 'ratio') {
-  return { name, type: GraphQLFloat, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: GraphQLFloat,
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 function stringArg(name = 'query') {
-  return { name, type: GraphQLString, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: GraphQLString,
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 function boolArg(name = 'flag') {
-  return { name, type: GraphQLBoolean, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: GraphQLBoolean,
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 function enumArg(name = 'episode') {
-  return { name, type: EpisodeEnum, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: EpisodeEnum,
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 function nonNullStringArg(name = 'id') {
-  return { name, type: new GraphQLNonNull(GraphQLString), description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
+  return {
+    name,
+    type: new GraphQLNonNull(GraphQLString),
+    description: null,
+    defaultValue: undefined,
+    deprecationReason: null,
+    extensions: {},
+    astNode: undefined,
+  } as Parameters<typeof ArgInput>[0]['arg'];
 }
 
 describe('ArgInput — enum', () => {
   it('renders a select with all enum values', () => {
     render(<ArgInput arg={enumArg()} value="" onChange={() => {}} />);
-    expect(screen.getByRole('combobox', { name: 'episode' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: 'episode' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'NEWHOPE' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'EMPIRE' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'JEDI' })).toBeInTheDocument();
@@ -70,12 +120,16 @@ describe('ArgInput — enum', () => {
 describe('ArgInput — Int/Float', () => {
   it('renders a number input for Int', () => {
     render(<ArgInput arg={intArg()} value="" onChange={() => {}} />);
-    expect(screen.getByRole('spinbutton', { name: 'count' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('spinbutton', { name: 'count' }),
+    ).toBeInTheDocument();
   });
 
   it('renders a number input for Float', () => {
     render(<ArgInput arg={floatArg()} value="" onChange={() => {}} />);
-    expect(screen.getByRole('spinbutton', { name: 'ratio' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('spinbutton', { name: 'ratio' }),
+    ).toBeInTheDocument();
   });
 
   it('calls onChange when the value changes', async () => {

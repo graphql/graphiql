@@ -33,7 +33,11 @@ describe('ArgInput — variable toggle', () => {
 
   it('does not render the toggle button when onPromote is not supplied', () => {
     render(
-      <ArgInput arg={makeArg('first', GraphQLInt)} value="5" onChange={() => {}} />,
+      <ArgInput
+        arg={makeArg('first', GraphQLInt)}
+        value="5"
+        onChange={() => {}}
+      />,
     );
     expect(
       screen.queryByRole('button', { name: /use as variable/i }),
@@ -50,7 +54,9 @@ describe('ArgInput — variable toggle', () => {
         onPromote={onPromote}
       />,
     );
-    await userEvent.click(screen.getByRole('button', { name: /use as variable/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /use as variable/i }),
+    );
     expect(onPromote).toHaveBeenCalledWith('first', 'first');
   });
 
@@ -67,7 +73,9 @@ describe('ArgInput — variable toggle', () => {
       />,
     );
     // Button should show $first
-    expect(screen.getByRole('button', { name: /\$first/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /\$first/i }),
+    ).toBeInTheDocument();
   });
 
   it('has aria-pressed=true on the toggle when isVariable is true', () => {
@@ -129,7 +137,9 @@ describe('ArgInput — variable toggle', () => {
       />,
     );
     // The textbox for string input should not be visible
-    expect(screen.queryByRole('textbox', { name: 'query' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: 'query' }),
+    ).not.toBeInTheDocument();
     // A variable badge should be present (the span with class graphiql-qb-var-badge)
     expect(
       document.querySelector('.graphiql-qb-var-badge'),
