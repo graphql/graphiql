@@ -15,6 +15,7 @@ import {
   isFieldSelected,
   isInlineFragmentPresent,
   removeInlineFragment,
+  type ArgValue,
 } from '../lib/document-mutator';
 import { FieldRow } from './field-row';
 
@@ -24,7 +25,7 @@ type FieldTreeProps = {
   doc: DocumentNode;
   schema?: GraphQLSchema;
   onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: string) => void;
+  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
@@ -90,7 +91,7 @@ type FieldTreeNodeProps = {
   selected: boolean;
   objectType: GraphQLObjectType | undefined;
   onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: string) => void;
+  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
@@ -178,7 +179,7 @@ type TypeConditionSelectorProps = {
   schema: GraphQLSchema;
   field: ReturnType<GraphQLObjectType['getFields']>[string];
   onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: string) => void;
+  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;
@@ -239,7 +240,7 @@ type TypeConditionEntryProps = {
   doc: DocumentNode;
   schema: GraphQLSchema;
   onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: string) => void;
+  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
   onAddInlineFragment?: (path: string[], typeName: string) => void;

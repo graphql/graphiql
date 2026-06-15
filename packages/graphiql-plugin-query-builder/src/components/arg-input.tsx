@@ -10,11 +10,12 @@ import {
   type GraphQLType,
 } from 'graphql';
 import type { FC } from 'react';
+import type { ArgValue } from '../lib/document-mutator';
 
 type ArgInputProps = {
   arg: GraphQLArgument | GraphQLInputField;
-  value: string;
-  onChange: (v: string) => void;
+  value: ArgValue;
+  onChange: (v: ArgValue) => void;
   /** When set, a "use as variable" toggle is rendered for scalar/enum args. */
   isVariable?: boolean;
   /** The variable name currently bound to this arg (only meaningful when `isVariable` is true). */
@@ -65,8 +66,8 @@ export const ArgInput: FC<ArgInputProps> = ({
 type TypedInputProps = {
   type: GraphQLType;
   name: string;
-  value: string;
-  onChange: (v: string) => void;
+  value: ArgValue;
+  onChange: (v: ArgValue) => void;
   isVariable?: boolean;
   variableName?: string;
   onPromote?: (argName: string, suggestedName: string) => void;
@@ -104,7 +105,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
       <ListArgInput
         itemType={type.ofType}
         name={name}
-        value={value}
+        value={Array.isArray(value) ? value : []}
         onChange={onChange}
       />
     );
@@ -113,17 +114,22 @@ const ArgInputByType: FC<TypedInputProps> = ({
   const named = getNamedType(type);
 
   if (isInputObjectType(named)) {
+    const objValue =
+      !Array.isArray(value) && typeof value === 'object' && value !== null
+        ? (value as { [field: string]: ArgValue })
+        : {};
     return (
       <InputObjectArgInput
         inputType={named}
         name={name}
-        value={value}
+        value={objValue}
         onChange={onChange}
       />
     );
   }
 
   // For scalar and enum types, optionally render the variable toggle.
+  const scalarValue = typeof value === 'string' ? value : '';
   const toggleBtn = onPromote ? (
     <button
       type="button"
@@ -151,7 +157,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
         ) : (
           <select
             aria-label={name}
-            value={value}
+            value={scalarValue}
             onChange={e => onChange(e.target.value)}
             className="graphiql-qb-arg-select"
           >
@@ -180,7 +186,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
             <input
               type="checkbox"
               aria-label={name}
-              checked={value === 'true'}
+              checked={scalarValue === 'true'}
               onChange={e => onChange(e.target.checked ? 'true' : 'false')}
               className="graphiql-qb-arg-checkbox"
             />
@@ -201,7 +207,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
           <input
             type={inputType}
             aria-label={name}
-            value={value}
+            value={scalarValue}
             onChange={e => onChange(e.target.value)}
             className="graphiql-qb-arg-input"
           />
@@ -215,62 +221,40 @@ const ArgInputByType: FC<TypedInputProps> = ({
 };
 
 // ---------------------------------------------------------------------------
-// List arg: JSON array string → repeat-add UI
+// List arg: real ArgValue[] — no JSON round-trips
 // ---------------------------------------------------------------------------
-
-function parseListValue(raw: string): unknown[] {
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
 
 type ListArgInputProps = {
   itemType: GraphQLType;
   name: string;
-  value: string;
-  onChange: (v: string) => void;
+  value: ArgValue[];
+  onChange: (v: ArgValue) => void;
 };
 
 const ListArgInput: FC<ListArgInputProps> = ({ itemType, name, value, onChange }) => {
-  const items = parseListValue(value);
-
-  const updateAt = (index: number, newVal: unknown) => {
-    const next = [...items];
+  const updateAt = (index: number, newVal: ArgValue) => {
+    const next = [...value];
     next[index] = newVal;
-    onChange(JSON.stringify(next));
+    onChange(next);
   };
 
   const removeAt = (index: number) => {
-    const next = items.filter((_, i) => i !== index);
-    onChange(JSON.stringify(next));
+    onChange(value.filter((_, i) => i !== index));
   };
 
   const addItem = () => {
-    // Default empty value per item type
-    const defaultItem = defaultValueForType(itemType);
-    onChange(JSON.stringify([...items, defaultItem]));
+    onChange([...value, defaultValueForType(itemType)]);
   };
 
   return (
     <div className="graphiql-qb-list-arg">
-      {items.map((item, i) => (
+      {value.map((item, i) => (
         <div key={i} className="graphiql-qb-list-item">
           <ArgInputByType
             type={itemType}
             name={name}
-            value={typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item ?? '')}
-            onChange={v => {
-              // Try to parse as JSON for objects/arrays; otherwise use as string
-              try {
-                updateAt(i, JSON.parse(v));
-              } catch {
-                updateAt(i, v);
-              }
-            }}
+            value={item}
+            onChange={v => updateAt(i, v)}
           />
           <button
             type="button"
@@ -294,7 +278,7 @@ const ListArgInput: FC<ListArgInputProps> = ({ itemType, name, value, onChange }
   );
 };
 
-function defaultValueForType(type: GraphQLType): unknown {
+function defaultValueForType(type: GraphQLType): ArgValue {
   if (isNonNullType(type)) return defaultValueForType(type.ofType);
   if (isListType(type)) return [];
   const named = getNamedType(type);
@@ -303,66 +287,41 @@ function defaultValueForType(type: GraphQLType): unknown {
 }
 
 // ---------------------------------------------------------------------------
-// Input object arg: JSON object string → recursive field inputs
+// Input object arg: real { [field]: ArgValue } — no JSON round-trips
 // ---------------------------------------------------------------------------
-
-function parseObjectValue(raw: string): Record<string, unknown> {
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw);
-    return parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)
-      ? (parsed as Record<string, unknown>)
-      : {};
-  } catch {
-    return {};
-  }
-}
 
 type InputObjectArgInputProps = {
   inputType: ReturnType<typeof getNamedType> & { getFields: () => Record<string, GraphQLInputField> };
   name: string;
-  value: string;
-  onChange: (v: string) => void;
+  value: { [field: string]: ArgValue };
+  onChange: (v: ArgValue) => void;
 };
 
 const InputObjectArgInput: FC<InputObjectArgInputProps> = ({ inputType, name, value, onChange }) => {
-  const objValues = parseObjectValue(value);
   const fields = inputType.getFields();
 
-  const onChangeField = (fieldName: string, fieldValue: unknown) => {
-    const next: Record<string, unknown> = { ...objValues };
+  const onChangeField = (fieldName: string, fieldValue: ArgValue) => {
+    const next: { [field: string]: ArgValue } = { ...value };
     if (fieldValue === '' || fieldValue === undefined) {
       delete next[fieldName];
     } else {
       next[fieldName] = fieldValue;
     }
-    onChange(JSON.stringify(next));
+    onChange(next);
   };
 
   return (
     <details className="graphiql-qb-input-object">
       <summary>{name}</summary>
       {Object.entries(fields).map(([fieldName, field]) => {
-        const fieldRaw = objValues[fieldName];
-        const fieldStr =
-          fieldRaw !== undefined && fieldRaw !== null
-            ? typeof fieldRaw === 'object'
-              ? JSON.stringify(fieldRaw)
-              : String(fieldRaw)
-            : '';
+        const fieldVal: ArgValue = value[fieldName] ?? '';
         return (
           <div key={fieldName} className="graphiql-qb-input-field">
             <ArgInputByType
               type={field.type}
               name={fieldName}
-              value={fieldStr}
-              onChange={v => {
-                try {
-                  onChangeField(fieldName, JSON.parse(v));
-                } catch {
-                  onChangeField(fieldName, v);
-                }
-              }}
+              value={fieldVal}
+              onChange={v => onChangeField(fieldName, v)}
             />
           </div>
         );

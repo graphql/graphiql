@@ -1,5 +1,6 @@
 import type { GraphQLField } from 'graphql';
 import type { FC } from 'react';
+import type { ArgValue } from '../lib/document-mutator';
 import { ArgInput } from './arg-input';
 
 type FieldRowProps = {
@@ -8,7 +9,7 @@ type FieldRowProps = {
   selected: boolean;
   hasChildren: boolean;
   expanded: boolean;
-  argValues?: Record<string, string>;
+  argValues?: Record<string, ArgValue>;
   /**
    * Map of arg name → variable name for args that have been promoted to
    * variables. When an arg name is present here, its input shows as a variable
@@ -17,7 +18,7 @@ type FieldRowProps = {
   argVariables?: Record<string, string>;
   onToggle: (path: string[]) => void;
   onExpand: (path: string[]) => void;
-  onSetArg?: (path: string[], argName: string, value: string) => void;
+  onSetArg?: (path: string[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (path: string[], argName: string, suggestedName: string) => void;
   onDemoteArg?: (path: string[], varName: string) => void;
 };

@@ -2,12 +2,18 @@ import {
   GraphQLEnumType,
   Kind,
   OperationTypeNode,
+  isEnumType,
+  isInputObjectType,
+  isListType,
+  isNonNullType,
+  isScalarType,
   type ArgumentNode,
   type ConstValueNode,
   type DocumentNode,
   type FieldNode,
   type FragmentDefinitionNode,
   type FragmentSpreadNode,
+  type GraphQLInputType,
   type GraphQLScalarType,
   type InlineFragmentNode,
   type ListValueNode,
@@ -17,6 +23,13 @@ import {
   type ValueNode,
   type VariableDefinitionNode,
 } from 'graphql';
+
+/**
+ * A recursive value type for GraphQL input arguments. Leaves are always
+ * strings (the raw unquoted text the user typed); lists and input objects
+ * are represented as arrays and plain objects respectively.
+ */
+export type ArgValue = string | ArgValue[] | { [field: string]: ArgValue };
 
 /**
  * Returns whether the field at the given path is present in the first
@@ -155,15 +168,16 @@ export function getFieldArgVariables(
 }
 
 /**
- * Returns a map of argument name → raw string value for the field at `path`
+ * Returns a map of argument name → `ArgValue` for the field at `path`
  * in the first operation definition of `doc`. Values are extracted from the
- * AST and converted to a printable string form. Arguments that are not present
- * in the doc are omitted from the returned object.
+ * AST and converted to `ArgValue` (leaves become strings; lists and input
+ * objects become arrays and plain objects). Arguments not present in the doc
+ * are omitted from the returned object.
  */
 export function getFieldArgValues(
   doc: DocumentNode,
   path: string[],
-): Record<string, string> {
+): Record<string, ArgValue> {
   if (path.length === 0) return {};
 
   const operation = doc.definitions.find(
@@ -181,9 +195,9 @@ export function getFieldArgValues(
     );
     if (!field) return {};
     if (i === path.length - 1) {
-      const result: Record<string, string> = {};
+      const result: Record<string, ArgValue> = {};
       for (const arg of field.arguments ?? []) {
-        result[arg.name.value] = valueNodeToString(arg.value);
+        result[arg.name.value] = valueNodeToArgValue(arg.value);
       }
       return result;
     }
@@ -191,6 +205,92 @@ export function getFieldArgValues(
   }
 
   return {};
+}
+
+/**
+ * Converts a `ValueNode` from the AST into an `ArgValue`. List nodes become
+ * arrays, object nodes become plain objects, and all scalar/enum/boolean
+ * leaves become strings (preserving the same representation that `ArgInput`
+ * leaf controls use so the read→write round-trip is stable).
+ */
+export function valueNodeToArgValue(node: ValueNode): ArgValue {
+  switch (node.kind) {
+    case Kind.LIST:
+      return node.values.map(valueNodeToArgValue);
+    case Kind.OBJECT: {
+      const obj: { [field: string]: ArgValue } = {};
+      for (const f of node.fields) {
+        obj[f.name.value] = valueNodeToArgValue(f.value);
+      }
+      return obj;
+    }
+    case Kind.INT:
+    case Kind.FLOAT:
+    case Kind.STRING:
+    case Kind.ENUM:
+      return node.value;
+    case Kind.BOOLEAN:
+      return node.value ? 'true' : 'false';
+    default:
+      return '';
+  }
+}
+
+/**
+ * Converts an `ArgValue` to the appropriate GraphQL `ValueNode`, guided by
+ * the schema type so that Int items become `IntValue`, enum items become
+ * `EnumValue`, etc. Returns `undefined` for an empty scalar leaf (callers
+ * treat that as "remove this argument").
+ */
+export function argValueToValueNode(
+  type: GraphQLInputType,
+  value: ArgValue,
+): ValueNode | undefined {
+  // Strip NonNull wrapper
+  if (isNonNullType(type)) {
+    return argValueToValueNode(type.ofType, value);
+  }
+
+  if (isListType(type)) {
+    const items = Array.isArray(value) ? value : [];
+    const values: ValueNode[] = [];
+    for (const item of items) {
+      const node = argValueToValueNode(type.ofType, item);
+      if (node !== undefined) values.push(node);
+    }
+    const listNode: ListValueNode = { kind: Kind.LIST, values };
+    return listNode;
+  }
+
+  if (isInputObjectType(type)) {
+    const obj =
+      !Array.isArray(value) && typeof value === 'object' && value !== null
+        ? (value as { [field: string]: ArgValue })
+        : {};
+    const fields = type.getFields();
+    const objectFields: ObjectFieldNode[] = [];
+    for (const [fieldName, fieldDef] of Object.entries(fields)) {
+      const fieldVal = obj[fieldName];
+      if (fieldVal === undefined) continue;
+      const fieldNode = argValueToValueNode(fieldDef.type, fieldVal);
+      if (fieldNode === undefined) continue;
+      objectFields.push({
+        kind: Kind.OBJECT_FIELD as const,
+        name: { kind: Kind.NAME as const, value: fieldName },
+        value: fieldNode,
+      });
+    }
+    const objectNode: ObjectValueNode = { kind: Kind.OBJECT, fields: objectFields };
+    return objectNode;
+  }
+
+  // Scalar or enum leaf
+  if (isEnumType(type) || isScalarType(type)) {
+    const raw = typeof value === 'string' ? value : '';
+    return scalarToValueNode(type, raw);
+  }
+
+  return undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -201,6 +301,10 @@ export function getFieldArgValues(
  * Converts a plain JavaScript value to a GraphQL `ValueNode`. Handles strings,
  * numbers, booleans, arrays, and plain objects (for input types). Primitives
  * that don't match a known type fall back to a `StringValue`.
+ *
+ * NOTE: The live component path uses `argValueToValueNode` (schema-aware) instead.
+ * This function is kept because `setListArgValue`/`setInputObjectArgValue` depend on it
+ * and those functions have their own test coverage.
  */
 export function jsValueToValueNode(value: unknown): ValueNode {
   if (Array.isArray(value)) {
@@ -845,6 +949,8 @@ function findFieldSelectionSet(
   return selectionSet;
 }
 
+// No longer used internally — kept only to avoid breaking callers outside this
+// module if they imported it directly (tests use exported functions instead).
 function valueNodeToString(node: ValueNode): string {
   switch (node.kind) {
     case Kind.INT:

@@ -2,21 +2,20 @@ import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
 import {
   type FieldNode,
   getNamedType,
-  isEnumType,
-  isScalarType,
   parse,
   print,
 } from 'graphql';
 import { type FC, useMemo } from 'react';
 import {
   addInlineFragment,
+  argValueToValueNode,
   demoteVariable,
   promoteArgToVariable,
   removeInlineFragment,
-  scalarToValueNode,
   setFieldArgument,
   suggestVarName,
   toggleFieldSelection,
+  type ArgValue,
 } from '../lib/document-mutator';
 import { FragmentSection } from './fragment-section';
 import { FieldTree } from './field-tree';
@@ -121,14 +120,11 @@ export const QueryBuilder: FC = () => {
     return targetField?.args.find(a => a.name === argName);
   }
 
-  function handleSetArg(path: string[], argName: string, rawValue: string) {
+  function handleSetArg(path: string[], argName: string, value: ArgValue) {
     const schemaArg = resolveSchemaArg(path, argName);
     if (!schemaArg) return;
 
-    const namedArgType = getNamedType(schemaArg.type);
-    if (!namedArgType || (!isScalarType(namedArgType) && !isEnumType(namedArgType))) return;
-
-    const valueNode = scalarToValueNode(namedArgType, rawValue);
+    const valueNode = argValueToValueNode(schemaArg.type, value);
     applyDoc(setFieldArgument(doc, path, argName, valueNode));
   }
 
