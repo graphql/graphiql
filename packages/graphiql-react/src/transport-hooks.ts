@@ -73,6 +73,7 @@ export class TransportHookRegistry {
     const { _beforeSend, _onResponse } = this;
 
     return {
+      ...transport,
       send(request: TransportRequest): AsyncIterable<TransportResponse> {
         return {
           [Symbol.asyncIterator]() {
