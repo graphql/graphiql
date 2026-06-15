@@ -20433,7 +20433,7 @@ __metadata:
     graphql: "npm:^17.0.0-rc.0"
     graphql-helix: "npm:^1.13.0"
     graphql-ws: "npm:^6.0.5"
-    ws: "npm:8.20.1"
+    ws: "npm:8.21.0"
   languageName: unknown
   linkType: soft
 
@@ -21645,7 +21645,7 @@ __metadata:
     ovsx: "npm:0.8.3"
     svelte: "npm:^5.55.7"
     svelte2tsx: "npm:^0.6.16"
-    ws: "npm:8.20.1"
+    ws: "npm:8.21.0"
   languageName: unknown
   linkType: soft
 
@@ -22657,7 +22657,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.20.1, ws@npm:>=8.7.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.20.0":
+"ws@npm:8.21.0":
+  version: 8.21.0
+  resolution: "ws@npm:8.21.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/ef4a243476283fc49bc7550966c4af4aa0eef56273837211e700de3b664e08604a760cdddcb5ba43c049140e74ccfec5b0ee0bb439e08c2adf9138902fdde5f9
+  languageName: node
+  linkType: hard
+
+"ws@npm:>=8.7.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.20.0":
   version: 8.20.1
   resolution: "ws@npm:8.20.1"
   peerDependencies:
