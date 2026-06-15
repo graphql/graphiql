@@ -47,7 +47,7 @@ function extractRawArgValue(
   argName: string,
 ): string {
   const op = doc.definitions.find(d => d.kind === 'OperationDefinition');
-  if (!op || op.kind !== 'OperationDefinition') return '';
+  if (!op || op.kind !== 'OperationDefinition') {return '';}
 
   let ss = op.selectionSet;
   for (let i = 0; i < path.length; i++) {
@@ -55,15 +55,15 @@ function extractRawArgValue(
     const f = ss.selections.find(
       (s): s is FieldNode => s.kind === 'Field' && s.name.value === seg,
     );
-    if (!f) return '';
+    if (!f) {return '';}
     if (i === path.length - 1) {
       const argNode = (f.arguments ?? []).find(a => a.name.value === argName);
-      if (!argNode) return '';
+      if (!argNode) {return '';}
       const v = argNode.value;
-      if (v.kind === 'StringValue') return `"${v.value}"`;
-      if (v.kind === 'IntValue' || v.kind === 'FloatValue') return v.value;
-      if (v.kind === 'BooleanValue') return String(v.value);
-      if (v.kind === 'EnumValue') return v.value;
+      if (v.kind === 'StringValue') {return `"${v.value}"`;}
+      if (v.kind === 'IntValue' || v.kind === 'FloatValue') {return v.value;}
+      if (v.kind === 'BooleanValue') {return String(v.value);}
+      if (v.kind === 'EnumValue') {return v.value;}
       return '';
     }
     ss = f.selectionSet ?? ss;
@@ -98,11 +98,11 @@ export const QueryBuilder: FC = () => {
 
   /** Shared schema-walk helper — returns the arg on the field at `path`, or undefined. */
   function resolveSchemaArg(path: string[], argName: string) {
-    if (!schema) return undefined;
+    if (!schema) {return;}
     const [rootName, ...rest] = path;
     const rootType =
       schema.getQueryType() ?? schema.getMutationType() ?? schema.getSubscriptionType();
-    if (!rootType || !rootName) return undefined;
+    if (!rootType || !rootName) {return;}
 
     let currentType = rootType;
     let targetField: ReturnType<typeof currentType.getFields>[string] | undefined;
@@ -110,7 +110,7 @@ export const QueryBuilder: FC = () => {
     for (const name of fieldNames) {
       const fields = currentType.getFields();
       const f = fields[name];
-      if (!f) return undefined;
+      if (!f) {return;}
       targetField = f;
       const named = getNamedType(f.type);
       if (named && 'getFields' in named) {
@@ -122,7 +122,7 @@ export const QueryBuilder: FC = () => {
 
   function handleSetArg(path: string[], argName: string, value: ArgValue) {
     const schemaArg = resolveSchemaArg(path, argName);
-    if (!schemaArg) return;
+    if (!schemaArg) {return;}
 
     const valueNode = argValueToValueNode(schemaArg.type, value);
     applyDoc(setFieldArgument(doc, path, argName, valueNode));
@@ -130,10 +130,10 @@ export const QueryBuilder: FC = () => {
 
   function handlePromoteArg(path: string[], argName: string, suggestedName: string) {
     const schemaArg = resolveSchemaArg(path, argName);
-    if (!schemaArg) return;
+    if (!schemaArg) {return;}
 
     const namedType = getNamedType(schemaArg.type);
-    if (!namedType) return;
+    if (!namedType) {return;}
 
     const varName = suggestVarName(doc, suggestedName);
     const rawDefault = extractRawArgValue(doc, path, argName);

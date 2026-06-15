@@ -9,12 +9,10 @@ import {
 } from 'graphql';
 import { type FC, useState } from 'react';
 import {
-  addInlineFragment,
   getFieldArgValues,
   getFieldArgVariables,
   isFieldSelected,
   isInlineFragmentPresent,
-  removeInlineFragment,
   type ArgValue,
 } from '../lib/document-mutator';
 import { FieldRow } from './field-row';

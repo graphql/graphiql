@@ -144,8 +144,8 @@ export const FieldRowScalarUnchecked: Story = {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />
     </div>
   ),
@@ -161,11 +161,11 @@ export const FieldRowScalarChecked: Story = {
       <FieldRow
         field={scalarField}
         path={['hero']}
-        selected={true}
+        selected
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />
     </div>
   ),
@@ -184,10 +184,10 @@ export const FieldRowObjectCollapsed: Story = {
         field={objectField}
         path={[]}
         selected={false}
-        hasChildren={true}
+        hasChildren
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />
     </div>
   ),
@@ -200,10 +200,10 @@ export const FieldRowObjectExpanded: Story = {
         field={objectField}
         path={[]}
         selected={false}
-        hasChildren={true}
-        expanded={true}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        hasChildren
+        expanded
+        onToggle={() => {}}
+        onExpand={() => {}}
       />
     </div>
   ),
@@ -222,8 +222,8 @@ export const FieldTreeRootOnly: Story = {
         type={QueryType}
         path={[]}
         doc={emptyDoc}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />
     </div>
   ),
@@ -242,8 +242,8 @@ export const FieldTreeWithSelections: Story = {
         type={QueryType}
         path={[]}
         doc={preSelectedDoc}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />
     </div>
   ),
@@ -262,7 +262,7 @@ const enumArg = { name: 'episode', type: EpisodeEnum, description: null, default
 export const ArgInputInt: Story = {
   render: () => (
     <div style={{ padding: 16 }}>
-      <ArgInput arg={scalarIntArg} value="10" onChange={() => undefined} />
+      <ArgInput arg={scalarIntArg} value="10" onChange={() => {}} />
     </div>
   ),
 };
@@ -270,7 +270,7 @@ export const ArgInputInt: Story = {
 export const ArgInputFloat: Story = {
   render: () => (
     <div style={{ padding: 16 }}>
-      <ArgInput arg={scalarFloatArg} value="1.5" onChange={() => undefined} />
+      <ArgInput arg={scalarFloatArg} value="1.5" onChange={() => {}} />
     </div>
   ),
 };
@@ -278,7 +278,7 @@ export const ArgInputFloat: Story = {
 export const ArgInputString: Story = {
   render: () => (
     <div style={{ padding: 16 }}>
-      <ArgInput arg={scalarStringArg} value="Luke" onChange={() => undefined} />
+      <ArgInput arg={scalarStringArg} value="Luke" onChange={() => {}} />
     </div>
   ),
 };
@@ -286,7 +286,7 @@ export const ArgInputString: Story = {
 export const ArgInputBoolean: Story = {
   render: () => (
     <div style={{ padding: 16 }}>
-      <ArgInput arg={scalarBoolArg} value="true" onChange={() => undefined} />
+      <ArgInput arg={scalarBoolArg} value="true" onChange={() => {}} />
     </div>
   ),
 };
@@ -294,7 +294,7 @@ export const ArgInputBoolean: Story = {
 export const ArgInputEnum: Story = {
   render: () => (
     <div style={{ padding: 16 }}>
-      <ArgInput arg={enumArg} value="JEDI" onChange={() => undefined} />
+      <ArgInput arg={enumArg} value="JEDI" onChange={() => {}} />
     </div>
   ),
 };
@@ -325,13 +325,13 @@ export const FieldRowScalarArgsChecked: Story = {
       <FieldRow
         field={heroFieldWithArgs}
         path={[]}
-        selected={true}
-        hasChildren={true}
+        selected
+        hasChildren
         expanded={false}
         argValues={{ id: 'abc', first: '5' }}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
+        onSetArg={() => {}}
       />
     </div>
   ),
@@ -343,13 +343,13 @@ export const FieldRowEnumArgChecked: Story = {
       <FieldRow
         field={heroFieldWithArgs}
         path={[]}
-        selected={true}
-        hasChildren={true}
+        selected
+        hasChildren
         expanded={false}
         argValues={{ episode: 'JEDI' }}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
+        onSetArg={() => {}}
       />
     </div>
   ),
@@ -361,13 +361,13 @@ export const FieldRowMixedArgsChecked: Story = {
       <FieldRow
         field={heroFieldWithArgs}
         path={[]}
-        selected={true}
-        hasChildren={true}
+        selected
+        hasChildren
         expanded={false}
         argValues={{ id: 'abc', episode: 'NEWHOPE', first: '10' }}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
+        onSetArg={() => {}}
       />
     </div>
   ),
@@ -439,7 +439,7 @@ export const ArgInputListOfScalars: Story = {
       <ArgInput
         arg={listStringArg}
         value={JSON.stringify(['alpha', 'beta'])}
-        onChange={() => undefined}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -451,7 +451,7 @@ export const ArgInputListOfInputObjects: Story = {
       <ArgInput
         arg={listInputObjectArg}
         value={JSON.stringify([{ name: 'hero', value: '1' }, { name: 'jedi' }])}
-        onChange={() => undefined}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -463,7 +463,7 @@ export const ArgInputInputObject: Story = {
       <ArgInput
         arg={inputObjectArg}
         value={JSON.stringify({ name: 'alpha', value: 'test' })}
-        onChange={() => undefined}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -475,7 +475,7 @@ export const ArgInputDeeplyNestedInputObject: Story = {
       <ArgInput
         arg={deepInputObjectArg}
         value={JSON.stringify({ label: 'outer', tag: { name: 'inner', value: 'deep' } })}
-        onChange={() => undefined}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -503,10 +503,10 @@ export const ArgInputVarToggleOff: Story = {
       <ArgInput
         arg={intArgForVar}
         value="10"
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable={false}
-        onPromote={() => undefined}
-        onDemote={() => undefined}
+        onPromote={() => {}}
+        onDemote={() => {}}
       />
     </div>
   ),
@@ -520,11 +520,11 @@ export const ArgInputVarToggleOn: Story = {
       <ArgInput
         arg={intArgForVar}
         value=""
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable
         variableName="first"
-        onPromote={() => undefined}
-        onDemote={() => undefined}
+        onPromote={() => {}}
+        onDemote={() => {}}
       />
     </div>
   ),
@@ -545,7 +545,7 @@ const docWithFragments = parse(`
 export const FragmentSectionEmpty: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docNoFragments} onCreateFragment={() => undefined} />
+      <FragmentSection doc={docNoFragments} onCreateFragment={() => {}} />
     </div>
   ),
 };
@@ -554,7 +554,7 @@ export const FragmentSectionEmpty: Story = {
 export const FragmentSectionWithFragments: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docWithFragments} onCreateFragment={() => undefined} />
+      <FragmentSection doc={docWithFragments} onCreateFragment={() => {}} />
     </div>
   ),
 };

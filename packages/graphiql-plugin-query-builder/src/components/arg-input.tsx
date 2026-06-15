@@ -279,10 +279,10 @@ const ListArgInput: FC<ListArgInputProps> = ({ itemType, name, value, onChange }
 };
 
 function defaultValueForType(type: GraphQLType): ArgValue {
-  if (isNonNullType(type)) return defaultValueForType(type.ofType);
-  if (isListType(type)) return [];
+  if (isNonNullType(type)) {return defaultValueForType(type.ofType);}
+  if (isListType(type)) {return [];}
   const named = getNamedType(type);
-  if (isInputObjectType(named)) return {};
+  if (isInputObjectType(named)) {return {};}
   return '';
 }
 

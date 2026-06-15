@@ -52,8 +52,8 @@ describe('FieldRow', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.getByText('name')).toBeInTheDocument();
@@ -67,8 +67,8 @@ describe('FieldRow', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.getByText('String')).toBeInTheDocument();
@@ -82,8 +82,8 @@ describe('FieldRow', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     const checkbox = screen.getByRole('checkbox', { name: /Toggle name/i });
@@ -95,11 +95,11 @@ describe('FieldRow', () => {
       <FieldRow
         field={nameField}
         path={['hero']}
-        selected={true}
+        selected
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     const checkbox = screen.getByRole('checkbox', { name: /Toggle name/i });
@@ -116,7 +116,7 @@ describe('FieldRow', () => {
         hasChildren={false}
         expanded={false}
         onToggle={onToggle}
-        onExpand={() => undefined}
+        onExpand={() => {}}
       />,
     );
     await userEvent.click(screen.getByRole('checkbox', { name: /Toggle name/i }));
@@ -130,10 +130,10 @@ describe('FieldRow', () => {
         field={friendsField}
         path={[]}
         selected={false}
-        hasChildren={true}
+        hasChildren
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     const expandBtn = screen.getByRole('button', { name: /Expand friends/i });
@@ -147,9 +147,9 @@ describe('FieldRow', () => {
         field={friendsField}
         path={[]}
         selected={false}
-        hasChildren={true}
+        hasChildren
         expanded={false}
-        onToggle={() => undefined}
+        onToggle={() => {}}
         onExpand={onExpand}
       />,
     );
@@ -165,8 +165,8 @@ describe('FieldRow', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.queryByRole('button')).toBeNull();
@@ -180,8 +180,8 @@ describe('FieldRow', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     const row = container.querySelector('.graphiql-qb-field-row') as HTMLElement;
@@ -198,8 +198,8 @@ describe('FieldRow — arg inputs', () => {
         selected={false}
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.queryByRole('spinbutton')).toBeNull();
@@ -211,11 +211,11 @@ describe('FieldRow — arg inputs', () => {
       <FieldRow
         field={heroField}
         path={[]}
-        selected={true}
+        selected
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.getByRole('spinbutton', { name: 'id' })).toBeInTheDocument();
@@ -227,12 +227,12 @@ describe('FieldRow — arg inputs', () => {
       <FieldRow
         field={heroField}
         path={[]}
-        selected={true}
+        selected
         hasChildren={false}
         expanded={false}
         argValues={{ id: '7', episode: 'JEDI' }}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
       />,
     );
     expect(screen.getByRole('spinbutton')).toHaveValue(7);
@@ -245,11 +245,11 @@ describe('FieldRow — arg inputs', () => {
       <FieldRow
         field={heroField}
         path={[]}
-        selected={true}
+        selected
         hasChildren={false}
         expanded={false}
-        onToggle={() => undefined}
-        onExpand={() => undefined}
+        onToggle={() => {}}
+        onExpand={() => {}}
         onSetArg={onSetArg}
       />,
     );

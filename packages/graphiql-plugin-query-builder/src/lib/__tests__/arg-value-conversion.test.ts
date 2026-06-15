@@ -84,7 +84,7 @@ describe('argValueToValueNode — list of Int', () => {
   it('produces IntValues, not StringValues', () => {
     const node = argValueToValueNode(new GraphQLList(GraphQLInt), ['1', '2', '3']);
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) throw new Error('expected LIST');
+    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
     expect(node.values).toHaveLength(3);
     expect(node.values[0]).toEqual({ kind: Kind.INT, value: '1' });
     expect(node.values[1]).toEqual({ kind: Kind.INT, value: '2' });
@@ -101,7 +101,7 @@ describe('argValueToValueNode — list of enum', () => {
   it('produces EnumValues, not StringValues', () => {
     const node = argValueToValueNode(new GraphQLList(EpisodeEnum), ['NEWHOPE', 'JEDI']);
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) throw new Error('expected LIST');
+    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
     expect(node.values[0]).toEqual({ kind: Kind.ENUM, value: 'NEWHOPE' });
     expect(node.values[1]).toEqual({ kind: Kind.ENUM, value: 'JEDI' });
   });
@@ -111,7 +111,7 @@ describe('argValueToValueNode — input object', () => {
   it('converts an input object to ObjectValue with typed fields', () => {
     const node = argValueToValueNode(TagInput, { name: 'hero', count: '5', episode: 'JEDI' });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) throw new Error('expected OBJECT');
+    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
     const byName = Object.fromEntries(node.fields.map(f => [f.name.value, f.value]));
     expect(byName['name']).toEqual({ kind: Kind.STRING, value: 'hero' });
     expect(byName['count']).toEqual({ kind: Kind.INT, value: '5' });
@@ -121,7 +121,7 @@ describe('argValueToValueNode — input object', () => {
   it('omits empty-string leaves (matching "remove arg" convention)', () => {
     const node = argValueToValueNode(TagInput, { name: 'hero', count: '' });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) throw new Error('expected OBJECT');
+    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
     const names = node.fields.map(f => f.name.value);
     expect(names).toContain('name');
     expect(names).not.toContain('count');
@@ -130,7 +130,7 @@ describe('argValueToValueNode — input object', () => {
   it('omits undefined fields', () => {
     const node = argValueToValueNode(TagInput, { name: 'x' });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) throw new Error('expected OBJECT');
+    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
     expect(node.fields).toHaveLength(1);
     expect(node.fields[0]!.name.value).toBe('name');
   });
@@ -143,7 +143,7 @@ describe('argValueToValueNode — list of input objects', () => {
       [{ name: 'a', count: '1' }, { name: 'b' }],
     );
     expect(node?.kind).toBe(Kind.LIST);
-    if (node?.kind !== Kind.LIST) throw new Error('expected LIST');
+    if (node?.kind !== Kind.LIST) {throw new Error('expected LIST');}
     expect(node.values).toHaveLength(2);
     expect(node.values[0]!.kind).toBe(Kind.OBJECT);
     expect(node.values[1]!.kind).toBe(Kind.OBJECT);
@@ -157,10 +157,10 @@ describe('argValueToValueNode — nested input object', () => {
       tag: { name: 'inner', count: '3', episode: 'EMPIRE' },
     });
     expect(node?.kind).toBe(Kind.OBJECT);
-    if (node?.kind !== Kind.OBJECT) throw new Error('expected OBJECT');
+    if (node?.kind !== Kind.OBJECT) {throw new Error('expected OBJECT');}
     const tagField = node.fields.find(f => f.name.value === 'tag');
     expect(tagField?.value.kind).toBe(Kind.OBJECT);
-    if (tagField?.value.kind !== Kind.OBJECT) throw new Error('expected nested OBJECT');
+    if (tagField?.value.kind !== Kind.OBJECT) {throw new Error('expected nested OBJECT');}
     const countField = tagField.value.fields.find(f => f.name.value === 'count');
     expect(countField?.value).toEqual({ kind: Kind.INT, value: '3' });
     const episodeField = tagField.value.fields.find(f => f.name.value === 'episode');

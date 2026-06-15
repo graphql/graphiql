@@ -1,30 +1,10 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString, parse, print } from 'graphql';
+import { parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { setListArgValue, setInputObjectArgValue } from '../document-mutator';
 
 function doc(query: string) {
   return parse(query, { noLocation: true });
 }
-
-// ---------------------------------------------------------------------------
-// Input types used across tests
-// ---------------------------------------------------------------------------
-
-const TagInput = new GraphQLInputObjectType({
-  name: 'TagInput',
-  fields: {
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    value: { type: GraphQLString },
-  },
-});
-
-const NestedInput = new GraphQLInputObjectType({
-  name: 'NestedInput',
-  fields: {
-    label: { type: GraphQLString },
-    tag: { type: TagInput },
-  },
-});
 
 // ---------------------------------------------------------------------------
 // setListArgValue

@@ -38,7 +38,7 @@ describe('FragmentSection', () => {
     render(
       <FragmentSection
         doc={doc('{ hero { name } }')}
-        onCreateFragment={() => undefined}
+        onCreateFragment={() => {}}
       />,
     );
     expect(

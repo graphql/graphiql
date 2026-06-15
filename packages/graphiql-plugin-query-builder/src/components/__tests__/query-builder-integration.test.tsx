@@ -60,17 +60,17 @@ describe('QueryBuilder integration — list and input-object args', () => {
     __state.schema = TestSchema;
     // items is in the doc so args are visible (isFieldSelected → true)
     __state.queryText = '{ items }';
-    __state.updateActiveTabValues = (vals: { query?: string }) => {
-      if (vals.query !== undefined) {
-        writtenQueries.push(vals.query);
+    __state.updateActiveTabValues = (values: { query?: string }) => {
+      if (values.query !== undefined) {
+        writtenQueries.push(values.query);
         // Feed back so the next re-render picks up the new doc
-        __state.queryText = vals.query;
+        __state.queryText = values.query;
       }
     };
   });
 
   function lastQuery(): string {
-    return writtenQueries[writtenQueries.length - 1] ?? __state.queryText;
+    return writtenQueries.at(-1) ?? __state.queryText;
   }
 
   it('renders the items field', () => {

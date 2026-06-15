@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   GraphQLInputObjectType,
@@ -23,14 +23,6 @@ const TagInput = new GraphQLInputObjectType({
   },
 });
 
-const DeepInput = new GraphQLInputObjectType({
-  name: 'DeepInput',
-  fields: {
-    label: { type: GraphQLString },
-    tag: { type: TagInput },
-  },
-});
-
 function makeArg(name: string, type: unknown) {
   return {
     name,
@@ -50,13 +42,13 @@ function makeArg(name: string, type: unknown) {
 describe('ArgInput — list of scalars', () => {
   it('renders an "Add item" button for a list arg', () => {
     const arg = makeArg('tags', new GraphQLList(GraphQLString));
-    render(<ArgInput arg={arg} value={[]} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={[]} onChange={() => {}} />);
     expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument();
   });
 
   it('renders one input per existing item', () => {
     const arg = makeArg('ids', new GraphQLList(GraphQLString));
-    render(<ArgInput arg={arg} value={['alpha', 'beta']} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={['alpha', 'beta']} onChange={() => {}} />);
     const inputs = screen.getAllByRole('textbox');
     expect(inputs).toHaveLength(2);
   });
@@ -99,7 +91,7 @@ describe('ArgInput — list of scalars', () => {
 
   it('renders a list wrapped in NonNull', () => {
     const arg = makeArg('ids', new GraphQLNonNull(new GraphQLList(GraphQLString)));
-    render(<ArgInput arg={arg} value={[]} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={[]} onChange={() => {}} />);
     expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument();
   });
 });
@@ -111,7 +103,7 @@ describe('ArgInput — list of scalars', () => {
 describe('ArgInput — list of Int', () => {
   it('renders number inputs for items in a list of Int', () => {
     const arg = makeArg('ids', new GraphQLList(GraphQLInt));
-    render(<ArgInput arg={arg} value={['1', '2']} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={['1', '2']} onChange={() => {}} />);
     const inputs = screen.getAllByRole('spinbutton');
     expect(inputs).toHaveLength(2);
   });
@@ -124,7 +116,7 @@ describe('ArgInput — list of Int', () => {
 describe('ArgInput — input object', () => {
   it('renders a disclosure element for the input object', () => {
     const arg = makeArg('input', TagInput);
-    render(<ArgInput arg={arg} value={{}} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
     // Should render a <details> with a <summary>
     const details = document.querySelector('details.graphiql-qb-input-object');
     expect(details).toBeInTheDocument();
@@ -132,7 +124,7 @@ describe('ArgInput — input object', () => {
 
   it('renders each field of the input object', () => {
     const arg = makeArg('input', TagInput);
-    render(<ArgInput arg={arg} value={{}} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
     // TagInput has fields: name, value
     expect(screen.getByRole('textbox', { name: 'name' })).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'value' })).toBeInTheDocument();
@@ -157,7 +149,7 @@ describe('ArgInput — input object', () => {
       <ArgInput
         arg={arg}
         value={{ name: 'hello', value: 'world' }}
-        onChange={() => undefined}
+        onChange={() => {}}
       />,
     );
     expect(screen.getByRole('textbox', { name: 'name' })).toHaveValue('hello');
@@ -173,7 +165,7 @@ describe('ArgInput — list of input objects', () => {
   it('renders inputs for each item in a list of input objects', () => {
     const arg = makeArg('tags', new GraphQLList(TagInput));
     const value: ArgValue[] = [{ name: 'a', value: '1' }, { name: 'b', value: '2' }];
-    render(<ArgInput arg={arg} value={value} onChange={() => undefined} />);
+    render(<ArgInput arg={arg} value={value} onChange={() => {}} />);
     const nameInputs = screen.getAllByRole('textbox', { name: 'name' });
     expect(nameInputs).toHaveLength(2);
   });

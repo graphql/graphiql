@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   GraphQLInterfaceType,
-  GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
@@ -103,8 +102,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
     expect(screen.getByText('search')).toBeInTheDocument();
@@ -117,8 +116,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
     expect(
@@ -134,8 +133,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
 
@@ -155,8 +154,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
         onAddInlineFragment={onAdd}
       />,
     );
@@ -177,8 +176,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ search { ... on Human { name } } }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
         onRemoveInlineFragment={onRemove}
       />,
     );
@@ -201,8 +200,8 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ search { ... on Droid { primaryFunction } } }')}
         schema={SchemaWithUnion}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
 
@@ -226,8 +225,8 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
 
@@ -246,8 +245,8 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
-        onToggle={() => undefined}
-        onSetArg={() => undefined}
+        onToggle={() => {}}
+        onSetArg={() => {}}
       />,
     );
 

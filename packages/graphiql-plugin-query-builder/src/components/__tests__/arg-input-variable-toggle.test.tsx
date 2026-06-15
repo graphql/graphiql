@@ -22,8 +22,8 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value="5"
-        onChange={() => undefined}
-        onPromote={() => undefined}
+        onChange={() => {}}
+        onPromote={() => {}}
       />,
     );
     expect(
@@ -33,7 +33,7 @@ describe('ArgInput — variable toggle', () => {
 
   it('does not render the toggle button when onPromote is not supplied', () => {
     render(
-      <ArgInput arg={makeArg('first', GraphQLInt)} value="5" onChange={() => undefined} />,
+      <ArgInput arg={makeArg('first', GraphQLInt)} value="5" onChange={() => {}} />,
     );
     expect(
       screen.queryByRole('button', { name: /use as variable/i }),
@@ -46,7 +46,7 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value="5"
-        onChange={() => undefined}
+        onChange={() => {}}
         onPromote={onPromote}
       />,
     );
@@ -59,11 +59,11 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value=""
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable
         variableName="first"
-        onPromote={() => undefined}
-        onDemote={() => undefined}
+        onPromote={() => {}}
+        onDemote={() => {}}
       />,
     );
     // Button should show $first
@@ -75,11 +75,11 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value=""
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable
         variableName="first"
-        onPromote={() => undefined}
-        onDemote={() => undefined}
+        onPromote={() => {}}
+        onDemote={() => {}}
       />,
     );
     const btn = screen.getByRole('button', { name: /\$first/i });
@@ -91,8 +91,8 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value="5"
-        onChange={() => undefined}
-        onPromote={() => undefined}
+        onChange={() => {}}
+        onPromote={() => {}}
       />,
     );
     const btn = screen.getByRole('button', { name: /use as variable/i });
@@ -105,10 +105,10 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('first', GraphQLInt)}
         value=""
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable
         variableName="first"
-        onPromote={() => undefined}
+        onPromote={() => {}}
         onDemote={onDemote}
       />,
     );
@@ -121,11 +121,11 @@ describe('ArgInput — variable toggle', () => {
       <ArgInput
         arg={makeArg('query', GraphQLString)}
         value=""
-        onChange={() => undefined}
+        onChange={() => {}}
         isVariable
         variableName="query"
-        onPromote={() => undefined}
-        onDemote={() => undefined}
+        onPromote={() => {}}
+        onDemote={() => {}}
       />,
     );
     // The textbox for string input should not be visible

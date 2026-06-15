@@ -16,10 +16,6 @@ const EpisodeEnum = new GraphQLEnumType({
   values: { NEWHOPE: { value: 4 }, EMPIRE: { value: 5 }, JEDI: { value: 6 } },
 });
 
-function makeArg(name: string, type: ReturnType<typeof GraphQLInt['toString']> extends string ? never : unknown) {
-  return { name, type, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
-}
-
 function intArg(name = 'count') {
   return { name, type: GraphQLInt, description: null, defaultValue: undefined, deprecationReason: null, extensions: {}, astNode: undefined } as Parameters<typeof ArgInput>[0]['arg'];
 }
@@ -46,7 +42,7 @@ function nonNullStringArg(name = 'id') {
 
 describe('ArgInput — enum', () => {
   it('renders a select with all enum values', () => {
-    render(<ArgInput arg={enumArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={enumArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('combobox', { name: 'episode' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'NEWHOPE' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'EMPIRE' })).toBeInTheDocument();
@@ -54,7 +50,7 @@ describe('ArgInput — enum', () => {
   });
 
   it('shows the empty placeholder option', () => {
-    render(<ArgInput arg={enumArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={enumArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('option', { name: '—' })).toBeInTheDocument();
   });
 
@@ -66,19 +62,19 @@ describe('ArgInput — enum', () => {
   });
 
   it('reflects the current value', () => {
-    render(<ArgInput arg={enumArg()} value="EMPIRE" onChange={() => undefined} />);
+    render(<ArgInput arg={enumArg()} value="EMPIRE" onChange={() => {}} />);
     expect(screen.getByRole('combobox')).toHaveValue('EMPIRE');
   });
 });
 
 describe('ArgInput — Int/Float', () => {
   it('renders a number input for Int', () => {
-    render(<ArgInput arg={intArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={intArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('spinbutton', { name: 'count' })).toBeInTheDocument();
   });
 
   it('renders a number input for Float', () => {
-    render(<ArgInput arg={floatArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={floatArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('spinbutton', { name: 'ratio' })).toBeInTheDocument();
   });
 
@@ -92,12 +88,12 @@ describe('ArgInput — Int/Float', () => {
 
 describe('ArgInput — String/ID', () => {
   it('renders a text input for String', () => {
-    render(<ArgInput arg={stringArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={stringArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('textbox', { name: 'query' })).toBeInTheDocument();
   });
 
   it('renders a text input for NonNull String', () => {
-    render(<ArgInput arg={nonNullStringArg()} value="" onChange={() => undefined} />);
+    render(<ArgInput arg={nonNullStringArg()} value="" onChange={() => {}} />);
     expect(screen.getByRole('textbox', { name: 'id' })).toBeInTheDocument();
   });
 
@@ -111,17 +107,17 @@ describe('ArgInput — String/ID', () => {
 
 describe('ArgInput — Boolean', () => {
   it('renders a checkbox for Boolean', () => {
-    render(<ArgInput arg={boolArg()} value="false" onChange={() => undefined} />);
+    render(<ArgInput arg={boolArg()} value="false" onChange={() => {}} />);
     expect(screen.getByRole('checkbox', { name: 'flag' })).toBeInTheDocument();
   });
 
   it('is checked when value is "true"', () => {
-    render(<ArgInput arg={boolArg()} value="true" onChange={() => undefined} />);
+    render(<ArgInput arg={boolArg()} value="true" onChange={() => {}} />);
     expect(screen.getByRole('checkbox')).toBeChecked();
   });
 
   it('is unchecked when value is "false"', () => {
-    render(<ArgInput arg={boolArg()} value="false" onChange={() => undefined} />);
+    render(<ArgInput arg={boolArg()} value="false" onChange={() => {}} />);
     expect(screen.getByRole('checkbox')).not.toBeChecked();
   });
 

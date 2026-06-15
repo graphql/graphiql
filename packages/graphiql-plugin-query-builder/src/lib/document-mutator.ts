@@ -37,23 +37,23 @@ export type ArgValue = string | ArgValue[] | { [field: string]: ArgValue };
  * `['hero', 'name']` for `{ hero { name } }`.
  */
 export function isFieldSelected(doc: DocumentNode, path: string[]): boolean {
-  if (path.length === 0) return false;
+  if (path.length === 0) {return false;}
 
   const operation = doc.definitions.find(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return false;
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) {return false;}
 
   let selectionSet: SelectionSetNode | undefined = operation.selectionSet;
 
   for (let i = 0; i < path.length; i++) {
     const segment = path[i]!;
-    if (!selectionSet) return false;
+    if (!selectionSet) {return false;}
     const field: FieldNode | undefined = selectionSet.selections.find(
       (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
     );
-    if (!field) return false;
-    if (i === path.length - 1) return true;
+    if (!field) {return false;}
+    if (i === path.length - 1) {return true;}
     selectionSet = field.selectionSet;
   }
 
@@ -72,15 +72,15 @@ export function toggleFieldSelection(
   doc: DocumentNode,
   path: string[],
 ): DocumentNode {
-  if (path.length === 0) return doc;
+  if (path.length === 0) {return doc;}
 
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   const selected = isFieldSelected(doc, path);
   const newSelectionSet = selected
@@ -107,7 +107,7 @@ export function scalarToValueNode(
   type: GraphQLScalarType | GraphQLEnumType,
   raw: string,
 ): ValueNode | undefined {
-  if (raw === '') return undefined;
+  if (raw === '') {return undefined;}
   if (type instanceof GraphQLEnumType) {
     return { kind: Kind.ENUM, value: raw };
   }
@@ -136,22 +136,22 @@ export function getFieldArgVariables(
   doc: DocumentNode,
   path: string[],
 ): Record<string, string> {
-  if (path.length === 0) return {};
+  if (path.length === 0) {return {};}
 
   const operation = doc.definitions.find(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return {};
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) {return {};}
 
   let selectionSet: SelectionSetNode | undefined = operation.selectionSet;
 
   for (let i = 0; i < path.length; i++) {
     const segment = path[i]!;
-    if (!selectionSet) return {};
+    if (!selectionSet) {return {};}
     const field: FieldNode | undefined = selectionSet.selections.find(
       (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
     );
-    if (!field) return {};
+    if (!field) {return {};}
     if (i === path.length - 1) {
       const result: Record<string, string> = {};
       for (const arg of field.arguments ?? []) {
@@ -178,22 +178,22 @@ export function getFieldArgValues(
   doc: DocumentNode,
   path: string[],
 ): Record<string, ArgValue> {
-  if (path.length === 0) return {};
+  if (path.length === 0) {return {};}
 
   const operation = doc.definitions.find(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return {};
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) {return {};}
 
   let selectionSet: SelectionSetNode | undefined = operation.selectionSet;
 
   for (let i = 0; i < path.length; i++) {
     const segment = path[i]!;
-    if (!selectionSet) return {};
+    if (!selectionSet) {return {};}
     const field: FieldNode | undefined = selectionSet.selections.find(
       (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
     );
-    if (!field) return {};
+    if (!field) {return {};}
     if (i === path.length - 1) {
       const result: Record<string, ArgValue> = {};
       for (const arg of field.arguments ?? []) {
@@ -256,7 +256,7 @@ export function argValueToValueNode(
     const values: ValueNode[] = [];
     for (const item of items) {
       const node = argValueToValueNode(type.ofType, item);
-      if (node !== undefined) values.push(node);
+      if (node !== undefined) {values.push(node);}
     }
     const listNode: ListValueNode = { kind: Kind.LIST, values };
     return listNode;
@@ -271,9 +271,9 @@ export function argValueToValueNode(
     const objectFields: ObjectFieldNode[] = [];
     for (const [fieldName, fieldDef] of Object.entries(fields)) {
       const fieldVal = obj[fieldName];
-      if (fieldVal === undefined) continue;
+      if (fieldVal === undefined) {continue;}
       const fieldNode = argValueToValueNode(fieldDef.type, fieldVal);
-      if (fieldNode === undefined) continue;
+      if (fieldNode === undefined) {continue;}
       objectFields.push({
         kind: Kind.OBJECT_FIELD as const,
         name: { kind: Kind.NAME as const, value: fieldName },
@@ -402,15 +402,15 @@ export function suggestVarName(doc: DocumentNode, argName: string): string {
   const operation = doc.definitions.find(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return argName;
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) {return argName;}
 
   const existingNames = new Set(
     (operation.variableDefinitions ?? []).map(vd => vd.variable.name.value),
   );
 
-  if (!existingNames.has(argName)) return argName;
+  if (!existingNames.has(argName)) {return argName;}
   let i = 2;
-  while (existingNames.has(`${argName}_${i}`)) i++;
+  while (existingNames.has(`${argName}_${i}`)) {i++;}
   return `${argName}_${i}`;
 }
 
@@ -420,15 +420,15 @@ export function suggestVarName(doc: DocumentNode, argName: string): string {
  * `EnumValue` for anything else (enum values and bare words).
  */
 function rawToValueNode(raw: string): ConstValueNode | undefined {
-  if (!raw) return undefined;
+  if (!raw) {return undefined;}
   // Quoted string: "foo" → StringValue
   if (raw.startsWith('"') && raw.endsWith('"')) {
     return { kind: Kind.STRING, value: raw.slice(1, -1) };
   }
-  if (raw === 'true') return { kind: Kind.BOOLEAN, value: true };
-  if (raw === 'false') return { kind: Kind.BOOLEAN, value: false };
-  if (/^-?\d+$/.test(raw)) return { kind: Kind.INT, value: raw };
-  if (/^-?\d+\.\d+$/.test(raw)) return { kind: Kind.FLOAT, value: raw };
+  if (raw === 'true') {return { kind: Kind.BOOLEAN, value: true };}
+  if (raw === 'false') {return { kind: Kind.BOOLEAN, value: false };}
+  if (/^-?\d+$/.test(raw)) {return { kind: Kind.INT, value: raw };}
+  if (/^-?\d+\.\d+$/.test(raw)) {return { kind: Kind.FLOAT, value: raw };}
   // Enum value or bare string
   return { kind: Kind.ENUM, value: raw };
 }
@@ -454,10 +454,10 @@ export function promoteArgToVariable(
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   // Build the variable definition node.
   const defaultValue = rawToValueNode(defaultRaw);
@@ -471,7 +471,7 @@ export function promoteArgToVariable(
       kind: Kind.NAMED_TYPE,
       name: { kind: Kind.NAME, value: type },
     },
-    defaultValue: defaultValue,
+    defaultValue,
     directives: [],
   };
 
@@ -515,14 +515,14 @@ export function demoteVariable(doc: DocumentNode, varName: string): DocumentNode
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   const varDefs = operation.variableDefinitions ?? [];
   const targetDef = varDefs.find(vd => vd.variable.name.value === varName);
-  if (!targetDef) return doc;
+  if (!targetDef) {return doc;}
 
   const defaultValue: ValueNode | undefined = targetDef.defaultValue;
 
@@ -553,7 +553,7 @@ function replaceVariableInSelectionSet(
   defaultValue: ValueNode | undefined,
 ): SelectionSetNode {
   const newSelections = selectionSet.selections.map(selection => {
-    if (selection.kind !== Kind.FIELD) return selection;
+    if (selection.kind !== Kind.FIELD) {return selection;}
 
     const field = selection as FieldNode;
     const existingArgs = field.arguments ?? [];
@@ -563,7 +563,7 @@ function replaceVariableInSelectionSet(
           arg.value.kind === Kind.VARIABLE &&
           arg.value.name.value === varName
         ) {
-          if (defaultValue === undefined) return null; // remove the arg
+          if (defaultValue === undefined) {return null;} // remove the arg
           return { ...arg, value: defaultValue };
         }
         return arg;
@@ -615,14 +615,14 @@ export function createFragmentFromSelection(
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   // Find the target field and capture its current selection set.
   const targetSelectionSet = findSelectionSet(operation.selectionSet, path);
-  if (!targetSelectionSet || targetSelectionSet.selections.length === 0) return doc;
+  if (!targetSelectionSet || targetSelectionSet.selections.length === 0) {return doc;}
 
   // Build the fragment definition.
   const fragmentDef: FragmentDefinitionNode = {
@@ -655,7 +655,7 @@ export function createFragmentFromSelection(
     spreadSet,
   );
 
-  if (newSelectionSet === operation.selectionSet) return doc;
+  if (newSelectionSet === operation.selectionSet) {return doc;}
 
   const newOperation = { ...operation, selectionSet: newSelectionSet };
   const newDefinitions = [...doc.definitions];
@@ -672,9 +672,9 @@ function findSelectionSet(
   const field = selectionSet.selections.find(
     (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
   );
-  if (!field) return undefined;
-  if (rest.length === 0) return field.selectionSet;
-  if (!field.selectionSet) return undefined;
+  if (!field) {return undefined;}
+  if (rest.length === 0) {return field.selectionSet;}
+  if (!field.selectionSet) {return undefined;}
   return findSelectionSet(field.selectionSet, rest);
 }
 
@@ -687,7 +687,7 @@ function replaceFieldSelectionSet(
   const fieldIndex = selectionSet.selections.findIndex(
     (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
   );
-  if (fieldIndex === -1) return selectionSet;
+  if (fieldIndex === -1) {return selectionSet;}
 
   const field = selectionSet.selections[fieldIndex] as FieldNode;
 
@@ -695,9 +695,9 @@ function replaceFieldSelectionSet(
   if (rest.length === 0) {
     updatedField = { ...field, selectionSet: newSet };
   } else {
-    if (!field.selectionSet) return selectionSet;
+    if (!field.selectionSet) {return selectionSet;}
     const updatedChildSet = replaceFieldSelectionSet(field.selectionSet, rest, newSet);
-    if (updatedChildSet === field.selectionSet) return selectionSet;
+    if (updatedChildSet === field.selectionSet) {return selectionSet;}
     updatedField = { ...field, selectionSet: updatedChildSet };
   }
 
@@ -721,7 +721,7 @@ export function isInlineFragmentPresent(
   typeName: string,
 ): boolean {
   const selectionSet = findFieldSelectionSet(doc, path);
-  if (!selectionSet) return false;
+  if (!selectionSet) {return false;}
   return selectionSet.selections.some(
     (s): s is InlineFragmentNode =>
       s.kind === Kind.INLINE_FRAGMENT &&
@@ -743,22 +743,22 @@ export function addInlineFragment(
   path: string[],
   typeName: string,
 ): DocumentNode {
-  if (path.length === 0) return doc;
+  if (path.length === 0) {return doc;}
 
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   const newSelectionSet = addInlineFragmentInSelectionSet(
     operation.selectionSet,
     path,
     typeName,
   );
-  if (newSelectionSet === operation.selectionSet) return doc;
+  if (newSelectionSet === operation.selectionSet) {return doc;}
 
   const newOperation = { ...operation, selectionSet: newSelectionSet };
   const newDefinitions = [...doc.definitions];
@@ -777,22 +777,22 @@ export function removeInlineFragment(
   path: string[],
   typeName: string,
 ): DocumentNode {
-  if (path.length === 0) return doc;
+  if (path.length === 0) {return doc;}
 
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   const newSelectionSet = removeInlineFragmentInSelectionSet(
     operation.selectionSet,
     path,
     typeName,
   );
-  if (newSelectionSet === operation.selectionSet) return doc;
+  if (newSelectionSet === operation.selectionSet) {return doc;}
 
   const newOperation = { ...operation, selectionSet: newSelectionSet };
   const newDefinitions = [...doc.definitions];
@@ -814,7 +814,6 @@ function addInlineFragmentInSelectionSet(
   if (rest.length === 0) {
     // Target field found — work on it.
     let field: FieldNode;
-    let fieldExisted = true;
     if (fieldIndex === -1) {
       // Field not present — can't add fragment to it.
       return selectionSet;
@@ -832,7 +831,7 @@ function addInlineFragmentInSelectionSet(
         s.kind === Kind.INLINE_FRAGMENT &&
         s.typeCondition?.name.value === typeName,
     );
-    if (alreadyPresent) return selectionSet;
+    if (alreadyPresent) {return selectionSet;}
 
     const fragment: InlineFragmentNode = {
       kind: Kind.INLINE_FRAGMENT,
@@ -866,12 +865,12 @@ function addInlineFragmentInSelectionSet(
   }
 
   // Recurse into the child field.
-  if (fieldIndex === -1) return selectionSet;
+  if (fieldIndex === -1) {return selectionSet;}
   const field = selectionSet.selections[fieldIndex] as FieldNode;
-  if (!field.selectionSet) return selectionSet;
+  if (!field.selectionSet) {return selectionSet;}
 
   const newChildSet = addInlineFragmentInSelectionSet(field.selectionSet, rest, typeName);
-  if (newChildSet === field.selectionSet) return selectionSet;
+  if (newChildSet === field.selectionSet) {return selectionSet;}
 
   const updatedField: FieldNode = { ...field, selectionSet: newChildSet };
   const newSelections = [...selectionSet.selections];
@@ -889,12 +888,12 @@ function removeInlineFragmentInSelectionSet(
   const fieldIndex = selectionSet.selections.findIndex(
     (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
   );
-  if (fieldIndex === -1) return selectionSet;
+  if (fieldIndex === -1) {return selectionSet;}
 
   const field = selectionSet.selections[fieldIndex] as FieldNode;
 
   if (rest.length === 0) {
-    if (!field.selectionSet) return selectionSet;
+    if (!field.selectionSet) {return selectionSet;}
 
     const newInnerSelections = field.selectionSet.selections.filter(
       s =>
@@ -916,9 +915,9 @@ function removeInlineFragmentInSelectionSet(
     return { ...selectionSet, selections: newSelections };
   }
 
-  if (!field.selectionSet) return selectionSet;
+  if (!field.selectionSet) {return selectionSet;}
   const newChildSet = removeInlineFragmentInSelectionSet(field.selectionSet, rest, typeName);
-  if (newChildSet === field.selectionSet) return selectionSet;
+  if (newChildSet === field.selectionSet) {return selectionSet;}
 
   const updatedField: FieldNode = { ...field, selectionSet: newChildSet };
   const newSelections = [...selectionSet.selections];
@@ -933,7 +932,7 @@ function findFieldSelectionSet(
   const operation = doc.definitions.find(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) return undefined;
+  if (!operation || operation.kind !== Kind.OPERATION_DEFINITION) {return undefined;}
 
   let selectionSet: SelectionSetNode = operation.selectionSet;
 
@@ -941,28 +940,12 @@ function findFieldSelectionSet(
     const field = selectionSet.selections.find(
       (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
     );
-    if (!field) return undefined;
-    if (!field.selectionSet) return undefined;
+    if (!field) {return undefined;}
+    if (!field.selectionSet) {return undefined;}
     selectionSet = field.selectionSet;
   }
 
   return selectionSet;
-}
-
-// No longer used internally — kept only to avoid breaking callers outside this
-// module if they imported it directly (tests use exported functions instead).
-function valueNodeToString(node: ValueNode): string {
-  switch (node.kind) {
-    case Kind.INT:
-    case Kind.FLOAT:
-    case Kind.STRING:
-    case Kind.ENUM:
-      return node.value;
-    case Kind.BOOLEAN:
-      return node.value ? 'true' : 'false';
-    default:
-      return '';
-  }
 }
 
 /**
@@ -978,15 +961,15 @@ export function setFieldArgument(
   argName: string,
   value: ValueNode | undefined,
 ): DocumentNode {
-  if (path.length === 0) return doc;
+  if (path.length === 0) {return doc;}
 
   const operationIndex = doc.definitions.findIndex(
     d => d.kind === Kind.OPERATION_DEFINITION,
   );
-  if (operationIndex === -1) return doc;
+  if (operationIndex === -1) {return doc;}
 
   const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) return doc;
+  if (operation.kind !== Kind.OPERATION_DEFINITION) {return doc;}
 
   const newSelectionSet = setArgInSelectionSet(
     operation.selectionSet,
@@ -994,7 +977,7 @@ export function setFieldArgument(
     argName,
     value,
   );
-  if (newSelectionSet === operation.selectionSet) return doc;
+  if (newSelectionSet === operation.selectionSet) {return doc;}
 
   const newOperation = { ...operation, selectionSet: newSelectionSet };
   const newDefinitions = [...doc.definitions];
@@ -1012,7 +995,7 @@ function setArgInSelectionSet(
   const fieldIndex = selectionSet.selections.findIndex(
     (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
   );
-  if (fieldIndex === -1) return selectionSet; // field not found — nothing to do
+  if (fieldIndex === -1) {return selectionSet;} // field not found — nothing to do
 
   const field = selectionSet.selections[fieldIndex] as FieldNode;
 
@@ -1040,9 +1023,9 @@ function setArgInSelectionSet(
     updatedField = { ...field, arguments: newArgs };
   } else {
     // Descend into the child selection set.
-    if (!field.selectionSet) return selectionSet;
+    if (!field.selectionSet) {return selectionSet;}
     const newChildSet = setArgInSelectionSet(field.selectionSet, rest, argName, value);
-    if (newChildSet === field.selectionSet) return selectionSet;
+    if (newChildSet === field.selectionSet) {return selectionSet;}
     updatedField = { ...field, selectionSet: newChildSet };
   }
 
@@ -1066,7 +1049,7 @@ function addField(
     const alreadyPresent = selectionSet.selections.some(
       (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
     );
-    if (alreadyPresent) return selectionSet;
+    if (alreadyPresent) {return selectionSet;}
 
     const newField: FieldNode = {
       kind: Kind.FIELD,
@@ -1140,10 +1123,10 @@ function removeField(
   const parentIndex = selectionSet.selections.findIndex(
     (s): s is FieldNode => s.kind === Kind.FIELD && s.name.value === segment,
   );
-  if (parentIndex === -1) return selectionSet; // nothing to remove
+  if (parentIndex === -1) {return selectionSet;} // nothing to remove
 
   const parent = selectionSet.selections[parentIndex] as FieldNode;
-  if (!parent.selectionSet) return selectionSet;
+  if (!parent.selectionSet) {return selectionSet;}
 
   const updatedParent: FieldNode = {
     ...parent,
