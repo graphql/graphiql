@@ -1023,3 +1023,96 @@ describe('getAutocompleteSuggestions', () => {
       ]));
   });
 });
+
+describe('getAutocompleteSuggestions - list input values (#587)', () => {
+  const listSchema = buildSchema(`
+    enum Episode { NEWHOPE EMPIRE JEDI }
+    input FilterInput {
+      episodes: [Episode]
+      one: Episode
+    }
+    type Query {
+      listEnum(values: [Episode]): String
+      listEnumNonNull(values: [Episode!]!): String
+      listBool(flags: [Boolean]): String
+      singleEnum(value: Episode): String
+      nestedList(values: [[Episode]]): String
+      nested(input: FilterInput): String
+    }
+  `);
+
+  function valueSuggestions(query: string, label: string) {
+    const caret = query.indexOf('|');
+    const text = query.replace('|', '');
+    const before = text.slice(0, caret);
+    const line = before.split('\n').length - 1;
+    const character = before.length - (before.lastIndexOf('\n') + 1);
+    return getAutocompleteSuggestions(
+      listSchema,
+      text,
+      new Position(line, character),
+    )
+      .filter(s => s.label === label)
+      .map(s => ({ label: s.label, insertText: s.insertText }));
+  }
+
+  it('wraps an enum value in brackets at a list argument value position', () => {
+    expect(valueSuggestions('{ listEnum(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('wraps an enum value for a non-null list of non-null items', () => {
+    expect(valueSuggestions('{ listEnumNonNull(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('wraps a boolean value in brackets at a list argument value position', () => {
+    expect(valueSuggestions('{ listBool(flags: |) }', 'true')).toEqual([
+      { label: 'true', insertText: '[true]' },
+    ]);
+  });
+
+  it('wraps an enum value at a list input-object field value position', () => {
+    expect(
+      valueSuggestions('{ nested(input: { episodes: | }) }', 'JEDI'),
+    ).toEqual([{ label: 'JEDI', insertText: '[JEDI]' }]);
+  });
+
+  it('does not wrap when the cursor is already inside the list literal', () => {
+    expect(valueSuggestions('{ listEnum(values: [|]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('does not wrap a non-list (single) enum argument value', () => {
+    expect(valueSuggestions('{ singleEnum(value: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('does not wrap a non-list (single) input-object enum field value', () => {
+    expect(valueSuggestions('{ nested(input: { one: | }) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('wraps a nested list value with the matching number of brackets', () => {
+    expect(valueSuggestions('{ nestedList(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[[JEDI]]' },
+    ]);
+  });
+
+  it('wraps once when inside the outer bracket of a nested list', () => {
+    expect(valueSuggestions('{ nestedList(values: [|]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('does not wrap when inside both brackets of a nested list', () => {
+    expect(valueSuggestions('{ nestedList(values: [[|]]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+});
