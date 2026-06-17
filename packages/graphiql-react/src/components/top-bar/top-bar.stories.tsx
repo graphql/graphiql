@@ -19,7 +19,12 @@ const switchableTransport: {
   method: 'GET' | 'POST';
   supportedMethods: ('GET' | 'POST')[];
   setMethod(method: 'GET' | 'POST'): void;
-  send: () => Promise<{ ok: boolean; body: { data: Record<string, never> }; timing: { totalMs: number }; size: Record<string, never> }>;
+  send: () => Promise<{
+    ok: boolean;
+    body: { data: Record<string, never> };
+    timing: { totalMs: number };
+    size: Record<string, never>;
+  }>;
 } = {
   url: 'https://api.example.com/graphql',
   method: 'POST',

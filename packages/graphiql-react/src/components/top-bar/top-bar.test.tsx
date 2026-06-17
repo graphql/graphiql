@@ -50,7 +50,9 @@ describe('TopBarView', () => {
   });
 
   it('shows the static method label when only one method is supported', () => {
-    render(<TopBarView {...DEFAULTS} method="POST" supportedMethods={['POST']} />);
+    render(
+      <TopBarView {...DEFAULTS} method="POST" supportedMethods={['POST']} />,
+    );
     expect(screen.getByText('POST')).toBeInTheDocument();
     expect(
       screen.queryByRole('group', { name: /HTTP method/i }),
@@ -67,12 +69,8 @@ describe('TopBarView', () => {
     );
     const group = screen.getByRole('group', { name: /HTTP method/i });
     expect(group).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'GET' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'POST' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'GET' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'POST' })).toBeInTheDocument();
   });
 
   it('marks the active method as pressed in the switcher', () => {

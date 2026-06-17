@@ -80,7 +80,9 @@ export const TopBarView: FC<TopBarViewProps> = ({
                 type="button"
                 className={
                   'graphiql-top-bar-method-option' +
-                  (method === m ? ' graphiql-top-bar-method-option--active' : '')
+                  (method === m
+                    ? ' graphiql-top-bar-method-option--active'
+                    : '')
                 }
                 aria-pressed={method === m}
                 onClick={() => onSetMethod(m)}

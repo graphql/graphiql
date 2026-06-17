@@ -110,7 +110,9 @@
   cursor: pointer;
   line-height: 1;
   white-space: nowrap;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 }
 
 .graphiql-top-bar-method-option + .graphiql-top-bar-method-option {
@@ -123,7 +125,9 @@
   font-weight: 700;
 }
 
-.graphiql-top-bar-method-option:not(.graphiql-top-bar-method-option--active):hover {
+.graphiql-top-bar-method-option:not(
+    .graphiql-top-bar-method-option--active
+  ):hover {
   background: oklch(var(--bg-canvas));
   color: oklch(var(--fg-default));
 }
