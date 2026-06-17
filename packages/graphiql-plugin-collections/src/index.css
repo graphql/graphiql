@@ -1,0 +1,295 @@
+.graphiql-collections-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.graphiql-collections-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.graphiql-collections-empty,
+.graphiql-collections-loading {
+  padding: var(--px-8) var(--px-12);
+  color: oklch(var(--fg-subtle));
+  font-size: var(--font-size-hint);
+}
+
+.graphiql-collections-action {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-4) var(--px-8);
+  border-radius: var(--border-radius-4);
+  color: oklch(var(--fg-subtle));
+  font-size: var(--font-size-hint);
+}
+
+.graphiql-collections-action:hover {
+  background: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-collection-row {
+  border-bottom: 1px solid oklch(var(--border-default) / 0.5);
+}
+
+.graphiql-collection-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  padding: var(--px-8) var(--px-12);
+  cursor: pointer;
+  user-select: none;
+}
+
+.graphiql-collection-header:hover {
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-collection-name {
+  flex: 1;
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-collection-rename-input {
+  flex: 1;
+  font-size: var(--font-size-body);
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  padding: 2px var(--px-6);
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-collection-badge {
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  background: oklch(var(--bg-subtle));
+  padding: 0 var(--px-6);
+  border-radius: var(--border-radius-full);
+}
+
+.graphiql-collection-chevron {
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  flex-shrink: 0;
+}
+
+.graphiql-collection-menu {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-4);
+  border-radius: var(--border-radius-4);
+  color: oklch(var(--fg-subtle));
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.graphiql-collection-header:hover .graphiql-collection-menu {
+  opacity: 1;
+}
+
+.graphiql-collection-items {
+  padding: 0 0 var(--px-4);
+}
+
+.graphiql-collection-item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  padding: var(--px-6) var(--px-12) var(--px-6) var(--px-20);
+  cursor: pointer;
+}
+
+.graphiql-collection-item-row:hover {
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-collection-item-row[aria-grabbed="true"] {
+  opacity: 0.5;
+}
+
+.graphiql-collection-item-name {
+  flex: 1;
+  font-size: var(--font-size-body);
+  color: oklch(var(--fg-default));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphiql-collection-drag-handle {
+  cursor: grab;
+  color: oklch(var(--fg-subtle));
+  flex-shrink: 0;
+}
+
+.graphiql-collection-drop-target {
+  outline: 2px solid oklch(var(--accent-default));
+  outline-offset: -2px;
+}
+
+.graphiql-collection-item-type {
+  font-size: 10px;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-4);
+  flex-shrink: 0;
+  color: white;
+  background: oklch(var(--accent-default));
+}
+
+.graphiql-collection-item-type[data-operation-type="mutation"] {
+  background: oklch(var(--color-warning, 70% 0.2 80));
+}
+
+.graphiql-collection-item-type[data-operation-type="subscription"] {
+  background: oklch(var(--color-info, 65% 0.2 270));
+}
+
+.graphiql-collection-item-menu {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-4);
+  border-radius: var(--border-radius-4);
+  color: oklch(var(--fg-subtle));
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.graphiql-collection-item-row:hover .graphiql-collection-item-menu {
+  opacity: 1;
+}
+
+/* Save dialog */
+.graphiql-save-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-12);
+  padding: var(--px-12) 0;
+}
+
+.graphiql-save-dialog-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-save-dialog-input,
+.graphiql-save-dialog-select {
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  padding: var(--px-6) var(--px-8);
+  color: oklch(var(--fg-default));
+  font-size: var(--font-size-body);
+}
+
+.graphiql-save-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--px-8);
+  padding-top: var(--px-8);
+}
+
+.graphiql-save-dialog-cancel,
+.graphiql-save-dialog-save {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-6) var(--px-16);
+  border-radius: var(--border-radius-4);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-save-dialog-cancel {
+  color: oklch(var(--fg-subtle));
+  border: 1px solid oklch(var(--border-default));
+}
+
+.graphiql-save-dialog-save {
+  background: oklch(var(--accent-default));
+  color: white;
+}
+
+/* Import/Export dialog */
+.graphiql-import-export-tabs {
+  display: flex;
+  gap: var(--px-4);
+  border-bottom: 1px solid oklch(var(--border-default));
+  padding-bottom: var(--px-8);
+  margin-bottom: var(--px-12);
+}
+
+.graphiql-import-export-tab {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-4) var(--px-12);
+  border-radius: var(--border-radius-4);
+  font-size: var(--font-size-body);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-import-export-tab.active {
+  background: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-import-export-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-8);
+}
+
+.graphiql-import-export-textarea {
+  width: 100%;
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  padding: var(--px-8);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  resize: vertical;
+}
+
+.graphiql-import-export-download,
+.graphiql-import-export-import {
+  all: unset;
+  cursor: pointer;
+  padding: var(--px-6) var(--px-16);
+  border-radius: var(--border-radius-4);
+  font-size: var(--font-size-body);
+  background: oklch(var(--accent-default));
+  color: white;
+  align-self: flex-start;
+}
+
+.graphiql-import-export-mode {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+}
+
+.graphiql-import-export-mode legend {
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  margin-bottom: var(--px-4);
+}
+
+.graphiql-import-export-error {
+  color: oklch(var(--color-error, 60% 0.2 25));
+  font-size: var(--font-size-hint);
+}
