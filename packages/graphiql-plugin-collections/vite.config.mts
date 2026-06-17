@@ -14,7 +14,13 @@ export default defineConfig({
     }),
     dts({
       include: ['src/**'],
-      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+      exclude: [
+        '**/*.spec.{ts,tsx}',
+        '**/*.test.{ts,tsx}',
+        '**/__tests__/',
+        '**/__mocks__/',
+        '**/test-setup.ts',
+      ],
     }),
   ],
   css: {
@@ -35,8 +41,9 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'react/jsx-runtime',
-        // Exclude peer dependencies from bundle
+        // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
+        ...Object.keys(packageJSON.dependencies),
       ],
       output: {
         preserveModules: true,
