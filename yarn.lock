@@ -3236,7 +3236,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-collections@workspace:^, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
+"@graphiql/plugin-collections@npm:^0.1.0-alpha.0, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections"
   dependencies:
@@ -14041,7 +14041,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
-    "@graphiql/plugin-collections": "workspace:^"
+    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
     "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
     "@graphiql/plugin-history": "npm:^0.4.2"
     "@graphiql/react": "npm:^0.37.4"
