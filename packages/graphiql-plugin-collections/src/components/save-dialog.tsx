@@ -21,7 +21,8 @@ export const SaveDialog: FC<SaveDialogProps> = ({
 }) => {
   const collections = useCollectionsStore(s => s.collections);
   const [name, setName] = useState(initialName);
-  const [selectedCollectionId, setSelectedCollectionId] = useState<string>('__new__');
+  const [selectedCollectionId, setSelectedCollectionId] =
+    useState<string>('__new__');
   const [newCollectionName, setNewCollectionName] = useState('New Collection');
 
   const handleSave = () => {
@@ -83,10 +84,18 @@ export const SaveDialog: FC<SaveDialogProps> = ({
         )}
       </div>
       <div className="graphiql-save-dialog-actions">
-        <button type="button" onClick={onClose} className="graphiql-save-dialog-cancel">
+        <button
+          type="button"
+          onClick={onClose}
+          className="graphiql-save-dialog-cancel"
+        >
           Cancel
         </button>
-        <button type="button" onClick={handleSave} className="graphiql-save-dialog-save">
+        <button
+          type="button"
+          onClick={handleSave}
+          className="graphiql-save-dialog-save"
+        >
           Save
         </button>
       </div>

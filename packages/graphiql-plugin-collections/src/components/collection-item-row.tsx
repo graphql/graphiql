@@ -20,7 +20,12 @@ type CollectionItemRowProps = {
   allCollections: Collection[];
   onOpen(item: CollectionItem): void;
   onDelete(collectionId: string, itemId: string): void;
-  onMove(fromCollectionId: string, fromIndex: number, toCollectionId: string, toIndex: number): void;
+  onMove(
+    fromCollectionId: string,
+    fromIndex: number,
+    toCollectionId: string,
+    toIndex: number,
+  ): void;
 };
 
 export const CollectionItemRow: FC<CollectionItemRowProps> = ({
@@ -61,7 +66,9 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
         e.preventDefault();
         setIsDragOver(false);
         try {
-          const data = JSON.parse(e.dataTransfer.getData('application/x-graphiql-item'));
+          const data = JSON.parse(
+            e.dataTransfer.getData('application/x-graphiql-item'),
+          );
           onMove(data.collectionId, data.index, collectionId, index);
         } catch {
           // malformed drag data
@@ -69,7 +76,9 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
       }}
       onClick={() => onOpen(item)}
     >
-      <span className="graphiql-collection-drag-handle" aria-hidden="true">⠿</span>
+      <span className="graphiql-collection-drag-handle" aria-hidden="true">
+        ⠿
+      </span>
       <MethodPill operation={operationType} aria-hidden />
       <span className="graphiql-collection-item-name" title={item.name}>
         {item.name}
@@ -83,14 +92,24 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
           ···
         </DropdownMenu.Button>
         <DropdownMenu.Content>
-          <DropdownMenu.Item onSelect={() => onOpen(item)}>Open</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => onOpen(item)}>
+            Open
+          </DropdownMenu.Item>
           {index > 0 && (
-            <DropdownMenu.Item onSelect={() => onMove(collectionId, index, collectionId, index - 1)}>
+            <DropdownMenu.Item
+              onSelect={() =>
+                onMove(collectionId, index, collectionId, index - 1)
+              }
+            >
               Move up
             </DropdownMenu.Item>
           )}
           {index < totalItems - 1 && (
-            <DropdownMenu.Item onSelect={() => onMove(collectionId, index, collectionId, index + 1)}>
+            <DropdownMenu.Item
+              onSelect={() =>
+                onMove(collectionId, index, collectionId, index + 1)
+              }
+            >
               Move down
             </DropdownMenu.Item>
           )}
@@ -102,7 +121,9 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
                 .map(c => (
                   <DropdownMenu.Item
                     key={c.id}
-                    onSelect={() => onMove(collectionId, index, c.id, c.items.length)}
+                    onSelect={() =>
+                      onMove(collectionId, index, c.id, c.items.length)
+                    }
                   >
                     Move to: {c.name}
                   </DropdownMenu.Item>

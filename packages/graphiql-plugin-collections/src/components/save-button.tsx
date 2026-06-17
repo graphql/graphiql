@@ -4,7 +4,8 @@ import CollectionsIcon from '../icons/collections.svg?react';
 import { SaveDialog } from './save-dialog';
 
 function deriveOperationName(query: string): string {
-  const match = /(?:query|mutation|subscription)\s+([A-Za-z_][A-Za-z0-9_]*)/i.exec(query);
+  const match =
+    /(?:query|mutation|subscription)\s+([A-Za-z_][A-Za-z0-9_]*)/i.exec(query);
   return match?.[1] ?? 'Unnamed operation';
 }
 

@@ -44,7 +44,11 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
             <button
               type="button"
               className="graphiql-collections-action"
-              onClick={() => collectionsStore.getState().actions.createCollection('New Collection')}
+              onClick={() =>
+                collectionsStore
+                  .getState()
+                  .actions.createCollection('New Collection')
+              }
               aria-label="New collection"
               title="New collection"
             >

@@ -8,7 +8,9 @@ type StorageEnvelope = {
   collections: Collection[];
 };
 
-export function createLocalStorageAdapter(storageKey = DEFAULT_KEY): CollectionsStorage {
+export function createLocalStorageAdapter(
+  storageKey = DEFAULT_KEY,
+): CollectionsStorage {
   return {
     async load() {
       try {

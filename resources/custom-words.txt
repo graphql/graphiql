@@ -175,6 +175,7 @@ paas
 pabbati
 picomatch
 pieas
+pluggable
 pnpm
 postbuild
 pratap

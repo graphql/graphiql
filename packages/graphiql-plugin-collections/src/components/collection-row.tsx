@@ -10,8 +10,16 @@ type CollectionRowProps = {
   onDelete(id: string): void;
   onOpenItem(item: CollectionItem): void;
   onDeleteItem(collectionId: string, itemId: string): void;
-  onMoveItem(fromCollectionId: string, fromIndex: number, toCollectionId: string, toIndex: number): void;
-  onAddItem(collectionId: string, item: Omit<CollectionItem, 'id' | 'createdAt' | 'updatedAt'>): CollectionItem;
+  onMoveItem(
+    fromCollectionId: string,
+    fromIndex: number,
+    toCollectionId: string,
+    toIndex: number,
+  ): void;
+  onAddItem(
+    collectionId: string,
+    item: Omit<CollectionItem, 'id' | 'createdAt' | 'updatedAt'>,
+  ): CollectionItem;
 };
 
 export const CollectionRow: FC<CollectionRowProps> = ({
@@ -69,7 +77,9 @@ export const CollectionRow: FC<CollectionRowProps> = ({
         ) : (
           <span className="graphiql-collection-name">{collection.name}</span>
         )}
-        <span className="graphiql-collection-badge">{collection.items.length}</span>
+        <span className="graphiql-collection-badge">
+          {collection.items.length}
+        </span>
         <DropdownMenu>
           <DropdownMenu.Button
             className="graphiql-collection-menu"
@@ -79,10 +89,12 @@ export const CollectionRow: FC<CollectionRowProps> = ({
             ···
           </DropdownMenu.Button>
           <DropdownMenu.Content>
-            <DropdownMenu.Item onSelect={() => {
-              setRenameValue(collection.name);
-              setIsRenaming(true);
-            }}>
+            <DropdownMenu.Item
+              onSelect={() => {
+                setRenameValue(collection.name);
+                setIsRenaming(true);
+              }}
+            >
               Rename
             </DropdownMenu.Item>
             <DropdownMenu.Separator />

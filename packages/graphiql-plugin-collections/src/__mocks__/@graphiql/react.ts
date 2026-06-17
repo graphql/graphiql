@@ -20,7 +20,11 @@ export const __state = {
   schema: null as unknown,
   queryText: '{ __typename }',
   addTab: () => {},
-  updateActiveTabValues(_values: { query?: string; variables?: string; headers?: string }) {},
+  updateActiveTabValues(_values: {
+    query?: string;
+    variables?: string;
+    headers?: string;
+  }) {},
 };
 
 export function useGraphiQL<T>(selector: Selector<T>): T {
@@ -37,10 +41,11 @@ export const useGraphiQLActions = () => ({
   updateActiveTabValues: __state.updateActiveTabValues,
 });
 
-export const createBoundedUseStore = ((store: StoreApi<unknown>) => (selector?: (state: unknown) => unknown) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useStore(store, selector ? useShallow(selector) : (s: unknown) => s);
-}) as <S extends StoreApi<unknown>>(
+export const createBoundedUseStore = ((store: StoreApi<unknown>) =>
+  (selector?: (state: unknown) => unknown) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useStore(store, selector ? useShallow(selector) : (s: unknown) => s);
+  }) as <S extends StoreApi<unknown>>(
   store: S,
 ) => {
   (): ExtractState<S>;
@@ -64,13 +69,21 @@ export const MethodPill = ({ operation: _operation }: { operation: string }) =>
   null;
 
 export const Dialog = Object.assign(
-  ({ children, open: _open, onOpenChange: _onOpenChange }: { children?: ReactNode; open?: boolean; onOpenChange?: (open: boolean) => void }) => children ?? null,
+  ({
+    children,
+    open: _open,
+    onOpenChange: _onOpenChange,
+  }: {
+    children?: ReactNode;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+  }) => children ?? null,
   {
     Title: ({ children }: { children: ReactNode }) => children,
     Close: ({ children }: { children: ReactNode }) => children,
     Description: ({ children }: { children: ReactNode }) => children,
     Trigger: ({ children }: { children: ReactNode }) => children,
-  }
+  },
 );
 
 export const DropdownMenu = Object.assign(
@@ -78,9 +91,15 @@ export const DropdownMenu = Object.assign(
   {
     Button: ({ children }: { children: ReactNode }) => children,
     Content: ({ children }: { children: ReactNode }) => children,
-    Item: ({ children, onSelect: _onSelect }: { children: ReactNode; onSelect?: () => void }) => children,
+    Item: ({
+      children,
+      onSelect: _onSelect,
+    }: {
+      children: ReactNode;
+      onSelect?: () => void;
+    }) => children,
     Separator: () => null,
-  }
+  },
 );
 
 export const ChevronDownIcon = () => null;

@@ -99,9 +99,14 @@ describe('addItem', () => {
       name: 'Get User',
       query: '{ user { id } }',
     });
-    const col = collectionsStore.getState().collections.find(x => x.id === c.id)!;
+    const col = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c.id)!;
     expect(col.items).toHaveLength(1);
-    expect(col.items[0]).toMatchObject({ name: 'Get User', query: '{ user { id } }' });
+    expect(col.items[0]).toMatchObject({
+      name: 'Get User',
+      query: '{ user { id } }',
+    });
     expect(item.id).toBeTruthy();
   });
 });
@@ -113,7 +118,9 @@ describe('updateItem', () => {
     const c = getActions().createCollection('Queries');
     const item = getActions().addItem(c.id, { name: 'Old', query: '{ a }' });
     getActions().updateItem(c.id, item.id, { name: 'New', query: '{ b }' });
-    const col = collectionsStore.getState().collections.find(x => x.id === c.id)!;
+    const col = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c.id)!;
     expect(col.items[0]).toMatchObject({ name: 'New', query: '{ b }' });
   });
 });
@@ -126,7 +133,9 @@ describe('deleteItem', () => {
     const item = getActions().addItem(c.id, { name: 'q1', query: '{ a }' });
     getActions().addItem(c.id, { name: 'q2', query: '{ b }' });
     getActions().deleteItem(c.id, item.id);
-    const col = collectionsStore.getState().collections.find(x => x.id === c.id)!;
+    const col = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c.id)!;
     expect(col.items).toHaveLength(1);
     expect(col.items[0]?.name).toBe('q2');
   });
@@ -141,7 +150,9 @@ describe('moveItem', () => {
     getActions().addItem(c.id, { name: 'b', query: '{ b }' });
     getActions().addItem(c.id, { name: 'c', query: '{ c }' });
     getActions().moveItem(c.id, 0, c.id, 2);
-    const col = collectionsStore.getState().collections.find(x => x.id === c.id)!;
+    const col = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c.id)!;
     expect(col.items.map(i => i.name)).toEqual(['b', 'c', 'a']);
   });
 
@@ -152,8 +163,12 @@ describe('moveItem', () => {
     const c2 = getActions().createCollection('C2');
     const item = getActions().addItem(c1.id, { name: 'item', query: '{ x }' });
     getActions().moveItem(c1.id, 0, c2.id, 0);
-    const col1 = collectionsStore.getState().collections.find(x => x.id === c1.id)!;
-    const col2 = collectionsStore.getState().collections.find(x => x.id === c2.id)!;
+    const col1 = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c1.id)!;
+    const col2 = collectionsStore
+      .getState()
+      .collections.find(x => x.id === c2.id)!;
     expect(col1.items).toHaveLength(0);
     expect(col2.items).toHaveLength(1);
     expect(col2.items[0]?.name).toBe(item.name);
@@ -210,7 +225,13 @@ describe('importCollections', () => {
     getActions().createCollection('Will be replaced');
     const replacement = JSON.stringify({
       collections: [
-        { id: 'imported-1', name: 'Imported', items: [], createdAt: 0, updatedAt: 0 },
+        {
+          id: 'imported-1',
+          name: 'Imported',
+          items: [],
+          createdAt: 0,
+          updatedAt: 0,
+        },
       ],
     });
     getActions().importCollections(replacement, 'replace');
@@ -232,8 +253,12 @@ describe('persistence round-trip', () => {
   it('save then load restores data', async () => {
     let persisted: Collection[] = [];
     const storage: CollectionsStorage = {
-      async load() { return persisted; },
-      async save(cols) { persisted = [...cols]; },
+      async load() {
+        return persisted;
+      },
+      async save(cols) {
+        persisted = [...cols];
+      },
     };
     await getActions().init(storage);
     getActions().createCollection('Persistent');
@@ -255,7 +280,9 @@ describe('createLocalStorageAdapter', () => {
       key,
       JSON.stringify({
         version: 99,
-        collections: [{ id: 'x', name: 'Saved', items: [], createdAt: 0, updatedAt: 0 }],
+        collections: [
+          { id: 'x', name: 'Saved', items: [], createdAt: 0, updatedAt: 0 },
+        ],
       }),
     );
     const adapter = createLocalStorageAdapter(key);

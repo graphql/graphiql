@@ -7,7 +7,10 @@ type ImportExportDialogProps = {
   onClose(): void;
 };
 
-export const ImportExportDialog: FC<ImportExportDialogProps> = ({ open, onClose }) => {
+export const ImportExportDialog: FC<ImportExportDialogProps> = ({
+  open,
+  onClose,
+}) => {
   const [mode, setMode] = useState<'export' | 'import'>('export');
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
   const [importError, setImportError] = useState<string | null>(null);
@@ -39,7 +42,9 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({ open, onClose 
         collectionsStore.getState().actions.importCollections(text, importMode);
         onClose();
       } catch {
-        setImportError('Invalid JSON file. Please select a valid collections export.');
+        setImportError(
+          'Invalid JSON file. Please select a valid collections export.',
+        );
       }
     };
     reader.readAsText(file);
@@ -72,7 +77,11 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({ open, onClose 
             value={exported}
             rows={12}
           />
-          <button type="button" onClick={handleDownload} className="graphiql-import-export-download">
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="graphiql-import-export-download"
+          >
             Download JSON
           </button>
         </div>
@@ -108,8 +117,14 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({ open, onClose 
               Replace (remove all existing collections)
             </label>
           </fieldset>
-          {importError && <p className="graphiql-import-export-error">{importError}</p>}
-          <button type="button" onClick={handleImport} className="graphiql-import-export-import">
+          {importError && (
+            <p className="graphiql-import-export-error">{importError}</p>
+          )}
+          <button
+            type="button"
+            onClick={handleImport}
+            className="graphiql-import-export-import"
+          >
             Import
           </button>
         </div>

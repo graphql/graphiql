@@ -14,10 +14,22 @@ type CollectionsActions = {
   createCollection(name: string, description?: string): Collection;
   deleteCollection(id: string): void;
   renameCollection(id: string, name: string): void;
-  addItem(collectionId: string, item: Omit<CollectionItem, 'id' | 'createdAt' | 'updatedAt'>): CollectionItem;
-  updateItem(collectionId: string, itemId: string, updates: Partial<Omit<CollectionItem, 'id' | 'createdAt'>>): void;
+  addItem(
+    collectionId: string,
+    item: Omit<CollectionItem, 'id' | 'createdAt' | 'updatedAt'>,
+  ): CollectionItem;
+  updateItem(
+    collectionId: string,
+    itemId: string,
+    updates: Partial<Omit<CollectionItem, 'id' | 'createdAt'>>,
+  ): void;
   deleteItem(collectionId: string, itemId: string): void;
-  moveItem(fromCollectionId: string, fromIndex: number, toCollectionId: string, toIndex: number): void;
+  moveItem(
+    fromCollectionId: string,
+    fromIndex: number,
+    toCollectionId: string,
+    toIndex: number,
+  ): void;
   importCollections(json: string, mode: 'merge' | 'replace'): void;
   exportCollections(): string;
 };
@@ -88,7 +100,9 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
                   ...c,
                   updatedAt: Date.now(),
                   items: c.items.map(i =>
-                    i.id === itemId ? { ...i, ...updates, updatedAt: Date.now() } : i,
+                    i.id === itemId
+                      ? { ...i, ...updates, updatedAt: Date.now() }
+                      : i,
                   ),
                 }
               : c,
@@ -100,7 +114,11 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         set(s => ({
           collections: s.collections.map(c =>
             c.id === collectionId
-              ? { ...c, items: c.items.filter(i => i.id !== itemId), updatedAt: Date.now() }
+              ? {
+                  ...c,
+                  items: c.items.filter(i => i.id !== itemId),
+                  updatedAt: Date.now(),
+                }
               : c,
           ),
         }));
@@ -109,7 +127,12 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
       moveItem(fromCollectionId, fromIndex, toCollectionId, toIndex) {
         const { collections } = get();
         const fromCollection = collections.find(c => c.id === fromCollectionId);
-        if (!fromCollection || fromIndex < 0 || fromIndex >= fromCollection.items.length) return;
+        if (
+          !fromCollection ||
+          fromIndex < 0 ||
+          fromIndex >= fromCollection.items.length
+        )
+          return;
 
         const item = fromCollection.items[fromIndex];
         if (!item) return;
@@ -121,7 +144,11 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
             return { ...c, items, updatedAt: Date.now() };
           }
           if (c.id === fromCollectionId) {
-            return { ...c, items: c.items.filter((_, i) => i !== fromIndex), updatedAt: Date.now() };
+            return {
+              ...c,
+              items: c.items.filter((_, i) => i !== fromIndex),
+              updatedAt: Date.now(),
+            };
           }
           if (c.id === toCollectionId) {
             const items = [...c.items];
@@ -139,14 +166,17 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
           const incoming: Collection[] = Array.isArray(parsed.collections)
             ? parsed.collections
             : Array.isArray(parsed)
-            ? parsed
-            : [];
+              ? parsed
+              : [];
           if (mode === 'replace') {
             set({ collections: incoming });
           } else {
             const existing = get().collections;
             const existingIds = new Set(existing.map(c => c.id));
-            const merged = [...existing, ...incoming.filter(c => !existingIds.has(c.id))];
+            const merged = [
+              ...existing,
+              ...incoming.filter(c => !existingIds.has(c.id)),
+            ];
             set({ collections: merged });
           }
           void persist();
@@ -155,7 +185,11 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         }
       },
       exportCollections() {
-        return JSON.stringify({ version: 1, collections: get().collections }, null, 2);
+        return JSON.stringify(
+          { version: 1, collections: get().collections },
+          null,
+          2,
+        );
       },
     },
   };

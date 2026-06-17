@@ -109,7 +109,7 @@
   background: oklch(var(--bg-subtle));
 }
 
-.graphiql-collection-item-row[aria-grabbed="true"] {
+.graphiql-collection-item-row[aria-grabbed='true'] {
   opacity: 0.5;
 }
 
@@ -147,11 +147,11 @@
   background: oklch(var(--accent-default));
 }
 
-.graphiql-collection-item-type[data-operation-type="mutation"] {
+.graphiql-collection-item-type[data-operation-type='mutation'] {
   background: oklch(var(--color-warning, 70% 0.2 80));
 }
 
-.graphiql-collection-item-type[data-operation-type="subscription"] {
+.graphiql-collection-item-type[data-operation-type='subscription'] {
   background: oklch(var(--color-info, 65% 0.2 270));
 }
 

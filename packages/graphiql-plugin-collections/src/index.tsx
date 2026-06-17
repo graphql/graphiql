@@ -6,7 +6,10 @@ import './index.css';
 
 export type { CollectionsStorage, Collection, CollectionItem } from './types';
 export { collectionsStore, useCollectionsStore } from './store';
-export { createLocalStorageAdapter, localStorageAdapter } from './storage/local-storage';
+export {
+  createLocalStorageAdapter,
+  localStorageAdapter,
+} from './storage/local-storage';
 export { CollectionsSaveButton } from './components/save-button';
 
 export type CollectionsPluginOptions = {
@@ -14,7 +17,9 @@ export type CollectionsPluginOptions = {
   storage?: CollectionsStorage;
 };
 
-export const collectionsPlugin = (options?: CollectionsPluginOptions): GraphiQLPlugin => {
+export const collectionsPlugin = (
+  options?: CollectionsPluginOptions,
+): GraphiQLPlugin => {
   function CollectionsPanelWithOptions() {
     return <CollectionsPanel storage={options?.storage} />;
   }
