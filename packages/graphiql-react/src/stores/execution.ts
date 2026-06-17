@@ -4,6 +4,7 @@ import {
   formatError,
   formatResult,
   GetDefaultFieldNamesFn,
+  HttpMethod,
   isAsyncIterable,
   isObservable,
   Transport,
@@ -151,6 +152,16 @@ export interface ExecutionSlice {
    * timing, size). Mutually exclusive with `fetcher`.
    */
   transport?: Transport;
+
+  /**
+   * The currently active HTTP method as tracked in the store. Mirrors
+   * `transport.method` and updated via `setTransportMethod` so that
+   * consumers re-render when the method changes. `null` when using a
+   * fetcher (which has no observable method).
+   *
+   * @default null
+   */
+  transportMethod: HttpMethod | null;
 }
 
 export interface ExecutionActions {
@@ -173,6 +184,13 @@ export interface ExecutionActions {
    * Mark the upgrade-to-`transport` banner as dismissed and persist the choice.
    */
   dismissTransportUpgradeBanner(): void;
+
+  /**
+   * Switch the HTTP method used by subsequent requests and re-render
+   * consumers that read `transportMethod`. Only valid when `transport`
+   * is configured and `transport.supportedMethods` has more than one entry.
+   */
+  setTransportMethod(method: HttpMethod): void;
 }
 
 type BaseExecutionProps = {
@@ -295,6 +313,7 @@ export const createExecutionSlice: CreateExecutionSlice =
       transportUpgradeBannerDismissed: false,
       subscription: null,
       queryId: 0,
+      transportMethod: initial.transport?.method ?? null,
       actions: {
         setResponseView(view: ResponseView) {
           const { storage } = get();
@@ -305,6 +324,14 @@ export const createExecutionSlice: CreateExecutionSlice =
           const { storage } = get();
           storage.set(STORAGE_KEY.transportUpgradeBannerDismissed, 'true');
           set({ transportUpgradeBannerDismissed: true });
+        },
+        setTransportMethod(method: HttpMethod) {
+          const { transport } = get();
+          if (!transport?.setMethod) {
+            return;
+          }
+          transport.setMethod(method);
+          set({ transportMethod: method });
         },
         stop() {
           set(({ subscription }) => {

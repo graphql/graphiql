@@ -87,6 +87,47 @@
   flex-shrink: 0;
 }
 
+/* GET/POST segmented switcher — shown when transport supports both methods */
+.graphiql-top-bar-method-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid oklch(var(--border-strong));
+}
+
+.graphiql-top-bar-method-option {
+  padding: 0 var(--px-6);
+  height: 18px;
+  background: oklch(var(--bg-subtle));
+  border: none;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+}
+
+.graphiql-top-bar-method-option + .graphiql-top-bar-method-option {
+  border-left: 1px solid oklch(var(--border-strong));
+}
+
+.graphiql-top-bar-method-option--active {
+  background: oklch(var(--accent-green) / 0.15);
+  color: oklch(var(--accent-green));
+  font-weight: 700;
+}
+
+.graphiql-top-bar-method-option:not(.graphiql-top-bar-method-option--active):hover {
+  background: oklch(var(--bg-canvas));
+  color: oklch(var(--fg-default));
+}
+
 .graphiql-top-bar-endpoint-url {
   color: oklch(var(--fg-subtle));
   overflow: hidden;

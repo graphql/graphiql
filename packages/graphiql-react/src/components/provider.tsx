@@ -346,7 +346,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   useDidUpdate(() => {
     const wrappedTransport =
       transport && registry ? registry.wrap(transport) : transport;
-    storeRef.current.setState({ fetcher, transport: wrappedTransport });
+    storeRef.current.setState({
+      fetcher,
+      transport: wrappedTransport,
+      transportMethod: wrappedTransport?.method ?? null,
+    });
   }, [fetcher, transport]);
 
   // Plugin sync
