@@ -6,6 +6,7 @@
 @import '@graphiql/react/style.css';
 @import '@graphiql/plugin-history/style.css';
 @import '@graphiql/plugin-doc-explorer/style.css';
+@import '@graphiql/plugin-collections/style.css';
 
 /**
  * Separate CSS without importing fonts/etc

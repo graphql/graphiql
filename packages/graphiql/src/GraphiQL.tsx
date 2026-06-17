@@ -49,6 +49,10 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import {
+  collectionsPlugin,
+  CollectionsSaveButton,
+} from '@graphiql/plugin-collections';
+import {
   ActivityBar,
   GraphiQLLogo,
   GraphiQLToolbar,
@@ -81,9 +85,11 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
+const DEFAULT_PLUGINS = [HISTORY_PLUGIN, collectionsPlugin()];
+
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN],
+  plugins = DEFAULT_PLUGINS,
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,
@@ -215,6 +221,7 @@ const LABEL = {
   prettify: 'Prettify query',
   copy: 'Copy query',
   save: 'Save query',
+  saveToCollection: 'Save to collection',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
@@ -521,6 +528,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       <SaveIcon aria-hidden="true" />
                     </UnStyledButton>
                   </Tooltip>
+                  <CollectionsSaveButton />
                 </div>
                 {logo}
               </div>
