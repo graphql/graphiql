@@ -14,13 +14,16 @@ export function createLocalStorageAdapter(
   return {
     async load() {
       try {
-        const raw = window.localStorage.getItem(storageKey);
-        if (!raw) return [];
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) {
+          return [];
+        }
         const parsed: StorageEnvelope = JSON.parse(raw);
         if (parsed.version !== VERSION) {
           // Version mismatch: attempt a best-effort migration.
           // V1 has the same shape — just update the version stamp and return collections.
           // Future migrations go here when VERSION is bumped.
+          // eslint-disable-next-line no-console
           console.warn(
             `[graphiql/plugin-collections] Storage version mismatch (found ${parsed.version}, expected ${VERSION}). Attempting to load collections as-is.`,
           );
@@ -33,7 +36,7 @@ export function createLocalStorageAdapter(
     },
     async save(collections) {
       try {
-        window.localStorage.setItem(
+        localStorage.setItem(
           storageKey,
           JSON.stringify({ version: VERSION, collections }),
         );

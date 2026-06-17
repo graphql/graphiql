@@ -51,7 +51,9 @@ export const CollectionRow: FC<CollectionRowProps> = ({
         aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={e => {
-          if (e.key === 'Enter' || e.key === ' ') setExpanded(ex => !ex);
+          if (e.key === 'Enter' || e.key === ' ') {
+            setExpanded(ex => !ex);
+          }
         }}
       >
         <span className="graphiql-collection-chevron" aria-hidden="true">
@@ -65,7 +67,9 @@ export const CollectionRow: FC<CollectionRowProps> = ({
             onChange={e => setRenameValue(e.target.value)}
             onBlur={commitRename}
             onKeyDown={e => {
-              if (e.key === 'Enter') commitRename();
+              if (e.key === 'Enter') {
+                commitRename();
+              }
               if (e.key === 'Escape') {
                 setRenameValue(collection.name);
                 setIsRenaming(false);

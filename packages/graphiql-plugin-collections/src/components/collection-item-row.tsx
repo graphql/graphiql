@@ -113,7 +113,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
               Move down
             </DropdownMenu.Item>
           )}
-          {allCollections.filter(c => c.id !== collectionId).length > 0 && (
+          {allCollections.some(c => c.id !== collectionId) && (
             <>
               <DropdownMenu.Separator />
               {allCollections

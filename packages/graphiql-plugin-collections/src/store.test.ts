@@ -276,7 +276,7 @@ describe('createLocalStorageAdapter', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const key = 'test-collections-key';
     // Store with version 99
-    window.localStorage.setItem(
+    localStorage.setItem(
       key,
       JSON.stringify({
         version: 99,
@@ -293,6 +293,6 @@ describe('createLocalStorageAdapter', () => {
       expect.stringContaining('version mismatch'),
     );
     warnSpy.mockRestore();
-    window.localStorage.removeItem(key);
+    localStorage.removeItem(key);
   });
 });

@@ -19,7 +19,7 @@ type Selector<T> = (state: GraphiQLState) => T;
 export const __state = {
   schema: null as unknown,
   queryText: '{ __typename }',
-  addTab: () => {},
+  addTab() {},
   updateActiveTabValues(_values: {
     query?: string;
     variables?: string;

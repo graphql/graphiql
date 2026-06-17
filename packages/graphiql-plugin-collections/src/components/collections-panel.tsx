@@ -35,6 +35,12 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
     });
   };
 
+  const handleRename = actions.renameCollection;
+  const handleDelete = actions.deleteCollection;
+  const handleDeleteItem = actions.deleteItem;
+  const handleMoveItem = actions.moveItem;
+  const handleAddItem = actions.addItem;
+
   return (
     <div className="graphiql-collections-panel">
       <PanelHeader
@@ -78,12 +84,12 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
             key={collection.id}
             collection={collection}
             allCollections={collections}
-            onRename={actions.renameCollection}
-            onDelete={actions.deleteCollection}
+            onRename={handleRename}
+            onDelete={handleDelete}
             onOpenItem={handleOpen}
-            onDeleteItem={actions.deleteItem}
-            onMoveItem={actions.moveItem}
-            onAddItem={actions.addItem}
+            onDeleteItem={handleDeleteItem}
+            onMoveItem={handleMoveItem}
+            onAddItem={handleAddItem}
           />
         ))}
       </div>
