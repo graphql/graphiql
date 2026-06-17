@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { useGraphiQL } from '@graphiql/react';
+import CollectionsIcon from '../icons/collections.svg?react';
 import { SaveDialog } from './save-dialog';
 
 function deriveOperationName(query: string): string {
@@ -27,7 +28,7 @@ export const CollectionsSaveButton: FC = () => {
         aria-label="Save to collection"
         title="Save to collection"
       >
-        🗂
+        <CollectionsIcon aria-hidden="true" className="graphiql-toolbar-icon" />
       </button>
       <SaveDialog
         open={open}

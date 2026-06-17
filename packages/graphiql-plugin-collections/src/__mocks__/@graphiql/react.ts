@@ -1,5 +1,7 @@
 // Minimal stub of @graphiql/react for unit/integration tests.
 import type { ReactNode } from 'react';
+
+export type Operation = 'query' | 'mutation' | 'subscription';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 import type { StoreApi, ExtractState } from 'zustand';

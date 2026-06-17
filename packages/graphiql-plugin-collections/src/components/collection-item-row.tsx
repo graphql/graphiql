@@ -1,8 +1,9 @@
 import { FC, useState } from 'react';
-import { DropdownMenu } from '@graphiql/react';
+import { DropdownMenu, MethodPill } from '@graphiql/react';
+import type { Operation } from '@graphiql/react';
 import type { Collection, CollectionItem } from '../types';
 
-function inferOperationType(query: string): 'query' | 'mutation' | 'subscription' {
+function inferOperationType(query: string): Operation {
   const match = /^\s*(query|mutation|subscription)/i.exec(query);
   const keyword = match?.[1]?.toLowerCase();
   if (keyword === 'mutation' || keyword === 'subscription') {
@@ -69,12 +70,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
       onClick={() => onOpen(item)}
     >
       <span className="graphiql-collection-drag-handle" aria-hidden="true">⠿</span>
-      <span
-        className="graphiql-collection-item-type"
-        data-operation-type={operationType}
-      >
-        {operationType.slice(0, 1).toUpperCase()}
-      </span>
+      <MethodPill operation={operationType} aria-hidden />
       <span className="graphiql-collection-item-name" title={item.name}>
         {item.name}
       </span>
