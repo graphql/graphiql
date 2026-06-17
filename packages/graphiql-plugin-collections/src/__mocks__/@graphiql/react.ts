@@ -36,7 +36,8 @@ export const useGraphiQLActions = () => ({
 });
 
 export const createBoundedUseStore = ((store: StoreApi<unknown>) => (selector?: (state: unknown) => unknown) => {
-  return useStore(store, selector ? useShallow(selector) : undefined);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useStore(store, selector ? useShallow(selector) : (s: unknown) => s);
 }) as <S extends StoreApi<unknown>>(
   store: S,
 ) => {

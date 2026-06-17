@@ -112,6 +112,7 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         if (!fromCollection || fromIndex < 0 || fromIndex >= fromCollection.items.length) return;
 
         const item = fromCollection.items[fromIndex];
+        if (!item) return;
         const newCollections = collections.map(c => {
           if (c.id === fromCollectionId && c.id === toCollectionId) {
             const items = [...c.items];

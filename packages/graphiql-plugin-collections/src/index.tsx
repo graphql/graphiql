@@ -1,6 +1,7 @@
 import type { GraphiQLPlugin } from '@graphiql/react';
 import { CollectionsPanel } from './components/collections-panel';
 import CollectionsIcon from './icons/collections.svg?react';
+import type { CollectionsStorage } from './types';
 import './index.css';
 
 export type { CollectionsStorage, Collection, CollectionItem } from './types';
@@ -10,7 +11,7 @@ export { CollectionsSaveButton } from './components/save-button';
 
 export type CollectionsPluginOptions = {
   /** Custom storage adapter. Defaults to localStorage with key 'graphiql:collections'. */
-  storage?: import('./types').CollectionsStorage;
+  storage?: CollectionsStorage;
 };
 
 export const collectionsPlugin = (options?: CollectionsPluginOptions): GraphiQLPlugin => {

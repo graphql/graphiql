@@ -4,8 +4,9 @@ import type { Collection, CollectionItem } from '../types';
 
 function inferOperationType(query: string): 'query' | 'mutation' | 'subscription' {
   const match = /^\s*(query|mutation|subscription)/i.exec(query);
-  if (match) {
-    return match[1].toLowerCase() as 'query' | 'mutation' | 'subscription';
+  const keyword = match?.[1]?.toLowerCase();
+  if (keyword === 'mutation' || keyword === 'subscription') {
+    return keyword;
   }
   return 'query';
 }
