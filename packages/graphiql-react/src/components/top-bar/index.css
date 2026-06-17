@@ -119,9 +119,14 @@
   border-left: 1px solid oklch(var(--border-strong));
 }
 
+/*
+ * Solid background with near-white text rather than an alpha tint of the
+ * accent, so the active label keeps contrast above WCAG AA in both themes
+ * (matches the approach used by MethodPill).
+ */
 .graphiql-top-bar-method-option--active {
-  background: oklch(var(--accent-green) / 0.15);
-  color: oklch(var(--accent-green));
+  background: oklch(50% 0.15 146);
+  color: oklch(98% 0 0);
   font-weight: 700;
 }
 
