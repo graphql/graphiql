@@ -87,54 +87,28 @@
   flex-shrink: 0;
 }
 
-/* GET/POST segmented switcher — shown when transport supports both methods */
-.graphiql-top-bar-method-switcher {
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 1px solid oklch(var(--border-strong));
-}
-
-.graphiql-top-bar-method-option {
+/* Click-to-toggle method chip — shown when transport supports both methods */
+.graphiql-top-bar-method-toggle {
   padding: 0 var(--px-6);
   height: 18px;
   background: oklch(var(--bg-subtle));
-  border: none;
-  color: oklch(var(--fg-subtle));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-green));
   font-family: var(--font-family-mono);
   font-size: var(--font-size-small);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   line-height: 1;
   white-space: nowrap;
+  flex-shrink: 0;
   transition:
     background 0.1s,
     color 0.1s;
 }
 
-.graphiql-top-bar-method-option + .graphiql-top-bar-method-option {
-  border-left: 1px solid oklch(var(--border-strong));
-}
-
-/*
- * Solid background with near-white text rather than an alpha tint of the
- * accent, so the active label keeps contrast above WCAG AA in both themes
- * (matches the approach used by MethodPill).
- */
-.graphiql-top-bar-method-option--active {
-  background: oklch(50% 0.15 146);
-  color: oklch(98% 0 0);
-  font-weight: 700;
-}
-
-.graphiql-top-bar-method-option:not(
-    .graphiql-top-bar-method-option--active
-  ):hover {
+.graphiql-top-bar-method-toggle:hover {
   background: oklch(var(--bg-canvas));
-  color: oklch(var(--fg-default));
 }
 
 .graphiql-top-bar-endpoint-url {

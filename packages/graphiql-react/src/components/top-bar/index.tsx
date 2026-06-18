@@ -6,6 +6,7 @@ import type { FC } from 'react';
 import type { HttpMethod } from '@graphiql/toolkit';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
+import { Tooltip } from '../tooltip';
 import './index.css';
 
 export type TopBarProps = {
@@ -56,6 +57,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
   onSetMethod,
 }) => {
   const canSwitch = supportedMethods.length > 1;
+  const otherMethod = supportedMethods.find(m => m !== method) ?? method;
 
   return (
     <header className="graphiql-top-bar" role="banner">
@@ -69,28 +71,15 @@ export const TopBarView: FC<TopBarViewProps> = ({
 
       <div className="graphiql-top-bar-endpoint">
         {canSwitch ? (
-          <span
-            className="graphiql-top-bar-method-switcher"
-            role="group"
-            aria-label="HTTP method"
-          >
-            {(['GET', 'POST'] as const).map(m => (
-              <button
-                key={m}
-                type="button"
-                className={
-                  'graphiql-top-bar-method-option' +
-                  (method === m
-                    ? ' graphiql-top-bar-method-option--active'
-                    : '')
-                }
-                aria-pressed={method === m}
-                onClick={() => onSetMethod(m)}
-              >
-                {m}
-              </button>
-            ))}
-          </span>
+          <Tooltip label={`Switch to ${otherMethod}`}>
+            <button
+              type="button"
+              className="graphiql-top-bar-method-toggle"
+              onClick={() => onSetMethod(otherMethod)}
+            >
+              {method}
+            </button>
+          </Tooltip>
         ) : (
           <span className="graphiql-top-bar-endpoint-method">{method}</span>
         )}

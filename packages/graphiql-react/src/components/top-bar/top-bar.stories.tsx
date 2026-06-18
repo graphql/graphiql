@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GraphiQLProvider } from '../provider';
 import { TopBar } from './';
+import { Tooltip } from '../tooltip';
 
 const postOnlyTransport = {
   url: 'https://api.example.com/graphql',
@@ -54,21 +55,25 @@ export const Default: Story = {
   args: { version: 'v6.0.0-alpha.1' },
   decorators: [
     Story => (
-      <GraphiQLProvider transport={postOnlyTransport}>
-        <Story />
-      </GraphiQLProvider>
+      <Tooltip.Provider>
+        <GraphiQLProvider transport={postOnlyTransport}>
+          <Story />
+        </GraphiQLProvider>
+      </Tooltip.Provider>
     ),
   ],
 };
 
-/** GET/POST-capable transport: segmented switcher visible. */
+/** GET/POST-capable transport: click-to-toggle method chip with tooltip. */
 export const WithMethodSwitcher: Story = {
   args: { version: 'v6.0.0-alpha.1' },
   decorators: [
     Story => (
-      <GraphiQLProvider transport={switchableTransport}>
-        <Story />
-      </GraphiQLProvider>
+      <Tooltip.Provider>
+        <GraphiQLProvider transport={switchableTransport}>
+          <Story />
+        </GraphiQLProvider>
+      </Tooltip.Provider>
     ),
   ],
 };
@@ -78,9 +83,11 @@ export const NoVersion: Story = {
   args: {},
   decorators: [
     Story => (
-      <GraphiQLProvider transport={postOnlyTransport}>
-        <Story />
-      </GraphiQLProvider>
+      <Tooltip.Provider>
+        <GraphiQLProvider transport={postOnlyTransport}>
+          <Story />
+        </GraphiQLProvider>
+      </Tooltip.Provider>
     ),
   ],
 };
