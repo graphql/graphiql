@@ -1,6 +1,6 @@
 # Upgrading `graphiql` to `6.0.0`
 
-This covers the one notable change in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
+This covers the notable changes in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`, and the active operation now following the editor cursor. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
 
 ## Overview
 
@@ -146,6 +146,17 @@ const transport: Transport = {
 ```
 
 Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-code them; the response pane reads those fields directly.
+
+## Active operation follows the cursor
+
+In a document with more than one operation, the active operation now tracks the editor cursor. Moving the cursor into a different named operation updates `operationName`, so the Run button, the operation dropdown, and operation-aware plugins reflect the operation you are editing. Previously `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or by picking from the operation dropdown.
+
+Two things to know if you embed GraphiQL:
+
+- The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+- A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
+
+To opt out of cursor tracking, pin the operation with the `operationName` prop on `<GraphiQL>`; an explicit `operationName` overrides what the cursor would otherwise select.
 
 ## What's deprecated, not removed
 

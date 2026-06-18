@@ -99,6 +99,25 @@ export function createSchema({
     },
   });
 
+  // An interface that itself implements another interface (TestInterface),
+  // exercising the "interfaces can implement interfaces" case.
+  const NodeInterface = new GraphQLInterfaceType({
+    name: 'Node',
+    description: 'A node with a stable id; also a TestInterface.',
+    fields: () => ({
+      id: {
+        type: GraphQLID,
+        description: 'Stable identifier.',
+      },
+      name: {
+        type: GraphQLString,
+        description: 'Common name string.',
+      },
+    }),
+    interfaces: [TestInterface],
+    resolveType: () => UnionFirst,
+  });
+
   const UnionFirst = new GraphQLObjectType({
     name: 'First',
     fields: () => ({
@@ -106,12 +125,16 @@ export function createSchema({
         type: GraphQLString,
         description: 'Common name string for UnionFirst.',
       },
+      id: {
+        type: GraphQLID,
+        description: 'Stable identifier (from the Node interface).',
+      },
       first: {
         type: new GraphQLList(TestInterface),
         resolve: () => true,
       },
     }),
-    interfaces: [TestInterface],
+    interfaces: [TestInterface, NodeInterface],
   });
 
   const UnionSecond = new GraphQLObjectType({
