@@ -1,6 +1,6 @@
 # Upgrading `graphiql` to `6.0.0`
 
-This covers the notable changes in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`, and the active operation now following the editor cursor. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
+This covers the notable changes in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`, the active operation now following the editor cursor, and a query builder plugin installed by default. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
 
 ## Overview
 
@@ -157,6 +157,18 @@ Two things to know if you embed GraphiQL:
 - A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 
 To opt out of cursor tracking, pin the operation with the `operationName` prop on `<GraphiQL>`; an explicit `operationName` overrides what the cursor would otherwise select.
+
+## Query builder plugin installed by default
+
+`graphiql@6` ships `@graphiql/plugin-query-builder` and installs it by default, so a new query builder icon appears in the plugin rail with no extra configuration. To remove it, pass your own `plugins` list without it:
+
+```tsx
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
+
+<GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
+```
+
+The plugin's stylesheet is bundled into `graphiql`'s own `style.css`, so it is included whether or not the plugin is in your `plugins` list. Dropping the plugin removes its panel and rail icon; the small amount of unused CSS remains in the bundle.
 
 ## What's deprecated, not removed
 
