@@ -3318,6 +3318,7 @@ __metadata:
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
+    "@testing-library/user-event": "npm:^14.6.1"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphql: "npm:^16.9.0"
     react: "npm:^19.1.0"
@@ -3327,7 +3328,7 @@ __metadata:
     vite-plugin-svgr: "npm:^4.3.0"
   peerDependencies:
     "@graphiql/react": ^0.37.0
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown

@@ -20,6 +20,7 @@
     "./style.css": "./dist/style.css",
     ".": "./dist/index.js"
   },
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "react",
@@ -40,7 +41,7 @@
   },
   "peerDependencies": {
     "@graphiql/react": "^0.37.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
@@ -49,6 +50,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",
