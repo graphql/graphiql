@@ -14,7 +14,7 @@ export default defineConfig({
   ],
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/test-setup.ts'],
+    setupFiles: ['./setup-files.ts'],
     alias: [
       {
         // Fixes Error: Failed to resolve entry for package "monaco-editor".

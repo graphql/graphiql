@@ -39,7 +39,7 @@ import {
 } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
 import { FieldTree } from './field-tree';
-import './../index.css';
+import './../style.css';
 
 // monaco-editor's `CursorChangeReason.Explicit` — a cursor move the user made
 // directly (mouse or keyboard), as opposed to one caused by a content change.

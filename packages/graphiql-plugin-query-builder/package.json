@@ -20,7 +20,6 @@
     "./style.css": "./dist/style.css",
     ".": "./dist/index.js"
   },
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "react",
@@ -41,7 +40,7 @@
   },
   "peerDependencies": {
     "@graphiql/react": "^0.37.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },

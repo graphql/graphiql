@@ -21,7 +21,7 @@ import { ArgInput } from '../components/arg-input';
 import { FieldRow } from '../components/field-row';
 import { FieldTree } from '../components/field-tree';
 import { FragmentSection } from '../components/fragment-section';
-import '../index.css';
+import '../style.css';
 
 // ---------------------------------------------------------------------------
 // Demo schema — Star Wars flavoured, scalar leaves + one nested object type
