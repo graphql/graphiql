@@ -40,6 +40,13 @@ interface OperationEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
+// monaco-editor's `CursorChangeReason.Explicit` — a cursor move the user made
+// directly (mouse or keyboard), as opposed to one caused by a content change
+// (`ContentFlush`, e.g. a `setValue` from a plugin) or a programmatic
+// `setPosition`. Inlined as a literal to avoid pulling monaco-editor in just
+// for the enum.
+const CURSOR_CHANGE_EXPLICIT = 3;
+
 /**
  * Returns the name of the operation whose source range contains the editor's
  * cursor, or `undefined` when the cursor is outside every operation or the
@@ -315,7 +322,14 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     });
     const disposables = [
       model.onDidChangeContent(handleChange),
-      editor.onDidChangeCursorPosition(syncCursorOperationName),
+      editor.onDidChangeCursorPosition(e => {
+        // Only follow cursor moves the user made directly. A `setValue` or
+        // programmatic `setPosition` (e.g. from the query builder writing back
+        // an edit) must not change the active operation.
+        if (e.reason === CURSOR_CHANGE_EXPLICIT) {
+          syncCursorOperationName();
+        }
+      }),
       // Drop pending debounced calls on teardown so neither can fire against a
       // disposed editor.
       { dispose: () => handleChange.cancel() },
