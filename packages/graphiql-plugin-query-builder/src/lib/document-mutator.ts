@@ -541,6 +541,9 @@ export function argValueToValueNode(
         values.push(node);
       }
     }
+    if (values.length === 0) {
+      return undefined;
+    }
     const listNode: ListValueNode = { kind: Kind.LIST, values };
     return listNode;
   }
@@ -566,6 +569,9 @@ export function argValueToValueNode(
         name: { kind: Kind.NAME as const, value: fieldName },
         value: fieldNode,
       });
+    }
+    if (objectFields.length === 0) {
+      return undefined;
     }
     const objectNode: ObjectValueNode = {
       kind: Kind.OBJECT,

@@ -97,9 +97,15 @@ describe('argValueToValueNode — list of Int', () => {
     expect(node.values[2]).toEqual({ kind: Kind.INT, value: '3' });
   });
 
-  it('produces an empty ListValue for an empty array', () => {
+  it('returns undefined for an empty array (matching "remove arg" convention)', () => {
     const node = argValueToValueNode(new GraphQLList(GraphQLInt), []);
-    expect(node).toEqual({ kind: Kind.LIST, values: [] });
+    expect(node).toBeUndefined();
+  });
+
+  it('returns undefined when every item projects away', () => {
+    // Empty-string scalars are dropped, leaving nothing to emit.
+    const node = argValueToValueNode(new GraphQLList(GraphQLString), ['', '']);
+    expect(node).toBeUndefined();
   });
 });
 
@@ -156,6 +162,11 @@ describe('argValueToValueNode — input object', () => {
     }
     expect(node.fields).toHaveLength(1);
     expect(node.fields[0]!.name.value).toBe('name');
+  });
+
+  it('returns undefined when every field projects away', () => {
+    const node = argValueToValueNode(TagInput, { name: '', count: '' });
+    expect(node).toBeUndefined();
   });
 });
 
