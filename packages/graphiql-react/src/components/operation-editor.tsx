@@ -316,8 +316,9 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     const disposables = [
       model.onDidChangeContent(handleChange),
       editor.onDidChangeCursorPosition(syncCursorOperationName),
-      // Drop a pending cursor sync on teardown so it can't fire against a
+      // Drop pending debounced calls on teardown so neither can fire against a
       // disposed editor.
+      { dispose: () => handleChange.cancel() },
       { dispose: () => syncCursorOperationName.cancel() },
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
