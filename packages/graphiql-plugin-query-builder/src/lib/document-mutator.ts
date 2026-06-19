@@ -792,6 +792,17 @@ function replaceVariableInSelectionSet(
   defaultValue: ValueNode | undefined,
 ): SelectionSetNode {
   const newSelections = selectionSet.selections.map(selection => {
+    if (selection.kind === Kind.INLINE_FRAGMENT) {
+      return {
+        ...selection,
+        selectionSet: replaceVariableInSelectionSet(
+          selection.selectionSet,
+          varName,
+          defaultValue,
+        ),
+      };
+    }
+
     if (selection.kind !== Kind.FIELD) {
       return selection;
     }

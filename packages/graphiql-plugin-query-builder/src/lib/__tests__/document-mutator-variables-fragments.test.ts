@@ -333,6 +333,28 @@ describe('demoteVariable', () => {
     expect(printed).not.toMatch(/stored/);
     expect(printed).not.toMatch(/\$v/);
   });
+
+  it('replaces a reference nested inside an inline fragment', () => {
+    const d = doc(
+      'query A($x: String = "d") { search { ... on Human { f(id: $x) } } }',
+    );
+    const result = demoteVariable(d, 'x');
+    const printed = print(result);
+    expect(printed).toMatch(/f\(id: "d"\)/);
+    expect(printed).not.toMatch(/\$x/);
+    expect(() => parse(printed)).not.toThrow();
+  });
+
+  it('removes a no-default reference nested inside an inline fragment', () => {
+    const d = doc(
+      'query A($x: String) { search { ... on Human { f(id: $x) } } }',
+    );
+    const result = demoteVariable(d, 'x');
+    const printed = print(result);
+    expect(printed).not.toMatch(/\$x/);
+    expect(printed).not.toMatch(/id:/);
+    expect(() => parse(printed)).not.toThrow();
+  });
 });
 
 // ---------------------------------------------------------------------------
