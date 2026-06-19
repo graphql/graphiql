@@ -3,6 +3,7 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  GraphQLUnionType,
   parse,
 } from 'graphql';
 import { describe, expect, it } from 'vitest';
@@ -110,6 +111,26 @@ describe('resolveSchemaArg', () => {
   it('returns undefined for an unknown field or arg', () => {
     expect(resolveSchemaArg(schema, 'query', ['nope'], 'id')).toBeUndefined();
     expect(resolveSchemaArg(schema, 'query', ['hero'], 'nope')).toBeUndefined();
+  });
+
+  it('resolves an argument on a field inside an inline fragment', () => {
+    const Droid = new GraphQLObjectType({
+      name: 'Droid',
+      fields: {
+        part: { type: GraphQLString, args: { id: { type: GraphQLInt } } },
+      },
+    });
+    const SearchResult = new GraphQLUnionType({
+      name: 'SearchResult',
+      types: [Droid],
+    });
+    const RootQuery = new GraphQLObjectType({
+      name: 'Query',
+      fields: { search: { type: SearchResult } },
+    });
+    const unionSchema = new GraphQLSchema({ query: RootQuery, types: [Droid] });
+    const path = ['search', inlineFragmentSegment('Droid'), 'part'];
+    expect(resolveSchemaArg(unionSchema, 'query', path, 'id')?.name).toBe('id');
   });
 });
 

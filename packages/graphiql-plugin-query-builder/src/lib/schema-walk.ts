@@ -225,6 +225,15 @@ export function resolveSchemaArg(
   let targetField: { args: readonly GraphQLArgument[] } | undefined;
   const fieldNames = rest.length === 0 ? [rootName] : [rootName, ...rest];
   for (const name of fieldNames) {
+    if (name.startsWith('... on ')) {
+      const condition = schema.getType(name.slice('... on '.length));
+      if (!condition) {
+        return;
+      }
+      currentType = condition;
+      targetField = undefined;
+      continue;
+    }
     if (!('getFields' in currentType)) {
       return;
     }
