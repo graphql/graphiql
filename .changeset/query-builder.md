@@ -1,5 +1,5 @@
 ---
-'@graphiql/plugin-query-builder': minor
+'@graphiql/plugin-query-builder': patch
 'graphiql': minor
 ---
 
