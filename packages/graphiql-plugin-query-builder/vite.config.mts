@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import svgr from 'vite-plugin-svgr';
@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 import packageJSON from './package.json' with { type: 'json' };
 
-const reactCompilerConfig: Partial<ReactCompilerConfig> = {
+export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,
   sources(filename) {
     if (filename.includes('__tests__')) {
@@ -16,23 +16,25 @@ const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   },
 };
 
+export const plugins: PluginOption[] = [
+  react({
+    babel: {
+      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
+    },
+  }),
+  svgr({
+    svgrOptions: {
+      titleProp: true,
+    },
+  }),
+  dts({
+    include: ['src/**'],
+    exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+  }),
+];
+
 export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-      },
-    }),
-    svgr({
-      svgrOptions: {
-        titleProp: true,
-      },
-    }),
-    dts({
-      include: ['src/**'],
-      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
-    }),
-  ],
+  plugins,
   css: {
     transformer: 'lightningcss',
   },

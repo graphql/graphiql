@@ -1,17 +1,9 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
+import { plugins } from './vite.config.mjs';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    svgr({
-      svgrOptions: {
-        titleProp: true,
-      },
-    }),
-  ],
+  plugins,
   test: {
     environment: 'jsdom',
     setupFiles: ['./setup-files.ts'],
