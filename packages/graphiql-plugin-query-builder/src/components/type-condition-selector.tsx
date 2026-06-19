@@ -62,14 +62,21 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
   abstractType,
 }) => {
   const { doc, schema, operationName, cursorPath } = useFieldTreeContext();
-  const [expanded, setExpanded] = useState(() => {
-    const typeConditions = schema
-      ? applicableTypeConditions(abstractType, schema)
-      : [];
-    return typeConditions.some(t =>
-      isInlineFragmentPresent(doc, fieldPath, t.name, operationName),
-    );
-  });
+  // Whether the document currently has a type condition selected under this
+  // field. Recomputed each render so a fragment added after mount can open the
+  // section (see the effect below).
+  const hasSelectedCondition = (
+    schema ? applicableTypeConditions(abstractType, schema) : []
+  ).some(t => isInlineFragmentPresent(doc, fieldPath, t.name, operationName));
+  const [expanded, setExpanded] = useState(hasSelectedCondition);
+
+  // Open the section when a type condition becomes selected in the document.
+  // Only opens, never force-closes, so the user can still collapse it manually.
+  useEffect(() => {
+    if (hasSelectedCondition) {
+      setExpanded(true);
+    }
+  }, [hasSelectedCondition]);
 
   // Open the section when the editor cursor sits inside one of its type
   // conditions, so the reveal can cascade down to a field nested in a

@@ -365,6 +365,40 @@ describe('FieldTree — interface field', () => {
     ).toBeNull();
   });
 
+  it('opens the possible types section when a condition is added to the document after mount', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <FieldTree
+        type={QueryWithInterface}
+        path={[]}
+        doc={doc('{ __typename }')}
+        schema={SchemaWithInterface}
+        onToggle={() => {}}
+        onSetArg={() => {}}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /expand character/i }));
+    expect(
+      screen.queryByLabelText(/toggle \.\.\. on HumanCharacter/i),
+    ).toBeNull();
+
+    rerender(
+      <FieldTree
+        type={QueryWithInterface}
+        path={[]}
+        doc={doc('{ character { ... on HumanCharacter { name } } }')}
+        schema={SchemaWithInterface}
+        onToggle={() => {}}
+        onSetArg={() => {}}
+      />,
+    );
+
+    expect(
+      screen.getByLabelText(/toggle \.\.\. on HumanCharacter/i),
+    ).toBeInTheDocument();
+  });
+
   it("lets an interface's own field be selected directly", async () => {
     const onToggle = vi.fn();
     const user = userEvent.setup();
