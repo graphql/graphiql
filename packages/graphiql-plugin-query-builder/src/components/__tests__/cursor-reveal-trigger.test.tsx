@@ -15,9 +15,15 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { afterEach, describe, expect, it } from 'vitest';
-import { __state } from '../../__mocks__/@graphiql/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
+
+vi.mock('@graphiql/react', async () => {
+  const actual =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+});
 
 const TestSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -29,6 +35,7 @@ const TestSchema = new GraphQLSchema({
 // A stub editor whose cursor always resolves to the `id` field, exposing the
 // cursor-change callback so the test can fire events with specific reasons.
 function setupEditor() {
+  installGraphiQLReactMock();
   const query = '{ id }';
   let cursorCb: ((e: { reason: number }) => void) | undefined;
   __state.schema = TestSchema;

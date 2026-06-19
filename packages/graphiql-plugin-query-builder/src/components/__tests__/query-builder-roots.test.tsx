@@ -6,9 +6,15 @@
  */
 import { render, screen } from '@testing-library/react';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { __state } from '../../__mocks__/@graphiql/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
+
+vi.mock('@graphiql/react', async () => {
+  const actual =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+});
 
 const QueryType = new GraphQLObjectType({
   name: 'Query',
@@ -27,6 +33,7 @@ const TestSchema = new GraphQLSchema({
 
 describe('QueryBuilder — root operation sections', () => {
   beforeEach(() => {
+    installGraphiQLReactMock();
     __state.schema = TestSchema;
     __state.queryText = '{ items }';
     __state.operationName = undefined;

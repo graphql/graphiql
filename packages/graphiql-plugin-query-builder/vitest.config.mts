@@ -1,7 +1,7 @@
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
-import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -12,17 +12,17 @@ export default defineConfig({
       },
     }),
   ],
-  resolve: {
-    alias: {
-      // Point @graphiql/react to our stub so tests don't need a built dist.
-      '@graphiql/react': path.resolve(
-        __dirname,
-        'src/__mocks__/@graphiql/react.ts',
-      ),
-    },
-  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
+    alias: [
+      {
+        // Fixes Error: Failed to resolve entry for package "monaco-editor".
+        find: /^monaco-editor$/,
+        replacement: path.resolve(
+          '../../node_modules/monaco-editor/esm/vs/editor/editor.api',
+        ),
+      },
+    ],
   },
 });

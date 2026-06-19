@@ -19,9 +19,15 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { afterEach, describe, expect, it } from 'vitest';
-import { __state } from '../../__mocks__/@graphiql/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
+
+vi.mock('@graphiql/react', async () => {
+  const actual =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+});
 
 const Node = new GraphQLInterfaceType({
   name: 'Node',
@@ -42,6 +48,7 @@ const TestSchema = new GraphQLSchema({
 
 // Stub editor whose cursor resolves to `extra`, nested inside `... on Impl`.
 function setupEditor() {
+  installGraphiQLReactMock();
   const query = '{ node { ... on Impl { extra } } }';
   let cursorCb: ((e: { reason: number }) => void) | undefined;
   __state.schema = TestSchema;

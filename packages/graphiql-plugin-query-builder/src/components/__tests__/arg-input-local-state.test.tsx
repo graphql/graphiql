@@ -22,9 +22,15 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { describe, expect, it, beforeEach } from 'vitest';
-import { __state } from '../../__mocks__/@graphiql/react';
+import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
+
+vi.mock('@graphiql/react', async () => {
+  const actual =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+});
 
 // ---------------------------------------------------------------------------
 // Test schema: search(query: String), items(ids: [Int])
@@ -55,6 +61,7 @@ const TestSchema = new GraphQLSchema({ query: QueryType });
 // ---------------------------------------------------------------------------
 
 function setupState(queryText: string) {
+  installGraphiQLReactMock();
   const writtenQueries: string[] = [];
   __state.schema = TestSchema;
   __state.queryText = queryText;

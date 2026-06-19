@@ -17,9 +17,15 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { describe, expect, it, beforeEach } from 'vitest';
-import { __state } from '../../__mocks__/@graphiql/react';
+import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
+
+vi.mock('@graphiql/react', async () => {
+  const actual =
+    await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
+  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+});
 
 // ---------------------------------------------------------------------------
 // Test schema: items(ids: [Int], filter: FilterInput)
@@ -56,6 +62,7 @@ describe('QueryBuilder integration — list and input-object args', () => {
   let writtenQueries: string[];
 
   beforeEach(() => {
+    installGraphiQLReactMock();
     writtenQueries = [];
     __state.schema = TestSchema;
     // items is in the doc so args are visible (isFieldSelected → true)
