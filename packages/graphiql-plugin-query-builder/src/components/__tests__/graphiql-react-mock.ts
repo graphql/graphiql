@@ -1,36 +1,51 @@
 /**
- * Shared test helper: wires up vi.fn() mocks for useGraphiQL and
+ * Shared test helper: wires the vi.fn() mocks for useGraphiQL and
  * useGraphiQLActions (imported from the REAL '@graphiql/react') to read from a
- * mutable __state object, replicating the old hand-written module mock.
+ * per-test state object.
+ *
+ * Each call to installGraphiQLReactMock() builds a fresh state object and
+ * returns it, so there is no module-level mutable state to leak between tests.
+ * The mocks read the returned object live, so a test can mutate it (or have the
+ * builder write back into it) and a re-render observes the new values.
  *
  * Usage in each test file:
  *   1. Add a top-level vi.mock('@graphiql/react', ...) that spreads the real
  *      module and replaces useGraphiQL / useGraphiQLActions with vi.fn().
- *   2. Import { __state, installGraphiQLReactMock } from this file.
- *   3. Call installGraphiQLReactMock() inside beforeEach (or at the top of any
- *      setup function) so the mock implementations are wired before the test
- *      mutates __state and renders.
+ *   2. Import { installGraphiQLReactMock } from this file.
+ *   3. Call it in beforeEach (or a setup function) and keep the returned object;
+ *      pass initial values as overrides and mutate it for per-test changes.
  */
 import { type Mock } from 'vitest';
 import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
 
-// Mutable state that tests can override.
-export const __state = {
-  schema: null as unknown,
-  queryText: '{ __typename }',
-  variablesText: undefined as string | undefined,
-  operationName: undefined as string | undefined,
+export interface GraphiQLReactMockState {
+  schema: unknown;
+  queryText: string;
+  variablesText: string | undefined;
+  operationName: string | undefined;
   // Tests that exercise editor-cursor behavior set a stub editor here; left null
   // otherwise so the builder falls back to updateActiveTabValues.
-  queryEditor: null as unknown,
-  updateActiveTabValues(_values: { query?: string; variables?: string }) {},
-};
+  queryEditor: unknown;
+  updateActiveTabValues(values: { query?: string; variables?: string }): void;
+}
 
 /**
- * Wire the vi.fn() mocks to read __state live. Call this inside beforeEach
- * (before mutating __state or rendering) in each test file that uses the mock.
+ * Build a fresh state object and wire the vi.fn() mocks to read it live. Returns
+ * the state so the test can mutate it; call once per test (e.g. in beforeEach).
  */
-export function installGraphiQLReactMock() {
+export function installGraphiQLReactMock(
+  overrides: Partial<GraphiQLReactMockState> = {},
+): GraphiQLReactMockState {
+  const state: GraphiQLReactMockState = {
+    schema: null,
+    queryText: '{ __typename }',
+    variablesText: undefined,
+    operationName: undefined,
+    queryEditor: null,
+    updateActiveTabValues() {},
+    ...overrides,
+  };
+
   (useGraphiQL as Mock).mockImplementation(
     (
       selector: (state: {
@@ -43,17 +58,19 @@ export function installGraphiQLReactMock() {
       }) => unknown,
     ) =>
       selector({
-        schema: __state.schema,
-        queryEditor: __state.queryEditor,
+        schema: state.schema,
+        queryEditor: state.queryEditor,
         variableEditor: null,
         activeTabIndex: 0,
-        tabs: [{ query: __state.queryText, variables: __state.variablesText }],
-        operationName: __state.operationName,
+        tabs: [{ query: state.queryText, variables: state.variablesText }],
+        operationName: state.operationName,
       }),
   );
 
   (useGraphiQLActions as Mock).mockImplementation(() => ({
     updateActiveTabValues: (v: { query?: string; variables?: string }) =>
-      __state.updateActiveTabValues(v),
+      state.updateActiveTabValues(v),
   }));
+
+  return state;
 }

@@ -19,8 +19,8 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import { describe, expect, it, vi } from 'vitest';
+import { installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -48,25 +48,26 @@ const TestSchema = new GraphQLSchema({
 
 // Stub editor whose cursor resolves to `extra`, nested inside `... on Impl`.
 function setupEditor() {
-  installGraphiQLReactMock();
   const query = '{ node { ... on Impl { extra } } }';
   let cursorCb: ((e: { reason: number }) => void) | undefined;
-  __state.schema = TestSchema;
-  __state.queryText = query;
-  __state.queryEditor = {
-    onDidChangeCursorPosition(cb: (e: { reason: number }) => void) {
-      cursorCb = cb;
-      return { dispose() {} };
-    },
-    getModel: () => ({
+  installGraphiQLReactMock({
+    schema: TestSchema,
+    queryText: query,
+    queryEditor: {
+      onDidChangeCursorPosition(cb: (e: { reason: number }) => void) {
+        cursorCb = cb;
+        return { dispose() {} };
+      },
+      getModel: () => ({
+        getValue: () => query,
+        getOffsetAt: () => query.indexOf('extra') + 1,
+      }),
+      getPosition: () => ({ lineNumber: 1, column: 1 }),
       getValue: () => query,
-      getOffsetAt: () => query.indexOf('extra') + 1,
-    }),
-    getPosition: () => ({ lineNumber: 1, column: 1 }),
-    getValue: () => query,
-    setValue() {},
-    setPosition() {},
-  };
+      setValue() {},
+      setPosition() {},
+    },
+  });
   return { fireUserCursor: () => act(() => cursorCb?.({ reason: 3 })) };
 }
 
@@ -76,10 +77,6 @@ const deepFieldVisible = () =>
     .some(
       r => r.querySelector('.graphiql-qb-field-name')?.textContent === 'extra',
     );
-
-afterEach(() => {
-  __state.queryEditor = null;
-});
 
 describe('cursor reveal into a collapsed Possible types section', () => {
   it('re-opens the section so the nested field is revealed', async () => {

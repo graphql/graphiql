@@ -4,8 +4,8 @@
  * query string. This is the test that would have caught the original bug where
  * list/input-object changes were discarded because handleSetArg early-returned.
  *
- * The mock in src/__mocks__/@graphiql/react.ts (aliased via vitest.config.mts)
- * exposes `__state` so tests can control schema + query text.
+ * The shared graphiql-react-mock helper exposes a per-test state object so tests
+ * can control schema + query text and observe the builder's writes.
  */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -18,7 +18,10 @@ import {
   GraphQLString,
 } from 'graphql';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import {
+  type GraphiQLReactMockState,
+  installGraphiQLReactMock,
+} from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -60,24 +63,26 @@ const TestSchema = new GraphQLSchema({ query: QueryType });
 
 describe('QueryBuilder integration — list and input-object args', () => {
   let writtenQueries: string[];
+  let state: GraphiQLReactMockState;
 
   beforeEach(() => {
-    installGraphiQLReactMock();
     writtenQueries = [];
-    __state.schema = TestSchema;
     // items is in the doc so args are visible (isFieldSelected → true)
-    __state.queryText = '{ items }';
-    __state.updateActiveTabValues = (values: { query?: string }) => {
-      if (values.query !== undefined) {
-        writtenQueries.push(values.query);
-        // Feed back so the next re-render picks up the new doc
-        __state.queryText = values.query;
-      }
-    };
+    state = installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: '{ items }',
+      updateActiveTabValues: (values: { query?: string }) => {
+        if (values.query !== undefined) {
+          writtenQueries.push(values.query);
+          // Feed back so the next re-render picks up the new doc
+          state.queryText = values.query;
+        }
+      },
+    });
   });
 
   function lastQuery(): string {
-    return writtenQueries.at(-1) ?? __state.queryText;
+    return writtenQueries.at(-1) ?? state.queryText;
   }
 
   it('renders the items field', () => {
@@ -106,7 +111,7 @@ describe('QueryBuilder integration — list and input-object args', () => {
   it('list-of-Int arg: editing an item produces IntValue (not StringValue)', async () => {
     const user = userEvent.setup();
     // Pre-populate the doc with one ids item so the spinbutton renders immediately
-    __state.queryText = '{ items(ids: [1]) }';
+    state.queryText = '{ items(ids: [1]) }';
     render(<QueryBuilder />);
 
     // The list of Int should have rendered one spinbutton labeled 'ids'

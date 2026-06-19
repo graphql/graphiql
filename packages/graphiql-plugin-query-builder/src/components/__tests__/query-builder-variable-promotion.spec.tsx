@@ -8,7 +8,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import { installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -41,15 +41,15 @@ describe('QueryBuilder — promoting a mutation argument to a variable', () => {
   let writes: { query?: string; variables?: string }[];
 
   beforeEach(() => {
-    installGraphiQLReactMock();
     writes = [];
-    __state.schema = TestSchema;
-    __state.queryText = 'mutation B {\n  setString(value: "hi")\n}';
-    __state.variablesText = undefined;
-    __state.operationName = 'B';
-    __state.updateActiveTabValues = values => {
-      writes.push(values);
-    };
+    installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: 'mutation B {\n  setString(value: "hi")\n}',
+      operationName: 'B',
+      updateActiveTabValues: values => {
+        writes.push(values);
+      },
+    });
   });
 
   it('writes the value to the variables JSON and a bare variable definition', async () => {

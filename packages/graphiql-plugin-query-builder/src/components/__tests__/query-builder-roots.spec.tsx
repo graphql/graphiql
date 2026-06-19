@@ -2,12 +2,15 @@
  * The root operation sections (Query / Mutation / Subscription) follow the
  * active operation: the root matching the active operation's kind is expanded
  * and enabled, the others are collapsed and disabled. The active operation is
- * driven by `operationName` from the editor store (mocked via `__state`).
+ * driven by `operationName` from the editor store (mocked via graphiql-react-mock).
  */
 import { render, screen } from '@testing-library/react';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import {
+  type GraphiQLReactMockState,
+  installGraphiQLReactMock,
+} from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -32,12 +35,13 @@ const TestSchema = new GraphQLSchema({
 });
 
 describe('QueryBuilder — root operation sections', () => {
+  let state: GraphiQLReactMockState;
+
   beforeEach(() => {
-    installGraphiQLReactMock();
-    __state.schema = TestSchema;
-    __state.queryText = '{ items }';
-    __state.operationName = undefined;
-    __state.updateActiveTabValues = () => {};
+    state = installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: '{ items }',
+    });
   });
 
   it('expands and enables the root matching the active query operation', () => {
@@ -52,8 +56,8 @@ describe('QueryBuilder — root operation sections', () => {
   });
 
   it('switches the active root when the active operation is a mutation', () => {
-    __state.queryText = 'mutation M { createItem }';
-    __state.operationName = 'M';
+    state.queryText = 'mutation M { createItem }';
+    state.operationName = 'M';
     render(<QueryBuilder />);
 
     expect(screen.getByRole('button', { name: /Mutation/i })).toBeEnabled();

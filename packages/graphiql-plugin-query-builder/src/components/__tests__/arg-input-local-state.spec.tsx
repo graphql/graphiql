@@ -10,8 +10,8 @@
  *     visible input that stays on screen even though an empty element can't be
  *     represented in the document.
  *
- * Both tests use the stateful __state mock so the query write feeds back into
- * the component (the same pattern as query-builder-integration.test.tsx).
+ * Both tests use the stateful graphiql-react-mock so the query write feeds back
+ * into the component (the same pattern as query-builder-integration.spec.tsx).
  */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -22,8 +22,8 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import { describe, expect, it, vi } from 'vitest';
+import { installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -61,17 +61,18 @@ const TestSchema = new GraphQLSchema({ query: QueryType });
 // ---------------------------------------------------------------------------
 
 function setupState(queryText: string) {
-  installGraphiQLReactMock();
   const writtenQueries: string[] = [];
-  __state.schema = TestSchema;
-  __state.queryText = queryText;
-  __state.updateActiveTabValues = (values: { query?: string }) => {
-    if (values.query !== undefined) {
-      writtenQueries.push(values.query);
-      __state.queryText = values.query;
-    }
-  };
-  return { writtenQueries };
+  const state = installGraphiQLReactMock({
+    schema: TestSchema,
+    queryText,
+    updateActiveTabValues: (values: { query?: string }) => {
+      if (values.query !== undefined) {
+        writtenQueries.push(values.query);
+        state.queryText = values.query;
+      }
+    },
+  });
+  return { writtenQueries, state };
 }
 
 // ---------------------------------------------------------------------------
@@ -79,10 +80,6 @@ function setupState(queryText: string) {
 // ---------------------------------------------------------------------------
 
 describe('multi-char scalar input — local state fix', () => {
-  beforeEach(() => {
-    setupState('{ search }');
-  });
-
   it('typing a multi-char string produces the full value in the document', async () => {
     const { writtenQueries } = setupState('{ search }');
     const user = userEvent.setup();
@@ -114,15 +111,15 @@ describe('multi-char scalar input — local state fix', () => {
 
   it('external document change is reflected in the input', () => {
     // Start with search(query: "old") in the doc
-    const { writtenQueries } = setupState('{ search(query: "old") }');
+    const { writtenQueries, state } = setupState('{ search(query: "old") }');
     const { rerender } = render(<QueryBuilder />);
 
     const input = screen.getByRole('textbox', { name: 'query' });
     expect(input).toHaveValue('old');
 
     // Simulate an external change (e.g. user edits the editor directly):
-    // update __state.queryText and re-render
-    __state.queryText = '{ search(query: "new") }';
+    // update the editor state and re-render
+    state.queryText = '{ search(query: "new") }';
     rerender(<QueryBuilder />);
 
     // The input should now show "new" (external change synced in)

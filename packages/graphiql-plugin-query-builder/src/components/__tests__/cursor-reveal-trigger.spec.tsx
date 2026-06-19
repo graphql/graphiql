@@ -15,8 +15,8 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { __state, installGraphiQLReactMock } from './graphiql-react-mock';
+import { describe, expect, it, vi } from 'vitest';
+import { installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
 
 vi.mock('@graphiql/react', async () => {
@@ -35,25 +35,26 @@ const TestSchema = new GraphQLSchema({
 // A stub editor whose cursor always resolves to the `id` field, exposing the
 // cursor-change callback so the test can fire events with specific reasons.
 function setupEditor() {
-  installGraphiQLReactMock();
   const query = '{ id }';
   let cursorCb: ((e: { reason: number }) => void) | undefined;
-  __state.schema = TestSchema;
-  __state.queryText = query;
-  __state.queryEditor = {
-    onDidChangeCursorPosition(cb: (e: { reason: number }) => void) {
-      cursorCb = cb;
-      return { dispose() {} };
-    },
-    getModel: () => ({
+  installGraphiQLReactMock({
+    schema: TestSchema,
+    queryText: query,
+    queryEditor: {
+      onDidChangeCursorPosition(cb: (e: { reason: number }) => void) {
+        cursorCb = cb;
+        return { dispose() {} };
+      },
+      getModel: () => ({
+        getValue: () => query,
+        getOffsetAt: () => query.indexOf('id') + 1, // inside the `id` token
+      }),
+      getPosition: () => ({ lineNumber: 1, column: 4 }),
       getValue: () => query,
-      getOffsetAt: () => query.indexOf('id') + 1, // inside the `id` token
-    }),
-    getPosition: () => ({ lineNumber: 1, column: 4 }),
-    getValue: () => query,
-    setValue() {},
-    setPosition() {},
-  };
+      setValue() {},
+      setPosition() {},
+    },
+  });
   return { fireCursor: (reason: number) => act(() => cursorCb?.({ reason })) };
 }
 
@@ -65,10 +66,6 @@ const idRow = () =>
     )!;
 
 const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
-
-afterEach(() => {
-  __state.queryEditor = null;
-});
 
 describe('cursor reveal trigger', () => {
   it('reveals on user navigation but not on programmatic cursor changes', async () => {
