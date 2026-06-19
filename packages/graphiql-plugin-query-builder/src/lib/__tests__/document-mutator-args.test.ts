@@ -49,6 +49,37 @@ describe('scalarToValueNode', () => {
   it('returns undefined for an empty string', () => {
     expect(scalarToValueNode(GraphQLInt, '')).toBeUndefined();
   });
+
+  it('truncates a decimal entered into an Int field to a valid IntValue', () => {
+    expect(scalarToValueNode(GraphQLInt, '1.5')).toEqual({
+      kind: 'IntValue',
+      value: '1',
+    });
+  });
+
+  it('normalizes scientific notation into a valid IntValue', () => {
+    expect(scalarToValueNode(GraphQLInt, '1e3')).toEqual({
+      kind: 'IntValue',
+      value: '1000',
+    });
+  });
+
+  it('returns undefined for non-numeric Int input', () => {
+    expect(scalarToValueNode(GraphQLInt, '-')).toBeUndefined();
+    expect(scalarToValueNode(GraphQLInt, 'abc')).toBeUndefined();
+  });
+
+  it('normalizes a Float so the literal is always valid GraphQL', () => {
+    // ".5" has no integer part and is not a valid FloatValue literal as-is.
+    expect(scalarToValueNode(GraphQLFloat, '.5')).toEqual({
+      kind: 'FloatValue',
+      value: '0.5',
+    });
+  });
+
+  it('returns undefined for non-numeric Float input', () => {
+    expect(scalarToValueNode(GraphQLFloat, 'abc')).toBeUndefined();
+  });
 });
 
 describe('setFieldArgument', () => {

@@ -140,6 +140,21 @@ describe('ArgInput — Int/Float', () => {
     await userEvent.type(screen.getByRole('spinbutton'), '42');
     expect(onChange).toHaveBeenCalled();
   });
+
+  it('restricts the Int input to whole-number steps', () => {
+    render(<ArgInput arg={intArg()} value="" onChange={() => {}} />);
+    expect(screen.getByRole('spinbutton', { name: 'count' })).toHaveAttribute(
+      'step',
+      '1',
+    );
+  });
+
+  it('does not constrain the Float input step', () => {
+    render(<ArgInput arg={floatArg()} value="" onChange={() => {}} />);
+    expect(
+      screen.getByRole('spinbutton', { name: 'ratio' }),
+    ).not.toHaveAttribute('step');
+  });
 });
 
 describe('ArgInput — String/ID', () => {

@@ -399,10 +399,24 @@ export function scalarToValueNode(
     return { kind: Kind.ENUM, value: raw };
   }
   switch (type.name) {
-    case 'Int':
-      return { kind: Kind.INT, value: raw };
-    case 'Float':
-      return { kind: Kind.FLOAT, value: raw };
+    case 'Int': {
+      const n = Number(raw);
+      if (!Number.isFinite(n)) {
+        return undefined;
+      }
+      const int = Math.trunc(n);
+      if (!Number.isSafeInteger(int)) {
+        return undefined;
+      }
+      return { kind: Kind.INT, value: String(int) };
+    }
+    case 'Float': {
+      const n = Number(raw);
+      if (!Number.isFinite(n)) {
+        return undefined;
+      }
+      return { kind: Kind.FLOAT, value: String(n) };
+    }
     case 'Boolean':
       return { kind: Kind.BOOLEAN, value: raw === 'true' };
     case 'String':

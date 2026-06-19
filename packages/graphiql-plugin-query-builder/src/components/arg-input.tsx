@@ -221,6 +221,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
           <ScalarArgControl
             name={name}
             inputType={inputType}
+            step={named.name === 'Int' ? '1' : undefined}
             value={typeof value === 'string' ? value : ''}
             onChange={onChange}
           />
@@ -246,6 +247,7 @@ const ArgInputByType: FC<TypedInputProps> = ({
 type ScalarArgControlProps = {
   name: string;
   inputType: 'text' | 'number';
+  step?: string;
   value: string;
   onChange: (v: ArgValue) => void;
 };
@@ -253,12 +255,14 @@ type ScalarArgControlProps = {
 const ScalarArgControl: FC<ScalarArgControlProps> = ({
   name,
   inputType,
+  step,
   value,
   onChange,
 }) => {
   return (
     <input
       type={inputType}
+      step={step}
       aria-label={name}
       value={value}
       onChange={e => onChange(e.target.value)}
