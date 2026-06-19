@@ -1,12 +1,28 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import svgr from 'vite-plugin-svgr';
 import dts from 'vite-plugin-dts';
+import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 import packageJSON from './package.json' with { type: 'json' };
+
+const reactCompilerConfig: Partial<ReactCompilerConfig> = {
+  ...$reactCompilerConfig,
+  sources(filename) {
+    if (filename.includes('__tests__')) {
+      return false;
+    }
+    return filename.includes('/graphiql-plugin-query-builder/src/');
+  },
+};
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
+      },
+    }),
     svgr({
       svgrOptions: {
         titleProp: true,
@@ -35,8 +51,9 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'react/jsx-runtime',
-        // Exclude peer dependencies from bundle
+        // Exclude peer dependencies and dependencies from bundle
         ...Object.keys(packageJSON.peerDependencies),
+        ...Object.keys(packageJSON.dependencies),
       ],
       output: {
         preserveModules: true,

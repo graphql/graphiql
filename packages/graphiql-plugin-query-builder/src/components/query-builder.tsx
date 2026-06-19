@@ -126,7 +126,6 @@ export const QueryBuilder: FC = () => {
       setWorkingDoc(emptyDoc());
     }
     // unparseable in-progress text: keep the last valid working document
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- refs are stable
   }, [queryText]);
 
   // The active operation has exactly one root type (query, mutation, or
@@ -308,7 +307,8 @@ export const QueryBuilder: FC = () => {
       inlineValue = argValueToValueNode(schemaArg.type, String(jsValue));
     }
     applyDoc(demoteVariable(workingDoc, varName, operationName, inlineValue));
-    const { [varName]: _removed, ...rest } = vars;
+    const rest = { ...vars };
+    delete rest[varName];
     applyVariables(rest);
   }
 

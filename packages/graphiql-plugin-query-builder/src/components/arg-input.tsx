@@ -10,7 +10,7 @@ import {
   type GraphQLInputField,
   type GraphQLType,
 } from 'graphql';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useState } from 'react';
 import { type ArgValue } from '../lib/document-mutator';
 
 /**
@@ -352,11 +352,10 @@ type ListArgInputProps = {
   onChange: (v: ArgValue) => void;
 };
 
-type ListItem = { id: number; value: ArgValue };
+type ListItem = { id: string; value: ArgValue };
 
-let nextListItemId = 0;
 const withIds = (values: ArgValue[]): ListItem[] =>
-  values.map(value => ({ id: nextListItemId++, value }));
+  values.map(value => ({ id: crypto.randomUUID(), value }));
 
 // The non-empty projection: items that survive into the document. Only empty
 // scalar leaves are dropped; objects and nested lists print fine.
@@ -371,15 +370,18 @@ const ListArgInput: FC<ListArgInputProps> = ({
 }) => {
   const [items, setItems] = useState<ListItem[]>(() => withIds(value));
 
-  // Adopt the prop only when it differs from our items' projection, so a
-  // just-added empty row isn't wiped by our own write echoing back.
-  useEffect(() => {
-    if (JSON.stringify(value) !== JSON.stringify(projectItems(items))) {
+  // Resync local rows only when the external `value` actually differs from our
+  // current projection, so a just-added empty row isn't wiped by our own write
+  // echoing back. Adjust state during render (rather than in an effect keyed on
+  // `value` alone) so the dependency is honest and React Compiler can optimize.
+  const valueJSON = JSON.stringify(value);
+  const [syncedJSON, setSyncedJSON] = useState(valueJSON);
+  if (valueJSON !== syncedJSON) {
+    setSyncedJSON(valueJSON);
+    if (valueJSON !== JSON.stringify(projectItems(items))) {
       setItems(withIds(value));
     }
-    // Intentionally only react to external `value` changes, not local edits.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }
 
   const emit = (next: ListItem[]) => {
     setItems(next);
@@ -413,7 +415,7 @@ const ListArgInput: FC<ListArgInputProps> = ({
         onClick={() =>
           emit([
             ...items,
-            { id: nextListItemId++, value: defaultValueForType(itemType) },
+            { id: crypto.randomUUID(), value: defaultValueForType(itemType) },
           ])
         }
         aria-label="Add item"

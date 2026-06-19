@@ -45,6 +45,9 @@
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
+  "dependencies": {
+    "react-compiler-runtime": "19.1.0-rc.1"
+  },
   "devDependencies": {
     "@graphiql/react": "^0.37.4",
     "@testing-library/dom": "^10.4.0",
@@ -52,6 +55,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^4.4.1",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
