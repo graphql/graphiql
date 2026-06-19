@@ -125,6 +125,24 @@ describe('ArgInput — variable toggle', () => {
     expect(onDemote).toHaveBeenCalledWith('first', 'first');
   });
 
+  it('does not re-promote when an active toggle is clicked without onDemote', async () => {
+    const onPromote = vi.fn();
+    render(
+      <ArgInput
+        arg={makeArg('first', GraphQLInt)}
+        value=""
+        onChange={() => {}}
+        isVariable
+        variableName="first"
+        onPromote={onPromote}
+      />,
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /inline argument/i }),
+    );
+    expect(onPromote).not.toHaveBeenCalled();
+  });
+
   it('hides the literal input and shows a variable badge when isVariable is true', () => {
     render(
       <ArgInput

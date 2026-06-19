@@ -150,8 +150,10 @@ const ArgInputByType: FC<TypedInputProps> = ({
       className="graphiql-qb-var-toggle"
       aria-pressed={isVariable}
       onClick={() => {
-        if (isVariable && onDemote && variableName) {
-          onDemote(name, variableName);
+        if (isVariable) {
+          if (onDemote && variableName) {
+            onDemote(name, variableName);
+          }
         } else {
           onPromote(name, name);
         }
