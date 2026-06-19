@@ -48,9 +48,7 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
-import { queryBuilderPlugin } from '@graphiql/plugin-query-builder';
-
-const QUERY_BUILDER_PLUGIN = queryBuilderPlugin();
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
   ActivityBar,
   GraphiQLLogo,

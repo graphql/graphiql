@@ -16,13 +16,11 @@ yarn add @graphiql/plugin-query-builder
 
 ```tsx
 import { GraphiQL } from 'graphiql';
-import { queryBuilderPlugin } from '@graphiql/plugin-query-builder';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import '@graphiql/plugin-query-builder/style.css';
 
-const queryBuilder = queryBuilderPlugin();
-
 function App() {
-  return <GraphiQL plugins={[queryBuilder]} fetcher={fetcher} />;
+  return <GraphiQL plugins={[QUERY_BUILDER_PLUGIN]} fetcher={fetcher} />;
 }
 ```
 
