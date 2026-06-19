@@ -2,7 +2,7 @@
 
 A first-party visual query builder plugin for GraphiQL. Build GraphQL queries by clicking through your schema instead of writing them by hand.
 
-> **Alpha:** The plugin is in early development. Full capabilities — schema tree browsing, argument inputs, fragments, and unions/interfaces — are being added incrementally. See [#734](https://github.com/graphql/graphiql/issues/734) for the original feature request.
+Pick fields from the schema and the operation in the editor stays in sync, both ways. It covers a schema tree with checkboxes, argument inputs (scalars, enums, lists, and input objects, including lists of input objects), promoting scalar arguments to variables, creating named fragments from a selection, and union/interface type-condition selectors. See [#734](https://github.com/graphql/graphiql/issues/734) for the original feature request.
 
 ## Install
 
