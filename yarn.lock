@@ -3327,10 +3327,9 @@ __metadata:
     react-dom: "npm:^19.1.0"
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
-    vite-plugin-svgr: "npm:^4.3.0"
   peerDependencies:
     "@graphiql/react": ^0.37.0
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown

@@ -1,7 +1,6 @@
 import { defineConfig, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
-import svgr from 'vite-plugin-svgr';
 import dts from 'vite-plugin-dts';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 import packageJSON from './package.json' with { type: 'json' };
@@ -20,11 +19,6 @@ export const plugins: PluginOption[] = [
   react({
     babel: {
       plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-    },
-  }),
-  svgr({
-    svgrOptions: {
-      titleProp: true,
     },
   }),
   dts({
