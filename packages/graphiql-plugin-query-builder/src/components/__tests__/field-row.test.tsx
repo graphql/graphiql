@@ -42,9 +42,19 @@ const fieldWithArgs = new GraphQLObjectType({
   },
 });
 
+const typeWithDeprecated = new GraphQLObjectType({
+  name: 'WithDeprecated',
+  fields: {
+    legacy: { type: GraphQLString, deprecationReason: 'Use name instead' },
+    current: { type: GraphQLString },
+  },
+});
+
 const nameField = parentType.getFields()['name']!;
 const friendsField = parentType.getFields()['friends']!;
 const heroField = fieldWithArgs.getFields()['hero']!;
+const legacyField = typeWithDeprecated.getFields()['legacy']!;
+const currentField = typeWithDeprecated.getFields()['current']!;
 
 describe('FieldRow', () => {
   it('renders the field name', () => {
@@ -213,6 +223,45 @@ describe('FieldRow', () => {
       '.graphiql-qb-field-row',
     ) as HTMLElement;
     expect(row.style.paddingLeft).toBe('24px'); // 2 * 12px
+  });
+});
+
+describe('FieldRow — deprecated fields', () => {
+  it('marks a deprecated field and surfaces the reason', () => {
+    render(
+      <FieldRow
+        field={legacyField}
+        path={[]}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    const badge = screen.getByText('deprecated');
+    expect(badge).toHaveAttribute('title', 'Use name instead');
+    expect(screen.getByText('legacy')).toHaveClass(
+      'graphiql-qb-field-name--deprecated',
+    );
+  });
+
+  it('does not mark a non-deprecated field', () => {
+    render(
+      <FieldRow
+        field={currentField}
+        path={[]}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    expect(screen.queryByText('deprecated')).toBeNull();
+    expect(screen.getByText('current')).not.toHaveClass(
+      'graphiql-qb-field-name--deprecated',
+    );
   });
 });
 

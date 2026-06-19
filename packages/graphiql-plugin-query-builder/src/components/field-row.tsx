@@ -52,6 +52,10 @@ export const FieldRow: FC<FieldRowProps> = ({
   const fullPath = [...path, field.name];
   const indent = path.length * 12;
   const hasArgs = field.args.length > 0;
+  const deprecated = Boolean(field.deprecationReason);
+  const nameClassName = `graphiql-qb-field-name${
+    deprecated ? ' graphiql-qb-field-name--deprecated' : ''
+  }`;
   // Color the type by its unwrapped named kind: scalars/enums are "leaf" types,
   // everything else (object/interface/union) is "composite".
   const namedType = getNamedType(field.type);
@@ -88,7 +92,7 @@ export const FieldRow: FC<FieldRowProps> = ({
             >
               <ChevronDownIcon />
             </span>
-            <span className="graphiql-qb-field-name">{field.name}</span>
+            <span className={nameClassName}>{field.name}</span>
           </button>
         ) : (
           <label className="graphiql-qb-field-toggle">
@@ -99,8 +103,16 @@ export const FieldRow: FC<FieldRowProps> = ({
               aria-label={`Toggle ${field.name}`}
               className="graphiql-qb-field-checkbox"
             />
-            <span className="graphiql-qb-field-name">{field.name}</span>
+            <span className={nameClassName}>{field.name}</span>
           </label>
+        )}
+        {deprecated && (
+          <span
+            className="graphiql-qb-field-deprecated"
+            title={field.deprecationReason ?? undefined}
+          >
+            deprecated
+          </span>
         )}
         <span
           className={

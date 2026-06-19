@@ -331,6 +331,21 @@
   color: oklch(var(--fg-strong));
 }
 
+.graphiql-qb-field-name--deprecated {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.graphiql-qb-field-deprecated {
+  flex-shrink: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: oklch(var(--fg-subtle));
+  cursor: help;
+}
+
 .graphiql-qb-field-type {
   flex-shrink: 0;
   font-family: var(--font-family-mono);
