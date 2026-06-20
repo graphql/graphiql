@@ -269,7 +269,9 @@ And external image:
 `.trim();
 
   // A type with many fields, to exercise the query builder's long-list cap and
-  // filter. The list has more than 20 fields, so it caps with a "+ N more"
+  // filter. Reachable via the `wide` field on the mutation root (kept off the
+  // query root so the language-service tests' schema-position assertions stay
+  // stable). The list has more than 20 fields, so it caps with a "more fields"
   // expander and shows a "Filter fields" input. `viewer` and `accountBalance`
   // carry descriptions so the filter (which matches name, description, and type)
   // can be tried by description, and `nested` repeats the type so the cap can be
@@ -304,11 +306,6 @@ And external image:
     name: 'Test',
     description: 'Test type for testing\n New line works',
     fields: () => ({
-      wide: {
-        type: WideType,
-        description: 'A type with many fields, for testing long field lists',
-        resolve: () => ({}),
-      },
       test: {
         type: TestType,
         description: '`test` field from `Test` type.',
@@ -424,6 +421,11 @@ And external image:
     name: 'MutationType',
     description: 'This is a simple mutation type',
     fields: {
+      wide: {
+        type: WideType,
+        description: 'A type with many fields, for testing long field lists',
+        resolve: () => ({}),
+      },
       setString: {
         type: GraphQLString,
         description: 'Set the string field',
