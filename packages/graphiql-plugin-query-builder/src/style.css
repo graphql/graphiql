@@ -408,6 +408,12 @@
   cursor: help;
 }
 
+/* Cap the deprecation tooltip width so markdown reasons wrap and preserve
+   paragraphs instead of stretching the tooltip across the viewport. */
+.graphiql-qb-deprecation-tooltip {
+  max-width: 340px;
+}
+
 .graphiql-qb-field-type {
   flex-shrink: 0;
   margin-left: auto;

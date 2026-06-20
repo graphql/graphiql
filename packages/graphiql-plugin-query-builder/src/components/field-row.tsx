@@ -1,4 +1,4 @@
-import { ChevronDownIcon, Tooltip } from '@graphiql/react';
+import { ChevronDownIcon, MarkdownContent, Tooltip } from '@graphiql/react';
 import { getNamedType, isEnumType, isScalarType } from 'graphql';
 import type { GraphQLField } from 'graphql';
 import type { FC } from 'react';
@@ -107,7 +107,16 @@ export const FieldRow: FC<FieldRowProps> = ({
           </label>
         )}
         {deprecated && (
-          <Tooltip label={field.deprecationReason}>
+          <Tooltip
+            label={
+              <MarkdownContent
+                type="deprecation"
+                className="graphiql-qb-deprecation-tooltip"
+              >
+                {field.deprecationReason ?? ''}
+              </MarkdownContent>
+            }
+          >
             <span
               className="graphiql-qb-field-deprecated"
               aria-label="deprecated"
