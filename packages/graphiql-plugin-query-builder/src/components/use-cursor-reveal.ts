@@ -42,9 +42,13 @@ export function useCursorReveal(
       return;
     }
     setFlash(true);
-    // Center it vertically so it doesn't land under the sticky operation header
-    // when scrolling up.
-    nodeRef.current?.scrollIntoView({ block: 'center' });
+    // Scroll the header row into view, not the whole node. For a composite field
+    // the node also wraps its expanded children, so centering the node would
+    // center that tall subtree and leave the field's own row off-center. The
+    // first child is the row (the children, if any, follow it). Centered
+    // vertically so it doesn't land under the sticky operation header.
+    const row = nodeRef.current?.firstElementChild ?? nodeRef.current;
+    row?.scrollIntoView({ block: 'center' });
     const timer = setTimeout(() => setFlash(false), 700);
     return () => clearTimeout(timer);
   }, [cursorPath, isTarget]);
