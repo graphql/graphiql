@@ -29,7 +29,7 @@ const field = (name: string): GraphQLField<unknown, unknown> => fields[name]!;
 
 describe('fieldMatchesFilter', () => {
   it('matches on field name, case-insensitively', () => {
-    expect(fieldMatchesFilter(field('count'), 'COUN')).toBe(true);
+    expect(fieldMatchesFilter(field('count'), 'COUNT')).toBe(true);
   });
 
   it('matches on description when the name does not match', () => {

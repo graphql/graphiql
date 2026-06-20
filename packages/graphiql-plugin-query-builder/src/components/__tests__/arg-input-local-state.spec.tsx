@@ -65,7 +65,7 @@ function setupState(queryText: string) {
   const state = installGraphiQLReactMock({
     schema: TestSchema,
     queryText,
-    updateActiveTabValues: (values: { query?: string }) => {
+    updateActiveTabValues(values: { query?: string }) {
       if (values.query !== undefined) {
         writtenQueries.push(values.query);
         state.queryText = values.query;

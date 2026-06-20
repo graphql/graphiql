@@ -46,7 +46,7 @@ describe('QueryBuilder — promoting a mutation argument to a variable', () => {
       schema: TestSchema,
       queryText: 'mutation B {\n  setString(value: "hi")\n}',
       operationName: 'B',
-      updateActiveTabValues: values => {
+      updateActiveTabValues(values) {
         writes.push(values);
       },
     });

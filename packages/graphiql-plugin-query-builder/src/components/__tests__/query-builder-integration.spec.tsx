@@ -71,7 +71,7 @@ describe('QueryBuilder integration — list and input-object args', () => {
     state = installGraphiQLReactMock({
       schema: TestSchema,
       queryText: '{ items }',
-      updateActiveTabValues: (values: { query?: string }) => {
+      updateActiveTabValues(values: { query?: string }) {
         if (values.query !== undefined) {
           writtenQueries.push(values.query);
           // Feed back so the next re-render picks up the new doc
