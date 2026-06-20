@@ -171,13 +171,32 @@ Cypress.Commands.add(
         }[severity];
         expect(markers[0].severity).eq(markerSeverity);
       }
-      cy.contains(text).trigger('mousemove', {
-        // Hover in the right corner, because some errors like `Expected comma or closing brace` are
-        // highlighted at the end
-        position: 'bottomRight',
-        force: true, // otherwise popup doesn't show
-      });
-      cy.contains(message);
     });
+    // Monaco computes the hover tooltip from a single `mousemove`. When that
+    // event fires before the hover provider has picked up the latest markers,
+    // the tooltip never renders and no further event re-asks for it. Re-trigger
+    // until the message shows so the assertion stops racing the tooltip.
+    assertHoverShowsMessage(text, message);
   },
 );
+
+function assertHoverShowsMessage(text: string, message: string, attempt = 0) {
+  cy.contains(text).trigger('mousemove', {
+    // Hover in the right corner, because some errors like `Expected comma or closing brace` are
+    // highlighted at the end
+    position: 'bottomRight',
+    force: true, // otherwise popup doesn't show
+  });
+  if (attempt >= 10) {
+    cy.contains(message); // out of retries: assert directly so failures report clearly
+    return;
+  }
+  cy.get('body').then($body => {
+    if ($body.text().includes(message)) {
+      cy.contains(message);
+    } else {
+      cy.wait(300);
+      assertHoverShowsMessage(text, message, attempt + 1);
+    }
+  });
+}

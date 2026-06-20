@@ -1,4 +1,16 @@
 .graphiql-tooltip {
+  /* Sit above page content (sticky headers use z-index: 1, dialogs use 10). */
+  z-index: 100;
+  /* Cap to the space Radix measured between the trigger and the viewport edge,
+     less the status bar, so a tall tooltip (e.g. a markdown deprecation reason)
+     scrolls and stops above the status bar instead of running off-screen.
+     border-box keeps the padding inside the cap so the box, not just its
+     content, fits. */
+  box-sizing: border-box;
+  max-height: calc(
+    var(--radix-tooltip-content-available-height) - var(--status-bar-height)
+  );
+  overflow-y: auto;
   background: oklch(var(--bg-elevated));
   border: 1px solid oklch(var(--border-default));
   border-radius: var(--radius-md);

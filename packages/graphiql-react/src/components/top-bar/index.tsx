@@ -5,6 +5,7 @@
 import type { FC } from 'react';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
+import { GraphQLLogoIcon } from '../../icons';
 import './index.css';
 
 export type TopBarProps = {
@@ -44,7 +45,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
   return (
     <header className="graphiql-top-bar" role="banner">
       <div className="graphiql-top-bar-brand">
-        <span className="graphiql-top-bar-logo" aria-hidden="true" />
+        <GraphQLLogoIcon className="graphiql-top-bar-logo" aria-hidden="true" />
         <span className="graphiql-top-bar-wordmark">GraphiQL</span>
         {version && <span className="graphiql-top-bar-version">{version}</span>}
       </div>
