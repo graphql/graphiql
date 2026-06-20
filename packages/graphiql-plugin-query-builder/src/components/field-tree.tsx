@@ -28,7 +28,7 @@ type FieldTreeListProps = {
 };
 
 export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
-  const { doc, operationName, cursorPath } = useFieldTreeContext();
+  const { doc, operationName } = useFieldTreeContext();
   const [expanded, setExpanded] = useState(false);
   const [filter, setFilter] = useState('');
 
@@ -37,24 +37,14 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
   const isSelected = (fieldName: string): boolean =>
     isFieldSelected(doc, [...path, fieldName], operationName);
 
-  // If the cursor targets a field at this level that the cap would hide, expand
-  // so cursor-reveal can flash it. cursorPath is absolute; the field at this
-  // level is the segment right after our path.
-  const cursorFieldHere =
-    cursorPath?.length === path.length + 1 &&
-    path.every((seg, i) => cursorPath[i] === seg)
-      ? cursorPath[path.length]
-      : undefined;
-  const cursorBeyondCap =
-    cursorFieldHere !== undefined &&
-    fields.findIndex(f => f.name === cursorFieldHere) >= FIELD_LIST_THRESHOLD &&
-    !isSelected(cursorFieldHere);
-
+  // A field under the editor cursor is always present in the document (the cursor
+  // path is parsed from the query), so it is selected and already pinned visible
+  // by selectVisibleFields. No cursor-specific expansion is needed here.
   const { visible, hiddenCount } = selectVisibleFields({
     fields,
     isSelected,
     threshold: FIELD_LIST_THRESHOLD,
-    expanded: expanded || cursorBeyondCap,
+    expanded,
     filter,
   });
 

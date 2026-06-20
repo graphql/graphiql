@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   GraphQLObjectType,
@@ -89,5 +89,37 @@ describe('FieldTreeList — cap', () => {
       'user',
     );
     expect(fieldNames()).toEqual(['f5']);
+  });
+
+  it('flashes a beyond-cap field when the editor cursor lands on it', async () => {
+    const query = '{ f24 }';
+    installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: query,
+      queryEditor: {
+        onDidChangeCursorPosition() {
+          return { dispose() {} };
+        },
+        getModel: () => ({
+          getValue: () => query,
+          getOffsetAt: () => query.indexOf('f24') + 1,
+        }),
+        getPosition: () => ({ lineNumber: 1, column: 1 }),
+        getValue: () => query,
+        setValue() {},
+        setPosition() {},
+      },
+    });
+    render(<QueryBuilder />);
+    const f24Row = () =>
+      screen
+        .getAllByTestId('field-row')
+        .find(
+          r =>
+            r.querySelector('.graphiql-qb-field-name')?.textContent === 'f24',
+        )!;
+    // f24 sorts at index 24 (beyond the cap) but is selected, so it renders and
+    // the cursor reveal flashes it.
+    await waitFor(() => expect(f24Row()).toHaveClass('graphiql-qb-flash'));
   });
 });

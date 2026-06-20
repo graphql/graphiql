@@ -5,8 +5,7 @@ import {
   GraphQLString,
   type GraphQLField,
 } from 'graphql';
-import { fieldMatchesFilter } from '../field-list-view';
-import { selectVisibleFields } from '../field-list-view';
+import { fieldMatchesFilter, selectVisibleFields } from '../field-list-view';
 
 // Build a real type so fields carry name/description/type, then read them back.
 const T = new GraphQLObjectType({
