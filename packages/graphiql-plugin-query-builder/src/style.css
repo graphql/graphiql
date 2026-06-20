@@ -115,10 +115,13 @@
   flex-direction: column;
 }
 
-/* Filter input shown above long field lists. */
+/* Filter input shown above long field lists. Inset to align with the field
+   rows rather than spanning the full pane width. */
 .graphiql-qb-field-filter {
-  width: 100%;
-  margin-bottom: var(--px-6);
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+  margin: 0 var(--px-8) var(--px-6);
   padding: var(--px-4) var(--px-8);
   background-color: oklch(var(--fg-default) / 0.08);
   border: 1px solid transparent;
@@ -138,16 +141,18 @@
   background-color: oklch(var(--bg-canvas));
 }
 
-/* "+ N more" control that reveals the capped tail of a long field list. */
+/* "...N more fields" control that reveals the capped tail of a long field list.
+   Inset to match the filter input, monospace to read as a count. */
 .graphiql-qb-show-more {
-  margin-top: var(--px-4);
+  align-self: flex-start;
+  margin: var(--px-4) var(--px-8) 0;
   padding: var(--px-4) var(--px-8);
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
   color: oklch(var(--accent-purple));
   cursor: pointer;
-  font-family: var(--font-family);
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-small);
   text-align: left;
   transition: background 80ms;

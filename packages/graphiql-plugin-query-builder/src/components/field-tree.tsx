@@ -69,7 +69,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
           className="graphiql-qb-show-more"
           onClick={() => setExpanded(true)}
         >
-          + {hiddenCount} more
+          ...{hiddenCount} more fields
         </button>
       )}
     </div>
