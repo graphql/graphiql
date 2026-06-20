@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Tooltip } from '@graphiql/react';
 import {
   GraphQLEnumType,
   GraphQLInt,
@@ -227,24 +228,30 @@ describe('FieldRow', () => {
 });
 
 describe('FieldRow — deprecated fields', () => {
-  it('marks a deprecated field and surfaces the reason', () => {
+  it('marks a deprecated field and surfaces the reason', async () => {
     render(
-      <FieldRow
-        field={legacyField}
-        path={[]}
-        selected={false}
-        hasChildren={false}
-        expanded={false}
-        onToggle={() => {}}
-        onExpand={() => {}}
-      />,
+      <Tooltip.Provider delayDuration={0}>
+        <FieldRow
+          field={legacyField}
+          path={[]}
+          selected={false}
+          hasChildren={false}
+          expanded={false}
+          onToggle={() => {}}
+          onExpand={() => {}}
+        />
+      </Tooltip.Provider>,
     );
     const badge = screen.getByText('DEP');
-    expect(badge).toHaveAttribute('title', 'Use name instead');
     expect(badge).toHaveAttribute('aria-label', 'deprecated');
     expect(screen.getByText('legacy')).toHaveClass(
       'graphiql-qb-field-name--deprecated',
     );
+    // The deprecation reason is shown in a styled tooltip on hover. Radix renders
+    // the content both visibly and for screen readers, so there are >1 matches.
+    await userEvent.hover(badge);
+    const tips = await screen.findAllByText('Use name instead');
+    expect(tips.length).toBeGreaterThan(0);
   });
 
   it('does not mark a non-deprecated field', () => {
