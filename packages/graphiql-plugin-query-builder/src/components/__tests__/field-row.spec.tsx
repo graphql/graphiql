@@ -239,8 +239,9 @@ describe('FieldRow — deprecated fields', () => {
         onExpand={() => {}}
       />,
     );
-    const badge = screen.getByText('deprecated');
+    const badge = screen.getByText('DEP');
     expect(badge).toHaveAttribute('title', 'Use name instead');
+    expect(badge).toHaveAttribute('aria-label', 'deprecated');
     expect(screen.getByText('legacy')).toHaveClass(
       'graphiql-qb-field-name--deprecated',
     );
@@ -258,7 +259,7 @@ describe('FieldRow — deprecated fields', () => {
         onExpand={() => {}}
       />,
     );
-    expect(screen.queryByText('deprecated')).toBeNull();
+    expect(screen.queryByText('DEP')).toBeNull();
     expect(screen.getByText('current')).not.toHaveClass(
       'graphiql-qb-field-name--deprecated',
     );

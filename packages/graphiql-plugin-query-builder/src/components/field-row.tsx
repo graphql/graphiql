@@ -109,9 +109,10 @@ export const FieldRow: FC<FieldRowProps> = ({
         {deprecated && (
           <span
             className="graphiql-qb-field-deprecated"
+            aria-label="deprecated"
             title={field.deprecationReason ?? undefined}
           >
-            deprecated
+            DEP
           </span>
         )}
         <span

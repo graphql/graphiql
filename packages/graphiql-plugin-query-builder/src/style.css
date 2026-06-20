@@ -383,13 +383,22 @@
   text-decoration-thickness: 1px;
 }
 
+/* Neutral chip mirroring the QRY/MUT/SUB method-pill geometry, so a deprecated
+   field reads as a quiet gray tag rather than loud inline text. */
 .graphiql-qb-field-deprecated {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-eyebrow);
-  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  color: oklch(var(--fg-subtle));
+  line-height: 1.4;
+  color: oklch(var(--fg-muted));
+  background: oklch(var(--fg-default) / 0.1);
   cursor: help;
 }
 
