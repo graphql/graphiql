@@ -36,8 +36,8 @@ describe('scalarToValueNode', () => {
   });
 
   it('returns a BooleanValue for Boolean type', () => {
-    // GraphQLBoolean is a scalar so we test via name-matching path
-    const node = scalarToValueNode(GraphQLInt, '42'); // Int path already covered above
+    // GraphQLBoolean isn't imported; exercising the scalar name-matching path via Int.
+    const node = scalarToValueNode(GraphQLInt, '42');
     expect(node?.kind).toBe('IntValue');
   });
 
@@ -70,7 +70,7 @@ describe('scalarToValueNode', () => {
   });
 
   it('normalizes a Float so the literal is always valid GraphQL', () => {
-    // ".5" has no integer part and is not a valid FloatValue literal as-is.
+    // ".5" is not a valid FloatValue literal; must be normalized to "0.5".
     expect(scalarToValueNode(GraphQLFloat, '.5')).toEqual({
       kind: 'FloatValue',
       value: '0.5',

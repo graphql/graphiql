@@ -17,10 +17,8 @@ import {
 } from './field-tree-context';
 import { FieldTreeNode } from './field-tree-node';
 
-// ---------------------------------------------------------------------------
-// FieldTreeList — internal: renders a list of fields for a given type/path,
-// reading shared state from context. Used by recursive calls inside the tree.
-// ---------------------------------------------------------------------------
+// Internal: renders a flat list of fields for one type/path. Called recursively
+// from FieldTreeNode; reads shared doc/callbacks from context.
 
 type FieldTreeListProps = {
   type: GraphQLObjectType | GraphQLInterfaceType;
@@ -81,10 +79,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// FieldTree — public API: sets up the context provider then renders FieldTreeList.
-// Called from query-builder.tsx with the full callback bundle.
-// ---------------------------------------------------------------------------
+// Public API: wires up the context provider and renders FieldTreeList at the root.
 
 type FieldTreeProps = {
   type: GraphQLObjectType | GraphQLInterfaceType;

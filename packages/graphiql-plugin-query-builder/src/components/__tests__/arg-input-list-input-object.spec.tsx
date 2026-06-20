@@ -11,10 +11,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { ArgInput } from '../arg-input';
 import type { ArgValue } from '../../lib/document-mutator';
 
-// ---------------------------------------------------------------------------
-// Shared input types
-// ---------------------------------------------------------------------------
-
 const TagInput = new GraphQLInputObjectType({
   name: 'TagInput',
   fields: {
@@ -34,10 +30,6 @@ function makeArg(name: string, type: unknown) {
     astNode: undefined,
   } as Parameters<typeof ArgInput>[0]['arg'];
 }
-
-// ---------------------------------------------------------------------------
-// ArgInput — list of scalars
-// ---------------------------------------------------------------------------
 
 describe('ArgInput — list of scalars', () => {
   it('renders an "Add item" button for a list arg', () => {
@@ -63,7 +55,6 @@ describe('ArgInput — list of scalars', () => {
     render(<ArgInput arg={arg} value={['']} onChange={onChange} />);
     await userEvent.type(screen.getByRole('textbox'), 'x');
     expect(onChange).toHaveBeenCalled();
-    // Each onChange call should pass the whole list as an ArgValue array
     const firstCall = onChange.mock.calls[0]![0] as ArgValue;
     expect(Array.isArray(firstCall)).toBe(true);
     expect((firstCall as ArgValue[])[0]).toBe('x');
@@ -107,10 +98,6 @@ describe('ArgInput — list of scalars', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// ArgInput — list of integers
-// ---------------------------------------------------------------------------
-
 describe('ArgInput — list of Int', () => {
   it('renders number inputs for items in a list of Int', () => {
     const arg = makeArg('ids', new GraphQLList(GraphQLInt));
@@ -120,15 +107,10 @@ describe('ArgInput — list of Int', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// ArgInput — input object
-// ---------------------------------------------------------------------------
-
 describe('ArgInput — input object', () => {
   it('renders a disclosure element for the input object', () => {
     const arg = makeArg('input', TagInput);
     render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
-    // Should render a <details> with a <summary>
     const details = document.querySelector('details.graphiql-qb-input-object');
     expect(details).toBeInTheDocument();
   });
@@ -137,8 +119,7 @@ describe('ArgInput — input object', () => {
     const arg = makeArg('input', TagInput);
     render(<ArgInput arg={arg} value={{}} onChange={() => {}} />);
     await userEvent.click(screen.getByText('input'));
-    // TagInput has fields: name, value. Use findBy so the assertion retries
-    // until the lazily-rendered nested inputs have committed.
+    // findByRole retries until lazily-rendered nested inputs have committed.
     expect(
       await screen.findByRole('textbox', { name: 'name' }),
     ).toBeInTheDocument();
@@ -152,7 +133,6 @@ describe('ArgInput — input object', () => {
     await userEvent.click(screen.getByText('input'));
     await userEvent.type(screen.getByRole('textbox', { name: 'name' }), 'x');
     expect(onChange).toHaveBeenCalled();
-    // Each call should pass the whole input object as an ArgValue object
     const firstVal = onChange.mock.calls[0]![0] as {
       [field: string]: ArgValue;
     };
@@ -176,10 +156,6 @@ describe('ArgInput — input object', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// ArgInput — list of input objects
-// ---------------------------------------------------------------------------
-
 describe('ArgInput — list of input objects', () => {
   it('renders inputs for each item in a list of input objects', async () => {
     const arg = makeArg('tags', new GraphQLList(TagInput));
@@ -188,7 +164,7 @@ describe('ArgInput — list of input objects', () => {
       { name: 'b', value: '2' },
     ];
     render(<ArgInput arg={arg} value={value} onChange={() => {}} />);
-    // Each item is a collapsed input-object disclosure; expand both.
+    // Each item renders as a collapsed disclosure; expand both before querying fields.
     for (const summary of screen.getAllByText('tags')) {
       await userEvent.click(summary);
     }
@@ -207,10 +183,6 @@ describe('ArgInput — list of input objects', () => {
     expect(result).toHaveLength(1);
   });
 });
-
-// ---------------------------------------------------------------------------
-// ArgInput — self-referential input object
-// ---------------------------------------------------------------------------
 
 const RecursiveInput: GraphQLInputObjectType = new GraphQLInputObjectType({
   name: 'RecursiveInput',

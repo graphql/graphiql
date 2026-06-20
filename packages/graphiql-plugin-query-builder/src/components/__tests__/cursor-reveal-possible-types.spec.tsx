@@ -46,7 +46,7 @@ const TestSchema = new GraphQLSchema({
   types: [Impl],
 });
 
-// Stub editor whose cursor resolves to `extra`, nested inside `... on Impl`.
+// Stub editor whose cursor resolves to `extra` inside `... on Impl`.
 function setupEditor() {
   const query = '{ node { ... on Impl { extra } } }';
   let cursorCb: ((e: { reason: number }) => void) | undefined;
@@ -83,16 +83,15 @@ describe('cursor reveal into a collapsed Possible types section', () => {
     const { fireUserCursor } = setupEditor();
     render(<QueryBuilder />);
 
-    // Reveal cascades down to `extra` (mount + initial recompute).
     await waitFor(() => expect(deepFieldVisible()).toBe(true));
 
-    // Collapse the Possible types section by hand — the deep field disappears.
+    // Collapse the Possible types section by hand — the deep field should disappear.
     fireEvent.click(
       document.querySelector('.graphiql-qb-possible-types-header')!,
     );
     expect(deepFieldVisible()).toBe(false);
 
-    // A fresh user cursor move into the condition re-opens the section.
+    // A fresh cursor move must re-open the section.
     fireUserCursor();
     await waitFor(() => expect(deepFieldVisible()).toBe(true));
   });

@@ -81,7 +81,6 @@ const DemoSchema = new GraphQLSchema({
 // Shared decorator
 // ---------------------------------------------------------------------------
 
-// Minimal fetcher that immediately resolves with empty data.
 const mockFetcher = async () => ({ data: null });
 
 function withProvider(schema: GraphQLSchema | null, children: ReactNode) {
@@ -700,7 +699,6 @@ export const WithInterfaceField: Story = {
 // Wide-type schema — exercises the field-list cap and filter at two levels
 // ---------------------------------------------------------------------------
 
-// 30-field object type: expanding it in the builder triggers the cap (shows 20, "+ N more")
 const WideObjectType = new GraphQLObjectType({
   name: 'Wide',
   fields: Object.fromEntries(
@@ -711,8 +709,6 @@ const WideObjectType = new GraphQLObjectType({
   ),
 });
 
-// Query root: 30 scalar fields (f0..f29) + one object field returning WideObjectType.
-// The root list itself also exceeds 20, so both levels independently trigger the cap.
 const WideQueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {

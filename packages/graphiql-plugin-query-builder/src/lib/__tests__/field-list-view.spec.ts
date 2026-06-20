@@ -7,7 +7,7 @@ import {
 } from 'graphql';
 import { fieldMatchesFilter, selectVisibleFields } from '../field-list-view';
 
-// Build a real type so fields carry name/description/type, then read them back.
+// Real GraphQL type so fields carry name/description/type metadata.
 const T = new GraphQLObjectType({
   name: 'T',
   fields: {

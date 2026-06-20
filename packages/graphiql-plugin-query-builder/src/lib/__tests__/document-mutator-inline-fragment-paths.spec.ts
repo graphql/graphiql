@@ -13,13 +13,10 @@ function doc(query: string) {
   return parse(query, { noLocation: true });
 }
 
-// ---------------------------------------------------------------------------
-// Bug fix: fields inside inline fragments use the correct path
-// ---------------------------------------------------------------------------
-
+// Fields inside inline fragments resolve to a path inside the fragment, not
+// as a sibling of the fragment or of the parent field.
 describe('inline fragment path segments', () => {
   it('toggleFieldSelection adds a field inside the fragment, not as a sibling', () => {
-    // Start from a doc with an inline fragment — add a field inside it
     const d2 = toggleFieldSelection(
       doc('{ union { ... on First { __typename } } }'),
       ['union', inlineFragmentSegment('First'), 'name'],
@@ -27,8 +24,7 @@ describe('inline fragment path segments', () => {
     const printed = print(d2);
     expect(printed).toContain('... on First');
     expect(printed).toContain('name');
-    // name must appear INSIDE the inline fragment, not as a direct child of union
-    // The printed form should be: union { ... on First { __typename name } }
+    // name must appear inside the fragment, not as a direct child of union.
     expect(printed).not.toMatch(/union\s*\{\s*name/);
   });
 
@@ -54,8 +50,6 @@ describe('inline fragment path segments', () => {
   });
 
   it('addInlineFragment creates the parent field when it is absent', () => {
-    // The abstract field has no selection yet — toggling the fragment must
-    // still work, creating `union { ... on First { __typename } }`.
     const result = addInlineFragment(doc('{ id }'), ['union'], 'First');
     expect(
       isFieldSelected(result, ['union', inlineFragmentSegment('First')]),
@@ -67,13 +61,11 @@ describe('inline fragment path segments', () => {
 
   it('removing the last field inside a fragment prunes the fragment and parent field', () => {
     const d = doc('{ union { ... on First { name } } }');
-    // name is the only field; removing it should prune the fragment, then union
     const result = toggleFieldSelection(d, [
       'union',
       inlineFragmentSegment('First'),
       'name',
     ]);
-    // The operation should have no selections left (or union pruned entirely)
     const printed = print(result);
     expect(printed).not.toContain('union');
   });
@@ -90,7 +82,6 @@ describe('inline fragment path segments', () => {
     const printed = print(result);
     expect(printed).toContain('... on First');
     expect(printed).toContain('f(a: 1)');
-    // Argument should be inside the fragment
     expect(printed).not.toMatch(/union\s*\{\s*f\(a: 1\)/);
   });
 
@@ -99,7 +90,6 @@ describe('inline fragment path segments', () => {
     const result = addInlineFragment(d, ['union'], 'Second');
     const printed = print(result);
     expect(printed).toContain('... on Second');
-    // The __typename seeded in the fragment should be inside the fragment
     expect(printed).toContain('__typename');
   });
 

@@ -11,7 +11,6 @@ vi.mock('@graphiql/react', async () => {
   return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
 });
 
-// Query type with 25 fields: f0..f24.
 const WideQuery = new GraphQLObjectType({
   name: 'Query',
   fields: Object.fromEntries(
@@ -117,8 +116,7 @@ describe('FieldTreeList — cap', () => {
           r =>
             r.querySelector('.graphiql-qb-field-name')?.textContent === 'f24',
         )!;
-    // f24 sorts at index 24 (beyond the cap) but is selected, so it renders and
-    // the cursor reveal flashes it.
+    // f24 is beyond the cap but is selected, so it pins into view and gets flashed.
     await waitFor(() => expect(f24Row()).toHaveClass('graphiql-qb-flash'));
   });
 });

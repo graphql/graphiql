@@ -43,9 +43,7 @@ describe('Query Builder – panel toggle', () => {
 
   it('shows the schema root type when a schema is available', () => {
     openQueryBuilder();
-    // The test schema query type is named "Test"
     cy.get('.graphiql-qb-root-name').should('contain.text', 'Test');
-    // At least one field row should be rendered
     cy.get('[data-testid="field-row"]').should('have.length.greaterThan', 0);
   });
 });
@@ -54,7 +52,6 @@ describe('Query Builder – selecting a scalar field', () => {
   it('adds the field to the query when its checkbox is checked', () => {
     openQueryBuilder();
 
-    // Check the "id" field – it is a scalar (ID), no children
     cy.get('[aria-label="Toggle id"]').click();
 
     expectQuery(query => expect(query).to.match(/\bid\b/));
@@ -66,7 +63,6 @@ describe('Query Builder – selecting a scalar field', () => {
     cy.get('[aria-label="Toggle id"]').click();
     expectQuery(query => expect(query).to.match(/\bid\b/));
 
-    // Uncheck
     cy.get('[aria-label="Toggle id"]').click();
     expectQuery(query => expect(query).to.not.match(/\bid\b/));
   });
@@ -76,10 +72,8 @@ describe('Query Builder – scalar argument', () => {
   it('adds a string arg to the query when typed into the arg input', () => {
     openQueryBuilder();
 
-    // Select "hasArgs" – it is a String field with many args
     cy.get('[aria-label="Toggle hasArgs"]').click();
 
-    // The "string" arg input should now appear (field is selected, has args)
     cy.get('[aria-label="string"]').should('be.visible').type('hello');
 
     expectQuery(query => {
@@ -101,12 +95,11 @@ mutation M {
 `;
 
   /**
-   * Regression: editing an argument of an operation that is not the first in
-   * the document used to remount the whole field tree shortly after each edit —
-   * the builder's write reset the active operation to the first one and the
-   * cursor sync restored it, and that churn unmounted the input. The remount
-   * runs on the editor's debounced (~100ms) sync, so a user typing at a normal
-   * pace lost focus between keystrokes and could only enter one character.
+   * Editing an argument of a non-first operation resets the active operation to
+   * the first one and the cursor sync restores it; that churn unmounts the input
+   * on the debounced (~100ms) sync, so without care a user typing at normal pace
+   * loses focus between keystrokes and can only enter one character. This guards
+   * focus is kept throughout.
    */
   it('keeps input focus after editing a non-first operation arg', () => {
     cy.visit(`?query=${encodeURIComponent(QUERY_THEN_MUTATION)}`);
@@ -133,23 +126,20 @@ mutation M {
 
 describe('Query Builder – list argument (Int[])', () => {
   /**
-   * This test exercises the fix that ensures list items with typed arguments
-   * are emitted as unquoted numeric literals (42) rather than quoted strings
-   * ("42") when the item type is Int.
+   * List items with a typed Int argument must be emitted as unquoted numeric
+   * literals (42) rather than quoted strings ("42").
    */
   it('adds a listInt item and emits it as an unquoted integer in the query', () => {
     openQueryBuilder();
 
-    // Select "hasArgs" to expose its args
     cy.get('[aria-label="Toggle hasArgs"]').click();
 
-    // hasArgs has several list args (listString, listInt, ...). Scope to the
-    // listInt row specifically — its "Add item" button and number input.
+    // hasArgs has multiple list args; scope to the listInt row to target the
+    // correct "Add item" button.
     cy.contains('.graphiql-qb-arg-row', 'listInt')
       .find('[aria-label="Add item"]')
       .click();
 
-    // An integer input should appear for the new list item (and persist)
     cy.contains('.graphiql-qb-arg-row', 'listInt')
       .find('input[type="number"]')
       .first()
@@ -159,7 +149,6 @@ describe('Query Builder – list argument (Int[])', () => {
     expectQuery(query => {
       const compact = query.replaceAll(/\s+/g, '');
       expect(compact).to.include('hasArgs');
-      // Must be [42], not ["42"]
       expect(compact).to.include('listInt:[42]');
       expect(compact).to.not.include('listInt:["42"]');
     });

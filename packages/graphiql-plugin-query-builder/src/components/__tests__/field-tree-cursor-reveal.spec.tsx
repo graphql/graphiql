@@ -61,13 +61,11 @@ describe('FieldTree — cursor reveal', () => {
     const { rerender } = renderTree(['parent', 'child']);
     expect(screen.getByText('child')).toBeInTheDocument();
 
-    // Manually collapse `parent`.
     await user.click(screen.getByRole('button', { name: /parent/i }));
     expect(screen.queryByText('child')).not.toBeInTheDocument();
 
-    // A later cursor move hands us a fresh array with the same path. The tree
-    // must follow the cursor and re-expand `parent`, even though it's still the
-    // same ancestor (`isAncestor` never changed).
+    // A fresh array with the same path must still trigger re-expansion; the
+    // tree can't skip it just because the ancestor path string is unchanged.
     rerender(
       <FieldTree
         type={QueryType}

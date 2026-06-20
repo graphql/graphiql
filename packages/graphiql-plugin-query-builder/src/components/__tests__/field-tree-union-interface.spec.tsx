@@ -11,10 +11,6 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 import { FieldTree } from '../field-tree';
 
-// ---------------------------------------------------------------------------
-// Mini schema with a union field
-// ---------------------------------------------------------------------------
-
 const HumanType = new GraphQLObjectType({
   name: 'Human',
   fields: {
@@ -37,10 +33,6 @@ const SearchResultUnion = new GraphQLUnionType({
   name: 'SearchResult',
   types: [HumanType, DroidType],
 });
-
-// ---------------------------------------------------------------------------
-// Mini schema with an interface field
-// ---------------------------------------------------------------------------
 
 const CharacterInterface = new GraphQLInterfaceType({
   name: 'Character',
@@ -65,7 +57,6 @@ const DroidWithInterface = new GraphQLObjectType({
   interfaces: [CharacterInterface],
 });
 
-// Root types
 const QueryWithUnion = new GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -91,12 +82,6 @@ const SchemaWithInterface = new GraphQLSchema({
   query: QueryWithInterface,
   types: [CharacterInterface, HumanWithInterface, DroidWithInterface],
 });
-
-// ---------------------------------------------------------------------------
-// Mini schema where an implementor implements a second interface (interface
-// implementing interface): `node: Node`, with `User` also implementing
-// `Timestamped`.
-// ---------------------------------------------------------------------------
 
 const TimestampedInterface = new GraphQLInterfaceType({
   name: 'Timestamped',
@@ -137,10 +122,6 @@ const SchemaWithNode = new GraphQLSchema({
 function doc(query: string) {
   return parse(query, { noLocation: true });
 }
-
-// ---------------------------------------------------------------------------
-// Union field tests
-// ---------------------------------------------------------------------------
 
 describe('FieldTree — union field', () => {
   it('renders the union field name', () => {
@@ -188,7 +169,6 @@ describe('FieldTree — union field', () => {
 
     await user.click(screen.getByRole('button', { name: /expand search/i }));
 
-    // A union has no own fields, so its type conditions show directly.
     expect(
       screen.getByLabelText(/toggle \.\.\. on Human/i),
     ).toBeInTheDocument();
@@ -212,8 +192,7 @@ describe('FieldTree — union field', () => {
 
     await user.click(screen.getByRole('button', { name: /expand search/i }));
 
-    // No "Possible types" collapse for unions — the conditions are the only
-    // content, so they show directly.
+    // Unions show type conditions directly with no collapsible "Possible types" wrapper.
     expect(
       screen.queryByRole('button', { name: /possible types/i }),
     ).toBeNull();
@@ -261,7 +240,6 @@ describe('FieldTree — union field', () => {
     );
 
     await user.click(screen.getByRole('button', { name: /expand search/i }));
-    // Human fragment is already present so checkbox should be checked
     const humanCheckbox = screen.getByLabelText(/toggle \.\.\. on Human/i);
     expect(humanCheckbox).toBeChecked();
     await user.click(humanCheckbox);
@@ -288,10 +266,6 @@ describe('FieldTree — union field', () => {
     expect(screen.getByLabelText(/toggle \.\.\. on Human/i)).not.toBeChecked();
   });
 });
-
-// ---------------------------------------------------------------------------
-// Interface field tests
-// ---------------------------------------------------------------------------
 
 describe('FieldTree — interface field', () => {
   it('renders type-condition entries for each implementing type', async () => {
@@ -414,17 +388,12 @@ describe('FieldTree — interface field', () => {
     );
 
     await user.click(screen.getByRole('button', { name: /expand character/i }));
-    // The interface's shared `name` field has a checkbox directly under the
-    // field, no type condition required.
+    // Interface own fields have a direct checkbox, no type condition required.
     await user.click(screen.getByLabelText(/toggle name/i));
 
     expect(onToggle).toHaveBeenCalledWith(['character', 'name']);
   });
 });
-
-// ---------------------------------------------------------------------------
-// Interface implementing interface
-// ---------------------------------------------------------------------------
 
 describe('FieldTree — interface implementing interface', () => {
   it('offers a sibling interface as a type condition, tagged as an interface', async () => {
@@ -443,11 +412,10 @@ describe('FieldTree — interface implementing interface', () => {
     await user.click(screen.getByRole('button', { name: /expand node/i }));
     await user.click(screen.getByRole('button', { name: /possible types/i }));
 
-    // Concrete implementors are offered...
     expect(screen.getByLabelText(/toggle \.\.\. on User/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/toggle \.\.\. on Post/i)).toBeInTheDocument();
-    // ...plus the sibling interface that an implementor also implements, marked
-    // as an interface so it's clear it matches several types.
+    // Sibling interface (Timestamped) is also offered, tagged as "interface"
+    // to signal it covers multiple types rather than a single concrete type.
     expect(
       screen.getByLabelText(/toggle \.\.\. on Timestamped/i),
     ).toBeInTheDocument();
@@ -469,13 +437,12 @@ describe('FieldTree — interface implementing interface', () => {
 
     await user.click(screen.getByRole('button', { name: /expand node/i }));
     await user.click(screen.getByRole('button', { name: /possible types/i }));
-    // Only the node field's own possible types so far.
     expect(
       screen.getAllByRole('button', { name: /possible types/i }),
     ).toHaveLength(1);
 
-    // Expanding the sibling interface condition surfaces ITS possible types
-    // (a second, nested section) so you can narrow further.
+    // Expanding the sibling interface condition surfaces its own possible types
+    // in a second nested section, allowing further narrowing.
     await user.click(
       screen.getByRole('button', { name: /expand \.\.\. on Timestamped/i }),
     );

@@ -13,10 +13,6 @@ function doc(query: string) {
   return parse(query, { noLocation: true });
 }
 
-// ---------------------------------------------------------------------------
-// suggestVarName
-// ---------------------------------------------------------------------------
-
 describe('suggestVarName', () => {
   it('returns the arg name when no collision exists', () => {
     const d = doc('query { hero }');
@@ -47,10 +43,6 @@ describe('suggestVarName', () => {
     expect(suggestVarName(d, 'value')).toBe('value_2');
   });
 });
-
-// ---------------------------------------------------------------------------
-// promoteArgToVariable
-// ---------------------------------------------------------------------------
 
 describe('promoteArgToVariable', () => {
   it('adds a variable definition to the operation', () => {
@@ -186,7 +178,6 @@ describe('promoteArgToVariable', () => {
       '"1"',
     );
     const printed = print(result);
-    // Should be parseable and contain the variable definition
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/\$id: String/);
     expect(printed).toMatch(/hero\(id: \$id\)/);
@@ -209,13 +200,12 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['villain'], // no such field
+      ['villain'],
       'id',
       'id',
       'String',
       '"1"',
     );
-    // Nothing references the variable, so none should be defined.
     expect(print(result)).not.toMatch(/\$id/);
     expect(result).toBe(d);
   });
@@ -231,15 +221,10 @@ describe('promoteArgToVariable', () => {
       '"1"',
     );
     const printed = print(result);
-    // Exactly one `$id: String` definition, and it stays valid.
     expect(printed.match(/\$id: String/g)).toHaveLength(1);
     expect(() => parse(printed)).not.toThrow();
   });
 });
-
-// ---------------------------------------------------------------------------
-// demoteVariable
-// ---------------------------------------------------------------------------
 
 describe('demoteVariable', () => {
   it('removes the variable definition from the operation', () => {
@@ -312,8 +297,8 @@ describe('demoteVariable', () => {
   });
 
   it('uses the passed inlineValue instead of the stored default when demoting', () => {
-    // Document has no default on the variable definition (as produced by the
-    // new promote flow which passes empty string for the default).
+    // The new promote flow writes no default on the variable definition;
+    // the caller passes the original literal as inlineValue for demotion.
     const d = doc('query A($v: String) { f(a: $v) }');
     const inlineValue = { kind: Kind.STRING as const, value: 'hello' };
     const result = demoteVariable(d, 'v', undefined, inlineValue);
@@ -324,7 +309,6 @@ describe('demoteVariable', () => {
   });
 
   it('inlineValue takes precedence over the stored default', () => {
-    // Variable definition has a default of "stored"; passed inlineValue should win.
     const d = doc('query A($v: String = "stored") { f(a: $v) }');
     const inlineValue = { kind: Kind.STRING as const, value: 'override' };
     const result = demoteVariable(d, 'v', undefined, inlineValue);
@@ -357,10 +341,6 @@ describe('demoteVariable', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// listFragments
-// ---------------------------------------------------------------------------
-
 describe('listFragments', () => {
   it('returns an empty array when the document has no fragment definitions', () => {
     const d = doc('{ hero { name } }');
@@ -383,10 +363,6 @@ describe('listFragments', () => {
     expect(listFragments(d)).toEqual(['HeroFields', 'DroidFields']);
   });
 });
-
-// ---------------------------------------------------------------------------
-// createFragmentFromSelection
-// ---------------------------------------------------------------------------
 
 describe('createFragmentFromSelection', () => {
   it('creates a named fragment definition for the selected fields', () => {
@@ -425,7 +401,6 @@ describe('createFragmentFromSelection', () => {
       'Hero',
     );
     const defs = result.definitions;
-    // Should have 2 definitions: operation + fragment
     expect(defs).toHaveLength(2);
     const fragDef = defs.find(def => def.kind === 'FragmentDefinition');
     expect(fragDef).toBeDefined();
@@ -448,10 +423,6 @@ describe('createFragmentFromSelection', () => {
     expect(() => parse(print(result))).not.toThrow();
   });
 });
-
-// ---------------------------------------------------------------------------
-// toggleFieldSelection — variable cleanup
-// ---------------------------------------------------------------------------
 
 describe('toggleFieldSelection — unused variable cleanup', () => {
   it('drops a variable definition orphaned by removing its field', () => {

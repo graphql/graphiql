@@ -10,10 +10,6 @@ function doc(query: string) {
   return parse(query, { noLocation: true });
 }
 
-// ---------------------------------------------------------------------------
-// isInlineFragmentPresent
-// ---------------------------------------------------------------------------
-
 describe('isInlineFragmentPresent', () => {
   it('returns false when there is no inline fragment at the path', () => {
     const d = doc('{ search { __typename } }');
@@ -40,10 +36,6 @@ describe('isInlineFragmentPresent', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// addInlineFragment
-// ---------------------------------------------------------------------------
-
 describe('addInlineFragment', () => {
   it('adds an inline fragment to a field that has no inline fragments yet', () => {
     const d = doc('{ search { __typename } }');
@@ -63,7 +55,6 @@ describe('addInlineFragment', () => {
   it('is a no-op when the inline fragment already exists', () => {
     const d = doc('{ search { ... on Human { name } } }');
     const result = addInlineFragment(d, ['search'], 'Human');
-    // Same document — no duplicate added
     const printed = print(result);
     const matches = printed.match(/\.\.\. on Human/g) ?? [];
     expect(matches.length).toBe(1);
@@ -92,8 +83,6 @@ describe('addInlineFragment', () => {
   it('creates the parent field when the path does not resolve to an existing one', () => {
     const d = doc('{ hero }');
     const result = addInlineFragment(d, ['nonexistent'], 'Human');
-    // The previously-absent field is created with the fragment inside it; the
-    // existing selection is preserved.
     expect(isInlineFragmentPresent(result, ['nonexistent'], 'Human')).toBe(
       true,
     );
@@ -107,10 +96,6 @@ describe('addInlineFragment', () => {
     expect(printed).toContain('__typename');
   });
 });
-
-// ---------------------------------------------------------------------------
-// removeInlineFragment
-// ---------------------------------------------------------------------------
 
 describe('removeInlineFragment', () => {
   it('removes an existing inline fragment from the path', () => {
@@ -162,15 +147,11 @@ describe('removeInlineFragment', () => {
     );
     const result = removeInlineFragment(d, ['hero'], 'Human');
     const printed = print(result);
-    // The fragment (and the now-empty hero) are gone; $x is no longer used.
+    // hero (now empty) is pruned; $x is no longer referenced.
     expect(printed).not.toContain('$x');
     expect(printed).toContain('other');
   });
 });
-
-// ---------------------------------------------------------------------------
-// Round-trip / print checks
-// ---------------------------------------------------------------------------
 
 describe('addInlineFragment / removeInlineFragment round-trip', () => {
   it('adding then removing restores the original document', () => {

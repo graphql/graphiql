@@ -7,10 +7,10 @@
  * @graphiql/react mock is NOT involved; this exercises the input controls in
  * isolation.
  *
- * Test 1 (regression): clicking "Add item" must NOT cause the new input to
- * vanish. An empty list element can't be represented in the document, so the
- * list control keeps it as a local row and only adopts the prop when its
- * non-empty projection actually differs.
+ * Test 1: clicking "Add item" must NOT cause the new input to vanish. An empty
+ * list element can't be represented in the document, so the list control keeps
+ * it as a local row and only adopts the prop when its non-empty projection
+ * actually differs.
  *
  * Test 2: multi-char scalar typing accumulates correctly (the control reads
  * straight from props now that the document updates synchronously).
@@ -38,10 +38,6 @@ import {
 } from '../../lib/document-mutator';
 import { ArgInput } from '../arg-input';
 
-// ---------------------------------------------------------------------------
-// Schema and arg definitions for tests
-// ---------------------------------------------------------------------------
-
 const TestQueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -62,7 +58,6 @@ const TestQueryType = new GraphQLObjectType({
 
 const _TestSchema = new GraphQLSchema({ query: TestQueryType });
 
-// Arg definitions that match the schema, for passing to ArgInput.arg
 function listIntArg(name = 'ids') {
   return {
     name,
@@ -86,10 +81,6 @@ function stringArg(name = 'q') {
     astNode: undefined,
   } as Parameters<typeof ArgInput>[0]['arg'];
 }
-
-// ---------------------------------------------------------------------------
-// Reactive harness: models the QueryBuilder echo loop directly
-// ---------------------------------------------------------------------------
 
 /**
  * ReactiveHarness drives the real echo loop:
@@ -118,14 +109,11 @@ const ReactiveHarness: FC<HarnessProps> = ({
 }) => {
   const [query, setQuery] = useState(initialQuery);
 
-  // Expose the setter so tests can simulate external edits.
-  // Use a ref-style callback rather than forwardRef to keep this simple.
+  // Ref-style callback instead of forwardRef — keeps the harness simple.
   if (onSetQueryRef) {
     onSetQueryRef(setQuery);
   }
 
-  // Derive the current arg value from the document — same as what
-  // QueryBuilder derives and passes down as the `value` prop.
   const doc = (() => {
     try {
       return parse(query);
@@ -138,7 +126,6 @@ const ReactiveHarness: FC<HarnessProps> = ({
   const value: ArgValue = argValues[argName] ?? [];
 
   const handleChange = (next: ArgValue) => {
-    // Mirror QueryBuilder.handleSetArg: argValueToValueNode → setFieldArgument → print
     const valueNode = argValueToValueNode(arg.type, next);
     const nextDoc = setFieldArgument(doc, path, argName, valueNode);
     setQuery(print(nextDoc));
@@ -152,11 +139,7 @@ const ReactiveHarness: FC<HarnessProps> = ({
   );
 };
 
-// ---------------------------------------------------------------------------
-// Test 1 (regression): add list item persists through the echo re-render
-// ---------------------------------------------------------------------------
-
-describe('arg-input reactive: add list item persists (regression)', () => {
+describe('arg-input reactive: add list item persists through echo re-render', () => {
   it('added empty Int item stays visible after the document echo', async () => {
     const user = userEvent.setup();
 
@@ -169,29 +152,21 @@ describe('arg-input reactive: add list item persists (regression)', () => {
       />,
     );
 
-    // Before clicking, no spinbutton for "ids" should be visible
     expect(screen.queryByRole('spinbutton', { name: 'ids' })).toBeNull();
 
-    // Click "Add item" — this emits [''] to onChange which triggers setQuery
-    // which re-renders with prop value [] (empty string leaf dropped)
+    // Clicking emits [''] → onChange → setQuery → re-render with prop [] (empty leaf dropped).
     await user.click(screen.getByRole('button', { name: /add item/i }));
 
-    // The input MUST still be visible after the echo re-render.
-    // Before the fix this assertion fails because the echo clobbers local state.
+    // The input must survive the echo re-render; the empty item must not be clobbered.
     const input = screen.getByRole('spinbutton', { name: 'ids' });
     expect(input).toBeInTheDocument();
 
-    // Now type a value — it should accumulate into the document
     await user.type(input, '5');
 
     const queryEl = screen.getByTestId('query');
     expect(queryEl.textContent).toMatch(/ids: \[5\]/);
   });
 });
-
-// ---------------------------------------------------------------------------
-// Test 2: multi-char scalar typing accumulates through echoes
-// ---------------------------------------------------------------------------
 
 describe('arg-input reactive: multi-char scalar typing', () => {
   it('typing "hello" into a String arg produces the full value', async () => {
@@ -214,10 +189,6 @@ describe('arg-input reactive: multi-char scalar typing', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Test 3: genuine external change re-syncs the input
-// ---------------------------------------------------------------------------
-
 describe('arg-input reactive: external document change re-syncs', () => {
   it('programmatic setQuery to a different value updates the displayed input', async () => {
     let externalSetQuery: ((q: string) => void) | undefined;
@@ -234,16 +205,13 @@ describe('arg-input reactive: external document change re-syncs', () => {
       />,
     );
 
-    // Verify the initial value is shown
     const input = screen.getByRole('textbox', { name: 'q' });
     expect(input).toHaveValue('old');
 
-    // Simulate an external edit (e.g. user types directly in the editor)
     act(() => {
       externalSetQuery!('{ search(q: "external") }');
     });
 
-    // The input must now reflect the externally-changed value
     expect(screen.getByRole('textbox', { name: 'q' })).toHaveValue('external');
   });
 });

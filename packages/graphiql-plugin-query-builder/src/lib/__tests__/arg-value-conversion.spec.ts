@@ -17,10 +17,6 @@ import {
   type ArgValue,
 } from '../document-mutator';
 
-// ---------------------------------------------------------------------------
-// Shared types
-// ---------------------------------------------------------------------------
-
 const EpisodeEnum = new GraphQLEnumType({
   name: 'Episode',
   values: { NEWHOPE: { value: 4 }, EMPIRE: { value: 5 }, JEDI: { value: 6 } },
@@ -42,10 +38,6 @@ const NestedInput = new GraphQLInputObjectType({
     tag: { type: TagInput },
   },
 });
-
-// ---------------------------------------------------------------------------
-// argValueToValueNode
-// ---------------------------------------------------------------------------
 
 describe('argValueToValueNode — scalars', () => {
   it('converts a String scalar leaf to StringValue', () => {
@@ -103,7 +95,8 @@ describe('argValueToValueNode — list of Int', () => {
   });
 
   it('returns undefined when every item projects away', () => {
-    // Empty-string scalars are dropped, leaving nothing to emit.
+    // Empty-string scalars are the "remove arg" sentinel; a list of only empty
+    // items projects to nothing and should not emit an arg at all.
     const node = argValueToValueNode(new GraphQLList(GraphQLString), ['', '']);
     expect(node).toBeUndefined();
   });
@@ -212,10 +205,6 @@ describe('argValueToValueNode — nested input object', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// valueNodeToArgValue
-// ---------------------------------------------------------------------------
-
 describe('valueNodeToArgValue', () => {
   it('converts an IntValue to string', () => {
     const result = valueNodeToArgValue({ kind: Kind.INT, value: '42' });
@@ -288,19 +277,13 @@ describe('valueNodeToArgValue', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Round-trip: read → write must reproduce the same printed query
-// ---------------------------------------------------------------------------
-
 describe('argValueToValueNode round-trip', () => {
   it('scalar String: read back unchanged produces identical query', () => {
     const original = `{ hero(name: "Luke") }`;
     const d = parse(original, { noLocation: true });
-    // Simulate reading the arg value from AST and writing it back
     const argNode = (d.definitions[0] as any).selectionSet.selections[0]
       .arguments[0].value;
     const read: ArgValue = valueNodeToArgValue(argNode);
-    // read should be "Luke" (unquoted)
     expect(read).toBe('Luke');
     const written = setFieldArgument(
       d,
@@ -333,9 +316,7 @@ describe('argValueToValueNode round-trip', () => {
     const node = argValueToValueNode(listType, value);
     const written = setFieldArgument(d, ['items'], 'ids', node);
     const printed = print(written);
-    // Must be parseable
     expect(() => parse(printed)).not.toThrow();
-    // Must contain int values, not quoted strings
     expect(printed).toMatch(/ids: \[1, 2, 3\]/);
     expect(printed).not.toMatch(/"1"/);
   });
@@ -348,7 +329,6 @@ describe('argValueToValueNode round-trip', () => {
     const written = setFieldArgument(d, ['hero'], 'episodes', node);
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
-    // Enum values must appear without quotes
     expect(printed).toMatch(/NEWHOPE/);
     expect(printed).toMatch(/JEDI/);
     expect(printed).not.toMatch(/"NEWHOPE"/);
@@ -361,7 +341,6 @@ describe('argValueToValueNode round-trip', () => {
     const written = setFieldArgument(d, ['createTag'], 'input', node);
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
-    // name is a String → must be quoted
     expect(printed).toMatch(/name: "hero"/);
     // count is Int → must NOT be quoted
     expect(printed).toMatch(/count: 5/);

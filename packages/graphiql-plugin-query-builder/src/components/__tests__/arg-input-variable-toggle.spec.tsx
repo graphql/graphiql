@@ -155,11 +155,9 @@ describe('ArgInput — variable toggle', () => {
         onDemote={() => {}}
       />,
     );
-    // The textbox for string input should not be visible
     expect(
       screen.queryByRole('textbox', { name: 'query' }),
     ).not.toBeInTheDocument();
-    // A variable badge should be present (the span with class graphiql-qb-var-badge)
     expect(
       document.querySelector('.graphiql-qb-var-badge'),
     ).toBeInTheDocument();

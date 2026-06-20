@@ -143,7 +143,6 @@ function findNodeAtPath(
 function mapNodeAtPath(
   selectionSet: SelectionSetNode,
   path: string[],
-  // Returns the replacement node, or `null` to delete the node at `path`.
   fn: (
     node: FieldNode | InlineFragmentNode,
   ) => FieldNode | InlineFragmentNode | null,
@@ -162,7 +161,6 @@ function mapNodeAtPath(
     | InlineFragmentNode;
 
   if (rest.length === 0) {
-    // Terminal — apply fn.
     const replacement = fn(node);
     const newSelections = [...selectionSet.selections];
     if (replacement === null) {
@@ -173,7 +171,6 @@ function mapNodeAtPath(
     return { ...selectionSet, selections: newSelections };
   }
 
-  // Non-terminal — recurse.
   if (!node.selectionSet) {
     return selectionSet;
   }
@@ -187,7 +184,6 @@ function mapNodeAtPath(
     return selectionSet;
   }
 
-  // Prune this node when its child set became empty (removeField behavior).
   if (pruneEmptyParent && newChildSet.selections.length === 0) {
     const newSelections = selectionSet.selections.filter(
       (_, i) => i !== nodeIndex,
@@ -541,7 +537,6 @@ export function argValueToValueNode(
   type: GraphQLInputType,
   value: ArgValue,
 ): ValueNode | undefined {
-  // Strip NonNull wrapper
   if (isNonNullType(type)) {
     return argValueToValueNode(type.ofType, value);
   }
@@ -594,7 +589,6 @@ export function argValueToValueNode(
     return objectNode;
   }
 
-  // Scalar or enum leaf
   if (isEnumType(type) || isScalarType(type)) {
     const raw = typeof value === 'string' ? value : '';
     return scalarToValueNode(type, raw);
@@ -602,10 +596,6 @@ export function argValueToValueNode(
 
   return undefined;
 }
-
-// ---------------------------------------------------------------------------
-// List and input-object value helpers
-// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Variable promotion helpers
@@ -647,7 +637,6 @@ function rawToValueNode(raw: string): ConstValueNode | undefined {
   if (!raw) {
     return undefined;
   }
-  // Quoted string: "foo" → StringValue
   if (raw.startsWith('"') && raw.endsWith('"')) {
     return { kind: Kind.STRING, value: raw.slice(1, -1) };
   }
@@ -663,7 +652,6 @@ function rawToValueNode(raw: string): ConstValueNode | undefined {
   if (/^-?\d+\.\d+$/.test(raw)) {
     return { kind: Kind.FLOAT, value: raw };
   }
-  // Enum value or bare string
   return { kind: Kind.ENUM, value: raw };
 }
 
@@ -697,7 +685,6 @@ export function promoteArgToVariable(
     return doc;
   }
 
-  // Build the variable definition node.
   const defaultValue = rawToValueNode(defaultRaw);
   const varDef: VariableDefinitionNode = {
     kind: Kind.VARIABLE_DEFINITION,
@@ -713,7 +700,6 @@ export function promoteArgToVariable(
     directives: [],
   };
 
-  // Replace the inline arg value with a Variable node.
   const varValueNode: ValueNode = {
     kind: Kind.VARIABLE,
     name: { kind: Kind.NAME, value: varName },
@@ -785,10 +771,7 @@ export function demoteVariable(
 
   const value: ValueNode | undefined = inlineValue ?? targetDef.defaultValue;
 
-  // Remove variable definition.
   const newVarDefs = varDefs.filter(vd => vd.variable.name.value !== varName);
-
-  // Walk the selection set and replace $varName references with the value or remove.
   const newSelectionSet = replaceVariableInSelectionSet(
     operation.selectionSet,
     varName,
@@ -903,13 +886,11 @@ export function createFragmentFromSelection(
     return doc;
   }
 
-  // Find the target field and capture its current selection set.
   const targetSelectionSet = findSelectionSet(operation.selectionSet, path);
   if (!targetSelectionSet || targetSelectionSet.selections.length === 0) {
     return doc;
   }
 
-  // Build the fragment definition.
   const fragmentDef: FragmentDefinitionNode = {
     kind: Kind.FRAGMENT_DEFINITION,
     name: { kind: Kind.NAME, value: fragmentName },
@@ -921,7 +902,6 @@ export function createFragmentFromSelection(
     selectionSet: targetSelectionSet,
   };
 
-  // Build a spread to replace the field's selections.
   const spread: FragmentSpreadNode = {
     kind: Kind.FRAGMENT_SPREAD,
     name: { kind: Kind.NAME, value: fragmentName },
@@ -933,7 +913,6 @@ export function createFragmentFromSelection(
     selections: [spread],
   };
 
-  // Replace the field's selection set in the operation.
   const newSelectionSet = replaceFieldSelectionSet(
     operation.selectionSet,
     path,
@@ -1028,7 +1007,6 @@ export function addInlineFragment(
     return doc;
   }
 
-  // Already present — no-op.
   if (isInlineFragmentPresent(doc, path, typeName, operationName)) {
     return doc;
   }
@@ -1207,7 +1185,6 @@ function addField(
   const [segment, ...rest] = path as [string, ...string[]];
 
   if (rest.length === 0) {
-    // Leaf — add the node if not already present.
     const alreadyPresent = selectionSet.selections.some(s =>
       selectionMatchesSegment(s, segment),
     );
@@ -1222,14 +1199,12 @@ function addField(
     };
   }
 
-  // Non-leaf — descend into the child node (creating it if necessary).
   const existingIndex = selectionSet.selections.findIndex(s =>
     selectionMatchesSegment(s, segment),
   );
 
   if (existingIndex === -1) {
-    // Parent doesn't exist yet — create it with an empty selection set, then
-    // recurse to add the child.
+    // Parent node doesn't exist yet; create it and recurse to add the child.
     const emptySet: SelectionSetNode = {
       kind: Kind.SELECTION_SET,
       selections: [],

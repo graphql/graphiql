@@ -74,10 +74,6 @@ export const ArgInput: FC<ArgInputProps> = ({
   );
 };
 
-// ---------------------------------------------------------------------------
-// Internal: dispatch by runtime type (handles NonNull unwrapping)
-// ---------------------------------------------------------------------------
-
 type TypedInputProps = {
   type: GraphQLType;
   name: string;
@@ -99,7 +95,6 @@ const ArgInputByType: FC<TypedInputProps> = ({
   onPromote,
   onDemote,
 }) => {
-  // Strip NonNull wrapper transparently
   if (isNonNullType(type)) {
     return (
       <ArgInputByType
@@ -143,7 +138,6 @@ const ArgInputByType: FC<TypedInputProps> = ({
     );
   }
 
-  // For scalar and enum types, optionally render the variable toggle.
   const toggleBtn = onPromote ? (
     <button
       type="button"
@@ -236,15 +230,9 @@ const ArgInputByType: FC<TypedInputProps> = ({
   return null;
 };
 
-// ---------------------------------------------------------------------------
-// ScalarArgControl — text/number input, controlled directly by the document
-// ---------------------------------------------------------------------------
-//
-// No local state is needed: the builder updates its working document
-// synchronously on each keystroke, so the `value` prop already reflects the
-// character just typed by the time we re-render. (Previously the document
-// round-trip was async, which dropped all but the last character unless we kept
-// a local copy.)
+// No local state: the builder updates its working document synchronously on
+// each keystroke, so `value` already reflects the character just typed by the
+// time we re-render. An async round-trip would deliver only the last character.
 
 type ScalarArgControlProps = {
   name: string;
@@ -273,10 +261,6 @@ const ScalarArgControl: FC<ScalarArgControlProps> = ({
   );
 };
 
-// ---------------------------------------------------------------------------
-// BooleanArgControl — checkbox (no multi-char issue, but keep pattern uniform)
-// ---------------------------------------------------------------------------
-
 type BooleanArgControlProps = {
   name: string;
   value: string;
@@ -298,10 +282,6 @@ const BooleanArgControl: FC<BooleanArgControlProps> = ({
     />
   );
 };
-
-// ---------------------------------------------------------------------------
-// EnumArgControl — select (no multi-char issue, but extracted for symmetry)
-// ---------------------------------------------------------------------------
 
 type EnumArgControlProps = {
   name: string;
@@ -333,17 +313,13 @@ const EnumArgControl: FC<EnumArgControlProps> = ({
   );
 };
 
-// ---------------------------------------------------------------------------
-// List arg: local items (with stable ids) so empty rows can persist
-// ---------------------------------------------------------------------------
-//
 // An empty list element can't live in the document (an empty slot isn't
-// printable), so in-progress items are held here in local state. We adopt the
+// printable), so in-progress items are held in local state. We adopt the
 // `value` prop only on a genuine external change, detected by comparing it to
 // the non-empty projection of our local items: equal means the prop is just our
-// own edit echoed back (empty rows dropped) and we keep the local rows; a
+// own edit echoed back (empty rows dropped) and we keep local rows; a
 // difference means the document changed under us and we adopt it. Items carry a
-// stable id so React reconciles the right input row when one is removed.
+// stable id so React reconciles the right row when one is removed.
 
 type ListArgInputProps = {
   itemType: GraphQLType;
@@ -441,10 +417,6 @@ function defaultValueForType(type: GraphQLType): ArgValue {
   }
   return '';
 }
-
-// ---------------------------------------------------------------------------
-// Input object arg: real { [field]: ArgValue } — no JSON round-trips
-// ---------------------------------------------------------------------------
 
 type InputObjectArgInputProps = {
   inputType: ReturnType<typeof getNamedType> & {

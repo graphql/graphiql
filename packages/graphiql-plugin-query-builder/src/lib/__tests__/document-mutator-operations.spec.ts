@@ -25,9 +25,7 @@ describe('toggleFieldSelection — named operation targeting', () => {
     const result = toggleFieldSelection(d, ['createHero', 'name'], 'B');
     const printed = print(result);
 
-    // B should now have `name` inside createHero
     expect(printed).toContain('name');
-    // A should still only contain hero { id } — no createHero
     const queryADef = result.definitions.find(
       def => def.kind === 'OperationDefinition' && def.name?.value === 'A',
     );
@@ -37,7 +35,6 @@ describe('toggleFieldSelection — named operation targeting', () => {
         s => s.kind === 'Field' && s.name.value === 'hero',
       );
       expect(heroField).toBeDefined();
-      // A should NOT have createHero
       const createHeroField = queryADef.selectionSet.selections.find(
         s => s.kind === 'Field' && s.name.value === 'createHero',
       );
@@ -51,7 +48,6 @@ describe('toggleFieldSelection — named operation targeting', () => {
     const printed = print(result);
 
     expect(printed).toContain('name');
-    // B should still only have createHero { id }
     const mutBDef = result.definitions.find(
       def => def.kind === 'OperationDefinition' && def.name?.value === 'B',
     );
@@ -90,14 +86,12 @@ describe('isFieldSelected — per operation name', () => {
 describe('getFieldArgValues / setFieldArgument — named operation', () => {
   it('reads arg values from the correct operation', () => {
     const d = twoOpDoc();
-    // B has createHero(name: "Luke")
     const values = getFieldArgValues(d, ['createHero'], 'B');
     expect(values['name']).toBe('Luke');
   });
 
   it('returns empty when path resolves in a different operation', () => {
     const d = twoOpDoc();
-    // createHero is in B, not A
     const values = getFieldArgValues(d, ['createHero'], 'A');
     expect(Object.keys(values)).toHaveLength(0);
   });
@@ -107,11 +101,9 @@ describe('getFieldArgValues / setFieldArgument — named operation', () => {
     const valueNode = { kind: Kind.STRING, value: 'Leia' } as const;
     const result = setFieldArgument(d, ['createHero'], 'name', valueNode, 'B');
 
-    // B should have the updated arg
     const valuesB = getFieldArgValues(result, ['createHero'], 'B');
     expect(valuesB['name']).toBe('Leia');
 
-    // A should be completely unchanged (hero { id } has no args)
     const valuesA = getFieldArgValues(result, ['hero'], 'A');
     expect(Object.keys(valuesA)).toHaveLength(0);
   });
@@ -120,7 +112,6 @@ describe('getFieldArgValues / setFieldArgument — named operation', () => {
 describe('backward-compatibility — no operationName falls back to first operation', () => {
   it('isFieldSelected without operationName targets the first operation', () => {
     const d = twoOpDoc();
-    // First op is A which has `hero`
     expect(isFieldSelected(d, ['hero'])).toBe(true);
     expect(isFieldSelected(d, ['createHero'])).toBe(false);
   });
@@ -128,9 +119,7 @@ describe('backward-compatibility — no operationName falls back to first operat
   it('toggleFieldSelection without operationName modifies the first operation', () => {
     const d = twoOpDoc();
     const result = toggleFieldSelection(d, ['hero', 'name']);
-    // hero.name added to first op (A)
     expect(isFieldSelected(result, ['hero', 'name'], 'A')).toBe(true);
-    // B should be untouched
     expect(isFieldSelected(result, ['createHero'], 'B')).toBe(true);
     expect(isFieldSelected(result, ['hero'], 'B')).toBe(false);
   });
@@ -148,16 +137,13 @@ describe('backward-compatibility — no operationName falls back to first operat
 describe('fallback when operationName does not match any operation', () => {
   it('isFieldSelected falls back to first operation on unknown name', () => {
     const d = twoOpDoc();
-    // 'hero' is in A (the first op); unknown name should fall back to A
     expect(isFieldSelected(d, ['hero'], 'NonExistent')).toBe(true);
   });
 
   it('toggleFieldSelection falls back to first operation on unknown name', () => {
     const d = twoOpDoc();
     const result = toggleFieldSelection(d, ['hero', 'name'], 'NoMatch');
-    // hero.name should be added to A (the first op) because NoMatch doesn't exist
     expect(isFieldSelected(result, ['hero', 'name'], 'A')).toBe(true);
-    // B should be untouched
     expect(isFieldSelected(result, ['createHero'], 'B')).toBe(true);
   });
 

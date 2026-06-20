@@ -235,12 +235,10 @@ export const QueryBuilder: FC = () => {
 
   function handleToggle(path: string[]) {
     const next = toggleFieldSelection(workingDoc, path, operationName);
-    // Immediate: removing a field can orphan variables, written just below.
     applyDoc(next);
     reconcileVariablesJson(next);
   }
 
-  /** Resolves the schema arg for `argName` on the field at `path`, or undefined. */
   function schemaArgFor(path: string[], argName: string) {
     return schema
       ? resolveSchemaArg(schema, activeOpKind, path, argName)
@@ -254,7 +252,6 @@ export const QueryBuilder: FC = () => {
     }
 
     const valueNode = argValueToValueNode(schemaArg.type, value);
-    // Debounced: this is the hot path for typing into argument inputs.
     applyDoc(
       setFieldArgument(workingDoc, path, argName, valueNode, operationName),
     );

@@ -118,7 +118,6 @@ describe('toggleFieldSelection — removing fields', () => {
   it('prunes a parent emptied by removing its last child', () => {
     const d = doc('{ hero { name } droid }');
     const result = toggleFieldSelection(d, ['hero', 'name']);
-    // 'hero' would be left as a composite with no body, so it is pruned entirely.
     expect(isFieldSelected(result, ['hero'])).toBe(false);
     expect(isFieldSelected(result, ['droid'])).toBe(true);
     expect(print(result)).toMatchInlineSnapshot(`
@@ -138,7 +137,6 @@ describe('toggleFieldSelection — removing fields', () => {
   it('cascades pruning up through multiple now-empty ancestors', () => {
     const d = doc('{ hero { friends { name } } droid }');
     const result = toggleFieldSelection(d, ['hero', 'friends', 'name']);
-    // friends empties, then hero empties; both are pruned.
     expect(isFieldSelected(result, ['hero'])).toBe(false);
     expect(isFieldSelected(result, ['hero', 'friends'])).toBe(false);
     expect(isFieldSelected(result, ['droid'])).toBe(true);
@@ -147,8 +145,7 @@ describe('toggleFieldSelection — removing fields', () => {
   it('drops an operation emptied of its last field, keeping the rest valid', () => {
     const d = doc('query A { hero } mutation B { createHero { id } }');
     const result = toggleFieldSelection(d, ['hero'], 'A');
-    // Operation A is removed entirely (an operation with no body is unprintable),
-    // and B is untouched, so the document stays parseable.
+    // An operation with no body is unprintable; it must be dropped entirely.
     expect(
       result.definitions.some(
         def => def.kind === 'OperationDefinition' && def.name?.value === 'A',
@@ -171,9 +168,8 @@ describe('toggleFieldSelection — removing fields', () => {
   });
 
   it('removes only the first occurrence when a field name is aliased twice', () => {
-    // The builder addresses fields by schema name, so both `a:` and `b:` match
-    // the `hero` segment. Removing must drop a single occurrence, not wipe both
-    // (the previous filter-all behavior lost hand-written aliases).
+    // Both `a: hero` and `b: hero` match the `hero` segment by schema name;
+    // removing must drop only one occurrence to preserve hand-written aliases.
     const d = doc('{ a: hero b: hero }');
     const result = toggleFieldSelection(d, ['hero']);
     expect(print(result)).toMatchInlineSnapshot(`
@@ -213,7 +209,6 @@ describe('toggleFieldSelection — round-trip', () => {
   it('handles multiple operations — only the first is modified', () => {
     const d = doc('query A { hero } mutation B { createHero { id } }');
     const result = toggleFieldSelection(d, ['hero', 'name']);
-    // 'hero' in first op gets name added
     expect(isFieldSelected(result, ['hero', 'name'])).toBe(true);
   });
 });

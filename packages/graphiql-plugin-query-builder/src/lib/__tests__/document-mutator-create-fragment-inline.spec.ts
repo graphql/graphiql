@@ -9,10 +9,6 @@ function doc(query: string) {
   return parse(query, { noLocation: true });
 }
 
-// ---------------------------------------------------------------------------
-// createFragmentFromSelection — inline-fragment path segments (Step 3 fix)
-// ---------------------------------------------------------------------------
-
 describe('createFragmentFromSelection with inline-fragment path segments', () => {
   it('extracts selections from an inline fragment into a named fragment', () => {
     // Build: { search { ... on Human { name appearsIn } } }
@@ -27,14 +23,10 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
     );
     const printed = print(result);
 
-    // The fragment definition must exist.
     expect(printed).toMatch(/fragment HumanDetails on Human/);
-    // The extracted fields appear in the fragment.
     expect(printed).toMatch(/name/);
     expect(printed).toMatch(/appearsIn/);
-    // The operation now has a spread instead of the inlined selections.
     expect(printed).toMatch(/\.\.\.HumanDetails/);
-    // The document is parseable.
     expect(() => parse(printed)).not.toThrow();
   });
 
@@ -57,8 +49,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
 
     const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
 
-    // Before the fix, findSelectionSet used Kind.FIELD only and returned
-    // undefined for inline-fragment segments, making this a no-op.
+    // findSelectionSet must handle inline-fragment path segments, not just Kind.FIELD.
     expect(print(result)).not.toBe(print(d));
   });
 

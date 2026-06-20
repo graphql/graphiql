@@ -223,7 +223,7 @@ describe('FieldRow', () => {
     const row = container.querySelector(
       '.graphiql-qb-field-row',
     ) as HTMLElement;
-    expect(row.style.paddingLeft).toBe('24px'); // 2 * 12px
+    expect(row.style.paddingLeft).toBe('24px'); // depth 2 × 12px
   });
 });
 
@@ -247,8 +247,7 @@ describe('FieldRow — deprecated fields', () => {
     expect(screen.getByText('legacy')).toHaveClass(
       'graphiql-qb-field-name--deprecated',
     );
-    // The deprecation reason is shown in a styled tooltip on hover. Radix renders
-    // the content both visibly and for screen readers, so there are >1 matches.
+    // Radix renders tooltip content both visibly and for screen readers, so >1 match.
     await userEvent.hover(badge);
     const tips = await screen.findAllByText('Use name instead');
     expect(tips.length).toBeGreaterThan(0);
