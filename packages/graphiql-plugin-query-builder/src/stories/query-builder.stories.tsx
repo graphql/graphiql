@@ -695,3 +695,45 @@ export const WithUnionField: Story = {
 export const WithInterfaceField: Story = {
   render: () => withProvider(InterfaceSchema, <QueryBuilder />),
 };
+
+// ---------------------------------------------------------------------------
+// Wide-type schema — exercises the field-list cap and filter at two levels
+// ---------------------------------------------------------------------------
+
+// 30-field object type: expanding it in the builder triggers the cap (shows 20, "+ N more")
+const WideObjectType = new GraphQLObjectType({
+  name: 'Wide',
+  fields: Object.fromEntries(
+    Array.from({ length: 30 }, (_, i) => [
+      `a${i}`,
+      { type: i % 3 === 0 ? GraphQLInt : GraphQLString },
+    ]),
+  ),
+});
+
+// Query root: 30 scalar fields (f0..f29) + one object field returning WideObjectType.
+// The root list itself also exceeds 20, so both levels independently trigger the cap.
+const WideQueryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    ...Object.fromEntries(
+      Array.from({ length: 30 }, (_, i) => [
+        `f${i}`,
+        { type: i % 3 === 0 ? GraphQLInt : GraphQLString },
+      ]),
+    ),
+    wide: { type: WideObjectType },
+  },
+});
+
+const WideSchema = new GraphQLSchema({ query: WideQueryType });
+
+/**
+ * QueryBuilder with a schema that has 31 root fields and a nested object type
+ * with 30 fields. Both lists exceed the 20-field cap, so the root shows "f0–f19
+ * + 11 more" and expanding `wide` shows "a0–a19 + 10 more". The Filter fields…
+ * input is visible at each level once the cap triggers.
+ */
+export const WideType: Story = {
+  render: () => withProvider(WideSchema, <QueryBuilder />),
+};
