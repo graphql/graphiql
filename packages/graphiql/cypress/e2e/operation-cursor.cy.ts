@@ -5,20 +5,18 @@
  * reflects as `<name> +N`.
  */
 
-const TWO_OPS = [
-  'query Alpha {',
-  '  test {',
-  '    id',
-  '  }',
-  '}',
-  '',
-  'query Beta {',
-  '  test {',
-  '    id',
-  '  }',
-  '}',
-  '',
-].join('\n');
+const TWO_OPS = `query Alpha {
+  test {
+    id
+  }
+}
+
+query Beta {
+  test {
+    id
+  }
+}
+`;
 
 // The title of the active session tab.
 const activeTabTitle = () =>

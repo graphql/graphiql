@@ -91,16 +91,14 @@ describe('Query Builder – scalar argument', () => {
 });
 
 describe('Query Builder – editing a non-first operation', () => {
-  const QUERY_THEN_MUTATION = [
-    'query Q {',
-    '  id',
-    '}',
-    '',
-    'mutation M {',
-    '  setString(value: "a")',
-    '}',
-    '',
-  ].join('\n');
+  const QUERY_THEN_MUTATION = `query Q {
+  id
+}
+
+mutation M {
+  setString(value: "a")
+}
+`;
 
   /**
    * Regression: editing an argument of an operation that is not the first in
