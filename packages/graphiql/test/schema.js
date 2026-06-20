@@ -268,10 +268,47 @@ And external image:
 ![Cat](https://placecats.com/300/200)
 `.trim();
 
+  // A type with many fields, to exercise the query builder's long-list cap and
+  // filter. The list has more than 20 fields, so it caps with a "+ N more"
+  // expander and shows a "Filter fields" input. `viewer` and `accountBalance`
+  // carry descriptions so the filter (which matches name, description, and type)
+  // can be tried by description, and `nested` repeats the type so the cap can be
+  // seen a level deeper.
+  const WideType = new GraphQLObjectType({
+    name: 'WideType',
+    description: 'A type with many fields, for testing long field lists',
+    fields: () => ({
+      viewer: {
+        type: GraphQLString,
+        description: 'The current user of the session',
+      },
+      accountBalance: {
+        type: GraphQLFloat,
+        description: 'Account balance, in cents',
+      },
+      nested: {
+        type: WideType,
+        description: 'Another WideType, to test the cap a level deeper',
+        resolve: () => ({}),
+      },
+      ...Object.fromEntries(
+        Array.from({ length: 30 }, (_, i) => [
+          `field${String(i + 1).padStart(2, '0')}`,
+          { type: i % 3 === 0 ? GraphQLInt : GraphQLString },
+        ]),
+      ),
+    }),
+  });
+
   const TestType = new GraphQLObjectType({
     name: 'Test',
     description: 'Test type for testing\n New line works',
     fields: () => ({
+      wide: {
+        type: WideType,
+        description: 'A type with many fields, for testing long field lists',
+        resolve: () => ({}),
+      },
       test: {
         type: TestType,
         description: '`test` field from `Test` type.',
