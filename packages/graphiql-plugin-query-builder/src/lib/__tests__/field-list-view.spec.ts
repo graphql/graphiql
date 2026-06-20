@@ -6,6 +6,7 @@ import {
   type GraphQLField,
 } from 'graphql';
 import { fieldMatchesFilter } from '../field-list-view';
+import { selectVisibleFields } from '../field-list-view';
 
 // Build a real type so fields carry name/description/type, then read them back.
 const T = new GraphQLObjectType({
@@ -41,5 +42,97 @@ describe('fieldMatchesFilter', () => {
 
   it('treats an empty/whitespace query as a match (no filtering)', () => {
     expect(fieldMatchesFilter(field('count'), '   ')).toBe(true);
+  });
+});
+
+// A type with 25 plainly-named string fields: f0..f24, in declaration order.
+const Wide = new GraphQLObjectType({
+  name: 'Wide',
+  fields: Object.fromEntries(
+    Array.from({ length: 25 }, (_, i) => [`f${i}`, { type: GraphQLString }]),
+  ),
+});
+const wideFields = Object.values(Wide.getFields());
+const none = () => false;
+
+describe('selectVisibleFields', () => {
+  it('shows all fields when at or under the threshold', () => {
+    const under = wideFields.slice(0, 20);
+    const r = selectVisibleFields({
+      fields: under,
+      isSelected: none,
+      threshold: 20,
+      expanded: false,
+      filter: '',
+    });
+    expect(r.visible).toHaveLength(20);
+    expect(r.hiddenCount).toBe(0);
+  });
+
+  it('caps to the threshold and reports the hidden count', () => {
+    const r = selectVisibleFields({
+      fields: wideFields,
+      isSelected: none,
+      threshold: 20,
+      expanded: false,
+      filter: '',
+    });
+    expect(r.visible.map(f => f.name)).toEqual(
+      wideFields.slice(0, 20).map(f => f.name),
+    );
+    expect(r.hiddenCount).toBe(5);
+  });
+
+  it('shows everything once expanded', () => {
+    const r = selectVisibleFields({
+      fields: wideFields,
+      isSelected: none,
+      threshold: 20,
+      expanded: true,
+      filter: '',
+    });
+    expect(r.visible).toHaveLength(25);
+    expect(r.hiddenCount).toBe(0);
+  });
+
+  it('pins a selected field that sorts beyond the cap and excludes it from the hidden count', () => {
+    const r = selectVisibleFields({
+      fields: wideFields,
+      isSelected: name => name === 'f24',
+      threshold: 20,
+      expanded: false,
+      filter: '',
+    });
+    expect(r.visible.map(f => f.name)).toContain('f24');
+    // First 20 (f0..f19) plus the pinned f24 = 21 visible; f20..f23 hidden.
+    expect(r.visible).toHaveLength(21);
+    expect(r.hiddenCount).toBe(4);
+  });
+
+  it('reports zero hidden when every beyond-cap field is selected', () => {
+    const r = selectVisibleFields({
+      fields: wideFields,
+      isSelected: name => ['f20', 'f21', 'f22', 'f23', 'f24'].includes(name),
+      threshold: 20,
+      expanded: false,
+      filter: '',
+    });
+    expect(r.visible).toHaveLength(25);
+    expect(r.hiddenCount).toBe(0);
+  });
+
+  it('a filter bypasses the cap and shows all matches', () => {
+    // f2 and f12 and f20..f24 all contain "2"
+    const r = selectVisibleFields({
+      fields: wideFields,
+      isSelected: none,
+      threshold: 20,
+      expanded: false,
+      filter: '2',
+    });
+    expect(r.visible.map(f => f.name)).toEqual(
+      wideFields.filter(f => f.name.includes('2')).map(f => f.name),
+    );
+    expect(r.hiddenCount).toBe(0);
   });
 });
