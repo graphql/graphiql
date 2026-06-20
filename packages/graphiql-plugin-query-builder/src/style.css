@@ -115,6 +115,48 @@
   flex-direction: column;
 }
 
+/* Filter input shown above long field lists. */
+.graphiql-qb-field-filter {
+  width: 100%;
+  margin-bottom: var(--px-6);
+  padding: var(--px-4) var(--px-8);
+  background-color: oklch(var(--fg-default) / 0.08);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-qb-field-filter::placeholder {
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-qb-field-filter:focus {
+  outline: none;
+  border-color: oklch(var(--accent-purple));
+  background-color: oklch(var(--bg-canvas));
+}
+
+/* "+ N more" control that reveals the capped tail of a long field list. */
+.graphiql-qb-show-more {
+  margin-top: var(--px-4);
+  padding: var(--px-4) var(--px-8);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-purple));
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  text-align: left;
+  transition: background 80ms;
+}
+
+.graphiql-qb-show-more:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
 .graphiql-qb-field-node {
   display: flex;
   flex-direction: column;
