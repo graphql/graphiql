@@ -34,6 +34,9 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
 
   const fields = Object.values(type.getFields());
   const isLong = fields.length > FIELD_LIST_THRESHOLD;
+  // Match the per-depth indent FieldRow applies, so the filter and "more" control
+  // line up with the rows at this nesting level instead of spanning the pane.
+  const indent = path.length * 12;
   const isSelected = (fieldName: string): boolean =>
     isFieldSelected(doc, [...path, fieldName], operationName);
 
@@ -54,6 +57,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
         <input
           type="text"
           className="graphiql-qb-field-filter"
+          style={{ marginLeft: indent }}
           aria-label="Filter fields"
           placeholder="Filter fields…"
           value={filter}
@@ -67,6 +71,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
         <button
           type="button"
           className="graphiql-qb-show-more"
+          style={{ marginLeft: indent }}
           onClick={() => setExpanded(true)}
         >
           ...{hiddenCount} more fields
