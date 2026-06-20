@@ -1,10 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installGraphiQLReactMock } from './graphiql-react-mock';
 import { QueryBuilder } from '../query-builder';
@@ -37,7 +33,10 @@ function fieldNames(): string[] {
 
 describe('FieldTreeList — cap', () => {
   beforeEach(() => {
-    installGraphiQLReactMock({ schema: TestSchema, queryText: '{ __typename }' });
+    installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: '{ __typename }',
+    });
   });
 
   it('caps the list at 20 fields and shows a "N more" control', () => {

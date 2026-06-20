@@ -16,7 +16,12 @@ const T = new GraphQLObjectType({
       description: 'The current user of the session',
     },
     count: { type: GraphQLInt },
-    profileType: { type: new GraphQLObjectType({ name: 'Profile', fields: { id: { type: GraphQLString } } }) },
+    profileType: {
+      type: new GraphQLObjectType({
+        name: 'Profile',
+        fields: { id: { type: GraphQLString } },
+      }),
+    },
   },
 });
 const fields = T.getFields();
