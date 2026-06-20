@@ -19,7 +19,12 @@ vi.mock('@graphiql/react', async () => {
 const WideQuery = new GraphQLObjectType({
   name: 'Query',
   fields: Object.fromEntries(
-    Array.from({ length: 25 }, (_, i) => [`f${i}`, { type: GraphQLString }]),
+    Array.from({ length: 25 }, (_, i) => [
+      `f${i}`,
+      i === 5
+        ? { type: GraphQLString, description: 'the current user record' }
+        : { type: GraphQLString },
+    ]),
   ),
 });
 const TestSchema = new GraphQLSchema({ query: WideQuery });
@@ -55,5 +60,34 @@ describe('FieldTreeList — cap', () => {
     installGraphiQLReactMock({ schema: TestSchema, queryText: '{ f24 }' });
     render(<QueryBuilder />);
     expect(fieldNames()).toContain('f24');
+  });
+
+  it('shows a filter input only on long lists', () => {
+    render(<QueryBuilder />);
+    expect(
+      screen.getByRole('textbox', { name: /filter fields/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('narrows the list to matches and hides the "N more" control while filtering', async () => {
+    render(<QueryBuilder />);
+    await userEvent.type(
+      screen.getByRole('textbox', { name: /filter fields/i }),
+      'f1',
+    );
+    const names = fieldNames();
+    expect(names).toContain('f1');
+    expect(names).toContain('f19');
+    expect(names).not.toContain('f0');
+    expect(screen.queryByRole('button', { name: /more/i })).toBeNull();
+  });
+
+  it('matches a description-only hit', async () => {
+    render(<QueryBuilder />);
+    await userEvent.type(
+      screen.getByRole('textbox', { name: /filter fields/i }),
+      'user',
+    );
+    expect(fieldNames()).toEqual(['f5']);
   });
 });

@@ -30,8 +30,10 @@ type FieldTreeListProps = {
 export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
   const { doc, operationName, cursorPath } = useFieldTreeContext();
   const [expanded, setExpanded] = useState(false);
+  const [filter, setFilter] = useState('');
 
   const fields = Object.values(type.getFields());
+  const isLong = fields.length > FIELD_LIST_THRESHOLD;
   const isSelected = (fieldName: string): boolean =>
     isFieldSelected(doc, [...path, fieldName], operationName);
 
@@ -53,11 +55,21 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
     isSelected,
     threshold: FIELD_LIST_THRESHOLD,
     expanded: expanded || cursorBeyondCap,
-    filter: '',
+    filter,
   });
 
   return (
     <div className="graphiql-qb-field-tree">
+      {isLong && (
+        <input
+          type="text"
+          className="graphiql-qb-field-filter"
+          aria-label="Filter fields"
+          placeholder="Filter fields…"
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+        />
+      )}
       {visible.map(field => (
         <FieldTreeNode key={field.name} field={field} path={path} />
       ))}
