@@ -294,6 +294,12 @@
   cursor: pointer;
 }
 
+/* In a field row, the name button sizes to its content so the deprecated chip
+   sits next to the field name; the type is pushed to the right edge instead. */
+.graphiql-qb-field-header > .graphiql-qb-field-toggle {
+  flex: 0 1 auto;
+}
+
 .graphiql-qb-field-toggle svg {
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -404,6 +410,7 @@
 
 .graphiql-qb-field-type {
   flex-shrink: 0;
+  margin-left: auto;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-eyebrow);
   color: oklch(var(--accent-orange));
