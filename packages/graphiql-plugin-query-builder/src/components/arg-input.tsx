@@ -10,7 +10,7 @@ import {
   type GraphQLInputField,
   type GraphQLType,
 } from 'graphql';
-import { type FC, useState } from 'react';
+import { type FC, type ReactNode, useState } from 'react';
 import { type ArgValue } from '../lib/document-mutator';
 
 /**
@@ -159,71 +159,56 @@ const ArgInputByType: FC<TypedInputProps> = ({
 
   if (isEnumType(named)) {
     return (
-      <span className="graphiql-qb-arg-with-toggle">
-        {isVariable ? (
-          <span
-            className="graphiql-qb-var-badge"
-            aria-label={`${name} bound to $${variableName ?? name}`}
-          >
-            ${variableName ?? name}
-          </span>
-        ) : (
-          <EnumArgControl
-            name={name}
-            value={typeof value === 'string' ? value : ''}
-            onChange={onChange}
-            enumValues={named.getValues().map(v => v.name)}
-          />
-        )}
-        {toggleBtn}
-      </span>
+      <WithVariableToggle
+        isVariable={isVariable}
+        name={name}
+        variableName={variableName}
+        toggle={toggleBtn}
+      >
+        <EnumArgControl
+          name={name}
+          value={typeof value === 'string' ? value : ''}
+          onChange={onChange}
+          enumValues={named.getValues().map(v => v.name)}
+        />
+      </WithVariableToggle>
     );
   }
 
   if (isScalarType(named)) {
     if (named.name === 'Boolean') {
       return (
-        <span className="graphiql-qb-arg-with-toggle">
-          {isVariable ? (
-            <span
-              className="graphiql-qb-var-badge"
-              aria-label={`${name} bound to $${variableName ?? name}`}
-            >
-              ${variableName ?? name}
-            </span>
-          ) : (
-            <BooleanArgControl
-              name={name}
-              value={typeof value === 'string' ? value : ''}
-              onChange={onChange}
-            />
-          )}
-          {toggleBtn}
-        </span>
+        <WithVariableToggle
+          isVariable={isVariable}
+          name={name}
+          variableName={variableName}
+          toggle={toggleBtn}
+        >
+          <BooleanArgControl
+            name={name}
+            value={typeof value === 'string' ? value : ''}
+            onChange={onChange}
+          />
+        </WithVariableToggle>
       );
     }
     const inputType =
       named.name === 'Int' || named.name === 'Float' ? 'number' : 'text';
     return (
-      <span className="graphiql-qb-arg-with-toggle">
-        {isVariable ? (
-          <span
-            className="graphiql-qb-var-badge"
-            aria-label={`${name} bound to $${variableName ?? name}`}
-          >
-            ${variableName ?? name}
-          </span>
-        ) : (
-          <ScalarArgControl
-            name={name}
-            inputType={inputType}
-            step={named.name === 'Int' ? '1' : undefined}
-            value={typeof value === 'string' ? value : ''}
-            onChange={onChange}
-          />
-        )}
-        {toggleBtn}
-      </span>
+      <WithVariableToggle
+        isVariable={isVariable}
+        name={name}
+        variableName={variableName}
+        toggle={toggleBtn}
+      >
+        <ScalarArgControl
+          name={name}
+          inputType={inputType}
+          step={named.name === 'Int' ? '1' : undefined}
+          value={typeof value === 'string' ? value : ''}
+          onChange={onChange}
+        />
+      </WithVariableToggle>
     );
   }
 
@@ -233,6 +218,38 @@ const ArgInputByType: FC<TypedInputProps> = ({
 // No local state: the builder updates its working document synchronously on
 // each keystroke, so `value` already reflects the character just typed by the
 // time we re-render. An async round-trip would deliver only the last character.
+
+type WithVariableToggleProps = {
+  isVariable: boolean;
+  name: string;
+  variableName?: string;
+  toggle: ReactNode;
+  children: ReactNode;
+};
+
+const WithVariableToggle: FC<WithVariableToggleProps> = ({
+  isVariable,
+  name,
+  variableName,
+  toggle,
+  children,
+}) => {
+  return (
+    <span className="graphiql-qb-arg-with-toggle">
+      {isVariable ? (
+        <span
+          className="graphiql-qb-var-badge"
+          aria-label={`${name} bound to $${variableName ?? name}`}
+        >
+          ${variableName ?? name}
+        </span>
+      ) : (
+        children
+      )}
+      {toggle}
+    </span>
+  );
+};
 
 type ScalarArgControlProps = {
   name: string;
