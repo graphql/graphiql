@@ -4,8 +4,12 @@ import {
   type GraphQLObjectType,
   type GraphQLSchema,
 } from 'graphql';
-import { type FC } from 'react';
-import type { ArgValue } from '../lib/document-mutator';
+import { type FC, useState } from 'react';
+import { isFieldSelected, type ArgValue } from '../lib/document-mutator';
+import {
+  FIELD_LIST_THRESHOLD,
+  selectVisibleFields,
+} from '../lib/field-list-view';
 import {
   FieldTreeProvider,
   type FieldTreeContextValue,
@@ -24,15 +28,48 @@ type FieldTreeListProps = {
 };
 
 export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
-  // Verify we're inside a provider (throws in dev if not).
-  useFieldTreeContext();
+  const { doc, operationName, cursorPath } = useFieldTreeContext();
+  const [expanded, setExpanded] = useState(false);
 
   const fields = Object.values(type.getFields());
+  const isSelected = (fieldName: string): boolean =>
+    isFieldSelected(doc, [...path, fieldName], operationName);
+
+  // If the cursor targets a field at this level that the cap would hide, expand
+  // so cursor-reveal can flash it. cursorPath is absolute; the field at this
+  // level is the segment right after our path.
+  const cursorFieldHere =
+    cursorPath?.length === path.length + 1 &&
+    path.every((seg, i) => cursorPath[i] === seg)
+      ? cursorPath[path.length]
+      : undefined;
+  const cursorBeyondCap =
+    cursorFieldHere !== undefined &&
+    fields.findIndex(f => f.name === cursorFieldHere) >= FIELD_LIST_THRESHOLD &&
+    !isSelected(cursorFieldHere);
+
+  const { visible, hiddenCount } = selectVisibleFields({
+    fields,
+    isSelected,
+    threshold: FIELD_LIST_THRESHOLD,
+    expanded: expanded || cursorBeyondCap,
+    filter: '',
+  });
+
   return (
     <div className="graphiql-qb-field-tree">
-      {fields.map(field => (
+      {visible.map(field => (
         <FieldTreeNode key={field.name} field={field} path={path} />
       ))}
+      {hiddenCount > 0 && (
+        <button
+          type="button"
+          className="graphiql-qb-show-more"
+          onClick={() => setExpanded(true)}
+        >
+          + {hiddenCount} more
+        </button>
+      )}
     </div>
   );
 };
