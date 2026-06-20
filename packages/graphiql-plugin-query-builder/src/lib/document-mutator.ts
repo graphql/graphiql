@@ -67,6 +67,42 @@ export function findOperation(
   return operation?.kind === Kind.OPERATION_DEFINITION ? operation : undefined;
 }
 
+/**
+ * Finds the target operation, calls `fn` with it, and returns a new
+ * `DocumentNode` with the result spliced back into `definitions`. When `fn`
+ * returns `null` the operation is removed entirely (used when an operation
+ * becomes empty and unprintable). Returns `doc` unchanged when no matching
+ * operation definition exists.
+ */
+function mapOperation(
+  doc: DocumentNode,
+  operationName: string | undefined,
+  fn: (operation: OperationDefinitionNode) => OperationDefinitionNode | null,
+): DocumentNode {
+  const index = findOperationIndex(doc, operationName);
+  if (index === -1) {
+    return doc;
+  }
+  const def = doc.definitions[index];
+  if (def?.kind !== Kind.OPERATION_DEFINITION) {
+    return doc;
+  }
+  const result = fn(def);
+  // When fn returns the same reference, the operation is unchanged — return
+  // the original doc so callers that rely on reference equality for no-op
+  // detection (e.g. toBe checks) continue to work.
+  if (result === def) {
+    return doc;
+  }
+  const newDefinitions = [...doc.definitions];
+  if (result === null) {
+    newDefinitions.splice(index, 1);
+  } else {
+    newDefinitions[index] = result;
+  }
+  return { ...doc, definitions: newDefinitions };
+}
+
 const INLINE_FRAGMENT_PREFIX = '... on ';
 
 /** Builds the path segment that addresses the `... on TypeName` inline fragment. */
@@ -338,28 +374,19 @@ export function toggleFieldSelection(
     return doc;
   }
 
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
-
   const selected = isFieldSelected(doc, path, operationName);
-  const newSelectionSet = selected
-    ? removeField(operation.selectionSet, path)
-    : addField(operation.selectionSet, path);
+  return mapOperation(doc, operationName, operation => {
+    const newSelectionSet = selected
+      ? removeField(operation.selectionSet, path)
+      : addField(operation.selectionSet, path);
 
-  const newDefinitions = [...doc.definitions];
-  if (newSelectionSet.selections.length === 0) {
-    // Removing the last field empties the operation. An operation with no
-    // selection set is unprintable (it would fail to parse and leave the
-    // builder out of sync), so drop the whole operation definition instead.
-    newDefinitions.splice(operationIndex, 1);
-  } else {
+    if (newSelectionSet.selections.length === 0) {
+      // Removing the last field empties the operation. An operation with no
+      // selection set is unprintable (it would fail to parse and leave the
+      // builder out of sync), so drop the whole operation definition instead.
+      return null;
+    }
+
     let newOperation: OperationDefinitionNode = {
       ...operation,
       selectionSet: newSelectionSet,
@@ -369,10 +396,8 @@ export function toggleFieldSelection(
     if (selected) {
       newOperation = pruneUnusedVariableDefinitions(newOperation, doc);
     }
-    newDefinitions[operationIndex] = newOperation;
-  }
-
-  return { ...doc, definitions: newDefinitions };
+    return newOperation;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -675,16 +700,6 @@ export function promoteArgToVariable(
   defaultRaw: string,
   operationName?: string,
 ): DocumentNode {
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
-
   const defaultValue = rawToValueNode(defaultRaw);
   const varDef: VariableDefinitionNode = {
     kind: Kind.VARIABLE_DEFINITION,
@@ -705,37 +720,35 @@ export function promoteArgToVariable(
     name: { kind: Kind.NAME, value: varName },
   };
 
-  const newSelectionSet = setArgInSelectionSet(
-    operation.selectionSet,
-    path,
-    argName,
-    varValueNode,
-  );
+  return mapOperation(doc, operationName, operation => {
+    const newSelectionSet = setArgInSelectionSet(
+      operation.selectionSet,
+      path,
+      argName,
+      varValueNode,
+    );
 
-  // The arg path didn't resolve, so nothing now references the variable; bail
-  // before defining one that would dangle. (print upgrades a shorthand query
-  // to `query (...) { ... }` automatically once it carries variable definitions.)
-  if (newSelectionSet === operation.selectionSet) {
-    return doc;
-  }
+    // The arg path didn't resolve, so nothing now references the variable; bail
+    // before defining one that would dangle. (print upgrades a shorthand query
+    // to `query (...) { ... }` automatically once it carries variable definitions.)
+    if (newSelectionSet === operation.selectionSet) {
+      return operation;
+    }
 
-  const existingVarDefs = operation.variableDefinitions ?? [];
-  // Don't redefine a variable that already exists, e.g. promoting twice.
-  const variableDefinitions = existingVarDefs.some(
-    vd => vd.variable.name.value === varName,
-  )
-    ? existingVarDefs
-    : [...existingVarDefs, varDef];
+    const existingVarDefs = operation.variableDefinitions ?? [];
+    // Don't redefine a variable that already exists, e.g. promoting twice.
+    const variableDefinitions = existingVarDefs.some(
+      vd => vd.variable.name.value === varName,
+    )
+      ? existingVarDefs
+      : [...existingVarDefs, varDef];
 
-  const newOperation = {
-    ...operation,
-    variableDefinitions,
-    selectionSet: newSelectionSet,
-  };
-
-  const newDefinitions = [...doc.definitions];
-  newDefinitions[operationIndex] = newOperation;
-  return { ...doc, definitions: newDefinitions };
+    return {
+      ...operation,
+      variableDefinitions,
+      selectionSet: newSelectionSet,
+    };
+  });
 }
 
 /**
@@ -753,40 +766,28 @@ export function demoteVariable(
   operationName?: string,
   inlineValue?: ValueNode,
 ): DocumentNode {
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
+  return mapOperation(doc, operationName, operation => {
+    const varDefs = operation.variableDefinitions ?? [];
+    const targetDef = varDefs.find(vd => vd.variable.name.value === varName);
+    if (!targetDef) {
+      return operation;
+    }
 
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
+    const value: ValueNode | undefined = inlineValue ?? targetDef.defaultValue;
 
-  const varDefs = operation.variableDefinitions ?? [];
-  const targetDef = varDefs.find(vd => vd.variable.name.value === varName);
-  if (!targetDef) {
-    return doc;
-  }
+    const newVarDefs = varDefs.filter(vd => vd.variable.name.value !== varName);
+    const newSelectionSet = replaceVariableInSelectionSet(
+      operation.selectionSet,
+      varName,
+      value,
+    );
 
-  const value: ValueNode | undefined = inlineValue ?? targetDef.defaultValue;
-
-  const newVarDefs = varDefs.filter(vd => vd.variable.name.value !== varName);
-  const newSelectionSet = replaceVariableInSelectionSet(
-    operation.selectionSet,
-    varName,
-    value,
-  );
-
-  const newOperation = {
-    ...operation,
-    variableDefinitions: newVarDefs,
-    selectionSet: newSelectionSet,
-  };
-
-  const newDefinitions = [...doc.definitions];
-  newDefinitions[operationIndex] = newOperation;
-  return { ...doc, definitions: newDefinitions };
+    return {
+      ...operation,
+      variableDefinitions: newVarDefs,
+      selectionSet: newSelectionSet,
+    };
+  });
 }
 
 function replaceVariableInSelectionSet(
@@ -876,13 +877,10 @@ export function createFragmentFromSelection(
   typeName: string,
   operationName?: string,
 ): DocumentNode {
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
+  // Resolve the target selection set before entering mapOperation so we can
+  // bail early and avoid building the fragment def when the path is missing.
+  const operation = findOperation(doc, operationName);
+  if (!operation) {
     return doc;
   }
 
@@ -913,21 +911,28 @@ export function createFragmentFromSelection(
     selections: [spread],
   };
 
-  const newSelectionSet = replaceFieldSelectionSet(
-    operation.selectionSet,
-    path,
-    spreadSet,
-  );
+  let changed = false;
+  const updatedDoc = mapOperation(doc, operationName, op => {
+    const newSelectionSet = replaceFieldSelectionSet(
+      op.selectionSet,
+      path,
+      spreadSet,
+    );
+    if (newSelectionSet === op.selectionSet) {
+      return op;
+    }
+    changed = true;
+    return { ...op, selectionSet: newSelectionSet };
+  });
 
-  if (newSelectionSet === operation.selectionSet) {
+  if (!changed) {
     return doc;
   }
 
-  const newOperation = { ...operation, selectionSet: newSelectionSet };
-  const newDefinitions = [...doc.definitions];
-  newDefinitions[operationIndex] = newOperation;
-
-  return { ...doc, definitions: [...newDefinitions, fragmentDef] };
+  return {
+    ...updatedDoc,
+    definitions: [...updatedDoc.definitions, fragmentDef],
+  };
 }
 
 function findSelectionSet(
@@ -997,16 +1002,6 @@ export function addInlineFragment(
     return doc;
   }
 
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
-
   if (isInlineFragmentPresent(doc, path, typeName, operationName)) {
     return doc;
   }
@@ -1016,12 +1011,10 @@ export function addInlineFragment(
   // the parent field(s) when absent, so this works even with no prior
   // selection on the abstract field.
   const fragmentPath = [...path, inlineFragmentSegment(typeName), '__typename'];
-  const newSelectionSet = addField(operation.selectionSet, fragmentPath);
-
-  const newOperation = { ...operation, selectionSet: newSelectionSet };
-  const newDefinitions = [...doc.definitions];
-  newDefinitions[operationIndex] = newOperation;
-  return { ...doc, definitions: newDefinitions };
+  return mapOperation(doc, operationName, operation => ({
+    ...operation,
+    selectionSet: addField(operation.selectionSet, fragmentPath),
+  }));
 }
 
 /**
@@ -1041,36 +1034,26 @@ export function removeInlineFragment(
     return doc;
   }
 
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
-
   // Remove the entire inline fragment by treating it as a leaf path segment.
   const fragmentPath = [...path, inlineFragmentSegment(typeName)];
-  const newSelectionSet = removeField(operation.selectionSet, fragmentPath);
-  if (newSelectionSet === operation.selectionSet) {
-    return doc;
-  }
+  return mapOperation(doc, operationName, operation => {
+    const newSelectionSet = removeField(operation.selectionSet, fragmentPath);
+    if (newSelectionSet === operation.selectionSet) {
+      return operation;
+    }
 
-  const newDefinitions = [...doc.definitions];
-  if (newSelectionSet.selections.length === 0) {
-    // Removing the fragment emptied the operation; drop it (an operation with
-    // no selection set is unprintable).
-    newDefinitions.splice(operationIndex, 1);
-  } else {
+    if (newSelectionSet.selections.length === 0) {
+      // Removing the fragment emptied the operation; drop it (an operation with
+      // no selection set is unprintable).
+      return null;
+    }
+
     // Dropping the fragment can orphan a variable a field inside it used.
-    newDefinitions[operationIndex] = pruneUnusedVariableDefinitions(
+    return pruneUnusedVariableDefinitions(
       { ...operation, selectionSet: newSelectionSet },
       doc,
     );
-  }
-  return { ...doc, definitions: newDefinitions };
+  });
 }
 
 function findFieldSelectionSet(
@@ -1110,30 +1093,18 @@ export function setFieldArgument(
     return doc;
   }
 
-  const operationIndex = findOperationIndex(doc, operationName);
-  if (operationIndex === -1) {
-    return doc;
-  }
-
-  const operation = doc.definitions[operationIndex]!;
-  if (operation.kind !== Kind.OPERATION_DEFINITION) {
-    return doc;
-  }
-
-  const newSelectionSet = setArgInSelectionSet(
-    operation.selectionSet,
-    path,
-    argName,
-    value,
-  );
-  if (newSelectionSet === operation.selectionSet) {
-    return doc;
-  }
-
-  const newOperation = { ...operation, selectionSet: newSelectionSet };
-  const newDefinitions = [...doc.definitions];
-  newDefinitions[operationIndex] = newOperation;
-  return { ...doc, definitions: newDefinitions };
+  return mapOperation(doc, operationName, operation => {
+    const newSelectionSet = setArgInSelectionSet(
+      operation.selectionSet,
+      path,
+      argName,
+      value,
+    );
+    if (newSelectionSet === operation.selectionSet) {
+      return operation;
+    }
+    return { ...operation, selectionSet: newSelectionSet };
+  });
 }
 
 function setArgInSelectionSet(
