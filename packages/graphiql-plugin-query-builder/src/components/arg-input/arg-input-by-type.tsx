@@ -6,18 +6,19 @@ import {
   isListType,
   isNonNullType,
   isScalarType,
-  type GraphQLArgument,
   type GraphQLInputField,
   type GraphQLType,
 } from 'graphql';
 import { type FC, type ReactNode, useState } from 'react';
-import { type ArgValue } from '../lib/document-mutator';
+import { type ArgValue } from '../../lib/document-mutator';
+import { BooleanArgControl, ScalarArgControl } from './scalar-arg-control';
+import { EnumArgControl } from './enum-arg-control';
 
 /**
  * True when an arg/field of this type renders as an input-object disclosure
  * (which labels itself via its header). A list of input objects does not — it
  * renders as a list and needs its own `name:` label — so we only unwrap
- * NonNull here, not List.
+ * NonNull here, not List. Re-exported as the public predicate from index.
  */
 export function rendersAsInputObject(type: GraphQLType): boolean {
   const unwrapped = isNonNullType(type) ? type.ofType : type;
@@ -27,54 +28,7 @@ export function rendersAsInputObject(type: GraphQLType): boolean {
   return isInputObjectType(getNamedType(unwrapped));
 }
 
-type ArgInputProps = {
-  arg: GraphQLArgument | GraphQLInputField;
-  value: ArgValue;
-  onChange: (v: ArgValue) => void;
-  /** When set, a "use as variable" toggle is rendered for scalar/enum args. */
-  isVariable?: boolean;
-  /** The variable name currently bound to this arg (only meaningful when `isVariable` is true). */
-  variableName?: string;
-  /** Called when the user clicks "use as variable". */
-  onPromote?: (argName: string, suggestedName: string) => void;
-  /** Called when the user clicks the active variable badge to demote back to a literal. */
-  onDemote?: (argName: string, varName: string) => void;
-};
-
-/**
- * Renders an appropriate input control for a single GraphQL argument or input
- * field. Handles scalars, enums, lists (repeat add/remove UI), and input
- * objects (recursive nested fields via a collapsible disclosure). Returns null
- * for any types not yet supported.
- *
- * When `onPromote` is supplied, scalar and enum inputs show a "use as variable"
- * toggle button. Clicking it calls `onPromote`; when `isVariable` is true the
- * button shows the bound variable name and clicking it calls `onDemote`.
- */
-export const ArgInput: FC<ArgInputProps> = ({
-  arg,
-  value,
-  onChange,
-  isVariable = false,
-  variableName,
-  onPromote,
-  onDemote,
-}) => {
-  return (
-    <ArgInputByType
-      type={arg.type}
-      name={arg.name}
-      value={value}
-      onChange={onChange}
-      isVariable={isVariable}
-      variableName={variableName}
-      onPromote={onPromote}
-      onDemote={onDemote}
-    />
-  );
-};
-
-type TypedInputProps = {
+export type TypedInputProps = {
   type: GraphQLType;
   name: string;
   value: ArgValue;
@@ -85,7 +39,7 @@ type TypedInputProps = {
   onDemote?: (argName: string, varName: string) => void;
 };
 
-const ArgInputByType: FC<TypedInputProps> = ({
+export const ArgInputByType: FC<TypedInputProps> = ({
   type,
   name,
   value,
@@ -215,10 +169,6 @@ const ArgInputByType: FC<TypedInputProps> = ({
   return null;
 };
 
-// No local state: the builder updates its working document synchronously on
-// each keystroke, so `value` already reflects the character just typed by the
-// time we re-render. An async round-trip would deliver only the last character.
-
 type WithVariableToggleProps = {
   isVariable: boolean;
   name: string;
@@ -248,85 +198,6 @@ const WithVariableToggle: FC<WithVariableToggleProps> = ({
       )}
       {toggle}
     </span>
-  );
-};
-
-type ScalarArgControlProps = {
-  name: string;
-  inputType: 'text' | 'number';
-  step?: string;
-  value: string;
-  onChange: (v: ArgValue) => void;
-};
-
-const ScalarArgControl: FC<ScalarArgControlProps> = ({
-  name,
-  inputType,
-  step,
-  value,
-  onChange,
-}) => {
-  return (
-    <input
-      type={inputType}
-      step={step}
-      aria-label={name}
-      value={value}
-      onChange={e => onChange(e.target.value)}
-      className="graphiql-qb-arg-input"
-    />
-  );
-};
-
-type BooleanArgControlProps = {
-  name: string;
-  value: string;
-  onChange: (v: ArgValue) => void;
-};
-
-const BooleanArgControl: FC<BooleanArgControlProps> = ({
-  name,
-  value,
-  onChange,
-}) => {
-  return (
-    <input
-      type="checkbox"
-      aria-label={name}
-      checked={value === 'true'}
-      onChange={e => onChange(e.target.checked ? 'true' : 'false')}
-      className="graphiql-qb-arg-checkbox"
-    />
-  );
-};
-
-type EnumArgControlProps = {
-  name: string;
-  value: string;
-  onChange: (v: ArgValue) => void;
-  enumValues: string[];
-};
-
-const EnumArgControl: FC<EnumArgControlProps> = ({
-  name,
-  value,
-  onChange,
-  enumValues,
-}) => {
-  return (
-    <select
-      aria-label={name}
-      value={value}
-      onChange={e => onChange(e.target.value)}
-      className="graphiql-qb-arg-select"
-    >
-      <option value="">—</option>
-      {enumValues.map(v => (
-        <option key={v} value={v}>
-          {v}
-        </option>
-      ))}
-    </select>
   );
 };
 
