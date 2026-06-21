@@ -1,6 +1,7 @@
 import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
 import {
   Kind,
+  OperationTypeNode,
   type DocumentNode,
   type ValueNode,
   getNamedType,
@@ -54,7 +55,7 @@ function emptyDoc(): DocumentNode {
 
 export interface UseWorkingDocumentResult {
   workingDoc: DocumentNode;
-  activeOpKind: string | undefined;
+  activeOpKind: OperationTypeNode | undefined;
   handleToggle: (path: PathSegment[]) => void;
   handleSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   handlePromoteArg: (
@@ -145,7 +146,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
 
   // The active operation has exactly one root type (query, mutation, or
   // subscription); that root is the only one the builder can edit.
-  const activeOpKind: string | undefined = findOperation(
+  const activeOpKind: OperationTypeNode | undefined = findOperation(
     workingDoc,
     operationName,
   )?.operation;

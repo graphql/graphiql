@@ -4,7 +4,7 @@ import {
   PanelHeader,
   useGraphiQL,
 } from '@graphiql/react';
-import { isInterfaceType, isObjectType } from 'graphql';
+import { OperationTypeNode, isInterfaceType, isObjectType } from 'graphql';
 import { type FC, useEffect, useState } from 'react';
 import { countSelectedFields, resolveFieldNamedType } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
@@ -48,7 +48,8 @@ export const QueryBuilder: FC = () => {
       ? resolveFieldNamedType(schema, activeOpKind, cursorPath)
       : undefined;
   const canCreateFragment = Boolean(
-    fragmentType && (isObjectType(fragmentType) || isInterfaceType(fragmentType)),
+    fragmentType &&
+    (isObjectType(fragmentType) || isInterfaceType(fragmentType)),
   );
 
   const header = (
@@ -67,14 +68,16 @@ export const QueryBuilder: FC = () => {
     );
   }
 
-  const queryType = schema.getQueryType();
-  const mutationType = schema.getMutationType();
-
   const rootTypes = [
-    queryType,
-    mutationType,
-    schema.getSubscriptionType(),
-  ].filter(Boolean) as NonNullable<ReturnType<typeof schema.getQueryType>>[];
+    OperationTypeNode.QUERY,
+    OperationTypeNode.MUTATION,
+    OperationTypeNode.SUBSCRIPTION,
+  ]
+    .map(op => ({ op, type: schema.getRootType(op) }))
+    .filter(
+      (r): r is { op: OperationTypeNode; type: NonNullable<typeof r.type> } =>
+        Boolean(r.type),
+    );
 
   const selectedCount = countSelectedFields(workingDoc, operationName);
 
@@ -82,13 +85,7 @@ export const QueryBuilder: FC = () => {
     <div className="graphiql-query-builder">
       {header}
       <div className="graphiql-qb-body">
-        {rootTypes.map(rootType => {
-          const opKind =
-            rootType === queryType
-              ? 'query'
-              : rootType === mutationType
-                ? 'mutation'
-                : 'subscription';
+        {rootTypes.map(({ op: opKind, type: rootType }) => {
           const isActiveRoot = opKind === activeOpKind;
           const expanded = manualExpanded[opKind] ?? isActiveRoot;
           return (

@@ -1,5 +1,6 @@
 import {
   Kind,
+  OperationTypeNode,
   isInterfaceType,
   isObjectType,
   visit,
@@ -212,16 +213,14 @@ export function countSelectedFields(
  */
 export function resolveSchemaArg(
   schema: GraphQLSchema,
-  activeOpKind: string | undefined,
+  activeOpKind: OperationTypeNode | string | undefined,
   path: PathSegment[],
   argName: string,
 ): GraphQLArgument | undefined {
   const rootType =
-    (activeOpKind === 'mutation'
-      ? schema.getMutationType()
-      : activeOpKind === 'subscription'
-        ? schema.getSubscriptionType()
-        : schema.getQueryType()) ?? schema.getQueryType();
+    schema.getRootType(
+      (activeOpKind ?? OperationTypeNode.QUERY) as OperationTypeNode,
+    ) ?? schema.getQueryType();
   if (!rootType || path.length === 0) {
     return;
   }
@@ -266,15 +265,13 @@ export function resolveSchemaArg(
  */
 export function resolveFieldNamedType(
   schema: GraphQLSchema,
-  activeOpKind: string | undefined,
+  activeOpKind: OperationTypeNode | string | undefined,
   path: PathSegment[],
 ): GraphQLNamedType | undefined {
   const rootType =
-    (activeOpKind === 'mutation'
-      ? schema.getMutationType()
-      : activeOpKind === 'subscription'
-        ? schema.getSubscriptionType()
-        : schema.getQueryType()) ?? schema.getQueryType();
+    schema.getRootType(
+      (activeOpKind ?? OperationTypeNode.QUERY) as OperationTypeNode,
+    ) ?? schema.getQueryType();
   if (!rootType || path.length === 0) {
     return;
   }
