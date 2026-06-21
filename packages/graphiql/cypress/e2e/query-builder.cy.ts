@@ -106,7 +106,7 @@ mutation M {
     cy.contains('.view-line', 'mutation M').should('be.visible');
 
     // Activate the mutation (the second operation) via the cursor.
-    cy.contains('.view-line', 'mutation M').click('left', { force: true });
+    cy.activateOperation('M');
 
     openQueryBuilder();
     cy.get('.graphiql-qb-root-name').should('contain.text', 'MutationType');
