@@ -4,7 +4,6 @@ import {
   type DocumentNode,
   type OperationDefinitionNode,
   type SelectionSetNode,
-  type ValueNode,
 } from 'graphql';
 
 import {

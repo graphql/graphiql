@@ -127,7 +127,7 @@ export function replaceVariableInSelectionSet(
           ? null
           : { ...arg, value: defaultValue };
       }
-      return undefined; // leave other args untouched
+      return; // leave other args untouched
     },
   });
 }
