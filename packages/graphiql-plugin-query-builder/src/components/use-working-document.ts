@@ -1,5 +1,6 @@
 import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
 import {
+  Kind,
   type DocumentNode,
   type ValueNode,
   getNamedType,
@@ -171,7 +172,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   function reconcileVariablesJson(next: ReturnType<typeof parse>) {
     const definedVars = new Set<string>();
     for (const def of next.definitions) {
-      if (def.kind === 'OperationDefinition') {
+      if (def.kind === Kind.OPERATION_DEFINITION) {
         for (const vd of def.variableDefinitions ?? []) {
           definedVars.add(vd.variable.name.value);
         }

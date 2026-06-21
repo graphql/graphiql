@@ -1,4 +1,4 @@
-import { parse, print } from 'graphql';
+import { Kind, parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import {
   createFragmentFromSelection,
@@ -38,7 +38,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
 
     expect(result.definitions).toHaveLength(2);
     const fragDef = result.definitions.find(
-      def => def.kind === 'FragmentDefinition',
+      def => def.kind === Kind.FRAGMENT_DEFINITION,
     );
     expect(fragDef).toBeDefined();
   });

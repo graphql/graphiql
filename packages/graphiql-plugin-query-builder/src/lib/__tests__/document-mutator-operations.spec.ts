@@ -27,16 +27,16 @@ describe('toggleFieldSelection — named operation targeting', () => {
 
     expect(printed).toContain('name');
     const queryADef = result.definitions.find(
-      def => def.kind === 'OperationDefinition' && def.name?.value === 'A',
+      def => def.kind === Kind.OPERATION_DEFINITION && def.name?.value === 'A',
     );
     expect(queryADef).toBeDefined();
-    if (queryADef?.kind === 'OperationDefinition') {
+    if (queryADef?.kind === Kind.OPERATION_DEFINITION) {
       const heroField = queryADef.selectionSet.selections.find(
-        s => s.kind === 'Field' && s.name.value === 'hero',
+        s => s.kind === Kind.FIELD && s.name.value === 'hero',
       );
       expect(heroField).toBeDefined();
       const createHeroField = queryADef.selectionSet.selections.find(
-        s => s.kind === 'Field' && s.name.value === 'createHero',
+        s => s.kind === Kind.FIELD && s.name.value === 'createHero',
       );
       expect(createHeroField).toBeUndefined();
     }
@@ -49,11 +49,11 @@ describe('toggleFieldSelection — named operation targeting', () => {
 
     expect(printed).toContain('name');
     const mutBDef = result.definitions.find(
-      def => def.kind === 'OperationDefinition' && def.name?.value === 'B',
+      def => def.kind === Kind.OPERATION_DEFINITION && def.name?.value === 'B',
     );
-    if (mutBDef?.kind === 'OperationDefinition') {
+    if (mutBDef?.kind === Kind.OPERATION_DEFINITION) {
       const heroField = mutBDef.selectionSet.selections.find(
-        s => s.kind === 'Field' && s.name.value === 'hero',
+        s => s.kind === Kind.FIELD && s.name.value === 'hero',
       );
       expect(heroField).toBeUndefined();
     }

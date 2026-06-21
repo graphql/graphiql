@@ -1,4 +1,4 @@
-import { parse, print } from 'graphql';
+import { Kind, parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { isFieldSelected, toggleFieldSelection } from '../document-mutator';
 
@@ -148,7 +148,8 @@ describe('toggleFieldSelection — removing fields', () => {
     // An operation with no body is unprintable; it must be dropped entirely.
     expect(
       result.definitions.some(
-        def => def.kind === 'OperationDefinition' && def.name?.value === 'A',
+        def =>
+          def.kind === Kind.OPERATION_DEFINITION && def.name?.value === 'A',
       ),
     ).toBe(false);
     expect(() => print(result)).not.toThrow();

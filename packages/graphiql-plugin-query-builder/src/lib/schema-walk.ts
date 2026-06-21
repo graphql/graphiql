@@ -1,4 +1,5 @@
 import {
+  Kind,
   type DocumentNode,
   type FieldNode,
   type GraphQLArgument,
@@ -41,12 +42,12 @@ export function readVariables(
 export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
   const op = doc.definitions.find(
     d =>
-      d.kind === 'OperationDefinition' &&
+      d.kind === Kind.OPERATION_DEFINITION &&
       d.loc != null &&
       d.loc.start <= offset &&
       d.loc.end >= offset,
   );
-  if (!op || op.kind !== 'OperationDefinition') {
+  if (!op || op.kind !== Kind.OPERATION_DEFINITION) {
     return [];
   }
   const path: string[] = [];
@@ -54,7 +55,7 @@ export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
   for (;;) {
     const selection = selections.find(
       (s): s is FieldNode | InlineFragmentNode =>
-        (s.kind === 'Field' || s.kind === 'InlineFragment') &&
+        (s.kind === Kind.FIELD || s.kind === Kind.INLINE_FRAGMENT) &&
         s.loc != null &&
         s.loc.start <= offset &&
         s.loc.end >= offset,
@@ -62,7 +63,7 @@ export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
     if (!selection) {
       break;
     }
-    if (selection.kind === 'Field') {
+    if (selection.kind === Kind.FIELD) {
       path.push(selection.name.value);
     } else {
       const typeName = selection.typeCondition?.name.value;
@@ -87,12 +88,13 @@ function findOperationDefinition(doc: DocumentNode, operationName?: string) {
   const byName = operationName
     ? doc.definitions.find(
         d =>
-          d.kind === 'OperationDefinition' && d.name?.value === operationName,
+          d.kind === Kind.OPERATION_DEFINITION &&
+          d.name?.value === operationName,
       )
     : undefined;
   const op =
-    byName ?? doc.definitions.find(d => d.kind === 'OperationDefinition');
-  return op?.kind === 'OperationDefinition' ? op : undefined;
+    byName ?? doc.definitions.find(d => d.kind === Kind.OPERATION_DEFINITION);
+  return op?.kind === Kind.OPERATION_DEFINITION ? op : undefined;
 }
 
 /**
@@ -107,11 +109,11 @@ function selectionMatchesSegment(
   if (segment.startsWith('... on ')) {
     const typeName = segment.slice('... on '.length);
     return (
-      selection.kind === 'InlineFragment' &&
+      selection.kind === Kind.INLINE_FRAGMENT &&
       selection.typeCondition?.name.value === typeName
     );
   }
-  return selection.kind === 'Field' && selection.name.value === segment;
+  return selection.kind === Kind.FIELD && selection.name.value === segment;
 }
 
 /**
@@ -141,7 +143,7 @@ export function extractRawArgValue(
       return '';
     }
     if (i === path.length - 1) {
-      if (node.kind !== 'Field') {
+      if (node.kind !== Kind.FIELD) {
         return '';
       }
       const argNode = (node.arguments ?? []).find(
@@ -151,16 +153,16 @@ export function extractRawArgValue(
         return '';
       }
       const v = argNode.value;
-      if (v.kind === 'StringValue') {
+      if (v.kind === Kind.STRING) {
         return `"${v.value}"`;
       }
-      if (v.kind === 'IntValue' || v.kind === 'FloatValue') {
+      if (v.kind === Kind.INT || v.kind === Kind.FLOAT) {
         return v.value;
       }
-      if (v.kind === 'BooleanValue') {
+      if (v.kind === Kind.BOOLEAN) {
         return String(v.value);
       }
-      if (v.kind === 'EnumValue') {
+      if (v.kind === Kind.ENUM) {
         return v.value;
       }
       return '';
@@ -181,12 +183,12 @@ export function countSelectedFields(
   let count = 0;
   function walk(selections: readonly SelectionNode[]) {
     for (const sel of selections) {
-      if (sel.kind === 'Field') {
+      if (sel.kind === Kind.FIELD) {
         count++;
         if (sel.selectionSet) {
           walk(sel.selectionSet.selections);
         }
-      } else if (sel.kind === 'InlineFragment' && sel.selectionSet) {
+      } else if (sel.kind === Kind.INLINE_FRAGMENT && sel.selectionSet) {
         walk(sel.selectionSet.selections);
       }
     }

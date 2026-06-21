@@ -402,7 +402,7 @@ describe('createFragmentFromSelection', () => {
     );
     const defs = result.definitions;
     expect(defs).toHaveLength(2);
-    const fragDef = defs.find(def => def.kind === 'FragmentDefinition');
+    const fragDef = defs.find(def => def.kind === Kind.FRAGMENT_DEFINITION);
     expect(fragDef).toBeDefined();
   });
 

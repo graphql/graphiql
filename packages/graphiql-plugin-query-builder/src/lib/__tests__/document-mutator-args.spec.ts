@@ -22,28 +22,28 @@ const EpisodeEnum = new GraphQLEnumType({
 describe('scalarToValueNode', () => {
   it('returns an IntValue for Int type', () => {
     const node = scalarToValueNode(GraphQLInt, '42');
-    expect(node).toEqual({ kind: 'IntValue', value: '42' });
+    expect(node).toEqual({ kind: Kind.INT, value: '42' });
   });
 
   it('returns a FloatValue for Float type', () => {
     const node = scalarToValueNode(GraphQLFloat, '3.14');
-    expect(node).toEqual({ kind: 'FloatValue', value: '3.14' });
+    expect(node).toEqual({ kind: Kind.FLOAT, value: '3.14' });
   });
 
   it('returns a StringValue for String type', () => {
     const node = scalarToValueNode(GraphQLString, 'hello');
-    expect(node).toEqual({ kind: 'StringValue', value: 'hello' });
+    expect(node).toEqual({ kind: Kind.STRING, value: 'hello' });
   });
 
   it('returns a BooleanValue for Boolean type', () => {
     // GraphQLBoolean isn't imported; exercising the scalar name-matching path via Int.
     const node = scalarToValueNode(GraphQLInt, '42');
-    expect(node?.kind).toBe('IntValue');
+    expect(node?.kind).toBe(Kind.INT);
   });
 
   it('returns an EnumValue for an enum type', () => {
     const node = scalarToValueNode(EpisodeEnum, 'NEWHOPE');
-    expect(node).toEqual({ kind: 'EnumValue', value: 'NEWHOPE' });
+    expect(node).toEqual({ kind: Kind.ENUM, value: 'NEWHOPE' });
   });
 
   it('returns undefined for an empty string', () => {
@@ -52,14 +52,14 @@ describe('scalarToValueNode', () => {
 
   it('truncates a decimal entered into an Int field to a valid IntValue', () => {
     expect(scalarToValueNode(GraphQLInt, '1.5')).toEqual({
-      kind: 'IntValue',
+      kind: Kind.INT,
       value: '1',
     });
   });
 
   it('normalizes scientific notation into a valid IntValue', () => {
     expect(scalarToValueNode(GraphQLInt, '1e3')).toEqual({
-      kind: 'IntValue',
+      kind: Kind.INT,
       value: '1000',
     });
   });
@@ -72,7 +72,7 @@ describe('scalarToValueNode', () => {
   it('normalizes a Float so the literal is always valid GraphQL', () => {
     // ".5" is not a valid FloatValue literal; must be normalized to "0.5".
     expect(scalarToValueNode(GraphQLFloat, '.5')).toEqual({
-      kind: 'FloatValue',
+      kind: Kind.FLOAT,
       value: '0.5',
     });
   });
