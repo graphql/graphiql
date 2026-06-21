@@ -1,5 +1,4 @@
 import {
-  GraphQLEnumType,
   isEnumType,
   isInputObjectType,
   isListType,
@@ -7,6 +6,7 @@ import {
   isScalarType,
   Kind,
   type ConstValueNode,
+  type GraphQLEnumType,
   type GraphQLInputType,
   type GraphQLScalarType,
   type ListValueNode,
@@ -34,7 +34,7 @@ export function scalarToValueNode(
   if (raw === '') {
     return undefined;
   }
-  if (type instanceof GraphQLEnumType) {
+  if (isEnumType(type)) {
     return { kind: Kind.ENUM, value: raw };
   }
   switch (type.name) {
