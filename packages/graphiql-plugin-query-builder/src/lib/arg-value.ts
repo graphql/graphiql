@@ -4,6 +4,7 @@ import {
   isListType,
   isNonNullType,
   isScalarType,
+  parseValue,
   Kind,
   type ConstValueNode,
   type GraphQLEnumType,
@@ -103,30 +104,19 @@ export function valueNodeToArgValue(node: ValueNode): ArgValue {
 }
 
 /**
- * Parses a raw string default value into a `ConstValueNode`. Handles quoted
- * strings (strips quotes), booleans, integers, and floats. Falls back to an
- * `EnumValue` for anything else (enum values and bare words).
+ * Parses a raw string default value into a `ConstValueNode` using graphql's
+ * `parseValue`. Returns `undefined` when `raw` is empty/falsy or when
+ * `parseValue` throws (malformed input).
  */
 export function rawToValueNode(raw: string): ConstValueNode | undefined {
   if (!raw) {
     return undefined;
   }
-  if (raw.startsWith('"') && raw.endsWith('"')) {
-    return { kind: Kind.STRING, value: raw.slice(1, -1) };
+  try {
+    return parseValue(raw) as ConstValueNode;
+  } catch {
+    return undefined;
   }
-  if (raw === 'true') {
-    return { kind: Kind.BOOLEAN, value: true };
-  }
-  if (raw === 'false') {
-    return { kind: Kind.BOOLEAN, value: false };
-  }
-  if (/^-?\d+$/.test(raw)) {
-    return { kind: Kind.INT, value: raw };
-  }
-  if (/^-?\d+\.\d+$/.test(raw)) {
-    return { kind: Kind.FLOAT, value: raw };
-  }
-  return { kind: Kind.ENUM, value: raw };
 }
 
 /**
