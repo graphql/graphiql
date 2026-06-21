@@ -1,5 +1,6 @@
 import {
   Kind,
+  visit,
   type DocumentNode,
   type FieldNode,
   type GraphQLArgument,
@@ -191,22 +192,13 @@ export function countSelectedFields(
   operationName?: string,
 ): number {
   let count = 0;
-  function walk(selections: readonly SelectionNode[]) {
-    for (const sel of selections) {
-      if (sel.kind === Kind.FIELD) {
-        count++;
-        if (sel.selectionSet) {
-          walk(sel.selectionSet.selections);
-        }
-      } else if (sel.kind === Kind.INLINE_FRAGMENT && sel.selectionSet) {
-        walk(sel.selectionSet.selections);
-      }
-    }
-  }
-
   const op = findOperationDefinition(doc, operationName);
   if (op) {
-    walk(op.selectionSet.selections);
+    visit(op, {
+      Field() {
+        count++;
+      },
+    });
   }
   return count;
 }

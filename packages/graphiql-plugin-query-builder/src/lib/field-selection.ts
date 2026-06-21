@@ -1,5 +1,6 @@
 import {
   Kind,
+  visit,
   type DocumentNode,
   type OperationDefinitionNode,
   type SelectionSetNode,
@@ -15,45 +16,16 @@ import {
   type PathSegment,
 } from './ast-path';
 
-/** Collects every variable name referenced by an argument value. */
-export function collectVariablesInValue(
-  value: ValueNode,
-  into: Set<string>,
-): void {
-  switch (value.kind) {
-    case Kind.VARIABLE:
-      into.add(value.name.value);
-      break;
-    case Kind.LIST:
-      for (const item of value.values) {
-        collectVariablesInValue(item, into);
-      }
-      break;
-    case Kind.OBJECT:
-      for (const field of value.fields) {
-        collectVariablesInValue(field.value, into);
-      }
-      break;
-    default:
-      break;
-  }
-}
-
 /** Collects every variable name referenced anywhere within `selectionSet`. */
 export function collectVariableReferences(
   selectionSet: SelectionSetNode,
   into: Set<string>,
 ): void {
-  for (const selection of selectionSet.selections) {
-    if (selection.kind === Kind.FIELD) {
-      for (const arg of selection.arguments ?? []) {
-        collectVariablesInValue(arg.value, into);
-      }
-    }
-    if ('selectionSet' in selection && selection.selectionSet) {
-      collectVariableReferences(selection.selectionSet, into);
-    }
-  }
+  visit(selectionSet, {
+    Variable(node) {
+      into.add(node.name.value);
+    },
+  });
 }
 
 /**

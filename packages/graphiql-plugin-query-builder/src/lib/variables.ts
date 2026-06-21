@@ -1,8 +1,7 @@
 import {
   Kind,
-  type ArgumentNode,
+  visit,
   type DocumentNode,
-  type FieldNode,
   type SelectionSetNode,
   type ValueNode,
   type VariableDefinitionNode,
@@ -118,54 +117,19 @@ export function replaceVariableInSelectionSet(
   varName: string,
   defaultValue: ValueNode | undefined,
 ): SelectionSetNode {
-  const newSelections = selectionSet.selections.map(selection => {
-    if (selection.kind === Kind.INLINE_FRAGMENT) {
-      return {
-        ...selection,
-        selectionSet: replaceVariableInSelectionSet(
-          selection.selectionSet,
-          varName,
-          defaultValue,
-        ),
-      };
-    }
-
-    if (selection.kind !== Kind.FIELD) {
-      return selection;
-    }
-
-    const field = selection as FieldNode;
-    const existingArgs = field.arguments ?? [];
-    const newArgs = existingArgs
-      .map(arg => {
-        if (
-          arg.value.kind === Kind.VARIABLE &&
-          arg.value.name.value === varName
-        ) {
-          if (defaultValue === undefined) {
-            return null;
-          } // remove the arg
-          return { ...arg, value: defaultValue };
-        }
-        return arg;
-      })
-      .filter((a): a is ArgumentNode => a !== null);
-
-    const updatedField: FieldNode = {
-      ...field,
-      arguments: newArgs,
-      selectionSet: field.selectionSet
-        ? replaceVariableInSelectionSet(
-            field.selectionSet,
-            varName,
-            defaultValue,
-          )
-        : undefined,
-    };
-    return updatedField;
+  return visit(selectionSet, {
+    Argument(arg) {
+      if (
+        arg.value.kind === Kind.VARIABLE &&
+        arg.value.name.value === varName
+      ) {
+        return defaultValue === undefined
+          ? null
+          : { ...arg, value: defaultValue };
+      }
+      return undefined; // leave other args untouched
+    },
   });
-
-  return { ...selectionSet, selections: newSelections };
 }
 
 /**
