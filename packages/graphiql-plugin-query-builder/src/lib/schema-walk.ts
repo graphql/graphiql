@@ -1,5 +1,7 @@
 import {
   Kind,
+  isInterfaceType,
+  isObjectType,
   visit,
   type DocumentNode,
   type FieldNode,
@@ -236,12 +238,10 @@ export function resolveSchemaArg(
       targetField = undefined;
       continue;
     }
-    if (!('getFields' in currentType)) {
+    if (!(isObjectType(currentType) || isInterfaceType(currentType))) {
       return;
     }
-    const fields = (
-      currentType as { getFields: () => Record<string, unknown> }
-    ).getFields();
+    const fields = currentType.getFields();
     const f = fields[seg.name] as
       | { type: unknown; args: readonly GraphQLArgument[] }
       | undefined;
@@ -250,7 +250,7 @@ export function resolveSchemaArg(
     }
     targetField = f;
     const named = getNamedType(f.type as Parameters<typeof getNamedType>[0]);
-    if (named && 'getFields' in named) {
+    if (named && (isObjectType(named) || isInterfaceType(named))) {
       currentType = named;
     }
   }
@@ -291,12 +291,10 @@ export function resolveFieldNamedType(
       result = condition;
       continue;
     }
-    if (!('getFields' in currentType)) {
+    if (!(isObjectType(currentType) || isInterfaceType(currentType))) {
       return;
     }
-    const fields = (
-      currentType as { getFields: () => Record<string, unknown> }
-    ).getFields();
+    const fields = currentType.getFields();
     const f = fields[seg.name] as { type: unknown } | undefined;
     if (!f) {
       return;

@@ -4,6 +4,7 @@ import {
   PanelHeader,
   useGraphiQL,
 } from '@graphiql/react';
+import { isInterfaceType, isObjectType } from 'graphql';
 import { type FC, useEffect, useState } from 'react';
 import { countSelectedFields, resolveFieldNamedType } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
@@ -47,7 +48,7 @@ export const QueryBuilder: FC = () => {
       ? resolveFieldNamedType(schema, activeOpKind, cursorPath)
       : undefined;
   const canCreateFragment = Boolean(
-    fragmentType && 'getFields' in fragmentType,
+    fragmentType && (isObjectType(fragmentType) || isInterfaceType(fragmentType)),
   );
 
   const header = (
