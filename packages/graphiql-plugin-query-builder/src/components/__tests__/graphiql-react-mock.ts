@@ -16,7 +16,7 @@
  *      pass initial values as overrides and mutate it for per-test changes.
  */
 import { type Mock } from 'vitest';
-import { useGraphiQL, useGraphiQLActions } from '@graphiql/react';
+import { useGraphiQL, useGraphiQLActions, useMonaco } from '@graphiql/react';
 
 export interface GraphiQLReactMockState {
   schema: unknown;
@@ -71,6 +71,17 @@ export function installGraphiQLReactMock(
     updateActiveTabValues: (v: { query?: string; variables?: string }) =>
       state.updateActiveTabValues(v),
   }));
+
+  const monacoStub = {
+    monaco: {
+      editor: {
+        CursorChangeReason: { Explicit: 3 },
+      },
+    },
+  };
+  (useMonaco as Mock).mockImplementation(
+    (selector: (state: typeof monacoStub) => unknown) => selector(monacoStub),
+  );
 
   return state;
 }

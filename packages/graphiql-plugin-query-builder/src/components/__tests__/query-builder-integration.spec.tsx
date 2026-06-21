@@ -27,7 +27,12 @@ import { QueryBuilder } from '../query-builder';
 vi.mock('@graphiql/react', async () => {
   const actual =
     await vi.importActual<typeof import('@graphiql/react')>('@graphiql/react');
-  return { ...actual, useGraphiQL: vi.fn(), useGraphiQLActions: vi.fn() };
+  return {
+    ...actual,
+    useGraphiQL: vi.fn(),
+    useGraphiQLActions: vi.fn(),
+    useMonaco: vi.fn(),
+  };
 });
 
 const FilterInput = new GraphQLInputObjectType({

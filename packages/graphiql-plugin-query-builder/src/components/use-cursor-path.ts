@@ -1,13 +1,8 @@
-import { useGraphiQL } from '@graphiql/react';
+import { useGraphiQL, useMonaco } from '@graphiql/react';
 import { parse } from 'graphql';
 import { useEffect, useState } from 'react';
 import { type PathSegment } from '../lib/ast-path';
 import { fieldPathAtOffset } from '../lib/schema-walk';
-
-// monaco-editor's `CursorChangeReason.Explicit` — a cursor move the user made
-// directly (mouse or keyboard), as opposed to one caused by a content change.
-// Inlined as a literal to avoid pulling monaco-editor in just for the enum.
-const CURSOR_CHANGE_EXPLICIT = 3;
 
 /**
  * Tracks the field path under the editor cursor so the tree can expand down to
@@ -19,6 +14,7 @@ const CURSOR_CHANGE_EXPLICIT = 3;
  */
 export function useCursorPath(): PathSegment[] {
   const queryEditor = useGraphiQL(state => state.queryEditor);
+  const monaco = useMonaco(state => state.monaco);
 
   const [cursorPath, setCursorPath] = useState<PathSegment[]>([]);
   useEffect(() => {
@@ -44,11 +40,8 @@ export function useCursorPath(): PathSegment[] {
       timer = setTimeout(recompute, 80);
     };
     const disposable = queryEditor.onDidChangeCursorPosition(e => {
-      // Only follow genuine user navigation. Our own writes reset and restore
-      // the cursor (setValue -> ContentFlush, setPosition -> NotSet), which
-      // would otherwise re-reveal — flash, scroll, expand — whatever field the
-      // cursor sits on every time the user edits something in the panel.
-      if (e.reason === CURSOR_CHANGE_EXPLICIT) {
+      // Only react to explicit (user) cursor moves, not content-flush/programmatic ones.
+      if (e.reason === monaco?.editor.CursorChangeReason.Explicit) {
         schedule();
       }
     });
@@ -57,7 +50,7 @@ export function useCursorPath(): PathSegment[] {
       clearTimeout(timer);
       disposable.dispose();
     };
-  }, [queryEditor]);
+  }, [queryEditor, monaco]);
 
   return cursorPath;
 }
