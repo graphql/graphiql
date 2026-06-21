@@ -52,7 +52,7 @@ export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
   }
   const path: string[] = [];
   let selections: readonly SelectionNode[] = op.selectionSet.selections;
-  for (;;) {
+  while (true) {
     const selection = selections.find(
       (s): s is FieldNode | InlineFragmentNode =>
         (s.kind === Kind.FIELD || s.kind === Kind.INLINE_FRAGMENT) &&
