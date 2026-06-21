@@ -8,9 +8,6 @@ import { fieldPathAtOffset } from '../lib/schema-walk';
  * Tracks the field path under the editor cursor so the tree can expand down to
  * it. Subscribes to the query editor directly (debounced to avoid thrashing
  * while typing), ignoring cursor resets caused by our own writes.
- *
- * Calls `useGraphiQL` internally so selector usage stays identical to what the
- * component did before extraction.
  */
 export function useCursorPath(): PathSegment[] {
   const queryEditor = useGraphiQL(state => state.queryEditor);

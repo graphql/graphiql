@@ -79,9 +79,6 @@ export interface UseWorkingDocumentResult {
 /**
  * Owns the working document: its state, editor write-back, echo-suppression,
  * external-edit sync, and all document-mutation handlers.
- *
- * Calls `useGraphiQL`/`useGraphiQLActions` internally so selector usage stays
- * identical to what the component did before extraction.
  */
 export function useWorkingDocument(): UseWorkingDocumentResult {
   const schema = useGraphiQL(state => state.schema);

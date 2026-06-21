@@ -37,8 +37,8 @@ export function pruneUnusedVariableDefinitions(
   operation: OperationDefinitionNode,
   doc: DocumentNode,
 ): OperationDefinitionNode {
-  const varDefs = operation.variableDefinitions ?? [];
-  if (varDefs.length === 0) {
+  const varDefs = operation.variableDefinitions;
+  if (!varDefs) {
     return operation;
   }
 
