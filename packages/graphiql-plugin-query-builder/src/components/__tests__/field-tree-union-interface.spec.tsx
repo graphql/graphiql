@@ -9,6 +9,7 @@ import {
   parse,
 } from 'graphql';
 import { describe, expect, it, vi } from 'vitest';
+import { fieldSegment } from '../../lib/document-mutator';
 import { FieldTree } from '../field-tree';
 
 const HumanType = new GraphQLObjectType({
@@ -220,7 +221,7 @@ describe('FieldTree — union field', () => {
     await user.click(screen.getByRole('button', { name: /expand search/i }));
     await user.click(screen.getByLabelText(/toggle \.\.\. on Human/i));
 
-    expect(onAdd).toHaveBeenCalledWith(['search'], 'Human');
+    expect(onAdd).toHaveBeenCalledWith([fieldSegment('search')], 'Human');
   });
 
   it('calls onRemoveInlineFragment when a checked type-condition checkbox is unchecked', async () => {
@@ -244,7 +245,7 @@ describe('FieldTree — union field', () => {
     expect(humanCheckbox).toBeChecked();
     await user.click(humanCheckbox);
 
-    expect(onRemove).toHaveBeenCalledWith(['search'], 'Human');
+    expect(onRemove).toHaveBeenCalledWith([fieldSegment('search')], 'Human');
   });
 
   it('type-condition checkbox is checked when inline fragment is present in doc', async () => {
@@ -391,7 +392,10 @@ describe('FieldTree — interface field', () => {
     // Interface own fields have a direct checkbox, no type condition required.
     await user.click(screen.getByLabelText(/toggle name/i));
 
-    expect(onToggle).toHaveBeenCalledWith(['character', 'name']);
+    expect(onToggle).toHaveBeenCalledWith([
+      fieldSegment('character'),
+      fieldSegment('name'),
+    ]);
   });
 });
 

@@ -10,15 +10,32 @@ import {
   type ValueNode,
 } from 'graphql';
 
-export const INLINE_FRAGMENT_PREFIX = '... on ';
+export type PathSegment =
+  | { kind: 'field'; name: string }
+  | { kind: 'inlineFragment'; typeName: string };
 
-/** Builds the path segment that addresses the `... on TypeName` inline fragment. */
-export function inlineFragmentSegment(typeName: string): string {
-  return `${INLINE_FRAGMENT_PREFIX}${typeName}`;
+export type Path = PathSegment[];
+
+export function fieldSegment(name: string): PathSegment {
+  return { kind: 'field', name };
 }
 
-export function isInlineFragmentSegment(segment: string): boolean {
-  return segment.startsWith(INLINE_FRAGMENT_PREFIX);
+/** Builds the path segment that addresses the `... on TypeName` inline fragment. */
+export function inlineFragmentSegment(typeName: string): PathSegment {
+  return { kind: 'inlineFragment', typeName };
+}
+
+export function segmentsEqual(a: PathSegment, b: PathSegment): boolean {
+  if (a.kind !== b.kind) {
+    return false;
+  }
+  if (a.kind === 'field' && b.kind === 'field') {
+    return a.name === b.name;
+  }
+  if (a.kind === 'inlineFragment' && b.kind === 'inlineFragment') {
+    return a.typeName === b.typeName;
+  }
+  return false;
 }
 
 /**
@@ -34,16 +51,19 @@ export function isInlineFragmentSegment(segment: string): boolean {
  */
 export function selectionMatchesSegment(
   selection: SelectionNode,
-  segment: string,
+  segment: PathSegment,
 ): boolean {
-  if (isInlineFragmentSegment(segment)) {
-    const typeName = segment.slice(INLINE_FRAGMENT_PREFIX.length);
-    return (
-      selection.kind === Kind.INLINE_FRAGMENT &&
-      selection.typeCondition?.name.value === typeName
-    );
+  switch (segment.kind) {
+    case 'inlineFragment':
+      return (
+        selection.kind === Kind.INLINE_FRAGMENT &&
+        selection.typeCondition?.name.value === segment.typeName
+      );
+    case 'field':
+      return (
+        selection.kind === Kind.FIELD && selection.name.value === segment.name
+      );
   }
-  return selection.kind === Kind.FIELD && selection.name.value === segment;
 }
 
 /**
@@ -53,7 +73,7 @@ export function selectionMatchesSegment(
  */
 export function findNodeAtPath(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
 ): FieldNode | InlineFragmentNode | undefined {
   let current: SelectionSetNode = selectionSet;
   for (let i = 0; i < path.length; i++) {
@@ -85,13 +105,13 @@ export function findNodeAtPath(
  */
 export function mapNodeAtPath(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
   fn: (
     node: FieldNode | InlineFragmentNode,
   ) => FieldNode | InlineFragmentNode | null,
   pruneEmptyParent = true,
 ): SelectionSetNode {
-  const [segment, ...rest] = path as [string, ...string[]];
+  const [segment, ...rest] = path as [PathSegment, ...PathSegment[]];
   const nodeIndex = selectionSet.selections.findIndex(s =>
     selectionMatchesSegment(s, segment),
   );
@@ -144,40 +164,42 @@ export function mapNodeAtPath(
 
 /** Creates the field or inline fragment for `segment`, with the given child set. */
 export function createSelectionForSegment(
-  segment: string,
+  segment: PathSegment,
   selectionSet?: SelectionSetNode,
 ): FieldNode | InlineFragmentNode {
-  if (isInlineFragmentSegment(segment)) {
-    return {
-      kind: Kind.INLINE_FRAGMENT,
-      typeCondition: {
-        kind: Kind.NAMED_TYPE,
-        name: {
-          kind: Kind.NAME,
-          value: segment.slice(INLINE_FRAGMENT_PREFIX.length),
+  switch (segment.kind) {
+    case 'inlineFragment':
+      return {
+        kind: Kind.INLINE_FRAGMENT,
+        typeCondition: {
+          kind: Kind.NAMED_TYPE,
+          name: {
+            kind: Kind.NAME,
+            value: segment.typeName,
+          },
         },
-      },
-      directives: [],
-      selectionSet: selectionSet ?? {
-        kind: Kind.SELECTION_SET,
-        selections: [],
-      },
-    };
+        directives: [],
+        selectionSet: selectionSet ?? {
+          kind: Kind.SELECTION_SET,
+          selections: [],
+        },
+      };
+    case 'field':
+      return {
+        kind: Kind.FIELD,
+        name: { kind: Kind.NAME, value: segment.name },
+        arguments: [],
+        directives: [],
+        selectionSet,
+      };
   }
-  return {
-    kind: Kind.FIELD,
-    name: { kind: Kind.NAME, value: segment },
-    arguments: [],
-    directives: [],
-    selectionSet,
-  };
 }
 
 export function addField(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
 ): SelectionSetNode {
-  const [segment, ...rest] = path as [string, ...string[]];
+  const [segment, ...rest] = path as [PathSegment, ...PathSegment[]];
 
   if (rest.length === 0) {
     const alreadyPresent = selectionSet.selections.some(s =>
@@ -232,7 +254,7 @@ export function addField(
 
 export function removeField(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
 ): SelectionSetNode {
   // Delete the terminal node (fn returns null); pruneEmptyParent=true
   // ensures any ancestor whose child set became empty is also pruned.
@@ -241,7 +263,7 @@ export function removeField(
 
 export function replaceFieldSelectionSet(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
   newSet: SelectionSetNode,
 ): SelectionSetNode {
   return mapNodeAtPath(
@@ -255,7 +277,7 @@ export function replaceFieldSelectionSet(
 
 export function setArgInSelectionSet(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
   argName: string,
   value: ValueNode | undefined,
 ): SelectionSetNode {
@@ -293,7 +315,7 @@ export function setArgInSelectionSet(
 
 export function findSelectionSet(
   selectionSet: SelectionSetNode,
-  path: string[],
+  path: PathSegment[],
 ): SelectionSetNode | undefined {
   const node = findNodeAtPath(selectionSet, path);
   return node?.selectionSet;

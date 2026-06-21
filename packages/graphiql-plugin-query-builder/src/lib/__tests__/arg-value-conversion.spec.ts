@@ -12,6 +12,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import {
   argValueToValueNode,
+  fieldSegment,
   setFieldArgument,
   valueNodeToArgValue,
   type ArgValue,
@@ -287,7 +288,7 @@ describe('argValueToValueNode round-trip', () => {
     expect(read).toBe('Luke');
     const written = setFieldArgument(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'name',
       argValueToValueNode(GraphQLString, read as string),
     );
@@ -302,7 +303,7 @@ describe('argValueToValueNode round-trip', () => {
     expect(read).toBe('7');
     const written = setFieldArgument(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'count',
       argValueToValueNode(GraphQLInt, read as string),
     );
@@ -314,7 +315,7 @@ describe('argValueToValueNode round-trip', () => {
     const listType = new GraphQLList(GraphQLInt);
     const value: ArgValue = ['1', '2', '3'];
     const node = argValueToValueNode(listType, value);
-    const written = setFieldArgument(d, ['items'], 'ids', node);
+    const written = setFieldArgument(d, [fieldSegment('items')], 'ids', node);
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/ids: \[1, 2, 3\]/);
@@ -326,7 +327,12 @@ describe('argValueToValueNode round-trip', () => {
     const listType = new GraphQLList(EpisodeEnum);
     const value: ArgValue = ['NEWHOPE', 'JEDI'];
     const node = argValueToValueNode(listType, value);
-    const written = setFieldArgument(d, ['hero'], 'episodes', node);
+    const written = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'episodes',
+      node,
+    );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/NEWHOPE/);
@@ -338,7 +344,12 @@ describe('argValueToValueNode round-trip', () => {
     const d = parse('{ createTag }', { noLocation: true });
     const value: ArgValue = { name: 'hero', count: '5', episode: 'EMPIRE' };
     const node = argValueToValueNode(TagInput, value);
-    const written = setFieldArgument(d, ['createTag'], 'input', node);
+    const written = setFieldArgument(
+      d,
+      [fieldSegment('createTag')],
+      'input',
+      node,
+    );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/name: "hero"/);
@@ -358,7 +369,12 @@ describe('argValueToValueNode round-trip', () => {
       { name: 'b', episode: 'JEDI' },
     ];
     const node = argValueToValueNode(listType, value);
-    const written = setFieldArgument(d, ['createTags'], 'tags', node);
+    const written = setFieldArgument(
+      d,
+      [fieldSegment('createTags')],
+      'tags',
+      node,
+    );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/name: "a"/);

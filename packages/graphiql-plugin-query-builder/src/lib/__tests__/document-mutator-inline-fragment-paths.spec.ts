@@ -2,6 +2,7 @@ import { parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import {
   addInlineFragment,
+  fieldSegment,
   inlineFragmentSegment,
   isFieldSelected,
   removeInlineFragment,
@@ -19,7 +20,11 @@ describe('inline fragment path segments', () => {
   it('toggleFieldSelection adds a field inside the fragment, not as a sibling', () => {
     const d2 = toggleFieldSelection(
       doc('{ union { ... on First { __typename } } }'),
-      ['union', inlineFragmentSegment('First'), 'name'],
+      [
+        fieldSegment('union'),
+        inlineFragmentSegment('First'),
+        fieldSegment('name'),
+      ],
     );
     const printed = print(d2);
     expect(printed).toContain('... on First');
@@ -31,18 +36,24 @@ describe('inline fragment path segments', () => {
   it('isFieldSelected with inline fragment segment is true after toggle', () => {
     const d = doc('{ union { ... on First { name } } }');
     expect(
-      isFieldSelected(d, ['union', inlineFragmentSegment('First'), 'name']),
+      isFieldSelected(d, [
+        fieldSegment('union'),
+        inlineFragmentSegment('First'),
+        fieldSegment('name'),
+      ]),
     ).toBe(true);
   });
 
   it('isFieldSelected with plain field path is false (field is inside fragment, not direct child)', () => {
     const d = doc('{ union { ... on First { name } } }');
-    expect(isFieldSelected(d, ['union', 'name'])).toBe(false);
+    expect(
+      isFieldSelected(d, [fieldSegment('union'), fieldSegment('name')]),
+    ).toBe(false);
   });
 
   it('addInlineFragment adds fragment to an already-selected field', () => {
     const d = doc('{ union { __typename } }');
-    const result = addInlineFragment(d, ['union'], 'First');
+    const result = addInlineFragment(d, [fieldSegment('union')], 'First');
     const printed = print(result);
     expect(printed).toContain('union');
     expect(printed).toContain('... on First');
@@ -50,9 +61,16 @@ describe('inline fragment path segments', () => {
   });
 
   it('addInlineFragment creates the parent field when it is absent', () => {
-    const result = addInlineFragment(doc('{ id }'), ['union'], 'First');
+    const result = addInlineFragment(
+      doc('{ id }'),
+      [fieldSegment('union')],
+      'First',
+    );
     expect(
-      isFieldSelected(result, ['union', inlineFragmentSegment('First')]),
+      isFieldSelected(result, [
+        fieldSegment('union'),
+        inlineFragmentSegment('First'),
+      ]),
     ).toBe(true);
     const printed = print(result);
     expect(printed).toContain('... on First');
@@ -62,9 +80,9 @@ describe('inline fragment path segments', () => {
   it('removing the last field inside a fragment prunes the fragment and parent field', () => {
     const d = doc('{ union { ... on First { name } } }');
     const result = toggleFieldSelection(d, [
-      'union',
+      fieldSegment('union'),
       inlineFragmentSegment('First'),
-      'name',
+      fieldSegment('name'),
     ]);
     const printed = print(result);
     expect(printed).not.toContain('union');
@@ -75,7 +93,11 @@ describe('inline fragment path segments', () => {
     const { Kind } = require('graphql') as typeof import('graphql');
     const result = setFieldArgument(
       d,
-      ['union', inlineFragmentSegment('First'), 'f'],
+      [
+        fieldSegment('union'),
+        inlineFragmentSegment('First'),
+        fieldSegment('f'),
+      ],
       'a',
       { kind: Kind.INT, value: '1' },
     );
@@ -87,7 +109,7 @@ describe('inline fragment path segments', () => {
 
   it('round-trip: add inline fragment via path then check presence', () => {
     const d = doc('{ union { __typename } }');
-    const result = addInlineFragment(d, ['union'], 'Second');
+    const result = addInlineFragment(d, [fieldSegment('union')], 'Second');
     const printed = print(result);
     expect(printed).toContain('... on Second');
     expect(printed).toContain('__typename');
@@ -95,7 +117,7 @@ describe('inline fragment path segments', () => {
 
   it('removeInlineFragment with absent parent is a no-op', () => {
     const d = doc('{ __typename }');
-    const result = removeInlineFragment(d, ['union'], 'First');
+    const result = removeInlineFragment(d, [fieldSegment('union')], 'First');
     expect(print(result)).toBe(print(d));
   });
 });

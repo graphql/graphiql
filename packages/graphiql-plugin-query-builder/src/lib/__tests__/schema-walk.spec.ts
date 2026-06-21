@@ -7,7 +7,7 @@ import {
   parse,
 } from 'graphql';
 import { describe, expect, it } from 'vitest';
-import { inlineFragmentSegment } from '../document-mutator';
+import { fieldSegment, inlineFragmentSegment } from '../document-mutator';
 import {
   countSelectedFields,
   extractRawArgValue,
@@ -40,7 +40,10 @@ describe('fieldPathAtOffset', () => {
     const query = '{ hero { name } }';
     const d = doc(query);
     const offset = query.indexOf('name') + 1;
-    expect(fieldPathAtOffset(d, offset)).toEqual(['hero', 'name']);
+    expect(fieldPathAtOffset(d, offset)).toEqual([
+      fieldSegment('hero'),
+      fieldSegment('name'),
+    ]);
   });
 
   it('includes an inline-fragment segment for a type condition', () => {
@@ -48,9 +51,9 @@ describe('fieldPathAtOffset', () => {
     const d = doc(query);
     const offset = query.indexOf('primaryFunction') + 1;
     expect(fieldPathAtOffset(d, offset)).toEqual([
-      'search',
+      fieldSegment('search'),
       inlineFragmentSegment('Droid'),
-      'primaryFunction',
+      fieldSegment('primaryFunction'),
     ]);
   });
 
@@ -62,25 +65,37 @@ describe('fieldPathAtOffset', () => {
 describe('extractRawArgValue', () => {
   it('returns a quoted string for a StringValue arg', () => {
     expect(
-      extractRawArgValue(doc('{ hero(name: "Luke") }'), ['hero'], 'name'),
+      extractRawArgValue(
+        doc('{ hero(name: "Luke") }'),
+        [fieldSegment('hero')],
+        'name',
+      ),
     ).toBe('"Luke"');
   });
 
   it('returns the digits for an Int arg', () => {
-    expect(extractRawArgValue(doc('{ hero(id: 42) }'), ['hero'], 'id')).toBe(
-      '42',
-    );
+    expect(
+      extractRawArgValue(doc('{ hero(id: 42) }'), [fieldSegment('hero')], 'id'),
+    ).toBe('42');
   });
 
   it('reaches an arg on a field nested in an inline fragment', () => {
     const d = doc('{ search { ... on Droid { part(id: 7) } } }');
-    const path = ['search', inlineFragmentSegment('Droid'), 'part'];
+    const path = [
+      fieldSegment('search'),
+      inlineFragmentSegment('Droid'),
+      fieldSegment('part'),
+    ];
     expect(extractRawArgValue(d, path, 'id')).toBe('7');
   });
 
   it('returns empty string when the field or arg is missing', () => {
-    expect(extractRawArgValue(doc('{ hero }'), ['villain'], 'id')).toBe('');
-    expect(extractRawArgValue(doc('{ hero }'), ['hero'], 'id')).toBe('');
+    expect(
+      extractRawArgValue(doc('{ hero }'), [fieldSegment('villain')], 'id'),
+    ).toBe('');
+    expect(
+      extractRawArgValue(doc('{ hero }'), [fieldSegment('hero')], 'id'),
+    ).toBe('');
   });
 });
 
@@ -105,12 +120,18 @@ describe('resolveSchemaArg', () => {
   const schema = new GraphQLSchema({ query: Query });
 
   it('resolves an argument on a root field', () => {
-    expect(resolveSchemaArg(schema, 'query', ['hero'], 'id')?.name).toBe('id');
+    expect(
+      resolveSchemaArg(schema, 'query', [fieldSegment('hero')], 'id')?.name,
+    ).toBe('id');
   });
 
   it('returns undefined for an unknown field or arg', () => {
-    expect(resolveSchemaArg(schema, 'query', ['nope'], 'id')).toBeUndefined();
-    expect(resolveSchemaArg(schema, 'query', ['hero'], 'nope')).toBeUndefined();
+    expect(
+      resolveSchemaArg(schema, 'query', [fieldSegment('nope')], 'id'),
+    ).toBeUndefined();
+    expect(
+      resolveSchemaArg(schema, 'query', [fieldSegment('hero')], 'nope'),
+    ).toBeUndefined();
   });
 
   it('resolves an argument on a field inside an inline fragment', () => {
@@ -129,7 +150,11 @@ describe('resolveSchemaArg', () => {
       fields: { search: { type: SearchResult } },
     });
     const unionSchema = new GraphQLSchema({ query: RootQuery, types: [Droid] });
-    const path = ['search', inlineFragmentSegment('Droid'), 'part'];
+    const path = [
+      fieldSegment('search'),
+      inlineFragmentSegment('Droid'),
+      fieldSegment('part'),
+    ];
     expect(resolveSchemaArg(unionSchema, 'query', path, 'id')?.name).toBe('id');
   });
 });
@@ -149,15 +174,21 @@ describe('resolveFieldNamedType', () => {
   const schema = new GraphQLSchema({ query: Query });
 
   it('resolves the named type of a composite field', () => {
-    expect(resolveFieldNamedType(schema, 'query', ['me'])?.name).toBe('Person');
+    expect(
+      resolveFieldNamedType(schema, 'query', [fieldSegment('me')])?.name,
+    ).toBe('Person');
   });
 
   it('resolves a scalar field type', () => {
-    expect(resolveFieldNamedType(schema, 'query', ['count'])?.name).toBe('Int');
+    expect(
+      resolveFieldNamedType(schema, 'query', [fieldSegment('count')])?.name,
+    ).toBe('Int');
   });
 
   it('returns undefined for an empty path or unknown field', () => {
     expect(resolveFieldNamedType(schema, 'query', [])).toBeUndefined();
-    expect(resolveFieldNamedType(schema, 'query', ['nope'])).toBeUndefined();
+    expect(
+      resolveFieldNamedType(schema, 'query', [fieldSegment('nope')]),
+    ).toBeUndefined();
   });
 });

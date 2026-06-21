@@ -11,7 +11,9 @@ import { type FC, useEffect, useState } from 'react';
 import {
   inlineFragmentSegment,
   isInlineFragmentPresent,
+  segmentsEqual,
 } from '../lib/document-mutator';
+import { type PathSegment } from '../lib/ast-path';
 import { useFieldTreeContext } from './field-tree-context';
 import { FieldTreeList } from './field-tree';
 import { useCursorReveal } from './use-cursor-reveal';
@@ -53,7 +55,7 @@ export function applicableTypeConditions(
 // ---------------------------------------------------------------------------
 
 type TypeConditionSelectorProps = {
-  fieldPath: string[];
+  fieldPath: PathSegment[];
   abstractType: GraphQLAbstractType;
 };
 
@@ -80,14 +82,14 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
 
   // Open the section when the editor cursor sits inside one of its type
   // conditions, so the reveal can cascade down to a field nested in a
-  // `... on TypeName`. (A condition contributes a `... on ...` path segment
+  // `... on TypeName`. (A condition contributes an inlineFragment path segment
   // right after this field's path; a directly-selectable interface field does
   // not, so it won't force the section open.)
   const cursorInCondition =
     cursorPath !== undefined &&
     cursorPath.length > fieldPath.length &&
-    fieldPath.every((seg, i) => cursorPath[i] === seg) &&
-    (cursorPath[fieldPath.length]?.startsWith('... on ') ?? false);
+    fieldPath.every((seg, i) => segmentsEqual(cursorPath[i]!, seg)) &&
+    cursorPath[fieldPath.length]?.kind === 'inlineFragment';
   useEffect(() => {
     if (cursorInCondition) {
       setExpanded(true);
@@ -174,7 +176,7 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
 // ---------------------------------------------------------------------------
 
 type TypeConditionEntryProps = {
-  fieldPath: string[];
+  fieldPath: PathSegment[];
   typeName: string;
   concreteType: GraphQLObjectType | GraphQLInterfaceType;
   /** Whether this type condition is an interface (matches several types). */

@@ -1,25 +1,26 @@
 import type { DocumentNode, GraphQLSchema } from 'graphql';
 import { createContext, useContext, type ReactNode } from 'react';
 import type { ArgValue } from '../lib/document-mutator';
+import type { PathSegment } from '../lib/ast-path';
 
 export type FieldTreeCallbacks = {
-  onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
+  onToggle: (path: PathSegment[]) => void;
+  onSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (
-    path: string[],
+    path: PathSegment[],
     argName: string,
     suggestedName: string,
   ) => void;
-  onDemoteArg?: (path: string[], argName: string, varName: string) => void;
-  onAddInlineFragment?: (path: string[], typeName: string) => void;
-  onRemoveInlineFragment?: (path: string[], typeName: string) => void;
+  onDemoteArg?: (path: PathSegment[], argName: string, varName: string) => void;
+  onAddInlineFragment?: (path: PathSegment[], typeName: string) => void;
+  onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
 };
 
 export type FieldTreeContextValue = FieldTreeCallbacks & {
   doc: DocumentNode;
   schema?: GraphQLSchema;
   operationName?: string;
-  cursorPath?: string[];
+  cursorPath?: PathSegment[];
 };
 
 const FieldTreeContext = createContext<FieldTreeContextValue | null>(null);

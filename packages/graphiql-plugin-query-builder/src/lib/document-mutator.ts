@@ -8,7 +8,14 @@ export {
   valueNodeToArgValue,
 } from './arg-value';
 
-export { findOperation, inlineFragmentSegment } from './ast-path';
+export {
+  findOperation,
+  fieldSegment,
+  inlineFragmentSegment,
+  segmentsEqual,
+  type Path,
+  type PathSegment,
+} from './ast-path';
 
 export { isFieldSelected, toggleFieldSelection } from './field-selection';
 

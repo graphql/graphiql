@@ -7,17 +7,19 @@ import {
 
 import {
   addField,
+  fieldSegment,
   findNodeAtPath,
   findOperation,
   inlineFragmentSegment,
   mapOperation,
   removeField,
+  type PathSegment,
 } from './ast-path';
 import { pruneUnusedVariableDefinitions } from './field-selection';
 
 function findFieldSelectionSet(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   operationName?: string,
 ): SelectionSetNode | undefined {
   const operation = findOperation(doc, operationName);
@@ -40,7 +42,7 @@ function findFieldSelectionSet(
  */
 export function isInlineFragmentPresent(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   typeName: string,
   operationName?: string,
 ): boolean {
@@ -66,7 +68,7 @@ export function isInlineFragmentPresent(
  */
 export function addInlineFragment(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   typeName: string,
   operationName?: string,
 ): DocumentNode {
@@ -82,7 +84,11 @@ export function addInlineFragment(
   // addressable path segment and seeding it with __typename. addField creates
   // the parent field(s) when absent, so this works even with no prior
   // selection on the abstract field.
-  const fragmentPath = [...path, inlineFragmentSegment(typeName), '__typename'];
+  const fragmentPath = [
+    ...path,
+    inlineFragmentSegment(typeName),
+    fieldSegment('__typename'),
+  ];
   return mapOperation(doc, operationName, operation => ({
     ...operation,
     selectionSet: addField(operation.selectionSet, fragmentPath),
@@ -98,7 +104,7 @@ export function addInlineFragment(
  */
 export function removeInlineFragment(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   typeName: string,
   operationName?: string,
 ): DocumentNode {

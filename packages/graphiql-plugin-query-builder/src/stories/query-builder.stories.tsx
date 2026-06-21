@@ -21,6 +21,7 @@ import { ArgInput } from '../components/arg-input';
 import { FieldRow } from '../components/field-row';
 import { FieldTree } from '../components/field-tree';
 import { FragmentSection } from '../components/fragment-section';
+import { fieldSegment } from '../lib/document-mutator';
 import '../style.css';
 
 // ---------------------------------------------------------------------------
@@ -146,7 +147,7 @@ export const FieldRowScalarUnchecked: Story = {
     <div style={{ padding: 16, width: 320 }}>
       <FieldRow
         field={scalarField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -166,7 +167,7 @@ export const FieldRowScalarChecked: Story = {
     <div style={{ padding: 16, width: 320 }}>
       <FieldRow
         field={scalarField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected
         hasChildren={false}
         expanded={false}

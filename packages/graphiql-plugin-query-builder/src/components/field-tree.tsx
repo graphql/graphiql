@@ -6,6 +6,7 @@ import {
 } from 'graphql';
 import { type FC, useState } from 'react';
 import { isFieldSelected, type ArgValue } from '../lib/document-mutator';
+import { fieldSegment, type PathSegment } from '../lib/ast-path';
 import {
   FIELD_LIST_THRESHOLD,
   selectVisibleFields,
@@ -22,7 +23,7 @@ import { FieldTreeNode } from './field-tree-node';
 
 type FieldTreeListProps = {
   type: GraphQLObjectType | GraphQLInterfaceType;
-  path: string[];
+  path: PathSegment[];
 };
 
 export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
@@ -36,7 +37,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
   // line up with the rows at this nesting level instead of spanning the pane.
   const indent = path.length * 12;
   const isSelected = (fieldName: string): boolean =>
-    isFieldSelected(doc, [...path, fieldName], operationName);
+    isFieldSelected(doc, [...path, fieldSegment(fieldName)], operationName);
 
   // A field under the editor cursor is always present in the document (the cursor
   // path is parsed from the query), so it is selected and already pinned visible
@@ -83,22 +84,22 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
 
 type FieldTreeProps = {
   type: GraphQLObjectType | GraphQLInterfaceType;
-  path: string[];
+  path: PathSegment[];
   doc: DocumentNode;
   schema?: GraphQLSchema;
   operationName?: string;
   /** Absolute field path under the editor cursor; ancestors auto-expand. */
-  cursorPath?: string[];
-  onToggle: (path: string[]) => void;
-  onSetArg: (path: string[], argName: string, value: ArgValue) => void;
+  cursorPath?: PathSegment[];
+  onToggle: (path: PathSegment[]) => void;
+  onSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (
-    path: string[],
+    path: PathSegment[],
     argName: string,
     suggestedName: string,
   ) => void;
-  onDemoteArg?: (path: string[], argName: string, varName: string) => void;
-  onAddInlineFragment?: (path: string[], typeName: string) => void;
-  onRemoveInlineFragment?: (path: string[], typeName: string) => void;
+  onDemoteArg?: (path: PathSegment[], argName: string, varName: string) => void;
+  onAddInlineFragment?: (path: PathSegment[], typeName: string) => void;
+  onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
 };
 
 export const FieldTree: FC<FieldTreeProps> = ({

@@ -9,6 +9,7 @@ import {
   GraphQLString,
 } from 'graphql';
 import { describe, expect, it, vi } from 'vitest';
+import { fieldSegment } from '../../lib/document-mutator';
 import { FieldRow } from '../field-row';
 
 const EpisodeEnum = new GraphQLEnumType({
@@ -62,7 +63,7 @@ describe('FieldRow', () => {
     render(
       <FieldRow
         field={nameField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -77,7 +78,7 @@ describe('FieldRow', () => {
     render(
       <FieldRow
         field={nameField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -92,7 +93,7 @@ describe('FieldRow', () => {
     render(
       <FieldRow
         field={nameField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -108,7 +109,7 @@ describe('FieldRow', () => {
     render(
       <FieldRow
         field={nameField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected
         hasChildren={false}
         expanded={false}
@@ -125,7 +126,7 @@ describe('FieldRow', () => {
     render(
       <FieldRow
         field={nameField}
-        path={['hero']}
+        path={[fieldSegment('hero')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -137,7 +138,10 @@ describe('FieldRow', () => {
       screen.getByRole('checkbox', { name: /Toggle name/i }),
     );
     expect(onToggle).toHaveBeenCalledOnce();
-    expect(onToggle).toHaveBeenCalledWith(['hero', 'name']);
+    expect(onToggle).toHaveBeenCalledWith([
+      fieldSegment('hero'),
+      fieldSegment('name'),
+    ]);
   });
 
   it('shows expand button for object fields', () => {
@@ -212,7 +216,7 @@ describe('FieldRow', () => {
     const { container } = render(
       <FieldRow
         field={nameField}
-        path={['hero', 'friends']}
+        path={[fieldSegment('hero'), fieldSegment('friends')]}
         selected={false}
         hasChildren={false}
         expanded={false}
@@ -342,6 +346,10 @@ describe('FieldRow — arg inputs', () => {
       screen.getByRole('combobox', { name: 'episode' }),
       'NEWHOPE',
     );
-    expect(onSetArg).toHaveBeenCalledWith(['hero'], 'episode', 'NEWHOPE');
+    expect(onSetArg).toHaveBeenCalledWith(
+      [fieldSegment('hero')],
+      'episode',
+      'NEWHOPE',
+    );
   });
 });

@@ -32,10 +32,12 @@ import { type FC, useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
   argValueToValueNode,
+  fieldSegment,
   getFieldArgValues,
   setFieldArgument,
   type ArgValue,
 } from '../../lib/document-mutator';
+import { type PathSegment } from '../../lib/ast-path';
 import { ArgInput } from '../arg-input';
 
 const TestQueryType = new GraphQLObjectType({
@@ -94,8 +96,8 @@ type HarnessProps = {
   initialQuery: string;
   argName: string;
   arg: Parameters<typeof ArgInput>[0]['arg'];
-  /** field path in the query (e.g. ['items'] for `{ items }`) */
-  path: string[];
+  /** field path in the query (e.g. [fieldSegment('items')] for `{ items }`) */
+  path: PathSegment[];
   /** expose setQuery so tests can simulate external edits */
   onSetQueryRef?: (setter: (q: string) => void) => void;
 };
@@ -148,7 +150,7 @@ describe('arg-input reactive: add list item persists through echo re-render', ()
         initialQuery="{ items }"
         argName="ids"
         arg={listIntArg('ids')}
-        path={['items']}
+        path={[fieldSegment('items')]}
       />,
     );
 
@@ -177,7 +179,7 @@ describe('arg-input reactive: multi-char scalar typing', () => {
         initialQuery="{ search }"
         argName="q"
         arg={stringArg('q')}
-        path={['search']}
+        path={[fieldSegment('search')]}
       />,
     );
 
@@ -198,7 +200,7 @@ describe('arg-input reactive: external document change re-syncs', () => {
         initialQuery='{ search(q: "old") }'
         argName="q"
         arg={stringArg('q')}
-        path={['search']}
+        path={[fieldSegment('search')]}
         onSetQueryRef={setter => {
           externalSetQuery = setter;
         }}

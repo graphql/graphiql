@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { segmentsEqual, type PathSegment } from '../lib/ast-path';
 
 /**
  * Reveals a tree node as the editor cursor moves onto it or a descendant:
@@ -10,14 +11,14 @@ import { useEffect, useRef, useState } from 'react';
  * rows so both react to the cursor.
  */
 export function useCursorReveal(
-  fullPath: string[],
-  cursorPath: string[] | undefined,
+  fullPath: PathSegment[],
+  cursorPath: PathSegment[] | undefined,
   setExpanded: (value: boolean) => void,
 ) {
   const onCursorPath =
     cursorPath !== undefined &&
     cursorPath.length >= fullPath.length &&
-    fullPath.every((seg, i) => cursorPath[i] === seg);
+    fullPath.every((seg, i) => segmentsEqual(cursorPath[i]!, seg));
   const isAncestor = onCursorPath && cursorPath.length > fullPath.length;
   const isTarget = onCursorPath && cursorPath.length === fullPath.length;
 

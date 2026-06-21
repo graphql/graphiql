@@ -9,7 +9,11 @@ import {
   type SelectionNode,
   getNamedType,
 } from 'graphql';
-import { inlineFragmentSegment } from './document-mutator';
+import {
+  fieldSegment,
+  inlineFragmentSegment,
+  type PathSegment,
+} from './ast-path';
 
 /**
  * Safely parse the variables JSON text, returning a plain object or {} on
@@ -34,12 +38,15 @@ export function readVariables(
 /**
  * Returns the tree path of the selection whose source range contains `offset`,
  * walking from the operation that contains the cursor down through nested
- * selection sets. Inline fragments contribute a `... on TypeName` segment
+ * selection sets. Inline fragments contribute an `inlineFragment` path segment
  * (matching the builder's path model), so the cursor resolves to fields nested
  * inside union/interface type conditions too. Returns `[]` when the cursor
  * isn't inside a field or fragment.
  */
-export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
+export function fieldPathAtOffset(
+  doc: DocumentNode,
+  offset: number,
+): PathSegment[] {
   const op = doc.definitions.find(
     d =>
       d.kind === Kind.OPERATION_DEFINITION &&
@@ -50,7 +57,7 @@ export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
   if (!op || op.kind !== Kind.OPERATION_DEFINITION) {
     return [];
   }
-  const path: string[] = [];
+  const path: PathSegment[] = [];
   let selections: readonly SelectionNode[] = op.selectionSet.selections;
   while (true) {
     const selection = selections.find(
@@ -64,7 +71,7 @@ export function fieldPathAtOffset(doc: DocumentNode, offset: number): string[] {
       break;
     }
     if (selection.kind === Kind.FIELD) {
-      path.push(selection.name.value);
+      path.push(fieldSegment(selection.name.value));
     } else {
       const typeName = selection.typeCondition?.name.value;
       if (!typeName) {
@@ -98,22 +105,25 @@ function findOperationDefinition(doc: DocumentNode, operationName?: string) {
 }
 
 /**
- * Matches a path segment against a selection, by schema field name or, for a
- * `... on TypeName` segment, by inline-fragment type condition. Mirrors the
- * document-mutator path model so the cursor/path helpers agree with it.
+ * Matches a path segment against a selection, by schema field name or, for an
+ * inline-fragment segment, by type condition. Mirrors the document-mutator path
+ * model so the cursor/path helpers agree with it.
  */
 function selectionMatchesSegment(
   selection: SelectionNode,
-  segment: string,
+  segment: PathSegment,
 ): boolean {
-  if (segment.startsWith('... on ')) {
-    const typeName = segment.slice('... on '.length);
-    return (
-      selection.kind === Kind.INLINE_FRAGMENT &&
-      selection.typeCondition?.name.value === typeName
-    );
+  switch (segment.kind) {
+    case 'inlineFragment':
+      return (
+        selection.kind === Kind.INLINE_FRAGMENT &&
+        selection.typeCondition?.name.value === segment.typeName
+      );
+    case 'field':
+      return (
+        selection.kind === Kind.FIELD && selection.name.value === segment.name
+      );
   }
-  return selection.kind === Kind.FIELD && selection.name.value === segment;
 }
 
 /**
@@ -124,7 +134,7 @@ function selectionMatchesSegment(
  */
 export function extractRawArgValue(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   argName: string,
   operationName?: string,
 ): string {
@@ -209,26 +219,24 @@ export function countSelectedFields(
 export function resolveSchemaArg(
   schema: GraphQLSchema,
   activeOpKind: string | undefined,
-  path: string[],
+  path: PathSegment[],
   argName: string,
 ): GraphQLArgument | undefined {
-  const [rootName, ...rest] = path;
   const rootType =
     (activeOpKind === 'mutation'
       ? schema.getMutationType()
       : activeOpKind === 'subscription'
         ? schema.getSubscriptionType()
         : schema.getQueryType()) ?? schema.getQueryType();
-  if (!rootType || !rootName) {
+  if (!rootType || path.length === 0) {
     return;
   }
 
   let currentType: GraphQLNamedType = rootType;
   let targetField: { args: readonly GraphQLArgument[] } | undefined;
-  const fieldNames = rest.length === 0 ? [rootName] : [rootName, ...rest];
-  for (const name of fieldNames) {
-    if (name.startsWith('... on ')) {
-      const condition = schema.getType(name.slice('... on '.length));
+  for (const seg of path) {
+    if (seg.kind === 'inlineFragment') {
+      const condition = schema.getType(seg.typeName);
       if (!condition) {
         return;
       }
@@ -242,7 +250,7 @@ export function resolveSchemaArg(
     const fields = (
       currentType as { getFields: () => Record<string, unknown> }
     ).getFields();
-    const f = fields[name] as
+    const f = fields[seg.name] as
       | { type: unknown; args: readonly GraphQLArgument[] }
       | undefined;
     if (!f) {
@@ -259,7 +267,7 @@ export function resolveSchemaArg(
 
 /**
  * Resolves the named type reached by walking `path` from the root type for
- * `activeOpKind`. Field segments descend into the field's type; `... on Type`
+ * `activeOpKind`. Field segments descend into the field's type; `inlineFragment`
  * segments switch to that type condition. Returns undefined when a segment
  * doesn't resolve. Used to pick the type condition when extracting a field's
  * selection into a fragment.
@@ -267,7 +275,7 @@ export function resolveSchemaArg(
 export function resolveFieldNamedType(
   schema: GraphQLSchema,
   activeOpKind: string | undefined,
-  path: string[],
+  path: PathSegment[],
 ): GraphQLNamedType | undefined {
   const rootType =
     (activeOpKind === 'mutation'
@@ -282,8 +290,8 @@ export function resolveFieldNamedType(
   let currentType: GraphQLNamedType = rootType;
   let result: GraphQLNamedType | undefined;
   for (const seg of path) {
-    if (seg.startsWith('... on ')) {
-      const condition = schema.getType(seg.slice('... on '.length));
+    if (seg.kind === 'inlineFragment') {
+      const condition = schema.getType(seg.typeName);
       if (!condition) {
         return;
       }
@@ -297,7 +305,7 @@ export function resolveFieldNamedType(
     const fields = (
       currentType as { getFields: () => Record<string, unknown> }
     ).getFields();
-    const f = fields[seg] as { type: unknown } | undefined;
+    const f = fields[seg.name] as { type: unknown } | undefined;
     if (!f) {
       return;
     }

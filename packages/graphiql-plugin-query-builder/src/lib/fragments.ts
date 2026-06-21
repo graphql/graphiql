@@ -11,6 +11,7 @@ import {
   findSelectionSet,
   mapOperation,
   replaceFieldSelectionSet,
+  type PathSegment,
 } from './ast-path';
 
 /**
@@ -36,7 +37,7 @@ export function listFragments(doc: DocumentNode): string[] {
  */
 export function createFragmentFromSelection(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   fragmentName: string,
   typeName: string,
   operationName?: string,

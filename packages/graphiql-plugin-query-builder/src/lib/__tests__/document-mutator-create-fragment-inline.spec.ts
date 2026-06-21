@@ -2,6 +2,7 @@ import { Kind, parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import {
   createFragmentFromSelection,
+  fieldSegment,
   inlineFragmentSegment,
 } from '../document-mutator';
 
@@ -13,7 +14,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
   it('extracts selections from an inline fragment into a named fragment', () => {
     // Build: { search { ... on Human { name appearsIn } } }
     const d = doc('{ search { ... on Human { name appearsIn } } }');
-    const path = ['search', inlineFragmentSegment('Human')];
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
 
     const result = createFragmentFromSelection(
       d,
@@ -32,7 +33,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
 
   it('produces exactly two definitions: operation + fragment', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const path = ['search', inlineFragmentSegment('Human')];
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
 
     const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
 
@@ -45,7 +46,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
 
   it('is not a no-op when the path contains an inline-fragment segment', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const path = ['search', inlineFragmentSegment('Human')];
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
 
     const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
 
@@ -55,7 +56,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
 
   it('does nothing when the inline-fragment type is not present', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const path = ['search', inlineFragmentSegment('Droid')];
+    const path = [fieldSegment('search'), inlineFragmentSegment('Droid')];
 
     const result = createFragmentFromSelection(d, path, 'DroidFields', 'Droid');
 
@@ -65,7 +66,11 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
   it('handles a deeper path ending at an inline fragment', () => {
     // { hero { friends { ... on Human { name } } } }
     const d = doc('{ hero { friends { ... on Human { name appearsIn } } } }');
-    const path = ['hero', 'friends', inlineFragmentSegment('Human')];
+    const path = [
+      fieldSegment('hero'),
+      fieldSegment('friends'),
+      inlineFragmentSegment('Human'),
+    ];
 
     const result = createFragmentFromSelection(
       d,

@@ -3,11 +3,12 @@ import { getNamedType, isEnumType, isScalarType } from 'graphql';
 import type { GraphQLField } from 'graphql';
 import type { FC } from 'react';
 import type { ArgValue } from '../lib/document-mutator';
+import type { PathSegment } from '../lib/ast-path';
 import { ArgInput, rendersAsInputObject } from './arg-input';
 
 type FieldRowProps = {
   field: GraphQLField<unknown, unknown>;
-  path: string[];
+  path: PathSegment[];
   selected: boolean;
   hasChildren: boolean;
   expanded: boolean;
@@ -22,15 +23,15 @@ type FieldRowProps = {
    * badge instead of the literal input control.
    */
   argVariables?: Record<string, string>;
-  onToggle: (path: string[]) => void;
-  onExpand: (path: string[]) => void;
-  onSetArg?: (path: string[], argName: string, value: ArgValue) => void;
+  onToggle: (path: PathSegment[]) => void;
+  onExpand: (path: PathSegment[]) => void;
+  onSetArg?: (path: PathSegment[], argName: string, value: ArgValue) => void;
   onPromoteArg?: (
-    path: string[],
+    path: PathSegment[],
     argName: string,
     suggestedName: string,
   ) => void;
-  onDemoteArg?: (path: string[], argName: string, varName: string) => void;
+  onDemoteArg?: (path: PathSegment[], argName: string, varName: string) => void;
 };
 
 export const FieldRow: FC<FieldRowProps> = ({
@@ -49,7 +50,7 @@ export const FieldRow: FC<FieldRowProps> = ({
   onPromoteArg,
   onDemoteArg,
 }) => {
-  const fullPath = [...path, field.name];
+  const fullPath = [...path, { kind: 'field' as const, name: field.name }];
   const indent = path.length * 12;
   const hasArgs = field.args.length > 0;
   const deprecated = Boolean(field.deprecationReason);

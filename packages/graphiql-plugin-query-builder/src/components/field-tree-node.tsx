@@ -14,6 +14,7 @@ import {
   getFieldArgVariables,
   isFieldSelected,
 } from '../lib/document-mutator';
+import { fieldSegment, type PathSegment } from '../lib/ast-path';
 import { useFieldTreeContext } from './field-tree-context';
 import { FieldTreeList } from './field-tree';
 import { FieldRow } from './field-row';
@@ -22,7 +23,7 @@ import { useCursorReveal } from './use-cursor-reveal';
 
 type FieldTreeNodeProps = {
   field: GraphQLField<unknown, unknown>;
-  path: string[];
+  path: PathSegment[];
 };
 
 export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
@@ -38,7 +39,7 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
   } = useFieldTreeContext();
 
   const [expanded, setExpanded] = useState(false);
-  const fullPath = [...path, field.name];
+  const fullPath = [...path, fieldSegment(field.name)];
   const argValues = getFieldArgValues(doc, fullPath, operationName);
   const argVariables = getFieldArgVariables(doc, fullPath, operationName);
 

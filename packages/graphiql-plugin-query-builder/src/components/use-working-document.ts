@@ -24,6 +24,7 @@ import {
   toggleFieldSelection,
   type ArgValue,
 } from '../lib/document-mutator';
+import { type PathSegment } from '../lib/ast-path';
 import {
   extractRawArgValue,
   readVariables,
@@ -54,18 +55,22 @@ function emptyDoc(): DocumentNode {
 export interface UseWorkingDocumentResult {
   workingDoc: DocumentNode;
   activeOpKind: string | undefined;
-  handleToggle: (path: string[]) => void;
-  handleSetArg: (path: string[], argName: string, value: ArgValue) => void;
+  handleToggle: (path: PathSegment[]) => void;
+  handleSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   handlePromoteArg: (
-    path: string[],
+    path: PathSegment[],
     argName: string,
     suggestedName: string,
   ) => void;
-  handleDemoteArg: (path: string[], argName: string, varName: string) => void;
-  handleAddInlineFragment: (path: string[], typeName: string) => void;
-  handleRemoveInlineFragment: (path: string[], typeName: string) => void;
+  handleDemoteArg: (
+    path: PathSegment[],
+    argName: string,
+    varName: string,
+  ) => void;
+  handleAddInlineFragment: (path: PathSegment[], typeName: string) => void;
+  handleRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleCreateFragment: (
-    cursorPath: string[],
+    cursorPath: PathSegment[],
     fragmentType: { name: string },
   ) => void;
 }
@@ -190,19 +195,19 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     }
   }
 
-  function handleToggle(path: string[]) {
+  function handleToggle(path: PathSegment[]) {
     const next = toggleFieldSelection(workingDoc, path, operationName);
     applyDoc(next);
     reconcileVariablesJson(next);
   }
 
-  function schemaArgFor(path: string[], argName: string) {
+  function schemaArgFor(path: PathSegment[], argName: string) {
     return schema
       ? resolveSchemaArg(schema, activeOpKind, path, argName)
       : undefined;
   }
 
-  function handleSetArg(path: string[], argName: string, value: ArgValue) {
+  function handleSetArg(path: PathSegment[], argName: string, value: ArgValue) {
     const schemaArg = schemaArgFor(path, argName);
     if (!schemaArg) {
       return;
@@ -215,7 +220,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function handlePromoteArg(
-    path: string[],
+    path: PathSegment[],
     argName: string,
     suggestedName: string,
   ) {
@@ -252,7 +257,11 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     }
   }
 
-  function handleDemoteArg(path: string[], argName: string, varName: string) {
+  function handleDemoteArg(
+    path: PathSegment[],
+    argName: string,
+    varName: string,
+  ) {
     const vars = readVariables(variablesText);
     const jsValue = vars[varName];
     const schemaArg = schemaArgFor(path, argName);
@@ -266,11 +275,11 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     applyVariables(rest);
   }
 
-  function handleAddInlineFragment(path: string[], typeName: string) {
+  function handleAddInlineFragment(path: PathSegment[], typeName: string) {
     applyDoc(addInlineFragment(workingDoc, path, typeName, operationName));
   }
 
-  function handleRemoveInlineFragment(path: string[], typeName: string) {
+  function handleRemoveInlineFragment(path: PathSegment[], typeName: string) {
     const next = removeInlineFragment(
       workingDoc,
       path,
@@ -286,7 +295,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // set worth lifting out). cursorPath and fragmentType are passed in from the
   // component, which computes them from useCursorPath + schema.
   function handleCreateFragment(
-    cursorPath: string[],
+    cursorPath: PathSegment[],
     fragmentType: { name: string },
   ) {
     const base = `${fragmentType.name}Fields`;

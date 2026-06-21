@@ -1,6 +1,7 @@
 import { Kind, parse, print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import {
+  fieldSegment,
   promoteArgToVariable,
   demoteVariable,
   suggestVarName,
@@ -49,7 +50,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -63,7 +64,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -78,7 +79,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(first: 5) }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'first',
       'first',
       'Int',
@@ -92,7 +93,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { items(limit: 10) }');
     const result = promoteArgToVariable(
       d,
-      ['items'],
+      [fieldSegment('items')],
       'limit',
       'limit',
       'Int',
@@ -108,7 +109,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { users(active: true) }');
     const result = promoteArgToVariable(
       d,
-      ['users'],
+      [fieldSegment('users')],
       'active',
       'active',
       'Boolean',
@@ -124,7 +125,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { search(query: "hello") }');
     const result = promoteArgToVariable(
       d,
-      ['search'],
+      [fieldSegment('search')],
       'query',
       'query',
       'String',
@@ -140,7 +141,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(id: "1", episode: JEDI) }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -155,7 +156,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero { friends(first: 3) { name } } }');
     const result = promoteArgToVariable(
       d,
-      ['hero', 'friends'],
+      [fieldSegment('hero'), fieldSegment('friends')],
       'first',
       'first',
       'Int',
@@ -171,7 +172,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('{ hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -187,7 +188,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query GetHero { hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -200,7 +201,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query { hero(id: "1") }');
     const result = promoteArgToVariable(
       d,
-      ['villain'],
+      [fieldSegment('villain')],
       'id',
       'id',
       'String',
@@ -214,7 +215,7 @@ describe('promoteArgToVariable', () => {
     const d = doc('query ($id: String) { hero(id: $id) }');
     const result = promoteArgToVariable(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -283,7 +284,7 @@ describe('demoteVariable', () => {
     const original = doc('query GetHero { hero(id: "1") }');
     const promoted = promoteArgToVariable(
       original,
-      ['hero'],
+      [fieldSegment('hero')],
       'id',
       'id',
       'String',
@@ -369,7 +370,7 @@ describe('createFragmentFromSelection', () => {
     const d = doc('{ hero { name appearsIn } }');
     const result = createFragmentFromSelection(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
     );
@@ -384,7 +385,7 @@ describe('createFragmentFromSelection', () => {
     const d = doc('{ hero { name appearsIn } }');
     const result = createFragmentFromSelection(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
     );
@@ -396,7 +397,7 @@ describe('createFragmentFromSelection', () => {
     const d = doc('{ hero { name appearsIn } }');
     const result = createFragmentFromSelection(
       d,
-      ['hero'],
+      [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
     );
@@ -410,7 +411,7 @@ describe('createFragmentFromSelection', () => {
     const d = doc('{ hero { name } }');
     const result = createFragmentFromSelection(
       d,
-      ['droid'],
+      [fieldSegment('droid')],
       'DroidFields',
       'Droid',
     );
@@ -419,7 +420,12 @@ describe('createFragmentFromSelection', () => {
 
   it('produces a parseable document', () => {
     const d = doc('{ hero { id name friends { name } } }');
-    const result = createFragmentFromSelection(d, ['hero'], 'HeroFull', 'Hero');
+    const result = createFragmentFromSelection(
+      d,
+      [fieldSegment('hero')],
+      'HeroFull',
+      'Hero',
+    );
     expect(() => parse(print(result))).not.toThrow();
   });
 });
@@ -427,14 +433,14 @@ describe('createFragmentFromSelection', () => {
 describe('toggleFieldSelection — unused variable cleanup', () => {
   it('drops a variable definition orphaned by removing its field', () => {
     const d = doc('query A($x: String) { hero(id: $x) { name } droid }');
-    const result = toggleFieldSelection(d, ['hero']);
+    const result = toggleFieldSelection(d, [fieldSegment('hero')]);
     expect(print(result)).not.toContain('$x');
     expect(print(result)).toContain('droid');
   });
 
   it('keeps a variable still referenced by another field', () => {
     const d = doc('query A($x: String) { hero(id: $x) other(id: $x) }');
-    const result = toggleFieldSelection(d, ['hero']);
+    const result = toggleFieldSelection(d, [fieldSegment('hero')]);
     expect(print(result)).toContain('$x');
     expect(print(result)).toContain('other(id: $x)');
   });
@@ -443,7 +449,10 @@ describe('toggleFieldSelection — unused variable cleanup', () => {
     const d = doc(
       'query A($x: String) { hero { ...F } } fragment F on Hero { friend(id: $x) }',
     );
-    const result = toggleFieldSelection(d, ['hero', 'name']);
+    const result = toggleFieldSelection(d, [
+      fieldSegment('hero'),
+      fieldSegment('name'),
+    ]);
     expect(print(result)).toContain('$x');
   });
 });

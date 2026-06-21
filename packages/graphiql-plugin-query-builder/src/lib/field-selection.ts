@@ -12,6 +12,7 @@ import {
   findOperation,
   mapOperation,
   removeField,
+  type PathSegment,
 } from './ast-path';
 
 /** Collects every variable name referenced by an argument value. */
@@ -88,11 +89,10 @@ export function pruneUnusedVariableDefinitions(
 /**
  * Returns whether the field at the given path is present in the target
  * operation (by name, or the first operation when unspecified) of `doc`.
- * Path elements are field names, e.g. `['hero', 'name']` for `{ hero { name } }`.
  */
 export function isFieldSelected(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   operationName?: string,
 ): boolean {
   if (path.length === 0) {
@@ -118,7 +118,7 @@ export function isFieldSelected(
  */
 export function toggleFieldSelection(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   operationName?: string,
 ): DocumentNode {
   if (path.length === 0) {

@@ -10,6 +10,7 @@ import {
   findOperation,
   mapOperation,
   setArgInSelectionSet,
+  type PathSegment,
 } from './ast-path';
 import { type ArgValue, valueNodeToArgValue } from './arg-value';
 
@@ -21,7 +22,7 @@ import { type ArgValue, valueNodeToArgValue } from './arg-value';
  */
 export function getFieldArgVariables(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   operationName?: string,
 ): Record<string, string> {
   if (path.length === 0) {
@@ -57,7 +58,7 @@ export function getFieldArgVariables(
  */
 export function getFieldArgValues(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   operationName?: string,
 ): Record<string, ArgValue> {
   if (path.length === 0) {
@@ -91,7 +92,7 @@ export function getFieldArgValues(
  */
 export function setFieldArgument(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   argName: string,
   value: ValueNode | undefined,
   operationName?: string,

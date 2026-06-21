@@ -7,6 +7,8 @@ import {
   parse,
 } from 'graphql';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { fieldSegment } from '../../lib/document-mutator';
+import { type PathSegment } from '../../lib/ast-path';
 import { FieldTree } from '../field-tree';
 
 beforeAll(() => {
@@ -35,7 +37,7 @@ function doc(query: string) {
   return parse(query, { noLocation: true });
 }
 
-function renderTree(cursorPath?: string[]) {
+function renderTree(cursorPath?: PathSegment[]) {
   return render(
     <FieldTree
       type={QueryType}
@@ -51,14 +53,17 @@ function renderTree(cursorPath?: string[]) {
 
 describe('FieldTree — cursor reveal', () => {
   it('auto-expands ancestors of the cursor field', () => {
-    renderTree(['parent', 'child']);
+    renderTree([fieldSegment('parent'), fieldSegment('child')]);
     // `parent` is an ancestor of the cursor, so its `child` row is revealed.
     expect(screen.getByText('child')).toBeInTheDocument();
   });
 
   it('re-expands a collapsed ancestor when the cursor moves again', async () => {
     const user = userEvent.setup();
-    const { rerender } = renderTree(['parent', 'child']);
+    const { rerender } = renderTree([
+      fieldSegment('parent'),
+      fieldSegment('child'),
+    ]);
     expect(screen.getByText('child')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /parent/i }));
@@ -72,7 +77,7 @@ describe('FieldTree — cursor reveal', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={schema}
-        cursorPath={['parent', 'child']}
+        cursorPath={[fieldSegment('parent'), fieldSegment('child')]}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,

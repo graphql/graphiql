@@ -1,6 +1,7 @@
 import { useGraphiQL } from '@graphiql/react';
 import { parse } from 'graphql';
 import { useEffect, useState } from 'react';
+import { type PathSegment } from '../lib/ast-path';
 import { fieldPathAtOffset } from '../lib/schema-walk';
 
 // monaco-editor's `CursorChangeReason.Explicit` — a cursor move the user made
@@ -16,10 +17,10 @@ const CURSOR_CHANGE_EXPLICIT = 3;
  * Calls `useGraphiQL` internally so selector usage stays identical to what the
  * component did before extraction.
  */
-export function useCursorPath(): string[] {
+export function useCursorPath(): PathSegment[] {
   const queryEditor = useGraphiQL(state => state.queryEditor);
 
-  const [cursorPath, setCursorPath] = useState<string[]>([]);
+  const [cursorPath, setCursorPath] = useState<PathSegment[]>([]);
   useEffect(() => {
     if (!queryEditor) {
       return;

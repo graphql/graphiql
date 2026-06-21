@@ -8,7 +8,11 @@ import {
   type VariableDefinitionNode,
 } from 'graphql';
 
-import { mapOperation, setArgInSelectionSet } from './ast-path';
+import {
+  mapOperation,
+  setArgInSelectionSet,
+  type PathSegment,
+} from './ast-path';
 import { rawToValueNode } from './arg-value';
 
 /**
@@ -51,7 +55,7 @@ export function suggestVarName(doc: DocumentNode, argName: string): string {
  */
 export function promoteArgToVariable(
   doc: DocumentNode,
-  path: string[],
+  path: PathSegment[],
   argName: string,
   varName: string,
   type: string,
