@@ -213,14 +213,13 @@ export function countSelectedFields(
  */
 export function resolveSchemaArg(
   schema: GraphQLSchema,
-  activeOpKind: OperationTypeNode | string | undefined,
+  activeOpKind: OperationTypeNode | undefined,
   path: PathSegment[],
   argName: string,
 ): GraphQLArgument | undefined {
   const rootType =
-    schema.getRootType(
-      (activeOpKind ?? OperationTypeNode.QUERY) as OperationTypeNode,
-    ) ?? schema.getQueryType();
+    schema.getRootType(activeOpKind ?? OperationTypeNode.QUERY) ??
+    schema.getQueryType();
   if (!rootType || path.length === 0) {
     return;
   }
@@ -265,13 +264,12 @@ export function resolveSchemaArg(
  */
 export function resolveFieldNamedType(
   schema: GraphQLSchema,
-  activeOpKind: OperationTypeNode | string | undefined,
+  activeOpKind: OperationTypeNode | undefined,
   path: PathSegment[],
 ): GraphQLNamedType | undefined {
   const rootType =
-    schema.getRootType(
-      (activeOpKind ?? OperationTypeNode.QUERY) as OperationTypeNode,
-    ) ?? schema.getQueryType();
+    schema.getRootType(activeOpKind ?? OperationTypeNode.QUERY) ??
+    schema.getQueryType();
   if (!rootType || path.length === 0) {
     return;
   }

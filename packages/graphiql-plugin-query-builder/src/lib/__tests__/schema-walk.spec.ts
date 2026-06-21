@@ -4,6 +4,7 @@ import {
   GraphQLSchema,
   GraphQLString,
   GraphQLUnionType,
+  OperationTypeNode,
   parse,
 } from 'graphql';
 import { describe, expect, it } from 'vitest';
@@ -121,16 +122,31 @@ describe('resolveSchemaArg', () => {
 
   it('resolves an argument on a root field', () => {
     expect(
-      resolveSchemaArg(schema, 'query', [fieldSegment('hero')], 'id')?.name,
+      resolveSchemaArg(
+        schema,
+        OperationTypeNode.QUERY,
+        [fieldSegment('hero')],
+        'id',
+      )?.name,
     ).toBe('id');
   });
 
   it('returns undefined for an unknown field or arg', () => {
     expect(
-      resolveSchemaArg(schema, 'query', [fieldSegment('nope')], 'id'),
+      resolveSchemaArg(
+        schema,
+        OperationTypeNode.QUERY,
+        [fieldSegment('nope')],
+        'id',
+      ),
     ).toBeUndefined();
     expect(
-      resolveSchemaArg(schema, 'query', [fieldSegment('hero')], 'nope'),
+      resolveSchemaArg(
+        schema,
+        OperationTypeNode.QUERY,
+        [fieldSegment('hero')],
+        'nope',
+      ),
     ).toBeUndefined();
   });
 
@@ -155,7 +171,9 @@ describe('resolveSchemaArg', () => {
       inlineFragmentSegment('Droid'),
       fieldSegment('part'),
     ];
-    expect(resolveSchemaArg(unionSchema, 'query', path, 'id')?.name).toBe('id');
+    expect(
+      resolveSchemaArg(unionSchema, OperationTypeNode.QUERY, path, 'id')?.name,
+    ).toBe('id');
   });
 });
 
@@ -175,20 +193,28 @@ describe('resolveFieldNamedType', () => {
 
   it('resolves the named type of a composite field', () => {
     expect(
-      resolveFieldNamedType(schema, 'query', [fieldSegment('me')])?.name,
+      resolveFieldNamedType(schema, OperationTypeNode.QUERY, [
+        fieldSegment('me'),
+      ])?.name,
     ).toBe('Person');
   });
 
   it('resolves a scalar field type', () => {
     expect(
-      resolveFieldNamedType(schema, 'query', [fieldSegment('count')])?.name,
+      resolveFieldNamedType(schema, OperationTypeNode.QUERY, [
+        fieldSegment('count'),
+      ])?.name,
     ).toBe('Int');
   });
 
   it('returns undefined for an empty path or unknown field', () => {
-    expect(resolveFieldNamedType(schema, 'query', [])).toBeUndefined();
     expect(
-      resolveFieldNamedType(schema, 'query', [fieldSegment('nope')]),
+      resolveFieldNamedType(schema, OperationTypeNode.QUERY, []),
+    ).toBeUndefined();
+    expect(
+      resolveFieldNamedType(schema, OperationTypeNode.QUERY, [
+        fieldSegment('nope'),
+      ]),
     ).toBeUndefined();
   });
 });
