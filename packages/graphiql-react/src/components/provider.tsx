@@ -356,6 +356,15 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     actions.setVisiblePlugin(visiblePlugin);
   }, [plugins, visiblePlugin]);
 
+  // Operation-name pin sync — keep the cursor-tracking override in step with the
+  // `operationName` prop. Without this the override is fixed at store creation,
+  // so pinning an operation by setting `operationName` after mount (e.g. from a
+  // URL or app state) would not take effect, and clearing it would not restore
+  // cursor tracking.
+  useDidUpdate(() => {
+    storeRef.current.setState({ overrideOperationName: operationName ?? null });
+  }, [operationName]);
+
   /**
    * Synchronize prop changes with state
    */

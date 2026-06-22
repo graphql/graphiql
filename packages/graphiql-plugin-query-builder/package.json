@@ -1,0 +1,70 @@
+{
+  "name": "@graphiql/plugin-query-builder",
+  "version": "0.1.0-alpha.0",
+  "sideEffects": [
+    "*.css"
+  ],
+  "description": "A first-party visual query builder plugin for GraphiQL.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-plugin-query-builder"
+  },
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphiql-plugin-query-builder#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/plugin-query-builder"
+  },
+  "license": "MIT",
+  "exports": {
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css",
+    ".": "./dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "react",
+    "graphql",
+    "graphiql",
+    "plugin",
+    "query",
+    "builder"
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "types:check": "tsgo --noEmit",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "build": "vite build",
+    "test": "vitest run",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "@graphiql/react": "^0.37.0",
+    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "dependencies": {
+    "react-compiler-runtime": "19.1.0-rc.1"
+  },
+  "devDependencies": {
+    "@graphiql/react": "^0.37.4",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "graphql": "^16.9.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "storybook": "^10.3.6",
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.3"
+  }
+}
