@@ -3203,7 +3203,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     typescript: "npm:^5.8.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.0.1"
   peerDependencies:
     "@graphiql/react": ^0.37.0
@@ -3228,7 +3228,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
@@ -3250,7 +3250,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     typescript: "npm:^5.8.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.0.1"
     vite-plugin-svgr: "npm:^4.3.0"
   peerDependencies:
@@ -3273,7 +3273,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
@@ -3314,7 +3314,7 @@ __metadata:
     react-dom: "npm:^19.1.0"
     set-value: "npm:^4.1.0"
     typescript: "npm:^5.8.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.5.3"
     vite-plugin-svgr: "npm:^4.3.0"
     zustand: "npm:^5"
@@ -11668,7 +11668,7 @@ __metadata:
     react-dom: "npm:^19"
     react-router: "npm:^7"
     typescript: "npm:^5"
-    vite: "npm:^7"
+    vite: "npm:^6"
   languageName: unknown
   linkType: soft
 
@@ -13311,7 +13311,7 @@ __metadata:
     react-dom: "npm:^19.1.0"
     start-server-and-test: "npm:^1.10.11"
     typescript: "npm:^5.8.0"
-    vite: "npm:^6.3.4"
+    vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.5.3"
     vitest-canvas-mock: "npm:^1.1.4"
   peerDependencies:
@@ -21745,9 +21745,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:6.3.4":
-  version: 6.3.4
-  resolution: "vite@npm:6.3.4"
+"vite@npm:6.4.3":
+  version: 6.4.3
+  resolution: "vite@npm:6.4.3"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -21796,7 +21796,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/f1534a3f42d14b30e11c58e5e451903d965d5f5ba18d8c81f9df208589e3d2c65535abaa3268d3963573174b8e056ea7bc445f567622c65fcdf98eb4acc1bf4e
+  checksum: 10c0/23ce22e50d5c7a87321f04b155c5bc3cf915e34e6c40918975741ed5e8b0c257039a643f1bc1cd829ee814ad92a138704e82084b7ebe40b399a62d8effea630c
   languageName: node
   linkType: hard
 

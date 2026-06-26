@@ -26,6 +26,6 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "typescript": "^5",
-    "vite": "^7"
+    "vite": "^6"
   }
 }
