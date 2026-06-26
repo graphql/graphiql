@@ -1849,14 +1849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/types@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@changesets/types@npm:6.0.0"
-  checksum: 10c0/e755f208792547e3b9ece15ce4da22466267da810c6fd87d927a1b8cec4d7fb7f0eea0d1a7585747676238e3e4ba1ffdabe016ccb05cfa537b4e4b03ec399f41
-  languageName: node
-  linkType: hard
-
-"@changesets/types@npm:^6.1.0":
+"@changesets/types@npm:^6.0.0, @changesets/types@npm:^6.1.0":
   version: 6.1.0
   resolution: "@changesets/types@npm:6.1.0"
   checksum: 10c0/b4cea3a4465d1eaf0bbd7be1e404aca5a055a61d4cc72aadcb73bbbda1670b4022736b8d3052616cbf1f451afa0637545d077697f4b923236539af9cd5abce6c
