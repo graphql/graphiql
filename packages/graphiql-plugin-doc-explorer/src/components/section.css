@@ -20,3 +20,18 @@
     margin-top: var(--px-16);
   }
 }
+
+.graphiql-doc-explorer-section:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.graphiql-doc-explorer-section:last-child
+  > .graphiql-doc-explorer-section-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
