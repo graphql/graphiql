@@ -108,7 +108,7 @@
     "dotenv": "10.0.0",
     "graphql": "^16.9.0 || ^17.0.0-rc.0",
     "graphql-config": "^5.1.6",
-    "graphql-ws": "5.10.0",
+    "graphql-ws": "6.0.8",
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.6.16",
