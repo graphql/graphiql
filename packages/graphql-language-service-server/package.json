@@ -44,7 +44,7 @@
   "dependencies": {
     "@astrojs/compiler": "^2.10.1",
     "@babel/parser": "^7.23.6",
-    "@babel/types": "^7.23.5",
+    "@babel/types": "^8.0.0",
     "@graphql-tools/code-file-loader": "8.0.3",
     "cosmiconfig-toml-loader": "^1.0.0",
     "debounce-promise": "^3.1.2",
