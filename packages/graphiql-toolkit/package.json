@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "graphql": "^16.9.0",
-    "graphql-ws": "^5.5.5",
+    "graphql-ws": "^6.0.8",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
     "tsup": "^8.2.4"
