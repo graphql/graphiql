@@ -1923,14 +1923,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lint@npm:^6.0.0":
-  version: 6.8.1
-  resolution: "@codemirror/lint@npm:6.8.1"
+"@codemirror/lint@npm:^6.9.7":
+  version: 6.9.7
+  resolution: "@codemirror/lint@npm:6.9.7"
   dependencies:
     "@codemirror/state": "npm:^6.0.0"
-    "@codemirror/view": "npm:^6.0.0"
+    "@codemirror/view": "npm:^6.42.0"
     crelt: "npm:^1.0.5"
-  checksum: 10c0/3e7ca352fe08dd11cea4f3b5cdccff2fd08afb5393fdaf98ac659ef368d9169b4d42618c4f856168910a5d1bae7aa1ab6c72020be85b56ccdeb7f678ceb65b6d
+  checksum: 10c0/5c2985e1118c96d76ccc2295e86476b6a56d4cb764e228b0d42ad08f9e2bb2f4862a2609196099d0242b639e924cd93acc1cca8ae55b4910c4f4e66856981fe0
   languageName: node
   linkType: hard
 
@@ -1952,6 +1952,18 @@ __metadata:
     style-mod: "npm:^4.1.0"
     w3c-keyname: "npm:^2.2.4"
   checksum: 10c0/09fe1c114a1a35e6bfa8bd001904ff8ce5ba36f916b6517d82f48beaad05aa614a1d96b2dfe6639ce64229f9201759903836da813689a4a8439d381383f115dd
+  languageName: node
+  linkType: hard
+
+"@codemirror/view@npm:^6.42.0":
+  version: 6.43.1
+  resolution: "@codemirror/view@npm:6.43.1"
+  dependencies:
+    "@codemirror/state": "npm:^6.6.0"
+    crelt: "npm:^1.0.6"
+    style-mod: "npm:^4.1.0"
+    w3c-keyname: "npm:^2.2.4"
+  checksum: 10c0/1ef96bfc756703f6675957793a3ea0f9aef8b2014172c15fc4063b58cefd6974688148eb25c1f2277d6b59d7ca9cb7f66d05e7b6e8c15d68bf050795c902fc18
   languageName: node
   linkType: hard
 
@@ -9248,7 +9260,7 @@ __metadata:
     "@codemirror/autocomplete": "npm:^6.0.0"
     "@codemirror/buildhelper": "npm:^0.1.16"
     "@codemirror/language": "npm:^6.0.0"
-    "@codemirror/lint": "npm:^6.0.0"
+    "@codemirror/lint": "npm:^6.9.7"
     "@codemirror/state": "npm:^6.0.0"
     "@codemirror/view": "npm:^6.0.0"
     "@lezer/common": "npm:^1.0.0"
@@ -9261,7 +9273,7 @@ __metadata:
   peerDependencies:
     "@codemirror/autocomplete": ^6.0.0
     "@codemirror/language": ^6.0.0
-    "@codemirror/lint": ^6.0.0
+    "@codemirror/lint": ^6.9.7
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/highlight": ^1.0.0
