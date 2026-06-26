@@ -1553,7 +1553,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.27.0, @babel/template@npm:^7.28.6, @babel/template@npm:^7.29.7, @babel/template@npm:^7.4.4":
+"@babel/template@npm:^7.25.9, @babel/template@npm:^7.27.0, @babel/template@npm:^7.28.6, @babel/template@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/template@npm:7.29.7"
   dependencies:
@@ -8589,15 +8589,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-transform-import-meta@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "babel-plugin-transform-import-meta@npm:2.2.1"
+"babel-plugin-transform-import-meta@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "babel-plugin-transform-import-meta@npm:2.3.3"
   dependencies:
-    "@babel/template": "npm:^7.4.4"
-    tslib: "npm:^2.4.0"
+    "@babel/template": "npm:^7.25.9"
+    tslib: "npm:^2.8.1"
   peerDependencies:
     "@babel/core": ^7.10.0
-  checksum: 10c0/9d8c73b767bbd13abc288f98866251e44b58d8fbcb0186aa7166d1be021db05f7bdb993342e38956ab144987255ded9558d22fed8d9a54ea1dc3df34fa8a981e
+  checksum: 10c0/184275ef4f1c14a79e46fa2084e5743fbcfbaa52a9372f713e0e97e45aab4ac5be214c7eb4893fb9ea0088d32913772651776c660bee38bd2c8d52ef92750c07
   languageName: node
   linkType: hard
 
@@ -13256,7 +13256,7 @@ __metadata:
     "@typescript/native-preview": "npm:^7.0.0-dev"
     "@vscode/vsce": "npm:^2.22.1-2"
     babel-plugin-macros: "npm:^3.1.0"
-    babel-plugin-transform-import-meta: "npm:^2.2.1"
+    babel-plugin-transform-import-meta: "npm:^2.3.3"
     concurrently: "npm:^7.0.0"
     copy: "npm:^0.3.2"
     cspell: "npm:^5.15.2"
