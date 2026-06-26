@@ -478,6 +478,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       const { queryEditor, headerEditor, variableEditor, onPrettifyQuery } =
         get();
 
+      const errors: any[] = [];
+
       if (variableEditor) {
         try {
           const content = variableEditor.getValue();
@@ -491,6 +493,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
             'Parsing variables JSON failed, skip prettification.',
             error,
           );
+          errors.push(error);
         }
       }
 
@@ -507,21 +510,32 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
             'Parsing headers JSON failed, skip prettification.',
             error,
           );
+          errors.push(error);
         }
       }
 
-      if (!queryEditor) {
-        return;
-      }
-      try {
-        const content = queryEditor.getValue();
-        const formatted = await onPrettifyQuery(content);
-        if (formatted !== content) {
-          queryEditor.setValue(formatted);
+      if (queryEditor) {
+        try {
+          const content = queryEditor.getValue();
+          const formatted = await onPrettifyQuery(content);
+          if (formatted !== content) {
+            queryEditor.setValue(formatted);
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.warn('Parsing query failed, skip prettification.', error);
+          errors.push(error);
         }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.warn('Parsing query failed, skip prettification.', error);
+      }
+
+      if (errors.length) {
+        if (errors.length > 1) {
+          const msg = errors
+            .map(err => err?.message || 'Error prettifying')
+            .join(', ');
+          throw new Error(msg);
+        }
+        throw errors[0];
       }
     },
     mergeQuery() {
