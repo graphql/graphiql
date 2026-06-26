@@ -73,7 +73,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   forcedTheme,
   confirmCloseTab,
   className,
-
+  editorOverrides,
   children,
   ...props
 }) => {
@@ -112,6 +112,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     forcedTheme,
     confirmCloseTab,
     className,
+    editorOverrides,
   };
   const hasHistoryPlugin = plugins.includes(HISTORY_PLUGIN);
   const HistoryToUse = hasHistoryPlugin ? HistoryStore : Fragment;
@@ -204,6 +205,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   onEditHeaders,
   responseTooltip,
   showPersistHeadersSettings,
+  editorOverrides,
 }) => {
   const { addTab, moveTab, closeTab, changeTab, setVisiblePlugin } =
     useGraphiQLActions();
@@ -361,6 +363,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           <QueryEditor
             onClickReference={onClickReference}
             onEdit={onEditQuery}
+            editorOverrides={editorOverrides}
           />
         ) : (
           <Spinner />
@@ -429,11 +432,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <VariableEditor
           className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
           onEdit={onEditVariables}
+          editorOverrides={editorOverrides}
         />
         {isHeadersEditorEnabled && (
           <HeaderEditor
             className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
             onEdit={onEditHeaders}
+            editorOverrides={editorOverrides}
           />
         )}
       </section>
@@ -521,7 +526,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               />
               <div className="graphiql-response" ref={editorResize.secondRef}>
                 {isFetching && <Spinner />}
-                <ResponseEditor responseTooltip={responseTooltip} />
+                <ResponseEditor
+                  responseTooltip={responseTooltip}
+                  editorOverrides={editorOverrides}
+                />
                 {footer}
               </div>
             </div>

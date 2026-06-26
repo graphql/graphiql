@@ -20,6 +20,7 @@ interface RequestHeadersEditorProps extends EditorProps {
 
 export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
   onEdit,
+  editorOverrides,
   ...props
 }) => {
   const { setEditor, run, prettifyEditors, mergeQuery } = useGraphiQLActions();
@@ -41,7 +42,7 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
       uri: `${uriInstanceId}${URI_NAME.requestHeaders}`,
       value: initialHeaders,
     });
-    const editor = createEditor(ref, { model });
+    const editor = createEditor(ref, { model, ...editorOverrides });
     setEditor({ headerEditor: editor });
     const disposables = [
       editor.addAction({ ...KEY_BINDINGS.runQuery, run }),
