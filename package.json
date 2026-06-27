@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.29.6",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
@@ -82,7 +82,7 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.21.0",
     "@babel/register": "^7.21.0",
-    "@changesets/changelog-github": "0.5.0",
+    "@changesets/changelog-github": "0.7.0",
     "@changesets/cli": "2.27.7",
     "@types/codemirror": "^0.0.90",
     "@types/copy": "^0.3.1",
@@ -92,7 +92,7 @@
     "@types/ws": "8.2.2",
     "@typescript/native-preview": "^7.0.0-dev",
     "babel-plugin-macros": "^3.1.0",
-    "babel-plugin-transform-import-meta": "^2.2.1",
+    "babel-plugin-transform-import-meta": "^2.3.3",
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
     "cspell": "^5.15.2",
@@ -118,10 +118,10 @@
   "resolutions": {
     "@babel/traverse": "^7.23.2",
     "vscode-languageserver-types": "3.17.3",
-    "markdown-it": "14.1.0",
+    "markdown-it": "14.2.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "vite": "6.3.4"
+    "vite": "6.4.3"
   },
   "devDependencies": {
     "@vscode/vsce": "^2.22.1-2",
