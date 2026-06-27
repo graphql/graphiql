@@ -120,6 +120,15 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
+   * Invoked when the current operation is saved, via the Save toolbar button or
+   * ⌘S. Receives the active tab (with the latest operation contents) so hosts
+   * can persist it — e.g. the collections plugin saves or updates a stored
+   * operation. The built-in dirty-state tracking runs regardless.
+   * @param tab - The active tab at the time of saving.
+   */
+  onSaveQuery?: (tab: TabState) => void;
+
+  /**
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the operation editor.
    * @default
@@ -242,6 +251,7 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
+  | 'onSaveQuery'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -297,6 +307,7 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'onSaveQuery'
     | 'uriInstanceId'
   >,
 ) => StateCreator<
@@ -466,7 +477,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     saveQuery() {
-      const { queryEditor } = get();
+      const { queryEditor, onSaveQuery } = get();
       const query = queryEditor?.getValue() ?? null;
       set(({ activeTabIndex, tabs, onTabChange, actions }) => {
         const updated = {
@@ -479,6 +490,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         onTabChange?.(updated);
         return updated;
       });
+      const { tabs, activeTabIndex } = get();
+      const activeTab = tabs[activeTabIndex];
+      if (activeTab) {
+        onSaveQuery?.({ ...activeTab, query });
+      }
     },
     async copyQuery() {
       const { queryEditor, onCopyQuery } = get();

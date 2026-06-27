@@ -156,6 +156,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTabChange,
   shouldPersistHeaders = false,
   onCopyQuery,
+  onSaveQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
   dangerouslyAssumeSchemaIsValid = false,
@@ -272,6 +273,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
           initialVariables: variables ?? '',
           onCopyQuery,
+          onSaveQuery,
           onEditOperationName,
           onPrettifyQuery,
           onTabChange,
