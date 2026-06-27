@@ -10,7 +10,7 @@ describe('GraphiQL keyboard interactions', () => {
       });
     });
 
-    cy.get('.graphiql-query-editor textarea').type('{esc}', { force: true });
+    cy.typeInEditor('{esc}');
 
     cy.get('@escapeHandler').should('have.been.called');
   });
@@ -25,10 +25,10 @@ describe('GraphiQL keyboard interactions', () => {
         }
       });
     });
-    cy.get('.graphiql-query-editor textarea').type('{\n  t', { force: true });
+    cy.typeInEditor('{\n  t');
     // Wait autocomplete dialog to appear
     cy.get('.monaco-list').should('exist');
-    cy.get('.graphiql-query-editor textarea').type('{esc}');
+    cy.typeInEditor('{esc}');
     cy.get('@escapeHandler').should('not.have.been.called');
   });
 });

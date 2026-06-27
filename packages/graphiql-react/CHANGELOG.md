@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.37.7
+
+### Patch Changes
+
+- [#4346](https://github.com/graphql/graphiql/pull/4346) [`0f5a2a0`](https://github.com/graphql/graphiql/commit/0f5a2a0b250a568ca618e934a5ad119a869bb973) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Release a patch version of the packages served from esm.sh in the [GraphiQL CDN example](examples/graphiql-cdn/index.html) to trigger a rebuild on esm.sh now that a longstanding esm.sh issue has been fixed.
+
+- Updated dependencies [[`0f5a2a0`](https://github.com/graphql/graphiql/commit/0f5a2a0b250a568ca618e934a5ad119a869bb973)]:
+  - @graphiql/toolkit@0.12.1
+
 ## 0.37.6
 
 ### Patch Changes

@@ -48,6 +48,7 @@ import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
   collectionsPlugin,
   CollectionsSaveButton,
@@ -85,7 +86,11 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-const DEFAULT_PLUGINS = [HISTORY_PLUGIN, collectionsPlugin()];
+const DEFAULT_PLUGINS = [
+  HISTORY_PLUGIN,
+  QUERY_BUILDER_PLUGIN,
+  collectionsPlugin(),
+];
 
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
@@ -254,6 +259,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    operations,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -262,6 +268,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'operations',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
@@ -464,28 +471,44 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                   aria-label="Select active operation"
                   className="no-scrollbar"
                 >
-                  {tabs.map((tab, index) => (
-                    <Tab
-                      key={tab.id}
-                      // Prevent overscroll over container
-                      dragConstraints={tabContainerRef}
-                      value={tab}
-                      isActive={index === activeTabIndex}
-                      isDirty={tab.query !== tab.lastSavedQuery}
-                    >
-                      <Tab.Button
-                        aria-controls="graphiql-session"
-                        id={`graphiql-session-tab-${index}`}
-                        title={tab.title}
-                        onClick={handleTabClick}
+                  {tabs.map((tab, index) => {
+                    const isActive = index === activeTabIndex;
+                    // For the active tab, surface how many other operations the
+                    // document holds alongside the one the cursor is in. Only
+                    // when the active operation is named, so the title reads as
+                    // `<name> +N`; an anonymous active operation has no name to
+                    // anchor the count to.
+                    const otherOperations =
+                      isActive && tab.operationName && operations
+                        ? operations.length - 1
+                        : 0;
+                    const tabTitle =
+                      otherOperations > 0
+                        ? `${tab.title} +${otherOperations}`
+                        : tab.title;
+                    return (
+                      <Tab
+                        key={tab.id}
+                        // Prevent overscroll over container
+                        dragConstraints={tabContainerRef}
+                        value={tab}
+                        isActive={isActive}
+                        isDirty={tab.query !== tab.lastSavedQuery}
                       >
-                        {tab.title}
-                      </Tab.Button>
-                      {tabs.length > 1 && (
-                        <Tab.Close onClick={handleTabClose} />
-                      )}
-                    </Tab>
-                  ))}
+                        <Tab.Button
+                          aria-controls="graphiql-session"
+                          id={`graphiql-session-tab-${index}`}
+                          title={tabTitle}
+                          onClick={handleTabClick}
+                        >
+                          {tabTitle}
+                        </Tab.Button>
+                        {tabs.length > 1 && (
+                          <Tab.Close onClick={handleTabClose} />
+                        )}
+                      </Tab>
+                    );
+                  })}
                 </Tabs>
                 <Tooltip label={LABEL.newTab}>
                   <UnStyledButton

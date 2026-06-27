@@ -1,0 +1,87 @@
+import { Kind, parse, print } from 'graphql';
+import { describe, expect, it } from 'vitest';
+import {
+  createFragmentFromSelection,
+  fieldSegment,
+  inlineFragmentSegment,
+} from '../document-mutator';
+
+function doc(query: string) {
+  return parse(query, { noLocation: true });
+}
+
+describe('createFragmentFromSelection with inline-fragment path segments', () => {
+  it('extracts selections from an inline fragment into a named fragment', () => {
+    // Build: { search { ... on Human { name appearsIn } } }
+    const d = doc('{ search { ... on Human { name appearsIn } } }');
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
+
+    const result = createFragmentFromSelection(
+      d,
+      path,
+      'HumanDetails',
+      'Human',
+    );
+    const printed = print(result);
+
+    expect(printed).toMatch(/fragment HumanDetails on Human/);
+    expect(printed).toMatch(/name/);
+    expect(printed).toMatch(/appearsIn/);
+    expect(printed).toMatch(/\.\.\.HumanDetails/);
+    expect(() => parse(printed)).not.toThrow();
+  });
+
+  it('produces exactly two definitions: operation + fragment', () => {
+    const d = doc('{ search { ... on Human { name } } }');
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
+
+    const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
+
+    expect(result.definitions).toHaveLength(2);
+    const fragDef = result.definitions.find(
+      def => def.kind === Kind.FRAGMENT_DEFINITION,
+    );
+    expect(fragDef).toBeDefined();
+  });
+
+  it('is not a no-op when the path contains an inline-fragment segment', () => {
+    const d = doc('{ search { ... on Human { name } } }');
+    const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
+
+    const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
+
+    // findSelectionSet must handle inline-fragment path segments, not just Kind.FIELD.
+    expect(print(result)).not.toBe(print(d));
+  });
+
+  it('does nothing when the inline-fragment type is not present', () => {
+    const d = doc('{ search { ... on Human { name } } }');
+    const path = [fieldSegment('search'), inlineFragmentSegment('Droid')];
+
+    const result = createFragmentFromSelection(d, path, 'DroidFields', 'Droid');
+
+    expect(print(result)).toBe(print(d));
+  });
+
+  it('handles a deeper path ending at an inline fragment', () => {
+    // { hero { friends { ... on Human { name } } } }
+    const d = doc('{ hero { friends { ... on Human { name appearsIn } } } }');
+    const path = [
+      fieldSegment('hero'),
+      fieldSegment('friends'),
+      inlineFragmentSegment('Human'),
+    ];
+
+    const result = createFragmentFromSelection(
+      d,
+      path,
+      'HumanFriendFields',
+      'Human',
+    );
+    const printed = print(result);
+
+    expect(printed).toMatch(/fragment HumanFriendFields on Human/);
+    expect(printed).toMatch(/\.\.\.HumanFriendFields/);
+    expect(() => parse(printed)).not.toThrow();
+  });
+});
