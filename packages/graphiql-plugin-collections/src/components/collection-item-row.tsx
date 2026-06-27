@@ -1,37 +1,7 @@
 import { FC, useState } from 'react';
-import { Kind, parse } from 'graphql';
 import { DropdownMenu, MethodPill } from '@graphiql/react';
-import type { Operation } from '@graphiql/react';
 import type { Collection, CollectionItem } from '../types';
-
-function inferOperationType(query: string): Operation {
-  const match = /^\s*(query|mutation|subscription)/i.exec(query);
-  const keyword = match?.[1]?.toLowerCase();
-  if (keyword === 'mutation' || keyword === 'subscription') {
-    return keyword;
-  }
-  return 'query';
-}
-
-/**
- * A saved item holds a whole document, which may contain more than one
- * operation. Return the single operation's type, or `'mix'` when there are
- * several so the row shows a neutral pill instead of just the first one's.
- */
-function getDocumentMethod(query: string): Operation | 'mix' {
-  try {
-    const operations = parse(query).definitions.filter(
-      def => def.kind === Kind.OPERATION_DEFINITION,
-    );
-    if (operations.length > 1) {
-      return 'mix';
-    }
-    const [operation] = operations;
-    return operation ? operation.operation : 'query';
-  } catch {
-    return inferOperationType(query);
-  }
-}
+import { getDocumentMethod } from '../operation-method';
 
 type CollectionItemRowProps = {
   item: CollectionItem;
