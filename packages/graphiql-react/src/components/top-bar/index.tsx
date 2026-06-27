@@ -8,6 +8,7 @@ import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { Tooltip } from '../tooltip';
 import { GraphQLLogoIcon } from '../../icons';
+import { cn, getRunBlockReason, resolveActiveOperation } from '../../utility';
 import './index.css';
 
 export type TopBarProps = {
@@ -20,6 +21,12 @@ export const TopBar: FC<TopBarProps> = ({ version }) => {
   const isFetching = useGraphiQL(state => state.isFetching);
   const transport = useGraphiQL(state => state.transport);
   const transportMethod = useGraphiQL(state => state.transportMethod);
+  const runDisabledReason = useGraphiQL(state =>
+    getRunBlockReason(
+      state.transportMethod,
+      resolveActiveOperation(state.operations, state.operationName),
+    ),
+  );
 
   const url = transport?.url ?? '—';
   const method: HttpMethod = transportMethod ?? 'POST';
@@ -32,6 +39,7 @@ export const TopBar: FC<TopBarProps> = ({ version }) => {
       url={url}
       method={method}
       supportedMethods={supportedMethods}
+      runDisabledReason={runDisabledReason}
       onRun={run}
       onSetMethod={setTransportMethod}
     />
@@ -44,6 +52,8 @@ export type TopBarViewProps = {
   url: string;
   method: HttpMethod;
   supportedMethods: HttpMethod[];
+  /** Non-null when Run is blocked; the string is the reason shown in a tooltip. */
+  runDisabledReason?: string | null;
   onRun: () => void;
   onSetMethod: (method: HttpMethod) => void;
 };
@@ -54,11 +64,29 @@ export const TopBarView: FC<TopBarViewProps> = ({
   url,
   method,
   supportedMethods,
+  runDisabledReason = null,
   onRun,
   onSetMethod,
 }) => {
   const canSwitch = supportedMethods.length > 1;
   const otherMethod = supportedMethods.find(m => m !== method) ?? method;
+  const isBlocked = runDisabledReason !== null;
+
+  const runButton = (
+    <button
+      type="button"
+      className="graphiql-top-bar-run"
+      onClick={onRun}
+      disabled={isFetching || isBlocked}
+      aria-label="Run query"
+    >
+      Run
+      <KeycapHint
+        keys={[MODIFIER.Meta, MODIFIER.Enter]}
+        ariaLabel="Run query shortcut"
+      />
+    </button>
+  );
 
   return (
     <header className="graphiql-top-bar" role="banner">
@@ -75,7 +103,10 @@ export const TopBarView: FC<TopBarViewProps> = ({
           <Tooltip label={`Switch to ${otherMethod}`}>
             <button
               type="button"
-              className="graphiql-top-bar-method-toggle"
+              className={cn(
+                'graphiql-top-bar-method-toggle',
+                isBlocked && 'graphiql-top-bar-method-toggle--attention',
+              )}
               onClick={() => onSetMethod(otherMethod)}
             >
               {method}
@@ -95,19 +126,11 @@ export const TopBarView: FC<TopBarViewProps> = ({
         />
       </button>
 
-      <button
-        type="button"
-        className="graphiql-top-bar-run"
-        onClick={onRun}
-        disabled={isFetching}
-        aria-label="Run query"
-      >
-        Run
-        <KeycapHint
-          keys={[MODIFIER.Meta, MODIFIER.Enter]}
-          ariaLabel="Run query shortcut"
-        />
-      </button>
+      {isBlocked ? (
+        <Tooltip label={runDisabledReason}>{runButton}</Tooltip>
+      ) : (
+        runButton
+      )}
     </header>
   );
 };

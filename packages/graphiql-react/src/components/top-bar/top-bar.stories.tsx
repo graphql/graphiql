@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GraphiQLProvider } from '../provider';
-import { TopBar } from './';
+import { TopBar, TopBarView } from './';
 import { Tooltip } from '../tooltip';
 
 const postOnlyTransport = {
@@ -90,4 +90,22 @@ export const NoVersion: Story = {
       </Tooltip.Provider>
     ),
   ],
+};
+
+/** GET selected with a mutation in the editor: Run disabled, method toggle highlighted. */
+export const MutationBlockedOverGet: Story = {
+  render: () => (
+    <Tooltip.Provider>
+      <TopBarView
+        version="v6.0.0-alpha.1"
+        isFetching={false}
+        url="https://api.example.com/graphql"
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+        onRun={() => {}}
+        onSetMethod={() => {}}
+      />
+    </Tooltip.Provider>
+  ),
 };

@@ -122,6 +122,48 @@ describe('TopBarView', () => {
     expect(screen.getByRole('button', { name: /Run query/i })).toBeDisabled();
   });
 
+  it('disables the Run button when a mutation is blocked over GET', () => {
+    renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+      />,
+    );
+    expect(screen.getByRole('button', { name: /Run query/i })).toBeDisabled();
+  });
+
+  it('highlights the method toggle when a mutation is blocked over GET', () => {
+    const { container } = renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+      />,
+    );
+    expect(
+      container.querySelector('.graphiql-top-bar-method-toggle--attention'),
+    ).not.toBeNull();
+  });
+
+  it('does not highlight the toggle or disable Run when not blocked', () => {
+    const { container } = renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: /Run query/i }),
+    ).not.toBeDisabled();
+    expect(
+      container.querySelector('.graphiql-top-bar-method-toggle--attention'),
+    ).toBeNull();
+  });
+
   it('renders the command palette button', () => {
     render(<TopBarView {...DEFAULTS} />);
     expect(screen.getByText('Jump to schema')).toBeInTheDocument();

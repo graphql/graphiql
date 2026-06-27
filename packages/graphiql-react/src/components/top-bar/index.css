@@ -105,6 +105,22 @@
   background: oklch(var(--bg-canvas));
 }
 
+.graphiql-top-bar-method-toggle--attention {
+  color: oklch(var(--accent-orange));
+  border-color: oklch(var(--accent-orange));
+  animation: graphiql-top-bar-method-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes graphiql-top-bar-method-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
 .graphiql-top-bar-endpoint-url {
   color: oklch(var(--fg-subtle));
   overflow: hidden;
