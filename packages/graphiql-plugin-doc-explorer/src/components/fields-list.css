@@ -1,0 +1,130 @@
+.graphiql-doc-explorer-fields-list {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-4) 0;
+}
+
+/* Section header — "FIELDS · N" */
+.graphiql-doc-explorer-fields-list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: var(--px-6) var(--px-16) var(--px-4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: oklch(var(--fg-subtle));
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  width: 100%;
+  text-align: left;
+
+  & svg {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: oklch(var(--fg-muted));
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: -2px;
+  }
+}
+
+.graphiql-doc-explorer-fields-list-count {
+  color: oklch(var(--fg-dim));
+  font-weight: 500;
+}
+
+.graphiql-doc-explorer-fields-list-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual field row */
+.graphiql-doc-explorer-field-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  padding: 5px var(--px-12) 5px var(--px-24);
+  background: transparent;
+  border: none;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    background: oklch(var(--fg-default) / 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: -2px;
+  }
+}
+
+/* Active row — blue accent */
+.graphiql-doc-explorer-field-row--active {
+  background: oklch(var(--accent-blue) / 0.08);
+  border-left-color: oklch(var(--accent-blue));
+  margin-left: -2px;
+
+  &:hover {
+    background: oklch(var(--accent-blue) / 0.12);
+  }
+}
+
+.graphiql-doc-explorer-field-row--deprecated {
+  opacity: 0.6;
+}
+
+/* Signature line: name : type */
+.graphiql-doc-explorer-field-row-sig {
+  display: flex;
+  align-items: baseline;
+  gap: var(--px-6);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+}
+
+.graphiql-doc-explorer-field-row-name {
+  color: oklch(var(--accent-green-light));
+}
+
+.graphiql-doc-explorer-field-row-colon {
+  color: oklch(var(--fg-disabled));
+}
+
+/* Return type color — inherits from TypeLink */
+.graphiql-doc-explorer-field-row-type {
+  color: oklch(var(--accent-orange));
+
+  /* TypeLink anchors inside a field row get orange color */
+  & .graphiql-doc-explorer-type-name {
+    color: oklch(var(--accent-orange));
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Optional description */
+.graphiql-doc-explorer-field-row-desc {
+  font-size: 11px;
+  color: oklch(var(--fg-subtle));
+  line-height: 15px;
+}
+
+.graphiql-doc-explorer-fields-list-show-deprecated {
+  margin: var(--px-8) var(--px-16);
+}

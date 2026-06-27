@@ -96,7 +96,7 @@ export type DocExplorerStoreType = {
   };
 };
 
-const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
+const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Root' }];
 
 export const docExplorerStore = createStore<DocExplorerStoreType>(
   (set, get) => ({

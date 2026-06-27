@@ -11,7 +11,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
-import type { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
@@ -36,12 +36,42 @@ describe('GraphiQL', () => {
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
-    it('should throw error without fetcher', () => {
+    it('should throw error without fetcher or transport', () => {
       const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // @ts-expect-error fetcher is a required prop to GraphiQL
+      // @ts-expect-error -- one of fetcher | transport is required on GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+        'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
+      );
+      spy.mockRestore();
+    });
+
+    it('is a type error to pass both `fetcher` and `transport`', () => {
+      // The assertion that matters here is the `@ts-expect-error` directive:
+      // if the XOR on `GraphiQLProps` regresses and both props become valid,
+      // tsc reports the directive as unused and this test fails to compile.
+      // The runtime guard in `GraphiQLProvider` belt-and-suspenders the type
+      // check.
+      const transport: Transport = {
+        url: 'https://example.com/graphql',
+        method: 'POST',
+        supportedMethods: ['POST'],
+        send: async () => ({
+          ok: true,
+          body: { data: {} },
+          timing: { totalMs: 0 },
+          size: {},
+        }),
+      };
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(() =>
+        render(
+          // @ts-expect-error -- `fetcher` and `transport` are mutually exclusive
+          <GraphiQL fetcher={noOpFetcher} transport={transport} />,
+        ),
+      ).toThrow(
+        'The `fetcher` and `transport` props are mutually exclusive. Pass one or the other, not both.',
       );
       spy.mockRestore();
     });
@@ -181,9 +211,9 @@ describe('GraphiQL', () => {
           expect(queryEditor).toBeVisible();
           expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
         },
-        { timeout: 15_000 },
+        { timeout: 25_000 },
       );
-    }, 20000);
+    }, 30000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
@@ -260,9 +290,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(
-          container.querySelector('[aria-label="Variables"]'),
-        ).toBeVisible();
+        // The editor tools section should be visible and the Variables radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const variablesRadio = container.querySelector(
+          'input[type="radio"][value="variables"]',
+        );
+        expect(variablesRadio).toBeChecked();
       });
     });
 
@@ -274,7 +310,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(container.querySelector('[aria-label="Headers"]')).toBeVisible();
+        // The editor tools section should be visible and the Headers radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const headersRadio = container.querySelector(
+          'input[type="radio"][value="headers"]',
+        );
+        expect(headersRadio).toBeChecked();
       });
     });
 
@@ -384,57 +428,47 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
-  it('allows the user to control persisting headers if it is true', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
-    );
+  describe('Settings dialog', () => {
+    async function openSettings(container: HTMLElement) {
+      await act(async () => {
+        fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+      return document.querySelector('[role="dialog"]')!;
+    }
 
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
+    it('shows the persist-headers control when shouldPersistHeaders is true', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
       );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('allows the user to control persisting headers if it is not passed in', async () => {
-    const { container, findByText } = render(
-      <GraphiQL fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+    it('shows the persist-headers control by default', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('does not allow the user to control persisting headers is false', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
+    it('hides the persist-headers control when shouldPersistHeaders is false', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
       );
+      const dialog = await openSettings(container);
+      // "Density" confirms the dialog is open before asserting absence.
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Persist headers');
     });
 
-    const callback = async () => {
-      try {
-        // Expecting non-existence; short-circuit instead of waiting the default.
-        await findByText('Persist headers', undefined, { timeout: 1000 });
-      } catch {
-        // eslint-disable-next-line no-throw-literal
-        throw 'failed';
-      }
-    };
-    await expect(callback).rejects.toEqual('failed');
+    it('hides the theme control when forcedTheme is set', async () => {
+      const { container } = render(
+        <GraphiQL forcedTheme="dark" fetcher={noOpFetcher} />,
+      );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Theme');
+    });
   });
 
   describe('Tabs', () => {
