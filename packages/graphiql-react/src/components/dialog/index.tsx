@@ -26,8 +26,8 @@ const DialogClose = forwardRef<
 DialogClose.displayName = 'Dialog.Close';
 
 /**
- * The chrome at the top of a dialog: a title on the left and a close button on
- * the right, with a bottom divider. A string child is wrapped in `Dialog.Title`
+ * The styled header of a dialog: a title on the left and a close button on the
+ * right, with a bottom divider. A string child is wrapped in `Dialog.Title`
  * automatically (Radix requires a title for accessibility); pass JSX to render
  * your own title node.
  */
