@@ -17,7 +17,11 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
-import { tryParseJSONC } from '../utility';
+import {
+  tryParseJSONC,
+  getRunBlockReason,
+  resolveActiveOperation,
+} from '../utility';
 import { Range } from '../utility/monaco-ssr';
 import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions, MonacoEditor } from '../types';
@@ -348,12 +352,14 @@ export const createExecutionSlice: CreateExecutionSlice =
             variableEditor,
             actions,
             operationName,
+            operations,
             documentAST,
             subscription,
             overrideOperationName,
             queryId,
             fetcher,
             transport,
+            transportMethod,
           } = get();
           if (!queryEditor || !responseEditor) {
             return;
@@ -361,6 +367,16 @@ export const createExecutionSlice: CreateExecutionSlice =
           // If there's an active subscription, unsubscribe it and return
           if (subscription) {
             actions.stop();
+            return;
+          }
+
+          // Mutations are forbidden over GET. Don't silently fall back to POST —
+          // the UI disables Run in this state; bail out for any keyboard path too.
+          const blockReason = getRunBlockReason(
+            transportMethod,
+            resolveActiveOperation(operations, operationName),
+          );
+          if (blockReason) {
             return;
           }
 
