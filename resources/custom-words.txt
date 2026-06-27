@@ -177,6 +177,7 @@ pabbati
 parseable
 picomatch
 pieas
+pluggable
 pnpm
 postbuild
 pratap

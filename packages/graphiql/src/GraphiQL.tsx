@@ -50,6 +50,11 @@ import {
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
+  collectionsPlugin,
+  collectionsStore,
+  CollectionsSaveDialog,
+} from '@graphiql/plugin-collections';
+import {
   ActivityBar,
   GraphiQLLogo,
   GraphiQLToolbar,
@@ -82,9 +87,15 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  *
  * @see https://github.com/graphql/graphiql#usage
  */
+const DEFAULT_PLUGINS = [
+  HISTORY_PLUGIN,
+  QUERY_BUILDER_PLUGIN,
+  collectionsPlugin(),
+];
+
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN],
+  plugins = DEFAULT_PLUGINS,
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,
@@ -146,6 +157,10 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
+      onSaveQuery={tab => {
+        collectionsStore.getState().actions.requestSave(tab);
+        props.onSaveQuery?.(tab);
+      }}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -540,6 +555,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       <SaveIcon aria-hidden="true" />
                     </UnStyledButton>
                   </Tooltip>
+                  <CollectionsSaveDialog />
                 </div>
                 {logo}
               </div>

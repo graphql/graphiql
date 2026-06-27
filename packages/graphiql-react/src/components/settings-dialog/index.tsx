@@ -130,12 +130,7 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <div className="graphiql-settings-dialog">
-        <div className="graphiql-settings-dialog-header">
-          <Dialog.Title className="graphiql-settings-dialog-title">
-            Settings
-          </Dialog.Title>
-          <Dialog.Close />
-        </div>
+        <Dialog.Header>Settings</Dialog.Header>
 
         <div className="graphiql-settings-dialog-body">
           {!forcedThemeSetting && (
