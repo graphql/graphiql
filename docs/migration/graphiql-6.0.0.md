@@ -1,6 +1,6 @@
 # Upgrading `graphiql` to `6.0.0`
 
-This covers the one notable change in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
+This covers the notable changes in `graphiql@6`: a new `Transport` API that replaces `Fetcher`/`createGraphiQLFetcher`, the active operation now following the editor cursor, and a query builder plugin installed by default. The rest of the surface carries over. Open an issue if something is missing here and we'll add it.
 
 ## Overview
 
@@ -146,6 +146,29 @@ const transport: Transport = {
 ```
 
 Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-code them; the response pane reads those fields directly.
+
+## Active operation follows the cursor
+
+In a document with more than one operation, the active operation now tracks the editor cursor. Moving the cursor into a different named operation updates `operationName`, so the Run button, the operation dropdown, and operation-aware plugins reflect the operation you are editing. Previously `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or by picking from the operation dropdown.
+
+Two things to know if you embed GraphiQL:
+
+- The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+- A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
+
+To opt out of cursor tracking, pin the operation with the `operationName` prop on `<GraphiQL>`; an explicit `operationName` overrides what the cursor would otherwise select.
+
+## Query builder plugin installed by default
+
+`graphiql@6` ships `@graphiql/plugin-query-builder` and installs it by default, so a new query builder icon appears in the plugin rail with no extra configuration. To remove it, pass your own `plugins` list without it:
+
+```tsx
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
+
+<GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
+```
+
+The plugin's stylesheet is bundled into `graphiql`'s own `style.css`, so it is included whether or not the plugin is in your `plugins` list. Dropping the plugin removes its panel and rail icon; the small amount of unused CSS remains in the bundle.
 
 ## What's deprecated, not removed
 

@@ -1,5 +1,5 @@
 import { getSelectedOperationName } from '@graphiql/toolkit';
-import type { DocumentNode } from 'graphql';
+import type { DocumentNode, OperationDefinitionNode } from 'graphql';
 import {
   getOperationFacts,
   getContextAtPosition,
@@ -40,6 +40,41 @@ interface OperationEditorProps extends EditorProps {
   onEdit?(value: string, documentAST?: DocumentNode): void;
 }
 
+// monaco-editor's `CursorChangeReason.Explicit` — a cursor move the user made
+// directly (mouse or keyboard), as opposed to one caused by a content change
+// (`ContentFlush`, e.g. a `setValue` from a plugin) or a programmatic
+// `setPosition`. Inlined as a literal to avoid pulling monaco-editor in just
+// for the enum.
+const CURSOR_CHANGE_EXPLICIT = 3;
+
+/**
+ * Returns the name of the operation whose source range contains the editor's
+ * cursor, or `undefined` when the cursor is outside every operation or the
+ * containing operation is anonymous.
+ */
+export function getOperationNameAtCursor(
+  editor: monaco.editor.ICodeEditor,
+  operations: readonly OperationDefinitionNode[],
+): string | undefined {
+  const position = editor.getPosition();
+  if (!position) {
+    return undefined;
+  }
+  const cursorIndex = editor.getModel()!.getOffsetAt(position);
+
+  let operationName: string | undefined;
+  for (const operation of operations) {
+    if (
+      operation.loc &&
+      operation.loc.start <= cursorIndex &&
+      operation.loc.end >= cursorIndex
+    ) {
+      operationName = operation.name?.value;
+    }
+  }
+  return operationName;
+}
+
 export const OperationEditor: FC<OperationEditorProps> = ({
   onClickReference,
   onEdit,
@@ -64,6 +99,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     referencePlugin,
     operations,
     operationName,
+    overrideOperationName,
     externalFragments,
     uriInstanceId,
     storage,
@@ -75,6 +111,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'referencePlugin',
       'operations',
       'operationName',
+      'overrideOperationName',
       'externalFragments',
       'uriInstanceId',
       'storage',
@@ -88,6 +125,19 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
+
+  // The content-change handler below is registered once on mount, so it would
+  // otherwise close over the initial (undefined) operation name, schema, and
+  // operations. Mirror them into refs so it reconciles against current values
+  // instead of reverting the selection to the first operation on every edit.
+  const operationNameRef = useRef(operationName);
+  const operationsRef = useRef(operations);
+  const schemaRef = useRef(schema);
+  useEffect(() => {
+    operationNameRef.current = operationName;
+    operationsRef.current = operations;
+    schemaRef.current = schema;
+  }, [operationName, operations, schema]);
 
   /*
   useEffect(() => {
@@ -158,11 +208,17 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     */
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
-    const operationFacts = getOperationFacts(schema, editorInstance.getValue());
+    const currentSchema = schemaRef.current;
+    const currentOperations = operationsRef.current;
+    const currentOperationName = operationNameRef.current;
+    const operationFacts = getOperationFacts(
+      currentSchema,
+      editorInstance.getValue(),
+    );
     // Update the operation name should any query names change.
     const newOperationName = getSelectedOperationName(
-      operations,
-      operationName,
+      currentOperations,
+      currentOperationName,
       operationFacts?.operations,
     );
     setOperationFacts({
@@ -184,27 +240,33 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         run();
         return;
       }
-      const position = editor.getPosition()!;
-      const cursorIndex = editor.getModel()!.getOffsetAt(position);
-
-      // Loop through all operations to see if one contains the cursor.
-      let newOperationName: string | undefined;
-      for (const operation of operations) {
-        if (
-          operation.loc &&
-          operation.loc.start <= cursorIndex &&
-          operation.loc.end >= cursorIndex
-        ) {
-          newOperationName = operation.name?.value;
-        }
-      }
-
+      const newOperationName = getOperationNameAtCursor(editor, operations);
       if (newOperationName && newOperationName !== operationName) {
         setOperationName(newOperationName);
       }
       run();
     };
   }, [operationName, operations, run, setOperationName]);
+
+  // Keep the active operation in sync with the cursor: as it moves between
+  // operations, `operationName` follows it (so the Run button, operation
+  // dropdown, and operation-aware plugins all reflect where you are editing).
+  const syncOperationNameToCursorRef = useRef<(editor: MonacoEditor) => void>(
+    null!,
+  );
+
+  useEffect(() => {
+    syncOperationNameToCursorRef.current = editor => {
+      // When an operation is pinned via the `operationName` prop, leave it be.
+      if (!operations || typeof overrideOperationName === 'string') {
+        return;
+      }
+      const newOperationName = getOperationNameAtCursor(editor, operations);
+      if (newOperationName && newOperationName !== operationName) {
+        setOperationName(newOperationName);
+      }
+    };
+  }, [operationName, operations, overrideOperationName, setOperationName]);
 
   const { monacoGraphQL, monaco } = useMonaco();
 
@@ -242,7 +304,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       onEdit?.(query, operationFacts?.documentAST);
       if (
         operationFacts?.operationName &&
-        operationName !== operationFacts.operationName
+        operationNameRef.current !== operationFacts.operationName
       ) {
         setOperationName(operationFacts.operationName);
       }
@@ -255,8 +317,23 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     // Call once to initially update the values
     getAndUpdateOperationFacts(editor);
 
+    const syncCursorOperationName = debounce(100, () => {
+      syncOperationNameToCursorRef.current(editor);
+    });
     const disposables = [
       model.onDidChangeContent(handleChange),
+      editor.onDidChangeCursorPosition(e => {
+        // Only follow cursor moves the user made directly. A `setValue` or
+        // programmatic `setPosition` (e.g. from the query builder writing back
+        // an edit) must not change the active operation.
+        if (e.reason === CURSOR_CHANGE_EXPLICIT) {
+          syncCursorOperationName();
+        }
+      }),
+      // Drop pending debounced calls on teardown so neither can fire against a
+      // disposed editor.
+      { dispose: () => handleChange.cancel() },
+      { dispose: () => syncCursorOperationName.cancel() },
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
         run: (...args) => runAtCursorRef.current(...args),

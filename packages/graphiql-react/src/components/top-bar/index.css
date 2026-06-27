@@ -20,12 +20,6 @@
 .graphiql-top-bar-logo {
   width: 22px;
   height: 22px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    135deg,
-    oklch(var(--accent-green-light)),
-    oklch(var(--accent-blue))
-  );
   flex-shrink: 0;
 }
 
