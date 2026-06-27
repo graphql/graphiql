@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { Kind, parse } from 'graphql';
 import { DropdownMenu, MethodPill } from '@graphiql/react';
 import type { Operation } from '@graphiql/react';
 import type { Collection, CollectionItem } from '../types';
@@ -10,6 +11,26 @@ function inferOperationType(query: string): Operation {
     return keyword;
   }
   return 'query';
+}
+
+/**
+ * A saved item holds a whole document, which may contain more than one
+ * operation. Return the single operation's type, or `'mix'` when there are
+ * several so the row shows a neutral pill instead of just the first one's.
+ */
+function getDocumentMethod(query: string): Operation | 'mix' {
+  try {
+    const operations = parse(query).definitions.filter(
+      def => def.kind === Kind.OPERATION_DEFINITION,
+    );
+    if (operations.length > 1) {
+      return 'mix';
+    }
+    const [operation] = operations;
+    return operation ? operation.operation : 'query';
+  } catch {
+    return inferOperationType(query);
+  }
 }
 
 type CollectionItemRowProps = {
@@ -40,7 +61,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
-  const operationType = inferOperationType(item.query);
+  const method = getDocumentMethod(item.query);
 
   return (
     <div
@@ -79,7 +100,16 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
       <span className="graphiql-collection-drag-handle" aria-hidden="true">
         ⠿
       </span>
-      <MethodPill operation={operationType} aria-hidden />
+      {method === 'mix' ? (
+        <span
+          className="graphiql-method-pill graphiql-collection-method-pill-mix"
+          aria-hidden
+        >
+          MIX
+        </span>
+      ) : (
+        <MethodPill operation={method} aria-hidden />
+      )}
       <span className="graphiql-collection-item-name" title={item.name}>
         {item.name}
       </span>

@@ -133,6 +133,12 @@
   outline-offset: -2px;
 }
 
+/* Pill for documents that contain more than one operation. */
+.graphiql-collection-method-pill-mix {
+  color: oklch(98% 0 0);
+  background: oklch(55% 0.02 270);
+}
+
 .graphiql-collection-item-menu {
   all: unset;
   cursor: pointer;
