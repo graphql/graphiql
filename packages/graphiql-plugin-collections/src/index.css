@@ -70,7 +70,7 @@
   color: oklch(var(--fg-subtle));
   background: oklch(var(--bg-subtle));
   padding: 0 var(--px-6);
-  border-radius: var(--border-radius-full);
+  border-radius: 9999px;
 }
 
 .graphiql-collection-chevron {
@@ -129,30 +129,8 @@
 }
 
 .graphiql-collection-drop-target {
-  outline: 2px solid oklch(var(--accent-default));
+  outline: 2px solid oklch(var(--accent-blue));
   outline-offset: -2px;
-}
-
-.graphiql-collection-item-type {
-  font-size: 10px;
-  font-weight: 700;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius-4);
-  flex-shrink: 0;
-  color: white;
-  background: oklch(var(--accent-default));
-}
-
-.graphiql-collection-item-type[data-operation-type='mutation'] {
-  background: oklch(var(--color-warning, 70% 0.2 80));
-}
-
-.graphiql-collection-item-type[data-operation-type='subscription'] {
-  background: oklch(var(--color-info, 65% 0.2 270));
 }
 
 .graphiql-collection-item-menu {
@@ -170,14 +148,7 @@
 }
 
 /* Save dialog */
-.graphiql-save-dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--px-12);
-  padding: var(--px-12) 0;
-}
-
-.graphiql-save-dialog-form label {
+.graphiql-save-dialog-field {
   display: flex;
   flex-direction: column;
   gap: var(--px-4);
@@ -189,36 +160,16 @@
 .graphiql-save-dialog-select {
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-default));
-  border-radius: var(--border-radius-4);
+  border-radius: var(--radius-sm);
   padding: var(--px-6) var(--px-8);
   color: oklch(var(--fg-default));
   font-size: var(--font-size-body);
 }
 
-.graphiql-save-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--px-8);
-  padding-top: var(--px-8);
-}
-
-.graphiql-save-dialog-cancel,
-.graphiql-save-dialog-save {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-6) var(--px-16);
-  border-radius: var(--border-radius-4);
-  font-size: var(--font-size-body);
-}
-
-.graphiql-save-dialog-cancel {
-  color: oklch(var(--fg-subtle));
-  border: 1px solid oklch(var(--border-default));
-}
-
-.graphiql-save-dialog-save {
-  background: oklch(var(--accent-default));
-  color: white;
+.graphiql-save-dialog-input:focus-visible,
+.graphiql-save-dialog-select:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -1px;
 }
 
 /* Import/Export dialog */
@@ -227,14 +178,13 @@
   gap: var(--px-4);
   border-bottom: 1px solid oklch(var(--border-default));
   padding-bottom: var(--px-8);
-  margin-bottom: var(--px-12);
 }
 
 .graphiql-import-export-tab {
   all: unset;
   cursor: pointer;
   padding: var(--px-4) var(--px-12);
-  border-radius: var(--border-radius-4);
+  border-radius: var(--radius-sm);
   font-size: var(--font-size-body);
   color: oklch(var(--fg-subtle));
 }
@@ -244,7 +194,7 @@
   color: oklch(var(--fg-default));
 }
 
-.graphiql-import-export-body {
+.graphiql-import-export-section {
   display: flex;
   flex-direction: column;
   gap: var(--px-8);
@@ -254,7 +204,7 @@
   width: 100%;
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-default));
-  border-radius: var(--border-radius-4);
+  border-radius: var(--radius-sm);
   padding: var(--px-8);
   color: oklch(var(--fg-default));
   font-family: var(--font-family-mono);
@@ -262,15 +212,7 @@
   resize: vertical;
 }
 
-.graphiql-import-export-download,
-.graphiql-import-export-import {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-6) var(--px-16);
-  border-radius: var(--border-radius-4);
-  font-size: var(--font-size-body);
-  background: oklch(var(--accent-default));
-  color: white;
+.graphiql-import-export-action {
   align-self: flex-start;
 }
 

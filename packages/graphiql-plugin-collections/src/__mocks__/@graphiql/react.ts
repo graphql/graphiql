@@ -83,8 +83,13 @@ export const Dialog = Object.assign(
     Close: ({ children }: { children: ReactNode }) => children,
     Description: ({ children }: { children: ReactNode }) => children,
     Trigger: ({ children }: { children: ReactNode }) => children,
+    Header: ({ children }: { children: ReactNode }) => children,
+    Body: ({ children }: { children: ReactNode }) => children,
+    Footer: ({ children }: { children: ReactNode }) => children,
   },
 );
+
+export const Button = ({ children }: { children?: ReactNode }) => children;
 
 export const DropdownMenu = Object.assign(
   ({ children }: { children?: ReactNode }) => children ?? null,

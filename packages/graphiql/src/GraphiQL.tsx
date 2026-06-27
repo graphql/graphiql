@@ -51,7 +51,8 @@ import {
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
   collectionsPlugin,
-  CollectionsSaveButton,
+  collectionsStore,
+  CollectionsSaveDialog,
 } from '@graphiql/plugin-collections';
 import {
   ActivityBar,
@@ -156,6 +157,10 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
+      onSaveQuery={tab => {
+        collectionsStore.getState().actions.requestSave(tab);
+        props.onSaveQuery?.(tab);
+      }}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -226,7 +231,6 @@ const LABEL = {
   prettify: 'Prettify query',
   copy: 'Copy query',
   save: 'Save query',
-  saveToCollection: 'Save to collection',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
@@ -551,7 +555,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       <SaveIcon aria-hidden="true" />
                     </UnStyledButton>
                   </Tooltip>
-                  <CollectionsSaveButton />
+                  <CollectionsSaveDialog />
                 </div>
                 {logo}
               </div>

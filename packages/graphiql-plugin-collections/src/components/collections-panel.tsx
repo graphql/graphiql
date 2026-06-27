@@ -1,8 +1,7 @@
-import { FC, useEffect, useState } from 'react';
-import { PanelHeader, useGraphiQLActions } from '@graphiql/react';
+import { FC, useEffect, useRef, useState } from 'react';
+import { PanelHeader, useGraphiQL, useGraphiQLActions } from '@graphiql/react';
 import { useCollectionsStore, collectionsStore } from '../store';
 import { CollectionRow } from './collection-row';
-import { SaveDialog } from './save-dialog';
 import { ImportExportDialog } from './import-export-dialog';
 import { localStorageAdapter } from '../storage/local-storage';
 import type { CollectionItem, CollectionsStorage } from '../types';
@@ -16,7 +15,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const collections = useCollectionsStore(s => s.collections);
   const loaded = useCollectionsStore(s => s.loaded);
   const [showImportExport, setShowImportExport] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   useEffect(() => {
     void actions.init(storage ?? localStorageAdapter);
@@ -25,8 +23,28 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   }, []);
 
   const { addTab, updateActiveTabValues } = useGraphiQLActions();
+  const activeTabId = useGraphiQL(s => s.tabs[s.activeTabIndex]?.id);
+
+  // Opening an item creates a tab, then links it once the new tab is active so
+  // ⌘S updates the saved item in place rather than reopening the dialog.
+  const pendingLink = useRef<{ collectionId: string; itemId: string } | null>(
+    null,
+  );
+  useEffect(() => {
+    const link = pendingLink.current;
+    if (link && activeTabId) {
+      actions.linkTab(activeTabId, link.collectionId, link.itemId);
+      pendingLink.current = null;
+    }
+  }, [activeTabId, actions]);
 
   const handleOpen = (item: CollectionItem) => {
+    const collectionId = collections.find(c =>
+      c.items.some(i => i.id === item.id),
+    )?.id;
+    if (collectionId) {
+      pendingLink.current = { collectionId, itemId: item.id };
+    }
     addTab();
     updateActiveTabValues({
       query: item.query,
@@ -93,12 +111,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
           />
         ))}
       </div>
-      <SaveDialog
-        open={showSaveDialog}
-        onClose={() => setShowSaveDialog(false)}
-        initialQuery=""
-        initialName="Unnamed operation"
-      />
       <ImportExportDialog
         open={showImportExport}
         onClose={() => setShowImportExport(false)}
