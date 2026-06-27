@@ -80,11 +80,16 @@ export const ExecuteButton: FC = () => {
     </DropdownMenu>
   ) : (
     <Tooltip label={label}>
-      <button
-        {...buttonProps}
-        disabled={isBlocked}
-        onClick={isRunning ? stop : run}
-      />
+      {isBlocked ? (
+        // A native disabled button emits no pointer/focus events, so Radix
+        // would never open the tooltip explaining why it's disabled. Wrap it
+        // in a focusable span that receives the events instead.
+        <span className="graphiql-execute-button-tooltip-target" tabIndex={0}>
+          <button {...buttonProps} disabled onClick={run} />
+        </span>
+      ) : (
+        <button {...buttonProps} onClick={isRunning ? stop : run} />
+      )}
     </Tooltip>
   );
 };

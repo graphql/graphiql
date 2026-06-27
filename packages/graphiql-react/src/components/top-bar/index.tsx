@@ -127,7 +127,14 @@ export const TopBarView: FC<TopBarViewProps> = ({
       </button>
 
       {isBlocked ? (
-        <Tooltip label={runDisabledReason}>{runButton}</Tooltip>
+        <Tooltip label={runDisabledReason}>
+          {/* A native disabled button emits no pointer/focus events, so Radix
+              would never open the tooltip. Wrap it in a focusable span that
+              receives the events instead. */}
+          <span className="graphiql-top-bar-run-tooltip-target" tabIndex={0}>
+            {runButton}
+          </span>
+        </Tooltip>
       ) : (
         runButton
       )}

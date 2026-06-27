@@ -149,8 +149,17 @@
 .graphiql-top-bar-run:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  /* Let pointer events fall through to the tooltip-target wrapper so the
+     "switch to POST" tooltip can open over the disabled button. */
+  pointer-events: none;
 }
 
 .graphiql-top-bar-run:not(:disabled):hover {
   filter: brightness(1.1);
+}
+
+.graphiql-top-bar-run-tooltip-target {
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: not-allowed;
 }

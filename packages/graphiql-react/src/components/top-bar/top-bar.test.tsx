@@ -148,7 +148,25 @@ describe('TopBarView', () => {
     ).not.toBeNull();
   });
 
-  it('does not highlight the toggle or disable Run when not blocked', () => {
+  it('wraps the disabled Run button in a focusable tooltip target when blocked', () => {
+    renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+      />,
+    );
+    // A native disabled button emits no events, so the tooltip needs a
+    // focusable wrapper to receive hover/focus and open.
+    const target = screen
+      .getByRole('button', { name: /Run query/i })
+      .closest('.graphiql-top-bar-run-tooltip-target');
+    expect(target).not.toBeNull();
+    expect(target).toHaveAttribute('tabindex', '0');
+  });
+
+  it('does not highlight the toggle, disable Run, or wrap it when not blocked', () => {
     const { container } = renderTopBar(
       <TopBarView
         {...DEFAULTS}
@@ -161,6 +179,9 @@ describe('TopBarView', () => {
     ).not.toBeDisabled();
     expect(
       container.querySelector('.graphiql-top-bar-method-toggle--attention'),
+    ).toBeNull();
+    expect(
+      container.querySelector('.graphiql-top-bar-run-tooltip-target'),
     ).toBeNull();
   });
 

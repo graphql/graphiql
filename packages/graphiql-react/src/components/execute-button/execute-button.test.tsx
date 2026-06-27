@@ -67,6 +67,28 @@ describe('ExecuteButton', () => {
     expect(screen.getByRole('button')).toBeDisabled();
   });
 
+  it('wraps the disabled button in a focusable tooltip target while GET is selected', () => {
+    setup({ operations: opsOf('mutation M { a }'), transportMethod: 'GET' });
+    renderButton(<ExecuteButton />);
+    // A native disabled button emits no events, so the tooltip needs a
+    // focusable wrapper to receive hover/focus and open.
+    const target = screen
+      .getByRole('button')
+      .closest('.graphiql-execute-button-tooltip-target');
+    expect(target).not.toBeNull();
+    expect(target).toHaveAttribute('tabindex', '0');
+  });
+
+  it('does not wrap the button when not blocked', () => {
+    setup({ operations: opsOf('query Q { a }'), transportMethod: 'GET' });
+    renderButton(<ExecuteButton />);
+    expect(
+      screen
+        .getByRole('button')
+        .closest('.graphiql-execute-button-tooltip-target'),
+    ).toBeNull();
+  });
+
   it('enables the button for a single query while GET is selected', () => {
     setup({ operations: opsOf('query Q { a }'), transportMethod: 'GET' });
     renderButton(<ExecuteButton />);
