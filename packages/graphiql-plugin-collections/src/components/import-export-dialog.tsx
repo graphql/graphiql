@@ -1,5 +1,5 @@
 import { FC, useRef, useState } from 'react';
-import { Dialog } from '@graphiql/react';
+import { Button, Dialog } from '@graphiql/react';
 import { collectionsStore } from '../store';
 
 type ImportExportDialogProps = {
@@ -52,84 +52,87 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <Dialog.Title>Import / Export Collections</Dialog.Title>
-      <div className="graphiql-import-export-tabs">
-        <button
-          type="button"
-          className={`graphiql-import-export-tab${mode === 'export' ? ' active' : ''}`}
-          onClick={() => setMode('export')}
-        >
-          Export
-        </button>
-        <button
-          type="button"
-          className={`graphiql-import-export-tab${mode === 'import' ? ' active' : ''}`}
-          onClick={() => setMode('import')}
-        >
-          Import
-        </button>
-      </div>
-      {mode === 'export' && (
-        <div className="graphiql-import-export-body">
-          <textarea
-            readOnly
-            className="graphiql-import-export-textarea"
-            value={exported}
-            rows={12}
-          />
+      <Dialog.Header>Import / Export Collections</Dialog.Header>
+      <Dialog.Body>
+        <div className="graphiql-import-export-tabs">
           <button
             type="button"
-            onClick={handleDownload}
-            className="graphiql-import-export-download"
+            className={`graphiql-import-export-tab${mode === 'export' ? ' active' : ''}`}
+            onClick={() => setMode('export')}
           >
-            Download JSON
+            Export
           </button>
-        </div>
-      )}
-      {mode === 'import' && (
-        <div className="graphiql-import-export-body">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,application/json"
-            onChange={() => setImportError(null)}
-          />
-          <fieldset className="graphiql-import-export-mode">
-            <legend>Import mode</legend>
-            <label>
-              <input
-                type="radio"
-                name="import-mode"
-                value="merge"
-                checked={importMode === 'merge'}
-                onChange={() => setImportMode('merge')}
-              />
-              Merge (append new collections, skip duplicates)
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="import-mode"
-                value="replace"
-                checked={importMode === 'replace'}
-                onChange={() => setImportMode('replace')}
-              />
-              Replace (remove all existing collections)
-            </label>
-          </fieldset>
-          {importError && (
-            <p className="graphiql-import-export-error">{importError}</p>
-          )}
           <button
             type="button"
-            onClick={handleImport}
-            className="graphiql-import-export-import"
+            className={`graphiql-import-export-tab${mode === 'import' ? ' active' : ''}`}
+            onClick={() => setMode('import')}
           >
             Import
           </button>
         </div>
-      )}
-      <Dialog.Close />
+        {mode === 'export' && (
+          <div className="graphiql-import-export-section">
+            <textarea
+              readOnly
+              className="graphiql-import-export-textarea"
+              value={exported}
+              rows={12}
+            />
+            <Button
+              type="button"
+              variant="primary"
+              onClick={handleDownload}
+              className="graphiql-import-export-action"
+            >
+              Download JSON
+            </Button>
+          </div>
+        )}
+        {mode === 'import' && (
+          <div className="graphiql-import-export-section">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              onChange={() => setImportError(null)}
+            />
+            <fieldset className="graphiql-import-export-mode">
+              <legend>Import mode</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="import-mode"
+                  value="merge"
+                  checked={importMode === 'merge'}
+                  onChange={() => setImportMode('merge')}
+                />
+                Merge (append new collections, skip duplicates)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="import-mode"
+                  value="replace"
+                  checked={importMode === 'replace'}
+                  onChange={() => setImportMode('replace')}
+                />
+                Replace (remove all existing collections)
+              </label>
+            </fieldset>
+            {importError && (
+              <p className="graphiql-import-export-error">{importError}</p>
+            )}
+            <Button
+              type="button"
+              variant="primary"
+              onClick={handleImport}
+              className="graphiql-import-export-action"
+            >
+              Import
+            </Button>
+          </div>
+        )}
+      </Dialog.Body>
     </Dialog>
   );
 };

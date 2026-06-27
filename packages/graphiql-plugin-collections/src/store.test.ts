@@ -27,6 +27,14 @@ beforeEach(() => {
   collectionsStore.setState({
     ...initialState,
     storage: makeStorage(),
+    links: {},
+    saveDialog: {
+      open: false,
+      query: '',
+      variables: '',
+      headers: '',
+      name: '',
+    },
   });
 });
 
@@ -294,5 +302,62 @@ describe('createLocalStorageAdapter', () => {
     );
     warnSpy.mockRestore();
     localStorage.removeItem(key);
+  });
+});
+
+describe('requestSave', () => {
+  it('opens the save dialog for an unlinked tab', () => {
+    getActions().requestSave({
+      id: 'tab-1',
+      query: 'query GetUser { user { id } }',
+      variables: '{}',
+      headers: '',
+    });
+    const { saveDialog } = collectionsStore.getState();
+    expect(saveDialog.open).toBe(true);
+    expect(saveDialog.tabId).toBe('tab-1');
+    expect(saveDialog.name).toBe('GetUser');
+    expect(saveDialog.query).toBe('query GetUser { user { id } }');
+  });
+
+  it('updates the linked item in place without opening the dialog', () => {
+    const collection = getActions().createCollection('My collection');
+    const item = getActions().addItem(collection.id, {
+      name: 'GetUser',
+      query: 'query GetUser { user { id } }',
+      variables: '{}',
+      headers: '',
+    });
+    getActions().linkTab('tab-1', collection.id, item.id);
+
+    getActions().requestSave({
+      id: 'tab-1',
+      query: 'query GetUser { user { id name } }',
+      variables: '{"x":1}',
+      headers: '{"h":"v"}',
+    });
+
+    const { collections, saveDialog } = collectionsStore.getState();
+    const saved = collections[0]?.items[0];
+    expect(saveDialog.open).toBe(false);
+    expect(saved?.id).toBe(item.id);
+    expect(saved?.query).toBe('query GetUser { user { id name } }');
+    expect(saved?.variables).toBe('{"x":1}');
+    expect(saved?.headers).toBe('{"h":"v"}');
+    expect(collections[0]?.items).toHaveLength(1);
+  });
+
+  it('falls back to the dialog when the linked item no longer exists', () => {
+    const collection = getActions().createCollection('My collection');
+    const item = getActions().addItem(collection.id, {
+      name: 'GetUser',
+      query: 'query GetUser { user { id } }',
+    });
+    getActions().linkTab('tab-1', collection.id, item.id);
+    getActions().deleteItem(collection.id, item.id);
+
+    getActions().requestSave({ id: 'tab-1', query: 'query A { a }' });
+
+    expect(collectionsStore.getState().saveDialog.open).toBe(true);
   });
 });

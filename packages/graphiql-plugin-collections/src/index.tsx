@@ -5,12 +5,16 @@ import type { CollectionsStorage } from './types';
 import './index.css';
 
 export type { CollectionsStorage, Collection, CollectionItem } from './types';
-export { collectionsStore, useCollectionsStore } from './store';
+export {
+  collectionsStore,
+  useCollectionsStore,
+  type ActiveOperation,
+} from './store';
 export {
   createLocalStorageAdapter,
   localStorageAdapter,
 } from './storage/local-storage';
-export { CollectionsSaveButton } from './components/save-button';
+export { SaveDialog as CollectionsSaveDialog } from './components/save-dialog';
 
 export type CollectionsPluginOptions = {
   /** Custom storage adapter. Defaults to localStorage with key 'graphiql:collections'. */

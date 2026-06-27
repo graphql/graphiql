@@ -3,10 +3,36 @@ import { createBoundedUseStore } from '@graphiql/react';
 import type { Collection, CollectionItem, CollectionsStorage } from './types';
 import { localStorageAdapter } from './storage/local-storage';
 
+/** A link from an editor tab to the collection item it was opened from or saved as. */
+type TabLink = { collectionId: string; itemId: string };
+
+/** The active operation being saved, as seen by the save dialog. */
+export type SaveDialogState = {
+  open: boolean;
+  /** The tab this save originated from, linked to the item once saved. */
+  tabId?: string;
+  query: string;
+  variables: string;
+  headers: string;
+  name: string;
+};
+
+/** The current operation handed to `requestSave` from ⌘S or the save button. */
+export type ActiveOperation = {
+  id?: string;
+  query: string | null;
+  variables?: string | null;
+  headers?: string | null;
+  operationName?: string | null;
+};
+
 type CollectionsState = {
   collections: Collection[];
   loaded: boolean;
   storage: CollectionsStorage;
+  /** Maps a tab id to the collection item it is linked to. */
+  links: Record<string, TabLink>;
+  saveDialog: SaveDialogState;
 };
 
 type CollectionsActions = {
@@ -32,7 +58,36 @@ type CollectionsActions = {
   ): void;
   importCollections(json: string, mode: 'merge' | 'replace'): void;
   exportCollections(): string;
+  /** Link a tab to a collection item so ⌘S updates it in place. */
+  linkTab(tabId: string, collectionId: string, itemId: string): void;
+  /**
+   * Save the active operation: update the linked item in place if the tab is
+   * already tied to a collection item, otherwise open the save dialog.
+   */
+  requestSave(operation: ActiveOperation): void;
+  openSaveDialog(input: Omit<SaveDialogState, 'open'>): void;
+  closeSaveDialog(): void;
 };
+
+const INITIAL_SAVE_DIALOG: SaveDialogState = {
+  open: false,
+  query: '',
+  variables: '',
+  headers: '',
+  name: '',
+};
+
+export function deriveOperationName(
+  query: string,
+  fallback?: string | null,
+): string {
+  if (fallback) {
+    return fallback;
+  }
+  const match =
+    /(?:query|mutation|subscription)\s+([A-Za-z_][A-Za-z0-9_]*)/i.exec(query);
+  return match?.[1] ?? 'Unnamed operation';
+}
 
 type StoreShape = CollectionsState & { actions: CollectionsActions };
 
@@ -45,6 +100,8 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
     collections: [],
     loaded: false,
     storage: localStorageAdapter,
+    links: {},
+    saveDialog: INITIAL_SAVE_DIALOG,
     actions: {
       async init(storage) {
         const collections = await storage.load();
@@ -193,6 +250,43 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
           null,
           2,
         );
+      },
+      linkTab(tabId, collectionId, itemId) {
+        set(s => ({
+          links: { ...s.links, [tabId]: { collectionId, itemId } },
+        }));
+      },
+      requestSave(operation) {
+        const { links, collections, actions } = get();
+        const link = operation.id ? links[operation.id] : undefined;
+        if (link) {
+          const collection = collections.find(c => c.id === link.collectionId);
+          const item = collection?.items.find(i => i.id === link.itemId);
+          if (item) {
+            actions.updateItem(link.collectionId, link.itemId, {
+              query: operation.query ?? '',
+              variables: operation.variables ?? '',
+              headers: operation.headers ?? '',
+            });
+            return;
+          }
+        }
+        actions.openSaveDialog({
+          tabId: operation.id,
+          query: operation.query ?? '',
+          variables: operation.variables ?? '',
+          headers: operation.headers ?? '',
+          name: deriveOperationName(
+            operation.query ?? '',
+            operation.operationName,
+          ),
+        });
+      },
+      openSaveDialog(input) {
+        set({ saveDialog: { ...input, open: true } });
+      },
+      closeSaveDialog() {
+        set(s => ({ saveDialog: { ...s.saveDialog, open: false } }));
       },
     },
   };
