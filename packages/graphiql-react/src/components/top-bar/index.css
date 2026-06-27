@@ -81,6 +81,30 @@
   flex-shrink: 0;
 }
 
+/* Click-to-toggle method chip — shown when transport supports both methods */
+.graphiql-top-bar-method-toggle {
+  padding: 0 var(--px-6);
+  height: 18px;
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-green));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.graphiql-top-bar-method-toggle:hover {
+  background: oklch(var(--bg-canvas));
+}
+
 .graphiql-top-bar-endpoint-url {
   color: oklch(var(--fg-subtle));
   overflow: hidden;
