@@ -2,22 +2,6 @@
   min-width: 360px;
 }
 
-.graphiql-settings-dialog-header {
-  align-items: center;
-  border-bottom: 1px solid oklch(var(--border-default));
-  display: flex;
-  justify-content: space-between;
-  padding: var(--px-12) var(--px-4) var(--px-12) var(--px-16);
-}
-
-.graphiql-settings-dialog-title {
-  color: oklch(var(--fg-strong));
-  font-family: var(--font-family);
-  font-size: var(--font-size-body);
-  font-weight: 600;
-  margin: 0;
-}
-
 .graphiql-settings-dialog-body {
   display: flex;
   flex-direction: column;
