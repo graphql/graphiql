@@ -32,7 +32,7 @@ export function resolveActiveOperation(
  */
 export function getRunBlockReason(
   method: HttpMethod | null | undefined,
-  operation: OperationDefinitionNode | undefined,
+  operation?: OperationDefinitionNode,
 ): string | null {
   const effectiveMethod = method ?? 'POST';
   if (

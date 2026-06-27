@@ -57,7 +57,7 @@ describe('getRunBlockReason', () => {
     expect(getRunBlockReason(undefined, MUTATION[0])).toBeNull();
   });
 
-  it('does not block when the active operation is undefined', () => {
-    expect(getRunBlockReason('GET', undefined)).toBeNull();
+  it('does not block when there is no active operation', () => {
+    expect(getRunBlockReason('GET')).toBeNull();
   });
 });
