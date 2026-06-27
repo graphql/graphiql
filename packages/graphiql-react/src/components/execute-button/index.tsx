@@ -4,7 +4,7 @@ import { PlayIcon, StopIcon } from '../../icons';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
 import { KEY_MAP, formatShortcutForOS } from '../../constants';
-import { pick } from '../../utility';
+import { pick, getRunBlockReason, resolveActiveOperation } from '../../utility';
 import './index.css';
 
 export const ExecuteButton: FC = () => {
@@ -14,15 +14,31 @@ export const ExecuteButton: FC = () => {
     operationName,
     isFetching,
     overrideOperationName,
+    transportMethod,
   } = useGraphiQL(
-    pick('operations', 'operationName', 'isFetching', 'overrideOperationName'),
+    pick(
+      'operations',
+      'operationName',
+      'isFetching',
+      'overrideOperationName',
+      'transportMethod',
+    ),
   );
   const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const hasOptions =
     operations.length > 1 && typeof overrideOperationName !== 'string';
   const isRunning = isFetching || isSubscribed;
 
-  const label = `${isRunning ? 'Stop' : 'Execute'} query (${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')})`;
+  const runDisabledReason = getRunBlockReason(
+    transportMethod,
+    resolveActiveOperation(operations, operationName),
+  );
+  // Never block the Stop affordance — only a fresh run can be blocked.
+  const isBlocked = !isRunning && runDisabledReason !== null;
+
+  const label = isBlocked
+    ? runDisabledReason!
+    : `${isRunning ? 'Stop' : 'Execute'} query (${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')})`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',
@@ -44,6 +60,7 @@ export const ExecuteButton: FC = () => {
           return (
             <DropdownMenu.Item
               key={`${opName}-${i}`}
+              disabled={getRunBlockReason(transportMethod, operation) !== null}
               onSelect={() => {
                 const selectedOperationName = operation.name?.value;
                 if (
@@ -63,7 +80,16 @@ export const ExecuteButton: FC = () => {
     </DropdownMenu>
   ) : (
     <Tooltip label={label}>
-      <button {...buttonProps} onClick={isRunning ? stop : run} />
+      {isBlocked ? (
+        // A native disabled button emits no pointer/focus events, so Radix
+        // would never open the tooltip explaining why it's disabled. Wrap it
+        // in a focusable span that receives the events instead.
+        <span className="graphiql-execute-button-tooltip-target" tabIndex={0}>
+          <button {...buttonProps} disabled onClick={run} />
+        </span>
+      ) : (
+        <button {...buttonProps} onClick={isRunning ? stop : run} />
+      )}
     </Tooltip>
   );
 };

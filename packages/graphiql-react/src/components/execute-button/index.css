@@ -7,6 +7,14 @@ button.graphiql-execute-button {
   padding: 0;
   width: var(--toolbar-width);
 
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    /* Let pointer events fall through to the tooltip-target wrapper so the
+       "switch to POST" tooltip can open over the disabled button. */
+    pointer-events: none;
+  }
+
   &:hover {
     background-color: oklch(var(--btn-primary-border));
   }
@@ -28,4 +36,9 @@ button.graphiql-execute-button {
     margin: auto;
     width: var(--icon-size-lg);
   }
+}
+
+.graphiql-execute-button-tooltip-target {
+  display: inline-flex;
+  cursor: not-allowed;
 }

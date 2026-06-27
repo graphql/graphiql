@@ -9,6 +9,11 @@ export { debounce } from './debounce';
 export { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
 export { markdown } from './markdown';
 export { pick } from './pick';
+export {
+  getRunBlockReason,
+  resolveActiveOperation,
+  MUTATION_OVER_GET_REASON,
+} from './run-block';
 export { useDragResize } from './resize';
 export { clsx as cn } from 'clsx';
 export {
