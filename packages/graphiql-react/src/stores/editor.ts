@@ -123,10 +123,14 @@ export interface EditorSlice extends TabsState {
    * Invoked when the current operation is saved, via the Save toolbar button or
    * ⌘S. Receives the active tab (with the latest operation contents) so hosts
    * can persist it — e.g. the collections plugin saves or updates a stored
-   * operation. The built-in dirty-state tracking runs regardless.
+   * operation.
+   *
+   * Return `true` if the save was committed synchronously, so the dirty-state
+   * dot is cleared. Return `false`/nothing if the save was deferred (e.g. a
+   * dialog opened); the host should then call `markTabSaved` once it commits.
    * @param tab - The active tab at the time of saving.
    */
-  onSaveQuery?: (tab: TabState) => void;
+  onSaveQuery?: (tab: TabState) => boolean | void;
 
   /**
    * Invoked when the prettify callback is invoked.
@@ -223,10 +227,18 @@ export interface EditorActions {
   }): void;
 
   /**
-   * Save the current query. Updates `lastSavedQuery` on the active tab so the
-   * dirty-state dot clears. Triggered by the Save toolbar button or ⌘S.
+   * Save the current query. Triggered by the Save toolbar button or ⌘S.
+   * Delegates to `onSaveQuery` when set; the dirty-state dot is cleared only
+   * when the save actually commits (no handler, or the handler returns `true`).
    */
   saveQuery(): void;
+
+  /**
+   * Mark a tab as saved, clearing its dirty-state dot. Hosts call this after a
+   * deferred save (e.g. a save dialog) commits.
+   * @param tabId - The id of the tab that was saved.
+   */
+  markTabSaved(tabId: string): void;
 
   /**
    * Copy a query to clipboard.
@@ -477,12 +489,37 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     saveQuery() {
-      const { queryEditor, onSaveQuery } = get();
+      const { queryEditor, onSaveQuery, tabs, activeTabIndex, actions } = get();
       const query = queryEditor?.getValue() ?? null;
-      set(({ activeTabIndex, tabs, onTabChange, actions }) => {
+      const activeTab = tabs[activeTabIndex];
+      // Delegate to the host. It returns `true` when the save commits
+      // synchronously (e.g. updating an already-saved operation in place), or
+      // `false`/nothing when it defers to a dialog and will call `markTabSaved`
+      // on commit. With no handler, ⌘S just marks the tab saved.
+      const committed =
+        activeTab && onSaveQuery
+          ? onSaveQuery({ ...activeTab, query })
+          : undefined;
+      if (activeTab && (!onSaveQuery || committed)) {
+        actions.markTabSaved(activeTab.id);
+      }
+    },
+    markTabSaved(tabId) {
+      set(({ activeTabIndex, tabs, onTabChange, actions, queryEditor }) => {
+        const activeTabId = tabs[activeTabIndex]?.id;
         const updated = {
-          tabs: tabs.map((tab, i) =>
-            i === activeTabIndex ? { ...tab, lastSavedQuery: query } : tab,
+          tabs: tabs.map(tab =>
+            tab.id === tabId
+              ? {
+                  ...tab,
+                  // Use the live editor value for the active tab (the editors
+                  // only reflect the active tab); fall back to stored content.
+                  lastSavedQuery:
+                    tab.id === activeTabId
+                      ? (queryEditor?.getValue() ?? null)
+                      : tab.query,
+                }
+              : tab,
           ),
           activeTabIndex,
         };
@@ -490,11 +527,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         onTabChange?.(updated);
         return updated;
       });
-      const { tabs, activeTabIndex } = get();
-      const activeTab = tabs[activeTabIndex];
-      if (activeTab) {
-        onSaveQuery?.({ ...activeTab, query });
-      }
     },
     async copyQuery() {
       const { queryEditor, onCopyQuery } = get();

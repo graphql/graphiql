@@ -1,5 +1,10 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { PanelHeader, useGraphiQL, useGraphiQLActions } from '@graphiql/react';
+import {
+  PanelHeader,
+  pick,
+  useGraphiQL,
+  useGraphiQLActions,
+} from '@graphiql/react';
 import { useCollectionsStore, collectionsStore } from '../store';
 import { CollectionRow } from './collection-row';
 import { ImportExportDialog } from './import-export-dialog';
@@ -23,6 +28,9 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   }, []);
 
   const { addTab, updateActiveTabValues } = useGraphiQLActions();
+  const { queryEditor, variableEditor, headerEditor } = useGraphiQL(
+    pick('queryEditor', 'variableEditor', 'headerEditor'),
+  );
   const activeTabId = useGraphiQL(s => s.tabs[s.activeTabIndex]?.id);
 
   // Opening an item creates a tab, then links it once the new tab is active so
@@ -46,10 +54,19 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
       pendingLink.current = { collectionId, itemId: item.id };
     }
     addTab();
+    // `addTab` resets the editors to the new empty tab, so populate them with
+    // the saved operation. The editors' change handlers sync this back to tab
+    // state; `updateActiveTabValues` covers the case where an editor isn't
+    // mounted yet. Seed `lastSavedQuery` too so the freshly opened tab matches
+    // its saved item and doesn't show as dirty.
+    queryEditor?.setValue(item.query ?? '');
+    variableEditor?.setValue(item.variables ?? '');
+    headerEditor?.setValue(item.headers ?? '');
     updateActiveTabValues({
       query: item.query,
       variables: item.variables ?? '',
       headers: item.headers ?? '',
+      lastSavedQuery: item.query ?? null,
     });
   };
 

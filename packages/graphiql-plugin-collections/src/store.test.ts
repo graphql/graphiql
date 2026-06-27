@@ -307,12 +307,13 @@ describe('createLocalStorageAdapter', () => {
 
 describe('requestSave', () => {
   it('opens the save dialog for an unlinked tab', () => {
-    getActions().requestSave({
+    const savedInPlace = getActions().requestSave({
       id: 'tab-1',
       query: 'query GetUser { user { id } }',
       variables: '{}',
       headers: '',
     });
+    expect(savedInPlace).toBe(false);
     const { saveDialog } = collectionsStore.getState();
     expect(saveDialog.open).toBe(true);
     expect(saveDialog.tabId).toBe('tab-1');
@@ -330,12 +331,13 @@ describe('requestSave', () => {
     });
     getActions().linkTab('tab-1', collection.id, item.id);
 
-    getActions().requestSave({
+    const savedInPlace = getActions().requestSave({
       id: 'tab-1',
       query: 'query GetUser { user { id name } }',
       variables: '{"x":1}',
       headers: '{"h":"v"}',
     });
+    expect(savedInPlace).toBe(true);
 
     const { collections, saveDialog } = collectionsStore.getState();
     const saved = collections[0]?.items[0];

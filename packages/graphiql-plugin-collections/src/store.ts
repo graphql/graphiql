@@ -62,9 +62,11 @@ type CollectionsActions = {
   linkTab(tabId: string, collectionId: string, itemId: string): void;
   /**
    * Save the active operation: update the linked item in place if the tab is
-   * already tied to a collection item, otherwise open the save dialog.
+   * already tied to a collection item, otherwise open the save dialog. Returns
+   * `true` when it saved in place (so the caller can clear the dirty state),
+   * `false` when it opened the dialog instead.
    */
-  requestSave(operation: ActiveOperation): void;
+  requestSave(operation: ActiveOperation): boolean;
   openSaveDialog(input: Omit<SaveDialogState, 'open'>): void;
   closeSaveDialog(): void;
 };
@@ -268,7 +270,7 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
               variables: operation.variables ?? '',
               headers: operation.headers ?? '',
             });
-            return;
+            return true;
           }
         }
         actions.openSaveDialog({
@@ -281,6 +283,7 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
             operation.operationName,
           ),
         });
+        return false;
       },
       openSaveDialog(input) {
         set({ saveDialog: { ...input, open: true } });

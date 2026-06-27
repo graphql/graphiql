@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Button, Dialog } from '@graphiql/react';
+import { Button, Dialog, useGraphiQLActions } from '@graphiql/react';
 import { useCollectionsStore, collectionsStore } from '../store';
 
 const NEW_COLLECTION = '__new__';
@@ -13,6 +13,7 @@ export const SaveDialog: FC = () => {
   const collections = useCollectionsStore(s => s.collections);
   const actions = useCollectionsStore(s => s.actions);
   const { open, name: initialName } = useCollectionsStore(s => s.saveDialog);
+  const { markTabSaved } = useGraphiQLActions();
 
   const [name, setName] = useState(initialName);
   const [selectedCollectionId, setSelectedCollectionId] =
@@ -45,6 +46,7 @@ export const SaveDialog: FC = () => {
     });
     if (saveDialog.tabId) {
       a.linkTab(saveDialog.tabId, collectionId, item.id);
+      markTabSaved(saveDialog.tabId);
     }
     a.closeSaveDialog();
   };

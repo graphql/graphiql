@@ -39,7 +39,13 @@ export function useGraphiQL<T>(selector: Selector<T>): T {
 export const useGraphiQLActions = () => ({
   addTab: __state.addTab,
   updateActiveTabValues: __state.updateActiveTabValues,
+  markTabSaved(_tabId: string) {},
 });
+
+export const pick =
+  <K extends string>(...keys: K[]) =>
+  (state: Record<string, unknown>) =>
+    Object.fromEntries(keys.map(k => [k, state[k]]));
 
 export const createBoundedUseStore = ((store: StoreApi<unknown>) =>
   (selector?: (state: unknown) => unknown) => {

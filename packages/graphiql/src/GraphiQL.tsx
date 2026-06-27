@@ -158,8 +158,11 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       referencePlugin={referencePlugin}
       {...props}
       onSaveQuery={tab => {
-        collectionsStore.getState().actions.requestSave(tab);
+        const savedInPlace = collectionsStore
+          .getState()
+          .actions.requestSave(tab);
         props.onSaveQuery?.(tab);
+        return savedInPlace;
       }}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
