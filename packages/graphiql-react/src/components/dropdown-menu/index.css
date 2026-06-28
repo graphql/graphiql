@@ -23,7 +23,7 @@
   margin: var(--px-4);
   outline: none;
   overflow: hidden;
-  padding: var(--px-6) var(--px-8);
+  padding: var(--row-padding-y) var(--row-padding-x);
   text-overflow: ellipsis;
   white-space: nowrap;
 

@@ -133,6 +133,10 @@
   --status-bar-height: 24px;
   --rail-width: 48px;
   --tab-strip-height: 32px;
+  --dialog-padding-x: 16px;
+  --dialog-padding-y: 16px;
+  --dialog-bar-padding-y: 8px;
+  --dialog-gap: 16px;
 }
 
 [data-density='compact'] {
@@ -144,6 +148,10 @@
   --status-bar-height: 20px;
   --rail-width: 42px;
   --tab-strip-height: 26px;
+  --dialog-padding-x: 12px;
+  --dialog-padding-y: 12px;
+  --dialog-bar-padding-y: 6px;
+  --dialog-gap: 12px;
 }
 
 [data-density='spacious'] {
@@ -155,6 +163,10 @@
   --status-bar-height: 30px;
   --rail-width: 56px;
   --tab-strip-height: 40px;
+  --dialog-padding-x: 20px;
+  --dialog-padding-y: 20px;
+  --dialog-bar-padding-y: 12px;
+  --dialog-gap: 20px;
 }
 
 /* -------------------------------------------------------------------------

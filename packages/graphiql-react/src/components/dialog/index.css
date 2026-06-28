@@ -30,11 +30,20 @@
   z-index: 10;
 }
 
-.graphiql-dialog-close > svg {
+.graphiql-dialog-close {
+  border-radius: var(--radius-sm);
   color: oklch(var(--fg-muted));
+  padding: var(--px-6);
+
+  &:hover {
+    background: oklch(var(--bg-overlay));
+    color: oklch(var(--fg-default));
+  }
+}
+
+.graphiql-dialog-close > svg {
   display: block;
   height: var(--icon-size-md);
-  padding: var(--px-12);
   width: var(--icon-size-md);
 }
 
@@ -43,7 +52,10 @@
   border-bottom: 1px solid oklch(var(--border-default));
   display: flex;
   justify-content: space-between;
-  padding: var(--px-12) var(--px-4) var(--px-12) var(--px-16);
+  /* Slightly less padding on the close-button side so the icon optically aligns
+     with the title; the button carries its own padding for the hit target. */
+  padding: var(--dialog-bar-padding-y) var(--px-10) var(--dialog-bar-padding-y)
+    var(--dialog-padding-x);
 }
 
 .graphiql-dialog-title {
@@ -51,14 +63,15 @@
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: 600;
+  line-height: var(--line-height-body);
   margin: 0;
 }
 
 .graphiql-dialog-body {
   display: flex;
   flex-direction: column;
-  gap: var(--px-16);
-  padding: var(--px-16);
+  gap: var(--dialog-gap);
+  padding: var(--dialog-padding-y) var(--dialog-padding-x);
 }
 
 .graphiql-dialog-footer {
@@ -66,5 +79,5 @@
   display: flex;
   gap: var(--px-8);
   justify-content: flex-end;
-  padding: var(--px-12) var(--px-16);
+  padding: var(--dialog-bar-padding-y) var(--dialog-padding-x);
 }
