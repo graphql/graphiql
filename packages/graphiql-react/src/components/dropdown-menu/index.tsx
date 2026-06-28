@@ -11,6 +11,7 @@ import {
   Root,
 } from '@radix-ui/react-dropdown-menu';
 import { UnStyledButton } from '../button';
+import { usePortalContainer } from '../portal';
 import './index.css';
 
 const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
@@ -29,8 +30,9 @@ const Content: FC<DropdownMenuContentProps> = ({
   className,
   ...props
 }) => {
+  const container = usePortalContainer();
   return (
-    <Portal>
+    <Portal container={container}>
       <RadixContent
         align={align}
         sideOffset={sideOffset}
