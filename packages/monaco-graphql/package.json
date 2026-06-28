@@ -76,7 +76,6 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
-    "execa": "^7.1.1",
     "graphql": "^16.9.0",
     "monaco-editor": "0.52.2",
     "prettier": "3.3.2",

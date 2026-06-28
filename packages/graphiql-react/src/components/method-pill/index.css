@@ -1,0 +1,32 @@
+.graphiql-method-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/*
+ * Pills use solid backgrounds rather than alpha tints so they read the
+ * same regardless of what surface they're stacked on, and contrast against
+ * the pill text stays well above WCAG AA in both themes.
+ */
+.graphiql-method-pill-query {
+  color: oklch(98% 0 0);
+  background: oklch(50% 0.15 146);
+}
+
+.graphiql-method-pill-mutation {
+  color: oklch(15% 0 0);
+  background: oklch(85% 0.13 90);
+}
+
+.graphiql-method-pill-subscription {
+  color: oklch(98% 0 0);
+  background: oklch(45% 0.18 295);
+}

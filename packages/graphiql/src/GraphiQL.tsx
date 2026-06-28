@@ -10,48 +10,72 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { useState, Children, useRef, Fragment } from 'react';
+import { Children, useRef, useState, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  CopyIcon,
   ExecuteButton,
   GraphiQLProvider,
-  HeaderEditor,
   PlusIcon,
+  PortalProvider,
+  PrettifyIcon,
   QueryEditor,
   ResponseEditor,
+  SaveIcon,
+  SidePanel,
   Spinner,
   Tab,
   Tabs,
   Tooltip,
+  TopBar,
+  StatusBar,
   UnStyledButton,
+  VarHeadersStrip,
   useDragResize,
   useGraphiQL,
+  useGraphiQLSettings,
   pick,
-  VariableEditor,
   EditorProps,
   cn,
   useGraphiQLActions,
   useMonaco,
+  VariableEditor,
+  HeaderEditor,
 } from '@graphiql/react';
+import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
 import {
   DocExplorerStore,
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
-import { GraphiQLLogo, GraphiQLToolbar, GraphiQLFooter, Sidebar } from './ui';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import {
+  ActivityBar,
+  GraphiQLLogo,
+  GraphiQLToolbar,
+  GraphiQLFooter,
+} from './ui';
 
 /**
  * API docs for this live here:
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
+ *
+ * Note: the XOR between `fetcher` and `transport` is preserved here explicitly.
+ * `Omit` flattens discriminated unions, so it has to be re-applied at this
+ * level so passing both props is a compile error at the `<GraphiQL>` call site.
  */
-export interface GraphiQLProps
-  // `children` prop should be optional
-  extends
-    GraphiQLInterfaceProps,
-    Omit<ComponentPropsWithoutRef<typeof GraphiQLProvider>, 'children'>,
-    Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> {}
+export type GraphiQLProps = GraphiQLInterfaceProps &
+  Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
+  Omit<
+    ComponentPropsWithoutRef<typeof GraphiQLProvider>,
+    'children' | 'fetcher' | 'transport'
+  > &
+  (
+    | { fetcher: Fetcher; transport?: never }
+    | { transport: Transport; fetcher?: never }
+  );
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -61,7 +85,7 @@ export interface GraphiQLProps
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN],
+  plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN],
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,
@@ -150,7 +174,7 @@ export interface GraphiQLInterfaceProps
     AddSuffix<Pick<HeaderEditorProps, 'onEdit'>, 'Headers'>,
     Pick<ResponseEditorProps, 'responseTooltip'>,
     Pick<
-      ComponentPropsWithoutRef<typeof Sidebar>,
+      ComponentPropsWithoutRef<typeof ActivityBar>,
       'forcedTheme' | 'showPersistHeadersSettings'
     > {
   children?: ReactNode;
@@ -190,12 +214,15 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const LABEL = {
   newTab: 'New tab',
+  prettify: 'Prettify query',
+  copy: 'Copy query',
+  save: 'Save query',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   forcedTheme,
-  isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
+  isHeadersEditorEnabled = true,
   children: $children,
   confirmCloseTab,
   className,
@@ -205,8 +232,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   responseTooltip,
   showPersistHeadersSettings,
 }) => {
-  const { addTab, moveTab, closeTab, changeTab, setVisiblePlugin } =
-    useGraphiQLActions();
+  const {
+    addTab,
+    moveTab,
+    closeTab,
+    changeTab,
+    setVisiblePlugin,
+    saveQuery,
+    copyQuery,
+    prettifyEditors,
+  } = useGraphiQLActions();
   const {
     initialVariables,
     initialHeaders,
@@ -214,6 +249,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     activeTabIndex,
     isFetching,
     visiblePlugin,
+    operations,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -222,11 +258,20 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'activeTabIndex',
       'isFetching',
       'visiblePlugin',
+      'operations',
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
-  const PluginContent = visiblePlugin?.content;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const setContainerRef = (node: HTMLDivElement | null) => {
+    containerRef.current = node;
+    setPortalContainer(node);
+  };
+  useGraphiQLSettings(containerRef);
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -258,20 +303,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     })(defaultEditorToolsVisibility),
     sizeThresholdSecond: 60,
     storageKey: 'secondaryEditorFlex',
-  });
-
-  const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
-    'variables' | 'headers'
-  >(() => {
-    if (
-      defaultEditorToolsVisibility === 'variables' ||
-      defaultEditorToolsVisibility === 'headers'
-    ) {
-      return defaultEditorToolsVisibility;
-    }
-    return !initialVariables && initialHeaders && isHeadersEditorEnabled
-      ? 'headers'
-      : 'variables';
   });
 
   const { logo, toolbar, footer, children } = Children.toArray(
@@ -310,14 +341,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       pluginResize.setHiddenElement(null);
     }
   }
-
-  const handleToolsTabClick: ButtonHandler = event => {
-    if (editorToolsResize.hiddenElement === 'second') {
-      editorToolsResize.setHiddenElement(null);
-    }
-    const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
-    setActiveSecondaryEditor(tabName);
-  };
 
   const toggleEditorTools: ButtonHandler = () => {
     editorToolsResize.setHiddenElement(
@@ -377,33 +400,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       </section>
 
       <div ref={editorToolsResize.dragBarRef} className="graphiql-editor-tools">
-        <UnStyledButton
-          type="button"
-          className={cn(
-            activeSecondaryEditor === 'variables' &&
-              editorToolsResize.hiddenElement !== 'second' &&
-              'active',
-          )}
-          onClick={handleToolsTabClick}
-          data-name="variables"
-        >
-          Variables
-        </UnStyledButton>
-        {isHeadersEditorEnabled && (
-          <UnStyledButton
-            type="button"
-            className={cn(
-              activeSecondaryEditor === 'headers' &&
-                editorToolsResize.hiddenElement !== 'second' &&
-                'active',
-            )}
-            onClick={handleToolsTabClick}
-            data-name="headers"
-          >
-            Headers
-          </UnStyledButton>
-        )}
-
         <Tooltip label={editorToolsText}>
           <UnStyledButton
             type="button"
@@ -421,21 +417,22 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
       <section
         className="graphiql-editor-tool"
-        aria-label={
-          activeSecondaryEditor === 'variables' ? 'Variables' : 'Headers'
-        }
+        aria-label="Variables and Headers"
         ref={editorToolsResize.secondRef}
       >
-        <VariableEditor
-          className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
-          onEdit={onEditVariables}
+        <VarHeadersStrip
+          defaultTab={((d: typeof defaultEditorToolsVisibility) => {
+            if (d === 'variables' || d === 'headers') {
+              return d;
+            }
+            return !initialVariables && initialHeaders && isHeadersEditorEnabled
+              ? 'headers'
+              : 'variables';
+          })(defaultEditorToolsVisibility)}
+          headersEditorEnabled={isHeadersEditorEnabled}
+          onEditVariables={onEditVariables}
+          onEditHeaders={onEditHeaders}
         />
-        {isHeadersEditorEnabled && (
-          <HeaderEditor
-            className={activeSecondaryEditor === 'headers' ? '' : 'hidden'}
-            onEdit={onEditHeaders}
-          />
-        )}
       </section>
     </div>
   );
@@ -444,91 +441,146 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   return (
     <Tooltip.Provider>
-      <div className={cn('graphiql-container', className)}>
-        <Sidebar
-          forcedTheme={forcedTheme}
-          showPersistHeadersSettings={showPersistHeadersSettings}
-          setHiddenElement={pluginResize.setHiddenElement}
-        />
-        <div className="graphiql-main">
-          <div
-            ref={pluginResize.firstRef}
-            className="graphiql-plugin"
-            style={{
-              // Make sure the container shrinks when containing long
-              // non-breaking texts
-              minWidth: '200px',
-            }}
-          >
-            {PluginContent && <PluginContent />}
-          </div>
-          {visiblePlugin && (
-            <div
-              className="graphiql-horizontal-drag-bar"
-              ref={pluginResize.dragBarRef}
+      <PortalProvider container={portalContainer}>
+        <div
+          ref={setContainerRef}
+          className={cn('graphiql-container', className)}
+        >
+          <TopBar />
+          <div className="graphiql-body">
+            <ActivityBar
+              forcedTheme={forcedTheme}
+              showPersistHeadersSettings={showPersistHeadersSettings}
+              setHiddenElement={pluginResize.setHiddenElement}
             />
-          )}
-          <div ref={pluginResize.secondRef} className="graphiql-sessions">
-            <div className="graphiql-session-header">
-              <Tabs
-                ref={tabContainerRef}
-                values={tabs}
-                onReorder={moveTab}
-                aria-label="Select active operation"
-                className="no-scrollbar"
-              >
-                {tabs.map((tab, index, arr) => (
-                  <Tab
-                    key={tab.id}
-                    // Prevent overscroll over container
-                    dragConstraints={tabContainerRef}
-                    value={tab}
-                    isActive={index === activeTabIndex}
+            <div className="graphiql-main">
+              <div ref={pluginResize.firstRef} className="graphiql-plugin">
+                <SidePanel />
+              </div>
+              {visiblePlugin && (
+                <div
+                  className="graphiql-horizontal-drag-bar"
+                  ref={pluginResize.dragBarRef}
+                />
+              )}
+              <div ref={pluginResize.secondRef} className="graphiql-sessions">
+                <div className="graphiql-session-header">
+                  <Tabs
+                    ref={tabContainerRef}
+                    values={tabs}
+                    onReorder={moveTab}
+                    aria-label="Select active operation"
+                    className="no-scrollbar"
                   >
-                    <Tab.Button
-                      aria-controls="graphiql-session"
-                      id={`graphiql-session-tab-${index}`}
-                      title={tab.title}
-                      onClick={handleTabClick}
+                    {tabs.map((tab, index) => {
+                      const isActive = index === activeTabIndex;
+                      // For the active tab, surface how many other operations the
+                      // document holds alongside the one the cursor is in. Only
+                      // when the active operation is named, so the title reads as
+                      // `<name> +N`; an anonymous active operation has no name to
+                      // anchor the count to.
+                      const otherOperations =
+                        isActive && tab.operationName && operations
+                          ? operations.length - 1
+                          : 0;
+                      const tabTitle =
+                        otherOperations > 0
+                          ? `${tab.title} +${otherOperations}`
+                          : tab.title;
+                      return (
+                        <Tab
+                          key={tab.id}
+                          // Prevent overscroll over container
+                          dragConstraints={tabContainerRef}
+                          value={tab}
+                          isActive={isActive}
+                          isDirty={tab.query !== tab.lastSavedQuery}
+                        >
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            title={tabTitle}
+                            onClick={handleTabClick}
+                          >
+                            {tabTitle}
+                          </Tab.Button>
+                          {tabs.length > 1 && (
+                            <Tab.Close onClick={handleTabClose} />
+                          )}
+                        </Tab>
+                      );
+                    })}
+                  </Tabs>
+                  <Tooltip label={LABEL.newTab}>
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-add"
+                      onClick={addTab}
+                      aria-label={LABEL.newTab}
                     >
-                      {tab.title}
-                    </Tab.Button>
-                    {arr.length > 1 && <Tab.Close onClick={handleTabClose} />}
-                  </Tab>
-                ))}
-              </Tabs>
-              <Tooltip label={LABEL.newTab}>
-                <UnStyledButton
-                  type="button"
-                  className="graphiql-tab-add"
-                  onClick={addTab}
-                  aria-label={LABEL.newTab}
+                      <PlusIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                  <div className="graphiql-tab-strip-actions">
+                    <Tooltip label={LABEL.prettify}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={prettifyEditors}
+                        aria-label={LABEL.prettify}
+                      >
+                        <PrettifyIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                    <Tooltip label={LABEL.copy}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={copyQuery}
+                        aria-label={LABEL.copy}
+                      >
+                        <CopyIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                    <Tooltip label={LABEL.save}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={saveQuery}
+                        aria-label={LABEL.save}
+                      >
+                        <SaveIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                  </div>
+                  {logo}
+                </div>
+                <div
+                  role="tabpanel"
+                  id="graphiql-session" // used by aria-controls="graphiql-session"
+                  aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
                 >
-                  <PlusIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
-              {logo}
-            </div>
-            <div
-              role="tabpanel"
-              id="graphiql-session" // used by aria-controls="graphiql-session"
-              aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
-            >
-              {editors}
-              <div
-                className="graphiql-horizontal-drag-bar"
-                ref={editorResize.dragBarRef}
-              />
-              <div className="graphiql-response" ref={editorResize.secondRef}>
-                {isFetching && <Spinner />}
-                <ResponseEditor responseTooltip={responseTooltip} />
-                {footer}
+                  {editors}
+                  <div
+                    className="graphiql-horizontal-drag-bar"
+                    ref={editorResize.dragBarRef}
+                  />
+                  <div
+                    className="graphiql-response"
+                    ref={editorResize.secondRef}
+                  >
+                    {isFetching && <Spinner />}
+                    <ResponseEditor responseTooltip={responseTooltip} />
+                    {footer}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          <StatusBar />
         </div>
-      </div>
-      {children}
+        {children}
+      </PortalProvider>
     </Tooltip.Provider>
   );
 };

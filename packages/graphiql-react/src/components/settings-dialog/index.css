@@ -1,0 +1,47 @@
+.graphiql-settings-dialog {
+  min-width: 360px;
+}
+
+.graphiql-settings-dialog-body {
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-4) 0;
+}
+
+.graphiql-settings-section {
+  align-items: center;
+  border-bottom: 1px solid oklch(var(--border-muted));
+  display: flex;
+  gap: var(--px-16);
+  justify-content: space-between;
+  padding: var(--px-12) var(--px-16);
+}
+
+.graphiql-settings-section:last-child {
+  border-bottom: none;
+}
+
+.graphiql-settings-section-title {
+  color: oklch(var(--fg-default));
+  flex-shrink: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-ui);
+  margin: 0;
+  min-width: 72px;
+}
+
+.graphiql-settings-section-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+}
+
+.graphiql-settings-section-caption {
+  color: oklch(var(--fg-muted));
+  font-family: var(--font-family);
+  font-size: var(--font-size-eyebrow);
+  letter-spacing: var(--letter-spacing-ui);
+  margin: 0;
+}

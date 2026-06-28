@@ -1,0 +1,382 @@
+import { ChevronDownIcon, CloseIcon, PlusIcon } from '@graphiql/react';
+import {
+  getNamedType,
+  isEnumType,
+  isInputObjectType,
+  isListType,
+  isNonNullType,
+  isScalarType,
+  type GraphQLInputField,
+  type GraphQLType,
+} from 'graphql';
+import { type FC, type ReactNode, useState } from 'react';
+import { type ArgValue } from '../../lib/document-mutator';
+import { BooleanArgControl, ScalarArgControl } from './scalar-arg-control';
+import { EnumArgControl } from './enum-arg-control';
+
+/**
+ * True when an arg/field of this type renders as an input-object disclosure
+ * (which labels itself via its header). A list of input objects does not — it
+ * renders as a list and needs its own `name:` label — so we only unwrap
+ * NonNull here, not List. Re-exported as the public predicate from index.
+ */
+export function rendersAsInputObject(type: GraphQLType): boolean {
+  const unwrapped = isNonNullType(type) ? type.ofType : type;
+  if (isListType(unwrapped)) {
+    return false;
+  }
+  return isInputObjectType(getNamedType(unwrapped));
+}
+
+export type TypedInputProps = {
+  type: GraphQLType;
+  name: string;
+  value: ArgValue;
+  onChange: (v: ArgValue) => void;
+  isVariable?: boolean;
+  variableName?: string;
+  onPromote?: (argName: string, suggestedName: string) => void;
+  onDemote?: (argName: string, varName: string) => void;
+};
+
+export const ArgInputByType: FC<TypedInputProps> = ({
+  type,
+  name,
+  value,
+  onChange,
+  isVariable = false,
+  variableName,
+  onPromote,
+  onDemote,
+}) => {
+  if (isNonNullType(type)) {
+    return (
+      <ArgInputByType
+        type={type.ofType}
+        name={name}
+        value={value}
+        onChange={onChange}
+        isVariable={isVariable}
+        variableName={variableName}
+        onPromote={onPromote}
+        onDemote={onDemote}
+      />
+    );
+  }
+
+  if (isListType(type)) {
+    return (
+      <ListArgInput
+        itemType={type.ofType}
+        name={name}
+        value={Array.isArray(value) ? value : []}
+        onChange={onChange}
+      />
+    );
+  }
+
+  const named = getNamedType(type);
+
+  if (isInputObjectType(named)) {
+    const objValue =
+      !Array.isArray(value) && typeof value === 'object' && value !== null
+        ? (value as { [field: string]: ArgValue })
+        : {};
+    return (
+      <InputObjectArgInput
+        inputType={named}
+        name={name}
+        value={objValue}
+        onChange={onChange}
+      />
+    );
+  }
+
+  const toggleBtn = onPromote ? (
+    <button
+      type="button"
+      className="graphiql-qb-var-toggle"
+      aria-pressed={isVariable}
+      onClick={() => {
+        if (isVariable) {
+          if (onDemote && variableName) {
+            onDemote(name, variableName);
+          }
+        } else {
+          onPromote(name, name);
+        }
+      }}
+    >
+      {isVariable ? 'Inline argument' : 'Use as variable'}
+    </button>
+  ) : null;
+
+  if (isEnumType(named)) {
+    return (
+      <WithVariableToggle
+        isVariable={isVariable}
+        name={name}
+        variableName={variableName}
+        toggle={toggleBtn}
+      >
+        <EnumArgControl
+          name={name}
+          value={typeof value === 'string' ? value : ''}
+          onChange={onChange}
+          enumValues={named.getValues().map(v => v.name)}
+        />
+      </WithVariableToggle>
+    );
+  }
+
+  if (isScalarType(named)) {
+    if (named.name === 'Boolean') {
+      return (
+        <WithVariableToggle
+          isVariable={isVariable}
+          name={name}
+          variableName={variableName}
+          toggle={toggleBtn}
+        >
+          <BooleanArgControl
+            name={name}
+            value={typeof value === 'string' ? value : ''}
+            onChange={onChange}
+          />
+        </WithVariableToggle>
+      );
+    }
+    const inputType =
+      named.name === 'Int' || named.name === 'Float' ? 'number' : 'text';
+    return (
+      <WithVariableToggle
+        isVariable={isVariable}
+        name={name}
+        variableName={variableName}
+        toggle={toggleBtn}
+      >
+        <ScalarArgControl
+          name={name}
+          inputType={inputType}
+          step={named.name === 'Int' ? '1' : undefined}
+          value={typeof value === 'string' ? value : ''}
+          onChange={onChange}
+        />
+      </WithVariableToggle>
+    );
+  }
+
+  return null;
+};
+
+type WithVariableToggleProps = {
+  isVariable: boolean;
+  name: string;
+  variableName?: string;
+  toggle: ReactNode;
+  children: ReactNode;
+};
+
+const WithVariableToggle: FC<WithVariableToggleProps> = ({
+  isVariable,
+  name,
+  variableName,
+  toggle,
+  children,
+}) => {
+  return (
+    <span className="graphiql-qb-arg-with-toggle">
+      {isVariable ? (
+        <span
+          className="graphiql-qb-var-badge"
+          aria-label={`${name} bound to $${variableName ?? name}`}
+        >
+          ${variableName ?? name}
+        </span>
+      ) : (
+        children
+      )}
+      {toggle}
+    </span>
+  );
+};
+
+// An empty list element can't live in the document (an empty slot isn't
+// printable), so in-progress items are held in local state. We adopt the
+// `value` prop only on a genuine external change, detected by comparing it to
+// the non-empty projection of our local items: equal means the prop is just our
+// own edit echoed back (empty rows dropped) and we keep local rows; a
+// difference means the document changed under us and we adopt it. Items carry a
+// stable id so React reconciles the right row when one is removed.
+
+type ListArgInputProps = {
+  itemType: GraphQLType;
+  name: string;
+  value: ArgValue[];
+  onChange: (v: ArgValue) => void;
+};
+
+type ListItem = { id: string; value: ArgValue };
+
+const withIds = (values: ArgValue[]): ListItem[] =>
+  values.map(value => ({ id: crypto.randomUUID(), value }));
+
+// The non-empty projection: items that survive into the document. Only empty
+// scalar leaves are dropped; objects and nested lists print fine.
+const projectItems = (items: ListItem[]): ArgValue[] =>
+  items.map(i => i.value).filter(v => v !== '');
+
+const ListArgInput: FC<ListArgInputProps> = ({
+  itemType,
+  name,
+  value,
+  onChange,
+}) => {
+  const [items, setItems] = useState<ListItem[]>(() => withIds(value));
+
+  // Resync local rows only when the external `value` actually differs from our
+  // current projection, so a just-added empty row isn't wiped by our own write
+  // echoing back. Adjust state during render (rather than in an effect keyed on
+  // `value` alone) so the dependency is honest and React Compiler can optimize.
+  const valueJSON = JSON.stringify(value);
+  const [syncedJSON, setSyncedJSON] = useState(valueJSON);
+  if (valueJSON !== syncedJSON) {
+    setSyncedJSON(valueJSON);
+    if (valueJSON !== JSON.stringify(projectItems(items))) {
+      setItems(withIds(value));
+    }
+  }
+
+  const emit = (next: ListItem[]) => {
+    setItems(next);
+    onChange(next.map(i => i.value));
+  };
+
+  return (
+    <div className="graphiql-qb-list-arg">
+      {items.map(item => (
+        <div key={item.id} className="graphiql-qb-list-item">
+          <ArgInputByType
+            type={itemType}
+            name={name}
+            value={item.value}
+            onChange={v =>
+              emit(items.map(i => (i.id === item.id ? { ...i, value: v } : i)))
+            }
+          />
+          <button
+            type="button"
+            onClick={() => emit(items.filter(i => i.id !== item.id))}
+            aria-label="Remove item"
+            className="graphiql-qb-list-remove"
+          >
+            <CloseIcon />
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() =>
+          emit([
+            ...items,
+            { id: crypto.randomUUID(), value: defaultValueForType(itemType) },
+          ])
+        }
+        aria-label="Add item"
+        className="graphiql-qb-list-add"
+      >
+        <PlusIcon />
+        Add
+      </button>
+    </div>
+  );
+};
+
+function defaultValueForType(type: GraphQLType): ArgValue {
+  if (isNonNullType(type)) {
+    return defaultValueForType(type.ofType);
+  }
+  if (isListType(type)) {
+    return [];
+  }
+  const named = getNamedType(type);
+  if (isInputObjectType(named)) {
+    return {};
+  }
+  return '';
+}
+
+type InputObjectArgInputProps = {
+  inputType: ReturnType<typeof getNamedType> & {
+    getFields: () => Record<string, GraphQLInputField>;
+  };
+  name: string;
+  value: { [field: string]: ArgValue };
+  onChange: (v: ArgValue) => void;
+};
+
+const InputObjectArgInput: FC<InputObjectArgInputProps> = ({
+  inputType,
+  name,
+  value,
+  onChange,
+}) => {
+  // Render nested fields only once expanded. Input object types can be
+  // self-referential (e.g. an input with a field of its own type), so rendering
+  // every level eagerly would recurse forever.
+  const [open, setOpen] = useState(false);
+  const fields = inputType.getFields();
+
+  const onChangeField = (fieldName: string, fieldValue: ArgValue) => {
+    const next: { [field: string]: ArgValue } = { ...value };
+    if (fieldValue === '' || fieldValue === undefined) {
+      delete next[fieldName];
+    } else {
+      next[fieldName] = fieldValue;
+    }
+    onChange(next);
+  };
+
+  return (
+    <details
+      className="graphiql-qb-input-object"
+      onToggle={e => setOpen(e.currentTarget.open)}
+    >
+      <summary className="graphiql-qb-input-object-summary">
+        <span
+          className={
+            open
+              ? 'graphiql-qb-chevron-expanded'
+              : 'graphiql-qb-chevron-collapsed'
+          }
+        >
+          <ChevronDownIcon />
+        </span>
+        <span className="graphiql-qb-arg-name">{name}</span>
+      </summary>
+      {open && (
+        <div className="graphiql-qb-input-object-fields">
+          {Object.entries(fields).map(([fieldName, field]) => {
+            const fieldVal: ArgValue = value[fieldName] ?? '';
+            // Input-object fields label themselves via their disclosure; others
+            // get a `name:` label here.
+            const isObjectField = rendersAsInputObject(field.type);
+            return (
+              <div key={fieldName} className="graphiql-qb-arg-row">
+                {!isObjectField && (
+                  <span className="graphiql-qb-arg-name">{fieldName}:</span>
+                )}
+                <ArgInputByType
+                  type={field.type}
+                  name={fieldName}
+                  value={fieldVal}
+                  onChange={v => onChangeField(fieldName, v)}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </details>
+  );
+};

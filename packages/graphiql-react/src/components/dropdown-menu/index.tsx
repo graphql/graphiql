@@ -5,20 +5,19 @@ import {
   Portal,
   Content as RadixContent,
   Item as RadixItem,
+  Separator as RadixSeparator,
   DropdownMenuContentProps,
   DropdownMenuItemProps,
   Root,
 } from '@radix-ui/react-dropdown-menu';
+import { UnStyledButton } from '../button';
+import { usePortalContainer } from '../portal';
 import './index.css';
 
 const Button = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
   (props, ref) => (
     <Trigger asChild>
-      <button
-        {...props}
-        ref={ref}
-        className={cn('graphiql-un-styled', props.className)}
-      />
+      <UnStyledButton {...props} ref={ref} />
     </Trigger>
   ),
 );
@@ -31,8 +30,9 @@ const Content: FC<DropdownMenuContentProps> = ({
   className,
   ...props
 }) => {
+  const container = usePortalContainer();
   return (
-    <Portal>
+    <Portal container={container}>
       <RadixContent
         align={align}
         sideOffset={sideOffset}
@@ -51,8 +51,16 @@ const Item: FC<DropdownMenuItemProps> = ({ className, children, ...props }) => (
   </RadixItem>
 );
 
+const Separator: FC<ComponentProps<'div'>> = ({ className, ...props }) => (
+  <RadixSeparator
+    className={cn('graphiql-dropdown-separator', className)}
+    {...props}
+  />
+);
+
 export const DropdownMenu = Object.assign(Root, {
   Button,
   Item,
   Content,
+  Separator,
 });

@@ -76,18 +76,18 @@
       import React from 'react';
       import ReactDOM from 'react-dom/client';
       import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
+      import { createTransport } from '@graphiql/toolkit';
       import { explorerPlugin } from '@graphiql/plugin-explorer';
       import 'graphiql/setup-workers/esm.sh';
 
-      const fetcher = createGraphiQLFetcher({
+      const transport = createTransport({
         url: 'https://countries.trevorblades.com',
       });
       const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
+          transport,
           plugins,
           defaultEditorToolsVisibility: true,
         });

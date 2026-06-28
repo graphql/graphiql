@@ -1,44 +1,29 @@
-.graphiql-history-header {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-medium);
+.graphiql-history {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.graphiql-history-header button {
-  font-size: var(--font-size-inline-code);
-  padding: var(--px-6) var(--px-10);
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .graphiql-history-items {
-  margin: var(--px-16) 0 0;
+  margin: 0;
   list-style: none;
   padding: 0;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .graphiql-history-item {
-  border-radius: var(--border-radius-4);
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  border-bottom: 1px solid oklch(var(--border-default));
   display: flex;
-  font-size: var(--font-size-inline-code);
-  font-family: var(--font-family-mono);
-  height: 34px;
+  align-items: stretch;
 
   &:hover {
-    color: hsl(var(--color-neutral));
-    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-  }
-
-  &:not(:first-child) {
-    margin-top: var(--px-4);
+    background-color: oklch(var(--accent-blue) / 0.06);
   }
 
   &.editable {
-    background-color: hsla(
-      var(--color-primary),
-      var(--alpha-background-medium)
-    );
+    background-color: oklch(var(--accent-blue) / 0.08);
 
     & > input {
       background: transparent;
@@ -46,27 +31,27 @@
       flex: 1;
       margin: 0;
       outline: none;
-      padding: 0 var(--px-10);
+      padding: 0 var(--px-14);
       width: 100%;
+      color: oklch(var(--fg-default));
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-mono);
 
       &::placeholder {
-        color: hsla(var(--color-neutral), var(--alpha-secondary));
+        color: oklch(var(--fg-disabled));
       }
     }
 
     & > button {
-      color: hsl(var(--color-primary));
+      color: oklch(var(--accent-blue));
       padding: 0 var(--px-10);
 
       &:active {
-        background-color: hsla(
-          var(--color-primary),
-          var(--alpha-background-heavy)
-        );
+        background-color: oklch(var(--accent-blue) / 0.12);
       }
 
       &:focus {
-        outline: hsl(var(--color-primary)) auto 1px;
+        outline: oklch(var(--accent-blue)) auto 1px;
       }
 
       & > svg {
@@ -76,30 +61,80 @@
   }
 }
 
-button.graphiql-history-item-label {
+.graphiql-history-item-inner {
+  padding: var(--px-8) var(--px-14);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
   flex: 1;
-  padding: var(--px-8) var(--px-10);
+}
+
+.graphiql-history-item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  min-width: 0;
+}
+
+.graphiql-history-item-label {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  text-align: left;
 }
 
-button.graphiql-history-item-action {
-  align-items: center;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+.graphiql-history-item-meta {
   display: flex;
-  padding: var(--px-8) var(--px-6);
+  align-items: center;
+  gap: var(--px-6);
+  min-width: 0;
+  padding-left: 12px;
+}
+
+.graphiql-history-item-variables {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+}
+
+.graphiql-history-item-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-right: var(--px-6);
+}
+
+.graphiql-history-item-action {
+  align-items: center;
+  color: oklch(var(--fg-disabled));
+  display: flex;
+  padding: var(--px-6);
+  border-radius: var(--radius-sm);
 
   &:hover {
-    color: hsl(var(--color-neutral));
+    color: oklch(var(--fg-default));
+    background-color: oklch(var(--fg-default) / 0.06);
   }
 
   & > svg {
-    height: 14px;
-    width: 14px;
+    height: 12px;
+    width: 12px;
   }
 }
 
 .graphiql-history-item-spacer {
-  height: var(--px-16);
+  height: 1px;
+  background-color: oklch(var(--border-strong));
+  margin: var(--px-8) 0;
 }

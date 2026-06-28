@@ -3,16 +3,21 @@ import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import { ImagePreview } from './image-preview';
+import { ResponseHeader } from './response-header';
+import { ResponseTableView } from './response-table-view';
+import { ResponseTreeView } from './response-tree-view';
 import {
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
-import { pick, cleanupDisposables, cn, Range } from '../utility';
+import { Range } from '../utility/monaco-ssr';
+import { pick, cleanupDisposables, cn } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';
 import { useMonaco } from '../stores';
+import type { ResponseView } from '../stores';
 
 type ResponseTooltipType = ComponentType<{
   /**
@@ -36,12 +41,41 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   responseTooltip: ResponseTooltip,
   ...props
 }) => {
-  const { setEditor, run } = useGraphiQLActions();
-  const { fetchError, validationErrors, responseEditor, uriInstanceId } =
-    useGraphiQL(
-      pick('fetchError', 'validationErrors', 'responseEditor', 'uriInstanceId'),
-    );
+  const { setEditor, run, setResponseView, dismissTransportUpgradeBanner } =
+    useGraphiQLActions();
+  const {
+    fetchError,
+    validationErrors,
+    responseEditor,
+    uriInstanceId,
+    lastResponse,
+    responseView,
+    transport,
+    transportUpgradeBannerDismissed,
+  } = useGraphiQL(
+    pick(
+      'fetchError',
+      'validationErrors',
+      'responseEditor',
+      'uriInstanceId',
+      'lastResponse',
+      'responseView',
+      'transport',
+      'transportUpgradeBannerDismissed',
+    ),
+  );
   const ref = useRef<HTMLDivElement>(null!);
+
+  async function handleCopy() {
+    const value = responseEditor?.getValue();
+    if (value) {
+      await navigator.clipboard.writeText(value);
+    }
+  }
+
+  function handleViewChange(view: ResponseView) {
+    setResponseView(view);
+  }
   const monaco = useMonaco(state => state.monaco);
   useEffect(() => {
     if (fetchError) {
@@ -139,16 +173,56 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     return cleanupDisposables(disposables);
   }, [monaco]); // eslint-disable-line react-hooks/exhaustive-deps -- only on mount
 
+  const isFetcherPath = !transport;
+  const showUpgradeBanner = isFetcherPath && !transportUpgradeBannerDismissed;
+  const showHeader = !isFetcherPath || showUpgradeBanner;
+
   return (
-    <section
-      ref={ref}
-      aria-label="Result Window"
-      aria-live="polite"
-      aria-atomic="true"
-      tabIndex={0}
-      onKeyDown={onEditorContainerKeyDown}
-      {...props}
-      className={cn('result-window', props.className)}
-    />
+    <div {...props} className={cn('graphiql-response-pane', props.className)}>
+      {showHeader && (
+        <ResponseHeader
+          status={lastResponse?.status}
+          statusText={lastResponse?.statusText}
+          timeMs={
+            lastResponse?.timing.totalMs !== undefined
+              ? Math.round(lastResponse.timing.totalMs)
+              : undefined
+          }
+          sizeBytes={lastResponse?.size.response}
+          upgradeNotice={
+            showUpgradeBanner
+              ? {
+                  href: 'https://github.com/graphql/graphiql/blob/main/docs/migration/graphiql-6.0.0.md',
+                  onDismiss: dismissTransportUpgradeBanner,
+                }
+              : undefined
+          }
+          view={responseView}
+          onViewChange={handleViewChange}
+          onCopy={handleCopy}
+        />
+      )}
+      <section
+        ref={ref}
+        aria-label="Result Window"
+        aria-live="polite"
+        aria-atomic="true"
+        tabIndex={0}
+        onKeyDown={onEditorContainerKeyDown}
+        className="result-window"
+        hidden={responseView !== 'json'}
+      />
+      {responseView === 'tree' &&
+        (lastResponse ? (
+          <ResponseTreeView data={lastResponse.body} />
+        ) : (
+          <div className="graphiql-response-empty-state" role="status">
+            <span>Run a query to see the tree view.</span>
+          </div>
+        ))}
+      {responseView === 'table' && (
+        <ResponseTableView data={lastResponse?.body} />
+      )}
+    </div>
   );
 };

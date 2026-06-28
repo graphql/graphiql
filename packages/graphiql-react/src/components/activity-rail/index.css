@@ -1,0 +1,97 @@
+.graphiql-activity-rail {
+  display: flex;
+  flex-direction: column;
+  width: var(--rail-width);
+  padding: var(--px-8) 0;
+  background: oklch(var(--bg-elevated));
+  border-right: 1px solid oklch(var(--border-default));
+  flex-shrink: 0;
+}
+
+.graphiql-activity-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  align-items: center;
+}
+
+.graphiql-activity-rail-item {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  background: transparent;
+  color: oklch(var(--fg-subtle));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.graphiql-activity-rail-item:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-activity-rail-item:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: 2px;
+}
+
+.graphiql-activity-rail-item.active {
+  background: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-strong));
+  border-left-color: oklch(var(--accent-blue));
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.graphiql-activity-rail-item svg {
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+}
+
+.graphiql-activity-rail-spacer {
+  flex: 1;
+}
+
+.graphiql-activity-rail-settings {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  border: 0;
+  background: transparent;
+  color: oklch(var(--fg-subtle));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: var(--radius-md);
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.graphiql-activity-rail-settings:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-activity-rail-settings:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: 2px;
+}
+
+.graphiql-activity-rail-settings svg {
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+}

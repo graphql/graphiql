@@ -3,7 +3,9 @@ import {
   fetcherReturnToPromise,
   formatError,
   formatResult,
+  isAsyncIterable,
   isPromise,
+  type Fetcher,
 } from '@graphiql/toolkit';
 import {
   buildClientSchema,
@@ -60,6 +62,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         onSchemaChange,
         headerEditor,
         fetcher,
+        transport,
         inputValueDeprecation,
         introspectionQueryName,
         schemaDescription,
@@ -94,9 +97,39 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           schemaDescription,
         });
 
+        // When the consumer passed a `transport`, project it into a Fetcher-shaped
+        // adapter just for introspection: take the first yielded `TransportResponse`
+        // and return its `body` (the `ExecutionResult`).
+        const introspectionFetcher: Fetcher = transport
+          ? ((async params => {
+              const sendResult = transport.send({
+                query: params.query,
+                operationName: params.operationName,
+                variables: params.variables,
+                headers: headers as Record<string, string> | undefined,
+              });
+              let body: unknown;
+              if (isAsyncIterable(sendResult)) {
+                const iter = sendResult[Symbol.asyncIterator]();
+                const first = await iter.next();
+                await iter.return?.();
+                if (first.done || !first.value) {
+                  throw new Error(
+                    'Empty introspection response from transport.',
+                  );
+                }
+                body = first.value.body;
+              } else {
+                body = (await sendResult).body;
+              }
+              const result = Array.isArray(body) ? body[0] : body;
+              return result as Awaited<ReturnType<Fetcher>>;
+            }) as Fetcher)
+          : fetcher!;
+
         function doIntrospection(query: string) {
           const fetch = fetcherReturnToPromise(
-            fetcher(
+            introspectionFetcher(
               { query, operationName: introspectionQueryName },
               fetcherOpts,
             ),

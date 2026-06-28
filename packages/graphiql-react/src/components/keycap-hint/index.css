@@ -1,0 +1,22 @@
+.graphiql-keycap-hint {
+  display: inline-flex;
+  gap: var(--px-4);
+  align-items: center;
+}
+
+.graphiql-keycap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--px-4);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-canvas));
+  color: oklch(var(--fg-muted));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  line-height: 1;
+}

@@ -60,6 +60,9 @@ export const createThemeSlice: CreateThemeSlice =
         document.body.classList.remove('graphiql-light', 'graphiql-dark');
         if (theme) {
           document.body.classList.add(`graphiql-${theme}`);
+          document.documentElement.setAttribute('data-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
         }
         const { monaco } = monacoStore.getState();
         const resolvedTheme = theme ?? getSystemTheme();
