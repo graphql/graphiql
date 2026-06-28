@@ -264,10 +264,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
   const containerRef = useRef<HTMLDivElement>(null);
-  // Radix portals (dialogs, tooltips, dropdowns) render into this element so
-  // they inherit the container's `data-theme` / `data-density` / `data-font-size`
-  // tokens instead of escaping to `document.body`. It lives in state so portals
-  // re-render into it once the container mounts.
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null,
   );

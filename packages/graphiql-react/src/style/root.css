@@ -9,9 +9,8 @@
 }
 
 /*
- * Radix portals (dialog, tooltip, dropdown) now render inside
- * `.graphiql-container` via PortalProvider, so they inherit these variables
- * through normal DOM ancestry — they no longer need to be re-listed here.
+ * Radix portals (dialog, tooltip, dropdown) render inside `.graphiql-container`
+ * via PortalProvider, so they inherit these variables through DOM ancestry.
  */
 .graphiql-container {
   /* Colors */
