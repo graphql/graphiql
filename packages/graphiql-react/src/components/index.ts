@@ -14,6 +14,7 @@ export { ButtonGroup } from './button-group';
 export { Dialog } from './dialog';
 export { DropdownMenu } from './dropdown-menu';
 export { MarkdownContent } from './markdown-content';
+export { PortalProvider, usePortalContainer } from './portal';
 export { Spinner } from './spinner';
 export { Tabs, Tab } from './tabs';
 export { Tooltip } from './tooltip';

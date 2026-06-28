@@ -8,11 +8,12 @@
   font-variant-ligatures: none;
 }
 
-.graphiql-container,
-.graphiql-dialog,
-.graphiql-dialog-overlay,
-.graphiql-tooltip,
-[data-radix-popper-content-wrapper] {
+/*
+ * Radix portals (dialog, tooltip, dropdown) now render inside
+ * `.graphiql-container` via PortalProvider, so they inherit these variables
+ * through normal DOM ancestry — they no longer need to be re-listed here.
+ */
+.graphiql-container {
   /* Colors */
   --color-primary: 320, 95%, 43%;
   --color-secondary: 242, 51%, 61%;
@@ -75,11 +76,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  body:not(.graphiql-light) .graphiql-container,
-  body:not(.graphiql-light) .graphiql-dialog,
-  body:not(.graphiql-light) .graphiql-dialog-overlay,
-  body:not(.graphiql-light) .graphiql-tooltip,
-  body:not(.graphiql-light) [data-radix-popper-content-wrapper] {
+  body:not(.graphiql-light) .graphiql-container {
     --color-primary: 338, 100%, 67%;
     --color-secondary: 243, 100%, 77%;
     --color-tertiary: 188, 100%, 44%;
@@ -95,11 +92,7 @@
   }
 }
 
-body.graphiql-dark .graphiql-container,
-body.graphiql-dark .graphiql-dialog,
-body.graphiql-dark .graphiql-dialog-overlay,
-body.graphiql-dark .graphiql-tooltip,
-body.graphiql-dark [data-radix-popper-content-wrapper] {
+body.graphiql-dark .graphiql-container {
   --color-primary: 338, 100%, 67%;
   --color-secondary: 243, 100%, 77%;
   --color-tertiary: 188, 100%, 44%;

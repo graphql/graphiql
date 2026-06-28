@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { Children, useRef, Fragment } from 'react';
+import { Children, useRef, useState, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -18,6 +18,7 @@ import {
   ExecuteButton,
   GraphiQLProvider,
   PlusIcon,
+  PortalProvider,
   PrettifyIcon,
   QueryEditor,
   ResponseEditor,
@@ -263,6 +264,17 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
   const containerRef = useRef<HTMLDivElement>(null);
+  // Radix portals (dialogs, tooltips, dropdowns) render into this element so
+  // they inherit the container's `data-theme` / `data-density` / `data-font-size`
+  // tokens instead of escaping to `document.body`. It lives in state so portals
+  // re-render into it once the container mounts.
+  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const setContainerRef = (node: HTMLDivElement | null) => {
+    containerRef.current = node;
+    setPortalContainer(node);
+  };
   useGraphiQLSettings(containerRef);
 
   const pluginResize = useDragResize({
@@ -433,138 +445,146 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   return (
     <Tooltip.Provider>
-      <div ref={containerRef} className={cn('graphiql-container', className)}>
-        <TopBar />
-        <div className="graphiql-body">
-          <ActivityBar
-            forcedTheme={forcedTheme}
-            showPersistHeadersSettings={showPersistHeadersSettings}
-            setHiddenElement={pluginResize.setHiddenElement}
-          />
-          <div className="graphiql-main">
-            <div ref={pluginResize.firstRef} className="graphiql-plugin">
-              <SidePanel />
-            </div>
-            {visiblePlugin && (
-              <div
-                className="graphiql-horizontal-drag-bar"
-                ref={pluginResize.dragBarRef}
-              />
-            )}
-            <div ref={pluginResize.secondRef} className="graphiql-sessions">
-              <div className="graphiql-session-header">
-                <Tabs
-                  ref={tabContainerRef}
-                  values={tabs}
-                  onReorder={moveTab}
-                  aria-label="Select active operation"
-                  className="no-scrollbar"
-                >
-                  {tabs.map((tab, index) => {
-                    const isActive = index === activeTabIndex;
-                    // For the active tab, surface how many other operations the
-                    // document holds alongside the one the cursor is in. Only
-                    // when the active operation is named, so the title reads as
-                    // `<name> +N`; an anonymous active operation has no name to
-                    // anchor the count to.
-                    const otherOperations =
-                      isActive && tab.operationName && operations
-                        ? operations.length - 1
-                        : 0;
-                    const tabTitle =
-                      otherOperations > 0
-                        ? `${tab.title} +${otherOperations}`
-                        : tab.title;
-                    return (
-                      <Tab
-                        key={tab.id}
-                        // Prevent overscroll over container
-                        dragConstraints={tabContainerRef}
-                        value={tab}
-                        isActive={isActive}
-                        isDirty={tab.query !== tab.lastSavedQuery}
-                      >
-                        <Tab.Button
-                          aria-controls="graphiql-session"
-                          id={`graphiql-session-tab-${index}`}
-                          title={tabTitle}
-                          onClick={handleTabClick}
-                        >
-                          {tabTitle}
-                        </Tab.Button>
-                        {tabs.length > 1 && (
-                          <Tab.Close onClick={handleTabClose} />
-                        )}
-                      </Tab>
-                    );
-                  })}
-                </Tabs>
-                <Tooltip label={LABEL.newTab}>
-                  <UnStyledButton
-                    type="button"
-                    className="graphiql-tab-add"
-                    onClick={addTab}
-                    aria-label={LABEL.newTab}
-                  >
-                    <PlusIcon aria-hidden="true" />
-                  </UnStyledButton>
-                </Tooltip>
-                <div className="graphiql-tab-strip-actions">
-                  <Tooltip label={LABEL.prettify}>
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-strip-action"
-                      onClick={prettifyEditors}
-                      aria-label={LABEL.prettify}
-                    >
-                      <PrettifyIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                  <Tooltip label={LABEL.copy}>
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-strip-action"
-                      onClick={copyQuery}
-                      aria-label={LABEL.copy}
-                    >
-                      <CopyIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                  <Tooltip label={LABEL.save}>
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-strip-action"
-                      onClick={saveQuery}
-                      aria-label={LABEL.save}
-                    >
-                      <SaveIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                </div>
-                {logo}
+      <PortalProvider container={portalContainer}>
+        <div
+          ref={setContainerRef}
+          className={cn('graphiql-container', className)}
+        >
+          <TopBar />
+          <div className="graphiql-body">
+            <ActivityBar
+              forcedTheme={forcedTheme}
+              showPersistHeadersSettings={showPersistHeadersSettings}
+              setHiddenElement={pluginResize.setHiddenElement}
+            />
+            <div className="graphiql-main">
+              <div ref={pluginResize.firstRef} className="graphiql-plugin">
+                <SidePanel />
               </div>
-              <div
-                role="tabpanel"
-                id="graphiql-session" // used by aria-controls="graphiql-session"
-                aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
-              >
-                {editors}
+              {visiblePlugin && (
                 <div
                   className="graphiql-horizontal-drag-bar"
-                  ref={editorResize.dragBarRef}
+                  ref={pluginResize.dragBarRef}
                 />
-                <div className="graphiql-response" ref={editorResize.secondRef}>
-                  {isFetching && <Spinner />}
-                  <ResponseEditor responseTooltip={responseTooltip} />
-                  {footer}
+              )}
+              <div ref={pluginResize.secondRef} className="graphiql-sessions">
+                <div className="graphiql-session-header">
+                  <Tabs
+                    ref={tabContainerRef}
+                    values={tabs}
+                    onReorder={moveTab}
+                    aria-label="Select active operation"
+                    className="no-scrollbar"
+                  >
+                    {tabs.map((tab, index) => {
+                      const isActive = index === activeTabIndex;
+                      // For the active tab, surface how many other operations the
+                      // document holds alongside the one the cursor is in. Only
+                      // when the active operation is named, so the title reads as
+                      // `<name> +N`; an anonymous active operation has no name to
+                      // anchor the count to.
+                      const otherOperations =
+                        isActive && tab.operationName && operations
+                          ? operations.length - 1
+                          : 0;
+                      const tabTitle =
+                        otherOperations > 0
+                          ? `${tab.title} +${otherOperations}`
+                          : tab.title;
+                      return (
+                        <Tab
+                          key={tab.id}
+                          // Prevent overscroll over container
+                          dragConstraints={tabContainerRef}
+                          value={tab}
+                          isActive={isActive}
+                          isDirty={tab.query !== tab.lastSavedQuery}
+                        >
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            title={tabTitle}
+                            onClick={handleTabClick}
+                          >
+                            {tabTitle}
+                          </Tab.Button>
+                          {tabs.length > 1 && (
+                            <Tab.Close onClick={handleTabClose} />
+                          )}
+                        </Tab>
+                      );
+                    })}
+                  </Tabs>
+                  <Tooltip label={LABEL.newTab}>
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-add"
+                      onClick={addTab}
+                      aria-label={LABEL.newTab}
+                    >
+                      <PlusIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                  <div className="graphiql-tab-strip-actions">
+                    <Tooltip label={LABEL.prettify}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={prettifyEditors}
+                        aria-label={LABEL.prettify}
+                      >
+                        <PrettifyIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                    <Tooltip label={LABEL.copy}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={copyQuery}
+                        aria-label={LABEL.copy}
+                      >
+                        <CopyIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                    <Tooltip label={LABEL.save}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={saveQuery}
+                        aria-label={LABEL.save}
+                      >
+                        <SaveIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                  </div>
+                  {logo}
+                </div>
+                <div
+                  role="tabpanel"
+                  id="graphiql-session" // used by aria-controls="graphiql-session"
+                  aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+                >
+                  {editors}
+                  <div
+                    className="graphiql-horizontal-drag-bar"
+                    ref={editorResize.dragBarRef}
+                  />
+                  <div
+                    className="graphiql-response"
+                    ref={editorResize.secondRef}
+                  >
+                    {isFetching && <Spinner />}
+                    <ResponseEditor responseTooltip={responseTooltip} />
+                    {footer}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <StatusBar />
         </div>
-        <StatusBar />
-      </div>
-      {children}
+        {children}
+      </PortalProvider>
     </Tooltip.Provider>
   );
 };
