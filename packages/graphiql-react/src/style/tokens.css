@@ -135,7 +135,7 @@
   --tab-strip-height: 32px;
   --dialog-padding-x: 16px;
   --dialog-padding-y: 16px;
-  --dialog-bar-padding-y: 8px;
+  --dialog-bar-padding-y: 6px;
   --dialog-gap: 16px;
 }
 
@@ -150,7 +150,7 @@
   --tab-strip-height: 26px;
   --dialog-padding-x: 12px;
   --dialog-padding-y: 12px;
-  --dialog-bar-padding-y: 6px;
+  --dialog-bar-padding-y: 4px;
   --dialog-gap: 12px;
 }
 
@@ -165,7 +165,7 @@
   --tab-strip-height: 40px;
   --dialog-padding-x: 20px;
   --dialog-padding-y: 20px;
-  --dialog-bar-padding-y: 12px;
+  --dialog-bar-padding-y: 10px;
   --dialog-gap: 20px;
 }
 
