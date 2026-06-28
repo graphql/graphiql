@@ -2,6 +2,7 @@ import { cn } from '../../utility';
 import { forwardRef, FC, ComponentPropsWithoutRef } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
+import { usePortalContainer } from '../portal';
 import * as D from '@radix-ui/react-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
@@ -68,9 +69,10 @@ const DialogFooter = forwardRef<
 DialogFooter.displayName = 'Dialog.Footer';
 
 const DialogRoot: FC<D.DialogProps> = ({ children, ...props }) => {
+  const container = usePortalContainer();
   return (
     <D.Root {...props}>
-      <D.Portal>
+      <D.Portal container={container}>
         <D.Overlay className="graphiql-dialog-overlay" />
         <D.Content className="graphiql-dialog">{children}</D.Content>
       </D.Portal>
