@@ -79,7 +79,8 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   return (
     <div className="graphiql-collections-panel">
       <PanelHeader
-        title="Collections"
+        title="Operation Collections"
+        subtitle="Save and organize operations into collections."
         actions={
           <>
             <button

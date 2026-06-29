@@ -54,53 +54,61 @@ export const SaveDialog: FC = () => {
   return (
     <Dialog open={open} onOpenChange={o => !o && actions.closeSaveDialog()}>
       <Dialog.Header>Save to collection</Dialog.Header>
-      <Dialog.Body>
-        <label className="graphiql-save-dialog-field">
-          <span>Operation name</span>
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Unnamed operation"
-            className="graphiql-save-dialog-input"
-          />
-        </label>
-        <label className="graphiql-save-dialog-field">
-          <span>Collection</span>
-          <select
-            value={selectedCollectionId}
-            onChange={e => setSelectedCollectionId(e.target.value)}
-            className="graphiql-save-dialog-select"
-          >
-            <option value={NEW_COLLECTION}>+ New collection</option>
-            {collections.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        {selectedCollectionId === NEW_COLLECTION && (
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          handleSave();
+        }}
+      >
+        <Dialog.Body>
           <label className="graphiql-save-dialog-field">
-            <span>Collection name</span>
+            <span>Operation name</span>
             <input
               type="text"
-              value={newCollectionName}
-              onChange={e => setNewCollectionName(e.target.value)}
-              placeholder="Collection name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Unnamed operation"
               className="graphiql-save-dialog-input"
+              autoFocus
             />
           </label>
-        )}
-      </Dialog.Body>
-      <Dialog.Footer>
-        <Button type="button" onClick={() => actions.closeSaveDialog()}>
-          Cancel
-        </Button>
-        <Button type="button" variant="primary" onClick={handleSave}>
-          Save
-        </Button>
-      </Dialog.Footer>
+          <label className="graphiql-save-dialog-field">
+            <span>Collection</span>
+            <select
+              value={selectedCollectionId}
+              onChange={e => setSelectedCollectionId(e.target.value)}
+              className="graphiql-save-dialog-select"
+            >
+              <option value={NEW_COLLECTION}>+ New collection</option>
+              {collections.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          {selectedCollectionId === NEW_COLLECTION && (
+            <label className="graphiql-save-dialog-field">
+              <span>Collection name</span>
+              <input
+                type="text"
+                value={newCollectionName}
+                onChange={e => setNewCollectionName(e.target.value)}
+                placeholder="Collection name"
+                className="graphiql-save-dialog-input"
+              />
+            </label>
+          )}
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button type="button" onClick={() => actions.closeSaveDialog()}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            Save
+          </Button>
+        </Dialog.Footer>
+      </form>
     </Dialog>
   );
 };
