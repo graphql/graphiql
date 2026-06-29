@@ -14,9 +14,20 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
   const [mode, setMode] = useState<'export' | 'import'>('export');
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
   const [importError, setImportError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const exported = collectionsStore.getState().actions.exportCollections();
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(exported);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard unavailable; the textarea is still selectable as a fallback
+    }
+  };
 
   const handleDownload = () => {
     const blob = new Blob([exported], { type: 'application/json' });
@@ -78,14 +89,19 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
               value={exported}
               rows={12}
             />
-            <Button
-              type="button"
-              variant="primary"
-              onClick={handleDownload}
-              className="graphiql-import-export-action"
-            >
-              Download JSON
-            </Button>
+            <div className="graphiql-import-export-actions">
+              <Button
+                type="button"
+                variant="primary"
+                state={copied ? 'success' : undefined}
+                onClick={() => void handleCopy()}
+              >
+                {copied ? 'Copied!' : 'Copy JSON'}
+              </Button>
+              <Button type="button" onClick={handleDownload}>
+                Download JSON
+              </Button>
+            </div>
           </div>
         )}
         {mode === 'import' && (

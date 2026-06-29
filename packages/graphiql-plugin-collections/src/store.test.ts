@@ -207,6 +207,22 @@ describe('exportCollections', () => {
   });
 });
 
+describe('exportCollection', () => {
+  it('exports a single collection as a one-collection envelope', () => {
+    const a = getActions().createCollection('Alpha');
+    getActions().createCollection('Beta');
+    const parsed = JSON.parse(getActions().exportCollection(a.id));
+    expect(parsed.version).toBe(1);
+    expect(parsed.collections).toHaveLength(1);
+    expect(parsed.collections[0]?.name).toBe('Alpha');
+  });
+
+  it('exports an empty envelope for an unknown id', () => {
+    const parsed = JSON.parse(getActions().exportCollection('nope'));
+    expect(parsed.collections).toEqual([]);
+  });
+});
+
 describe('importCollections', () => {
   it('merge mode appends without duplicating by id', async () => {
     const storage = makeStorage();

@@ -233,7 +233,9 @@
   resize: vertical;
 }
 
-.graphiql-import-export-action {
+.graphiql-import-export-actions {
+  display: flex;
+  gap: var(--px-8);
   align-self: flex-start;
 }
 

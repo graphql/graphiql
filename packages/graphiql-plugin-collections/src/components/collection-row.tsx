@@ -8,6 +8,7 @@ type CollectionRowProps = {
   allCollections: Collection[];
   onRename(id: string, name: string): void;
   onDelete(id: string): void;
+  onCopy(id: string): void;
   onOpenItem(item: CollectionItem): void;
   onDeleteItem(collectionId: string, itemId: string): void;
   onMoveItem(
@@ -27,6 +28,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
   allCollections,
   onRename,
   onDelete,
+  onCopy,
   onOpenItem,
   onDeleteItem,
   onMoveItem,
@@ -100,6 +102,9 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               }}
             >
               Rename
+            </DropdownMenu.Item>
+            <DropdownMenu.Item onSelect={() => onCopy(collection.id)}>
+              Copy to clipboard
             </DropdownMenu.Item>
             <DropdownMenu.Separator />
             <DropdownMenu.Item onSelect={() => onDelete(collection.id)}>

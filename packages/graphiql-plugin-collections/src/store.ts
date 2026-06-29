@@ -58,6 +58,8 @@ type CollectionsActions = {
   ): void;
   importCollections(json: string, mode: 'merge' | 'replace'): void;
   exportCollections(): string;
+  /** Export a single collection as a (one-collection) export envelope. */
+  exportCollection(id: string): string;
   /** Link a tab to a collection item so ⌘S updates it in place. */
   linkTab(tabId: string, collectionId: string, itemId: string): void;
   /**
@@ -249,6 +251,14 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
       exportCollections() {
         return JSON.stringify(
           { version: 1, collections: get().collections },
+          null,
+          2,
+        );
+      },
+      exportCollection(id) {
+        const collection = get().collections.find(c => c.id === id);
+        return JSON.stringify(
+          { version: 1, collections: collection ? [collection] : [] },
           null,
           2,
         );
