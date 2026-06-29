@@ -15,15 +15,110 @@ type CollectionsPanelProps = {
   storage?: CollectionsStorage;
 };
 
+/**
+ * Returns how many collections `text` holds if it is a valid collections
+ * export, otherwise `null`. Used to guard paste/drop so non-collections content
+ * is ignored rather than mangled.
+ */
+function parseCollectionsExport(text: string): number | null {
+  try {
+    const parsed = JSON.parse(text);
+    const list = Array.isArray(parsed?.collections)
+      ? parsed.collections
+      : Array.isArray(parsed)
+        ? parsed
+        : null;
+    if (
+      !list?.length ||
+      !list.every(
+        (c: unknown) =>
+          c &&
+          typeof c === 'object' &&
+          Array.isArray((c as { items?: unknown }).items),
+      )
+    ) {
+      return null;
+    }
+    return list.length;
+  } catch {
+    return null;
+  }
+}
+
+function isEditableTarget(el: Element | null): boolean {
+  if (!el) {
+    return false;
+  }
+  return (
+    el.tagName === 'INPUT' ||
+    el.tagName === 'TEXTAREA' ||
+    (el as HTMLElement).isContentEditable ||
+    Boolean(el.closest('.monaco-editor'))
+  );
+}
+
 export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const actions = useCollectionsStore(s => s.actions);
   const collections = useCollectionsStore(s => s.collections);
   const loaded = useCollectionsStore(s => s.loaded);
   const [showImportExport, setShowImportExport] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     void actions.init(storage ?? localStorageAdapter);
     // storage is intentionally only read on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Clear the import feedback after a few seconds.
+  useEffect(() => {
+    if (!status) {
+      return;
+    }
+    const timer = setTimeout(() => setStatus(null), 4000);
+    return () => clearTimeout(timer);
+  }, [status]);
+
+  const importText = (text: string, invalidMessage: string) => {
+    const count = parseCollectionsExport(text);
+    if (count === null) {
+      if (invalidMessage) {
+        setStatus({ ok: false, message: invalidMessage });
+      }
+      return;
+    }
+    collectionsStore.getState().actions.importCollections(text, 'merge');
+    setStatus({
+      ok: true,
+      message: `Imported ${count} collection${count === 1 ? '' : 's'}.`,
+    });
+  };
+
+  const importDroppedFile = async (file: File) => {
+    importText(await file.text(), "That file isn't a collections export.");
+  };
+
+  // Paste a collections export anywhere in the open panel to merge it in.
+  // Guarded so it never hijacks a normal paste: ignored while typing in an
+  // editor/input, and ignored unless the clipboard parses as an export.
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      if (isEditableTarget(document.activeElement)) {
+        return;
+      }
+      const text = event.clipboardData?.getData('text') ?? '';
+      if (parseCollectionsExport(text) === null) {
+        return;
+      }
+      event.preventDefault();
+      importText(text, '');
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+    // bound once: only stable refs (store, setStatus) are used
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,7 +172,31 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const handleAddItem = actions.addItem;
 
   return (
-    <div className="graphiql-collections-panel">
+    <div
+      className={`graphiql-collections-panel${isDragOver ? ' graphiql-collections-drop-active' : ''}`}
+      onDragOver={e => {
+        if (!e.dataTransfer.types.includes('Files')) {
+          return;
+        }
+        e.preventDefault();
+        setIsDragOver(true);
+      }}
+      onDragLeave={e => {
+        if (e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          return;
+        }
+        setIsDragOver(false);
+      }}
+      onDrop={e => {
+        const file = e.dataTransfer.files[0];
+        if (!file) {
+          return; // not a file drop (e.g. an item being reordered)
+        }
+        e.preventDefault();
+        setIsDragOver(false);
+        void importDroppedFile(file);
+      }}
+    >
       <PanelHeader
         title="Operation Collections"
         subtitle="Save and organize operations into collections."
@@ -108,10 +227,19 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
           </>
         }
       />
+      {status && (
+        <div
+          className={`graphiql-collections-status${status.ok ? '' : ' graphiql-collections-status-error'}`}
+          role="status"
+        >
+          {status.message}
+        </div>
+      )}
       {!loaded && <div className="graphiql-collections-loading">Loading…</div>}
       {loaded && collections.length === 0 && (
         <div className="graphiql-collections-empty">
-          No collections yet. Save an operation to get started.
+          No collections yet. Save an operation to get started, or drop or paste
+          a collections export to import one.
         </div>
       )}
       <div className="graphiql-collections-list">

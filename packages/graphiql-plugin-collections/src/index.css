@@ -5,6 +5,21 @@
   overflow: hidden;
 }
 
+.graphiql-collections-drop-active {
+  outline: 2px dashed oklch(var(--accent-blue));
+  outline-offset: -4px;
+}
+
+.graphiql-collections-status {
+  padding: var(--px-4) var(--px-12);
+  font-size: var(--font-size-hint);
+  color: oklch(var(--accent-green));
+}
+
+.graphiql-collections-status-error {
+  color: oklch(var(--accent-red));
+}
+
 .graphiql-collections-list {
   overflow-y: auto;
   flex: 1;
