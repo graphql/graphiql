@@ -52,6 +52,9 @@
   border-bottom: 1px solid oklch(var(--border-default));
   display: flex;
   justify-content: space-between;
+  /* Keep the title and close button apart even when the dialog is only as wide
+     as its content (e.g. a short title), where `space-between` adds no room. */
+  gap: var(--px-16);
   /* Less padding on the close-button side so the icon optically aligns with the
      title (button padding + this ≈ --dialog-padding-x); the button carries its
      own padding for the hit target. */
