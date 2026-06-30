@@ -51,6 +51,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@graphiql/plugin-collections": "^0.1.0-alpha.0",
     "@graphiql/plugin-doc-explorer": "^0.4.2",
     "@graphiql/plugin-history": "^0.4.2",
     "@graphiql/plugin-query-builder": "^0.1.0-alpha.0",

@@ -3430,6 +3430,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@graphiql/plugin-collections@npm:^0.1.0-alpha.0, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
+  version: 0.0.0-use.local
+  resolution: "@graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections"
+  dependencies:
+    "@graphiql/react": "npm:^0.37.4"
+    "@testing-library/dom": "npm:^10.4.0"
+    "@testing-library/jest-dom": "npm:^6.6.3"
+    "@testing-library/react": "npm:^16.3.0"
+    "@vitejs/plugin-react": "npm:^4.4.1"
+    graphql: "npm:^16.9.0"
+    react: "npm:^19.1.0"
+    react-dom: "npm:^19.1.0"
+    vite: "npm:^6.3.4"
+    vite-plugin-dts: "npm:^4.5.3"
+    vite-plugin-svgr: "npm:^4.3.0"
+    zustand: "npm:^5"
+  peerDependencies:
+    "@graphiql/react": ^0.37.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    react: ^18 || ^19
+    react-dom: ^18 || ^19
+  languageName: unknown
+  linkType: soft
+
 "@graphiql/plugin-doc-explorer@npm:^0.4.2, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
@@ -14327,6 +14351,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
+    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
     "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
     "@graphiql/plugin-history": "npm:^0.4.2"
     "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"

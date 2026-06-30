@@ -51,11 +51,23 @@ import {
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
+  collectionsPlugin,
+  collectionsStore,
+  useCollectionsStore,
+  CollectionsSaveDialog,
+} from '@graphiql/plugin-collections';
+import {
   ActivityBar,
   GraphiQLLogo,
   GraphiQLToolbar,
   GraphiQLFooter,
 } from './ui';
+
+const DEFAULT_PLUGINS = [
+  HISTORY_PLUGIN,
+  QUERY_BUILDER_PLUGIN,
+  collectionsPlugin(),
+];
 
 /**
  * API docs for this live here:
@@ -85,7 +97,7 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN],
+  plugins = DEFAULT_PLUGINS,
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,
@@ -147,6 +159,13 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
+      onSaveQuery={tab => {
+        const savedInPlace = collectionsStore
+          .getState()
+          .actions.requestSave(tab);
+        props.onSaveQuery?.(tab);
+        return savedInPlace;
+      }}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -262,6 +281,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
+  const collectionsReadOnly = useCollectionsStore(s => s.config.readOnly);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
@@ -542,16 +562,21 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                         <CopyIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
-                    <Tooltip label={LABEL.save}>
-                      <UnStyledButton
-                        type="button"
-                        className="graphiql-tab-strip-action"
-                        onClick={saveQuery}
-                        aria-label={LABEL.save}
-                      >
-                        <SaveIcon aria-hidden="true" />
-                      </UnStyledButton>
-                    </Tooltip>
+                    {!collectionsReadOnly && (
+                      <>
+                        <Tooltip label={LABEL.save}>
+                          <UnStyledButton
+                            type="button"
+                            className="graphiql-tab-strip-action"
+                            onClick={saveQuery}
+                            aria-label={LABEL.save}
+                          >
+                            <SaveIcon aria-hidden="true" />
+                          </UnStyledButton>
+                        </Tooltip>
+                        <CollectionsSaveDialog />
+                      </>
+                    )}
                   </div>
                   {logo}
                 </div>
