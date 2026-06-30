@@ -46,16 +46,19 @@ function renderRow(
 }
 
 describe('CollectionItemRow', () => {
-  it('clicking "Copy operation" calls onCopy with the item id', () => {
-    const { onCopy } = renderRow();
+  it('clicking "Copy operation" calls onCopy with the item id, not onOpen', () => {
+    const { onCopy, onOpen } = renderRow();
     fireEvent.click(screen.getByText('Copy operation'));
     expect(onCopy).toHaveBeenCalledOnce();
     expect(onCopy).toHaveBeenCalledWith('item-1');
+    // Menu clicks must not fall through to the row's open handler.
+    expect(onOpen).not.toHaveBeenCalled();
   });
 
-  it('clicking "Delete" calls onDelete with collectionId and itemId', () => {
-    const { onDelete } = renderRow();
+  it('clicking "Delete" calls onDelete with collectionId and itemId, not onOpen', () => {
+    const { onDelete, onOpen } = renderRow();
     fireEvent.click(screen.getByText('Delete'));
     expect(onDelete).toHaveBeenCalledWith('col-1', 'item-1');
+    expect(onOpen).not.toHaveBeenCalled();
   });
 });

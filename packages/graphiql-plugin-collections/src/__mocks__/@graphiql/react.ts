@@ -121,7 +121,19 @@ export const DropdownMenu = Object.assign(
       children: ReactNode;
       onSelect?: () => void;
     }) =>
-      createElement('button', { type: 'button', onClick: onSelect }, children),
+      // Real Radix renders the menu in a portal, so item clicks never reach the
+      // triggering row. Stop propagation here to mirror that in the mock DOM.
+      createElement(
+        'button',
+        {
+          type: 'button',
+          onClick(e: { stopPropagation(): void }) {
+            e.stopPropagation();
+            onSelect?.();
+          },
+        },
+        children,
+      ),
     Separator: () => null,
   },
 );
