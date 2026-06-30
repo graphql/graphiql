@@ -389,6 +389,23 @@ describe('applyImport', () => {
     expect(state[0]?.name).toBe('Imported');
   });
 
+  it('replace mode preserves the items in the replacement', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    getActions().createCollection('Will be replaced');
+    const incoming = makeCol('imported-1', 'Imported', [
+      makeItem({ id: 'op-1', name: 'Op One', query: '{ a }' }),
+      makeItem({ id: 'op-2', name: 'Op Two', query: '{ b }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'replace' });
+    const state = collectionsStore.getState().collections;
+    expect(state).toHaveLength(1);
+    expect(state[0]?.items.map(i => i.id)).toEqual(['op-1', 'op-2']);
+  });
+
   it('idempotent apply is a no-op — no duplicates', async () => {
     const storage = makeStorage();
     await getActions().init(storage);
