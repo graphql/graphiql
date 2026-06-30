@@ -389,8 +389,11 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
       {!loaded && <div className="graphiql-collections-loading">Loading…</div>}
       {loaded && collections.length === 0 && (
         <div className="graphiql-collections-empty">
-          No collections yet. Save an operation to get started, or drop or paste
-          a collections export to import one.
+          {readOnly
+            ? 'No collections.'
+            : allowImport
+              ? 'No collections yet. Save an operation to get started, or drop or paste a collections export to import one.'
+              : 'No collections yet. Save an operation to get started.'}
         </div>
       )}
       <div className="graphiql-collections-list">
