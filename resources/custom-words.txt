@@ -274,3 +274,7 @@ wordmark
 yoshiakis
 zdravo
 zustand
+affordances
+automerge
+crdt
+yjs
