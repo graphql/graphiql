@@ -54,6 +54,54 @@ describe('init', () => {
   });
 });
 
+describe('setCollections', () => {
+  it('replaces the in-memory collections', () => {
+    const col = makeCol('c1', 'Alpha');
+    getActions().setCollections([col]);
+    expect(collectionsStore.getState().collections).toEqual([col]);
+  });
+
+  it('does not call storage.save', async () => {
+    const storage = makeStorage();
+    const saveSpy = vi.spyOn(storage, 'save');
+    await getActions().init(storage);
+    getActions().setCollections([makeCol('c1', 'Alpha')]);
+    await new Promise(r => setTimeout(r, 0));
+    expect(saveSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('reload', () => {
+  it('re-reads from storage and updates state', async () => {
+    let callCount = 0;
+    const colV1 = makeCol('c1', 'V1');
+    const colV2 = makeCol('c1', 'V2');
+    const storage: CollectionsStorage = {
+      async load() {
+        callCount++;
+        return callCount === 1 ? [colV1] : [colV2];
+      },
+      async save() {},
+    };
+    await getActions().init(storage);
+    expect(collectionsStore.getState().collections[0]?.name).toBe('V1');
+    await getActions().reload();
+    expect(collectionsStore.getState().collections[0]?.name).toBe('V2');
+  });
+
+  it('calls storage.load and does not call storage.save', async () => {
+    const storage = makeStorage([makeCol('c1', 'Alpha')]);
+    const loadSpy = vi.spyOn(storage, 'load');
+    const saveSpy = vi.spyOn(storage, 'save');
+    await getActions().init(storage);
+    loadSpy.mockClear(); // clear the init call
+    await getActions().reload();
+    expect(loadSpy).toHaveBeenCalledOnce();
+    await new Promise(r => setTimeout(r, 0));
+    expect(saveSpy).not.toHaveBeenCalled();
+  });
+});
+
 describe('createCollection', () => {
   it('adds a collection', async () => {
     const storage = makeStorage();

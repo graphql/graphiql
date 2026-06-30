@@ -43,6 +43,14 @@ type CollectionsState = {
 
 type CollectionsActions = {
   init(storage: CollectionsStorage): Promise<void>;
+  /**
+   * Replace the in-memory collections wholesale without persisting. Use this
+   * to reflect state loaded or merged externally — writing it back would be
+   * redundant and, for a DB adapter, an unwanted extra write.
+   */
+  setCollections(collections: Collection[]): void;
+  /** Re-read collections from the configured storage — call after an external/remote change to refresh the UI. */
+  reload(): Promise<void>;
   createCollection(name: string, description?: string): Collection;
   deleteCollection(id: string): void;
   renameCollection(id: string, name: string): void;
@@ -135,6 +143,13 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
       async init(storage) {
         const collections = await storage.load();
         set({ collections, loaded: true, storage });
+      },
+      setCollections(collections) {
+        set({ collections });
+      },
+      async reload() {
+        const collections = await get().storage.load();
+        set({ collections });
       },
       createCollection(name, description) {
         const c: Collection = {
