@@ -258,3 +258,77 @@
   color: oklch(var(--color-error, 60% 0.2 25));
   font-size: var(--font-size-hint);
 }
+
+/* Conflict dialog */
+.graphiql-conflict-summary {
+  margin: 0 0 var(--px-12);
+  font-size: var(--font-size-body);
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--px-8);
+}
+
+.graphiql-conflict-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-8);
+}
+
+.graphiql-conflict-review-hint-label {
+  margin: 0;
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-conflict-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  padding: var(--px-4) var(--px-8);
+}
+
+.graphiql-conflict-review-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  padding: var(--px-4) 0;
+  cursor: pointer;
+  font-size: var(--font-size-body);
+}
+
+.graphiql-conflict-review-checkbox {
+  flex-shrink: 0;
+}
+
+.graphiql-conflict-review-name {
+  flex: 1;
+  color: oklch(var(--fg-default));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphiql-conflict-review-collection {
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+.graphiql-conflict-review-hint {
+  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+.graphiql-conflict-review-confirm {
+  display: flex;
+  gap: var(--px-8);
+}

@@ -1,5 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import {
+  Button,
+  Dialog,
   PanelHeader,
   pick,
   useGraphiQL,
@@ -8,8 +10,14 @@ import {
 import { useCollectionsStore, collectionsStore } from '../store';
 import { CollectionRow } from './collection-row';
 import { ImportExportDialog } from './import-export-dialog';
+import { ConflictDialog } from './conflict-dialog';
 import { localStorageAdapter } from '../storage/local-storage';
-import type { CollectionItem, CollectionsStorage } from '../types';
+import type {
+  CollectionItem,
+  CollectionsStorage,
+  ImportAnalysis,
+  ImportResolution,
+} from '../types';
 
 type CollectionsPanelProps = {
   storage?: CollectionsStorage;
@@ -57,6 +65,14 @@ function isEditableTarget(el: Element | null): boolean {
   );
 }
 
+/** Derive a human-readable label from the parsed incoming collections. */
+function deriveSourceLabel(incoming: ImportAnalysis['_incoming']): string {
+  if (incoming.length === 1 && incoming[0]) {
+    return incoming[0].name;
+  }
+  return `${incoming.length} collections`;
+}
+
 export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const actions = useCollectionsStore(s => s.actions);
   const collections = useCollectionsStore(s => s.collections);
@@ -66,6 +82,12 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(
     null,
   );
+  const [pendingConflict, setPendingConflict] = useState<{
+    analysis: ImportAnalysis;
+    sourceLabel: string;
+  } | null>(null);
+  // Text awaiting replace confirmation (destructive, so we prompt before applying).
+  const [pendingReplace, setPendingReplace] = useState<string | null>(null);
 
   useEffect(() => {
     void actions.init(storage ?? localStorageAdapter);
@@ -82,26 +104,96 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
     return () => clearTimeout(timer);
   }, [status]);
 
-  const importText = (text: string, invalidMessage: string) => {
-    const count = parseCollectionsExport(text);
-    if (count === null) {
-      if (invalidMessage) {
-        setStatus({ ok: false, message: invalidMessage });
-      }
-      return;
-    }
+  const applyReplace = (text: string) => {
     const analysis = collectionsStore.getState().actions.analyzeImport(text);
     collectionsStore
       .getState()
-      .actions.applyImport(analysis, { mode: 'merge', applyChanges: true });
+      .actions.applyImport(analysis, { mode: 'replace' });
+    const count = analysis._incoming.length;
     setStatus({
       ok: true,
-      message: `Imported ${count} collection${count === 1 ? '' : 's'}.`,
+      message: `Replaced with ${count} collection${count === 1 ? '' : 's'}.`,
+    });
+  };
+
+  const runImport = (text: string, mode: 'merge' | 'replace') => {
+    if (mode === 'replace') {
+      setPendingReplace(text);
+      return;
+    }
+
+    // merge path
+    const count = parseCollectionsExport(text);
+    if (count === null) {
+      setStatus({
+        ok: false,
+        message: "That file isn't a collections export.",
+      });
+      return;
+    }
+    const analysis = collectionsStore.getState().actions.analyzeImport(text);
+    if (!analysis.ok) {
+      setStatus({ ok: false, message: 'Invalid collections export.' });
+      return;
+    }
+    if (analysis.changedItems.length === 0) {
+      // No conflicts — apply immediately.
+      collectionsStore
+        .getState()
+        .actions.applyImport(analysis, { mode: 'merge', applyChanges: true });
+      setStatus({
+        ok: true,
+        message: `Imported ${count} collection${count === 1 ? '' : 's'}.`,
+      });
+      return;
+    }
+    // Conflicts present — open the dialog.
+    setPendingConflict({
+      analysis,
+      sourceLabel: deriveSourceLabel(analysis._incoming),
+    });
+  };
+
+  const handleConflictResolve = (resolution: ImportResolution) => {
+    if (!pendingConflict) {
+      return;
+    }
+    const { analysis } = pendingConflict;
+    collectionsStore.getState().actions.applyImport(analysis, resolution);
+    setPendingConflict(null);
+    const newCount = analysis.newItems.length;
+    const changedCount =
+      'changedItemIds' in resolution
+        ? resolution.changedItemIds.size
+        : 'applyChanges' in resolution && resolution.applyChanges
+          ? analysis.changedItems.length
+          : 0;
+    const parts = [
+      analysis.newCollections.length > 0 &&
+        `${analysis.newCollections.length} new collection${analysis.newCollections.length !== 1 ? 's' : ''}`,
+      newCount > 0 && `${newCount} new operation${newCount !== 1 ? 's' : ''}`,
+      changedCount > 0 &&
+        `${changedCount} operation${changedCount !== 1 ? 's' : ''} updated`,
+    ].filter(Boolean);
+    setStatus({
+      ok: true,
+      message:
+        parts.length > 0
+          ? `Imported: ${parts.join(', ')}.`
+          : 'Import complete.',
     });
   };
 
   const importDroppedFile = async (file: File) => {
-    importText(await file.text(), "That file isn't a collections export.");
+    const text = await file.text();
+    if (parseCollectionsExport(text) === null) {
+      setStatus({
+        ok: false,
+        message: "That file isn't a collections export.",
+      });
+      return;
+    }
+    runImport(text, 'merge');
   };
 
   // Paste a collections export anywhere in the open panel to merge it in.
@@ -117,7 +209,7 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
         return;
       }
       event.preventDefault();
-      importText(text, '');
+      runImport(text, 'merge');
     };
     document.addEventListener('paste', onPaste);
     return () => document.removeEventListener('paste', onPaste);
@@ -276,7 +368,47 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
       <ImportExportDialog
         open={showImportExport}
         onClose={() => setShowImportExport(false)}
+        onImport={runImport}
       />
+      {pendingConflict && (
+        <ConflictDialog
+          analysis={pendingConflict.analysis}
+          sourceLabel={pendingConflict.sourceLabel}
+          open
+          onClose={() => setPendingConflict(null)}
+          onResolve={handleConflictResolve}
+        />
+      )}
+      <Dialog
+        open={pendingReplace !== null}
+        onOpenChange={o => !o && setPendingReplace(null)}
+      >
+        <Dialog.Header>Replace all collections?</Dialog.Header>
+        <Dialog.Body>
+          <p className="graphiql-conflict-summary">
+            This will remove all existing collections and replace them with the
+            imported data. This cannot be undone.
+          </p>
+          <div className="graphiql-conflict-actions">
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                const text = pendingReplace;
+                setPendingReplace(null);
+                if (text !== null) {
+                  applyReplace(text);
+                }
+              }}
+            >
+              Replace
+            </Button>
+            <Button type="button" onClick={() => setPendingReplace(null)}>
+              Cancel
+            </Button>
+          </div>
+        </Dialog.Body>
+      </Dialog>
     </div>
   );
 };

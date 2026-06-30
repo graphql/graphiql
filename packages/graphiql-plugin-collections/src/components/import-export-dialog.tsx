@@ -5,11 +5,13 @@ import { collectionsStore } from '../store';
 type ImportExportDialogProps = {
   open: boolean;
   onClose(): void;
+  onImport(text: string, mode: 'merge' | 'replace'): void;
 };
 
 export const ImportExportDialog: FC<ImportExportDialogProps> = ({
   open,
   onClose,
+  onImport,
 }) => {
   const [mode, setMode] = useState<'export' | 'import'>('export');
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
@@ -50,23 +52,14 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
       const text = e.target?.result as string;
       try {
         JSON.parse(text);
-        const analysis = collectionsStore
-          .getState()
-          .actions.analyzeImport(text);
-        collectionsStore
-          .getState()
-          .actions.applyImport(
-            analysis,
-            importMode === 'replace'
-              ? { mode: 'replace' }
-              : { mode: 'merge', applyChanges: true },
-          );
-        onClose();
       } catch {
         setImportError(
           'Invalid JSON file. Please select a valid collections export.',
         );
+        return;
       }
+      onClose();
+      onImport(text, importMode);
     };
     reader.readAsText(file);
   };
@@ -132,7 +125,7 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
                   checked={importMode === 'merge'}
                   onChange={() => setImportMode('merge')}
                 />
-                Merge (append new collections, skip duplicates)
+                Merge (add new, update changed in place)
               </label>
               <label>
                 <input

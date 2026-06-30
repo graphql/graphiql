@@ -1,5 +1,6 @@
 // Minimal stub of @graphiql/react for unit/integration tests.
-import type { ReactNode } from 'react';
+import { createElement } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 
 export type Operation = 'query' | 'mutation' | 'subscription';
 import { useStore } from 'zustand';
@@ -95,7 +96,18 @@ export const Dialog = Object.assign(
   },
 );
 
-export const Button = ({ children }: { children?: ReactNode }) => children;
+export const Button = ({
+  children,
+  onClick,
+  type,
+}: {
+  children?: ReactNode;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  type?: 'button' | 'submit' | 'reset';
+  variant?: string;
+  state?: string;
+  className?: string;
+}) => createElement('button', { type: type ?? 'button', onClick }, children);
 
 export const DropdownMenu = Object.assign(
   ({ children }: { children?: ReactNode }) => children ?? null,
