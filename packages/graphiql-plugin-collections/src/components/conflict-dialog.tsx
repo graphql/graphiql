@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { Button, Dialog } from '@graphiql/react';
+import { useCollectionsStore } from '../store';
 import type { ImportAnalysis, ImportResolution, ItemConflict } from '../types';
 
 type ConflictDialogProps = {
@@ -80,6 +81,9 @@ export const ConflictDialog: FC<ConflictDialogProps> = ({
   const [reviewing, setReviewing] = useState(false);
   // Default all to unchecked (keep mine = safe default)
   const [checked, setChecked] = useState<Set<string>>(new Set());
+  // Conflicts always reference a collection the recipient already has, so the
+  // "in X" label comes from local collections, not the incoming envelope.
+  const localCollections = useCollectionsStore(s => s.collections);
 
   const handleCheckChange = (id: string, isChecked: boolean) => {
     setChecked(prev => {
@@ -99,9 +103,7 @@ export const ConflictDialog: FC<ConflictDialogProps> = ({
     }
   };
 
-  const collectionNameById = new Map(
-    analysis._incoming.map(c => [c.id, c.name]),
-  );
+  const collectionNameById = new Map(localCollections.map(c => [c.id, c.name]));
 
   const summary = [
     analysis.newItems.length > 0 && `${analysis.newItems.length} new`,
