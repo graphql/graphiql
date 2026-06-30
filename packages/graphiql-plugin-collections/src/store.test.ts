@@ -426,7 +426,7 @@ describe('applyImport', () => {
     expect(after[0]?.items[0]?.query).toBe(before[0]?.items[0]?.query);
   });
 
-  it('reshare updates item in place, not duplicated', async () => {
+  it('re-share updates item in place, not duplicated', async () => {
     const storage = makeStorage();
     await getActions().init(storage);
     const col = getActions().createCollection('Col');
