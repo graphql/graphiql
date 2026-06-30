@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { collectionsStore } from './store';
-import type { Collection, CollectionsStorage } from './types';
+import type { Collection, CollectionItem, CollectionsStorage } from './types';
 import { createLocalStorageAdapter } from './storage/local-storage';
 
 const getActions = () => collectionsStore.getState().actions;
@@ -223,24 +223,156 @@ describe('exportCollection', () => {
   });
 });
 
-describe('importCollections', () => {
-  it('merge mode appends without duplicating by id', async () => {
+// ---------------------------------------------------------------------------
+// Helpers shared across analyzeImport / applyImport tests
+// ---------------------------------------------------------------------------
+
+const makeItem = (
+  overrides: Partial<CollectionItem> & {
+    id: string;
+    name: string;
+    query: string;
+  },
+): CollectionItem => ({
+  createdAt: 1000,
+  updatedAt: 1000,
+  ...overrides,
+});
+
+const makeCol = (
+  id: string,
+  name: string,
+  items: CollectionItem[] = [],
+): Collection => ({
+  id,
+  name,
+  items,
+  createdAt: 1000,
+  updatedAt: 1000,
+});
+
+describe('analyzeImport', () => {
+  it('returns ok:false for invalid JSON', () => {
+    const result = getActions().analyzeImport('not valid json{{');
+    expect(result.ok).toBe(false);
+    expect(result.newCollections).toHaveLength(0);
+    expect(result.newItems).toHaveLength(0);
+    expect(result.changedItems).toHaveLength(0);
+    expect(result.unchangedCount).toBe(0);
+  });
+
+  it('returns ok:false for valid JSON with no collections', () => {
+    const result = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [] }),
+    );
+    expect(result.ok).toBe(false);
+  });
+
+  it('accepts a bare array as input', () => {
+    const col = makeCol('c1', 'C1');
+    const result = getActions().analyzeImport(JSON.stringify([col]));
+    expect(result.ok).toBe(true);
+    expect(result.newCollections).toHaveLength(1);
+  });
+
+  it('idempotent round-trip: everything unchanged, no new/changed items', async () => {
     const storage = makeStorage();
     await getActions().init(storage);
-    const c = getActions().createCollection('Existing');
-    const toImport = JSON.stringify({
-      version: 1,
-      collections: [
-        { id: c.id, name: 'Duplicate', items: [], createdAt: 0, updatedAt: 0 },
-        { id: 'new-id', name: 'New', items: [], createdAt: 0, updatedAt: 0 },
-      ],
-    });
-    getActions().importCollections(toImport, 'merge');
-    const state = collectionsStore.getState().collections;
-    expect(state).toHaveLength(2);
-    // existing kept, duplicate skipped, new added
-    expect(state.find(c2 => c2.id === c.id)?.name).toBe('Existing');
-    expect(state.find(c2 => c2.id === 'new-id')?.name).toBe('New');
+    const col = getActions().createCollection('My Queries');
+    getActions().addItem(col.id, { name: 'Foo', query: '{ foo }' });
+
+    const exported = getActions().exportCollections();
+    const analysis = getActions().analyzeImport(exported);
+
+    expect(analysis.ok).toBe(true);
+    expect(analysis.newCollections).toHaveLength(0);
+    expect(analysis.newItems).toHaveLength(0);
+    expect(analysis.changedItems).toHaveLength(0);
+    expect(analysis.unchangedCount).toBe(1);
+  });
+
+  it('classifies a new collection and its items as new', () => {
+    const item = makeItem({ id: 'item-1', name: 'Op', query: '{ a }' });
+    const col = makeCol('col-new', 'New Col', [item]);
+    const result = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [col] }),
+    );
+
+    expect(result.ok).toBe(true);
+    expect(result.newCollections).toHaveLength(1);
+    expect(result.newCollections[0]?.id).toBe('col-new');
+    expect(result.newCollections[0]?.items).toHaveLength(0); // shell only
+    expect(result.newItems).toHaveLength(1);
+    expect(result.newItems[0]?.item.id).toBe('item-1');
+    expect(result.newItems[0]?.targetCollectionId).toBe('col-new');
+  });
+
+  it('classifies an existing item with changed content as a changedItem', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('My Col');
+    const item = getActions().addItem(col.id, { name: 'Op', query: '{ old }' });
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: item.id, name: 'Op', query: '{ new }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+
+    expect(analysis.changedItems).toHaveLength(1);
+    expect(analysis.changedItems[0]?.incoming.query).toBe('{ new }');
+    expect(analysis.changedItems[0]?.current.query).toBe('{ old }');
+    expect(analysis.changedItems[0]?.currentCollectionId).toBe(col.id);
+    expect(analysis.newItems).toHaveLength(0);
+    expect(analysis.unchangedCount).toBe(0);
+  });
+
+  it('tracks currentCollectionId as where the recipient keeps the item, not the incoming parent', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    // Item lives in col-D after recipient moved it there.
+    const colK = getActions().createCollection('K');
+    const colD = getActions().createCollection('D');
+    const item = getActions().addItem(colK.id, { name: 'X', query: '{ x }' });
+    // Simulate recipient moving it to D.
+    getActions().moveItem(colK.id, 0, colD.id, 0);
+
+    // Import comes in with the item still in K (with changed content).
+    const incoming = makeCol(colK.id, 'K', [
+      makeItem({ id: item.id, name: 'X', query: '{ x changed }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+
+    expect(analysis.changedItems).toHaveLength(1);
+    expect(analysis.changedItems[0]?.currentCollectionId).toBe(colD.id);
+  });
+
+  it('collection metadata is not overridden when collection id already exists', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Local Name');
+
+    // Import with same id but different name — newCollections should be empty.
+    const incoming = makeCol(col.id, 'Incoming Name', []);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+
+    expect(analysis.newCollections).toHaveLength(0);
+  });
+});
+
+describe('applyImport', () => {
+  it('apply of ok:false analysis is a no-op', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    getActions().createCollection('Keep me');
+    const bad = getActions().analyzeImport('garbage!!');
+    getActions().applyImport(bad, { mode: 'merge', applyChanges: true });
+    expect(collectionsStore.getState().collections).toHaveLength(1);
   });
 
   it('replace mode replaces all collections', async () => {
@@ -248,28 +380,290 @@ describe('importCollections', () => {
     await getActions().init(storage);
     getActions().createCollection('Will be replaced');
     const replacement = JSON.stringify({
-      collections: [
-        {
-          id: 'imported-1',
-          name: 'Imported',
-          items: [],
-          createdAt: 0,
-          updatedAt: 0,
-        },
-      ],
+      collections: [makeCol('imported-1', 'Imported')],
     });
-    getActions().importCollections(replacement, 'replace');
+    const analysis = getActions().analyzeImport(replacement);
+    getActions().applyImport(analysis, { mode: 'replace' });
     const state = collectionsStore.getState().collections;
     expect(state).toHaveLength(1);
     expect(state[0]?.name).toBe('Imported');
   });
 
-  it('does nothing on invalid JSON', async () => {
+  it('idempotent apply is a no-op — no duplicates', async () => {
     const storage = makeStorage();
     await getActions().init(storage);
-    getActions().createCollection('Keep me');
-    getActions().importCollections('not valid json', 'replace');
-    expect(collectionsStore.getState().collections).toHaveLength(1);
+    const col = getActions().createCollection('My Queries');
+    getActions().addItem(col.id, { name: 'Foo', query: '{ foo }' });
+    const before = collectionsStore.getState().collections;
+
+    const analysis = getActions().analyzeImport(
+      getActions().exportCollections(),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const after = collectionsStore.getState().collections;
+    expect(after).toHaveLength(1);
+    expect(after[0]?.items).toHaveLength(1);
+    // No structural change (name, query still the same).
+    expect(after[0]?.name).toBe(before[0]?.name);
+    expect(after[0]?.items[0]?.query).toBe(before[0]?.items[0]?.query);
+  });
+
+  it('reshare updates item in place, not duplicated', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    const item = getActions().addItem(col.id, { name: 'Op', query: '{ old }' });
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: item.id, name: 'Op', query: '{ new }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const finalCol = collectionsStore
+      .getState()
+      .collections.find(c => c.id === col.id)!;
+    expect(finalCol.items).toHaveLength(1);
+    expect(finalCol.items[0]?.id).toBe(item.id);
+    expect(finalCol.items[0]?.query).toBe('{ new }');
+  });
+
+  it('update-in-place respects recipient org: updates item in D, not in K', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const colK = getActions().createCollection('K');
+    const colD = getActions().createCollection('D');
+    const item = getActions().addItem(colK.id, {
+      name: 'X',
+      query: '{ x }',
+      createdAt: 500,
+    } as any);
+    getActions().moveItem(colK.id, 0, colD.id, 0);
+
+    const incoming = makeCol(colK.id, 'K', [
+      makeItem({ id: item.id, name: 'X', query: '{ x changed }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const state = collectionsStore.getState().collections;
+    const kItems = state.find(c => c.id === colK.id)!.items;
+    const dItems = state.find(c => c.id === colD.id)!.items;
+
+    expect(kItems).toHaveLength(0);
+    expect(dItems).toHaveLength(1);
+    expect(dItems[0]?.query).toBe('{ x changed }');
+  });
+
+  it('orphan materializes parent: new collection shell created with incoming id+name', () => {
+    const item = makeItem({ id: 'item-orphan', name: 'Op', query: '{ q }' });
+    const col = makeCol('col-new', 'New Parent', [item]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [col] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const state = collectionsStore.getState().collections;
+    const created = state.find(c => c.id === 'col-new');
+    expect(created).toBeDefined();
+    expect(created?.name).toBe('New Parent');
+    expect(created?.items).toHaveLength(1);
+    expect(created?.items[0]?.id).toBe('item-orphan');
+  });
+
+  it('new items are always applied regardless of applyChanges:false', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Existing Col');
+    const existingItem = getActions().addItem(col.id, {
+      name: 'Old',
+      query: '{ old }',
+    });
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: existingItem.id, name: 'Old', query: '{ changed }' }),
+      makeItem({ id: 'brand-new-item', name: 'New', query: '{ new }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    // applyChanges:false — should still add brand-new-item
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: false });
+
+    const finalCol = collectionsStore
+      .getState()
+      .collections.find(c => c.id === col.id)!;
+    expect(finalCol.items).toHaveLength(2);
+    expect(finalCol.items.find(i => i.id === 'brand-new-item')).toBeDefined();
+    // Changed item left untouched.
+    expect(finalCol.items.find(i => i.id === existingItem.id)?.query).toBe(
+      '{ old }',
+    );
+  });
+
+  it('keep-mine: applyChanges:false leaves changed items untouched', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    const item = getActions().addItem(col.id, {
+      name: 'Op',
+      query: '{ local }',
+    });
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: item.id, name: 'Op', query: '{ remote }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: false });
+
+    const finalItem = collectionsStore.getState().collections[0]?.items[0];
+    expect(finalItem?.query).toBe('{ local }');
+  });
+
+  it('per-item review: only changedItemIds subset is applied', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    const itemA = getActions().addItem(col.id, {
+      name: 'A',
+      query: '{ a local }',
+    });
+    const itemB = getActions().addItem(col.id, {
+      name: 'B',
+      query: '{ b local }',
+    });
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: itemA.id, name: 'A', query: '{ a remote }' }),
+      makeItem({ id: itemB.id, name: 'B', query: '{ b remote }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    // Only apply A.
+    getActions().applyImport(analysis, {
+      mode: 'merge',
+      changedItemIds: new Set([itemA.id]),
+    });
+
+    const items = collectionsStore.getState().collections[0]?.items ?? [];
+    expect(items.find(i => i.id === itemA.id)?.query).toBe('{ a remote }');
+    expect(items.find(i => i.id === itemB.id)?.query).toBe('{ b local }');
+  });
+
+  it('collection metadata not overridden by incoming name', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Local Name');
+
+    const incoming = makeCol(col.id, 'Incoming Name', [
+      makeItem({ id: 'new-item', name: 'New', query: '{ n }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const finalCol = collectionsStore
+      .getState()
+      .collections.find(c => c.id === col.id)!;
+    expect(finalCol.name).toBe('Local Name');
+    // But the new item is still added.
+    expect(finalCol.items).toHaveLength(1);
+  });
+
+  it('merge never deletes: local-only item kept when absent from import', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    const keepMe = getActions().addItem(col.id, {
+      name: 'Keep',
+      query: '{ keep }',
+    });
+
+    // Import omits keepMe entirely.
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({ id: 'other', name: 'Other', query: '{ other }' }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const finalItems = collectionsStore.getState().collections[0]?.items ?? [];
+    expect(finalItems.find(i => i.id === keepMe.id)).toBeDefined();
+    expect(finalItems).toHaveLength(2);
+  });
+
+  it('update-in-place preserves local createdAt', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    const item = getActions().addItem(col.id, { name: 'Op', query: '{ old }' });
+    const localCreatedAt =
+      collectionsStore.getState().collections[0]!.items[0]!.createdAt;
+
+    const incoming = makeCol(col.id, col.name, [
+      makeItem({
+        id: item.id,
+        name: 'Op',
+        query: '{ new }',
+        createdAt: 9999,
+        updatedAt: 9999,
+      }),
+    ]);
+    const analysis = getActions().analyzeImport(
+      JSON.stringify({ version: 1, collections: [incoming] }),
+    );
+    getActions().applyImport(analysis, { mode: 'merge', applyChanges: true });
+
+    const finalItem = collectionsStore.getState().collections[0]?.items[0];
+    expect(finalItem?.createdAt).toBe(localCreatedAt);
+    expect(finalItem?.query).toBe('{ new }');
+  });
+});
+
+describe('exportItem', () => {
+  it('returns a one-item envelope with parent shell', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('My Col');
+    const item = getActions().addItem(col.id, { name: 'Op', query: '{ q }' });
+
+    const parsed = JSON.parse(getActions().exportItem(item.id));
+    expect(parsed.version).toBe(1);
+    expect(parsed.collections).toHaveLength(1);
+    expect(parsed.collections[0]?.id).toBe(col.id);
+    expect(parsed.collections[0]?.name).toBe('My Col');
+    expect(parsed.collections[0]?.items).toHaveLength(1);
+    expect(parsed.collections[0]?.items[0]?.id).toBe(item.id);
+  });
+
+  it('returns an empty envelope for an unknown itemId', () => {
+    const parsed = JSON.parse(getActions().exportItem('does-not-exist'));
+    expect(parsed.version).toBe(1);
+    expect(parsed.collections).toEqual([]);
+  });
+
+  it('round-trips: exportItem then analyzeImport → item is unchanged', async () => {
+    const storage = makeStorage();
+    await getActions().init(storage);
+    const col = getActions().createCollection('Col');
+    getActions().addItem(col.id, { name: 'Op', query: '{ q }' });
+    const itemId = collectionsStore.getState().collections[0]!.items[0]!.id;
+
+    const exported = getActions().exportItem(itemId);
+    const analysis = getActions().analyzeImport(exported);
+    expect(analysis.unchangedCount).toBe(1);
+    expect(analysis.newItems).toHaveLength(0);
+    expect(analysis.changedItems).toHaveLength(0);
   });
 });
 

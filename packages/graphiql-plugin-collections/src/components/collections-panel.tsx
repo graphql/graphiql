@@ -90,7 +90,10 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
       }
       return;
     }
-    collectionsStore.getState().actions.importCollections(text, 'merge');
+    const analysis = collectionsStore.getState().actions.analyzeImport(text);
+    collectionsStore
+      .getState()
+      .actions.applyImport(analysis, { mode: 'merge', applyChanges: true });
     setStatus({
       ok: true,
       message: `Imported ${count} collection${count === 1 ? '' : 's'}.`,

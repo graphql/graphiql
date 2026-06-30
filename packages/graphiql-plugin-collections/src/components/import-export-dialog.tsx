@@ -50,7 +50,17 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
       const text = e.target?.result as string;
       try {
         JSON.parse(text);
-        collectionsStore.getState().actions.importCollections(text, importMode);
+        const analysis = collectionsStore
+          .getState()
+          .actions.analyzeImport(text);
+        collectionsStore
+          .getState()
+          .actions.applyImport(
+            analysis,
+            importMode === 'replace'
+              ? { mode: 'replace' }
+              : { mode: 'merge', applyChanges: true },
+          );
         onClose();
       } catch {
         setImportError(
