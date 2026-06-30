@@ -824,6 +824,32 @@ describe('requestSave', () => {
     expect(collections[0]?.items).toHaveLength(1);
   });
 
+  it('returns false and does not open the dialog when config.readOnly is true', () => {
+    collectionsStore.setState({
+      config: {
+        readOnly: true,
+        allowImportExport: true,
+        allowReplace: true,
+        allowCopy: true,
+      },
+    });
+    const savedInPlace = getActions().requestSave({
+      id: 'tab-1',
+      query: 'query GetUser { user { id } }',
+    });
+    expect(savedInPlace).toBe(false);
+    expect(collectionsStore.getState().saveDialog.open).toBe(false);
+    // restore default for subsequent tests
+    collectionsStore.setState({
+      config: {
+        readOnly: false,
+        allowImportExport: true,
+        allowReplace: true,
+        allowCopy: true,
+      },
+    });
+  });
+
   it('falls back to the dialog when the linked item no longer exists', () => {
     const collection = getActions().createCollection('My collection');
     const item = getActions().addItem(collection.id, {

@@ -9,6 +9,10 @@ type CollectionItemRowProps = {
   index: number;
   totalItems: number;
   allCollections: Collection[];
+  /** Hide write affordances (Move, Delete) and disable drag-reorder when true. */
+  readOnly?: boolean;
+  /** Hide "Copy operation" when false. */
+  allowCopy?: boolean;
   onOpen(item: CollectionItem): void;
   onCopy(itemId: string): void;
   onDelete(collectionId: string, itemId: string): void;
@@ -26,6 +30,8 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   index,
   totalItems,
   allCollections,
+  readOnly = false,
+  allowCopy = true,
   onOpen,
   onCopy,
   onDelete,
@@ -39,34 +45,46 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
     <div
       className={`graphiql-collection-item-row${isDragOver ? ' graphiql-collection-drop-target' : ''}`}
       aria-grabbed={isDragging || undefined}
-      draggable
-      onDragStart={e => {
-        setIsDragging(true);
-        e.dataTransfer.setData(
-          'application/x-graphiql-item',
-          JSON.stringify({ collectionId, index }),
-        );
-        e.dataTransfer.effectAllowed = 'move';
-      }}
-      onDragEnd={() => setIsDragging(false)}
-      onDragOver={e => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        setIsDragOver(true);
-      }}
-      onDragLeave={() => setIsDragOver(false)}
-      onDrop={e => {
-        e.preventDefault();
-        setIsDragOver(false);
-        try {
-          const data = JSON.parse(
-            e.dataTransfer.getData('application/x-graphiql-item'),
-          );
-          onMove(data.collectionId, data.index, collectionId, index);
-        } catch {
-          // malformed drag data
-        }
-      }}
+      draggable={!readOnly}
+      onDragStart={
+        readOnly
+          ? undefined
+          : e => {
+              setIsDragging(true);
+              e.dataTransfer.setData(
+                'application/x-graphiql-item',
+                JSON.stringify({ collectionId, index }),
+              );
+              e.dataTransfer.effectAllowed = 'move';
+            }
+      }
+      onDragEnd={readOnly ? undefined : () => setIsDragging(false)}
+      onDragOver={
+        readOnly
+          ? undefined
+          : e => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+              setIsDragOver(true);
+            }
+      }
+      onDragLeave={readOnly ? undefined : () => setIsDragOver(false)}
+      onDrop={
+        readOnly
+          ? undefined
+          : e => {
+              e.preventDefault();
+              setIsDragOver(false);
+              try {
+                const data = JSON.parse(
+                  e.dataTransfer.getData('application/x-graphiql-item'),
+                );
+                onMove(data.collectionId, data.index, collectionId, index);
+              } catch {
+                // malformed drag data
+              }
+            }
+      }
       onClick={() => onOpen(item)}
     >
       <span className="graphiql-collection-drag-handle" aria-hidden="true">
@@ -97,10 +115,12 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
           <DropdownMenu.Item onSelect={() => onOpen(item)}>
             Open
           </DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={() => onCopy(item.id)}>
-            Copy operation
-          </DropdownMenu.Item>
-          {index > 0 && (
+          {allowCopy && (
+            <DropdownMenu.Item onSelect={() => onCopy(item.id)}>
+              Copy operation
+            </DropdownMenu.Item>
+          )}
+          {!readOnly && index > 0 && (
             <DropdownMenu.Item
               onSelect={() =>
                 onMove(collectionId, index, collectionId, index - 1)
@@ -109,7 +129,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
               Move up
             </DropdownMenu.Item>
           )}
-          {index < totalItems - 1 && (
+          {!readOnly && index < totalItems - 1 && (
             <DropdownMenu.Item
               onSelect={() =>
                 onMove(collectionId, index, collectionId, index + 1)
@@ -118,7 +138,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
               Move down
             </DropdownMenu.Item>
           )}
-          {allCollections.some(c => c.id !== collectionId) && (
+          {!readOnly && allCollections.some(c => c.id !== collectionId) && (
             <>
               <DropdownMenu.Separator />
               {allCollections
@@ -135,10 +155,16 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
                 ))}
             </>
           )}
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item onSelect={() => onDelete(collectionId, item.id)}>
-            Delete
-          </DropdownMenu.Item>
+          {!readOnly && (
+            <>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item
+                onSelect={() => onDelete(collectionId, item.id)}
+              >
+                Delete
+              </DropdownMenu.Item>
+            </>
+          )}
         </DropdownMenu.Content>
       </DropdownMenu>
     </div>

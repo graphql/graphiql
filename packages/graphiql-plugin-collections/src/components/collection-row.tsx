@@ -6,6 +6,10 @@ import { CollectionItemRow } from './collection-item-row';
 type CollectionRowProps = {
   collection: Collection;
   allCollections: Collection[];
+  /** Hide write affordances (Rename, Delete, add-item) when true. */
+  readOnly?: boolean;
+  /** Hide "Copy to clipboard" when false. */
+  allowCopy?: boolean;
   onRename(id: string, name: string): void;
   onDelete(id: string): void;
   onCopy(id: string): void;
@@ -27,6 +31,8 @@ type CollectionRowProps = {
 export const CollectionRow: FC<CollectionRowProps> = ({
   collection,
   allCollections,
+  readOnly = false,
+  allowCopy = true,
   onRename,
   onDelete,
   onCopy,
@@ -97,21 +103,29 @@ export const CollectionRow: FC<CollectionRowProps> = ({
             ···
           </DropdownMenu.Button>
           <DropdownMenu.Content>
-            <DropdownMenu.Item
-              onSelect={() => {
-                setRenameValue(collection.name);
-                setIsRenaming(true);
-              }}
-            >
-              Rename
-            </DropdownMenu.Item>
-            <DropdownMenu.Item onSelect={() => onCopy(collection.id)}>
-              Copy to clipboard
-            </DropdownMenu.Item>
-            <DropdownMenu.Separator />
-            <DropdownMenu.Item onSelect={() => onDelete(collection.id)}>
-              Delete
-            </DropdownMenu.Item>
+            {!readOnly && (
+              <DropdownMenu.Item
+                onSelect={() => {
+                  setRenameValue(collection.name);
+                  setIsRenaming(true);
+                }}
+              >
+                Rename
+              </DropdownMenu.Item>
+            )}
+            {allowCopy && (
+              <DropdownMenu.Item onSelect={() => onCopy(collection.id)}>
+                Copy to clipboard
+              </DropdownMenu.Item>
+            )}
+            {!readOnly && (
+              <>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item onSelect={() => onDelete(collection.id)}>
+                  Delete
+                </DropdownMenu.Item>
+              </>
+            )}
           </DropdownMenu.Content>
         </DropdownMenu>
       </div>
@@ -125,6 +139,8 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               index={i}
               totalItems={collection.items.length}
               allCollections={allCollections}
+              readOnly={readOnly}
+              allowCopy={allowCopy}
               onOpen={onOpenItem}
               onCopy={onCopyItem}
               onDelete={onDeleteItem}

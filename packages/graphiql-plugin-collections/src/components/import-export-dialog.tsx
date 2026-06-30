@@ -6,18 +6,27 @@ type ImportExportDialogProps = {
   open: boolean;
   onClose(): void;
   onImport(text: string, mode: 'merge' | 'replace'): void;
+  /** Hide the Import tab/controls (import is a write) when true. */
+  readOnly?: boolean;
+  /** Hide the "Replace" import option (force merge) when false. */
+  allowReplace?: boolean;
 };
 
 export const ImportExportDialog: FC<ImportExportDialogProps> = ({
   open,
   onClose,
   onImport,
+  readOnly = false,
+  allowReplace = true,
 }) => {
   const [mode, setMode] = useState<'export' | 'import'>('export');
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
   const [importError, setImportError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Importing is a write; suppress the Import tab entirely under readOnly.
+  const effectiveMode = readOnly ? 'export' : mode;
 
   const exported = collectionsStore.getState().actions.exportCollections();
 
@@ -59,7 +68,7 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
         return;
       }
       onClose();
-      onImport(text, importMode);
+      onImport(text, allowReplace ? importMode : 'merge');
     };
     reader.readAsText(file);
   };
@@ -68,23 +77,25 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
       <Dialog.Header>Import / Export Collections</Dialog.Header>
       <Dialog.Body>
-        <div className="graphiql-import-export-tabs">
-          <button
-            type="button"
-            className={`graphiql-import-export-tab${mode === 'export' ? ' active' : ''}`}
-            onClick={() => setMode('export')}
-          >
-            Export
-          </button>
-          <button
-            type="button"
-            className={`graphiql-import-export-tab${mode === 'import' ? ' active' : ''}`}
-            onClick={() => setMode('import')}
-          >
-            Import
-          </button>
-        </div>
-        {mode === 'export' && (
+        {!readOnly && (
+          <div className="graphiql-import-export-tabs">
+            <button
+              type="button"
+              className={`graphiql-import-export-tab${effectiveMode === 'export' ? ' active' : ''}`}
+              onClick={() => setMode('export')}
+            >
+              Export
+            </button>
+            <button
+              type="button"
+              className={`graphiql-import-export-tab${effectiveMode === 'import' ? ' active' : ''}`}
+              onClick={() => setMode('import')}
+            >
+              Import
+            </button>
+          </div>
+        )}
+        {effectiveMode === 'export' && (
           <div className="graphiql-import-export-section">
             <textarea
               readOnly
@@ -107,7 +118,7 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
             </div>
           </div>
         )}
-        {mode === 'import' && (
+        {effectiveMode === 'import' && (
           <div className="graphiql-import-export-section">
             <input
               ref={fileInputRef}
@@ -122,21 +133,23 @@ export const ImportExportDialog: FC<ImportExportDialogProps> = ({
                   type="radio"
                   name="import-mode"
                   value="merge"
-                  checked={importMode === 'merge'}
+                  checked={!allowReplace || importMode === 'merge'}
                   onChange={() => setImportMode('merge')}
                 />
                 Merge (add new, update changed in place)
               </label>
-              <label>
-                <input
-                  type="radio"
-                  name="import-mode"
-                  value="replace"
-                  checked={importMode === 'replace'}
-                  onChange={() => setImportMode('replace')}
-                />
-                Replace (remove all existing collections)
-              </label>
+              {allowReplace && (
+                <label>
+                  <input
+                    type="radio"
+                    name="import-mode"
+                    value="replace"
+                    checked={importMode === 'replace'}
+                    onChange={() => setImportMode('replace')}
+                  />
+                  Replace (remove all existing collections)
+                </label>
+              )}
             </fieldset>
             {importError && (
               <p className="graphiql-import-export-error">{importError}</p>

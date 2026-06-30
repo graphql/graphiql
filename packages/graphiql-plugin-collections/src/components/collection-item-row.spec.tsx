@@ -61,4 +61,51 @@ describe('CollectionItemRow', () => {
     expect(onDelete).toHaveBeenCalledWith('col-1', 'item-1');
     expect(onOpen).not.toHaveBeenCalled();
   });
+
+  it('readOnly hides Delete and Move affordances and disables drag', () => {
+    const twoItems: Collection[] = [
+      {
+        id: 'col-1',
+        name: 'Col One',
+        createdAt: 1000,
+        updatedAt: 1000,
+        items: [item, { ...item, id: 'item-2', name: 'Second' }],
+      },
+      {
+        id: 'col-2',
+        name: 'Col Two',
+        createdAt: 1000,
+        updatedAt: 1000,
+        items: [],
+      },
+    ];
+    const { container } = render(
+      <CollectionItemRow
+        item={item}
+        collectionId="col-1"
+        index={0}
+        totalItems={2}
+        allCollections={twoItems}
+        readOnly
+        onOpen={vi.fn()}
+        onCopy={vi.fn()}
+        onDelete={vi.fn()}
+        onMove={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText('Delete')).toBeNull();
+    expect(screen.queryByText('Move down')).toBeNull();
+    expect(screen.queryByText(/^Move to:/)).toBeNull();
+    // Still openable / copyable.
+    expect(screen.getByText('Open')).toBeTruthy();
+    expect(screen.getByText('Copy operation')).toBeTruthy();
+    const row = container.querySelector('.graphiql-collection-item-row');
+    expect(row?.getAttribute('draggable')).toBe('false');
+  });
+
+  it('allowCopy:false hides "Copy operation"', () => {
+    renderRow({ allowCopy: false });
+    expect(screen.queryByText('Copy operation')).toBeNull();
+    expect(screen.getByText('Open')).toBeTruthy();
+  });
 });

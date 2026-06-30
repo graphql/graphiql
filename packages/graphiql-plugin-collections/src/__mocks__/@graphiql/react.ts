@@ -63,14 +63,12 @@ export const GraphiQLProvider = ({ children }: { children: ReactNode }) =>
   children;
 
 export const PanelHeader = ({
-  title: _title,
-  subtitle: _subtitle,
-  actions: _actions,
+  actions,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
-}) => null;
+}) => actions ?? null;
 
 export const MethodPill = ({ operation: _operation }: { operation: string }) =>
   null;

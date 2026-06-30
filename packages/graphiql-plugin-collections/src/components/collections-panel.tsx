@@ -21,6 +21,11 @@ import type {
 
 type CollectionsPanelProps = {
   storage?: CollectionsStorage;
+  /** Capability flags; all default on. See `CollectionsConfig`. */
+  readOnly?: boolean;
+  allowImportExport?: boolean;
+  allowReplace?: boolean;
+  allowCopy?: boolean;
 };
 
 /**
@@ -73,7 +78,16 @@ function deriveSourceLabel(incoming: ImportAnalysis['_incoming']): string {
   return `${incoming.length} collections`;
 }
 
-export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
+export const CollectionsPanel: FC<CollectionsPanelProps> = ({
+  storage,
+  readOnly = false,
+  allowImportExport = true,
+  allowReplace = true,
+  allowCopy = true,
+}) => {
+  // Importing is a write; it's available only when both writes and the
+  // import/export feature are enabled.
+  const allowImport = !readOnly && allowImportExport;
   const actions = useCollectionsStore(s => s.actions);
   const collections = useCollectionsStore(s => s.collections);
   const loaded = useCollectionsStore(s => s.loaded);
@@ -90,8 +104,13 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
   const [pendingReplace, setPendingReplace] = useState<string | null>(null);
 
   useEffect(() => {
-    void actions.init(storage ?? localStorageAdapter);
-    // storage is intentionally only read on mount
+    void actions.init(storage ?? localStorageAdapter, {
+      readOnly,
+      allowImportExport,
+      allowReplace,
+      allowCopy,
+    });
+    // storage/config are intentionally only read on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -196,11 +215,19 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
     runImport(text, 'merge');
   };
 
+  // Keep a live ref so the once-bound paste listener honors current config.
+  const allowImportRef = useRef(allowImport);
+  allowImportRef.current = allowImport;
+
   // Paste a collections export anywhere in the open panel to merge it in.
   // Guarded so it never hijacks a normal paste: ignored while typing in an
-  // editor/input, and ignored unless the clipboard parses as an export.
+  // editor/input, ignored unless the clipboard parses as an export, and
+  // ignored entirely when importing is disabled.
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
+      if (!allowImportRef.current) {
+        return;
+      }
       if (isEditableTarget(document.activeElement)) {
         return;
       }
@@ -292,7 +319,7 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
     <div
       className={`graphiql-collections-panel${isDragOver ? ' graphiql-collections-drop-active' : ''}`}
       onDragOver={e => {
-        if (!e.dataTransfer.types.includes('Files')) {
+        if (!allowImport || !e.dataTransfer.types.includes('Files')) {
           return;
         }
         e.preventDefault();
@@ -305,6 +332,9 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
         setIsDragOver(false);
       }}
       onDrop={e => {
+        if (!allowImport) {
+          return;
+        }
         const file = e.dataTransfer.files[0];
         if (!file) {
           return; // not a file drop (e.g. an item being reordered)
@@ -319,28 +349,32 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
         subtitle="Save and organize operations into collections."
         actions={
           <>
-            <button
-              type="button"
-              className="graphiql-collections-action"
-              onClick={() =>
-                collectionsStore
-                  .getState()
-                  .actions.createCollection('New Collection')
-              }
-              aria-label="New collection"
-              title="New collection"
-            >
-              + New
-            </button>
-            <button
-              type="button"
-              className="graphiql-collections-action"
-              onClick={() => setShowImportExport(true)}
-              aria-label="Import / Export"
-              title="Import / Export"
-            >
-              ↑↓
-            </button>
+            {!readOnly && (
+              <button
+                type="button"
+                className="graphiql-collections-action"
+                onClick={() =>
+                  collectionsStore
+                    .getState()
+                    .actions.createCollection('New Collection')
+                }
+                aria-label="New collection"
+                title="New collection"
+              >
+                + New
+              </button>
+            )}
+            {allowImportExport && (
+              <button
+                type="button"
+                className="graphiql-collections-action"
+                onClick={() => setShowImportExport(true)}
+                aria-label="Import / Export"
+                title="Import / Export"
+              >
+                ↑↓
+              </button>
+            )}
           </>
         }
       />
@@ -365,6 +399,8 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
             key={collection.id}
             collection={collection}
             allCollections={collections}
+            readOnly={readOnly}
+            allowCopy={allowCopy}
             onRename={handleRename}
             onDelete={handleDelete}
             onCopy={id => void handleCopy(id)}
@@ -376,11 +412,15 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
           />
         ))}
       </div>
-      <ImportExportDialog
-        open={showImportExport}
-        onClose={() => setShowImportExport(false)}
-        onImport={runImport}
-      />
+      {allowImportExport && (
+        <ImportExportDialog
+          open={showImportExport}
+          onClose={() => setShowImportExport(false)}
+          onImport={runImport}
+          readOnly={readOnly}
+          allowReplace={allowReplace}
+        />
+      )}
       {pendingConflict && (
         <ConflictDialog
           analysis={pendingConflict.analysis}

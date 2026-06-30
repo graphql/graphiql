@@ -53,6 +53,7 @@ import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import {
   collectionsPlugin,
   collectionsStore,
+  useCollectionsStore,
   CollectionsSaveDialog,
 } from '@graphiql/plugin-collections';
 import {
@@ -280,6 +281,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     ),
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
+  const collectionsReadOnly = useCollectionsStore(s => s.config.readOnly);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
@@ -560,17 +562,21 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                         <CopyIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
-                    <Tooltip label={LABEL.save}>
-                      <UnStyledButton
-                        type="button"
-                        className="graphiql-tab-strip-action"
-                        onClick={saveQuery}
-                        aria-label={LABEL.save}
-                      >
-                        <SaveIcon aria-hidden="true" />
-                      </UnStyledButton>
-                    </Tooltip>
-                    <CollectionsSaveDialog />
+                    {!collectionsReadOnly && (
+                      <>
+                        <Tooltip label={LABEL.save}>
+                          <UnStyledButton
+                            type="button"
+                            className="graphiql-tab-strip-action"
+                            onClick={saveQuery}
+                            aria-label={LABEL.save}
+                          >
+                            <SaveIcon aria-hidden="true" />
+                          </UnStyledButton>
+                        </Tooltip>
+                        <CollectionsSaveDialog />
+                      </>
+                    )}
                   </div>
                   {logo}
                 </div>

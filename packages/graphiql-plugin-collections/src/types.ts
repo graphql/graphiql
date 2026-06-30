@@ -18,6 +18,29 @@ export type CollectionItem = {
   updatedAt: number;
 };
 
+/**
+ * Host-controlled capability flags. All capabilities are on by default; a host
+ * can turn any of them off to run a governed, read-only, or share-disabled
+ * collections experience.
+ */
+export type CollectionsConfig = {
+  /** When true, no write operations are possible (export & copy still allowed). */
+  readOnly: boolean;
+  /** Master switch for the import/export feature (hides both import and export). */
+  allowImportExport: boolean;
+  /** When false, the destructive "Replace" import option is hidden. */
+  allowReplace: boolean;
+  /** When false, "Copy to clipboard" / "Copy operation" affordances are hidden. */
+  allowCopy: boolean;
+};
+
+export const DEFAULT_COLLECTIONS_CONFIG: CollectionsConfig = {
+  readOnly: false,
+  allowImportExport: true,
+  allowReplace: true,
+  allowCopy: true,
+};
+
 /** Pluggable storage interface. Default localStorage adapter ships with the plugin. */
 export type CollectionsStorage = {
   storageKey?: string;

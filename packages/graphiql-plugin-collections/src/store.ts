@@ -3,10 +3,12 @@ import { createBoundedUseStore } from '@graphiql/react';
 import type {
   Collection,
   CollectionItem,
+  CollectionsConfig,
   CollectionsStorage,
   ImportAnalysis,
   ImportResolution,
 } from './types';
+import { DEFAULT_COLLECTIONS_CONFIG } from './types';
 import { localStorageAdapter } from './storage/local-storage';
 
 /** A link from an editor tab to the collection item it was opened from or saved as. */
@@ -36,13 +38,18 @@ type CollectionsState = {
   collections: Collection[];
   loaded: boolean;
   storage: CollectionsStorage;
+  /** Host-controlled capability flags; set on init from the plugin options. */
+  config: CollectionsConfig;
   /** Maps a tab id to the collection item it is linked to. */
   links: Record<string, TabLink>;
   saveDialog: SaveDialogState;
 };
 
 type CollectionsActions = {
-  init(storage: CollectionsStorage): Promise<void>;
+  init(
+    storage: CollectionsStorage,
+    config?: Partial<CollectionsConfig>,
+  ): Promise<void>;
   /**
    * Replace the in-memory collections wholesale without persisting. Use this
    * to reflect state loaded or merged externally — writing it back would be
@@ -137,12 +144,18 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
     collections: [],
     loaded: false,
     storage: localStorageAdapter,
+    config: DEFAULT_COLLECTIONS_CONFIG,
     links: {},
     saveDialog: INITIAL_SAVE_DIALOG,
     actions: {
-      async init(storage) {
+      async init(storage, config) {
         const collections = await storage.load();
-        set({ collections, loaded: true, storage });
+        set({
+          collections,
+          loaded: true,
+          storage,
+          config: { ...DEFAULT_COLLECTIONS_CONFIG, ...config },
+        });
       },
       setCollections(collections) {
         set({ collections });
@@ -456,6 +469,11 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         }));
       },
       requestSave(operation) {
+        // Authoritative gate: saving is disabled in read-only mode regardless
+        // of how it was triggered (⌘S, save button, etc.).
+        if (get().config.readOnly) {
+          return false;
+        }
         const { links, collections, actions } = get();
         const link = operation.id ? links[operation.id] : undefined;
         if (link) {
