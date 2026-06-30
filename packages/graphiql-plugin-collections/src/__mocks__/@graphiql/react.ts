@@ -116,11 +116,12 @@ export const DropdownMenu = Object.assign(
     Content: ({ children }: { children: ReactNode }) => children,
     Item: ({
       children,
-      onSelect: _onSelect,
+      onSelect,
     }: {
       children: ReactNode;
       onSelect?: () => void;
-    }) => children,
+    }) =>
+      createElement('button', { type: 'button', onClick: onSelect }, children),
     Separator: () => null,
   },
 );

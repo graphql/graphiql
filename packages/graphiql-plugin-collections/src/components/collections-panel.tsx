@@ -272,6 +272,16 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
     }
   };
 
+  const handleCopyItem = async (itemId: string) => {
+    const json = collectionsStore.getState().actions.exportItem(itemId);
+    try {
+      await navigator.clipboard.writeText(json);
+      setStatus({ ok: true, message: 'Copied operation to clipboard.' });
+    } catch {
+      setStatus({ ok: false, message: 'Could not copy to clipboard.' });
+    }
+  };
+
   const handleRename = actions.renameCollection;
   const handleDelete = actions.deleteCollection;
   const handleDeleteItem = actions.deleteItem;
@@ -359,6 +369,7 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({ storage }) => {
             onDelete={handleDelete}
             onCopy={id => void handleCopy(id)}
             onOpenItem={handleOpen}
+            onCopyItem={id => void handleCopyItem(id)}
             onDeleteItem={handleDeleteItem}
             onMoveItem={handleMoveItem}
             onAddItem={handleAddItem}

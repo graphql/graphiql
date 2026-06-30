@@ -10,6 +10,7 @@ type CollectionItemRowProps = {
   totalItems: number;
   allCollections: Collection[];
   onOpen(item: CollectionItem): void;
+  onCopy(itemId: string): void;
   onDelete(collectionId: string, itemId: string): void;
   onMove(
     fromCollectionId: string,
@@ -26,6 +27,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   totalItems,
   allCollections,
   onOpen,
+  onCopy,
   onDelete,
   onMove,
 }) => {
@@ -94,6 +96,9 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
         <DropdownMenu.Content>
           <DropdownMenu.Item onSelect={() => onOpen(item)}>
             Open
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => onCopy(item.id)}>
+            Copy operation
           </DropdownMenu.Item>
           {index > 0 && (
             <DropdownMenu.Item

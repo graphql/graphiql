@@ -10,6 +10,7 @@ type CollectionRowProps = {
   onDelete(id: string): void;
   onCopy(id: string): void;
   onOpenItem(item: CollectionItem): void;
+  onCopyItem(itemId: string): void;
   onDeleteItem(collectionId: string, itemId: string): void;
   onMoveItem(
     fromCollectionId: string,
@@ -30,6 +31,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
   onDelete,
   onCopy,
   onOpenItem,
+  onCopyItem,
   onDeleteItem,
   onMoveItem,
 }) => {
@@ -124,6 +126,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               totalItems={collection.items.length}
               allCollections={allCollections}
               onOpen={onOpenItem}
+              onCopy={onCopyItem}
               onDelete={onDeleteItem}
               onMove={onMoveItem}
             />
