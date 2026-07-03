@@ -112,6 +112,7 @@ jiti
 jonathanawesome
 jsdelivr
 jsgl
+keymap
 kumar
 languageservice
 leebyron
@@ -139,6 +140,7 @@ modulemap
 multipass
 nauroze
 newhope
+ngql
 nextjs
 nodenext
 nishchit
@@ -244,7 +246,9 @@ vizag
 vsix
 webp
 websockets
+webworker
 wgutils
+whatwg
 wincent
 wonka
 yoshiakis
