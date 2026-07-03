@@ -362,9 +362,7 @@ export function GraphiQLInterface({
   const editorToolsText = `${editorToolsHiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
-    editorToolsHiddenElement === 'second'
-      ? ChevronUpIcon
-      : ChevronDownIcon;
+    editorToolsHiddenElement === 'second' ? ChevronUpIcon : ChevronDownIcon;
 
   const editors = (
     <div className="graphiql-editors" ref={editorFirstRef}>
