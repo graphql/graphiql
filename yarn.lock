@@ -3331,7 +3331,7 @@ __metadata:
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": "npm:^3.1.0"
     graphql: "npm:^16.9.0"
-    graphql-ws: "npm:^5.5.5"
+    graphql-ws: "npm:^6.0.8"
     isomorphic-fetch: "npm:^3.0.0"
     meros: "npm:^1.1.4"
     subscriptions-transport-ws: "npm:0.11.0"
@@ -11706,7 +11706,7 @@ __metadata:
     file-loader: "npm:^6"
     graphiql: "npm:^5.2.4"
     graphql: "npm:^16"
-    graphql-ws: "npm:^5"
+    graphql-ws: "npm:^6"
     html-webpack-plugin: "npm:^5"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -13435,25 +13435,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-ws@npm:5.10.0":
-  version: 5.10.0
-  resolution: "graphql-ws@npm:5.10.0"
-  peerDependencies:
-    graphql: ">=0.11 <=16"
-  checksum: 10c0/1f21af84631bbab2440deb346b9f32749c82cb5fe8ed41a67dd679342b2c993d06ab04afc485767c3fd20659d97e21500032a622735c2a5211e9ff2be4927e2b
-  languageName: node
-  linkType: hard
-
-"graphql-ws@npm:^5, graphql-ws@npm:^5.5.5":
-  version: 5.16.2
-  resolution: "graphql-ws@npm:5.16.2"
-  peerDependencies:
-    graphql: ">=0.11 <=16"
-  checksum: 10c0/ba373df11ea8c6349c9f67335a0dfb09050a09ecc6b724b64730d242675c41d9f4b4a114b190b8711d014f8491c2bb8249e0df8308d51c4b27c921f87c4f6c58
-  languageName: node
-  linkType: hard
-
-"graphql-ws@npm:^6.0.5, graphql-ws@npm:^6.0.6":
+"graphql-ws@npm:6.0.8, graphql-ws@npm:^6, graphql-ws@npm:^6.0.6, graphql-ws@npm:^6.0.8":
   version: 6.0.8
   resolution: "graphql-ws@npm:6.0.8"
   peerDependencies:
@@ -20693,7 +20675,7 @@ __metadata:
     express: "npm:^4.20.0"
     graphql: "npm:^17.0.0-rc.0"
     graphql-helix: "npm:^1.13.0"
-    graphql-ws: "npm:^6.0.5"
+    graphql-ws: "npm:^6.0.8"
     ws: "npm:8.21.0"
   languageName: unknown
   linkType: soft
@@ -21901,7 +21883,7 @@ __metadata:
     esbuild: "npm:0.28.1"
     graphql: "npm:^16.9.0 || ^17.0.0-rc.0"
     graphql-config: "npm:^5.1.6"
-    graphql-ws: "npm:5.10.0"
+    graphql-ws: "npm:6.0.8"
     nullthrows: "npm:1.1.1"
     ovsx: "npm:0.8.3"
     svelte: "npm:^5.55.7"
