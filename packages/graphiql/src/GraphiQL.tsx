@@ -192,7 +192,7 @@ const LABEL = {
   newTab: 'New tab',
 };
 
-export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
+export function GraphiQLInterface({
   forcedTheme,
   isHeadersEditorEnabled = true,
   defaultEditorToolsVisibility,
@@ -204,7 +204,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   onEditHeaders,
   responseTooltip,
   showPersistHeadersSettings,
-}) => {
+}: GraphiQLInterfaceProps) {
   const { addTab, moveTab, closeTab, changeTab, setVisiblePlugin } =
     useGraphiQLActions();
   const {
@@ -228,7 +228,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   const PluginContent = visiblePlugin?.content;
 
-  const pluginResize = useDragResize({
+  const {
+    hiddenElement: pluginHiddenElement,
+    setHiddenElement: setPluginHiddenElement,
+    firstRef: pluginFirstRef,
+    dragBarRef: pluginDragBarRef,
+    secondRef: pluginSecondRef,
+  } = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
     initiallyHidden: visiblePlugin ? undefined : 'first',
@@ -240,11 +246,21 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     sizeThresholdSecond: 200,
     storageKey: 'docExplorerFlex',
   });
-  const editorResize = useDragResize({
+  const {
+    firstRef: editorFirstRef,
+    dragBarRef: editorDragBarRef,
+    secondRef: editorSecondRef,
+  } = useDragResize({
     direction: 'horizontal',
     storageKey: 'editorFlex',
   });
-  const editorToolsResize = useDragResize({
+  const {
+    hiddenElement: editorToolsHiddenElement,
+    setHiddenElement: setEditorToolsHiddenElement,
+    firstRef: editorToolsFirstRef,
+    dragBarRef: editorToolsDragBarRef,
+    secondRef: editorToolsSecondRef,
+  } = useDragResize({
     defaultSizeRelation: 3,
     direction: 'vertical',
     initiallyHidden: ((d: typeof defaultEditorToolsVisibility) => {
@@ -306,22 +322,22 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
 
   function onClickReference() {
-    if (pluginResize.hiddenElement === 'first') {
-      pluginResize.setHiddenElement(null);
+    if (pluginHiddenElement === 'first') {
+      setPluginHiddenElement(null);
     }
   }
 
   const handleToolsTabClick: ButtonHandler = event => {
-    if (editorToolsResize.hiddenElement === 'second') {
-      editorToolsResize.setHiddenElement(null);
+    if (editorToolsHiddenElement === 'second') {
+      setEditorToolsHiddenElement(null);
     }
     const tabName = event.currentTarget.dataset.name as 'variables' | 'headers';
     setActiveSecondaryEditor(tabName);
   };
 
   const toggleEditorTools: ButtonHandler = () => {
-    editorToolsResize.setHiddenElement(
-      editorToolsResize.hiddenElement === 'second' ? null : 'second',
+    setEditorToolsHiddenElement(
+      editorToolsHiddenElement === 'second' ? null : 'second',
     );
   };
 
@@ -343,19 +359,19 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     changeTab(index);
   };
 
-  const editorToolsText = `${editorToolsResize.hiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
+  const editorToolsText = `${editorToolsHiddenElement === 'second' ? 'Show' : 'Hide'} editor tools`;
 
   const EditorToolsIcon =
-    editorToolsResize.hiddenElement === 'second'
+    editorToolsHiddenElement === 'second'
       ? ChevronUpIcon
       : ChevronDownIcon;
 
   const editors = (
-    <div className="graphiql-editors" ref={editorResize.firstRef}>
+    <div className="graphiql-editors" ref={editorFirstRef}>
       <section
         className="graphiql-query-editor"
         aria-label="Operation Editor"
-        ref={editorToolsResize.firstRef}
+        ref={editorToolsFirstRef}
       >
         {hasMonaco ? (
           <QueryEditor
@@ -376,12 +392,12 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         </div>
       </section>
 
-      <div ref={editorToolsResize.dragBarRef} className="graphiql-editor-tools">
+      <div ref={editorToolsDragBarRef} className="graphiql-editor-tools">
         <UnStyledButton
           type="button"
           className={cn(
             activeSecondaryEditor === 'variables' &&
-              editorToolsResize.hiddenElement !== 'second' &&
+              editorToolsHiddenElement !== 'second' &&
               'active',
           )}
           onClick={handleToolsTabClick}
@@ -394,7 +410,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
             type="button"
             className={cn(
               activeSecondaryEditor === 'headers' &&
-                editorToolsResize.hiddenElement !== 'second' &&
+                editorToolsHiddenElement !== 'second' &&
                 'active',
             )}
             onClick={handleToolsTabClick}
@@ -424,7 +440,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         aria-label={
           activeSecondaryEditor === 'variables' ? 'Variables' : 'Headers'
         }
-        ref={editorToolsResize.secondRef}
+        ref={editorToolsSecondRef}
       >
         <VariableEditor
           className={activeSecondaryEditor === 'variables' ? '' : 'hidden'}
@@ -448,11 +464,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         <Sidebar
           forcedTheme={forcedTheme}
           showPersistHeadersSettings={showPersistHeadersSettings}
-          setHiddenElement={pluginResize.setHiddenElement}
+          setHiddenElement={setPluginHiddenElement}
         />
         <div className="graphiql-main">
           <div
-            ref={pluginResize.firstRef}
+            ref={pluginFirstRef}
             className="graphiql-plugin"
             style={{
               // Make sure the container shrinks when containing long
@@ -465,10 +481,10 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           {visiblePlugin && (
             <div
               className="graphiql-horizontal-drag-bar"
-              ref={pluginResize.dragBarRef}
+              ref={pluginDragBarRef}
             />
           )}
-          <div ref={pluginResize.secondRef} className="graphiql-sessions">
+          <div ref={pluginSecondRef} className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs
                 ref={tabContainerRef}
@@ -517,9 +533,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
               {editors}
               <div
                 className="graphiql-horizontal-drag-bar"
-                ref={editorResize.dragBarRef}
+                ref={editorDragBarRef}
               />
-              <div className="graphiql-response" ref={editorResize.secondRef}>
+              <div className="graphiql-response" ref={editorSecondRef}>
                 {isFetching && <Spinner />}
                 <ResponseEditor responseTooltip={responseTooltip} />
                 {footer}
@@ -531,7 +547,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       {children}
     </Tooltip.Provider>
   );
-};
+}
 
 function getChildComponentType(child: ReactNode) {
   if (
