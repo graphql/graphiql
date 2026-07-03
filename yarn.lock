@@ -3494,7 +3494,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
-    babel-plugin-react-compiler: "npm:19.1.0-rc.1"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     graphql: "npm:^16.9.0"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
@@ -3540,7 +3540,7 @@ __metadata:
     "@graphiql/toolkit": "npm:^0.12.0"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
-    babel-plugin-react-compiler: "npm:19.1.0-rc.1"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
@@ -3569,7 +3569,7 @@ __metadata:
     "@types/react-dom": "npm:^19.1.2"
     "@types/set-value": "npm:^4.0.1"
     "@vitejs/plugin-react": "npm:^4.4.1"
-    babel-plugin-react-compiler: "npm:19.1.0-rc.1"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     clsx: "npm:^1.2.1"
     framer-motion: "npm:^12.12"
     get-value: "npm:^3.0.1"
@@ -8851,12 +8851,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-react-compiler@npm:19.1.0-rc.1":
-  version: 19.1.0-rc.1
-  resolution: "babel-plugin-react-compiler@npm:19.1.0-rc.1"
+"babel-plugin-react-compiler@npm:19.1.0-rc.3":
+  version: 19.1.0-rc.3
+  resolution: "babel-plugin-react-compiler@npm:19.1.0-rc.3"
   dependencies:
     "@babel/types": "npm:^7.26.0"
-  checksum: 10c0/51f086d94a51bdd0490da78283ec4b5f51e735365387004c740bdd1341379c5e686fc7300cf4461411f84e9ee7211a90d0199925dd39de52d9a61cdaa5c650e7
+  checksum: 10c0/6811500cf81a309f104ec1de3fa9336932a1105e3c0e747b81a1d12e80c2cd4f531f7c42ec4441f96527ee20e19342af58d958241061d47a02b0d8bee66fbe35
   languageName: node
   linkType: hard
 
@@ -13603,7 +13603,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     "@vitest/web-worker": "npm:^4.1.6"
-    babel-plugin-react-compiler: "npm:19.1.0-rc.1"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     concurrently: "npm:^7.0.0"
     cross-env: "npm:^7.0.2"
     cypress: "npm:^13.13.2"
