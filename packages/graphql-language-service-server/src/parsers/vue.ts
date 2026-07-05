@@ -1,7 +1,16 @@
 import { parse, compileScript, SFCScriptBlock } from 'vue/compiler-sfc';
 import { RangeMapper, SourceParser } from './types';
 import { Position, Range } from 'graphql-language-service';
-import { BlockStatement, Statement } from '@babel/types';
+
+// Use the Statement type from @vue/compiler-sfc's own @babel/types to avoid
+// version-skew conflicts between @babel/types@8 (our dep) and the v7 bundled
+// inside @vue/compiler-sfc.
+type Statement = SFCScriptBlock['scriptAst'] extends
+  | (infer T)[]
+  | null
+  | undefined
+  ? T
+  : never;
 
 type ParseVueSFCResult =
   | { type: 'error'; errors: Error[] }
@@ -41,7 +50,7 @@ export function parseVueSFC(source: string): ParseVueSFCResult {
     type: 'ok',
     scriptOffset: scriptBlock.loc.start.line - 1,
     scriptSetupAst: scriptBlock.scriptSetupAst,
-    scriptAst: scriptBlock.scriptAst as BlockStatement[],
+    scriptAst: scriptBlock.scriptAst as Statement[],
   };
 }
 
