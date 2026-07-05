@@ -497,7 +497,10 @@ value                  | meta.type.interface.graphql meta.type.object.graphql va
 :                      | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
                        | meta.type.interface.graphql meta.type.object.graphql
 Int                    | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
- = 42                  | meta.type.interface.graphql meta.type.object.graphql
+                       | meta.type.interface.graphql meta.type.object.graphql
+=                      | meta.type.interface.graphql meta.type.object.graphql punctuation.assignment.graphql
+                       | meta.type.interface.graphql meta.type.object.graphql
+42                     | meta.type.interface.graphql meta.type.object.graphql constant.numeric.float.graphql
 }                      | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
                        | 
 interface              | meta.type.interface.graphql keyword.interface.graphql
@@ -644,4 +647,260 @@ Droid                  | support.type.graphql
                        | 
 TestType               | support.type.graphql
                        | 
+`;
+
+exports[`source.graphql grammar > should tokenize descriptions as documentation and argument values as strings 1`] = `
+# a hash comment stays a comment | comment.line.graphql.js
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Top-level type description       | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+type                             | meta.type.interface.graphql keyword.type.graphql
+                                 | meta.type.interface.graphql
+User                             | meta.type.interface.graphql support.type.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+{                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Field description                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+fullName                         | meta.type.interface.graphql meta.type.object.graphql variable.graphql
+(                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Argument description             | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+prefix                           | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql variable.parameter.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql support.type.builtin.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+=                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql punctuation.assignment.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+Mr.                              | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+)                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+@deprecated                      | meta.type.interface.graphql meta.type.object.graphql entity.name.function.directive.graphql
+(                                | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+reason                           | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql variable.parameter.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+use displayName                  | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)                                | meta.type.interface.graphql meta.type.object.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+tags                             | meta.type.interface.graphql meta.type.object.graphql variable.graphql
+(                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+filter                           | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql variable.parameter.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql
+[                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql meta.brace.square.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql support.type.builtin.graphql
+!                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql keyword.operator.nulltype.graphql
+]                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql meta.brace.square.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
+=                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql punctuation.assignment.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql
+[                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql meta.brace.square.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+active                           | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+verified                         | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+]                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.listvalues.graphql meta.brace.square.graphql
+)                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql
+[                                | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql meta.brace.square.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql support.type.builtin.graphql
+!                                | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql keyword.operator.nulltype.graphql
+]                                | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql meta.brace.square.graphql
+!                                | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql keyword.operator.nulltype.graphql
+}                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Input description                | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+input                            | meta.type.interface.graphql keyword.input.graphql
+                                 | meta.type.interface.graphql
+UserFilter                       | meta.type.interface.graphql support.type.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+{                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Input field description          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+limit                            | meta.type.interface.graphql meta.type.object.graphql variable.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+Int                              | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+=                                | meta.type.interface.graphql meta.type.object.graphql punctuation.assignment.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+10                               | meta.type.interface.graphql meta.type.object.graphql constant.numeric.float.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+name                             | meta.type.interface.graphql meta.type.object.graphql variable.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+=                                | meta.type.interface.graphql meta.type.object.graphql punctuation.assignment.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+anon                             | meta.type.interface.graphql meta.type.object.graphql string.quoted.double.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+note                             | meta.type.interface.graphql meta.type.object.graphql variable.graphql
+:                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+String                           | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+=                                | meta.type.interface.graphql meta.type.object.graphql punctuation.assignment.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql
+"""                              | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql punctuation.definition.string.begin.graphql
+block string default value       | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql
+"""                              | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql punctuation.definition.string.end.graphql
+}                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | 
+"""                              | comment.block.documentation.graphql
+Block description                | comment.block.documentation.graphql
+"""                              | comment.block.documentation.graphql
+enum                             | meta.enum.graphql keyword.enum.graphql
+                                 | meta.enum.graphql
+Role                             | meta.enum.graphql support.type.enum.graphql
+                                 | meta.enum.graphql meta.type.object.graphql
+{                                | meta.enum.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | meta.enum.graphql meta.type.object.graphql
+"                                | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Enum value description           | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql
+"                                | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql
+  ADMIN                          | meta.enum.graphql meta.type.object.graphql constant.character.enum.graphql
+  MEMBER                         | meta.enum.graphql meta.type.object.graphql constant.character.enum.graphql
+}                                | meta.enum.graphql meta.type.object.graphql punctuation.operation.graphql
+                                 | 
+directive                        | keyword.directive.graphql
+                                 | 
+@sample                          | entity.name.function.directive.graphql
+(                                | meta.brace.round.graphql
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Directive argument description   | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+                                 | meta.variables.graphql
+mode                             | meta.variables.graphql variable.parameter.graphql
+:                                | meta.variables.graphql punctuation.colon.graphql
+                                 | meta.variables.graphql
+String                           | meta.variables.graphql support.type.builtin.graphql
+                                 | meta.variables.graphql
+=                                | meta.variables.graphql punctuation.assignment.graphql
+                                 | meta.variables.graphql
+"                                | meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+fast                             | meta.variables.graphql string.quoted.double.graphql
+"                                | meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)                                | meta.brace.round.graphql
+                                 | 
+on                               | keyword.on.graphql
+                                 | 
+FIELD_DEFINITION                 | support.type.location.graphql
+                                 | 
+query                            | keyword.operation.graphql
+                                 | meta.selectionset.graphql
+{                                | meta.selectionset.graphql punctuation.operation.graphql
+                                 | meta.selectionset.graphql
+search                           | meta.selectionset.graphql variable.graphql
+(                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+term                             | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
+"                                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+single line value                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
+"                                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+,                                | meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
+body                             | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
+"""                              | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql punctuation.definition.string.begin.graphql
+block string value               | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql
+"""                              | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql punctuation.definition.string.end.graphql
+)                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+{                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+id                               | meta.selectionset.graphql meta.selectionset.graphql variable.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+}                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+}                                | meta.selectionset.graphql punctuation.operation.graphql
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Operation description            | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+query                            | keyword.operation.graphql
+                                 | 
+GetUser                          | entity.name.function.graphql
+(                                | meta.brace.round.graphql
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Variable description             | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+                                 | meta.variables.graphql
+$id                              | meta.variables.graphql variable.parameter.graphql
+:                                | meta.variables.graphql punctuation.colon.graphql
+                                 | meta.variables.graphql
+ID                               | meta.variables.graphql support.type.builtin.graphql
+                                 | meta.variables.graphql
+=                                | meta.variables.graphql punctuation.assignment.graphql
+                                 | meta.variables.graphql
+"                                | meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
+default-id                       | meta.variables.graphql string.quoted.double.graphql
+"                                | meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
+)                                | meta.brace.round.graphql
+                                 | meta.selectionset.graphql
+{                                | meta.selectionset.graphql punctuation.operation.graphql
+                                 | meta.selectionset.graphql
+user                             | meta.selectionset.graphql variable.graphql
+(                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+id                               | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
+:                                | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
+$id                              | meta.selectionset.graphql meta.arguments.graphql variable.graphql
+)                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+{                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+...                              | meta.selectionset.graphql meta.selectionset.graphql keyword.operator.spread.graphql
+UserFields                       | meta.selectionset.graphql meta.selectionset.graphql variable.fragment.graphql
+                                 | meta.selectionset.graphql meta.selectionset.graphql
+}                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
+}                                | meta.selectionset.graphql punctuation.operation.graphql
+                                 | 
+"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+Fragment description             | comment.line.documentation.graphql
+"                                | comment.line.documentation.graphql
+fragment                         | meta.fragment.graphql keyword.fragment.graphql
+                                 | meta.fragment.graphql
+UserFields                       | meta.fragment.graphql entity.name.fragment.graphql
+                                 | meta.fragment.graphql
+on                               | meta.fragment.graphql keyword.on.graphql
+                                 | meta.fragment.graphql
+User                             | meta.fragment.graphql support.type.graphql
+                                 | meta.fragment.graphql meta.selectionset.graphql
+{                                | meta.fragment.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                 | meta.fragment.graphql meta.selectionset.graphql
+name                             | meta.fragment.graphql meta.selectionset.graphql variable.graphql
+}                                | meta.fragment.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                 | 
 `;

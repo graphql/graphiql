@@ -29,7 +29,7 @@ const graphql = graphql`
 `;
 
 const graphql = graphql(`
-  """ this is a comment """
+  """ this is an operation description """
   query {
     user(id: "5", name: ${variable}) {
       something
@@ -84,7 +84,7 @@ const queryWithInlineComment = `
 
 const queryWithLeadingComment = /* GraphQL */ `
   query {
-    """ this is a comment """
+    # this is a comment
     user(id: "5", name: boolean) {
       something
     }
