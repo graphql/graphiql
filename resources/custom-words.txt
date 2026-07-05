@@ -177,6 +177,7 @@ pabbati
 parseable
 picomatch
 pieas
+pluggable
 pnpm
 postbuild
 pratap
@@ -273,3 +274,11 @@ wordmark
 yoshiakis
 zdravo
 zustand
+affordances
+automerge
+crdt
+yjs
+microtasks
+unregistering
+unstub
+unstyled

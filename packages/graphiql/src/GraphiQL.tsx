@@ -50,12 +50,19 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
 import {
   ActivityBar,
   GraphiQLLogo,
   GraphiQLToolbar,
   GraphiQLFooter,
 } from './ui';
+
+const DEFAULT_PLUGINS = [
+  HISTORY_PLUGIN,
+  QUERY_BUILDER_PLUGIN,
+  collectionsPlugin(),
+];
 
 /**
  * API docs for this live here:
@@ -85,7 +92,7 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
-  plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN],
+  plugins = DEFAULT_PLUGINS,
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
   onEditVariables,
@@ -147,6 +154,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
+      onSaveQuery={props.onSaveQuery}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -250,6 +258,9 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     isFetching,
     visiblePlugin,
     operations,
+    plugins,
+    saveHandlers,
+    onSaveQuery,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -259,8 +270,12 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'isFetching',
       'visiblePlugin',
       'operations',
+      'plugins',
+      'saveHandlers',
+      'onSaveQuery',
     ),
   );
+  const canSave = saveHandlers.size > 0 || Boolean(onSaveQuery);
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -494,7 +509,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                           dragConstraints={tabContainerRef}
                           value={tab}
                           isActive={isActive}
-                          isDirty={tab.query !== tab.lastSavedQuery}
+                          isDirty={
+                            canSave &&
+                            tab.lastSavedQuery !== null &&
+                            tab.query !== tab.lastSavedQuery
+                          }
                         >
                           <Tab.Button
                             aria-controls="graphiql-session"
@@ -542,16 +561,23 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                         <CopyIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
-                    <Tooltip label={LABEL.save}>
-                      <UnStyledButton
-                        type="button"
-                        className="graphiql-tab-strip-action"
-                        onClick={saveQuery}
-                        aria-label={LABEL.save}
-                      >
-                        <SaveIcon aria-hidden="true" />
-                      </UnStyledButton>
-                    </Tooltip>
+                    {canSave && (
+                      <Tooltip label={LABEL.save}>
+                        <UnStyledButton
+                          type="button"
+                          className="graphiql-tab-strip-action"
+                          onClick={saveQuery}
+                          aria-label={LABEL.save}
+                        >
+                          <SaveIcon aria-hidden="true" />
+                        </UnStyledButton>
+                      </Tooltip>
+                    )}
+                    {plugins.map(plugin =>
+                      plugin.sessionActions ? (
+                        <plugin.sessionActions key={plugin.title} />
+                      ) : null,
+                    )}
                   </div>
                   {logo}
                 </div>
