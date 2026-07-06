@@ -490,7 +490,7 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
                 aria-label="New collection"
                 title="New collection"
               >
-                + New
+                + New Collection
               </button>
             )}
           </div>
