@@ -75,10 +75,10 @@ describe('CollectionItemRow actions', () => {
       configurable: true,
     });
     renderRow();
-    expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
-    expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
-    expect(screen.getByLabelText('Share MyOperation')).toBeTruthy();
-    expect(screen.getByLabelText('Delete MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Rename')).toBeTruthy();
+    expect(screen.getByLabelText('Copy operation')).toBeTruthy();
+    expect(screen.getByLabelText('Share as collection')).toBeTruthy();
+    expect(screen.getByLabelText('Delete')).toBeTruthy();
     expect(screen.queryByText('···')).toBeNull();
     expect(screen.queryByText('Open')).toBeNull();
   });
@@ -90,7 +90,7 @@ describe('CollectionItemRow actions', () => {
     });
     const { onOpen, onAnnounce } = renderRow();
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+      fireEvent.click(screen.getByLabelText('Copy operation'));
     });
     expect(writeText).toHaveBeenCalledOnce();
     expect(writeText).toHaveBeenCalledWith('{ __typename }');
@@ -106,16 +106,16 @@ describe('CollectionItemRow actions', () => {
     });
     renderRow();
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+      fireEvent.click(screen.getByLabelText('Copy operation'));
     });
     expect(
-      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+      screen.getByLabelText('Copy operation').getAttribute('data-confirmed'),
     ).toBe('true');
     act(() => {
       vi.advanceTimersByTime(1600);
     });
     expect(
-      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+      screen.getByLabelText('Copy operation').getAttribute('data-confirmed'),
     ).toBeNull();
   });
 
@@ -126,7 +126,7 @@ describe('CollectionItemRow actions', () => {
     });
     const { onShare, onAnnounce, onOpen } = renderRow();
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+      fireEvent.click(screen.getByLabelText('Share as collection'));
     });
     expect(onShare).toHaveBeenCalledOnce();
     expect(onShare).toHaveBeenCalledWith('item-1');
@@ -142,16 +142,20 @@ describe('CollectionItemRow actions', () => {
     });
     renderRow();
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+      fireEvent.click(screen.getByLabelText('Share as collection'));
     });
     expect(
-      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+      screen
+        .getByLabelText('Share as collection')
+        .getAttribute('data-confirmed'),
     ).toBe('true');
     act(() => {
       vi.advanceTimersByTime(1600);
     });
     expect(
-      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+      screen
+        .getByLabelText('Share as collection')
+        .getAttribute('data-confirmed'),
     ).toBeNull();
   });
 
@@ -163,7 +167,7 @@ describe('CollectionItemRow actions', () => {
     });
     const { onAnnounce } = renderRow();
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+      fireEvent.click(screen.getByLabelText('Copy operation'));
     });
     await waitFor(() => {
       expect(onAnnounce).toHaveBeenCalledWith(
@@ -171,7 +175,7 @@ describe('CollectionItemRow actions', () => {
       );
     });
     expect(
-      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+      screen.getByLabelText('Copy operation').getAttribute('data-confirmed'),
     ).toBeNull();
   });
 
@@ -183,7 +187,7 @@ describe('CollectionItemRow actions', () => {
     const onShare = vi.fn().mockRejectedValue(new Error('denied'));
     const { onAnnounce } = renderRow({ onShare });
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+      fireEvent.click(screen.getByLabelText('Share as collection'));
     });
     await waitFor(() => {
       expect(onAnnounce).toHaveBeenCalledWith(
@@ -191,7 +195,9 @@ describe('CollectionItemRow actions', () => {
       );
     });
     expect(
-      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+      screen
+        .getByLabelText('Share as collection')
+        .getAttribute('data-confirmed'),
     ).toBeNull();
   });
 
@@ -201,7 +207,7 @@ describe('CollectionItemRow actions', () => {
       configurable: true,
     });
     const { onDelete, onOpen } = renderRow();
-    fireEvent.click(screen.getByLabelText('Delete MyOperation'));
+    fireEvent.click(screen.getByLabelText('Delete'));
     expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('col-1', 'item-1');
     expect(onOpen).not.toHaveBeenCalled();
@@ -223,10 +229,10 @@ describe('CollectionItemRow actions', () => {
       configurable: true,
     });
     renderRow({ readOnly: true });
-    expect(screen.queryByLabelText('Edit MyOperation')).toBeNull();
-    expect(screen.queryByLabelText('Delete MyOperation')).toBeNull();
-    expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
-    expect(screen.getByLabelText('Share MyOperation')).toBeTruthy();
+    expect(screen.queryByLabelText('Rename')).toBeNull();
+    expect(screen.queryByLabelText('Delete')).toBeNull();
+    expect(screen.getByLabelText('Copy operation')).toBeTruthy();
+    expect(screen.getByLabelText('Share as collection')).toBeTruthy();
   });
 });
 
@@ -237,7 +243,7 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     const { onOpen } = renderRow();
-    const pencil = screen.getByLabelText('Edit MyOperation');
+    const pencil = screen.getByLabelText('Rename');
     fireEvent.click(pencil);
     // Edit inputs appear.
     const inputs = screen.getAllByRole('textbox');
@@ -252,7 +258,7 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     const { onRenameItem } = renderRow();
-    fireEvent.click(screen.getByLabelText('Edit MyOperation'));
+    fireEvent.click(screen.getByLabelText('Rename'));
     const [nameInput] = screen.getAllByRole('textbox');
     fireEvent.change(nameInput!, { target: { value: 'UpdatedOp' } });
     // Find description input — it's the second textbox.
@@ -272,7 +278,7 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     const { onRenameItem } = renderRow();
-    fireEvent.click(screen.getByLabelText('Edit MyOperation'));
+    fireEvent.click(screen.getByLabelText('Rename'));
     const [nameInput] = screen.getAllByRole('textbox');
     fireEvent.change(nameInput!, { target: { value: 'BlurOp' } });
     fireEvent.blur(nameInput!);
@@ -289,7 +295,7 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     const { onRenameItem } = renderRow();
-    fireEvent.click(screen.getByLabelText('Edit MyOperation'));
+    fireEvent.click(screen.getByLabelText('Rename'));
     const [nameInput, descInput] = screen.getAllByRole('textbox');
     // Focus moves from the name input into the sibling description input.
     fireEvent.blur(nameInput!, { relatedTarget: descInput });
@@ -304,12 +310,12 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     const { onRenameItem } = renderRow();
-    fireEvent.click(screen.getByLabelText('Edit MyOperation'));
+    fireEvent.click(screen.getByLabelText('Rename'));
     const [nameInput] = screen.getAllByRole('textbox');
     fireEvent.keyDown(nameInput!, { key: 'Escape' });
     expect(onRenameItem).not.toHaveBeenCalled();
     // Edit mode exited — pencil is back.
-    expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Rename')).toBeTruthy();
   });
 
   it('readOnly hides the pencil button', () => {
@@ -318,7 +324,7 @@ describe('CollectionItemRow inline edit', () => {
       configurable: true,
     });
     renderRow({ readOnly: true });
-    expect(screen.queryByLabelText('Edit MyOperation')).toBeNull();
+    expect(screen.queryByLabelText('Rename')).toBeNull();
   });
 });
 

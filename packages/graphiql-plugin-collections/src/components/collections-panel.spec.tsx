@@ -597,7 +597,7 @@ describe('CollectionsPanel share item', () => {
     render(<CollectionsPanel />);
 
     await act(async () => {
-      fireEvent.click(screen.getByLabelText('Share MyOp'));
+      fireEvent.click(screen.getByLabelText('Share as collection'));
     });
 
     // clipboard must receive the importable envelope (contains "version": 1)
