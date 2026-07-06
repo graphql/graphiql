@@ -1,5 +1,4 @@
 import type { ExecutionResult } from 'graphql';
-import type { Client } from 'graphql-ws';
 
 export type TransportRequest = {
   query: string;
@@ -79,6 +78,47 @@ export type Transport = {
   ): Promise<TransportResponse> | AsyncIterable<TransportResponse>;
 };
 
+/**
+ * The event stream a {@link SubscriptionClient} pushes results into.
+ * Deliberately the minimal subset of `graphql-ws`'s `Sink` the transport
+ * relies on, so a `graphql-ws` (or signature-compatible `graphql-sse`) client
+ * satisfies it structurally, with no adapter.
+ */
+export type SubscriptionSink = {
+  /** Deliver one subscription event. */
+  next: (value: ExecutionResult) => void;
+  /** Report a terminal error; closes the stream. */
+  error: (error: unknown) => void;
+  /** Signal the stream has ended; closes the stream. */
+  complete: () => void;
+};
+
+/**
+ * The GraphQL request handed to {@link SubscriptionClient.subscribe}. Carries
+ * only the operation itself — transport concerns such as per-request headers
+ * are not part of the subscription contract.
+ */
+export type SubscriptionRequest = {
+  query: string;
+  operationName?: string | null;
+  variables?: Record<string, unknown>;
+};
+
+/**
+ * The narrowest subscription-client contract the transport depends on: a single
+ * `subscribe(request, sink)` that streams events into `sink` and returns a
+ * dispose function used to tear the subscription down.
+ *
+ * This is intentionally the smallest shape that both `graphql-ws`'s and
+ * `graphql-sse`'s `createClient()` already satisfy, so either drops in with no
+ * wrapping — and so does any custom client (for example one that reads HTTP
+ * `multipart/mixed`) able to expose the same method. See the recipes in
+ * `create-transport/README.md`.
+ */
+export type SubscriptionClient = {
+  subscribe(request: SubscriptionRequest, sink: SubscriptionSink): () => void;
+};
+
 export type CreateTransportOptions = {
   /**
    * URL for HTTP(S) requests. Required.
@@ -89,16 +129,16 @@ export type CreateTransportOptions = {
    */
   headers?: Record<string, string>;
   /**
-   * A pre-built subscription client whose `.subscribe(payload, sink)` matches
-   * the `graphql-ws` `Client` shape. `graphql-sse`'s `createClient()` is
-   * signature-compatible, so SSE subscriptions work without any SSE-specific
-   * code in the toolkit.
+   * A pre-built subscription client satisfying the {@link SubscriptionClient}
+   * contract — a single `subscribe(request, sink)` method. `graphql-ws`'s and
+   * `graphql-sse`'s `createClient()` both satisfy it directly, as does any
+   * custom client (e.g. HTTP `multipart/mixed`) exposing the same method.
    *
    * Construct the client yourself and pass it in; the toolkit does not build
    * one for you. If a subscription is sent without this option configured,
-   * `send()` throws.
+   * `send()` throws. See `create-transport/README.md` for recipes.
    */
-  subscriptionClient?: Client;
+  subscriptionClient?: SubscriptionClient;
   /**
    * Use `multipart/mixed` incremental delivery for `@defer`/`@stream`.
    * Defaults to true.

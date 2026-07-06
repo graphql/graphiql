@@ -14,8 +14,7 @@ import {
   createSimpleFetcher,
   createWebsocketsFetcherFromClient,
 } from '../../create-fetcher/lib';
-import type { Client } from 'graphql-ws';
-import type { TransportResponse } from '../types';
+import type { SubscriptionClient, TransportResponse } from '../types';
 
 // Keep the real HTTP transport helpers; only stub the client-to-fetcher adapter
 // so no real socket is required.
@@ -135,7 +134,7 @@ describe('createTransport — subscription', () => {
       url: URL,
       // Truthy placeholder; the real client never gets called since the
       // adapter above is mocked.
-      subscriptionClient: {} as Client,
+      subscriptionClient: {} as SubscriptionClient,
     });
     const result = transport.send({ query: SUBSCRIPTION });
 
