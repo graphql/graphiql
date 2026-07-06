@@ -111,7 +111,7 @@ describe('ImportDialog import flow', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Import' }));
     triggerFileReaderLoad('not json at all');
 
-    expect(screen.getByText(/Invalid JSON file/)).toBeTruthy();
+    expect(screen.getByText(/Invalid JSON/)).toBeTruthy();
     expect(onImport).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -152,5 +152,59 @@ describe('ImportDialog import flow', () => {
 
     expect(onImport).toHaveBeenCalledWith(VALID_EXPORT, 'replace');
     expect(onClose).toHaveBeenCalledOnce();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Paste flow tests
+// ---------------------------------------------------------------------------
+
+describe('ImportDialog paste flow', () => {
+  const pasteInto = (text: string) =>
+    fireEvent.change(screen.getByLabelText('Paste collections export JSON'), {
+      target: { value: text },
+    });
+
+  it('pasting a valid export calls onImport with the pasted text, then closes', () => {
+    const { onClose, onImport } = renderDialog();
+
+    pasteInto(VALID_EXPORT);
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+
+    expect(onImport).toHaveBeenCalledOnce();
+    expect(onImport).toHaveBeenCalledWith(VALID_EXPORT, 'merge');
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('pasting invalid JSON keeps the dialog open with an inline error', () => {
+    const { onClose, onImport } = renderDialog();
+
+    pasteInto('not json at all');
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+
+    expect(screen.getByText(/Invalid JSON/)).toBeTruthy();
+    expect(onImport).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('pasted text takes precedence over a selected file', () => {
+    const { onImport } = renderDialog();
+    attachFakeFile();
+
+    pasteInto(VALID_EXPORT);
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+
+    expect(onImport).toHaveBeenCalledWith(VALID_EXPORT, 'merge');
+  });
+
+  it('clicking Import with neither paste nor file shows an inline error', () => {
+    const { onImport } = renderDialog();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+
+    expect(
+      screen.getByText(/Paste a collections export or choose a file/),
+    ).toBeTruthy();
+    expect(onImport).not.toHaveBeenCalled();
   });
 });

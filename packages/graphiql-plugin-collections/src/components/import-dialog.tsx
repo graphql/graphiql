@@ -18,32 +18,41 @@ export const ImportDialog: FC<ImportDialogProps> = ({
 }) => {
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
   const [importError, setImportError] = useState<string | null>(null);
+  const [pastedText, setPastedText] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const validateAndImport = (text: string) => {
+    try {
+      JSON.parse(text);
+    } catch {
+      setImportError(
+        'Invalid JSON. Please paste or select a valid collections export.',
+      );
+      return;
+    }
+    const analysis = collectionsStore.getState().actions.analyzeImport(text);
+    if (!analysis.ok) {
+      setImportError('This isn’t a valid collections export.');
+      return;
+    }
+    onImport(text, allowReplace ? importMode : 'merge');
+    onClose();
+  };
+
   const handleImport = () => {
+    const pasted = pastedText.trim();
+    if (pasted) {
+      validateAndImport(pasted);
+      return;
+    }
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
-      setImportError('Please select a file.');
+      setImportError('Paste a collections export or choose a file.');
       return;
     }
     const reader = new FileReader();
     reader.onload = e => {
-      const text = e.target?.result as string;
-      try {
-        JSON.parse(text);
-      } catch {
-        setImportError(
-          'Invalid JSON file. Please select a valid collections export.',
-        );
-        return;
-      }
-      const analysis = collectionsStore.getState().actions.analyzeImport(text);
-      if (!analysis.ok) {
-        setImportError('This file isn’t a valid collections export.');
-        return;
-      }
-      onImport(text, allowReplace ? importMode : 'merge');
-      onClose();
+      validateAndImport(e.target?.result as string);
     };
     reader.readAsText(file);
   };
@@ -53,6 +62,17 @@ export const ImportDialog: FC<ImportDialogProps> = ({
       <Dialog.Header>Import collections</Dialog.Header>
       <Dialog.Body>
         <div className="graphiql-import-export-section">
+          <textarea
+            className="graphiql-import-export-textarea"
+            rows={6}
+            aria-label="Paste collections export JSON"
+            placeholder="Paste a collections export (JSON)…"
+            value={pastedText}
+            onChange={e => {
+              setPastedText(e.target.value);
+              setImportError(null);
+            }}
+          />
           <input
             ref={fileInputRef}
             type="file"
