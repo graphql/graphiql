@@ -30,15 +30,12 @@ export type CollectionsConfig = {
   allowImportExport: boolean;
   /** When false, the destructive "Replace" import option is hidden. */
   allowReplace: boolean;
-  /** When false, "Copy to clipboard" / "Copy operation" affordances are hidden. */
-  allowCopy: boolean;
 };
 
 export const DEFAULT_COLLECTIONS_CONFIG: CollectionsConfig = {
   readOnly: false,
   allowImportExport: true,
   allowReplace: true,
-  allowCopy: true,
 };
 
 /** Pluggable storage interface. Default localStorage adapter ships with the plugin. */

@@ -836,7 +836,6 @@ describe('requestSave', () => {
         readOnly: true,
         allowImportExport: true,
         allowReplace: true,
-        allowCopy: true,
       },
     });
     const savedInPlace = getActions().requestSave({
@@ -851,7 +850,6 @@ describe('requestSave', () => {
         readOnly: false,
         allowImportExport: true,
         allowReplace: true,
-        allowCopy: true,
       },
     });
   });

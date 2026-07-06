@@ -89,13 +89,6 @@ describe('CollectionItemRow actions', () => {
     expect(screen.queryByLabelText('Delete MyOperation')).toBeNull();
     expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
   });
-
-  it('allowCopy:false hides copy but keeps edit and delete', () => {
-    renderRow({ allowCopy: false });
-    expect(screen.queryByLabelText('Copy MyOperation')).toBeNull();
-    expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
-    expect(screen.getByLabelText('Delete MyOperation')).toBeTruthy();
-  });
 });
 
 describe('CollectionItemRow inline edit', () => {

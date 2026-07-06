@@ -9,8 +9,6 @@ type CollectionRowProps = {
   onToggleExpand(): void;
   /** Hide write affordances (Rename, Delete, add-item) when true. */
   readOnly?: boolean;
-  /** Hide "Copy to clipboard" when false. */
-  allowCopy?: boolean;
   grabbed: { collectionId: string; index: number; itemId: string } | null;
   onGrabToggle(collectionId: string, index: number, itemId: string): void;
   onGrabMove(direction: 'up' | 'down'): void;
@@ -43,7 +41,6 @@ export const CollectionRow: FC<CollectionRowProps> = ({
   expanded,
   onToggleExpand,
   readOnly = false,
-  allowCopy = true,
   grabbed,
   onGrabToggle,
   onGrabMove,
@@ -121,20 +118,18 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               <PenIcon aria-hidden="true" />
             </button>
           )}
-          {allowCopy && (
-            <button
-              type="button"
-              className="graphiql-collection-header-action"
-              aria-label={`Copy ${collection.name}`}
-              title={`Copy ${collection.name}`}
-              onClick={e => {
-                e.stopPropagation();
-                onCopy(collection.id);
-              }}
-            >
-              <CopyIcon aria-hidden="true" />
-            </button>
-          )}
+          <button
+            type="button"
+            className="graphiql-collection-header-action"
+            aria-label={`Copy ${collection.name}`}
+            title={`Copy ${collection.name}`}
+            onClick={e => {
+              e.stopPropagation();
+              onCopy(collection.id);
+            }}
+          >
+            <CopyIcon aria-hidden="true" />
+          </button>
           {!readOnly && (
             <button
               type="button"
@@ -160,7 +155,6 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               collectionId={collection.id}
               index={i}
               readOnly={readOnly}
-              allowCopy={allowCopy}
               isGrabbed={
                 grabbed?.collectionId === collection.id && grabbed.index === i
               }

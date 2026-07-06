@@ -9,4 +9,4 @@ New `@graphiql/plugin-collections` plugin: save named operations into folder col
 - Reorder within and across collections by drag-and-drop or keyboard: focus a row's drag handle, Space to grab, arrow keys to move (auto-expanding a collapsed destination), Space to drop, Escape to cancel.
 - Share by clipboard: copy a whole collection or a single operation, then paste or drop it into the pane. Import and export as JSON from the dialog.
 - Identity-aware merge: imports reconcile by stable id, so re-importing updates in place and never duplicates. A conflict dialog lets you apply incoming changes, keep yours, or review each. Merge never deletes.
-- Pluggable persistence via the `storage` option (defaults to `localStorage`), plus `readOnly`, `allowImportExport`, `allowReplace`, and `allowCopy` for locking down a governed deployment.
+- Pluggable persistence via the `storage` option (defaults to `localStorage`), plus `readOnly`, `allowImportExport`, and `allowReplace` for locking down a governed deployment.

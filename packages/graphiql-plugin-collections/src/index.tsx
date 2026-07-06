@@ -31,8 +31,6 @@ export type CollectionsPluginOptions = {
   allowImportExport?: boolean;
   /** Allow the destructive "Replace" import option. Default true. */
   allowReplace?: boolean;
-  /** Allow "Copy to clipboard" / "Copy operation" affordances. Default true. */
-  allowCopy?: boolean;
 };
 
 export const collectionsPlugin = (
@@ -44,7 +42,6 @@ export const collectionsPlugin = (
         readOnly={options?.readOnly}
         allowImportExport={options?.allowImportExport}
         allowReplace={options?.allowReplace}
-        allowCopy={options?.allowCopy}
       />
     );
   }
@@ -55,7 +52,6 @@ export const collectionsPlugin = (
         readOnly={options?.readOnly}
         allowImportExport={options?.allowImportExport}
         allowReplace={options?.allowReplace}
-        allowCopy={options?.allowCopy}
       />
     );
   }

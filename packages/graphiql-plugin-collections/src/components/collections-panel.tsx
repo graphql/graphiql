@@ -25,7 +25,6 @@ type CollectionsPanelProps = {
   readOnly?: boolean;
   allowImportExport?: boolean;
   allowReplace?: boolean;
-  allowCopy?: boolean;
 };
 
 /**
@@ -82,7 +81,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
   readOnly = false,
   allowImportExport = true,
   allowReplace = true,
-  allowCopy = true,
 }) => {
   // Importing is a write; it's available only when both writes and the
   // import/export feature are enabled.
@@ -591,7 +589,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
             key={collection.id}
             collection={collection}
             readOnly={readOnly}
-            allowCopy={allowCopy}
             expanded={!collapsed.has(collection.id)}
             onToggleExpand={() => toggleExpand(collection.id)}
             grabbed={grabbed}

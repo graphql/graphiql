@@ -10,8 +10,6 @@ type CollectionItemRowProps = {
   index: number;
   /** Hide write affordances (Move, Delete) and disable drag-reorder when true. */
   readOnly?: boolean;
-  /** Hide "Copy operation" when false. */
-  allowCopy?: boolean;
   isGrabbed: boolean;
   onGrabToggle(): void;
   onGrabMove(direction: 'up' | 'down'): void;
@@ -37,7 +35,6 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   collectionId,
   index,
   readOnly = false,
-  allowCopy = true,
   isGrabbed,
   onGrabToggle,
   onGrabMove,
@@ -256,17 +253,15 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
               <PenIcon aria-hidden="true" />
             </button>
           )}
-          {allowCopy && (
-            <button
-              type="button"
-              className="graphiql-collection-item-action"
-              aria-label={`Copy ${item.name}`}
-              title={`Copy ${item.name}`}
-              onClick={handleCopy}
-            >
-              <CopyIcon aria-hidden="true" />
-            </button>
-          )}
+          <button
+            type="button"
+            className="graphiql-collection-item-action"
+            aria-label={`Copy ${item.name}`}
+            title={`Copy ${item.name}`}
+            onClick={handleCopy}
+          >
+            <CopyIcon aria-hidden="true" />
+          </button>
           {!readOnly && (
             <button
               type="button"

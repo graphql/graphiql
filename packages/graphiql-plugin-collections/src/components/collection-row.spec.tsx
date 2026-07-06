@@ -26,7 +26,6 @@ function renderRow(
         expanded={expanded}
         onToggleExpand={() => setExpanded(e => !e)}
         readOnly={false}
-        allowCopy
         onRename={onRename}
         onDelete={onDelete}
         onCopy={onCopy}
@@ -55,12 +54,6 @@ describe('CollectionRow gating', () => {
     expect(screen.getByLabelText('Copy My Collection')).toBeTruthy();
     expect(screen.getByLabelText('Delete My Collection')).toBeTruthy();
     expect(screen.queryByText('···')).toBeNull();
-  });
-
-  it('allowCopy:false hides copy', () => {
-    renderRow({ allowCopy: false });
-    expect(screen.queryByLabelText('Copy My Collection')).toBeNull();
-    expect(screen.getByLabelText('Rename My Collection')).toBeTruthy();
   });
 
   it('readOnly hides rename and delete but keeps copy', () => {

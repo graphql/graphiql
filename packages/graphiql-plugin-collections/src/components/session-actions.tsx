@@ -10,7 +10,6 @@ type CollectionsSessionActionsProps = {
   readOnly?: boolean;
   allowImportExport?: boolean;
   allowReplace?: boolean;
-  allowCopy?: boolean;
 };
 
 export const CollectionsSessionActions = ({
@@ -18,7 +17,6 @@ export const CollectionsSessionActions = ({
   readOnly = false,
   allowImportExport = true,
   allowReplace = true,
-  allowCopy = true,
 }: CollectionsSessionActionsProps) => {
   useEffect(() => {
     void collectionsStore
@@ -27,7 +25,6 @@ export const CollectionsSessionActions = ({
         readOnly,
         allowImportExport,
         allowReplace,
-        allowCopy,
       });
     // storage/config are intentionally only read on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -46,7 +46,6 @@ collectionsPlugin({
   readOnly, // default false
   allowImportExport, // default true
   allowReplace, // default true
-  allowCopy, // default true
 });
 ```
 
@@ -56,7 +55,6 @@ collectionsPlugin({
 | `readOnly`          | `false`              | Hides every write affordance (create, rename, delete, reorder, save, import). Export and copy stay available so users can still share. |
 | `allowImportExport` | `true`               | When `false`, hides the import/export dialog button and turns off paste/drop import.                                                   |
 | `allowReplace`      | `true`               | When `false`, hides the destructive "replace everything" import mode and leaves only merge.                                            |
-| `allowCopy`         | `true`               | When `false`, hides the "Copy to clipboard" and "Copy operation" actions.                                                              |
 
 ## Import and merge behavior
 
