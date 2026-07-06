@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { CollectionRow } from './collection-row';
@@ -17,21 +18,33 @@ function renderRow(
   const onRename = vi.fn();
   const onDelete = vi.fn();
   const onCopy = vi.fn();
-  render(
-    <CollectionRow
-      collection={collection}
-      onRename={onRename}
-      onDelete={onDelete}
-      onCopy={onCopy}
-      onOpenItem={vi.fn()}
-      onCopyItem={vi.fn()}
-      onDeleteItem={vi.fn()}
-      onMoveItem={vi.fn()}
-      onAddItem={vi.fn() as never}
-      onRenameItem={vi.fn()}
-      {...overrides}
-    />,
-  );
+  function Harness() {
+    const [expanded, setExpanded] = useState(overrides.expanded ?? true);
+    return (
+      <CollectionRow
+        collection={collection}
+        expanded={expanded}
+        onToggleExpand={() => setExpanded(e => !e)}
+        readOnly={false}
+        allowCopy
+        onRename={onRename}
+        onDelete={onDelete}
+        onCopy={onCopy}
+        onOpenItem={vi.fn()}
+        onCopyItem={vi.fn()}
+        onDeleteItem={vi.fn()}
+        onMoveItem={vi.fn()}
+        onAddItem={vi.fn() as never}
+        onRenameItem={vi.fn()}
+        grabbed={null}
+        onGrabToggle={vi.fn()}
+        onGrabMove={vi.fn()}
+        onGrabCancel={vi.fn()}
+        {...overrides}
+      />
+    );
+  }
+  render(<Harness />);
   return { onRename, onDelete, onCopy };
 }
 

@@ -409,3 +409,141 @@ describe('CollectionsPanel replace confirmation', () => {
     expect(collectionsStore.getState().collections[0]?.id).toBe('col-existing');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Keyboard reorder
+// ---------------------------------------------------------------------------
+
+function seedTwoCollections() {
+  collectionsStore.setState({
+    loaded: true,
+    collections: [
+      {
+        id: 'A',
+        name: 'Alpha',
+        createdAt: 1,
+        updatedAt: 1,
+        items: [
+          { id: 'a0', name: 'A0', query: '{a0}', createdAt: 1, updatedAt: 1 },
+          { id: 'a1', name: 'A1', query: '{a1}', createdAt: 1, updatedAt: 1 },
+        ],
+      },
+      {
+        id: 'B',
+        name: 'Beta',
+        createdAt: 1,
+        updatedAt: 1,
+        items: [
+          { id: 'b0', name: 'B0', query: '{b0}', createdAt: 1, updatedAt: 1 },
+        ],
+      },
+    ],
+  });
+}
+
+function itemOrder(collectionId: string): string[] {
+  return (
+    collectionsStore
+      .getState()
+      .collections.find(c => c.id === collectionId)
+      ?.items.map(i => i.id) ?? []
+  );
+}
+
+describe('CollectionsPanel keyboard reorder', () => {
+  it('grab + ArrowDown reorders within a collection', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowDown' });
+    expect(itemOrder('A')).toEqual(['a1', 'a0']);
+  });
+
+  it('ArrowDown past the end moves into the next collection', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A1/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowDown' });
+    expect(itemOrder('A')).toEqual(['a0']);
+    expect(itemOrder('B')).toEqual(['a1', 'b0']);
+  });
+
+  it('escape returns the item to its origin', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowDown' }); // A -> [a1, a0]
+    fireEvent.keyDown(handle, { key: 'Escape' });
+    expect(itemOrder('A')).toEqual(['a0', 'a1']);
+  });
+
+  it('escape returns the item to its origin after a cross-collection move', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    fireEvent.keyDown(screen.getByLabelText(/Reorder A1/i), { key: ' ' });
+    fireEvent.keyDown(screen.getByLabelText(/Reorder A1/i), {
+      key: 'ArrowDown',
+    }); // A -> [a0], B -> [a1, b0]
+    expect(itemOrder('B')).toEqual(['a1', 'b0']);
+    // The row remounts under collection B, so re-query the handle before cancelling.
+    fireEvent.keyDown(screen.getByLabelText(/Reorder A1/i), { key: 'Escape' });
+    expect(itemOrder('A')).toEqual(['a0', 'a1']);
+    expect(itemOrder('B')).toEqual(['b0']);
+  });
+
+  it('announces via an assertive live region', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    const live = document.querySelector('[aria-live="assertive"]');
+    expect(live?.textContent).toMatch(/Grabbed A0/i);
+  });
+
+  it('ArrowUp from the top of a collection appends to the previous collection', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder B0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowUp' });
+    expect(itemOrder('A')).toEqual(['a0', 'a1', 'b0']);
+    expect(itemOrder('B')).toEqual([]);
+  });
+
+  it('ArrowDown at the very end is a no-op and announces', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder B0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowDown' });
+    expect(itemOrder('A')).toEqual(['a0', 'a1']);
+    expect(itemOrder('B')).toEqual(['b0']);
+    const live = document.querySelector('[aria-live="assertive"]');
+    expect(live?.textContent).toMatch(/Already at the end/i);
+  });
+
+  it('ArrowUp at the very start is a no-op and announces', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: 'ArrowUp' });
+    expect(itemOrder('A')).toEqual(['a0', 'a1']);
+    expect(itemOrder('B')).toEqual(['b0']);
+    const live = document.querySelector('[aria-live="assertive"]');
+    expect(live?.textContent).toMatch(/Already at the start/i);
+  });
+
+  it('dropping via space announces the item name', () => {
+    seedTwoCollections();
+    render(<CollectionsPanel />);
+    const handle = screen.getByLabelText(/Reorder A0/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    fireEvent.keyDown(handle, { key: ' ' });
+    const live = document.querySelector('[aria-live="assertive"]');
+    expect(live?.textContent).toMatch(/Dropped A0/i);
+  });
+});

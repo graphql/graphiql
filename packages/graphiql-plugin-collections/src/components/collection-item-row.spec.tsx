@@ -19,11 +19,18 @@ function renderRow(
   const onDelete = vi.fn();
   const onMove = vi.fn();
   const onRenameItem = vi.fn();
+  const onGrabToggle = vi.fn();
+  const onGrabMove = vi.fn();
+  const onGrabCancel = vi.fn();
   render(
     <CollectionItemRow
       item={item}
       collectionId="col-1"
       index={0}
+      isGrabbed={false}
+      onGrabToggle={onGrabToggle}
+      onGrabMove={onGrabMove}
+      onGrabCancel={onGrabCancel}
       onOpen={onOpen}
       onCopy={onCopy}
       onDelete={onDelete}
@@ -32,7 +39,16 @@ function renderRow(
       {...overrides}
     />,
   );
-  return { onOpen, onCopy, onDelete, onMove, onRenameItem };
+  return {
+    onOpen,
+    onCopy,
+    onDelete,
+    onMove,
+    onRenameItem,
+    onGrabToggle,
+    onGrabMove,
+    onGrabCancel,
+  };
 }
 
 describe('CollectionItemRow actions', () => {
@@ -161,6 +177,10 @@ describe('CollectionItemRow description subtext', () => {
         item={itemWithDesc}
         collectionId="col-1"
         index={0}
+        isGrabbed={false}
+        onGrabToggle={vi.fn()}
+        onGrabMove={vi.fn()}
+        onGrabCancel={vi.fn()}
         onOpen={vi.fn()}
         onCopy={vi.fn()}
         onDelete={vi.fn()}
@@ -178,5 +198,44 @@ describe('CollectionItemRow description subtext', () => {
       '.graphiql-collection-item-description',
     );
     expect(desc).toBeNull();
+  });
+});
+
+describe('CollectionItemRow keyboard grab', () => {
+  it('space on the drag handle toggles grab, not row open', () => {
+    const { onGrabToggle, onOpen } = renderRow();
+    const handle = screen.getByLabelText(/Reorder MyOperation/i);
+    fireEvent.keyDown(handle, { key: ' ' });
+    expect(onGrabToggle).toHaveBeenCalledOnce();
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('arrow keys move only while grabbed', () => {
+    const { onGrabMove } = renderRow({ isGrabbed: true });
+    const handle = screen.getByLabelText(/Reorder MyOperation/i);
+    fireEvent.keyDown(handle, { key: 'ArrowDown' });
+    fireEvent.keyDown(handle, { key: 'ArrowUp' });
+    expect(onGrabMove).toHaveBeenNthCalledWith(1, 'down');
+    expect(onGrabMove).toHaveBeenNthCalledWith(2, 'up');
+  });
+
+  it('does not move via arrows when not grabbed', () => {
+    const { onGrabMove } = renderRow({ isGrabbed: false });
+    const handle = screen.getByLabelText(/Reorder MyOperation/i);
+    fireEvent.keyDown(handle, { key: 'ArrowDown' });
+    expect(onGrabMove).not.toHaveBeenCalled();
+  });
+
+  it('escape cancels while grabbed', () => {
+    const { onGrabCancel } = renderRow({ isGrabbed: true });
+    const handle = screen.getByLabelText(/Reorder MyOperation/i);
+    fireEvent.keyDown(handle, { key: 'Escape' });
+    expect(onGrabCancel).toHaveBeenCalledOnce();
+  });
+
+  it('marks the handle pressed when grabbed', () => {
+    renderRow({ isGrabbed: true });
+    const handle = screen.getByLabelText(/Reorder MyOperation/i);
+    expect(handle.getAttribute('aria-pressed')).toBe('true');
   });
 });

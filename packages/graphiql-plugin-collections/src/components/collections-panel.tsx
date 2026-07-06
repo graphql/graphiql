@@ -104,6 +104,21 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
   // Text awaiting replace confirmation (destructive, so we prompt before applying).
   const [pendingReplace, setPendingReplace] = useState<string | null>(null);
 
+  // Expand/collapse state (collapsed collection ids).
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [grabbed, setGrabbed] = useState<{
+    collectionId: string;
+    index: number;
+    itemId: string;
+  } | null>(null);
+  const [origin, setOrigin] = useState<{
+    collectionId: string;
+    index: number;
+  } | null>(null);
+  const [liveMessage, setLiveMessage] = useState('');
+  const listRef = useRef<HTMLDivElement>(null);
+  const cancelledItemRef = useRef<string | null>(null);
+
   // Clear the import feedback after a few seconds.
   useEffect(() => {
     if (!status) {
@@ -329,6 +344,144 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
     });
   };
 
+  const toggleExpand = (id: string) =>
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+
+  const expand = (id: string) =>
+    setCollapsed(prev => {
+      if (!prev.has(id)) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+
+  const handleGrabToggle = (
+    collectionId: string,
+    index: number,
+    itemId: string,
+  ) => {
+    if (grabbed) {
+      const cols = collectionsStore.getState().collections;
+      const col = cols.find(c => c.id === grabbed.collectionId);
+      const droppedItem = col?.items[grabbed.index];
+      setLiveMessage(
+        `Dropped ${droppedItem?.name ?? grabbed.itemId} in ${col?.name ?? ''} at position ${grabbed.index + 1}.`,
+      );
+      setGrabbed(null);
+      setOrigin(null);
+      return;
+    }
+    setGrabbed({ collectionId, index, itemId });
+    setOrigin({ collectionId, index });
+    const item = collectionsStore
+      .getState()
+      .collections.find(c => c.id === collectionId)?.items[index];
+    setLiveMessage(
+      `Grabbed ${item?.name ?? itemId}. Use arrow keys to move, space to drop, escape to cancel.`,
+    );
+  };
+
+  const handleGrabMove = (direction: 'up' | 'down') => {
+    if (!grabbed) {
+      return;
+    }
+    const cols = collectionsStore.getState().collections;
+    const cIdx = cols.findIndex(c => c.id === grabbed.collectionId);
+    const col = cols[cIdx];
+    if (!col) {
+      return;
+    }
+    const { moveItem } = collectionsStore.getState().actions;
+
+    if (direction === 'down') {
+      if (grabbed.index < col.items.length - 1) {
+        moveItem(col.id, grabbed.index, col.id, grabbed.index + 1);
+        const next = { ...grabbed, index: grabbed.index + 1 };
+        setGrabbed(next);
+        setLiveMessage(
+          `Position ${next.index + 1} of ${col.items.length} in ${col.name}.`,
+        );
+      } else if (cIdx < cols.length - 1) {
+        const dest = cols[cIdx + 1]!;
+        expand(dest.id);
+        moveItem(col.id, grabbed.index, dest.id, 0);
+        setGrabbed({ collectionId: dest.id, index: 0, itemId: grabbed.itemId });
+        setLiveMessage(
+          `Moved to ${dest.name}, position 1 of ${dest.items.length + 1}.`,
+        );
+      } else {
+        setLiveMessage('Already at the end.');
+      }
+    } else if (grabbed.index > 0) {
+      moveItem(col.id, grabbed.index, col.id, grabbed.index - 1);
+      const next = { ...grabbed, index: grabbed.index - 1 };
+      setGrabbed(next);
+      setLiveMessage(
+        `Position ${next.index + 1} of ${col.items.length} in ${col.name}.`,
+      );
+    } else if (cIdx > 0) {
+      const dest = cols[cIdx - 1]!;
+      expand(dest.id);
+      const toIndex = dest.items.length;
+      moveItem(col.id, grabbed.index, dest.id, toIndex);
+      setGrabbed({
+        collectionId: dest.id,
+        index: toIndex,
+        itemId: grabbed.itemId,
+      });
+      setLiveMessage(
+        `Moved to ${dest.name}, position ${toIndex + 1} of ${dest.items.length + 1}.`,
+      );
+    } else {
+      setLiveMessage('Already at the start.');
+    }
+  };
+
+  const handleGrabCancel = () => {
+    if (!grabbed || !origin) {
+      return;
+    }
+    collectionsStore
+      .getState()
+      .actions.moveItem(
+        grabbed.collectionId,
+        grabbed.index,
+        origin.collectionId,
+        origin.index,
+      );
+    cancelledItemRef.current = grabbed.itemId;
+    setGrabbed(null);
+    setOrigin(null);
+    setLiveMessage('Move cancelled.');
+  };
+
+  useEffect(() => {
+    if (grabbed) {
+      listRef.current
+        ?.querySelector<HTMLElement>(
+          `[data-collection-drag-handle="${grabbed.itemId}"]`,
+        )
+        ?.focus();
+    } else if (cancelledItemRef.current) {
+      listRef.current
+        ?.querySelector<HTMLElement>(
+          `[data-collection-drag-handle="${cancelledItemRef.current}"]`,
+        )
+        ?.focus();
+      cancelledItemRef.current = null;
+    }
+  }, [grabbed]);
+
   return (
     <div
       className={`graphiql-collections-panel${isDragOver ? ' graphiql-collections-drop-active' : ''}`}
@@ -425,13 +578,26 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
               : 'No collections yet. Save an operation to get started.'}
         </div>
       )}
-      <div className="graphiql-collections-list">
+      <div
+        className="graphiql-sr-only"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        {liveMessage}
+      </div>
+      <div className="graphiql-collections-list" ref={listRef}>
         {collections.map(collection => (
           <CollectionRow
             key={collection.id}
             collection={collection}
             readOnly={readOnly}
             allowCopy={allowCopy}
+            expanded={!collapsed.has(collection.id)}
+            onToggleExpand={() => toggleExpand(collection.id)}
+            grabbed={grabbed}
+            onGrabToggle={handleGrabToggle}
+            onGrabMove={handleGrabMove}
+            onGrabCancel={handleGrabCancel}
             onRename={handleRename}
             onDelete={handleDelete}
             onCopy={id => void handleCopy(id)}

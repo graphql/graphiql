@@ -5,10 +5,16 @@ import { CollectionItemRow } from './collection-item-row';
 
 type CollectionRowProps = {
   collection: Collection;
+  expanded: boolean;
+  onToggleExpand(): void;
   /** Hide write affordances (Rename, Delete, add-item) when true. */
   readOnly?: boolean;
   /** Hide "Copy to clipboard" when false. */
   allowCopy?: boolean;
+  grabbed: { collectionId: string; index: number; itemId: string } | null;
+  onGrabToggle(collectionId: string, index: number, itemId: string): void;
+  onGrabMove(direction: 'up' | 'down'): void;
+  onGrabCancel(): void;
   onRename(id: string, name: string): void;
   onDelete(id: string): void;
   onCopy(id: string): void;
@@ -34,8 +40,14 @@ type CollectionRowProps = {
 
 export const CollectionRow: FC<CollectionRowProps> = ({
   collection,
+  expanded,
+  onToggleExpand,
   readOnly = false,
   allowCopy = true,
+  grabbed,
+  onGrabToggle,
+  onGrabMove,
+  onGrabCancel,
   onRename,
   onDelete,
   onCopy,
@@ -45,7 +57,6 @@ export const CollectionRow: FC<CollectionRowProps> = ({
   onMoveItem,
   onRenameItem,
 }) => {
-  const [expanded, setExpanded] = useState(true);
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(collection.name);
 
@@ -83,7 +94,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
             className="graphiql-collection-toggle"
             aria-expanded={expanded}
             aria-label={`Toggle ${collection.name}`}
-            onClick={() => setExpanded(e => !e)}
+            onClick={onToggleExpand}
           >
             <span className="graphiql-collection-chevron" aria-hidden="true">
               {expanded ? '▾' : '▸'}
@@ -150,6 +161,12 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               index={i}
               readOnly={readOnly}
               allowCopy={allowCopy}
+              isGrabbed={
+                grabbed?.collectionId === collection.id && grabbed.index === i
+              }
+              onGrabToggle={() => onGrabToggle(collection.id, i, item.id)}
+              onGrabMove={onGrabMove}
+              onGrabCancel={onGrabCancel}
               onOpen={onOpenItem}
               onCopy={onCopyItem}
               onDelete={onDeleteItem}

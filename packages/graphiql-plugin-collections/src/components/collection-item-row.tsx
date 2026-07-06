@@ -12,6 +12,10 @@ type CollectionItemRowProps = {
   readOnly?: boolean;
   /** Hide "Copy operation" when false. */
   allowCopy?: boolean;
+  isGrabbed: boolean;
+  onGrabToggle(): void;
+  onGrabMove(direction: 'up' | 'down'): void;
+  onGrabCancel(): void;
   onOpen(item: CollectionItem): void;
   onCopy(itemId: string): void;
   onDelete(collectionId: string, itemId: string): void;
@@ -34,6 +38,10 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   index,
   readOnly = false,
   allowCopy = true,
+  isGrabbed,
+  onGrabToggle,
+  onGrabMove,
+  onGrabCancel,
   onOpen,
   onCopy,
   onDelete,
@@ -95,6 +103,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   return (
     <div
       className={`graphiql-collection-item-row${isDragOver ? ' graphiql-collection-drop-target' : ''}`}
+      data-grabbed={isGrabbed || undefined}
       draggable={!readOnly && !isEditing}
       onDragStart={
         readOnly || isEditing
@@ -139,9 +148,36 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
         }
       }}
     >
-      <span className="graphiql-collection-drag-handle" aria-hidden="true">
+      <button
+        type="button"
+        className="graphiql-collection-drag-handle"
+        data-collection-drag-handle={item.id}
+        aria-label={`Reorder ${item.name}. Press space to grab, arrow keys to move, escape to cancel.`}
+        aria-pressed={isGrabbed}
+        disabled={readOnly}
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            onGrabToggle();
+          } else if (isGrabbed && e.key === 'ArrowDown') {
+            e.preventDefault();
+            e.stopPropagation();
+            onGrabMove('down');
+          } else if (isGrabbed && e.key === 'ArrowUp') {
+            e.preventDefault();
+            e.stopPropagation();
+            onGrabMove('up');
+          } else if (isGrabbed && e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            onGrabCancel();
+          }
+        }}
+      >
         ⠿
-      </span>
+      </button>
       {method === 'mix' ? (
         <span
           className="graphiql-method-pill graphiql-collection-method-pill-mix"

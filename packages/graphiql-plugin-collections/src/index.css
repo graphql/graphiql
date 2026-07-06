@@ -209,7 +209,7 @@
   background: oklch(var(--bg-subtle));
 }
 
-.graphiql-collection-item-row[aria-grabbed='true'] {
+.graphiql-collection-item-row[data-grabbed='true'] {
   opacity: 0.5;
 }
 
@@ -222,9 +222,20 @@
 }
 
 .graphiql-collection-drag-handle {
+  all: unset;
   cursor: grab;
   color: oklch(var(--fg-subtle));
   flex-shrink: 0;
+}
+
+.graphiql-collection-drag-handle:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
+  border-radius: var(--border-radius-4);
+}
+
+.graphiql-collection-drag-handle:disabled {
+  cursor: default;
 }
 
 .graphiql-collection-drop-target {
@@ -413,4 +424,16 @@
 .graphiql-conflict-review-confirm {
   display: flex;
   gap: var(--px-8);
+}
+
+.graphiql-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
