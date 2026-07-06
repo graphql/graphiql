@@ -304,26 +304,18 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
     });
   };
 
-  const handleCopy = async (collectionId: string) => {
+  const announce = (message: string) => setLiveMessage(message);
+
+  const handleShareCollection = async (collectionId: string) => {
     const json = collectionsStore
       .getState()
       .actions.exportCollection(collectionId);
-    try {
-      await navigator.clipboard.writeText(json);
-      setStatus({ ok: true, message: 'Copied collection to clipboard.' });
-    } catch {
-      setStatus({ ok: false, message: 'Could not copy to clipboard.' });
-    }
+    await navigator.clipboard.writeText(json);
   };
 
-  const handleCopyItem = async (itemId: string) => {
+  const handleShareItem = async (itemId: string) => {
     const json = collectionsStore.getState().actions.exportItem(itemId);
-    try {
-      await navigator.clipboard.writeText(json);
-      setStatus({ ok: true, message: 'Copied operation to clipboard.' });
-    } catch {
-      setStatus({ ok: false, message: 'Could not copy to clipboard.' });
-    }
+    await navigator.clipboard.writeText(json);
   };
 
   const handleRename = actions.renameCollection;
@@ -597,9 +589,10 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
             onGrabCancel={handleGrabCancel}
             onRename={handleRename}
             onDelete={handleDelete}
-            onCopy={id => void handleCopy(id)}
+            onShareCollection={handleShareCollection}
             onOpenItem={handleOpen}
-            onCopyItem={id => void handleCopyItem(id)}
+            onShare={handleShareItem}
+            onAnnounce={announce}
             onDeleteItem={handleDeleteItem}
             onMoveItem={handleMoveItem}
             onAddItem={handleAddItem}

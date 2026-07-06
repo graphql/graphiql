@@ -1,7 +1,9 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { MethodPill, PenIcon, CopyIcon, TrashIcon } from '@graphiql/react';
 import type { CollectionItem } from '../types';
 import { getDocumentMethod } from '../operation-method';
+import UploadIcon from '../icons/upload.svg?react';
+import CheckIcon from '../icons/check.svg?react';
 
 type CollectionItemRowProps = {
   item: CollectionItem;
@@ -15,7 +17,8 @@ type CollectionItemRowProps = {
   onGrabMove(direction: 'up' | 'down'): void;
   onGrabCancel(): void;
   onOpen(item: CollectionItem): void;
-  onCopy(itemId: string): void;
+  onShare(itemId: string): Promise<void>;
+  onAnnounce(message: string): void;
   onDelete(collectionId: string, itemId: string): void;
   onMove(
     fromCollectionId: string,
@@ -40,13 +43,16 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   onGrabMove,
   onGrabCancel,
   onOpen,
-  onCopy,
+  onShare,
+  onAnnounce,
   onDelete,
   onMove,
   onRenameItem,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [confirmed, setConfirmed] = useState<'copy' | 'share' | null>(null);
+  const [confirmToken, setConfirmToken] = useState(0);
   const editFormRef = useRef<HTMLDivElement>(null);
   const [editName, setEditName] = useState(item.name);
   const [editDescription, setEditDescription] = useState(
@@ -63,9 +69,28 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
     setIsEditing(true);
   };
 
-  const handleCopy = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onCopy(item.id);
+  useEffect(() => {
+    if (!confirmed) {
+      return;
+    }
+    const timer = setTimeout(() => setConfirmed(null), 1500);
+    return () => clearTimeout(timer);
+  }, [confirmed, confirmToken]);
+
+  const runAction = async (
+    kind: 'copy' | 'share',
+    write: () => Promise<void>,
+    message: string,
+    failureMessage: string,
+  ) => {
+    try {
+      await write();
+      onAnnounce(message);
+      setConfirmed(kind);
+      setConfirmToken(t => t + 1);
+    } catch {
+      onAnnounce(failureMessage);
+    }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -258,9 +283,44 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
             className="graphiql-collection-item-action"
             aria-label={`Copy ${item.name}`}
             title={`Copy ${item.name}`}
-            onClick={handleCopy}
+            data-confirmed={confirmed === 'copy' || undefined}
+            onClick={e => {
+              e.stopPropagation();
+              void runAction(
+                'copy',
+                () => navigator.clipboard.writeText(item.query),
+                'Copied query to clipboard.',
+                'Could not copy to clipboard.',
+              );
+            }}
           >
-            <CopyIcon aria-hidden="true" />
+            {confirmed === 'copy' ? (
+              <CheckIcon aria-hidden="true" />
+            ) : (
+              <CopyIcon aria-hidden="true" />
+            )}
+          </button>
+          <button
+            type="button"
+            className="graphiql-collection-item-action"
+            aria-label={`Share ${item.name}`}
+            title={`Share ${item.name}`}
+            data-confirmed={confirmed === 'share' || undefined}
+            onClick={e => {
+              e.stopPropagation();
+              void runAction(
+                'share',
+                () => onShare(item.id),
+                'Shared operation to clipboard.',
+                'Could not share to clipboard.',
+              );
+            }}
+          >
+            {confirmed === 'share' ? (
+              <CheckIcon aria-hidden="true" />
+            ) : (
+              <UploadIcon aria-hidden="true" />
+            )}
           </button>
           {!readOnly && (
             <button

@@ -179,6 +179,13 @@
   outline-offset: -2px;
 }
 
+/* Only recolor the confirmed check; its visibility still follows the hover /
+   focus reveal, so it disappears with the other actions when the row is left. */
+.graphiql-collection-header-action[data-confirmed],
+.graphiql-collection-item-action[data-confirmed] {
+  color: oklch(var(--accent-green));
+}
+
 .graphiql-collection-header-action svg,
 .graphiql-collection-item-action svg {
   display: block;

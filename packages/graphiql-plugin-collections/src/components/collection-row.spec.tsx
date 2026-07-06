@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { CollectionRow } from './collection-row';
 import type { Collection } from '../types';
 
@@ -12,12 +12,20 @@ const collection: Collection = {
   items: [],
 };
 
+const writeText = vi.fn().mockResolvedValue(null);
+
+afterEach(() => {
+  writeText.mockClear();
+  vi.useRealTimers();
+});
+
 function renderRow(
   overrides: Partial<Parameters<typeof CollectionRow>[0]> = {},
 ) {
   const onRename = vi.fn();
   const onDelete = vi.fn();
-  const onCopy = vi.fn();
+  const onShareCollection = vi.fn().mockResolvedValue(null);
+  const onAnnounce = vi.fn();
   function Harness() {
     const [expanded, setExpanded] = useState(overrides.expanded ?? true);
     return (
@@ -28,9 +36,10 @@ function renderRow(
         readOnly={false}
         onRename={onRename}
         onDelete={onDelete}
-        onCopy={onCopy}
+        onShareCollection={onShareCollection}
         onOpenItem={vi.fn()}
-        onCopyItem={vi.fn()}
+        onShare={vi.fn().mockResolvedValue(null)}
+        onAnnounce={onAnnounce}
         onDeleteItem={vi.fn()}
         onMoveItem={vi.fn()}
         onAddItem={vi.fn() as never}
@@ -44,35 +53,71 @@ function renderRow(
     );
   }
   render(<Harness />);
-  return { onRename, onDelete, onCopy };
+  return { onRename, onDelete, onShareCollection, onAnnounce };
 }
 
 describe('CollectionRow gating', () => {
-  it('renders rename, copy, and delete buttons and no kebab', () => {
+  it('renders rename, share, and delete buttons and no kebab', () => {
     renderRow();
     expect(screen.getByLabelText('Rename My Collection')).toBeTruthy();
-    expect(screen.getByLabelText('Copy My Collection')).toBeTruthy();
+    expect(screen.getByLabelText('Share My Collection')).toBeTruthy();
     expect(screen.getByLabelText('Delete My Collection')).toBeTruthy();
     expect(screen.queryByText('···')).toBeNull();
   });
 
-  it('readOnly hides rename and delete but keeps copy', () => {
+  it('readOnly hides rename and delete but keeps share', () => {
     renderRow({ readOnly: true });
     expect(screen.queryByLabelText('Rename My Collection')).toBeNull();
     expect(screen.queryByLabelText('Delete My Collection')).toBeNull();
-    expect(screen.getByLabelText('Copy My Collection')).toBeTruthy();
+    expect(screen.getByLabelText('Share My Collection')).toBeTruthy();
   });
 });
 
 describe('CollectionRow header actions', () => {
-  it('clicking copy calls onCopy with the collection id', () => {
-    const { onCopy } = renderRow();
-    fireEvent.click(screen.getByLabelText('Copy My Collection'));
-    expect(onCopy).toHaveBeenCalledOnce();
-    expect(onCopy).toHaveBeenCalledWith('col-1');
+  it('clicking share calls onShareCollection with the collection id and announces', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const { onShareCollection, onAnnounce } = renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share My Collection'));
+    });
+    expect(onShareCollection).toHaveBeenCalledOnce();
+    expect(onShareCollection).toHaveBeenCalledWith('col-1');
+    expect(onAnnounce).toHaveBeenCalledWith('Shared collection to clipboard.');
+  });
+
+  it('clicking share shows confirmed state then reverts after 1500ms', async () => {
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share My Collection'));
+    });
+    expect(
+      screen
+        .getByLabelText('Share My Collection')
+        .getAttribute('data-confirmed'),
+    ).toBe('true');
+    act(() => {
+      vi.advanceTimersByTime(1600);
+    });
+    expect(
+      screen
+        .getByLabelText('Share My Collection')
+        .getAttribute('data-confirmed'),
+    ).toBeNull();
   });
 
   it('clicking delete calls onDelete with the collection id', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onDelete } = renderRow();
     fireEvent.click(screen.getByLabelText('Delete My Collection'));
     expect(onDelete).toHaveBeenCalledOnce();
@@ -80,6 +125,10 @@ describe('CollectionRow header actions', () => {
   });
 
   it('clicking rename opens the input and committing calls onRename with the new name', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onRename } = renderRow();
     fireEvent.click(screen.getByLabelText('Rename My Collection'));
     const input = screen.getByRole('textbox') as HTMLInputElement;
@@ -89,13 +138,19 @@ describe('CollectionRow header actions', () => {
     expect(onRename).toHaveBeenCalledWith('col-1', 'Renamed Collection');
   });
 
-  it('clicking a header action does not toggle expanded state', () => {
+  it('clicking a header action does not toggle expanded state', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow();
     const toggle = screen.getByRole('button', {
       name: /Toggle My Collection/i,
     });
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
-    fireEvent.click(screen.getByLabelText('Copy My Collection'));
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share My Collection'));
+    });
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
   });
 });

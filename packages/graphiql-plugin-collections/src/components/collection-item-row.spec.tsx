@@ -1,5 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import {
+  fireEvent,
+  render,
+  screen,
+  act,
+  waitFor,
+} from '@testing-library/react';
 import { CollectionItemRow } from './collection-item-row';
 import type { CollectionItem } from '../types';
 
@@ -15,7 +21,8 @@ function renderRow(
   overrides: Partial<Parameters<typeof CollectionItemRow>[0]> = {},
 ) {
   const onOpen = vi.fn();
-  const onCopy = vi.fn();
+  const onShare = vi.fn().mockResolvedValue(null);
+  const onAnnounce = vi.fn();
   const onDelete = vi.fn();
   const onMove = vi.fn();
   const onRenameItem = vi.fn();
@@ -32,7 +39,8 @@ function renderRow(
       onGrabMove={onGrabMove}
       onGrabCancel={onGrabCancel}
       onOpen={onOpen}
-      onCopy={onCopy}
+      onShare={onShare}
+      onAnnounce={onAnnounce}
       onDelete={onDelete}
       onMove={onMove}
       onRenameItem={onRenameItem}
@@ -41,7 +49,8 @@ function renderRow(
   );
   return {
     onOpen,
-    onCopy,
+    onShare,
+    onAnnounce,
     onDelete,
     onMove,
     onRenameItem,
@@ -51,25 +60,146 @@ function renderRow(
   };
 }
 
+// Set up clipboard mock before tests
+const writeText = vi.fn().mockResolvedValue(null);
+
+afterEach(() => {
+  writeText.mockClear();
+  vi.useRealTimers();
+});
+
 describe('CollectionItemRow actions', () => {
-  it('renders edit, copy, and delete buttons and no kebab or Open', () => {
+  it('renders edit, copy, share, and delete buttons and no kebab or Open', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow();
     expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
     expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Share MyOperation')).toBeTruthy();
     expect(screen.getByLabelText('Delete MyOperation')).toBeTruthy();
     expect(screen.queryByText('···')).toBeNull();
     expect(screen.queryByText('Open')).toBeNull();
   });
 
-  it('clicking copy calls onCopy with the item id, not onOpen', () => {
-    const { onCopy, onOpen } = renderRow();
-    fireEvent.click(screen.getByLabelText('Copy MyOperation'));
-    expect(onCopy).toHaveBeenCalledOnce();
-    expect(onCopy).toHaveBeenCalledWith('item-1');
+  it('clicking copy writes item.query to clipboard and announces, not onOpen', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const { onOpen, onAnnounce } = renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+    });
+    expect(writeText).toHaveBeenCalledOnce();
+    expect(writeText).toHaveBeenCalledWith('{ __typename }');
+    expect(onAnnounce).toHaveBeenCalledWith('Copied query to clipboard.');
     expect(onOpen).not.toHaveBeenCalled();
   });
 
+  it('clicking copy shows confirmed state then reverts after 1500ms', async () => {
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+    });
+    expect(
+      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+    ).toBe('true');
+    act(() => {
+      vi.advanceTimersByTime(1600);
+    });
+    expect(
+      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+    ).toBeNull();
+  });
+
+  it('clicking share calls onShare with the item id and announces', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const { onShare, onAnnounce, onOpen } = renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+    });
+    expect(onShare).toHaveBeenCalledOnce();
+    expect(onShare).toHaveBeenCalledWith('item-1');
+    expect(onAnnounce).toHaveBeenCalledWith('Shared operation to clipboard.');
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('clicking share shows confirmed state then reverts after 1500ms', async () => {
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+    });
+    expect(
+      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+    ).toBe('true');
+    act(() => {
+      vi.advanceTimersByTime(1600);
+    });
+    expect(
+      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+    ).toBeNull();
+  });
+
+  it('copy failure announces an error and does not enter the confirmed state', async () => {
+    const rejectingWriteText = vi.fn().mockRejectedValue(new Error('denied'));
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: rejectingWriteText },
+      configurable: true,
+    });
+    const { onAnnounce } = renderRow();
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Copy MyOperation'));
+    });
+    await waitFor(() => {
+      expect(onAnnounce).toHaveBeenCalledWith(
+        expect.stringMatching(/Could not copy/i),
+      );
+    });
+    expect(
+      screen.getByLabelText('Copy MyOperation').getAttribute('data-confirmed'),
+    ).toBeNull();
+  });
+
+  it('share failure announces an error and does not enter the confirmed state', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const onShare = vi.fn().mockRejectedValue(new Error('denied'));
+    const { onAnnounce } = renderRow({ onShare });
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share MyOperation'));
+    });
+    await waitFor(() => {
+      expect(onAnnounce).toHaveBeenCalledWith(
+        expect.stringMatching(/Could not share/i),
+      );
+    });
+    expect(
+      screen.getByLabelText('Share MyOperation').getAttribute('data-confirmed'),
+    ).toBeNull();
+  });
+
   it('clicking delete calls onDelete with collectionId and itemId, not onOpen', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onDelete, onOpen } = renderRow();
     fireEvent.click(screen.getByLabelText('Delete MyOperation'));
     expect(onDelete).toHaveBeenCalledOnce();
@@ -78,21 +208,34 @@ describe('CollectionItemRow actions', () => {
   });
 
   it('clicking the row still opens the item', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onOpen } = renderRow();
     fireEvent.click(screen.getByText('MyOperation'));
     expect(onOpen).toHaveBeenCalledOnce();
   });
 
-  it('readOnly hides edit and delete but keeps copy', () => {
+  it('readOnly hides edit and delete but keeps copy and share', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow({ readOnly: true });
     expect(screen.queryByLabelText('Edit MyOperation')).toBeNull();
     expect(screen.queryByLabelText('Delete MyOperation')).toBeNull();
     expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Share MyOperation')).toBeTruthy();
   });
 });
 
 describe('CollectionItemRow inline edit', () => {
   it('pencil button enters edit mode and does not open the item', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onOpen } = renderRow();
     const pencil = screen.getByLabelText('Edit MyOperation');
     fireEvent.click(pencil);
@@ -104,6 +247,10 @@ describe('CollectionItemRow inline edit', () => {
   });
 
   it('committing edit via Enter calls onRenameItem with name and description', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onRenameItem } = renderRow();
     fireEvent.click(screen.getByLabelText('Edit MyOperation'));
     const [nameInput] = screen.getAllByRole('textbox');
@@ -120,6 +267,10 @@ describe('CollectionItemRow inline edit', () => {
   });
 
   it('committing edit via blur calls onRenameItem', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onRenameItem } = renderRow();
     fireEvent.click(screen.getByLabelText('Edit MyOperation'));
     const [nameInput] = screen.getAllByRole('textbox');
@@ -133,6 +284,10 @@ describe('CollectionItemRow inline edit', () => {
   });
 
   it('moving focus from name to description does not commit or exit edit mode', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onRenameItem } = renderRow();
     fireEvent.click(screen.getByLabelText('Edit MyOperation'));
     const [nameInput, descInput] = screen.getAllByRole('textbox');
@@ -144,6 +299,10 @@ describe('CollectionItemRow inline edit', () => {
   });
 
   it('Escape cancels edit without calling onRenameItem', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onRenameItem } = renderRow();
     fireEvent.click(screen.getByLabelText('Edit MyOperation'));
     const [nameInput] = screen.getAllByRole('textbox');
@@ -154,6 +313,10 @@ describe('CollectionItemRow inline edit', () => {
   });
 
   it('readOnly hides the pencil button', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow({ readOnly: true });
     expect(screen.queryByLabelText('Edit MyOperation')).toBeNull();
   });
@@ -161,6 +324,10 @@ describe('CollectionItemRow inline edit', () => {
 
 describe('CollectionItemRow description subtext', () => {
   it('renders description subtext when item has a description', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const itemWithDesc: CollectionItem = {
       ...item,
       description: 'Fetches the current user',
@@ -175,7 +342,8 @@ describe('CollectionItemRow description subtext', () => {
         onGrabMove={vi.fn()}
         onGrabCancel={vi.fn()}
         onOpen={vi.fn()}
-        onCopy={vi.fn()}
+        onShare={vi.fn().mockResolvedValue(null)}
+        onAnnounce={vi.fn()}
         onDelete={vi.fn()}
         onMove={vi.fn()}
         onRenameItem={vi.fn()}
@@ -185,6 +353,10 @@ describe('CollectionItemRow description subtext', () => {
   });
 
   it('does not render description element when item has no description', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow();
     // No description element present.
     const desc = document.querySelector(
@@ -196,6 +368,10 @@ describe('CollectionItemRow description subtext', () => {
 
 describe('CollectionItemRow keyboard grab', () => {
   it('space on the drag handle toggles grab, not row open', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onGrabToggle, onOpen } = renderRow();
     const handle = screen.getByLabelText(/Reorder MyOperation/i);
     fireEvent.keyDown(handle, { key: ' ' });
@@ -204,6 +380,10 @@ describe('CollectionItemRow keyboard grab', () => {
   });
 
   it('arrow keys move only while grabbed', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onGrabMove } = renderRow({ isGrabbed: true });
     const handle = screen.getByLabelText(/Reorder MyOperation/i);
     fireEvent.keyDown(handle, { key: 'ArrowDown' });
@@ -213,6 +393,10 @@ describe('CollectionItemRow keyboard grab', () => {
   });
 
   it('does not move via arrows when not grabbed', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onGrabMove } = renderRow({ isGrabbed: false });
     const handle = screen.getByLabelText(/Reorder MyOperation/i);
     fireEvent.keyDown(handle, { key: 'ArrowDown' });
@@ -220,6 +404,10 @@ describe('CollectionItemRow keyboard grab', () => {
   });
 
   it('escape cancels while grabbed', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     const { onGrabCancel } = renderRow({ isGrabbed: true });
     const handle = screen.getByLabelText(/Reorder MyOperation/i);
     fireEvent.keyDown(handle, { key: 'Escape' });
@@ -227,6 +415,10 @@ describe('CollectionItemRow keyboard grab', () => {
   });
 
   it('marks the handle pressed when grabbed', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     renderRow({ isGrabbed: true });
     const handle = screen.getByLabelText(/Reorder MyOperation/i);
     expect(handle.getAttribute('aria-pressed')).toBe('true');

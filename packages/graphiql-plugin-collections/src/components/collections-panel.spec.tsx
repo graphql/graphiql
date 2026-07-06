@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { CollectionsPanel } from './collections-panel';
 import { collectionsStore } from '../store';
 // Imported by its real path (not the '@graphiql/react' alias) for typed access;
@@ -545,5 +551,67 @@ describe('CollectionsPanel keyboard reorder', () => {
     fireEvent.keyDown(handle, { key: ' ' });
     const live = document.querySelector('[aria-live="assertive"]');
     expect(live?.textContent).toMatch(/Dropped A0/i);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Share item — writes exportItem envelope + announces, no visible status
+// ---------------------------------------------------------------------------
+
+describe('CollectionsPanel share item', () => {
+  const writeText = vi.fn().mockResolvedValue(null);
+
+  beforeEach(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    writeText.mockClear();
+  });
+
+  it('clicking Share on an item writes the exportItem envelope and announces via aria-live, no visible status', async () => {
+    collectionsStore.setState({
+      loaded: true,
+      collections: [
+        {
+          id: 'col-1',
+          name: 'C',
+          createdAt: 1000,
+          updatedAt: 1000,
+          items: [
+            {
+              id: 'item-1',
+              name: 'MyOp',
+              query: '{ a }',
+              createdAt: 1000,
+              updatedAt: 1000,
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<CollectionsPanel />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Share MyOp'));
+    });
+
+    // clipboard must receive the importable envelope (contains "version": 1)
+    expect(writeText).toHaveBeenCalledOnce();
+    const written = writeText.mock.calls[0]?.[0] as string;
+    expect(written).toContain('"version"');
+
+    // aria-live region must announce
+    await waitFor(() => {
+      const live = document.querySelector('[aria-live="assertive"]');
+      expect(live?.textContent).toMatch(/Shared operation/i);
+    });
+
+    // No visible status element (setStatus is NOT called for share)
+    expect(document.querySelector('.graphiql-collections-status')).toBeNull();
   });
 });

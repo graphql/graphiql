@@ -1,7 +1,9 @@
-import { FC, useState } from 'react';
-import { PenIcon, CopyIcon, TrashIcon } from '@graphiql/react';
+import { FC, useEffect, useState } from 'react';
+import { PenIcon, TrashIcon } from '@graphiql/react';
 import type { Collection, CollectionItem } from '../types';
 import { CollectionItemRow } from './collection-item-row';
+import UploadIcon from '../icons/upload.svg?react';
+import CheckIcon from '../icons/check.svg?react';
 
 type CollectionRowProps = {
   collection: Collection;
@@ -15,9 +17,10 @@ type CollectionRowProps = {
   onGrabCancel(): void;
   onRename(id: string, name: string): void;
   onDelete(id: string): void;
-  onCopy(id: string): void;
+  onShareCollection(id: string): Promise<void>;
   onOpenItem(item: CollectionItem): void;
-  onCopyItem(itemId: string): void;
+  onShare(itemId: string): Promise<void>;
+  onAnnounce(message: string): void;
   onDeleteItem(collectionId: string, itemId: string): void;
   onMoveItem(
     fromCollectionId: string,
@@ -47,15 +50,37 @@ export const CollectionRow: FC<CollectionRowProps> = ({
   onGrabCancel,
   onRename,
   onDelete,
-  onCopy,
+  onShareCollection,
   onOpenItem,
-  onCopyItem,
+  onShare,
+  onAnnounce,
   onDeleteItem,
   onMoveItem,
   onRenameItem,
 }) => {
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(collection.name);
+  const [confirmed, setConfirmed] = useState(false);
+  const [confirmToken, setConfirmToken] = useState(0);
+
+  useEffect(() => {
+    if (!confirmed) {
+      return;
+    }
+    const timer = setTimeout(() => setConfirmed(false), 1500);
+    return () => clearTimeout(timer);
+  }, [confirmed, confirmToken]);
+
+  const runShareCollection = async () => {
+    try {
+      await onShareCollection(collection.id);
+      onAnnounce('Shared collection to clipboard.');
+      setConfirmed(true);
+      setConfirmToken(t => t + 1);
+    } catch {
+      onAnnounce('Could not share to clipboard.');
+    }
+  };
 
   const commitRename = () => {
     if (renameValue.trim()) {
@@ -121,14 +146,19 @@ export const CollectionRow: FC<CollectionRowProps> = ({
           <button
             type="button"
             className="graphiql-collection-header-action"
-            aria-label={`Copy ${collection.name}`}
-            title={`Copy ${collection.name}`}
+            aria-label={`Share ${collection.name}`}
+            title={`Share ${collection.name}`}
+            data-confirmed={confirmed || undefined}
             onClick={e => {
               e.stopPropagation();
-              onCopy(collection.id);
+              void runShareCollection();
             }}
           >
-            <CopyIcon aria-hidden="true" />
+            {confirmed ? (
+              <CheckIcon aria-hidden="true" />
+            ) : (
+              <UploadIcon aria-hidden="true" />
+            )}
           </button>
           {!readOnly && (
             <button
@@ -162,7 +192,8 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               onGrabMove={onGrabMove}
               onGrabCancel={onGrabCancel}
               onOpen={onOpenItem}
-              onCopy={onCopyItem}
+              onShare={onShare}
+              onAnnounce={onAnnounce}
               onDelete={onDeleteItem}
               onMove={onMoveItem}
               onRenameItem={onRenameItem}
