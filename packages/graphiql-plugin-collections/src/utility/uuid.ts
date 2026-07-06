@@ -1,12 +1,10 @@
-/** RFC4122-ish id that works outside secure contexts (crypto.randomUUID is undefined on plain http). */
+/** Stable unique id for collections and operations. Uses `crypto.randomUUID`
+ * when available, falling back to a timestamp + random suffix on plain http
+ * where `crypto.randomUUID` is undefined. */
 export function randomId(): string {
   const c = globalThis.crypto;
   if (c && typeof c.randomUUID === 'function') {
     return c.randomUUID();
   }
-  const s4 = () =>
-    Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .slice(1);
-  return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
