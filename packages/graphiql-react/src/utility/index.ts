@@ -12,7 +12,7 @@ export { pick } from './pick';
 export {
   getRunBlockReason,
   resolveActiveOperation,
-  MUTATION_OVER_GET_REASON,
+  MUTATION_REQUIRES_POST_REASON,
 } from './run-block';
 export { useDragResize } from './resize';
 export { clsx as cn } from 'clsx';

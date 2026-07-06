@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { HttpMethod } from '@graphiql/toolkit';
 import { GraphiQLProvider } from '../provider';
 import { TopBar, TopBarView } from './';
 import { Tooltip } from '../tooltip';
@@ -17,9 +18,9 @@ const postOnlyTransport = {
 
 const switchableTransport: {
   url: string;
-  method: 'GET' | 'POST';
-  supportedMethods: ('GET' | 'POST')[];
-  setMethod(method: 'GET' | 'POST'): void;
+  method: HttpMethod;
+  supportedMethods: HttpMethod[];
+  setMethod(method: HttpMethod): void;
   send: () => Promise<{
     ok: boolean;
     body: { data: Record<string, never> };
@@ -29,8 +30,8 @@ const switchableTransport: {
 } = {
   url: 'https://api.example.com/graphql',
   method: 'POST',
-  supportedMethods: ['GET', 'POST'],
-  setMethod(method: 'GET' | 'POST') {
+  supportedMethods: ['GET', 'POST', 'QUERY'],
+  setMethod(method: HttpMethod) {
     switchableTransport.method = method;
   },
   send: async () => ({
@@ -102,7 +103,7 @@ export const MutationBlockedOverGet: Story = {
         url="https://api.example.com/graphql"
         method="GET"
         supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+        runDisabledReason="Mutations can only be sent via POST"
         onRun={() => {}}
         onSetMethod={() => {}}
       />

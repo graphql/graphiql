@@ -3,7 +3,7 @@ import { parse, OperationDefinitionNode } from 'graphql';
 import {
   getRunBlockReason,
   resolveActiveOperation,
-  MUTATION_OVER_GET_REASON,
+  MUTATION_REQUIRES_POST_REASON,
 } from './run-block';
 
 function opsOf(source: string): OperationDefinitionNode[] {
@@ -40,12 +40,22 @@ describe('resolveActiveOperation', () => {
 describe('getRunBlockReason', () => {
   it('blocks a mutation over GET', () => {
     expect(getRunBlockReason('GET', MUTATION[0])).toBe(
-      MUTATION_OVER_GET_REASON,
+      MUTATION_REQUIRES_POST_REASON,
+    );
+  });
+
+  it('blocks a mutation over QUERY', () => {
+    expect(getRunBlockReason('QUERY', MUTATION[0])).toBe(
+      MUTATION_REQUIRES_POST_REASON,
     );
   });
 
   it('allows a query over GET', () => {
     expect(getRunBlockReason('GET', QUERY[0])).toBeNull();
+  });
+
+  it('allows a query over QUERY', () => {
+    expect(getRunBlockReason('QUERY', QUERY[0])).toBeNull();
   });
 
   it('allows a mutation over POST', () => {

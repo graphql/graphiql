@@ -69,8 +69,16 @@ export const TopBarView: FC<TopBarViewProps> = ({
   onSetMethod,
 }) => {
   const canSwitch = supportedMethods.length > 1;
-  const otherMethod = supportedMethods.find(m => m !== method) ?? method;
   const isBlocked = runDisabledReason !== null;
+  // Clicking the chip cycles to the next supported method. When a mutation is
+  // blocked on a safe method (GET/QUERY), the chip pulses and instead jumps
+  // straight to POST so a single click resolves the block.
+  const nextMethod =
+    supportedMethods[
+      (supportedMethods.indexOf(method) + 1) % supportedMethods.length
+    ];
+  const switchTarget =
+    isBlocked && supportedMethods.includes('POST') ? 'POST' : nextMethod;
 
   const runButton = (
     <button
@@ -100,14 +108,14 @@ export const TopBarView: FC<TopBarViewProps> = ({
 
       <div className="graphiql-top-bar-endpoint">
         {canSwitch ? (
-          <Tooltip label={`Switch to ${otherMethod}`}>
+          <Tooltip label={`Switch to ${switchTarget}`}>
             <button
               type="button"
               className={cn(
                 'graphiql-top-bar-method-toggle',
                 isBlocked && 'graphiql-top-bar-method-toggle--attention',
               )}
-              onClick={() => onSetMethod(otherMethod)}
+              onClick={() => onSetMethod(switchTarget)}
             >
               {method}
             </button>

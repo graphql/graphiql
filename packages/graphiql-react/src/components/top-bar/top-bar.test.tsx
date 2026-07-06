@@ -1,6 +1,7 @@
 'use no memo';
 
 import type { ReactElement } from 'react';
+import type { HttpMethod } from '@graphiql/toolkit';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -13,7 +14,7 @@ const DEFAULTS = {
   method: 'POST' as const,
   supportedMethods: ['POST' as const],
   onRun() {},
-  onSetMethod(_method: 'GET' | 'POST') {},
+  onSetMethod(_method: HttpMethod) {},
 };
 
 // The method toggle renders a Tooltip, which needs a provider ancestor.
@@ -109,6 +110,52 @@ describe('TopBarView', () => {
     expect(onSetMethod).toHaveBeenCalledWith('POST');
   });
 
+  it('cycles to the next method when three are supported (POST → QUERY)', async () => {
+    const user = userEvent.setup();
+    const onSetMethod = vi.fn();
+    renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="POST"
+        supportedMethods={['GET', 'POST', 'QUERY']}
+        onSetMethod={onSetMethod}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'POST' }));
+    expect(onSetMethod).toHaveBeenCalledWith('QUERY');
+  });
+
+  it('cycles past the last method back to the first (QUERY → GET)', async () => {
+    const user = userEvent.setup();
+    const onSetMethod = vi.fn();
+    renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="QUERY"
+        supportedMethods={['GET', 'POST', 'QUERY']}
+        onSetMethod={onSetMethod}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'QUERY' }));
+    expect(onSetMethod).toHaveBeenCalledWith('GET');
+  });
+
+  it('jumps straight to POST (not the next method) when a mutation is blocked over QUERY', async () => {
+    const user = userEvent.setup();
+    const onSetMethod = vi.fn();
+    renderTopBar(
+      <TopBarView
+        {...DEFAULTS}
+        method="QUERY"
+        supportedMethods={['GET', 'POST', 'QUERY']}
+        runDisabledReason="Mutations can only be sent via POST"
+        onSetMethod={onSetMethod}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'QUERY' }));
+    expect(onSetMethod).toHaveBeenCalledWith('POST');
+  });
+
   it('calls onRun when the Run button is clicked', async () => {
     const user = userEvent.setup();
     const onRun = vi.fn();
@@ -128,7 +175,7 @@ describe('TopBarView', () => {
         {...DEFAULTS}
         method="GET"
         supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+        runDisabledReason="Mutations can only be sent via POST"
       />,
     );
     expect(screen.getByRole('button', { name: /Run query/i })).toBeDisabled();
@@ -140,7 +187,7 @@ describe('TopBarView', () => {
         {...DEFAULTS}
         method="GET"
         supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+        runDisabledReason="Mutations can only be sent via POST"
       />,
     );
     expect(
@@ -154,7 +201,7 @@ describe('TopBarView', () => {
         {...DEFAULTS}
         method="GET"
         supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can't be sent over GET — switch to POST."
+        runDisabledReason="Mutations can only be sent via POST"
       />,
     );
     // A native disabled button emits no events, so the tooltip needs a

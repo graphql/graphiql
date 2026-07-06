@@ -2,11 +2,12 @@ import type { HttpMethod } from '@graphiql/toolkit';
 import { OperationDefinitionNode, OperationTypeNode } from 'graphql';
 
 /**
- * Shown when the user tries to run a mutation while the GET method is selected.
- * Mutations are forbidden over GET by the GraphQL-over-HTTP spec.
+ * Shown when the user tries to run a mutation while a safe method (GET or
+ * QUERY) is selected. Mutations are forbidden over safe methods: GET by the
+ * GraphQL-over-HTTP spec, and QUERY by the HTTP QUERY method's safety semantics.
  */
-export const MUTATION_OVER_GET_REASON =
-  "Mutations can't be sent over GET — switch to POST.";
+export const MUTATION_REQUIRES_POST_REASON =
+  'Mutations can only be sent via POST';
 
 /**
  * The operation that a run would execute: the sole operation when there is one,
@@ -28,7 +29,8 @@ export function resolveActiveOperation(
 
 /**
  * Returns a human-readable reason a run is blocked, or `null` when it may
- * proceed. Currently the only reason is a mutation over GET.
+ * proceed. Currently the only reason is a mutation over a safe method (GET or
+ * QUERY), both of which forbid mutations.
  */
 export function getRunBlockReason(
   method: HttpMethod | null | undefined,
@@ -36,10 +38,10 @@ export function getRunBlockReason(
 ): string | null {
   const effectiveMethod = method ?? 'POST';
   if (
-    effectiveMethod === 'GET' &&
+    effectiveMethod !== 'POST' &&
     operation?.operation === OperationTypeNode.MUTATION
   ) {
-    return MUTATION_OVER_GET_REASON;
+    return MUTATION_REQUIRES_POST_REASON;
   }
   return null;
 }
