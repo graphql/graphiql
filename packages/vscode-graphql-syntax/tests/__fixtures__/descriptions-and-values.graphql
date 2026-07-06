@@ -3,10 +3,8 @@
 "Top-level type description"
 type User {
   "Field description"
-  fullName(
-    "Argument description"
-    prefix: String = "Mr."
-  ): String @deprecated(reason: "use displayName")
+  fullName("Argument description" prefix: String = "Mr."): String
+    @deprecated(reason: "use displayName")
   tags(filter: [String!] = ["active", "verified"]): [String!]!
 }
 
@@ -15,7 +13,9 @@ input UserFilter {
   "Input field description"
   limit: Int = 10
   name: String = "anon"
-  note: String = """block string default value"""
+  note: String = """
+  block string default value
+  """
 }
 
 """
@@ -33,7 +33,12 @@ directive @sample(
 ) on FIELD_DEFINITION
 
 query {
-  search(term: "single line value", body: """block string value""") {
+  search(
+    term: "single line value"
+    body: """
+    block string value
+    """
+  ) {
     id
   }
 }

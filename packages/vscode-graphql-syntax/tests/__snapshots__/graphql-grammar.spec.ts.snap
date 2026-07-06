@@ -667,7 +667,6 @@ Field description                | meta.type.interface.graphql meta.type.object.
                                  | meta.type.interface.graphql meta.type.object.graphql
 fullName                         | meta.type.interface.graphql meta.type.object.graphql variable.graphql
 (                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
-                                 | meta.type.interface.graphql meta.type.object.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
 Argument description             | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
@@ -682,7 +681,6 @@ String                           | meta.type.interface.graphql meta.type.object.
 "                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
 Mr.                              | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-                                 | meta.type.interface.graphql meta.type.object.graphql
 )                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
 :                                | meta.type.interface.graphql meta.type.object.graphql punctuation.colon.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
@@ -771,7 +769,8 @@ String                           | meta.type.interface.graphql meta.type.object.
 =                                | meta.type.interface.graphql meta.type.object.graphql punctuation.assignment.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
 """                              | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql punctuation.definition.string.begin.graphql
-block string default value       | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql
+  block string default value     | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql
+                                 | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql
 """                              | meta.type.interface.graphql meta.type.object.graphql string.quoted.triple.graphql punctuation.definition.string.end.graphql
 }                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
                                  | 
@@ -822,20 +821,22 @@ query                            | keyword.operation.graphql
                                  | meta.selectionset.graphql
 search                           | meta.selectionset.graphql variable.graphql
 (                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
 term                             | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
 :                                | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
                                  | meta.selectionset.graphql meta.arguments.graphql
 "                                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.begin.graphql
 single line value                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql
 "                                | meta.selectionset.graphql meta.arguments.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
-,                                | meta.selectionset.graphql meta.arguments.graphql punctuation.comma.graphql
                                  | meta.selectionset.graphql meta.arguments.graphql
 body                             | meta.selectionset.graphql meta.arguments.graphql variable.parameter.graphql
 :                                | meta.selectionset.graphql meta.arguments.graphql punctuation.colon.graphql
                                  | meta.selectionset.graphql meta.arguments.graphql
 """                              | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql punctuation.definition.string.begin.graphql
-block string value               | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql
+    block string value           | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql
 """                              | meta.selectionset.graphql meta.arguments.graphql string.quoted.triple.graphql punctuation.definition.string.end.graphql
+                                 | meta.selectionset.graphql meta.arguments.graphql
 )                                | meta.selectionset.graphql meta.arguments.graphql meta.brace.round.directive.graphql
                                  | meta.selectionset.graphql meta.selectionset.graphql
 {                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
