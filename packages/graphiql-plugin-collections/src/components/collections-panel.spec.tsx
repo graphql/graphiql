@@ -127,7 +127,7 @@ describe('CollectionsPanel header gating', () => {
 // ---------------------------------------------------------------------------
 
 describe('CollectionsPanel paste import', () => {
-  it('paste with no conflicts applies immediately and shows success status', async () => {
+  it('paste with no conflicts applies immediately, with no status banner', async () => {
     // Empty store → no existing items → fresh import has no conflicts.
     render(<CollectionsPanel />);
 
@@ -148,8 +148,8 @@ describe('CollectionsPanel paste import', () => {
     expect(collections[0]?.items).toHaveLength(1);
     expect(collections[0]?.items[0]?.id).toBe('item-fresh');
 
-    // Success status message should be visible.
-    expect(screen.getByRole('status').textContent).toMatch(/Imported/);
+    // A successful import is silent — no status banner (it caused layout shift).
+    expect(screen.queryByRole('status')).toBeNull();
   });
 
   it('paste with non-collections content is ignored', () => {
@@ -229,8 +229,8 @@ describe('CollectionsPanel paste import with conflicts', () => {
     const items = collectionsStore.getState().collections[0]?.items ?? [];
     expect(items[0]?.query).toBe('{ updated }');
 
-    // Success status appears.
-    expect(screen.getByRole('status').textContent).toMatch(/updated/);
+    // A successful resolve is silent — no status banner.
+    expect(screen.queryByRole('status')).toBeNull();
   });
 });
 

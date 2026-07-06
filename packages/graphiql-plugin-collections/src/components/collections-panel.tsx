@@ -131,11 +131,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
     collectionsStore
       .getState()
       .actions.applyImport(analysis, { mode: 'replace' });
-    const count = analysis._incoming.length;
-    setStatus({
-      ok: true,
-      message: `Replaced with ${count} collection${count === 1 ? '' : 's'}.`,
-    });
   };
 
   const runImport = (text: string, mode: 'merge' | 'replace') => {
@@ -163,10 +158,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
       collectionsStore
         .getState()
         .actions.applyImport(analysis, { mode: 'merge', applyChanges: true });
-      setStatus({
-        ok: true,
-        message: `Imported ${count} collection${count === 1 ? '' : 's'}.`,
-      });
       return;
     }
     // Conflicts present — open the dialog.
@@ -183,27 +174,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
     const { analysis } = pendingConflict;
     collectionsStore.getState().actions.applyImport(analysis, resolution);
     setPendingConflict(null);
-    const newCount = analysis.newItems.length;
-    const changedCount =
-      'changedItemIds' in resolution
-        ? resolution.changedItemIds.size
-        : 'applyChanges' in resolution && resolution.applyChanges
-          ? analysis.changedItems.length
-          : 0;
-    const parts = [
-      analysis.newCollections.length > 0 &&
-        `${analysis.newCollections.length} new collection${analysis.newCollections.length !== 1 ? 's' : ''}`,
-      newCount > 0 && `${newCount} new operation${newCount !== 1 ? 's' : ''}`,
-      changedCount > 0 &&
-        `${changedCount} operation${changedCount !== 1 ? 's' : ''} updated`,
-    ].filter(Boolean);
-    setStatus({
-      ok: true,
-      message:
-        parts.length > 0
-          ? `Imported: ${parts.join(', ')}.`
-          : 'Import complete.',
-    });
   };
 
   const importDroppedFile = async (file: File) => {
