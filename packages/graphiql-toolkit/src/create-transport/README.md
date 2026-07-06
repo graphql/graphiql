@@ -26,7 +26,11 @@ contract, and the transport routes every subscription operation through it:
 ```ts
 type SubscriptionClient = {
   subscribe(
-    request: { query: string; operationName?: string | null; variables?: Record<string, unknown> },
+    request: {
+      query: string;
+      operationName?: string | null;
+      variables?: Record<string, unknown>;
+    },
     sink: {
       next: (value: ExecutionResult) => void;
       error: (error: unknown) => void;
@@ -111,7 +115,11 @@ const multipartSubscriptionClient: SubscriptionClient = {
         });
 
         const parts = await meros<{
-          payload?: { data?: unknown; errors?: unknown; extensions?: unknown } | null;
+          payload?: {
+            data?: unknown;
+            errors?: unknown;
+            extensions?: unknown;
+          } | null;
           errors?: unknown;
         }>(response);
 
