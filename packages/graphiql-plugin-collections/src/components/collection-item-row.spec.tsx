@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { CollectionItemRow } from './collection-item-row';
-import type { Collection, CollectionItem } from '../types';
+import type { CollectionItem } from '../types';
 
 const item: CollectionItem = {
   id: 'item-1',
@@ -10,16 +10,6 @@ const item: CollectionItem = {
   createdAt: 1000,
   updatedAt: 1000,
 };
-
-const allCollections: Collection[] = [
-  {
-    id: 'col-1',
-    name: 'Col One',
-    createdAt: 1000,
-    updatedAt: 1000,
-    items: [item],
-  },
-];
 
 function renderRow(
   overrides: Partial<Parameters<typeof CollectionItemRow>[0]> = {},
@@ -34,8 +24,6 @@ function renderRow(
       item={item}
       collectionId="col-1"
       index={0}
-      totalItems={1}
-      allCollections={allCollections}
       onOpen={onOpen}
       onCopy={onCopy}
       onDelete={onDelete}
@@ -47,69 +35,50 @@ function renderRow(
   return { onOpen, onCopy, onDelete, onMove, onRenameItem };
 }
 
-describe('CollectionItemRow', () => {
-  it('clicking "Copy operation" calls onCopy with the item id, not onOpen', () => {
+describe('CollectionItemRow actions', () => {
+  it('renders edit, copy, and delete buttons and no kebab or Open', () => {
+    renderRow();
+    expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Delete MyOperation')).toBeTruthy();
+    expect(screen.queryByText('···')).toBeNull();
+    expect(screen.queryByText('Open')).toBeNull();
+  });
+
+  it('clicking copy calls onCopy with the item id, not onOpen', () => {
     const { onCopy, onOpen } = renderRow();
-    fireEvent.click(screen.getByText('Copy operation'));
+    fireEvent.click(screen.getByLabelText('Copy MyOperation'));
     expect(onCopy).toHaveBeenCalledOnce();
     expect(onCopy).toHaveBeenCalledWith('item-1');
-    // Menu clicks must not fall through to the row's open handler.
     expect(onOpen).not.toHaveBeenCalled();
   });
 
-  it('clicking "Delete" calls onDelete with collectionId and itemId, not onOpen', () => {
+  it('clicking delete calls onDelete with collectionId and itemId, not onOpen', () => {
     const { onDelete, onOpen } = renderRow();
-    fireEvent.click(screen.getByText('Delete'));
+    fireEvent.click(screen.getByLabelText('Delete MyOperation'));
+    expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('col-1', 'item-1');
     expect(onOpen).not.toHaveBeenCalled();
   });
 
-  it('readOnly hides Delete and Move affordances and disables drag', () => {
-    const twoItems: Collection[] = [
-      {
-        id: 'col-1',
-        name: 'Col One',
-        createdAt: 1000,
-        updatedAt: 1000,
-        items: [item, { ...item, id: 'item-2', name: 'Second' }],
-      },
-      {
-        id: 'col-2',
-        name: 'Col Two',
-        createdAt: 1000,
-        updatedAt: 1000,
-        items: [],
-      },
-    ];
-    const { container } = render(
-      <CollectionItemRow
-        item={item}
-        collectionId="col-1"
-        index={0}
-        totalItems={2}
-        allCollections={twoItems}
-        readOnly
-        onOpen={vi.fn()}
-        onCopy={vi.fn()}
-        onDelete={vi.fn()}
-        onMove={vi.fn()}
-        onRenameItem={vi.fn()}
-      />,
-    );
-    expect(screen.queryByText('Delete')).toBeNull();
-    expect(screen.queryByText('Move down')).toBeNull();
-    expect(screen.queryByText(/^Move to:/)).toBeNull();
-    // Still openable / copyable.
-    expect(screen.getByText('Open')).toBeTruthy();
-    expect(screen.getByText('Copy operation')).toBeTruthy();
-    const row = container.querySelector('.graphiql-collection-item-row');
-    expect(row?.getAttribute('draggable')).toBe('false');
+  it('clicking the row still opens the item', () => {
+    const { onOpen } = renderRow();
+    fireEvent.click(screen.getByText('MyOperation'));
+    expect(onOpen).toHaveBeenCalledOnce();
   });
 
-  it('allowCopy:false hides "Copy operation"', () => {
+  it('readOnly hides edit and delete but keeps copy', () => {
+    renderRow({ readOnly: true });
+    expect(screen.queryByLabelText('Edit MyOperation')).toBeNull();
+    expect(screen.queryByLabelText('Delete MyOperation')).toBeNull();
+    expect(screen.getByLabelText('Copy MyOperation')).toBeTruthy();
+  });
+
+  it('allowCopy:false hides copy but keeps edit and delete', () => {
     renderRow({ allowCopy: false });
-    expect(screen.queryByText('Copy operation')).toBeNull();
-    expect(screen.getByText('Open')).toBeTruthy();
+    expect(screen.queryByLabelText('Copy MyOperation')).toBeNull();
+    expect(screen.getByLabelText('Edit MyOperation')).toBeTruthy();
+    expect(screen.getByLabelText('Delete MyOperation')).toBeTruthy();
   });
 });
 
@@ -192,8 +161,6 @@ describe('CollectionItemRow description subtext', () => {
         item={itemWithDesc}
         collectionId="col-1"
         index={0}
-        totalItems={1}
-        allCollections={allCollections}
         onOpen={vi.fn()}
         onCopy={vi.fn()}
         onDelete={vi.fn()}

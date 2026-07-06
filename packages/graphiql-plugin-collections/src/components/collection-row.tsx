@@ -1,11 +1,10 @@
 import { FC, useState } from 'react';
-import { DropdownMenu, PenIcon } from '@graphiql/react';
+import { PenIcon, CopyIcon, TrashIcon } from '@graphiql/react';
 import type { Collection, CollectionItem } from '../types';
 import { CollectionItemRow } from './collection-item-row';
 
 type CollectionRowProps = {
   collection: Collection;
-  allCollections: Collection[];
   /** Hide write affordances (Rename, Delete, add-item) when true. */
   readOnly?: boolean;
   /** Hide "Copy to clipboard" when false. */
@@ -35,7 +34,6 @@ type CollectionRowProps = {
 
 export const CollectionRow: FC<CollectionRowProps> = ({
   collection,
-  allCollections,
   readOnly = false,
   allowCopy = true,
   onRename,
@@ -96,54 +94,51 @@ export const CollectionRow: FC<CollectionRowProps> = ({
         <span className="graphiql-collection-badge">
           {collection.items.length}
         </span>
-        {!readOnly && (
-          <button
-            type="button"
-            className="graphiql-collection-rename-btn"
-            aria-label={`Rename ${collection.name}`}
-            title={`Rename ${collection.name}`}
-            onClick={e => {
-              e.stopPropagation();
-              setRenameValue(collection.name);
-              setIsRenaming(true);
-            }}
-          >
-            <PenIcon />
-          </button>
-        )}
-        <DropdownMenu>
-          <DropdownMenu.Button
-            className="graphiql-collection-menu"
-            aria-label={`Actions for ${collection.name}`}
-          >
-            ···
-          </DropdownMenu.Button>
-          <DropdownMenu.Content>
-            {!readOnly && (
-              <DropdownMenu.Item
-                onSelect={() => {
-                  setRenameValue(collection.name);
-                  setIsRenaming(true);
-                }}
-              >
-                Rename
-              </DropdownMenu.Item>
-            )}
-            {allowCopy && (
-              <DropdownMenu.Item onSelect={() => onCopy(collection.id)}>
-                Copy to clipboard
-              </DropdownMenu.Item>
-            )}
-            {!readOnly && (
-              <>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item onSelect={() => onDelete(collection.id)}>
-                  Delete
-                </DropdownMenu.Item>
-              </>
-            )}
-          </DropdownMenu.Content>
-        </DropdownMenu>
+        <div className="graphiql-collection-header-actions">
+          {!readOnly && (
+            <button
+              type="button"
+              className="graphiql-collection-header-action"
+              aria-label={`Rename ${collection.name}`}
+              title={`Rename ${collection.name}`}
+              onClick={e => {
+                e.stopPropagation();
+                setRenameValue(collection.name);
+                setIsRenaming(true);
+              }}
+            >
+              <PenIcon aria-hidden="true" />
+            </button>
+          )}
+          {allowCopy && (
+            <button
+              type="button"
+              className="graphiql-collection-header-action"
+              aria-label={`Copy ${collection.name}`}
+              title={`Copy ${collection.name}`}
+              onClick={e => {
+                e.stopPropagation();
+                onCopy(collection.id);
+              }}
+            >
+              <CopyIcon aria-hidden="true" />
+            </button>
+          )}
+          {!readOnly && (
+            <button
+              type="button"
+              className="graphiql-collection-header-action"
+              aria-label={`Delete ${collection.name}`}
+              title={`Delete ${collection.name}`}
+              onClick={e => {
+                e.stopPropagation();
+                onDelete(collection.id);
+              }}
+            >
+              <TrashIcon aria-hidden="true" />
+            </button>
+          )}
+        </div>
       </div>
       {expanded && collection.items.length > 0 && (
         <div className="graphiql-collection-items">
@@ -153,8 +148,6 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               item={item}
               collectionId={collection.id}
               index={i}
-              totalItems={collection.items.length}
-              allCollections={allCollections}
               readOnly={readOnly}
               allowCopy={allowCopy}
               onOpen={onOpenItem}

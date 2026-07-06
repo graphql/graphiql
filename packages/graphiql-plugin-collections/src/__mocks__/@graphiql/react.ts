@@ -156,3 +156,5 @@ export const ChevronDownIcon = () => null;
 export const ChevronUpIcon = () => null;
 export const MagnifyingGlassIcon = () => null;
 export const PenIcon = () => null;
+export const CopyIcon = () => null;
+export const TrashIcon = () => null;

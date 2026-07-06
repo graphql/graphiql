@@ -1,14 +1,13 @@
 import { FC, useRef, useState } from 'react';
-import { DropdownMenu, MethodPill, PenIcon } from '@graphiql/react';
-import type { Collection, CollectionItem } from '../types';
+import { MethodPill, PenIcon, CopyIcon, TrashIcon } from '@graphiql/react';
+import type { CollectionItem } from '../types';
 import { getDocumentMethod } from '../operation-method';
 
 type CollectionItemRowProps = {
   item: CollectionItem;
   collectionId: string;
+  /** The item's position within its collection, used for drag reorder. */
   index: number;
-  totalItems: number;
-  allCollections: Collection[];
   /** Hide write affordances (Move, Delete) and disable drag-reorder when true. */
   readOnly?: boolean;
   /** Hide "Copy operation" when false. */
@@ -33,8 +32,6 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   item,
   collectionId,
   index,
-  totalItems,
-  allCollections,
   readOnly = false,
   allowCopy = true,
   onOpen,
@@ -52,11 +49,23 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
   );
   const method = getDocumentMethod(item.query);
 
+  // Action buttons stop propagation so their clicks don't also trigger the
+  // row's open handler.
   const startEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     setEditName(item.name);
     setEditDescription(item.description ?? '');
     setIsEditing(true);
+  };
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCopy(item.id);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete(collectionId, item.id);
   };
 
   const commitEdit = () => {
@@ -198,81 +207,43 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
           )}
         </div>
       )}
-      {!readOnly && !isEditing && (
-        <button
-          type="button"
-          className="graphiql-collection-item-rename-btn"
-          aria-label={`Edit ${item.name}`}
-          title={`Edit ${item.name}`}
-          onClick={startEdit}
-        >
-          <PenIcon />
-        </button>
-      )}
-      <DropdownMenu>
-        <DropdownMenu.Button
-          className="graphiql-collection-item-menu"
-          aria-label={`Actions for ${item.name}`}
-          onClick={e => e.stopPropagation()}
-        >
-          ···
-        </DropdownMenu.Button>
-        <DropdownMenu.Content>
-          <DropdownMenu.Item onSelect={() => onOpen(item)}>
-            Open
-          </DropdownMenu.Item>
+      {!isEditing && (
+        <div className="graphiql-collection-item-actions">
+          {!readOnly && (
+            <button
+              type="button"
+              className="graphiql-collection-item-action"
+              aria-label={`Edit ${item.name}`}
+              title={`Edit ${item.name}`}
+              onClick={startEdit}
+            >
+              <PenIcon aria-hidden="true" />
+            </button>
+          )}
           {allowCopy && (
-            <DropdownMenu.Item onSelect={() => onCopy(item.id)}>
-              Copy operation
-            </DropdownMenu.Item>
-          )}
-          {!readOnly && index > 0 && (
-            <DropdownMenu.Item
-              onSelect={() =>
-                onMove(collectionId, index, collectionId, index - 1)
-              }
+            <button
+              type="button"
+              className="graphiql-collection-item-action"
+              aria-label={`Copy ${item.name}`}
+              title={`Copy ${item.name}`}
+              onClick={handleCopy}
             >
-              Move up
-            </DropdownMenu.Item>
-          )}
-          {!readOnly && index < totalItems - 1 && (
-            <DropdownMenu.Item
-              onSelect={() =>
-                onMove(collectionId, index, collectionId, index + 1)
-              }
-            >
-              Move down
-            </DropdownMenu.Item>
-          )}
-          {!readOnly && allCollections.some(c => c.id !== collectionId) && (
-            <>
-              <DropdownMenu.Separator />
-              {allCollections
-                .filter(c => c.id !== collectionId)
-                .map(c => (
-                  <DropdownMenu.Item
-                    key={c.id}
-                    onSelect={() =>
-                      onMove(collectionId, index, c.id, c.items.length)
-                    }
-                  >
-                    Move to: {c.name}
-                  </DropdownMenu.Item>
-                ))}
-            </>
+              <CopyIcon aria-hidden="true" />
+            </button>
           )}
           {!readOnly && (
-            <>
-              <DropdownMenu.Separator />
-              <DropdownMenu.Item
-                onSelect={() => onDelete(collectionId, item.id)}
-              >
-                Delete
-              </DropdownMenu.Item>
-            </>
+            <button
+              type="button"
+              className="graphiql-collection-item-action"
+              aria-label={`Delete ${item.name}`}
+              title={`Delete ${item.name}`}
+              onClick={handleDelete}
+            >
+              <TrashIcon aria-hidden="true" />
+            </button>
           )}
-        </DropdownMenu.Content>
-      </DropdownMenu>
+        </div>
+      )}
     </div>
   );
 };

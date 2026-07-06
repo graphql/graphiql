@@ -139,34 +139,51 @@
   flex-shrink: 0;
 }
 
-.graphiql-collection-menu {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-4);
-  border-radius: var(--border-radius-4);
-  color: oklch(var(--fg-subtle));
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-.graphiql-collection-header:hover .graphiql-collection-menu {
-  opacity: 1;
-}
-
-.graphiql-collection-rename-btn {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-4);
-  border-radius: var(--border-radius-4);
-  color: oklch(var(--fg-subtle));
-  opacity: 0;
-  transition: opacity 0.1s;
+.graphiql-collection-header-actions,
+.graphiql-collection-item-actions {
   display: flex;
   align-items: center;
+  gap: var(--px-2);
+  flex-shrink: 0;
 }
 
-.graphiql-collection-header:hover .graphiql-collection-rename-btn {
+.graphiql-collection-header-action,
+.graphiql-collection-item-action {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: var(--px-4);
+  border-radius: var(--border-radius-4);
+  color: oklch(var(--fg-subtle));
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.graphiql-collection-header:hover .graphiql-collection-header-action,
+.graphiql-collection-item-row:hover .graphiql-collection-item-action,
+.graphiql-collection-header-action:focus-visible,
+.graphiql-collection-item-action:focus-visible {
   opacity: 1;
+}
+
+.graphiql-collection-header-action:hover,
+.graphiql-collection-item-action:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-collection-header-action:focus-visible,
+.graphiql-collection-item-action:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
+}
+
+.graphiql-collection-header-action svg,
+.graphiql-collection-item-action svg {
+  display: block;
+  width: var(--px-16);
+  height: var(--px-16);
 }
 
 .graphiql-collection-items {
@@ -221,20 +238,6 @@
   background: oklch(55% 0.02 270);
 }
 
-.graphiql-collection-item-menu {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-4);
-  border-radius: var(--border-radius-4);
-  color: oklch(var(--fg-subtle));
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-.graphiql-collection-item-row:hover .graphiql-collection-item-menu {
-  opacity: 1;
-}
-
 .graphiql-collection-item-main {
   flex: 1;
   min-width: 0;
@@ -248,23 +251,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.graphiql-collection-item-rename-btn {
-  all: unset;
-  cursor: pointer;
-  padding: var(--px-4);
-  border-radius: var(--border-radius-4);
-  color: oklch(var(--fg-subtle));
-  opacity: 0;
-  transition: opacity 0.1s;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.graphiql-collection-item-row:hover .graphiql-collection-item-rename-btn {
-  opacity: 1;
 }
 
 .graphiql-collection-item-edit-form {

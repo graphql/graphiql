@@ -14,13 +14,15 @@ const collection: Collection = {
 function renderRow(
   overrides: Partial<Parameters<typeof CollectionRow>[0]> = {},
 ) {
+  const onRename = vi.fn();
+  const onDelete = vi.fn();
+  const onCopy = vi.fn();
   render(
     <CollectionRow
       collection={collection}
-      allCollections={[collection]}
-      onRename={vi.fn()}
-      onDelete={vi.fn()}
-      onCopy={vi.fn()}
+      onRename={onRename}
+      onDelete={onDelete}
+      onCopy={onCopy}
       onOpenItem={vi.fn()}
       onCopyItem={vi.fn()}
       onDeleteItem={vi.fn()}
@@ -30,27 +32,65 @@ function renderRow(
       {...overrides}
     />,
   );
+  return { onRename, onDelete, onCopy };
 }
 
 describe('CollectionRow gating', () => {
-  it('defaults show Rename, Copy to clipboard, and Delete', () => {
+  it('renders rename, copy, and delete buttons and no kebab', () => {
     renderRow();
-    expect(screen.getByText('Rename')).toBeTruthy();
-    expect(screen.getByText('Copy to clipboard')).toBeTruthy();
-    expect(screen.getByText('Delete')).toBeTruthy();
+    expect(screen.getByLabelText('Rename My Collection')).toBeTruthy();
+    expect(screen.getByLabelText('Copy My Collection')).toBeTruthy();
+    expect(screen.getByLabelText('Delete My Collection')).toBeTruthy();
+    expect(screen.queryByText('···')).toBeNull();
   });
 
-  it('allowCopy:false hides "Copy to clipboard"', () => {
+  it('allowCopy:false hides copy', () => {
     renderRow({ allowCopy: false });
-    expect(screen.queryByText('Copy to clipboard')).toBeNull();
-    expect(screen.getByText('Rename')).toBeTruthy();
+    expect(screen.queryByLabelText('Copy My Collection')).toBeNull();
+    expect(screen.getByLabelText('Rename My Collection')).toBeTruthy();
   });
 
-  it('readOnly hides Rename and Delete but keeps Copy to clipboard', () => {
+  it('readOnly hides rename and delete but keeps copy', () => {
     renderRow({ readOnly: true });
-    expect(screen.queryByText('Rename')).toBeNull();
-    expect(screen.queryByText('Delete')).toBeNull();
-    expect(screen.getByText('Copy to clipboard')).toBeTruthy();
+    expect(screen.queryByLabelText('Rename My Collection')).toBeNull();
+    expect(screen.queryByLabelText('Delete My Collection')).toBeNull();
+    expect(screen.getByLabelText('Copy My Collection')).toBeTruthy();
+  });
+});
+
+describe('CollectionRow header actions', () => {
+  it('clicking copy calls onCopy with the collection id', () => {
+    const { onCopy } = renderRow();
+    fireEvent.click(screen.getByLabelText('Copy My Collection'));
+    expect(onCopy).toHaveBeenCalledOnce();
+    expect(onCopy).toHaveBeenCalledWith('col-1');
+  });
+
+  it('clicking delete calls onDelete with the collection id', () => {
+    const { onDelete } = renderRow();
+    fireEvent.click(screen.getByLabelText('Delete My Collection'));
+    expect(onDelete).toHaveBeenCalledOnce();
+    expect(onDelete).toHaveBeenCalledWith('col-1');
+  });
+
+  it('clicking rename opens the input and committing calls onRename with the new name', () => {
+    const { onRename } = renderRow();
+    fireEvent.click(screen.getByLabelText('Rename My Collection'));
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'Renamed Collection' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onRename).toHaveBeenCalledOnce();
+    expect(onRename).toHaveBeenCalledWith('col-1', 'Renamed Collection');
+  });
+
+  it('clicking a header action does not toggle expanded state', () => {
+    renderRow();
+    const toggle = screen.getByRole('button', {
+      name: /Toggle My Collection/i,
+    });
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.click(screen.getByLabelText('Copy My Collection'));
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
   });
 });
 
@@ -85,8 +125,8 @@ describe('CollectionRow expand/collapse', () => {
     // Record the initial expanded state (true).
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
 
-    // Open rename via the dropdown menu item.
-    fireEvent.click(screen.getByText('Rename'));
+    // Open rename via the rename button.
+    fireEvent.click(screen.getByLabelText('Rename My Collection'));
 
     // The input should now be visible; the toggle button is replaced.
     const input = screen.getByRole('textbox') as HTMLInputElement;
@@ -100,22 +140,6 @@ describe('CollectionRow expand/collapse', () => {
       name: /Toggle My Collection/i,
     });
     expect(toggleAfter.getAttribute('aria-expanded')).toBe('true');
-  });
-
-  it('clicking the kebab/menu button does NOT toggle expanded state', () => {
-    renderRow();
-    const toggle = screen.getByRole('button', {
-      name: /Toggle My Collection/i,
-    });
-    expect(toggle.getAttribute('aria-expanded')).toBe('true');
-
-    // The DropdownMenu.Button mock renders its children directly (not as a
-    // button element with an accessible name), so locate it by text content.
-    const kebab = screen.getByText('···');
-    fireEvent.click(kebab);
-
-    // Expanded state must not have changed.
-    expect(toggle.getAttribute('aria-expanded')).toBe('true');
   });
 });
 

@@ -430,7 +430,6 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
           <CollectionRow
             key={collection.id}
             collection={collection}
-            allCollections={collections}
             readOnly={readOnly}
             allowCopy={allowCopy}
             onRename={handleRename}
