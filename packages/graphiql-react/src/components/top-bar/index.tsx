@@ -76,7 +76,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
   const nextMethod =
     supportedMethods[
       (supportedMethods.indexOf(method) + 1) % supportedMethods.length
-    ];
+    ] ?? method;
   const switchTarget =
     isBlocked && supportedMethods.includes('POST') ? 'POST' : nextMethod;
 

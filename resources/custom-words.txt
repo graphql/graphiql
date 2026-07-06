@@ -45,6 +45,7 @@ bobbybobby
 borggreve
 bram
 browserslistrc
+cacheable
 calar
 chainable
 changesets
