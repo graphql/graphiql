@@ -82,27 +82,31 @@
   --bg-subtle: 96% 0.008 248;
   --bg-overlay: 92% 0.01 248;
 
-  /* Borders */
-  --border-default: 90% 0.01 248;
-  --border-muted: 85% 0.01 248;
-  --border-strong: 78% 0.012 248;
+  /* Borders — higher chroma than the dark theme so dividers hold up against
+   * the brighter backgrounds. */
+  --border-default: 86% 0.016 248;
+  --border-muted: 80% 0.018 248;
+  --border-strong: 72% 0.02 248;
 
   /* Foreground */
   --fg-default: 20% 0.013 248;
   --fg-strong: 12% 0.011 248;
   --fg-muted: 40% 0.013 248;
   --fg-subtle: 50% 0.012 248;
-  --fg-disabled: 65% 0.012 248;
-  --fg-dim: 75% 0.011 248;
+  --fg-disabled: 46% 0.012 248;
+  --fg-dim: 55% 0.011 248;
 
   /* Accents — slightly darker / more saturated for AA contrast on light bg */
   --accent-blue: 50% 0.193 248;
   --accent-green: 50% 0.176 145;
-  --accent-green-light: 65% 0.19 145;
+  /* Used as text (field/enum names), so on a light background it has to sit
+   * darker than `--accent-green` to clear AA — despite the "light" name, which
+   * describes its dark-theme appearance. Don't lighten it. */
+  --accent-green-light: 42% 0.19 145;
   --accent-yellow: 70% 0.15 86;
-  --accent-orange: 62% 0.165 60;
+  --accent-orange: 48% 0.165 60;
   --accent-red: 55% 0.224 27;
-  --accent-purple: 55% 0.18 295;
+  --accent-purple: 45% 0.18 295;
   --accent-pink: 58% 0.22 17;
 
   /* Action button (Run) — keeps the green; inverted bg lets it stand out */
@@ -232,22 +236,22 @@
     --bg-elevated: 100% 0 248;
     --bg-subtle: 96% 0.008 248;
     --bg-overlay: 92% 0.01 248;
-    --border-default: 90% 0.01 248;
-    --border-muted: 85% 0.01 248;
-    --border-strong: 78% 0.012 248;
+    --border-default: 86% 0.016 248;
+    --border-muted: 80% 0.018 248;
+    --border-strong: 72% 0.02 248;
     --fg-default: 20% 0.013 248;
     --fg-strong: 12% 0.011 248;
     --fg-muted: 40% 0.013 248;
     --fg-subtle: 50% 0.012 248;
-    --fg-disabled: 65% 0.012 248;
-    --fg-dim: 75% 0.011 248;
+    --fg-disabled: 46% 0.012 248;
+    --fg-dim: 55% 0.011 248;
     --accent-blue: 50% 0.193 248;
     --accent-green: 50% 0.176 145;
-    --accent-green-light: 65% 0.19 145;
+    --accent-green-light: 42% 0.19 145;
     --accent-yellow: 70% 0.15 86;
-    --accent-orange: 62% 0.165 60;
+    --accent-orange: 48% 0.165 60;
     --accent-red: 55% 0.224 27;
-    --accent-purple: 55% 0.18 295;
+    --accent-purple: 45% 0.18 295;
     --accent-pink: 58% 0.22 17;
     --btn-primary: 51% 0.15 145;
     --btn-primary-border: 45% 0.17 145;

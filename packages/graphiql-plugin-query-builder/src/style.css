@@ -524,10 +524,14 @@ select.graphiql-qb-arg-select:focus {
 
 .graphiql-qb-var-toggle[aria-pressed='true'] {
   background: oklch(var(--accent-purple));
-  /* Dark purple background in light theme, light purple in dark theme.
-     Near-black text keeps ≥ 4.5:1 contrast on both surfaces. */
+  /* Light theme's accent-purple is dark enough that it needs light text;
+     dark theme's is light enough that it needs near-black text. */
   color: oklch(10% 0 0);
   border-color: transparent;
+
+  [data-theme='light'] & {
+    color: #fff;
+  }
 }
 
 .graphiql-qb-var-badge {

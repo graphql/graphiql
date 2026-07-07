@@ -57,10 +57,18 @@ button.graphiql-button {
     background-color: oklch(var(--accent-green));
     border-color: oklch(var(--accent-green));
     color: #000;
+
+    [data-theme='light'] & {
+      color: #fff;
+    }
   }
   &.graphiql-button-error {
     background-color: oklch(var(--accent-red));
     border-color: oklch(var(--accent-red));
     color: #000;
+
+    [data-theme='light'] & {
+      color: #fff;
+    }
   }
 }
