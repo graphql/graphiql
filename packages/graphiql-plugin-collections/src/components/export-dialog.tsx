@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Button, Dialog } from '@graphiql/react';
 import { collectionsStore } from '../store';
 
@@ -8,7 +8,6 @@ type ExportDialogProps = {
 };
 
 export const ExportDialog: FC<ExportDialogProps> = ({ open, onClose }) => {
-  const [copied, setCopied] = useState(false);
   const exported = open
     ? collectionsStore.getState().actions.exportCollections()
     : '';
@@ -16,11 +15,12 @@ export const ExportDialog: FC<ExportDialogProps> = ({ open, onClose }) => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(exported);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard unavailable; the textarea is still selectable as a fallback
+      // clipboard unavailable; leave the dialog open so the textarea stays
+      // selectable as a fallback.
+      return;
     }
+    onClose();
   };
 
   const handleDownload = () => {
@@ -31,6 +31,7 @@ export const ExportDialog: FC<ExportDialogProps> = ({ open, onClose }) => {
     a.download = 'graphiql-collections.json';
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
+    onClose();
   };
 
   return (
@@ -48,10 +49,9 @@ export const ExportDialog: FC<ExportDialogProps> = ({ open, onClose }) => {
             <Button
               type="button"
               variant="primary"
-              state={copied ? 'success' : undefined}
               onClick={() => void handleCopy()}
             >
-              {copied ? 'Copied!' : 'Copy JSON'}
+              Copy JSON
             </Button>
             <Button type="button" onClick={handleDownload}>
               Download JSON

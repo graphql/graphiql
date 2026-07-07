@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ExportDialog } from './export-dialog';
 import { collectionsStore } from '../store';
 
@@ -33,5 +33,47 @@ describe('ExportDialog', () => {
 
     const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
     expect(textarea.value).toBe('');
+  });
+
+  it('clicking Copy JSON copies the export and closes the dialog', async () => {
+    const writeText = vi.fn().mockResolvedValue(null);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const onClose = vi.fn();
+    render(<ExportDialog open onClose={onClose} />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Copy JSON' }));
+    });
+
+    expect(writeText).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('clicking Download JSON closes the dialog', () => {
+    const createObjectURL = vi.fn().mockReturnValue('blob:mock');
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(URL, 'createObjectURL', {
+      value: createObjectURL,
+      configurable: true,
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      value: revokeObjectURL,
+      configurable: true,
+    });
+    // jsdom doesn't implement navigation on anchor click; stub it out.
+    const clickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+    const onClose = vi.fn();
+    render(<ExportDialog open onClose={onClose} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download JSON' }));
+
+    expect(createObjectURL).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+    clickSpy.mockRestore();
   });
 });
