@@ -137,20 +137,21 @@ export function createTransport(opts: CreateTransportOptions): Transport {
       return subscribe(opts.subscriptionClient, params);
     }
 
-    // The GraphQL over HTTP spec forbids executing mutations over GET.
-    // https://graphql.github.io/graphql-over-http/rfcs/GraphQLOverHTTP.html#sec-GET
-    // When GET is the active method and the operation is a mutation, use POST
-    // if it is available. If POST is not supported (GET-only transport), throw —
-    // a spec-compliant server would reject the request with 405 anyway.
+    // Mutations may only be sent over POST. GET and QUERY are both safe methods
+    // (https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/),
+    // and the GraphQL over HTTP spec forbids mutations over GET; the same safety
+    // reasoning applies to QUERY. When a safe method is active and the operation
+    // is a mutation, use POST if it is available. If POST is not supported,
+    // throw — a spec-compliant server would reject the request anyway.
     let method: HttpMethod = activeMethod;
     if (
-      activeMethod === 'GET' &&
+      activeMethod !== 'POST' &&
       selectedOperationIsMutation(req.query, req.operationName)
     ) {
       if (!supportedMethods.includes('POST')) {
         throw new Error(
-          'Cannot execute a mutation over GET. ' +
-            "This transport is configured as GET-only (supportedMethods: ['GET']). " +
+          `Cannot execute a mutation over ${activeMethod}. ` +
+            `This transport does not support POST (supportedMethods: ${supportedMethods.join(', ')}). ` +
             'Add POST to supportedMethods or switch to a POST-capable transport.',
         );
       }
