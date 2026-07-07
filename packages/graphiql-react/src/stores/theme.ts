@@ -60,10 +60,12 @@ export const createThemeSlice: CreateThemeSlice =
         document.body.classList.remove('graphiql-light', 'graphiql-dark');
         if (theme) {
           document.body.classList.add(`graphiql-${theme}`);
-          document.documentElement.setAttribute('data-theme', theme);
-        } else {
-          document.documentElement.removeAttribute('data-theme');
         }
+        // `data-theme` (the v6 design-token attribute) is owned by
+        // `useGraphiQLSettings`, which scopes it to the GraphiQL container so
+        // portaled overlays inherit it. Writing it here too would race that
+        // writer and — since the token selectors are unscoped attribute
+        // selectors — leak the theme onto the whole document.
         const { monaco } = monacoStore.getState();
         const resolvedTheme = theme ?? getSystemTheme();
         const monacoTheme = editorTheme![resolvedTheme];
