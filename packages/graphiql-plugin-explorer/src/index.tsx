@@ -99,9 +99,18 @@ const ExplorerPlugin: FC<GraphiQLExplorerPluginProps> = props => {
   );
 };
 
+let warned = false;
+
 export function explorerPlugin(
   props?: GraphiQLExplorerPluginProps,
 ): GraphiQLPlugin {
+  if (!warned) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[@graphiql/plugin-explorer] This package is deprecated. Use the first-party @graphiql/plugin-query-builder instead. Removal planned for v7.',
+    );
+    warned = true;
+  }
   return {
     title: 'GraphiQL Explorer',
     icon: FolderPlusIcon,
