@@ -133,7 +133,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               type="button"
               className="graphiql-collection-header-action"
               aria-label={`Rename ${collection.name}`}
-              title={`Rename ${collection.name}`}
+              title="Rename"
               onClick={e => {
                 e.stopPropagation();
                 setRenameValue(collection.name);
@@ -147,7 +147,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
             type="button"
             className="graphiql-collection-header-action"
             aria-label={`Share ${collection.name}`}
-            title={`Share ${collection.name}`}
+            title="Share collection"
             data-confirmed={confirmed || undefined}
             onClick={e => {
               e.stopPropagation();
@@ -165,7 +165,7 @@ export const CollectionRow: FC<CollectionRowProps> = ({
               type="button"
               className="graphiql-collection-header-action"
               aria-label={`Delete ${collection.name}`}
-              title={`Delete ${collection.name}`}
+              title="Delete"
               onClick={e => {
                 e.stopPropagation();
                 onDelete(collection.id);
