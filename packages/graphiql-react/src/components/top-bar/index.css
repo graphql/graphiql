@@ -75,13 +75,13 @@
   font-size: var(--font-size-small);
 }
 
-.graphiql-top-bar-endpoint-method {
+.graphiql-top-bar-method-label {
   color: oklch(var(--accent-green));
   font-weight: 600;
   flex-shrink: 0;
 }
 
-/* Click-to-toggle method chip — shown when transport supports both methods */
+/* Click-to-cycle method chip — shown when the transport supports more than one method */
 .graphiql-top-bar-method-toggle {
   padding: 0 var(--px-6);
   height: 18px;

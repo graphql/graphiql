@@ -106,23 +106,24 @@ export const TopBarView: FC<TopBarViewProps> = ({
 
       <div className="graphiql-top-bar-divider" aria-hidden="true" />
 
+      {canSwitch ? (
+        <Tooltip label={`Switch to ${switchTarget}`}>
+          <button
+            type="button"
+            className={cn(
+              'graphiql-top-bar-method-toggle',
+              isBlocked && 'graphiql-top-bar-method-toggle--attention',
+            )}
+            onClick={() => onSetMethod(switchTarget)}
+          >
+            {method}
+          </button>
+        </Tooltip>
+      ) : (
+        <span className="graphiql-top-bar-method-label">{method}</span>
+      )}
+
       <div className="graphiql-top-bar-endpoint">
-        {canSwitch ? (
-          <Tooltip label={`Switch to ${switchTarget}`}>
-            <button
-              type="button"
-              className={cn(
-                'graphiql-top-bar-method-toggle',
-                isBlocked && 'graphiql-top-bar-method-toggle--attention',
-              )}
-              onClick={() => onSetMethod(switchTarget)}
-            >
-              {method}
-            </button>
-          </Tooltip>
-        ) : (
-          <span className="graphiql-top-bar-endpoint-method">{method}</span>
-        )}
         <span className="graphiql-top-bar-endpoint-url">{url}</span>
       </div>
 
