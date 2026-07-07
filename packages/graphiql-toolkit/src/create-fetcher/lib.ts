@@ -386,7 +386,7 @@ export const createMultipartFetcher = (
   };
 
 /**
- * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
+ * If `wsClient` or `legacyWsClient` are provided, then `subscriptionUrl` is overridden.
  */
 export async function getWsFetcher(
   options: CreateFetcherOptions,
@@ -401,8 +401,7 @@ export async function getWsFetcher(
       ...fetcherOpts?.headers,
     });
   }
-  const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
-  if (legacyWebsocketsClient) {
-    return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
+  if (options.legacyWsClient) {
+    return createLegacyWebsocketsFetcher(options.legacyWsClient);
   }
 }

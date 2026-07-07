@@ -112,10 +112,6 @@ export interface CreateFetcherOptions {
    */
   legacyWsClient?: any;
   /**
-   * alias for `legacyWsClient`
-   */
-  legacyClient?: any;
-  /**
    * Request headers you can provide statically.
    *
    * If you enable the request headers editor and the user provides
