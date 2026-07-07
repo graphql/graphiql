@@ -271,7 +271,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
             <button
               type="button"
               className="graphiql-collection-item-action"
-              aria-label="Rename"
+              aria-label={`Rename ${item.name}`}
               title="Rename"
               onClick={startEdit}
             >
@@ -281,7 +281,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
           <button
             type="button"
             className="graphiql-collection-item-action"
-            aria-label="Copy operation"
+            aria-label={`Copy operation ${item.name}`}
             title="Copy operation"
             data-confirmed={confirmed === 'copy' || undefined}
             onClick={e => {
@@ -303,7 +303,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
           <button
             type="button"
             className="graphiql-collection-item-action"
-            aria-label="Share as collection"
+            aria-label={`Share ${item.name} as collection`}
             title="Share as collection"
             data-confirmed={confirmed === 'share' || undefined}
             onClick={e => {
@@ -326,7 +326,7 @@ export const CollectionItemRow: FC<CollectionItemRowProps> = ({
             <button
               type="button"
               className="graphiql-collection-item-action"
-              aria-label="Delete"
+              aria-label={`Delete ${item.name}`}
               title="Delete"
               onClick={handleDelete}
             >
