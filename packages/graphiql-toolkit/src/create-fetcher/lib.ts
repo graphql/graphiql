@@ -21,6 +21,7 @@ import type {
 // Type-only import: erased at build time, so no runtime dependency cycle with
 // `create-transport`, which imports the helpers below at runtime.
 import type {
+  HttpMethod,
   SubscriptionClient,
   TransportResponse,
 } from '../create-transport/types';
@@ -126,15 +127,17 @@ function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
  * exposes whole.
  *
  * Pass `method: 'GET'` to encode the GraphQL params into the URL and send no
- * body. The default is `'POST'`. Note that this primitive does not enforce the
- * spec rule that mutations must not use GET — that policy lives in
- * `createTransport`, which composes this primitive in a spec-compliant way.
+ * body. `'POST'` and `'QUERY'` both send a JSON body; they differ only in the
+ * HTTP method on the wire. The default is `'POST'`. Note that this primitive
+ * does not enforce the spec rule that mutations must not use a safe method
+ * (GET/QUERY) — that policy lives in `createTransport`, which composes this
+ * primitive in a spec-compliant way.
  */
 export const simpleHttpTransport =
   (
     options: CreateFetcherOptions,
     httpFetch: typeof fetch,
-    method: 'GET' | 'POST' = 'POST',
+    method: HttpMethod = 'POST',
   ) =>
   async (
     graphQLParams: FetcherParams,
@@ -156,7 +159,7 @@ export const simpleHttpTransport =
     }
     const requestBody = JSON.stringify(graphQLParams);
     const response = await httpFetch(options.url, {
-      method: 'POST',
+      method,
       body: requestBody,
       headers: {
         'content-type': 'application/json',
@@ -263,13 +266,14 @@ export const createLegacyWebsocketsFetcher =
  * `@defer`, yielding a `TransportResponse` per chunk. HTTP metadata is read once
  * from the raw response and attached to every chunk (they share one response).
  *
- * Pass `method: 'GET'` to encode GraphQL params into the URL. Same escape-hatch
- * caveat as `simpleHttpTransport` — mutation enforcement lives in `createTransport`.
+ * Pass `method: 'GET'` to encode GraphQL params into the URL; `'POST'` and
+ * `'QUERY'` both send a JSON body. Same escape-hatch caveat as
+ * `simpleHttpTransport` — mutation enforcement lives in `createTransport`.
  */
 export const multipartHttpTransport = (
   options: CreateFetcherOptions,
   httpFetch: typeof fetch,
-  method: 'GET' | 'POST' = 'POST',
+  method: HttpMethod = 'POST',
 ) =>
   async function* (
     graphQLParams: FetcherParams,
@@ -292,7 +296,7 @@ export const multipartHttpTransport = (
     } else {
       requestBody = JSON.stringify(graphQLParams);
       rawResponse = await httpFetch(options.url, {
-        method: 'POST',
+        method,
         body: requestBody,
         headers: {
           'content-type': 'application/json',

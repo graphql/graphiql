@@ -176,7 +176,8 @@ function isTabsState(obj: any): obj is TabsState {
 }
 
 function isTabState(obj: any): obj is TabState {
-  // We don't persist hash or lastSavedQuery, so skip those checks here.
+  // We don't persist hash, and lastSavedQuery is optional (absent in tabs
+  // saved before it was persisted), so skip those checks here.
   return (
     obj &&
     typeof obj === 'object' &&
@@ -210,7 +211,6 @@ export function serializeTabState(
   return JSON.stringify(tabState, (key, value) =>
     key === 'hash' ||
     key === 'response' ||
-    key === 'lastSavedQuery' ||
     (!shouldPersistHeaders && key === 'headers')
       ? null
       : value,

@@ -410,3 +410,90 @@ describe('createTransport — GET method', () => {
     );
   });
 });
+
+describe('createTransport — QUERY method', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: { __typename: 'Query' } }));
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('sends a query as QUERY with a JSON body (not in the URL)', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'QUERY',
+      supportedMethods: ['POST', 'QUERY'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY });
+
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
+    expect(fetchInit.method).toBe('QUERY');
+    expect(fetchedUrl).toBe(URL);
+    expect(typeof fetchInit.body).toBe('string');
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      query: QUERY,
+    });
+    expect((fetchInit.headers as Record<string, string>)['content-type']).toBe(
+      'application/json',
+    );
+  });
+
+  it('sends a mutation as POST even when QUERY is selected (both supported)', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'QUERY',
+      supportedMethods: ['POST', 'QUERY'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: MUTATION });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.method).toBe('POST');
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      query: MUTATION,
+    });
+  });
+
+  it('QUERY-only: a mutation throws a clear error naming QUERY', () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['QUERY'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    expect(() => transport.send({ query: MUTATION })).toThrow(
+      /mutation.*QUERY/i,
+    );
+  });
+
+  it('setMethod can switch to QUERY when supported', async () => {
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET', 'POST', 'QUERY'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    transport.setMethod?.('QUERY');
+    expect(transport.method).toBe('QUERY');
+
+    await transport.send({ query: QUERY });
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.method).toBe('QUERY');
+  });
+});

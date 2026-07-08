@@ -38,15 +38,14 @@ describe('createTab', () => {
 });
 
 describe('serializeTabState', () => {
-  it('nullifies lastSavedQuery in serialized output (not persisted)', () => {
+  it('persists lastSavedQuery so dirty state survives a reload', () => {
     const tab = {
       ...createTab({ query: 'query Foo {}' }),
       lastSavedQuery: 'query Foo {}',
     };
     const state = { tabs: [tab], activeTabIndex: 0 };
     const parsed = JSON.parse(serializeTabState(state));
-    // lastSavedQuery is serialized as null so the field is reset on reload
-    expect(parsed.tabs[0].lastSavedQuery).toBeNull();
+    expect(parsed.tabs[0].lastSavedQuery).toBe('query Foo {}');
   });
 });
 

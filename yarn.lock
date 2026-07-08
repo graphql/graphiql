@@ -3430,6 +3430,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@graphiql/plugin-collections@npm:^0.1.0-alpha.0, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
+  version: 0.0.0-use.local
+  resolution: "@graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections"
+  dependencies:
+    "@graphiql/react": "npm:^0.37.4"
+    "@testing-library/dom": "npm:^10.4.0"
+    "@testing-library/jest-dom": "npm:^6.6.3"
+    "@testing-library/react": "npm:^16.3.0"
+    "@vitejs/plugin-react": "npm:^4.4.1"
+    graphql: "npm:^16.9.0"
+    react: "npm:^19.1.0"
+    react-dom: "npm:^19.1.0"
+    vite: "npm:^6.3.4"
+    vite-plugin-dts: "npm:^4.5.3"
+    vite-plugin-svgr: "npm:^4.3.0"
+    zod: "npm:^4.0.0"
+    zustand: "npm:^5"
+  peerDependencies:
+    "@graphiql/react": ^0.37.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    react: ^18 || ^19
+    react-dom: ^18 || ^19
+  languageName: unknown
+  linkType: soft
+
 "@graphiql/plugin-doc-explorer@npm:^0.4.2, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
@@ -14327,6 +14352,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
+    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
     "@graphiql/plugin-doc-explorer": "npm:^0.4.2"
     "@graphiql/plugin-history": "npm:^0.4.2"
     "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"
@@ -24638,6 +24664,13 @@ __metadata:
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.0.0":
+  version: 4.4.3
+  resolution: "zod@npm:4.4.3"
+  checksum: 10c0/7ea31b558e88f9faf44f31dd185e2e1cbf51fed3081787fb96cc2534749b50c0acfc6da7f0922a7353ed092dd358c7d50c28ea96c94d04af64191bd33152eca3
   languageName: node
   linkType: hard
 

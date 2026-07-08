@@ -48,7 +48,19 @@ export type TransportResponse = {
   size: { request?: number; response?: number };
 };
 
-export type HttpMethod = 'GET' | 'POST';
+/**
+ * HTTP methods a transport can use for query operations.
+ *
+ * - `POST` sends the operation in a JSON request body.
+ * - `GET` encodes the operation into the URL (no body); safe and cacheable,
+ *   but subject to URL length limits.
+ * - `QUERY` sends a JSON request body like `POST`, but is safe and idempotent
+ *   like `GET` (per the HTTP QUERY method), so responses stay cacheable. See
+ *   https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/
+ *
+ * Mutations may only be sent over `POST`, since `GET` and `QUERY` are safe.
+ */
+export type HttpMethod = 'GET' | 'POST' | 'QUERY';
 
 /**
  * Wire-level transport. `send()` returns a single Promise for queries and
@@ -151,12 +163,15 @@ export type CreateTransportOptions = {
   /**
    * Initial HTTP method to use for queries. Defaults to `'POST'`.
    * When set to `'GET'`, queries are encoded into the URL per the
-   * GraphQL over HTTP spec; mutations always use POST regardless.
+   * GraphQL over HTTP spec; when set to `'QUERY'`, queries are sent in a
+   * request body like POST. Mutations always use POST regardless, since
+   * `'GET'` and `'QUERY'` are safe methods.
    */
   method?: HttpMethod;
   /**
    * HTTP methods this transport should advertise as supported.
-   * Defaults to `['POST']`. Pass `['GET', 'POST']` to allow switching.
+   * Defaults to `['POST']`. Pass e.g. `['GET', 'POST']` or
+   * `['GET', 'POST', 'QUERY']` to allow switching.
    */
   supportedMethods?: HttpMethod[];
 };

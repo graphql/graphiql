@@ -20,6 +20,7 @@
 acao
 acmerc
 affordance
+affordances
 aivazis
 akshat
 alderaan
@@ -34,8 +35,9 @@ arthurgeron
 asiandrummer
 astro
 astrojs
-autodocs
 aumy
+autodocs
+automerge
 Autopurge
 behaviour
 benjie
@@ -45,6 +47,7 @@ bobbybobby
 borggreve
 bram
 browserslistrc
+cacheable
 calar
 chainable
 changesets
@@ -54,10 +57,11 @@ codegen
 codemirror
 codesandbox
 codespaces
-corellia
 codicon
 colmena
 combobox
+corellia
+crdt
 cshaver
 dedenting
 delivr
@@ -71,9 +75,9 @@ divyenduz
 dompurify
 dotan
 dotansimha
+EAEEF
 edcore
 envrc
-EAEEF
 esbuild
 estree
 execa
@@ -100,9 +104,9 @@ graphqls
 ˈɡrafək
 harshith
 headlessui
-homeworld
 heyenbrock
 hola
+homeworld
 htmling
 hurrell
 hyohyeon
@@ -140,6 +144,7 @@ matchingbracket
 medellín
 menlo
 meros
+microtasks
 middlewares
 minipass
 mockfs
@@ -148,10 +153,10 @@ multipass
 nauroze
 newhope
 nextjs
-nodenext
 nishchit
 nocheck
 nocursor
+nodenext
 nodenext
 nonmatchingbracket
 novvum
@@ -177,6 +182,7 @@ pabbati
 parseable
 picomatch
 pieas
+pluggable
 pnpm
 postbuild
 pratap
@@ -253,6 +259,9 @@ unfocus
 unnormalized
 unparsable
 unparseable
+unregistering
+unstub
+unstyled
 unsubscribable
 urigo
 urql
@@ -270,6 +279,7 @@ wgutils
 wincent
 wonka
 wordmark
+yjs
 yoshiakis
 zdravo
 zustand

@@ -156,6 +156,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTabChange,
   shouldPersistHeaders = false,
   onCopyQuery,
+  onSaveQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
   dangerouslyAssumeSchemaIsValid = false,
@@ -272,6 +273,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
             query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
           initialVariables: variables ?? '',
           onCopyQuery,
+          onSaveQuery,
           onEditOperationName,
           onPrettifyQuery,
           onTabChange,
@@ -346,7 +348,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   useDidUpdate(() => {
     const wrappedTransport =
       transport && registry ? registry.wrap(transport) : transport;
-    storeRef.current.setState({ fetcher, transport: wrappedTransport });
+    storeRef.current.setState({
+      fetcher,
+      transport: wrappedTransport,
+      transportMethod: wrappedTransport?.method ?? null,
+    });
   }, [fetcher, transport]);
 
   // Plugin sync
