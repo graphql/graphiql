@@ -1,6 +1,5 @@
 import { parse } from 'graphql';
 import type { OperationDefinitionNode } from 'graphql';
-import type { Client } from 'graphql-ws';
 import {
   createWebsocketsFetcherFromClient,
   multipartHttpTransport,
@@ -13,6 +12,7 @@ import type {
 import type {
   CreateTransportOptions,
   HttpMethod,
+  SubscriptionClient,
   Transport,
   TransportRequest,
   TransportResponse,
@@ -195,7 +195,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
 }
 
 async function* subscribe(
-  subscriptionClient: Client | undefined,
+  subscriptionClient: SubscriptionClient | undefined,
   params: FetcherParams,
 ): AsyncGenerator<TransportResponse> {
   if (!subscriptionClient) {

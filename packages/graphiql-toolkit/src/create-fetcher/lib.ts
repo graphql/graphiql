@@ -1,7 +1,6 @@
 import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros/browser';
 import type {
-  Client,
   ClientOptions,
   ExecutionResult,
   createClient as createClientType,
@@ -21,7 +20,11 @@ import type {
 } from './types';
 // Type-only import: erased at build time, so no runtime dependency cycle with
 // `create-transport`, which imports the helpers below at runtime.
-import type { HttpMethod, TransportResponse } from '../create-transport/types';
+import type {
+  HttpMethod,
+  SubscriptionClient,
+  TransportResponse,
+} from '../create-transport/types';
 
 const errorHasCode = (err: unknown): err is { code: string } => {
   return typeof err === 'object' && err !== null && 'code' in err;
@@ -219,10 +222,12 @@ export async function createWebsocketsFetcherFromUrl(
 }
 
 /**
- * Create ws/s fetcher using provided wsClient implementation
+ * Create a subscription fetcher from any client satisfying the
+ * {@link SubscriptionClient} contract (`graphql-ws`, `graphql-sse`, or a custom
+ * one — e.g. HTTP `multipart/mixed`).
  */
 export const createWebsocketsFetcherFromClient =
-  (wsClient: Client): Fetcher =>
+  (wsClient: SubscriptionClient): Fetcher =>
   (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
       wsClient.subscribe(graphQLParams, {
