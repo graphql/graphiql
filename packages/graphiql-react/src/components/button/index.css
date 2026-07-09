@@ -1,5 +1,9 @@
 .graphiql-un-styled {
   all: unset;
+  /* `all: unset` leaves the native button appearance, which paints a UA
+     `buttonface` background that ignores the theme (visible when the OS color
+     scheme differs from the active theme). Clear it explicitly. */
+  background: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
 
