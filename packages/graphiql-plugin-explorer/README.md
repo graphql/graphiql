@@ -1,5 +1,7 @@
 # GraphiQL Explorer Plugin
 
+> **Deprecated.** This package wraps the unmaintained OneGraph `graphiql-explorer` library. As of v6, GraphiQL ships a first-party visual query builder via `@graphiql/plugin-query-builder` (default-installed in `graphiql`). Removal of this package is planned for v7. See the [migration guide](../../docs/migration/graphiql-6.0.0.md).
+
 This package provides a plugin that integrates the
 [`GraphiQL Explorer`](https://github.com/OneGraph/graphiql-explorer) into the GraphiQL UI.
 

@@ -46,6 +46,7 @@ blockstring
 bobbybobby
 borggreve
 bram
+browserslist
 browserslistrc
 cacheable
 calar
@@ -77,6 +78,7 @@ dotan
 dotansimha
 EAEEF
 edcore
+embedders
 envrc
 esbuild
 estree
@@ -98,6 +100,7 @@ grafbase
 graphi
 graphile
 GraphiQL
+graphiqlplugin
 graphqlconfig
 graphqlrc
 graphqls
@@ -200,7 +203,9 @@ reparse
 reparsed
 resi
 resizer
+retheme
 retheming
+retint
 rikki
 roadmap
 roboto
