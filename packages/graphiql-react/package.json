@@ -83,7 +83,7 @@
     "@types/set-value": "^4.0.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/browser-playwright": "^4.1.6",
-    "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "babel-plugin-react-compiler": "19.1.0-rc.3",
     "graphql": "^16.9.0",
     "playwright": "^1.60.0",
     "react": "^19.1.0",

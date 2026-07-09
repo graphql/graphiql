@@ -95,7 +95,7 @@
     "babel-plugin-transform-import-meta": "^2.3.3",
     "concurrently": "^7.0.0",
     "copy": "^0.3.2",
-    "cspell": "^5.15.2",
+    "cspell": "^10.0.1",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "execa": "^7.1.1",
     "js-green-licenses": "4.0.0",

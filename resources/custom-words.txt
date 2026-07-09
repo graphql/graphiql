@@ -126,6 +126,7 @@ jonathanawesome
 jsdelivr
 jsgl
 keycap
+keymap
 kumar
 languageservice
 leebyron
@@ -155,6 +156,7 @@ modulemap
 multipass
 nauroze
 newhope
+ngql
 nextjs
 nishchit
 nocheck
@@ -280,7 +282,9 @@ vsix
 wcag
 webp
 websockets
+webworker
 wgutils
+whatwg
 wincent
 wonka
 wordmark

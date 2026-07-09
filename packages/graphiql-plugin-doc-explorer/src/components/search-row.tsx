@@ -44,8 +44,7 @@ export const SearchRow: FC = () => {
   const debouncedGetSearchResults = debounce(200, (search: string) => {
     setResults(getSearchResults(search));
   });
-  const [ref] = useState(inputRef);
-  const isFocused = ref.current === document.activeElement;
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
@@ -94,6 +93,8 @@ export const SearchRow: FC = () => {
           <ComboboxInput
             autoComplete="off"
             onChange={event => setSearchValue(event.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder="Search schema"
             ref={inputRef}
             value={searchValue}
