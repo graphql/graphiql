@@ -112,7 +112,7 @@ button.graphiql-tab-strip-action {
 
 /* All editors (operation, variable, request headers) */
 .graphiql-container .graphiql-editors {
-  background-color: hsl(var(--color-base));
+  background-color: oklch(var(--bg-canvas));
   border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
   box-shadow: var(--popover-box-shadow);
   display: flex;
