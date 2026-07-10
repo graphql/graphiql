@@ -1,6 +1,6 @@
 /* Everything */
 .graphiql-container {
-  background-color: hsl(var(--color-base));
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -224,7 +224,7 @@ button.graphiql-tab-strip-action {
 
 /* Generic drag bar for horizontal resizing */
 .graphiql-horizontal-drag-bar {
-  width: var(--px-12);
+  width: var(--px-8);
   cursor: col-resize;
 }
 
