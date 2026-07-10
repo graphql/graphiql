@@ -32,7 +32,17 @@
   --fg-disabled: 56.29% 0.02 256; /* #6E7681 */
   --fg-dim: 42.47% 0.017 255; /* #484F58 */
 
-  /* Accents */
+  /* Accents
+   *
+   * GraphQL identifier coloring is shared across the first-party plugins
+   * (doc explorer, history, query builder) so a given kind reads the same
+   * color everywhere:
+   *   - type names             -> --accent-orange
+   *   - field names            -> --accent-green-light
+   *   - argument names         -> --accent-purple
+   *   - directives             -> --accent-purple
+   *   - enum / default values  -> --accent-green-light / --accent-green
+   */
   --accent-blue: 78.57% 0.115 247; /* #79C0FF */
   --accent-green: 69.51% 0.181 146; /* #3FB950 */
   --accent-green-light: 84.16% 0.164 146; /* #7EE787 */

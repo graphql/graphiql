@@ -424,10 +424,10 @@
   white-space: nowrap;
 }
 
-/* Object / interface / union return types read as composite (blue); scalars
-   and enums keep the leaf color (orange). */
+/* Object / interface / union return types are still type names, so they keep
+   the same orange used for every other type name in the field tree. */
 .graphiql-qb-field-type--composite {
-  color: oklch(var(--accent-blue));
+  color: oklch(var(--accent-orange));
 }
 
 /* =========================================================================
@@ -455,7 +455,7 @@
 .graphiql-qb-arg-name {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-eyebrow);
-  color: oklch(var(--fg-muted));
+  color: oklch(var(--accent-purple));
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -739,7 +739,7 @@ select.graphiql-qb-arg-select:focus {
 }
 
 .graphiql-qb-type-name {
-  color: oklch(var(--accent-blue));
+  color: oklch(var(--accent-orange));
   font-weight: 600;
 }
 
