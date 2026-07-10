@@ -127,14 +127,6 @@ export const TopBarView: FC<TopBarViewProps> = ({
         <span className="graphiql-top-bar-endpoint-url">{url}</span>
       </div>
 
-      <button type="button" className="graphiql-top-bar-cmd">
-        <span>Jump to schema</span>
-        <KeycapHint
-          keys={[MODIFIER.Meta, 'K']}
-          ariaLabel="Open command palette"
-        />
-      </button>
-
       {isBlocked ? (
         <Tooltip label={runDisabledReason}>
           {/* A native disabled button emits no pointer/focus events, so Radix
