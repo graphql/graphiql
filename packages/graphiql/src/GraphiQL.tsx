@@ -15,8 +15,8 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
-  ExecuteButton,
   GraphiQLProvider,
+  MergeIcon,
   PlusIcon,
   PortalProvider,
   PrettifyIcon,
@@ -223,6 +223,7 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 const LABEL = {
   newTab: 'New tab',
   prettify: 'Prettify query',
+  merge: 'Merge fragments into query',
   copy: 'Copy query',
   save: 'Save query',
 };
@@ -249,6 +250,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     saveQuery,
     copyQuery,
     prettifyEditors,
+    mergeQuery,
   } = useGraphiQLActions();
   const {
     initialVariables,
@@ -361,8 +363,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       return acc;
     },
     {
-      logo: <GraphiQL.Logo />,
-      toolbar: <GraphiQL.Toolbar />,
       children: [],
     },
   );
@@ -417,15 +417,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ) : (
           <Spinner />
         )}
-
-        <div
-          className="graphiql-toolbar"
-          role="toolbar"
-          aria-label="Editor Commands"
-        >
-          <ExecuteButton />
-          {toolbar}
-        </div>
+        {toolbar}
       </section>
 
       <div ref={editorToolsDragBarRef} className="graphiql-editor-tools">
@@ -563,6 +555,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                         aria-label={LABEL.prettify}
                       >
                         <PrettifyIcon aria-hidden="true" />
+                      </UnStyledButton>
+                    </Tooltip>
+                    <Tooltip label={LABEL.merge}>
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-strip-action"
+                        onClick={mergeQuery}
+                        aria-label={LABEL.merge}
+                      >
+                        <MergeIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
                     <Tooltip label={LABEL.copy}>

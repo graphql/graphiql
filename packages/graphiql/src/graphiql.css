@@ -59,7 +59,7 @@ button.graphiql-tab-add {
   }
 }
 
-/* Right-side tab strip action buttons (prettify, copy, save) */
+/* Right-side tab strip action buttons (prettify, merge, copy, save) */
 .graphiql-tab-strip-actions {
   display: flex;
   align-items: center;
@@ -85,7 +85,7 @@ button.graphiql-tab-strip-action {
   }
 }
 
-/* The GraphiQL logo */
+/* The GraphiQL.Logo slot, opt-in only: branding lives in the top bar by default */
 .graphiql-container .graphiql-logo {
   margin-left: auto;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
@@ -130,7 +130,8 @@ button.graphiql-tab-strip-action {
   width: 100%;
 }
 
-/* The vertical toolbar next to the operation editor */
+/* The GraphiQL.Toolbar slot, opt-in only: prettify/merge/copy live in the
+   tab strip by default */
 .graphiql-container .graphiql-toolbar {
   width: var(--toolbar-width);
   display: flex;
