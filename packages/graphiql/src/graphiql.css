@@ -71,13 +71,13 @@ button.graphiql-tab-strip-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--px-4);
+  padding: var(--px-6);
   color: oklch(var(--fg-subtle));
 
   & > svg {
     display: block;
-    height: var(--icon-size-md);
-    width: var(--icon-size-md);
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
   }
 
   &:hover {
