@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
-import { render, screen, within, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  waitFor,
+  fireEvent,
+  act,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SettingsDialog, type SettingsDialogProps } from './index';
 import { SETTINGS_STORAGE_KEY } from '../../hooks/use-graphiql-settings';
@@ -261,14 +268,39 @@ describe('SettingsDialog — persist headers', () => {
 });
 
 describe('SettingsDialog — clear storage', () => {
-  it('clears storage and shows confirmation when clicked', async () => {
+  it('clears storage when clicked', async () => {
     const user = userEvent.setup();
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'Clear data' }));
+    const button = screen.getByRole('button', { name: 'Clear data' });
+    await user.click(button);
     expect(mockStorage.clear).toHaveBeenCalledOnce();
-    expect(
-      screen.getByRole('button', { name: 'Cleared data' }),
-    ).toBeInTheDocument();
+    // The label stays put; only the checkmark confirmation is added.
+    expect(button).toHaveTextContent('Clear data');
+  });
+
+  it('briefly shows a checkmark confirmation, then reverts', () => {
+    vi.useFakeTimers();
+    try {
+      renderDialog();
+      const button = screen.getByRole('button', { name: 'Clear data' });
+
+      expect(button.querySelector('svg')).not.toBeInTheDocument();
+
+      fireEvent.click(button);
+      expect(button.querySelector('svg')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1499);
+      });
+      expect(button.querySelector('svg')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(button.querySelector('svg')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

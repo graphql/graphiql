@@ -45,3 +45,11 @@
   letter-spacing: var(--letter-spacing-ui);
   margin: 0;
 }
+
+.graphiql-settings-check-icon {
+  color: oklch(var(--accent-green));
+  height: 14px;
+  margin-right: var(--px-4);
+  vertical-align: -2px;
+  width: 14px;
+}
