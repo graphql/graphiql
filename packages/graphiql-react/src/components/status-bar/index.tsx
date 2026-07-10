@@ -4,55 +4,61 @@ import type { FC } from 'react';
 import { useGraphiQL } from '../provider';
 import './index.css';
 
-export type StatusBarProps = {
-  encoding?: string;
+export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error';
+
+const CONNECTION_LABEL: Record<ConnectionStatus, string> = {
+  idle: 'Idle',
+  connecting: 'Connecting',
+  connected: 'Connected',
+  error: 'Connection error',
 };
 
-export type StatusBarViewProps = StatusBarProps & {
-  isConnected: boolean;
+export type StatusBarViewProps = {
+  connectionStatus: ConnectionStatus;
   typeCount: number;
-  pluginCount: number;
 };
 
 export const StatusBarView: FC<StatusBarViewProps> = ({
-  isConnected,
+  connectionStatus,
   typeCount,
-  pluginCount,
-  encoding = 'UTF-8',
 }) => (
   <footer className="graphiql-status-bar" role="contentinfo">
     <span
-      className={`graphiql-status-bar-conn${isConnected ? ' connected' : ' disconnected'}`}
+      className={`graphiql-status-bar-conn graphiql-status-bar-conn-${connectionStatus}`}
+      title={CONNECTION_LABEL[connectionStatus]}
     >
       <span className="graphiql-status-bar-conn-dot" aria-hidden="true" />
-      {isConnected ? 'Connected' : 'Disconnected'}
+      {CONNECTION_LABEL[connectionStatus]}
     </span>
-    {isConnected && (
+    {connectionStatus !== 'idle' && (
       <span className="graphiql-status-bar-types">{typeCount} types</span>
     )}
-    {pluginCount > 0 && (
-      <span className="graphiql-status-bar-plugins">
-        {pluginCount} {pluginCount === 1 ? 'plugin' : 'plugins'}
-      </span>
-    )}
-    <span className="graphiql-status-bar-spacer" />
-    <span>{encoding}</span>
-    <span>GraphQL</span>
   </footer>
 );
 
-export const StatusBar: FC<StatusBarProps> = props => {
+export const StatusBar: FC = () => {
   const schema = useGraphiQL(state => state.schema);
-  const plugins = useGraphiQL(state => state.plugins);
-  const isConnected = schema != null;
+  const fetchError = useGraphiQL(state => state.fetchError);
+  const isIntrospecting = useGraphiQL(state => state.isIntrospecting);
+  const isFetching = useGraphiQL(state => state.isFetching);
+  const lastResponse = useGraphiQL(state => state.lastResponse);
+
   const typeCount = schema ? Object.keys(schema.getTypeMap()).length : 0;
 
+  const connectionStatus: ConnectionStatus = (() => {
+    if (fetchError || lastResponse?.ok === false) {
+      return 'error';
+    }
+    if (isIntrospecting || isFetching) {
+      return 'connecting';
+    }
+    if (schema != null) {
+      return 'connected';
+    }
+    return 'idle';
+  })();
+
   return (
-    <StatusBarView
-      {...props}
-      isConnected={isConnected}
-      typeCount={typeCount}
-      pluginCount={plugins.length}
-    />
+    <StatusBarView connectionStatus={connectionStatus} typeCount={typeCount} />
   );
 };
