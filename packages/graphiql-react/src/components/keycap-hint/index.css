@@ -20,3 +20,9 @@
   font-weight: 600;
   line-height: 1;
 }
+
+.graphiql-keycap-glyph {
+  /* The glyphs' ink sits slightly above the vertical center of their em
+     box, so centering the line box alone isn't quite enough. */
+  transform: translateY(0.05em);
+}
