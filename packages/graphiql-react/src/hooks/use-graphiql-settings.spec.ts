@@ -8,6 +8,21 @@ import {
   vi,
 } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import { MONACO_THEME_NAME } from '../constants';
+
+// The settings hook drives the Monaco theme through `monacoStore`; stub it
+// out so tests can control the mock editor instance the hook sees.
+let mockMonaco: { editor: { setTheme: ReturnType<typeof vi.fn> } } | undefined;
+
+vi.mock('../stores/monaco', () => ({
+  monacoStore: {
+    getState: () => ({ monaco: mockMonaco }),
+    subscribe: () => () => {},
+  },
+  useMonaco: (selector: (state: { monaco: typeof mockMonaco }) => unknown) =>
+    selector({ monaco: mockMonaco }),
+}));
+
 import {
   useGraphiQLSettings,
   SETTINGS_STORAGE_KEY,
@@ -70,6 +85,7 @@ beforeAll(() => {
 beforeEach(() => {
   clearStorage();
   matchMediaMatches = false;
+  mockMonaco = { editor: { setTheme: vi.fn() } };
 });
 
 afterEach(() => {
@@ -235,5 +251,53 @@ describe('useGraphiQLSettings — auto theme', () => {
     expect(container.getAttribute('data-theme')).toBe('light');
 
     container.remove();
+  });
+});
+
+describe('useGraphiQLSettings — drives the Monaco theme', () => {
+  it('applies the resolved theme to Monaco on mount', () => {
+    setStorage({ theme: 'dark' });
+    renderHook(() => useGraphiQLSettings());
+
+    expect(mockMonaco!.editor.setTheme).toHaveBeenCalledWith(
+      MONACO_THEME_NAME.dark,
+    );
+  });
+
+  it('calls monaco.editor.setTheme with the light theme name on setTheme("light")', () => {
+    const { result } = renderHook(() => useGraphiQLSettings());
+
+    act(() => {
+      result.current.setTheme('light');
+    });
+
+    expect(mockMonaco!.editor.setTheme).toHaveBeenCalledWith(
+      MONACO_THEME_NAME.light,
+    );
+  });
+
+  it('calls monaco.editor.setTheme with the dark theme name on setTheme("dark")', () => {
+    const { result } = renderHook(() => useGraphiQLSettings());
+
+    act(() => {
+      result.current.setTheme('dark');
+    });
+
+    expect(mockMonaco!.editor.setTheme).toHaveBeenCalledWith(
+      MONACO_THEME_NAME.dark,
+    );
+  });
+
+  it('does not call monaco.editor.setTheme when monaco is not yet initialized', () => {
+    mockMonaco = undefined;
+    const { result } = renderHook(() => useGraphiQLSettings());
+
+    act(() => {
+      result.current.setTheme('dark');
+    });
+
+    // Nothing to assert on `setTheme` itself since there's no monaco
+    // instance, but the hook must not throw when monaco is unavailable.
+    expect(result.current.theme).toBe('dark');
   });
 });
