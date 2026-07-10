@@ -116,7 +116,7 @@ const App = () => {
 };
 ```
 
-### `legacyWsClient` or `legacyClient`
+### `legacyWsClient`
 
 Provide a legacy subscriptions client using `subscriptions-transport-ws`
 protocol. Using this option bypasses `subscriptionUrl`. In theory, this could be
@@ -162,11 +162,11 @@ const root = createRoot(document.getElementById('graphiql'));
 root.render(<App />);
 ```
 
-### Custom `legacyClient` Example
+### Custom `legacyWsClient` Example
 
 (not recommended)
 
-By providing the `legacyClient` you can support a `subscriptions-transport-ws`
+By providing the `legacyWsClient` you can support a `subscriptions-transport-ws`
 client implementation, or equivalent:
 
 ```jsx

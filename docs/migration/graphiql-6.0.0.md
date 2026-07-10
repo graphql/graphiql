@@ -163,6 +163,8 @@ See the [`@graphiql/react` README](../../packages/graphiql-react/README.md#avail
 
 The HTTP options object carries over. Subscriptions are different: `createTransport` does not build a subscription client for you. You construct your own `graphql-ws` (or `graphql-sse`) client and pass it as `subscriptionClient`. There is no `subscriptionUrl`, `wsClient`, `legacyWsClient`, or `wsConnectionParams` option on `createTransport` — those remain `createGraphiQLFetcher`-only.
 
+One of those `createGraphiQLFetcher` options did change: the deprecated `legacyClient` alias has been removed. It was a duplicate name for `legacyWsClient`, so if you passed `legacyClient`, rename it to `legacyWsClient` — same `subscriptions-transport-ws` client, one name instead of two.
+
 **Before:**
 
 ```ts
