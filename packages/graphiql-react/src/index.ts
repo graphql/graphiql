@@ -38,4 +38,3 @@ export type {
 export type { GraphiQLPlugin } from './stores/plugin';
 export type { ResponseView } from './stores';
 export { KEY_MAP, formatShortcutForOS, isMacOs } from './constants';
-export * from './deprecated';
