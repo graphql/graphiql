@@ -143,7 +143,7 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
-  cy.get('.graphiql-execute-button').click();
+  cy.get('[aria-label="Run query"]').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {
