@@ -140,9 +140,31 @@
   color: #fff;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-icon {
+  width: auto;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-sep {
+  width: 1px;
+  height: 14px;
+  background: rgb(255 255 255 / 0.28);
+  flex-shrink: 0;
+}
+
+/* The shortcut keycaps sit on the green fill here, not the dark bar, so recolor
+   them into faint translucent-white chips instead of the default dark boxes. */
+.graphiql-top-bar-run .graphiql-keycap {
+  border-color: rgb(255 255 255 / 0.3);
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
 }
 
 .graphiql-top-bar-run:disabled {

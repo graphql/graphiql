@@ -7,7 +7,7 @@ import type { HttpMethod } from '@graphiql/toolkit';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { Tooltip } from '../tooltip';
-import { GraphQLLogoIcon } from '../../icons';
+import { GraphQLLogoIcon, PlayIcon } from '../../icons';
 import { cn, getRunBlockReason, resolveActiveOperation } from '../../utility';
 import './index.css';
 
@@ -88,7 +88,9 @@ export const TopBarView: FC<TopBarViewProps> = ({
       disabled={isFetching || isBlocked}
       aria-label="Run query"
     >
-      Run
+      <PlayIcon className="graphiql-top-bar-run-icon" aria-hidden="true" />
+      <span className="graphiql-top-bar-run-label">Run</span>
+      <span className="graphiql-top-bar-run-sep" aria-hidden="true" />
       <KeycapHint
         keys={[MODIFIER.Meta, MODIFIER.Enter]}
         ariaLabel="Run query shortcut"
