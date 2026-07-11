@@ -83,6 +83,7 @@
 .graphiql-response-pane .result-window {
   flex: 1;
   min-height: 0;
+  padding: var(--px-16);
 }
 
 /* Smaller than the default .graphiql-spinner and tokenized to match the

@@ -3,7 +3,7 @@
   font-size: var(--font-size-mono);
   line-height: 1.6;
   color: oklch(var(--fg-default));
-  padding: var(--px-12) var(--px-16);
+  padding: var(--px-16);
   overflow: auto;
   flex: 1;
   min-height: 0;

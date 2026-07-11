@@ -1,7 +1,7 @@
 .graphiql-response-table-wrapper {
   flex: 1;
   overflow: auto;
-  padding: var(--px-14);
+  padding: var(--px-16);
 }
 
 .graphiql-response-table:not(:last-child) {
