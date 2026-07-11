@@ -104,6 +104,10 @@ const queryWithLeadingAboveComment =
 
 const response = await client.graphql(graphql, { issue });
 
+client. graphql(graphql, { issue });
+
+client./* comment */graphql(graphql, { issue });
+
 if (response) {
   const afterAmplify = true;
 }

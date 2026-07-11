@@ -27,6 +27,10 @@ const query = graphql<SomeGeneric>`
 
 const query = graphql<Generic>('query { id }');
 
+const nestedQuery = graphql<Result<User>>('query { id }');
+
+const nestedTaggedQuery = graphql<Result<User>>`query { id }`;
+
 const query = graphql('query { id }');
 
 const query = graphql<Generic>('query { id }');
@@ -63,6 +67,10 @@ const queryWithLeadingComment = /* GraphQL */ `
 `;
 
 const response = await client.graphql<Response>(graphql, { issue });
+
+client. graphql<Response>(graphql, { issue });
+
+client./* comment */graphql<Response>(graphql, { issue });
 
 if (response) {
   const afterAmplify = true;

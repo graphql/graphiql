@@ -459,6 +459,10 @@ const queryWithLeadingAboveComment =                       |
                                                            | 
 const response = await client.graphql(graphql, { issue }); | 
                                                            | 
+client. graphql(graphql, { issue });                       | 
+                                                           | 
+client./* comment */graphql(graphql, { issue });           | 
+                                                           | 
 if (response) {                                            | 
   const afterAmplify = true;                               | 
 }                                                          | 
@@ -631,6 +635,36 @@ id                                                                   | meta.embe
 )                                                                    | 
 ;                                                                    | 
                                                                      | 
+const nestedQuery =                                                  | 
+graphql                                                              | entity.name.function.tagged-template.js
+<Result<User>>(                                                      | 
+'                                                                    | punctuation.definition.string.template.begin.js
+query                                                                | meta.embedded.block.graphql keyword.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+id                                                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'                                                                    | punctuation.definition.string.template.end.js
+)                                                                    | 
+;                                                                    | 
+                                                                     | 
+const nestedTaggedQuery =                                            | 
+                                                                     | 
+graphql                                                              | entity.name.function.tagged-template.js
+<Result<User>>                                                       | 
+\`                                                                    | punctuation.definition.string.template.begin.js
+query                                                                | meta.embedded.block.graphql keyword.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+id                                                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+\`                                                                    | punctuation.definition.string.template.end.js
+;                                                                    | 
+                                                                     | 
 const query =                                                        | 
 graphql                                                              | entity.name.function.tagged-template.js
 (                                                                    | 
@@ -766,6 +800,10 @@ something                                                            | meta.embe
 ;                                                                    | 
                                                                      | 
 const response = await client.graphql<Response>(graphql, { issue }); | 
+                                                                     | 
+client. graphql<Response>(graphql, { issue });                       | 
+                                                                     | 
+client./* comment */graphql<Response>(graphql, { issue });           | 
                                                                      | 
 if (response) {                                                      | 
   const afterAmplify = true;                                         | 
