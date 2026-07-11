@@ -378,12 +378,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     }
   }, [visiblePlugin, pluginHiddenElement, setPluginHiddenElement]);
 
-  function onClickReference() {
-    if (pluginHiddenElement === 'first') {
-      setPluginHiddenElement(null);
-    }
-  }
-
   const toggleEditorTools: ButtonHandler = () => {
     setEditorToolsHiddenElement(
       editorToolsHiddenElement === 'second' ? null : 'second',
@@ -421,10 +415,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsFirstRef}
       >
         {hasMonaco ? (
-          <QueryEditor
-            onClickReference={onClickReference}
-            onEdit={onEditQuery}
-          />
+          <QueryEditor onEdit={onEditQuery} />
         ) : (
           <Spinner />
         )}
