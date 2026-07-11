@@ -211,8 +211,11 @@ describe('keyboard navigation', () => {
 
   // There is no standalone execute-button dropdown in the current UI: the
   // active operation follows the editor cursor (see operation-cursor.cy.ts),
-  // and Cmd-Enter runs whichever operation the cursor is in. This is the
-  // real keyboard path for picking and running one of several operations.
+  // and Run executes whichever operation the cursor is in. This is the real
+  // keyboard path for picking one of several operations before running it —
+  // the run step itself goes through the Run button rather than the
+  // Ctrl/Cmd-Enter shortcut, since that modifier is OS-dependent and this
+  // test only needs to prove the cursor-driven selection feeds the run.
   it('Keyboard-driven operation selection runs the operation under the cursor', () => {
     cy.visitWithOp({
       query: 'query A { __typename }\nquery B { __typename }\n',
@@ -228,7 +231,7 @@ describe('keyboard navigation', () => {
     cy.get('.graphiql-query-editor .graphiql-editor').first().realClick();
     cy.realPress('Enter');
     cy.focused().should('have.class', 'inputarea');
-    cy.realPress(['Meta', 'Enter']);
+    cy.clickExecuteQuery();
     cy.get('.result-window').should('contain.text', '__typename');
   });
 });
