@@ -224,6 +224,8 @@ button.graphiql-tab-strip-action {
 /* The response view */
 .graphiql-container .graphiql-response {
   display: flex;
+  flex: 1;
+  min-height: 0;
   width: 100%;
   flex-direction: column;
 }
