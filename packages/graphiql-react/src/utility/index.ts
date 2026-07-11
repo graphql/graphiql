@@ -15,6 +15,8 @@ export {
   MUTATION_REQUIRES_POST_REASON,
 } from './run-block';
 export { useDragResize } from './resize';
+export { typeCategory } from './type-category';
+export type { GraphQLTypeCategory } from './type-category';
 export { clsx as cn } from 'clsx';
 export {
   useOptimisticState,
