@@ -42,7 +42,7 @@ export const KEY_MAP = Object.freeze({
     key: 'Ctrl-F',
   },
   searchInDocs: {
-    key: 'Ctrl-Alt-K',
+    key: 'Ctrl-K',
   },
 });
 

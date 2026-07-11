@@ -41,7 +41,6 @@ button.graphiql-button {
     background-color: oklch(var(--btn-primary));
     border-color: oklch(var(--btn-primary-border));
     color: #fff;
-    font-weight: 600;
 
     &:hover {
       background-color: oklch(var(--btn-primary-border));

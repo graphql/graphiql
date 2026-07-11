@@ -44,22 +44,6 @@
   flex-shrink: 0;
 }
 
-.graphiql-top-bar-cmd {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--px-6);
-  padding: 0 var(--px-10);
-  height: 24px;
-  background: oklch(var(--bg-subtle));
-  border: 1px solid oklch(var(--border-strong));
-  border-radius: var(--radius-md);
-  color: oklch(var(--fg-subtle));
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-small);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .graphiql-top-bar-endpoint {
   display: inline-flex;
   align-items: center;
@@ -140,10 +124,32 @@
   color: #fff;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-icon {
+  width: auto;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-sep {
+  width: 1px;
+  height: 14px;
+  background: rgb(255 255 255 / 0.28);
+  flex-shrink: 0;
+}
+
+/* The shortcut keys sit on the green fill here, not the dark bar. Darken them
+   into subtle inset chips rather than the default dark boxes; a light (white)
+   overlay would lighten the green and drop the white glyphs below AA contrast. */
+.graphiql-top-bar-run .graphiql-keycap {
+  border-color: rgb(255 255 255 / 0.2);
+  background: rgb(0 0 0 / 0.18);
+  color: #fff;
 }
 
 .graphiql-top-bar-run:disabled {

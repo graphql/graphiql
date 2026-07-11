@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { Children, useRef, useState, Fragment } from 'react';
+import { Children, useEffect, useRef, useState, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -367,11 +367,16 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     },
   );
 
-  function onClickReference() {
-    if (pluginHiddenElement === 'first') {
+  // `visiblePlugin` and the pane's collapsed state are separate: the store
+  // tracks which plugin is active, while `useDragResize` owns the pane width.
+  // Reveal the pane whenever a plugin becomes visible through any path that
+  // doesn't manage the drag-resize state itself (the ⌘K shortcut, the
+  // `visiblePlugin` prop, or a plugin calling `setVisiblePlugin` directly).
+  useEffect(() => {
+    if (visiblePlugin && pluginHiddenElement === 'first') {
       setPluginHiddenElement(null);
     }
-  }
+  }, [visiblePlugin, pluginHiddenElement, setPluginHiddenElement]);
 
   const toggleEditorTools: ButtonHandler = () => {
     setEditorToolsHiddenElement(
@@ -409,14 +414,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         aria-label="Operation Editor"
         ref={editorToolsFirstRef}
       >
-        {hasMonaco ? (
-          <QueryEditor
-            onClickReference={onClickReference}
-            onEdit={onEditQuery}
-          />
-        ) : (
-          <Spinner />
-        )}
+        {hasMonaco ? <QueryEditor onEdit={onEditQuery} /> : <Spinner />}
         {toolbar}
       </section>
 
