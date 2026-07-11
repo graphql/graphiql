@@ -42,12 +42,11 @@
 }
 
 /* The editor side of the split: session header stacked above the editors.
-   The divider between the two panes runs the full height of this column. */
+   The divider between the two panes is drawn by the drag bar's sash. */
 .graphiql-container .graphiql-editor-column {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border-right: 1px solid oklch(var(--border-default));
 }
 
 /* The response side of the split */
@@ -265,34 +264,41 @@ button.graphiql-tab-strip-action {
   overflow: hidden;
 }
 
-/* Generic drag bar for horizontal resizing */
+/* Horizontal resizer, styled as a "sash": zero layout width so the panes sit
+   flush, an invisible expanded hit area straddling the seam, and a 1px divider
+   line. Width 0 also keeps the resize math (which subtracts the bar's
+   clientWidth) pixel-exact. */
 .graphiql-horizontal-drag-bar {
-  width: var(--px-8);
-  cursor: col-resize;
-}
-
-/* The editor/response resizer straddles the divider instead of taking layout
-   width of its own, so the response pane sits flush against the divider rather
-   than being pushed over by the bar. Width stays the same so the resize math
-   (which reads the bar's clientWidth) is unaffected. */
-.graphiql-container .graphiql-session-row > .graphiql-horizontal-drag-bar {
-  margin-inline: calc(var(--px-8) / -2);
+  width: 0;
   position: relative;
   z-index: 1;
 }
 
-.graphiql-horizontal-drag-bar:hover::after {
-  border: var(--px-2) solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
-  border-radius: var(--border-radius-2);
+/* The grab zone: 8px straddling the seam, with no layout footprint. */
+.graphiql-horizontal-drag-bar::before {
   content: '';
-  display: block;
-  height: 25%;
-  margin: 0 auto;
-  position: relative;
-  /* (100% - 25%) / 2 = 37.5% */
-  top: 37.5%;
-  width: 0;
+  position: absolute;
+  inset-block: 0;
+  left: calc(var(--px-8) / -2);
+  width: var(--px-8);
+  cursor: col-resize;
+}
+
+/* The visible divider line, centered on the seam. */
+.graphiql-horizontal-drag-bar::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: -0.5px;
+  width: 1px;
+  background: oklch(var(--border-default));
+}
+
+/* Thicken the divider on hover/drag as the resize affordance. */
+.graphiql-horizontal-drag-bar:hover::after,
+.graphiql-horizontal-drag-bar:active::after {
+  left: -1px;
+  width: 2px;
 }
 
 .graphiql-container .graphiql-chevron-icon {
