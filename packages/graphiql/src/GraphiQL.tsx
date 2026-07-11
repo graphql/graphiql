@@ -615,7 +615,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                     ref={editorSecondRef}
                     className="graphiql-response-column"
                   >
-                    <div className="graphiql-response-header" />
                     <div className="graphiql-response">
                       {isFetching && <Spinner />}
                       <ResponseEditor responseTooltip={responseTooltip} />
