@@ -3,7 +3,6 @@
 import type { FC } from 'react';
 import { Dialog } from '../dialog';
 import { SegmentedControl } from '../segmented-control';
-import { Button } from '../button';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import {
   useGraphiQLSettings,
@@ -14,6 +13,27 @@ import {
 import { useMonaco } from '../../stores';
 import { useEffect, useState } from 'react';
 import './index.css';
+
+// Time the clear-storage button shows its checkmark confirmation before it
+// reverts, mirroring the collections plugin's copy/share confirmation.
+const CLEAR_STORAGE_CONFIRMATION_MS = 1500;
+
+const CheckIcon: FC = () => (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 16 16"
+    fill="none"
+    className="graphiql-settings-check-icon"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.75"
+      d="m3.5 8.5 3 3 6-7"
+    />
+  </svg>
+);
 
 const FONT_SIZE_PX: Record<FontSize, number> = {
   compact: 12,
@@ -82,24 +102,31 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   const shouldPersistHeaders = useGraphiQL(state => state.shouldPersistHeaders);
   const storage = useGraphiQL(state => state.storage);
   const { setShouldPersistHeaders } = useGraphiQLActions();
-  const [clearStorageStatus, setClearStorageStatus] = useState<
-    'success' | 'error' | undefined
-  >();
+  const [isDataCleared, setIsDataCleared] = useState(false);
 
-  // Reset the clear-storage button state when the dialog closes.
+  // Reset the clear-storage confirmation when the dialog closes.
   useEffect(() => {
     if (!open) {
-      setClearStorageStatus(undefined);
+      setIsDataCleared(false);
     }
   }, [open]);
 
-  function handleClearData() {
-    try {
-      storage.clear();
-      setClearStorageStatus('success');
-    } catch {
-      setClearStorageStatus('error');
+  // The confirmation is transient: flash the checkmark, then hide it again,
+  // mirroring the collections plugin's share confirmation.
+  useEffect(() => {
+    if (!isDataCleared) {
+      return;
     }
+    const timer = setTimeout(
+      () => setIsDataCleared(false),
+      CLEAR_STORAGE_CONFIRMATION_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [isDataCleared]);
+
+  function handleClearData() {
+    storage.clear();
+    setIsDataCleared(true);
   }
 
   // Keep Monaco editor font size in sync with the active preset.
@@ -192,16 +219,25 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
                 Remove all locally stored data and start fresh.
               </p>
             </div>
-            <Button
+            <button
               type="button"
-              state={clearStorageStatus}
-              disabled={clearStorageStatus === 'success'}
+              className="graphiql-settings-clear-button"
               onClick={handleClearData}
+              data-confirmed={isDataCleared || undefined}
             >
-              {{ success: 'Cleared data', error: 'Failed' }[
-                clearStorageStatus!
-              ] ?? 'Clear data'}
-            </Button>
+              <span className="graphiql-settings-clear-button-label">
+                Clear data
+              </span>
+              <span
+                className="graphiql-settings-clear-button-check"
+                aria-hidden="true"
+              >
+                <CheckIcon />
+              </span>
+            </button>
+            <span className="graphiql-settings-sr-only" role="status">
+              {isDataCleared ? 'Data cleared' : ''}
+            </span>
           </section>
         </div>
       </div>
