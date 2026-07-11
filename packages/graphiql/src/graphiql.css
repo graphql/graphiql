@@ -39,7 +39,6 @@
   height: var(--session-header-height);
   align-items: center;
   display: flex;
-  padding: var(--px-8) var(--px-8) 0;
   gap: var(--px-8);
 }
 
@@ -103,7 +102,6 @@ button.graphiql-tab-strip-action {
 .graphiql-container #graphiql-session {
   display: flex;
   flex: 1;
-  padding: 0 var(--px-8) var(--px-8);
 }
 
 /* All editors (operation, variable, request headers) */
