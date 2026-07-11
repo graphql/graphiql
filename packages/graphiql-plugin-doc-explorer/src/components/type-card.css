@@ -67,7 +67,7 @@
 
 a.graphiql-doc-explorer-type-card-implements-link {
   font-family: var(--font-family-mono);
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
   text-decoration: none;
 
   &:hover {

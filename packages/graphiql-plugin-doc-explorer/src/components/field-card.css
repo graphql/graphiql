@@ -26,15 +26,7 @@
 .graphiql-doc-explorer-field-card-type {
   font-family: var(--font-family-mono);
   font-size: 14px;
-  color: oklch(var(--accent-orange));
-
-  & .graphiql-doc-explorer-type-name {
-    color: oklch(var(--accent-orange));
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  color: oklch(var(--fg-default));
 }
 
 .graphiql-doc-explorer-field-card-description {

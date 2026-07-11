@@ -86,7 +86,19 @@
 }
 
 .graphiql-doc-explorer-search-type {
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='scalar'] {
+  color: oklch(var(--type-scalar));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='enum'] {
+  color: oklch(var(--type-enum));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='input'] {
+  color: oklch(var(--type-input));
 }
 
 .graphiql-doc-explorer-search-field {

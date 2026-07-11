@@ -78,15 +78,7 @@
 }
 
 .graphiql-doc-explorer-argument-type {
-  color: oklch(var(--accent-orange));
-
-  & .graphiql-doc-explorer-type-name {
-    color: oklch(var(--accent-orange));
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  color: oklch(var(--fg-default));
 }
 
 .graphiql-doc-explorer-argument-default {

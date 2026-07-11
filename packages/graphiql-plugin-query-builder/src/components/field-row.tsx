@@ -1,5 +1,9 @@
-import { ChevronDownIcon, MarkdownContent, Tooltip } from '@graphiql/react';
-import { getNamedType, isEnumType, isScalarType } from 'graphql';
+import {
+  ChevronDownIcon,
+  MarkdownContent,
+  Tooltip,
+  typeCategory,
+} from '@graphiql/react';
 import type { GraphQLField } from 'graphql';
 import type { FC } from 'react';
 import type { ArgValue } from '../lib/document-mutator';
@@ -57,10 +61,7 @@ export const FieldRow: FC<FieldRowProps> = ({
   const nameClassName = `graphiql-qb-field-name${
     deprecated ? ' graphiql-qb-field-name--deprecated' : ''
   }`;
-  // Color the type by its unwrapped named kind: scalars/enums are "leaf" types,
-  // everything else (object/interface/union) is "composite".
-  const namedType = getNamedType(field.type);
-  const isLeafType = isScalarType(namedType) || isEnumType(namedType);
+  const typeColorCategory = typeCategory(field.type);
 
   return (
     <div
@@ -127,11 +128,7 @@ export const FieldRow: FC<FieldRowProps> = ({
           </Tooltip>
         )}
         <span
-          className={
-            isLeafType
-              ? 'graphiql-qb-field-type'
-              : 'graphiql-qb-field-type graphiql-qb-field-type--composite'
-          }
+          className={`graphiql-qb-field-type graphiql-qb-field-type--${typeColorCategory}`}
         >
           {String(field.type)}
         </span>

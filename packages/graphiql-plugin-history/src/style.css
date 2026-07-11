@@ -83,7 +83,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: oklch(var(--fg-default));
+  /* The label is the operation/root field name, colored to match field names
+     in the doc explorer and query builder. */
+  color: oklch(var(--accent-green-light));
   font-family: var(--font-family-mono);
   font-size: var(--font-size-mono);
   text-align: left;

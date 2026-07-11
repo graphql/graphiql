@@ -41,6 +41,7 @@ The new tokens are stored as `L% C H` component triplets (lightness percent, chr
 - **Borders:** `--border-default`, `--border-muted`, `--border-strong`
 - **Foreground:** `--fg-default`, `--fg-strong`, `--fg-muted`, `--fg-subtle`, `--fg-disabled`, `--fg-dim`
 - **Accents:** `--accent-blue`, `--accent-green`, `--accent-green-light`, `--accent-yellow`, `--accent-orange`, `--accent-red`, `--accent-purple`, `--accent-pink`
+- **Type-name categories:** `--type-composite`, `--type-scalar`, `--type-enum`, `--type-input`
 - **Run button:** `--btn-primary`, `--btn-primary-border`
 - **Radii:** `--radius-sm`, `--radius-md`, `--radius-lg`
 - **Shadow:** `--shadow-popover`
@@ -48,6 +49,29 @@ The new tokens are stored as `L% C H` component triplets (lightness percent, chr
 There is no published mapping from the nine v5 `--color-*` names to these — the two palettes aren't a 1:1 redesign of each other. Some v5 roles split into several v6 tokens (one `--color-base` background becomes four: `--bg-canvas`, `--bg-elevated`, `--bg-subtle`, `--bg-overlay`), and v6 introduces categories v5 didn't have at all, like a three-step border scale and a dedicated `--fg-disabled` / `--fg-dim` pair for de-emphasized text. If you have a bespoke theme, treat the new token list as a fresh design surface to map your brand colors onto rather than a mechanical find-and-replace of the old one.
 
 The v5 variables are still documented in the [`@graphiql/react` README](../../packages/graphiql-react/README.md#theming); the new token file itself, [`tokens.css`](../../packages/graphiql-react/src/style/tokens.css), is the source of truth for the v6 set until the README catches up.
+
+### Type-name colors
+
+In the schema-aware plugins — the doc explorer and the query builder — type-name references are colored by their GraphQL kind rather than all sharing one color. This makes a field list easier to scan: leaf types stand out from the objects you drill into.
+
+| Kind                     | Token              | Default |
+| ------------------------ | ------------------ | ------- |
+| object, interface, union | `--type-composite` | orange  |
+| scalar                   | `--type-scalar`    | blue    |
+| enum                     | `--type-enum`      | green   |
+| input object             | `--type-input`     | gold    |
+
+These four `--type-*` tokens are the supported surface for retheming type-name colors. By default each aliases an accent token (`--type-scalar` resolves to `--accent-blue`, and so on), so you can retint either the accent or the `--type-*` token directly:
+
+```css
+[data-theme='dark'] {
+  --type-scalar: 75% 0.15 200; /* recolor scalar type names */
+}
+```
+
+If you're building your own plugin that renders type names and want it to match, `@graphiql/react` exports a `typeCategory(type)` helper that maps any GraphQL type to `'scalar' | 'enum' | 'input' | 'composite'` (unwrapping list and non-null wrappers). Apply the corresponding `--type-*` token to your markup; the attribute and class names GraphiQL uses internally are not part of the public API.
+
+The Monaco query editor is not schema-aware — it can't tell a scalar from an object by name alone — so type names in the query text itself keep a single color. This categorization applies only to the schema-driven plugin UIs.
 
 ### Retheming example
 

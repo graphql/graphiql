@@ -1,5 +1,5 @@
 a.graphiql-doc-explorer-type-name {
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
   text-decoration: none;
 
   &:hover {
@@ -7,6 +7,18 @@ a.graphiql-doc-explorer-type-name {
   }
 
   &:focus {
-    outline: oklch(var(--accent-orange)) auto 1px;
+    outline: currentColor auto 1px;
   }
+}
+
+a.graphiql-doc-explorer-type-name[data-type-kind='scalar'] {
+  color: oklch(var(--type-scalar));
+}
+
+a.graphiql-doc-explorer-type-name[data-type-kind='enum'] {
+  color: oklch(var(--type-enum));
+}
+
+a.graphiql-doc-explorer-type-name[data-type-kind='input'] {
+  color: oklch(var(--type-input));
 }

@@ -32,7 +32,25 @@
   --fg-disabled: 56.29% 0.02 256; /* #6E7681 */
   --fg-dim: 42.47% 0.017 255; /* #484F58 */
 
-  /* Accents */
+  /* Accents
+   *
+   * GraphQL identifier coloring is shared across the first-party plugins
+   * (doc explorer, history, query builder) so a given kind reads the same
+   * color everywhere:
+   *   - type names             -> by category, via --type-* (see below)
+   *   - field names            -> --accent-green-light
+   *   - argument names         -> --accent-purple
+   *   - directives             -> --accent-purple
+   *   - enum / default values  -> --accent-green-light / --accent-green
+   *
+   * Type names are further split by category. These --type-* tokens are the
+   * supported public surface for retheming type coloring; plugins reference
+   * them (never the raw --accent-* below) and third-party plugins may too:
+   *   - object / interface / union -> --type-composite
+   *   - scalar                     -> --type-scalar
+   *   - enum                       -> --type-enum
+   *   - input object               -> --type-input
+   */
   --accent-blue: 78.57% 0.115 247; /* #79C0FF */
   --accent-green: 69.51% 0.181 146; /* #3FB950 */
   --accent-green-light: 84.16% 0.164 146; /* #7EE787 */
@@ -41,6 +59,12 @@
   --accent-red: 66.51% 0.205 27; /* #F85149 */
   --accent-purple: 80.05% 0.127 306; /* #D2A8FF */
   --accent-pink: 73.45% 0.163 26; /* #FF7B72 */
+
+  /* Type-name categories (see Accents comment). Public retheming surface. */
+  --type-composite: var(--accent-orange);
+  --type-scalar: var(--accent-blue);
+  --type-enum: var(--accent-green);
+  --type-input: var(--accent-yellow);
 
   /* Action button (Run) */
   --btn-primary: 54.6% 0.147 146; /* #238636 */
@@ -108,6 +132,14 @@
   --accent-red: 55% 0.224 27;
   --accent-purple: 45% 0.18 295;
   --accent-pink: 58% 0.22 17;
+
+  /* Type-name categories. Composite/scalar/enum alias the AA-tuned light
+   * accents; input gets its own darker gold because --accent-yellow is only
+   * AA-safe as a background fill, not as text. */
+  --type-composite: var(--accent-orange);
+  --type-scalar: var(--accent-blue);
+  --type-enum: var(--accent-green-light);
+  --type-input: 48% 0.115 92;
 
   /* Action button (Run) — keeps the green; inverted bg lets it stand out */
   --btn-primary: 51% 0.15 145;
@@ -253,6 +285,10 @@
     --accent-red: 55% 0.224 27;
     --accent-purple: 45% 0.18 295;
     --accent-pink: 58% 0.22 17;
+    --type-composite: var(--accent-orange);
+    --type-scalar: var(--accent-blue);
+    --type-enum: var(--accent-green-light);
+    --type-input: 48% 0.115 92;
     --btn-primary: 51% 0.15 145;
     --btn-primary-border: 45% 0.17 145;
     --shadow-popover:
