@@ -41,7 +41,7 @@
 
 .graphiql-response-table td {
   padding: var(--px-6) var(--px-12);
-  border-bottom: 1px solid oklch(var(--border-subtle));
+  border-bottom: 1px solid oklch(var(--border-muted));
   vertical-align: top;
   max-width: 320px;
   overflow: hidden;
