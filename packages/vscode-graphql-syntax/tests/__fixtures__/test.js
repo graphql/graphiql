@@ -101,3 +101,19 @@ const queryWithLeadingAboveComment =
       }
     }
   `;
+
+const response = await client.graphql(graphql, { issue });
+
+if (response) {
+  const afterAmplify = true;
+}
+
+foo.graphql();
+
+const afterMember = 'after';
+
+graphql.experimental(`query { id }`);
+
+obj.graphql.experimental(`query { id }`);
+
+const afterExperimental = true;
