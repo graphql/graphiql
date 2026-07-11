@@ -70,6 +70,8 @@ declare namespace Cypress {
 
     clickPrettify(): Chainable<Element>;
 
+    clickMergeFragments(): Chainable<Element>;
+
     assertHasValues(op: Op): Chainable<Element>;
 
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
@@ -141,11 +143,15 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
-  cy.get('.graphiql-execute-button').click();
+  cy.get('[aria-label="Run query"]').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {
-  cy.get('[aria-label="Prettify query (Shift-Ctrl-P)"]').click();
+  cy.get('[aria-label="Prettify query"]').click();
+});
+
+Cypress.Commands.add('clickMergeFragments', () => {
+  cy.get('[aria-label="Merge fragments into query"]').click();
 });
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {

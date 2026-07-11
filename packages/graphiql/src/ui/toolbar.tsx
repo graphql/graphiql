@@ -22,6 +22,9 @@ const DefaultToolbarRenderProps: FC<{
 
 /**
  * Configure the UI by providing this Component as a child of GraphiQL.
+ * Not rendered by default: the tab strip's action buttons cover prettify,
+ * merge, and copy out of the box. This remains available for embedders who
+ * want the standalone toolbar.
  */
 export const GraphiQLToolbar: FC<{
   children?: typeof DefaultToolbarRenderProps | ReactNode;
@@ -30,7 +33,15 @@ export const GraphiQLToolbar: FC<{
   const { copyQuery, prettifyEditors, mergeQuery } = useGraphiQLActions();
 
   if (!isRenderProp) {
-    return children as ReactElement;
+    return (
+      <div
+        className="graphiql-toolbar"
+        role="toolbar"
+        aria-label="Editor Commands"
+      >
+        {children as ReactElement}
+      </div>
+    );
   }
 
   const prettify = (
@@ -60,5 +71,19 @@ export const GraphiQLToolbar: FC<{
     </ToolbarButton>
   );
 
-  return children({ prettify, copy, merge });
+  const rendered = (children as typeof DefaultToolbarRenderProps)({
+    prettify,
+    copy,
+    merge,
+  }) as ReactElement;
+
+  return (
+    <div
+      className="graphiql-toolbar"
+      role="toolbar"
+      aria-label="Editor Commands"
+    >
+      {rendered}
+    </div>
+  );
 };

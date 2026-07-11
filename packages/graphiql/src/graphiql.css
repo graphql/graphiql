@@ -34,12 +34,53 @@
   min-width: 0;
 }
 
-/* The session header containing tabs and the logo */
+/* The editor and response panes, split by the horizontal drag bar */
+.graphiql-container .graphiql-session-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The editor side of the split: session header stacked above the editors.
+   The divider between the two panes is drawn by the drag bar's sash. */
+.graphiql-container .graphiql-editor-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The response side of the split */
+.graphiql-container .graphiql-response-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Match the response header's height to the editor's session header so the
+   view picker lines up with the tabs and action buttons across the split. The
+   default horizontal padding keeps the status off the divider. */
+.graphiql-container .graphiql-response-header {
+  height: var(--session-header-height);
+}
+
+/* The session header (tabs + action buttons) reads as a toolbar strip, matching
+   the elevated surface and divider of the response header across the split. */
 .graphiql-container .graphiql-session-header {
   height: var(--session-header-height);
   align-items: center;
   display: flex;
   gap: var(--px-8);
+  background: oklch(var(--bg-elevated));
+  border-bottom: 1px solid oklch(var(--border-default));
+}
+
+/* The tab strip carries its own shorter height + bottom divider by default,
+   which double-lines against the header divider. Stretch it to the full header
+   height and drop its border so the header shows a single divider. */
+.graphiql-container .graphiql-session-header .graphiql-tabs {
+  height: auto;
+  align-self: stretch;
+  border-bottom: none;
 }
 
 /* The button to add a new tab */
@@ -54,7 +95,7 @@ button.graphiql-tab-add {
   }
 }
 
-/* Right-side tab strip action buttons (prettify, copy, save) */
+/* Right-side tab strip action buttons (prettify, merge, copy, save) */
 .graphiql-tab-strip-actions {
   display: flex;
   align-items: center;
@@ -66,13 +107,13 @@ button.graphiql-tab-strip-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--px-4);
+  padding: var(--px-6);
   color: oklch(var(--fg-subtle));
 
   & > svg {
     display: block;
-    height: var(--icon-size-md);
-    width: var(--icon-size-md);
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
   }
 
   &:hover {
@@ -80,7 +121,7 @@ button.graphiql-tab-strip-action {
   }
 }
 
-/* The GraphiQL logo */
+/* The GraphiQL.Logo slot, opt-in only: branding lives in the top bar by default */
 .graphiql-container .graphiql-logo {
   margin-left: auto;
   color: hsla(var(--color-neutral), var(--alpha-secondary));
@@ -102,12 +143,12 @@ button.graphiql-tab-strip-action {
 .graphiql-container #graphiql-session {
   display: flex;
   flex: 1;
+  min-height: 0;
 }
 
 /* All editors (operation, variable, request headers) */
 .graphiql-container .graphiql-editors {
   background: oklch(var(--bg-canvas));
-  border-right: 1px solid oklch(var(--border-default));
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -123,7 +164,8 @@ button.graphiql-tab-strip-action {
   width: 100%;
 }
 
-/* The vertical toolbar next to the operation editor */
+/* The GraphiQL.Toolbar slot, opt-in only: prettify/merge/copy live in the
+   tab strip by default */
 .graphiql-container .graphiql-toolbar {
   width: var(--toolbar-width);
   display: flex;
@@ -193,9 +235,9 @@ button.graphiql-tab-strip-action {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  /* Add some padding so it doesn't touch the tabs */
-  padding-top: var(--px-16);
   display: flex;
+  flex: 1;
+  min-height: 0;
   width: 100%;
   flex-direction: column;
 }
@@ -220,24 +262,42 @@ button.graphiql-tab-strip-action {
   overflow: hidden;
 }
 
-/* Generic drag bar for horizontal resizing */
+/* Horizontal resizer, styled as a "sash": zero layout width so the panes sit
+   flush, an invisible expanded hit area straddling the seam, and a 1px divider
+   line. Width 0 also keeps the resize math (which subtracts the bar's
+   clientWidth) pixel-exact. */
 .graphiql-horizontal-drag-bar {
+  width: 0;
+  position: relative;
+  z-index: 1;
+  cursor: col-resize;
+}
+
+/* The grab zone: 8px straddling the seam, with no layout footprint. */
+.graphiql-horizontal-drag-bar::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: calc(var(--px-8) / -2);
   width: var(--px-8);
   cursor: col-resize;
 }
 
-.graphiql-horizontal-drag-bar:hover::after {
-  border: var(--px-2) solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
-  border-radius: var(--border-radius-2);
+/* The visible divider line, centered on the seam. */
+.graphiql-horizontal-drag-bar::after {
   content: '';
-  display: block;
-  height: 25%;
-  margin: 0 auto;
-  position: relative;
-  /* (100% - 25%) / 2 = 37.5% */
-  top: 37.5%;
-  width: 0;
+  position: absolute;
+  inset-block: 0;
+  left: -0.5px;
+  width: 1px;
+  background: oklch(var(--border-default));
+}
+
+/* Thicken the divider on hover/drag as the resize affordance. */
+.graphiql-horizontal-drag-bar:hover::after,
+.graphiql-horizontal-drag-bar:active::after {
+  left: -1px;
+  width: 2px;
 }
 
 .graphiql-container .graphiql-chevron-icon {

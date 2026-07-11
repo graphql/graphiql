@@ -384,8 +384,9 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editors =
-        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
+      const editorColumn = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor-column',
+      )!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -403,7 +404,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect(editors.style.flexGrow).toEqual('3.5');
+        expect(editorColumn.style.flexGrow).toEqual('3.5');
       });
 
       clientWidthSpy.mockRestore();
@@ -626,7 +627,7 @@ describe('GraphiQL', () => {
         </>
       );
 
-      const { container, getByRole } = render(
+      const { container, queryByRole } = render(
         <GraphiQL fetcher={noOpFetcher}>{myFragment}</GraphiQL>,
       );
 
@@ -634,13 +635,15 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-logo'),
+        ).not.toBeInTheDocument();
+        expect(queryByRole('toolbar')).not.toBeInTheDocument();
       });
     });
 
     it('properly ignores non-override children components', async () => {
-      const { container, getByRole } = render(
+      const { container, queryByRole } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyFunctionalComponent />
         </GraphiQL>,
@@ -650,8 +653,10 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-logo'),
+        ).not.toBeInTheDocument();
+        expect(queryByRole('toolbar')).not.toBeInTheDocument();
       });
     });
 
@@ -663,7 +668,7 @@ describe('GraphiQL', () => {
         }
       }
 
-      const { container, getByRole } = render(
+      const { container, queryByRole } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyClassComponent />
         </GraphiQL>,
@@ -673,8 +678,10 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-logo'),
+        ).not.toBeInTheDocument();
+        expect(queryByRole('toolbar')).not.toBeInTheDocument();
       });
     });
 
@@ -729,6 +736,83 @@ describe('GraphiQL', () => {
         });
       });
     });
+  });
+
+  describe('tab strip actions', () => {
+    it('renders exactly one prettify, merge, copy, and save action, and no legacy toolbar or logo', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} onSaveQuery={() => {}} />,
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('[aria-label="Prettify query"]'),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll(
+            '[aria-label="Merge fragments into query"]',
+          ),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll('[aria-label="Copy query"]'),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll('[aria-label="Save query"]'),
+        ).toHaveLength(1);
+        expect(
+          container.querySelector('.graphiql-toolbar'),
+        ).not.toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-logo'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('merges fragments into the operation when Merge Fragments is clicked', async () => {
+      let queryEditor: MonacoEditor;
+      let documentAST: unknown;
+
+      const HookConsumer: FC = () => {
+        const $queryEditor = useGraphiQL(state => state.queryEditor);
+        const $documentAST = useGraphiQL(state => state.documentAST);
+        useEffect(() => {
+          queryEditor = $queryEditor!;
+          documentAST = $documentAST;
+        }, [$queryEditor, $documentAST]);
+        return null;
+      };
+
+      const { getByLabelText } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer />
+        </GraphiQL>,
+      );
+
+      const query = `fragment NameFragment on Query { q }
+query TestQuery { ...NameFragment }`;
+
+      await waitFor(() => {
+        expect(queryEditor).toBeTruthy();
+      });
+      act(() => {
+        queryEditor.setValue(query);
+      });
+
+      await waitFor(() => {
+        expect(queryEditor.getValue()).toContain('...NameFragment');
+        // The editor debounces content-change handling before it updates the
+        // document AST that `mergeQuery` reads from.
+        expect(documentAST).toBeTruthy();
+      });
+
+      fireEvent.click(getByLabelText('Merge fragments into query'));
+
+      await waitFor(() => {
+        const merged = queryEditor.getValue();
+        expect(merged).not.toContain('...NameFragment');
+        expect(merged).toContain('q');
+      });
+    }, 15_000);
   });
 
   it('should support multiple instances', async () => {

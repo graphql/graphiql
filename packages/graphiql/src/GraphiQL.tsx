@@ -15,8 +15,8 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
-  ExecuteButton,
   GraphiQLProvider,
+  MergeIcon,
   PlusIcon,
   PortalProvider,
   PrettifyIcon,
@@ -223,6 +223,7 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 const LABEL = {
   newTab: 'New tab',
   prettify: 'Prettify query',
+  merge: 'Merge fragments into query',
   copy: 'Copy query',
   save: 'Save query',
 };
@@ -249,6 +250,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     saveQuery,
     copyQuery,
     prettifyEditors,
+    mergeQuery,
   } = useGraphiQLActions();
   const {
     initialVariables,
@@ -361,8 +363,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       return acc;
     },
     {
-      logo: <GraphiQL.Logo />,
-      toolbar: <GraphiQL.Toolbar />,
       children: [],
     },
   );
@@ -408,22 +408,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     editorToolsHiddenElement === 'second' ? ChevronUpIcon : ChevronDownIcon;
 
   const editors = (
-    <div className="graphiql-editors" ref={editorFirstRef}>
+    <div className="graphiql-editors">
       <section
         className="graphiql-query-editor"
         aria-label="Operation Editor"
         ref={editorToolsFirstRef}
       >
         {hasMonaco ? <QueryEditor onEdit={onEditQuery} /> : <Spinner />}
-
-        <div
-          className="graphiql-toolbar"
-          role="toolbar"
-          aria-label="Editor Commands"
-        >
-          <ExecuteButton />
-          {toolbar}
-        </div>
+        {toolbar}
       </section>
 
       <div ref={editorToolsDragBarRef} className="graphiql-editor-tools">
@@ -491,122 +483,141 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                 />
               )}
               <div ref={pluginSecondRef} className="graphiql-sessions">
-                <div className="graphiql-session-header">
-                  <Tabs
-                    ref={tabContainerRef}
-                    values={tabs}
-                    onReorder={moveTab}
-                    aria-label="Select active operation"
-                    className="no-scrollbar"
-                  >
-                    {tabs.map((tab, index) => {
-                      const isActive = index === activeTabIndex;
-                      // For the active tab, surface how many other operations the
-                      // document holds alongside the one the cursor is in. Only
-                      // when the active operation is named, so the title reads as
-                      // `<name> +N`; an anonymous active operation has no name to
-                      // anchor the count to.
-                      const otherOperations =
-                        isActive && tab.operationName && operations
-                          ? operations.length - 1
-                          : 0;
-                      const tabTitle =
-                        otherOperations > 0
-                          ? `${tab.title} +${otherOperations}`
-                          : tab.title;
-                      return (
-                        <Tab
-                          key={tab.id}
-                          // Prevent overscroll over container
-                          dragConstraints={tabContainerRef}
-                          value={tab}
-                          isActive={isActive}
-                          isDirty={
-                            canSave &&
-                            tab.lastSavedQuery !== null &&
-                            tab.query !== tab.lastSavedQuery
-                          }
-                        >
-                          <Tab.Button
-                            aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            title={tabTitle}
-                            onClick={handleTabClick}
-                          >
-                            {tabTitle}
-                          </Tab.Button>
-                          {tabs.length > 1 && (
-                            <Tab.Close onClick={handleTabClose} />
-                          )}
-                        </Tab>
-                      );
-                    })}
-                  </Tabs>
-                  <Tooltip label={LABEL.newTab}>
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-add"
-                      onClick={addTab}
-                      aria-label={LABEL.newTab}
-                    >
-                      <PlusIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                  <div className="graphiql-tab-strip-actions">
-                    <Tooltip label={LABEL.prettify}>
-                      <UnStyledButton
-                        type="button"
-                        className="graphiql-tab-strip-action"
-                        onClick={prettifyEditors}
-                        aria-label={LABEL.prettify}
+                <div className="graphiql-session-row">
+                  <div ref={editorFirstRef} className="graphiql-editor-column">
+                    <div className="graphiql-session-header">
+                      <Tabs
+                        ref={tabContainerRef}
+                        values={tabs}
+                        onReorder={moveTab}
+                        aria-label="Select active operation"
+                        className="no-scrollbar"
                       >
-                        <PrettifyIcon aria-hidden="true" />
-                      </UnStyledButton>
-                    </Tooltip>
-                    <Tooltip label={LABEL.copy}>
-                      <UnStyledButton
-                        type="button"
-                        className="graphiql-tab-strip-action"
-                        onClick={copyQuery}
-                        aria-label={LABEL.copy}
-                      >
-                        <CopyIcon aria-hidden="true" />
-                      </UnStyledButton>
-                    </Tooltip>
-                    {canSave && (
-                      <Tooltip label={LABEL.save}>
+                        {tabs.map((tab, index) => {
+                          const isActive = index === activeTabIndex;
+                          // For the active tab, surface how many other operations the
+                          // document holds alongside the one the cursor is in. Only
+                          // when the active operation is named, so the title reads as
+                          // `<name> +N`; an anonymous active operation has no name to
+                          // anchor the count to.
+                          const otherOperations =
+                            isActive && tab.operationName && operations
+                              ? operations.length - 1
+                              : 0;
+                          const tabTitle =
+                            otherOperations > 0
+                              ? `${tab.title} +${otherOperations}`
+                              : tab.title;
+                          return (
+                            <Tab
+                              key={tab.id}
+                              // Prevent overscroll over container
+                              dragConstraints={tabContainerRef}
+                              value={tab}
+                              isActive={isActive}
+                              isDirty={
+                                canSave &&
+                                tab.lastSavedQuery !== null &&
+                                tab.query !== tab.lastSavedQuery
+                              }
+                            >
+                              <Tab.Button
+                                aria-controls="graphiql-session"
+                                id={`graphiql-session-tab-${index}`}
+                                title={tabTitle}
+                                onClick={handleTabClick}
+                              >
+                                {tabTitle}
+                              </Tab.Button>
+                              {tabs.length > 1 && (
+                                <Tab.Close onClick={handleTabClose} />
+                              )}
+                            </Tab>
+                          );
+                        })}
+                      </Tabs>
+                      <Tooltip label={LABEL.newTab}>
                         <UnStyledButton
                           type="button"
-                          className="graphiql-tab-strip-action"
-                          onClick={saveQuery}
-                          aria-label={LABEL.save}
+                          className="graphiql-tab-add"
+                          onClick={addTab}
+                          aria-label={LABEL.newTab}
                         >
-                          <SaveIcon aria-hidden="true" />
+                          <PlusIcon aria-hidden="true" />
                         </UnStyledButton>
                       </Tooltip>
-                    )}
-                    {plugins.map(plugin =>
-                      plugin.sessionActions ? (
-                        <plugin.sessionActions key={plugin.title} />
-                      ) : null,
-                    )}
+                      <div className="graphiql-tab-strip-actions">
+                        <Tooltip label={LABEL.prettify}>
+                          <UnStyledButton
+                            type="button"
+                            className="graphiql-tab-strip-action"
+                            onClick={prettifyEditors}
+                            aria-label={LABEL.prettify}
+                          >
+                            <PrettifyIcon aria-hidden="true" />
+                          </UnStyledButton>
+                        </Tooltip>
+                        <Tooltip label={LABEL.merge}>
+                          <UnStyledButton
+                            type="button"
+                            className="graphiql-tab-strip-action"
+                            onClick={mergeQuery}
+                            aria-label={LABEL.merge}
+                          >
+                            <MergeIcon aria-hidden="true" />
+                          </UnStyledButton>
+                        </Tooltip>
+                        <Tooltip label={LABEL.copy}>
+                          <UnStyledButton
+                            type="button"
+                            className="graphiql-tab-strip-action"
+                            onClick={copyQuery}
+                            aria-label={LABEL.copy}
+                          >
+                            <CopyIcon aria-hidden="true" />
+                          </UnStyledButton>
+                        </Tooltip>
+                        {canSave && (
+                          <Tooltip label={LABEL.save}>
+                            <UnStyledButton
+                              type="button"
+                              className="graphiql-tab-strip-action"
+                              onClick={saveQuery}
+                              aria-label={LABEL.save}
+                            >
+                              <SaveIcon aria-hidden="true" />
+                            </UnStyledButton>
+                          </Tooltip>
+                        )}
+                        {plugins.map(plugin =>
+                          plugin.sessionActions ? (
+                            <plugin.sessionActions key={plugin.title} />
+                          ) : null,
+                        )}
+                      </div>
+                      {logo}
+                    </div>
+                    <div
+                      role="tabpanel"
+                      id="graphiql-session" // used by aria-controls="graphiql-session"
+                      aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
+                    >
+                      {editors}
+                    </div>
                   </div>
-                  {logo}
-                </div>
-                <div
-                  role="tabpanel"
-                  id="graphiql-session" // used by aria-controls="graphiql-session"
-                  aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
-                >
-                  {editors}
                   <div
                     className="graphiql-horizontal-drag-bar"
                     ref={editorDragBarRef}
                   />
-                  <div className="graphiql-response" ref={editorSecondRef}>
-                    {isFetching && <Spinner />}
-                    <ResponseEditor responseTooltip={responseTooltip} />
-                    {footer}
+                  <div
+                    ref={editorSecondRef}
+                    className="graphiql-response-column"
+                  >
+                    <div className="graphiql-response">
+                      {isFetching && <Spinner />}
+                      <ResponseEditor responseTooltip={responseTooltip} />
+                      {footer}
+                    </div>
                   </div>
                 </div>
               </div>
