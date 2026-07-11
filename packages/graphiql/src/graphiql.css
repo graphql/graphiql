@@ -38,12 +38,39 @@
   min-width: 0;
 }
 
-/* The session header containing tabs and the logo */
+/* The editor and response panes, split by the horizontal drag bar */
+.graphiql-container .graphiql-session-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: var(--px-8);
+}
+
+/* The editor side of the split: session header stacked above the editors */
+.graphiql-container .graphiql-editor-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The response side of the split */
+.graphiql-container .graphiql-response-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Placeholder band keeping the response top aligned with the editor top */
+.graphiql-container .graphiql-response-header {
+  height: var(--session-header-height);
+  flex-shrink: 0;
+}
+
+/* The session header containing tabs and the action buttons */
 .graphiql-container .graphiql-session-header {
   height: var(--session-header-height);
   align-items: center;
   display: flex;
-  padding: var(--px-8) var(--px-8) 0;
   gap: var(--px-8);
 }
 
@@ -107,7 +134,7 @@ button.graphiql-tab-strip-action {
 .graphiql-container #graphiql-session {
   display: flex;
   flex: 1;
-  padding: 0 var(--px-8) var(--px-8);
+  min-height: 0;
 }
 
 /* All editors (operation, variable, request headers) */
