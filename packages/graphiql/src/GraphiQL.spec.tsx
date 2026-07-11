@@ -355,8 +355,9 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editorColumn =
-        container.querySelector<HTMLDivElement>('.graphiql-editor-column')!;
+      const editorColumn = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor-column',
+      )!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
