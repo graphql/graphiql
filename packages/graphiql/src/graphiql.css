@@ -77,6 +77,15 @@
   border-bottom: 1px solid oklch(var(--border-default));
 }
 
+/* The tab strip carries its own shorter height + bottom divider by default,
+   which double-lines against the header divider. Stretch it to the full header
+   height and drop its border so the header shows a single divider. */
+.graphiql-container .graphiql-session-header .graphiql-tabs {
+  height: auto;
+  align-self: stretch;
+  border-bottom: none;
+}
+
 /* The button to add a new tab */
 button.graphiql-tab-add {
   padding: var(--px-4);
@@ -260,6 +269,16 @@ button.graphiql-tab-strip-action {
 .graphiql-horizontal-drag-bar {
   width: var(--px-8);
   cursor: col-resize;
+}
+
+/* The editor/response resizer straddles the divider instead of taking layout
+   width of its own, so the response pane sits flush against the divider rather
+   than being pushed over by the bar. Width stays the same so the resize math
+   (which reads the bar's clientWidth) is unaffected. */
+.graphiql-container .graphiql-session-row > .graphiql-horizontal-drag-bar {
+  margin-inline: calc(var(--px-8) / -2);
+  position: relative;
+  z-index: 1;
 }
 
 .graphiql-horizontal-drag-bar:hover::after {
