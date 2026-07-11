@@ -1,5 +1,5 @@
 import { cn } from '../../utility';
-import { forwardRef, FC, ComponentPropsWithoutRef } from 'react';
+import { forwardRef, FC, ComponentPropsWithoutRef, RefObject } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
 import { usePortalContainer } from '../portal';
@@ -68,13 +68,44 @@ const DialogFooter = forwardRef<
 ));
 DialogFooter.displayName = 'Dialog.Footer';
 
-const DialogRoot: FC<D.DialogProps> = ({ children, ...props }) => {
+export type DialogRootProps = D.DialogProps & {
+  /**
+   * The element focus should return to when the dialog closes. Radix
+   * restores focus to whatever had it when the dialog opened, but that
+   * snapshot can be clobbered by re-renders while the dialog is open (e.g.
+   * a controlled dialog whose content subscribes to store updates), which
+   * silently drops focus to `<body>`. Pass a ref to the element that opened
+   * the dialog (usually its trigger button) to make the restore explicit.
+   */
+  restoreFocusRef?: RefObject<HTMLElement | null>;
+};
+
+const DialogRoot: FC<DialogRootProps> = ({
+  children,
+  restoreFocusRef,
+  ...props
+}) => {
   const container = usePortalContainer();
   return (
     <D.Root {...props}>
       <D.Portal container={container}>
         <D.Overlay className="graphiql-dialog-overlay" />
-        <D.Content className="graphiql-dialog">{children}</D.Content>
+        <D.Content
+          className="graphiql-dialog"
+          onCloseAutoFocus={
+            restoreFocusRef
+              ? event => {
+                  const target = restoreFocusRef.current;
+                  if (target) {
+                    event.preventDefault();
+                    target.focus();
+                  }
+                }
+              : undefined
+          }
+        >
+          {children}
+        </D.Content>
       </D.Portal>
     </D.Root>
   );

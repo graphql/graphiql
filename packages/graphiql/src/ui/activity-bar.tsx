@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 import {
   ActivityRail,
   Dialog,
@@ -30,6 +30,7 @@ export const ActivityBar: FC<ActivityBarProps> = ({
   const [showDialog, setShowDialog] = useState<
     'settings' | 'short-keys' | null
   >(null);
+  const settingsButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     function openSettings(event: KeyboardEvent) {
@@ -69,6 +70,7 @@ export const ActivityBar: FC<ActivityBarProps> = ({
       <ActivityRail
         onPluginToggle={handlePluginToggle}
         onSettingsClick={() => setShowDialog('settings')}
+        settingsButtonRef={settingsButtonRef}
       />
       <Dialog
         open={showDialog === 'short-keys'}
@@ -95,6 +97,7 @@ export const ActivityBar: FC<ActivityBarProps> = ({
         onOpenChange={handleOpenSettingsDialog}
         forcedTheme={forcedTheme}
         showPersistHeadersSettings={showPersistHeadersSettings}
+        restoreFocusRef={settingsButtonRef}
       />
     </>
   );
