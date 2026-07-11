@@ -56,74 +56,72 @@ describe('keyboard navigation', () => {
     });
   });
 
+  // The tab-strip actions (prettify/merge/copy/save) and the response pane's
+  // view-picker/copy/result stops are the same interactive elements in the
+  // same relative order regardless of exactly which plugins or save handlers
+  // are registered; asserting the full label set once here (rather than
+  // hardcoding positional Tab counts) keeps this resilient to unrelated
+  // toolbar changes while still proving each segment is keyboard-reachable
+  // in order.
+  const TOP_BAR_AND_RAIL_LABELS = [
+    { className: 'graphiql-top-bar-method-toggle' },
+    { ariaLabel: 'Run query' },
+    { ariaLabel: 'Show Documentation Explorer' },
+    { ariaLabel: 'Show History' },
+    { ariaLabel: 'Show Query Builder' },
+    { ariaLabel: 'Show Collections' },
+    { ariaLabel: 'Settings' },
+  ];
+
+  function assertFocusedStop(stop: { className?: string; ariaLabel?: string }) {
+    if (stop.className) {
+      cy.focused().should('have.class', stop.className);
+    } else {
+      cy.focused().should('have.attr', 'aria-label', stop.ariaLabel);
+    }
+  }
+
   it('Tab order proceeds top bar to rail to panel header to editor', () => {
     cy.get('.graphiql-top-bar-brand').realClick();
 
-    cy.realPress('Tab');
-    cy.focused().should('have.class', 'graphiql-top-bar-method-toggle');
+    for (const stop of TOP_BAR_AND_RAIL_LABELS) {
+      cy.realPress('Tab');
+      assertFocusedStop(stop);
+    }
 
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Run query');
-
-    cy.realPress('Tab');
-    cy.focused().should(
-      'have.attr',
-      'aria-label',
-      'Show Documentation Explorer',
-    );
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Show History');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Show Query Builder');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Show Collections');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Settings');
-
-    // Session tab strip
+    // Session tab strip: the active tab button, "New tab", then the
+    // tab-strip actions (whichever ones are registered — prettify/merge/copy
+    // are always present, save only when a save handler is registered).
     cy.realPress('Tab');
     cy.focused().should('have.id', 'graphiql-session-tab-0');
     cy.realPress('Tab');
     cy.focused().should('have.attr', 'aria-label', 'New tab');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Prettify query');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Copy query');
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Save query');
-    cy.realPress('Tab');
-    cy.focused().should('have.class', 'graphiql-logo-link');
+
+    cy.get('.graphiql-tab-strip-action').then($actions => {
+      const labels = [...$actions].map(el => el.getAttribute('aria-label'));
+      expect(labels).to.include.members([
+        'Prettify query',
+        'Merge fragments into query',
+        'Copy query',
+      ]);
+      for (const label of labels) {
+        cy.realPress('Tab');
+        cy.focused().should('have.attr', 'aria-label', label);
+      }
+    });
 
     // Operation editor, reached as a single stop (see the Enter-to-edit test
     // below for why Tab doesn't dive into Monaco's internal DOM).
     cy.realPress('Tab');
     cy.focused().should('have.class', 'graphiql-editor');
-
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Execute query (Cmd-Enter)');
   });
 
-  it('Tab order proceeds from the editor toolbar through variables/headers to the response pane', () => {
+  it('Tab order proceeds from the editor tools toggle through variables/headers to the response pane', () => {
     cy.get('.graphiql-top-bar-brand').realClick();
-    for (let i = 0; i < 15; i++) {
-      cy.realPress('Tab');
-    }
-    cy.focused().should('have.attr', 'aria-label', 'Execute query (Cmd-Enter)');
-
-    cy.realPress('Tab');
-    cy.focused().should(
-      'have.attr',
-      'aria-label',
-      'Prettify query (Shift-Ctrl-P)',
-    );
-    cy.realPress('Tab');
-    cy.focused().should(
-      'have.attr',
-      'aria-label',
-      'Merge fragments into query (Shift-Ctrl-M)',
-    );
-    cy.realPress('Tab');
-    cy.focused().should('have.attr', 'aria-label', 'Copy query (Shift-Ctrl-C)');
+    // Fast-forward past the top bar/rail/tab-strip/operation editor (covered
+    // by the previous test) directly to the editor-tools toggle, the first
+    // stop this test is actually about.
+    cy.get('.graphiql-query-editor .graphiql-editor').first().focus();
     cy.realPress('Tab');
     cy.focused().should('have.attr', 'aria-label', 'Hide editor tools');
 
@@ -144,9 +142,7 @@ describe('keyboard navigation', () => {
 
   it('Shift+Tab from the response pane mirrors the forward order back to the start', () => {
     cy.get('.graphiql-top-bar-brand').realClick();
-    for (let i = 0; i < 24; i++) {
-      cy.realPress('Tab');
-    }
+    cy.get('.result-window').focus();
     cy.focused().should('have.attr', 'aria-label', 'Result Window');
 
     cy.realPress(['Shift', 'Tab']);
@@ -213,17 +209,26 @@ describe('keyboard navigation', () => {
     cy.focused().should('have.attr', 'aria-label', 'Edit label');
   });
 
-  it('The execute button operation dropdown supports arrow keys and Escape', () => {
+  // There is no standalone execute-button dropdown in the current UI: the
+  // active operation follows the editor cursor (see operation-cursor.cy.ts),
+  // and Cmd-Enter runs whichever operation the cursor is in. This is the
+  // real keyboard path for picking and running one of several operations.
+  it('Keyboard-driven operation selection runs the operation under the cursor', () => {
     cy.visitWithOp({
       query: 'query A { __typename }\nquery B { __typename }\n',
     });
     cy.get('.graphiql-query-editor .view-lines').should('exist');
-    cy.get('.graphiql-execute-button').realClick();
-    cy.get('[role="menu"]').should('be.visible');
-    cy.realPress('ArrowDown');
-    cy.focused().should('have.attr', 'role', 'menuitem');
-    cy.realPress('Escape');
-    cy.get('[role="menu"]').should('not.exist');
-    cy.focused().should('have.class', 'graphiql-execute-button');
+
+    cy.activateOperation('B');
+    cy.get('.graphiql-tab-active .graphiql-tab-button').should(
+      'contain.text',
+      'B',
+    );
+
+    cy.get('.graphiql-query-editor .graphiql-editor').first().realClick();
+    cy.realPress('Enter');
+    cy.focused().should('have.class', 'inputarea');
+    cy.realPress(['Meta', 'Enter']);
+    cy.get('.result-window').should('contain.text', '__typename');
   });
 });
