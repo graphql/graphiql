@@ -595,16 +595,16 @@ const docWithFragments = parse(`
 export const FragmentSectionEmpty: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docNoFragments} onCreateFragment={() => {}} />
+      <FragmentSection doc={docNoFragments} />
     </div>
   ),
 };
 
-/** Fragment panel listing two existing named fragments. */
+/** Fragment panel listing two existing named fragments, each renameable. */
 export const FragmentSectionWithFragments: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docWithFragments} onCreateFragment={() => {}} />
+      <FragmentSection doc={docWithFragments} onRenameFragment={() => {}} />
     </div>
   ),
 };

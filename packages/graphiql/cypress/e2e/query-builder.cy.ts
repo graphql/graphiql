@@ -154,3 +154,97 @@ describe('Query Builder – list argument (Int[])', () => {
     });
   });
 });
+
+describe('Query Builder – fragment extraction', () => {
+  /**
+   * Expand a composite field, select a scalar child, then extract the row to a
+   * fragment. The selection becomes a spread and a matching fragment definition
+   * is appended.
+   */
+  it('extracts a selected subtree into a named fragment via the row action', () => {
+    openQueryBuilder();
+
+    // Expand `person` (a Person-typed composite) and select `name`.
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    expectQuery(query =>
+      expect(query.replaceAll(/\s+/g, '')).to.include('person{name}'),
+    );
+
+    // The extract action reveals on hover; force the click since it starts at
+    // opacity 0 until the row is hovered.
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+
+    expectQuery(query => {
+      const compact = query.replaceAll(/\s+/g, '');
+      expect(compact).to.include('person{...PersonFields}');
+      expect(compact).to.include('fragmentPersonFieldsonPerson');
+      expect(compact).to.include('name');
+    });
+
+    // The fragment is listed and the row shows the spread state.
+    cy.get('.graphiql-qb-fragment-name').should('contain.text', 'PersonFields');
+    cy.get('[data-testid="field-spread"]').should(
+      'contain.text',
+      'PersonFields',
+    );
+  });
+
+  /**
+   * With a document that already defines a Person fragment, a second Person
+   * field offers "Use ...PersonFields" instead of forcing a new fragment.
+   */
+  it('reuses an existing fragment on another field of the same type', () => {
+    const QUERY = `{
+  person { ...PersonFields }
+  test { person { name } }
+}
+
+fragment PersonFields on Person {
+  name
+}
+`;
+    cy.visit(`?query=${encodeURIComponent(QUERY)}`);
+    openQueryBuilder();
+
+    // Drill into test → person (a second Person-typed field) and reuse.
+    cy.get('[aria-label="Expand test"]').click();
+    cy.get('[aria-label="Expand person"]').filter(':visible').last().click();
+    cy.get('[aria-label="Spread PersonFields into person"]').click({
+      force: true,
+    });
+
+    expectQuery(query => {
+      const compact = query.replaceAll(/\s+/g, '');
+      expect(compact).to.include('test{person{...PersonFields}}');
+      // Exactly one fragment definition — no duplicate created.
+      expect(compact.match(/fragmentPersonFields/g)).to.have.length(1);
+    });
+  });
+
+  /**
+   * The extract action is a plain, keyboard-focusable <button> (no negative
+   * tabindex, no hover-only operability): it can take focus and activate while
+   * focused. Native Enter/Space activation of the button element is covered by
+   * the plugin unit tests via userEvent.
+   */
+  it('exposes the extract action as a focusable, operable button', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+
+    cy.get('[aria-label="Extract person to a fragment"]')
+      .focus()
+      .should('be.focused')
+      .click();
+
+    expectQuery(query =>
+      expect(query.replaceAll(/\s+/g, '')).to.include(
+        'person{...PersonFields}',
+      ),
+    );
+  });
+});

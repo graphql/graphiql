@@ -271,6 +271,102 @@ describe('FieldRow', () => {
   });
 });
 
+describe('FieldRow — extract to fragment', () => {
+  it('renders the extract action when onExtractFragment is supplied', () => {
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onExtractFragment={() => {}}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: /extract friends to a fragment/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the extract action when onExtractFragment is absent', () => {
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: /extract .* to a fragment/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('fires onExtractFragment when the action is clicked', async () => {
+    const onExtractFragment = vi.fn();
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onExtractFragment={onExtractFragment}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /extract friends to a fragment/i }),
+    );
+    expect(onExtractFragment).toHaveBeenCalledOnce();
+  });
+
+  it('renders the fragment-spread badge when fragmentSpread is set', () => {
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected
+        hasChildren
+        expanded={false}
+        fragmentSpread="FriendFields"
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    const badge = screen.getByTestId('field-spread');
+    expect(badge).toHaveTextContent('FriendFields');
+  });
+
+  it('offers "Use ...Fragment" for each spreadable fragment', async () => {
+    const onSpreadFragment = vi.fn();
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        spreadableFragments={[{ name: 'FriendFields', typeName: 'Friend' }]}
+        onSpreadFragment={onSpreadFragment}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    const btn = screen.getByRole('button', {
+      name: /spread FriendFields into friends/i,
+    });
+    await userEvent.click(btn);
+    expect(onSpreadFragment).toHaveBeenCalledWith('FriendFields');
+  });
+});
+
 describe('FieldRow — deprecated fields', () => {
   it('marks a deprecated field and surfaces the reason', async () => {
     render(
