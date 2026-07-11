@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { FC, useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
+import {
+  GraphQLNonNull,
+  GraphQLList,
+  GraphQLString,
+  GraphQLEnumType,
+  GraphQLObjectType,
+  GraphQLInputObjectType,
+} from 'graphql';
 import { docExplorerStore, useDocExplorer } from '../../context';
 import { TypeLink } from '../type-link';
 import { unwrapType } from './test-utils';
@@ -69,5 +76,44 @@ describe('TypeLink', () => {
     expect(container).toHaveTextContent('[String]');
     rerender(<TypeLinkWithContext type={GraphQLString} />);
     expect(container).toHaveTextContent('String');
+  });
+
+  const enumT = new GraphQLEnumType({ name: 'Episode', values: { NEWHOPE: {} } });
+  const objectT = new GraphQLObjectType({
+    name: 'Droid',
+    fields: { id: { type: GraphQLString } },
+  });
+  const inputT = new GraphQLInputObjectType({
+    name: 'ReviewInput',
+    fields: { stars: { type: GraphQLString } },
+  });
+
+  it('tags a scalar type with data-type-kind="scalar"', () => {
+    const { container } = render(<TypeLinkWithContext type={GraphQLString} />);
+    expect(container.querySelector('a')).toHaveAttribute(
+      'data-type-kind',
+      'scalar',
+    );
+  });
+  it('tags an enum type with data-type-kind="enum"', () => {
+    const { container } = render(<TypeLinkWithContext type={enumT} />);
+    expect(container.querySelector('a')).toHaveAttribute(
+      'data-type-kind',
+      'enum',
+    );
+  });
+  it('tags an object type with data-type-kind="composite"', () => {
+    const { container } = render(<TypeLinkWithContext type={objectT} />);
+    expect(container.querySelector('a')).toHaveAttribute(
+      'data-type-kind',
+      'composite',
+    );
+  });
+  it('tags an input object type with data-type-kind="input"', () => {
+    const { container } = render(<TypeLinkWithContext type={inputT} />);
+    expect(container.querySelector('a')).toHaveAttribute(
+      'data-type-kind',
+      'input',
+    );
   });
 });
