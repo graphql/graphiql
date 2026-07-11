@@ -4,9 +4,9 @@ import {
   PanelHeader,
   useGraphiQL,
 } from '@graphiql/react';
-import { OperationTypeNode, isInterfaceType, isObjectType } from 'graphql';
+import { OperationTypeNode } from 'graphql';
 import { type FC, useEffect, useState } from 'react';
-import { countSelectedFields, resolveFieldNamedType } from '../lib/schema-walk';
+import { countSelectedFields } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
 import { FieldTree } from './field-tree';
 import { useCursorPath } from './use-cursor-path';
@@ -26,7 +26,9 @@ export const QueryBuilder: FC = () => {
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
-    handleCreateFragment,
+    handleExtractFragment,
+    handleSpreadFragment,
+    handleRenameFragment,
   } = useWorkingDocument();
 
   const cursorPath = useCursorPath();
@@ -39,18 +41,6 @@ export const QueryBuilder: FC = () => {
   useEffect(() => {
     setManualExpanded({});
   }, [activeOpKind]);
-
-  // A fragment can be extracted from the field the cursor is in, as long as it
-  // resolves to a composite type (object or interface — those have a selection
-  // set worth lifting out).
-  const fragmentType =
-    schema && cursorPath.length > 0
-      ? resolveFieldNamedType(schema, activeOpKind, cursorPath)
-      : undefined;
-  const canCreateFragment = Boolean(
-    fragmentType &&
-    (isObjectType(fragmentType) || isInterfaceType(fragmentType)),
-  );
 
   const header = (
     <PanelHeader
@@ -141,6 +131,9 @@ export const QueryBuilder: FC = () => {
                   onDemoteArg={handleDemoteArg}
                   onAddInlineFragment={handleAddInlineFragment}
                   onRemoveInlineFragment={handleRemoveInlineFragment}
+                  onExtractFragment={handleExtractFragment}
+                  onSpreadFragment={handleSpreadFragment}
+                  onRenameFragment={handleRenameFragment}
                 />
               )}
             </section>
@@ -148,11 +141,7 @@ export const QueryBuilder: FC = () => {
         })}
         <FragmentSection
           doc={workingDoc}
-          onCreateFragment={
-            canCreateFragment
-              ? () => handleCreateFragment(cursorPath, fragmentType!)
-              : undefined
-          }
+          onRenameFragment={handleRenameFragment}
         />
       </div>
     </div>

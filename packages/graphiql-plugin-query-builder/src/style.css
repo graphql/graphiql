@@ -813,24 +813,114 @@ select.graphiql-qb-arg-select:focus {
   color: oklch(var(--accent-blue));
 }
 
-.graphiql-qb-create-fragment-btn {
-  margin-top: var(--px-8);
+.graphiql-qb-fragment-rename {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-default));
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-strong));
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--px-6);
+}
+
+.graphiql-qb-fragment-rename:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* The rename pencil sits next to the fragment name and only fills in on
+   hover/focus of the row, matching the row-action reveal pattern. */
+.graphiql-qb-fragment-rename-btn {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--px-6);
+  padding: 0;
+  border: none;
+  background: none;
+  color: oklch(var(--fg-subtle));
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-fragment-rename-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-item:hover .graphiql-qb-fragment-rename-btn,
+.graphiql-qb-fragment-rename-btn:focus-visible {
+  opacity: 1;
+}
+
+.graphiql-qb-fragment-rename-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Row-level fragment actions (extract / spread) + the extracted-spread badge
+   ========================================================================= */
+
+/* The extract / spread buttons live in the field header and stay hidden until
+   the row is hovered or one of them is focused, so they don't clutter every
+   composite row. Mirrors the inline-fragment header reveal pattern. */
+.graphiql-qb-field-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  margin-left: var(--px-6);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-field-header:hover .graphiql-qb-field-actions,
+.graphiql-qb-field-actions:focus-within {
+  opacity: 1;
+}
+
+.graphiql-qb-extract-fragment-btn,
+.graphiql-qb-spread-fragment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  padding: 1px var(--px-6);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-subtle));
   color: oklch(var(--fg-muted));
   cursor: pointer;
   font-family: var(--font-family);
-  font-size: var(--font-size-small);
-  padding: var(--px-6) var(--px-12);
-  width: 100%;
-  text-align: left;
+  font-size: var(--font-size-eyebrow);
+  white-space: nowrap;
   transition:
     background 80ms,
     color 80ms;
 }
 
-.graphiql-qb-create-fragment-btn:hover {
+.graphiql-qb-extract-fragment-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-extract-fragment-btn:hover,
+.graphiql-qb-spread-fragment-btn:hover {
   background: oklch(var(--bg-overlay));
   color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-extract-fragment-btn:focus-visible,
+.graphiql-qb-spread-fragment-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* An extracted field shows `...FragmentName` in place of its expand chrome. */
+.graphiql-qb-field-spread {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--accent-blue));
 }

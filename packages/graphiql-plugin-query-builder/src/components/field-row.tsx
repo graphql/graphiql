@@ -1,12 +1,13 @@
 import {
   ChevronDownIcon,
   MarkdownContent,
+  MergeIcon,
   Tooltip,
   typeCategory,
 } from '@graphiql/react';
 import type { GraphQLField } from 'graphql';
 import type { FC } from 'react';
-import type { ArgValue } from '../lib/document-mutator';
+import type { ArgValue, FragmentInfo } from '../lib/document-mutator';
 import type { PathSegment } from '../lib/ast-path';
 import { ArgInput, rendersAsInputObject } from './arg-input';
 
@@ -27,6 +28,21 @@ type FieldRowProps = {
    * badge instead of the literal input control.
    */
   argVariables?: Record<string, string>;
+  /**
+   * When set, this field's selection has been extracted to (or replaced with) a
+   * spread of this named fragment. The row shows `...fragmentSpread` in place of
+   * its expand chrome.
+   */
+  fragmentSpread?: string;
+  /**
+   * Extracts the current selection into a new fragment. Present only on a
+   * composite row that is expanded with a non-empty selection to lift out.
+   */
+  onExtractFragment?: () => void;
+  /** Existing fragments whose type condition matches this field's type. */
+  spreadableFragments?: FragmentInfo[];
+  /** Replaces this field's selection with a spread of an existing fragment. */
+  onSpreadFragment?: (fragmentName: string) => void;
   onToggle: (path: PathSegment[]) => void;
   onExpand: (path: PathSegment[]) => void;
   onSetArg?: (path: PathSegment[], argName: string, value: ArgValue) => void;
@@ -48,6 +64,10 @@ export const FieldRow: FC<FieldRowProps> = ({
   current = false,
   argValues = {},
   argVariables = {},
+  fragmentSpread,
+  onExtractFragment,
+  spreadableFragments = [],
+  onSpreadFragment,
   onToggle,
   onExpand,
   onSetArg,
@@ -126,6 +146,39 @@ export const FieldRow: FC<FieldRowProps> = ({
               DEP
             </span>
           </Tooltip>
+        )}
+        {fragmentSpread && (
+          <span className="graphiql-qb-field-spread" data-testid="field-spread">
+            <span className="graphiql-qb-spread">...</span>
+            {fragmentSpread}
+          </span>
+        )}
+        {(onExtractFragment || onSpreadFragment) && (
+          <span className="graphiql-qb-field-actions">
+            {onExtractFragment && (
+              <button
+                type="button"
+                className="graphiql-qb-extract-fragment-btn"
+                onClick={onExtractFragment}
+                aria-label={`Extract ${field.name} to a fragment`}
+              >
+                <MergeIcon />
+                <span>Extract to fragment</span>
+              </button>
+            )}
+            {onSpreadFragment &&
+              spreadableFragments.map(info => (
+                <button
+                  key={info.name}
+                  type="button"
+                  className="graphiql-qb-spread-fragment-btn"
+                  onClick={() => onSpreadFragment(info.name)}
+                  aria-label={`Spread ${info.name} into ${field.name}`}
+                >
+                  Use ...{info.name}
+                </button>
+              ))}
+          </span>
         )}
         <span
           className={`graphiql-qb-field-type graphiql-qb-field-type--${typeColorCategory}`}

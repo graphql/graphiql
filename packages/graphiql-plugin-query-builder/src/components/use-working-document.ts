@@ -20,7 +20,9 @@ import {
   listFragments,
   promoteArgToVariable,
   removeInlineFragment,
+  renameFragment,
   setFieldArgument,
+  spreadExistingFragment,
   suggestVarName,
   toggleFieldSelection,
   type ArgValue,
@@ -70,10 +72,9 @@ export interface UseWorkingDocumentResult {
   ) => void;
   handleAddInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
-  handleCreateFragment: (
-    cursorPath: PathSegment[],
-    fragmentType: { name: string },
-  ) => void;
+  handleExtractFragment: (path: PathSegment[], typeName: string) => void;
+  handleSpreadFragment: (path: PathSegment[], fragmentName: string) => void;
+  handleRenameFragment: (oldName: string, newName: string) => void;
 }
 
 /**
@@ -288,15 +289,12 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     reconcileVariablesJson(next);
   }
 
-  // A fragment can be extracted from the field the cursor is in, as long as it
-  // resolves to a composite type (object or interface — those have a selection
-  // set worth lifting out). cursorPath and fragmentType are passed in from the
-  // component, which computes them from useCursorPath + schema.
-  function handleCreateFragment(
-    cursorPath: PathSegment[],
-    fragmentType: { name: string },
-  ) {
-    const base = `${fragmentType.name}Fields`;
+  // Lift the selection at `path` into a new named fragment on `typeName`,
+  // replacing the selection with a spread. The name is auto-generated
+  // (`${typeName}Fields`, de-duped against existing fragments) and stays
+  // editable afterwards from the fragment list.
+  function handleExtractFragment(path: PathSegment[], typeName: string) {
+    const base = `${typeName}Fields`;
     const existing = new Set(listFragments(workingDoc));
     let name = base;
     for (let n = 2; existing.has(name); n++) {
@@ -305,12 +303,27 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     applyDoc(
       createFragmentFromSelection(
         workingDoc,
-        cursorPath,
+        path,
         name,
-        fragmentType.name,
+        typeName,
         operationName,
       ),
     );
+  }
+
+  function handleSpreadFragment(path: PathSegment[], fragmentName: string) {
+    const next = spreadExistingFragment(
+      workingDoc,
+      path,
+      fragmentName,
+      operationName,
+    );
+    applyDoc(next);
+    reconcileVariablesJson(next);
+  }
+
+  function handleRenameFragment(oldName: string, newName: string) {
+    applyDoc(renameFragment(workingDoc, oldName, newName));
   }
 
   return {
@@ -322,6 +335,8 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
-    handleCreateFragment,
+    handleExtractFragment,
+    handleSpreadFragment,
+    handleRenameFragment,
   };
 }

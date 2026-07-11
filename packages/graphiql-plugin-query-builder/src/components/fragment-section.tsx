@@ -1,28 +1,91 @@
+import { PenIcon } from '@graphiql/react';
 import type { DocumentNode } from 'graphql';
-import type { FC } from 'react';
+import { type FC, useState } from 'react';
 import { listFragments } from '../lib/document-mutator';
 
 type FragmentSectionProps = {
   /** The current document; used to list existing named fragments. */
   doc: DocumentNode;
-  /**
-   * Called when the user wants to create a new fragment from the current
-   * selection. The caller is responsible for prompting for (or generating)
-   * a fragment name and type condition, then calling `createFragmentFromSelection`.
-   */
-  onCreateFragment?: () => void;
+  /** Renames a fragment and every spread that references it. */
+  onRenameFragment?: (oldName: string, newName: string) => void;
+};
+
+type FragmentItemProps = {
+  name: string;
+  onRename?: (oldName: string, newName: string) => void;
+};
+
+const FragmentItem: FC<FragmentItemProps> = ({ name, onRename }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(name);
+
+  function commit() {
+    setEditing(false);
+    const next = draft.trim();
+    if (next && next !== name) {
+      onRename?.(name, next);
+    } else {
+      setDraft(name);
+    }
+  }
+
+  function cancel() {
+    setEditing(false);
+    setDraft(name);
+  }
+
+  if (editing) {
+    return (
+      <li className="graphiql-qb-fragment-item">
+        <input
+          className="graphiql-qb-fragment-rename"
+          value={draft}
+          autoFocus
+          aria-label={`Rename fragment ${name}`}
+          onChange={e => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              commit();
+            } else if (e.key === 'Escape') {
+              cancel();
+            }
+          }}
+        />
+      </li>
+    );
+  }
+
+  return (
+    <li className="graphiql-qb-fragment-item">
+      <span className="graphiql-qb-fragment-name">{name}</span>
+      {onRename && (
+        <button
+          type="button"
+          className="graphiql-qb-fragment-rename-btn"
+          aria-label={`Rename fragment ${name}`}
+          onClick={() => {
+            setDraft(name);
+            setEditing(true);
+          }}
+        >
+          <PenIcon />
+        </button>
+      )}
+    </li>
+  );
 };
 
 /**
  * Renders the fragment panel in the query builder sidebar.
  *
- * Shows a list of named fragments already present in the document and an
- * affordance to extract a new one from the current field selection. Inline
- * fragments for union/interface spreads are handled separately.
+ * Lists every named fragment in the document and lets each one be renamed in
+ * place (the definition and all its spreads update together). New fragments are
+ * created from a field row's "Extract to fragment" action, not from here.
  */
 export const FragmentSection: FC<FragmentSectionProps> = ({
   doc,
-  onCreateFragment,
+  onRenameFragment,
 }) => {
   const fragments = listFragments(doc);
 
@@ -34,20 +97,9 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
       ) : (
         <ul className="graphiql-qb-fragment-list" role="list">
           {fragments.map(name => (
-            <li key={name} className="graphiql-qb-fragment-item">
-              <span className="graphiql-qb-fragment-name">{name}</span>
-            </li>
+            <FragmentItem key={name} name={name} onRename={onRenameFragment} />
           ))}
         </ul>
-      )}
-      {onCreateFragment && (
-        <button
-          type="button"
-          className="graphiql-qb-create-fragment-btn"
-          onClick={onCreateFragment}
-        >
-          Create fragment from selection
-        </button>
       )}
     </section>
   );
