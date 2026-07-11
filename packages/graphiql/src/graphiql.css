@@ -57,12 +57,10 @@
 }
 
 /* Match the response header's height to the editor's session header so the
-   view picker lines up with the tabs and action buttons across the split, and
-   drop its left padding so its content sits flush with the pane edge like the
-   tabs do on the editor side. */
+   view picker lines up with the tabs and action buttons across the split. The
+   default horizontal padding keeps the status off the divider. */
 .graphiql-container .graphiql-response-header {
   height: var(--session-header-height);
-  padding-left: 0;
 }
 
 /* The session header (tabs + action buttons) reads as a toolbar strip, matching
@@ -272,6 +270,7 @@ button.graphiql-tab-strip-action {
   width: 0;
   position: relative;
   z-index: 1;
+  cursor: col-resize;
 }
 
 /* The grab zone: 8px straddling the seam, with no layout footprint. */
