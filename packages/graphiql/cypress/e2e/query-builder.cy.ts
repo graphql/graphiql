@@ -180,7 +180,7 @@ describe('Query Builder – fragment extraction', () => {
     expectQuery(query => {
       const compact = query.replaceAll(/\s+/g, '');
       expect(compact).to.include('person{...PersonFields}');
-      expect(compact).to.include('fragmentPersonFieldsonPerson');
+      expect(query).to.match(/fragment\s+PersonFields\s+on\s+Person/);
       expect(compact).to.include('name');
     });
 

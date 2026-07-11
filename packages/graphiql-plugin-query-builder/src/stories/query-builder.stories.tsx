@@ -600,7 +600,7 @@ export const FragmentSectionEmpty: Story = {
   ),
 };
 
-/** Fragment panel listing two existing named fragments, each renameable. */
+/** Fragment panel listing two existing named fragments, each with an editable name. */
 export const FragmentSectionWithFragments: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
