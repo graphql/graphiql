@@ -78,7 +78,10 @@ describe('TypeLink', () => {
     expect(container).toHaveTextContent('String');
   });
 
-  const enumT = new GraphQLEnumType({ name: 'Episode', values: { NEWHOPE: {} } });
+  const enumT = new GraphQLEnumType({
+    name: 'Episode',
+    values: { NEWHOPE: {} },
+  });
   const objectT = new GraphQLObjectType({
     name: 'Droid',
     fields: { id: { type: GraphQLString } },

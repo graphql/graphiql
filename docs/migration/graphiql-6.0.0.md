@@ -54,12 +54,12 @@ The v5 variables are still documented in the [`@graphiql/react` README](../../pa
 
 In the schema-aware plugins — the doc explorer and the query builder — type-name references are colored by their GraphQL kind rather than all sharing one color. This makes a field list easier to scan: leaf types stand out from the objects you drill into.
 
-| Kind | Token | Default |
-| --- | --- | --- |
-| object, interface, union | `--type-composite` | orange |
-| scalar | `--type-scalar` | blue |
-| enum | `--type-enum` | green |
-| input object | `--type-input` | gold |
+| Kind                     | Token              | Default |
+| ------------------------ | ------------------ | ------- |
+| object, interface, union | `--type-composite` | orange  |
+| scalar                   | `--type-scalar`    | blue    |
+| enum                     | `--type-enum`      | green   |
+| input object             | `--type-input`     | gold    |
 
 These four `--type-*` tokens are the supported surface for retheming type-name colors. By default each aliases an accent token (`--type-scalar` resolves to `--accent-blue`, and so on), so you can retint either the accent or the `--type-*` token directly:
 
