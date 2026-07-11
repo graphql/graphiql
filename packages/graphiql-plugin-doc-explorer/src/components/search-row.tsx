@@ -20,6 +20,7 @@ import {
   KeycapHint,
   debounce,
   KEY_MAP,
+  typeCategory,
 } from '@graphiql/react';
 import { useDocExplorer, useDocExplorerActions } from '../context';
 import { useSearchResults } from './search';
@@ -163,7 +164,12 @@ export const SearchRow: FC = () => {
 };
 
 const SearchType: FC<{ type: GraphQLNamedType }> = ({ type }) => (
-  <span className="graphiql-doc-explorer-search-type">{type.name}</span>
+  <span
+    className="graphiql-doc-explorer-search-type"
+    data-type-kind={typeCategory(type)}
+  >
+    {type.name}
+  </span>
 );
 
 type SearchFieldProps = {
