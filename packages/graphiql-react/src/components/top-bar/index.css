@@ -159,11 +159,12 @@
   flex-shrink: 0;
 }
 
-/* The shortcut keys sit on the green fill here, not the dark bar, so recolor
-   them into faint translucent-white chips instead of the default dark boxes. */
+/* The shortcut keys sit on the green fill here, not the dark bar. Darken them
+   into subtle inset chips rather than the default dark boxes; a light (white)
+   overlay would lighten the green and drop the white glyphs below AA contrast. */
 .graphiql-top-bar-run .graphiql-keycap {
-  border-color: rgb(255 255 255 / 0.3);
-  background: rgb(255 255 255 / 0.12);
+  border-color: rgb(255 255 255 / 0.2);
+  background: rgb(0 0 0 / 0.18);
   color: #fff;
 }
 
