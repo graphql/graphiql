@@ -58,17 +58,23 @@
 }
 
 /* Match the response header's height to the editor's session header so the
-   view picker lines up with the tabs and action buttons across the split. */
+   view picker lines up with the tabs and action buttons across the split, and
+   drop its left padding so its content sits flush with the pane edge like the
+   tabs do on the editor side. */
 .graphiql-container .graphiql-response-header {
   height: var(--session-header-height);
+  padding-left: 0;
 }
 
-/* The session header containing tabs and the action buttons */
+/* The session header (tabs + action buttons) reads as a toolbar strip, matching
+   the elevated surface and divider of the response header across the split. */
 .graphiql-container .graphiql-session-header {
   height: var(--session-header-height);
   align-items: center;
   display: flex;
   gap: var(--px-8);
+  background: oklch(var(--bg-elevated));
+  border-bottom: 1px solid oklch(var(--border-default));
 }
 
 /* The button to add a new tab */
