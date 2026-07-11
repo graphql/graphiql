@@ -10,7 +10,7 @@ import type {
   FC,
   ComponentPropsWithoutRef,
 } from 'react';
-import { Children, useRef, useState, Fragment } from 'react';
+import { Children, useEffect, useRef, useState, Fragment } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -366,6 +366,17 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       children: [],
     },
   );
+
+  // `visiblePlugin` and the pane's collapsed state are separate: the store
+  // tracks which plugin is active, while `useDragResize` owns the pane width.
+  // Reveal the pane whenever a plugin becomes visible through any path that
+  // doesn't manage the drag-resize state itself (the ⌘K shortcut, the
+  // `visiblePlugin` prop, or a plugin calling `setVisiblePlugin` directly).
+  useEffect(() => {
+    if (visiblePlugin && pluginHiddenElement === 'first') {
+      setPluginHiddenElement(null);
+    }
+  }, [visiblePlugin, pluginHiddenElement, setPluginHiddenElement]);
 
   function onClickReference() {
     if (pluginHiddenElement === 'first') {
