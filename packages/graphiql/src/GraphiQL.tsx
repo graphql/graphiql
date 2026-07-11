@@ -414,11 +414,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         aria-label="Operation Editor"
         ref={editorToolsFirstRef}
       >
-        {hasMonaco ? (
-          <QueryEditor onEdit={onEditQuery} />
-        ) : (
-          <Spinner />
-        )}
+        {hasMonaco ? <QueryEditor onEdit={onEditQuery} /> : <Spinner />}
 
         <div
           className="graphiql-toolbar"
