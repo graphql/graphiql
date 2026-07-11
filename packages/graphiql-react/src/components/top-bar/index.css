@@ -159,7 +159,7 @@
   flex-shrink: 0;
 }
 
-/* The shortcut keycaps sit on the green fill here, not the dark bar, so recolor
+/* The shortcut keys sit on the green fill here, not the dark bar, so recolor
    them into faint translucent-white chips instead of the default dark boxes. */
 .graphiql-top-bar-run .graphiql-keycap {
   border-color: rgb(255 255 255 / 0.3);
