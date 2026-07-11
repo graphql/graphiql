@@ -104,18 +104,10 @@
   color: oklch(var(--fg-disabled));
 }
 
-/* Return type color — inherits from TypeLink */
+/* The type-name anchor colors itself by category (see type-link.css); this
+   wrapper only styles the surrounding list/non-null punctuation ([, ], !). */
 .graphiql-doc-explorer-field-row-type {
-  color: oklch(var(--accent-orange));
-
-  /* TypeLink anchors inside a field row get orange color */
-  & .graphiql-doc-explorer-type-name {
-    color: oklch(var(--accent-orange));
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  color: oklch(var(--fg-default));
 }
 
 /* Optional description */

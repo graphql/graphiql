@@ -55,9 +55,10 @@
   color: oklch(var(--fg-muted));
 }
 
-/* Type name in root rows — orange like TypeLink */
+/* Root operation types are always objects (composite). Plain spans, not
+   TypeLink anchors, so they need an explicit color. */
 .graphiql-doc-explorer-schema-root-row .graphiql-doc-explorer-type-name {
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
 }
 
 /* All-types rows */
