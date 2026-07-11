@@ -44,6 +44,13 @@ const fieldWithArgs = new GraphQLObjectType({
   },
 });
 
+const typeWithEnumReturn = new GraphQLObjectType({
+  name: 'WithEnumReturn',
+  fields: {
+    episode: { type: EpisodeEnum },
+  },
+});
+
 const typeWithDeprecated = new GraphQLObjectType({
   name: 'WithDeprecated',
   fields: {
@@ -57,6 +64,7 @@ const friendsField = parentType.getFields()['friends']!;
 const heroField = fieldWithArgs.getFields()['hero']!;
 const legacyField = typeWithDeprecated.getFields()['legacy']!;
 const currentField = typeWithDeprecated.getFields()['current']!;
+const episodeField = typeWithEnumReturn.getFields()['episode']!;
 
 describe('FieldRow', () => {
   it('renders the field name', () => {
@@ -87,6 +95,38 @@ describe('FieldRow', () => {
       />,
     );
     expect(screen.getByText('String')).toBeInTheDocument();
+  });
+
+  it('marks a scalar return type with the --scalar modifier', () => {
+    const { container } = render(
+      <FieldRow
+        field={nameField}
+        path={[fieldSegment('hero')]}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    const typeEl = container.querySelector('.graphiql-qb-field-type');
+    expect(typeEl?.className).toContain('graphiql-qb-field-type--scalar');
+  });
+
+  it('marks an enum return type with the --enum modifier', () => {
+    const { container } = render(
+      <FieldRow
+        field={episodeField}
+        path={[]}
+        selected={false}
+        hasChildren={false}
+        expanded={false}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    const typeEl = container.querySelector('.graphiql-qb-field-type');
+    expect(typeEl?.className).toContain('graphiql-qb-field-type--enum');
   });
 
   it('checkbox is unchecked when selected=false', () => {

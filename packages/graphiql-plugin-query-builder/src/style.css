@@ -419,15 +419,21 @@
   margin-left: auto;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-eyebrow);
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
   text-align: right;
   white-space: nowrap;
 }
 
-/* Object / interface / union return types are still type names, so they keep
-   the same orange used for every other type name in the field tree. */
 .graphiql-qb-field-type--composite {
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-qb-field-type--scalar {
+  color: oklch(var(--type-scalar));
+}
+
+.graphiql-qb-field-type--enum {
+  color: oklch(var(--type-enum));
 }
 
 /* =========================================================================
@@ -739,7 +745,7 @@ select.graphiql-qb-arg-select:focus {
 }
 
 .graphiql-qb-type-name {
-  color: oklch(var(--accent-orange));
+  color: oklch(var(--type-composite));
   font-weight: 600;
 }
 
