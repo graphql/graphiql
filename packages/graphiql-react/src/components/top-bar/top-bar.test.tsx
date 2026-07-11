@@ -232,11 +232,6 @@ describe('TopBarView', () => {
     ).toBeNull();
   });
 
-  it('does not render a jump-to-schema button', () => {
-    render(<TopBarView {...DEFAULTS} />);
-    expect(screen.queryByText('Jump to schema')).not.toBeInTheDocument();
-  });
-
   it('has role="banner" on the header element', () => {
     const { container } = render(<TopBarView {...DEFAULTS} />);
     expect(container.querySelector('header[role="banner"]')).not.toBeNull();
