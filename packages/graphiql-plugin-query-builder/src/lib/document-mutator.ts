@@ -31,7 +31,14 @@ export {
   suggestVarName,
 } from './variables';
 
-export { createFragmentFromSelection, listFragments } from './fragments';
+export {
+  createFragmentFromSelection,
+  listFragments,
+  listFragmentInfos,
+  renameFragment,
+  spreadExistingFragment,
+  type FragmentInfo,
+} from './fragments';
 
 export {
   addInlineFragment,
