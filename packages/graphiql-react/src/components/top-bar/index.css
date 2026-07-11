@@ -140,7 +140,6 @@
   color: #fff;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
-  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
