@@ -18,6 +18,11 @@
   border-radius: var(--border-radius-4);
   display: flex;
   flex: 1;
+
+  &:focus-within {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: 2px;
+  }
   gap: var(--px-8);
   padding: var(--px-4) var(--px-8);
 }
