@@ -18,6 +18,7 @@ import {
   useGraphiQL,
   useOperationsEditorState,
   MonacoEditor,
+  isMacOs,
 } from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
@@ -251,6 +252,34 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         expect(container.querySelector('.graphiql-plugin')).not.toBeVisible();
+      });
+    });
+
+    it('reveals the plugin pane when Cmd/Ctrl+K opens the doc explorer', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      const pane = container.querySelector('.graphiql-plugin');
+      await waitFor(() => {
+        expect(pane).not.toBeVisible();
+      });
+
+      act(() => {
+        window.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            code: 'KeyK',
+            metaKey: isMacOs,
+            ctrlKey: !isMacOs,
+            bubbles: true,
+            cancelable: true,
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(pane).toBeVisible();
+        expect(
+          container.querySelector('.graphiql-doc-explorer'),
+        ).toBeInTheDocument();
       });
     });
   }); // plugins

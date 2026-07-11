@@ -44,22 +44,6 @@
   flex-shrink: 0;
 }
 
-.graphiql-top-bar-cmd {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--px-6);
-  padding: 0 var(--px-10);
-  height: 24px;
-  background: oklch(var(--bg-subtle));
-  border: 1px solid oklch(var(--border-strong));
-  border-radius: var(--radius-md);
-  color: oklch(var(--fg-subtle));
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-small);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .graphiql-top-bar-endpoint {
   display: inline-flex;
   align-items: center;

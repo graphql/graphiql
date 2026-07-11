@@ -232,11 +232,6 @@ describe('TopBarView', () => {
     ).toBeNull();
   });
 
-  it('renders the command palette button', () => {
-    render(<TopBarView {...DEFAULTS} />);
-    expect(screen.getByText('Jump to schema')).toBeInTheDocument();
-  });
-
   it('has role="banner" on the header element', () => {
     const { container } = render(<TopBarView {...DEFAULTS} />);
     expect(container.querySelector('header[role="banner"]')).not.toBeNull();

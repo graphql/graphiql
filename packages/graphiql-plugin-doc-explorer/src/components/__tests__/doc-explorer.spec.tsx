@@ -18,6 +18,7 @@ vi.mock('@graphiql/react', async () => {
   return {
     ...originalModule,
     useGraphiQL: vi.fn(),
+    useGraphiQLActions: vi.fn(() => ({ setVisiblePlugin: vi.fn() })),
   };
 });
 
