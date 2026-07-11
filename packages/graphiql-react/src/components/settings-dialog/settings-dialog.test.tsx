@@ -274,30 +274,34 @@ describe('SettingsDialog — clear storage', () => {
     const button = screen.getByRole('button', { name: 'Clear data' });
     await user.click(button);
     expect(mockStorage.clear).toHaveBeenCalledOnce();
-    // The label stays put; only the checkmark confirmation is added.
-    expect(button).toHaveTextContent('Clear data');
+    // The label stays put — the checkmark swaps in over it, so the button
+    // keeps its accessible name.
+    expect(button).toHaveAccessibleName('Clear data');
   });
 
-  it('briefly shows a checkmark confirmation, then reverts', () => {
+  it('briefly swaps the label for a checkmark, then reverts', () => {
     vi.useFakeTimers();
     try {
       renderDialog();
       const button = screen.getByRole('button', { name: 'Clear data' });
 
-      expect(button.querySelector('svg')).not.toBeInTheDocument();
+      expect(button).not.toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toBeEmptyDOMElement();
 
       fireEvent.click(button);
-      expect(button.querySelector('svg')).toBeInTheDocument();
+      expect(button).toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toHaveTextContent('Data cleared');
 
       act(() => {
         vi.advanceTimersByTime(1499);
       });
-      expect(button.querySelector('svg')).toBeInTheDocument();
+      expect(button).toHaveAttribute('data-confirmed');
 
       act(() => {
         vi.advanceTimersByTime(1);
       });
-      expect(button.querySelector('svg')).not.toBeInTheDocument();
+      expect(button).not.toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toBeEmptyDOMElement();
     } finally {
       vi.useRealTimers();
     }

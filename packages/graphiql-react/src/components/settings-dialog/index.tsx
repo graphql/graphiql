@@ -3,7 +3,6 @@
 import type { FC } from 'react';
 import { Dialog } from '../dialog';
 import { SegmentedControl } from '../segmented-control';
-import { Button } from '../button';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import {
   useGraphiQLSettings,
@@ -220,10 +219,25 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
                 Remove all locally stored data and start fresh.
               </p>
             </div>
-            <Button type="button" onClick={handleClearData}>
-              {isDataCleared && <CheckIcon />}
-              Clear data
-            </Button>
+            <button
+              type="button"
+              className="graphiql-settings-clear-button"
+              onClick={handleClearData}
+              data-confirmed={isDataCleared || undefined}
+            >
+              <span className="graphiql-settings-clear-button-label">
+                Clear data
+              </span>
+              <span
+                className="graphiql-settings-clear-button-check"
+                aria-hidden="true"
+              >
+                <CheckIcon />
+              </span>
+            </button>
+            <span className="graphiql-settings-sr-only" role="status">
+              {isDataCleared ? 'Data cleared' : ''}
+            </span>
           </section>
         </div>
       </div>
