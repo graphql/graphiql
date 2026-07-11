@@ -45,3 +45,84 @@
   letter-spacing: var(--letter-spacing-ui);
   margin: 0;
 }
+
+/* Sized to sit in the segmented-control family: the same typography as a
+   segment option, and 4px vertical padding (a segment cell's 3px plus the
+   track's own 1px) so the button matches a full segmented bar's height. */
+.graphiql-settings-clear-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--px-4) var(--px-8);
+  border: 1px solid oklch(var(--border-muted));
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-ui);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.graphiql-settings-clear-button:hover {
+  background: oklch(var(--bg-overlay));
+}
+
+.graphiql-settings-clear-button:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: 1px;
+}
+
+/* The label stays in the DOM while the check shows, so the button keeps a
+   fixed width and its accessible name. The two cross-fade in place. */
+.graphiql-settings-clear-button-label {
+  transition: opacity 0.15s ease;
+}
+
+.graphiql-settings-clear-button[data-confirmed]
+  .graphiql-settings-clear-button-label {
+  opacity: 0;
+}
+
+.graphiql-settings-clear-button-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.graphiql-settings-clear-button[data-confirmed]
+  .graphiql-settings-clear-button-check {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphiql-settings-clear-button,
+  .graphiql-settings-clear-button-label,
+  .graphiql-settings-clear-button-check {
+    transition: none;
+  }
+}
+
+.graphiql-settings-check-icon {
+  color: oklch(var(--accent-green));
+  height: 14px;
+  width: 14px;
+}
+
+.graphiql-settings-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

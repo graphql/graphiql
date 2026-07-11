@@ -12,10 +12,6 @@
   font-size: var(--font-size-eyebrow);
 }
 
-.graphiql-status-bar-spacer {
-  flex: 1;
-}
-
 .graphiql-status-bar-conn {
   display: inline-flex;
   align-items: center;
@@ -29,14 +25,18 @@
   border-radius: 50%;
 }
 
-.graphiql-status-bar-conn.connected .graphiql-status-bar-conn-dot {
+.graphiql-status-bar-conn-idle .graphiql-status-bar-conn-dot {
+  background: oklch(var(--fg-dim));
+}
+
+.graphiql-status-bar-conn-connecting .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-yellow));
+}
+
+.graphiql-status-bar-conn-connected .graphiql-status-bar-conn-dot {
   background: oklch(var(--accent-green));
 }
 
-.graphiql-status-bar-conn.disconnected .graphiql-status-bar-conn-dot {
+.graphiql-status-bar-conn-error .graphiql-status-bar-conn-dot {
   background: oklch(var(--accent-red));
-}
-
-.graphiql-status-bar-plugins {
-  color: oklch(var(--accent-purple));
 }

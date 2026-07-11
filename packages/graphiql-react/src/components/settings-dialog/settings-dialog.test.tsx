@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
-import { render, screen, within, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  waitFor,
+  fireEvent,
+  act,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SettingsDialog, type SettingsDialogProps } from './index';
 import { SETTINGS_STORAGE_KEY } from '../../hooks/use-graphiql-settings';
@@ -261,14 +268,43 @@ describe('SettingsDialog — persist headers', () => {
 });
 
 describe('SettingsDialog — clear storage', () => {
-  it('clears storage and shows confirmation when clicked', async () => {
+  it('clears storage when clicked', async () => {
     const user = userEvent.setup();
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'Clear data' }));
+    const button = screen.getByRole('button', { name: 'Clear data' });
+    await user.click(button);
     expect(mockStorage.clear).toHaveBeenCalledOnce();
-    expect(
-      screen.getByRole('button', { name: 'Cleared data' }),
-    ).toBeInTheDocument();
+    // The label stays put — the checkmark swaps in over it, so the button
+    // keeps its accessible name.
+    expect(button).toHaveAccessibleName('Clear data');
+  });
+
+  it('briefly swaps the label for a checkmark, then reverts', () => {
+    vi.useFakeTimers();
+    try {
+      renderDialog();
+      const button = screen.getByRole('button', { name: 'Clear data' });
+
+      expect(button).not.toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toBeEmptyDOMElement();
+
+      fireEvent.click(button);
+      expect(button).toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toHaveTextContent('Data cleared');
+
+      act(() => {
+        vi.advanceTimersByTime(1499);
+      });
+      expect(button).toHaveAttribute('data-confirmed');
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(button).not.toHaveAttribute('data-confirmed');
+      expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

@@ -62,35 +62,30 @@ export default meta;
 
 type Story = StoryObj<typeof StatusBarView>;
 
-export const Disconnected: Story = {
+export const Idle: Story = {
   args: {
-    isConnected: false,
+    connectionStatus: 'idle',
     typeCount: 0,
-    pluginCount: 0,
+  },
+};
+
+export const Connecting: Story = {
+  args: {
+    connectionStatus: 'connecting',
+    typeCount: 0,
   },
 };
 
 export const Connected: Story = {
   args: {
-    isConnected: true,
+    connectionStatus: 'connected',
     typeCount,
-    pluginCount: 0,
   },
 };
 
-export const WithPlugins: Story = {
+export const ConnectionError: Story = {
   args: {
-    isConnected: true,
-    typeCount,
-    pluginCount: 2,
-  },
-};
-
-export const CustomEncoding: Story = {
-  args: {
-    isConnected: false,
+    connectionStatus: 'error',
     typeCount: 0,
-    pluginCount: 0,
-    encoding: 'UTF-16',
   },
 };

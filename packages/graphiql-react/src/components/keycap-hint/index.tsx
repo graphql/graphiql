@@ -45,7 +45,7 @@ export const KeycapHint: FC<KeycapHintProps> = ({ keys, ariaLabel }) => {
     <span className="graphiql-keycap-hint" aria-label={ariaLabel}>
       {keys.map((k, i) => (
         <kbd key={`${k}-${i}`} className="graphiql-keycap">
-          {display[k] ?? k}
+          <span className="graphiql-keycap-glyph">{display[k] ?? k}</span>
         </kbd>
       ))}
     </span>

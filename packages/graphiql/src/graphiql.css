@@ -1,6 +1,6 @@
 /* Everything */
 .graphiql-container {
-  background-color: hsl(var(--color-base));
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -26,15 +26,11 @@
 
 /* The current session and tabs */
 .graphiql-container .graphiql-sessions {
-  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-  /* Adding the 8px of padding to the inner border radius of the operation editor */
-  border-radius: calc(var(--border-radius-12) + var(--px-8));
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex-direction: column;
   flex: 1;
   max-height: 100%;
-  margin: var(--px-16);
-  margin-left: 0;
   min-width: 0;
 }
 
@@ -43,14 +39,15 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  padding: var(--px-8);
 }
 
-/* The editor side of the split: session header stacked above the editors */
+/* The editor side of the split: session header stacked above the editors.
+   The divider between the two panes runs the full height of this column. */
 .graphiql-container .graphiql-editor-column {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  border-right: 1px solid oklch(var(--border-default));
 }
 
 /* The response side of the split */
@@ -139,9 +136,7 @@ button.graphiql-tab-strip-action {
 
 /* All editors (operation, variable, request headers) */
 .graphiql-container .graphiql-editors {
-  background-color: hsl(var(--color-base));
-  border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
-  box-shadow: var(--popover-box-shadow);
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -257,7 +252,7 @@ button.graphiql-tab-strip-action {
 
 /* Generic drag bar for horizontal resizing */
 .graphiql-horizontal-drag-bar {
-  width: var(--px-12);
+  width: var(--px-8);
   cursor: col-resize;
 }
 
