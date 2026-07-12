@@ -70,9 +70,38 @@
   overflow: hidden;
 }
 
+/* Positions the loading spinner overlay below the header without taking up
+   flex layout space, so it never shifts the header or result body. */
+.graphiql-response-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
 .graphiql-response-pane .result-window {
   flex: 1;
   min-height: 0;
+  padding: var(--px-16);
+}
+
+/* Smaller than the default .graphiql-spinner and tokenized to match the
+   response header, since it floats over polished chrome rather than a bare
+   loading screen. */
+.graphiql-response-spinner-overlay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 28px;
+  width: 28px;
+
+  &::after {
+    height: 22px;
+    width: 22px;
+    border-color: transparent;
+    border-top-color: oklch(var(--accent-blue));
+  }
 }
 
 .graphiql-response-empty-state {

@@ -6,6 +6,7 @@ import { ImagePreview } from './image-preview';
 import { ResponseHeader } from './response-header';
 import { ResponseTableView } from './response-table-view';
 import { ResponseTreeView } from './response-tree-view';
+import { Spinner } from './spinner';
 import {
   getOrCreateModel,
   createEditor,
@@ -48,6 +49,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     validationErrors,
     responseEditor,
     uriInstanceId,
+    isFetching,
     lastResponse,
     responseView,
     transport,
@@ -58,6 +60,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
       'validationErrors',
       'responseEditor',
       'uriInstanceId',
+      'isFetching',
       'lastResponse',
       'responseView',
       'transport',
@@ -202,27 +205,32 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
           onCopy={handleCopy}
         />
       )}
-      <section
-        ref={ref}
-        aria-label="Result Window"
-        aria-live="polite"
-        aria-atomic="true"
-        tabIndex={0}
-        onKeyDown={onEditorContainerKeyDown}
-        className="result-window"
-        hidden={responseView !== 'json'}
-      />
-      {responseView === 'tree' &&
-        (lastResponse ? (
-          <ResponseTreeView data={lastResponse.body} />
-        ) : (
-          <div className="graphiql-response-empty-state" role="status">
-            <span>Run a query to see the tree view.</span>
-          </div>
-        ))}
-      {responseView === 'table' && (
-        <ResponseTableView data={lastResponse?.body} />
-      )}
+      <div className="graphiql-response-body">
+        {isFetching && (
+          <Spinner className="graphiql-response-spinner-overlay" />
+        )}
+        <section
+          ref={ref}
+          aria-label="Result Window"
+          aria-live="polite"
+          aria-atomic="true"
+          tabIndex={0}
+          onKeyDown={onEditorContainerKeyDown}
+          className="result-window"
+          hidden={responseView !== 'json'}
+        />
+        {responseView === 'tree' &&
+          (lastResponse ? (
+            <ResponseTreeView data={lastResponse.body} />
+          ) : (
+            <div className="graphiql-response-empty-state" role="status">
+              <span>Run a query to see the tree view.</span>
+            </div>
+          ))}
+        {responseView === 'table' && (
+          <ResponseTableView data={lastResponse?.body} />
+        )}
+      </div>
     </div>
   );
 };
