@@ -174,16 +174,13 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   const [manualTarget, setManualTarget] = useState<DefinitionTarget | null>(
     null,
   );
-  const cursorKey = cursor.target
-    ? `${cursor.target.kind}:${cursor.target.name ?? ''}`
-    : '';
   useEffect(() => {
-    // A non-empty key means the cursor is inside a definition; the editor then
-    // takes over, clearing any click-focused target.
-    if (cursorKey) {
-      setManualTarget(null);
-    }
-  }, [cursorKey]);
+    // Any explicit cursor move re-syncs the builder to the cursor's definition,
+    // clearing a click-focused override (Back to query / focus fragment) — even
+    // when the cursor stays within the same definition, so clicking back into a
+    // fragment after "Back to query" reopens its editor.
+    setManualTarget(null);
+  }, [cursor.moveId]);
 
   const target: DefinitionTarget = manualTarget ??
     cursor.target ?? { kind: 'operation', name: operationName };

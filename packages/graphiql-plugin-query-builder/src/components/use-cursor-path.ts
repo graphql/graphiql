@@ -9,9 +9,14 @@ export interface CursorContext {
   target: DefinitionTarget | undefined;
   /** Field path under the cursor within `target`; empty when not on a field. */
   path: PathSegment[];
+  /**
+   * Increments on every explicit cursor move, so consumers can react to any
+   * cursor interaction — including one that stays within the same definition.
+   */
+  moveId: number;
 }
 
-const EMPTY_CONTEXT: CursorContext = { target: undefined, path: [] };
+const EMPTY_CONTEXT: CursorContext = { target: undefined, path: [], moveId: 0 };
 
 /**
  * Tracks the definition (operation or fragment) and field path under the editor
@@ -37,14 +42,21 @@ export function useCursorContext(): CursorContext {
         return;
       }
       const offset = model.getOffsetAt(pos);
-      let next: CursorContext | undefined;
+      let resolved:
+        | { target: DefinitionTarget | undefined; path: PathSegment[] }
+        | undefined;
       try {
-        next = cursorContextAtOffset(parse(model.getValue()), offset);
+        resolved = cursorContextAtOffset(parse(model.getValue()), offset);
       } catch {
         // Unparseable in-progress edit — leave the context as-is.
         return;
       }
-      setContext(next ?? EMPTY_CONTEXT);
+      const next = resolved ?? { target: undefined, path: [] };
+      setContext(prev => ({
+        target: next.target,
+        path: next.path,
+        moveId: prev.moveId + 1,
+      }));
     };
     const schedule = () => {
       clearTimeout(timer);
