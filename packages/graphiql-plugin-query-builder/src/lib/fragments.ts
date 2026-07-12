@@ -219,7 +219,7 @@ export function inlineFragment(
   const rewritten = visit(doc, {
     SelectionSet(node) {
       if (!node.selections.some(isTargetSpread)) {
-        return undefined;
+        return;
       }
       return {
         ...node,

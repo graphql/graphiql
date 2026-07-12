@@ -848,10 +848,10 @@ select.graphiql-qb-arg-select:focus {
 }
 
 .graphiql-qb-fragment-name {
-  font-family: var(--font-family);
-  font-size: var(--font-size-body);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
   font-weight: 600;
-  color: oklch(var(--fg-strong));
+  color: oklch(var(--accent-blue));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
