@@ -109,7 +109,6 @@ export const TopBarView: FC<TopBarViewProps> = ({
   const hasOptions =
     operations.length > 1 && typeof overrideOperationName !== 'string';
   const activeOperation = resolveActiveOperation(operations, operationName);
-  const activeOperationLabel = activeOperation?.name?.value;
 
   const selectOperation = (selectedOperationName: string | undefined) => {
     if (selectedOperationName && selectedOperationName !== operationName) {
@@ -230,12 +229,6 @@ export const TopBarView: FC<TopBarViewProps> = ({
       <div className="graphiql-top-bar-endpoint">
         <span className="graphiql-top-bar-endpoint-url">{url}</span>
       </div>
-
-      {activeOperationLabel && (
-        <span className="graphiql-top-bar-active-operation">
-          {activeOperationLabel}
-        </span>
-      )}
 
       {runButton}
     </header>

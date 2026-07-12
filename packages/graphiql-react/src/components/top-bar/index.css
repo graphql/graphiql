@@ -112,17 +112,6 @@
   white-space: nowrap;
 }
 
-.graphiql-top-bar-active-operation {
-  color: oklch(var(--fg-subtle));
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-small);
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 /* The split Run control: a primary run half and, when the document has more
    than one operation, a caret half opening the operation picker. Both halves
    render their own green fill so `:hover`/`:active` on either (which also
@@ -158,6 +147,14 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
+}
+
+/* The caret is an `UnStyledButton`, whose `all: unset` resets `box-sizing` to
+   `content-box` — its border would add to the 28px height and make it stand a
+   pixel taller than the primary half. Scope under `.graphiql-top-bar-run` so
+   this wins on specificity, not load order. */
+.graphiql-top-bar-run .graphiql-top-bar-run-caret {
+  box-sizing: border-box;
 }
 
 .graphiql-top-bar-run-primary {

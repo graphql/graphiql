@@ -119,8 +119,7 @@ export const MutationBlockedOverGet: Story = {
 };
 
 /**
- * A single operation: the Run button is a plain pill, no caret and no
- * active-operation label (naming your only operation is redundant).
+ * A single operation: the Run button is a plain pill, no caret.
  */
 export const SingleOperationNoCaret: Story = {
   render: () => (
@@ -142,8 +141,7 @@ export const SingleOperationNoCaret: Story = {
 
 /**
  * Several named operations: the Run button grows a caret opening the
- * operation picker, and the currently active operation is named beside it.
- * GET is selected, so the mutation's menu item is disabled.
+ * operation picker. GET is selected, so the mutation's menu item is disabled.
  */
 export const MultipleOperationsWithPicker: Story = {
   render: () => (

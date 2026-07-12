@@ -357,28 +357,5 @@ describe('TopBarView', () => {
       expect(queryItem).not.toHaveAttribute('data-disabled');
       expect(mutationItem).toHaveAttribute('data-disabled');
     });
-
-    it('renders the active operation name beside the Run button', () => {
-      render(
-        <TopBarView {...DEFAULTS} operations={TWO_OPS} operationName="Beta" />,
-      );
-      expect(screen.getByText('Beta')).toBeInTheDocument();
-    });
-
-    it('renders no active-operation label for an unnamed single operation', () => {
-      render(<TopBarView {...DEFAULTS} operations={opsOf('{ a }')} />);
-      expect(
-        document.querySelector('.graphiql-top-bar-active-operation'),
-      ).toBeNull();
-    });
-
-    it('renders no active-operation label when the cursor is outside every operation', () => {
-      render(
-        <TopBarView {...DEFAULTS} operations={TWO_OPS} operationName={null} />,
-      );
-      expect(
-        document.querySelector('.graphiql-top-bar-active-operation'),
-      ).toBeNull();
-    });
   });
 });
