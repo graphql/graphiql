@@ -54,15 +54,15 @@ The v5 variables are still documented in the [`@graphiql/react` README](../../pa
 
 There's no mechanical 1:1 replacement — a single v5 variable often split across several v6 tokens depending on the surface, and which token you want depends on what you're theming. As a starting point, here's where GraphiQL's own internal usages of each v5 variable moved to:
 
-| v5 variable | Role | v6 token(s) GraphiQL now uses |
-| --- | --- | --- |
-| `--color-base` | Surfaces / backgrounds | `--bg-canvas` (page), `--bg-elevated` (menus/popovers), `--bg-subtle` (inputs, resting fills), `--bg-overlay` (hover) |
-| `--color-neutral` | Body text, icons, borders, subtle fills | Text: `--fg-default` (default), `--fg-muted` (secondary), `--fg-subtle` (icons); borders: `--border-default`, `--border-strong`; translucent fills: `oklch(var(--fg-default) / <alpha>)` |
-| `--color-primary` | Links, primary accent | `--accent-blue` (links, accent text/icons); `--btn-primary` + `--btn-primary-border` (filled action buttons) |
-| `--color-warning` | Deprecation / warning | `--accent-orange` (text/border; `oklch(var(--accent-orange) / 0.1)` for fills) |
-| `--color-error` | Errors | `--accent-red` |
-| `--color-success` | Success | `--accent-green` |
-| `--color-secondary`, `--color-tertiary`, `--color-info` | Secondary accents, editor syntax | The `--accent-*` set in `tokens.css`; editor syntax colors are defined in the Monaco theme, not via CSS variables |
+| v5 variable                                             | Role                                    | v6 token(s) GraphiQL now uses                                                                                                                                                            |
+| ------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--color-base`                                          | Surfaces / backgrounds                  | `--bg-canvas` (page), `--bg-elevated` (menus/popovers), `--bg-subtle` (inputs, resting fills), `--bg-overlay` (hover)                                                                    |
+| `--color-neutral`                                       | Body text, icons, borders, subtle fills | Text: `--fg-default` (default), `--fg-muted` (secondary), `--fg-subtle` (icons); borders: `--border-default`, `--border-strong`; translucent fills: `oklch(var(--fg-default) / <alpha>)` |
+| `--color-primary`                                       | Links, primary accent                   | `--accent-blue` (links, accent text/icons); `--btn-primary` + `--btn-primary-border` (filled action buttons)                                                                             |
+| `--color-warning`                                       | Deprecation / warning                   | `--accent-orange` (text/border; `oklch(var(--accent-orange) / 0.1)` for fills)                                                                                                           |
+| `--color-error`                                         | Errors                                  | `--accent-red`                                                                                                                                                                           |
+| `--color-success`                                       | Success                                 | `--accent-green`                                                                                                                                                                         |
+| `--color-secondary`, `--color-tertiary`, `--color-info` | Secondary accents, editor syntax        | The `--accent-*` set in `tokens.css`; editor syntax colors are defined in the Monaco theme, not via CSS variables                                                                        |
 
 Remember these are OKLCH triplets composed with `oklch(var(--x))` (and `oklch(var(--x) / <alpha>)` for transparency), not `hsl()`/`hsla()`.
 
