@@ -29,7 +29,11 @@ import {
   type ArgValue,
   type DefinitionTarget,
 } from '../lib/document-mutator';
-import { findDefinition, type PathSegment } from '../lib/ast-path';
+import {
+  definitionSelectionOffset,
+  findDefinition,
+  type PathSegment,
+} from '../lib/ast-path';
 import {
   extractRawArgValue,
   readVariables,
@@ -166,40 +170,74 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     operationName,
   )?.operation;
 
-  // The definition the builder edits follows the editor cursor: moving into a
-  // fragment switches to editing it. A click (focus a fragment / back to query)
-  // sets a manual target that holds until the cursor next moves into a
-  // definition, at which point the editor takes over again.
+  // The editor cursor is the single source of truth for what's being edited:
+  // its definition is the active target. "Editing a fragment" is just the
+  // cursor being inside that fragment, tracked here as its name (null = the
+  // operation). The focus/back handlers below don't set this directly; they
+  // move the editor cursor, and the resulting cursor update flows back here.
   const cursor = useCursorContext();
-  const [manualTarget, setManualTarget] = useState<DefinitionTarget | null>(
-    null,
-  );
+  const [activeFragment, setActiveFragment] = useState<string | null>(null);
+  // The active fragment the cursor implies: its name inside a fragment, null
+  // inside an operation, undefined when outside any definition (leave as-is).
+  const cursorFragment: string | null | undefined =
+    cursor.target?.kind === 'fragment'
+      ? cursor.target.name
+      : cursor.target?.kind === 'operation'
+        ? null
+        : undefined;
   useEffect(() => {
-    // Any explicit cursor move re-syncs the builder to the cursor's definition,
-    // clearing a click-focused override (Back to query / focus fragment) — even
-    // when the cursor stays within the same definition, so clicking back into a
-    // fragment after "Back to query" reopens its editor.
-    setManualTarget(null);
-  }, [cursor.moveId]);
+    if (cursorFragment !== undefined) {
+      setActiveFragment(cursorFragment);
+    }
+  }, [cursorFragment]);
 
-  const target: DefinitionTarget = manualTarget ??
-    cursor.target ?? { kind: 'operation', name: operationName };
+  const target: DefinitionTarget =
+    activeFragment != null
+      ? { kind: 'fragment', name: activeFragment }
+      : { kind: 'operation', name: operationName };
 
   // Auto-expand the tree to the cursor only when the cursor sits in the
-  // definition we're showing; a click-focused fragment doesn't move the cursor.
-  const cursorPath =
-    cursor.target &&
-    cursor.target.kind === target.kind &&
-    cursor.target.name === target.name
-      ? cursor.path
-      : undefined;
+  // definition we're showing.
+  const cursorInTarget =
+    cursor.target != null &&
+    (activeFragment != null
+      ? cursor.target.kind === 'fragment' &&
+        cursor.target.name === activeFragment
+      : cursor.target.kind === 'operation');
+  const cursorPath = cursorInTarget ? cursor.path : undefined;
+
+  // Move the editor cursor into a definition; the cursor update then switches
+  // the active target (above). Setting the target this way — rather than
+  // directly — keeps the editor and builder from diverging, which is what made
+  // the old click-override approach prone to stale-target bugs.
+  function moveCursorToTarget(next: DefinitionTarget) {
+    // Optimistically reflect the move so the panel updates without waiting for
+    // the debounced cursor read (and for the no-editor case in tests).
+    setActiveFragment(next.kind === 'fragment' ? next.name : null);
+    if (!queryEditor) {
+      return;
+    }
+    const model = queryEditor.getModel();
+    if (!model) {
+      return;
+    }
+    let offset: number | undefined;
+    try {
+      offset = definitionSelectionOffset(parse(model.getValue()), next);
+    } catch {
+      return;
+    }
+    if (offset != null) {
+      queryEditor.setPosition(model.getPositionAt(offset));
+    }
+  }
 
   function handleFocusFragment(fragmentName: string) {
-    setManualTarget({ kind: 'fragment', name: fragmentName });
+    moveCursorToTarget({ kind: 'fragment', name: fragmentName });
   }
 
   function handleBackToQuery() {
-    setManualTarget({ kind: 'operation', name: operationName });
+    moveCursorToTarget({ kind: 'operation', name: operationName });
   }
 
   // Apply a new working document: update state synchronously, then write it to
@@ -380,8 +418,8 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   function handleDeleteFragment(fragmentName: string) {
     applyDoc(inlineFragment(workingDoc, fragmentName));
     // If we were editing the deleted fragment, fall back to the operation.
-    if (target.kind === 'fragment' && target.name === fragmentName) {
-      setManualTarget({ kind: 'operation', name: operationName });
+    if (activeFragment === fragmentName) {
+      moveCursorToTarget({ kind: 'operation', name: operationName });
     }
   }
 

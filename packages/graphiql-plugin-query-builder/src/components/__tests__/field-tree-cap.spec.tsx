@@ -103,9 +103,6 @@ describe('FieldTreeList — cap', () => {
         onDidChangeCursorPosition() {
           return { dispose() {} };
         },
-        onDidFocusEditorText() {
-          return { dispose() {} };
-        },
         getModel: () => ({
           getValue: () => query,
           getOffsetAt: () => query.indexOf('f24') + 1,

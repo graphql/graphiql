@@ -485,3 +485,18 @@ export function mapDefinition(
   }
   return { ...doc, definitions: newDefinitions };
 }
+
+/**
+ * A source offset just inside the selection set of the definition addressed by
+ * `target`, or `undefined` when it can't be located. Used to move the editor
+ * cursor into a definition so the builder — which follows the cursor — switches
+ * to editing it. Requires `doc` to carry location info (parse without
+ * `noLocation`).
+ */
+export function definitionSelectionOffset(
+  doc: DocumentNode,
+  target: DefinitionTarget,
+): number | undefined {
+  const loc = findDefinition(doc, target)?.selectionSet.loc;
+  return loc ? loc.start + 1 : undefined;
+}
