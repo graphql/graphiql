@@ -89,6 +89,10 @@
     padding: var(--px-4);
     color: oklch(var(--fg-muted));
     line-height: 0;
+    border-radius: var(--radius-sm);
+    transition:
+      color 120ms ease,
+      background 120ms ease;
 
     & > svg {
       height: var(--icon-size-sm);
@@ -97,6 +101,12 @@
 
     &:hover {
       color: oklch(var(--fg-default));
+      background: oklch(var(--bg-overlay));
+    }
+
+    &:focus-visible {
+      outline: 2px solid oklch(var(--accent-blue));
+      outline-offset: 2px;
     }
   }
 
