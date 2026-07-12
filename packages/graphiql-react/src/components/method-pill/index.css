@@ -17,16 +17,28 @@
  * the pill text stays well above WCAG AA in both themes.
  */
 .graphiql-method-pill-query {
-  color: oklch(98% 0 0);
-  background: oklch(50% 0.15 146);
+  /* --accent-green is near-black-readable in dark theme (light L) and
+     near-white-readable in light theme (darker L) — same split as
+     .graphiql-button-success. */
+  color: oklch(15% 0 0);
+  background: oklch(var(--accent-green));
+
+  [data-theme='light'] & {
+    color: oklch(98% 0 0);
+  }
 }
 
 .graphiql-method-pill-mutation {
   color: oklch(15% 0 0);
-  background: oklch(85% 0.13 90);
+  background: oklch(var(--accent-yellow));
 }
 
 .graphiql-method-pill-subscription {
-  color: oklch(98% 0 0);
-  background: oklch(45% 0.18 295);
+  /* Same theme split as --accent-green above, see .graphiql-qb-var-toggle. */
+  color: oklch(15% 0 0);
+  background: oklch(var(--accent-purple));
+
+  [data-theme='light'] & {
+    color: oklch(98% 0 0);
+  }
 }
