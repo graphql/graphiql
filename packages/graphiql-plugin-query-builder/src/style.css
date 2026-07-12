@@ -956,6 +956,9 @@ select.graphiql-qb-arg-select:focus {
   display: flex;
   align-items: center;
   gap: var(--px-6);
+  /* Matches the field header's left padding so the spread's checkbox lines up
+     with the sibling field checkboxes (which sit at indent + this padding). */
+  padding-left: var(--px-8);
   min-height: var(--px-24);
 }
 
