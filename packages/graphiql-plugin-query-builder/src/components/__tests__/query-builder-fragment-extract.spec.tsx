@@ -98,7 +98,7 @@ describe('QueryBuilder — fragment extraction row action', () => {
     );
 
     // The row is not frozen into a badge: the spread shows as a child
-    // reference and the field's own children stay tickable.
+    // reference and the field's own children can still be toggled.
     await waitFor(() =>
       expect(screen.getByTestId('fragment-ref')).toHaveTextContent(
         'UserFields',

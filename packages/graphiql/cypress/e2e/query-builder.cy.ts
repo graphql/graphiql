@@ -242,9 +242,10 @@ describe('Query Builder – fragment extraction', () => {
     // just spreads it.
     cy.get('[aria-label="Toggle age"]').click();
     expectQuery(query => {
-      const compact = query.replaceAll(/\s+/g, '');
-      expect(compact).to.include('fragmentPersonFieldsonPerson{nameage}');
-      expect(compact).to.include('person{...PersonFields}');
+      expect(query).to.match(
+        /fragment\s+PersonFields\s+on\s+Person\s*{\s*name\s+age\s*}/,
+      );
+      expect(query.replaceAll(/\s+/g, '')).to.include('person{...PersonFields}');
     });
 
     // Return to the operation view.
