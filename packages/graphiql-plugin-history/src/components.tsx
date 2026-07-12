@@ -54,6 +54,10 @@ export const History: FC = () => {
         actions={clearButton}
       />
 
+      {!hasFavorites && !hasItems && (
+        <div className="graphiql-history-empty">No queries run yet.</div>
+      )}
+
       {hasFavorites && (
         <ul className="graphiql-history-items">
           {favorites.map(item => (
