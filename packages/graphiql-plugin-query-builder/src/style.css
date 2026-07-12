@@ -915,8 +915,22 @@ select.graphiql-qb-arg-select:focus {
   outline-offset: 1px;
 }
 
-/* An extracted field shows `...FragmentName` in place of its expand chrome. */
-.graphiql-qb-field-spread {
+/* Fragment spreads in a field's selection render as reference rows among its
+   children (`...FragmentName`), so an extracted field stays a normal editable
+   composite instead of collapsing into a badge. */
+.graphiql-qb-fragment-refs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.graphiql-qb-fragment-ref-item {
+  display: flex;
+  align-items: center;
+  min-height: var(--px-24);
+}
+
+.graphiql-qb-fragment-ref {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-mono);
   color: oklch(var(--accent-blue));

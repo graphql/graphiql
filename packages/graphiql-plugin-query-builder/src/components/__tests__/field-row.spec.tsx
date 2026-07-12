@@ -326,23 +326,6 @@ describe('FieldRow — extract to fragment', () => {
     );
     expect(onExtractFragment).toHaveBeenCalledOnce();
   });
-
-  it('renders the fragment-spread badge when fragmentSpread is set', () => {
-    render(
-      <FieldRow
-        field={friendsField}
-        path={[]}
-        selected
-        hasChildren
-        expanded={false}
-        fragmentSpread="FriendFields"
-        onToggle={() => {}}
-        onExpand={() => {}}
-      />,
-    );
-    const badge = screen.getByTestId('field-spread');
-    expect(badge).toHaveTextContent('FriendFields');
-  });
 });
 
 describe('FieldRow — deprecated fields', () => {

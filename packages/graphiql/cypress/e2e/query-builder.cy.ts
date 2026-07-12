@@ -184,9 +184,10 @@ describe('Query Builder – fragment extraction', () => {
       expect(compact).to.include('name');
     });
 
-    // The fragment is listed and the row shows the spread state.
+    // The fragment is listed and the extracted field shows a spread reference
+    // among its children (the row stays an editable composite, not a badge).
     cy.get('.graphiql-qb-fragment-name').should('contain.text', 'PersonFields');
-    cy.get('[data-testid="field-spread"]').should(
+    cy.get('[data-testid="fragment-ref"]').should(
       'contain.text',
       'PersonFields',
     );

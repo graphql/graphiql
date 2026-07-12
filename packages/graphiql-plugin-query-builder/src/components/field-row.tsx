@@ -29,12 +29,6 @@ type FieldRowProps = {
    */
   argVariables?: Record<string, string>;
   /**
-   * When set, this field's selection has been extracted to (or replaced with) a
-   * spread of this named fragment. The row shows `...fragmentSpread` in place of
-   * its expand chrome.
-   */
-  fragmentSpread?: string;
-  /**
    * Extracts the current selection into a new fragment. Present only on a
    * composite row that is expanded with a non-empty selection to lift out.
    */
@@ -60,7 +54,6 @@ export const FieldRow: FC<FieldRowProps> = ({
   current = false,
   argValues = {},
   argVariables = {},
-  fragmentSpread,
   onExtractFragment,
   onToggle,
   onExpand,
@@ -140,12 +133,6 @@ export const FieldRow: FC<FieldRowProps> = ({
               DEP
             </span>
           </Tooltip>
-        )}
-        {fragmentSpread && (
-          <span className="graphiql-qb-field-spread" data-testid="field-spread">
-            <span className="graphiql-qb-spread">...</span>
-            {fragmentSpread}
-          </span>
         )}
         {onExtractFragment && (
           <span className="graphiql-qb-field-actions">

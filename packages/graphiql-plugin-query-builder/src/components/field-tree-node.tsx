@@ -69,17 +69,19 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     : undefined;
   const nodeSelections = nodeSelectionSet?.selections ?? [];
 
-  // A field whose selection set is a single fragment spread has already been
-  // extracted (or spread from an existing fragment); its row shows `...Name`
-  // rather than the extract/expand chrome.
-  const spreadName =
-    nodeSelections.length === 1 &&
-    nodeSelections[0]?.kind === Kind.FRAGMENT_SPREAD
-      ? nodeSelections[0].name.value
-      : undefined;
+  // Fragment spreads sitting in this field's selection (e.g. after extraction,
+  // `person { ...PersonFields }`) render as reference rows among the field's
+  // children. The field itself stays a normal, editable composite — ticking
+  // more fields adds them alongside the spread in the base query.
+  const spreadRefs = nodeSelections
+    .filter(s => s.kind === Kind.FRAGMENT_SPREAD)
+    .map(s => s.name.value);
 
-  const hasExtractableSelection =
-    spreadName === undefined && nodeSelections.length > 0;
+  // Offer extraction only when there's a concrete selection to lift out — a
+  // bare spread has nothing new to extract.
+  const hasExtractableSelection = nodeSelections.some(
+    s => s.kind === Kind.FIELD || s.kind === Kind.INLINE_FRAGMENT,
+  );
   const canExtract = Boolean(
     isFragmentTarget &&
     namedType &&
@@ -115,7 +117,6 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
         current={current}
         argValues={argValues}
         argVariables={argVariables}
-        fragmentSpread={spreadName}
         onExtractFragment={handleExtract}
         onToggle={onToggle}
         onExpand={handleExpand}
@@ -123,17 +124,29 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
         onPromoteArg={onPromoteArg}
         onDemoteArg={onDemoteArg}
       />
-      {spreadName === undefined &&
-        isObject &&
-        expanded &&
-        namedType &&
-        isObjectType(namedType) && (
-          <FieldTreeList
-            type={namedType as GraphQLObjectType}
-            path={fullPath}
-          />
-        )}
-      {spreadName === undefined && isAbstract && expanded && (
+      {expanded && spreadRefs.length > 0 && (
+        <ul
+          className="graphiql-qb-fragment-refs"
+          role="list"
+          style={{ paddingLeft: fullPath.length * 12 }}
+        >
+          {spreadRefs.map(name => (
+            <li key={name} className="graphiql-qb-fragment-ref-item">
+              <span
+                className="graphiql-qb-fragment-ref"
+                data-testid="fragment-ref"
+              >
+                <span className="graphiql-qb-spread">...</span>
+                {name}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {isObject && expanded && namedType && isObjectType(namedType) && (
+        <FieldTreeList type={namedType as GraphQLObjectType} path={fullPath} />
+      )}
+      {isAbstract && expanded && (
         <>
           {/* Interface fields shared by every implementor can be selected
               directly, without a type condition. Unions have no such fields. */}

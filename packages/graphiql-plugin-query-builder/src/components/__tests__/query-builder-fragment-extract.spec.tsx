@@ -86,6 +86,37 @@ describe('QueryBuilder — fragment extraction row action', () => {
     });
   });
 
+  it('keeps the extracted field editable and shows the spread as a child reference', async () => {
+    const user = userEvent.setup();
+    render(<QueryBuilder />);
+
+    await user.click(screen.getByRole('button', { name: /expand user/i }));
+    await user.click(
+      await screen.findByRole('button', {
+        name: /extract user to a fragment/i,
+      }),
+    );
+
+    // The row is not frozen into a badge: the spread shows as a child
+    // reference and the field's own children stay tickable.
+    await waitFor(() =>
+      expect(screen.getByTestId('fragment-ref')).toHaveTextContent(
+        'UserFields',
+      ),
+    );
+
+    // Ticking another field adds it to the base query alongside the spread,
+    // not to the fragment.
+    await user.click(screen.getByRole('checkbox', { name: /toggle email/i }));
+
+    await waitFor(() => {
+      const q = lastQuery();
+      expect(q).toMatch(/user\s*{\s*\.\.\.UserFields\s+email\s*}/);
+      // The fragment definition is untouched by the base-query edit.
+      expect(q.match(/fragment UserFields/g)).toHaveLength(1);
+    });
+  });
+
   it('does not offer extraction on a composite row with no selection', async () => {
     const user = userEvent.setup();
     state.queryText = '{ user { name } }';
