@@ -56,11 +56,11 @@
   flex: 1;
 }
 
-/* ToolbarButton defaults to --toolbar-width (40px); shrink it so the hover
+/* ToolbarButton defaults to --icon-button-size-lg; shrink it so the hover
    background fits inside the 32px header bar. */
 .graphiql-response-header .graphiql-toolbar-button {
-  height: 28px;
-  width: 28px;
+  height: var(--icon-button-size-sm);
+  width: var(--icon-button-size-sm);
 }
 
 .graphiql-response-pane {

@@ -19,8 +19,8 @@
 }
 
 .graphiql-activity-rail-item {
-  width: 32px;
-  height: 32px;
+  width: var(--icon-button-size-md);
+  height: var(--icon-button-size-md);
   border: 0;
   border-left: 2px solid transparent;
   margin-left: -2px;
@@ -64,8 +64,8 @@
 }
 
 .graphiql-activity-rail-settings {
-  width: 32px;
-  height: 32px;
+  width: var(--icon-button-size-md);
+  height: var(--icon-button-size-md);
   margin: 0 auto;
   border: 0;
   background: transparent;

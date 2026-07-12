@@ -3,9 +3,9 @@ button.graphiql-execute-button {
   border: 1px solid oklch(var(--btn-primary-border));
   border-radius: var(--radius-md);
   cursor: pointer;
-  height: var(--toolbar-width);
+  height: var(--icon-button-size-lg);
   padding: 0;
-  width: var(--toolbar-width);
+  width: var(--icon-button-size-lg);
 
   &:disabled {
     cursor: not-allowed;

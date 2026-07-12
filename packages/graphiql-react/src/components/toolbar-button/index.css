@@ -2,8 +2,8 @@ button.graphiql-toolbar-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--toolbar-width);
-  width: var(--toolbar-width);
+  height: var(--icon-button-size-lg);
+  width: var(--icon-button-size-lg);
   color: oklch(var(--fg-subtle));
   border-radius: var(--radius-sm);
 
