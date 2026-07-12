@@ -34,6 +34,7 @@ const TestSchema = new GraphQLSchema({ query: QueryType });
 /** A minimal Monaco stub whose reported cursor offset the test controls. */
 function makeFakeEditor(getText: () => string) {
   let cursorCb: ((e: { reason: number }) => void) | undefined;
+  let focusCb: (() => void) | undefined;
   let offset = 0;
   return {
     editor: {
@@ -46,11 +47,19 @@ function makeFakeEditor(getText: () => string) {
         cursorCb = cb;
         return { dispose() {} };
       },
+      onDidFocusEditorText(cb: () => void) {
+        focusCb = cb;
+        return { dispose() {} };
+      },
     },
     moveCursorTo(next: number) {
       offset = next;
       // reason 3 === CursorChangeReason.Explicit in the mock.
       cursorCb?.({ reason: 3 });
+    },
+    /** Regain focus without moving the cursor (a click at the current spot). */
+    focus() {
+      focusCb?.();
     },
   };
 }
@@ -96,6 +105,35 @@ describe('QueryBuilder — cursor-driven editing target', () => {
     // regression: this used to be ignored because the definition was unchanged.
     act(() => {
       fake.moveCursorTo(insideFragment + 1);
+      vi.advanceTimersByTime(100);
+    });
+    expect(
+      screen.getByRole('button', { name: /back to query/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('reopens the fragment editor on refocus even at the unchanged cursor spot', () => {
+    const fake = makeFakeEditor(() => QUERY);
+    installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: QUERY,
+      queryEditor: fake.editor,
+    });
+    render(<QueryBuilder />);
+
+    act(() => {
+      fake.moveCursorTo(QUERY.indexOf('name'));
+      vi.advanceTimersByTime(100);
+    });
+    fireEvent.click(screen.getByRole('button', { name: /back to query/i }));
+    expect(
+      screen.queryByRole('button', { name: /back to query/i }),
+    ).not.toBeInTheDocument();
+
+    // Clicking back into the editor at the same spot fires no cursor-move event,
+    // but the editor regains focus — which must re-sync to the fragment.
+    act(() => {
+      fake.focus();
       vi.advanceTimersByTime(100);
     });
     expect(

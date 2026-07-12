@@ -24,6 +24,11 @@ const EMPTY_CONTEXT: CursorContext = { target: undefined, path: [], moveId: 0 };
  * editing to that fragment, and the path expands the tree down to the cursor.
  * Subscribes to the query editor directly (debounced to avoid thrashing while
  * typing), ignoring cursor resets caused by our own writes.
+ *
+ * Recomputes on both explicit cursor moves and the editor regaining focus. The
+ * focus signal matters because clicking back into the editor at the exact spot
+ * the cursor already sat fires no cursor-move event, yet should still re-sync
+ * the builder to the cursor (e.g. after "Back to query" moved focus away).
  */
 export function useCursorContext(): CursorContext {
   const queryEditor = useGraphiQL(state => state.queryEditor);
@@ -62,16 +67,22 @@ export function useCursorContext(): CursorContext {
       clearTimeout(timer);
       timer = setTimeout(recompute, 80);
     };
-    const disposable = queryEditor.onDidChangeCursorPosition(e => {
+    const cursorDisposable = queryEditor.onDidChangeCursorPosition(e => {
       // Only react to explicit (user) cursor moves, not content-flush/programmatic ones.
       if (e.reason === monaco?.editor.CursorChangeReason.Explicit) {
         schedule();
       }
     });
+    // Re-sync when the editor regains focus (e.g. clicking back into it after a
+    // builder action stole focus), which covers a click at the current cursor.
+    const focusDisposable = queryEditor.onDidFocusEditorText(() => {
+      schedule();
+    });
     recompute();
     return () => {
       clearTimeout(timer);
-      disposable.dispose();
+      cursorDisposable.dispose();
+      focusDisposable.dispose();
     };
   }, [queryEditor, monaco]);
 

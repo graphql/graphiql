@@ -50,6 +50,9 @@ function setupEditor() {
         cursorCb = cb;
         return { dispose() {} };
       },
+      onDidFocusEditorText() {
+        return { dispose() {} };
+      },
       getModel: () => ({
         getValue: () => query,
         getOffsetAt: () => query.indexOf('id') + 1, // inside the `id` token
