@@ -13,6 +13,7 @@
  * via PortalProvider, so they inherit these variables through DOM ancestry.
  */
 .graphiql-container {
+  /* DEPRECATED (v5): retained frozen for backward compatibility and the CodeMirror-based explorer plugin. Do not add new usages — use the OKLCH tokens in tokens.css. */
   /* Colors */
   --color-primary: 320, 95%, 43%;
   --color-secondary: 242, 51%, 61%;
