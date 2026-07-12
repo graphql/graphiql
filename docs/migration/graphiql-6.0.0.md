@@ -11,7 +11,7 @@ If something in your integration breaks that isn't covered here, please open an 
 3. [Removed hooks](#removed-hooks)
 4. [New `transport` prop](#new-transport-prop)
 5. [New first-party plugins](#new-first-party-plugins)
-6. [`@graphiql/plugin-explorer` deprecation](#graphiqlplugin-explorer-deprecation)
+6. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
 7. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
 8. [Considering for removal in v7](#considering-for-removal-in-v7)
 9. [Other notes](#other-notes)
@@ -26,7 +26,7 @@ Most of this is additive and requires no rewrite: the old `fetcher` prop and the
 
 If you don't override GraphiQL's CSS, there's nothing to do here — the new look applies automatically.
 
-If you do retheme GraphiQL by overriding CSS custom properties, the important thing to understand is that v6 does **not** replace the old variables with new ones of the same name — it adds a second, parallel token system and **deprecates the old one**. The v5 variables (`--color-primary`, `--color-neutral`, `--color-base`, and so on, defined under `.graphiql-container` as `h, s%, l%` triplets consumed via `hsl(var(--x))`) are still defined, frozen at their v5 values, but **no v6 component reads them anymore** — every restyled surface reads a new set of OKLCH tokens in `tokens.css` instead. The only first-party code that still reads the v5 variables is `@graphiql/plugin-explorer` — specifically the `colors` prop it hands to the `graphiql-explorer` library to tint that plugin's tree — and that plugin is itself deprecated.
+If you do retheme GraphiQL by overriding CSS custom properties, the important thing to understand is that v6 does **not** replace the old variables with new ones of the same name — it adds a second, parallel token system and **deprecates the old one**. The v5 variables (`--color-primary`, `--color-neutral`, `--color-base`, and so on, defined under `.graphiql-container` as `h, s%, l%` triplets consumed via `hsl(var(--x))`) are still defined, frozen at their v5 values, but **no v6 component reads them anymore** — every restyled surface reads a new set of OKLCH tokens in `tokens.css` instead. They're retained only as a frozen compatibility surface for your own custom CSS — no first-party code reads them.
 
 Practically, that means:
 
@@ -441,15 +441,11 @@ import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 
 Their stylesheets are bundled into `graphiql`'s own `style.css` regardless of whether they're in your `plugins` list, so opting out removes the panel and rail icon but not the (small) amount of CSS from the bundle.
 
-## `@graphiql/plugin-explorer` deprecation
+## `@graphiql/plugin-explorer` removal
 
-`@graphiql/plugin-explorer` — the plugin wrapping OneGraph's `graphiql-explorer` library — is deprecated as of v6. It still works exactly as before: same API, same props, no behavior change. But it wraps a library that is no longer actively maintained upstream, and its role is now filled by the first-party `@graphiql/plugin-query-builder` described above, which is default-installed and covers the same "build a query without typing it" use case with fragment, variable, and union/interface support that `graphiql-explorer` never had.
+`@graphiql/plugin-explorer` — the plugin wrapping OneGraph's `graphiql-explorer` library — is **removed in v6**. It wrapped a library that is no longer actively maintained upstream, and its role is now filled by the first-party `@graphiql/plugin-query-builder` described above, which is default-installed and covers the same "build a query without typing it" use case with fragment, variable, and union/interface support that `graphiql-explorer` never had.
 
-Calling `explorerPlugin()` now logs a one-time console warning:
-
-```
-[@graphiql/plugin-explorer] This package is deprecated. Use the first-party @graphiql/plugin-query-builder instead. Removal planned for v7.
-```
+The package is no longer published from the v6 line. If you still depend on it and can't migrate yet, it remains available on the **v5 LTS branch** — the last `5.x` release stays on npm and is maintained there — but new development targets the query builder.
 
 ### Migrating
 
@@ -481,7 +477,7 @@ If you're using `graphiql` (rather than assembling your own plugin list), the qu
 
 Check the [known limitations](../../packages/graphiql-plugin-query-builder/README.md#known-limitations) in the query builder's README before migrating a heavily-scripted or aliased set of operations — a small number of edge cases (repeated aliased fields, explicit `null` arguments) aren't yet covered.
 
-`@graphiql/plugin-explorer` is not being removed in this release. It continues to receive the same level of maintenance it has for the past several versions (bug fixes as needed; no new features), and removal is planned for a future major version, not this one.
+If you can't migrate before upgrading to v6, pin `@graphiql/plugin-explorer` to its last `5.x` release from npm and track the v5 LTS branch, where it stays maintained.
 
 ## Theme, density, and font-size settings
 
@@ -529,7 +525,6 @@ Nothing below is happening in v6. These are informal signals about where the pro
 - **React 18 support.** v6 still supports React 18 and 19 as peer dependencies. A future major version may drop React 18 once the React 19 adoption curve looks similar to where 18 was when 17 support was dropped.
 - **GraphQL.js 15 support.** Similarly, `graphql` `^15.5.0` remains a supported peer range in v6 alongside `^16` and `^17`. Expect the floor to move up in a future major version.
 - **The v5 HSL variable set.** The old `--color-*` variables are **deprecated in v6**. They're still defined — frozen at their v5 values — for backward compatibility, but no v6 component reads them: internal usage was migrated to the OKLCH tokens in `tokens.css` (see [CSS and retheming](#css-and-retheming)). A transparent compatibility shim isn't feasible, because the two systems use different color formats — `h, s%, l%` for `hsl()` versus `L% C H` for `oklch()` — so an old variable can't simply alias a new one. Expect the frozen definitions to be removed in v7. If your integration reads or sets the v5 variable names, migrate to the new tokens now (see [Migrating `--color-*` overrides](#migrating---color--overrides)) and weigh in on [discussion #4219](https://github.com/graphql/graphiql/discussions/4219).
-- **`@graphiql/plugin-explorer`.** Covered above — deprecated in v6, planned for removal in v7.
 
 ## Other notes
 
