@@ -167,15 +167,15 @@ You can pass a list of plugin objects to the `GraphiQL` component using the
 the `onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
-state using the hooks provided by `@graphiql/react`. For example, check out
-how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in
-the [plugin package](../graphiql-plugin-explorer) in this repo.
+state using the hooks provided by `@graphiql/react`.
 
 ### Theming
 
 The GraphiQL interface uses CSS variables for theming, in particular for colors.
-Check out the [`root.css`](../graphiql-react/src/style/root.css) file for the
-available variables.
+As of v6 the supported set is the OKLCH design tokens in
+[`tokens.css`](../graphiql-react/src/style/tokens.css); the older `--color-*` HSL
+variables in [`root.css`](../graphiql-react/src/style/root.css) are deprecated
+(see the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#css-and-retheming)).
 
 Overriding these variables is the only officially supported way of customizing
 the appearance of GraphiQL. Starting from version 2, class names are no longer

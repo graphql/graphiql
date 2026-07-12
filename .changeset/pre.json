@@ -13,7 +13,6 @@
     "graphiql": "5.2.2",
     "@graphiql/plugin-code-exporter": "5.1.1",
     "@graphiql/plugin-doc-explorer": "0.4.1",
-    "@graphiql/plugin-explorer": "5.1.1",
     "@graphiql/plugin-history": "0.4.1",
     "@graphiql/react": "0.37.3",
     "@graphiql/toolkit": "0.11.3",

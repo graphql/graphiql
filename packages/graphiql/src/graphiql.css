@@ -88,7 +88,7 @@ button.graphiql-tab-add {
   padding: var(--px-4);
 
   & > svg {
-    color: hsla(var(--color-neutral), var(--alpha-secondary));
+    color: oklch(var(--fg-muted));
     display: block;
     height: var(--icon-size-lg);
     width: var(--icon-size-lg);
@@ -124,18 +124,18 @@ button.graphiql-tab-strip-action {
 /* The GraphiQL.Logo slot, opt-in only: branding lives in the top bar by default */
 .graphiql-container .graphiql-logo {
   margin-left: auto;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
 }
 
 /* Undo default link styling for the default GraphiQL logo link */
 .graphiql-container .graphiql-logo .graphiql-logo-link {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   text-decoration: none;
 
   &:focus {
-    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
+    outline: oklch(var(--accent-blue)) auto 1px;
   }
 }
 
@@ -156,8 +156,7 @@ button.graphiql-tab-strip-action {
 
 /* The operation editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
-  border-bottom: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-bottom: 1px solid oklch(var(--border-default));
   padding: var(--px-16);
   column-gap: var(--px-16);
   display: flex;
@@ -179,7 +178,7 @@ button.graphiql-tab-strip-action {
 
 /* The toolbar icons */
 .graphiql-toolbar-icon {
-  color: hsla(var(--color-neutral), var(--alpha-tertiary));
+  color: oklch(var(--fg-subtle));
   display: block;
   height: calc(var(--toolbar-width) - (var(--px-8) * 2));
   width: calc(var(--toolbar-width) - (var(--px-8) * 2));
@@ -195,11 +194,11 @@ button.graphiql-tab-strip-action {
 }
 
 .graphiql-container .graphiql-editor-tools button {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
 }
 
 .graphiql-container .graphiql-editor-tools button.active {
-  color: hsl(var(--color-neutral));
+  color: oklch(var(--fg-default));
 }
 
 /* The tab buttons to switch between editor tools */
@@ -250,8 +249,7 @@ button.graphiql-tab-strip-action {
 
 /* The footer below the response view */
 .graphiql-container .graphiql-footer {
-  border-top: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-top: 1px solid oklch(var(--border-default));
 }
 
 /* The plugin container — sizing controlled by useDragResize; chrome handled by <SidePanel> */
@@ -301,7 +299,7 @@ button.graphiql-tab-strip-action {
 }
 
 .graphiql-container .graphiql-chevron-icon {
-  color: hsla(var(--color-neutral), var(--alpha-tertiary));
+  color: oklch(var(--fg-subtle));
   display: block;
   height: var(--px-12);
   margin: var(--px-12);
@@ -340,8 +338,7 @@ button.graphiql-tab-strip-action {
 /* A section inside the settings dialog */
 .graphiql-dialog .graphiql-dialog-section {
   align-items: center;
-  border-top: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-top: 1px solid oklch(var(--border-default));
   display: flex;
   justify-content: space-between;
   padding: var(--px-24);
@@ -359,11 +356,11 @@ button.graphiql-tab-strip-action {
 
 /* The section caption in the settings dialog */
 .graphiql-dialog .graphiql-dialog-section-caption {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
 }
 
 .graphiql-dialog .graphiql-warning-text {
-  color: hsl(var(--color-warning));
+  color: oklch(var(--accent-orange));
   font-weight: var(--font-weight-medium);
 }
 
@@ -373,13 +370,13 @@ button.graphiql-tab-strip-action {
 }
 
 .graphiql-dialog .graphiql-table :is(th, td) {
-  border: 1px solid hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border: 1px solid oklch(var(--border-default));
   padding: var(--px-8) var(--px-12);
 }
 
 /* A single key the short-key dialog */
 .graphiql-dialog .graphiql-key {
-  background-color: hsla(var(--color-neutral), var(--alpha-background-medium));
+  background-color: oklch(var(--bg-overlay));
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
 }
